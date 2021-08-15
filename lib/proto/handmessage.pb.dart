@@ -1036,6 +1036,7 @@ class Flop extends $pb.GeneratedMessage {
         valueFieldType: $pb.PbFieldType.OF,
         packageName: const $pb.PackageName('game'))
     ..m<$core.int, $core.String>(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'playerCardRanks', entryClassName: 'Flop.PlayerCardRanksEntry', keyFieldType: $pb.PbFieldType.OU3, valueFieldType: $pb.PbFieldType.OS, packageName: const $pb.PackageName('game'))
+    ..pc<$0.Board>(7, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'boards', $pb.PbFieldType.PM, subBuilder: $0.Board.create)
     ..hasRequiredFields = false;
 
   Flop._() : super();
@@ -1046,6 +1047,7 @@ class Flop extends $pb.GeneratedMessage {
     $core.Iterable<$0.SeatsInPots>? seatsPots,
     $core.Map<$core.int, $core.double>? playerBalance,
     $core.Map<$core.int, $core.String>? playerCardRanks,
+    $core.Iterable<$0.Board>? boards,
   }) {
     final _result = create();
     if (board != null) {
@@ -1065,6 +1067,9 @@ class Flop extends $pb.GeneratedMessage {
     }
     if (playerCardRanks != null) {
       _result.playerCardRanks.addAll(playerCardRanks);
+    }
+    if (boards != null) {
+      _result.boards.addAll(boards);
     }
     return _result;
   }
@@ -1120,6 +1125,9 @@ class Flop extends $pb.GeneratedMessage {
 
   @$pb.TagNumber(6)
   $core.Map<$core.int, $core.String> get playerCardRanks => $_getMap(5);
+
+  @$pb.TagNumber(7)
+  $core.List<$0.Board> get boards => $_getList(6);
 }
 
 class Turn extends $pb.GeneratedMessage {
@@ -1151,6 +1159,7 @@ class Turn extends $pb.GeneratedMessage {
     ..pc<$0.SeatsInPots>(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'seatsPots', $pb.PbFieldType.PM, subBuilder: $0.SeatsInPots.create)
     ..m<$core.int, $core.double>(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'playerBalance', entryClassName: 'Turn.PlayerBalanceEntry', keyFieldType: $pb.PbFieldType.OU3, valueFieldType: $pb.PbFieldType.OF, packageName: const $pb.PackageName('game'))
     ..m<$core.int, $core.String>(7, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'playerCardRanks', entryClassName: 'Turn.PlayerCardRanksEntry', keyFieldType: $pb.PbFieldType.OU3, valueFieldType: $pb.PbFieldType.OS, packageName: const $pb.PackageName('game'))
+    ..pc<$0.Board>(8, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'boards', $pb.PbFieldType.PM, subBuilder: $0.Board.create)
     ..hasRequiredFields = false;
 
   Turn._() : super();
@@ -1162,6 +1171,7 @@ class Turn extends $pb.GeneratedMessage {
     $core.Iterable<$0.SeatsInPots>? seatsPots,
     $core.Map<$core.int, $core.double>? playerBalance,
     $core.Map<$core.int, $core.String>? playerCardRanks,
+    $core.Iterable<$0.Board>? boards,
   }) {
     final _result = create();
     if (board != null) {
@@ -1184,6 +1194,9 @@ class Turn extends $pb.GeneratedMessage {
     }
     if (playerCardRanks != null) {
       _result.playerCardRanks.addAll(playerCardRanks);
+    }
+    if (boards != null) {
+      _result.boards.addAll(boards);
     }
     return _result;
   }
@@ -1251,6 +1264,9 @@ class Turn extends $pb.GeneratedMessage {
 
   @$pb.TagNumber(7)
   $core.Map<$core.int, $core.String> get playerCardRanks => $_getMap(6);
+
+  @$pb.TagNumber(8)
+  $core.List<$0.Board> get boards => $_getList(7);
 }
 
 class River extends $pb.GeneratedMessage {
@@ -1282,6 +1298,7 @@ class River extends $pb.GeneratedMessage {
     ..pc<$0.SeatsInPots>(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'seatsPots', $pb.PbFieldType.PM, subBuilder: $0.SeatsInPots.create)
     ..m<$core.int, $core.double>(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'playerBalance', entryClassName: 'River.PlayerBalanceEntry', keyFieldType: $pb.PbFieldType.OU3, valueFieldType: $pb.PbFieldType.OF, packageName: const $pb.PackageName('game'))
     ..m<$core.int, $core.String>(7, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'playerCardRanks', entryClassName: 'River.PlayerCardRanksEntry', keyFieldType: $pb.PbFieldType.OU3, valueFieldType: $pb.PbFieldType.OS, packageName: const $pb.PackageName('game'))
+    ..pc<$0.Board>(9, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'boards', $pb.PbFieldType.PM, subBuilder: $0.Board.create)
     ..hasRequiredFields = false;
 
   River._() : super();
@@ -1293,6 +1310,7 @@ class River extends $pb.GeneratedMessage {
     $core.Iterable<$0.SeatsInPots>? seatsPots,
     $core.Map<$core.int, $core.double>? playerBalance,
     $core.Map<$core.int, $core.String>? playerCardRanks,
+    $core.Iterable<$0.Board>? boards,
   }) {
     final _result = create();
     if (board != null) {
@@ -1315,6 +1333,9 @@ class River extends $pb.GeneratedMessage {
     }
     if (playerCardRanks != null) {
       _result.playerCardRanks.addAll(playerCardRanks);
+    }
+    if (boards != null) {
+      _result.boards.addAll(boards);
     }
     return _result;
   }
@@ -1382,6 +1403,9 @@ class River extends $pb.GeneratedMessage {
 
   @$pb.TagNumber(7)
   $core.Map<$core.int, $core.String> get playerCardRanks => $_getMap(6);
+
+  @$pb.TagNumber(9)
+  $core.List<$0.Board> get boards => $_getList(7);
 }
 
 class SeatCards extends $pb.GeneratedMessage {
@@ -1861,6 +1885,8 @@ class HandLog extends $pb.GeneratedMessage {
     ..aOB(12, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'runItTwice')
     ..aOM<RunItTwiceResult>(13, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'runItTwiceResult', subBuilder: RunItTwiceResult.create)
     ..pc<$0.SeatsInPots>(14, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'seatsPotsShowdown', $pb.PbFieldType.PM, subBuilder: $0.SeatsInPots.create)
+    ..pc<$0.Board>(15, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'boards', $pb.PbFieldType.PM, subBuilder: $0.Board.create)
+    ..m<$core.int, $0.PotWinnersV2>(16, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'potWinners2', protoName: 'pot_winners_2', entryClassName: 'HandLog.PotWinners2Entry', keyFieldType: $pb.PbFieldType.OU3, valueFieldType: $pb.PbFieldType.OM, valueCreator: $0.PotWinnersV2.create, packageName: const $pb.PackageName('game'))
     ..hasRequiredFields = false;
 
   HandLog._() : super();
@@ -1877,6 +1903,8 @@ class HandLog extends $pb.GeneratedMessage {
     $core.bool? runItTwice,
     RunItTwiceResult? runItTwiceResult,
     $core.Iterable<$0.SeatsInPots>? seatsPotsShowdown,
+    $core.Iterable<$0.Board>? boards,
+    $core.Map<$core.int, $0.PotWinnersV2>? potWinners2,
   }) {
     final _result = create();
     if (preflopActions != null) {
@@ -1914,6 +1942,12 @@ class HandLog extends $pb.GeneratedMessage {
     }
     if (seatsPotsShowdown != null) {
       _result.seatsPotsShowdown.addAll(seatsPotsShowdown);
+    }
+    if (boards != null) {
+      _result.boards.addAll(boards);
+    }
+    if (potWinners2 != null) {
+      _result.potWinners2.addAll(potWinners2);
     }
     return _result;
   }
@@ -2080,96 +2114,12 @@ class HandLog extends $pb.GeneratedMessage {
 
   @$pb.TagNumber(14)
   $core.List<$0.SeatsInPots> get seatsPotsShowdown => $_getList(11);
-}
 
-class HandPlayerBalance extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
-      const $core.bool.fromEnvironment('protobuf.omit_message_names')
-          ? ''
-          : 'HandPlayerBalance',
-      package: const $pb.PackageName(
-          const $core.bool.fromEnvironment('protobuf.omit_message_names')
-              ? ''
-              : 'game'),
-      createEmptyInstance: create)
-    ..a<$core.double>(
-        1,
-        const $core.bool.fromEnvironment('protobuf.omit_field_names')
-            ? ''
-            : 'before',
-        $pb.PbFieldType.OF)
-    ..a<$core.double>(
-        2,
-        const $core.bool.fromEnvironment('protobuf.omit_field_names')
-            ? ''
-            : 'after',
-        $pb.PbFieldType.OF)
-    ..hasRequiredFields = false;
+  @$pb.TagNumber(15)
+  $core.List<$0.Board> get boards => $_getList(12);
 
-  HandPlayerBalance._() : super();
-  factory HandPlayerBalance({
-    $core.double? before,
-    $core.double? after,
-  }) {
-    final _result = create();
-    if (before != null) {
-      _result.before = before;
-    }
-    if (after != null) {
-      _result.after = after;
-    }
-    return _result;
-  }
-  factory HandPlayerBalance.fromBuffer($core.List<$core.int> i,
-          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
-      create()..mergeFromBuffer(i, r);
-  factory HandPlayerBalance.fromJson($core.String i,
-          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
-      create()..mergeFromJson(i, r);
-  @$core.Deprecated('Using this can add significant overhead to your binary. '
-      'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
-      'Will be removed in next major version')
-  HandPlayerBalance clone() => HandPlayerBalance()..mergeFromMessage(this);
-  @$core.Deprecated('Using this can add significant overhead to your binary. '
-      'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
-      'Will be removed in next major version')
-  HandPlayerBalance copyWith(void Function(HandPlayerBalance) updates) =>
-      super.copyWith((message) => updates(message as HandPlayerBalance))
-          as HandPlayerBalance; // ignore: deprecated_member_use
-  $pb.BuilderInfo get info_ => _i;
-  @$core.pragma('dart2js:noInline')
-  static HandPlayerBalance create() => HandPlayerBalance._();
-  HandPlayerBalance createEmptyInstance() => create();
-  static $pb.PbList<HandPlayerBalance> createRepeated() =>
-      $pb.PbList<HandPlayerBalance>();
-  @$core.pragma('dart2js:noInline')
-  static HandPlayerBalance getDefault() => _defaultInstance ??=
-      $pb.GeneratedMessage.$_defaultFor<HandPlayerBalance>(create);
-  static HandPlayerBalance? _defaultInstance;
-
-  @$pb.TagNumber(1)
-  $core.double get before => $_getN(0);
-  @$pb.TagNumber(1)
-  set before($core.double v) {
-    $_setFloat(0, v);
-  }
-
-  @$pb.TagNumber(1)
-  $core.bool hasBefore() => $_has(0);
-  @$pb.TagNumber(1)
-  void clearBefore() => clearField(1);
-
-  @$pb.TagNumber(2)
-  $core.double get after => $_getN(1);
-  @$pb.TagNumber(2)
-  set after($core.double v) {
-    $_setFloat(1, v);
-  }
-
-  @$pb.TagNumber(2)
-  $core.bool hasAfter() => $_has(1);
-  @$pb.TagNumber(2)
-  void clearAfter() => clearField(2);
+  @$pb.TagNumber(16)
+  $core.Map<$core.int, $0.PotWinnersV2> get potWinners2 => $_getMap(13);
 }
 
 class PlayerInfo extends $pb.GeneratedMessage {
@@ -2192,7 +2142,7 @@ class PlayerInfo extends $pb.GeneratedMessage {
     ..p<$core.int>(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'bestCards', $pb.PbFieldType.PU3)
     ..a<$core.int>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'rank', $pb.PbFieldType.OU3)
     ..e<$0.HandStatus>(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'playedUntil', $pb.PbFieldType.OE, defaultOrMaker: $0.HandStatus.HandStatus_UNKNOWN, valueOf: $0.HandStatus.valueOf, enumValues: $0.HandStatus.values)
-    ..aOM<HandPlayerBalance>(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'balance', subBuilder: HandPlayerBalance.create)
+    ..aOM<$0.HandPlayerBalance>(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'balance', subBuilder: $0.HandPlayerBalance.create)
     ..p<$core.int>(7, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'hhCards', $pb.PbFieldType.PU3)
     ..a<$core.int>(8, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'hhRank', $pb.PbFieldType.OU3)
     ..a<$core.double>(9, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'received', $pb.PbFieldType.OF)
@@ -2206,7 +2156,7 @@ class PlayerInfo extends $pb.GeneratedMessage {
     $core.Iterable<$core.int>? bestCards,
     $core.int? rank,
     $0.HandStatus? playedUntil,
-    HandPlayerBalance? balance,
+    $0.HandPlayerBalance? balance,
     $core.Iterable<$core.int>? hhCards,
     $core.int? hhRank,
     $core.double? received,
@@ -2314,9 +2264,9 @@ class PlayerInfo extends $pb.GeneratedMessage {
   void clearPlayedUntil() => clearField(5);
 
   @$pb.TagNumber(6)
-  HandPlayerBalance get balance => $_getN(5);
+  $0.HandPlayerBalance get balance => $_getN(5);
   @$pb.TagNumber(6)
-  set balance(HandPlayerBalance v) {
+  set balance($0.HandPlayerBalance v) {
     setField(6, v);
   }
 
@@ -2325,7 +2275,7 @@ class PlayerInfo extends $pb.GeneratedMessage {
   @$pb.TagNumber(6)
   void clearBalance() => clearField(6);
   @$pb.TagNumber(6)
-  HandPlayerBalance ensureBalance() => $_ensure(5);
+  $0.HandPlayerBalance ensureBalance() => $_ensure(5);
 
   @$pb.TagNumber(7)
   $core.List<$core.int> get hhCards => $_getList(6);
@@ -2729,6 +2679,654 @@ class HandResult extends $pb.GeneratedMessage {
   $core.bool hasMaxPlayers() => $_has(20);
   @$pb.TagNumber(21)
   void clearMaxPlayers() => clearField(21);
+}
+
+class HandResultClient extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      const $core.bool.fromEnvironment('protobuf.omit_message_names')
+          ? ''
+          : 'HandResultClient',
+      package: const $pb.PackageName(
+          const $core.bool.fromEnvironment('protobuf.omit_message_names')
+              ? ''
+              : 'game'),
+      createEmptyInstance: create)
+    ..aOB(
+        1,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'runItTwice')
+    ..p<$core.int>(
+        2,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'activeSeats',
+        $pb.PbFieldType.PU3)
+    ..e<$0.HandStatus>(
+        3,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'wonAt',
+        $pb.PbFieldType.OE,
+        defaultOrMaker: $0.HandStatus.HandStatus_UNKNOWN,
+        valueOf: $0.HandStatus.valueOf,
+        enumValues: $0.HandStatus.values)
+    ..pc<$0.Board>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'boards', $pb.PbFieldType.PM, subBuilder: $0.Board.create)
+    ..pc<$0.PotWinnersV2>(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'potWinners', $pb.PbFieldType.PM, subBuilder: $0.PotWinnersV2.create)
+    ..a<$core.int>(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'pauseTimeSecs', $pb.PbFieldType.OU3)
+    ..m<$core.int, $0.PlayerHandInfo>(7, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'playerInfo', entryClassName: 'HandResultClient.PlayerInfoEntry', keyFieldType: $pb.PbFieldType.OU3, valueFieldType: $pb.PbFieldType.OM, valueCreator: $0.PlayerHandInfo.create, packageName: const $pb.PackageName('game'))
+    ..aOB(8, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'scoop')
+    ..m<$fixnum.Int64, PlayerStats>(9, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'playerStats', entryClassName: 'HandResultClient.PlayerStatsEntry', keyFieldType: $pb.PbFieldType.OU6, valueFieldType: $pb.PbFieldType.OM, valueCreator: PlayerStats.create, packageName: const $pb.PackageName('game'))
+    ..a<$core.int>(10, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'handNum', $pb.PbFieldType.OU3)
+    ..hasRequiredFields = false;
+
+  HandResultClient._() : super();
+  factory HandResultClient({
+    $core.bool? runItTwice,
+    $core.Iterable<$core.int>? activeSeats,
+    $0.HandStatus? wonAt,
+    $core.Iterable<$0.Board>? boards,
+    $core.Iterable<$0.PotWinnersV2>? potWinners,
+    $core.int? pauseTimeSecs,
+    $core.Map<$core.int, $0.PlayerHandInfo>? playerInfo,
+    $core.bool? scoop,
+    $core.Map<$fixnum.Int64, PlayerStats>? playerStats,
+    $core.int? handNum,
+  }) {
+    final _result = create();
+    if (runItTwice != null) {
+      _result.runItTwice = runItTwice;
+    }
+    if (activeSeats != null) {
+      _result.activeSeats.addAll(activeSeats);
+    }
+    if (wonAt != null) {
+      _result.wonAt = wonAt;
+    }
+    if (boards != null) {
+      _result.boards.addAll(boards);
+    }
+    if (potWinners != null) {
+      _result.potWinners.addAll(potWinners);
+    }
+    if (pauseTimeSecs != null) {
+      _result.pauseTimeSecs = pauseTimeSecs;
+    }
+    if (playerInfo != null) {
+      _result.playerInfo.addAll(playerInfo);
+    }
+    if (scoop != null) {
+      _result.scoop = scoop;
+    }
+    if (playerStats != null) {
+      _result.playerStats.addAll(playerStats);
+    }
+    if (handNum != null) {
+      _result.handNum = handNum;
+    }
+    return _result;
+  }
+  factory HandResultClient.fromBuffer($core.List<$core.int> i,
+          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(i, r);
+  factory HandResultClient.fromJson($core.String i,
+          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(i, r);
+  @$core.Deprecated('Using this can add significant overhead to your binary. '
+      'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+      'Will be removed in next major version')
+  HandResultClient clone() => HandResultClient()..mergeFromMessage(this);
+  @$core.Deprecated('Using this can add significant overhead to your binary. '
+      'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+      'Will be removed in next major version')
+  HandResultClient copyWith(void Function(HandResultClient) updates) =>
+      super.copyWith((message) => updates(message as HandResultClient))
+          as HandResultClient; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static HandResultClient create() => HandResultClient._();
+  HandResultClient createEmptyInstance() => create();
+  static $pb.PbList<HandResultClient> createRepeated() =>
+      $pb.PbList<HandResultClient>();
+  @$core.pragma('dart2js:noInline')
+  static HandResultClient getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<HandResultClient>(create);
+  static HandResultClient? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.bool get runItTwice => $_getBF(0);
+  @$pb.TagNumber(1)
+  set runItTwice($core.bool v) {
+    $_setBool(0, v);
+  }
+
+  @$pb.TagNumber(1)
+  $core.bool hasRunItTwice() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearRunItTwice() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.List<$core.int> get activeSeats => $_getList(1);
+
+  @$pb.TagNumber(3)
+  $0.HandStatus get wonAt => $_getN(2);
+  @$pb.TagNumber(3)
+  set wonAt($0.HandStatus v) {
+    setField(3, v);
+  }
+
+  @$pb.TagNumber(3)
+  $core.bool hasWonAt() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearWonAt() => clearField(3);
+
+  @$pb.TagNumber(4)
+  $core.List<$0.Board> get boards => $_getList(3);
+
+  @$pb.TagNumber(5)
+  $core.List<$0.PotWinnersV2> get potWinners => $_getList(4);
+
+  @$pb.TagNumber(6)
+  $core.int get pauseTimeSecs => $_getIZ(5);
+  @$pb.TagNumber(6)
+  set pauseTimeSecs($core.int v) {
+    $_setUnsignedInt32(5, v);
+  }
+
+  @$pb.TagNumber(6)
+  $core.bool hasPauseTimeSecs() => $_has(5);
+  @$pb.TagNumber(6)
+  void clearPauseTimeSecs() => clearField(6);
+
+  @$pb.TagNumber(7)
+  $core.Map<$core.int, $0.PlayerHandInfo> get playerInfo => $_getMap(6);
+
+  @$pb.TagNumber(8)
+  $core.bool get scoop => $_getBF(7);
+  @$pb.TagNumber(8)
+  set scoop($core.bool v) {
+    $_setBool(7, v);
+  }
+
+  @$pb.TagNumber(8)
+  $core.bool hasScoop() => $_has(7);
+  @$pb.TagNumber(8)
+  void clearScoop() => clearField(8);
+
+  @$pb.TagNumber(9)
+  $core.Map<$fixnum.Int64, PlayerStats> get playerStats => $_getMap(8);
+
+  @$pb.TagNumber(10)
+  $core.int get handNum => $_getIZ(9);
+  @$pb.TagNumber(10)
+  set handNum($core.int v) {
+    $_setUnsignedInt32(9, v);
+  }
+
+  @$pb.TagNumber(10)
+  $core.bool hasHandNum() => $_has(9);
+  @$pb.TagNumber(10)
+  void clearHandNum() => clearField(10);
+}
+
+class HandLogV2 extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'HandLogV2',
+      package: const $pb.PackageName(
+          const $core.bool.fromEnvironment('protobuf.omit_message_names')
+              ? ''
+              : 'game'),
+      createEmptyInstance: create)
+    ..aOM<$0.HandActionLog>(
+        1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'preflopActions',
+        subBuilder: $0.HandActionLog.create)
+    ..aOM<$0.HandActionLog>(
+        2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'flopActions',
+        subBuilder: $0.HandActionLog.create)
+    ..aOM<$0.HandActionLog>(
+        3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'turnActions',
+        subBuilder: $0.HandActionLog.create)
+    ..aOM<$0.HandActionLog>(
+        4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'riverActions',
+        subBuilder: $0.HandActionLog.create)
+    ..a<$fixnum.Int64>(9, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'handStartedAt', $pb.PbFieldType.OU6, defaultOrMaker: $fixnum.Int64.ZERO)
+    ..a<$fixnum.Int64>(11, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'handEndedAt', $pb.PbFieldType.OU6, defaultOrMaker: $fixnum.Int64.ZERO)
+    ..hasRequiredFields = false;
+
+  HandLogV2._() : super();
+  factory HandLogV2({
+    $0.HandActionLog? preflopActions,
+    $0.HandActionLog? flopActions,
+    $0.HandActionLog? turnActions,
+    $0.HandActionLog? riverActions,
+    $fixnum.Int64? handStartedAt,
+    $fixnum.Int64? handEndedAt,
+  }) {
+    final _result = create();
+    if (preflopActions != null) {
+      _result.preflopActions = preflopActions;
+    }
+    if (flopActions != null) {
+      _result.flopActions = flopActions;
+    }
+    if (turnActions != null) {
+      _result.turnActions = turnActions;
+    }
+    if (riverActions != null) {
+      _result.riverActions = riverActions;
+    }
+    if (handStartedAt != null) {
+      _result.handStartedAt = handStartedAt;
+    }
+    if (handEndedAt != null) {
+      _result.handEndedAt = handEndedAt;
+    }
+    return _result;
+  }
+  factory HandLogV2.fromBuffer($core.List<$core.int> i,
+          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(i, r);
+  factory HandLogV2.fromJson($core.String i,
+          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(i, r);
+  @$core.Deprecated('Using this can add significant overhead to your binary. '
+      'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+      'Will be removed in next major version')
+  HandLogV2 clone() => HandLogV2()..mergeFromMessage(this);
+  @$core.Deprecated('Using this can add significant overhead to your binary. '
+      'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+      'Will be removed in next major version')
+  HandLogV2 copyWith(void Function(HandLogV2) updates) =>
+      super.copyWith((message) => updates(message as HandLogV2))
+          as HandLogV2; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static HandLogV2 create() => HandLogV2._();
+  HandLogV2 createEmptyInstance() => create();
+  static $pb.PbList<HandLogV2> createRepeated() => $pb.PbList<HandLogV2>();
+  @$core.pragma('dart2js:noInline')
+  static HandLogV2 getDefault() =>
+      _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<HandLogV2>(create);
+  static HandLogV2? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $0.HandActionLog get preflopActions => $_getN(0);
+  @$pb.TagNumber(1)
+  set preflopActions($0.HandActionLog v) {
+    setField(1, v);
+  }
+
+  @$pb.TagNumber(1)
+  $core.bool hasPreflopActions() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearPreflopActions() => clearField(1);
+  @$pb.TagNumber(1)
+  $0.HandActionLog ensurePreflopActions() => $_ensure(0);
+
+  @$pb.TagNumber(2)
+  $0.HandActionLog get flopActions => $_getN(1);
+  @$pb.TagNumber(2)
+  set flopActions($0.HandActionLog v) {
+    setField(2, v);
+  }
+
+  @$pb.TagNumber(2)
+  $core.bool hasFlopActions() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearFlopActions() => clearField(2);
+  @$pb.TagNumber(2)
+  $0.HandActionLog ensureFlopActions() => $_ensure(1);
+
+  @$pb.TagNumber(3)
+  $0.HandActionLog get turnActions => $_getN(2);
+  @$pb.TagNumber(3)
+  set turnActions($0.HandActionLog v) {
+    setField(3, v);
+  }
+
+  @$pb.TagNumber(3)
+  $core.bool hasTurnActions() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearTurnActions() => clearField(3);
+  @$pb.TagNumber(3)
+  $0.HandActionLog ensureTurnActions() => $_ensure(2);
+
+  @$pb.TagNumber(4)
+  $0.HandActionLog get riverActions => $_getN(3);
+  @$pb.TagNumber(4)
+  set riverActions($0.HandActionLog v) {
+    setField(4, v);
+  }
+
+  @$pb.TagNumber(4)
+  $core.bool hasRiverActions() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearRiverActions() => clearField(4);
+  @$pb.TagNumber(4)
+  $0.HandActionLog ensureRiverActions() => $_ensure(3);
+
+  @$pb.TagNumber(9)
+  $fixnum.Int64 get handStartedAt => $_getI64(4);
+  @$pb.TagNumber(9)
+  set handStartedAt($fixnum.Int64 v) {
+    $_setInt64(4, v);
+  }
+
+  @$pb.TagNumber(9)
+  $core.bool hasHandStartedAt() => $_has(4);
+  @$pb.TagNumber(9)
+  void clearHandStartedAt() => clearField(9);
+
+  @$pb.TagNumber(11)
+  $fixnum.Int64 get handEndedAt => $_getI64(5);
+  @$pb.TagNumber(11)
+  set handEndedAt($fixnum.Int64 v) {
+    $_setInt64(5, v);
+  }
+
+  @$pb.TagNumber(11)
+  $core.bool hasHandEndedAt() => $_has(5);
+  @$pb.TagNumber(11)
+  void clearHandEndedAt() => clearField(11);
+}
+
+class HandResultServer extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'HandResultServer',
+      package: const $pb.PackageName(
+          const $core.bool.fromEnvironment('protobuf.omit_message_names')
+              ? ''
+              : 'game'),
+      createEmptyInstance: create)
+    ..a<$fixnum.Int64>(
+        1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'gameId', $pb.PbFieldType.OU6,
+        defaultOrMaker: $fixnum.Int64.ZERO)
+    ..a<$core.int>(
+        2,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'handNum',
+        $pb.PbFieldType.OU3)
+    ..e<$1.GameType>(
+        3,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'gameType',
+        $pb.PbFieldType.OE,
+        defaultOrMaker: $1.GameType.UNKNOWN,
+        valueOf: $1.GameType.valueOf,
+        enumValues: $1.GameType.values)
+    ..a<$core.int>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'noCards', $pb.PbFieldType.OU3)
+    ..aOM<HandLog>(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'handLog', subBuilder: HandLog.create)
+    ..aOM<HandStats>(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'handStats', subBuilder: HandStats.create)
+    ..aOB(8, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'runItTwice')
+    ..a<$core.int>(9, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'buttonPos', $pb.PbFieldType.OU3)
+    ..a<$core.double>(10, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'smallBlind', $pb.PbFieldType.OF)
+    ..a<$core.double>(11, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'bigBlind', $pb.PbFieldType.OF)
+    ..a<$core.double>(12, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'ante', $pb.PbFieldType.OF)
+    ..a<$core.int>(13, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'maxPlayers', $pb.PbFieldType.OU3)
+    ..aOM<HandResultClient>(14, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'result', subBuilder: HandResultClient.create)
+    ..aOM<HandLogV2>(15, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'log', subBuilder: HandLogV2.create)
+    ..hasRequiredFields = false;
+
+  HandResultServer._() : super();
+  factory HandResultServer({
+    $fixnum.Int64? gameId,
+    $core.int? handNum,
+    $1.GameType? gameType,
+    $core.int? noCards,
+    HandLog? handLog,
+    HandStats? handStats,
+    $core.bool? runItTwice,
+    $core.int? buttonPos,
+    $core.double? smallBlind,
+    $core.double? bigBlind,
+    $core.double? ante,
+    $core.int? maxPlayers,
+    HandResultClient? result,
+    HandLogV2? log,
+  }) {
+    final _result = create();
+    if (gameId != null) {
+      _result.gameId = gameId;
+    }
+    if (handNum != null) {
+      _result.handNum = handNum;
+    }
+    if (gameType != null) {
+      _result.gameType = gameType;
+    }
+    if (noCards != null) {
+      _result.noCards = noCards;
+    }
+    if (handLog != null) {
+      _result.handLog = handLog;
+    }
+    if (handStats != null) {
+      _result.handStats = handStats;
+    }
+    if (runItTwice != null) {
+      _result.runItTwice = runItTwice;
+    }
+    if (buttonPos != null) {
+      _result.buttonPos = buttonPos;
+    }
+    if (smallBlind != null) {
+      _result.smallBlind = smallBlind;
+    }
+    if (bigBlind != null) {
+      _result.bigBlind = bigBlind;
+    }
+    if (ante != null) {
+      _result.ante = ante;
+    }
+    if (maxPlayers != null) {
+      _result.maxPlayers = maxPlayers;
+    }
+    if (result != null) {
+      _result.result = result;
+    }
+    if (log != null) {
+      _result.log = log;
+    }
+    return _result;
+  }
+  factory HandResultServer.fromBuffer($core.List<$core.int> i,
+          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(i, r);
+  factory HandResultServer.fromJson($core.String i,
+          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(i, r);
+  @$core.Deprecated('Using this can add significant overhead to your binary. '
+      'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+      'Will be removed in next major version')
+  HandResultServer clone() => HandResultServer()..mergeFromMessage(this);
+  @$core.Deprecated('Using this can add significant overhead to your binary. '
+      'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+      'Will be removed in next major version')
+  HandResultServer copyWith(void Function(HandResultServer) updates) =>
+      super.copyWith((message) => updates(message as HandResultServer))
+          as HandResultServer; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static HandResultServer create() => HandResultServer._();
+  HandResultServer createEmptyInstance() => create();
+  static $pb.PbList<HandResultServer> createRepeated() =>
+      $pb.PbList<HandResultServer>();
+  @$core.pragma('dart2js:noInline')
+  static HandResultServer getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<HandResultServer>(create);
+  static HandResultServer? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $fixnum.Int64 get gameId => $_getI64(0);
+  @$pb.TagNumber(1)
+  set gameId($fixnum.Int64 v) {
+    $_setInt64(0, v);
+  }
+
+  @$pb.TagNumber(1)
+  $core.bool hasGameId() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearGameId() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.int get handNum => $_getIZ(1);
+  @$pb.TagNumber(2)
+  set handNum($core.int v) {
+    $_setUnsignedInt32(1, v);
+  }
+
+  @$pb.TagNumber(2)
+  $core.bool hasHandNum() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearHandNum() => clearField(2);
+
+  @$pb.TagNumber(3)
+  $1.GameType get gameType => $_getN(2);
+  @$pb.TagNumber(3)
+  set gameType($1.GameType v) {
+    setField(3, v);
+  }
+
+  @$pb.TagNumber(3)
+  $core.bool hasGameType() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearGameType() => clearField(3);
+
+  @$pb.TagNumber(4)
+  $core.int get noCards => $_getIZ(3);
+  @$pb.TagNumber(4)
+  set noCards($core.int v) {
+    $_setUnsignedInt32(3, v);
+  }
+
+  @$pb.TagNumber(4)
+  $core.bool hasNoCards() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearNoCards() => clearField(4);
+
+  @$pb.TagNumber(5)
+  HandLog get handLog => $_getN(4);
+  @$pb.TagNumber(5)
+  set handLog(HandLog v) {
+    setField(5, v);
+  }
+
+  @$pb.TagNumber(5)
+  $core.bool hasHandLog() => $_has(4);
+  @$pb.TagNumber(5)
+  void clearHandLog() => clearField(5);
+  @$pb.TagNumber(5)
+  HandLog ensureHandLog() => $_ensure(4);
+
+  @$pb.TagNumber(6)
+  HandStats get handStats => $_getN(5);
+  @$pb.TagNumber(6)
+  set handStats(HandStats v) {
+    setField(6, v);
+  }
+
+  @$pb.TagNumber(6)
+  $core.bool hasHandStats() => $_has(5);
+  @$pb.TagNumber(6)
+  void clearHandStats() => clearField(6);
+  @$pb.TagNumber(6)
+  HandStats ensureHandStats() => $_ensure(5);
+
+  @$pb.TagNumber(8)
+  $core.bool get runItTwice => $_getBF(6);
+  @$pb.TagNumber(8)
+  set runItTwice($core.bool v) {
+    $_setBool(6, v);
+  }
+
+  @$pb.TagNumber(8)
+  $core.bool hasRunItTwice() => $_has(6);
+  @$pb.TagNumber(8)
+  void clearRunItTwice() => clearField(8);
+
+  @$pb.TagNumber(9)
+  $core.int get buttonPos => $_getIZ(7);
+  @$pb.TagNumber(9)
+  set buttonPos($core.int v) {
+    $_setUnsignedInt32(7, v);
+  }
+
+  @$pb.TagNumber(9)
+  $core.bool hasButtonPos() => $_has(7);
+  @$pb.TagNumber(9)
+  void clearButtonPos() => clearField(9);
+
+  @$pb.TagNumber(10)
+  $core.double get smallBlind => $_getN(8);
+  @$pb.TagNumber(10)
+  set smallBlind($core.double v) {
+    $_setFloat(8, v);
+  }
+
+  @$pb.TagNumber(10)
+  $core.bool hasSmallBlind() => $_has(8);
+  @$pb.TagNumber(10)
+  void clearSmallBlind() => clearField(10);
+
+  @$pb.TagNumber(11)
+  $core.double get bigBlind => $_getN(9);
+  @$pb.TagNumber(11)
+  set bigBlind($core.double v) {
+    $_setFloat(9, v);
+  }
+
+  @$pb.TagNumber(11)
+  $core.bool hasBigBlind() => $_has(9);
+  @$pb.TagNumber(11)
+  void clearBigBlind() => clearField(11);
+
+  @$pb.TagNumber(12)
+  $core.double get ante => $_getN(10);
+  @$pb.TagNumber(12)
+  set ante($core.double v) {
+    $_setFloat(10, v);
+  }
+
+  @$pb.TagNumber(12)
+  $core.bool hasAnte() => $_has(10);
+  @$pb.TagNumber(12)
+  void clearAnte() => clearField(12);
+
+  @$pb.TagNumber(13)
+  $core.int get maxPlayers => $_getIZ(11);
+  @$pb.TagNumber(13)
+  set maxPlayers($core.int v) {
+    $_setUnsignedInt32(11, v);
+  }
+
+  @$pb.TagNumber(13)
+  $core.bool hasMaxPlayers() => $_has(11);
+  @$pb.TagNumber(13)
+  void clearMaxPlayers() => clearField(13);
+
+  @$pb.TagNumber(14)
+  HandResultClient get result => $_getN(12);
+  @$pb.TagNumber(14)
+  set result(HandResultClient v) {
+    setField(14, v);
+  }
+
+  @$pb.TagNumber(14)
+  $core.bool hasResult() => $_has(12);
+  @$pb.TagNumber(14)
+  void clearResult() => clearField(14);
+  @$pb.TagNumber(14)
+  HandResultClient ensureResult() => $_ensure(12);
+
+  @$pb.TagNumber(15)
+  HandLogV2 get log => $_getN(13);
+  @$pb.TagNumber(15)
+  set log(HandLogV2 v) {
+    setField(15, v);
+  }
+
+  @$pb.TagNumber(15)
+  $core.bool hasLog() => $_has(13);
+  @$pb.TagNumber(15)
+  void clearLog() => clearField(15);
+  @$pb.TagNumber(15)
+  HandLogV2 ensureLog() => $_ensure(13);
 }
 
 class MsgAcknowledgement extends $pb.GeneratedMessage {
@@ -3335,6 +3933,7 @@ enum HandMessageItem_Content {
   runItTwice,
   announcement,
   dealerChoice,
+  handResultClient,
   notSet
 }
 
@@ -3358,19 +3957,17 @@ class HandMessageItem extends $pb.GeneratedMessage {
     26: HandMessageItem_Content.runItTwice,
     27: HandMessageItem_Content.announcement,
     28: HandMessageItem_Content.dealerChoice,
+    29: HandMessageItem_Content.handResultClient,
     0: HandMessageItem_Content.notSet
   };
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
-      const $core.bool.fromEnvironment('protobuf.omit_message_names')
-          ? ''
-          : 'HandMessageItem',
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'HandMessageItem',
       package: const $pb.PackageName(
           const $core.bool.fromEnvironment('protobuf.omit_message_names')
               ? ''
               : 'game'),
       createEmptyInstance: create)
-    ..oo(
-        0, [12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28])
+    ..oo(0,
+        [12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29])
     ..aOS(
         7,
         const $core.bool.fromEnvironment('protobuf.omit_field_names')
@@ -3379,9 +3976,11 @@ class HandMessageItem extends $pb.GeneratedMessage {
     ..aOM<$0.NextSeatAction>(
         12, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'seatAction',
         subBuilder: $0.NextSeatAction.create)
-    ..aOM<HandDealCards>(13, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'dealCards',
+    ..aOM<HandDealCards>(
+        13, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'dealCards',
         subBuilder: HandDealCards.create)
-    ..aOM<NewHand>(14, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'newHand', subBuilder: NewHand.create)
+    ..aOM<NewHand>(14, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'newHand',
+        subBuilder: NewHand.create)
     ..aOM<$0.HandAction>(15, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'playerActed', subBuilder: $0.HandAction.create)
     ..aOM<ActionChange>(16, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'actionChange', subBuilder: ActionChange.create)
     ..aOM<HandResult>(17, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'handResult', subBuilder: HandResult.create)
@@ -3396,6 +3995,7 @@ class HandMessageItem extends $pb.GeneratedMessage {
     ..aOM<RunItTwiceBoards>(26, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'runItTwice', subBuilder: RunItTwiceBoards.create)
     ..aOM<Announcement>(27, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'announcement', subBuilder: Announcement.create)
     ..aOM<DealerChoice>(28, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'dealerChoice', subBuilder: DealerChoice.create)
+    ..aOM<HandResultClient>(29, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'handResultClient', subBuilder: HandResultClient.create)
     ..hasRequiredFields = false;
 
   HandMessageItem._() : super();
@@ -3418,6 +4018,7 @@ class HandMessageItem extends $pb.GeneratedMessage {
     RunItTwiceBoards? runItTwice,
     Announcement? announcement,
     DealerChoice? dealerChoice,
+    HandResultClient? handResultClient,
   }) {
     final _result = create();
     if (messageType != null) {
@@ -3473,6 +4074,9 @@ class HandMessageItem extends $pb.GeneratedMessage {
     }
     if (dealerChoice != null) {
       _result.dealerChoice = dealerChoice;
+    }
+    if (handResultClient != null) {
+      _result.handResultClient = handResultClient;
     }
     return _result;
   }
@@ -3756,4 +4360,18 @@ class HandMessageItem extends $pb.GeneratedMessage {
   void clearDealerChoice() => clearField(28);
   @$pb.TagNumber(28)
   DealerChoice ensureDealerChoice() => $_ensure(17);
+
+  @$pb.TagNumber(29)
+  HandResultClient get handResultClient => $_getN(18);
+  @$pb.TagNumber(29)
+  set handResultClient(HandResultClient v) {
+    setField(29, v);
+  }
+
+  @$pb.TagNumber(29)
+  $core.bool hasHandResultClient() => $_has(18);
+  @$pb.TagNumber(29)
+  void clearHandResultClient() => clearField(29);
+  @$pb.TagNumber(29)
+  HandResultClient ensureHandResultClient() => $_ensure(18);
 }

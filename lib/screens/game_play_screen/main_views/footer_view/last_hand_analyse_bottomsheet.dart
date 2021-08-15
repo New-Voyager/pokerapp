@@ -49,7 +49,7 @@ class _LastHandAnalyseBottomSheetState
                   -1, // for last hand we pass -1
                   isAppbarWithHandNumber: true,
                   clubCode: widget.clubCode,
-                  handLogModel: handLog,
+                  //handLogModel: handLog,
                   isBottomSheet: true,
                 ),
               ),

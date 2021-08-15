@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
@@ -19,6 +20,7 @@ class _ProfilePageViewState extends State<ProfilePageView>
   // GifController _gifController;
   bool _showGif = false;
   AssetImage _gifImage;
+  AppTextScreen _appScreenText;
 
   List<CardObject> cards =
       [200, 196].map((e) => CardHelper.getCard(e)).toList();
@@ -35,6 +37,8 @@ class _ProfilePageViewState extends State<ProfilePageView>
 
   @override
   Widget build(BuildContext context) {
+    _appScreenText = getAppTextScreen("profilePageView");
+
     return Container(
       color: AppColorsNew.screenBackgroundColor,
       child: Column(

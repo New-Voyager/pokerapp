@@ -5,6 +5,7 @@ import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:provider/provider.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class WhichWinnerWidget extends StatelessWidget {
   final double seperator;
@@ -14,9 +15,8 @@ class WhichWinnerWidget extends StatelessWidget {
   });
 
   Color _getColor(String whichWinner) {
-    if (whichWinner == AppConstants.HIGH_WINNERS)
-      return AppColorsNew.newBlueShadeColor;
-    return AppColorsNew.newActiveBoxColor;
+    if (whichWinner == AppConstants.HIGH_WINNERS) return Colors.red;
+    return Colors.grey;
   }
 
   @override
@@ -28,9 +28,10 @@ class WhichWinnerWidget extends StatelessWidget {
         builder: (_, tableState, theme, __) => tableState.whichWinner == null
             ? const SizedBox.shrink()
             : Container(
-                padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 20.0),
+                padding:
+                    EdgeInsets.symmetric(vertical: 4.pw, horizontal: 10.pw),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10.0),
+                  borderRadius: BorderRadius.circular(10.pw),
                   color: _getColor(tableState.whichWinner),
                 ),
                 child: FittedBox(

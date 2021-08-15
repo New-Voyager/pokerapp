@@ -27,12 +27,13 @@ const ACTION$json = const {
     const {'1': 'RUN_IT_TWICE_NO', '2': 11},
     const {'1': 'RUN_IT_TWICE_PROMPT', '2': 12},
     const {'1': 'POST_BLIND', '2': 13},
+    const {'1': 'BOMB_POT_BET', '2': 14},
   ],
 };
 
 /// Descriptor for `ACTION`. Decode as a `google.protobuf.EnumDescriptorProto`.
 final $typed_data.Uint8List aCTIONDescriptor = $convert.base64Decode(
-    'CgZBQ1RJT04SEgoOQUNUSU9OX1VOS05PV04QABIGCgJTQhABEgYKAkJCEAISDAoIU1RSQURETEUQAxIJCgVDSEVDSxAEEggKBENBTEwQBRIICgRGT0xEEAYSBwoDQkVUEAcSCQoFUkFJU0UQCBIJCgVBTExJThAJEhQKEFJVTl9JVF9UV0lDRV9ZRVMQChITCg9SVU5fSVRfVFdJQ0VfTk8QCxIXChNSVU5fSVRfVFdJQ0VfUFJPTVBUEAwSDgoKUE9TVF9CTElORBAN');
+    'CgZBQ1RJT04SEgoOQUNUSU9OX1VOS05PV04QABIGCgJTQhABEgYKAkJCEAISDAoIU1RSQURETEUQAxIJCgVDSEVDSxAEEggKBENBTEwQBRIICgRGT0xEEAYSBwoDQkVUEAcSCQoFUkFJU0UQCBIJCgVBTExJThAJEhQKEFJVTl9JVF9UV0lDRV9ZRVMQChITCg9SVU5fSVRfVFdJQ0VfTk8QCxIXChNSVU5fSVRfVFdJQ0VfUFJPTVBUEAwSDgoKUE9TVF9CTElORBANEhAKDEJPTUJfUE9UX0JFVBAO');
 @$core.Deprecated('Use handStatusDescriptor instead')
 const HandStatus$json = const {
   '1': 'HandStatus',
@@ -69,12 +70,13 @@ const PlayerActState$json = const {
     const {'1': 'PLAYER_ACT_RAISE', '2': 9},
     const {'1': 'PLAYER_ACT_CHECK', '2': 10},
     const {'1': 'PLAYER_ACT_POST_BLIND', '2': 11},
+    const {'1': 'PLAYER_ACT_BOMB_POT', '2': 12},
   ],
 };
 
 /// Descriptor for `PlayerActState`. Decode as a `google.protobuf.EnumDescriptorProto`.
 final $typed_data.Uint8List playerActStateDescriptor = $convert.base64Decode(
-    'Cg5QbGF5ZXJBY3RTdGF0ZRIWChJQTEFZRVJfQUNUX1VOS05PV04QABIZChVQTEFZRVJfQUNUX0VNUFRZX1NFQVQQARIYChRQTEFZRVJfQUNUX05PVF9BQ1RFRBACEhUKEVBMQVlFUl9BQ1RfRk9MREVEEAMSFQoRUExBWUVSX0FDVF9BTExfSU4QBBIRCg1QTEFZRVJfQUNUX0JCEAUSFwoTUExBWUVSX0FDVF9TVFJBRERMRRAGEhIKDlBMQVlFUl9BQ1RfQkVUEAcSEwoPUExBWUVSX0FDVF9DQUxMEAgSFAoQUExBWUVSX0FDVF9SQUlTRRAJEhQKEFBMQVlFUl9BQ1RfQ0hFQ0sQChIZChVQTEFZRVJfQUNUX1BPU1RfQkxJTkQQCw==');
+    'Cg5QbGF5ZXJBY3RTdGF0ZRIWChJQTEFZRVJfQUNUX1VOS05PV04QABIZChVQTEFZRVJfQUNUX0VNUFRZX1NFQVQQARIYChRQTEFZRVJfQUNUX05PVF9BQ1RFRBACEhUKEVBMQVlFUl9BQ1RfRk9MREVEEAMSFQoRUExBWUVSX0FDVF9BTExfSU4QBBIRCg1QTEFZRVJfQUNUX0JCEAUSFwoTUExBWUVSX0FDVF9TVFJBRERMRRAGEhIKDlBMQVlFUl9BQ1RfQkVUEAcSEwoPUExBWUVSX0FDVF9DQUxMEAgSFAoQUExBWUVSX0FDVF9SQUlTRRAJEhQKEFBMQVlFUl9BQ1RfQ0hFQ0sQChIZChVQTEFZRVJfQUNUX1BPU1RfQkxJTkQQCxIXChNQTEFZRVJfQUNUX0JPTUJfUE9UEAw=');
 @$core.Deprecated('Use flowStateDescriptor instead')
 const FlowState$json = const {
   '1': 'FlowState',
@@ -497,6 +499,9 @@ const CurrentHandState$json = const {
     const {'1': 'pots', '3': 23, '4': 3, '5': 2, '10': 'pots'},
     const {'1': 'pot_updates', '3': 24, '4': 1, '5': 2, '10': 'potUpdates'},
     const {'1': 'no_cards', '3': 25, '4': 1, '5': 13, '10': 'noCards'},
+    const {'1': 'bomb_pot', '3': 36, '4': 1, '5': 8, '10': 'bombPot'},
+    const {'1': 'double_board', '3': 37, '4': 1, '5': 8, '10': 'doubleBoard'},
+    const {'1': 'bomb_pot_bet', '3': 38, '4': 1, '5': 2, '10': 'bombPotBet'},
   ],
   '3': const [
     CurrentHandState_PlayersActedEntry$json,
@@ -533,7 +538,7 @@ const CurrentHandState_PlayersStackEntry$json = const {
 
 /// Descriptor for `CurrentHandState`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List currentHandStateDescriptor = $convert.base64Decode(
-    'ChBDdXJyZW50SGFuZFN0YXRlEhcKB2dhbWVfaWQYASABKARSBmdhbWVJZBIZCghoYW5kX251bRgCIAEoDVIHaGFuZE51bRIrCglnYW1lX3R5cGUYAyABKA4yDi5nYW1lLkdhbWVUeXBlUghnYW1lVHlwZRI1Cg1jdXJyZW50X3JvdW5kGAQgASgOMhAuZ2FtZS5IYW5kU3RhdHVzUgxjdXJyZW50Um91bmQSHQoKYnV0dG9uX3BvcxgFIAEoDVIJYnV0dG9uUG9zEiYKD3NtYWxsX2JsaW5kX3BvcxgGIAEoDVINc21hbGxCbGluZFBvcxIiCg1iaWdfYmxpbmRfcG9zGAcgASgNUgtiaWdCbGluZFBvcxIbCgliaWdfYmxpbmQYCCABKAJSCGJpZ0JsaW5kEh8KC3NtYWxsX2JsaW5kGAkgASgCUgpzbWFsbEJsaW5kEhoKCHN0cmFkZGxlGAogASgCUghzdHJhZGRsZRJNCg1wbGF5ZXJzX2FjdGVkGAwgAygLMiguZ2FtZS5DdXJyZW50SGFuZFN0YXRlLlBsYXllcnNBY3RlZEVudHJ5UgxwbGF5ZXJzQWN0ZWQSHwoLYm9hcmRfY2FyZHMYDSADKA1SCmJvYXJkQ2FyZHMSIgoNYm9hcmRfY2FyZHNfMhgOIAMoDVILYm9hcmRDYXJkczISGgoIY2FyZHNTdHIYDyABKAlSCGNhcmRzU3RyEhwKCWNhcmRzMlN0chgQIAEoCVIJY2FyZHMyU3RyEiEKDHBsYXllcl9jYXJkcxgRIAEoCVILcGxheWVyQ2FyZHMSJAoOcGxheWVyX3NlYXRfbm8YEiABKA1SDHBsYXllclNlYXRObxJNCg1wbGF5ZXJzX3N0YWNrGBMgAygLMiguZ2FtZS5DdXJyZW50SGFuZFN0YXRlLlBsYXllcnNTdGFja0VudHJ5UgxwbGF5ZXJzU3RhY2sSJwoQbmV4dF9zZWF0X3RvX2FjdBgUIAEoDVINbmV4dFNlYXRUb0FjdBIyChVyZW1haW5pbmdfYWN0aW9uX3RpbWUYFSABKA1SE3JlbWFpbmluZ0FjdGlvblRpbWUSPgoQbmV4dF9zZWF0X2FjdGlvbhgWIAEoCzIULmdhbWUuTmV4dFNlYXRBY3Rpb25SDm5leHRTZWF0QWN0aW9uEhIKBHBvdHMYFyADKAJSBHBvdHMSHwoLcG90X3VwZGF0ZXMYGCABKAJSCnBvdFVwZGF0ZXMSGQoIbm9fY2FyZHMYGSABKA1SB25vQ2FyZHMaVQoRUGxheWVyc0FjdGVkRW50cnkSEAoDa2V5GAEgASgNUgNrZXkSKgoFdmFsdWUYAiABKAsyFC5nYW1lLlBsYXllckFjdFJvdW5kUgV2YWx1ZToCOAEaPwoRUGxheWVyc1N0YWNrRW50cnkSEAoDa2V5GAEgASgEUgNrZXkSFAoFdmFsdWUYAiABKAJSBXZhbHVlOgI4AQ==');
+    'ChBDdXJyZW50SGFuZFN0YXRlEhcKB2dhbWVfaWQYASABKARSBmdhbWVJZBIZCghoYW5kX251bRgCIAEoDVIHaGFuZE51bRIrCglnYW1lX3R5cGUYAyABKA4yDi5nYW1lLkdhbWVUeXBlUghnYW1lVHlwZRI1Cg1jdXJyZW50X3JvdW5kGAQgASgOMhAuZ2FtZS5IYW5kU3RhdHVzUgxjdXJyZW50Um91bmQSHQoKYnV0dG9uX3BvcxgFIAEoDVIJYnV0dG9uUG9zEiYKD3NtYWxsX2JsaW5kX3BvcxgGIAEoDVINc21hbGxCbGluZFBvcxIiCg1iaWdfYmxpbmRfcG9zGAcgASgNUgtiaWdCbGluZFBvcxIbCgliaWdfYmxpbmQYCCABKAJSCGJpZ0JsaW5kEh8KC3NtYWxsX2JsaW5kGAkgASgCUgpzbWFsbEJsaW5kEhoKCHN0cmFkZGxlGAogASgCUghzdHJhZGRsZRJNCg1wbGF5ZXJzX2FjdGVkGAwgAygLMiguZ2FtZS5DdXJyZW50SGFuZFN0YXRlLlBsYXllcnNBY3RlZEVudHJ5UgxwbGF5ZXJzQWN0ZWQSHwoLYm9hcmRfY2FyZHMYDSADKA1SCmJvYXJkQ2FyZHMSIgoNYm9hcmRfY2FyZHNfMhgOIAMoDVILYm9hcmRDYXJkczISGgoIY2FyZHNTdHIYDyABKAlSCGNhcmRzU3RyEhwKCWNhcmRzMlN0chgQIAEoCVIJY2FyZHMyU3RyEiEKDHBsYXllcl9jYXJkcxgRIAEoCVILcGxheWVyQ2FyZHMSJAoOcGxheWVyX3NlYXRfbm8YEiABKA1SDHBsYXllclNlYXRObxJNCg1wbGF5ZXJzX3N0YWNrGBMgAygLMiguZ2FtZS5DdXJyZW50SGFuZFN0YXRlLlBsYXllcnNTdGFja0VudHJ5UgxwbGF5ZXJzU3RhY2sSJwoQbmV4dF9zZWF0X3RvX2FjdBgUIAEoDVINbmV4dFNlYXRUb0FjdBIyChVyZW1haW5pbmdfYWN0aW9uX3RpbWUYFSABKA1SE3JlbWFpbmluZ0FjdGlvblRpbWUSPgoQbmV4dF9zZWF0X2FjdGlvbhgWIAEoCzIULmdhbWUuTmV4dFNlYXRBY3Rpb25SDm5leHRTZWF0QWN0aW9uEhIKBHBvdHMYFyADKAJSBHBvdHMSHwoLcG90X3VwZGF0ZXMYGCABKAJSCnBvdFVwZGF0ZXMSGQoIbm9fY2FyZHMYGSABKA1SB25vQ2FyZHMSGQoIYm9tYl9wb3QYJCABKAhSB2JvbWJQb3QSIQoMZG91YmxlX2JvYXJkGCUgASgIUgtkb3VibGVCb2FyZBIgCgxib21iX3BvdF9iZXQYJiABKAJSCmJvbWJQb3RCZXQaVQoRUGxheWVyc0FjdGVkRW50cnkSEAoDa2V5GAEgASgNUgNrZXkSKgoFdmFsdWUYAiABKAsyFC5nYW1lLlBsYXllckFjdFJvdW5kUgV2YWx1ZToCOAEaPwoRUGxheWVyc1N0YWNrRW50cnkSEAoDa2V5GAEgASgEUgNrZXkSFAoFdmFsdWUYAiABKAJSBXZhbHVlOgI4AQ==');
 @$core.Deprecated('Use handWinnerDescriptor instead')
 const HandWinner$json = const {
   '1': 'HandWinner',
@@ -588,3 +593,229 @@ const PotWinners$json = const {
 /// Descriptor for `PotWinners`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List potWinnersDescriptor = $convert.base64Decode(
     'CgpQb3RXaW5uZXJzEhUKBnBvdF9ubxgBIAEoDVIFcG90Tm8SFgoGYW1vdW50GAIgASgCUgZhbW91bnQSLwoKaGlfd2lubmVycxgDIAMoCzIQLmdhbWUuSGFuZFdpbm5lclIJaGlXaW5uZXJzEjEKC2xvd193aW5uZXJzGAQgAygLMhAuZ2FtZS5IYW5kV2lubmVyUgpsb3dXaW5uZXJzEh0KCnBhdXNlX3RpbWUYBSABKA1SCXBhdXNlVGltZQ==');
+@$core.Deprecated('Use boardCardRankDescriptor instead')
+const BoardCardRank$json = const {
+  '1': 'BoardCardRank',
+  '2': const [
+    const {'1': 'board_no', '3': 1, '4': 1, '5': 13, '10': 'boardNo'},
+    const {'1': 'seat_no', '3': 2, '4': 1, '5': 13, '10': 'seatNo'},
+    const {'1': 'hi_rank', '3': 3, '4': 1, '5': 13, '10': 'hiRank'},
+    const {'1': 'hi_cards', '3': 4, '4': 3, '5': 13, '10': 'hiCards'},
+    const {'1': 'low_found', '3': 5, '4': 1, '5': 8, '10': 'lowFound'},
+    const {'1': 'lo_rank', '3': 6, '4': 1, '5': 13, '10': 'loRank'},
+    const {'1': 'lo_cards', '3': 7, '4': 3, '5': 13, '10': 'loCards'},
+    const {'1': 'best_rank', '3': 8, '4': 1, '5': 13, '10': 'bestRank'},
+    const {'1': 'best_cards', '3': 9, '4': 3, '5': 13, '10': 'bestCards'},
+  ],
+};
+
+/// Descriptor for `BoardCardRank`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List boardCardRankDescriptor = $convert.base64Decode(
+    'Cg1Cb2FyZENhcmRSYW5rEhkKCGJvYXJkX25vGAEgASgNUgdib2FyZE5vEhcKB3NlYXRfbm8YAiABKA1SBnNlYXRObxIXCgdoaV9yYW5rGAMgASgNUgZoaVJhbmsSGQoIaGlfY2FyZHMYBCADKA1SB2hpQ2FyZHMSGwoJbG93X2ZvdW5kGAUgASgIUghsb3dGb3VuZBIXCgdsb19yYW5rGAYgASgNUgZsb1JhbmsSGQoIbG9fY2FyZHMYByADKA1SB2xvQ2FyZHMSGwoJYmVzdF9yYW5rGAggASgNUghiZXN0UmFuaxIdCgpiZXN0X2NhcmRzGAkgAygNUgliZXN0Q2FyZHM=');
+@$core.Deprecated('Use boardDescriptor instead')
+const Board$json = const {
+  '1': 'Board',
+  '2': const [
+    const {'1': 'board_no', '3': 1, '4': 1, '5': 13, '10': 'boardNo'},
+    const {'1': 'cards', '3': 2, '4': 3, '5': 13, '10': 'cards'},
+    const {
+      '1': 'player_rank',
+      '3': 3,
+      '4': 3,
+      '5': 11,
+      '6': '.game.Board.PlayerRankEntry',
+      '10': 'playerRank'
+    },
+  ],
+  '3': const [Board_PlayerRankEntry$json],
+};
+
+@$core.Deprecated('Use boardDescriptor instead')
+const Board_PlayerRankEntry$json = const {
+  '1': 'PlayerRankEntry',
+  '2': const [
+    const {'1': 'key', '3': 1, '4': 1, '5': 13, '10': 'key'},
+    const {
+      '1': 'value',
+      '3': 2,
+      '4': 1,
+      '5': 11,
+      '6': '.game.BoardCardRank',
+      '10': 'value'
+    },
+  ],
+  '7': const {'7': true},
+};
+
+/// Descriptor for `Board`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List boardDescriptor = $convert.base64Decode(
+    'CgVCb2FyZBIZCghib2FyZF9ubxgBIAEoDVIHYm9hcmRObxIUCgVjYXJkcxgCIAMoDVIFY2FyZHMSPAoLcGxheWVyX3JhbmsYAyADKAsyGy5nYW1lLkJvYXJkLlBsYXllclJhbmtFbnRyeVIKcGxheWVyUmFuaxpSCg9QbGF5ZXJSYW5rRW50cnkSEAoDa2V5GAEgASgNUgNrZXkSKQoFdmFsdWUYAiABKAsyEy5nYW1lLkJvYXJkQ2FyZFJhbmtSBXZhbHVlOgI4AQ==');
+@$core.Deprecated('Use winnerDescriptor instead')
+const Winner$json = const {
+  '1': 'Winner',
+  '2': const [
+    const {'1': 'seat_no', '3': 1, '4': 1, '5': 13, '10': 'seatNo'},
+    const {'1': 'amount', '3': 2, '4': 1, '5': 2, '10': 'amount'},
+  ],
+};
+
+/// Descriptor for `Winner`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List winnerDescriptor = $convert.base64Decode(
+    'CgZXaW5uZXISFwoHc2VhdF9ubxgBIAEoDVIGc2VhdE5vEhYKBmFtb3VudBgCIAEoAlIGYW1vdW50');
+@$core.Deprecated('Use boardWinnerDescriptor instead')
+const BoardWinner$json = const {
+  '1': 'BoardWinner',
+  '2': const [
+    const {'1': 'board_no', '3': 2, '4': 1, '5': 13, '10': 'boardNo'},
+    const {'1': 'amount', '3': 3, '4': 1, '5': 2, '10': 'amount'},
+    const {
+      '1': 'hi_winners',
+      '3': 4,
+      '4': 3,
+      '5': 11,
+      '6': '.game.BoardWinner.HiWinnersEntry',
+      '10': 'hiWinners'
+    },
+    const {
+      '1': 'low_winners',
+      '3': 5,
+      '4': 3,
+      '5': 11,
+      '6': '.game.BoardWinner.LowWinnersEntry',
+      '10': 'lowWinners'
+    },
+    const {'1': 'hi_rank_text', '3': 6, '4': 1, '5': 9, '10': 'hiRankText'},
+  ],
+  '3': const [
+    BoardWinner_HiWinnersEntry$json,
+    BoardWinner_LowWinnersEntry$json
+  ],
+};
+
+@$core.Deprecated('Use boardWinnerDescriptor instead')
+const BoardWinner_HiWinnersEntry$json = const {
+  '1': 'HiWinnersEntry',
+  '2': const [
+    const {'1': 'key', '3': 1, '4': 1, '5': 13, '10': 'key'},
+    const {
+      '1': 'value',
+      '3': 2,
+      '4': 1,
+      '5': 11,
+      '6': '.game.Winner',
+      '10': 'value'
+    },
+  ],
+  '7': const {'7': true},
+};
+
+@$core.Deprecated('Use boardWinnerDescriptor instead')
+const BoardWinner_LowWinnersEntry$json = const {
+  '1': 'LowWinnersEntry',
+  '2': const [
+    const {'1': 'key', '3': 1, '4': 1, '5': 13, '10': 'key'},
+    const {
+      '1': 'value',
+      '3': 2,
+      '4': 1,
+      '5': 11,
+      '6': '.game.Winner',
+      '10': 'value'
+    },
+  ],
+  '7': const {'7': true},
+};
+
+/// Descriptor for `BoardWinner`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List boardWinnerDescriptor = $convert.base64Decode(
+    'CgtCb2FyZFdpbm5lchIZCghib2FyZF9ubxgCIAEoDVIHYm9hcmRObxIWCgZhbW91bnQYAyABKAJSBmFtb3VudBI/CgpoaV93aW5uZXJzGAQgAygLMiAuZ2FtZS5Cb2FyZFdpbm5lci5IaVdpbm5lcnNFbnRyeVIJaGlXaW5uZXJzEkIKC2xvd193aW5uZXJzGAUgAygLMiEuZ2FtZS5Cb2FyZFdpbm5lci5Mb3dXaW5uZXJzRW50cnlSCmxvd1dpbm5lcnMSIAoMaGlfcmFua190ZXh0GAYgASgJUgpoaVJhbmtUZXh0GkoKDkhpV2lubmVyc0VudHJ5EhAKA2tleRgBIAEoDVIDa2V5EiIKBXZhbHVlGAIgASgLMgwuZ2FtZS5XaW5uZXJSBXZhbHVlOgI4ARpLCg9Mb3dXaW5uZXJzRW50cnkSEAoDa2V5GAEgASgNUgNrZXkSIgoFdmFsdWUYAiABKAsyDC5nYW1lLldpbm5lclIFdmFsdWU6AjgB');
+@$core.Deprecated('Use potWinnersV2Descriptor instead')
+const PotWinnersV2$json = const {
+  '1': 'PotWinnersV2',
+  '2': const [
+    const {'1': 'pot_no', '3': 1, '4': 1, '5': 13, '10': 'potNo'},
+    const {'1': 'amount', '3': 2, '4': 1, '5': 2, '10': 'amount'},
+    const {
+      '1': 'board_winners',
+      '3': 3,
+      '4': 3,
+      '5': 11,
+      '6': '.game.BoardWinner',
+      '10': 'boardWinners'
+    },
+  ],
+};
+
+/// Descriptor for `PotWinnersV2`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List potWinnersV2Descriptor = $convert.base64Decode(
+    'CgxQb3RXaW5uZXJzVjISFQoGcG90X25vGAEgASgNUgVwb3RObxIWCgZhbW91bnQYAiABKAJSBmFtb3VudBI2Cg1ib2FyZF93aW5uZXJzGAMgAygLMhEuZ2FtZS5Cb2FyZFdpbm5lclIMYm9hcmRXaW5uZXJz');
+@$core.Deprecated('Use handResultV2Descriptor instead')
+const HandResultV2$json = const {
+  '1': 'HandResultV2',
+  '2': const [
+    const {
+      '1': 'boards',
+      '3': 1,
+      '4': 3,
+      '5': 11,
+      '6': '.game.Board',
+      '10': 'boards'
+    },
+    const {
+      '1': 'pot_winners',
+      '3': 2,
+      '4': 3,
+      '5': 11,
+      '6': '.game.PotWinnersV2',
+      '10': 'potWinners'
+    },
+  ],
+};
+
+/// Descriptor for `HandResultV2`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List handResultV2Descriptor = $convert.base64Decode(
+    'CgxIYW5kUmVzdWx0VjISIwoGYm9hcmRzGAEgAygLMgsuZ2FtZS5Cb2FyZFIGYm9hcmRzEjMKC3BvdF93aW5uZXJzGAIgAygLMhIuZ2FtZS5Qb3RXaW5uZXJzVjJSCnBvdFdpbm5lcnM=');
+@$core.Deprecated('Use handPlayerBalanceDescriptor instead')
+const HandPlayerBalance$json = const {
+  '1': 'HandPlayerBalance',
+  '2': const [
+    const {'1': 'before', '3': 1, '4': 1, '5': 2, '10': 'before'},
+    const {'1': 'after', '3': 2, '4': 1, '5': 2, '10': 'after'},
+  ],
+};
+
+/// Descriptor for `HandPlayerBalance`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List handPlayerBalanceDescriptor = $convert.base64Decode(
+    'ChFIYW5kUGxheWVyQmFsYW5jZRIWCgZiZWZvcmUYASABKAJSBmJlZm9yZRIUCgVhZnRlchgCIAEoAlIFYWZ0ZXI=');
+@$core.Deprecated('Use playerHandInfoDescriptor instead')
+const PlayerHandInfo$json = const {
+  '1': 'PlayerHandInfo',
+  '2': const [
+    const {'1': 'id', '3': 1, '4': 1, '5': 4, '10': 'id'},
+    const {'1': 'cards', '3': 2, '4': 3, '5': 13, '10': 'cards'},
+    const {
+      '1': 'played_until',
+      '3': 5,
+      '4': 1,
+      '5': 14,
+      '6': '.game.HandStatus',
+      '10': 'playedUntil'
+    },
+    const {
+      '1': 'balance',
+      '3': 6,
+      '4': 1,
+      '5': 11,
+      '6': '.game.HandPlayerBalance',
+      '10': 'balance'
+    },
+    const {'1': 'hh_cards', '3': 7, '4': 3, '5': 13, '10': 'hhCards'},
+    const {'1': 'hh_rank', '3': 8, '4': 1, '5': 13, '10': 'hhRank'},
+    const {'1': 'received', '3': 9, '4': 1, '5': 2, '10': 'received'},
+    const {'1': 'rake_paid', '3': 10, '4': 1, '5': 2, '10': 'rakePaid'},
+  ],
+};
+
+/// Descriptor for `PlayerHandInfo`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List playerHandInfoDescriptor = $convert.base64Decode(
+    'Cg5QbGF5ZXJIYW5kSW5mbxIOCgJpZBgBIAEoBFICaWQSFAoFY2FyZHMYAiADKA1SBWNhcmRzEjMKDHBsYXllZF91bnRpbBgFIAEoDjIQLmdhbWUuSGFuZFN0YXR1c1ILcGxheWVkVW50aWwSMQoHYmFsYW5jZRgGIAEoCzIXLmdhbWUuSGFuZFBsYXllckJhbGFuY2VSB2JhbGFuY2USGQoIaGhfY2FyZHMYByADKA1SB2hoQ2FyZHMSFwoHaGhfcmFuaxgIIAEoDVIGaGhSYW5rEhoKCHJlY2VpdmVkGAkgASgCUghyZWNlaXZlZBIbCglyYWtlX3BhaWQYCiABKAJSCHJha2VQYWlk');

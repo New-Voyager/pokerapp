@@ -36,7 +36,7 @@ class _RestoreAccountScreenState extends State<RestoreAccountScreen> {
   @override
   Widget build(BuildContext context) {
     final appTheme = AppTheme.getTheme(context);
-    _appScreenText = getAppTextScreen("registration");
+    _appScreenText = getAppTextScreen("recoveraccount");
 
     return Container(
       decoration: AppDecorators.bgRadialGradient(appTheme),
@@ -57,7 +57,7 @@ class _RestoreAccountScreenState extends State<RestoreAccountScreen> {
                   alignment: Alignment.center,
                   margin: EdgeInsets.only(top: 16, bottom: 8),
                   child: Text(
-                    "Restore existing account",
+                    _appScreenText['RESTOREEXISTINGACCOUNT'],
                     style: AppTextStyles.T1.copyWith(
                       color: appTheme.supportingColorWithDark(0.50),
                     ),
@@ -127,7 +127,7 @@ class _RestoreAccountScreenState extends State<RestoreAccountScreen> {
                             ),
 
                             /* label texts */
-                            labelText: 'Recovery email',
+                            labelText: _appScreenText['RECOVERYEMAIL'],
                             labelStyle: AppTextStyles.T0.copyWith(
                               color: appTheme.accentColor,
                             ),
@@ -151,7 +151,7 @@ class _RestoreAccountScreenState extends State<RestoreAccountScreen> {
                         RoundedColorButton(
                           backgroundColor: appTheme.accentColor,
                           textColor: appTheme.primaryColorWithDark(0.50),
-                          text: AppStringsNew.getCodeButtonText,
+                          text: _appScreenText['GETCODE'],
                           fontSize: 14.dp,
                           onTapFunction: () => _handleGetCode(context),
                         ),
@@ -173,7 +173,8 @@ class _RestoreAccountScreenState extends State<RestoreAccountScreen> {
                                 validator: (value) {
                                   if (_restoreVisible) {
                                     if (value.isEmpty) {
-                                      return "Enter recovery code";
+                                      return _appScreenText[
+                                          "ENTERRECOVERYCODE"];
                                     }
                                   }
                                   return null;
@@ -218,7 +219,7 @@ class _RestoreAccountScreenState extends State<RestoreAccountScreen> {
                                   ),
 
                                   /* label texts */
-                                  labelText: 'Recovery email',
+                                  labelText: _appScreenText['RECOVERYEMAIL'],
                                   labelStyle: AppTextStyles.T0.copyWith(
                                     color: appTheme.accentColor,
                                   ),
@@ -243,7 +244,7 @@ class _RestoreAccountScreenState extends State<RestoreAccountScreen> {
                               RoundedColorButton(
                                 backgroundColor: appTheme.accentColor,
                                 textColor: appTheme.primaryColorWithDark(0.50),
-                                text: AppStringsNew.restoreButtonText,
+                                text: _appScreenText['RESTORE'],
                                 fontSize: 14.dp,
                                 onTapFunction: () => _handleRestoreClick(
                                   context,
@@ -264,7 +265,7 @@ class _RestoreAccountScreenState extends State<RestoreAccountScreen> {
                           child: Container(
                             alignment: Alignment.center,
                             padding: EdgeInsets.all(16),
-                            child: Text(AppStringsNew.signupButtonText,
+                            child: Text(_appScreenText['SIGNUP'],
                                 style: AppTextStyles.T2.copyWith(
                                   decoration: TextDecoration.underline,
                                   color: appTheme.accentColor,
@@ -288,7 +289,7 @@ class _RestoreAccountScreenState extends State<RestoreAccountScreen> {
     // Validate code with server and navigate to main screen if success
     if (_formKey.currentState.validate()) {
       ConnectionDialog.show(
-          context: context, loadingText: "Restoring account...");
+          context: context, loadingText: _appScreenText['"RESTORINGACCOUT"']);
 
       // Get Device ID
       String deviceId = new Uuid().v4().toString();
@@ -337,13 +338,14 @@ class _RestoreAccountScreenState extends State<RestoreAccountScreen> {
     FocusScope.of(context).unfocus();
     // Make API Call to get code
     if (_formKey.currentState.validate()) {
-      ConnectionDialog.show(context: context, loadingText: "Sending code...");
+      ConnectionDialog.show(
+          context: context, loadingText: _appScreenText["SENDINGCODE"]);
       final result = await AuthService.sendRecoveryCode(
         recoveryEmail: _emailCtrl.text.trim(),
       );
       if (result['status']) {
         Alerts.showNotification(
-          titleText: "Code sent to recovery mail.",
+          titleText: _appScreenText["CODESENTTORECOVERYMAIL"],
           duration: Duration(seconds: 4),
         );
         setState(() {
@@ -351,7 +353,7 @@ class _RestoreAccountScreenState extends State<RestoreAccountScreen> {
         });
       } else {
         Alerts.showNotification(
-          titleText: "Failed to send code.",
+          titleText: _appScreenText["FAILEDTOSENDCODE"],
           subTitleText: result['error'],
           duration: Duration(seconds: 4),
         );

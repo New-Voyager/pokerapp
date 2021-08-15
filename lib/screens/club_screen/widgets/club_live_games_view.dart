@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/newmodels/game_model_new.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
-import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/main_screens/games_page_view/widgets/live_games_item.dart';
@@ -11,7 +11,9 @@ import 'package:provider/provider.dart';
 
 class ClubLiveGamesView extends StatelessWidget {
   final List<GameModelNew> liveGames;
-  ClubLiveGamesView(this.liveGames);
+  final AppTextScreen appScreenText;
+
+  ClubLiveGamesView(this.liveGames, this.appScreenText);
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +30,7 @@ class ClubLiveGamesView extends StatelessWidget {
             Container(
               margin: EdgeInsets.only(left: 16, bottom: 8),
               child: Text(
-                "Live Games",
+                appScreenText['LIVEGAMES'],
                 style: AppDecorators.getSubtitle2Style(theme: theme),
               ),
             ),
@@ -36,7 +38,7 @@ class ClubLiveGamesView extends StatelessWidget {
                 ? Container(
                     height: 150,
                     child: Center(
-                      child: Text(AppStringsNew.noLiveGamesText,
+                      child: Text(appScreenText['NOLIVEGAMES'],
                           style: AppStylesNew.labelTextStyle),
                     ),
                   )

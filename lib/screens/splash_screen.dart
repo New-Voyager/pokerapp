@@ -30,35 +30,44 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
 
     Future.delayed(Duration(milliseconds: 400), () async {
+      bool goToLoginScreen = true;
       if (AppConfig.deviceId == null || AppConfig.deviceSecret == null) {
-        _moveToLoginScreen();
+        // go to login screen
       } else {
-        // generate jwt
-        final resp = await AuthService.newlogin(
-            AppConfig.deviceId, AppConfig.deviceSecret);
-        if (resp['status']) {
-          // Need to initialize before queries
-          await graphQLConfiguration.init();
+        try {
+          // generate jwt
+          final resp = await AuthService.newlogin(
+              AppConfig.deviceId, AppConfig.deviceSecret);
+          if (resp['status']) {
+            // Need to initialize before queries
+            await graphQLConfiguration.init();
 
-          // successfully logged in
-          AppConfig.jwt = resp['jwt'];
-          // save device id, device secret and jwt
-          AuthModel currentUser = AuthModel(
-              deviceID: AppConfig.deviceId,
-              deviceSecret: AppConfig.deviceSecret,
-              name: resp['name'],
-              uuid: resp['uuid'],
-              playerId: resp['id'],
-              jwt: resp['jwt']);
-          await AuthService.save(currentUser);
-          AppConfig.jwt = resp['jwt'];
-          final availableCoins = await AppCoinService.availableCoins();
-          AppConfig.setAvailableCoins(availableCoins);
-        } else {
+            // successfully logged in
+            AppConfig.jwt = resp['jwt'];
+            // save device id, device secret and jwt
+            AuthModel currentUser = AuthModel(
+                deviceID: AppConfig.deviceId,
+                deviceSecret: AppConfig.deviceSecret,
+                name: resp['name'],
+                uuid: resp['uuid'],
+                playerId: resp['id'],
+                jwt: resp['jwt']);
+            await AuthService.save(currentUser);
+            AppConfig.jwt = resp['jwt'];
+            final availableCoins = await AppCoinService.availableCoins();
+            AppConfig.setAvailableCoins(availableCoins);
+            goToLoginScreen = false;
+          }
+        } catch (err) {
+          goToLoginScreen = true;
+        }
+        
+        if(goToLoginScreen) {
           _moveToLoginScreen();
           return;
+        } else {
+          _moveToMainScreen();
         }
-        _moveToMainScreen();
       }
     });
   }

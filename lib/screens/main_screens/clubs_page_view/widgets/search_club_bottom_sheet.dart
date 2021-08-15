@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/search_club_model.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
-import 'package:pokerapp/resources/new/app_colors_new.dart';
-import 'package:pokerapp/resources/new/app_strings_new.dart';
-import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
 import 'package:pokerapp/widgets/round_color_button.dart';
 import 'package:provider/provider.dart';
 import '../../../../services/app/club_interior_service.dart';
-import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class SearchClubBottomSheet extends StatefulWidget {
   SearchClubBottomSheet();
@@ -25,6 +22,14 @@ class _SearchClubBottomSheetState extends State<SearchClubBottomSheet> {
   String searchClubCode;
   SearchClub searchClub;
   bool _showLoading = false;
+  AppTextScreen _appScreenText;
+
+  @override
+  void initState() {
+    _appScreenText = getAppTextScreen("searchClubBottomSheet");
+    super.initState();
+  }
+
   void _toggleLoading() {
     if (mounted)
       setState(() {
@@ -115,9 +120,9 @@ class _SearchClubBottomSheetState extends State<SearchClubBottomSheet> {
                                 theme: theme,
                                 elevation: 0.0,
                                 radius: 7,
-                                hintText: 'Enter club code',
+                                hintText: _appScreenText['ENTERCLUBCODE'],
                                 validator: (String val) => val.trim().isEmpty
-                                    ? 'You must provide a club code'
+                                    ? _appScreenText['YOUMUSTPROVIDEACLUBCODE']
                                     : null,
                                 onSaved: (String val) =>
                                     searchClubCode = val.trim(),
@@ -169,7 +174,7 @@ class _SearchClubBottomSheetState extends State<SearchClubBottomSheet> {
                                 ),
                                 child: searchClub == null
                                     ? Text(
-                                        "No clubs found for the code '$searchClubCode' ",
+                                        "${_appScreenText['NOCLUBSFOUNDFORTHECODE']} '$searchClubCode' ",
                                         style: AppDecorators.getHeadLine4Style(
                                             theme: theme),
                                       )
@@ -178,21 +183,21 @@ class _SearchClubBottomSheetState extends State<SearchClubBottomSheet> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            "A club is found",
+                                            "${_appScreenText['ACLUBISFOUND']}",
                                             style:
                                                 AppDecorators.getSubtitle3Style(
                                                     theme: theme),
                                           ),
                                           separator10,
                                           Text(
-                                            "Name: ${searchClub.name}",
+                                            "${_appScreenText['NAME']}: ${searchClub.name}",
                                             style:
                                                 AppDecorators.getHeadLine4Style(
                                                     theme: theme),
                                           ),
                                           separator10,
                                           Text(
-                                            "Host: ${searchClub.ownerName}",
+                                            "${_appScreenText['HOST']}: ${searchClub.ownerName}",
                                             style:
                                                 AppDecorators.getHeadLine4Style(
                                                     theme: theme),
@@ -202,7 +207,7 @@ class _SearchClubBottomSheetState extends State<SearchClubBottomSheet> {
                                             child: RoundedColorButton(
                                               onTapFunction: () =>
                                                   onJoin(context),
-                                              text: AppStringsNew.Join,
+                                              text: "${_appScreenText['JOIN']}",
                                               backgroundColor:
                                                   theme.accentColor,
                                               textColor:

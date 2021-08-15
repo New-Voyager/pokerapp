@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_type.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
@@ -15,6 +16,7 @@ class GameTypeItem extends StatelessWidget {
   final List<GameType> gamesList;
   final Function onSettingsClick;
   final Function onArrowClick;
+  final AppTextScreen appScreenText;
   GameTypeItem({
     @required this.clubCode,
     this.type,
@@ -24,6 +26,7 @@ class GameTypeItem extends StatelessWidget {
     this.gamesList,
     this.onSettingsClick,
     this.onArrowClick,
+    this.appScreenText,
   });
 
   @override

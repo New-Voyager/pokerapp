@@ -2,19 +2,24 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
+import 'package:pokerapp/models/handlog_model.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/proto/hand.pbjson.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
-import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
+import 'package:pokerapp/utils/formatter.dart';
 import 'package:provider/provider.dart';
 
 class HandlogSummary extends StatelessWidget {
-  final HandLogModelNew handlogModel;
+  final AppTextScreen appTextScreen;
+  final HandResultData handResult;
 
-  HandlogSummary({this.handlogModel});
+  HandlogSummary({this.handResult});
   @override
   Widget build(BuildContext context) {
+    final playersInSeats = this.handResult.result.playerInfo.keys.toList();
     return Consumer<AppTheme>(
       builder: (_, theme, __) => Container(
         child: Column(
@@ -29,7 +34,7 @@ class HandlogSummary extends StatelessWidget {
               width: double.infinity,
               alignment: Alignment.center,
               child: Text(
-                AppStringsNew.StackText,
+                appTextScreen['STACK'],
                 style: AppDecorators.getHeadLine4Style(theme: theme)
                     .copyWith(fontWeight: FontWeight.w700),
               ),
@@ -38,12 +43,13 @@ class HandlogSummary extends StatelessWidget {
               padding: EdgeInsets.only(bottom: 16),
               child: ListView.separated(
                 itemBuilder: (context, index) {
-                  log("TOTAL : ${handlogModel.hand.playersInSeats.length}");
+                  log("TOTAL : ${playersInSeats.length}");
+                  final player =
+                      handResult.result.playerInfo[playersInSeats[index]];
                   // log(handlogModel.hand.data.players[(index + 1).toString()].id);
-                  return actionRow(
-                      handlogModel.hand.playersInSeats[index], theme);
+                  return actionRow(player, theme);
                 },
-                itemCount: handlogModel.hand.playersInSeats.length,
+                itemCount: playersInSeats.length,
                 shrinkWrap: true,
                 physics: ClampingScrollPhysics(),
                 separatorBuilder: (context, index) => Divider(
@@ -60,18 +66,15 @@ class HandlogSummary extends StatelessWidget {
     );
   }
 
-  Widget actionRow(Player player, AppTheme theme) {
-    final int diff = player.balance.after - player.balance.before;
+  Widget actionRow(ResultPlayerInfo player, AppTheme theme) {
+    final double diff = player.balance.after - player.balance.before;
     // int index = handlogModel.players
     //     .indexWhere((element) => element.id.toString() == player.id);
     // String playerName =
     //     index != -1 ? handlogModel.players[index].name : "Player";
     String playerName = 'Player';
     if (player != null) {
-      playerName = getPlayerNameBySeatNo(
-        handLogModel: handlogModel,
-        seatNo: player.seatNo,
-      );
+      playerName = player.name;
     }
     return Container(
       decoration: AppDecorators.tileDecorationWithoutBorder(theme),
@@ -97,7 +100,7 @@ class HandlogSummary extends StatelessWidget {
           Expanded(
             flex: 2,
             child: Text(
-              diff.toString(),
+              DataFormatter.chipsFormat(diff),
               style: TextStyle(
                 color: (diff > 0) ? Colors.green : Colors.red,
                 fontSize: 12.0,

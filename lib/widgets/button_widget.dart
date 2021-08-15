@@ -38,9 +38,9 @@ class ButtonWidget extends StatelessWidget {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                 theme.accentColor.withAlpha(200),
-                 theme.accentColor.withAlpha(150),
-                 theme.accentColor.withAlpha(75), 
+                  theme.accentColor.withAlpha(200),
+                  theme.accentColor.withAlpha(150),
+                  theme.accentColor.withAlpha(75),
                 ],
               ),
             ),

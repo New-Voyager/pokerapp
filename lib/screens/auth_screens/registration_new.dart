@@ -125,47 +125,47 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
       context: context,
       builder: (context) {
         return AlertDialog(
-        actionsPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        backgroundColor: appTheme.fillInColor,
-        title: Text("Debug details"),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            CardFormTextField(
-              theme: _appTheme,
-              hintText: "API Server URL",
-              onChanged: (val) {
-                //log("VALUE : $val");
-                apiUrl = val;
-                setState(() {});
-              },
-            ),
+          actionsPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          backgroundColor: appTheme.fillInColor,
+          title: _appScreenText['DEBUGDETAILS'],
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CardFormTextField(
+                theme: _appTheme,
+                hintText: _appScreenText['APISERVERURL'],
+                onChanged: (val) {
+                  //log("VALUE : $val");
+                  apiUrl = val;
+                  setState(() {});
+                },
+              ),
+            ],
+          ),
+          actions: [
+            RoundedColorButton(
+                text: _appScreenText["SAVE"],
+                backgroundColor: appTheme.accentColor,
+                textColor: appTheme.primaryColorWithDark(0.50),
+                onTapFunction: () async {
+                  if (apiUrl.isEmpty) {
+                    toast(_appScreenText['APIURLCANTBEEMPTY']);
+                    return;
+                  }
+
+                  // FIRST SET THE URLS
+                  await AppConfig.saveApiUrl(
+                    apiServer: apiUrl.trim(),
+                  );
+
+                  await graphQLConfiguration.init();
+
+                  Alerts.showNotification(titleText:  _appScreenText['APIURLISSET']);
+
+                  Navigator.of(context).pop();
+                }),
           ],
-        ),
-        actions: [
-          RoundedColorButton(
-              text: "SAVE",
-              backgroundColor: appTheme.accentColor,
-              textColor: appTheme.primaryColorWithDark(0.50),
-              onTapFunction: () async {
-                if (apiUrl.isEmpty) {
-                  toast("API url can't be empty");
-                  return;
-                }
-
-                // FIRST SET THE URLS
-                await AppConfig.saveApiUrl(
-                  apiServer: apiUrl.trim(),
-                );
-
-                await graphQLConfiguration.init();
-
-                Alerts.showNotification(titleText: 'API url is SET');
-
-                Navigator.of(context).pop();
-              }),
-        ],
-      );
+        );
       },
     );
   }
@@ -179,13 +179,13 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
           text: TextSpan(
             children: [
               TextSpan(
-                text: "By creating an account, you agree with our ",
+                text: _appScreenText['BYCREATINGANACCOUNTYOUAGREEWITHOUR'],
                 style: AppTextStyles.T2.copyWith(
                   color: appTheme.supportingColorWithDark(0.50),
                 ),
               ),
               TextSpan(
-                text: "Terms of Service",
+                text: _appScreenText["TERMSOFSERVICE"],
                 style: AppTextStyles.T2.copyWith(
                   decoration: TextDecoration.underline,
                   color: appTheme.supportingColorWithDark(0.50),
@@ -199,7 +199,7 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
                 ),
               ),
               TextSpan(
-                text: "Privacy Policy",
+                text: _appScreenText["PRIVACYPOLICY"],
                 style: AppTextStyles.T2.copyWith(
                   decoration: TextDecoration.underline,
                   color: appTheme.supportingColorWithDark(0.50),
@@ -246,22 +246,22 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
                         // screen name
                         _buildTextFormField(
                           appTheme: appTheme,
-                          labelText: _appScreenText.getText('SCREEN_NAME'),
+                          labelText: _appScreenText['SCREEN_NAME'],
                           keyboardType: TextInputType.name,
                           controller: _screenNameCtrl,
                           validator: (value) {
                             if (value.isEmpty) {
-                              return AppStringsNew.screenNameEmptyErrorText;
+                              return _appScreenText['SCREENNAMEISMANDATORY'];
                             }
                             if (value.length > 20) {
-                              return AppStringsNew.screenNameLengthErrorText;
+                              return _appScreenText["SCREENNAME20LATTER"];
                             }
                             return null;
                           },
-                          hintText: _appScreenText.getText('REQUIRED'),
+                          hintText: _appScreenText['REQUIRED'],
                           onInfoIconPress: () {
                             toast(
-                              AppStringsNew.screenNameHintToast,
+                              _appScreenText['SCREENNAMEDESCRIPTION'],
                               duration: Duration(seconds: 3),
                             );
                           },
@@ -273,19 +273,19 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
                         // name
                         _buildTextFormField(
                           appTheme: appTheme,
-                          labelText: _appScreenText.getText('YOUR_NAME'),
+                          labelText: _appScreenText['YOUR_NAME'],
                           keyboardType: TextInputType.name,
                           controller: _nameCtrl,
                           validator: (value) {
                             if (value.length > 30) {
-                              return AppStringsNew.displayNameLengthErrorText;
+                              return _appScreenText['DISPLAYNAME30LETTERS'];
                             }
                             return null;
                           },
-                          hintText: _appScreenText.getText('OPTIONAL'),
+                          hintText: _appScreenText['OPTIONAL'],
                           onInfoIconPress: () {
                             toast(
-                              AppStringsNew.displayNameHintToast,
+                              _appScreenText['YOURNAMEHINT'],
                               duration: Duration(seconds: 4),
                             );
                           },
@@ -297,26 +297,26 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
                         // Recover Email
                         _buildTextFormField(
                           appTheme: appTheme,
-                          labelText: _appScreenText.getText('RECOVERY_EMAIL'),
+                          labelText: _appScreenText['RECOVERY_EMAIL'],
                           keyboardType: TextInputType.emailAddress,
                           controller: _emailCtrl,
                           validator: (value) {
                             if (value.length > 50) {
-                              return AppStringsNew.emailInvalidText;
+                              return _appScreenText['INVALIDEMAIL'];
                             } else if (value.isNotEmpty) {
                               // RegExp for email validation
                               if (!RegExp(
                                       r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
                                   .hasMatch(value)) {
-                                return AppStringsNew.emailInvalidText;
+                                return _appScreenText['INVALIDEMAIL'];
                               }
                             }
                             return null;
                           },
-                          hintText: _appScreenText.getText('OPTIONAL'),
+                          hintText: _appScreenText['OPTIONAL'],
                           onInfoIconPress: () {
                             toast(
-                              AppStringsNew.emailHintToast,
+                              _appScreenText['RECOVERYEMAILHINT'],
                               duration: Duration(seconds: 5),
                             );
                           },
@@ -331,7 +331,7 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
                         RoundedColorButton(
                           backgroundColor: _appTheme.accentColor,
                           textColor: _appTheme.primaryColorWithDark(0.50),
-                          text: AppStringsNew.signupButtonText,
+                          text: _appScreenText['SIGNUP'],
                           fontSize: 14.dp,
                           onTapFunction: () => _handleSignUpClick(),
                         ),
@@ -349,7 +349,7 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
                     alignment: Alignment.center,
                     padding: EdgeInsets.all(16),
                     child: Text(
-                      AppStringsNew.restoreAccountText,
+                      _appScreenText['RESTOREACCOUNT'],
                       style: AppTextStyles.T2.copyWith(
                         decoration: TextDecoration.underline,
                         color: _appTheme.accentColor,
@@ -380,11 +380,11 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
   }
 
   _openPrivacyPolicy() {
-    toast("Opening privacy policy URL");
+    toast(_appScreenText['OPENINGPRIVACYPOLICYURL']);
   }
 
   _openTermsOfService() {
-    toast("Opening Terms and conditions URL");
+    toast(_appScreenText['OPENINGTERMSANDCONDITIONURL']);
   }
 
   _handleSignUpClick() async {

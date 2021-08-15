@@ -224,56 +224,50 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
     context.read<RabbitState>().putResult(null);
   }
 
-  Widget _buildAllHoleCardAndRabbitHuntSelectionButton(context) =>
-      Consumer<ValueNotifier<FooterStatus>>(
-        builder: (context, vnfs, __) {
-          bool _showEye = _showAllCardSelectionButton(vnfs);
-          return Visibility(
-            // if in result, we show the bar
-            visible: vnfs.value == FooterStatus.Result,
-            child: Container(
-              padding: EdgeInsets.symmetric(vertical: 10.0),
-              color: Colors.black.withOpacity(0.70),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                // hole card selection button and rabbit hunt button
-                children: [
-                  // hole card selection button
-                  _showEye
-                      ? GameCircleButton(
-                          iconData: Icons.visibility_rounded,
-                          onClickHandler: () =>
-                              _markAllCardsAsSelected(context),
-                        )
-                      : const SizedBox.shrink(),
+  Widget _buildAllHoleCardAndRabbitHuntSelectionButton(context) {
+    final bool isRabbitHuntAllowed = Provider.of<GameState>(
+      context,
+      listen: false,
+    ).gameInfo.allowRabbitHunt;
 
-                  // GestureDetector(
-                  //   onTap: _showEye
-                  //       ? () => _markAllCardsAsSelected(context)
-                  //       : null,
-                  //   child: Icon(
-                  //     Icons.visibility_rounded,
-                  //     size: 40.0,
-                  //   ),
-                  // ),
+    return Consumer2<ValueNotifier<FooterStatus>, RabbitState>(
+      builder: (context, vnfs, rb, __) {
+        final bool _showEye = _showAllCardSelectionButton(vnfs);
+        final bool _showRabbit = rb.show && isRabbitHuntAllowed;
 
-                  // rabbit hunt button
-                  Consumer<RabbitState>(
-                    builder: (context, rb, __) => rb.show &&
-                            context.read<GameState>().gameInfo.allowRabbitHunt
-                        ? GameCircleButton(
-                            onClickHandler: () =>
-                                onRabbitTap(rb.copy(), context),
-                            imagePath: AppAssets.rabbit,
-                          )
-                        : const SizedBox.shrink(),
-                  ),
-                ],
-              ),
+        return Visibility(
+          // if in result and (a reason to show), we show the bar
+          visible:
+              vnfs.value == FooterStatus.Result && (_showEye || _showRabbit),
+          child: Container(
+            padding: EdgeInsets.symmetric(vertical: 10.0),
+            color: Colors.black.withOpacity(0.70),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              // hole card selection button and rabbit hunt button
+              children: [
+                // hole card selection button
+                _showEye
+                    ? GameCircleButton(
+                        iconData: Icons.visibility_rounded,
+                        onClickHandler: () => _markAllCardsAsSelected(context),
+                      )
+                    : const SizedBox.shrink(),
+
+                // rabbit hunt button
+                _showRabbit
+                    ? GameCircleButton(
+                        onClickHandler: () => onRabbitTap(rb.copy(), context),
+                        imagePath: AppAssets.rabbit,
+                      )
+                    : const SizedBox.shrink(),
+              ],
             ),
-          );
-        },
-      );
+          ),
+        );
+      },
+    );
+  }
 
   Widget _buildholeCardViewAndStraddleDialog(
     GameState gameState,

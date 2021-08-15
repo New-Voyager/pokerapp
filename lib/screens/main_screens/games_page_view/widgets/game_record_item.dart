@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/models/newmodels/game_model_new.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
@@ -15,6 +16,8 @@ class GameRecordItem extends StatelessWidget {
   GameRecordItem({this.game, this.onTapFunction});
   @override
   Widget build(BuildContext context) {
+    AppTextScreen _appScreenText = getAppTextScreen("gameRecordItem");
+
     return InkWell(
       onTap: onTapFunction,
       child: Container(

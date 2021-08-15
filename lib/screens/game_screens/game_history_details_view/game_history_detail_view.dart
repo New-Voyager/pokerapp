@@ -1,9 +1,11 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/models/hand_history_model.dart';
+import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
@@ -16,6 +18,7 @@ import 'package:pokerapp/screens/game_screens/game_history_details_view/stack_ch
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/screens/game_screens/widgets/highhand_widget.dart';
 import 'package:pokerapp/services/app/game_service.dart';
+import 'package:pokerapp/services/test/hand_messages.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/widgets/round_color_button.dart';
@@ -716,7 +719,10 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
         ),
       );
     }
-
+    bool showHandHistory = _gameDetail.playedGame;
+    if (widget.data.isHost || widget.data.isManager || widget.data.isOwner) {
+      showHandHistory = true;
+    }
     log('hands Played: ${_gameDetail.handsPlayed}');
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
@@ -733,7 +739,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
             onTap: () {
-              if (_gameDetail.playedGame) {
+              if (showHandHistory) {
                 this.onHandHistoryPressed(context);
               }
             },
@@ -753,7 +759,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
             ),
             title: Text(AppStringsNew.handHistoryTitle,
                 style: AppDecorators.getHeadLine4Style(theme: theme)),
-            trailing: !_gameDetail.playedGame
+            trailing: !showHandHistory
                 ? Text(
                     AppStringsNew.notAvaialbleText,
                   )

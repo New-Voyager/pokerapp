@@ -3,12 +3,15 @@ import 'dart:developer';
 import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
+import 'package:pokerapp/proto/hand.pbserver.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/animating_widgets/my_last_action_animating_widget.dart';
 import 'package:provider/provider.dart';
 import 'communication_view.dart';
 import 'hand_analyse_view.dart';
@@ -42,6 +45,10 @@ class _FooterViewState extends State<FooterView>
   /* this value notifier is used in a child widget - hole cards view */
   final ValueNotifier<bool> isHoleCardsVisibleVn = ValueNotifier(false);
 
+  /* holds changes for MY last action */
+  final ValueNotifier<HandActions> myLastActionVn = ValueNotifier(null);
+  PlayerActedState _myAction;
+
   final Function eq = const ListEquality().equals;
 
   Players _players;
@@ -64,6 +71,14 @@ class _FooterViewState extends State<FooterView>
 
     if (me == null) {
       return;
+    }
+
+    // we dont update action if HandActions.NONE
+    final tmpAction = me?.action?.action;
+    if (tmpAction != HandActions.NONE) {
+      myLastActionVn.value = null;
+      myLastActionVn.value = tmpAction;
+      _myAction = me?.action;
     }
 
     if (mePlayerModelVn.value == null) {
@@ -165,6 +180,14 @@ class _FooterViewState extends State<FooterView>
     );
   }
 
+  Widget _buildMyLastActionWidget(context) {
+    return ValueListenableBuilder<HandActions>(
+      valueListenable: myLastActionVn,
+      builder: (_, handAction, __) =>
+          MyLastActionAnimatingWidget(myAction: _myAction),
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -191,6 +214,9 @@ class _FooterViewState extends State<FooterView>
 
           /* seat confirm widget */
           _buildSeatConfirmWidget(context),
+
+          /* my last action */
+          _buildMyLastActionWidget(context),
         ],
       );
 

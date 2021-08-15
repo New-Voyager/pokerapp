@@ -19,7 +19,9 @@ class AppTheme extends ChangeNotifier {
   }
 
   // call this from anywhere to get the app theme object
-  static AppTheme getTheme(BuildContext context) => context.read<AppTheme>();
+  static AppTheme getTheme(BuildContext context) {
+    return context.read<AppTheme>();
+  }
 
   // font family
   String get fontFamily => _themeData.fontFamily;
@@ -49,8 +51,10 @@ class AppTheme extends ChangeNotifier {
 
   // main color that the app is based on
   Color get primaryColor => _themeData.primaryColor;
-  Color primaryColorWithDark([double d = 0.10]) =>
-      _darken(_themeData.primaryColor, d);
+  Color primaryColorWithDark([double d = 0.10]) {
+    return _darken(_themeData.primaryColor, d);
+  }
+
   Color primaryColorWithLight([double l = 0.10]) =>
       _lighten(_themeData.primaryColor, l);
 

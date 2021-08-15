@@ -188,6 +188,7 @@ class PlayerModel {
   @override
   String toString() => this.name;
 
+  set action(PlayerActedState action) => this._action = action;
   PlayerActedState get action => this._action;
   PlayerConnectivityState get connectivity => this._connectivity;
 

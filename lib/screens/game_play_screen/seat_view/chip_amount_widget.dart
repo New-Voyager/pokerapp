@@ -166,7 +166,7 @@ class _ChipAmountWidgetState extends State<ChipAmountWidget>
       return;
     }
     final potKey = widget.boardAttributesObject.getPotsKey(0);
-    log('potViewPos: 3 afterFirstLayout ChipAmountWidget seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos}');
+    log('potViewPos: 3 afterFirstLayout potKey: $potKey ChipAmountWidget seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos}');
 
     if (potKey == null || potKey.currentContext == null) {
       // log('potViewPos: 3 return afterFirstLayout ChipAmountWidget seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos} potKey: ${potKey} potKey.currentContext: ${potKey.currentContext}');
@@ -226,7 +226,7 @@ class _ChipAmountAnimatingWidgetState extends State<ChipAmountAnimatingWidget>
     Offset begin = Offset(0, 0);
     begin = seat.betWidgetPos;
     this.begin = begin;
-    log('chip amount animation end: $end');
+    log('Chip Animation: chip amount animation end: $end');
     //log('reverse animation: ${widget.reverse ?? false}, winner: ${seat.player.action.winner}');
     if (widget.reverse ?? false) {
       Offset swap = end;

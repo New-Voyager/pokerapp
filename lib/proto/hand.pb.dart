@@ -1587,6 +1587,9 @@ class CurrentHandState extends $pb.GeneratedMessage {
     ..p<$core.double>(23, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'pots', $pb.PbFieldType.PF)
     ..a<$core.double>(24, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'potUpdates', $pb.PbFieldType.OF)
     ..a<$core.int>(25, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'noCards', $pb.PbFieldType.OU3)
+    ..aOB(36, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'bombPot')
+    ..aOB(37, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'doubleBoard')
+    ..a<$core.double>(38, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'bombPotBet', $pb.PbFieldType.OF)
     ..hasRequiredFields = false;
 
   CurrentHandState._() : super();
@@ -1615,6 +1618,9 @@ class CurrentHandState extends $pb.GeneratedMessage {
     $core.Iterable<$core.double>? pots,
     $core.double? potUpdates,
     $core.int? noCards,
+    $core.bool? bombPot,
+    $core.bool? doubleBoard,
+    $core.double? bombPotBet,
   }) {
     final _result = create();
     if (gameId != null) {
@@ -1688,6 +1694,15 @@ class CurrentHandState extends $pb.GeneratedMessage {
     }
     if (noCards != null) {
       _result.noCards = noCards;
+    }
+    if (bombPot != null) {
+      _result.bombPot = bombPot;
+    }
+    if (doubleBoard != null) {
+      _result.doubleBoard = doubleBoard;
+    }
+    if (bombPotBet != null) {
+      _result.bombPotBet = bombPotBet;
     }
     return _result;
   }
@@ -1962,6 +1977,42 @@ class CurrentHandState extends $pb.GeneratedMessage {
   $core.bool hasNoCards() => $_has(23);
   @$pb.TagNumber(25)
   void clearNoCards() => clearField(25);
+
+  @$pb.TagNumber(36)
+  $core.bool get bombPot => $_getBF(24);
+  @$pb.TagNumber(36)
+  set bombPot($core.bool v) {
+    $_setBool(24, v);
+  }
+
+  @$pb.TagNumber(36)
+  $core.bool hasBombPot() => $_has(24);
+  @$pb.TagNumber(36)
+  void clearBombPot() => clearField(36);
+
+  @$pb.TagNumber(37)
+  $core.bool get doubleBoard => $_getBF(25);
+  @$pb.TagNumber(37)
+  set doubleBoard($core.bool v) {
+    $_setBool(25, v);
+  }
+
+  @$pb.TagNumber(37)
+  $core.bool hasDoubleBoard() => $_has(25);
+  @$pb.TagNumber(37)
+  void clearDoubleBoard() => clearField(37);
+
+  @$pb.TagNumber(38)
+  $core.double get bombPotBet => $_getN(26);
+  @$pb.TagNumber(38)
+  set bombPotBet($core.double v) {
+    $_setFloat(26, v);
+  }
+
+  @$pb.TagNumber(38)
+  $core.bool hasBombPotBet() => $_has(26);
+  @$pb.TagNumber(38)
+  void clearBombPotBet() => clearField(38);
 }
 
 class HandWinner extends $pb.GeneratedMessage {
@@ -2269,4 +2320,936 @@ class PotWinners extends $pb.GeneratedMessage {
   $core.bool hasPauseTime() => $_has(4);
   @$pb.TagNumber(5)
   void clearPauseTime() => clearField(5);
+}
+
+class BoardCardRank extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      const $core.bool.fromEnvironment('protobuf.omit_message_names')
+          ? ''
+          : 'BoardCardRank',
+      package: const $pb.PackageName(
+          const $core.bool.fromEnvironment('protobuf.omit_message_names')
+              ? ''
+              : 'game'),
+      createEmptyInstance: create)
+    ..a<$core.int>(
+        1,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'boardNo',
+        $pb.PbFieldType.OU3)
+    ..a<$core.int>(
+        2,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'seatNo',
+        $pb.PbFieldType.OU3)
+    ..a<$core.int>(
+        3,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'hiRank',
+        $pb.PbFieldType.OU3)
+    ..p<$core.int>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'hiCards', $pb.PbFieldType.PU3)
+    ..aOB(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'lowFound')
+    ..a<$core.int>(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'loRank', $pb.PbFieldType.OU3)
+    ..p<$core.int>(7, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'loCards', $pb.PbFieldType.PU3)
+    ..a<$core.int>(8, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'bestRank', $pb.PbFieldType.OU3)
+    ..p<$core.int>(9, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'bestCards', $pb.PbFieldType.PU3)
+    ..hasRequiredFields = false;
+
+  BoardCardRank._() : super();
+  factory BoardCardRank({
+    $core.int? boardNo,
+    $core.int? seatNo,
+    $core.int? hiRank,
+    $core.Iterable<$core.int>? hiCards,
+    $core.bool? lowFound,
+    $core.int? loRank,
+    $core.Iterable<$core.int>? loCards,
+    $core.int? bestRank,
+    $core.Iterable<$core.int>? bestCards,
+  }) {
+    final _result = create();
+    if (boardNo != null) {
+      _result.boardNo = boardNo;
+    }
+    if (seatNo != null) {
+      _result.seatNo = seatNo;
+    }
+    if (hiRank != null) {
+      _result.hiRank = hiRank;
+    }
+    if (hiCards != null) {
+      _result.hiCards.addAll(hiCards);
+    }
+    if (lowFound != null) {
+      _result.lowFound = lowFound;
+    }
+    if (loRank != null) {
+      _result.loRank = loRank;
+    }
+    if (loCards != null) {
+      _result.loCards.addAll(loCards);
+    }
+    if (bestRank != null) {
+      _result.bestRank = bestRank;
+    }
+    if (bestCards != null) {
+      _result.bestCards.addAll(bestCards);
+    }
+    return _result;
+  }
+  factory BoardCardRank.fromBuffer($core.List<$core.int> i,
+          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(i, r);
+  factory BoardCardRank.fromJson($core.String i,
+          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(i, r);
+  @$core.Deprecated('Using this can add significant overhead to your binary. '
+      'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+      'Will be removed in next major version')
+  BoardCardRank clone() => BoardCardRank()..mergeFromMessage(this);
+  @$core.Deprecated('Using this can add significant overhead to your binary. '
+      'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+      'Will be removed in next major version')
+  BoardCardRank copyWith(void Function(BoardCardRank) updates) =>
+      super.copyWith((message) => updates(message as BoardCardRank))
+          as BoardCardRank; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static BoardCardRank create() => BoardCardRank._();
+  BoardCardRank createEmptyInstance() => create();
+  static $pb.PbList<BoardCardRank> createRepeated() =>
+      $pb.PbList<BoardCardRank>();
+  @$core.pragma('dart2js:noInline')
+  static BoardCardRank getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<BoardCardRank>(create);
+  static BoardCardRank? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.int get boardNo => $_getIZ(0);
+  @$pb.TagNumber(1)
+  set boardNo($core.int v) {
+    $_setUnsignedInt32(0, v);
+  }
+
+  @$pb.TagNumber(1)
+  $core.bool hasBoardNo() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearBoardNo() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.int get seatNo => $_getIZ(1);
+  @$pb.TagNumber(2)
+  set seatNo($core.int v) {
+    $_setUnsignedInt32(1, v);
+  }
+
+  @$pb.TagNumber(2)
+  $core.bool hasSeatNo() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearSeatNo() => clearField(2);
+
+  @$pb.TagNumber(3)
+  $core.int get hiRank => $_getIZ(2);
+  @$pb.TagNumber(3)
+  set hiRank($core.int v) {
+    $_setUnsignedInt32(2, v);
+  }
+
+  @$pb.TagNumber(3)
+  $core.bool hasHiRank() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearHiRank() => clearField(3);
+
+  @$pb.TagNumber(4)
+  $core.List<$core.int> get hiCards => $_getList(3);
+
+  @$pb.TagNumber(5)
+  $core.bool get lowFound => $_getBF(4);
+  @$pb.TagNumber(5)
+  set lowFound($core.bool v) {
+    $_setBool(4, v);
+  }
+
+  @$pb.TagNumber(5)
+  $core.bool hasLowFound() => $_has(4);
+  @$pb.TagNumber(5)
+  void clearLowFound() => clearField(5);
+
+  @$pb.TagNumber(6)
+  $core.int get loRank => $_getIZ(5);
+  @$pb.TagNumber(6)
+  set loRank($core.int v) {
+    $_setUnsignedInt32(5, v);
+  }
+
+  @$pb.TagNumber(6)
+  $core.bool hasLoRank() => $_has(5);
+  @$pb.TagNumber(6)
+  void clearLoRank() => clearField(6);
+
+  @$pb.TagNumber(7)
+  $core.List<$core.int> get loCards => $_getList(6);
+
+  @$pb.TagNumber(8)
+  $core.int get bestRank => $_getIZ(7);
+  @$pb.TagNumber(8)
+  set bestRank($core.int v) {
+    $_setUnsignedInt32(7, v);
+  }
+
+  @$pb.TagNumber(8)
+  $core.bool hasBestRank() => $_has(7);
+  @$pb.TagNumber(8)
+  void clearBestRank() => clearField(8);
+
+  @$pb.TagNumber(9)
+  $core.List<$core.int> get bestCards => $_getList(8);
+}
+
+class Board extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      const $core.bool.fromEnvironment('protobuf.omit_message_names')
+          ? ''
+          : 'Board',
+      package: const $pb.PackageName(
+          const $core.bool.fromEnvironment('protobuf.omit_message_names')
+              ? ''
+              : 'game'),
+      createEmptyInstance: create)
+    ..a<$core.int>(
+        1,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'boardNo',
+        $pb.PbFieldType.OU3)
+    ..p<$core.int>(
+        2,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'cards',
+        $pb.PbFieldType.PU3)
+    ..m<$core.int, BoardCardRank>(
+        3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'playerRank',
+        entryClassName: 'Board.PlayerRankEntry',
+        keyFieldType: $pb.PbFieldType.OU3,
+        valueFieldType: $pb.PbFieldType.OM,
+        valueCreator: BoardCardRank.create,
+        packageName: const $pb.PackageName('game'))
+    ..hasRequiredFields = false;
+
+  Board._() : super();
+  factory Board({
+    $core.int? boardNo,
+    $core.Iterable<$core.int>? cards,
+    $core.Map<$core.int, BoardCardRank>? playerRank,
+  }) {
+    final _result = create();
+    if (boardNo != null) {
+      _result.boardNo = boardNo;
+    }
+    if (cards != null) {
+      _result.cards.addAll(cards);
+    }
+    if (playerRank != null) {
+      _result.playerRank.addAll(playerRank);
+    }
+    return _result;
+  }
+  factory Board.fromBuffer($core.List<$core.int> i,
+          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(i, r);
+  factory Board.fromJson($core.String i,
+          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(i, r);
+  @$core.Deprecated('Using this can add significant overhead to your binary. '
+      'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+      'Will be removed in next major version')
+  Board clone() => Board()..mergeFromMessage(this);
+  @$core.Deprecated('Using this can add significant overhead to your binary. '
+      'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+      'Will be removed in next major version')
+  Board copyWith(void Function(Board) updates) =>
+      super.copyWith((message) => updates(message as Board))
+          as Board; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static Board create() => Board._();
+  Board createEmptyInstance() => create();
+  static $pb.PbList<Board> createRepeated() => $pb.PbList<Board>();
+  @$core.pragma('dart2js:noInline')
+  static Board getDefault() =>
+      _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<Board>(create);
+  static Board? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.int get boardNo => $_getIZ(0);
+  @$pb.TagNumber(1)
+  set boardNo($core.int v) {
+    $_setUnsignedInt32(0, v);
+  }
+
+  @$pb.TagNumber(1)
+  $core.bool hasBoardNo() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearBoardNo() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.List<$core.int> get cards => $_getList(1);
+
+  @$pb.TagNumber(3)
+  $core.Map<$core.int, BoardCardRank> get playerRank => $_getMap(2);
+}
+
+class Winner extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      const $core.bool.fromEnvironment('protobuf.omit_message_names')
+          ? ''
+          : 'Winner',
+      package: const $pb.PackageName(
+          const $core.bool.fromEnvironment('protobuf.omit_message_names')
+              ? ''
+              : 'game'),
+      createEmptyInstance: create)
+    ..a<$core.int>(
+        1,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'seatNo',
+        $pb.PbFieldType.OU3)
+    ..a<$core.double>(
+        2,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'amount',
+        $pb.PbFieldType.OF)
+    ..hasRequiredFields = false;
+
+  Winner._() : super();
+  factory Winner({
+    $core.int? seatNo,
+    $core.double? amount,
+  }) {
+    final _result = create();
+    if (seatNo != null) {
+      _result.seatNo = seatNo;
+    }
+    if (amount != null) {
+      _result.amount = amount;
+    }
+    return _result;
+  }
+  factory Winner.fromBuffer($core.List<$core.int> i,
+          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(i, r);
+  factory Winner.fromJson($core.String i,
+          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(i, r);
+  @$core.Deprecated('Using this can add significant overhead to your binary. '
+      'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+      'Will be removed in next major version')
+  Winner clone() => Winner()..mergeFromMessage(this);
+  @$core.Deprecated('Using this can add significant overhead to your binary. '
+      'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+      'Will be removed in next major version')
+  Winner copyWith(void Function(Winner) updates) =>
+      super.copyWith((message) => updates(message as Winner))
+          as Winner; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static Winner create() => Winner._();
+  Winner createEmptyInstance() => create();
+  static $pb.PbList<Winner> createRepeated() => $pb.PbList<Winner>();
+  @$core.pragma('dart2js:noInline')
+  static Winner getDefault() =>
+      _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<Winner>(create);
+  static Winner? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.int get seatNo => $_getIZ(0);
+  @$pb.TagNumber(1)
+  set seatNo($core.int v) {
+    $_setUnsignedInt32(0, v);
+  }
+
+  @$pb.TagNumber(1)
+  $core.bool hasSeatNo() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearSeatNo() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.double get amount => $_getN(1);
+  @$pb.TagNumber(2)
+  set amount($core.double v) {
+    $_setFloat(1, v);
+  }
+
+  @$pb.TagNumber(2)
+  $core.bool hasAmount() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearAmount() => clearField(2);
+}
+
+class BoardWinner extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'BoardWinner',
+      package: const $pb.PackageName(
+          const $core.bool.fromEnvironment('protobuf.omit_message_names')
+              ? ''
+              : 'game'),
+      createEmptyInstance: create)
+    ..a<$core.int>(
+        2,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'boardNo',
+        $pb.PbFieldType.OU3)
+    ..a<$core.double>(
+        3,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'amount',
+        $pb.PbFieldType.OF)
+    ..m<$core.int, Winner>(
+        4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'hiWinners',
+        entryClassName: 'BoardWinner.HiWinnersEntry',
+        keyFieldType: $pb.PbFieldType.OU3,
+        valueFieldType: $pb.PbFieldType.OM,
+        valueCreator: Winner.create,
+        packageName: const $pb.PackageName('game'))
+    ..m<$core.int, Winner>(
+        5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'lowWinners',
+        entryClassName: 'BoardWinner.LowWinnersEntry',
+        keyFieldType: $pb.PbFieldType.OU3,
+        valueFieldType: $pb.PbFieldType.OM,
+        valueCreator: Winner.create,
+        packageName: const $pb.PackageName('game'))
+    ..aOS(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'hiRankText')
+    ..hasRequiredFields = false;
+
+  BoardWinner._() : super();
+  factory BoardWinner({
+    $core.int? boardNo,
+    $core.double? amount,
+    $core.Map<$core.int, Winner>? hiWinners,
+    $core.Map<$core.int, Winner>? lowWinners,
+    $core.String? hiRankText,
+  }) {
+    final _result = create();
+    if (boardNo != null) {
+      _result.boardNo = boardNo;
+    }
+    if (amount != null) {
+      _result.amount = amount;
+    }
+    if (hiWinners != null) {
+      _result.hiWinners.addAll(hiWinners);
+    }
+    if (lowWinners != null) {
+      _result.lowWinners.addAll(lowWinners);
+    }
+    if (hiRankText != null) {
+      _result.hiRankText = hiRankText;
+    }
+    return _result;
+  }
+  factory BoardWinner.fromBuffer($core.List<$core.int> i,
+          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(i, r);
+  factory BoardWinner.fromJson($core.String i,
+          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(i, r);
+  @$core.Deprecated('Using this can add significant overhead to your binary. '
+      'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+      'Will be removed in next major version')
+  BoardWinner clone() => BoardWinner()..mergeFromMessage(this);
+  @$core.Deprecated('Using this can add significant overhead to your binary. '
+      'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+      'Will be removed in next major version')
+  BoardWinner copyWith(void Function(BoardWinner) updates) =>
+      super.copyWith((message) => updates(message as BoardWinner))
+          as BoardWinner; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static BoardWinner create() => BoardWinner._();
+  BoardWinner createEmptyInstance() => create();
+  static $pb.PbList<BoardWinner> createRepeated() => $pb.PbList<BoardWinner>();
+  @$core.pragma('dart2js:noInline')
+  static BoardWinner getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<BoardWinner>(create);
+  static BoardWinner? _defaultInstance;
+
+  @$pb.TagNumber(2)
+  $core.int get boardNo => $_getIZ(0);
+  @$pb.TagNumber(2)
+  set boardNo($core.int v) {
+    $_setUnsignedInt32(0, v);
+  }
+
+  @$pb.TagNumber(2)
+  $core.bool hasBoardNo() => $_has(0);
+  @$pb.TagNumber(2)
+  void clearBoardNo() => clearField(2);
+
+  @$pb.TagNumber(3)
+  $core.double get amount => $_getN(1);
+  @$pb.TagNumber(3)
+  set amount($core.double v) {
+    $_setFloat(1, v);
+  }
+
+  @$pb.TagNumber(3)
+  $core.bool hasAmount() => $_has(1);
+  @$pb.TagNumber(3)
+  void clearAmount() => clearField(3);
+
+  @$pb.TagNumber(4)
+  $core.Map<$core.int, Winner> get hiWinners => $_getMap(2);
+
+  @$pb.TagNumber(5)
+  $core.Map<$core.int, Winner> get lowWinners => $_getMap(3);
+
+  @$pb.TagNumber(6)
+  $core.String get hiRankText => $_getSZ(4);
+  @$pb.TagNumber(6)
+  set hiRankText($core.String v) {
+    $_setString(4, v);
+  }
+
+  @$pb.TagNumber(6)
+  $core.bool hasHiRankText() => $_has(4);
+  @$pb.TagNumber(6)
+  void clearHiRankText() => clearField(6);
+}
+
+class PotWinnersV2 extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      const $core.bool.fromEnvironment('protobuf.omit_message_names')
+          ? ''
+          : 'PotWinnersV2',
+      package: const $pb.PackageName(
+          const $core.bool.fromEnvironment('protobuf.omit_message_names')
+              ? ''
+              : 'game'),
+      createEmptyInstance: create)
+    ..a<$core.int>(
+        1,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'potNo',
+        $pb.PbFieldType.OU3)
+    ..a<$core.double>(
+        2,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'amount',
+        $pb.PbFieldType.OF)
+    ..pc<BoardWinner>(
+        3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'boardWinners', $pb.PbFieldType.PM,
+        subBuilder: BoardWinner.create)
+    ..hasRequiredFields = false;
+
+  PotWinnersV2._() : super();
+  factory PotWinnersV2({
+    $core.int? potNo,
+    $core.double? amount,
+    $core.Iterable<BoardWinner>? boardWinners,
+  }) {
+    final _result = create();
+    if (potNo != null) {
+      _result.potNo = potNo;
+    }
+    if (amount != null) {
+      _result.amount = amount;
+    }
+    if (boardWinners != null) {
+      _result.boardWinners.addAll(boardWinners);
+    }
+    return _result;
+  }
+  factory PotWinnersV2.fromBuffer($core.List<$core.int> i,
+          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(i, r);
+  factory PotWinnersV2.fromJson($core.String i,
+          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(i, r);
+  @$core.Deprecated('Using this can add significant overhead to your binary. '
+      'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+      'Will be removed in next major version')
+  PotWinnersV2 clone() => PotWinnersV2()..mergeFromMessage(this);
+  @$core.Deprecated('Using this can add significant overhead to your binary. '
+      'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+      'Will be removed in next major version')
+  PotWinnersV2 copyWith(void Function(PotWinnersV2) updates) =>
+      super.copyWith((message) => updates(message as PotWinnersV2))
+          as PotWinnersV2; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static PotWinnersV2 create() => PotWinnersV2._();
+  PotWinnersV2 createEmptyInstance() => create();
+  static $pb.PbList<PotWinnersV2> createRepeated() =>
+      $pb.PbList<PotWinnersV2>();
+  @$core.pragma('dart2js:noInline')
+  static PotWinnersV2 getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<PotWinnersV2>(create);
+  static PotWinnersV2? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.int get potNo => $_getIZ(0);
+  @$pb.TagNumber(1)
+  set potNo($core.int v) {
+    $_setUnsignedInt32(0, v);
+  }
+
+  @$pb.TagNumber(1)
+  $core.bool hasPotNo() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearPotNo() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.double get amount => $_getN(1);
+  @$pb.TagNumber(2)
+  set amount($core.double v) {
+    $_setFloat(1, v);
+  }
+
+  @$pb.TagNumber(2)
+  $core.bool hasAmount() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearAmount() => clearField(2);
+
+  @$pb.TagNumber(3)
+  $core.List<BoardWinner> get boardWinners => $_getList(2);
+}
+
+class HandResultV2 extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      const $core.bool.fromEnvironment('protobuf.omit_message_names')
+          ? ''
+          : 'HandResultV2',
+      package: const $pb.PackageName(
+          const $core.bool.fromEnvironment('protobuf.omit_message_names')
+              ? ''
+              : 'game'),
+      createEmptyInstance: create)
+    ..pc<Board>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'boards', $pb.PbFieldType.PM,
+        subBuilder: Board.create)
+    ..pc<PotWinnersV2>(
+        2,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'potWinners',
+        $pb.PbFieldType.PM,
+        subBuilder: PotWinnersV2.create)
+    ..hasRequiredFields = false;
+
+  HandResultV2._() : super();
+  factory HandResultV2({
+    $core.Iterable<Board>? boards,
+    $core.Iterable<PotWinnersV2>? potWinners,
+  }) {
+    final _result = create();
+    if (boards != null) {
+      _result.boards.addAll(boards);
+    }
+    if (potWinners != null) {
+      _result.potWinners.addAll(potWinners);
+    }
+    return _result;
+  }
+  factory HandResultV2.fromBuffer($core.List<$core.int> i,
+          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(i, r);
+  factory HandResultV2.fromJson($core.String i,
+          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(i, r);
+  @$core.Deprecated('Using this can add significant overhead to your binary. '
+      'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+      'Will be removed in next major version')
+  HandResultV2 clone() => HandResultV2()..mergeFromMessage(this);
+  @$core.Deprecated('Using this can add significant overhead to your binary. '
+      'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+      'Will be removed in next major version')
+  HandResultV2 copyWith(void Function(HandResultV2) updates) =>
+      super.copyWith((message) => updates(message as HandResultV2))
+          as HandResultV2; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static HandResultV2 create() => HandResultV2._();
+  HandResultV2 createEmptyInstance() => create();
+  static $pb.PbList<HandResultV2> createRepeated() =>
+      $pb.PbList<HandResultV2>();
+  @$core.pragma('dart2js:noInline')
+  static HandResultV2 getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<HandResultV2>(create);
+  static HandResultV2? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.List<Board> get boards => $_getList(0);
+
+  @$pb.TagNumber(2)
+  $core.List<PotWinnersV2> get potWinners => $_getList(1);
+}
+
+class HandPlayerBalance extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      const $core.bool.fromEnvironment('protobuf.omit_message_names')
+          ? ''
+          : 'HandPlayerBalance',
+      package: const $pb.PackageName(
+          const $core.bool.fromEnvironment('protobuf.omit_message_names')
+              ? ''
+              : 'game'),
+      createEmptyInstance: create)
+    ..a<$core.double>(
+        1,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'before',
+        $pb.PbFieldType.OF)
+    ..a<$core.double>(
+        2,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'after',
+        $pb.PbFieldType.OF)
+    ..hasRequiredFields = false;
+
+  HandPlayerBalance._() : super();
+  factory HandPlayerBalance({
+    $core.double? before,
+    $core.double? after,
+  }) {
+    final _result = create();
+    if (before != null) {
+      _result.before = before;
+    }
+    if (after != null) {
+      _result.after = after;
+    }
+    return _result;
+  }
+  factory HandPlayerBalance.fromBuffer($core.List<$core.int> i,
+          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(i, r);
+  factory HandPlayerBalance.fromJson($core.String i,
+          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(i, r);
+  @$core.Deprecated('Using this can add significant overhead to your binary. '
+      'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+      'Will be removed in next major version')
+  HandPlayerBalance clone() => HandPlayerBalance()..mergeFromMessage(this);
+  @$core.Deprecated('Using this can add significant overhead to your binary. '
+      'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+      'Will be removed in next major version')
+  HandPlayerBalance copyWith(void Function(HandPlayerBalance) updates) =>
+      super.copyWith((message) => updates(message as HandPlayerBalance))
+          as HandPlayerBalance; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static HandPlayerBalance create() => HandPlayerBalance._();
+  HandPlayerBalance createEmptyInstance() => create();
+  static $pb.PbList<HandPlayerBalance> createRepeated() =>
+      $pb.PbList<HandPlayerBalance>();
+  @$core.pragma('dart2js:noInline')
+  static HandPlayerBalance getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<HandPlayerBalance>(create);
+  static HandPlayerBalance? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.double get before => $_getN(0);
+  @$pb.TagNumber(1)
+  set before($core.double v) {
+    $_setFloat(0, v);
+  }
+
+  @$pb.TagNumber(1)
+  $core.bool hasBefore() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearBefore() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.double get after => $_getN(1);
+  @$pb.TagNumber(2)
+  set after($core.double v) {
+    $_setFloat(1, v);
+  }
+
+  @$pb.TagNumber(2)
+  $core.bool hasAfter() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearAfter() => clearField(2);
+}
+
+class PlayerHandInfo extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'PlayerHandInfo',
+      package: const $pb.PackageName(
+          const $core.bool.fromEnvironment('protobuf.omit_message_names')
+              ? ''
+              : 'game'),
+      createEmptyInstance: create)
+    ..a<$fixnum.Int64>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'id', $pb.PbFieldType.OU6,
+        defaultOrMaker: $fixnum.Int64.ZERO)
+    ..p<$core.int>(
+        2,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'cards',
+        $pb.PbFieldType.PU3)
+    ..e<HandStatus>(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'playedUntil', $pb.PbFieldType.OE,
+        defaultOrMaker: HandStatus.HandStatus_UNKNOWN,
+        valueOf: HandStatus.valueOf,
+        enumValues: HandStatus.values)
+    ..aOM<HandPlayerBalance>(
+        6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'balance',
+        subBuilder: HandPlayerBalance.create)
+    ..p<$core.int>(7, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'hhCards', $pb.PbFieldType.PU3)
+    ..a<$core.int>(8, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'hhRank', $pb.PbFieldType.OU3)
+    ..a<$core.double>(9, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'received', $pb.PbFieldType.OF)
+    ..a<$core.double>(10, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'rakePaid', $pb.PbFieldType.OF)
+    ..hasRequiredFields = false;
+
+  PlayerHandInfo._() : super();
+  factory PlayerHandInfo({
+    $fixnum.Int64? id,
+    $core.Iterable<$core.int>? cards,
+    HandStatus? playedUntil,
+    HandPlayerBalance? balance,
+    $core.Iterable<$core.int>? hhCards,
+    $core.int? hhRank,
+    $core.double? received,
+    $core.double? rakePaid,
+  }) {
+    final _result = create();
+    if (id != null) {
+      _result.id = id;
+    }
+    if (cards != null) {
+      _result.cards.addAll(cards);
+    }
+    if (playedUntil != null) {
+      _result.playedUntil = playedUntil;
+    }
+    if (balance != null) {
+      _result.balance = balance;
+    }
+    if (hhCards != null) {
+      _result.hhCards.addAll(hhCards);
+    }
+    if (hhRank != null) {
+      _result.hhRank = hhRank;
+    }
+    if (received != null) {
+      _result.received = received;
+    }
+    if (rakePaid != null) {
+      _result.rakePaid = rakePaid;
+    }
+    return _result;
+  }
+  factory PlayerHandInfo.fromBuffer($core.List<$core.int> i,
+          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(i, r);
+  factory PlayerHandInfo.fromJson($core.String i,
+          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(i, r);
+  @$core.Deprecated('Using this can add significant overhead to your binary. '
+      'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+      'Will be removed in next major version')
+  PlayerHandInfo clone() => PlayerHandInfo()..mergeFromMessage(this);
+  @$core.Deprecated('Using this can add significant overhead to your binary. '
+      'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+      'Will be removed in next major version')
+  PlayerHandInfo copyWith(void Function(PlayerHandInfo) updates) =>
+      super.copyWith((message) => updates(message as PlayerHandInfo))
+          as PlayerHandInfo; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static PlayerHandInfo create() => PlayerHandInfo._();
+  PlayerHandInfo createEmptyInstance() => create();
+  static $pb.PbList<PlayerHandInfo> createRepeated() =>
+      $pb.PbList<PlayerHandInfo>();
+  @$core.pragma('dart2js:noInline')
+  static PlayerHandInfo getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<PlayerHandInfo>(create);
+  static PlayerHandInfo? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $fixnum.Int64 get id => $_getI64(0);
+  @$pb.TagNumber(1)
+  set id($fixnum.Int64 v) {
+    $_setInt64(0, v);
+  }
+
+  @$pb.TagNumber(1)
+  $core.bool hasId() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearId() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.List<$core.int> get cards => $_getList(1);
+
+  @$pb.TagNumber(5)
+  HandStatus get playedUntil => $_getN(2);
+  @$pb.TagNumber(5)
+  set playedUntil(HandStatus v) {
+    setField(5, v);
+  }
+
+  @$pb.TagNumber(5)
+  $core.bool hasPlayedUntil() => $_has(2);
+  @$pb.TagNumber(5)
+  void clearPlayedUntil() => clearField(5);
+
+  @$pb.TagNumber(6)
+  HandPlayerBalance get balance => $_getN(3);
+  @$pb.TagNumber(6)
+  set balance(HandPlayerBalance v) {
+    setField(6, v);
+  }
+
+  @$pb.TagNumber(6)
+  $core.bool hasBalance() => $_has(3);
+  @$pb.TagNumber(6)
+  void clearBalance() => clearField(6);
+  @$pb.TagNumber(6)
+  HandPlayerBalance ensureBalance() => $_ensure(3);
+
+  @$pb.TagNumber(7)
+  $core.List<$core.int> get hhCards => $_getList(4);
+
+  @$pb.TagNumber(8)
+  $core.int get hhRank => $_getIZ(5);
+  @$pb.TagNumber(8)
+  set hhRank($core.int v) {
+    $_setUnsignedInt32(5, v);
+  }
+
+  @$pb.TagNumber(8)
+  $core.bool hasHhRank() => $_has(5);
+  @$pb.TagNumber(8)
+  void clearHhRank() => clearField(8);
+
+  @$pb.TagNumber(9)
+  $core.double get received => $_getN(6);
+  @$pb.TagNumber(9)
+  set received($core.double v) {
+    $_setFloat(6, v);
+  }
+
+  @$pb.TagNumber(9)
+  $core.bool hasReceived() => $_has(6);
+  @$pb.TagNumber(9)
+  void clearReceived() => clearField(9);
+
+  @$pb.TagNumber(10)
+  $core.double get rakePaid => $_getN(7);
+  @$pb.TagNumber(10)
+  set rakePaid($core.double v) {
+    $_setFloat(7, v);
+  }
+
+  @$pb.TagNumber(10)
+  $core.bool hasRakePaid() => $_has(7);
+  @$pb.TagNumber(10)
+  void clearRakePaid() => clearField(10);
 }

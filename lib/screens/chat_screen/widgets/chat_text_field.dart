@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
@@ -13,9 +14,11 @@ class ChatTextField extends StatelessWidget {
   final Function onSend;
   final Function onEmojiSelectTap;
   final Function onGifSelectTap;
+  final AppTextScreen appScreenText;
 
   const ChatTextField({
     Key key,
+    this.appScreenText,
     this.textEditingController,
     this.icon,
     this.onTap,
@@ -55,7 +58,7 @@ class ChatTextField extends StatelessWidget {
                 textInputAction: TextInputAction.newline,
                 decoration: InputDecoration(
                   border: InputBorder.none,
-                  hintText: AppStringsNew.enterMessageHintText,
+                  hintText: appScreenText['ENTERMESSAGE'],
                   hintStyle: AppDecorators.getSubtitle3Style(theme: theme),
                 ),
               ),

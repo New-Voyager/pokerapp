@@ -1,17 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/newmodels/game_model_new.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
-import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
-import 'package:pokerapp/resources/new/app_strings_new.dart';
-import 'package:pokerapp/resources/new/app_styles_new.dart';
-
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/widgets/round_color_button.dart';
-import 'package:pokerapp/widgets/rounded_accent_button.dart';
 import 'package:provider/provider.dart';
 
 class LiveGameItem extends StatelessWidget {
@@ -21,6 +17,8 @@ class LiveGameItem extends StatelessWidget {
   LiveGameItem({this.game, this.onTapFunction});
   @override
   Widget build(BuildContext context) {
+    AppTextScreen _appScreenText = getAppTextScreen("liveGameItem");
+
     return Consumer<AppTheme>(
       builder: (_, theme, __) => Stack(
         children: [
@@ -85,7 +83,7 @@ class LiveGameItem extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               Text(
-                                '${AppStringsNew.BuyIn}: ${game.buyInMin}-${game.buyInMax}',
+                                '${_appScreenText['BUYIN']}: ${game.buyInMin}-${game.buyInMax}',
                                 style: AppDecorators.getSubtitle1Style(
                                     theme: theme),
                               ),
@@ -99,23 +97,23 @@ class LiveGameItem extends StatelessWidget {
                           ),
                           AppDimensionsNew.getVerticalSizedBox(4.ph),
                           Text(
-                            "${AppStringsNew.GameId} - ${game.gameCode}",
+                            "${_appScreenText['GAMEID']} - ${game.gameCode}",
                             style:
                                 AppDecorators.getSubtitle2Style(theme: theme),
                           ),
                           AppDimensionsNew.getVerticalSizedBox(2.ph),
                           Text(
                             GameModelNew.getSeatsAvailble(game) > 0
-                                ? "${game.maxPlayers} ${AppStringsNew.OpenSeats}"
+                                ? "${game.maxPlayers} ${_appScreenText['OPENSEATS']}"
                                 : game.waitlistCount > 0
-                                    ? "${AppStringsNew.TableFull} (${game.waitlistCount} ${AppStringsNew.Waiting})"
-                                    : "${AppStringsNew.TableFull}",
+                                    ? "${_appScreenText['TABLEISFULL']} (${game.waitlistCount} ${_appScreenText['WAITING']})"
+                                    : "${_appScreenText['TABLEISFULL']}",
                             style:
                                 AppDecorators.getSubtitle1Style(theme: theme),
                           ),
                           AppDimensionsNew.getVerticalSizedBox(8.ph),
                           Text(
-                            "${AppStringsNew.Started} ${DataFormatter.getTimeInHHMMFormat(game.elapsedTime)} ${AppStringsNew.Ago}.",
+                            "${_appScreenText['STARTED']} ${DataFormatter.getTimeInHHMMFormat(game.elapsedTime)} ${_appScreenText['AGO']}.",
                             style:
                                 AppDecorators.getSubtitle3Style(theme: theme),
                           ),
@@ -130,8 +128,8 @@ class LiveGameItem extends StatelessWidget {
             right: 5.pw,
             child: RoundedColorButton(
               text: GameModelNew.getSeatsAvailble(game) > 0
-                  ? "${AppStringsNew.Join}"
-                  : "${AppStringsNew.View}",
+                  ? "${_appScreenText['JOIN']}"
+                  : "${_appScreenText['VIEW']}",
               onTapFunction: onTapFunction,
               backgroundColor: theme.accentColor,
               textColor: theme.primaryColorWithDark(),

@@ -1,33 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_stages.dart';
-import 'package:pokerapp/models/hand_log_model_new.dart';
+import 'package:pokerapp/models/handlog_model.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_stage_header.dart';
-import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/widgets/cards/multiple_stack_card_views.dart';
 
 class HandlogShowDown extends StatelessWidget {
-  final HandLogModelNew handLogModel;
-  HandlogShowDown({this.handLogModel});
+  final HandResultData handResult;
+  HandlogShowDown({this.handResult});
   @override
   Widget build(BuildContext context) {
-    if (handLogModel.hand.handLog.wonAt != GameStages.SHOWDOWN) {
+    if (handResult.wonAt() != GameStages.SHOWDOWN) {
       return Container();
     }
     return Column(
       children: [
         HandStageHeader(
           stageName: "Showdown",
-          handLogModel: handLogModel,
-          stageCards: handLogModel.hand.boardCards,
+          handResult: handResult,
         ),
         Container(
           child: ListView.separated(
             shrinkWrap: true,
             physics: ClampingScrollPhysics(),
             itemBuilder: (context, index) {
-              Player player = handLogModel.hand.playersInSeats[index];
+              int seatNo = handResult.result.activeSeats[index];
+              final player = handResult.getPlayerBySeatNo(seatNo);
               if (player.playedUntil != "SHOW_DOWN") {
                 return Container();
               }
@@ -43,10 +42,7 @@ class HandlogShowDown extends StatelessWidget {
                     Expanded(
                       flex: 3,
                       child: Text(
-                        getPlayerNameBySeatNo(
-                          handLogModel: handLogModel,
-                          seatNo: player.seatNo,
-                        ),
+                        player.name,
                         style: AppStylesNew.playerNameTextStyle,
                       ),
                     ),
@@ -61,7 +57,8 @@ class HandlogShowDown extends StatelessWidget {
               );
             },
             separatorBuilder: (context, index) {
-              Player player = handLogModel.hand.playersInSeats[index];
+              final seatNo = handResult.result.activeSeats[index];
+              final player = handResult.getPlayerBySeatNo(seatNo);
               if (player.playedUntil != "SHOW_DOWN") {
                 return Container();
               }
@@ -72,7 +69,7 @@ class HandlogShowDown extends StatelessWidget {
                 height: 1,
               );
             },
-            itemCount: handLogModel.hand.playersInSeats.length,
+            itemCount: handResult.result.activeSeats.length,
           ),
         )
       ],

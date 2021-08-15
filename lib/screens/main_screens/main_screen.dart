@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/models/app_state.dart';
 import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/app_icons.dart';
@@ -40,6 +41,8 @@ class _MainScreenState extends State<MainScreen>
     with SingleTickerProviderStateMixin, RouteAwareAnalytics {
   @override
   String get routeName => Routes.main;
+
+  AppTextScreen _appScreenText;
 
   //TabController _controller;
   PlayerInfo _currentPlayer;
@@ -94,6 +97,8 @@ class _MainScreenState extends State<MainScreen>
   @override
   void initState() {
     super.initState();
+    _appScreenText = getAppTextScreen("mainScreen");
+
     _init();
     // _controller = TabController(
     //   vsync: this,
@@ -109,68 +114,6 @@ class _MainScreenState extends State<MainScreen>
     }
   }
 
-/*
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColorsNew.screenBackgroundColor,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.only(top: 10.0),
-          child: Column(
-            children: <Widget>[
-              Expanded(
-                child: TabBarView(
-                  physics: NeverScrollableScrollPhysics(),
-                  controller: _controller,
-                  children: <Widget>[
-                    GamesPageView(),
-                    ClubsPageView(),
-                    ProfilePageView(),
-                    PurchasePageView()
-                  ],
-                ),
-              ),
-              Container(
-                color: AppColorsNew.widgetBackgroundColor,
-                child: TabBar(
-                  isScrollable: false,
-                  controller: _controller,
-                  indicatorColor: Colors.transparent,
-                  labelColor: AppColorsNew.appAccentColor,
-                  unselectedLabelColor: AppColorsNew.unselectedColor,
-                  labelPadding: const EdgeInsets.only(
-                    top: 10.0,
-                    bottom: 10.0,
-                  ),
-                  tabs: <Widget>[
-                    TabBarItem(
-                      iconData: AppIcons.playing_card,
-                      title: 'Games',
-                    ),
-                    TabBarItem(
-                      iconData: AppIcons.users,
-                      title: 'Clubs',
-                    ),
-                    TabBarItem(
-                      iconData: AppIcons.user,
-                      title: 'My Profile',
-                    ),
-                    TabBarItem(
-                      iconData: Icons.money,
-                      title: 'Purchase',
-                    ),
-                  ],
-                ),
-              )
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
- */
 
   @override
   Widget build(BuildContext context) {
@@ -207,28 +150,28 @@ class _MainScreenState extends State<MainScreen>
               items: [
                 CurvedNavItem(
                   iconData: AppIcons.playing_card,
-                  title: 'Games',
+                  title: _appScreenText['GAMES'],
                   selected: _navPos == 0,
                 ),
                 CurvedNavItem(
                   iconData: AppIcons.users,
-                  title: 'Clubs',
+                  title: _appScreenText['CLUBS'],
                   selected: _navPos == 1,
                 ),
                 CurvedNavItem(
                   iconData: AppIcons.user,
-                  title: 'Profile',
+                  title: _appScreenText['PROFILE'],
                   selected: _navPos == 2,
                 ),
                 CurvedNavItem(
                   iconData: Icons.shopping_cart,
-                  title: 'Store',
+                  title: _appScreenText['STORE'],
                   selected: _navPos == 3,
                 ),
                 if (TestService.isTesting)
                   CurvedNavItem(
                     iconData: Icons.money,
-                    title: 'Test',
+                    title: _appScreenText['TEST'],
                     selected: _navPos == 4,
                   ),
               ],
