@@ -980,8 +980,6 @@ class HandActionProtoService {
       tableState.notifyAll();
       if (_close) return;
 
-      // show bomb animation here
-
       // play the bet sound effect
       playSoundEffect(AppAssets.betRaiseSound);
 
