@@ -464,7 +464,7 @@ class HandActionProtoService {
       board2Cards: board2Cards,
     );
   }
-  
+
   Future<void> handleNewHand(proto.HandMessageItem message) async {
     _gameState.handState = HandState.STARTED;
     _gameState.highHand = null;
@@ -550,14 +550,14 @@ class HandActionProtoService {
         }
         playerObj.status = playerInSeat.status.name;
         playerObj.inhand = playerInSeat.inhand;
-        if (playerInSeat.buyInExpTime != null && 
-            playerInSeat.breakExpTime.length > 0 && 
+        if (playerInSeat.buyInExpTime != null &&
+            playerInSeat.breakExpTime.length > 0 &&
             playerInSeat.stack == 0) {
           playerObj.showBuyIn = true;
           final buyInTimeExpAt = DateTime.tryParse(playerInSeat.buyInExpTime);
           playerObj.buyInTimeExpAt = buyInTimeExpAt.toLocal();
         }
-        if (playerInSeat.breakExpTime != null && 
+        if (playerInSeat.breakExpTime != null &&
             playerInSeat.breakExpTime.length > 0) {
           playerObj.inBreak = true;
           final time = DateTime.tryParse(playerInSeat.breakExpTime);
@@ -585,7 +585,7 @@ class HandActionProtoService {
         }
       }
       bool refresh = false;
-      for(final seatNo in seatNos.keys) {
+      for (final seatNo in seatNos.keys) {
         if (seatNos[seatNo] > 1) {
           refresh = true;
           break;
@@ -627,7 +627,8 @@ class HandActionProtoService {
 
     // next action seat is me
     if (!newHand.bombPot) {
-      final nextActionSeat = _gameState.getSeat(_context, newHand.nextActionSeat);
+      final nextActionSeat =
+          _gameState.getSeat(_context, newHand.nextActionSeat);
       if (nextActionSeat != null && nextActionSeat.isMe) {
         // if straddle is allowed, my stack size > straddle value, and I haven't turned off straddle option
         if (_gameState.gameInfo.utgStraddleAllowed &&
@@ -969,7 +970,6 @@ class HandActionProtoService {
     }
   }
 
-
   Future<void> handleBombPot() async {
     log('Hand Message: ::handleBombPot:: START');
     if (_close) return;
@@ -985,12 +985,17 @@ class HandActionProtoService {
 
       // place players bets
       final players = _gameState.getPlayers(_context);
-      for(final player in players.players) {
+      for (final player in players.players) {
         if (player.inhand) {
-          PlayerActedState action = PlayerActedState();
-          action.setBombPotAction(handInfo.bombPotBet);
+          // get the seat
+          Seat seat = _gameState.getSeatByPlayer(player.playerId);
+
+          // update player bet & player stack
+          seat.player.action.setBombPotAction(handInfo.bombPotBet);
           player.stack = player.stack - handInfo.bombPotBet.toInt();
-          player.action = action;
+
+          // notify seat
+          seat.notify();
         }
       }
       if (_close) return;
@@ -1000,6 +1005,7 @@ class HandActionProtoService {
       log('Hand Message: ::handleDealStarted:: END');
     }
   }
+
   // we update the pot only during
   void updatePot(List<double> potValues, String key, BuildContext context) {
     try {
@@ -1129,7 +1135,7 @@ class HandActionProtoService {
       playSoundEffect(AppAssets.flopSound);
       tableState.notifyAll();
       await Future.delayed(Duration(seconds: 1));
-      audioPlayer.stop();      
+      audioPlayer.stop();
       if (message.river.boards.length == 2) {
         board = message.river.boards[1];
         if (!tableState.twoBoardsNeeded) {

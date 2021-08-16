@@ -385,6 +385,7 @@ class PlayerActedState {
   }
 
   void setBombPotAction(double amount) {
+    log('paaul bomb pot amount: $amount');
     _playerAction = HandActions.BOMB_POT_BET;
     _amount = amount;
   }
