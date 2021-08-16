@@ -15,6 +15,8 @@ class AnimationAssets {
 
   static const String _base = 'assets/animations';
 
+  static const bombPotAnimation = '$_base/bombpot.json';
+
   static const List<AnimationObject> animationObjects = const [
     const AnimationObject(
       id: 'chicken',

@@ -385,8 +385,8 @@ class PlayerActedState {
   }
 
   void setBombPotAction(double amount) {
-    log('paaul bomb pot amount: $amount');
-    _playerAction = HandActions.BOMB_POT_BET;
+    // keeping the playerAction null shows NO label in the player's nameplate
+    _playerAction = null;
     _amount = amount;
   }
 

@@ -407,7 +407,7 @@ class GameState {
     this._gameInfo?.agoraToken = v;
   }
 
-  HandInfoState get handInfo => this.handInfo;
+  HandInfoState get handInfo => this._handInfo;
 
   bool get isGameRunning {
     bool tableRunning =
