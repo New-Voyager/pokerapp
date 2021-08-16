@@ -46,7 +46,10 @@ class _CenterViewState extends State<CenterView> {
   TableState get tableState => widget.tableState;
 
   Widget _bombPotAnimation() {
-    return LottieBuilder.asset(AnimationAssets.bombPotAnimation);
+    return LottieBuilder.asset(
+      AnimationAssets.bombPotAnimation,
+      key: UniqueKey(),
+    );
   }
 
   Widget _positionAnimationShuffleCardView({
