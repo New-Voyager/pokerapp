@@ -52,4 +52,18 @@ class AppThemeData {
     this.navBgColor = const Color(0xFF3D5242),
     this.navFabColor = const Color(0xFF40D876),
   });
+
+  Map<String, dynamic> toMap() {
+    return {
+      "primaryColor": this.primaryColor.value,
+      "secondaryColor": this.secondaryColor.value,
+      "accentColor": this.accentColor.value,
+      "fillInColor": this.fillInColor.value,
+      "supportingColor": this.supportingColor.value,
+      "negativeOrErrorColor": this.negativeOrErrorColor.value,
+      "fontFamily": this.fontFamily,
+      "navBgColor": this.navBgColor.value,
+      "navFabColor": this.navFabColor.value,
+    };
+  }
 }
