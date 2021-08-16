@@ -179,7 +179,7 @@ class PlayerModel {
 
   bool get isActive {
     if (this.playerFolded ?? false) {
-      return false;
+      return true;
     }
     return this.inhand;
   }
