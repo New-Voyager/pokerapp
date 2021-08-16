@@ -7,8 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
-import 'package:pokerapp/enums/player_status.dart';
 import 'package:pokerapp/models/game_play_models/business/card_distribution_model.dart';
+import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/marked_cards.dart';
@@ -20,7 +20,6 @@ import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/newmodels/game_model_new.dart';
 import 'package:pokerapp/models/player_info.dart' as pi;
 import 'package:pokerapp/models/rabbit_state.dart';
-import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/proto/hand.pb.dart' as proto;
 import 'package:pokerapp/proto/enums.pb.dart' as proto;
 import 'package:pokerapp/proto/handmessage.pb.dart' as proto;
@@ -347,10 +346,6 @@ class HandActionProtoService {
     try {
       // delegate further actions to sub services as per messageType
       switch (messageType) {
-        case AppConstants.RESULT:
-          await handleResult(message);
-          return;
-
         case AppConstants.RESULT2:
           await handleResult2(message.handResultClient);
           return;
@@ -365,6 +360,9 @@ class HandActionProtoService {
 
         case AppConstants.DEAL_STARTED:
           return handleDealStarted();
+
+        case AppConstants.BOMB_POT:
+          return handleBombPot();
 
         case AppConstants.DEAL:
           return handleDeal(message);
@@ -404,9 +402,6 @@ class HandActionProtoService {
 
         case AppConstants.ANNOUNCEMENT:
           return handleAnnouncement(message);
-
-        // case AppConstants.DEALER_CHOICE:
-        //   return handleDealerChoice(data);
       }
     } catch (err) {
       log('Error: ${err.toString()}');
@@ -469,42 +464,7 @@ class HandActionProtoService {
       board2Cards: board2Cards,
     );
   }
-
-  // Future<void> handleDealerChoice(proto.HandMessageItem message) async {
-  //   final dealerChoice = message.dealerChoice;
-  //   if (dealerChoice == null) {
-  //     return;
-  //   }
-
-  //   if (_close) return;
-  //   final TableState tableState = _gameState.getTableState(_context);
-  //   // remove all the community cards
-  //   tableState.clear();
-  //   tableState.notifyAll();
-
-  //   if (_close) return;
-  //   _gameState.resetPlayers(_context, notify: true);
-
-  //   if (_close) return;
-  //   _context.read<ValueNotifier<FooterStatus>>().value = FooterStatus.None;
-
-  //   List<GameType> gameChoices = [];
-  //   for (final type in dealerChoice.games) {
-  //     final gameType =
-  //         GameType.values.firstWhere((element) => element.index == type.value);
-  //     gameChoices.add(gameType);
-  //   }
-  //   final timeout = int.parse(dealerChoice.timeout.toString());
-  //   GameType type = await showGameSelectorDialog(
-  //     listOfGameTypes: gameChoices,
-  //     timeLimit: Duration(seconds: timeout),
-  //   );
-  //   log('selected game type: $type');
-  //   if (type != GameType.UNKNOWN) {
-  //     GameService.dealerChoice(_gameState.gameCode, type);
-  //   }
-  // }
-
+  
   Future<void> handleNewHand(proto.HandMessageItem message) async {
     _gameState.handState = HandState.STARTED;
     _gameState.highHand = null;
@@ -523,6 +483,7 @@ class HandActionProtoService {
     double bigBlind = newHand.bigBlind;
     double smallBlind = newHand.smallBlind;
     int handNum = newHand.handNum;
+
     GameType gameType = GameType.values
         .firstWhere((element) => element.index == newHand.gameType.value);
     _gameState.resetSeatActions(newHand: true);
@@ -539,6 +500,9 @@ class HandActionProtoService {
       gameType: gameType,
       smallBlind: smallBlind,
       bigBlind: bigBlind,
+      bombPot: newHand.bombPot,
+      bombPotBet: newHand.bombPotBet,
+      doubleBoard: newHand.doubleBoardBombPot,
     );
 
     // set small blind and big blind
@@ -555,38 +519,99 @@ class HandActionProtoService {
 
     // update player's state and stack
     final playersInSeats = newHand.playersInSeats;
-    bool refresh = false;
-    for (final seatNo in playersInSeats.keys) {
-      if (_close) return;
-      final seat = _gameState.getSeat(_context, seatNo);
-      if (seat == null && seat.player == null) {
-        refresh = true;
-        break;
+    int retryCount = 0;
+    while (retryCount < 2) {
+      retryCount++;
+      // show buyin button/timer if the player is in middle of buyin
+      for (final seatNo in playersInSeats.keys) {
+        if (seatNo == 0) {
+          continue;
+        }
+        final playerInSeat = playersInSeats[seatNo];
+        PlayerModel playerFound;
+        bool newPlayer = true;
+        for (final player in players.players) {
+          if (player.playerId == playerInSeat.playerId.toInt()) {
+            playerFound = player;
+            break;
+          }
+        }
+        PlayerModel playerObj;
+        if (playerFound != null) {
+          newPlayer = false;
+          playerObj = playerFound;
+        } else {
+          playerObj = new PlayerModel();
+        }
+        playerObj.seatNo = seatNo;
+        playerObj.stack = playerInSeat.stack.toInt();
+        if (newHand.bombPot) {
+          playerObj.stack = playerObj.stack + newHand.bombPotBet.toInt();
+        }
+        playerObj.status = playerInSeat.status.name;
+        playerObj.inhand = playerInSeat.inhand;
+        if (playerInSeat.buyInExpTime != null && 
+            playerInSeat.breakExpTime.length > 0 && 
+            playerInSeat.stack == 0) {
+          playerObj.showBuyIn = true;
+          final buyInTimeExpAt = DateTime.tryParse(playerInSeat.buyInExpTime);
+          playerObj.buyInTimeExpAt = buyInTimeExpAt.toLocal();
+        }
+        if (playerInSeat.breakExpTime != null && 
+            playerInSeat.breakExpTime.length > 0) {
+          playerObj.inBreak = true;
+          final time = DateTime.tryParse(playerInSeat.breakExpTime);
+          playerObj.breakTimeExpAt = time.toLocal();
+        }
+
+        if (newPlayer) {
+          playerObj.playerUuid = playerInSeat.uuid;
+          players.addNewPlayerSilent(playerObj);
+        }
+        if (playerObj.playerUuid == this._currentPlayer.uuid) {
+          playerObj.isMe = true;
+        }
+        final seat = _gameState.getSeat(_context, seatNo);
+        seat.player = playerObj;
       }
 
-      final player = players.fromSeat(seatNo);
-      if (player == null) {
-        refresh = true;
+      // make sure no two users in the same seat
+      Map<int, int> seatNos = Map<int, int>();
+      for (final player in players.players) {
+        if (!seatNos.containsKey(player.seatNo)) {
+          seatNos[player.seatNo] = 1;
+        } else {
+          seatNos[player.seatNo] = seatNos[player.seatNo] + 1;
+        }
+      }
+      bool refresh = false;
+      for(final seatNo in seatNos.keys) {
+        if (seatNos[seatNo] > 1) {
+          refresh = true;
+          break;
+        }
+      }
+      if (refresh) {
+        // the game state does not have all the players, refresh
+        if (_close) return;
+        log('gameState seats does not match with new hand. * Refreshing *');
+        await _gameState.refresh(_context);
+        log('gameState seats does not match with new hand. * Refreshing Done *');
+      } else {
         break;
       }
     }
 
-    if (refresh) {
-      // the game state does not have all the players, refresh
+    if (!newHand.bombPot) {
+      final sbSeat = _gameState.getSeat(_context, sbPos);
+      sbSeat.player.action.sb = true;
+      sbSeat.player.action.amount = _gameState.gameInfo.smallBlind.toDouble();
+
       if (_close) return;
-      log('gameState seats does not match with new hand. * Refreshing *');
-      await _gameState.refresh(_context);
-      log('gameState seats does not match with new hand. * Refreshing Done *');
+      final bbSeat = _gameState.getSeat(_context, bbPos);
+      bbSeat.player.action.bb = true;
+      bbSeat.player.action.amount = _gameState.gameInfo.bigBlind.toDouble();
     }
-
-    final sbSeat = _gameState.getSeat(_context, sbPos);
-    sbSeat.player.action.sb = true;
-    sbSeat.player.action.amount = _gameState.gameInfo.smallBlind.toDouble();
-
-    if (_close) return;
-    final bbSeat = _gameState.getSeat(_context, bbPos);
-    bbSeat.player.action.bb = true;
-    bbSeat.player.action.amount = _gameState.gameInfo.bigBlind.toDouble();
 
     if (_close) return;
     final TableState tableState = _gameState.getTableState(_context);
@@ -600,76 +625,46 @@ class HandActionProtoService {
     if (_close) return;
     _context.read<ValueNotifier<FooterStatus>>().value = FooterStatus.None;
 
-    for (final seatNo in playersInSeats.keys) {
-      if (_close) return;
-      final seat = _gameState.getSeat(_context, seatNo);
-      if (seat != null && seat.player != null) {
-        final playerUpdate = playersInSeats[seatNo];
-        final double stack = playerUpdate.stack;
-        seat.player.stack = stack.toInt();
-        seat.player.startingStack = stack.toInt();
-
-        final String statusStr = playerUpdate.status.toString();
-        final status = PlayerStatus.values.firstWhere(
-            (element) => (element.toString() == 'PlayerStatus.' + statusStr));
-        seat.player.status = playerUpdate.status.toString();
-        if (status == PlayerStatus.WAIT_FOR_BUYIN ||
-            status == PlayerStatus.WAIT_FOR_BUYIN_APPROVAL) {
-          // show buyin timer
-          seat.player.showBuyIn = true;
-          seat.player.buyInTimeExpAt =
-              DateTime.parse(playerUpdate.buyInExpTime);
-
-          // show buyin button
-          if (seat.player.isMe) {
-            if (_close) return;
-            _gameState.getMyState(_context).notify();
-          }
-        } else {
-          seat.player.showBuyIn = false;
-          seat.player.buyInTimeExpAt = null;
-        }
-      }
-    }
-
     // next action seat is me
-    final nextActionSeat = _gameState.getSeat(_context, newHand.nextActionSeat);
-    if (nextActionSeat != null && nextActionSeat.isMe) {
-      // if straddle is allowed, my stack size > straddle value, and I haven't turned off straddle option
-      if (_gameState.gameInfo.utgStraddleAllowed &&
-          nextActionSeat.player.stack >= 2 * _gameState.gameInfo.bigBlind) {
-        // set straddlePrompt true
-        if (_gameState.settings.straddleOption) {
-          // we show the straddle dialog only when the auto straddle is off
-          if (_gameState.settings.autoStraddle == true) {
-            // set straddle bet
-            _gameState.straddleBetThisHand = true;
-          } else {
-            // prompt for the straddle dialog
-            _gameState.straddlePrompt = true;
+    if (!newHand.bombPot) {
+      final nextActionSeat = _gameState.getSeat(_context, newHand.nextActionSeat);
+      if (nextActionSeat != null && nextActionSeat.isMe) {
+        // if straddle is allowed, my stack size > straddle value, and I haven't turned off straddle option
+        if (_gameState.gameInfo.utgStraddleAllowed &&
+            nextActionSeat.player.stack >= 2 * _gameState.gameInfo.bigBlind) {
+          // set straddlePrompt true
+          if (_gameState.settings.straddleOption) {
+            // we show the straddle dialog only when the auto straddle is off
+            if (_gameState.settings.autoStraddle == true) {
+              // set straddle bet
+              _gameState.straddleBetThisHand = true;
+            } else {
+              // prompt for the straddle dialog
+              _gameState.straddlePrompt = true;
+            }
           }
         }
       }
+
+      /* marking the small blind */
+      int smallBlindIdx = players.players.indexWhere((p) => p.seatNo == sbPos);
+      assert(smallBlindIdx != -1);
+
+      players.updatePlayerTypeSilent(
+        smallBlindIdx,
+        TablePosition.SmallBlind,
+        coinAmount: smallBlind.toInt(),
+      );
+
+      /* marking the big blind */
+      int bigBlindIdx = players.players.indexWhere((p) => p.seatNo == bbPos);
+      assert(bigBlindIdx != -1);
+      players.updatePlayerTypeSilent(
+        bigBlindIdx,
+        TablePosition.BigBlind,
+        coinAmount: bigBlind.toInt(),
+      );
     }
-
-    /* marking the small blind */
-    int smallBlindIdx = players.players.indexWhere((p) => p.seatNo == sbPos);
-    assert(smallBlindIdx != -1);
-
-    players.updatePlayerTypeSilent(
-      smallBlindIdx,
-      TablePosition.SmallBlind,
-      coinAmount: smallBlind.toInt(),
-    );
-
-    /* marking the big blind */
-    int bigBlindIdx = players.players.indexWhere((p) => p.seatNo == bbPos);
-    assert(bigBlindIdx != -1);
-    players.updatePlayerTypeSilent(
-      bigBlindIdx,
-      TablePosition.BigBlind,
-      coinAmount: bigBlind.toInt(),
-    );
 
     /* marking the dealer */
     int dealerIdx = players.players.indexWhere((p) => p.seatNo == dealerPos);
@@ -691,16 +686,7 @@ class HandActionProtoService {
     /* get a new card back asset to be shown */
     if (_close) return;
     _context.read<ValueNotifier<String>>().value = CardBackAssets.getRandom();
-    // // wait for the fastAnimationDuration completion
-    // // this is done to wait until the footerResult section is removed
 
-    // /* put new hand message */
-    // tableState.updateTableStatusSilent(AppConstants.NEW_HAND);
-    // tableState.notifyAll();
-
-    // log('Hand Message: ::handleNewHand:: Delaying');
-    // await Future.delayed(Duration(milliseconds: 10000));
-    // tableState.updateTableStatusSilent(AppConstants.CLEAR);
     tableState.notifyAll();
     log('Hand Message: ::handleNewHand:: END');
     _gameState.handState = HandState.NEW_HAND;
@@ -983,6 +969,39 @@ class HandActionProtoService {
     }
   }
 
+
+  Future<void> handleBombPot() async {
+    log('Hand Message: ::handleBombPot:: START');
+    if (_close) return;
+    try {
+      final TableState tableState = _gameState.getTableState(_context);
+      final handInfo = _gameState.getHandInfo(_context);
+      tableState.clear();
+      tableState.notifyAll();
+      if (_close) return;
+
+      // show bomb animation here
+
+      // play the bet sound effect
+      playSoundEffect(AppAssets.betRaiseSound);
+
+      // place players bets
+      final players = _gameState.getPlayers(_context);
+      for(final player in players.players) {
+        if (player.inhand) {
+          PlayerActedState action = PlayerActedState();
+          action.setBombPotAction(handInfo.bombPotBet);
+          player.stack = player.stack - handInfo.bombPotBet.toInt();
+          player.action = action;
+        }
+      }
+      if (_close) return;
+      players.notifyAll();
+      tableState.notifyAll();
+    } finally {
+      log('Hand Message: ::handleDealStarted:: END');
+    }
+  }
   // we update the pot only during
   void updatePot(List<double> potValues, String key, BuildContext context) {
     try {

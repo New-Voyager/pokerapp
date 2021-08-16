@@ -1,5 +1,4 @@
 import 'package:pokerapp/models/ui/app_text.dart';
-import 'package:pokerapp/resources/new/app_strings_new.dart';
 
 enum GameType {
   UNKNOWN,

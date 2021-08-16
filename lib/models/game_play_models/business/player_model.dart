@@ -34,6 +34,7 @@ class PlayerModel {
   int startingStack = 0;
   String avatarUrl = '';
   String status = '';
+  bool inhand = false;
   List<int> _cards = [];
   List<int> highlightCards = [];
   PlayerActedState _action;
@@ -174,6 +175,13 @@ class PlayerModel {
 
   List<int> get cards {
     return this._cards;
+  }
+
+  bool get isActive {
+    if (this.playerFolded ?? false) {
+      return false;
+    }
+    return this.inhand;
   }
 
   set cards(List<int> v) {
@@ -367,11 +375,18 @@ class PlayerActedState {
       _playerAction = HandActions.ALLIN;
     } else if (handAction.action == proto.ACTION.CHECK) {
       _playerAction = HandActions.CHECK;
+    } else if (handAction.action == proto.ACTION.BOMB_POT_BET) {
+      _playerAction = HandActions.BOMB_POT_BET;
     }
     _amount = handAction.amount;
     if (_amount == null) {
       _amount = 0;
     }
+  }
+
+  void setBombPotAction(double amount) {
+    _playerAction = HandActions.BOMB_POT_BET;
+    _amount = amount;
   }
 
   void reset({bool stickAction}) {

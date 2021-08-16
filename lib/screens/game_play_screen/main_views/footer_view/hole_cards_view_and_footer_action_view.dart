@@ -38,7 +38,7 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
 
   bool _showAllCardSelectionButton(var vnfs) {
     final bool isInResult = vnfs.value == FooterStatus.Result;
-    return isInResult && (playerModel?.playerFolded ?? false);
+    return isInResult && (playerModel?.isActive ?? false);
   }
 
   void _markAllCardsAsSelected(BuildContext context) {

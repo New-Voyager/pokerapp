@@ -813,6 +813,9 @@ class HandInfoState extends ChangeNotifier {
   int _handNum = 0;
   double _smallBlind = 0;
   double _bigBlind = 0;
+  bool _bombPot = false;
+  bool _doubleBoard = false;
+  double _bombPotBet = 0;
 
   int get noCards => _noCards;
 
@@ -850,17 +853,32 @@ class HandInfoState extends ChangeNotifier {
 
   double get bigBlind => this._bigBlind;
 
+  bool get bombPot => this._bombPot;
+
+  bool get doubleBoard => this._doubleBoard;
+
+  double get bombPotBet => this._bombPotBet;
+
   update(
       {int noCards,
       GameType gameType,
       int handNum,
       double smallBlind,
-      double bigBlind}) {
+      double bigBlind,
+      bool bombPot,
+      bool doubleBoard,
+      double bombPotBet}) {
     if (noCards != null) this._noCards = noCards;
     if (gameType != null) this._gameType = gameType;
     if (handNum != null) this._handNum = handNum;
     if (smallBlind != null) this._smallBlind = smallBlind;
     if (bigBlind != null) this._bigBlind = bigBlind;
+    this._bombPot = false;
+    if (bombPot != null) this._bombPot = bombPot;
+    if (this._bombPot) {
+      this._doubleBoard = doubleBoard;
+      this._bombPotBet = bombPotBet;
+    }
     this.notifyListeners();
   }
 
