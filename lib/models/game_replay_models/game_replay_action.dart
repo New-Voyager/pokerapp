@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
+import 'package:pokerapp/models/handlog_model.dart';
 
 enum GameReplayActionType {
   card_distribution,
@@ -40,8 +41,7 @@ class GameReplayAction {
   final Map<int, List<int>> playerCards;
 
   /* result data */
-  final Map<String, PotWinner> potWinners;
-  final dynamic runItTwiceResult;
+  final HandResultNew result;
 
   GameReplayAction({
     @required this.gameReplayActionType,
@@ -54,8 +54,7 @@ class GameReplayAction {
     this.boardCards2,
     this.boardCard,
     this.playerCards,
-    this.potWinners,
-    this.runItTwiceResult,
+    this.result,
     this.seatNos,
   }) : assert(gameReplayActionType != null);
 }

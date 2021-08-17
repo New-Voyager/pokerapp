@@ -1,3 +1,5 @@
+import 'dart:js';
+
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
@@ -9,10 +11,12 @@ import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_replay_models/game_replay_action.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
+import 'package:pokerapp/proto/handmessage.pb.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_proto_service.dart';
 import 'package:pokerapp/services/game_play/action_services/result_handler.dart';
+import 'package:pokerapp/services/game_play/action_services/result_handler_v2.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/proto/hand.pb.dart' as proto;
@@ -227,57 +231,77 @@ class GameReplayActionService {
       );
 
   Future<void> _runItTwiceWinner(GameReplayAction action) {
-    // update pots before result
-    HandActionProtoService.updatePotBeforeResultStatic(
-      isRunItTwice: true,
-      runItTwiceResult: action.runItTwiceResult,
-      potWinners: null,
-      context: _context,
-    );
     final GameState gameState = GameState.getState(_context);
-
-    ResultHandler resultHandler = ResultHandler(
+    ResultHandlerV2 resultHander = ResultHandlerV2(
       gameState: gameState,
-      replay: true,
-      isRunItTwice: true,
-      runItTwiceResult: action.runItTwiceResult,
-      boardCards: action.boardCards,
-      boardCards2: action.boardCards2,
-      potWinners: null,
       context: _context,
-      audioPlayer: _audioPlayer,
+      result: null, // TODO: FIX THIS
+      audioPlayer: new AudioPlayer(),
     );
-    return resultHandler.show();
+
+    return resultHander.show();
+
+    // // update pots before result
+    // HandActionProtoService.updatePotBeforeResultStatic(
+    //   isRunItTwice: true,
+    //   runItTwiceResult: action.runItTwiceResult,
+    //   potWinners: null,
+    //   context: _context,
+    // );
+    // final GameState gameState = GameState.getState(_context);
+
+    // ResultHandler resultHandler = ResultHandler(
+    //   gameState: gameState,
+    //   replay: true,
+    //   isRunItTwice: true,
+    //   runItTwiceResult: action.runItTwiceResult,
+    //   boardCards: action.boardCards,
+    //   boardCards2: action.boardCards2,
+    //   potWinners: null,
+    //   context: _context,
+    //   audioPlayer: _audioPlayer,
+    // );
+    // return resultHandler.show();
   }
 
   Future<void> _potWinnerResult(GameReplayAction action) {
-    //final Map<String, dynamic> potWinners = {};
-    Map<int, proto.PotWinners> potWinners = {};
-    for (final pw in action.potWinners.entries) {
-      int potNo = int.parse(pw.key.toString());
-      potWinners[potNo] = pw.value.toProto();
-    }
-
-    // update pots before result
-    HandActionProtoService.updatePotBeforeResultStatic(
-      isRunItTwice: false,
-      runItTwiceResult: null,
-      potWinners: potWinners,
-      context: _context,
-    );
     final GameState gameState = GameState.getState(_context);
-
-    ResultHandler resultHandler = ResultHandler(
+    ResultHandlerV2 resultHander = ResultHandlerV2(
       gameState: gameState,
-      replay: true,
-      isRunItTwice: false,
-      runItTwiceResult: null,
-      boardCards: action.boardCards,
-      potWinners: potWinners,
       context: _context,
-      audioPlayer: _audioPlayer,
+      result: null, // TODO: FIX THIS
+      audioPlayer: new AudioPlayer(),
     );
-    return resultHandler.show();
+
+    return resultHander.show();
+
+    // //final Map<String, dynamic> potWinners = {};
+    // Map<int, proto.PotWinners> potWinners = {};
+    // for (final pw in action.potWinners.entries) {
+    //   int potNo = int.parse(pw.key.toString());
+    //   potWinners[potNo] = pw.value.toProto();
+    // }
+
+    // // update pots before result
+    // HandActionProtoService.updatePotBeforeResultStatic(
+    //   isRunItTwice: false,
+    //   runItTwiceResult: null,
+    //   potWinners: potWinners,
+    //   context: _context,
+    // );
+    // final GameState gameState = GameState.getState(_context);
+
+    // ResultHandler resultHandler = ResultHandler(
+    //   gameState: gameState,
+    //   replay: true,
+    //   isRunItTwice: false,
+    //   runItTwiceResult: null,
+    //   boardCards: action.boardCards,
+    //   potWinners: potWinners,
+    //   context: _context,
+    //   audioPlayer: _audioPlayer,
+    // );
+    // return resultHandler.show();
   }
 
   /* this method sets no of cards & distributes the cards */

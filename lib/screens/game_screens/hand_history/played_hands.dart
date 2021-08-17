@@ -262,25 +262,18 @@ class _PlayedHandsScreenState extends State<PlayedHandsScreen> {
 
   _replayHand(int index) async {
     final item = widget.history[index];
+
+    // get handNumber and gameCode
     final handNum = item.handNum;
     final gameCode = widget.gameCode;
-    Future.delayed(Duration(milliseconds: 10), () async {
-      try {
-        ConnectionDialog.show(
-            context: context, loadingText: "Loading hand ...");
-        final handLogModel = await HandService.getHandLog(gameCode, handNum);
-        Navigator.pop(context);
 
-        // ReplayHandDialog.show(
-        //   context: context,
-        //   hand: jsonDecode(handLogModel.handData),
-        //   playerID: widget.currentPlayer.id,
-        // );
-      } catch (err) {
-        // ignore the error
-        log('error: ${err.toString()}');
-      }
-    });
+    // show replay dialog
+    ReplayHandDialog.show(
+      context: context,
+      playerID: widget.currentPlayer.id,
+      handNumber: handNum,
+      gameCode: gameCode,
+    );
   }
 
   showCustomMenu(context, int index, AppTheme theme) {

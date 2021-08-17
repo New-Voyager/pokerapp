@@ -189,11 +189,11 @@ class MessageItem extends StatelessWidget {
                         iconColor: theme.primaryColorWithDark(),
                         icon: Icons.replay,
                         onTap: () {
-                          ReplayHandDialog.show(
-                            context: context,
-                            hand: messageModel.sharedHand.data,
-                            playerID: playerInfo['id'],
-                          );
+                          // ReplayHandDialog.show(
+                          //   context: context,
+                          //   hand: messageModel.sharedHand.data,
+                          //   playerID: playerInfo['id'],
+                          // );
                         })
                   ],
                 ),
