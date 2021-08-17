@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
@@ -10,6 +11,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/table_state.dar
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/animation_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
@@ -43,6 +45,13 @@ class CenterView extends StatefulWidget {
 
 class _CenterViewState extends State<CenterView> {
   TableState get tableState => widget.tableState;
+
+  Widget _bombPotAnimation() {
+    return LottieBuilder.asset(
+      AnimationAssets.bombPotAnimation,
+      key: UniqueKey(),
+    );
+  }
 
   Widget _positionAnimationShuffleCardView({
     Widget child,
@@ -245,13 +254,16 @@ class _CenterViewState extends State<CenterView> {
       vnGameStatus,
       vnTableStatus,
       vnShowCardShuffling,
+
       builder: (_, gameStatus, tableStatus, showCardsShuffling, __) {
         if (gameState.customizationMode) {
           return customizationView( offset: boardAttributes.centerViewCardShufflePosition,
                   scale: boardAttributes.centerViewCenterScale,);
         }
           if(showCardsShuffling) {
-              return _positionAnimationShuffleCardView(
+              return (gameState?.handInfo?.bombPot ?? false)
+                  ? _bombPotAnimation()
+                  : _positionAnimationShuffleCardView(
                   offset: boardAttributes.centerViewCardShufflePosition,
                   scale: boardAttributes.centerViewCenterScale,
                   child: AnimatingShuffleCardView(),
@@ -326,69 +338,69 @@ class _CenterViewState extends State<CenterView> {
   Widget _buildMultiplePots(boardAttributes) {
     log('potViewPos: building multiple pots');
     return ValueListenableBuilder2<List<int>, int>(
-        vnPotChips,
-        vnPotToHighlight,
-        builder: (context, potChips, potToHighlight, __) {
-          final List<Widget> pots = [];
+      vnPotChips,
+      vnPotToHighlight,
+      builder: (context, potChips, potToHighlight, __) {
+        final List<Widget> pots = [];
 
-          final List<int> cleanedPotChips = potChips ?? [];
-          bool rebuildSeats = false;
-          for (int i = 0; i < cleanedPotChips.length; i++) {
-            if (cleanedPotChips[i] == null) cleanedPotChips[i] = 0;
+        final List<int> cleanedPotChips = potChips ?? [];
+        bool rebuildSeats = false;
+        for (int i = 0; i < cleanedPotChips.length; i++) {
+          if (cleanedPotChips[i] == null) cleanedPotChips[i] = 0;
 
-            double potChipValue = 10;
-            potChipValue = cleanedPotChips[i]?.toDouble();
+          double potChipValue = 10;
+          potChipValue = cleanedPotChips[i]?.toDouble();
 
-            final potKey = GlobalKey();
-            bool dimView = tableState.dimPots;
-            bool highlight = (potToHighlight ?? -1) == i;
-            if (highlight) {
-              dimView = false;
-            }
-
-            final potsView = PotsView(
-              isBoardHorizontal: this.widget.isBoardHorizontal,
-              potChip: potChipValue,
-              uiKey: potKey,
-              highlight: highlight,
-              dim: dimView,
-            );
-
-            if (boardAttributes.setPotsKey(i, potKey)) {
-              rebuildSeats = true;
-            }
-            pots.add(potsView);
+          final potKey = GlobalKey();
+          bool dimView = tableState.dimPots;
+          bool highlight = (potToHighlight ?? -1) == i;
+          if (highlight) {
+            dimView = false;
           }
 
-          // transparent pots to occupy the space
-          if (pots.length == 0) {
-            final potKey = GlobalKey();
-
-            final emptyPotsView = PotsView(
-              isBoardHorizontal: this.widget.isBoardHorizontal,
-              potChip: 0,
-              uiKey: potKey,
-              highlight: false,
-              transparent: true,
-            );
-
-            if (boardAttributes.setPotsKey(0, potKey)) {
-              rebuildSeats = true;
-            }
-            pots.add(emptyPotsView);
-          }
-          if (rebuildSeats) {
-            Future.delayed(Duration(milliseconds: 100), () {
-              final gameState = GameState.getState(context);
-              gameState.rebuildSeats();
-            });
-          }
-          return Row(
-            mainAxisSize: MainAxisSize.min,
-            children: pots,
+          final potsView = PotsView(
+            isBoardHorizontal: this.widget.isBoardHorizontal,
+            potChip: potChipValue,
+            uiKey: potKey,
+            highlight: highlight,
+            dim: dimView,
           );
-        },
-      );
+
+          if (boardAttributes.setPotsKey(i, potKey)) {
+            rebuildSeats = true;
+          }
+          pots.add(potsView);
+        }
+
+        // transparent pots to occupy the space
+        if (pots.length == 0) {
+          final potKey = GlobalKey();
+
+          final emptyPotsView = PotsView(
+            isBoardHorizontal: this.widget.isBoardHorizontal,
+            potChip: 0,
+            uiKey: potKey,
+            highlight: false,
+            transparent: true,
+          );
+
+          if (boardAttributes.setPotsKey(0, potKey)) {
+            rebuildSeats = true;
+          }
+          pots.add(emptyPotsView);
+        }
+        if (rebuildSeats) {
+          Future.delayed(Duration(milliseconds: 100), () {
+            final gameState = GameState.getState(context);
+            gameState.rebuildSeats();
+          });
+        }
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          children: pots,
+        );
+      },
+    );
   }
 
   double _getOpacityForPotUpdatesView({

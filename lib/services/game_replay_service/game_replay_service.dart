@@ -5,10 +5,11 @@ import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart
 import 'package:pokerapp/models/game_replay_models/game_replay_action.dart';
 import 'package:pokerapp/models/game_replay_models/game_replay_controller.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
+import 'package:pokerapp/models/handlog_model.dart';
 import 'package:pokerapp/models/player_info.dart';
 
 class GameReplayService {
-  final dynamic data;
+  final HandResultData data;
   final int playerID;
   final String gameCode;
   final int handNumber;
@@ -20,29 +21,64 @@ class GameReplayService {
     this.handNumber,
   });
 
-  List<PlayerModel> _getPlayers(List<Player> players) => players
-      .map<PlayerModel>((p) => PlayerModel(
-            name: p.name,
-            seatNo: p.seatNo,
-            stack: p.balance.before,
-            playerId: p.id,
-          ))
-      .toList();
+  List<PlayerModel> _getPlayers(Map<int, ResultPlayerInfo> players) {
+    List<PlayerModel> playerModels = [];
+
+    players.forEach((key, playerInfo) {
+      playerModels.add(
+        PlayerModel(
+          name: playerInfo.name,
+          seatNo: key,
+          stack: playerInfo.balance.before.toInt(),
+          playerId: playerInfo.id,
+        ),
+      );
+    });
+
+    return playerModels;
+  }
+
+  // List<PlayerModel> _getPlayers(List<Player> players) => players
+  //     .map<PlayerModel>((p) => PlayerModel(
+  //           name: p.name,
+  //           seatNo: p.seatNo,
+  //           stack: p.balance.before,
+  //           playerId: p.id,
+  //         ))
+  //     .toList();
 
   /* returns back the mapping of <seat.no-cards> */
-  Map<int, List<int>> _getPlayerCards(List<Player> players, int myID) {
+  Map<int, List<int>> _getPlayerCards(
+    Map<int, ResultPlayerInfo> players,
+    int myID,
+  ) {
     Map<int, List<int>> _playerCards = {};
 
     /* IF I played until showdown then only show my cards */
-    for (Player p in players)
+    players.forEach((seatNo, p) {
       if (p.playedUntil == 'SHOW_DOWN' || p.id == myID)
-        _playerCards[p.seatNo] = p.cards;
+        _playerCards[seatNo] = p.cards;
+    });
 
     return _playerCards;
   }
 
+  // Map<int, List<int>> _getPlayerCards(List<Player> players, int myID) {
+  //   Map<int, List<int>> _playerCards = {};
+
+  //   /* IF I played until showdown then only show my cards */
+  //   for (Player p in players)
+  //     if (p.playedUntil == 'SHOW_DOWN' || p.id == myID)
+  //       _playerCards[p.seatNo] = p.cards;
+
+  //   return _playerCards;
+  // }
+
   List<GameReplayAction> _getActions({
-    @required HandLog handLog,
+    @required GameActions preflopActions,
+    @required GameActions flopActions,
+    @required GameActions turnActions,
+    @required GameActions riverActions,
     @required List<int> myCards,
     @required int noCards,
     @required List<int> flopCards,
@@ -52,8 +88,7 @@ class GameReplayService {
     @required List<int> board1Cards,
     @required List<int> board2Cards,
     @required bool isRunItTwice,
-    @required dynamic runItTwiceResult,
-    @required Map<String, PotWinner> potWinners,
+    @required HandResultNew result,
     @required List<int> seatNos,
   }) {
     final List<GameReplayAction> actions = [];
@@ -73,13 +108,13 @@ class GameReplayService {
     actions.add(
       GameReplayAction(
         gameReplayActionType: GameReplayActionType.pre_flop_started,
-        pots: handLog.preflopActions.pots,
+        pots: preflopActions.pots,
       ),
     );
 
     /* add player actions */
     actions.addAll(
-      handLog.preflopActions.actions
+      preflopActions.actions
           .map<GameReplayAction>((ActionElement action) => GameReplayAction(
                 gameReplayActionType: GameReplayActionType.player_action,
                 action: action,
@@ -89,65 +124,65 @@ class GameReplayService {
 
     /* flop actions */
 
-    final List<GameReplayAction> flopActions = handLog.flopActions.actions
+    final List<GameReplayAction> flopActionsList = flopActions.actions
         .map<GameReplayAction>((ActionElement action) => GameReplayAction(
               gameReplayActionType: GameReplayActionType.player_action,
               action: action,
             ))
         .toList();
 
-    if (flopActions.isNotEmpty) {
+    if (flopActionsList.isNotEmpty) {
       actions.add(
         GameReplayAction(
           gameReplayActionType: GameReplayActionType.flop_started,
           // startPot: handLog.flopActions.potStart,
-          pots: handLog.flopActions.pots,
+          pots: flopActions.pots,
           boardCards: flopCards,
         ),
       );
 
-      actions.addAll(flopActions);
+      actions.addAll(flopActionsList);
     }
 
     /* turn actions */
-    final List<GameReplayAction> turnActions = handLog.turnActions.actions
+    final List<GameReplayAction> turnActionsList = turnActions.actions
         .map<GameReplayAction>((ActionElement action) => GameReplayAction(
               gameReplayActionType: GameReplayActionType.player_action,
               action: action,
             ))
         .toList();
 
-    if (turnActions.isNotEmpty) {
+    if (turnActionsList.isNotEmpty) {
       actions.add(
         GameReplayAction(
           gameReplayActionType: GameReplayActionType.turn_started,
-          pots: handLog.turnActions.pots,
+          pots: turnActions.pots,
           boardCard: turnCard,
         ),
       );
 
-      actions.addAll(turnActions);
+      actions.addAll(turnActionsList);
     }
 
     /* river actions */
-    final List<GameReplayAction> riverActions = handLog.riverActions.actions
+    final List<GameReplayAction> riverActionsList = riverActions.actions
         .map<GameReplayAction>((ActionElement action) => GameReplayAction(
               gameReplayActionType: GameReplayActionType.player_action,
               action: action,
             ))
         .toList();
 
-    if (riverActions.isNotEmpty) {
+    if (riverActionsList.isNotEmpty) {
       actions.add(
         GameReplayAction(
           gameReplayActionType: GameReplayActionType.river_started,
-          pots: handLog.riverActions.pots,
+          pots: riverActions.pots,
           boardCard: riverCard,
         ),
       );
 
       /* add player actions */
-      actions.addAll(riverActions);
+      actions.addAll(riverActionsList);
     }
 
     /* showdown -> show the cards of all the players */
@@ -170,14 +205,12 @@ class GameReplayService {
       );
 
     /* declare winner */
-    /* if run it twice is true -> show run it twice result */
-    /* else show the regular pot winner result */
 
     if (isRunItTwice)
       actions.add(
         GameReplayAction(
           gameReplayActionType: GameReplayActionType.run_it_twice_winner,
-          runItTwiceResult: runItTwiceResult,
+          result: result,
           boardCards: board1Cards,
           boardCards2: board2Cards,
         ),
@@ -186,7 +219,7 @@ class GameReplayService {
       actions.add(
         GameReplayAction(
           gameReplayActionType: GameReplayActionType.pot_winner,
-          potWinners: potWinners,
+          result: result,
           boardCards: board1Cards,
         ),
       );
@@ -196,42 +229,47 @@ class GameReplayService {
 
   /* we parse the hand log data here, and instantiate the game reply controller */
   Future<GameReplayController> buildController() async {
-    final HandLogModelNew handLog = HandLogModelNew.fromJson(data);
-
-    final List<PlayerModel> players = _getPlayers(handLog.hand.playersInSeats);
+    final List<PlayerModel> players = _getPlayers(data.result.playerInfo);
     final List<int> seatNos = players.map((p) => p.seatNo).toList();
 
     final GameInfoModel gameInfoModel = GameInfoModel(
-      maxPlayers: handLog.hand.maxPlayers,
-      gameType: handLog.hand.gameType,
+      maxPlayers: data.maxPlayers,
+      gameType: data.gameType,
       tableStatus: null,
       status: null,
-      smallBlind: handLog.hand.smallBlind.toInt(),
-      bigBlind: handLog.hand.bigBlind.toInt(),
+      smallBlind: data.smallBlind.toInt(),
+      bigBlind: data.bigBlind.toInt(),
       playersInSeats: players,
     );
 
     /* finding the current Player */
-    final PlayerModel currPlayer =
-        players.firstWhere((p) => p.playerId == playerID);
+    final PlayerModel currPlayer = players.firstWhere(
+      (p) => p.playerId == playerID,
+    );
 
-    final Map<int, List<int>> playerCards =
-        _getPlayerCards(handLog.hand.playersInSeats, playerID);
+    final Map<int, List<int>> playerCards = _getPlayerCards(
+      data.result.playerInfo,
+      playerID,
+    );
+
+    List<int> board1Cards = data.getBoard1();
 
     final List<GameReplayAction> actions = _getActions(
       myCards: playerCards[currPlayer.seatNo],
-      handLog: handLog.hand.handLog,
-      noCards: handLog.hand.noCards,
-      flopCards: handLog.hand.flop,
-      riverCard: handLog.hand.river,
-      turnCard: handLog.hand.turn,
+      noCards: data.noCards,
+      flopCards: board1Cards.sublist(0, 3),
+      riverCard: board1Cards[3],
+      turnCard: board1Cards[4],
       playerCards: playerCards,
-      board1Cards: handLog.hand.boardCards,
-      board2Cards: handLog.hand.boardCards2,
-      isRunItTwice: handLog.hand.handLog.runItTwice,
-      runItTwiceResult: handLog.hand.handLog.runItTwiceResult,
-      potWinners: handLog.hand.handLog.potWinners,
+      board1Cards: board1Cards,
+      board2Cards: data.getBoard2(),
+      isRunItTwice: data.runItTwice,
+      result: data.result,
       seatNos: seatNos,
+      flopActions: data.flopActions,
+      preflopActions: data.preflopActions,
+      riverActions: data.riverActions,
+      turnActions: data.turnActions,
     );
 
     final GameState gameState = GameState();
@@ -248,7 +286,7 @@ class GameReplayService {
     );
 
     return GameReplayController(
-      playerActionTime: handLog.hand.actionTime ?? 30,
+      playerActionTime: data.actionTime ?? 30,
       gameState: gameState,
       actions: actions,
     );

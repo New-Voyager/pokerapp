@@ -28,7 +28,8 @@ class ActionStatusWidget extends StatelessWidget {
         action == HandActions.RAISE ||
         action == HandActions.FOLD ||
         action == HandActions.ALLIN ||
-        action == HandActions.STRADDLE) {
+        action == HandActions.STRADDLE ||
+        action == HandActions.BOMB_POT_BET) {
       actionStr = action.toString().replaceAll('HandActions.', '');
     }
 
