@@ -3,7 +3,7 @@
 		"myInfo": {
 			"id": 1,
 			"uuid": "371e8c15-39cb-4bd9-a932-ced7a9dd6aac",
-			"name": "tom"
+			"name": "me"
 		},
 		"role": {
 			"isHost": true,
@@ -27,7 +27,7 @@
 		"seatInfo": {
 			"availableSeats": [],
 			"playersInSeats": [{
-					"name": "s",
+					"name": "me",
 					"playerId": "1",
 					"seatNo": 1,
 					"playerUuid": "185ecfc9c80b5ee6",
@@ -73,7 +73,7 @@
 					"status": "PLAYING"
 				},
 				{
-					"name": "rob",
+					"name": "paul",
 					"playerId": "6",
 					"seatNo": 6,
 					"playerUuid": "5cd96779-c6b2-4dba-a814-f365b6b48aeb",
@@ -82,7 +82,7 @@
 					"status": "PLAYING"
 				},
 				{
-					"name": "john",
+					"name": "cnu federer",
 					"playerId": "7",
 					"seatNo": 7,
 					"playerUuid": "d04d24d1-be90-4c02-b8fb-c2499d9b76ed",

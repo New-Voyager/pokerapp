@@ -14,6 +14,7 @@ import 'package:pokerapp/proto/hand.pbserver.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/animating_widgets/my_last_action_animating_widget.dart';
 import 'package:provider/provider.dart';
 import 'communication_view.dart';
+import 'customization_view.dart';
 import 'hand_analyse_view.dart';
 import 'hole_cards_view_and_footer_action_view.dart';
 import 'seat_change_confirm_widget.dart';
@@ -143,6 +144,16 @@ class _FooterViewState extends State<FooterView>
     );
   }
 
+  Widget _buildCustomizationView() {
+    return Positioned(
+          right: 0,
+          top: 0,
+          child: HoleCardCustomizationView(
+          ),
+        );
+  }
+
+
   Widget _buildCommunicationWidget() => Positioned(
         right: 0,
         top: 0,
@@ -201,24 +212,32 @@ class _FooterViewState extends State<FooterView>
   }
 
   @override
-  Widget build(BuildContext context) => Stack(
-        children: [
-          /* hand analyse view */
-          _buildHandAnalyseView(context),
+  Widget build(BuildContext context) { 
+    final gameState = GameState.getState(context);
+    List<Widget> children = [];
+    if (gameState.customizationMode) {
+      children.add(_buildMainView());
+      /* communication widgets */
+      children.add(_buildCustomizationView());
+    } else {
+      /* hand analyse view */
+      children.add(_buildHandAnalyseView(context));
 
-          /* build main view - straddle prompt, hole cards, action view*/
-          _buildMainView(),
+      /* build main view - straddle prompt, hole cards, action view*/
+      children.add(_buildMainView());
 
-          /* communication widgets */
-          _buildCommunicationWidget(),
+      /* communication widgets */
+      children.add(_buildCommunicationWidget());
 
-          /* seat confirm widget */
-          _buildSeatConfirmWidget(context),
+      /* seat confirm widget */
+      children.add(_buildSeatConfirmWidget(context));
 
-          /* my last action */
-          _buildMyLastActionWidget(context),
-        ],
-      );
+      /* my last action */
+      children.add(_buildMyLastActionWidget(context));
+
+    }
+    return Stack(children: children,);
+  }
 
   @override
   void afterFirstLayout(BuildContext context) {

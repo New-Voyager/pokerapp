@@ -17,6 +17,7 @@ import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/center_button_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/pots_view.dart';
+import 'package:pokerapp/screens/game_play_screen/widgets/game_circle_button.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/widgets/cards/animations/animating_shuffle_card_view.dart';
@@ -67,6 +68,31 @@ class _CenterViewState extends State<CenterView> {
           ),
         ),
       );
+
+
+  Widget customizationView({
+    double scale = 1.0,
+    Offset offset = Offset.zero,
+  }) {
+    AppTheme theme = AppTheme.getTheme(context);
+      return Align(
+        alignment: Alignment.center,
+        child: Transform.translate(
+          offset: offset,
+          child: Transform.scale(
+            scale: scale * 1.2,
+            child: GameCircleButton(
+                          onClickHandler: () {},
+                          child: Icon(
+                            Icons.edit,
+                            size: 24,
+                            color: theme.primaryColorWithDark()
+                          ),
+                        )
+          ),
+        ),
+      );
+  }
 
   Widget centerTextWidget(
     String text,
@@ -228,22 +254,28 @@ class _CenterViewState extends State<CenterView> {
       vnGameStatus,
       vnTableStatus,
       vnShowCardShuffling,
-      builder: (_, gameStatus, tableStatus, showCardsShuffling, __) =>
-          showCardsShuffling
-              // if hand has bombpot enabled, show bombpot animation instead of card shuffling
-              ? (gameState?.handInfo?.bombPot ?? false)
+
+      builder: (_, gameStatus, tableStatus, showCardsShuffling, __) {
+        if (gameState.customizationMode) {
+          return customizationView( offset: boardAttributes.centerViewCardShufflePosition,
+                  scale: boardAttributes.centerViewCenterScale,);
+        }
+          if(showCardsShuffling) {
+              return (gameState?.handInfo?.bombPot ?? false)
                   ? _bombPotAnimation()
                   : _positionAnimationShuffleCardView(
-                      offset: boardAttributes.centerViewCardShufflePosition,
-                      scale: boardAttributes.centerViewCenterScale,
-                      child: AnimatingShuffleCardView(),
-                    )
-              : _mainBuild(
+                  offset: boardAttributes.centerViewCardShufflePosition,
+                  scale: boardAttributes.centerViewCenterScale,
+                  child: AnimatingShuffleCardView(),
+                );
+          }
+          return _mainBuild(
                   context,
                   tableStatus: tableStatus,
                   gameStatus: gameStatus,
                   boardAttributes: boardAttributes,
-                ),
+                );
+      }
     );
   }
 

@@ -14,6 +14,7 @@ import 'package:pokerapp/screens/game_screens/new_game_settings/choose_game_new.
 import 'package:pokerapp/screens/profile_screens/customize_view.dart';
 import 'package:pokerapp/screens/profile_screens/help_screen.dart';
 import 'package:pokerapp/screens/profile_screens/performance_view.dart';
+import 'package:pokerapp/services/game_play/customization_service.dart';
 import 'package:provider/provider.dart';
 
 import 'package:pokerapp/screens/screens.dart';
@@ -39,6 +40,9 @@ class Routes {
   static const String main = '/main';
   // Theme selection
   static const String customize = "/customize";
+
+  // Theme selection
+  static const String game_screen_customize = "/game_customize";
 
   // GamePlayScreen
   static const String game_play = '/game_play';
@@ -286,6 +290,13 @@ class Routes {
         return _getPageRoute(
           routeName: settings.name,
           viewToShow: CustomizeScreen(),
+        );
+      case game_screen_customize:
+        var gameCode = 'CUSTOMIZE';
+        var customizeService = CustomizationService();
+        return _getPageRoute(
+          routeName: settings.name,
+          viewToShow: GamePlayScreen(gameCode: gameCode, customizationService: customizeService,),
         );
       case club_main:
         var clubCode = settings.arguments as String;

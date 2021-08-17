@@ -99,7 +99,7 @@ class AppDecorators {
 
   static TextStyle getSubtitle3Style({@required AppTheme theme}) {
     return TextStyle(
-      color: theme.secondaryColorWithDark(),
+      color: theme.secondaryColorWithLight(),
       fontSize: 8.dp,
       fontWeight: FontWeight.w300,
     );
@@ -146,4 +146,49 @@ class AppDecorators {
       ),
     );
   }
+
+  static BoxDecoration getChatMyMessageDecoration(AppTheme theme) {
+    return BoxDecoration(
+      color: theme.fillInColor,
+      borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(16),
+        topRight: Radius.circular(16),
+        bottomLeft: Radius.circular(16),
+      ),
+    );
+  }
+
+  static BoxDecoration getChatOtherMessageDecoration(AppTheme theme) {
+    return BoxDecoration(
+      color: theme.fillInColor,
+      borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(16),
+        topRight: Radius.circular(16),
+        bottomRight: Radius.circular(16),
+      ),
+    );
+  }
+
+  static BoxDecoration getCurvedRadialGradient(AppTheme theme) => BoxDecoration(
+        gradient: RadialGradient(
+          colors: [
+            theme.primaryColor,
+            theme.primaryColorWithDark(),
+          ],
+          center: Alignment.topLeft,
+          radius: 1.5,
+        ),
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(16),
+          topRight: Radius.circular(16),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: theme.secondaryColor,
+            offset: Offset(1, 1),
+            blurRadius: 1,
+            spreadRadius: 1,
+          )
+        ],
+      );
 }

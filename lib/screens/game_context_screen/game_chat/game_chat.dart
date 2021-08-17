@@ -4,7 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pokerapp/models/game_play_models/business/game_chat_notfi_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/models/ui/app_theme_data.dart';
 import 'package:pokerapp/resources/app_constants.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
+import 'package:pokerapp/resources/app_dimensions.dart';
+import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
+import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/screens/game_context_screen/game_chat/game_giphys.dart';
@@ -108,7 +114,7 @@ class _GameChatState extends State<GameChat> {
     _textEditingController.clear();
   }
 
-  Widget _buildCloseButton() => Align(
+  Widget _buildCloseButton(AppTheme theme) => Align(
         alignment: Alignment.topRight,
         child: InkWell(
           child: Padding(
@@ -117,7 +123,7 @@ class _GameChatState extends State<GameChat> {
               angle: -pi / 2,
               child: SvgPicture.asset(
                 'assets/images/backarrow.svg',
-                color: AppColorsNew.newGreenButtonColor,
+                color: theme.accentColor,
                 width: 20.pw,
                 height: 20.ph,
                 fit: BoxFit.cover,
@@ -129,7 +135,7 @@ class _GameChatState extends State<GameChat> {
         ),
       );
 
-  Widget _buildChatBubble(ChatMessage message) {
+  Widget _buildChatBubble(ChatMessage message, AppTheme theme) {
     bool isMe = myID == message.fromPlayer;
 
     return Align(
@@ -139,11 +145,12 @@ class _GameChatState extends State<GameChat> {
           margin: EdgeInsets.symmetric(vertical: 2.0),
           constraints: BoxConstraints(
             maxWidth: MediaQuery.of(context).size.width * 0.80,
+            minWidth: MediaQuery.of(context).size.width * 0.3,
           ),
           padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
           decoration: isMe
-              ? AppStylesNew.myMessageDecoration
-              : AppStylesNew.otherMessageDecoration,
+              ? AppDecorators.getChatMyMessageDecoration(theme)
+              : AppDecorators.getChatOtherMessageDecoration(theme),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -153,27 +160,17 @@ class _GameChatState extends State<GameChat> {
                   // name
                   Text(
                     message.fromName.toString(),
-                    style: AppStylesNew.clubItemInfoTextStyle.copyWith(
-                      fontSize: 12,
-                      color: AppColorsNew.newGreenButtonColor,
-                    ),
+                    style: AppDecorators.getSubtitle2Style(theme: theme)
+                        .copyWith(color: theme.accentColor),
                     softWrap: true,
                   ),
 
                   // sep
                   Container(
                     margin: EdgeInsets.symmetric(horizontal: 5.0),
-                    color: const Color(0xff848484),
+                    //color: const Color(0xff848484),
                     height: 10.0,
                     width: 1.0,
-                  ),
-
-                  // time
-                  Text(
-                    "${AppConstants.CHAT_DATE_TIME_FORMAT.format(message.received.toLocal())}",
-                    style: AppStylesNew.itemInfoSecondaryTextStyle.copyWith(
-                      fontSize: 10,
-                    ),
                   ),
                 ],
               ),
@@ -185,9 +182,21 @@ class _GameChatState extends State<GameChat> {
               message.text != null
                   ? Text(
                       message.text,
-                      style: AppStylesNew.clubCodeStyle,
+                      style: AppDecorators.getHeadLine4Style(theme: theme),
                     )
                   : AttributedGifWidget(url: message.giphyLink),
+
+              AppDimensionsNew.getVerticalSizedBox(4),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  // time
+                  Text(
+                    "${AppConstants.CHAT_DATE_TIME_FORMAT.format(message.received.toLocal())}",
+                    style: AppDecorators.getSubtitle3Style(theme: theme),
+                  ),
+                ],
+              )
             ],
           ),
         ),
@@ -195,7 +204,7 @@ class _GameChatState extends State<GameChat> {
     );
   }
 
-  Widget _buildMessageArea() => Expanded(
+  Widget _buildMessageArea(AppTheme theme) => Expanded(
         child: Consumer<GameChatNotifState>(
           builder: (_, gcns, __) => ListView(
             shrinkWrap: true,
@@ -205,17 +214,14 @@ class _GameChatState extends State<GameChat> {
             physics: BouncingScrollPhysics(),
             reverse: true,
             children: widget.chatService.messages.reversed
-                .map((c) => _buildChatBubble(c))
+                .map((c) => _buildChatBubble(c, theme))
                 .toList(),
           ),
         ),
       );
 
-  Widget _buildTextField() => Container(
-        decoration: BoxDecoration(
-          color: Colors.black,
-          borderRadius: BorderRadius.circular(10.0),
-        ),
+  Widget _buildTextField(AppTheme theme) => Container(
+        decoration: AppDecorators.tileDecorationWithoutBorder(theme),
         margin: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
         padding: EdgeInsets.all(10.0),
         child: Row(
@@ -227,17 +233,14 @@ class _GameChatState extends State<GameChat> {
                   _vnShowEmojiPicker.value = false;
                 },
                 controller: _textEditingController,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 15.0,
-                ),
+                style: AppDecorators.getSubtitle2Style(theme: theme),
                 textAlign: TextAlign.start,
                 textAlignVertical: TextAlignVertical.center,
                 decoration: InputDecoration(
                   contentPadding: EdgeInsets.zero,
                   isDense: true,
                   border: InputBorder.none,
-                  hintText: 'Type a message',
+                  hintText: AppStringsNew.chatHintText,
                 ),
               ),
             ),
@@ -248,14 +251,14 @@ class _GameChatState extends State<GameChat> {
               child: Icon(
                 Icons.emoji_emotions_outlined,
                 size: 25,
-                color: AppColorsNew.yellowAccentColor,
+                color: theme.accentColor,
               ),
             ),
           ],
         ),
       );
 
-  Widget _buildUserInputWidget() {
+  Widget _buildUserInputWidget(AppTheme theme) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10.0),
       child: Row(
@@ -266,13 +269,13 @@ class _GameChatState extends State<GameChat> {
             child: Icon(
               Icons.add_circle_outline,
               size: 25,
-              color: AppColorsNew.yellowAccentColor,
+              color: theme.accentColor,
             ),
           ),
 
           /* main text field */
           Expanded(
-            child: _buildTextField(),
+            child: _buildTextField(theme),
           ),
 
           /* send button */
@@ -280,7 +283,7 @@ class _GameChatState extends State<GameChat> {
             onTap: _onSendClick,
             child: Icon(
               Icons.send_outlined,
-              color: AppColorsNew.yellowAccentColor,
+              color: theme.accentColor,
               size: 25,
             ),
           ),
@@ -289,7 +292,8 @@ class _GameChatState extends State<GameChat> {
     );
   }
 
-  Widget _buildNewMessageNotifier() => Consumer<GameChatNotifState>(
+  Widget _buildNewMessageNotifier(AppTheme theme) =>
+      Consumer<GameChatNotifState>(
         builder: (_, gcns, __) => gcns.hasUnreadMessages
             ? InkWell(
                 onTap: _scrollToBottom,
@@ -300,7 +304,7 @@ class _GameChatState extends State<GameChat> {
                     children: [
                       Icon(
                         Icons.arrow_downward_rounded,
-                        color: Colors.red,
+                        color: theme.primaryColorWithDark(),
                         size: 20.0,
                       ),
 
@@ -311,7 +315,7 @@ class _GameChatState extends State<GameChat> {
                         '${gcns.count} new message',
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          color: Colors.red,
+                          color: theme.accentColor,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -322,9 +326,9 @@ class _GameChatState extends State<GameChat> {
             : const SizedBox.shrink(),
       );
 
-  Widget _buildMainBody() {
+  Widget _buildMainBody(AppTheme theme) {
     return Container(
-      color: AppColorsNew.darkGreenShadeColor,
+      decoration: AppDecorators.bgRadialGradient(theme),
       // padding: EdgeInsets.only(
       //   bottom: MediaQuery.of(context).viewInsets.bottom,
       // ),
@@ -335,18 +339,18 @@ class _GameChatState extends State<GameChat> {
           Stack(
             children: [
               /* new message notifier */
-              _buildNewMessageNotifier(),
+              _buildNewMessageNotifier(theme),
 
               /* close button */
-              _buildCloseButton(),
+              _buildCloseButton(theme),
             ],
           ),
 
           /* main message area */
-          _buildMessageArea(),
+          _buildMessageArea(theme),
 
           /* user input widget */
-          _buildUserInputWidget(),
+          _buildUserInputWidget(theme),
         ],
       ),
     );
@@ -354,11 +358,12 @@ class _GameChatState extends State<GameChat> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = AppTheme.getTheme(context);
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         /* main bottom sheet, that has all the chat functionality */
-        _buildMainBody(),
+        _buildMainBody(theme),
 
         /* emoji picker widget */
         ValueListenableBuilder<bool>(

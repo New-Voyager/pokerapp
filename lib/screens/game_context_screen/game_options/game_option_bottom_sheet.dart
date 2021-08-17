@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/option_item_model.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
@@ -38,9 +40,10 @@ class _GameOptionsState extends State<GameOptionsBottomSheet> {
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
+    final theme = AppTheme.getTheme(context);
     final currentPlayer = widget.gameState.currentPlayer;
     return Container(
-      decoration: AppStylesNew.bgCurvedGreenRadialGradient,
+      decoration: AppDecorators.getCurvedRadialGradient(theme),
       height: height / 2,
       child: Column(
         mainAxisSize: MainAxisSize.max,
@@ -63,11 +66,12 @@ class _GameOptionsState extends State<GameOptionsBottomSheet> {
               children: [
                 Text(
                   AppStringsNew.gameCodeText,
-                  style: AppStylesNew.labelTextStyle,
+                  style: AppDecorators.getSubtitle3Style(theme: theme),
                 ),
                 Text(
                   "${widget.gameState.gameCode}",
-                  style: AppStylesNew.valueTextStyle,
+                  style: AppDecorators.getHeadLine4Style(theme: theme)
+                      .copyWith(fontWeight: FontWeight.w700),
                 ),
               ],
             ),

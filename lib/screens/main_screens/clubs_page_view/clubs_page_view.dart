@@ -325,8 +325,8 @@ class _ClubsPageViewState extends State<ClubsPageView>
                                 child: Center(
                                   child: Text(
                                     _appScreenText['NOCLUBS'],
-                                    style: AppDecorators.getCenterTextTextstyle(
-                                        appTheme: theme),
+                                    style: AppDecorators.getAccentTextStyle(
+                                        theme: theme),
                                   ),
                                 ),
                               )

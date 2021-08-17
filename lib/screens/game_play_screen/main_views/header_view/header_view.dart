@@ -3,10 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/screens/game_context_screen/game_options/game_option_bottom_sheet.dart';
+import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
+import 'package:pokerapp/widgets/heading_widget.dart';
 import 'package:provider/provider.dart';
 
 class HeaderView extends StatelessWidget {
@@ -28,7 +33,15 @@ class HeaderView extends StatelessWidget {
     return '';
   }
 
-  Widget _buildMainContent() {
+  Widget _buildCustomizeHeader(AppTheme theme) {
+    return Expanded(
+                      child: HeadingWidget(
+                        heading: 'CUSTOMIZE',
+                      ),
+                    );
+  }
+
+  Widget _buildMainContent(AppTheme theme) {
     return Consumer<HandInfoState>(
       builder: (_, his, __) {
         String titleText = "";
@@ -44,27 +57,21 @@ class HeaderView extends StatelessWidget {
             RichText(
               text: TextSpan(
                 text: titleText,
-                style: TextStyle(
-                  color: AppColorsNew.newTextColor,
-                ),
+                style: AppDecorators.getHeadLine4Style(theme: theme),
               ),
             ),
 
             /* hand number */
             RichText(
               text: TextSpan(
-                text: "Hand ",
-                style: TextStyle(
-                  color: AppColorsNew.newTextColor,
+                text: AppStringsNew.hand,
+                style: AppDecorators.getHeadLine4Style(theme: theme).copyWith(
+                  fontWeight: FontWeight.w600,
                 ),
                 children: [
                   TextSpan(
-                    text: "#${his.handNum}",
-                    style: TextStyle(
-                      color: AppColorsNew.yellowAccentColor,
-                      fontSize: 8.dp,
-                      fontWeight: FontWeight.w500,
-                    ),
+                    text: " #${his.handNum}",
+                    style: AppDecorators.getAccentTextStyle(theme: theme),
                   )
                 ],
               ),
@@ -90,7 +97,13 @@ class HeaderView extends StatelessWidget {
         ),
       );
 
-  void _onGameMenuNavButtonPress(BuildContext context) => showModalBottomSheet(
+  void _onGameMenuNavButtonPress(BuildContext context) {
+    final gameState = GameState.getState(context);
+    if (gameState.customizationMode) {
+      // show backdrop options
+      return ;
+    }
+    showModalBottomSheet(
         context: context,
         isScrollControlled: true,
         backgroundColor: Colors.transparent,
@@ -102,8 +115,15 @@ class HeaderView extends StatelessWidget {
         ),
         builder: (_) => GameOptionsBottomSheet(GameState.getState(context)),
       );
+  }
 
-  Widget _buildGameMenuNavButton(BuildContext context) => Align(
+  Widget _buildGameMenuNavButton(BuildContext context, AppTheme theme) {
+    IconData iconData = Icons.more_vert;
+    final gameState = GameState.getState(context);
+    if (gameState.customizationMode) {
+      iconData = Icons.edit_rounded;
+    }
+    return Align(
         alignment: Alignment.centerRight,
         child: InkWell(
           onTap: () => _onGameMenuNavButtonPress(context),
@@ -111,44 +131,51 @@ class HeaderView extends StatelessWidget {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               border: Border.all(
-                color: AppColorsNew.newGreenButtonColor,
+                color: theme.secondaryColor,
                 width: 2,
               ),
             ),
             // padding: EdgeInsets.all(5),
             child: Icon(
-              Icons.more_vert,
-              color: AppColorsNew.newGreenButtonColor,
+              iconData,
+              color:theme.secondaryColor,
             ),
           ),
         ),
       );
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: AppColorsNew.newBackgroundBlackColor.withOpacity(0.7),
-      padding: EdgeInsets.symmetric(vertical: 8),
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            /* main content */
-            _buildMainContent(),
+    final gameState = GameState.getState(context);
 
-            /* back button */
-            _buildBackButton(context),
+    return Consumer<AppTheme>(
+      builder: (_, theme, __) {
+        return Container(
+          color: theme.primaryColorWithDark().withOpacity(0.8),
+          padding: EdgeInsets.symmetric(vertical: 8),
+          child: Container(
+            margin: const EdgeInsets.only(right: 16, top: 8, bottom: 8),
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                /* main content */
+                _buildMainContent(theme),
 
-            /* game menu */
-            Consumer<HandInfoState>(builder: (_, his, __) {
-              return Visibility(
-                  child: _buildGameMenuNavButton(context),
-                  visible: !gameState.ended);
-            }),
-          ],
-        ),
-      ),
+                /* back button */
+                BackArrowWidget(),
+
+                /* game menu */
+                Consumer<HandInfoState>(builder: (_, his, __) {
+                  return Visibility(
+                      child: _buildGameMenuNavButton(context, theme),
+                      visible: !gameState.ended);
+                }),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

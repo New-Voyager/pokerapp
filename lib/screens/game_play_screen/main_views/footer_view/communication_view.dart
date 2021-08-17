@@ -10,7 +10,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:pokerapp/enums/player_status.dart';
 import 'package:pokerapp/models/game_play_models/business/game_chat_notfi_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
-import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/game_circle_button.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/voice_text_widget.dart';
 //import 'package:pokerapp/services/agora/agora.dart';
@@ -37,11 +37,11 @@ class _CommunicationViewState extends State<CommunicationView> {
   @override
   Widget build(BuildContext context) {
     log('CommunicationView:  ::build::');
-
+    final theme = AppTheme.getTheme(context);
     final gameState = GameState.getState(context);
     final communicationState = gameState.getCommunicationState();
     final chat = SvgPicture.asset('assets/images/game/chat.svg',
-        width: 16, height: 16, color: Colors.black);
+        width: 16, height: 16, color: theme.primaryColorWithDark());
 
     return ListenableProvider<CommunicationState>(
         create: (_) => communicationState,
@@ -62,16 +62,16 @@ class _CommunicationViewState extends State<CommunicationView> {
                       // debugLog(gameState.gameCode, 'Show agora audio widgets');
                       // log('Show agora audio widgets');
                       children.addAll(
-                          agoraAudioWidgets(gameState, communicationState));
+                          agoraAudioWidgets(gameState, communicationState,theme));
                     } else {
                       log('User is playing and audio conference connected, showing janusAudioWidgets');
                       children.addAll(
-                          janusAudioWidgets(gameState, communicationState));
+                          janusAudioWidgets(gameState, communicationState,theme));
                     }
                   } else {
                     // when the user turns off audio conf
                     log('User turned off audio conf, showing audioChatWidgets');
-                    children.addAll(audioChatWidgets());
+                    children.addAll(audioChatWidgets(theme));
                   }
                 } else if (communicationState.voiceChatEnable) {
                   log('Showing voiceChatWidgets');
@@ -103,23 +103,23 @@ class _CommunicationViewState extends State<CommunicationView> {
             ));
   }
 
-  Widget talkingAnimation(Function onTap) {
+  Widget talkingAnimation(Function onTap,AppTheme theme) {
     Widget child = BlinkWidget(
       children: [
         SvgPicture.asset('assets/images/game/mic-step1.svg',
-            width: 16, height: 16, color: Colors.black),
+            width: 16, height: 16, color:theme.primaryColorWithDark()),
         SvgPicture.asset('assets/images/game/mic-step2.svg',
-            width: 16, height: 16, color: Colors.black),
+            width: 16, height: 16, color:theme.primaryColorWithDark()),
         SvgPicture.asset('assets/images/game/mic-step3.svg',
-            width: 16, height: 16, color: Colors.black),
+            width: 16, height: 16, color: theme.primaryColorWithDark()),
         SvgPicture.asset('assets/images/game/mic-step1.svg',
-            width: 16, height: 16, color: Colors.black),
+            width: 16, height: 16, color:theme.primaryColorWithDark()),
       ],
     );
     return GameCircleButton(onClickHandler: onTap, child: child);
   }
 
-  janusAudioWidgets(GameState gameState, CommunicationState state) {
+  janusAudioWidgets(GameState gameState, CommunicationState state,AppTheme theme) {
     Color iconColor = Colors.grey;
     Widget mic;
 
@@ -140,7 +140,7 @@ class _CommunicationViewState extends State<CommunicationView> {
             gameState.janusEngine.muteUnmute();
             //Alerts.showNotification(titleText: "AudioConfigChanged from anim");
           }
-        });
+        },theme);
       }
     }
 
@@ -239,7 +239,7 @@ class _CommunicationViewState extends State<CommunicationView> {
     return widgets;
   }
 
-  agoraAudioWidgets(GameState gameState, CommunicationState state) {
+  agoraAudioWidgets(GameState gameState, CommunicationState state,AppTheme theme) {
     Color iconColor = Colors.grey;
     Widget mic;
 
@@ -272,7 +272,7 @@ class _CommunicationViewState extends State<CommunicationView> {
             gameState.agoraEngine.switchMicrophone();
             //Alerts.showNotification(titleText: "AudioConfigChanged from anim");
           }
-        });
+        },theme);
       }
     }
 
@@ -403,7 +403,7 @@ class _CommunicationViewState extends State<CommunicationView> {
     ];
   }
 
-  audioChatWidgets() {
+  audioChatWidgets(AppTheme theme) {
     return [
       GestureDetector(
         onLongPress: () => onMicPress(context),
@@ -411,7 +411,7 @@ class _CommunicationViewState extends State<CommunicationView> {
             onMicPressEnd(context, details),
         child: Icon(
           Icons.mic,
-          color: AppColorsNew.newGreenButtonColor,
+          color: theme.accentColor,
           size: 34.pw,
         ),
       ),

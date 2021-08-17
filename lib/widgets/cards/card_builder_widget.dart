@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_assets.dart';
@@ -28,7 +29,7 @@ class CardBuilderWidget extends StatelessWidget {
     @required this.dim,
     @required this.highlight,
     @required this.isCardVisible,
-    @required Widget this.cardBuilder(TextStyle _, TextStyle __),
+    @required Widget this.cardBuilder(TextStyle _, TextStyle __, BuildContext ___),
     this.shadow = false,
     this.roundRadius = 5.0,
     this.cardFace,
@@ -154,11 +155,11 @@ class CardBuilderWidget extends StatelessWidget {
       TextStyle cardTextStyle, TextStyle suitTextStyle, BuildContext context) {
     if (cardFace == CardFace.FRONT)
       return isCardVisible
-          ? cardBuilder(cardTextStyle, suitTextStyle)
+          ? cardBuilder(cardTextStyle, suitTextStyle, context)
           : Container();
 
     String vnCardBackImage;
-
+    final gameState = GameState.getState(context);
     try {
       // get the card back side asset as we need
       vnCardBackImage = context.read<ValueNotifier<String>>().value;
@@ -169,9 +170,11 @@ class CardBuilderWidget extends StatelessWidget {
       vnCardBackImage = AppAssets.cardBackImage;
     }
 
+    final image = Image.memory(gameState.assets.getHoleCardBack());
+
     return ClipRRect(
       borderRadius: BorderRadius.all(Radius.circular(roundRadius)),
-      child: Image.asset(vnCardBackImage),
+      child: image,
     );
   }
 }

@@ -67,7 +67,7 @@ class BetWidget extends StatelessWidget {
 
   // TODO: MAKE THIS CLASS A GENERAL ONE SOMEWHERE OUTSIDE IN UTILS
   // WE CAN REUSE THIS CLASS FOR OTHER PLACES AS WELL
-  Widget _buildToolTipWith({Widget child}) {
+  Widget _buildToolTipWith({Widget child, AppTheme theme}) {
     final userSettingsBox = HiveDatasource.getInstance.getBox(
       BoxType.USER_SETTINGS_BOX,
     );
@@ -89,7 +89,7 @@ class BetWidget extends StatelessWidget {
     return SimpleTooltip(
       // ui
       backgroundColor: Colors.white,
-      borderColor: AppColorsNew.newTextGreenColor,
+      borderColor: theme.accentColor,
       ballonPadding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
 
       // others
@@ -108,9 +108,16 @@ class BetWidget extends StatelessWidget {
     );
   }
 
-  String _getBetChipSvg() {
+  String _getBetChipSvg(AppTheme theme) {
     String primaryColor = '#168348';
     String accentColor = '#C8923B';
+
+    // String primaryColor =
+    //     '#${theme.primaryColor.red}${theme.primaryColor.green}${theme.primaryColor.blue}';
+    // String accentColor =
+    //     '#${theme.accentColor.red}${theme.accentColor.green}${theme.accentColor.blue}';
+    log("0-0-0-0 primary color : $primaryColor");
+    log("0-0-0-0 primary color : $accentColor");
 
     return """<svg width="124" height="125" viewBox="0 0 124 125" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M13.6747 64.3028C12.8901 63.5182 12.7324 63.1576 12.7324 62.1474C12.7324 60.7622 13.245 59.8816 14.3983 59.2852C16.0297 58.4416 17.908 59.0622 18.6862 60.7021C19.2171 61.8209 19.2171 62.5644 18.686 63.5913C18.1673 64.5944 16.9643 65.245 15.6283 65.245C14.8476 65.245 14.402 65.0301 13.6747 64.3028V64.3028Z" fill="$accentColor"/>
@@ -129,7 +136,8 @@ class BetWidget extends StatelessWidget {
 </svg>""";
   }
 
-  Widget _buildBetButton(final bool isLargerDisplay, vnBetAmount) {
+  Widget _buildBetButton(
+      final bool isLargerDisplay, vnBetAmount, AppTheme theme) {
     final vnOffsetValue = ValueNotifier<double>(.0);
 
     final colorizeColors = [
@@ -155,7 +163,7 @@ class BetWidget extends StatelessWidget {
           Transform.scale(
             scale: 1.5,
             child: SvgPicture.string(
-              _getBetChipSvg(),
+              _getBetChipSvg(theme),
               height: s,
               width: s,
             ),
@@ -198,6 +206,7 @@ class BetWidget extends StatelessWidget {
           ),
         ),
       ),
+      theme: theme,
     );
 
     return Column(
@@ -257,7 +266,7 @@ class BetWidget extends StatelessWidget {
             activeTrackColor: appTheme.secondaryColor,
             thumbShape: RoundSliderThumbShape(enabledThumbRadius: 12),
             inactiveTrackColor: appTheme.secondaryColor.withOpacity(
-              0.15,
+              0.5,
             ),
             trackHeight: 10.0,
           ),
@@ -291,10 +300,10 @@ class BetWidget extends StatelessWidget {
         final valueNotifierVal = context.read<ValueNotifier<double>>();
 
         return Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
           children: [
             /* bet button */
-            _buildBetButton(isLargerDisplay, valueNotifierVal),
+            _buildBetButton(isLargerDisplay, valueNotifierVal, appTheme),
 
             /* progress drag to bet */
             _buildBetSeekBar(width, appTheme),
@@ -307,7 +316,7 @@ class BetWidget extends StatelessWidget {
                 alignment: Alignment.center,
                 width: width / 1.5,
                 height: 60.ph,
-                child: betAmountList(valueNotifierVal),
+                child: betAmountList(valueNotifierVal, appTheme),
               ),
             )
           ],
@@ -316,7 +325,7 @@ class BetWidget extends StatelessWidget {
     );
   }
 
-  Widget sleekSlider() {
+  Widget sleekSlider(AppTheme theme) {
     return Consumer<ValueNotifier<double>>(
       builder: (_, vnValue, __) => SleekCircularSlider(
         onChange: (value) {
@@ -342,12 +351,21 @@ class BetWidget extends StatelessWidget {
           ),
           customColors: CustomSliderColors(
             hideShadow: false,
-            trackColor: AppColorsNew.newGreenRadialStartColor,
-            dotColor: AppColorsNew.newBorderColor,
+            trackColor: theme.fillInColor.withAlpha(100),
+            dotColor: theme.accentColor,
             progressBarColors: [
-              AppColorsNew.newBorderColor,
-              AppColorsNew.newBorderColor,
-              AppColorsNew.newBorderColor,
+              theme.primaryColorWithLight().withAlpha(50),
+              theme.primaryColorWithLight().withAlpha(100),
+              theme.primaryColorWithLight().withAlpha(150),
+
+              theme.primaryColorWithLight().withAlpha(200),
+              theme.primaryColorWithLight(),
+
+              theme.primaryColor,
+              theme.primaryColorWithDark(),
+              // AppColorsNew.newBorderColor,
+              // AppColorsNew.newBorderColor,
+              // AppColorsNew.newBorderColor,
               // Colors.red,
               // Colors.yellow,
               // Colors.green,
@@ -368,11 +386,13 @@ class BetWidget extends StatelessWidget {
     bool isKeyboard = false,
     Option option,
     void onTap(),
+    AppTheme theme,
   }) =>
-      Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Column(
+      FittedBox(
+        fit: BoxFit.fitHeight,
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 4),
+          child: Column(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -393,8 +413,8 @@ class BetWidget extends StatelessWidget {
                       // begin: Alignment.topRight,
                       // end: Alignment.bottomLeft,
                       colors: [
-                        AppColorsNew.newGreenRadialStartColor,
-                        AppColorsNew.newGreenRadialStopColor,
+                        theme.fillInColor,
+                        theme.primaryColorWithDark(),
                       ],
                       stops: [
                         0.2,
@@ -403,7 +423,7 @@ class BetWidget extends StatelessWidget {
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: AppColorsNew.newGreenButtonColor,
+                        color: theme.secondaryColor,
                         offset: Offset(0, 1),
                         blurRadius: 0.5,
                         spreadRadius: 0.5,
@@ -433,47 +453,51 @@ class BetWidget extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(width: 10),
-        ],
+        ),
       );
 
-  Widget betAmountList(ValueNotifier<double> vnValue) {
-    return ListView.builder(
-      physics: BouncingScrollPhysics(),
-      scrollDirection: Axis.horizontal,
-      shrinkWrap: true,
-      itemBuilder: (context, index) {
-        if (index == 0) {
-          // show keyboard
+  Widget betAmountList(ValueNotifier<double> vnValue, AppTheme theme) {
+    return Container(
+      height: 70.ph,
+      child: ListView.builder(
+        physics: BouncingScrollPhysics(),
+        scrollDirection: Axis.horizontal,
+        shrinkWrap: true,
+        itemBuilder: (context, index) {
+          if (index == 0) {
+            // show keyboard
+            return _buildBetAmountChild(
+              theme: theme,
+              isKeyboard: true,
+              onTap: () async {
+                double min = action.minRaiseAmount.toDouble();
+                double max = action.maxRaiseAmount.toDouble();
+
+                final double res = await NumericKeyboard2.show(
+                  context,
+                  title:
+                      'Enter your bet/raise amount (${action.minRaiseAmount.toString()} - ${action.maxRaiseAmount.toString()})',
+                  min: min,
+                  max: max,
+                );
+
+                if (res != null) vnValue.value = res;
+              },
+            );
+          }
+
+          final option = action.options[index - 1];
+
           return _buildBetAmountChild(
-            isKeyboard: true,
-            onTap: () async {
-              double min = action.minRaiseAmount.toDouble();
-              double max = action.maxRaiseAmount.toDouble();
-
-              final double res = await NumericKeyboard2.show(
-                context,
-                title:
-                    'Enter your bet/raise amount (${action.minRaiseAmount.toString()} - ${action.maxRaiseAmount.toString()})',
-                min: min,
-                max: max,
-              );
-
-              if (res != null) vnValue.value = res;
+            theme: theme,
+            option: action.options[index - 1],
+            onTap: () {
+              vnValue.value = option.amount.toDouble();
             },
           );
-        }
-
-        final option = action.options[index - 1];
-
-        return _buildBetAmountChild(
-          option: action.options[index - 1],
-          onTap: () {
-            vnValue.value = option.amount.toDouble();
-          },
-        );
-      },
-      itemCount: action.options.length + 1,
+        },
+        itemCount: action.options.length + 1,
+      ),
     );
   }
 }

@@ -20,9 +20,12 @@ import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/player_info.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
+import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/game_context_screen/game_chat/game_chat.dart';
 import 'package:pokerapp/screens/game_play_screen/game_play_screen_util_methods.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/board_view.dart';
@@ -40,6 +43,7 @@ import 'package:pokerapp/services/encryption/encryption_service.dart';
 import 'package:pokerapp/services/game_play/action_services/game_action_service/util_action_services.dart';
 import 'package:pokerapp/services/game_play/action_services/game_update_service.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_proto_service.dart';
+import 'package:pokerapp/services/game_play/customization_service.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/services/game_play/graphql/seat_change_service.dart';
@@ -78,10 +82,12 @@ board width: 800.0 height: 492.8
 * */
 class GamePlayScreen extends StatefulWidget {
   final String gameCode;
+  final CustomizationService customizationService;
 
   // NOTE: Enable this for agora audio testing
   GamePlayScreen({
     @required this.gameCode,
+    this.customizationService,
   }) : assert(gameCode != null);
 
   @override
@@ -118,7 +124,16 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   Future<GameInfoModel> _fetchGameInfo() async {
     GameInfoModel gameInfo;
 
-    if (TestService.isTesting) {
+    if (widget.customizationService != null) {
+      try {
+        await widget.customizationService.load();
+        gameInfo = widget.customizationService.gameInfo;
+        this._currentPlayer = widget.customizationService.currentPlayer;
+      } catch (e, s) {
+        print('test data loading error: $s');
+        return null;
+      }
+    } else if (TestService.isTesting) {
       try {
         debugPrint('Loading game from test data');
         // load test data
@@ -238,7 +253,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
     final encryptionService = EncryptionService();
 
-    if (!TestService.isTesting) {
+    if (!TestService.isTesting && widget.customizationService == null) {
       // subscribe the NATs channels
       final natsClient = Provider.of<Nats>(context, listen: false);
 
@@ -248,6 +263,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     }
 
     _gameState = GameState();
+    if (widget.customizationService != null) {
+      _gameState.customizationMode = true;
+    }
     _gameState.gameComService = gameComService;
     await _gameState.initialize(
       gameCode: _gameInfoModel.gameCode,
@@ -277,8 +295,8 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     } else {}
 
     // _audioPlayer = AudioPlayer();
-
-    if (TestService.isTesting) {
+    
+    if (TestService.isTesting || widget.customizationService != null) {
       // testing code goes here
       _gameContextObj = GameContextObject(
         gameCode: widget.gameCode,
@@ -329,7 +347,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       _gameState.getCommunicationState().voiceChatEnable = true;
       _gameState.getCommunicationState().notify();
     }
-    if (!TestService.isTesting) {
+    if (!TestService.isTesting && widget.customizationService == null) {
       _initChatListeners(gameComService.gameMessaging);
     }
 
@@ -368,7 +386,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   }
 
   void _sendMarkedCards(BuildContext context) {
-    if (TestService.isTesting) return;
+    if (TestService.isTesting || widget.customizationService != null) return;
 
     final MarkedCards markedCards = _gameState.getMarkedCards(context);
 
@@ -583,7 +601,8 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         )
       : SizedBox.shrink();
 
-  Widget _buildBoardView(Size boardDimensions, double tableScale) => Container(
+  Widget _buildBoardView(Size boardDimensions, double tableScale) {
+    return Container(
         width: boardDimensions.width,
         height: boardDimensions.height,
         child: Transform.scale(
@@ -597,8 +616,10 @@ class _GamePlayScreenState extends State<GamePlayScreen>
           ),
         ),
       );
+  }
 
-  Widget _buildFooterView(BuildContext context) => Expanded(
+  Widget _buildFooterView(BuildContext context) {
+    return Expanded(
         child: Container(
           decoration: BoxDecoration(
             image: DecorationImage(
@@ -615,6 +636,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
           ),
         ),
       );
+  }
 
   void _setupGameContextObject() {
     if (_gameContextObj.gameUpdateService == null) {
@@ -656,7 +678,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
       _gameContextObj.handActionProtoService.loop();
 
-      if (!TestService.isTesting) {
+      if (!TestService.isTesting && widget.customizationService == null) {
         _gameContextObj.gameComService.handToAllChannelStream.listen(
           (nats.Message message) {
             if (!_gameContextObj.gameComService.active) return;
@@ -684,12 +706,8 @@ class _GamePlayScreenState extends State<GamePlayScreen>
                               * Deal - contains seat No and cards
                               * Your Action - seat No, available actions & amounts */
 
-            if (TestService.isTesting) {
-              _gameContextObj.handActionProtoService.handle(message.data);
-            } else {
-              _gameContextObj.handActionProtoService
-                  .handle(message.data, encrypted: true);
-            }
+            _gameContextObj.handActionProtoService
+                .handle(message.data, encrypted: true);
           },
         );
       }
@@ -700,7 +718,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     /* THIS METHOD QUERIES THE CURRENT HAND AND POPULATE THE
        GAME SCREEN, IF AND ONLY IF THE GAME IS ALREADY PLAYING */
 
-    if (TestService.isTesting == true) return;
+    if (TestService.isTesting == true || widget.customizationService != null) return;
 
     if (_gameInfoModel?.tableStatus == AppConstants.GAME_RUNNING) {
       // query current hand to get game update
@@ -768,10 +786,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     );
   }
 
-  Widget _buildBody() {
+  Widget _buildBody(AppTheme theme) {
     // show a progress indicator if the game info object is null
-    if (_gameInfoModel == null)
-      return Center(child: CircularProgressIndicator());
+    if (_gameInfoModel == null) return Center(child: CircularProgressWidget());
 
     /* get the screen sizes, and initialize the board attributes */
     BoardAttributesObject boardAttributes = BoardAttributesObject(
@@ -809,7 +826,8 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         return ListenableProvider<ValueNotifier<bool>>(
           // default value false means, we keep the chat window hidden initially
           create: (_) => ValueNotifier<bool>(false),
-          builder: (context, _) => _buildCoreBody(context, boardAttributes),
+          builder: (context, _) =>
+              _buildCoreBody(context, boardAttributes),
         );
       },
     );
@@ -826,20 +844,27 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         print('test data loading error: $e');
       }
     }
-
-    return Container(
-      decoration: AppStylesNew.BgGreenRadialGradient,
-      child: SafeArea(
-        child: Scaffold(
-          /* FIXME: THIS FLOATING ACTION BUTTON IS FOR SHOWING THE TESTS */
-          floatingActionButton: GamePlayScreenUtilMethods.floatingActionButton(
-            onReload: () {},
+    if (widget.customizationService != null) {
+      this._currentPlayer = widget.customizationService.currentPlayer;
+    }
+    return Consumer<AppTheme>(
+      builder: (_, theme, __) {
+        return Container(
+          decoration: AppDecorators.bgRadialGradient(theme),
+          child: SafeArea(
+            child: Scaffold(
+              /* FIXME: THIS FLOATING ACTION BUTTON IS FOR SHOWING THE TESTS */
+              floatingActionButton:
+                  GamePlayScreenUtilMethods.floatingActionButton(
+                onReload: () {},
+              ),
+              resizeToAvoidBottomInset: true,
+              backgroundColor: Colors.transparent,
+              body: _buildBody(theme),
+            ),
           ),
-          resizeToAvoidBottomInset: true,
-          backgroundColor: Colors.transparent,
-          body: _buildBody(),
-        ),
-      ),
+        );
+      },
     );
   }
 

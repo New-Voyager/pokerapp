@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/auth_model.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/models/ui/app_theme_data.dart';
 import 'package:pokerapp/resources/app_config.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/services/app/appcoin_service.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
+import 'package:pokerapp/services/data/box_type.dart';
+import 'package:pokerapp/services/data/hive_datasource_impl.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -12,26 +16,25 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  _moveToLoginScreen() => Navigator.pushReplacementNamed(
-        context,
-        Routes.registration,
-      );
-
-  _moveToMainScreen() => Navigator.pushReplacementNamed(
-        context,
-        Routes.main,
-      );
+  
+  void _navigateToNextScreen(bool isAuthenticated) {
+    Navigator.pushReplacementNamed(
+      context,
+      isAuthenticated ? Routes.main : Routes.registration,
+    );
+  }
 
   @override
   void initState() {
     super.initState();
 
     Future.delayed(Duration(milliseconds: 400), () async {
+      /*
+      By default navigate to login screen, 
+      if config has device id and device secret then navigates to main screen.
+      */
       bool goToLoginScreen = true;
-      if (AppConfig.deviceId == null || AppConfig.deviceSecret == null) {
-        // go to login screen
-        _moveToLoginScreen();
-      } else {
+      if (AppConfig.deviceId != null || AppConfig.deviceSecret != null) {
         try {
           // generate jwt
           final resp = await AuthService.newlogin(
@@ -59,19 +62,29 @@ class _SplashScreenState extends State<SplashScreen> {
         } catch (err) {
           goToLoginScreen = true;
         }
-
-        if (goToLoginScreen) {
-          _moveToLoginScreen();
-          return;
-        } else {
-          _moveToMainScreen();
-        }
       }
+      _navigateToNextScreen(!goToLoginScreen);
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = AppTheme.getTheme(context);
+    final themeData = HiveDatasource.getInstance
+        .getBox(BoxType.USER_SETTINGS_BOX)
+        .get("theme");
+    if (themeData != null) {
+      theme.updateThemeData(
+        AppThemeData(
+          primaryColor: Color(themeData['primaryColor']),
+          secondaryColor: Color(themeData['secondaryColor']),
+          accentColor: Color(themeData['accentColor']),
+          fillInColor: Color(themeData['fillInColor']),
+          fontFamily: themeData['fontFamily'],
+          supportingColor: Color(themeData['supportingColor']),
+        ),
+      );
+    }
     return Scaffold(
       backgroundColor: Colors.black,
       body: Center(
