@@ -14,6 +14,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/models/player_info.dart';
+import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/services/agora/agora.dart';
 import 'package:pokerapp/services/app/game_service.dart';
@@ -23,6 +24,7 @@ import 'package:pokerapp/services/data/hive_models/game_settings.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/services/janus/janus.dart';
+import 'package:pokerapp/utils/utils.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 import 'package:pokerapp/proto/hand.pb.dart' as proto;
@@ -116,6 +118,10 @@ class GameState {
   // tracks whether buyin keyboard is shown or not
   bool buyInKeyboardShown = false;
 
+  // customization mode
+  bool customizationMode  = false;
+
+  GameScreenAssets assets;
   Future<void> initialize({
     String gameCode,
     @required GameInfoModel gameInfo,
@@ -139,6 +145,10 @@ class GameState {
     for (int seatNo = 1; seatNo <= gameInfo.maxPlayers; seatNo++) {
       this._seats[seatNo] = Seat(seatNo, null);
     }
+
+    // load assets
+    this.assets = new GameScreenAssets();
+    await this.assets.initialize();
 
     _tableState = TableState();
     if (gameInfo != null) {
@@ -991,5 +1001,66 @@ class CommunicationState extends ChangeNotifier {
 class StraddlePromptState extends ChangeNotifier {
   void notify() {
     notifyListeners();
+  }
+}
+
+class GameScreenAssets {
+  String backdropImage;
+  String boardImage;
+  String holeCardBackImage;
+  String holeCardFaceDir;
+
+  Uint8List backdropBytes;
+  Uint8List boardBytes;
+  Uint8List holeCardBackBytes;
+  Map<String, Uint8List> cardStrImage;
+  Map<int, Uint8List> cardNumberImage;
+
+  Uint8List getBackDrop() {
+    return backdropBytes;
+  }
+
+  Uint8List getBoard() {
+    return boardBytes;
+  }
+
+  Uint8List getHoleCardBack() {
+    return holeCardBackBytes;
+  }
+
+  Uint8List getHoleCard(int card) {
+    return cardNumberImage[card];
+  }
+
+  Uint8List getHoleCardStr(String card) {
+    return cardStrImage[card];
+  }
+
+  Future<void> initialize() async {
+    cardStrImage = Map<String, Uint8List>();
+    cardNumberImage = Map<int, Uint8List>();
+    String backdropImage = 'assets/images/backgrounds/night sky.png';
+    String tableImage = 'assets/images/table/night sky table.png';
+    //tableImage = AppAssets.horizontalTable;
+    //backdropImage = AppAssets.barBookshelfBackground;
+
+    backdropBytes = (await rootBundle.load(backdropImage))
+          .buffer
+          .asUint8List();
+    boardBytes = (await rootBundle.load(tableImage))
+          .buffer
+          .asUint8List();
+    holeCardBackBytes = (await rootBundle.load('assets/images/card_back/set2/Asset 7.png'))
+          .buffer
+          .asUint8List();
+
+    for(int card in CardConvUtils.cardNumbers.keys) {
+      final cardStr = CardConvUtils.getString(card);
+      final cardBytes = (await rootBundle.load('assets/images/card_face/$card.svg'))
+          .buffer
+          .asUint8List();
+      cardStrImage[cardStr] = cardBytes;
+      cardNumberImage[card] = cardBytes;
+    }
   }
 }

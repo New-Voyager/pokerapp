@@ -99,6 +99,10 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
       listen: false,
     );
 
+    if (widget.gameState.customizationMode) {
+      return;
+    }
+
     if (seatChangeContext != null && seatChangeContext.seatChangeInProgress) {
       return;
     }

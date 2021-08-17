@@ -317,8 +317,12 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                         index: 2,
                                         onTapFunction: () {
                                           Navigator.of(context).pushNamed(
-                                            Routes.customize,
+                                            Routes.game_screen_customize,
                                           );
+                                          
+                                          // Navigator.of(context).pushNamed(
+                                          //   Routes.customize,
+                                          // );
                                         },
                                       ),
                                       ListTileItem(

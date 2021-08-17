@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/widgets/cards/card_builder_widget.dart';
 
@@ -23,9 +24,13 @@ class PlayerHoleCardView extends StatelessWidget {
   Widget _buildCardUI(
     TextStyle cardTextStyle,
     TextStyle suitTextStyle,
+    BuildContext context,
   ) {
+    final gameState = GameState.getState(context);
+    final cardAsset = SvgPicture.memory(gameState.assets.getHoleCard(card.cardNum));
+    //final cardAsset = SvgPicture.asset('assets/images/card_face/${card.cardNum}.svg');
     return Stack(fit: StackFit.expand, children: [
-      SvgPicture.asset('assets/images/card_face/${card.cardNum}.svg'),
+      cardAsset,
       /* visible marker */
       Positioned(
         top: 50,

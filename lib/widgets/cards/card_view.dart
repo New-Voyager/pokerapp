@@ -18,6 +18,7 @@ class CardView extends StatelessWidget {
   Widget _buildCardUI(
     TextStyle cardTextStyle,
     TextStyle suitTextStyle,
+    BuildContext context,
   ) {
     String suitImage = CardHelper.getSuitImage(card.suit);
     // suitImage = 'assets/images/cards/heart.png';

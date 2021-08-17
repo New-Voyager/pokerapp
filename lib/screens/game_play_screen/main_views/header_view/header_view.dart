@@ -11,6 +11,7 @@ import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/screens/game_context_screen/game_options/game_option_bottom_sheet.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
+import 'package:pokerapp/widgets/heading_widget.dart';
 import 'package:provider/provider.dart';
 
 class HeaderView extends StatelessWidget {
@@ -30,6 +31,14 @@ class HeaderView extends StatelessWidget {
     }
 
     return '';
+  }
+
+  Widget _buildCustomizeHeader(AppTheme theme) {
+    return Expanded(
+                      child: HeadingWidget(
+                        heading: 'CUSTOMIZE',
+                      ),
+                    );
   }
 
   Widget _buildMainContent(AppTheme theme) {
@@ -88,7 +97,13 @@ class HeaderView extends StatelessWidget {
         ),
       );
 
-  void _onGameMenuNavButtonPress(BuildContext context) => showModalBottomSheet(
+  void _onGameMenuNavButtonPress(BuildContext context) {
+    final gameState = GameState.getState(context);
+    if (gameState.customizationMode) {
+      // show backdrop options
+      return ;
+    }
+    showModalBottomSheet(
         context: context,
         isScrollControlled: true,
         backgroundColor: Colors.transparent,
@@ -100,8 +115,15 @@ class HeaderView extends StatelessWidget {
         ),
         builder: (_) => GameOptionsBottomSheet(GameState.getState(context)),
       );
+  }
 
-  Widget _buildGameMenuNavButton(BuildContext context, AppTheme theme) => Align(
+  Widget _buildGameMenuNavButton(BuildContext context, AppTheme theme) {
+    IconData iconData = Icons.more_vert;
+    final gameState = GameState.getState(context);
+    if (gameState.customizationMode) {
+      iconData = Icons.edit_rounded;
+    }
+    return Align(
         alignment: Alignment.centerRight,
         child: InkWell(
           onTap: () => _onGameMenuNavButtonPress(context),
@@ -115,15 +137,18 @@ class HeaderView extends StatelessWidget {
             ),
             // padding: EdgeInsets.all(5),
             child: Icon(
-              Icons.more_vert,
+              iconData,
               color:theme.secondaryColor,
             ),
           ),
         ),
       );
+  }
 
   @override
   Widget build(BuildContext context) {
+    final gameState = GameState.getState(context);
+
     return Consumer<AppTheme>(
       builder: (_, theme, __) {
         return Container(
