@@ -16,25 +16,25 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  _moveToLoginScreen() => Navigator.pushReplacementNamed(
-        context,
-        Routes.registration,
-      );
-
-  _moveToMainScreen() => Navigator.pushReplacementNamed(
-        context,
-        Routes.main,
-      );
+  
+  void _navigateToNextScreen(bool isAuthenticated) {
+    Navigator.pushReplacementNamed(
+      context,
+      isAuthenticated ? Routes.main : Routes.registration,
+    );
+  }
 
   @override
   void initState() {
     super.initState();
 
     Future.delayed(Duration(milliseconds: 400), () async {
+      /*
+      By default navigate to login screen, 
+      if config has device id and device secret then navigates to main screen.
+      */
       bool goToLoginScreen = true;
-      if (AppConfig.deviceId == null || AppConfig.deviceSecret == null) {
-        // go to login screen
-      } else {
+      if (AppConfig.deviceId != null || AppConfig.deviceSecret != null) {
         try {
           // generate jwt
           final resp = await AuthService.newlogin(
@@ -62,14 +62,8 @@ class _SplashScreenState extends State<SplashScreen> {
         } catch (err) {
           goToLoginScreen = true;
         }
-
-        if (goToLoginScreen) {
-          _moveToLoginScreen();
-          return;
-        } else {
-          _moveToMainScreen();
-        }
       }
+      _navigateToNextScreen(!goToLoginScreen);
     });
   }
 
