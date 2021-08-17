@@ -30,6 +30,7 @@ class _SplashScreenState extends State<SplashScreen> {
       bool goToLoginScreen = true;
       if (AppConfig.deviceId == null || AppConfig.deviceSecret == null) {
         // go to login screen
+        _moveToLoginScreen();
       } else {
         try {
           // generate jwt
@@ -58,8 +59,8 @@ class _SplashScreenState extends State<SplashScreen> {
         } catch (err) {
           goToLoginScreen = true;
         }
-        
-        if(goToLoginScreen) {
+
+        if (goToLoginScreen) {
           _moveToLoginScreen();
           return;
         } else {
