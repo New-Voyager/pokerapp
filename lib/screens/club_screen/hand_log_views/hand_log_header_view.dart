@@ -40,7 +40,8 @@ class HandLogHeaderView extends StatelessWidget {
                   style: AppDecorators.getHeadLine4Style(theme: theme),
                 ),
                 Text(
-                  "${_appScreenText['HAND']}: #" + _handResult.handNum.toString(),
+                  "${_appScreenText['HAND']}: #" +
+                      _handResult.handNum.toString(),
                   style: AppDecorators.getSubtitle2Style(theme: theme),
                 ),
               ],

@@ -29,7 +29,8 @@ class CardBuilderWidget extends StatelessWidget {
     @required this.dim,
     @required this.highlight,
     @required this.isCardVisible,
-    @required Widget this.cardBuilder(TextStyle _, TextStyle __, BuildContext ___),
+    @required
+        Widget this.cardBuilder(TextStyle _, TextStyle __, BuildContext ___),
     this.shadow = false,
     this.roundRadius = 5.0,
     this.cardFace,

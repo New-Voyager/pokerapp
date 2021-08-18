@@ -295,7 +295,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     } else {}
 
     // _audioPlayer = AudioPlayer();
-    
+
     if (TestService.isTesting || widget.customizationService != null) {
       // testing code goes here
       _gameContextObj = GameContextObject(
@@ -603,39 +603,39 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
   Widget _buildBoardView(Size boardDimensions, double tableScale) {
     return Container(
-        width: boardDimensions.width,
-        height: boardDimensions.height,
-        child: Transform.scale(
-          scale: tableScale,
-          child: BoardView(
-            gameComService: _gameContextObj?.gameComService,
-            gameInfo: _gameInfoModel,
-            audioPlayer: _audioPlayer,
-            onUserTap: _onJoinGame,
-            onStartGame: startGame,
-          ),
+      width: boardDimensions.width,
+      height: boardDimensions.height,
+      child: Transform.scale(
+        scale: tableScale,
+        child: BoardView(
+          gameComService: _gameContextObj?.gameComService,
+          gameInfo: _gameInfoModel,
+          audioPlayer: _audioPlayer,
+          onUserTap: _onJoinGame,
+          onStartGame: startGame,
         ),
-      );
+      ),
+    );
   }
 
   Widget _buildFooterView(BuildContext context) {
     return Expanded(
-        child: Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage("assets/images/bottom_pattern.png"),
-              fit: BoxFit.fill,
-            ),
-          ),
-          child: FooterView(
-            gameContext: _gameContextObj,
-            gameCode: widget.gameCode,
-            playerUuid: _currentPlayer.uuid,
-            chatVisibilityChange: () => _toggleChatVisibility(context),
-            clubCode: _gameInfoModel.clubCode,
+      child: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("assets/images/bottom_pattern.png"),
+            fit: BoxFit.fill,
           ),
         ),
-      );
+        child: FooterView(
+          gameContext: _gameContextObj,
+          gameCode: widget.gameCode,
+          playerUuid: _currentPlayer.uuid,
+          chatVisibilityChange: () => _toggleChatVisibility(context),
+          clubCode: _gameInfoModel.clubCode,
+        ),
+      ),
+    );
   }
 
   void _setupGameContextObject() {
@@ -718,7 +718,8 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     /* THIS METHOD QUERIES THE CURRENT HAND AND POPULATE THE
        GAME SCREEN, IF AND ONLY IF THE GAME IS ALREADY PLAYING */
 
-    if (TestService.isTesting == true || widget.customizationService != null) return;
+    if (TestService.isTesting == true || widget.customizationService != null)
+      return;
 
     if (_gameInfoModel?.tableStatus == AppConstants.GAME_RUNNING) {
       // query current hand to get game update
@@ -826,8 +827,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         return ListenableProvider<ValueNotifier<bool>>(
           // default value false means, we keep the chat window hidden initially
           create: (_) => ValueNotifier<bool>(false),
-          builder: (context, _) =>
-              _buildCoreBody(context, boardAttributes),
+          builder: (context, _) => _buildCoreBody(context, boardAttributes),
         );
       },
     );

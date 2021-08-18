@@ -203,7 +203,7 @@ class BoardView extends StatelessWidget {
           //log('Rebuilding buyin button now');
           return RoundRaisedButtonWithTimer(
             buttonText: AppStringsNew.BuyIn,
-            color:theme.fillInColor,
+            color: theme.fillInColor,
             verticalPadding: 1,
             fontSize: 15,
             onButtonTap: () async => {await onBuyin(context)},
@@ -232,28 +232,28 @@ class BoardView extends StatelessWidget {
     }
     // log('Rebuild buyin button: Status: ${myState.status.toString()}');
 
-    if (mySeat.player.rankText != null && mySeat.player.rankText.isNotEmpty) {
-      //log('mySeat.player.inBreak');
-      final theme = AppTheme.getTheme(context);
-      return Container(
-        padding: EdgeInsets.symmetric(
-          horizontal: 14.pw,
-          vertical: 3.ph,
-        ),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(6.pw),
-          border: Border.all(color: theme.accentColorWithDark()),
-          // border: Border.all(color: Colors.grey[700]),
-          //color: Colors.green[700],
-        ),
-        child: Text(
-          mySeat.player.rankText,
-          style: AppDecorators.getHeadLine4Style(theme: theme),
-        ),
-      );
-    } else {
-      return SizedBox.shrink();
-    }
+    // if (mySeat.player.rankText != null && mySeat.player.rankText.isNotEmpty) {
+    //   //log('mySeat.player.inBreak');
+    //   final theme = AppTheme.getTheme(context);
+    //   return Container(
+    //     padding: EdgeInsets.symmetric(
+    //       horizontal: 14.pw,
+    //       vertical: 3.ph,
+    //     ),
+    //     decoration: BoxDecoration(
+    //       borderRadius: BorderRadius.circular(6.pw),
+    //       border: Border.all(color: theme.accentColorWithDark()),
+    //       // border: Border.all(color: Colors.grey[700]),
+    //       //color: Colors.green[700],
+    //     ),
+    //     child: Text(
+    //       mySeat.player.rankText,
+    //       style: AppDecorators.getHeadLine4Style(theme: theme),
+    //     ),
+    //   );
+    // } else {
+    //   return SizedBox.shrink();
+    // }
   }
 
   Widget sitBackButton(BuildContext context) {

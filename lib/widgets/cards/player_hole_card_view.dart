@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/widgets/cards/card_builder_widget.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class PlayerHoleCardView extends StatelessWidget {
   final CardObject card;
@@ -27,7 +28,8 @@ class PlayerHoleCardView extends StatelessWidget {
     BuildContext context,
   ) {
     final gameState = GameState.getState(context);
-    final cardAsset = SvgPicture.memory(gameState.assets.getHoleCard(card.cardNum));
+    final cardAsset =
+        SvgPicture.memory(gameState.assets.getHoleCard(card.cardNum));
     //final cardAsset = SvgPicture.asset('assets/images/card_face/${card.cardNum}.svg');
     return Stack(fit: StackFit.expand, children: [
       cardAsset,
@@ -47,8 +49,8 @@ class PlayerHoleCardView extends StatelessWidget {
       Positioned(
         top: 0,
         left: 0,
-        bottom: 0,
-        width: 30,
+        bottom: 50.pw,
+        width: 30.pw,
         child: GestureDetector(
           onTap: onMarkTapCallback,
         ),

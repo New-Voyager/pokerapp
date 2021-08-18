@@ -433,23 +433,47 @@ class TestService {
     );
     final player = gameState.me(_context);
     i++;
-    player.cards = [
-      162,
-      194,
-      // 196,
-      // 200,
-      // 56,
-    ];
-    int r = i % 4;
-    if (r == 1) {
-      player.cards[0] = 161;
-    }
-    if (r == 2) {
-      player.cards[0] = 177;
-    }
-    if (r == 3) {
-      player.cards[0] = 184;
-    }
+    /*
+    113, 71: 9♠
+    114, 72: 9❤
+    116, 74: 9♦
+    120, 78: 9♣    
+    130, 82: T❤
+    132, 84: T♦
+    136, 88: T♣
+    129, 81: T♠
+    152, 98: J♣
+    145, 91: J♠
+    146, 92: J❤
+    148, 94: J♦
+    161, A1: Q♠
+    162, A2: Q❤
+    164, A4: Q♦
+    168, A8: Q♣
+    177, B1: K♠
+    178, B2: K❤
+    180, B4: K♦
+    184, B8: K♣
+    200, C8: A♣
+    193, C1: A♠
+    194, C2: A❤
+    196, C4: A♦
+    Ah, 10c, 9s, Jd, Ks 
+    */
+    player.cards = [161, 200, 168, 177, 194];
+    player.rankText = 'Full House';
+    final myState = gameState.getMyState(_context);
+    myState.notify();
+    // int r = i % 4;
+    // if (r == 1) {
+    //   player.cards[0] = 184;
+    // }
+    // if (r == 2) {
+    //   player.cards[0] = 178;
+    // }
+    // if (r == 3) {
+    //   player.cards[0] = 196;
+    // }
 
     player.noOfCardsVisible = player.cards.length;
     final players = gameState.getPlayers(_context);

@@ -146,13 +146,11 @@ class _FooterViewState extends State<FooterView>
 
   Widget _buildCustomizationView() {
     return Positioned(
-          right: 0,
-          top: 0,
-          child: HoleCardCustomizationView(
-          ),
-        );
+      right: 0,
+      top: 0,
+      child: HoleCardCustomizationView(),
+    );
   }
-
 
   Widget _buildCommunicationWidget() => Positioned(
         right: 0,
@@ -212,7 +210,7 @@ class _FooterViewState extends State<FooterView>
   }
 
   @override
-  Widget build(BuildContext context) { 
+  Widget build(BuildContext context) {
     final gameState = GameState.getState(context);
     List<Widget> children = [];
     if (gameState.customizationMode) {
@@ -234,9 +232,10 @@ class _FooterViewState extends State<FooterView>
 
       /* my last action */
       children.add(_buildMyLastActionWidget(context));
-
     }
-    return Stack(children: children,);
+    return Stack(
+      children: children,
+    );
   }
 
   @override

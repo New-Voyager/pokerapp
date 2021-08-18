@@ -319,7 +319,7 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                           Navigator.of(context).pushNamed(
                                             Routes.game_screen_customize,
                                           );
-                                          
+
                                           // Navigator.of(context).pushNamed(
                                           //   Routes.customize,
                                           // );

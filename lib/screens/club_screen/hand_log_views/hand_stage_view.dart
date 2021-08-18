@@ -210,7 +210,7 @@ class HandStageView extends StatelessWidget {
         return handResult.turnActions;
 
       case GameStages.RIVER:
-        stageName =  _appScreenText["RIVER"];
+        stageName = _appScreenText["RIVER"];
         return handResult.riverActions;
 
       case GameStages.SHOWDOWN:

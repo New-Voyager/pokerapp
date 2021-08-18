@@ -35,10 +35,10 @@ class HeaderView extends StatelessWidget {
 
   Widget _buildCustomizeHeader(AppTheme theme) {
     return Expanded(
-                      child: HeadingWidget(
-                        heading: 'CUSTOMIZE',
-                      ),
-                    );
+      child: HeadingWidget(
+        heading: 'CUSTOMIZE',
+      ),
+    );
   }
 
   Widget _buildMainContent(AppTheme theme) {
@@ -101,20 +101,20 @@ class HeaderView extends StatelessWidget {
     final gameState = GameState.getState(context);
     if (gameState.customizationMode) {
       // show backdrop options
-      return ;
+      return;
     }
     showModalBottomSheet(
-        context: context,
-        isScrollControlled: true,
-        backgroundColor: Colors.transparent,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(32),
-            topRight: Radius.circular(32),
-          ),
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(32),
+          topRight: Radius.circular(32),
         ),
-        builder: (_) => GameOptionsBottomSheet(GameState.getState(context)),
-      );
+      ),
+      builder: (_) => GameOptionsBottomSheet(GameState.getState(context)),
+    );
   }
 
   Widget _buildGameMenuNavButton(BuildContext context, AppTheme theme) {
@@ -124,25 +124,25 @@ class HeaderView extends StatelessWidget {
       iconData = Icons.edit_rounded;
     }
     return Align(
-        alignment: Alignment.centerRight,
-        child: InkWell(
-          onTap: () => _onGameMenuNavButtonPress(context),
-          child: Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: theme.secondaryColor,
-                width: 2,
-              ),
-            ),
-            // padding: EdgeInsets.all(5),
-            child: Icon(
-              iconData,
-              color:theme.secondaryColor,
+      alignment: Alignment.centerRight,
+      child: InkWell(
+        onTap: () => _onGameMenuNavButtonPress(context),
+        child: Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(
+              color: theme.secondaryColor,
+              width: 2,
             ),
           ),
+          // padding: EdgeInsets.all(5),
+          child: Icon(
+            iconData,
+            color: theme.secondaryColor,
+          ),
         ),
-      );
+      ),
+    );
   }
 
   @override

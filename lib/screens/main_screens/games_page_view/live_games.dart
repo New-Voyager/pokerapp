@@ -234,7 +234,9 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                         backgroundColor: appTheme.accentColor,
                         textColor: appTheme.primaryColorWithDark(),
                       ),
-                      Expanded(child: HeadingWidget(heading:  _appScreenText['POKERCLUBAPP'])),
+                      Expanded(
+                          child: HeadingWidget(
+                              heading: _appScreenText['POKERCLUBAPP'])),
                       RoundedColorButton(
                         onTapFunction: () async {
                           _disposeTimer();

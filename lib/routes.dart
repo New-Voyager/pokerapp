@@ -296,7 +296,10 @@ class Routes {
         var customizeService = CustomizationService();
         return _getPageRoute(
           routeName: settings.name,
-          viewToShow: GamePlayScreen(gameCode: gameCode, customizationService: customizeService,),
+          viewToShow: GamePlayScreen(
+            gameCode: gameCode,
+            customizationService: customizeService,
+          ),
         );
       case club_main:
         var clubCode = settings.arguments as String;

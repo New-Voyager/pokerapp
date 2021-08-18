@@ -73,6 +73,13 @@ class AppDecorators {
     );
   }
 
+  static TextStyle getHeadLine5Style({@required AppTheme theme}) {
+    return TextStyle(
+      color: theme.supportingColor,
+      fontSize: 10.dp,
+    );
+  }
+
   static TextStyle getAccentTextStyle({@required AppTheme theme}) {
     return TextStyle(
       color: theme.accentColor,

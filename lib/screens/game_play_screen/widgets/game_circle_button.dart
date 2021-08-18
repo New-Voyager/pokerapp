@@ -62,8 +62,9 @@ class GameCircleButton extends StatelessWidget {
       height: 32.pw,
       width: 32.pw,
       decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: buttonColor,),
+        shape: BoxShape.circle,
+        color: buttonColor,
+      ),
       padding: EdgeInsets.all(5.pw),
       margin: EdgeInsets.symmetric(
         horizontal: 5.pw,

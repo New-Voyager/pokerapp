@@ -11,7 +11,8 @@ class HoleCardCustomizationView extends StatefulWidget {
   HoleCardCustomizationView();
 
   @override
-  _HoleCardCustomizationViewState createState() => _HoleCardCustomizationViewState();
+  _HoleCardCustomizationViewState createState() =>
+      _HoleCardCustomizationViewState();
 }
 
 class _HoleCardCustomizationViewState extends State<HoleCardCustomizationView> {
@@ -21,16 +22,12 @@ class _HoleCardCustomizationViewState extends State<HoleCardCustomizationView> {
     final theme = AppTheme.getTheme(context);
     List<Widget> children = [];
     children.add(GameCircleButton(
-                          onClickHandler: () {},
-                          child: Icon(
-                            Icons.edit,
-                            size: 24,
-                            color: theme.primaryColorWithDark()
-                          ),
-                        ));
+      onClickHandler: () {},
+      child: Icon(Icons.edit, size: 24, color: theme.primaryColorWithDark()),
+    ));
     return Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: children,
-                );
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: children,
+    );
   }
 }
