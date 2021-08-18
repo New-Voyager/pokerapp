@@ -873,6 +873,9 @@ class GameState {
     if (player == null) {
       return [];
     }
+    if (player.cards == null) {
+      return [];
+    }
     //holecardOrder = HoleCardOrder.SEQUENCE;
     if (holecardOrder == HoleCardOrder.DEALT) {
       return player.cards;

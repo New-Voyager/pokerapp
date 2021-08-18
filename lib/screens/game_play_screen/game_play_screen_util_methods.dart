@@ -23,7 +23,6 @@ import 'package:pokerapp/models/game_play_models/provider_models/game_context.da
 import 'package:pokerapp/models/rabbit_state.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
-import 'package:pokerapp/resources/card_back_assets.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/game_service.dart';
@@ -302,11 +301,6 @@ class GamePlayScreenUtilMethods {
       /* this is for having random card back for every new hand */
       ListenableProvider<CardDistributionModel>(
         create: (_) => CardDistributionModel(),
-      ),
-
-      /* this is for having random card back for every new hand */
-      ListenableProvider<ValueNotifier<String>>(
-        create: (_) => ValueNotifier<String>(CardBackAssets.getRandom()),
       ),
 
       /* a header object is used to update the header section of

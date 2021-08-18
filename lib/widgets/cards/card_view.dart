@@ -4,9 +4,6 @@ import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:pokerapp/widgets/cards/card_builder_widget.dart';
 
-final cardBackImage = new Image(
-  image: AssetImage('assets/images/card_back/set2/Asset 6.png'),
-);
 
 class CardView extends StatelessWidget {
   final CardObject card;
@@ -21,8 +18,6 @@ class CardView extends StatelessWidget {
     BuildContext context,
   ) {
     String suitImage = CardHelper.getSuitImage(card.suit);
-    // suitImage = 'assets/images/cards/heart.png';
-    // log('suit image: $suitImage');
 
     return Column(
       mainAxisSize: MainAxisSize.min,

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
-import 'package:pokerapp/resources/card_back_assets.dart';
+import 'dart:typed_data';
 
 class CardBack {
   final GlobalKey<_CardBackWidgetState> _key = GlobalKey();
-  String cardBackImageAsset;
+  Uint8List cardBackBytes;
   double dx;
   double dy;
 
@@ -18,7 +18,7 @@ class CardBack {
   CardBack({
     @required this.xTarget,
     @required this.yTarget,
-    this.cardBackImageAsset = CardBackAssets.asset1_1,
+    @required this.cardBackBytes,
     this.dx = 0,
     this.dy = 0,
     this.delay = 0,
@@ -94,8 +94,8 @@ class _CardBackWidgetState extends State<_CardBackWidget>
 //              )
 //            ],
               ),
-          child: Image.asset(
-            widget.cardBack.cardBackImageAsset,
+          child: Image.memory(
+            widget.cardBack.cardBackBytes,
           ),
         ),
       );

@@ -5,8 +5,8 @@
 * */
 import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
-import 'package:pokerapp/resources/card_back_assets.dart';
 import 'package:pokerapp/widgets/cards/community_cards_view/custom_flip_card.dart';
 import 'package:provider/provider.dart';
 
@@ -37,18 +37,14 @@ class _TurnOrRiverCommunityCardsState extends State<TurnOrRiverCommunityCards> {
   }
 
   Widget _buildFlipCardWidget() {
-    String cardBackAsset = CardBackAssets.asset1_1;
-
-    try {
-      cardBackAsset =
-          Provider.of<ValueNotifier<String>>(context, listen: false).value;
-    } catch (_) {}
+    final gameState = GameState.getState(context);
+    final cardBackBytes = gameState.assets.getHoleCardBack();
 
     return CustomFlipCard(
       onFlipDone: onFlipDone,
       globalKey: _globalFlipKey,
       cardWidget: widget.riverOrTurnCards.last,
-      cardBackAsset: cardBackAsset,
+      cardBackBytes: cardBackBytes,
     );
   }
 

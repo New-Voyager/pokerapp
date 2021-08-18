@@ -159,23 +159,15 @@ class CardBuilderWidget extends StatelessWidget {
           ? cardBuilder(cardTextStyle, suitTextStyle, context)
           : Container();
 
-    String vnCardBackImage;
-    final gameState = GameState.getState(context);
-    try {
-      // get the card back side asset as we need
-      vnCardBackImage = context.read<ValueNotifier<String>>().value;
-    } catch (e) {
-      // we cath exceptions in case we dont have the back card asset available,
-      // such as in cases of Hand Logs or Hand Histories back card assets
-      // in such cases, show the default card, cardBackImage
-      vnCardBackImage = AppAssets.cardBackImage;
-    }
-
-    final image = Image.memory(gameState.assets.getHoleCardBack());
+    // final gameState = GameState.getState(context);
+    // final image = Image.memory(gameState.assets.getHoleCardBack());
+    Image cardBackImage = Image.asset('assets/images/card_back/set2/Asset 8.png');
 
     return ClipRRect(
       borderRadius: BorderRadius.all(Radius.circular(roundRadius)),
-      child: image,
+      child: cardBackImage,
     );
   }
 }
+
+
