@@ -130,63 +130,78 @@ class DeviceInfo {
   }
 }
 
-
 class CardConvUtils {
   static Map<int, String> cardNumbers = {
-        1: '2s',
-        2: '2h',
-        4: '2d',
-        8: '2c',
-      17: '3s',
-      18: '3h',
-      20: '3d',
-      24: '3c',
-      40: '4c',
-      33: '4s',
-      34: '4h',
-      36: '4d',
-      50: '5h',
-      52: '5d',
-      56: '5c',
-      49: '5s',
-      65: '6s',
-      66: '6h',
-      68: '6d',
-      72: '6c',
-      81: '7s',
-      82: '7h',
-      84: '7d',
-      88: '7c',
-      97: '8s',
-      98: '8h',
-      100: '8d',
-      104: '8c',
-      113: '9s',
-      114: '9h',
-      116: '9d',
-      120: '9c',
-      130: 'Th',
-      132: 'Td',
-      136: 'Tc',
-      129: 'Ts',
-      152: 'Jc',
-      145: 'Js',
-      146: 'Jh',
-      148: 'Jd',
-      161: 'Qs',
-      162: 'Qh',
-      164: 'Qd',
-      168: 'Qc',
-      177: 'Ks',
-      178: 'Kh',
-      180: 'Kd',
-      184: 'Kc',
-      200: 'Ac',
-      193: 'As',
-      194: 'Ah',
-      196: 'Ad'
+    1: '2s',
+    2: '2h',
+    4: '2d',
+    8: '2c',
+    17: '3s',
+    18: '3h',
+    20: '3d',
+    24: '3c',
+    40: '4c',
+    33: '4s',
+    34: '4h',
+    36: '4d',
+    50: '5h',
+    52: '5d',
+    56: '5c',
+    49: '5s',
+    65: '6s',
+    66: '6h',
+    68: '6d',
+    72: '6c',
+    81: '7s',
+    82: '7h',
+    84: '7d',
+    88: '7c',
+    97: '8s',
+    98: '8h',
+    100: '8d',
+    104: '8c',
+    113: '9s',
+    114: '9h',
+    116: '9d',
+    120: '9c',
+    130: 'Th',
+    132: 'Td',
+    136: 'Tc',
+    129: 'Ts',
+    152: 'Jc',
+    145: 'Js',
+    146: 'Jh',
+    148: 'Jd',
+    161: 'Qs',
+    162: 'Qh',
+    164: 'Qd',
+    168: 'Qc',
+    177: 'Ks',
+    178: 'Kh',
+    180: 'Kd',
+    184: 'Kc',
+    200: 'Ac',
+    193: 'As',
+    194: 'Ah',
+    196: 'Ad'
   };
   static getString(int cardNum) {
     return cardNumbers[cardNum];
+  }
+
+  static getCardLetter(int cardNum) {
+    return cardNumbers[cardNum].substring(0, 1);
+  }
+
+  static getCardSuit(int cardNum) {
+    return cardNumbers[cardNum][1];
+  }
+
+  static List<String> getCardLetters() {
+    return ['2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A'];
+  }
+
+  static List<String> getCardSuits() {
+    return ['c', 's', 'd', 'h'];
   }
 }

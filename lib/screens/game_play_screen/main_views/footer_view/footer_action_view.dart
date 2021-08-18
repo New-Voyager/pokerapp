@@ -362,7 +362,6 @@ class _FooterActionViewState extends State<FooterActionView> {
               alignment: Alignment.bottomCenter,
               child: Container(
                 padding: EdgeInsets.symmetric(vertical: 4.0),
-                
                 child: _buildActionWidgets(actionState.action, theme),
               ),
             ),

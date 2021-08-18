@@ -27,7 +27,7 @@
 		"seatInfo": {
 			"availableSeats": [],
 			"playersInSeats": [{
-					"name": "me",
+					"name": "poker club",
 					"playerId": "1",
 					"seatNo": 1,
 					"playerUuid": "185ecfc9c80b5ee6",
@@ -45,7 +45,7 @@
 					"status": "PLAYING"
 				},
 				{
-					"name": "brian",
+					"name": "cnu federer",
 					"playerId": "3",
 					"seatNo": 3,
 					"playerUuid": "4b93e2be-7992-45c3-a2dd-593c2f708cb7",
@@ -54,7 +54,7 @@
 					"status": "PLAYING"
 				},
 				{
-					"name": "tom",
+					"name": "paul",
 					"playerId": "4",
 					"seatNo": 4,
 					"playerUuid": "371e8c15-39cb-4bd9-a932-ced7a9dd6aac",

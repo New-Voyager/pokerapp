@@ -275,7 +275,6 @@ class _GameOptionState extends State<GameOption> {
                   if (closed) return;
                   setState(() {});
                 }),
-            
             _buildCheckBox(
               text: AppStringsNew.promptRunitTwice,
               value: widget.gameState.gameInfo.playerRunItTwice,
@@ -403,7 +402,9 @@ class _GameOptionState extends State<GameOption> {
                       alignment: WrapAlignment.center,
                       //mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        ...gameActions.map((e) => gameActionItem(e,theme)).toList(),
+                        ...gameActions
+                            .map((e) => gameActionItem(e, theme))
+                            .toList(),
                       ],
                     ),
                   ),
@@ -665,7 +666,7 @@ class _GameOptionState extends State<GameOption> {
     );
   }
 
-  gameActionItem(OptionItemModel optionItemModel,AppTheme theme) {
+  gameActionItem(OptionItemModel optionItemModel, AppTheme theme) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 5),
       child: GestureDetector(
@@ -679,7 +680,7 @@ class _GameOptionState extends State<GameOption> {
             Container(
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color:theme.accentColor,
+                color: theme.accentColor,
               ),
               padding: EdgeInsets.all(10),
               child: Icon(

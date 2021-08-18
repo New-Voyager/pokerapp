@@ -5,11 +5,11 @@ import 'package:flutter/services.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/player_info.dart' as pi;
+
 class CustomizationService {
   pi.PlayerInfo _currentPlayer;
   GameInfoModel _gameInfo;
   CustomizationService();
-
 
   pi.PlayerInfo get currentPlayer {
     return _currentPlayer;

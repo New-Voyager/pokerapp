@@ -69,29 +69,24 @@ class _CenterViewState extends State<CenterView> {
         ),
       );
 
-
   Widget customizationView({
     double scale = 1.0,
     Offset offset = Offset.zero,
   }) {
     AppTheme theme = AppTheme.getTheme(context);
-      return Align(
-        alignment: Alignment.center,
-        child: Transform.translate(
-          offset: offset,
-          child: Transform.scale(
+    return Align(
+      alignment: Alignment.center,
+      child: Transform.translate(
+        offset: offset,
+        child: Transform.scale(
             scale: scale * 1.2,
             child: GameCircleButton(
-                          onClickHandler: () {},
-                          child: Icon(
-                            Icons.edit,
-                            size: 24,
-                            color: theme.primaryColorWithDark()
-                          ),
-                        )
-          ),
-        ),
-      );
+              onClickHandler: () {},
+              child: Icon(Icons.edit,
+                  size: 24, color: theme.primaryColorWithDark()),
+            )),
+      ),
+    );
   }
 
   Widget centerTextWidget(
@@ -251,32 +246,30 @@ class _CenterViewState extends State<CenterView> {
     final boardAttributes = gameState.getBoardAttributes(context);
 
     return ValueListenableBuilder3<String, String, bool>(
-      vnGameStatus,
-      vnTableStatus,
-      vnShowCardShuffling,
-
-      builder: (_, gameStatus, tableStatus, showCardsShuffling, __) {
-        if (gameState.customizationMode) {
-          return customizationView( offset: boardAttributes.centerViewCardShufflePosition,
-                  scale: boardAttributes.centerViewCenterScale,);
-        }
-          if(showCardsShuffling) {
-              return (gameState?.handInfo?.bombPot ?? false)
-                  ? _bombPotAnimation()
-                  : _positionAnimationShuffleCardView(
-                  offset: boardAttributes.centerViewCardShufflePosition,
-                  scale: boardAttributes.centerViewCenterScale,
-                  child: AnimatingShuffleCardView(),
-                );
-          }
-          return _mainBuild(
-                  context,
-                  tableStatus: tableStatus,
-                  gameStatus: gameStatus,
-                  boardAttributes: boardAttributes,
-                );
+        vnGameStatus, vnTableStatus, vnShowCardShuffling,
+        builder: (_, gameStatus, tableStatus, showCardsShuffling, __) {
+      if (gameState.customizationMode) {
+        return customizationView(
+          offset: boardAttributes.centerViewCardShufflePosition,
+          scale: boardAttributes.centerViewCenterScale,
+        );
       }
-    );
+      if (showCardsShuffling) {
+        return (gameState?.handInfo?.bombPot ?? false)
+            ? _bombPotAnimation()
+            : _positionAnimationShuffleCardView(
+                offset: boardAttributes.centerViewCardShufflePosition,
+                scale: boardAttributes.centerViewCenterScale,
+                child: AnimatingShuffleCardView(),
+              );
+      }
+      return _mainBuild(
+        context,
+        tableStatus: tableStatus,
+        gameStatus: gameStatus,
+        boardAttributes: boardAttributes,
+      );
+    });
   }
 
   Widget _buildMainCenterView(final context, final boardAttributes) {

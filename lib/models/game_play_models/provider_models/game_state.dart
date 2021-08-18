@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/enums/game_status.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
@@ -49,6 +50,19 @@ enum HandState {
   ENDED,
 }
 
+enum HoleCardOrder {
+  DEALT,
+  SEQUENCE,
+  SUIT,
+  PAIR,
+}
+List<HoleCardOrder> holeCardOrders = [
+  HoleCardOrder.DEALT,
+  HoleCardOrder.PAIR,
+  HoleCardOrder.SEQUENCE,
+  HoleCardOrder.SUIT
+];
+
 /*
  * This class maintains game state. This game state is used by game play screen.
  * All the other states in the game play screen are managed by this game state object.
@@ -67,6 +81,9 @@ class GameState {
   ListenableProvider<PopupButtonState> _popupButtonState;
   ListenableProvider<CommunicationState> _communicationStateProvider;
   ListenableProvider<StraddlePromptState> _straddlePromptState;
+
+  HoleCardsState _holeCardsState;
+  ListenableProvider<HoleCardsState> _holeCardsProvider;
 
   CommunicationState _communicationState;
   Players _players;
@@ -119,7 +136,10 @@ class GameState {
   bool buyInKeyboardShown = false;
 
   // customization mode
-  bool customizationMode  = false;
+  bool customizationMode = false;
+
+  // hole card order
+  HoleCardOrder holecardOrder = HoleCardOrder.DEALT;
 
   GameScreenAssets assets;
   Future<void> initialize({
@@ -186,6 +206,9 @@ class GameState {
         create: (_) => _communicationState);
     this._straddlePromptState = ListenableProvider<StraddlePromptState>(
         create: (_) => StraddlePromptState());
+    _holeCardsState = HoleCardsState();
+    this._holeCardsProvider =
+        ListenableProvider<HoleCardsState>(create: (_) => _holeCardsState);
 
     this.janusEngine = JanusEngine(
         gameState: this,
@@ -537,9 +560,12 @@ class GameState {
   void clear(BuildContext context) {
     final tableState = this.getTableState(context);
     final players = this.getPlayers(context);
-
+    this.holecardOrder = HoleCardOrder.DEALT;
     // clear players
     players.clear();
+    if (players.me != null) {
+      players.me.rankText = '';
+    }
 
     // clear table state
     tableState.clear();
@@ -668,6 +694,7 @@ class GameState {
       this._popupButtonState,
       this._communicationStateProvider,
       this._straddlePromptState,
+      this._holeCardsProvider,
     ];
   }
 
@@ -811,6 +838,118 @@ class GameState {
     StraddlePromptState prompt =
         Provider.of<StraddlePromptState>(context, listen: false);
     return prompt;
+  }
+
+  PlayerModel getMe() {
+    for (PlayerModel player in this._players.players) {
+      if (player.isMe) {
+        return player;
+      }
+    }
+    return null;
+  }
+
+  void changeHoleCardOrder(BuildContext context) {
+    int i = HoleCardOrder.values.indexOf(holecardOrder);
+    if (i == -1) {
+    } else {
+      i++;
+      if (i >= HoleCardOrder.values.toList().length) {
+        i = 0;
+      }
+    }
+    holecardOrder = HoleCardOrder.values[i];
+
+    _holeCardsState.notify();
+    //final footerState = context.read<ValueNotifier<FooterStatus>>();
+    // Provider.of<ValueNotifier<FooterStatus>>(
+    //   context,
+    //   listen: false,
+    // ).value = FooterStatus.None;
+  }
+
+  List<int> getHoleCards() {
+    final player = getMe();
+    if (player == null) {
+      return [];
+    }
+    //holecardOrder = HoleCardOrder.SEQUENCE;
+    if (holecardOrder == HoleCardOrder.DEALT) {
+      return player.cards;
+    } else if (holecardOrder == HoleCardOrder.PAIR) {
+      List<int> playerCards = player.cards.sublist(0, player.cards.length);
+      List<int> cardsToReturn = [];
+      for (String letter in CardConvUtils.getCardLetters()) {
+        List<int> updatedCards = [];
+        // let us find out whether we have this card
+        for (int i = 0; i < playerCards.length; i++) {
+          String cardLetter = CardConvUtils.getCardLetter(playerCards[i]);
+          if (cardLetter == letter) {
+            cardsToReturn.add(playerCards[i]);
+          } else {
+            updatedCards.add(playerCards[i]);
+          }
+        }
+        playerCards = updatedCards;
+      }
+      return cardsToReturn.reversed.toList();
+    } else if (holecardOrder == HoleCardOrder.SUIT) {
+      List<int> playerCards = player.cards.sublist(0, player.cards.length);
+      List<int> cardsToReturn = [];
+      for (String suit in CardConvUtils.getCardSuits()) {
+        for (String letter in CardConvUtils.getCardLetters()) {
+          List<int> updatedCards = [];
+          var set1 = Set.from(player.cards);
+          var set2 = Set.from(cardsToReturn);
+          playerCards = List.from(set1.difference(set2));
+          // let us find out whether we have this card
+          for (int i = 0; i < playerCards.length; i++) {
+            String cardSuit = CardConvUtils.getCardSuit(playerCards[i]);
+            if (cardSuit != suit) {
+              continue;
+            }
+
+            String cardLetter = CardConvUtils.getCardLetter(playerCards[i]);
+            if (cardLetter == letter) {
+              cardsToReturn.add(playerCards[i]);
+            } else {
+              updatedCards.add(playerCards[i]);
+            }
+          }
+          playerCards = updatedCards;
+        }
+      }
+      return cardsToReturn.reversed.toList();
+    } else if (holecardOrder == HoleCardOrder.SEQUENCE) {
+      List<int> remainingCards = player.cards.sublist(0, player.cards.length);
+      List<int> cardsToReturn = [];
+      while (remainingCards.length > 0) {
+        for (String letter in CardConvUtils.getCardLetters()) {
+          List<int> updatedCards = [];
+          var set1 = Set.from(player.cards);
+          var set2 = Set.from(cardsToReturn);
+          remainingCards = List.from(set1.difference(set2));
+          // let us find out whether we have this card
+          for (int i = 0; i < remainingCards.length; i++) {
+            String cardLetter = CardConvUtils.getCardLetter(remainingCards[i]);
+            if (cardLetter == letter) {
+              cardsToReturn.add(remainingCards[i]);
+              break;
+            } else {
+              updatedCards.add(remainingCards[i]);
+            }
+          }
+          remainingCards = updatedCards;
+        }
+      }
+      var set1 = Set.from(player.cards);
+      var set2 = Set.from(cardsToReturn);
+      remainingCards = List.from(set1.difference(set2));
+      cardsToReturn.addAll(remainingCards);
+      return cardsToReturn.reversed.toList();
+    } else {
+      return player.cards.reversed.toList();
+    }
   }
 }
 
@@ -1062,23 +1201,27 @@ class GameScreenAssets {
     //tableImage = AppAssets.horizontalTable;
     //backdropImage = AppAssets.barBookshelfBackground;
 
-    backdropBytes = (await rootBundle.load(backdropImage))
-          .buffer
-          .asUint8List();
-    boardBytes = (await rootBundle.load(tableImage))
-          .buffer
-          .asUint8List();
-    holeCardBackBytes = (await rootBundle.load('assets/images/card_back/set2/Asset 7.png'))
-          .buffer
-          .asUint8List();
+    backdropBytes = (await rootBundle.load(backdropImage)).buffer.asUint8List();
+    boardBytes = (await rootBundle.load(tableImage)).buffer.asUint8List();
+    holeCardBackBytes =
+        (await rootBundle.load('assets/images/card_back/set2/Asset 7.png'))
+            .buffer
+            .asUint8List();
 
-    for(int card in CardConvUtils.cardNumbers.keys) {
+    for (int card in CardConvUtils.cardNumbers.keys) {
       final cardStr = CardConvUtils.getString(card);
-      final cardBytes = (await rootBundle.load('assets/images/card_face/$card.svg'))
-          .buffer
-          .asUint8List();
+      final cardBytes =
+          (await rootBundle.load('assets/images/card_face/$card.svg'))
+              .buffer
+              .asUint8List();
       cardStrImage[cardStr] = cardBytes;
       cardNumberImage[card] = cardBytes;
     }
+  }
+}
+
+class HoleCardsState extends ChangeNotifier {
+  void notify() {
+    notifyListeners();
   }
 }

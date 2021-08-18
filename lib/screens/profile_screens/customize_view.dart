@@ -145,7 +145,8 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
                                   });
                                   final settings = HiveDatasource.getInstance
                                       .getBox(BoxType.USER_SETTINGS_BOX);
-                                  settings.put('theme', themeList[index].toMap());
+                                  settings.put(
+                                      'theme', themeList[index].toMap());
                                   settings.put('themeIndex', index);
 
                                   theme.updateThemeData(selectedThemeData);

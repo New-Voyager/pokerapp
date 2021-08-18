@@ -160,7 +160,8 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
 
                   await graphQLConfiguration.init();
 
-                  Alerts.showNotification(titleText:  _appScreenText['APIURLISSET']);
+                  Alerts.showNotification(
+                      titleText: _appScreenText['APIURLISSET']);
 
                   Navigator.of(context).pop();
                 }),

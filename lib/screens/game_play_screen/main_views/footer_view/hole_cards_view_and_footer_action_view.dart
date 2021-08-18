@@ -8,12 +8,14 @@ import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/marked_cards.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/rabbit_state.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/game_circle_button.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_proto_service.dart';
 import 'package:pokerapp/widgets/cards/hole_stack_card_view.dart';
@@ -22,6 +24,7 @@ import 'package:pokerapp/widgets/cards/multiple_stack_card_views.dart';
 import 'package:pokerapp/widgets/num_diamond_widget.dart';
 import 'package:pokerapp/widgets/straddle_dialog.dart';
 import 'package:provider/provider.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 import 'footer_action_view.dart';
 
@@ -75,7 +78,8 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
           color: Colors.cyan,
         );
 
-    Widget _buildRevealButton(ValueNotifier<bool> vnIsRevealed,AppTheme theme) {
+    Widget _buildRevealButton(
+        ValueNotifier<bool> vnIsRevealed, AppTheme theme) {
       return Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
@@ -106,7 +110,7 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
           onTap: _onShareButtonTap,
           child: Icon(
             Icons.share_rounded,
-            color:theme.accentColor,
+            color: theme.accentColor,
             size: 30.0,
           ),
         ),
@@ -197,7 +201,7 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
                       child: Consumer<ValueNotifier<bool>>(
                         builder: (_, vnIsRevealed, __) => vnIsRevealed.value
                             ? _buildShareButton(theme)
-                            : _buildRevealButton(vnIsRevealed,theme),
+                            : _buildRevealButton(vnIsRevealed, theme),
                       ),
                     ),
 
@@ -272,74 +276,76 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
   Widget _buildholeCardViewAndStraddleDialog(
     GameState gameState,
     BoardAttributesObject boardAttributes,
-  ) =>
-      Builder(
-        builder: (context) => Stack(
-          alignment: Alignment.topCenter,
-          children: [
-            // hole card view
-            Transform.translate(
-              offset: boardAttributes.holeCardViewOffset,
-              child: Transform.scale(
-                scale: boardAttributes.holeCardViewScale,
-                child: Stack(
-                  alignment: Alignment.bottomCenter,
-                  // mainAxisSize: MainAxisSize.min,
-                  children: [
-                    // main hole card view
-                    Consumer<StraddlePromptState>(
-                      builder: (_, __, ___) => _buildHoleCardView(context),
-                    ),
-
-                    // all hole card selection button
-                    _buildAllHoleCardAndRabbitHuntSelectionButton(context),
-                  ],
-                ),
-              ),
-            ),
-
-            Consumer<StraddlePromptState>(
-              builder: (_, straddlePromptState, ___) => Align(
-                child: Transform.scale(
-                  scale: 0.80,
-                  child: StraddleDialog(
-                    straddlePrompt: gameState.straddlePrompt,
-                    gameState: gameState,
-                    onSelect: (List<bool> optionAutoValue) {
-                      final straddleOption = optionAutoValue[0];
-                      final autoStraddle = optionAutoValue[1];
-                      final straddleChoice = optionAutoValue[2];
-
-                      // put the settings in the game state settings
-                      gameState.settings.straddleOption = straddleOption;
-                      gameState.settings.autoStraddle = autoStraddle;
-
-                      if (straddleChoice != null) {
-                        gameState.straddlePrompt = false;
-                        straddlePromptState.notify();
-
-                        if (straddleChoice == true) {
-                          // act now
-                          log('Player wants to straddle');
-                          HandActionProtoService.takeAction(
-                            context: context,
-                            action: AppConstants.STRADDLE,
-                            amount: 2 * gameState.gameInfo.bigBlind,
-                          );
-                        } else {
-                          log('Player does not want to straddle');
-                          // show action buttons
-                          gameState.showAction(context, true);
-                        }
-                      }
-                    },
+  ) {
+    return Builder(
+      builder: (context) => Stack(
+        alignment: Alignment.topCenter,
+        children: [
+          // hole card view
+          Transform.translate(
+            offset: boardAttributes.holeCardViewOffset,
+            child: Transform.scale(
+              scale: boardAttributes.holeCardViewScale,
+              child: Stack(
+                alignment: Alignment.bottomCenter,
+                // mainAxisSize: MainAxisSize.min,
+                children: [
+                  // main hole card view
+                  Consumer3<StraddlePromptState, HoleCardsState, MyState>(
+                    builder: (_, __, ___, ____, _____) =>
+                        _buildHoleCardView(context),
                   ),
+
+                  // all hole card selection button
+                  _buildAllHoleCardAndRabbitHuntSelectionButton(context),
+                ],
+              ),
+            ),
+          ),
+
+          Consumer<StraddlePromptState>(
+            builder: (_, straddlePromptState, ___) => Align(
+              child: Transform.scale(
+                scale: 0.80,
+                child: StraddleDialog(
+                  straddlePrompt: gameState.straddlePrompt,
+                  gameState: gameState,
+                  onSelect: (List<bool> optionAutoValue) {
+                    final straddleOption = optionAutoValue[0];
+                    final autoStraddle = optionAutoValue[1];
+                    final straddleChoice = optionAutoValue[2];
+
+                    // put the settings in the game state settings
+                    gameState.settings.straddleOption = straddleOption;
+                    gameState.settings.autoStraddle = autoStraddle;
+
+                    if (straddleChoice != null) {
+                      gameState.straddlePrompt = false;
+                      straddlePromptState.notify();
+
+                      if (straddleChoice == true) {
+                        // act now
+                        log('Player wants to straddle');
+                        HandActionProtoService.takeAction(
+                          context: context,
+                          action: AppConstants.STRADDLE,
+                          amount: 2 * gameState.gameInfo.bigBlind,
+                        );
+                      } else {
+                        log('Player does not want to straddle');
+                        // show action buttons
+                        gameState.showAction(context, true);
+                      }
+                    }
+                  },
                 ),
               ),
             ),
-          ],
-        ),
-      );
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget _buildDarkBackground() => ValueListenableBuilder<bool>(
         valueListenable: _showDarkBackgroundVn,
@@ -396,18 +402,58 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
     );
   }
 
+  Widget _getRankText(GameState gameState, BuildContext context) {
+    final me = gameState.me(context);
+    final theme = AppTheme.getTheme(context);
+    Color borderColor = theme.accentColorWithDark();
+    if (me == null || me.rankText == '') {
+      borderColor = Colors.transparent;
+    }
+
+    Widget rankText = Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: 14.pw,
+        vertical: 3.ph,
+      ),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(6.pw),
+        border: Border.all(color: borderColor),
+      ),
+      child: Text(
+        me.rankText,
+        style: AppDecorators.getHeadLine5Style(theme: theme),
+      ),
+    );
+    return rankText;
+  }
+
   Widget _buildHoleCardView(BuildContext context) {
     log('HoleCards: rebuilding');
     final gameState = GameState.getState(context);
-
+    final theme = AppTheme.getTheme(context);
+    final playerCards = gameState.getHoleCards();
     Widget cardsWidget = cards(
       playerFolded: playerModel.playerFolded,
-      cardsInt: playerModel?.cards,
+      cardsInt: playerCards,
       straddlePrompt: gameState.straddlePrompt,
     );
-
     if (gameState.straddlePrompt) return cardsWidget;
-
+    Widget shuffleButton = Container();
+    if (playerModel != null && playerModel.cards != null) {
+      if (playerModel.cards.length > 2) {
+        shuffleButton = IconButton(
+          icon: Icon(
+            Icons.autorenew,
+            color: theme.accentColor,
+          ),
+          onPressed: () {
+            gameState.changeHoleCardOrder(context);
+            log('shuffle cards');
+          },
+        );
+      }
+    }
+    Widget rankText = _getRankText(gameState, context);
     return GestureDetector(
       onTap: () {
         isHoleCardsVisibleVn.value = !isHoleCardsVisibleVn.value;
@@ -417,7 +463,17 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
           isHoleCardsVisibleVn.value,
         );
       },
-      child: cardsWidget,
+      child: Transform.translate(
+          offset: Offset(0, 10.pw),
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+            rankText,
+            SizedBox(
+              height: 10.ph,
+            ),
+            cardsWidget,
+            shuffleButton,
+          ])),
     );
   }
 
