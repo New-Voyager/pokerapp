@@ -10,16 +10,16 @@ Map<int, Offset> _finalPositionCache = Map();
 class CardDistributionAnimatingWidget extends StatelessWidget {
   final GlobalKey _globalKey = GlobalKey();
 
-  Widget _buildCardBack() => Container(
-        height: AppDimensions.cardHeight,
-        width: AppDimensions.cardWidth,
-        decoration: BoxDecoration(),
-        child: Consumer<ValueNotifier<String>>(
-          builder: (_, cardBackAssetImageNotifier, __) => Image.asset(
-            cardBackAssetImageNotifier.value,
-          ),
-        ),
-      );
+  Widget _buildCardBack(BuildContext context) {
+    final GameState gameState = GameState.getState(context);
+    final cardBackImage = Image.memory(gameState.assets.getHoleCardBack());
+    return Container(
+      height: AppDimensions.cardHeight,
+      width: AppDimensions.cardWidth,
+      decoration: BoxDecoration(),
+      child: cardBackImage,
+    );
+  }
 
   Offset _getPositionOffsetFromKey(GlobalKey key) {
     if (key.currentContext == null) {
@@ -71,7 +71,7 @@ class CardDistributionAnimatingWidget extends StatelessWidget {
 
         return TweenAnimationBuilder<Offset>(
           key: ValueKey(model.seatNo),
-          child: _buildCardBack(),
+          child: _buildCardBack(context),
           curve: Curves.easeOut,
           tween: Tween<Offset>(
             begin: Offset(0, 0),

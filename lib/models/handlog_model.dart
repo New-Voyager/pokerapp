@@ -272,7 +272,10 @@ class HandResultData {
   }
 
   List<int> getBoard2() {
-    return result.boards[1].cards;
+    if (result.boards.length >= 2) {
+      return result.boards[1].cards;
+    }
+    return [];
   }
 
   BoardPlayerRank getPlayerRank(int boardNo, int seatNo) {

@@ -1,12 +1,10 @@
 import 'dart:developer';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
-import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
-import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/widgets/cards/pulsating_card_container.dart';
 import 'package:provider/provider.dart';
@@ -23,12 +21,14 @@ class CardBuilderWidget extends StatelessWidget {
   final bool shadow;
   final double roundRadius;
   final CardFace cardFace;
+  final Uint8List backCardBytes;
 
   CardBuilderWidget({
     @required this.card,
     @required this.dim,
     @required this.highlight,
     @required this.isCardVisible,
+    @required this.backCardBytes,
     @required
         Widget this.cardBuilder(TextStyle _, TextStyle __, BuildContext ___),
     this.shadow = false,
@@ -161,7 +161,12 @@ class CardBuilderWidget extends StatelessWidget {
 
     // final gameState = GameState.getState(context);
     // final image = Image.memory(gameState.assets.getHoleCardBack());
-    Image cardBackImage = Image.asset('assets/images/card_back/set2/Asset 8.png');
+    Image cardBackImage;
+    if (this.backCardBytes != null) {
+      cardBackImage = Image.memory(this.backCardBytes);
+    } else {
+      cardBackImage = Image.asset('assets/images/card_back/set2/Asset 8.png');
+    }
 
     return ClipRRect(
       borderRadius: BorderRadius.all(Radius.circular(roundRadius)),
@@ -169,5 +174,3 @@ class CardBuilderWidget extends StatelessWidget {
     );
   }
 }
-
-

@@ -1,15 +1,17 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:pokerapp/widgets/cards/card_builder_widget.dart';
 
-
 class CardView extends StatelessWidget {
   final CardObject card;
-
+  final Uint8List cardBackBytes;
   CardView({
     @required this.card,
+    @required this.cardBackBytes,
   });
 
   Widget _buildCardUI(
@@ -62,6 +64,7 @@ class CardView extends StatelessWidget {
     return CardBuilderWidget(
       card: card,
       dim: card.dim,
+      backCardBytes: cardBackBytes,
       highlight: card.highlight,
       isCardVisible: true,
       cardBuilder: _buildCardUI,

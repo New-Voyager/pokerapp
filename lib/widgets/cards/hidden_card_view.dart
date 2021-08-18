@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:provider/provider.dart';
 
@@ -11,7 +12,11 @@ class HiddenCardView extends StatelessWidget {
 
   final noOfCards;
 
-  Widget _buildCardBack() => Container(
+  Widget _buildCardBack(BuildContext context) {
+    final GameState gameState = GameState.getState(context);
+    final cardBackImage = Image.memory(gameState.assets.getHoleCardBack());
+
+    return Container(
         height: AppDimensions.cardHeight * 0.60,
         width: AppDimensions.cardWidth * 0.60,
         decoration: BoxDecoration(
@@ -23,12 +28,8 @@ class HiddenCardView extends StatelessWidget {
             )
           ],
         ),
-        child: Consumer<ValueNotifier<String>>(
-          builder: (_, valueNotifierAsset, __) => Image.asset(
-            valueNotifierAsset.value,
-          ),
-        ),
-      );
+        child: cardBackImage);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +48,7 @@ class HiddenCardView extends StatelessWidget {
           child: Transform.rotate(
             alignment: Alignment.bottomLeft,
             angle: (i - mid) * 0.20,
-            child: _buildCardBack(),
+            child: _buildCardBack(context),
           ),
         ),
       ),
