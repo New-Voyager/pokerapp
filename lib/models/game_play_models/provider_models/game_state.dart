@@ -1132,6 +1132,7 @@ class GameScreenAssets {
   Uint8List backdropBytes;
   Uint8List boardBytes;
   Uint8List holeCardBackBytes;
+  Uint8List betImageBytes;
   Map<String, Uint8List> cardStrImage;
   Map<int, Uint8List> cardNumberImage;
 
@@ -1155,14 +1156,20 @@ class GameScreenAssets {
     return cardStrImage[card];
   }
 
+  Uint8List getBetImage() {
+    return betImageBytes;
+  }
+
   Future<void> initialize() async {
     cardStrImage = Map<String, Uint8List>();
     cardNumberImage = Map<int, Uint8List>();
     String backdropImage = 'assets/images/backgrounds/night sky.png';
     String tableImage = 'assets/images/table/night sky table.png';
+    String betImage = 'assets/images/betimage.svg';
     //tableImage = AppAssets.horizontalTable;
     //backdropImage = AppAssets.barBookshelfBackground;
 
+    betImageBytes = (await rootBundle.load(betImage)).buffer.asUint8List();
     backdropBytes = (await rootBundle.load(backdropImage)).buffer.asUint8List();
     boardBytes = (await rootBundle.load(tableImage)).buffer.asUint8List();
     holeCardBackBytes =

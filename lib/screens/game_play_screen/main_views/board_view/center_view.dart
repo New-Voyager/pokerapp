@@ -15,6 +15,7 @@ import 'package:pokerapp/resources/animation_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
+import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/center_button_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/pots_view.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/game_circle_button.dart';
@@ -81,7 +82,9 @@ class _CenterViewState extends State<CenterView> {
         child: Transform.scale(
             scale: scale * 1.2,
             child: GameCircleButton(
-              onClickHandler: () {},
+              onClickHandler: () {
+                Navigator.of(context).pushNamed(Routes.select_table);
+              },
               child: Icon(Icons.edit,
                   size: 24, color: theme.primaryColorWithDark()),
             )),

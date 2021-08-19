@@ -70,7 +70,7 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
   // ];
 
   List<String> bgImageUrls = [
-    "https://assets-pokerclubapp.nyc3.digitaloceanspaces.com/background/western-saloon.jpg",
+    "https://assets-pokerclubapp.nyc3.digitaloceanspaces.com/background/western%20saloon.jpeg",
     "https://assets-pokerclubapp.nyc3.digitaloceanspaces.com/background/bar_bookshelf.jpg",
   ];
   List<String> tableImageUrls = [

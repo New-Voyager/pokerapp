@@ -14,6 +14,7 @@ import 'package:pokerapp/screens/game_screens/new_game_settings/choose_game_new.
 import 'package:pokerapp/screens/profile_screens/customize_view.dart';
 import 'package:pokerapp/screens/profile_screens/help_screen.dart';
 import 'package:pokerapp/screens/profile_screens/performance_view.dart';
+import 'package:pokerapp/screens/profile_screens/table_selector.dart';
 import 'package:pokerapp/services/game_play/customization_service.dart';
 import 'package:provider/provider.dart';
 
@@ -110,6 +111,9 @@ class Routes {
   static const String announcements = "/announcements";
   // help
   static const String help = "/help";
+
+// gamescreen table view.
+  static const String select_table = "/select_table";
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -396,6 +400,12 @@ class Routes {
           viewToShow: HelpScreen(
             version: versionCode,
           ),
+        );
+
+      case select_table:
+        return _getPageRoute(
+          routeName: settings.name,
+          viewToShow: TableSelectorScreen(),
         );
 
       default:
