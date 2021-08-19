@@ -57,7 +57,10 @@ class CardObject {
 
   bool isEmpty() => this.empty;
 
-  Widget get widget => CardView(card: this);
+  Widget get widget => CardView(
+        card: this,
+        cardBackBytes: null,
+      );
 
   String get cardHash => '$cardNum';
 

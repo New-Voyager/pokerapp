@@ -534,7 +534,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
           return Transform.scale(
             scale: boardAttributes.playerViewScale,
             child: Opacity(
-              opacity: (seat?.player?.isActive ?? false) ? 0.50 : 1.0,
+              opacity: (seat?.player?.isActive ?? false) ? 1.0 : 0.50,
               child: PlayerView(
                 gameState: widget.gameState,
                 gameComService: widget.gameComService,

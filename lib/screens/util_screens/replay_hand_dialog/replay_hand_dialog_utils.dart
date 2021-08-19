@@ -13,7 +13,6 @@ import 'package:pokerapp/models/game_play_models/provider_models/seat_change_mod
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_replay_models/game_replay_controller.dart';
 import 'package:pokerapp/models/handlog_model.dart';
-import 'package:pokerapp/resources/card_back_assets.dart';
 import 'package:pokerapp/services/game_replay_service/game_replay_service.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
@@ -62,11 +61,6 @@ class ReplayHandScreenUtils {
       /* this is for having random card back for every new hand */
       ListenableProvider<CardDistributionModel>(
         create: (_) => CardDistributionModel(),
-      ),
-
-      /* this is for having random card back for every new hand */
-      ListenableProvider<ValueNotifier<String>>(
-        create: (_) => ValueNotifier<String>(CardBackAssets.getRandom()),
       ),
 
       /* board object used for changing board attributes */

@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
@@ -9,13 +11,13 @@ class CustomFlipCard extends StatelessWidget {
   final Function onFlipDone;
   final GlobalKey<FlipCardState> globalKey;
   final Widget cardWidget;
-  final String cardBackAsset;
+  final Uint8List cardBackBytes;
 
   CustomFlipCard({
     @required this.onFlipDone,
     @required this.globalKey,
     @required this.cardWidget,
-    @required this.cardBackAsset,
+    @required this.cardBackBytes,
   });
 
   double _getScale(context) => CardBuilderWidget.getCardRatioFromCardType(
@@ -32,8 +34,8 @@ class CustomFlipCard extends StatelessWidget {
         back: cardWidget,
         front: ClipRRect(
           borderRadius: BorderRadius.circular(5.0),
-          child: Image.asset(
-            cardBackAsset,
+          child: Image.memory(
+            cardBackBytes,
             height: AppDimensions.cardHeight * _getScale(context),
             width: AppDimensions.cardWidth * _getScale(context),
           ),

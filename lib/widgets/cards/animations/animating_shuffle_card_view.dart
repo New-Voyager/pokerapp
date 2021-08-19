@@ -1,11 +1,10 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
-import 'package:pokerapp/resources/card_back_assets.dart';
 import 'package:pokerapp/widgets/cards/animations/card_back.dart';
-import 'package:provider/provider.dart';
 
 const delayConst = 1;
 const restOffsetMultiplier = 1 / 10;
@@ -19,8 +18,6 @@ class AnimatingShuffleCardView extends StatefulWidget {
 class _AnimatingShuffleCardViewState extends State<AnimatingShuffleCardView> {
   final _noOfCards = 20;
   final List<CardBack> _cards = [];
-
-  String cardBackAsset;
 
   Future<void> _animationWait() => Future.delayed(
         Duration(
@@ -116,10 +113,11 @@ class _AnimatingShuffleCardViewState extends State<AnimatingShuffleCardView> {
 
   void _initAnimate() async {
     var randomizer = math.Random();
+    GameState gameState = GameState.getState(context);
 
     for (int i = 0; i < _noOfCards; i++) {
       CardBack card = CardBack(
-        cardBackImageAsset: cardBackAsset,
+        cardBackBytes: gameState.assets.getHoleCardBack(),
         dx: -i * restOffsetMultiplier,
         dy: -i * restOffsetMultiplier,
         xTarget: getXTarget(i, randomizer),
@@ -148,16 +146,6 @@ class _AnimatingShuffleCardViewState extends State<AnimatingShuffleCardView> {
   }
 
   void init() async {
-    String cardBackAssetImage = CardBackAssets.getRandom();
-
-    try {
-      cardBackAssetImage = Provider.of<ValueNotifier<String>>(
-        context,
-        listen: false,
-      ).value;
-    } catch (e) {}
-
-    cardBackAsset = cardBackAssetImage;
     _initAnimate();
   }
 

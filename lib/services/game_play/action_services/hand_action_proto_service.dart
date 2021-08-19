@@ -25,7 +25,6 @@ import 'package:pokerapp/proto/enums.pb.dart' as proto;
 import 'package:pokerapp/proto/handmessage.pb.dart' as proto;
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
-import 'package:pokerapp/resources/card_back_assets.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/data/game_log_store.dart';
@@ -686,7 +685,6 @@ class HandActionProtoService {
 
     /* get a new card back asset to be shown */
     if (_close) return;
-    _context.read<ValueNotifier<String>>().value = CardBackAssets.getRandom();
 
     tableState.notifyAll();
     log('Hand Message: ::handleNewHand:: END');

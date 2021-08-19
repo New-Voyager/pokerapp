@@ -1,12 +1,10 @@
 import 'dart:developer';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
-import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
-import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/widgets/cards/pulsating_card_container.dart';
 import 'package:provider/provider.dart';
@@ -23,12 +21,14 @@ class CardBuilderWidget extends StatelessWidget {
   final bool shadow;
   final double roundRadius;
   final CardFace cardFace;
+  final Uint8List backCardBytes;
 
   CardBuilderWidget({
     @required this.card,
     @required this.dim,
     @required this.highlight,
     @required this.isCardVisible,
+    @required this.backCardBytes,
     @required
         Widget this.cardBuilder(TextStyle _, TextStyle __, BuildContext ___),
     this.shadow = false,
@@ -159,23 +159,18 @@ class CardBuilderWidget extends StatelessWidget {
           ? cardBuilder(cardTextStyle, suitTextStyle, context)
           : Container();
 
-    String vnCardBackImage;
-    final gameState = GameState.getState(context);
-    try {
-      // get the card back side asset as we need
-      vnCardBackImage = context.read<ValueNotifier<String>>().value;
-    } catch (e) {
-      // we cath exceptions in case we dont have the back card asset available,
-      // such as in cases of Hand Logs or Hand Histories back card assets
-      // in such cases, show the default card, cardBackImage
-      vnCardBackImage = AppAssets.cardBackImage;
+    // final gameState = GameState.getState(context);
+    // final image = Image.memory(gameState.assets.getHoleCardBack());
+    Image cardBackImage;
+    if (this.backCardBytes != null) {
+      cardBackImage = Image.memory(this.backCardBytes);
+    } else {
+      cardBackImage = Image.asset('assets/images/card_back/set2/Asset 8.png');
     }
-
-    final image = Image.memory(gameState.assets.getHoleCardBack());
 
     return ClipRRect(
       borderRadius: BorderRadius.all(Radius.circular(roundRadius)),
-      child: image,
+      child: cardBackImage,
     );
   }
 }
