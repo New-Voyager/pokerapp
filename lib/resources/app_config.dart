@@ -27,7 +27,7 @@ class AppConfig {
     String deviceId = sharedPreferences.getString(AppConstants.DEVICE_ID);
     String deviceSecret =
         sharedPreferences.getString(AppConstants.DEVICE_SECRET);
-
+    await AppConfig.saveApiUrl(apiServer: _apiUrl);
     _deviceId = deviceId;
     _deviceSecret = deviceSecret;
   }
