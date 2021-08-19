@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
@@ -182,11 +183,13 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
                           log("Downloading ${_selectedTable.id} : ${_selectedTable.name}");
                           _tableAssets[index] =
                               await AssetService.saveFile(_tableAssets[index]);
-                          AssetService.hiveStore.put(_tableAssets[index]);
-                          AssetService.setDefaultTableAsset(
-                              asset: _tableAssets[index]);
-                          setState(() {});
+                          await AssetService.hiveStore.put(_tableAssets[index]);
                         }
+                        await AssetService.setDefaultTableAsset(
+                            asset: _tableAssets[index]);
+                        setState(() {});
+                        final asset = await AssetService.getDefaultTableAsset();
+                        log(jsonEncode(asset.toJson()));
                       },
                       child: Container(
                         padding: EdgeInsets.symmetric(horizontal: 8),

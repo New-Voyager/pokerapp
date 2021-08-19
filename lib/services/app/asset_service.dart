@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:path_provider/path_provider.dart';
@@ -19,8 +20,12 @@ class AssetService {
 
   static Future<Asset> getDefaultTableAsset() async {
     if (defaultTableAsset == null) {
-      // Load default asset
-      hiveStore.get("default-table");
+      try {
+        // Load default asset
+        defaultTableAsset = await hiveStore.get("default-table");
+      } catch (err) {
+        log('error: ${err.toString()}');
+      }
     }
     return defaultTableAsset;
   }
@@ -32,7 +37,11 @@ class AssetService {
   static Future<Asset> getDefaultBackdropAsset() async {
     if (defaultTableAsset == null) {
       // Load default asset
-      hiveStore.get("default-backdrop");
+      try {
+        defaultBackdropAsset = await hiveStore.get("default-backdrop");
+      } catch (err) {
+        
+      }
     }
     return defaultTableAsset;
   }

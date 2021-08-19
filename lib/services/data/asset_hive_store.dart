@@ -72,8 +72,8 @@ class AssetHiveStore {
     return assetStore;
   }
 
-  Future<void> put(Asset asset, {String id}) {
-    return _assetBox.put(id ?? asset.id, asset.toJson());
+  Future<void> put(Asset asset, {String id}) async {
+    return await _assetBox.put(id ?? asset.id, asset.toJson());
   }
 
   Future<void> putAll(List<Asset> assets) async {
@@ -88,8 +88,9 @@ class AssetHiveStore {
   }
 
   Future<Asset> get(String id) async {
-    dynamic json = await _assetBox.get(id);
+    dynamic jsonString = await _assetBox.get(id);
     if (json != null) {
+      dynamic json = jsonDecode(jsonString);  
       return Asset.fromjson(json);
     }
     return null;
