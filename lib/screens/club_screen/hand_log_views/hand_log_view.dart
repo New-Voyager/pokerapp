@@ -20,6 +20,7 @@ import 'package:pokerapp/screens/club_screen/hand_log_views/handlog_showdown.dar
 import 'package:pokerapp/screens/club_screen/hand_log_views/handlog_summary.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/screens/util_screens/replay_hand_dialog/replay_hand_dialog.dart';
+import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/services/app/hand_service.dart';
 import 'package:pokerapp/services/test/hand_messages.dart';
 import 'package:pokerapp/services/test/test_service.dart';
@@ -140,11 +141,12 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
   }
 
   _replayHand() async {
+    final currentUser = await AuthService.get();
     ReplayHandDialog.show(
       gameCode: widget.gameCode,
       handNumber: widget.handNum,
       context: context,
-      playerID: // TODO: HOW TO GET PLAYER ID HERE?,
+      playerID: currentUser.playerId
     );
   }
 

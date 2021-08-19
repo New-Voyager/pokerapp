@@ -16,6 +16,7 @@ import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_winners_view.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/screens/util_screens/replay_hand_dialog/replay_hand_dialog.dart';
+import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/services/app/hand_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
@@ -108,11 +109,12 @@ class _BookmarkedHandsState extends State<BookmarkedHands>
   }
 
   _replayHand(HandLogModelNew model) async {
+    final player = await AuthService.get();
     ReplayHandDialog.show(
       context: context,
       handNumber: model.hand.handNum,
       gameCode: model.hand.gameCode,
-      playerID: // TODO: HOW TO GET PLAYER ID HERE?,
+      playerID: player.playerId, // TODO: HOW TO GET PLAYER ID HERE?,
     );
   }
 
