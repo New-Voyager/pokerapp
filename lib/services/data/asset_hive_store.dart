@@ -78,7 +78,11 @@ class AssetHiveStore {
 
   Future<void> putAll(List<Asset> assets) async {
     for (final asset in assets) {
-      await _assetBox.put(asset.id, asset.toJson());
+      // first get asset from the db, if it is already there, don't add it
+      final assetInStore = await _assetBox.get(asset.id);
+      if (assetInStore == null) {
+        await _assetBox.put(asset.id, asset.toJson());
+      }
     }
     return;
   }
