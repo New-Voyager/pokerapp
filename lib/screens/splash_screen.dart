@@ -6,7 +6,9 @@ import 'package:pokerapp/models/ui/app_theme_data.dart';
 import 'package:pokerapp/resources/app_config.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/services/app/appcoin_service.dart';
+import 'package:pokerapp/services/app/asset_service.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
+import 'package:pokerapp/services/data/asset_hive_store.dart';
 import 'package:pokerapp/services/data/box_type.dart';
 import 'package:pokerapp/services/data/hive_datasource_impl.dart';
 
@@ -56,6 +58,16 @@ class _SplashScreenState extends State<SplashScreen> {
             AppConfig.jwt = resp['jwt'];
             final availableCoins = await AppCoinService.availableCoins();
             AppConfig.setAvailableCoins(availableCoins);
+
+            // download assets (show status bar)
+            try {
+              List<Asset> assets = await AssetService.getAssets();
+              final store = await AssetService.getStore();
+              await store.putAll(assets);
+            } catch (err) { 
+
+            }
+
             goToLoginScreen = false;
           }
         } catch (err) {
