@@ -341,31 +341,33 @@ class _FooterActionViewState extends State<FooterActionView> {
     final boardAttributes = context.read<BoardAttributesObject>();
     final theme = AppTheme.getTheme(context);
 
-    return Container(
-      color: theme.primaryColor.withOpacity(0.5),
-      child: Consumer<ActionState>(
-        key: ValueKey('buildActionButtons'),
-        builder: (_, actionState, __) => Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            /* bet widget */
-            Expanded(
-              child: Transform.scale(
-                scale: boardAttributes.footerActionViewScale,
-                child: _buildBetWidget(actionState.action, 30),
+    return IntrinsicHeight(
+      child: Container(
+        color: theme.primaryColor.withOpacity(0.80),
+        child: Consumer<ActionState>(
+          key: ValueKey('buildActionButtons'),
+          builder: (_, actionState, __) => Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              /* bet widget */
+              Expanded(
+                child: Transform.scale(
+                  scale: boardAttributes.footerActionViewScale,
+                  child: _buildBetWidget(actionState.action, 30),
+                ),
               ),
-            ),
 
-            /* bottom row */
-            Transform.scale(
-              scale: boardAttributes.footerActionViewScale,
-              alignment: Alignment.bottomCenter,
-              child: Container(
-                padding: EdgeInsets.symmetric(vertical: 4.0),
-                child: _buildActionWidgets(actionState.action, theme),
+              /* bottom row */
+              Transform.scale(
+                scale: boardAttributes.footerActionViewScale,
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  padding: EdgeInsets.symmetric(vertical: 4.0),
+                  child: _buildActionWidgets(actionState.action, theme),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
