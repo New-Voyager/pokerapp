@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:pokerapp/models/hand_log_model_new.dart';
+import 'package:pokerapp/models/handlog_model.dart';
 
 BookmarkedHandModel bookmarkedHandModelFromJson(String str) =>
     BookmarkedHandModel.fromJson(json.decode(str));
@@ -50,7 +50,7 @@ class BookmarkedHand {
   String gameCode;
   int handNum;
   DateTime updatedAt;
-  HandLogModelNew handlogData;
+  HandResultData handlogData;
 
   factory BookmarkedHand.fromJson(Map<String, dynamic> json) {
     return BookmarkedHand(
@@ -66,7 +66,7 @@ class BookmarkedHand {
           : SharedToClubModel.fromJson(json["sharedTo"]),
       gameCode: json["gameCode"],
       handNum: json["handNum"],
-      handlogData: HandLogModelNew.fromJson(json["data"]),
+      handlogData: HandResultData.fromJson(json["data"]),
       updatedAt: DateTime.parse(json["updatedAt"]),
     );
   }

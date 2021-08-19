@@ -3,7 +3,6 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/enums/game_status.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
@@ -13,9 +12,7 @@ import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/marked_cards.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
-import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/models/player_info.dart';
-import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/services/agora/agora.dart';
 import 'package:pokerapp/services/app/game_service.dart';
@@ -108,12 +105,9 @@ class GameState {
   bool _playerSeatChangeInProgress = false;
   int _seatChangeSeat = 0;
   HandlogCacheService handlogCacheService;
-  Map<int, String> _handlogs = Map<int, String>();
   List<int> currentCards;
   List<int> lastCards;
-  String _lastHand;
   Map<int, String> _playerIdsToNames = Map<int, String>();
-  Map<int, List<int>> _myCards = Map<int, List<int>>();
   bool straddlePrompt = false;
   bool straddleBetThisHand = false;
 
@@ -784,41 +778,6 @@ class GameState {
   int get seatChangeSeat => this._seatChangeSeat;
 
   set seatChangeSeat(int seat) => this._seatChangeSeat = seat;
-
-  HandLogModelNew getHandLog(int handNum) {
-    if (_handlogs.containsKey(handNum)) {
-      //final String data = jsonDecode(_handlogs[handNum]);
-      final handLog = HandLogModelNew.handLogModelNewFromJson(
-          _handlogs[handNum],
-          serviceResult: true,
-          playerIdsToNames: this.playerIdToNames,
-          myCards: this._myCards);
-      return handLog;
-    }
-    return null;
-  }
-
-  void setHandLog(int handNum, String data, List<int> cards) {
-    log(data);
-    _handlogs[handNum] = data;
-    _myCards[handNum] = cards;
-  }
-
-  get lastHand {
-    if (_lastHand == null) {
-      return null;
-    }
-    //final jsonData = jsonDecode(_lastHand);
-    log(_lastHand);
-    final handLog = HandLogModelNew.handLogModelNewFromJson(_lastHand,
-        serviceResult: true,
-        authorizedToView: true,
-        playerIdsToNames: this.playerIdToNames,
-        myCards: _myCards);
-    return handLog;
-  }
-
-  set lastHand(String hand) => _lastHand = hand;
 
   Future<Uint8List> getAudioBytes(String assetFile) async {
     if (_audioCache[assetFile] == null) {

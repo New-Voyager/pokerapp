@@ -1,7 +1,6 @@
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
-import 'package:pokerapp/resources/new/app_strings_new.dart';
 
 class GameModelNew {
   String gameCode;
