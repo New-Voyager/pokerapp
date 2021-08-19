@@ -64,9 +64,7 @@ class _SplashScreenState extends State<SplashScreen> {
               List<Asset> assets = await AssetService.getAssets();
               final store = await AssetService.getStore();
               await store.putAll(assets);
-            } catch (err) { 
-
-            }
+            } catch (err) {}
 
             goToLoginScreen = false;
           }

@@ -5,6 +5,7 @@ import 'package:bouncing_widget/bouncing_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/player_action.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
@@ -111,13 +112,6 @@ class BetWidget extends StatelessWidget {
   String _getBetChipSvg(AppTheme theme) {
     String primaryColor = '#168348';
     String accentColor = '#C8923B';
-
-    // String primaryColor =
-    //     '#${theme.primaryColor.red}${theme.primaryColor.green}${theme.primaryColor.blue}';
-    // String accentColor =
-    //     '#${theme.accentColor.red}${theme.accentColor.green}${theme.accentColor.blue}';
-    log("0-0-0-0 primary color : $primaryColor");
-    log("0-0-0-0 primary color : $accentColor");
 
     return """<svg width="124" height="125" viewBox="0 0 124 125" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M13.6747 64.3028C12.8901 63.5182 12.7324 63.1576 12.7324 62.1474C12.7324 60.7622 13.245 59.8816 14.3983 59.2852C16.0297 58.4416 17.908 59.0622 18.6862 60.7021C19.2171 61.8209 19.2171 62.5644 18.686 63.5913C18.1673 64.5944 16.9643 65.245 15.6283 65.245C14.8476 65.245 14.402 65.0301 13.6747 64.3028V64.3028Z" fill="$accentColor"/>
@@ -497,6 +491,65 @@ class BetWidget extends StatelessWidget {
           );
         },
         itemCount: action.options.length + 1,
+      ),
+    );
+  }
+}
+
+class BetIconButton extends StatelessWidget {
+  final bool displayBetText;
+  BetIconButton({@required this.displayBetText});
+
+  @override
+  Widget build(BuildContext context) {
+    final double s = 40.dp;
+    final colorizeColors = [
+      Colors.green,
+      Colors.green[400],
+      Colors.green[200],
+      Colors.green[100],
+    ];
+
+    final gameState = GameState.getState(context);
+    final imageBytes = gameState.assets.getBetImage();
+    final colorizeTextStyle = TextStyle(
+      fontSize: 12.0.dp,
+      fontWeight: FontWeight.bold,
+    );
+
+    return Container(
+      height: s,
+      width: s,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          // bet coin
+          Transform.scale(
+            scale: 1.5,
+            child: SvgPicture.memory(
+              imageBytes,
+              height: s,
+              width: s,
+            ),
+          ),
+
+          // bet text
+          this.displayBetText
+              ? IgnorePointer(
+                  child: AnimatedTextKit(
+                    // isRepeatingAnimation: true,
+                    repeatForever: true,
+                    animatedTexts: [
+                      ColorizeAnimatedText(
+                        'BET',
+                        textStyle: colorizeTextStyle,
+                        colors: colorizeColors,
+                      ),
+                    ],
+                  ),
+                )
+              : Container(),
+        ],
       ),
     );
   }

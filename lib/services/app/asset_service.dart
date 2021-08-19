@@ -22,10 +22,8 @@ class AssetService {
   static Future<Asset> getDefaultTableAsset() async {
     try {
       defaultTableAsset = await hiveStore.get("default-table");
-    } catch (err) {
-      
-    }
-    return defaultTableAsset;    
+    } catch (err) {}
+    return defaultTableAsset;
   }
 
   static Future<void> setDefaultBackdropAsset({Asset asset}) async {
@@ -36,9 +34,7 @@ class AssetService {
   static Future<Asset> getDefaultBackdropAsset() async {
     try {
       defaultBackdropAsset = await hiveStore.get("default-backdrop");
-    } catch (err) {
-      
-    }
+    } catch (err) {}
     return defaultBackdropAsset;
   }
 

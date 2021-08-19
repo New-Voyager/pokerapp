@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 
 import 'package:hive/hive.dart';
@@ -14,10 +13,10 @@ class Asset {
   DateTime updatedDate;
   bool active;
   bool downloaded;
-  String downloadDir;         // directory for cards
-  String downloadedPath;      // file name of downloaded file (for single files)
+  String downloadDir; // directory for cards
+  String downloadedPath; // file name of downloaded file (for single files)
   Asset();
-  
+
   factory Asset.fromjson(dynamic json) {
     Asset asset = Asset();
     asset.id = json['id'];
@@ -99,7 +98,7 @@ class AssetHiveStore {
   Future<Asset> get(String id) async {
     dynamic jsonString = await _assetBox.get(id);
     if (json != null) {
-      dynamic json = jsonDecode(jsonString);  
+      dynamic json = jsonDecode(jsonString);
       return Asset.fromjson(json);
     }
     return null;

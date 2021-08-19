@@ -529,26 +529,36 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     //debugPrint('Creating user view for seat: ${seat.serverSeatPos}');
     userView = ListenableProvider<Seat>(
       create: (_) => seat,
-      builder: (context, _) => Consumer2<Seat, BoardAttributesObject>(
-        builder: (_, seat, boardAttributes, __) {
-          return Transform.scale(
-            scale: boardAttributes.playerViewScale,
-            child: Opacity(
-              opacity: (seat?.player?.isActive ?? false) ? 1.0 : 0.50,
-              child: PlayerView(
-                gameState: widget.gameState,
-                gameComService: widget.gameComService,
-                seat: seat,
-                cardsAlignment: cardsAlignment,
-                onUserTap: onUserTap,
-                boardAttributes: boardAttributes,
-                seatPos: seatPos,
-                seatPosIndex: seatPosIndex,
+      builder: (context, _) {
+        final gameState = GameState.getState(context);
+
+        return Consumer2<Seat, BoardAttributesObject>(
+          builder: (_, seat, boardAttributes, __) {
+            bool seatActive = gameState.customizationMode;
+            if (!gameState.customizationMode &&
+                seat != null &&
+                seat.player != null) {
+              seatActive = seat.player.isActive;
+            }
+            return Transform.scale(
+              scale: boardAttributes.playerViewScale,
+              child: Opacity(
+                opacity: seatActive ? 1.0 : 0.50,
+                child: PlayerView(
+                  gameState: widget.gameState,
+                  gameComService: widget.gameComService,
+                  seat: seat,
+                  cardsAlignment: cardsAlignment,
+                  onUserTap: onUserTap,
+                  boardAttributes: boardAttributes,
+                  seatPos: seatPos,
+                  seatPosIndex: seatPosIndex,
+                ),
               ),
-            ),
-          );
-        },
-      ),
+            );
+          },
+        );
+      },
     );
     return userView;
   }

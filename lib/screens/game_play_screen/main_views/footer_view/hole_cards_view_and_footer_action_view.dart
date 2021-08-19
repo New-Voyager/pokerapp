@@ -16,6 +16,7 @@ import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
+import 'package:pokerapp/screens/game_play_screen/widgets/bet_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/game_circle_button.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_proto_service.dart';
 import 'package:pokerapp/widgets/cards/hole_stack_card_view.dart';
@@ -39,7 +40,7 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
 
   final ValueNotifier<bool> _showDarkBackgroundVn = ValueNotifier(false);
 
-  bool _showAllCardSelectionButton(var vnfs) {
+  bool _showAllCardSelectionButton(BuildContext context, var vnfs) {
     final bool isInResult = vnfs.value == FooterStatus.Result;
     return isInResult && (playerModel?.isActive ?? false);
   }
@@ -236,7 +237,7 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
 
     return Consumer2<ValueNotifier<FooterStatus>, RabbitState>(
       builder: (context, vnfs, rb, __) {
-        final bool _showEye = _showAllCardSelectionButton(vnfs);
+        final bool _showEye = _showAllCardSelectionButton(context, vnfs);
         final bool _showRabbit = rb.show && isRabbitHuntAllowed;
 
         return Visibility(
@@ -277,10 +278,34 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
     GameState gameState,
     BoardAttributesObject boardAttributes,
   ) {
-    return Builder(
-      builder: (context) => Stack(
+    return Builder(builder: (context) {
+      List<Widget> children = [];
+      final gameState = GameState.getState(context);
+      // if (gameState.customizationMode) {
+      //   children.add(BetIconButton());
+      // }
+
+      children.addAll([
+        // // main hole card view
+        Consumer3<StraddlePromptState, HoleCardsState, MyState>(
+          builder: (_, __, ___, ____, _____) => _buildHoleCardView(context),
+        ),
+
+        // all hole card selection button
+        _buildAllHoleCardAndRabbitHuntSelectionButton(context),
+
+        Container(
+          height: 30,
+          width: 30,
+          color: Colors.red,
+        ),
+      ]);
+      return Stack(
         alignment: Alignment.topCenter,
         children: [
+          gameState.customizationMode
+              ? BetIconButton(displayBetText: false)
+              : Container(),
           // hole card view
           Transform.translate(
             offset: boardAttributes.holeCardViewOffset,
@@ -289,16 +314,7 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
               child: Stack(
                 alignment: Alignment.bottomCenter,
                 // mainAxisSize: MainAxisSize.min,
-                children: [
-                  // main hole card view
-                  Consumer3<StraddlePromptState, HoleCardsState, MyState>(
-                    builder: (_, __, ___, ____, _____) =>
-                        _buildHoleCardView(context),
-                  ),
-
-                  // all hole card selection button
-                  _buildAllHoleCardAndRabbitHuntSelectionButton(context),
-                ],
+                children: children,
               ),
             ),
           ),
@@ -343,8 +359,8 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
+      );
+    });
   }
 
   Widget _buildDarkBackground() => ValueListenableBuilder<bool>(
