@@ -7,7 +7,6 @@ import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
-import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/screens/game_play_screen/game_play_screen_util_methods.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/profile_popup.dart';
 import 'package:pokerapp/services/app/player_service.dart';

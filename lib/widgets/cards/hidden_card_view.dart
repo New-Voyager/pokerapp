@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
-import 'package:provider/provider.dart';
 
 const kDisplacementConstant = 3.0;
 

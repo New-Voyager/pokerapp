@@ -16,11 +16,10 @@ import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
-import 'package:pokerapp/models/hand_log_model_new.dart';
+import 'package:pokerapp/models/handlog_model.dart';
 import 'package:pokerapp/models/player_info.dart' as pi;
 import 'package:pokerapp/proto/handmessage.pb.dart';
 import 'package:pokerapp/resources/app_constants.dart';
-import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/last_hand_analyse_bottomsheet.dart';
 import 'package:pokerapp/screens/game_play_screen/pop_ups/seat_change_confirmation_pop_up.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/overlay_notification.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
@@ -937,23 +936,6 @@ class TestService {
         seat1.notify();
       }
     }
-  }
-
-  static showHandResult() async {
-    final handLog = HandLogModelNew.handLogModelNewFromJson(lastHandResult,
-        serviceResult: true, authorizedToView: true);
-    final ids = handLog.getPlayerIdsWithoutName();
-    log('$ids');
-    await showModalBottomSheet(
-      context: _context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (_) => LastHandAnalyseBottomSheet(
-        gameCode: 'DUMMY',
-        clubCode: 'DUMMY',
-        handLog: handLog,
-      ),
-    );
   }
 
   static showHandResult2() async {

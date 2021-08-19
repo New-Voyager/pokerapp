@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
-import 'package:pokerapp/resources/new/app_strings_new.dart';
 
 class AppThemeData {
   // main color that the app is based on

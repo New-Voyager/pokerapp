@@ -8,11 +8,10 @@ import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_replay_models/game_replay_action.dart';
-import 'package:pokerapp/models/hand_log_model_new.dart';
+import 'package:pokerapp/models/handlog_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_proto_service.dart';
-import 'package:pokerapp/services/game_play/action_services/result_handler_v2.dart';
 import 'package:pokerapp/services/game_play/action_services/result_handler_v2_json.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:provider/provider.dart';

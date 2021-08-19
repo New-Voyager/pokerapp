@@ -1,7 +1,6 @@
 import 'package:blinking_text/blinking_text.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
-import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:timer_count_down/timer_count_down.dart';
 

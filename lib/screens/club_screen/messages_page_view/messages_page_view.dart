@@ -20,7 +20,6 @@ import 'package:pokerapp/widgets/emoji_picker_widget.dart';
 import 'package:provider/provider.dart';
 
 import '../../../routes.dart';
-import '../../chat_screen/utils.dart';
 import '../../chat_screen/widgets/chat_text_field.dart';
 import 'club_chat_model.dart';
 

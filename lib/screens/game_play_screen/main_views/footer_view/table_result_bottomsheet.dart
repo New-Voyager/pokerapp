@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
-import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/screens/game_screens/table_result/table_result.dart';
 
 class TableResultBottomSheet extends StatefulWidget {

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
-import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/screens/game_screens/game_history_details_view/stack_details_view.dart';
 
 class PlayerStatsBottomSheet extends StatefulWidget {

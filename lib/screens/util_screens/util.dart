@@ -7,9 +7,7 @@ import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
-import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/models/newmodels/game_model_new.dart';
-import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
@@ -136,21 +134,6 @@ showWaitlistStatus(BuildContext context, String message, int duration) async {
           fontFamily: "ShadowsIntoLightTwo"),
     ),
   )..show(context);
-}
-
-String getPlayerNameBySeatNo({HandLogModelNew handLogModel, int seatNo}) {
-  AppTextScreen _appScreenText = getAppTextScreen("global");
-
-  final res = handLogModel.hand.playersInSeats
-      .firstWhere((element) => element.seatNo == seatNo, orElse: () => null);
-  String name;
-  if (res != null) {
-    name = res.name;
-  }
-  if (name == null) {
-    name = handLogModel.getPlayerName(res.id);
-  }
-  return name == null ? _appScreenText['PLAYER'] : name;
 }
 
 String printDuration(Duration duration) {

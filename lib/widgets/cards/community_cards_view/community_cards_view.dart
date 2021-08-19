@@ -90,7 +90,7 @@ class CommunityCardsView extends StatelessWidget {
 
   Widget buildSingleBoardCards(int boardNo, List<CardObject> boardCards,
       {bool dimBoard = false}) {
-    log('CommunityCardsView board: ${boardNo} dimBoard: $dimBoard');
+    log('CommunityCardsView board: $boardNo dimBoard: $dimBoard');
     /* we only need to show animation for the following 3 cases */
     if (boardCards?.length == 3)
       return FlopCommunityCards(

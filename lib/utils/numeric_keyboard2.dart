@@ -2,7 +2,6 @@ import 'dart:core';
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
-import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';

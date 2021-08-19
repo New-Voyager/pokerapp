@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:path_drawing/path_drawing.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
-import 'package:pokerapp/resources/new/app_colors_new.dart';
 
 class FilledPathPainter extends CustomPainter {
   FilledPathPainter({

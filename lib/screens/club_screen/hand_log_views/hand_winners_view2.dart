@@ -6,6 +6,7 @@ import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/enums/game_type.dart' as enums;
+import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/widgets/cards/multiple_stack_card_views.dart';
 
 class PotWinnersView extends StatelessWidget {
@@ -15,7 +16,6 @@ class PotWinnersView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = AppTheme.getTheme(context);
-    int noOfBoards = handResult.result.boards.length;
     Widget bw = boardWinners(potNo, theme);
     // players in the pot
     List<int> seatsInPots = [];
@@ -34,6 +34,7 @@ class PotWinnersView extends StatelessWidget {
       playerNames.add(player.name);
     }
     String players = playerNames.join(',');
+    bool isOnlyOnePot = handResult.result.potWinners.length == 1;
 
     return Container(
         decoration: AppDecorators.tileDecoration(theme),
@@ -43,14 +44,16 @@ class PotWinnersView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               potTitle(theme),
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: 8),
-                alignment: Alignment.centerRight,
-                child: Text(
-                  players,
-                  style: AppDecorators.getHeadLine4Style(theme: theme),
-                ),
-              ),
+              isOnlyOnePot
+                  ? Container()
+                  : Container(
+                      margin: EdgeInsets.symmetric(horizontal: 8),
+                      alignment: Alignment.centerRight,
+                      child: Text(
+                        players,
+                        style: AppDecorators.getHeadLine4Style(theme: theme),
+                      ),
+                    ),
               bw
             ]));
   }
@@ -74,8 +77,8 @@ class PotWinnersView extends StatelessWidget {
     );
   }
 
-  List<Widget> hiWinnerTile(
-      int boardNo, bool firstWinner, ResultWinner winner, bool hi) {
+  List<Widget> hiWinnerTile(int boardNo, bool firstWinner, ResultWinner winner,
+      bool hi, bool multipleBoards) {
     final board = this.handResult.result.boards[boardNo - 1];
     final playerRank = this.handResult.getPlayerRank(boardNo, winner.seatNo);
     final player = this.handResult.getPlayerBySeatNo(winner.seatNo);
@@ -134,12 +137,20 @@ class PotWinnersView extends StatelessWidget {
             show: true,
             needToShowEmptyCards: !showDown,
           );
-    if (firstWinner) {
+    if (!multipleBoards) {
       boardView = Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [Text('Board ${board.boardNo}'), boardView],
+        children: [Text('Board'), boardView],
       );
+    } else {
+      if (firstWinner) {
+        boardView = Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [Text('Board ${board.boardNo}'), boardView],
+        );
+      }
     }
     playerView = Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -167,15 +178,13 @@ class PotWinnersView extends StatelessWidget {
         hiWinnersText = 'Board ${boardWinner.boardNo} High Winners';
       }
     } else {
-      if (hiLoGame) {
+      if (hiLoGame && boardWinner.lowWinners.length > 0) {
         hiWinnersText = 'High Winners';
       }
     }
     // get board cards
     final hiWinners = Column(
-      children: [
-        Text(hiWinnersText),
-      ],
+      children: [],
     );
     final lowWinners = Column(
       children: [],
@@ -189,29 +198,27 @@ class PotWinnersView extends StatelessWidget {
       }
     }
 
-    List<Widget> children = [];
+    //List<Widget> children = [];
     if (boardWinner.hiWinners.length > 0) {
-      children.add(Text(hiWinnersText));
+      hiWinners.children.add(Text(hiWinnersText));
       //children.add(SizedBox(height: 5.dp));
       bool firstWinner = true;
       for (final winner in boardWinner.hiWinners.values) {
-        children.addAll(
-            hiWinnerTile(boardWinner.boardNo, firstWinner, winner, true));
+        hiWinners.children.addAll(hiWinnerTile(
+            boardWinner.boardNo, firstWinner, winner, true, multipleBoards));
         firstWinner = false;
       }
-      hiWinners.children.addAll(children);
     }
 
     if (boardWinner.lowWinners.length > 0) {
-      children.add(Text(lowWinnersText));
+      lowWinners.children.add(Text(lowWinnersText));
       //children.add(SizedBox(height: 5.dp));
       bool firstWinner = true;
       for (final winner in boardWinner.lowWinners.values) {
-        children.addAll(
-            hiWinnerTile(boardWinner.boardNo, firstWinner, winner, false));
+        lowWinners.children.addAll(hiWinnerTile(
+            boardWinner.boardNo, firstWinner, winner, false, multipleBoards));
         firstWinner = false;
       }
-      hiWinners.children.addAll(children);
     }
     List<Widget> allWidgets = [];
     allWidgets.addAll(hiWinners.children);
@@ -220,7 +227,6 @@ class PotWinnersView extends StatelessWidget {
     ));
     allWidgets.addAll(lowWinners.children);
     final winners = Column(children: allWidgets);
-
     return winners;
   }
 
@@ -228,6 +234,10 @@ class PotWinnersView extends StatelessWidget {
     String potStr = "Main Pot";
     if (potNo != 0) {
       potStr = 'Side Pot $potNo';
+    }
+    final potCount = handResult.result.potWinners.length;
+    if (potCount == 1) {
+      potStr = "Pot";
     }
     final pot = handResult.result.potWinners[potNo];
 
@@ -248,7 +258,7 @@ class PotWinnersView extends StatelessWidget {
         margin: EdgeInsets.symmetric(horizontal: 8),
         alignment: Alignment.centerRight,
         child: Text(
-          pot.amount.toString(),
+          DataFormatter.chipsFormat(pot.amount),
           style: AppDecorators.getHeadLine4Style(theme: theme),
         ),
       ),
@@ -285,20 +295,20 @@ class HandWinnersView2 extends StatelessWidget {
       //   }
       // }
 
-      int subCards = 0;
-      GameStages stageAtWon = handResult.wonAt();
+      // int subCards = 0;
+      // GameStages stageAtWon = handResult.wonAt();
 
-      if (stageAtWon == GameStages.PREFLOP) {
-        subCards = 0;
-      } else if (stageAtWon == GameStages.FLOP) {
-        subCards = 3;
-      } else if (stageAtWon == GameStages.TURN) {
-        subCards = 4;
-      } else if (stageAtWon == GameStages.RIVER) {
-        subCards = 5;
-      } else if (stageAtWon == GameStages.SHOWDOWN) {
-        subCards = 5;
-      }
+      // if (stageAtWon == GameStages.PREFLOP) {
+      //   subCards = 0;
+      // } else if (stageAtWon == GameStages.FLOP) {
+      //   subCards = 3;
+      // } else if (stageAtWon == GameStages.TURN) {
+      //   subCards = 4;
+      // } else if (stageAtWon == GameStages.RIVER) {
+      //   subCards = 5;
+      // } else if (stageAtWon == GameStages.SHOWDOWN) {
+      //   subCards = 5;
+      // }
 
       return Container(
         margin: EdgeInsets.only(bottom: 4, left: 8, right: 8),
@@ -311,10 +321,6 @@ class HandWinnersView2 extends StatelessWidget {
             ),
             itemCount: handResult.result.potWinners.length,
             itemBuilder: (context, index) {
-              String potStr = "Pot:";
-              if (index == 0 && handResult.result.potWinners.length > 1) {
-                potStr = "Main Pot:";
-              }
               return PotWinnersView(
                   handResult, handResult.result.potWinners[index].potNo);
             },
@@ -324,339 +330,3 @@ class HandWinnersView2 extends StatelessWidget {
     }
   }
 }
-
-/*
-
-Container(
-                decoration: AppDecorators.tileDecoration(theme),
-                padding: EdgeInsets.only(bottom: 16, top: 8, left: 4),
-                child: Column(
-                  children: [
-                    Container(
-                      margin: EdgeInsets.symmetric(horizontal: 8),
-                      alignment: Alignment.centerRight,
-                      child: Text(
-                        "$potStr " + handResult.result.potWinners[index].amount.toString(),
-                        style: AppDecorators.getHeadLine4Style(theme: theme),
-                      ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.symmetric(horizontal: 8),
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        winnersTitle,
-                        style: AppDecorators.getSubtitle3Style(theme: theme),
-                      ),
-                    ),
-                    Divider(
-                      color: theme.fillInColor,
-                      endIndent: 200,
-                      indent: 8,
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(left: 8, bottom: 16),
-                      // alignment: Alignment.centerRight,
-                      child: Container(
-                        child: ListView.builder(
-                          physics: NeverScrollableScrollPhysics(),
-                          itemCount: potWinnersList[index].hiWinners.length,
-                          shrinkWrap: true,
-                          itemBuilder: (context, winnerIndex) {
-                            return Container(
-                              padding: EdgeInsets.only(left: 8, right: 8),
-                              alignment: Alignment.centerLeft,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.only(bottom: 5),
-                                    child: Text(
-                                      getPlayerNameBySeatNo(
-                                          handLogModel: handLogModel,
-                                          seatNo: potWinnersList[index]
-                                              .hiWinners[winnerIndex]
-                                              .seatNo),
-                                      style: AppDecorators.getSubtitle1Style(
-                                              theme: theme)
-                                          .copyWith(
-                                              fontWeight: FontWeight.w700),
-                                      textAlign: TextAlign.left,
-                                    ),
-                                  ),
-                                  chatWidget ?? false
-                                      ? Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            StackCardView01(
-                                              totalCards: handLogModel
-                                                  .getPlayerBySeatNo(
-                                                      potWinnersList[index]
-                                                          .hiWinners[
-                                                              winnerIndex]
-                                                          .seatNo)
-                                                  .cards,
-                                              cardsToHighlight:
-                                                  potWinnersList[index]
-                                                      .hiWinners[winnerIndex]
-                                                      .playerCards,
-                                              show: handResult.wonAt() == GameStages.SHOWDOWN,
-                                            ),
-                                            Container(
-                                              margin: EdgeInsets.only(
-                                                  bottom: 4, top: 8),
-                                              child: Text(
-                                                "Community Cards",
-                                                style: AppDecorators
-                                                    .getSubtitle3Style(
-                                                        theme: theme),
-                                              ),
-                                            ),
-                                            StackCardView01(
-                                              totalCards: subCards >= 5
-                                                  ? handLogModel.hand.boardCards
-                                                  : handLogModel.hand.boardCards
-                                                      .sublist(0, subCards),
-                                              needToShowEmptyCards: true,
-                                              cardsToHighlight: subCards == 6
-                                                  ? potWinnersList[index]
-                                                      .hiWinners[winnerIndex]
-                                                      .winningCards
-                                                  : handLogModel
-                                                      .hand.boardCards,
-                                              show: true,
-                                            ),
-                                          ],
-                                        )
-                                      : Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            StackCardView01(
-                                              totalCards: handLogModel
-                                                  .getPlayerBySeatNo(
-                                                      potWinnersList[index]
-                                                          .hiWinners[
-                                                              winnerIndex]
-                                                          .seatNo)
-                                                  .cards,
-                                              cardsToHighlight:
-                                                  potWinnersList[index]
-                                                      .hiWinners[winnerIndex]
-                                                      .playerCards,
-                                              show: handLogModel
-                                                      .hand.handLog.wonAt ==
-                                                  GameStages.SHOWDOWN,
-                                            ),
-                                            StackCardView01(
-                                              totalCards: subCards >= 5
-                                                  ? handLogModel.hand.boardCards
-                                                  : handLogModel.hand.boardCards
-                                                      .sublist(0, subCards),
-                                              needToShowEmptyCards: true,
-                                              cardsToHighlight: subCards == 6
-                                                  ? potWinnersList[index]
-                                                      .hiWinners[winnerIndex]
-                                                      .winningCards
-                                                  : handLogModel
-                                                      .hand.boardCards,
-                                              show: true,
-                                            ),
-                                          ],
-                                        ),
-                                ],
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-                    Visibility(
-                      visible: potWinnersList[index].lowWinners.length > 0,
-                      child: Container(
-                        margin: EdgeInsets.symmetric(horizontal: 8),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Lo-Winners",
-                              style:
-                                  AppDecorators.getSubtitle3Style(theme: theme),
-                              textAlign: TextAlign.left,
-                            ),
-                            Divider(
-                              color: theme.fillInColor,
-                              endIndent: 50,
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(left: 5),
-                              alignment: Alignment.centerLeft,
-                              child: Container(
-                                child: ListView.builder(
-                                  physics: NeverScrollableScrollPhysics(),
-                                  itemCount:
-                                      potWinnersList[index].lowWinners.length,
-                                  shrinkWrap: true,
-                                  itemBuilder: (context, winnerIndex) {
-                                    return Container(
-                                      alignment: Alignment.centerLeft,
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Padding(
-                                            padding: EdgeInsets.only(bottom: 5),
-                                            child: Text(
-                                              getPlayerNameBySeatNo(
-                                                handLogModel: handLogModel,
-                                                seatNo: potWinnersList[index]
-                                                    .lowWinners[winnerIndex]
-                                                    .seatNo,
-                                              ),
-                                              style: AppDecorators
-                                                  .getHeadLine4Style(
-                                                      theme: theme),
-                                              textAlign: TextAlign.left,
-                                            ),
-                                          ),
-                                          chatWidget ?? false
-                                              ? Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    StackCardView01(
-                                                      totalCards: handLogModel
-                                                          .getPlayerBySeatNo(
-                                                              potWinnersList[
-                                                                      index]
-                                                                  .lowWinners[
-                                                                      winnerIndex]
-                                                                  .seatNo)
-                                                          .cards,
-                                                      cardsToHighlight:
-                                                          potWinnersList[index]
-                                                              .lowWinners[
-                                                                  winnerIndex]
-                                                              .playerCards,
-                                                      show: handLogModel.hand
-                                                              .handLog.wonAt ==
-                                                          GameStages.SHOWDOWN,
-                                                    ),
-                                                    Container(
-                                                      margin: EdgeInsets.only(
-                                                          bottom: 4, top: 8),
-                                                      child: Text(
-                                                        "Community Cards",
-                                                        style: AppDecorators
-                                                            .getSubtitle3Style(
-                                                                theme: theme),
-                                                      ),
-                                                    ),
-
-                                                    StackCardView01(
-                                                      totalCards: subCards >= 5
-                                                          ? handLogModel
-                                                              .hand.boardCards
-                                                          : handLogModel
-                                                              .hand.boardCards
-                                                              .sublist(
-                                                                  0, subCards),
-                                                      needToShowEmptyCards:
-                                                          true,
-                                                      cardsToHighlight:
-                                                          subCards == 6
-                                                              ? potWinnersList[
-                                                                      index]
-                                                                  .lowWinners[
-                                                                      winnerIndex]
-                                                                  .winningCards
-                                                              : handLogModel
-                                                                  .hand
-                                                                  .boardCards,
-                                                      show: true,
-                                                    ),
-                                                  ],
-                                                )
-                                              : Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    // CardsView(
-                                                    // cards: _handLogModel
-                                                    //     .hand
-                                                    //     .players[potWinnersList[
-                                                    //             index]
-                                                    //         .lowWinners[winnerIndex]
-                                                    //         .seatNo
-                                                    //         .toString()]
-                                                    //     .cards,
-                                                    //   show: _handLogModel
-                                                    //           .hand.handLog.wonAt ==
-                                                    //       GameStages.SHOWDOWN,
-                                                    // ),
-                                                    StackCardView01(
-                                                      totalCards: handLogModel
-                                                          .getPlayerBySeatNo(
-                                                              potWinnersList[
-                                                                      index]
-                                                                  .lowWinners[
-                                                                      winnerIndex]
-                                                                  .seatNo)
-                                                          .cards,
-                                                      cardsToHighlight:
-                                                          potWinnersList[index]
-                                                              .lowWinners[
-                                                                  winnerIndex]
-                                                              .playerCards,
-                                                      show: handLogModel.hand
-                                                              .handLog.wonAt ==
-                                                          GameStages.SHOWDOWN,
-                                                    ),
-                                                    StackCardView01(
-                                                      totalCards: subCards >= 5
-                                                          ? handLogModel
-                                                              .hand.boardCards
-                                                          : handLogModel
-                                                              .hand.boardCards
-                                                              .sublist(
-                                                                  0, subCards),
-                                                      needToShowEmptyCards:
-                                                          true,
-                                                      cardsToHighlight:
-                                                          subCards == 6
-                                                              ? potWinnersList[
-                                                                      index]
-                                                                  .lowWinners[
-                                                                      winnerIndex]
-                                                                  .winningCards
-                                                              : handLogModel
-                                                                  .hand
-                                                                  .boardCards,
-                                                      show: true,
-                                                    ),
-                                                  ],
-                                                ),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
-        ),
-      );
-
-      */

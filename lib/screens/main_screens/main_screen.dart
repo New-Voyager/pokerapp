@@ -10,7 +10,6 @@ import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/app_icons.dart';
-import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/screens/game_screens/game_history_details_view/hand_stats_view.dart';
 import 'package:pokerapp/screens/main_screens/clubs_page_view/clubs_page_view.dart';
 import 'package:pokerapp/screens/main_screens/games_page_view/live_games.dart';
