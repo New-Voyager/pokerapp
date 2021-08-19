@@ -66,7 +66,7 @@
     },
     "liveGame": {
         "HOST": "HOST",
-        "POKERCLUBAPP": "Poker Club App",
+        "POKERCLUBAPP": "Poker Club",
         "GAMECODE": "Game Code",
         "ENTERGAMECODE": "Enter Game code",
         "JOIN": "JOIN",
