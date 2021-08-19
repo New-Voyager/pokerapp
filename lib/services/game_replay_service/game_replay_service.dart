@@ -38,15 +38,6 @@ class GameReplayService {
     return playerModels;
   }
 
-  // List<PlayerModel> _getPlayers(List<Player> players) => players
-  //     .map<PlayerModel>((p) => PlayerModel(
-  //           name: p.name,
-  //           seatNo: p.seatNo,
-  //           stack: p.balance.before,
-  //           playerId: p.id,
-  //         ))
-  //     .toList();
-
   /* returns back the mapping of <seat.no-cards> */
   Map<int, List<int>> _getPlayerCards(
     Map<int, ResultPlayerInfo> players,
@@ -62,17 +53,6 @@ class GameReplayService {
 
     return _playerCards;
   }
-
-  // Map<int, List<int>> _getPlayerCards(List<Player> players, int myID) {
-  //   Map<int, List<int>> _playerCards = {};
-
-  //   /* IF I played until showdown then only show my cards */
-  //   for (Player p in players)
-  //     if (p.playedUntil == 'SHOW_DOWN' || p.id == myID)
-  //       _playerCards[p.seatNo] = p.cards;
-
-  //   return _playerCards;
-  // }
 
   List<GameReplayAction> _getActions({
     @required GameActions preflopActions,

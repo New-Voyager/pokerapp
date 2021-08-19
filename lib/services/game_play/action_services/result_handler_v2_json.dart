@@ -13,8 +13,6 @@ import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:provider/provider.dart';
-import 'package:pokerapp/proto/hand.pb.dart' as proto;
-import 'package:pokerapp/proto/handmessage.pb.dart' as proto;
 
 class Winner {
   int seatNo;
