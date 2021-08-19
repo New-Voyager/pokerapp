@@ -818,13 +818,7 @@ class GameState {
       }
     }
     holecardOrder = HoleCardOrder.values[i];
-
     _holeCardsState.notify();
-    //final footerState = context.read<ValueNotifier<FooterStatus>>();
-    // Provider.of<ValueNotifier<FooterStatus>>(
-    //   context,
-    //   listen: false,
-    // ).value = FooterStatus.None;
   }
 
   List<int> getHoleCards() {
@@ -835,7 +829,6 @@ class GameState {
     if (player.cards == null) {
       return [];
     }
-    //holecardOrder = HoleCardOrder.SEQUENCE;
     if (holecardOrder == HoleCardOrder.DEALT) {
       return player.cards;
     } else if (holecardOrder == HoleCardOrder.PAIR) {

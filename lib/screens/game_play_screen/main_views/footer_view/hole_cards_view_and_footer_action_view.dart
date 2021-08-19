@@ -459,15 +459,12 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
     Widget shuffleButton = Container();
     if (playerModel != null && playerModel.cards != null) {
       if (playerModel.cards.length > 2) {
-        shuffleButton = IconButton(
-          icon: Icon(
-            Icons.autorenew,
-            color: theme.accentColor,
-          ),
-          onPressed: () {
+        shuffleButton = GameCircleButton(
+          onClickHandler: () {
             gameState.changeHoleCardOrder(context);
-            log('shuffle cards');
           },
+          child: Icon(Icons.autorenew,
+              size: 24, color: theme.primaryColorWithDark()),
         );
       }
     }
@@ -489,8 +486,14 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
             SizedBox(
               height: 10.ph,
             ),
-            cardsWidget,
-            shuffleButton,
+            Stack(
+              alignment: Alignment.center,
+              children: [
+                cardsWidget,
+                shuffleButton,
+              ],
+            ),
+            //shuffleButton,
           ])),
     );
   }

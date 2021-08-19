@@ -80,31 +80,6 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
               : SingleChildScrollView(
                   child: Column(
                     children: [
-                      // Container(
-                      //   margin: EdgeInsets.only(
-                      //     left: 16,
-                      //     top: 5,
-                      //     bottom: 5,
-                      //     right: 10,
-                      //   ),
-                      //   alignment: Alignment.centerLeft,
-                      //   child: Text(
-                      //     "Club code: ${widget.clubCode}",
-                      //   ),
-                      // ),
-                      // Container(
-                      //   margin: EdgeInsets.only(left: 10, bottom: 5, right: 10),
-                      //   alignment: Alignment.centerLeft,
-                      //   child: Text(
-                      //     "Game Code: " + widget.data.gameCode.toString(),
-                      //     style: const TextStyle(
-                      //       fontFamily: AppAssets.fontFamilyLato,
-                      //       color: AppColorsNew.lightGrayTextColor,
-                      //       fontSize: 12.0,
-                      //       fontWeight: FontWeight.w400,
-                      //     ),
-                      //   ),
-                      // ),
                       Container(
                         padding: const EdgeInsets.all(8.0),
                         margin: EdgeInsets.symmetric(horizontal: 8),
@@ -132,10 +107,6 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
                               flex: 3,
                               child: stackTile(theme),
                             ),
-                            // Flexible(
-                            //   flex: 3,
-                            //   child: resultTile(),
-                            // ),
                             AppDimensionsNew.getHorizontalSpace(8),
                             Expanded(
                               flex: 3,
