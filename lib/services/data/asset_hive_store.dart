@@ -72,8 +72,8 @@ class AssetHiveStore {
     return assetStore;
   }
 
-  Future<void> put(Asset asset) {
-    return _assetBox.put(asset.id, asset.toJson());
+  Future<void> put(Asset asset, {String id}) {
+    return _assetBox.put(id ?? asset.id, asset.toJson());
   }
 
   Future<void> putAll(List<Asset> assets) async {

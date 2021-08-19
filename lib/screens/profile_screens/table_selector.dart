@@ -1,3 +1,6 @@
+import 'dart:developer';
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
@@ -5,9 +8,13 @@ import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
+import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/board_view.dart';
-import 'package:pokerapp/screens/game_play_screen/main_views/board_view/decorative_views/background_view.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
+import 'package:pokerapp/services/app/asset_service.dart';
+import 'package:pokerapp/services/data/asset_hive_store.dart';
+import 'package:pokerapp/services/data/box_type.dart';
+import 'package:pokerapp/services/data/hive_datasource_impl.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:provider/provider.dart';
 
@@ -31,11 +38,31 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
   ];
   TabController _tabController;
   int selectedTable = 0, selectedDrop = 0;
+  List<Asset> _tableAssets = [];
+  List<Asset> _backDropAssets = [];
+  Asset _selectedTable, _selectedDrop;
 
   @override
   void initState() {
     _tabController = TabController(length: 2, vsync: this);
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _fetchSavedItems();
+    });
+
     super.initState();
+  }
+
+  void _fetchSavedItems() async {
+    AssetService.assets.forEach((element) {
+      if (element.type == "game-background") {
+        _backDropAssets.add(element);
+      } else if (element.type == "table") {
+        _tableAssets.add(element);
+      }
+    });
+    _selectedTable = await AssetService.getDefaultTableAsset();
+    _selectedDrop = await AssetService.getDefaultBackdropAsset();
+    setState(() {});
   }
 
   @override
@@ -48,41 +75,48 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
     double tableScale = boardAttributes.tableScale;
     final boardDimensions = BoardView.dimensions(context, true);
 
-    return Consumer<AppTheme>(builder: (_, theme, __) {
-      return Container(
-        decoration: AppDecorators.bgRadialGradient(theme),
-        child: Scaffold(
-          backgroundColor: Colors.transparent,
-          appBar: AppBar(
-            leading: BackArrowWidget(),
-            backgroundColor: theme.primaryColorWithDark().withAlpha(150),
-          ),
-          body: Stack(
-            alignment: Alignment.topCenter,
-            children: [
-              CachedNetworkImage(
-                imageUrl: bgImageUrls[selectedDrop],
+    return Consumer<AppTheme>(
+      builder: (_, theme, __) {
+        return Container(
+          decoration: AppDecorators.bgRadialGradient(theme),
+          child: Scaffold(
+            backgroundColor: Colors.transparent,
+            appBar: AppBar(
+              leading: BackArrowWidget(),
+              backgroundColor: theme.primaryColorWithDark().withAlpha(150),
+            ),
+            body: Stack(
+              alignment: Alignment.topCenter,
+              children: [
+                 _selectedDrop?.downloadedPath == null ||
+                _selectedDrop.downloadedPath.isEmpty
+            ? CircularProgressWidget(text: "Downloading...")
+            : Image.file(
+                File(_selectedDrop?.downloadedPath),
+                fit: BoxFit.scaleDown,
+                width: size.width,
               ),
-              /* main view */
-              Column(
-                children: [
-                  // main board view
-                  _buildBoardView(boardDimensions, tableScale, size),
+                /* main view */
+                Column(
+                  children: [
+                    // main board view
+                    _buildBoardView(boardDimensions, tableScale, size),
 
-                  /* divider that divides the board view and the footer */
-                  Divider(color: AppColorsNew.dividerColor, thickness: 3),
+                    /* divider that divides the board view and the footer */
+                    Divider(color: AppColorsNew.dividerColor, thickness: 3),
 
-                  // footer section
-                  Expanded(
-                    child: _buildFooterView(theme, size),
-                  ),
-                ],
-              ),
-            ],
+                    // footer section
+                    Expanded(
+                      child: _buildFooterView(theme, size),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
-        ),
-      );
-    });
+        );
+      },
+    );
   }
 
   _buildBoardView(Size boardDimensions, double tableScale, Size size) {
@@ -92,11 +126,14 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
       padding: EdgeInsets.only(top: 100),
       child: Transform.scale(
         scale: tableScale,
-        child: CachedNetworkImage(
-          imageUrl: tableImageUrls[selectedTable],
-          fit: BoxFit.scaleDown,
-          width: size.width,
-        ),
+        child: _selectedTable?.downloadedPath == null ||
+                _selectedTable.downloadedPath.isEmpty
+            ? CircularProgressWidget(text: "Downloading...")
+            : Image.file(
+                File(_selectedTable?.downloadedPath),
+                fit: BoxFit.scaleDown,
+                width: size.width,
+              ),
       ),
     );
   }
@@ -131,11 +168,25 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
                 child: ListView.separated(
                   padding: EdgeInsets.symmetric(horizontal: 64),
                   itemBuilder: (context, index) {
+                    final bool isSelected =
+                        (_selectedTable?.id == _tableAssets[index].id);
                     return InkResponse(
-                      onTap: () {
+                      onTap: () async {
+                        // _selectedTable = _tableAssets[index];
+
                         setState(() {
-                          selectedTable = index;
+                          _selectedTable = _tableAssets[index];
                         });
+
+                        if (!_selectedTable.downloaded) {
+                          log("Downloading ${_selectedTable.id} : ${_selectedTable.name}");
+                          _tableAssets[index] =
+                              await AssetService.saveFile(_tableAssets[index]);
+                          AssetService.hiveStore.put(_tableAssets[index]);
+                          AssetService.setDefaultTableAsset(
+                              asset: _tableAssets[index]);
+                          setState(() {});
+                        }
                       },
                       child: Container(
                         padding: EdgeInsets.symmetric(horizontal: 8),
@@ -143,7 +194,7 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
                         width: size.height * 0.2,
                         margin: EdgeInsets.symmetric(vertical: 16),
                         decoration: BoxDecoration(
-                          color: (selectedTable == index)
+                          color: isSelected
                               ? Colors.white.withOpacity(0.6)
                               : Colors.transparent,
                           borderRadius: BorderRadius.circular(32),
@@ -152,11 +203,21 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
                           alignment: Alignment.center,
                           children: [
                             CachedNetworkImage(
-                              imageUrl: tableImageUrls[index],
+                              imageUrl: _tableAssets[index].previewLink,
                             ),
                             Visibility(
-                              visible: (selectedTable == index),
+                              visible: isSelected,
                               child: Icon(Icons.done),
+                            ),
+                            Visibility(
+                              visible:
+                                  !(_tableAssets[index].downloaded ?? true),
+                              child: Container(
+                                height: size.height * 0.1,
+                                width: size.height * 0.2,
+                                color: Colors.black.withOpacity(0.5),
+                                child: Icon(Icons.download_for_offline),
+                              ),
                             ),
                           ],
                         ),
@@ -165,20 +226,34 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
                   },
                   separatorBuilder: (context, index) =>
                       AppDimensionsNew.getHorizontalSpace(16),
-                  itemCount: tableImageUrls.length,
+                  itemCount: _tableAssets.length,
                   scrollDirection: Axis.horizontal,
                 ),
               ),
-              Container(
+             Container(
                 //height: size.height * 0.3,
                 child: ListView.separated(
                   padding: EdgeInsets.symmetric(horizontal: 64),
                   itemBuilder: (context, index) {
+                    final bool isSelected =
+                        (_selectedDrop?.id == _backDropAssets[index].id);
                     return InkResponse(
-                      onTap: () {
+                      onTap: () async {
+                        // _selectedTable = _tableAssets[index];
+
                         setState(() {
-                          selectedDrop = index;
+                          _selectedDrop = _backDropAssets[index];
                         });
+
+                        if (!_selectedDrop.downloaded) {
+                          log("Downloading ${_selectedDrop.id} : ${_selectedDrop.name}");
+                          _backDropAssets[index] =
+                              await AssetService.saveFile(_backDropAssets[index]);
+                          AssetService.hiveStore.put(_backDropAssets[index]);
+                          AssetService.setDefaultTableAsset(
+                              asset: _backDropAssets[index]);
+                          setState(() {});
+                        }
                       },
                       child: Container(
                         padding: EdgeInsets.symmetric(horizontal: 8),
@@ -186,20 +261,30 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
                         width: size.height * 0.2,
                         margin: EdgeInsets.symmetric(vertical: 16),
                         decoration: BoxDecoration(
-                          color: (selectedDrop == index)
+                          color: isSelected
                               ? Colors.white.withOpacity(0.6)
                               : Colors.transparent,
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(32),
                         ),
                         child: Stack(
                           alignment: Alignment.center,
                           children: [
                             CachedNetworkImage(
-                              imageUrl: bgImageUrls[index],
+                              imageUrl: _backDropAssets[index].previewLink,
                             ),
                             Visibility(
-                              visible: (selectedDrop == index),
+                              visible: isSelected,
                               child: Icon(Icons.done),
+                            ),
+                            Visibility(
+                              visible:
+                                  !(_backDropAssets[index].downloaded ?? true),
+                              child: Container(
+                                height: size.height * 0.1,
+                                width: size.height * 0.2,
+                                color: Colors.black.withOpacity(0.5),
+                                child: Icon(Icons.download_for_offline),
+                              ),
                             ),
                           ],
                         ),
@@ -208,11 +293,10 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
                   },
                   separatorBuilder: (context, index) =>
                       AppDimensionsNew.getHorizontalSpace(16),
-                  itemCount: bgImageUrls.length,
+                  itemCount: _backDropAssets.length,
                   scrollDirection: Axis.horizontal,
                 ),
-              ),
-            ],
+              ),  ],
           )),
         ],
       ),
