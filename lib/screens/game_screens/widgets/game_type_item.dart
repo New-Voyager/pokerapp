@@ -5,7 +5,6 @@ import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
-import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class GameTypeItem extends StatelessWidget {
   final String clubCode;

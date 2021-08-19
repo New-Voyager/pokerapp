@@ -4,7 +4,6 @@ import 'dart:developer';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/hand_history_model.dart';
-import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/models/handlog_model.dart';
 
 import 'auth_service.dart';
@@ -190,61 +189,6 @@ class HandService {
     return handLog;
   }
 
-  static Future<HandLogModelNew> getHandLogOld(
-      String gameCode, int handNum) async {
-    // SharedPreferences prefs = await SharedPreferences.getInstance();
-    // if (!HandlogCacheService.needToFetch(gameCode, handNum, prefs)) {
-    //   final data = HandlogCacheService.getFromCache(gameCode, handNum,prefs);
-    //   final handLog =
-    //       HandLogModelNew.handLogModelNewFromJson(data, serviceResult: true);
-    //   return handLog;
-    // }
-
-    GraphQLClient _client = graphQLConfiguration.clientToQuery();
-    log("Trying to get GameCode: $gameCode; handNum: $handNum");
-    Map<String, dynamic> variables = {
-      "gameCode": gameCode,
-    };
-    String query = handLogData;
-    if (handNum != -1) {
-      variables["handNum"] = handNum.toString();
-    } else {
-      query = lastHandLogData;
-    }
-    log("variables: $variables");
-    QueryResult result = await _client
-        .query(QueryOptions(documentNode: gql(query), variables: variables));
-
-    if (result.hasException) return null;
-
-    // instantiate game history detail object
-    // model.jsonData = result.data;
-    // model.load();
-    final data = jsonEncode(result.data);
-    // HandlogCacheService.saveToCache(gameCode, handNum, data, prefs);
-
-    final handLog =
-        HandLogModelNew.handLogModelNewFromJson(data, serviceResult: true);
-    return handLog;
-  }
-
-/*   static Future<bool> saveStarredHand(String gameCode, String handNum) async {
-    GraphQLClient _client = graphQLConfiguration.clientToQuery();
-
-    Map<String, dynamic> variables = {
-      "gameCode": gameCode,
-      "handNum": handNum,
-    };
-
-    QueryResult result = await _client.mutate(MutationOptions(
-        documentNode: gql(saveStarredHandMutation), variables: variables));
-    if (result.hasException) {
-      print(result.exception);
-      return false;
-    }
-    return true;
-  }
- */
   static Future<bool> shareHand(
       String gameCode, int handNum, String clubCode) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();

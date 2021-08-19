@@ -15,7 +15,6 @@ class PotWinnersView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = AppTheme.getTheme(context);
-    int noOfBoards = handResult.result.boards.length;
     Widget bw = boardWinners(potNo, theme);
     // players in the pot
     List<int> seatsInPots = [];
@@ -285,20 +284,20 @@ class HandWinnersView2 extends StatelessWidget {
       //   }
       // }
 
-      int subCards = 0;
-      GameStages stageAtWon = handResult.wonAt();
+      // int subCards = 0;
+      // GameStages stageAtWon = handResult.wonAt();
 
-      if (stageAtWon == GameStages.PREFLOP) {
-        subCards = 0;
-      } else if (stageAtWon == GameStages.FLOP) {
-        subCards = 3;
-      } else if (stageAtWon == GameStages.TURN) {
-        subCards = 4;
-      } else if (stageAtWon == GameStages.RIVER) {
-        subCards = 5;
-      } else if (stageAtWon == GameStages.SHOWDOWN) {
-        subCards = 5;
-      }
+      // if (stageAtWon == GameStages.PREFLOP) {
+      //   subCards = 0;
+      // } else if (stageAtWon == GameStages.FLOP) {
+      //   subCards = 3;
+      // } else if (stageAtWon == GameStages.TURN) {
+      //   subCards = 4;
+      // } else if (stageAtWon == GameStages.RIVER) {
+      //   subCards = 5;
+      // } else if (stageAtWon == GameStages.SHOWDOWN) {
+      //   subCards = 5;
+      // }
 
       return Container(
         margin: EdgeInsets.only(bottom: 4, left: 8, right: 8),
@@ -311,10 +310,6 @@ class HandWinnersView2 extends StatelessWidget {
             ),
             itemCount: handResult.result.potWinners.length,
             itemBuilder: (context, index) {
-              String potStr = "Pot:";
-              if (index == 0 && handResult.result.potWinners.length > 1) {
-                potStr = "Main Pot:";
-              }
               return PotWinnersView(
                   handResult, handResult.result.potWinners[index].potNo);
             },

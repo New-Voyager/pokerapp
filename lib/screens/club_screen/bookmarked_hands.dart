@@ -1,25 +1,21 @@
-import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/bookmarkedHands_model.dart';
-import 'package:pokerapp/models/hand_log_model_new.dart';
+import 'package:pokerapp/models/handlog_model.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
-import 'package:pokerapp/resources/new/app_colors_new.dart';
-import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
-import 'package:pokerapp/screens/club_screen/hand_log_views/hand_winners_view.dart';
+import 'package:pokerapp/screens/club_screen/hand_log_views/hand_winners_view2.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/screens/util_screens/replay_hand_dialog/replay_hand_dialog.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/services/app/hand_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
-import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
@@ -67,7 +63,7 @@ class _BookmarkedHandsState extends State<BookmarkedHands>
       list.add(item);
     }
     for (var item in list) {
-      log("GAME CODES : ${item.handlogData.hand.gameCode}");
+      log("GAME CODES : ${item.handlogData.gameCode}");
     }
     setState(() {
       loading = false;
@@ -80,7 +76,7 @@ class _BookmarkedHandsState extends State<BookmarkedHands>
       titleText: result ? _appScreenText["SUCCESS"] : _appScreenText["FAILED"],
       subTitleText: result
           ? "${_appScreenText['HAND']} " +
-              model.handlogData.hand.handNum.toString() +
+              model.handlogData.handNum.toString() +
               " ${_appScreenText['REMOVEDFROMBOOKMARKS']}"
           : "${_appScreenText['COULDNOTREMOVEBOOKMARK']}",
     );
@@ -93,27 +89,27 @@ class _BookmarkedHandsState extends State<BookmarkedHands>
     }
   }
 
-  _shareHandWithClub(HandLogModelNew model) async {
+  _shareHandWithClub(HandResultData model) async {
     log("IN SHARED HAND : ${widget.clubCode}");
     var result = await HandService.shareHand(
-        model.hand.gameCode, model.hand.handNum, widget.clubCode);
+        model.gameCode, model.handNum, widget.clubCode);
     Alerts.showNotification(
       titleText: result ? _appScreenText["SUCCESS"] : _appScreenText["FAILED"],
       subTitleText: result
           ? "${_appScreenText['HAND']} " +
-              model.hand.handNum.toString() +
+              model.handNum.toString() +
               " ${_appScreenText['HASBEENSHAREDWITHTHECLUB']}"
           : "${_appScreenText['COULDNOTSHARETHEHAND']}",
       leadingIcon: Icons.share_rounded,
     );
   }
 
-  _replayHand(HandLogModelNew model) async {
+  _replayHand(HandResultData model) async {
     final player = await AuthService.get();
     ReplayHandDialog.show(
       context: context,
-      handNumber: model.hand.handNum,
-      gameCode: model.hand.gameCode,
+      handNumber: model.handNum,
+      gameCode: model.gameCode,
       playerID: player.playerId, // TODO: HOW TO GET PLAYER ID HERE?,
     );
   }
@@ -175,10 +171,7 @@ class _BookmarkedHandsState extends State<BookmarkedHands>
                                             .tileDecorationWithoutBorder(theme),
                                         child: Column(
                                           children: [
-                                            HandWinnersView(
-                                              handLogModel:
-                                                  list[index].handlogData,
-                                            ),
+                                            PotWinnersView(list[index].handlogData, 1),
                                             Divider(
                                               color: theme.fillInColor,
                                               indent: 8,
@@ -195,7 +188,7 @@ class _BookmarkedHandsState extends State<BookmarkedHands>
                                                         .spaceBetween,
                                                 children: [
                                                   Text(
-                                                    "${_appScreenText['HAND']} #${list[index].handlogData.hand.handNum}",
+                                                    "${_appScreenText['HAND']} #${list[index].handNum}",
                                                     style: AppDecorators
                                                         .getSubtitle3Style(
                                                             theme: theme),

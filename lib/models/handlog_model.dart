@@ -1,8 +1,4 @@
-import 'dart:developer';
-
 import 'package:pokerapp/enums/game_stages.dart';
-
-import 'hand_log_model_new.dart';
 
 class BoardPlayerRank {
   int boardNo;
@@ -216,7 +212,6 @@ class HandResultData {
   String gameType;
   int actionTime;
   int noCards;
-  HandLog handLog;
   int maxPlayers;
   double smallBlind;
   double bigBlind;
@@ -354,5 +349,139 @@ class HandResultData {
     ret.runItTwice = ret.result.runItTwice;
 
     return ret;
+  }
+
+  ResultPlayerInfo getPlayerBySeat(int seatNo) {
+    return this.result.playerInfo[seatNo];
+  }
+}
+
+
+
+class GameActions {
+  GameActions({
+    this.pots,
+    this.potStart,
+    this.actions,
+    this.seatPots,
+  });
+
+  List<int> pots;
+  List<ActionElement> actions;
+  int potStart;
+  List<SeatPot> seatPots;
+
+  factory GameActions.fromJson(Map<String, dynamic> json) {
+    final seatPotsJson = json["seatsPots"];
+    List<SeatPot> seatPots = [];
+    if (seatPotsJson.length > 0) {
+      for (final seatPot in seatPotsJson) {
+        seatPots.add(SeatPot.fromJson(seatPot));
+      }
+    }
+
+    return GameActions(
+      pots: json["pots"]?.map<int>((e) => int.parse(e.toString()))?.toList(),
+      potStart: json["potStart"],
+      actions: List<ActionElement>.from(
+          json["actions"].map((x) => ActionElement.fromJson(x))),
+      seatPots: seatPots,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        "pot": pots,
+        "potStart": potStart,
+        "actions": List<dynamic>.from(actions.map((x) => x.toJson())),
+      };
+}
+
+class ActionElement {
+  ActionElement({
+    this.seatNo,
+    this.action,
+    this.amount,
+    this.timedOut,
+    this.actionTime,
+    this.stack,
+  });
+
+  int seatNo;
+  HandActions action;
+  int amount;
+  bool timedOut;
+  int actionTime;
+  int stack;
+
+  factory ActionElement.fromJson(Map<String, dynamic> json) {
+    final action = json['action'];
+    final actionValue = actionEnumValues.map[action];
+    return ActionElement(
+      seatNo: json["seatNo"],
+      action: actionValue,
+      amount: json["amount"],
+      timedOut: json["timedOut"],
+      actionTime: json["actionTime"],
+      stack: json["stack"],
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        "seatNo": seatNo,
+        "action": actionEnumValues.reverse[action],
+        "amount": amount,
+        "timedOut": timedOut,
+        "actionTime": actionTime,
+        "stack": stack,
+      };
+}
+
+
+final actionEnumValues = EnumValues({
+  "BB": HandActions.BB,
+  "CALL": HandActions.CALL,
+  "CHECK": HandActions.CHECK,
+  "SB": HandActions.SB,
+  "BET": HandActions.BET,
+  "RAISE": HandActions.RAISE,
+  "FOLD": HandActions.FOLD,
+  "STRADDLE": HandActions.STRADDLE,
+  "ALLIN": HandActions.ALLIN,
+  "BOMB_POT_BET": HandActions.BOMB_POT_BET,
+});
+
+final stagesEnumValues = StageEnumValues({
+  "PRE_FLOP": GameStages.PREFLOP,
+  "FLOP": GameStages.FLOP,
+  "RIVER": GameStages.RIVER,
+  "TURN": GameStages.TURN,
+  "SHOW_DOWN": GameStages.SHOWDOWN
+});
+
+class EnumValues<T> {
+  Map<String, T> map;
+  Map<T, String> reverseMap;
+
+  EnumValues(this.map);
+
+  Map<T, String> get reverse {
+    if (reverseMap == null) {
+      reverseMap = map.map((k, v) => new MapEntry(v, k));
+    }
+    return reverseMap;
+  }
+}
+
+class StageEnumValues<T> {
+  Map<String, T> map;
+  Map<T, String> reverseMap;
+
+  StageEnumValues(this.map);
+
+  Map<T, String> get reverse {
+    if (reverseMap == null) {
+      reverseMap = map.map((k, v) => new MapEntry(v, k));
+    }
+    return reverseMap;
   }
 }

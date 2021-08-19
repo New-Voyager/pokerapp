@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
-import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:provider/provider.dart';
-
-import '../utils.dart';
 
 class ChatTextField extends StatelessWidget {
   final TextEditingController textEditingController;

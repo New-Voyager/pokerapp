@@ -21,7 +21,6 @@ import 'package:pokerapp/models/newmodels/game_model_new.dart';
 import 'package:pokerapp/models/player_info.dart' as pi;
 import 'package:pokerapp/models/rabbit_state.dart';
 import 'package:pokerapp/proto/hand.pb.dart' as proto;
-import 'package:pokerapp/proto/enums.pb.dart' as proto;
 import 'package:pokerapp/proto/handmessage.pb.dart' as proto;
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';

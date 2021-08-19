@@ -5,14 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:pokerapp/models/auth_model.dart';
 import 'package:pokerapp/models/club_message_model.dart';
-import 'package:pokerapp/models/hand_log_model_new.dart';
+import 'package:pokerapp/models/handlog_model.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/chat_time.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/chat_user_avatar.dart';
-import 'package:pokerapp/screens/club_screen/hand_log_views/hand_winners_view.dart';
+import 'package:pokerapp/screens/club_screen/hand_log_views/hand_winners_view2.dart';
 import 'package:pokerapp/screens/util_screens/replay_hand_dialog/replay_hand_dialog.dart';
 import 'package:pokerapp/widgets/attributed_gif_widget.dart';
 import 'package:pokerapp/widgets/round_color_button.dart';
@@ -202,12 +202,9 @@ class MessageItem extends StatelessWidget {
               ],
             ),
             SizedBox(height: 10),
-            HandWinnersView(
-              handLogModel: HandLogModelNew.fromJson(
+            PotWinnersView(HandResultData.fromJson(
                 messageModel.sharedHand.data,
-              ),
-              chatWidget: true,
-            ),
+              ), 1),
             Container(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,

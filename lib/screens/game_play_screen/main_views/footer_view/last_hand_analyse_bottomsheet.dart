@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
-import 'package:pokerapp/models/hand_log_model_new.dart';
+import 'package:pokerapp/models/handlog_model.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
-import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_log_view.dart';
 
 class LastHandAnalyseBottomSheet extends StatefulWidget {
   final String gameCode;
   final String clubCode;
-  final HandLogModelNew handLog;
+  final HandResultNew handLog;
   LastHandAnalyseBottomSheet({this.gameCode, this.clubCode, this.handLog});
   @override
   _LastHandAnalyseBottomSheetState createState() =>
@@ -23,15 +21,6 @@ class _LastHandAnalyseBottomSheetState
   @override
   Widget build(BuildContext context) {
     final theme = AppTheme.getTheme(context);
-    // get game state
-    HandLogModelNew handLog;
-    if (widget.handLog != null) {
-      handLog = widget.handLog;
-    } else {
-      final gameState = GameState.getState(context);
-      handLog = gameState.lastHand;
-    }
-
     height = MediaQuery.of(context).size.height;
     return Container(
       height: height / ratio,

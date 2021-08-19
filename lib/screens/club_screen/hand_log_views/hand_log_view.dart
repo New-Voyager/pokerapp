@@ -1,11 +1,9 @@
-import 'dart:convert';
 import 'dart:developer';
 
+import 'package:pokerapp/main.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_stages.dart';
-import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/bookmarkedHands_model.dart';
-import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/models/handlog_model.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
@@ -14,7 +12,6 @@ import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_log_header_view.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_stage_view.dart';
-import 'package:pokerapp/screens/club_screen/hand_log_views/hand_winners_view.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/handlog_action.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/handlog_showdown.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/handlog_summary.dart';
@@ -22,10 +19,8 @@ import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/screens/util_screens/replay_hand_dialog/replay_hand_dialog.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/services/app/hand_service.dart';
-import 'package:pokerapp/services/test/hand_messages.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
-import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/widgets/round_color_button.dart';
 
 import '../../../routes.dart';
@@ -103,10 +98,10 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
   }
 
   loadJsonData() async {
-    String data = await DefaultAssetBundle.of(context)
-        .loadString("assets/sample-data/handlog/holdem/flop.json");
+    // String data = await DefaultAssetBundle.of(context)
+    //     .loadString("assets/sample-data/handlog/holdem/flop.json");
 
-    final jsonResult = json.decode(data);
+    //final jsonResult = json.decode(data);
     //_handLogModel = HandLogModelNew.fromJson(jsonResult);
 
     setState(() {

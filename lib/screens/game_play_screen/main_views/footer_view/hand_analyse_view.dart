@@ -10,12 +10,8 @@ import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/hand_history_model.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
-import 'package:pokerapp/models/rabbit_state.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
-import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
-import 'package:pokerapp/resources/new/app_colors_new.dart';
-import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
@@ -25,12 +21,9 @@ import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/table_r
 import 'package:pokerapp/screens/game_play_screen/widgets/game_circle_button.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/icon_with_badge.dart';
 import 'package:pokerapp/services/app/player_service.dart';
-import 'package:pokerapp/widgets/cards/multiple_stack_card_views.dart';
-import 'package:pokerapp/widgets/num_diamond_widget.dart';
 import 'package:provider/provider.dart';
 import 'hand_history_bottomsheet.dart';
 import 'last_hand_analyse_bottomsheet.dart';
-import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class HandAnalyseView extends StatefulWidget {
   final String clubCode;
