@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/handlog_model.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_log_view.dart';
@@ -20,6 +21,7 @@ class _LastHandAnalyseBottomSheetState
 
   @override
   Widget build(BuildContext context) {
+    final gameState = GameState.getState(context);
     final theme = AppTheme.getTheme(context);
     height = MediaQuery.of(context).size.height;
     return Container(
@@ -35,7 +37,7 @@ class _LastHandAnalyseBottomSheetState
               Expanded(
                 child: HandLogView(
                   widget.gameCode,
-                  -1, // for last hand we pass -1
+                  gameState.lastHandNum,
                   isAppbarWithHandNumber: true,
                   clubCode: widget.clubCode,
                   //handLogModel: handLog,

@@ -1464,6 +1464,7 @@ class HandActionProtoService {
     if (_close) return;
     final Players players = _gameState.getPlayers(_context);
     _gameState.resetSeatActions();
+    _gameState.lastHandNum = result.handNum;
     players.clearForShowdown();
     log('Hand Message: ::handleResult:: START');
 

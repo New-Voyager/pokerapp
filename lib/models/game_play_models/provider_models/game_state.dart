@@ -135,6 +135,9 @@ class GameState {
   // hole card order
   HoleCardOrder holecardOrder = HoleCardOrder.DEALT;
 
+  // last hand number
+  int lastHandNum = 0;
+
   GameScreenAssets assets;
   Future<void> initialize({
     String gameCode,
