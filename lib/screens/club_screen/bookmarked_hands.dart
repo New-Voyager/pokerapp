@@ -108,26 +108,12 @@ class _BookmarkedHandsState extends State<BookmarkedHands>
   }
 
   _replayHand(HandLogModelNew model) async {
-    final handNum = model.hand.handNum;
-    final gameCode = model.hand.gameCode;
-    log('paul: _replayhand bookmarked_hands');
-    // Future.delayed(Duration(milliseconds: 10), () async {
-    //   try {
-    //     ConnectionDialog.show(
-    //         context: context, loadingText: "${_appScreenText['LOADINGHAND']}");
-    //     final handLogModel = await HandService.getHandLog(gameCode, handNum);
-    //     Navigator.pop(context);
-
-    //     // ReplayHandDialog.show(
-    //     //   context: context,
-    //     //   hand: jsonDecode(handLogModel.handData),
-    //     //   playerID: handLogModel.myInfo.id,
-    //     // );
-    //   } catch (err) {
-    //     // ignore the error
-    //     log('error: ${err.toString()}');
-    //   }
-    // });
+    ReplayHandDialog.show(
+      context: context,
+      handNumber: model.hand.handNum,
+      gameCode: model.hand.gameCode,
+      playerID: // TODO: HOW TO GET PLAYER ID HERE?,
+    );
   }
 
   @override
