@@ -4,7 +4,6 @@ import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_replay_models/game_replay_action.dart';
 import 'package:pokerapp/models/game_replay_models/game_replay_controller.dart';
-import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/models/handlog_model.dart';
 import 'package:pokerapp/models/player_info.dart';
 

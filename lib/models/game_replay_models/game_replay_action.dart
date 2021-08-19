@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/models/handlog_model.dart';
 
 enum GameReplayActionType {

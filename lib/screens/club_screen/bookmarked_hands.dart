@@ -171,7 +171,8 @@ class _BookmarkedHandsState extends State<BookmarkedHands>
                                             .tileDecorationWithoutBorder(theme),
                                         child: Column(
                                           children: [
-                                            PotWinnersView(list[index].handlogData, 1),
+                                            PotWinnersView(
+                                                list[index].handlogData, 0),
                                             Divider(
                                               color: theme.fillInColor,
                                               indent: 8,

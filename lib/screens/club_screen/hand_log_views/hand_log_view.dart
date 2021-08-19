@@ -138,11 +138,10 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
   _replayHand() async {
     final currentUser = await AuthService.get();
     ReplayHandDialog.show(
-      gameCode: widget.gameCode,
-      handNumber: widget.handNum,
-      context: context,
-      playerID: currentUser.playerId
-    );
+        gameCode: widget.gameCode,
+        handNumber: widget.handNum,
+        context: context,
+        playerID: currentUser.playerId);
   }
 
   bool _isTheHandBookmarked(int handNum) {

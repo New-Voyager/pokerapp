@@ -1,4 +1,5 @@
 import 'package:pokerapp/enums/game_stages.dart';
+import 'package:pokerapp/enums/hand_actions.dart';
 
 class BoardPlayerRank {
   int boardNo;
@@ -356,8 +357,6 @@ class HandResultData {
   }
 }
 
-
-
 class GameActions {
   GameActions({
     this.pots,
@@ -436,7 +435,6 @@ class ActionElement {
       };
 }
 
-
 final actionEnumValues = EnumValues({
   "BB": HandActions.BB,
   "CALL": HandActions.CALL,
@@ -483,5 +481,22 @@ class StageEnumValues<T> {
       reverseMap = map.map((k, v) => new MapEntry(v, k));
     }
     return reverseMap;
+  }
+}
+
+class SeatPot {
+  List<int> seats = [];
+  double pot;
+  SeatPot();
+
+  factory SeatPot.fromJson(dynamic json) {
+    SeatPot seatPot = SeatPot();
+
+    seatPot.seats = [];
+    for (final seat in json['seats']) {
+      seatPot.seats.add(int.parse(seat.toString()));
+    }
+    seatPot.pot = double.parse(json['pot'].toString());
+    return seatPot;
   }
 }

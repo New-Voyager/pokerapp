@@ -202,9 +202,11 @@ class MessageItem extends StatelessWidget {
               ],
             ),
             SizedBox(height: 10),
-            PotWinnersView(HandResultData.fromJson(
-                messageModel.sharedHand.data,
-              ), 1),
+            PotWinnersView(
+                HandResultData.fromJson(
+                  messageModel.sharedHand.data,
+                ),
+                0),
             Container(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,

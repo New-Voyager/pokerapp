@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/models/handlog_model.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
