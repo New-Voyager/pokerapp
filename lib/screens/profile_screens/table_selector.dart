@@ -21,9 +21,9 @@ class TableSelectorScreen extends StatefulWidget {
 class _TableSelectorScreenState extends State<TableSelectorScreen>
     with SingleTickerProviderStateMixin {
   List<String> tableImageUrls = [
-    "https://assets-pokerclubapp.nyc3.digitaloceanspaces.com/table/blue.png",
-    "https://assets-pokerclubapp.nyc3.digitaloceanspaces.com/table/darkblue.png",
-    "https://assets-pokerclubapp.nyc3.digitaloceanspaces.com/table/red.png",
+    "https://assets-pokerclubapp.nyc3.digitaloceanspaces.com/table-1/blue.png",
+    "https://assets-pokerclubapp.nyc3.digitaloceanspaces.com/table-1/darkblue.png",
+    "https://assets-pokerclubapp.nyc3.digitaloceanspaces.com/table-1/red.png",
   ];
   List<String> bgImageUrls = [
     "https://assets-pokerclubapp.nyc3.digitaloceanspaces.com/background/western%20saloon.jpeg",
