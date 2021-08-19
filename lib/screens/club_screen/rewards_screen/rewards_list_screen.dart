@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/rewards_model.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/screens/club_screen/rewards_screen/create_rewards_screen.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
@@ -9,6 +10,7 @@ import 'package:provider/provider.dart';
 
 class RewardsListScreen extends StatelessWidget {
   final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
+  final AppTextScreen _appScreenText = getAppTextScreen("rewards");
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +22,7 @@ class RewardsListScreen extends StatelessWidget {
         appBar: CustomAppBar(
           theme: theme,
           context: context,
-          titleText: "Rewards",
+          titleText: _appScreenText['rewards'],
         ),
         /* AppBar(
           backgroundColor: AppColorsNew.screenBackgroundColor,
@@ -99,7 +101,7 @@ class RewardsListScreen extends StatelessWidget {
                         child: CreateRewardsScreen(),
                       ));
             },
-            text: 'New',
+            text: _appScreenText['new'],
           ),
         ),
       ];

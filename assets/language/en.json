@@ -331,5 +331,32 @@
         "HAND": "Hand",
         "COMMUNITYCARDS": "Community Cards",
         "YOURCARDS": "Your Cards"
+    },
+    "rewards": {
+        "newReward" : "New Reward",
+        "cancel" : "Cancel",
+        "enterSomething" : "Enter something",
+        "nameCanntEmpty" : "Name Can't be empty!",
+        "enterName" : "Enter Name",
+        "enterAmount" : "Enter Amount",
+        "amountEmptyError" : "Amount should be greater than 0!",
+        "rewardAmount": "Reward Amount",
+        "type": "Type",
+        "highHand": "High Hand",
+        "track": "Track",
+        "entireGame": "Entire Game",
+        "save": "Save",
+        "rewards": "Rewards",
+        "new": "New"
+    },
+    "clubGames": {
+        "noLiveGames": "No Live Games",
+        "liveGames": "Live Games",
+        "buyIn": "BUY IN",
+        "tableFull": "Table is full",
+        "openSeats": " open seats",
+        "inWaitingList": " in the waiting list",
+        "join": "Join",
+        "joinWaitlist": "Join Waitlist"
     }
 }
