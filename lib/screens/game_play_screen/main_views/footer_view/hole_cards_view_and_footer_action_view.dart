@@ -410,20 +410,22 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
       borderColor = Colors.transparent;
     }
 
-    Widget rankText = Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: 14.pw,
-        vertical: 3.ph,
-      ),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(6.pw),
-        border: Border.all(color: borderColor),
-      ),
-      child: Text(
-        me.rankText,
-        style: AppDecorators.getHeadLine5Style(theme: theme),
-      ),
-    );
+    Widget rankText = me == null
+        ? const SizedBox.shrink()
+        : Container(
+            padding: EdgeInsets.symmetric(
+              horizontal: 14.pw,
+              vertical: 3.ph,
+            ),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(6.pw),
+              border: Border.all(color: borderColor),
+            ),
+            child: Text(
+              me.rankText,
+              style: AppDecorators.getHeadLine5Style(theme: theme),
+            ),
+          );
     return rankText;
   }
 
