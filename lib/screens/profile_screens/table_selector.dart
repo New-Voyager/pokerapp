@@ -26,7 +26,7 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
     "https://assets-pokerclubapp.nyc3.digitaloceanspaces.com/table/red.png",
   ];
   List<String> bgImageUrls = [
-    "https://assets-pokerclubapp.nyc3.digitaloceanspaces.com/background/western-saloon.jpg",
+    "https://assets-pokerclubapp.nyc3.digitaloceanspaces.com/background/western%20saloon.jpeg",
     "https://assets-pokerclubapp.nyc3.digitaloceanspaces.com/background/bar_bookshelf.jpg",
   ];
   TabController _tabController;
