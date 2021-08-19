@@ -14,8 +14,6 @@ import 'package:pokerapp/screens/game_play_screen/main_views/board_view/board_vi
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/asset_service.dart';
 import 'package:pokerapp/services/data/asset_hive_store.dart';
-import 'package:pokerapp/services/data/box_type.dart';
-import 'package:pokerapp/services/data/hive_datasource_impl.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:provider/provider.dart';
 
@@ -250,13 +248,13 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
 
                         if (!_selectedDrop.downloaded) {
                           log("Downloading ${_selectedDrop.id} : ${_selectedDrop.name}");
-                          _backDropAssets[index] =
-                              await AssetService.saveFile(_backDropAssets[index]);
-                          AssetService.hiveStore.put(_backDropAssets[index]);
-                          AssetService.setDefaultTableAsset(
-                              asset: _backDropAssets[index]);
+                          _selectedDrop =
+                              await AssetService.saveFile(_selectedDrop);
+                          AssetService.hiveStore.put(_selectedDrop);
                           setState(() {});
                         }
+                        AssetService.setDefaultBackdropAsset(
+                            asset: _backDropAssets[index]);
                       },
                       child: Container(
                         padding: EdgeInsets.symmetric(horizontal: 8),

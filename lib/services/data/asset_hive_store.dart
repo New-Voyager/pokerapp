@@ -39,6 +39,15 @@ class Asset {
     asset.downloaded = false;
     asset.downloadDir = '';
     asset.downloadedPath = '';
+    if (json['downloaded'] ?? false) {
+      asset.downloaded = json['downloaded'];
+    }
+    if (json['downloadDir'] != null) {
+      asset.downloadDir = json['downloadDir'].toString();
+    }
+    if (json['downloadedPath'] != null) {
+      asset.downloadedPath = json['downloadedPath'].toString();
+    }
     return asset;
   }
 

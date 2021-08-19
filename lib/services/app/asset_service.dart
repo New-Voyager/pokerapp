@@ -16,34 +16,30 @@ class AssetService {
 
   static Future<void> setDefaultTableAsset({Asset asset}) async {
     await hiveStore.put(asset, id: "default-table");
+    await getDefaultTableAsset();
   }
 
   static Future<Asset> getDefaultTableAsset() async {
-    if (defaultTableAsset == null) {
-      try {
-        // Load default asset
-        defaultTableAsset = await hiveStore.get("default-table");
-      } catch (err) {
-        log('error: ${err.toString()}');
-      }
+    try {
+      defaultTableAsset = await hiveStore.get("default-table");
+    } catch (err) {
+      
     }
-    return defaultTableAsset;
+    return defaultTableAsset;    
   }
 
   static Future<void> setDefaultBackdropAsset({Asset asset}) async {
     await hiveStore.put(asset, id: "default-backdrop");
+    await getDefaultBackdropAsset();
   }
 
   static Future<Asset> getDefaultBackdropAsset() async {
-    if (defaultTableAsset == null) {
-      // Load default asset
-      try {
-        defaultBackdropAsset = await hiveStore.get("default-backdrop");
-      } catch (err) {
-        
-      }
+    try {
+      defaultBackdropAsset = await hiveStore.get("default-backdrop");
+    } catch (err) {
+      
     }
-    return defaultTableAsset;
+    return defaultBackdropAsset;
   }
 
   static Future<Asset> saveFile(Asset asset) async {
