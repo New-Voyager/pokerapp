@@ -37,8 +37,8 @@ class GameCircleButton extends StatelessWidget {
       } else {
         svg = SvgPicture.asset(
           imagePath,
-          height: 24.pw,
-          width: 24.pw,
+          height: 30.pw,
+          width: 30.pw,
         );
       }
     }
@@ -48,7 +48,7 @@ class GameCircleButton extends StatelessWidget {
           : Center(
               child: Icon(
               iconData,
-              size: 20.pw,
+              size: 30.pw,
               color: theme
                   .primaryColorWithDark(), //AppColorsNew.newGreenButtonColor,
             ));
@@ -59,8 +59,8 @@ class GameCircleButton extends StatelessWidget {
       buttonColor = AppColorsNew.disabledColor;
     }
     final button = Container(
-      height: 32.pw,
-      width: 32.pw,
+      height: 40.pw,
+      width: 40.pw,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: buttonColor,

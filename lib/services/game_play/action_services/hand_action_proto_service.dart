@@ -466,6 +466,7 @@ class HandActionProtoService {
   Future<void> handleNewHand(proto.HandMessageItem message) async {
     _gameState.handState = HandState.STARTED;
     _gameState.highHand = null;
+    _gameState.handInProgress = true;
     log('Hand Message: ::handleNewHand:: START');
     playSoundEffect(AppAssets.newHandSound);
 
@@ -1464,6 +1465,7 @@ class HandActionProtoService {
     if (_close) return;
     final Players players = _gameState.getPlayers(_context);
     _gameState.resetSeatActions();
+    _gameState.lastHandNum = result.handNum;
     players.clearForShowdown();
     log('Hand Message: ::handleResult:: START');
 
@@ -1476,14 +1478,18 @@ class HandActionProtoService {
       }
     }
     _gameState.handState = HandState.RESULT;
-    ResultHandlerV2 resultHandler = ResultHandlerV2(
-      result: result,
-      gameState: _gameState,
-      context: _context,
-      audioPlayer: audioPlayer,
-      replay: false,
-    );
-    await resultHandler.show();
+    try {
+      ResultHandlerV2 resultHandler = ResultHandlerV2(
+        result: result,
+        gameState: _gameState,
+        context: _context,
+        audioPlayer: audioPlayer,
+        replay: false,
+      );
+      await resultHandler.show();
+    } catch (err) {}
+    _gameState.handState = HandState.ENDED;
+    _gameState.handInProgress = false;
     log('Hand Message: ::handleResult:: END');
   }
 
@@ -1588,6 +1594,7 @@ class HandActionProtoService {
     }
 
     _gameState.handState = HandState.ENDED;
+    _gameState.handInProgress = false;
     log('Hand Message: ::handleResult:: END');
   }
 
