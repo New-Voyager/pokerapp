@@ -87,14 +87,14 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
             body: Stack(
               alignment: Alignment.topCenter,
               children: [
-                 _selectedDrop?.downloadedPath == null ||
-                _selectedDrop.downloadedPath.isEmpty
-            ? CircularProgressWidget(text: "Downloading...")
-            : Image.file(
-                File(_selectedDrop?.downloadedPath),
-                fit: BoxFit.scaleDown,
-                width: size.width,
-              ),
+                _selectedDrop?.downloadedPath == null ||
+                        _selectedDrop.downloadedPath.isEmpty
+                    ? CircularProgressWidget(text: "Downloading...")
+                    : Image.file(
+                        File(_selectedDrop?.downloadedPath),
+                        fit: BoxFit.scaleDown,
+                        width: size.width,
+                      ),
                 /* main view */
                 Column(
                   children: [
@@ -120,7 +120,7 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
 
   _buildBoardView(Size boardDimensions, double tableScale, Size size) {
     return Container(
-      height: size.height * 0.6,
+      height: size.height * 0.5,
       width: boardDimensions.width,
       padding: EdgeInsets.only(top: 100),
       child: Transform.scale(
@@ -130,8 +130,9 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
             ? CircularProgressWidget(text: "Downloading...")
             : Image.file(
                 File(_selectedTable?.downloadedPath),
-                fit: BoxFit.scaleDown,
-                width: size.width,
+                //   fit: BoxFit.scaleDown,
+                width: boardDimensions.width,
+                height: boardDimensions.height,
               ),
       ),
     );
@@ -231,7 +232,7 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
                   scrollDirection: Axis.horizontal,
                 ),
               ),
-             Container(
+              Container(
                 //height: size.height * 0.3,
                 child: ListView.separated(
                   padding: EdgeInsets.symmetric(horizontal: 64),
@@ -248,9 +249,11 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
 
                         if (!_selectedDrop.downloaded) {
                           log("Downloading ${_selectedDrop.id} : ${_selectedDrop.name}");
-                          _selectedDrop =
-                              await AssetService.saveFile(_selectedDrop);
-                          AssetService.hiveStore.put(_selectedDrop);
+                          _backDropAssets[index] = await AssetService.saveFile(
+                              _backDropAssets[index]);
+                          AssetService.hiveStore.put(_backDropAssets[index]);
+                          AssetService.setDefaultTableAsset(
+                              asset: _backDropAssets[index]);
                           setState(() {});
                         }
                         AssetService.setDefaultBackdropAsset(
@@ -297,7 +300,8 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
                   itemCount: _backDropAssets.length,
                   scrollDirection: Axis.horizontal,
                 ),
-              ),  ],
+              ),
+            ],
           )),
         ],
       ),
