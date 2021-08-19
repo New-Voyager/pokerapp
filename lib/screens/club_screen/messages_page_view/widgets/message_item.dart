@@ -185,16 +185,18 @@ class MessageItem extends StatelessWidget {
                     ),
                     SizedBox(width: 5),
                     RoundIconButton(
-                        bgColor: theme.accentColor,
-                        iconColor: theme.primaryColorWithDark(),
-                        icon: Icons.replay,
-                        onTap: () {
-                          // ReplayHandDialog.show(
-                          //   context: context,
-                          //   hand: messageModel.sharedHand.data,
-                          //   playerID: playerInfo['id'],
-                          // );
-                        })
+                      bgColor: theme.accentColor,
+                      iconColor: theme.primaryColorWithDark(),
+                      icon: Icons.replay,
+                      onTap: () {
+                        ReplayHandDialog.show(
+                          context: context,
+                          gameCode: messageModel.sharedHand.gameCode,
+                          handNumber: messageModel.sharedHand.handNum,
+                          playerID: playerInfo['id'],
+                        );
+                      },
+                    )
                   ],
                 ),
               ],

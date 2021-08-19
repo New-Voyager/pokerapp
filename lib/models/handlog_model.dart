@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:pokerapp/enums/game_stages.dart';
 
 import 'hand_log_model_new.dart';
@@ -171,12 +173,14 @@ class HandResultNew {
   List<ResultBoard> boards;
   List<ResultPotWinner> potWinners;
   Map<int, ResultPlayerInfo> playerInfo;
+  int pauseTimeInMs;
 
   HandResultNew();
 
   factory HandResultNew.fromJson(dynamic json) {
     HandResultNew ret = HandResultNew();
     ret.runItTwice = json['runItTwice'];
+    ret.pauseTimeInMs = json['pauseTimeSecs'] as int;
     ret.activeSeats = json['activeSeats'].cast<int>();
     ret.wonAt = json['wonAt'].toString();
     ret.boards = [];

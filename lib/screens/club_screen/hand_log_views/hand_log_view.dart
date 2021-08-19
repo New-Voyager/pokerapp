@@ -52,7 +52,6 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
   @override
   String get routeName => Routes.hand_log_view;
   bool _isLoading = true;
-  var handLogjson;
   List<BookmarkedHand> list = [];
   AppTextScreen _appScreenText;
   HandResultData _handResult;
@@ -141,26 +140,12 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
   }
 
   _replayHand() async {
-    final handNum = widget.handNum;
-    final gameCode = widget.gameCode;
-    log('paul: _replayhand bookmarked_hands');
-    // Future.delayed(Duration(milliseconds: 10), () async {
-    //   try {
-    //     ConnectionDialog.show(
-    //         context: context, loadingText: "${_appScreenText["LOADINGHAND"]}");
-    //     final handLogModel = await HandService.getHandLog(gameCode, handNum);
-    //     Navigator.pop(context);
-
-    //     // ReplayHandDialog.show(
-    //     //   context: context,
-    //     //   hand: jsonDecode(_handResult),
-    //     //   playerID: handLogModel.myInfo.id,
-    //     // );
-    //   } catch (err) {
-    //     // ignore the error
-    //     log('error: ${err.toString()}');
-    //   }
-    // });
+    ReplayHandDialog.show(
+      gameCode: widget.gameCode,
+      handNumber: widget.handNum,
+      context: context,
+      playerID: // TODO: HOW TO GET PLAYER ID HERE?,
+    );
   }
 
   bool _isTheHandBookmarked(int handNum) {
