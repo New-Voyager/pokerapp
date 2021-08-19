@@ -1009,7 +1009,7 @@ class GameUpdateService {
 
   void handleUpdateStatus({
     var status,
-  }) {
+  }) async {
     String tableStatus = status['tableStatus'];
     String gameStatus = status['status'];
 
@@ -1039,6 +1039,12 @@ class GameUpdateService {
         * This is done to get update of the game */
         //gameContext.handActionService.queryCurrentHand();
       } else if (gameStatus == AppConstants.GAME_ENDED) {
+        if (_gameState.handInProgress) {
+          // if we are in middle of the hand, don't close it yet
+          while (_gameState.handInProgress) {
+            await Future.delayed(Duration(milliseconds: 1000));
+          }
+        }
         // end the game
         log('Game has ended. Update the state');
         resetBoard();

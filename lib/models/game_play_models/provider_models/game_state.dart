@@ -138,6 +138,9 @@ class GameState {
   // last hand number
   int lastHandNum = 0;
 
+  // indicates a hand in progress
+  bool handInProgress = false;
+
   GameScreenAssets assets;
   Future<void> initialize({
     String gameCode,
