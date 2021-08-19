@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_model.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
@@ -11,9 +12,11 @@ import '../../main.dart';
 class ClubGameItem extends StatelessWidget {
   final GameModel _clubGameModel;
 
-  const ClubGameItem(this._clubGameModel);
+  ClubGameItem(this._clubGameModel);
 
   GameModel get clubGameModel => _clubGameModel;
+
+  final AppTextScreen _appScreenText = getAppTextScreen("clubGames");
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +77,7 @@ class ClubGameItem extends StatelessWidget {
                         Expanded(
                           flex: 5,
                           child: Text(
-                            "BUY IN : " +
+                            "${_appScreenText['buyIn']} : " +
                                 _clubGameModel.buyInMin.toString() +
                                 "/" +
                                 _clubGameModel.buyInMax.toString(),
@@ -98,9 +101,9 @@ class ClubGameItem extends StatelessWidget {
                           flex: 5,
                           child: Text(
                             _clubGameModel.seatsAvailable == 0
-                                ? "Table is full"
+                                ? _appScreenText['tableFull']
                                 : _clubGameModel.seatsAvailable.toString() +
-                                    " open seats",
+                                    _appScreenText['openSeats'],
                             textAlign: TextAlign.left,
                             style: TextStyle(
                               color: AppColorsNew.contentColor,
@@ -115,7 +118,7 @@ class ClubGameItem extends StatelessWidget {
                           child: Text(
                             _clubGameModel.waitList != 0
                                 ? _clubGameModel.waitList.toString() +
-                                    " in the waiting list"
+                                    _appScreenText['inWaitingList']
                                 : "",
                             textAlign: TextAlign.left,
                             style: TextStyle(
@@ -137,7 +140,9 @@ class ClubGameItem extends StatelessWidget {
             flex: 2,
             child: Container(
               child: CustomTextButton(
-                text: _clubGameModel.waitList == 0 ? "Join" : "Join Waitlist",
+                text: _clubGameModel.waitList == 0
+                    ? _appScreenText['join']
+                    : _appScreenText['joinWaitlist'],
                 onTap: () => navigatorKey.currentState.pushNamed(
                   Routes.game_play,
                   arguments: clubGameModel.gameCode,

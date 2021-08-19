@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/rewards_model.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/club_screen_icons_icons.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
@@ -9,6 +10,8 @@ class CreateRewardsScreen extends StatelessWidget {
   final TextEditingController _name = TextEditingController();
   final TextEditingController _amount = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  final AppTextScreen _appScreenText = getAppTextScreen("rewards");
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +31,7 @@ class CreateRewardsScreen extends StatelessWidget {
                 SizedBox(
                   width: 10.0,
                 ),
-                Text("New Reward"),
+                Text(_appScreenText['newReward']),
               ],
             ),
             elevation: 0.0,
@@ -36,7 +39,7 @@ class CreateRewardsScreen extends StatelessWidget {
             leading: Padding(
               padding: const EdgeInsets.all(10.0),
               child: CustomTextButton(
-                text: "Cancel",
+                text: _appScreenText['cancel'],
                 onTap: () {
                   Navigator.pop(context);
                 },
@@ -60,15 +63,16 @@ class CreateRewardsScreen extends StatelessWidget {
                     onChanged: (value) {},
                     validator: (text) {
                       if (text == null) {
-                        return "Enter something";
+                        return _appScreenText['enterSomething'];
                       } else if (text.isEmpty) {
-                        return "Name Can't be empty!";
+                        return _appScreenText['nameCanntEmpty'];
                       }
+                      return null;
                     },
                     controller: _name,
                     keyboardType: TextInputType.name,
                     decoration: InputDecoration(
-                      hintText: "Enter Name",
+                      hintText: _appScreenText['enterName'],
                       hintStyle: TextStyle(color: Colors.grey),
                     ),
                     style: TextStyle(color: Colors.white),
@@ -84,15 +88,16 @@ class CreateRewardsScreen extends StatelessWidget {
                     onChanged: (value) {},
                     validator: (text) {
                       if (text.isEmpty) {
-                        return "Enter Amount";
+                        return _appScreenText['enterAmount'];
                       } else if (int.parse(text) < 0) {
-                        return "Amount should be greater than 0!";
+                        return _appScreenText['amountEmptyError'];
                       }
+                      return null;
                     },
                     controller: _amount,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
-                      hintText: "Reward Amount",
+                      hintText: _appScreenText['rewardAmount'],
                       hintStyle: TextStyle(color: Colors.grey),
                     ),
                     style: TextStyle(color: Colors.white),
@@ -117,11 +122,11 @@ class CreateRewardsScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "Type",
+                        _appScreenText['type'],
                         style: TextStyle(color: Colors.white),
                       ),
                       Text(
-                        "High Hand",
+                      _appScreenText['highHand'],
                         style: TextStyle(color: Color(0xff848484)),
                       ),
                     ],
@@ -137,11 +142,11 @@ class CreateRewardsScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "Track",
+                        _appScreenText['track'],
                         style: TextStyle(color: Colors.white),
                       ),
                       Text(
-                        "Entire Game",
+                        _appScreenText['entireGame'],
                         style: TextStyle(color: Color(0xff848484)),
                       ),
                     ],
@@ -174,7 +179,7 @@ class CreateRewardsScreen extends StatelessWidget {
                       int.parse(_amount.text), "HIGH_HAND");
               Navigator.pop(context);
             },
-            text: 'Save',
+            text: _appScreenText['save'],
           ),
         ),
       ];
