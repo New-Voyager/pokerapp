@@ -246,9 +246,9 @@ class GameHistoryDetailModel extends ChangeNotifier {
     if (this.playedGame) {
       sessionTime = int.parse(gameData['sessionTime'].toString());
       sessionTimeStr = DataFormatter.timeFormat(sessionTime);
-      balance = double.parse(gameData['balance'].toString());
-      profit = double.parse(gameData['profit'].toString());
-      buyIn = double.parse(gameData['buyIn'].toString());
+      balance = double.parse((gameData['balance'] ?? '0').toString());
+      profit = double.parse((gameData['profit'] ?? '0').toString());
+      buyIn = double.parse((gameData['buyIn'] ?? '0').toString());
     }
 
     isOwner = gameData['isOwner'];
