@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
-import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/pulsating_button.dart';
 
 import 'game_circle_button.dart';
@@ -21,9 +21,12 @@ class _VoiceTextWidgetState extends State<VoiceTextWidget> {
   bool _longPressed = false;
   Timer _timerPeriodic;
   int _recSeconds = 10;
+  AppTextScreen _appScreenText;
 
   @override
   void initState() {
+    _appScreenText = getAppTextScreen("voiceTextWidget");
+
     super.initState();
   }
 
@@ -88,11 +91,11 @@ class _VoiceTextWidgetState extends State<VoiceTextWidget> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            " $_recSeconds sec ",
+                            " $_recSeconds ${_appScreenText['sec']} ",
                             style: TextStyle(color: Colors.white, fontSize: 12),
                           ),
                           Text(
-                            AppStringsNew.VoiceCancelMessage,
+                            _appScreenText['slideToCancel'],
                             style: TextStyle(color: Colors.white, fontSize: 10),
                           ),
                         ],

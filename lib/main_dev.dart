@@ -30,7 +30,7 @@ void main() async {
   var devFlavorApp = FlavorConfig(
     appName: 'PokerDev',
     flavorName: Flavor.DEV.toString(),
-    apiBaseUrl: 'https://dev.pokerapp.club',
+    apiBaseUrl: '67.205.136.63',
     child: MyApp(),
   );
   await AppConfig.init(devFlavorApp.apiBaseUrl);

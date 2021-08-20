@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/club_stats_model.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
-import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/stats_service.dart';
@@ -29,8 +29,12 @@ class _ClubStatsScreenState extends State<ClubStatsScreen>
   String get routeName => Routes.club_statistics;
   TabController _tabController;
   ClubStatsModel _clubStats;
+  AppTextScreen _appScreenText;
+
   @override
   void initState() {
+    _appScreenText = getAppTextScreen("clubStatsScreen");
+
     _tabController = TabController(length: 3, vsync: this, initialIndex: 0);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _fetchClubStats();
@@ -57,12 +61,12 @@ class _ClubStatsScreenState extends State<ClubStatsScreen>
             appBar: CustomAppBar(
               theme: theme,
               context: context,
-              titleText: AppStringsNew.clubStatisticsTitle,
+              titleText: _appScreenText['CLUBSTATISTICS'],
               subTitleText: widget.clubCode,
             ),
             body: _clubStats == null
                 ? CircularProgressWidget(
-                    text: AppStringsNew.loadingStatistics,
+                    text: _appScreenText['LOADINGSTATISTICS'],
                   )
                 : Column(
                     children: [
@@ -70,9 +74,9 @@ class _ClubStatsScreenState extends State<ClubStatsScreen>
                       TabBar(
                         controller: _tabController,
                         tabs: [
-                          Text(AppStringsNew.tabNLHText),
-                          Text(AppStringsNew.tabPLOText),
-                          Text(AppStringsNew.tab5CardPLOText),
+                          Text(_appScreenText['NOLIMITHOLDEM']),
+                          Text(_appScreenText['PLO']),
+                          Text(_appScreenText['5CARDPLO']),
                         ],
                         isScrollable: true,
                         indicatorSize: TabBarIndicatorSize.label,
@@ -88,14 +92,17 @@ class _ClubStatsScreenState extends State<ClubStatsScreen>
                             StatsDetailForGame(
                               action: _clubStats.holdem,
                               imagePath: AppAssetsNew.pathHoldemTypeImage,
+                              appScreenText: _appScreenText,
                             ),
                             StatsDetailForGame(
                               action: _clubStats.plo,
                               imagePath: AppAssetsNew.pathPLOTypeImage,
+                              appScreenText: _appScreenText,
                             ),
                             StatsDetailForGame(
                               action: _clubStats.fivecardPlo,
                               imagePath: AppAssetsNew.pathFiveCardPLOTypeImage,
+                              appScreenText: _appScreenText,
                             ),
                           ],
                         ),
@@ -112,7 +119,9 @@ class _ClubStatsScreenState extends State<ClubStatsScreen>
 class StatsDetailForGame extends StatelessWidget {
   final Map<String, int> action;
   final String imagePath;
-  StatsDetailForGame({this.action, this.imagePath});
+  final AppTextScreen appScreenText;
+
+  StatsDetailForGame({this.action, this.imagePath, this.appScreenText});
   final List<String> types = CardHelper.rankCards.keys.toList();
   //final List<List<int>> values = CardHelper.rankCards.values.toList();
 
@@ -140,7 +149,7 @@ class StatsDetailForGame extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                AppStringsNew.totalGamesText,
+                                appScreenText['TOTALGAMES'],
                                 style: AppDecorators.getSubtitle3Style(
                                     theme: theme),
                               ),
@@ -155,7 +164,7 @@ class StatsDetailForGame extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                AppStringsNew.totalHandsText,
+                                appScreenText['TOTALHANDS'],
                                 style: AppDecorators.getSubtitle3Style(
                                     theme: theme),
                               ),
@@ -187,14 +196,14 @@ class StatsDetailForGame extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       Text(
-                        AppStringsNew.oddsSoFarText,
+                        appScreenText['ODDSSOFAR'],
                         style: AppDecorators.getHeadLine4Style(theme: theme),
                       ),
                       Row(
                         children: [
                           Expanded(
                             child: Text(
-                              AppStringsNew.hand,
+                              appScreenText['HAND'],
                               style:
                                   AppDecorators.getSubtitle3Style(theme: theme),
                             ),
@@ -202,7 +211,7 @@ class StatsDetailForGame extends StatelessWidget {
                           ),
                           Expanded(
                             child: Text(
-                              AppStringsNew.hitsText,
+                              appScreenText['HITS'],
                               style:
                                   AppDecorators.getSubtitle3Style(theme: theme),
                               textAlign: TextAlign.end,
@@ -211,7 +220,7 @@ class StatsDetailForGame extends StatelessWidget {
                           ),
                           Expanded(
                             child: Text(
-                              AppStringsNew.odds,
+                              appScreenText['ODDS'],
                               style:
                                   AppDecorators.getSubtitle3Style(theme: theme),
                               textAlign: TextAlign.end,
@@ -247,7 +256,7 @@ class StatsDetailForGame extends StatelessWidget {
                                 child: Text(
                                   (action['totalHands'] == 0 ||
                                           action[types[index]] == 0)
-                                      ? "NA"
+                                      ? appScreenText['NA']
                                       : "${(action[types[index]] / action['totalHands']).toStringAsFixed(4)}",
                                   style: AppDecorators.getHeadLine4Style(
                                       theme: theme),

@@ -4,10 +4,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/seat_change_model.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
-import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/widgets/switch_widget.dart';
@@ -28,9 +28,13 @@ class _SeatChangeBottomSheetState extends State<SeatChangeBottomSheet> {
   bool isSeatChange = false;
   List<SeatChangeModel> allPlayersWantToChange = [];
   bool isSwitchShow = false;
+  AppTextScreen _appScreenText;
+
   @override
   void initState() {
     super.initState();
+    _appScreenText = getAppTextScreen("seatChangeBottomSheet");
+
     getAllSeatChangePlayers();
     for (final player in widget.gameState.gameInfo.playersInSeats) {
       if (player.playerUuid == widget.playerUuid) {
@@ -74,7 +78,7 @@ class _SeatChangeBottomSheetState extends State<SeatChangeBottomSheet> {
           appBar: CustomAppBar(
             theme: theme,
             context: context,
-            titleText: AppStringsNew.seatChangeTitle,
+            titleText: _appScreenText['seatChange'],
           ),
           body: Column(
             mainAxisSize: MainAxisSize.max,
@@ -96,7 +100,7 @@ class _SeatChangeBottomSheetState extends State<SeatChangeBottomSheet> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            AppStringsNew.playersInWaitingListText,
+            _appScreenText['playersInTheList'],
             style: AppDecorators.getSubtitle3Style(theme: theme),
           ),
           AppDimensionsNew.getVerticalSizedBox(10),
@@ -112,7 +116,7 @@ class _SeatChangeBottomSheetState extends State<SeatChangeBottomSheet> {
                     )
                   : Center(
                       child: Text(
-                        AppStringsNew.noSeatChangeRequestsText,
+                        _appScreenText['noSeatChangeRequests'],
                         style: AppDecorators.getSubtitle1Style(theme: theme),
                       ),
                     ),
@@ -149,7 +153,7 @@ class _SeatChangeBottomSheetState extends State<SeatChangeBottomSheet> {
       padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
       decoration: AppDecorators.tileDecorationWithoutBorder(theme),
       child: SwitchWidget(
-        label: AppStringsNew.seatChangeTitle,
+        label: _appScreenText['seatChange'],
         value: isSeatChange,
         onChange: (bool value) async {
           setState(() {

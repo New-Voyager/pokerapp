@@ -8,7 +8,6 @@ import 'package:pokerapp/models/club_message_model.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
-import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/club_screen/messages_page_view/bottom_sheet/gif_drawer_sheet.dart';
 import 'package:pokerapp/screens/club_screen/messages_page_view/widgets/message_item.dart';
@@ -134,7 +133,7 @@ class _MessagesPageViewState extends State<MessagesPageView>
           appBar: CustomAppBar(
             theme: theme,
             context: context,
-            titleText: AppStringsNew.ClubChatTitle,
+            titleText: _appScreenText['clubChat'],
             subTitleText: "${widget.clubCode}",
           ),
           body: Column(
@@ -146,7 +145,7 @@ class _MessagesPageViewState extends State<MessagesPageView>
                   builder: (_, snapshot) {
                     if (snapshot.hasError || _players == null)
                       return CircularProgressWidget(
-                        text: AppStringsNew.loadingMessagesText,
+                        text: _appScreenText['loadingMessages'],
                       );
 
                     if (snapshot.data?.isEmpty ?? true)

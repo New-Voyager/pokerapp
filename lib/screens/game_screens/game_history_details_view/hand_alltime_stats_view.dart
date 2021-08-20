@@ -5,11 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/models/hand_stats_model.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
-import 'package:pokerapp/resources/new/app_strings_new.dart';
-
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/game_screens/game_history_details_view/hand_stat_chart.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
@@ -34,9 +33,12 @@ class _HandAlltimeStatsViewState extends State<HandAlltimeStatsView>
   String get routeName => Routes.hand_statistics;
   GameHistoryDetailModel model;
   HandStatsModel stats;
+  AppTextScreen _appScreenText;
 
   @override
   void initState() {
+    _appScreenText = getAppTextScreen("handAlltimeStatsView");
+
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       fetchAllTimeStatsOnly();
       //testStats();
@@ -76,16 +78,16 @@ class _HandAlltimeStatsViewState extends State<HandAlltimeStatsView>
               ? CustomAppBar(
                   theme: theme,
                   context: context,
-                  titleText: AppStringsNew.handStats,
+                  titleText: _appScreenText['handStatistics'],
                   subTitleText:
-                      '${AppStringsNew.gameText}: ${model?.gameCode} ',
+                      '${_appScreenText['game']}: ${model?.gameCode} ',
                 )
               : AppBar(
                   toolbarHeight: 0,
                 ),
           body: stats == null
               ? CircularProgressWidget(
-                  text: AppStringsNew.loadingStatistics,
+                  text: "${_appScreenText['loadingStatistics']}",
                 )
               : SingleChildScrollView(
                   child: Column(
@@ -108,12 +110,12 @@ class _HandAlltimeStatsViewState extends State<HandAlltimeStatsView>
                                   child: Column(
                                     children: [
                                       Text(
-                                        AppStringsNew.allTimeText,
+                                        _appScreenText['allTime'],
                                         style: AppDecorators.getSubtitle3Style(
                                             theme: theme),
                                       ),
                                       Text(
-                                        "${AppStringsNew.hands} : ${stats.alltime.totalHands}",
+                                        "${_appScreenText['hands']} : ${stats.alltime.totalHands}",
                                         style: AppDecorators.getHeadLine4Style(
                                             theme: theme),
                                       ),
@@ -129,15 +131,15 @@ class _HandAlltimeStatsViewState extends State<HandAlltimeStatsView>
                             // Legend for PieChart
                             Wrap(
                               children: [
-                                buildOneItemInLegend(AppStringsNew.preflop,
+                                buildOneItemInLegend(_appScreenText['preflop'],
                                     theme.preFlopColor, theme),
-                                buildOneItemInLegend(
-                                    AppStringsNew.flop, theme.flopColor, theme),
-                                buildOneItemInLegend(
-                                    AppStringsNew.turn, theme.turnColor, theme),
-                                buildOneItemInLegend(AppStringsNew.river,
+                                buildOneItemInLegend(_appScreenText['flop'],
+                                    theme.flopColor, theme),
+                                buildOneItemInLegend(_appScreenText['turn'],
+                                    theme.turnColor, theme),
+                                buildOneItemInLegend(_appScreenText['river'],
                                     theme.riverColor, theme),
-                                buildOneItemInLegend(AppStringsNew.showdown,
+                                buildOneItemInLegend(_appScreenText['showdown'],
                                     theme.showDownColor, theme),
                               ],
                             ),
@@ -156,7 +158,7 @@ class _HandAlltimeStatsViewState extends State<HandAlltimeStatsView>
                             Row(
                               children: [
                                 Text(
-                                  AppStringsNew.stageStatisticsTitle,
+                                  _appScreenText['stageStatistics'],
                                   textAlign: TextAlign.left,
                                   style: AppDecorators.getHeadLine4Style(
                                       theme: theme),
@@ -172,7 +174,7 @@ class _HandAlltimeStatsViewState extends State<HandAlltimeStatsView>
                                 Expanded(
                                   flex: 2,
                                   child: Text(
-                                    AppStringsNew.allTimeText,
+                                    _appScreenText['allTime'],
                                     textAlign: TextAlign.center,
                                     style: AppDecorators.getSubtitle3Style(
                                         theme: theme),
@@ -181,32 +183,40 @@ class _HandAlltimeStatsViewState extends State<HandAlltimeStatsView>
                               ],
                             ),
                             _buildOneStageRow(
-                              title: buildOneItemInLegend(AppStringsNew.preflop,
-                                  theme.preFlopColor, theme),
+                              title: buildOneItemInLegend(
+                                  _appScreenText['preflop'],
+                                  theme.preFlopColor,
+                                  theme),
                               allVal: stats.alltime.inPreflop,
                               theme: theme,
                             ),
                             _buildOneStageRow(
                               title: buildOneItemInLegend(
-                                  AppStringsNew.flop, theme.flopColor, theme),
+                                  _appScreenText['flop'],
+                                  theme.flopColor,
+                                  theme),
                               allVal: stats.alltime.inFlop,
                               theme: theme,
                             ),
                             _buildOneStageRow(
                               title: buildOneItemInLegend(
-                                  AppStringsNew.turn, theme.turnColor, theme),
+                                  _appScreenText['turn'],
+                                  theme.turnColor,
+                                  theme),
                               allVal: stats.alltime.inTurn,
                               theme: theme,
                             ),
                             _buildOneStageRow(
                               title: buildOneItemInLegend(
-                                  AppStringsNew.river, theme.riverColor, theme),
+                                  _appScreenText['river'],
+                                  theme.riverColor,
+                                  theme),
                               allVal: stats.alltime.inRiver,
                               theme: theme,
                             ),
                             _buildOneStageRow(
                               title: buildOneItemInLegend(
-                                  AppStringsNew.showdown,
+                                  _appScreenText['showdown'],
                                   theme.showDownColor,
                                   theme),
                               allVal: stats.alltime.wentToShowDown,
@@ -228,7 +238,7 @@ class _HandAlltimeStatsViewState extends State<HandAlltimeStatsView>
                             Row(
                               children: [
                                 Text(
-                                  AppStringsNew.actionStatistics,
+                                  _appScreenText['actionStatistics'],
                                   textAlign: TextAlign.left,
                                   style: AppDecorators.getHeadLine4Style(
                                       theme: theme),
@@ -244,7 +254,7 @@ class _HandAlltimeStatsViewState extends State<HandAlltimeStatsView>
                                 Expanded(
                                   flex: 2,
                                   child: Text(
-                                    AppStringsNew.allTimeText,
+                                    _appScreenText['allTime'],
                                     textAlign: TextAlign.center,
                                     style: AppDecorators.getSubtitle3Style(
                                         theme: theme),
@@ -253,48 +263,48 @@ class _HandAlltimeStatsViewState extends State<HandAlltimeStatsView>
                               ],
                             ),
                             _buildOneStatRow(
-                              title: AppStringsNew.vpip,
+                              title: _appScreenText['vpip'],
                               allVal: stats.alltime.vpipCount,
                               theme: theme,
                             ),
                             _buildOneStatRow(
-                              title: AppStringsNew.contbet,
+                              title: _appScreenText['contBet'],
                               allVal: stats.alltime.contBet,
                               theme: theme,
                             ),
                             _buildOneStatRow(
-                              title: AppStringsNew.threebet,
+                              title: _appScreenText['threeBet'],
                               allVal: stats.alltime.threeBet,
                               theme: theme,
                             ),
                             _buildOneStatRow(
-                              title: AppStringsNew.wtsd,
+                              title: _appScreenText['wtsd'],
                               allVal: stats.alltime.wentToShowDown,
                               theme: theme,
                             ),
                             _buildOneStatRow(
-                              title: AppStringsNew.wsd,
+                              title: _appScreenText['wsd'],
                               allVal: stats.alltime.wonAtShowDown,
                               theme: theme,
                             ),
                             _buildOneStatRow(
-                              title: AppStringsNew.headsup,
+                              title: _appScreenText['headsup'],
                               allVal: stats.alltime.headsupHands,
                               theme: theme,
                             ),
                             _buildOneStatRow(
-                              title: AppStringsNew.headsdown,
+                              title: _appScreenText['headsupWon'],
                               allVal: stats.alltime.wonHeadsupHands,
                               theme: theme,
                             ),
                             AppDimensionsNew.getVerticalSizedBox(16),
                             Text(
-                              AppStringsNew.wtsdDesc,
+                              _appScreenText['WTSDWentToShowDown'],
                               style:
                                   AppDecorators.getSubtitle3Style(theme: theme),
                             ),
                             Text(
-                              AppStringsNew.wsdDesc,
+                              _appScreenText['WSDWonatShowDown'],
                               style:
                                   AppDecorators.getSubtitle3Style(theme: theme),
                             ),
