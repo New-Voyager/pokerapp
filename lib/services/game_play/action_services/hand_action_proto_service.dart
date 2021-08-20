@@ -817,6 +817,8 @@ class HandActionProtoService {
   }
 
   playSoundEffect(String soundFile) {
+    return;
+
     if (_gameState != null &&
         _gameState.settings != null &&
         _gameState.settings.gameSound) {
