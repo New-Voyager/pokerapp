@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
@@ -39,6 +40,8 @@ class HighhandWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    AppTextScreen _appScreenText = getAppTextScreen("highhandWidget");
+
     var newFormat = new DateFormat.yMd().add_jm();
     final date = newFormat.format(winner.handTime);
     return InkWell(
@@ -78,7 +81,7 @@ class HighhandWidget extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Community',
+                          _appScreenText['community'],
                           style: TextStyle(color: Colors.teal),
                         ),
                         separator,
@@ -95,7 +98,7 @@ class HighhandWidget extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'High hand',
+                          _appScreenText['highHand'],
                           style: TextStyle(color: Colors.green),
                         ),
                         separator,
@@ -115,7 +118,7 @@ class HighhandWidget extends StatelessWidget {
                   mainAxisSize: MainAxisSize.max,
                   children: [
                     Text(
-                      'Hand #${winner.handNum.toString()}',
+                      '${_appScreenText['hand']} #${winner.handNum.toString()}',
                       style: AppStylesNew.labelTextStyle,
                     ),
                     Text(

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/announcement_model.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
-import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
@@ -25,10 +25,13 @@ class AnnouncementsView extends StatefulWidget {
 class _AnnouncementsViewState extends State<AnnouncementsView> {
   List<AnnouncementModel> _listOfAnnounce = [];
   bool loading = true;
+  AppTextScreen _appScreenText;
 
   @override
   void initState() {
     super.initState();
+    _appScreenText = getAppTextScreen("announcementsView");
+
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _fetchAnnouncements();
     });
@@ -67,7 +70,7 @@ class _AnnouncementsViewState extends State<AnnouncementsView> {
                             child: Column(
                               children: [
                                 Text(
-                                  AppStringsNew.announcementsTitleText,
+                                  _appScreenText['ANNOUNCEMENTS'],
                                   style: AppDecorators.getAccentTextStyle(
                                       theme: theme),
                                 ),
@@ -83,7 +86,7 @@ class _AnnouncementsViewState extends State<AnnouncementsView> {
                             visible: (widget.clubModel.isOwner ||
                                 widget.clubModel.isManager),
                             child: RoundedColorButton(
-                              text: "+ ${AppStringsNew.newText}",
+                              text: "+ ${_appScreenText['NEW']}",
                               backgroundColor: theme.accentColor,
                               textColor: theme.primaryColorWithDark(),
                               onTapFunction: () =>
@@ -101,7 +104,7 @@ class _AnnouncementsViewState extends State<AnnouncementsView> {
                           : _listOfAnnounce.isEmpty
                               ? Center(
                                   child: Text(
-                                    AppStringsNew.noAnnouncementText,
+                                    _appScreenText['NOANNOUCEMENTS'],
                                     style: AppDecorators.getCenterTextTextstyle(
                                         appTheme: theme),
                                   ),
@@ -202,7 +205,7 @@ class _AnnouncementsViewState extends State<AnnouncementsView> {
               ),
               AppDimensionsNew.getHorizontalSpace(8),
               Text(
-                AppStringsNew.newAnnouncementText,
+                _appScreenText['NEWANNOUCEMENTS'],
                 style: AppDecorators.getSubtitle3Style(theme: theme),
               )
             ],
@@ -211,7 +214,7 @@ class _AnnouncementsViewState extends State<AnnouncementsView> {
               child: Column(
             children: [
               CardFormTextField(
-                  hintText: AppStringsNew.enterTextHint,
+                  hintText: _appScreenText['ENTERTEXTHERE'],
                   controller: _controller,
                   maxLines: 8,
                   theme: theme),
@@ -220,14 +223,14 @@ class _AnnouncementsViewState extends State<AnnouncementsView> {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   RoundedColorButton(
-                    text: AppStringsNew.cancelButtonText,
+                    text: _appScreenText['CANCEL'],
                     textColor: theme.secondaryColor,
                     backgroundColor: Colors.transparent,
                     borderColor: theme.secondaryColor,
                     onTapFunction: () => Navigator.of(context).pop(),
                   ),
                   RoundedColorButton(
-                    text: AppStringsNew.announceButtonText,
+                    text: _appScreenText['ANNOUNCE'],
                     textColor: theme.primaryColorWithDark(),
                     backgroundColor: theme.accentColor,
                     onTapFunction: () =>
@@ -253,7 +256,7 @@ class _AnnouncementsViewState extends State<AnnouncementsView> {
       );
       if (result.toString().isNotEmpty) {
         Alerts.showNotification(
-            titleText: AppStringsNew.announcementSuccessText,
+            titleText: _appScreenText['NEWANNOUCEMENTISPOSTED'],
             duration: Duration(seconds: 5));
         setState(() {
           loading = true;
@@ -261,7 +264,7 @@ class _AnnouncementsViewState extends State<AnnouncementsView> {
         await _fetchAnnouncements();
       } else {
         Alerts.showNotification(
-            titleText: AppStringsNew.announcementFailedText,
+            titleText: _appScreenText['FAILEDTOPOSTANNOUNCEMENT'],
             duration: Duration(seconds: 5));
       }
     }

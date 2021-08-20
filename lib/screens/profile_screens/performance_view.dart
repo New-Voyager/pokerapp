@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:pokerapp/models/player_performance_model.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
-import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/game_screens/game_history_details_view/hand_alltime_stats_view.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
@@ -27,9 +27,12 @@ class _PerformanceViewState extends State<PerformanceView>
   bool loading = true;
   PlayerPerformanceList performance;
   TabController _tabController;
+  AppTextScreen _appScreenText;
 
   @override
   void initState() {
+    _appScreenText = getAppTextScreen("performanceView");
+
     _tabController = TabController(length: 2, vsync: this);
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -73,7 +76,7 @@ class _PerformanceViewState extends State<PerformanceView>
               appBar: CustomAppBar(
                 theme: theme,
                 context: context,
-                titleText: AppStringsNew.PerformanceTitle,
+                titleText: _appScreenText['STATISTICS'],
               ),
               body: loading
                   ? Center(child: CircularProgressWidget())
@@ -82,7 +85,7 @@ class _PerformanceViewState extends State<PerformanceView>
                           performance.performanceList.length == 0
                       ? Center(
                           child: Text(
-                            AppStringsNew.noDataAvailable,
+                            _appScreenText['NODATAAVAILABLE'],
                             style: AppStylesNew.disabledButtonTextStyle,
                           ),
                         )
@@ -91,8 +94,8 @@ class _PerformanceViewState extends State<PerformanceView>
                             TabBar(
                               controller: _tabController,
                               tabs: [
-                                Tab(text: AppStringsNew.PerformanceTab1),
-                                Tab(text: AppStringsNew.PerformanceTab2),
+                                Tab(text: _appScreenText['HANDSTATS']),
+                                Tab(text: _appScreenText['PERFORMANCE']),
                               ],
                               labelColor: theme.secondaryColorWithLight(),
                               unselectedLabelColor:
@@ -123,7 +126,7 @@ class _PerformanceViewState extends State<PerformanceView>
                                         child: Column(
                                           children: [
                                             Text(
-                                              AppStringsNew.recentGamesText,
+                                              _appScreenText['RECENTGAMES'],
                                               style: AppDecorators
                                                   .getSubtitle3Style(
                                                       theme: theme),
@@ -158,15 +161,15 @@ class _PerformanceViewState extends State<PerformanceView>
   String getBalanceFormatted(double bal) {
     if (bal.abs() > 999999999) {
       double val = bal / 1000000000;
-      return "${val.toStringAsFixed(1)}B";
+      return "${val.toStringAsFixed(1)}${_appScreenText['B']}";
     }
     if (bal.abs() > 999999) {
       double val = bal / 1000000;
-      return "${val.toStringAsFixed(1)}M";
+      return "${val.toStringAsFixed(1)}${_appScreenText['M']}";
     }
     if (bal.abs() > 999) {
       double val = bal / 1000;
-      return "${val.toStringAsFixed(1)}K";
+      return "${val.toStringAsFixed(1)}${_appScreenText['K']}";
     }
     return "${bal.toStringAsFixed(1)}";
   }

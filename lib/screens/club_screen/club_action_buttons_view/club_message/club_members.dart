@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pokerapp/models/host_message_summary_model.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
-import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
@@ -28,9 +28,12 @@ class ClubMembers extends StatefulWidget {
 class _ClubMembersState extends State<ClubMembers> with RouteAwareAnalytics {
   @override
   String get routeName => Routes.club_members;
+  AppTextScreen _appScreenText;
 
   @override
   Widget build(BuildContext context) {
+    _appScreenText = getAppTextScreen("clubMembers");
+
     return Consumer<AppTheme>(
       builder: (_, theme, __) => Container(
         decoration: AppDecorators.bgRadialGradient(theme),
@@ -39,7 +42,7 @@ class _ClubMembersState extends State<ClubMembers> with RouteAwareAnalytics {
           appBar: CustomAppBar(
             theme: theme,
             context: context,
-            titleText: AppStringsNew.messagesText,
+            titleText: _appScreenText['MESSAGES'],
           ),
           floatingActionButton: FloatingActionButton(
             backgroundColor: theme.accentColor,

@@ -1,10 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/models/ui/app_theme_data.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
-import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/data/box_type.dart';
 import 'package:pokerapp/services/data/hive_datasource_impl.dart';
@@ -81,10 +81,13 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
   AppThemeData selectedThemeData;
   String selectedBgUrl;
   String selectedTableUrl;
+  AppTextScreen _appScreenText;
 
   @override
   void initState() {
     super.initState();
+    _appScreenText = getAppTextScreen("customizeScreen");
+
     selectedThemeData = themeList[0];
     selectedBgUrl = bgImageUrls[0];
     selectedTableUrl = tableImageUrls[0];
@@ -101,7 +104,7 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
             appBar: CustomAppBar(
               theme: theme,
               context: context,
-              titleText: AppStringsNew.customizeTitleText,
+              titleText: _appScreenText['customize'],
             ),
             body: SingleChildScrollView(
               child: Column(
@@ -115,11 +118,11 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          AppStringsNew.colorsTitleText,
+                          _appScreenText['chooseColor'],
                           style: AppDecorators.getHeadLine4Style(theme: theme),
                         ),
                         Text(
-                          AppStringsNew.colorsSubtitleText,
+                          _appScreenText['appPrimaryColorWillBeAffected'],
                           style: AppDecorators.getSubtitle3Style(theme: theme),
                         ),
                         AppDimensionsNew.getVerticalSizedBox(8),
@@ -158,7 +161,7 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
                                         child: Row(
                                           children: [
                                             Text(
-                                              "THEME ${index + 1}",
+                                              "${_appScreenText['theme']} ${index + 1}",
                                               style: AppDecorators
                                                   .getSubtitle1Style(
                                                       theme: theme),
@@ -238,11 +241,11 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          AppStringsNew.bgImagesThemeText,
+                          _appScreenText['chooseBackground'],
                           style: AppDecorators.getHeadLine4Style(theme: theme),
                         ),
                         Text(
-                          AppStringsNew.bgImagesSubtitleText,
+                          _appScreenText['gameScreenBackgroudnWillBeChanged'],
                           style: AppDecorators.getSubtitle3Style(theme: theme),
                         ),
                         AppDimensionsNew.getVerticalSizedBox(8),
@@ -294,11 +297,11 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          AppStringsNew.tableImagesThemeText,
+                          _appScreenText['chooseTable'],
                           style: AppDecorators.getHeadLine4Style(theme: theme),
                         ),
                         Text(
-                          AppStringsNew.tableImagesSubtitleText,
+                          _appScreenText['tableImageOnGameScreenWillBeChanged'],
                           style: AppDecorators.getSubtitle3Style(theme: theme),
                         ),
                         AppDimensionsNew.getVerticalSizedBox(8),

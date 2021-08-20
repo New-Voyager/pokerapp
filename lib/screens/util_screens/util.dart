@@ -8,10 +8,10 @@ import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/newmodels/game_model_new.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
-import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/profile_popup.dart';
 import 'package:pokerapp/services/app/game_service.dart';
@@ -150,6 +150,8 @@ Future<GameType> showGameSelectorDialog({
   @required List<GameType> listOfGameTypes,
   @required Duration timeLimit,
 }) async {
+  AppTextScreen _appScreenText = getAppTextScreen("showGameSelectorDialog");
+
   log("LENGTH : ${listOfGameTypes.length}");
   int sec = timeLimit.inSeconds;
   bool dismissed = false;
@@ -184,7 +186,7 @@ Future<GameType> showGameSelectorDialog({
                   Container(
                     padding: EdgeInsets.all(16),
                     child: Text(
-                      AppStringsNew.chooseGameTitleNextHand,
+                      _appScreenText['ChooseAGameTypeForTheNextHand'],
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 16,
@@ -335,6 +337,7 @@ showPlayerPopup(context, GlobalKey seatKey, GameState gameState, Seat seat) {
   final RenderBox overlay = Overlay.of(context).context.findRenderObject();
   final RenderBox button = seatKey.currentContext.findRenderObject();
   final gameState = GameState.getState(context);
+  AppTextScreen _appScreenText = getAppTextScreen("showPlayerPopup");
 
   final RelativeRect position = RelativeRect.fromRect(
     Rect.fromPoints(
@@ -366,7 +369,7 @@ showPlayerPopup(context, GlobalKey seatKey, GameState gameState, Seat seat) {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Text(
-                    "Note",
+                    _appScreenText['note'],
                   ),
                   Icon(
                     Icons.note,
@@ -383,7 +386,9 @@ showPlayerPopup(context, GlobalKey seatKey, GameState gameState, Seat seat) {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text("Animation"),
+                  Text(
+                    _appScreenText['animation'],
+                  ),
                   Icon(
                     Icons.note,
                     color: AppColorsNew.yellowAccentColor,
@@ -413,7 +418,7 @@ showPlayerPopup(context, GlobalKey seatKey, GameState gameState, Seat seat) {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Text(
-                    "Mute",
+                    _appScreenText['mute'],
                   ),
                   Icon(
                     Icons.volume_off,
@@ -431,7 +436,7 @@ showPlayerPopup(context, GlobalKey seatKey, GameState gameState, Seat seat) {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Text(
-                    "Kick",
+                    _appScreenText['kick'],
                   ),
                   Icon(
                     Icons.ios_share,
@@ -478,7 +483,7 @@ showPlayerPopup(context, GlobalKey seatKey, GameState gameState, Seat seat) {
                     ),
                     AppDimensionsNew.getHorizontalSpace(8),
                     Text(
-                      AppStringsNew.notesTitleText,
+                      _appScreenText['notes'],
                       style: AppStylesNew.labelTextStyle,
                     )
                   ],
@@ -488,7 +493,7 @@ showPlayerPopup(context, GlobalKey seatKey, GameState gameState, Seat seat) {
                     TextField(
                       controller: _controller,
                       decoration: InputDecoration(
-                        hintText: AppStringsNew.enterTextHint,
+                        hintText: _appScreenText['enterTextHere'],
                         fillColor: AppColorsNew.actionRowBgColor,
                         filled: true,
                         border: InputBorder.none,
@@ -501,14 +506,14 @@ showPlayerPopup(context, GlobalKey seatKey, GameState gameState, Seat seat) {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         RoundedColorButton(
-                          text: AppStringsNew.cancelButtonText,
+                          text: _appScreenText['cancel'],
                           textColor: AppColorsNew.newRedButtonColor,
                           backgroundColor: Colors.transparent,
                           borderColor: AppColorsNew.newRedButtonColor,
                           onTapFunction: () => Navigator.of(context).pop(),
                         ),
                         RoundedColorButton(
-                          text: AppStringsNew.saveButtonText,
+                          text: _appScreenText['save'],
                           textColor: AppColorsNew.darkGreenShadeColor,
                           backgroundColor: AppColorsNew.newGreenButtonColor,
                           borderColor: AppColorsNew.darkGreenShadeColor,
@@ -530,7 +535,8 @@ showPlayerPopup(context, GlobalKey seatKey, GameState gameState, Seat seat) {
                 await GameService.setNotesForUser(seat.player.playerUuid, data);
             if (res) {
               Alerts.showNotification(
-                  titleText: AppStringsNew.notesSavedAlertText);
+                titleText: _appScreenText['notesSaved'],
+              );
             }
           }
           break;
@@ -574,7 +580,7 @@ showPlayerPopup(context, GlobalKey seatKey, GameState gameState, Seat seat) {
           log('calling kickPlayer with ${gameState.gameCode} and ${seat.player.playerUuid}');
           PlayerService.kickPlayer(gameState.gameCode, seat.player.playerUuid);
           Alerts.showNotification(
-              titleText: AppStringsNew.kickedAlertMessage,
+              titleText: _appScreenText['playerWillBeRemovedAfterThisHand'],
               duration: Duration(seconds: 5));
           break;
       }

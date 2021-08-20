@@ -11,7 +11,6 @@ import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
-import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/screens/game_screens/new_game_settings/new_game_settings2.dart';
 import 'package:pokerapp/screens/game_screens/widgets/game_type_item.dart';
 import 'package:pokerapp/services/data/box_type.dart';
@@ -266,7 +265,7 @@ class _ChooseGameNewState extends State<ChooseGameNew>
         return AlertDialog(
           backgroundColor: AppColorsNew.darkGreenShadeColor,
           scrollable: true,
-          title: Text(AppStringsNew.loadSettingsTitle),
+          title: Text(_appScreenText['loadSettings']),
           content: StatefulBuilder(
             builder: (BuildContext context, localSetState) {
               return Container(

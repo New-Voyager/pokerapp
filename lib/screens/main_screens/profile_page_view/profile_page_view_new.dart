@@ -6,12 +6,12 @@ import 'package:get_version/get_version.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/auth_model.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/models/user_update_input.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
-import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
@@ -33,11 +33,14 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
   String _displayName = "Bob John";
   TextEditingController _controller;
   AuthModel _currentUser;
+  AppTextScreen _appScreenText;
 
   @override
   void initState() {
     super.initState();
     // Fetch my profile details
+    _appScreenText = getAppTextScreen("profilePageNew");
+
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _fetchMyProfile();
     });
@@ -69,8 +72,7 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
               backgroundColor: Colors.transparent,
               body: _currentUser == null
                   ? CircularProgressWidget(
-                      text: AppStringsNew.loadingDetailsText,
-                    )
+                      text: _appScreenText['GETTINGDETAILS'])
                   : SingleChildScrollView(
                       child: Column(
                         children: [
@@ -80,8 +82,7 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                           //       style: AppDecorators.getAccentTextStyle(
                           //           theme: theme)),
                           // ),
-                          HeadingWidget(
-                              heading: AppStringsNew.myProfileTitleText),
+                          HeadingWidget(heading: _appScreenText['MYPROFILE']),
 
                           Container(
                             decoration: AppDecorators.tileDecoration(theme),
@@ -158,7 +159,7 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            AppStringsNew.gamesText,
+                                            _appScreenText['GAMES'],
                                             style:
                                                 AppDecorators.getSubtitle3Style(
                                                     theme: theme),
@@ -175,7 +176,7 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.end,
                                         children: [
-                                          Text(AppStringsNew.hands,
+                                          Text(_appScreenText['HANDS'],
                                               style: AppDecorators
                                                   .getSubtitle3Style(
                                                       theme: theme)),
@@ -217,8 +218,9 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                       // ),
                                       ListTileItem(
                                         text: _currentUser.name == null
-                                            ? AppStringsNew.setDisplayName
-                                            : AppStringsNew.changeDisplayName,
+                                            ? _appScreenText['SETDISPLAYNAME']
+                                            : _appScreenText[
+                                                'CHANGEDISPLAYNAME'],
                                         subTitleText: _currentUser.name != null
                                             ? "(${_currentUser.name})"
                                             : "",
@@ -233,8 +235,10 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                       ),
                                       ListTileItem(
                                         text: _currentUser.email == null
-                                            ? AppStringsNew.setRecoveryMail
-                                            : AppStringsNew.changeRecoveryMail,
+                                            ? _appScreenText[
+                                                'SETRECOVERYEMAILADDRESS']
+                                            : _appScreenText[
+                                                'CHANGERECOVERYEMAILADDRESS'],
                                         subTitleText: _currentUser.email != null
                                             ? "(${_currentUser.email})"
                                             : "",
@@ -268,8 +272,7 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                       //   ),
                                       // ),
                                       ListTileItem(
-                                        text:
-                                            AppStringsNew.BookmarkedHandsTitle,
+                                        text: _appScreenText['BOOKMARKEDHANDS'],
                                         imagePath: AppAssetsNew
                                             .bookmarkedHandsImagePath,
                                         index: 0,
@@ -280,7 +283,7 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                         ),
                                       ),
                                       ListTileItem(
-                                          text: AppStringsNew.statistics,
+                                          text: _appScreenText['STATISTICS'],
                                           imagePath:
                                               AppAssetsNew.statisticsImagePath,
                                           index: 1,
@@ -311,7 +314,7 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                       //   ),
                                       // ),
                                       ListTileItem(
-                                        text: AppStringsNew.customize,
+                                        text: _appScreenText['CUSTOMIZE'],
                                         imagePath:
                                             AppAssetsNew.customizeImagePath,
                                         index: 2,
@@ -326,7 +329,7 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                         },
                                       ),
                                       ListTileItem(
-                                        text: AppStringsNew.helpText,
+                                        text: _appScreenText['HELP'],
                                         imagePath: AppAssetsNew
                                             .bookmarkedHandsImagePath,
                                         index: 3,
@@ -340,7 +343,7 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                         },
                                       ),
                                       ListTileItem(
-                                        text: AppStringsNew.tellAFriendText,
+                                        text: _appScreenText['TELLAFRIEND'],
                                         imagePath:
                                             AppAssetsNew.announcementImagePath,
                                         index: 4,
@@ -348,7 +351,7 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                       ),
                                       AppDimensionsNew.getVerticalSizedBox(16),
                                       ListTileItem(
-                                        text: AppStringsNew.logout,
+                                        text: _appScreenText['LOGOUT'],
                                         imagePath:
                                             AppAssetsNew.announcementImagePath,
                                         index: 5,
@@ -393,12 +396,12 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
         backgroundColor: theme.fillInColor,
         title: Text(
           type == UpdateType.SCREEN_NAME
-              ? AppStringsNew.nameChangeTitleText
+              ? _appScreenText['CHANGESCREENNAME']
               : type == UpdateType.DISPLAY_NAME
-                  ? AppStringsNew.displayNameChangeTitleText
+                  ? _appScreenText['CHANGEDISPLAYNAME']
                   : type == UpdateType.EMAIL
-                      ? AppStringsNew.emailChangeTitleText
-                      : "Update details",
+                      ? _appScreenText['CHANGEEMAIL']
+                      : _appScreenText['UPDATEDETAILS'],
           style: AppDecorators.getSubtitle3Style(theme: theme),
         ),
         content: Column(
@@ -407,12 +410,12 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
             CardFormTextField(
               controller: _controller,
               maxLines: 1,
-              hintText: AppStringsNew.hintTextForTextField,
+              hintText: _appScreenText['ENTERTEXT'],
               theme: theme,
             ),
             AppDimensionsNew.getVerticalSizedBox(12),
             RoundedColorButton(
-              text: AppStringsNew.saveButtonText,
+              text: _appScreenText['SAVE'],
               backgroundColor: theme.accentColor,
               textColor: theme.primaryColorWithDark(),
               onTapFunction: () {
@@ -430,7 +433,7 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
         if (!RegExp(
                 r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
             .hasMatch(result)) {
-          toast("$result is invalid email.");
+          toast("$result ${_appScreenText['ISINVALIDEMAIL']}");
           return;
         }
       }
@@ -441,13 +444,16 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
         email: type == UpdateType.EMAIL ? result : null,
       );
       ConnectionDialog.show(
-          context: context, loadingText: "Updating details...");
+          context: context,
+          loadingText: "${_appScreenText['UPDATINGDETAILS']}");
       final res = await AuthService.updateUserDetails(input);
 
       if (res != null && res == true) {
-        Alerts.showNotification(titleText: "User details updated!");
+        Alerts.showNotification(
+            titleText: "${_appScreenText['USERDETAILSUPDATED']}");
       } else {
-        Alerts.showNotification(titleText: "Failed to update user details!");
+        Alerts.showNotification(
+            titleText: "${_appScreenText['FAILEDTOUPDATEUSERDETAILS']}");
       }
       await _fetchMyProfile();
       ConnectionDialog.dismiss(context: context);
