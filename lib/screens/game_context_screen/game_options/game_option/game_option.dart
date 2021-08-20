@@ -6,10 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/option_item_model.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
-import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/game_service.dart';
@@ -43,6 +43,8 @@ class _GameOptionState extends State<GameOption> {
   double height;
   GameInfoModel gameInfo;
   bool closed = false;
+  AppTextScreen _appScreenText;
+
   @override
   void dispose() {
     closed = true;
@@ -54,9 +56,9 @@ class _GameOptionState extends State<GameOption> {
     Navigator.of(context).pop();
     if (widget.gameState.running) {
       Alerts.showNotification(
-          titleText: "Game",
+          titleText: _appScreenText['game'],
           svgPath: 'assets/images/casino.svg',
-          subTitleText: AppStringsNew.leaveGameNotificationText);
+          subTitleText: _appScreenText['youWillStandupAfterThisHand']);
       GameService.leaveGame(this.gameCode);
     }
 
@@ -70,9 +72,9 @@ class _GameOptionState extends State<GameOption> {
     Navigator.of(context).pop();
     if (widget.gameState.isGameRunning) {
       Alerts.showNotification(
-          titleText: "Game",
+          titleText: _appScreenText['game'],
           svgPath: 'assets/images/casino.svg',
-          subTitleText: AppStringsNew.gameEndNotificationText);
+          subTitleText: _appScreenText['theGameWillEndAfterThisHand']);
       // We need to broadcast to all the players
       GameService.endGame(this.gameCode);
     } else {
@@ -83,9 +85,9 @@ class _GameOptionState extends State<GameOption> {
 
   void onPause() {
     Alerts.showNotification(
-        titleText: "PAUSE",
+        titleText: _appScreenText['pause'],
         leadingIcon: Icons.pause_circle_outline,
-        subTitleText: AppStringsNew.pauseGameNotificationText);
+        subTitleText: _appScreenText['theGameWillPauseAfterThisHand']);
     Navigator.of(context).pop();
 
     GameService.pauseGame(this.gameCode);
@@ -93,9 +95,9 @@ class _GameOptionState extends State<GameOption> {
 
   void onBreak() {
     Alerts.showNotification(
-        titleText: "BREAK",
+        titleText: _appScreenText['break'],
         leadingIcon: Icons.time_to_leave,
-        subTitleText: AppStringsNew.breakGameNotificationText);
+        subTitleText: _appScreenText['takeBreakAfterThisHand']);
     Navigator.of(context).pop();
     GameService.takeBreak(this.gameCode);
   }
@@ -108,8 +110,8 @@ class _GameOptionState extends State<GameOption> {
 
     if (me != null) {
       if (me.stack >= widget.gameState.gameInfo.buyInMax) {
-        showAlertDialog(context, "Reload",
-            "Stack is greater than max buyin. Cannot reload!");
+        showAlertDialog(context, "${_appScreenText['reload']}",
+            _appScreenText['stackIsGreaterThankMaxBuyIn']);
         return;
       }
       int reloadMax = widget.gameState.gameInfo.buyInMax - me.stack;
@@ -158,19 +160,21 @@ class _GameOptionState extends State<GameOption> {
   @override
   void initState() {
     super.initState();
+    _appScreenText = getAppTextScreen("gameOption");
+
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _fetchGameInfo();
     });
     gameCode = widget.gameCode;
     gameActions = [
       OptionItemModel(
-          title: "Standup",
+          title: _appScreenText['standup'],
           iconData: Icons.exit_to_app_sharp,
           onTap: (context) {
             this.onLeave();
           }),
       OptionItemModel(
-          title: "Reload",
+          title: _appScreenText['reload'],
           iconData: Icons.shop,
           onTap: (context) {
             this.onReload();
@@ -179,14 +183,14 @@ class _GameOptionState extends State<GameOption> {
 
     if (widget.gameState.running) {
       gameActions.add(OptionItemModel(
-          title: "Break",
+          title: _appScreenText['break'],
           iconData: Icons.shop,
           onTap: (context) {
             this.onBreak();
           }));
       if (widget.isAdmin) {
         gameActions.add(OptionItemModel(
-            title: "Pause",
+            title: _appScreenText['pause'],
             iconData: Icons.pause,
             onTap: (context) {
               this.onPause();
@@ -196,7 +200,7 @@ class _GameOptionState extends State<GameOption> {
 
     if (widget.isAdmin) {
       gameActions.add(OptionItemModel(
-          title: "Terminate",
+          title: _appScreenText['terminate'],
           iconData: Icons.cancel_outlined,
           onTap: (context) {
             this.onEndGame();
@@ -205,9 +209,9 @@ class _GameOptionState extends State<GameOption> {
 
     gameSecondaryOptions = [
       OptionItemModel(
-        title: "Seat Change",
+        title: _appScreenText['seatChange'],
         image: "assets/images/casino.png",
-        name: "Request seat change",
+        name: _appScreenText['requestSeatChange'],
         backGroundColor: Colors.redAccent,
         onTap: (context) async {
           await showModalBottomSheet(
@@ -223,9 +227,9 @@ class _GameOptionState extends State<GameOption> {
     ];
 
     gameSecondaryOptions.add(OptionItemModel(
-        title: "Waiting List",
+        title: _appScreenText['waitingList'],
         image: "assets/images/casino.png",
-        name: "Add to waiting list",
+        name: _appScreenText['addToWaitingList'],
         backGroundColor: Colors.blue,
         onTap: (context) async {
           await showModalBottomSheet(
@@ -265,7 +269,7 @@ class _GameOptionState extends State<GameOption> {
           mainAxisSize: MainAxisSize.min,
           children: [
             _buildCheckBox(
-                text: AppStringsNew.muckLoosingHand,
+                text: _appScreenText['muckLosingHand'],
                 value: widget.gameState.gameInfo.playerMuckLosingHand,
                 onChange: (bool v) async {
                   await GameService.updateGameConfig(widget.gameState.gameCode,
@@ -276,7 +280,7 @@ class _GameOptionState extends State<GameOption> {
                   setState(() {});
                 }),
             _buildCheckBox(
-              text: AppStringsNew.promptRunitTwice,
+              text: _appScreenText['promptRunItTwice'],
               value: widget.gameState.gameInfo.playerRunItTwice,
               onChange: (bool v) async {
                 await GameService.updateGameConfig(widget.gameState.gameCode,
@@ -288,7 +292,7 @@ class _GameOptionState extends State<GameOption> {
               },
             ),
             _buildCheckBox(
-              text: AppStringsNew.gameSoundsText,
+              text: _appScreenText['gameSounds'],
               value: widget.gameState.settings.gameSound,
               onChange: (bool v) async {
                 // setting the value saves it to local storage too
@@ -300,7 +304,7 @@ class _GameOptionState extends State<GameOption> {
             ),
             widget.gameState.gameInfo.audioConfEnabled ?? false
                 ? _buildCheckBox(
-                    text: AppStringsNew.audioConferenceText,
+                    text: _appScreenText['audioConference'],
                     value: widget.gameState.settings.audioConf,
                     onChange: (bool v) async {
                       // setting the value saves it to local storage too
@@ -313,7 +317,7 @@ class _GameOptionState extends State<GameOption> {
                   )
                 : SizedBox(),
             _buildCheckBox(
-              text: AppStringsNew.animationsText,
+              text: _appScreenText['animations'],
               value: widget.gameState.settings.animations,
               onChange: (bool v) async {
                 // setting the value saves it to local storage too
@@ -323,7 +327,7 @@ class _GameOptionState extends State<GameOption> {
               },
             ),
             _buildCheckBox(
-              text: AppStringsNew.showChatText,
+              text: _appScreenText['animations'],
               value: widget.gameState.settings.showChat,
               onChange: (bool v) async {
                 // setting the value saves it to local storage too
@@ -342,7 +346,7 @@ class _GameOptionState extends State<GameOption> {
                     children: [
                       // straddle off
                       _buildCheckBox(
-                        text: AppStringsNew.straddleText,
+                        text: _appScreenText['straddle'],
                         value: widget.gameState.settings.straddleOption,
                         onChange: (bool v) async {
                           // setting the value saves it to local storage too
@@ -355,7 +359,7 @@ class _GameOptionState extends State<GameOption> {
 
                       // auto straddle
                       _buildCheckBox(
-                        text: AppStringsNew.autoStraddleText,
+                        text: _appScreenText['autoStraddle'],
                         value: widget.gameState.settings.autoStraddle,
                         onChange: (bool v) async {
                           if (v) {
@@ -421,7 +425,7 @@ class _GameOptionState extends State<GameOption> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(AppStringsNew.elapsedLabel,
+                          Text(_appScreenText['elapsed'],
                               style: AppDecorators.getSubtitle3Style(
                                   theme: theme)),
                           isFetching
@@ -441,7 +445,7 @@ class _GameOptionState extends State<GameOption> {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Text(
-                            AppStringsNew.hands,
+                            _appScreenText['hands'],
                             style:
                                 AppDecorators.getSubtitle3Style(theme: theme),
                           ),
@@ -469,7 +473,7 @@ class _GameOptionState extends State<GameOption> {
                           : Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(AppStringsNew.sessionText,
+                                Text(_appScreenText['session'],
                                     style: AppDecorators.getSubtitle3Style(
                                         theme: theme)),
                                 isFetching
@@ -491,7 +495,7 @@ class _GameOptionState extends State<GameOption> {
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 Text(
-                                  AppStringsNew.won,
+                                  _appScreenText['won'],
                                   style: AppDecorators.getSubtitle3Style(
                                       theme: theme),
                                 ),
@@ -529,12 +533,12 @@ class _GameOptionState extends State<GameOption> {
                       children: [
                         // main text
                         Text(
-                          AppStringsNew.betActionText,
+                          _appScreenText['betAction'],
                           style: AppDecorators.getHeadLine4Style(theme: theme),
                         ),
                         // hint text
                         Text(
-                          '(${AppStringsNew.betActionHintText})',
+                          '(${_appScreenText['appliedInNextAction']})',
                           style: AppDecorators.getSubtitle1Style(theme: theme),
                         ),
                       ],
@@ -552,10 +556,10 @@ class _GameOptionState extends State<GameOption> {
                           .getBox(BoxType.USER_SETTINGS_BOX)
                           .get('isTapForBetAction?', defaultValue: false),
                       children: {
-                        false: Text(AppStringsNew.swipeText,
+                        false: Text(_appScreenText['swipe'],
                             style:
                                 AppDecorators.getHeadLine4Style(theme: theme)),
-                        true: Text(AppStringsNew.tapText,
+                        true: Text(_appScreenText['tap'],
                             style:
                                 AppDecorators.getHeadLine4Style(theme: theme)),
                       },

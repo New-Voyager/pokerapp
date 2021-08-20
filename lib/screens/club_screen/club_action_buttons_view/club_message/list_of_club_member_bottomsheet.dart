@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/club_members_model.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/services/app/club_interior_service.dart';
@@ -9,10 +10,11 @@ import '../../../../main.dart';
 
 class ListOfClubMemberBottomSheet extends StatelessWidget {
   final String clubCode;
-  const ListOfClubMemberBottomSheet({
-    Key key,
-    @required this.clubCode,
-  }) : super(key: key);
+  final AppTextScreen appScreenText;
+
+  const ListOfClubMemberBottomSheet(
+      {Key key, @required this.clubCode, @required this.appScreenText})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +26,7 @@ class ListOfClubMemberBottomSheet extends StatelessWidget {
           Container(
             padding: EdgeInsets.symmetric(vertical: 10),
             child: Text(
-              "Choose a Member",
+              appScreenText['CHOOSEAMEMBER'],
             ),
           ),
           Expanded(

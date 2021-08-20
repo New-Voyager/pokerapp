@@ -6,10 +6,10 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/table_record.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
-import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/game_service.dart';
@@ -54,6 +54,7 @@ class _TableResultScreenState extends State<TableResultScreen>
 
   Map<int, Widget> tableWidgets;
   int _selectedTableWidget = 0;
+  AppTextScreen _appScreenText;
 
   void _fetchData() async {
     data = await GameService.getGameTableRecord(widget.gameCode);
@@ -64,6 +65,8 @@ class _TableResultScreenState extends State<TableResultScreen>
   @override
   void initState() {
     super.initState();
+    _appScreenText = getAppTextScreen("tableResultScreen");
+
     _fetchData();
   }
 
@@ -77,9 +80,9 @@ class _TableResultScreenState extends State<TableResultScreen>
   }
 
   initializeTableWidgets() {
-    tableWidgets = const <int, Widget>{
-      0: Text("Table"),
-      1: Text("Graph"),
+    tableWidgets = <int, Widget>{
+      0: Text(_appScreenText['table']),
+      1: Text(_appScreenText['graph']),
     };
   }
 
@@ -110,28 +113,28 @@ class _TableResultScreenState extends State<TableResultScreen>
             ),
             _buildHeaderChild(
               flex: widget.playerWidth,
-              text: 'Player',
+              text: _appScreenText['player'],
             ),
             _buildHeaderChild(
               flex: widget.sessionWidth,
-              text: 'Session',
+              text: _appScreenText['session'],
             ),
             _buildHeaderChild(
               flex: widget.numHandsWidth,
-              text: '#Hands',
+              text: _appScreenText['hands'],
             ),
             _buildHeaderChild(
               flex: widget.buyInWidth,
-              text: 'Buyin',
+              text: _appScreenText['buyin'],
             ),
             _buildHeaderChild(
               flex: widget.profitWidth,
-              text: 'Profit',
+              text: _appScreenText['profit'],
             ),
             widget.showTips
                 ? _buildHeaderChild(
                     flex: widget.rakeWidth,
-                    text: 'Tips',
+                    text: _appScreenText['tips'],
                   )
                 : Container(),
           ],
@@ -302,8 +305,8 @@ class _TableResultScreenState extends State<TableResultScreen>
         appBar: CustomAppBar(
           theme: theme,
           context: context,
-          titleText: AppStringsNew.TableRecordTitle,
-          subTitleText: "Game code: ${widget.gameCode}",
+          titleText: _appScreenText['tableResult'],
+          subTitleText: "${_appScreenText['gameCode']}: ${widget.gameCode}",
           showBackButton: widget.showBackButton,
         ),
         body: SingleChildScrollView(
@@ -330,7 +333,7 @@ class _TableResultScreenState extends State<TableResultScreen>
                           children: [
                             widget.showTips
                                 ? Text(
-                                    AppStringsNew.tips,
+                                    _appScreenText['tips'],
                                     style: AppDecorators.getSubtitle3Style(
                                         theme: theme),
                                   )
@@ -360,7 +363,7 @@ class _TableResultScreenState extends State<TableResultScreen>
                                       downloadTable(widget.gameCode);
                                     },
                                     child: Text(
-                                      AppStringsNew.download,
+                                      _appScreenText['download'],
                                       style: AppDecorators.getAccentTextStyle(
                                               theme: theme)
                                           .copyWith(
@@ -407,7 +410,7 @@ class _TableResultScreenState extends State<TableResultScreen>
     Future.delayed(Duration(seconds: 1), () async {
       try {
         final result = await GameService.downloadResult(gameCode);
-        String subject = 'Table result Game: $gameCode';
+        String subject = '${_appScreenText['tableResultGame']}: $gameCode';
         Share.share(result, subject: subject);
       } catch (err) {
         log('Error: ${err.toString()}');

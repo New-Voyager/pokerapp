@@ -5,9 +5,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
-import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/club_screen/club_action_screens/club_member_detailed_view/club_member_detailed_view.dart';
 import 'package:pokerapp/services/app/game_service.dart';
@@ -23,6 +23,7 @@ class CenterButtonView extends StatelessWidget {
   final String gameCode;
   final bool isHost;
   final Function onStartGame;
+  AppTextScreen _appScreenText;
 
   CenterButtonView(
       {this.gameCode,
@@ -50,9 +51,9 @@ class CenterButtonView extends StatelessWidget {
       listen: false,
     );
     Alerts.showNotification(
-        titleText: "Game",
+        titleText: _appScreenText['game'],
         svgPath: AppAssetsNew.seatChangeImagePath,
-        subTitleText: AppStringsNew.seatRearrangeText,
+        subTitleText: _appScreenText['movePlayerDescription'],
         duration: Duration(seconds: 30));
 
     Provider.of<SeatChangeNotifier>(
@@ -70,6 +71,8 @@ class CenterButtonView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    _appScreenText = getAppTextScreen("centerButtonView");
+
     final seatChange = Provider.of<SeatChangeNotifier>(context, listen: false);
     final gameContext = Provider.of<GameContextObject>(context, listen: false);
     final gameState = GameState.getState(context);
@@ -79,7 +82,7 @@ class CenterButtonView extends StatelessWidget {
             AppConstants.TABLE_STATUS_HOST_SEATCHANGE_IN_PROGRESS) {
       return Center(
           child: Text(
-        'Seat Change in Progress',
+        '${_appScreenText['seatChangeInProgress']}',
         style: TextStyle(
           color: Colors.white,
           fontSize: 14.dp,
@@ -96,7 +99,7 @@ class CenterButtonView extends StatelessWidget {
         } else {
           return Center(
               child: Text(
-            'Game Paused',
+            _appScreenText['gamePaused'],
             style: TextStyle(
               color: Colors.white,
               fontSize: 20.0,
@@ -107,7 +110,7 @@ class CenterButtonView extends StatelessWidget {
       } else {
         return Center(
             child: Text(
-          'Seat Change in Progress',
+          _appScreenText['seatChangeInProgress'],
           style: TextStyle(
             color: Colors.white,
             fontSize: 14.0,
@@ -134,11 +137,11 @@ class CenterButtonView extends StatelessWidget {
             borderRadius: BorderRadius.circular(20.0),
             color: Colors.black.withOpacity(0.50),
           ),
-          child: Text('Waiting to be started'),
+          child: Text(_appScreenText['waitingToBeStarted']),
         );
       }
     } else {
-      debugLog(gameState.gameCode, 'No center buttons');
+      debugLog(gameState.gameCode, "No center buttons");
       return Container();
     }
   }
@@ -162,7 +165,7 @@ class CenterButtonView extends StatelessWidget {
                     Container(
                       margin: EdgeInsets.only(bottom: 8),
                       child: Text(
-                        AppStringsNew.gamePausedText,
+                        _appScreenText['gamePaused'],
                         style: AppStylesNew.cardHeaderTextStyle,
                       ),
                     ),
@@ -182,7 +185,7 @@ class CenterButtonView extends StatelessWidget {
                             width: 48.pw,
                           ),
                           onTap: _onResumePress,
-                          text: AppStringsNew.resumeText,
+                          text: _appScreenText['resume'],
                         ),
 
                         SizedBox(width: 15.pw),
@@ -193,7 +196,7 @@ class CenterButtonView extends StatelessWidget {
                             width: 48.pw,
                           ),
                           onTap: () => _onRearrangeSeatsPress(providerContext),
-                          text: AppStringsNew.rearrangeText,
+                          text: _appScreenText['rearrange'],
                         ),
                         SizedBox(width: 15.pw),
                         IconAndTitleWidget(
@@ -203,7 +206,7 @@ class CenterButtonView extends StatelessWidget {
                             width: 48.pw,
                           ),
                           onTap: () => _onTerminatePress(context),
-                          text: AppStringsNew.terminateText,
+                          text: _appScreenText['terminate'],
                         ),
                         // Padding(
                         //   padding: const EdgeInsets.symmetric(
@@ -263,7 +266,7 @@ class CenterButtonView extends StatelessWidget {
                   width: 48.pw,
                 ),
                 onTap: this.onStartGame,
-                text: AppStringsNew.startText,
+                text: _appScreenText['start'],
               ),
               IconAndTitleWidget(
                 child: SvgPicture.asset(
@@ -272,7 +275,7 @@ class CenterButtonView extends StatelessWidget {
                   width: 48.pw,
                 ),
                 onTap: () => _onTerminatePress(context),
-                text: AppStringsNew.terminateText,
+                text: _appScreenText['terminate'],
               ),
             ],
           ),

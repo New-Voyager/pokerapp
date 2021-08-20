@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/club_weekly_activity_model.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
-import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/utils/club_weekly_activity_bar_chart.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
@@ -30,6 +30,8 @@ class ClubGraphicsViewNew extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    AppTextScreen _appScreenText = getAppTextScreen("clubGraphicsViewNew");
+
     loadWeeklyActivityData();
     return Container(
       height: MediaQuery.of(context).size.height / 5,
@@ -48,7 +50,7 @@ class ClubGraphicsViewNew extends StatelessWidget {
                     margin: EdgeInsets.all(5.pw),
                     padding: EdgeInsets.all(8.pw),
                     child: Text(
-                      AppStringsNew.unsettledText,
+                      _appScreenText['unsettled'],
                       style: AppStylesNew.labelTextStyle,
                     ),
                   ),
@@ -86,7 +88,7 @@ class ClubGraphicsViewNew extends StatelessWidget {
                     child: Column(
                       children: [
                         Text(
-                          AppStringsNew.weeklyActivity,
+                          _appScreenText['weeklyActivity'],
                           style: AppStylesNew.labelTextStyle,
                         ),
                       ],

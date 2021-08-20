@@ -8,7 +8,6 @@ import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
-import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 
 class ClubItemView extends StatelessWidget {
@@ -82,7 +81,7 @@ class ClubItemView extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    AppStringsNew.hostedBy,
+                    appScreenText['hostedBy'],
                     style: AppDecorators.getSubtitle3Style(theme: theme),
                   ),
                   Text(

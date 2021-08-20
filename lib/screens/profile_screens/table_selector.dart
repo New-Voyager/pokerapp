@@ -40,18 +40,19 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
   List<Asset> _tableAssets = [];
   List<Asset> _backDropAssets = [];
   Asset _selectedTable, _selectedDrop;
-
+  bool initialized = false;
   @override
   void initState() {
     _tabController = TabController(length: 2, vsync: this);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _fetchSavedItems();
     });
-
+    initialized = true;
     super.initState();
   }
 
   void _fetchSavedItems() async {
+    await AssetService.refresh();
     AssetService.assets.forEach((element) {
       if (element.type == "game-background") {
         _backDropAssets.add(element);
@@ -76,6 +77,21 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
 
     return Consumer<AppTheme>(
       builder: (_, theme, __) {
+        Widget backDrop;
+        if (initialized) {
+          if (_selectedTable == null) {
+            backDrop = Text('No default backdrop');
+          } else {
+            backDrop = Image.file(
+              File(_selectedDrop?.downloadedPath),
+              fit: BoxFit.scaleDown,
+              width: size.width,
+            );
+          }
+        } else {
+          backDrop = CircularProgressWidget(text: "Downloading...");
+        }
+
         return Container(
           decoration: AppDecorators.bgRadialGradient(theme),
           child: Scaffold(
@@ -87,15 +103,8 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
             body: Stack(
               alignment: Alignment.topCenter,
               children: [
-                _selectedDrop?.downloadedPath == null ||
-                        _selectedDrop.downloadedPath.isEmpty
-                    ? CircularProgressWidget(text: "Downloading...")
-                    : Image.file(
-                        File(_selectedDrop?.downloadedPath),
-                        fit: BoxFit.scaleDown,
-                        width: size.width,
-                      ),
                 /* main view */
+                backDrop,
                 Column(
                   children: [
                     // main board view
@@ -119,21 +128,26 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
   }
 
   _buildBoardView(Size boardDimensions, double tableScale, Size size) {
+    Widget table = Text('No default table');
+    if (initialized) {
+      if (_selectedTable != null) {
+        table = Image.file(
+          File(_selectedTable?.downloadedPath),
+          //   fit: BoxFit.scaleDown,
+          width: boardDimensions.width,
+          height: boardDimensions.height,
+        );
+      }
+    } else {
+      table = CircularProgressWidget(text: "Downloading...");
+    }
     return Container(
       height: size.height * 0.5,
       width: boardDimensions.width,
       padding: EdgeInsets.only(top: 100),
       child: Transform.scale(
         scale: tableScale,
-        child: _selectedTable?.downloadedPath == null ||
-                _selectedTable.downloadedPath.isEmpty
-            ? CircularProgressWidget(text: "Downloading...")
-            : Image.file(
-                File(_selectedTable?.downloadedPath),
-                //   fit: BoxFit.scaleDown,
-                width: boardDimensions.width,
-                height: boardDimensions.height,
-              ),
+        child: table,
       ),
     );
   }
