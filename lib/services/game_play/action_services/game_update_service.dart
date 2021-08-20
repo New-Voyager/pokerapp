@@ -103,7 +103,8 @@ class GameUpdateService {
     if (closed) return;
 
     String messageType = data['messageType'];
-    if (messageType.indexOf('PLAYER_CONNECTIVITY') == -1) {
+    if (messageType != null &&
+        messageType.indexOf('PLAYER_CONNECTIVITY') == -1) {
       final jsonData = jsonEncode(data);
       debugPrint(jsonData);
       debugLog(_gameState.gameCode, jsonData);
@@ -1214,6 +1215,8 @@ class GameUpdateService {
   }
 
   playSoundEffect(String soundFile) {
+    return;
+
     if (_gameState.settings.gameSound) {
       _gameState
           .getAudioBytes(soundFile)
