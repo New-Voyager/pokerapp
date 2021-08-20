@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
-import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/screens/game_context_screen/game_options/game_option_bottom_sheet.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
@@ -15,6 +15,7 @@ import 'package:provider/provider.dart';
 
 class HeaderView extends StatelessWidget {
   final GameState gameState;
+  AppTextScreen _appScreenText;
 
   HeaderView({
     @required this.gameState,
@@ -63,7 +64,7 @@ class HeaderView extends StatelessWidget {
             /* hand number */
             RichText(
               text: TextSpan(
-                text: AppStringsNew.hand,
+                text: _appScreenText['hand'],
                 style: AppDecorators.getHeadLine4Style(theme: theme).copyWith(
                   fontWeight: FontWeight.w600,
                 ),
@@ -146,6 +147,8 @@ class HeaderView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    _appScreenText = getAppTextScreen("global");
+
     final gameState = GameState.getState(context);
 
     return Consumer<AppTheme>(

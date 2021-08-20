@@ -6,9 +6,9 @@ import 'package:flutter/painting.dart';
 import 'package:pokerapp/models/auth_model.dart';
 import 'package:pokerapp/models/club_message_model.dart';
 import 'package:pokerapp/models/handlog_model.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
-import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/chat_time.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/chat_user_avatar.dart';
@@ -229,6 +229,7 @@ class MessageItem extends StatelessWidget {
     if (messageModel.messageType == MessageType.HAND) {
       return _buildSharedHand(context, isMe, theme);
     }
+    AppTextScreen _appScreenText = getAppTextScreen("global");
 
     return Align(
       alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
@@ -250,7 +251,7 @@ class MessageItem extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.all(3.0),
                   child: Text(
-                    isMe ? AppStringsNew.youText : playerName,
+                    isMe ? _appScreenText['you'] : playerName,
                     style: AppDecorators.getAccentTextStyle(theme: theme)
                         .copyWith(
                             fontWeight: FontWeight.normal, fontSize: 10.dp),

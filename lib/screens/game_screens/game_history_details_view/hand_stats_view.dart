@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/models/hand_stats_model.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
-import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/game_screens/game_history_details_view/hand_stat_chart.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
@@ -38,9 +38,12 @@ class _HandStatsViewState extends State<HandStatsView>
   GameHistoryDetailModel model;
   HandStatsModel stats;
   bool showThisGame = false;
+  AppTextScreen _appScreenText;
 
   @override
   void initState() {
+    _appScreenText = getAppTextScreen("handStatsView");
+
     model = widget.gameHistoryModel;
     showThisGame = !(widget.isAlltimeOnly ?? false);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -92,16 +95,16 @@ class _HandStatsViewState extends State<HandStatsView>
               ? CustomAppBar(
                   theme: theme,
                   context: context,
-                  titleText: AppStringsNew.handStatisticsTitle,
-                  subTitleText: 'Game: ${model?.gameCode} ',
+                  titleText: _appScreenText['handStatistics'],
+                  subTitleText:
+                      '${_appScreenText['game']}: ${model?.gameCode} ',
                 )
               : AppBar(
                   toolbarHeight: 0,
                 ),
           body: stats == null
               ? CircularProgressWidget(
-                  text: AppStringsNew.loadingStatistics,
-                )
+                  text: _appScreenText['loadingStatistics'])
               : SingleChildScrollView(
                   child: Column(
                     children: [
@@ -125,12 +128,12 @@ class _HandStatsViewState extends State<HandStatsView>
                                     flex: 1,
                                     child: Column(
                                       children: [
-                                        Text(AppStringsNew.thisGameText,
+                                        Text(_appScreenText['thisGame'],
                                             style:
                                                 AppDecorators.getHeadLine4Style(
                                                     theme: theme)),
                                         Text(
-                                            "${AppStringsNew.hands}: ${stats.thisGame.totalHands}",
+                                            "${_appScreenText['hands']}: ${stats.thisGame.totalHands}",
                                             style:
                                                 AppDecorators.getSubtitle1Style(
                                                     theme: theme)),
@@ -146,12 +149,12 @@ class _HandStatsViewState extends State<HandStatsView>
                                   flex: 1,
                                   child: Column(
                                     children: [
-                                      Text(AppStringsNew.allTimeText,
+                                      Text(_appScreenText['allTime'],
                                           style:
                                               AppDecorators.getHeadLine4Style(
                                                   theme: theme)),
                                       Text(
-                                          "${AppStringsNew.hands} : ${stats.alltime.totalHands}"),
+                                          "${_appScreenText['hands']} : ${stats.alltime.totalHands}"),
                                       Container(
                                           height: 150,
                                           child:
@@ -164,15 +167,15 @@ class _HandStatsViewState extends State<HandStatsView>
                             // Legend for PieChart
                             Wrap(
                               children: [
-                                buildOneItemInLegend(AppStringsNew.preflop,
+                                buildOneItemInLegend(_appScreenText['preflop'],
                                     AppColorsNew.preflopColor, theme),
-                                buildOneItemInLegend(AppStringsNew.flop,
+                                buildOneItemInLegend(_appScreenText['flop'],
                                     AppColorsNew.flopColor, theme),
-                                buildOneItemInLegend(AppStringsNew.turn,
+                                buildOneItemInLegend(_appScreenText['turn'],
                                     AppColorsNew.turnColor, theme),
-                                buildOneItemInLegend(AppStringsNew.river,
+                                buildOneItemInLegend(_appScreenText['river'],
                                     AppColorsNew.riverColor, theme),
-                                buildOneItemInLegend(AppStringsNew.showdown,
+                                buildOneItemInLegend(_appScreenText['showdown'],
                                     AppColorsNew.showDownColor, theme),
                               ],
                             ),
@@ -191,7 +194,7 @@ class _HandStatsViewState extends State<HandStatsView>
                             Row(
                               children: [
                                 Text(
-                                  AppStringsNew.stageStatisticsTitle,
+                                  _appScreenText['stageStatistics'],
                                   textAlign: TextAlign.left,
                                   style: AppDecorators.getHeadLine4Style(
                                       theme: theme),
@@ -208,7 +211,7 @@ class _HandStatsViewState extends State<HandStatsView>
                                   visible: showThisGame,
                                   child: Expanded(
                                     flex: 2,
-                                    child: Text(AppStringsNew.thisGameText,
+                                    child: Text(_appScreenText['thisGame'],
                                         textAlign: TextAlign.center,
                                         style: AppDecorators.getSubtitle3Style(
                                             theme: theme)),
@@ -216,7 +219,7 @@ class _HandStatsViewState extends State<HandStatsView>
                                 ),
                                 Expanded(
                                   flex: 2,
-                                  child: Text(AppStringsNew.allTimeText,
+                                  child: Text(_appScreenText['allTime'],
                                       textAlign: TextAlign.center,
                                       style: AppDecorators.getSubtitle3Style(
                                           theme: theme)),
@@ -224,36 +227,44 @@ class _HandStatsViewState extends State<HandStatsView>
                               ],
                             ),
                             _buildOneStageRow(
-                              title: buildOneItemInLegend(AppStringsNew.preflop,
-                                  AppColorsNew.preflopColor, theme),
+                              title: buildOneItemInLegend(
+                                  _appScreenText['preflop'],
+                                  AppColorsNew.preflopColor,
+                                  theme),
                               thisVal: stats.thisGame.inPreflop,
                               allVal: stats.alltime.inPreflop,
                               theme: theme,
                             ),
                             _buildOneStageRow(
-                              title: buildOneItemInLegend(AppStringsNew.flop,
-                                  AppColorsNew.flopColor, theme),
+                              title: buildOneItemInLegend(
+                                  _appScreenText['flop'],
+                                  AppColorsNew.flopColor,
+                                  theme),
                               thisVal: stats.thisGame.inFlop,
                               allVal: stats.alltime.inFlop,
                               theme: theme,
                             ),
                             _buildOneStageRow(
-                              title: buildOneItemInLegend(AppStringsNew.turn,
-                                  AppColorsNew.turnColor, theme),
+                              title: buildOneItemInLegend(
+                                  _appScreenText['turn'],
+                                  AppColorsNew.turnColor,
+                                  theme),
                               thisVal: stats.thisGame.inTurn,
                               allVal: stats.alltime.inTurn,
                               theme: theme,
                             ),
                             _buildOneStageRow(
-                              title: buildOneItemInLegend(AppStringsNew.river,
-                                  AppColorsNew.riverColor, theme),
+                              title: buildOneItemInLegend(
+                                  _appScreenText['river'],
+                                  AppColorsNew.riverColor,
+                                  theme),
                               thisVal: stats.thisGame.inRiver,
                               allVal: stats.alltime.inRiver,
                               theme: theme,
                             ),
                             _buildOneStageRow(
                               title: buildOneItemInLegend(
-                                  AppStringsNew.showdown,
+                                  _appScreenText['showdown'],
                                   AppColorsNew.showDownColor,
                                   theme),
                               thisVal: stats.thisGame.wentToShowDown,
@@ -276,7 +287,7 @@ class _HandStatsViewState extends State<HandStatsView>
                             Row(
                               children: [
                                 Text(
-                                  AppStringsNew.actionStatistics,
+                                  _appScreenText['actionStatistics'],
                                   textAlign: TextAlign.left,
                                   style: AppDecorators.getHeadLine4Style(
                                       theme: theme),
@@ -294,7 +305,7 @@ class _HandStatsViewState extends State<HandStatsView>
                                   child: Expanded(
                                     flex: 2,
                                     child: Text(
-                                      AppStringsNew.thisGameText,
+                                      _appScreenText['thisGame'],
                                       textAlign: TextAlign.center,
                                       style: AppDecorators.getSubtitle3Style(
                                           theme: theme),
@@ -304,7 +315,7 @@ class _HandStatsViewState extends State<HandStatsView>
                                 Expanded(
                                   flex: 2,
                                   child: Text(
-                                    AppStringsNew.allTimeText,
+                                    _appScreenText['allTime'],
                                     textAlign: TextAlign.center,
                                     style: AppDecorators.getSubtitle3Style(
                                         theme: theme),
@@ -313,55 +324,55 @@ class _HandStatsViewState extends State<HandStatsView>
                               ],
                             ),
                             _buildOneStatRow(
-                              title: AppStringsNew.vpip,
+                              title: _appScreenText['vpip'],
                               thisVal: stats.thisGame.vpipCount,
                               allVal: stats.alltime.vpipCount,
                               theme: theme,
                             ),
                             _buildOneStatRow(
-                              title: AppStringsNew.contbet,
+                              title: _appScreenText['contBet'],
                               thisVal: stats.thisGame.contBet,
                               allVal: stats.alltime.contBet,
                               theme: theme,
                             ),
                             _buildOneStatRow(
-                              title: AppStringsNew.threebet,
+                              title: _appScreenText['threeBet'],
                               thisVal: stats.thisGame.threeBet,
                               allVal: stats.alltime.threeBet,
                               theme: theme,
                             ),
                             _buildOneStatRow(
-                              title: AppStringsNew.wtsd,
+                              title: _appScreenText['wtsd'],
                               thisVal: stats.thisGame.wentToShowDown,
                               allVal: stats.alltime.wentToShowDown,
                               theme: theme,
                             ),
                             _buildOneStatRow(
-                              title: AppStringsNew.wsd,
+                              title: _appScreenText['wsd'],
                               thisVal: stats.thisGame.wonAtShowDown,
                               allVal: stats.alltime.wonAtShowDown,
                               theme: theme,
                             ),
                             _buildOneStatRow(
-                              title: AppStringsNew.headsup,
+                              title: _appScreenText['headsup'],
                               thisVal: stats.thisGame.headsupHands,
                               allVal: stats.alltime.headsupHands,
                               theme: theme,
                             ),
                             _buildOneStatRow(
-                              title: AppStringsNew.headsdown,
+                              title: _appScreenText['headsupWon'],
                               thisVal: stats.thisGame.wonHeadsupHands,
                               allVal: stats.alltime.wonHeadsupHands,
                               theme: theme,
                             ),
                             AppDimensionsNew.getVerticalSizedBox(16),
                             Text(
-                              AppStringsNew.wtsdDesc,
+                              _appScreenText['WTSDWentToShowDown'],
                               style:
                                   AppDecorators.getSubtitle3Style(theme: theme),
                             ),
                             Text(
-                              AppStringsNew.wsdDesc,
+                              _appScreenText['WSDWonatShowDown'],
                               style:
                                   AppDecorators.getSubtitle3Style(theme: theme),
                             ),
@@ -381,7 +392,7 @@ class _HandStatsViewState extends State<HandStatsView>
                             Row(
                               children: [
                                 Text(
-                                  AppStringsNew.headsup,
+                                  _appScreenText['headsup'],
                                   textAlign: TextAlign.left,
                                   style: AppDecorators.getHeadLine4Style(
                                       theme: theme),
@@ -399,7 +410,7 @@ class _HandStatsViewState extends State<HandStatsView>
                                   child: Expanded(
                                     flex: 6,
                                     child: Text(
-                                      AppStringsNew.thisGameText,
+                                      _appScreenText['thisGame'],
                                       textAlign: TextAlign.center,
                                       style: AppDecorators.getSubtitle3Style(
                                           theme: theme),
@@ -409,7 +420,7 @@ class _HandStatsViewState extends State<HandStatsView>
                                 Expanded(
                                   flex: 6,
                                   child: Text(
-                                    AppStringsNew.allTimeText,
+                                    _appScreenText['allTime'],
                                     textAlign: TextAlign.center,
                                     style: AppDecorators.getSubtitle3Style(
                                         theme: theme),
@@ -431,7 +442,7 @@ class _HandStatsViewState extends State<HandStatsView>
                                       children: [
                                         Expanded(
                                           child: Text(
-                                            AppStringsNew.hands,
+                                            _appScreenText['hands'],
                                             textAlign: TextAlign.center,
                                             style:
                                                 AppDecorators.getSubtitle3Style(
@@ -440,7 +451,7 @@ class _HandStatsViewState extends State<HandStatsView>
                                         ),
                                         Expanded(
                                           child: Text(
-                                            AppStringsNew.won,
+                                            _appScreenText['won'],
                                             textAlign: TextAlign.center,
                                             style:
                                                 AppDecorators.getSubtitle3Style(
@@ -449,7 +460,7 @@ class _HandStatsViewState extends State<HandStatsView>
                                         ),
                                         Expanded(
                                           child: Text(
-                                            AppStringsNew.perSymbol,
+                                            _appScreenText['perSymbol'],
                                             textAlign: TextAlign.center,
                                             style:
                                                 AppDecorators.getSubtitle3Style(
@@ -466,7 +477,7 @@ class _HandStatsViewState extends State<HandStatsView>
                                     children: [
                                       Expanded(
                                         child: Text(
-                                          AppStringsNew.hands,
+                                          _appScreenText['hands'],
                                           textAlign: TextAlign.center,
                                           style:
                                               AppDecorators.getSubtitle3Style(
@@ -475,7 +486,7 @@ class _HandStatsViewState extends State<HandStatsView>
                                       ),
                                       Expanded(
                                         child: Text(
-                                          AppStringsNew.won,
+                                          _appScreenText['won'],
                                           textAlign: TextAlign.center,
                                           style:
                                               AppDecorators.getSubtitle3Style(
@@ -484,7 +495,7 @@ class _HandStatsViewState extends State<HandStatsView>
                                       ),
                                       Expanded(
                                         child: Text(
-                                          AppStringsNew.perSymbol,
+                                          _appScreenText['perSymbol'],
                                           textAlign: TextAlign.center,
                                           style:
                                               AppDecorators.getSubtitle3Style(
@@ -748,7 +759,7 @@ class _HandStatsViewState extends State<HandStatsView>
         height: 100,
         child: Center(
             child: Text(
-          "No headsup data",
+          _appScreenText['noHeadsupData'],
           style: AppDecorators.getSubtitle3Style(theme: theme),
         )),
       ));

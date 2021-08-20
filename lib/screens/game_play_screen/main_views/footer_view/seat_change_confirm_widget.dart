@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
-import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/club_screen/club_action_screens/club_member_detailed_view/club_member_detailed_view.dart';
 import 'package:pokerapp/services/game_play/graphql/seat_change_service.dart';
@@ -36,6 +36,8 @@ class SeatChangeConfirmWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    AppTextScreen _appScreenText = getAppTextScreen("seatChangeConfirmWidget");
+
     return Container(
       padding: EdgeInsets.all(16),
       decoration: AppStylesNew.resumeBgDecoration,
@@ -44,7 +46,7 @@ class SeatChangeConfirmWidget extends StatelessWidget {
         children: [
           Container(
             margin: EdgeInsets.symmetric(vertical: 16),
-            child: Text(AppStringsNew.applySeatChanges,
+            child: Text(_appScreenText['applySeatChanges'],
                 style: AppStylesNew.cardHeaderTextStyle),
           ),
           Row(

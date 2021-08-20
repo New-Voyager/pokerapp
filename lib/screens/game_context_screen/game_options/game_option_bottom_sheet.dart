@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/option_item_model.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
-import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/screens/club_screen/club_games_page_view.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 
@@ -25,15 +25,28 @@ class GameOptionsBottomSheet extends StatefulWidget {
 class _GameOptionsState extends State<GameOptionsBottomSheet> {
   double height, width;
   int selectedOptionIndex = 0;
+  AppTextScreen _appScreenText;
+  List<OptionItemModel> items = [];
 
-  List<OptionItemModel> items = [
-    OptionItemModel(image: "assets/images/casino.png", title: "Game"),
-    OptionItemModel(name: "Live", title: "Live Games"),
-    OptionItemModel(
-        image: "assets/images/casino.png", title: "Pending Approvals"),
-    OptionItemModel(
-        image: "assets/images/casino.png", title: "Pending Approvals")
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _appScreenText = getAppTextScreen("gameHistoryView");
+    items = [
+      OptionItemModel(
+          image: "assets/images/casino.png", title: _appScreenText['game']),
+      OptionItemModel(
+          name: _appScreenText['live'], title: _appScreenText['liveGames']),
+      OptionItemModel(
+        image: "assets/images/casino.png",
+        title: _appScreenText['pendingApprovals'],
+      ),
+      OptionItemModel(
+        image: "assets/images/casino.png",
+        title: _appScreenText['pendingApprovals'],
+      )
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +77,7 @@ class _GameOptionsState extends State<GameOptionsBottomSheet> {
             child: Column(
               children: [
                 Text(
-                  AppStringsNew.gameCodeText,
+                  _appScreenText['gameCode'],
                   style: AppDecorators.getSubtitle3Style(theme: theme),
                 ),
                 Text(

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/resources/animation_assets.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
-import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class ProfilePopup extends StatefulWidget {
@@ -20,9 +20,12 @@ class _ProfilePopupState extends State<ProfilePopup> {
   bool _isMicOn = true;
   bool _isChatOn = true;
   String _animationID;
+  AppTextScreen _appScreenText;
 
   @override
   void initState() {
+    _appScreenText = getAppTextScreen("profilePopup");
+
     super.initState();
   }
 
@@ -31,7 +34,7 @@ class _ProfilePopupState extends State<ProfilePopup> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(AppStringsNew.tapToSendAnimText),
+        Text(_appScreenText['tapToSendAnimation']),
         AppDimensionsNew.getVerticalSizedBox(8),
         getStickers(),
       ],
@@ -99,7 +102,7 @@ class _ProfilePopupState extends State<ProfilePopup> {
                 borderRadius: BorderRadius.circular(25),
                 color: AppColorsNew.stickerDialogActionColor),
             child: Text(
-              "Confirm",
+              _appScreenText['confirm'],
               style: AppStylesNew.stickerDialogActionText,
             ),
           ),

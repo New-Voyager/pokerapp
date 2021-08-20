@@ -10,11 +10,11 @@ import 'package:pokerapp/models/game_play_models/provider_models/host_seat_chang
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/animation_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
-import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/center_button_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/pots_view.dart';
@@ -46,6 +46,7 @@ class CenterView extends StatefulWidget {
 
 class _CenterViewState extends State<CenterView> {
   TableState get tableState => widget.tableState;
+  AppTextScreen _appScreenText;
 
   Widget _bombPotAnimation() {
     return LottieBuilder.asset(
@@ -186,6 +187,7 @@ class _CenterViewState extends State<CenterView> {
   @override
   void initState() {
     super.initState();
+    _appScreenText = getAppTextScreen("centerView");
     tableState.addListener(tableStateListener);
   }
 
@@ -205,13 +207,13 @@ class _CenterViewState extends State<CenterView> {
     log('potViewPos: before game ended.');
     if (gameState.gameInfo.status == AppConstants.GAME_ENDED)
       return centerTextWidget(
-        AppStringsNew.gameEndedText,
+        _appScreenText['gameEnded'],
         boardAttributes.centerViewButtonVerticalTranslate,
       );
 
     log('potViewPos: before waiting for players.');
     if (!gameState.botGame && gameState.playersInSeatsCount <= 1) {
-      String text = 'Waiting for players to join';
+      String text = _appScreenText['waitingForPlayersToJoin'];
       return centerTextWidget(
           text, boardAttributes.centerViewButtonVerticalTranslate);
     }
@@ -219,7 +221,7 @@ class _CenterViewState extends State<CenterView> {
     log('potViewPos: before seat change progress.');
     if (gameState.gameInfo.tableStatus ==
         AppConstants.TABLE_STATUS_HOST_SEATCHANGE_IN_PROGRESS) {
-      return centerTextWidget('Seat change in progress',
+      return centerTextWidget(_appScreenText['seatChangeInProgress'],
           boardAttributes.centerViewButtonVerticalTranslate);
     }
 
@@ -432,7 +434,7 @@ class _CenterViewState extends State<CenterView> {
               color: Colors.black26,
             ),
             child: Text(
-              'Pot: ${DataFormatter.chipsFormat(potChipsUpdates?.toDouble())}',
+              '${_appScreenText['pot']}: ${DataFormatter.chipsFormat(potChipsUpdates?.toDouble())}',
               style: AppStylesNew.itemInfoTextStyleHeavy.copyWith(
                 fontSize: 13,
                 fontWeight: FontWeight.w400,

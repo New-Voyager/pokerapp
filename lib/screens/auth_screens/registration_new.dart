@@ -13,7 +13,6 @@ import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/app_text_styles.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
-import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/services/app/appcoin_service.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
@@ -402,7 +401,7 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
       }
 
       ConnectionDialog.show(
-          context: context, loadingText: AppStringsNew.loadingTextRegister);
+          context: context, loadingText: _appScreenText['registering']);
       final resp = await AuthService.signup(
         deviceId: deviceId,
         screenName: _screenNameCtrl.text.trim(),
@@ -413,7 +412,7 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
       if (resp['status']) {
         // successful
         Alerts.showNotification(
-            titleText: AppStringsNew.registrationSuccessText);
+            titleText: _appScreenText['registrationSuccess']);
 
         // save device id, device secret and jwt
         AuthModel currentUser = AuthModel(
@@ -439,7 +438,7 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
         // failed
         log("ERROR : ${resp['error']}");
         Alerts.showNotification(
-          titleText: AppStringsNew.registrationFailText,
+          titleText: _appScreenText['registrationFailed'],
           subTitleText: resp['error'],
           duration: Duration(seconds: 5),
         );

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
-import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:provider/provider.dart';
 
@@ -13,6 +13,8 @@ class HelpScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    AppTextScreen _appScreenText = getAppTextScreen("profilePageNew");
+
     final size = MediaQuery.of(context).size;
     return Consumer<AppTheme>(
       builder: (_, theme, __) {
@@ -24,7 +26,7 @@ class HelpScreen extends StatelessWidget {
               appBar: CustomAppBar(
                 theme: theme,
                 context: context,
-                titleText: AppStringsNew.appName,
+                titleText: _appScreenText['appName'],
                 subTitleText: version,
               ),
               body: Column(
@@ -47,7 +49,7 @@ class HelpScreen extends StatelessWidget {
                       children: [
                         ListTile(
                           title: Text(
-                            AppStringsNew.helpCenterText,
+                            _appScreenText['helpCenter'],
                             style:
                                 AppDecorators.getHeadLine4Style(theme: theme),
                           ),
@@ -59,7 +61,7 @@ class HelpScreen extends StatelessWidget {
                         ),
                         ListTile(
                           title: Text(
-                            AppStringsNew.requestFeature,
+                            _appScreenText['requestFeature'],
                             style:
                                 AppDecorators.getHeadLine4Style(theme: theme),
                           ),
@@ -75,7 +77,7 @@ class HelpScreen extends StatelessWidget {
                             color: theme.secondaryColor,
                           ),
                           title: Text(
-                            AppStringsNew.termsPolicy,
+                            _appScreenText['termsAndPrivacyPolicy'],
                             style:
                                 AppDecorators.getHeadLine4Style(theme: theme),
                           ),
@@ -87,7 +89,7 @@ class HelpScreen extends StatelessWidget {
                             color: theme.secondaryColor,
                           ),
                           title: Text(
-                            AppStringsNew.licenses,
+                            _appScreenText['licenses'],
                             style:
                                 AppDecorators.getHeadLine4Style(theme: theme),
                           ),

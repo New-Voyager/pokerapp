@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
@@ -33,11 +34,14 @@ class _BotScriptsScreenState extends State<BotScriptsScreen>
   List<String> newLiveGames = [];
   int retryCount = 0;
   String botRunnerHost;
+  AppTextScreen _appScreenText;
+
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       getBotScripts();
     });
+    _appScreenText = getAppTextScreen("botScriptsScreen");
 
     super.initState();
   }
@@ -50,7 +54,7 @@ class _BotScriptsScreenState extends State<BotScriptsScreen>
     var result = await http.get("http://$botRunnerHost:8081/app-games");
     log("URL : ${result.request.url}");
     if (result.statusCode != 200) {
-      toast("Failed to get Results : ${result.reasonPhrase}");
+      toast("${_appScreenText['FAILEDTOGETRESULT']} : ${result.reasonPhrase}");
     } else {
       log("RESULTS : ${jsonDecode(result.body)}");
       scripts = ScriptsModel.fromJson(jsonDecode(result.body));
@@ -91,7 +95,8 @@ class _BotScriptsScreenState extends State<BotScriptsScreen>
   }
 
   _handlePlay(Script script, BuildContext context) async {
-    ConnectionDialog.show(context: context, loadingText: "Launching Game..");
+    ConnectionDialog.show(
+        context: context, loadingText: "${_appScreenText['LAUNCHINGGAME']}");
     await launchScript(script);
   }
 
@@ -113,7 +118,7 @@ class _BotScriptsScreenState extends State<BotScriptsScreen>
       headers: {HttpHeaders.contentTypeHeader: "application/json"},
     );
     if (result.statusCode != 200) {
-      toast("Failed to start");
+      toast("${_appScreenText['FAILEDTOSTART']}");
     } else if (jsonDecode(result.body)['status'] == "Accepted") {
       await handleLoop(context);
     }
@@ -156,7 +161,8 @@ class _BotScriptsScreenState extends State<BotScriptsScreen>
         arguments: newGameCode,
       );
     } else {
-      showAlertDialog(context, "Timeout", "Failed to start Game");
+      showAlertDialog(context, "${_appScreenText['TIMEOUT']}",
+          "${_appScreenText['FAILEDTOSTARTGAME']}");
     }
   }
 
@@ -166,7 +172,8 @@ class _BotScriptsScreenState extends State<BotScriptsScreen>
         child: Scaffold(
       backgroundColor: AppColorsNew.screenBackgroundColor,
       appBar: AppBar(
-        title: Text("Bot scripts", style: AppStylesNew.titleBarTextStyle),
+        title: Text("${_appScreenText['BOTSCRIPTS']}",
+            style: AppStylesNew.titleBarTextStyle),
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios),
           color: AppColorsNew.appAccentColor,
