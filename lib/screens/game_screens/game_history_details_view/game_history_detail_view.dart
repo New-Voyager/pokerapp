@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/models/hand_history_model.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
-import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/game_screens/game_history_details_view/stack_chart_view.dart';
@@ -44,6 +44,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
 
   bool loadingDone = false;
   GameHistoryDetailModel _gameDetail;
+  AppTextScreen _appScreenText;
 
   _fetchData() async {
     await GameService.getGameHistoryDetail(_gameDetail);
@@ -55,6 +56,8 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
 
   @override
   void initState() {
+    _appScreenText = getAppTextScreen("gameHistoryDetailView");
+
     _gameDetail = widget.data;
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -72,8 +75,9 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
           appBar: CustomAppBar(
             theme: theme,
             context: context,
-            titleText: AppStringsNew.GameDetailsTitle,
-            subTitleText: "Game code: ${_gameDetail.gameCode}",
+            titleText: _appScreenText['gameDetails'],
+            subTitleText:
+                "${_appScreenText['gameCode']}: ${_gameDetail.gameCode}",
           ),
           body: !loadingDone
               ? Center(child: CircularProgressWidget())
@@ -144,7 +148,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
               backgroundColor: Colors.teal,
             ),
             title: Text(
-              "Hand History",
+              _appScreenText['handHistory'],
               style: TextStyle(color: Colors.white),
             ),
           ),
@@ -156,7 +160,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
               backgroundColor: Colors.teal,
             ),
             title: Text(
-              "Table Result",
+              _appScreenText['tableResult'],
               style: TextStyle(color: Colors.white),
             ),
           ),
@@ -182,7 +186,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
         child: Row(
           children: [
             Text(
-              "High Hand is not tracked",
+              _appScreenText['highHandisNotTracked'],
               style: TextStyle(color: Colors.white),
             ),
           ],
@@ -210,7 +214,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Big Win",
+                    _appScreenText['bigWin'],
                     style: TextStyle(color: Colors.white),
                   ),
                   seprator,
@@ -221,7 +225,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
                         style: TextStyle(color: Colors.amber, fontSize: 18.0),
                       ),
                       Text(
-                        "hand#2",
+                        "${_appScreenText['hand']}#2",
                         style:
                             TextStyle(color: Color(0xff848484), fontSize: 13.0),
                       ),
@@ -229,7 +233,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
                   ),
                   seprator,
                   Text(
-                    "Big Loss",
+                    "${_appScreenText['bigLoss']}",
                     style: TextStyle(color: Colors.white),
                   ),
                   seprator,
@@ -244,7 +248,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
                         width: 8.0,
                       ),
                       Text(
-                        "hand#3",
+                        "${_appScreenText['hand']}#3",
                         style: TextStyle(color: Color(0xff848484)),
                       ),
                     ],
@@ -277,7 +281,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "Hands",
+                    "${_appScreenText['hands']}",
                   ),
                   AppDimensionsNew.getHorizontalSpace(16),
                   Text(
@@ -301,7 +305,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
                 child: Visibility(
                   child: !_gameDetail.playedGame
                       ? Center(
-                          child: Text("No Data",
+                          child: Text(_appScreenText['noData'],
                               style: AppDecorators.getSubtitle3Style(
                                   theme: theme)),
                         )
@@ -347,7 +351,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
-                  "Stack",
+                  _appScreenText['stack'],
                   textAlign: TextAlign.left,
                 ),
               ),
@@ -367,7 +371,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
                   child: !_gameDetail.playedGame
                       ? Center(
                           child: Text(
-                            "No Data",
+                            _appScreenText['noData'],
                             style:
                                 AppDecorators.getSubtitle3Style(theme: theme),
                           ),
@@ -394,7 +398,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            profit < 0 ? "Loss" : "Profit",
+            profit < 0 ? _appScreenText['loss'] : _appScreenText['profit'],
             style: AppDecorators.getSubtitle3Style(theme: theme),
           ),
           _gameDetail.playedGame
@@ -422,7 +426,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
                   ),
                 )
               : Text(
-                  'No data',
+                  _appScreenText['noData'],
                   style: TextStyle(
                     color: Colors.white38,
                     fontSize: 10.dp,
@@ -432,7 +436,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
           Visibility(
             visible: _gameDetail.playedGame,
             child: Text(
-              "Buy-in",
+              _appScreenText['buyIn'],
               style: AppDecorators.getSubtitle3Style(theme: theme),
             ),
           ),
@@ -518,7 +522,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
                         visible: loadingDone && _gameDetail.endedAt != null,
                         child: Text(
                           _gameDetail.endedAtStr != null
-                              ? 'Started by ${_gameDetail.startedBy}'
+                              ? '${_appScreenText['startedBy']} ${_gameDetail.startedBy}'
                               : '',
                           style: AppDecorators.getSubtitle3Style(theme: theme)
                               .copyWith(fontSize: 6.dp),
@@ -528,7 +532,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
                         visible: loadingDone && _gameDetail.endedAt != null,
                         child: Text(
                           _gameDetail.endedAtStr != null
-                              ? 'Ended by ${_gameDetail.endedBy}'
+                              ? '${_appScreenText['endedBy']} ${_gameDetail.endedBy}'
                               : '',
                           style: AppDecorators.getSubtitle3Style(theme: theme)
                               .copyWith(fontSize: 6.dp),
@@ -538,7 +542,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
                         visible: loadingDone && _gameDetail.endedAt != null,
                         child: Text(
                           _gameDetail.endedAtStr != null
-                              ? 'Ended at ${_gameDetail.endedAtStr}'
+                              ? '${_appScreenText['endedAt']} ${_gameDetail.endedAtStr}'
                               : '',
                           style: AppDecorators.getSubtitle3Style(theme: theme)
                               .copyWith(fontSize: 6.dp),
@@ -574,7 +578,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
           children: [
             Container(
                 padding: EdgeInsets.only(top: 16, left: 16),
-                child: Text(AppStringsNew.highHandWinnersText)),
+                child: Text(_appScreenText['highHandWinners'])),
             HighhandWidget(
               this._gameDetail.hhWinners[0],
               clubCode: widget.clubCode,
@@ -650,12 +654,12 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              AppStringsNew.HighHandlogTitle,
+              _appScreenText['highHandLog'],
               style: AppDecorators.getHeadLine4Style(theme: theme),
             ),
           ],
         ),
-        trailing: Text(AppStringsNew.notTrackedText),
+        trailing: Text(_appScreenText['notTracked']),
       );
     } else {
       hhTile = ListTile(
@@ -677,7 +681,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
           ),
         ),
         title: Text(
-          AppStringsNew.HighHandlogTitle,
+          _appScreenText['highHandLog'],
           style: AppDecorators.getHeadLine4Style(theme: theme),
         ),
         trailing: Icon(
@@ -725,11 +729,11 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
                 fit: BoxFit.cover,
               ),
             ),
-            title: Text(AppStringsNew.handHistoryTitle,
+            title: Text(_appScreenText['handHistory'],
                 style: AppDecorators.getHeadLine4Style(theme: theme)),
             trailing: !showHandHistory
                 ? Text(
-                    AppStringsNew.notAvaialbleText,
+                    _appScreenText['notAvailable'],
                   )
                 : Icon(
                     Icons.arrow_forward_ios,
@@ -757,7 +761,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
               ),
             ),
             title: Text(
-              AppStringsNew.TableRecordTitle,
+              _appScreenText['tableResult'],
               style: AppDecorators.getHeadLine4Style(theme: theme),
             ),
             onTap: () {

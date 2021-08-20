@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pokerapp/models/game_play_models/business/game_chat_notfi_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
-import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/screens/game_context_screen/game_chat/game_giphys.dart';
 
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
@@ -39,6 +39,7 @@ class _GameChatState extends State<GameChat> {
 
   final ValueNotifier<bool> _vnShowEmojiPicker = ValueNotifier(false);
   final _textEditingController = TextEditingController();
+  AppTextScreen _appScreenText;
 
   int myID = -1;
 
@@ -48,6 +49,8 @@ class _GameChatState extends State<GameChat> {
 
   @override
   void initState() {
+    _appScreenText = getAppTextScreen("gameChat");
+
     super.initState();
 
     // mark all the messages as read post frame building
@@ -236,7 +239,7 @@ class _GameChatState extends State<GameChat> {
                   contentPadding: EdgeInsets.zero,
                   isDense: true,
                   border: InputBorder.none,
-                  hintText: AppStringsNew.chatHintText,
+                  hintText: _appScreenText['typeAMessage'],
                 ),
               ),
             ),

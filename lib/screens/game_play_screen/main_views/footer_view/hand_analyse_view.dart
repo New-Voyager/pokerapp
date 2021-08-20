@@ -10,10 +10,10 @@ import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/hand_history_model.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
-import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/debuglog_bottomsheet.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/player_stats_bottomsheet.dart';
@@ -42,6 +42,8 @@ class HandAnalyseView extends StatefulWidget {
 
 class _HandAnalyseViewState extends State<HandAnalyseView> {
   BuildContext _context;
+  AppTextScreen _appScreenText;
+
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
@@ -51,6 +53,8 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
         _pollPendingApprovals();
       }
     });
+    _appScreenText = getAppTextScreen("handAnalyseView");
+
     super.initState();
   }
 
@@ -131,7 +135,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                   ),
                   Container(
                       child: Text(
-                        AppStringsNew.pendingApprovalTitleText,
+                        _appScreenText['pendingApprovals'],
                         style: AppDecorators.getAccentTextStyle(theme: theme),
                       ),
                       padding: EdgeInsets.all(8)),
@@ -183,7 +187,8 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                                                           theme: theme),
                                                   children: [
                                                     TextSpan(
-                                                      text: " request buyin",
+                                                      text:
+                                                          " ${_appScreenText['requestBuyin']}",
                                                       style: AppDecorators
                                                           .getSubtitle3Style(
                                                               theme: theme),
@@ -198,7 +203,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                                                 ),
                                               ),
                                               Text(
-                                                "${AppStringsNew.outstandingBalance}: ${item.balance}",
+                                                "${_appScreenText['outstandingBalance']}: ${item.balance}",
                                                 style: AppDecorators
                                                     .getHeadLine4Style(
                                                         theme: theme),
@@ -214,19 +219,19 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                                                 CrossAxisAlignment.start,
                                             children: [
                                               Text(
-                                                "Game: ${item.gameType}",
+                                                "${_appScreenText['game']}: ${item.gameType}",
                                                 style: AppDecorators
                                                     .getSubtitle1Style(
                                                         theme: theme),
                                               ),
                                               Text(
-                                                "Code: ${item.gameCode}",
+                                                "${_appScreenText['code']}: ${item.gameCode}",
                                                 style: AppDecorators
                                                     .getSubtitle1Style(
                                                         theme: theme),
                                               ),
                                               Text(
-                                                "Club: ${item.clubCode}",
+                                                "${_appScreenText['club']}: ${item.clubCode}",
                                                 style: AppDecorators
                                                     .getSubtitle1Style(
                                                         theme: theme),
@@ -293,8 +298,8 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                                                     );
 
                                                     if (val == null) {
-                                                      toast(
-                                                          "Exception occured decline Request");
+                                                      toast(_appScreenText[
+                                                          'exceptionOccuredDeclineRequest']);
                                                     } else if (val) {
                                                       _pollPendingApprovals();
                                                       // Provider.of<PendingApprovalsState>(
@@ -318,7 +323,8 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
 
                                                     } else {
                                                       toast(
-                                                        "Failed to decline Request",
+                                                        _appScreenText[
+                                                            'failedToDeclineRequest'],
                                                       );
                                                     }
                                                   },
@@ -336,7 +342,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                                   height: height / 4,
                                   child: Center(
                                     child: Text(
-                                      AppStringsNew.noPendingText,
+                                      _appScreenText['noPendingApprovals'],
                                       style: AppDecorators.getSubtitle1Style(
                                           theme: theme),
                                     ),
@@ -347,8 +353,8 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                               return Container(
                                 height: height / 4,
                                 child: Center(
-                                  child:
-                                      Text("Something went wrong. Try again!"),
+                                  child: Text(_appScreenText[
+                                      'SomethingWentWrongTryAgain']),
                                 ),
                               );
                             }
@@ -752,7 +758,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
           callback: onClickViewHandAnalysis,
           imagePath: AppAssetsNew.handHistoryPath,
           value: 0,
-          label: AppStringsNew.handHistoryTitle,
+          label: _appScreenText['handHistory'],
           theme: theme,
         ),
 
@@ -762,7 +768,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
           callback: onTableBottomSheet,
           imagePath: AppAssetsNew.tableResultPath,
           value: 1,
-          label: AppStringsNew.tableText,
+          label: _appScreenText['table'],
           theme: theme,
         ),
 
@@ -772,7 +778,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
           callback: onPlayerStatsBottomSheet,
           imagePath: AppAssetsNew.playerStatsPath,
           value: 2,
-          label: AppStringsNew.stackSeats,
+          label: _appScreenText['stackStats'],
           theme: theme,
         ),
       ],

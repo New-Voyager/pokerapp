@@ -5,7 +5,6 @@ import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
-import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/formatter.dart';
@@ -83,7 +82,7 @@ class GameRecordItem extends StatelessWidget {
                       ),
                       AppDimensionsNew.getVerticalSizedBox(4.ph),
                       Text(
-                        "${AppStringsNew.GameId} - ${game.gameCode}",
+                        "${_appScreenText['gameId']} - ${game.gameCode}",
                         style: AppStylesNew.gameIdTextStyle,
                       ),
                       AppDimensionsNew.getVerticalSizedBox(2.ph),

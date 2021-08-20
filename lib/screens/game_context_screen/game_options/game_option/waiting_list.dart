@@ -4,11 +4,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/models/waiting_list_model.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
-import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/widgets/round_color_button.dart';
@@ -32,6 +32,7 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
   List<WaitingListModel> allWaitingListPlayers = [];
   bool ischanged = false;
   bool isSwitchShow = true;
+  AppTextScreen _appScreenText;
 
   @override
   void initState() {
@@ -76,6 +77,7 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
   @override
   Widget build(BuildContext context) {
     log('waiting list: build');
+    _appScreenText = getAppTextScreen("waitingListBottomSheet");
 
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
@@ -88,7 +90,7 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
                 appBar: CustomAppBar(
                   theme: theme,
                   context: context,
-                  titleText: AppStringsNew.waitingListTitle,
+                  titleText: _appScreenText['waitingList'],
                 ),
                 body: Column(
                   mainAxisSize: MainAxisSize.max,
@@ -110,7 +112,7 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            AppStringsNew.playersInWaitingListText,
+            _appScreenText['playersInTheList'],
             style: AppDecorators.getSubtitle3Style(theme: theme),
           ),
           AppDimensionsNew.getVerticalSizedBox(10),
@@ -126,7 +128,7 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
                     )
                   : Center(
                       child: Text(
-                        AppStringsNew.noWaitingListText,
+                        _appScreenText['waitingListIsEmpty'],
                         style: AppDecorators.getSubtitle3Style(theme: theme),
                       ),
                     ),
@@ -220,7 +222,7 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
           padding: EdgeInsets.all(8),
           decoration: AppDecorators.tileDecorationWithoutBorder(theme),
           child: SwitchWidget(
-            label: AppStringsNew.addMeToWaitingListText,
+            label: _appScreenText['addMeToWaitingList'],
             value: isInWaitingList,
             onChange: (bool value) async {
               setState(() {
@@ -256,7 +258,7 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         RoundedColorButton(
-                          text: AppStringsNew.applyText,
+                          text: _appScreenText['apply'],
                           textColor: theme.primaryColorWithDark(),
                           backgroundColor: theme.accentColor,
                           onTapFunction: () {
@@ -282,7 +284,7 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
                         ),
 
                         RoundedColorButton(
-                          text: AppStringsNew.cancelButtonText,
+                          text: _appScreenText['cancel'],
                           textColor: theme.accentColor,
                           borderColor: theme.accentColor,
                           onTapFunction: () {

@@ -10,7 +10,6 @@ import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
-import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/main_screens/clubs_page_view/widgets/club_item.dart';
@@ -297,7 +296,7 @@ class _ClubsPageViewState extends State<ClubsPageView>
                             _fetchClubs();
                           },
                         ),
-                        HeadingWidget(heading: AppStringsNew.clubsTitle),
+                        HeadingWidget(heading: _appScreenText['clubs']),
                         RoundedColorButton(
                           backgroundColor: theme.accentColor,
                           textColor: theme.primaryColorWithDark(),
