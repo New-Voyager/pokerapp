@@ -4,6 +4,7 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/option_item_model.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
@@ -11,6 +12,7 @@ import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/board_view/decorative_views/table_view.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/data/box_type.dart';
@@ -20,6 +22,7 @@ import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/numeric_keyboard2.dart';
 import 'package:pokerapp/widgets/switch_widget.dart';
+import 'package:provider/provider.dart';
 
 import 'seat_change_bottom_sheet.dart';
 import 'waiting_list.dart';
@@ -381,11 +384,107 @@ class _GameOptionState extends State<GameOption> {
         ),
       );
 
+  Widget _buildBasicGameOptions({
+    @required final bool isPlaying,
+    @required final AppTheme theme,
+  }) {
+    return !isPlaying
+        ? SizedBox.shrink()
+        : Container(
+            margin: EdgeInsets.only(bottom: 10),
+            padding: EdgeInsets.only(top: 16),
+            width: double.infinity,
+            decoration: AppDecorators.tileDecorationWithoutBorder(theme),
+            child: Wrap(
+              alignment: WrapAlignment.center,
+              //mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ...gameActions.map((e) => gameActionItem(e, theme)).toList(),
+              ],
+            ),
+          );
+  }
+
+  Widget _buildGameSettingOptions() {
+    return Container();
+  }
+
+  Widget _buildPlayerSettingOptions() {
+    return Container();
+  }
+
   @override
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
-    bool isPlaying = widget.gameState.isPlaying;
     final theme = AppTheme.getTheme(context);
+
+    final bool isPlaying = widget.gameState.isPlaying;
+    final bool isHost = context.read<GameContextObject>().isHost();
+
+    // when I am HOST and PLAYING the game
+    if (isPlaying && isHost) {
+      return DefaultTabController(
+        length: 2,
+        child: NestedScrollView(
+          physics: BouncingScrollPhysics(),
+          headerSliverBuilder: (context, value) {
+            return [
+              SliverToBoxAdapter(
+                // build the basic game options
+                child: _buildBasicGameOptions(
+                  isPlaying: isPlaying,
+                  theme: theme,
+                ),
+              ),
+              SliverToBoxAdapter(
+                // show tabs for game and player settings
+                child: TabBar(
+                  tabs: [
+                    Tab(
+                      child: Text('Game Settings'),
+                    ),
+                    Tab(
+                      child: Text('Player Settings'),
+                    ),
+                  ],
+                ),
+              ),
+            ];
+          },
+
+          // show game and player settings body
+          body: TabBarView(
+            physics: NeverScrollableScrollPhysics(),
+            children: [
+              // game settings to be shown here
+              // 1. allow seat change player
+              // 2. allow waiting list
+              // 3. bomb pot
+              // 4. audio conference
+              // 5. pause time after each result
+              _buildGameSettingOptions(),
+
+              // player settings to be shown here
+              // 1. muck losing hand
+              // 2. straddle
+              // 3. audio conference
+              // 4. run it twice
+              _buildPlayerSettingOptions(),
+            ],
+          ),
+        ),
+      );
+    }
+
+    // if I am HOST only - show game settings option
+    else if (isHost) {
+      return _buildGameSettingOptions();
+    }
+
+    // if I am PLAYING only - show player settings option
+    else {
+      return _buildPlayerSettingOptions();
+    }
 
     return SingleChildScrollView(
       physics: BouncingScrollPhysics(),
