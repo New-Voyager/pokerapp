@@ -21,7 +21,7 @@ class AssetService {
 
   static Future<Asset> getDefaultTableAsset() async {
     try {
-      defaultTableAsset = await hiveStore.get("default-table");
+      defaultTableAsset =  hiveStore.get("default-table");
     } catch (err) {}
     return defaultTableAsset;
   }

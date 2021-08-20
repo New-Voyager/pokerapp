@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -7,14 +8,18 @@ import 'package:pokerapp/enums/game_status.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/enums/player_status.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/marked_cards.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/player_info.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_constants.dart';
+import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/services/agora/agora.dart';
+import 'package:pokerapp/services/app/asset_service.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/app/handlog_cache_service.dart';
 import 'package:pokerapp/services/data/game_hive_store.dart';
@@ -1156,15 +1161,39 @@ class GameScreenAssets {
   Future<void> initialize() async {
     cardStrImage = Map<String, Uint8List>();
     cardNumberImage = Map<int, Uint8List>();
-    String backdropImage = 'assets/images/backgrounds/night sky.png';
-    String tableImage = 'assets/images/table/night sky table.png';
+    String backdropImage = AppAssetsNew.defaultBackdropPath;
+    String tableImage = AppAssetsNew.defaultTablePath;
     String betImage = 'assets/images/betimage.svg';
     //tableImage = AppAssets.horizontalTable;
     //backdropImage = AppAssets.barBookshelfBackground;
+    AppTheme theme = AppTheme.getTheme(navigatorKey.currentContext);
+    if (theme.tableAssetId == 'default-table') {
+      boardBytes = (await rootBundle.load(tableImage)).buffer.asUint8List();
+    } else {
+      try {
+        boardBytes =
+            File(AssetService.hiveStore.get(theme.tableAssetId).downloadedPath)
+                .readAsBytesSync();
+      } catch (e) {
+        boardBytes = (await rootBundle.load(tableImage)).buffer.asUint8List();
+      }
+    }
 
+    if (theme.backDropAssetId == 'default-backdrop') {
+      backdropBytes =
+          (await rootBundle.load(backdropImage)).buffer.asUint8List();
+    } else {
+      try {
+        backdropBytes = File(AssetService.hiveStore
+                .get(theme.backDropAssetId)
+                .downloadedPath)
+            .readAsBytesSync();
+      } catch (e) {
+        backdropBytes =
+            (await rootBundle.load(backdropImage)).buffer.asUint8List();
+      }
+    }
     betImageBytes = (await rootBundle.load(betImage)).buffer.asUint8List();
-    backdropBytes = (await rootBundle.load(backdropImage)).buffer.asUint8List();
-    boardBytes = (await rootBundle.load(tableImage)).buffer.asUint8List();
     holeCardBackBytes =
         (await rootBundle.load('assets/images/card_back/set2/Asset 7.png'))
             .buffer

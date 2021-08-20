@@ -73,6 +73,7 @@ class _CenterViewState extends State<CenterView> {
   Widget customizationView({
     double scale = 1.0,
     Offset offset = Offset.zero,
+    GameState gameState,
   }) {
     AppTheme theme = AppTheme.getTheme(context);
     return Align(
@@ -82,8 +83,12 @@ class _CenterViewState extends State<CenterView> {
         child: Transform.scale(
             scale: scale * 1.2,
             child: GameCircleButton(
-              onClickHandler: () {
-                Navigator.of(context).pushNamed(Routes.select_table);
+              onClickHandler: () async {
+                await Navigator.of(context).pushNamed(Routes.select_table);
+               await gameState.assets.initialize();
+               setState(() {
+                 
+               });
               },
               child: Icon(Icons.edit,
                   size: 24, color: theme.primaryColorWithDark()),
@@ -255,6 +260,7 @@ class _CenterViewState extends State<CenterView> {
         return customizationView(
           offset: boardAttributes.centerViewCardShufflePosition,
           scale: boardAttributes.centerViewCenterScale,
+          gameState: gameState,
         );
       }
       if (showCardsShuffling) {

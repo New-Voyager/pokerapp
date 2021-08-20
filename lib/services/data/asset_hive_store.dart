@@ -95,8 +95,8 @@ class AssetHiveStore {
     return;
   }
 
-  Future<Asset> get(String id) async {
-    dynamic jsonString = await _assetBox.get(id);
+  Asset get(String id) {
+    dynamic jsonString = _assetBox.get(id);
     if (json != null) {
       dynamic json = jsonDecode(jsonString);
       return Asset.fromjson(json);
