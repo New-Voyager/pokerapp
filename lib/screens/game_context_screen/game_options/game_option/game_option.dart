@@ -171,33 +171,41 @@ class _GameOptionState extends State<GameOption> {
     gameCode = widget.gameCode;
     gameActions = [
       OptionItemModel(
-          title: _appScreenText['standup'],
-          iconData: Icons.exit_to_app_sharp,
-          onTap: (context) {
-            this.onLeave();
-          }),
+        title: _appScreenText['standup'],
+        iconData: Icons.exit_to_app_sharp,
+        onTap: (context) {
+          this.onLeave();
+        },
+      ),
       OptionItemModel(
-          title: _appScreenText['reload'],
-          iconData: Icons.shop,
-          onTap: (context) {
-            this.onReload();
-          }),
+        title: _appScreenText['reload'],
+        iconData: Icons.shop,
+        onTap: (context) {
+          this.onReload();
+        },
+      ),
     ];
 
     if (widget.gameState.running) {
-      gameActions.add(OptionItemModel(
+      gameActions.add(
+        OptionItemModel(
           title: _appScreenText['break'],
           iconData: Icons.shop,
           onTap: (context) {
             this.onBreak();
-          }));
+          },
+        ),
+      );
       if (widget.isAdmin) {
-        gameActions.add(OptionItemModel(
+        gameActions.add(
+          OptionItemModel(
             title: _appScreenText['pause'],
             iconData: Icons.pause,
             onTap: (context) {
               this.onPause();
-            }));
+            },
+          ),
+        );
       }
     }
 
@@ -222,27 +230,32 @@ class _GameOptionState extends State<GameOption> {
             isScrollControlled: true,
             builder: (ctx) {
               return SeatChangeBottomSheet(
-                  widget.gameState, widget.gameCode, widget.playerUuid);
+                widget.gameState,
+                widget.gameCode,
+                widget.playerUuid,
+              );
             },
           );
         },
       ),
     ];
 
-    gameSecondaryOptions.add(OptionItemModel(
-        title: _appScreenText['waitingList'],
-        image: "assets/images/casino.png",
-        name: _appScreenText['addToWaitingList'],
-        backGroundColor: Colors.blue,
-        onTap: (context) async {
-          await showModalBottomSheet(
-              context: context,
-              isScrollControlled: true,
-              builder: (ctx) {
-                return WaitingListBottomSheet(
-                    widget.gameState, widget.gameCode, widget.playerUuid);
-              });
-        }));
+    gameSecondaryOptions.add(
+      OptionItemModel(
+          title: _appScreenText['waitingList'],
+          image: "assets/images/casino.png",
+          name: _appScreenText['addToWaitingList'],
+          backGroundColor: Colors.blue,
+          onTap: (context) async {
+            await showModalBottomSheet(
+                context: context,
+                isScrollControlled: true,
+                builder: (ctx) {
+                  return WaitingListBottomSheet(
+                      widget.gameState, widget.gameCode, widget.playerUuid);
+                });
+          }),
+    );
   }
 
   Widget _buildCheckBox({
@@ -405,12 +418,119 @@ class _GameOptionState extends State<GameOption> {
           );
   }
 
-  Widget _buildGameSettingOptions() {
-    return Container();
+  Widget _buildGameSettingOptions(AppTheme theme) {
+    return ListView.separated(
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      itemCount: gameSecondaryOptions.length,
+      itemBuilder: (context, index) {
+        return gameSecondaryOptionItem(
+          gameSecondaryOptions[index],
+          context,
+          theme,
+        );
+      },
+      separatorBuilder: (context, index) {
+        return Divider(
+          height: 2,
+          color: theme.secondaryColor,
+          endIndent: 24,
+          indent: 24,
+        );
+      },
+    );
   }
 
   Widget _buildPlayerSettingOptions() {
-    return Container();
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        /* show straddle off and auto straddle options ONLY when the UTG STRADDLE is on */
+        widget.gameState.gameInfo.utgStraddleAllowed
+            ? Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // straddle off
+                  _buildCheckBox(
+                    text: _appScreenText['straddle'],
+                    value: widget.gameState.settings.straddleOption,
+                    onChange: (bool v) async {
+                      // setting the value saves it to local storage too
+                      widget.gameState.settings.straddleOption = v;
+                      log('In toggle button widget, straddleOption = ${widget.gameState.settings.straddleOption}');
+                      if (closed) return;
+                      setState(() {});
+                    },
+                  ),
+
+                  // auto straddle
+                  _buildCheckBox(
+                    text: _appScreenText['autoStraddle'],
+                    value: widget.gameState.settings.autoStraddle,
+                    onChange: (bool v) async {
+                      if (v) {
+                        await FirebaseAnalytics().logEvent(
+                            name: "Auto_Straddle",
+                            parameters: {"name": "Auto Straddle is turned ON"});
+                      }
+                      // setting the value saves it to local storage too
+                      widget.gameState.settings.autoStraddle = v;
+                      log('In toggle button widget, autoStraddle = ${widget.gameState.settings.autoStraddle}');
+                    },
+                  ),
+                ],
+              )
+            : const SizedBox.shrink(),
+        _buildCheckBox(
+            text: _appScreenText['muckLosingHand'],
+            value: widget.gameState.gameInfo.playerMuckLosingHand,
+            onChange: (bool v) async {
+              await GameService.updateGameConfig(widget.gameState.gameCode,
+                  muckLosingHand: v);
+              // setting the value saves it to local storage too
+              widget.gameState.gameInfo.playerMuckLosingHand = v;
+              if (closed) return;
+              setState(() {});
+            }),
+        _buildCheckBox(
+          text: _appScreenText['promptRunItTwice'],
+          value: widget.gameState.gameInfo.playerRunItTwice,
+          onChange: (bool v) async {
+            await GameService.updateGameConfig(widget.gameState.gameCode,
+                runItTwicePrompt: v);
+            // setting the value saves it to local storage too
+            widget.gameState.gameInfo.playerRunItTwice = v;
+            if (closed) return;
+            setState(() {});
+          },
+        ),
+        _buildCheckBox(
+          text: _appScreenText['gameSounds'],
+          value: widget.gameState.settings.gameSound,
+          onChange: (bool v) async {
+            // setting the value saves it to local storage too
+            widget.gameState.settings.gameSound = v;
+            log('In toggle button widget, gameSounds = ${widget.gameState.settings.gameSound}');
+            if (closed) return;
+            setState(() {});
+          },
+        ),
+        widget.gameState.gameInfo.audioConfEnabled ?? false
+            ? _buildCheckBox(
+                text: _appScreenText['audioConference'],
+                value: widget.gameState.settings.audioConf,
+                onChange: (bool v) async {
+                  // setting the value saves it to local storage too
+                  widget.gameState.settings.audioConf = v;
+                  widget.gameState.janusEngine.joinLeaveAudioConference();
+                  log('In toggle button widget, audioConf = ${widget.gameState.settings.audioConf}');
+                  if (closed) return;
+                  setState(() {});
+                },
+              )
+            : SizedBox(),
+      ],
+    );
   }
 
   @override
@@ -454,7 +574,6 @@ class _GameOptionState extends State<GameOption> {
 
           // show game and player settings body
           body: TabBarView(
-            physics: NeverScrollableScrollPhysics(),
             children: [
               // game settings to be shown here
               // 1. allow seat change player
@@ -462,7 +581,7 @@ class _GameOptionState extends State<GameOption> {
               // 3. bomb pot
               // 4. audio conference
               // 5. pause time after each result
-              _buildGameSettingOptions(),
+              _buildGameSettingOptions(theme),
 
               // player settings to be shown here
               // 1. muck losing hand
@@ -478,7 +597,7 @@ class _GameOptionState extends State<GameOption> {
 
     // if I am HOST only - show game settings option
     else if (isHost) {
-      return _buildGameSettingOptions();
+      return _buildGameSettingOptions(theme);
     }
 
     // if I am PLAYING only - show player settings option
@@ -738,7 +857,10 @@ class _GameOptionState extends State<GameOption> {
   }
 
   gameSecondaryOptionItem(
-      OptionItemModel optionItemModel, BuildContext context, AppTheme theme) {
+    OptionItemModel optionItemModel,
+    BuildContext context,
+    AppTheme theme,
+  ) {
     return ListTile(
       onTap: () => optionItemModel.onTap(context),
       title: Text(
