@@ -339,7 +339,7 @@ class HandActionProtoService {
       }
     }
 
-    log('Hand Message: ::handleMessage:: START messageType: $messageType');
+    ////log('Hand Message: ::handleMessage:: START messageType: $messageType');
     final message = messageObject.item;
     try {
       // delegate further actions to sub services as per messageType
@@ -381,21 +381,21 @@ class HandActionProtoService {
           return;
 
         case AppConstants.FLOP:
-          log('Hand Message: ::handleStageChange:: FLOP');
+          ////log('Hand Message: ::handleStageChange:: FLOP');
           await handleStageChange(message, 'flop');
-          log('Hand Message: ::handleStageChange:: FLOP DONE');
+          ////log('Hand Message: ::handleStageChange:: FLOP DONE');
           return;
 
         case AppConstants.TURN:
-          log('Hand Message: ::handleStageChange:: TURN');
+          ////log('Hand Message: ::handleStageChange:: TURN');
           await handleStageChange(message, 'turn');
-          log('Hand Message: ::handleStageChange:: TURN DONE');
+          ////log('Hand Message: ::handleStageChange:: TURN DONE');
           return;
 
         case AppConstants.RIVER:
-          log('Hand Message: ::handleStageChange:: RIVER');
+          ////log('Hand Message: ::handleStageChange:: RIVER');
           await handleStageChange(message, 'river');
-          log('Hand Message: ::handleStageChange:: RIVER DONE');
+          ////log('Hand Message: ::handleStageChange:: RIVER DONE');
           return;
 
         case AppConstants.ANNOUNCEMENT:
@@ -404,7 +404,7 @@ class HandActionProtoService {
     } catch (err) {
       log('Error: ${err.toString()}');
     } finally {
-      log('Hand Message: ::handleMessage:: END messageType: $messageType');
+      ////log('Hand Message: ::handleMessage:: END messageType: $messageType');
     }
   }
 
@@ -466,7 +466,8 @@ class HandActionProtoService {
   Future<void> handleNewHand(proto.HandMessageItem message) async {
     _gameState.handState = HandState.STARTED;
     _gameState.highHand = null;
-    log('Hand Message: ::handleNewHand:: START');
+    _gameState.handInProgress = true;
+    ////log('Hand Message: ::handleNewHand:: START');
     playSoundEffect(AppAssets.newHandSound);
 
     /* data contains the dealer, small blind and big blind seat Positions
@@ -526,6 +527,14 @@ class HandActionProtoService {
           continue;
         }
         final playerInSeat = playersInSeats[seatNo];
+
+        if (playerInSeat.playerId == 0) {
+          // open seat
+          final seat = _gameState.getSeat(_context, seatNo);
+          seat.player = null;
+          continue;
+        }
+
         PlayerModel playerFound;
         bool newPlayer = true;
         for (final player in players.players) {
@@ -686,12 +695,12 @@ class HandActionProtoService {
     if (_close) return;
 
     tableState.notifyAll();
-    log('Hand Message: ::handleNewHand:: END');
+    //log('Hand Message: ::handleNewHand:: END');
     _gameState.handState = HandState.NEW_HAND;
   }
 
   Future<void> handleDeal(proto.HandMessageItem message) async {
-    log('Hand Message: ::handleDeal:: START');
+    //log('Hand Message: ::handleDeal:: START');
 
     // play the deal sound effect
     playSoundEffect(AppAssets.dealSound);
@@ -748,11 +757,11 @@ class HandActionProtoService {
     _context.read<CardDistributionModel>().seatNo = null;
     _gameState.handState = HandState.DEAL;
 
-    log('Hand Message: ::handleDeal:: END');
+    //log('Hand Message: ::handleDeal:: END');
   }
 
   Future<void> handleYourAction(proto.HandMessageItem message) async {
-    log('Hand Message: ::handleYourAction:: START');
+    //log('Hand Message: ::handleYourAction:: START');
 
     if (_close) return;
     try {
@@ -811,11 +820,13 @@ class HandActionProtoService {
         _gameState.showAction(_context, true);
       }
     } finally {
-      log('Hand Message: ::handleYourAction:: END');
+      //log('Hand Message: ::handleYourAction:: END');
     }
   }
 
   playSoundEffect(String soundFile) {
+    return;
+
     if (_gameState != null &&
         _gameState.settings != null &&
         _gameState.settings.gameSound) {
@@ -833,7 +844,7 @@ class HandActionProtoService {
     try {
       var actionChange = message.actionChange;
       int seatNo = actionChange.seatNo;
-      log('Hand Message: ::handleNextAction:: START seatNo: $seatNo');
+      //log('Hand Message: ::handleNextAction:: START seatNo: $seatNo');
 
       if (_close) return;
       final TableState tableState = Provider.of<TableState>(
@@ -876,7 +887,7 @@ class HandActionProtoService {
       // tableState.updateTableStatusSilent(null);
       // tableState.notifyAll();
     } finally {
-      log('Hand Message: ::handleNextAction:: END');
+      //log('Hand Message: ::handleNextAction:: END');
     }
     // log('handle next action end');
   }
@@ -885,7 +896,7 @@ class HandActionProtoService {
     bool fromGameReplay = false,
     int testNo = 2, // works only if in testing mode
   }) async {
-    log('Hand Message: ::handleDealStarted:: START');
+    //log('Hand Message: ::handleDealStarted:: START');
     // final me = _gameState.me(_context);
 
     /* if I am present in this game,
@@ -963,12 +974,12 @@ class HandActionProtoService {
       if (_close) return;
       players.notifyAll();
     } finally {
-      log('Hand Message: ::handleDealStarted:: END');
+      //log('Hand Message: ::handleDealStarted:: END');
     }
   }
 
   Future<void> handleBombPot() async {
-    log('Hand Message: ::handleBombPot:: START');
+    //log('Hand Message: ::handleBombPot:: START');
     if (_close) return;
     try {
       final TableState tableState = _gameState.getTableState(_context);
@@ -999,7 +1010,7 @@ class HandActionProtoService {
       players.notifyAll();
       tableState.notifyAll();
     } finally {
-      log('Hand Message: ::handleDealStarted:: END');
+      //log('Hand Message: ::handleDealStarted:: END');
     }
   }
 
@@ -1031,7 +1042,7 @@ class HandActionProtoService {
   ) async {
     assert(stage != null);
     // log('stage update start');
-    log('Hand Message: ::handleStageChange:: START');
+    //log('Hand Message: ::handleStageChange:: START');
 
     if (_close) return;
     final TableState tableState = _gameState.getTableState(_context);
@@ -1305,13 +1316,13 @@ class HandActionProtoService {
     } else {
       handleNextAction(message);
     }
-    log('Hand Message: ::handleStageChange:: END');
+    //log('Hand Message: ::handleStageChange:: END');
 
     // log('stage update done');
   }
 
   Future<void> handleAnnouncement(proto.HandMessageItem message) async {
-    log('Hand Message: ::handleAnnouncement:: START');
+    //log('Hand Message: ::handleAnnouncement:: START');
 
     final announcement = message.announcement;
     String type = announcement.type;
@@ -1326,13 +1337,13 @@ class HandActionProtoService {
         imagePath: GameModelNew.getGameTypeImageAssetFromEnum(gameType),
       );
     }
-    log('Hand Message: ::handleAnnouncement:: END');
+    //log('Hand Message: ::handleAnnouncement:: END');
   }
 
   Future<void> handlePlayerActed(proto.HandMessageItem message) async {
     final playerActed = message.playerActed;
     int seatNo = playerActed.seatNo;
-    log('Hand Message: ::handlePlayerActed:: START seatNo: $seatNo');
+    //log('Hand Message: ::handlePlayerActed:: START seatNo: $seatNo');
 
     if (_close) return;
     // show a prompt regarding last player action
@@ -1346,12 +1357,12 @@ class HandActionProtoService {
       _context.read<StraddlePromptState>().notify();
     }
     if (seat?.player?.action == null) {
-      //log('Hand Message: ::handlePlayerActed:: player acted: $seatNo, player: ${seat.player.name}');
+      ////log('Hand Message: ::handlePlayerActed:: player acted: $seatNo, player: ${seat.player.name}');
       return;
     }
     final action = seat.player.action;
     action.setActionProto(playerActed);
-    log('Hand Message: ::handlePlayerActed:: player acted: $seatNo, player: ${seat.player.name} action: ${action.action.toString()}');
+    //log('Hand Message: ::handlePlayerActed:: player acted: $seatNo, player: ${seat.player.name} action: ${action.action.toString()}');
 
     if (seat.player.isMe) {
       final Players players = gameState.getPlayers(_context);
@@ -1387,7 +1398,7 @@ class HandActionProtoService {
     if (_close) return;
     // before showing the prompt --> turn off the highlight on other players
     gameState.resetActionHighlight(_context, -1);
-    log('Hand Message: ::handlePlayerActed:: END');
+    //log('Hand Message: ::handlePlayerActed:: END');
   }
 
   /* seat-no, list of cards mapping */
@@ -1464,8 +1475,9 @@ class HandActionProtoService {
     if (_close) return;
     final Players players = _gameState.getPlayers(_context);
     _gameState.resetSeatActions();
+    _gameState.lastHandNum = result.handNum;
     players.clearForShowdown();
-    log('Hand Message: ::handleResult:: START');
+    //log('Hand Message: ::handleResult:: START');
 
     int myID = players?.me?.playerId ?? 0;
     for (final seatNo in result.playerInfo.keys) {
@@ -1476,15 +1488,19 @@ class HandActionProtoService {
       }
     }
     _gameState.handState = HandState.RESULT;
-    ResultHandlerV2 resultHandler = ResultHandlerV2(
-      result: result,
-      gameState: _gameState,
-      context: _context,
-      audioPlayer: audioPlayer,
-      replay: false,
-    );
-    await resultHandler.show();
-    log('Hand Message: ::handleResult:: END');
+    try {
+      ResultHandlerV2 resultHandler = ResultHandlerV2(
+        result: result,
+        gameState: _gameState,
+        context: _context,
+        audioPlayer: audioPlayer,
+        replay: false,
+      );
+      await resultHandler.show();
+    } catch (err) {}
+    _gameState.handState = HandState.ENDED;
+    _gameState.handInProgress = false;
+    //log('Hand Message: ::handleResult:: END');
   }
 
   Future<void> handleResult(proto.HandMessageItem message) async {
@@ -1504,7 +1520,7 @@ class HandActionProtoService {
     final Players players = _gameState.getPlayers(_context);
     _gameState.resetSeatActions();
     players.clearForShowdown();
-    log('Hand Message: ::handleResult:: START');
+    //log('Hand Message: ::handleResult:: START');
 
     // get hand winners data and update results
     final handResult = message.handResult;
@@ -1588,7 +1604,8 @@ class HandActionProtoService {
     }
 
     _gameState.handState = HandState.ENDED;
-    log('Hand Message: ::handleResult:: END');
+    _gameState.handInProgress = false;
+    //log('Hand Message: ::handleResult:: END');
   }
 
   Future<void> showHighHands(final highHand) async {

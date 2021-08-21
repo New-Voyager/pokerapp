@@ -7,9 +7,9 @@ import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_constants.dart';
-import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/animating_widgets/card_distribution_animating_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/center_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/decorative_views/table_view.dart';
@@ -29,6 +29,7 @@ class BoardView extends StatelessWidget {
   final Function(int index) onUserTap;
   final Function() onStartGame;
   final AudioPlayer audioPlayer;
+  AppTextScreen _appScreenText;
 
   BoardView({
     @required this.gameInfo,
@@ -58,6 +59,8 @@ class BoardView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    _appScreenText = getAppTextScreen("boardView");
+
     final theme = AppTheme.getTheme(context);
     final gameState = GameState.getState(context);
     gameState.boardKey = boardViewKey;
@@ -199,7 +202,7 @@ class BoardView extends StatelessWidget {
             seat.player.status == AppConstants.WAIT_FOR_BUYIN_APPROVAL) {
           //log('Rebuilding buyin button now');
           return RoundRaisedButtonWithTimer(
-            buttonText: AppStringsNew.BuyIn,
+            buttonText: _appScreenText['buyIn'],
             color: theme.fillInColor,
             verticalPadding: 1,
             fontSize: 15,
@@ -285,7 +288,7 @@ class BoardView extends StatelessWidget {
         return Transform.translate(
           offset: Offset(0, 10),
           child: RoundRaisedButtonWithTimer(
-            buttonText: AppStringsNew.sitBackText,
+            buttonText: _appScreenText['sitBack'],
             color: Colors.blueGrey,
             verticalPadding: 1,
             fontSize: 14,
@@ -305,7 +308,8 @@ class BoardView extends StatelessWidget {
     /* use numeric keyboard to get buyin */
     double value = await NumericKeyboard2.show(
       context,
-      title: 'Buy In (${gameInfo.buyInMin} - ${gameInfo.buyInMax})',
+      title:
+          '${_appScreenText['BuySpaceIn']} (${gameInfo.buyInMin} - ${gameInfo.buyInMax})',
       min: gameInfo.buyInMin.toDouble(),
       max: gameInfo.buyInMax.toDouble(),
     );

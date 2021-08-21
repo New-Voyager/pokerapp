@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:path/path.dart' as path;
@@ -20,6 +19,14 @@ class AssetService {
   static Future<void> setDefaultTableAsset({Asset asset}) async {
     await hiveStore.put(asset, id: "default-table");
     await getDefaultTableAsset();
+  }
+
+  static Future<void> refresh() async {
+    try {
+      final assets = await getAssets();
+      hiveStore = await getStore();
+      hiveStore.putAll(assets);
+    } catch (err) {}
   }
 
   static Future<Asset> getDefaultTableAsset() async {

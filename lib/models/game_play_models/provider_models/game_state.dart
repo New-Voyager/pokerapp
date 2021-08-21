@@ -140,7 +140,15 @@ class GameState {
   // hole card order
   HoleCardOrder holecardOrder = HoleCardOrder.DEALT;
 
+  // last hand number
+  int lastHandNum = 0;
+
+  // indicates a hand in progress
+  bool handInProgress = false;
+
+  // assets used in the game screen
   GameScreenAssets assets;
+
   Future<void> initialize({
     String gameCode,
     @required GameInfoModel gameInfo,
@@ -459,12 +467,17 @@ class GameState {
 
   set currentHandNum(int handNum) => this._currentHandNum = currentHandNum;
 
-  Future<void> refresh(BuildContext context) async {
+  Future<void> refresh(BuildContext context,
+      {bool rebuildSeats = false}) async {
     log('************ Refreshing game state');
     // fetch new player using GameInfo API and add to the game
     GameInfoModel gameInfo = await GameService.getGameInfo(this._gameCode);
 
     this._gameInfo = gameInfo;
+
+    if (rebuildSeats) {
+      this._seats.clear();
+    }
 
     // reset seats
     for (var seat in this._seats.values) {
@@ -483,6 +496,16 @@ class GameState {
       _playerIdsToNames[player.id] = player.name;
     }
 
+    // for (Seat seat in this._seats.values) {
+    //   seat.notify();
+    // }
+    if (rebuildSeats) {
+      log('GameState: Rebuilding all the seats again');
+      for (int seatNo = 1; seatNo <= gameInfo.maxPlayers; seatNo++) {
+        this._seats[seatNo] = Seat(seatNo, null);
+      }
+    }
+
     // show buyin button/timer if the player is in middle of buyin
     for (var player in playersInSeats) {
       player.startingStack = player.stack;
@@ -495,7 +518,6 @@ class GameState {
         player.inBreak = true;
         player.breakTimeExpAt = player.breakTimeExpAt.toLocal();
       }
-
       if (player.seatNo != 0) {
         final seat = this._seats[player.seatNo];
         seat.player = player;
@@ -539,7 +561,7 @@ class GameState {
   }
 
   void rebuildSeats() {
-    log('potViewPos: rebuilding seats.');
+    // log('potViewPos: rebuilding seats.');
     for (final seat in this._seats.values) {
       seat.notify();
     }

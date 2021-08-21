@@ -9,7 +9,6 @@ import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/app_text_styles.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
-import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
@@ -77,13 +76,13 @@ class _RestoreAccountScreenState extends State<RestoreAccountScreen> {
                           controller: _emailCtrl,
                           validator: (value) {
                             if (value.length > 50) {
-                              return AppStringsNew.emailInvalidText;
+                              return _appScreenText['invalidEmail'];
                             }
                             // RegExp for email validation
                             if (!RegExp(
                                     r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
                                 .hasMatch(value)) {
-                              return AppStringsNew.emailInvalidText;
+                              return _appScreenText['invalidEmail'];
                             }
 
                             return null;
@@ -120,7 +119,7 @@ class _RestoreAccountScreenState extends State<RestoreAccountScreen> {
                               ),
                               onPressed: () {
                                 toast(
-                                  AppStringsNew.emailHintToast,
+                                  _appScreenText['recoveryEmailHint'],
                                   duration: Duration(seconds: 5),
                                 );
                               },
@@ -212,7 +211,8 @@ class _RestoreAccountScreenState extends State<RestoreAccountScreen> {
                                     ),
                                     onPressed: () {
                                       toast(
-                                        AppStringsNew.recoveryCodeInfoToastText,
+                                        _appScreenText[
+                                            'recoveryCodeInfoToastText'],
                                         duration: Duration(seconds: 4),
                                       );
                                     },
@@ -308,7 +308,8 @@ class _RestoreAccountScreenState extends State<RestoreAccountScreen> {
       if (result['status'] == true) {
         ConnectionDialog.dismiss(context: context);
         // successful
-        Alerts.showNotification(titleText: AppStringsNew.restoreSuccessText);
+        Alerts.showNotification(
+            titleText: _appScreenText['restoreSuccessText']);
 
         // save device id, device secret and jwt
         AuthModel currentUser = AuthModel(

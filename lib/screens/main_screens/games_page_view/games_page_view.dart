@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:pokerapp/models/game_model.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
-import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/screens/main_screens/games_page_view/enums.dart';
 import 'package:pokerapp/screens/main_screens/games_page_view/widgets/game_item.dart';
 import 'package:pokerapp/services/app/user_games_service.dart';
@@ -18,7 +18,7 @@ class GamesPageView extends StatefulWidget {
 class _GamesPageViewState extends State<GamesPageView> {
   List<GameModel> _playedGames = [];
   List<GameModel> _liveGames = [];
-
+  AppTextScreen _appScreenText;
   bool _isLoading = false;
   void _toggleLoading() => setState(() => _isLoading = !_isLoading);
 
@@ -73,6 +73,8 @@ class _GamesPageViewState extends State<GamesPageView> {
   @override
   void initState() {
     super.initState();
+    _appScreenText = getAppTextScreen("gamesPageView");
+
     _fetchGameDetails();
   }
 
@@ -93,15 +95,15 @@ class _GamesPageViewState extends State<GamesPageView> {
               ),
               children: <Widget>[
                 /* live games */
-                _buildTitleTextWidget(AppStringsNew.liveGamesText),
+                _buildTitleTextWidget(_appScreenText['liveGames']),
                 _liveGames.isEmpty
-                    ? _buildEmptyGameListWidget('No Live Games')
+                    ? _buildEmptyGameListWidget(_appScreenText['noLiveGames'])
                     : _buildGameList(LiveOrPlayedGames.LiveGames),
 
                 /* played games */
-                _buildTitleTextWidget(AppStringsNew.playerGamesText),
+                _buildTitleTextWidget(_appScreenText['recentGames']),
                 _playedGames.isEmpty
-                    ? _buildEmptyGameListWidget('No Played Games')
+                    ? _buildEmptyGameListWidget(_appScreenText['noPlayedGames'])
                     : _buildGameList(LiveOrPlayedGames.PlayedGames),
               ],
             ),

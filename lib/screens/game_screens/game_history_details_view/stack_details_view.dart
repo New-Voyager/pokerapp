@@ -1,15 +1,12 @@
 import 'dart:developer';
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game_history_model.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
-
 import 'package:charts_flutter/flutter.dart' as charts;
-
 import 'package:flutter/services.dart' show rootBundle;
-import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/test/test_service.dart';
@@ -49,10 +46,13 @@ class _PointsLineChart extends State<PointsLineChart> with RouteAwareAnalytics {
   bool _popUpVisible = false;
   charts.SelectionModel<num> _selectionModel;
   int refreshcount = 1;
+  AppTextScreen _appScreenText;
 
   @override
   void initState() {
     super.initState();
+    _appScreenText = getAppTextScreen("pointsLineChart");
+
     log('PointsLineChart: Loading line chart');
     //TestService.isTesting ? _fetchData() : _loadStackData();
     if (TestService.isTesting) {
@@ -126,7 +126,7 @@ class _PointsLineChart extends State<PointsLineChart> with RouteAwareAnalytics {
                 appBar: CustomAppBar(
                   theme: theme,
                   context: context,
-                  titleText: AppStringsNew.stackTimelineText,
+                  titleText: _appScreenText['stackTimeline'],
                   showBackButton: widget.showBackButton,
                 ),
                 body: !loadingDone
@@ -282,15 +282,15 @@ class _PointsLineChart extends State<PointsLineChart> with RouteAwareAnalytics {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "Hand: #${currentStack.handNum}",
+                      "${_appScreenText['hand']}: #${currentStack.handNum}",
                       style: AppStylesNew.stackPopUpTextStyle,
                     ),
                     Text(
-                      "Before:${DataFormatter.chipsFormat(currentStack.before)}",
+                      "${_appScreenText['before']}:${DataFormatter.chipsFormat(currentStack.before)}",
                       style: AppStylesNew.stackPopUpTextStyle,
                     ),
                     Text(
-                      "After:${DataFormatter.chipsFormat(currentStack.after)}",
+                      "${_appScreenText['after']}:${DataFormatter.chipsFormat(currentStack.after)}",
                       style: AppStylesNew.stackPopUpTextStyle,
                     ),
                   ],

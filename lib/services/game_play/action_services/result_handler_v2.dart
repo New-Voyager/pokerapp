@@ -206,6 +206,7 @@ class ResultHandlerV2 {
   }
 
   void playApplause() {
+    return;
     if (gameState?.settings?.gameSound ?? true) {
       gameState.getAudioBytes(AppAssets.applauseSound).then((value) {
         audioPlayer.playBytes(value);

@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/hand_history_model.dart';
 import 'package:pokerapp/models/player_info.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
-import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/game_screens/hand_history/played_hands.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
@@ -38,11 +38,14 @@ class _HandHistoryState extends State<HandHistoryListView>
   bool loadingDone = false;
   HandHistoryListModel _data;
   PlayerInfo currentPlayer;
+  AppTextScreen _appScreenText;
 
   TabController _tabController;
 
   @override
   void initState() {
+    _appScreenText = getAppTextScreen("handHistoryListView");
+
     _tabController = new TabController(length: 2, vsync: this);
     _data = widget.data;
     super.initState();
@@ -72,7 +75,7 @@ class _HandHistoryState extends State<HandHistoryListView>
             theme: theme,
             showBackButton: !widget.isInBottomSheet,
             context: context,
-            titleText: AppStringsNew.handHistoryTitle,
+            titleText: _appScreenText['handHistory'],
           ),
           body: !loadingDone
               ? Center(child: CircularProgressWidget())
@@ -87,10 +90,10 @@ class _HandHistoryState extends State<HandHistoryListView>
                           labelColor: theme.secondaryColorWithLight(),
                           tabs: [
                             new Tab(
-                              text: "All Hands",
+                              text: _appScreenText['allHands'],
                             ),
                             new Tab(
-                              text: "Winning Hands",
+                              text: _appScreenText['winningHands'],
                             ),
                           ],
                           controller: _tabController,

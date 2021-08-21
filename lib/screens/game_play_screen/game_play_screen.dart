@@ -443,6 +443,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
   void _onAudio(ChatMessage message) async {
     log('Audio message is sent ${message.messageId} from player ${message.fromPlayer}');
+    return;
     final gameState = GameState.getState(_providerContext);
     final seat = gameState.getSeatByPlayer(message.fromPlayer);
     if (_voiceTextPlayer != null &&

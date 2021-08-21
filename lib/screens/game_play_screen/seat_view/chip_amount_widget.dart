@@ -39,7 +39,7 @@ class _ChipAmountWidgetState extends State<ChipAmountWidget>
     with AfterLayoutMixin<ChipAmountWidget> {
   @override
   Widget build(BuildContext context) {
-   // log('potViewPos: Rebuilding ChipAmountWidget seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos}');
+    //log('potViewPos: Rebuilding ChipAmountWidget seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos}');
 
     bool showBet = false;
     Offset offset = Offset.zero;

@@ -16,9 +16,9 @@ import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat_change_model.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
-import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/screens/game_play_screen/pop_ups/seat_change_confirmation_pop_up.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/count_down_timer.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/overlay_notification.dart';
@@ -35,6 +35,8 @@ class GameUpdateService {
   final BuildContext _context;
   final List<dynamic> _messages = [];
   bool closed = false;
+  AppTextScreen _appScreenText = getAppTextScreen("gameUpdateService");
+
   AudioPlayer audioPlayer;
 
   GameUpdateService(this._context, this._gameState, this.audioPlayer);
@@ -101,7 +103,8 @@ class GameUpdateService {
     if (closed) return;
 
     String messageType = data['messageType'];
-    if (messageType.indexOf('PLAYER_CONNECTIVITY') == -1) {
+    if (messageType != null &&
+        messageType.indexOf('PLAYER_CONNECTIVITY') == -1) {
       final jsonData = jsonEncode(data);
       debugPrint(jsonData);
       debugLog(_gameState.gameCode, jsonData);
@@ -282,25 +285,10 @@ class GameUpdateService {
       }
     }
 
-    // if (newPlayerModel.isMe) {
-    //   await Future.delayed(Duration(milliseconds: 100));
-    //   if (closed) return;
-    //   final mySeat = _gameState.mySeat(_context);
-    //   mySeat.player = newPlayerModel;
-    //   mySeat.notify();
-
-    //   _gameState.myState.status = PlayerStatus.WAIT_FOR_BUYIN_APPROVAL;
-    //   _gameState.myState.notify();
-    // }
     if (closed) return;
     final tableState = _gameState.getTableState(_context);
     tableState.notifyAll();
     _gameState.updatePlayers(_context);
-    // if (newPlayerModel.isMe &&
-    //     playerUpdate['status'] == AppConstants.WAIT_FOR_BUYIN) {
-    //   GamePlayScreenUtilMethods.onBuyin(_context);
-    // }
-    //}
   }
 
   void handlePlayerLeftGame({
@@ -488,8 +476,8 @@ class GameUpdateService {
       final myState = gameState.getMyState(_context);
       myState.notify();
 
-      showAlertDialog(
-          _context, "BuyIn Request", "The host denied the buyin request");
+      showAlertDialog(_context, _appScreenText['buyInRequest'],
+          _appScreenText['TheHostDeniedTheBuyinRequest']);
     }
   }
 
@@ -787,11 +775,12 @@ class GameUpdateService {
     final waitlistState = _gameState.getWaitlistState(_context);
     waitlistState.fromJson(data);
     waitlistState.notify();
-    String message = '${waitlistState.name} is invited to take the open seat.';
+    String message =
+        '${waitlistState.name} ${_appScreenText['isInvitedToTakeTheOpenSeat']}';
 
     showOverlayNotification(
       (context) => OverlayNotificationWidget(
-        title: 'Waitlist',
+        title: '${_appScreenText['Waitlist']}',
         subTitle: message,
       ),
       duration: Duration(seconds: 10),
@@ -831,9 +820,9 @@ class GameUpdateService {
     );
 
     valueNotifierNotModel.value = GeneralNotificationModel(
-      titleText: 'Seat change in progress',
+      titleText: '${_appScreenText['seatChangeInProgress']}',
       subTitleText:
-          'Seat change requested by ${player.name} at seat no ${player.seatNo}',
+          '${_appScreenText['seatChangeRequestedBy']} ${player.name} ${_appScreenText['atSeatNo']} ${player.seatNo}',
       trailingWidget: CountDownTimer(
         remainingTime:
             seatChangeTime * seatChangeSeatNo.length, // TODO: MULTIPLE PLAYERS?
@@ -1009,7 +998,7 @@ class GameUpdateService {
 
   void handleUpdateStatus({
     var status,
-  }) {
+  }) async {
     String tableStatus = status['tableStatus'];
     String gameStatus = status['status'];
 
@@ -1039,6 +1028,12 @@ class GameUpdateService {
         * This is done to get update of the game */
         //gameContext.handActionService.queryCurrentHand();
       } else if (gameStatus == AppConstants.GAME_ENDED) {
+        if (_gameState.handInProgress) {
+          // if we are in middle of the hand, don't close it yet
+          while (_gameState.handInProgress) {
+            await Future.delayed(Duration(milliseconds: 1000));
+          }
+        }
         // end the game
         log('Game has ended. Update the state');
         resetBoard();
@@ -1048,9 +1043,9 @@ class GameUpdateService {
         log('Game has paused. Update the state');
         resetBoard();
         Alerts.showNotification(
-            titleText: "Game",
+            titleText: "${_appScreenText['game']}",
             svgPath: 'assets/images/casino.svg',
-            subTitleText: AppStringsNew.pausedGameNotificationText);
+            subTitleText: _appScreenText['theGameIsPaused']);
 
         _gameState.refresh(_context);
         // paused the game
@@ -1110,12 +1105,13 @@ class GameUpdateService {
             openSeats: openSeats,
             promptSecs: promptSecs);
       } else {
-        String title = 'Seat change in progress';
-        String playerName = 'Player';
+        String title = '${_appScreenText['seatChangeInProgress']}';
+        String playerName = '${_appScreenText['player']}';
         if (player != null && player.player != null) {
           playerName = player.player.name;
         }
-        String subTitle = '$playerName is prompted to switch to an open seat';
+        String subTitle =
+            '$playerName ${_appScreenText['isPromptedToSwitchToAnOpenSeat']}';
 
         showOverlayNotification(
           (context) => OverlayNotificationWidget(
@@ -1194,6 +1190,7 @@ class GameUpdateService {
   void resetBoard() async {
     _gameState.clear(_context);
     _gameState.resetPlayers(_context);
+    _gameState.refresh(_context);
 
     /* clean up from result views */
     /* set footer status to none  */
@@ -1204,6 +1201,8 @@ class GameUpdateService {
   }
 
   playSoundEffect(String soundFile) {
+    return;
+
     if (_gameState.settings.gameSound) {
       _gameState
           .getAudioBytes(soundFile)

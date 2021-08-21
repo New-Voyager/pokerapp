@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:intl/intl.dart';
 import 'package:pokerapp/models/game_model.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
@@ -9,7 +10,6 @@ import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/main_screens/games_page_view/enums.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
-
 import '../../../../utils/color_generator.dart';
 
 class GameItem extends StatelessWidget {
@@ -29,6 +29,8 @@ class GameItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    AppTextScreen _appScreenText = getAppTextScreen("gameItem");
+
     var separator = SizedBox(height: 10.0);
 
     return Container(
@@ -104,7 +106,7 @@ class GameItem extends StatelessWidget {
                       * */
 
                       Text(
-                        'Code - ${game.gameCode}',
+                        '${_appScreenText['code']} - ${game.gameCode}',
                         style: AppStylesNew.itemInfoTextStyle,
                       ),
                       separator,
@@ -116,11 +118,11 @@ class GameItem extends StatelessWidget {
 
                       gameStatus == LiveOrPlayedGames.LiveGames
                           ? Text(
-                              "${'1' == '0' ? 'No' : '1'} Open Seat${'1' == '1' ? '' : 's'}${'\t' * 4}${'56'}",
+                              "${'1' == '0' ? '${_appScreenText['no']}' : '1'} ${_appScreenText['openSeat']}${'1' == '1' ? '' : 's'}${'\t' * 4}${'56'}",
                               style: AppStylesNew.itemInfoTextStyle,
                             )
                           : Text(
-                              "Session Time ${game.sessionTime}${'\t' * 4}Ended at : ${DateFormat('dd/yy hh:mm a').format(game.endedAt)}",
+                              "${_appScreenText['sessionTime']} ${game.sessionTime}${'\t' * 4}${_appScreenText['endedAt']} : ${DateFormat('dd/yy hh:mm a').format(game.endedAt)}",
                               style: AppStylesNew.itemInfoTextStyle,
                             ),
                     ],
@@ -137,8 +139,8 @@ class GameItem extends StatelessWidget {
                         ? CustomTextButton(
                             split: true,
                             text: 'game.openSeats' == '0'
-                                ? 'Join Waitlist'
-                                : 'Join',
+                                ? '${_appScreenText['joinWaitlist']}'
+                                : '${_appScreenText['join']}',
                             onTap: () {
                               // todo: need to decide what if wait listed
                               // fixme: for now the game screen is opened

@@ -2,8 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game_history_model.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
-import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/screens/game_screens/widgets/highhand_widget.dart';
@@ -34,7 +34,7 @@ class _HighHandLogViewState extends State<HighHandLogView>
   );
   bool loadingDone = false;
   _HighHandLogViewState();
-
+  AppTextScreen _appScreenText;
   void _fetchData() async {
     this.hhWinners = await GameService.getHighHandLog(widget.gameCode);
     loadingDone = true;
@@ -43,6 +43,8 @@ class _HighHandLogViewState extends State<HighHandLogView>
 
   @override
   void initState() {
+    _appScreenText = getAppTextScreen("highHandLogView");
+
     super.initState();
     _fetchData();
   }
@@ -56,8 +58,8 @@ class _HighHandLogViewState extends State<HighHandLogView>
           backgroundColor: Colors.transparent,
           appBar: CustomAppBar(
             theme: theme,
-            titleText: AppStringsNew.HighHandlogTitle,
-            subTitleText: "Game code: ${widget.gameCode}",
+            titleText: _appScreenText['highHandLog'],
+            subTitleText: "${_appScreenText['gameCode']}: ${widget.gameCode}",
             context: context,
           ),
           body: Material(

@@ -193,6 +193,8 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
 
     animationController.addListener(() async {
       if (animationController.isCompleted) {
+        return;
+
         /* wait before the explosion */
         // await Future.delayed(_durationWaitBeforeExplosion);
 

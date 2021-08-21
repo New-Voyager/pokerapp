@@ -3,7 +3,9 @@
         "OPTIONAL": "Optional",
         "LOADING": "Loading",
         "NOMESSAGES": "No Messages",
-        "PLAYER": "Player"
+        "PLAYER": "Player",
+        "you": "You",
+        "hand": "Hand"
     },
     "liveGames": {
         "EMPTY_GAMECODE_ERROR": "GameCode can't be empty",
@@ -41,7 +43,10 @@
         "INVALIDEMAIL": "Invalid email",
         "RECOVERYEMAILHINT": "Recovery email : To recover this poker game account in case of loss of this device or transfer to a new device",
         "SIGNUP": "SIGN UP",
-        "RESTOREACCOUNT": "Restore Account"
+        "RESTOREACCOUNT": "Restore Account",
+        "registering": "Registering...",
+        "registrationSuccess": "Registration Success!",
+        "registrationFailed": "Registration Failed"
     },
     "recoveraccount": {
         "RESTOREEXISTINGACCOUNT": "Restore existing account",
@@ -55,7 +60,11 @@
         "RESTORE": "RESTORE",
         "SIGNUP": "SIGN UP",
         "SUBTITLE": "Play poker with friends",
-        "POCKERCLUBAPP": "Poker Club App"
+        "POCKERCLUBAPP": "Poker Club App",
+        "invalidEmail": "Invalid email",
+        "recoveryEmailHint": "Recovery email : To recover this poker game account in case of loss of this device or transfer to a new device",
+        "recoveryCodeInfoToastText": "Recovery code will be sent to your registered email account",
+        "restoreSuccessText": "Restoration Success!"
     },
     "mainScreen": {
         "GAMES": "Games",
@@ -91,7 +100,8 @@
         "VIEW": "VIEW"
     },
     "gameRecordItem": {
-        "DEFAULTTYPE": "Game"
+        "DEFAULTTYPE": "Game",
+        "gameId": "GameID"
     },
     "gameHistoryItemNew": {
         "CLUB": "Club",
@@ -108,7 +118,8 @@
         "SAVE": "SAVE",
         "NOSAVEDSETTINGS": "No Saved Settings",
         "OK": "Ok",
-        "START": "Start"
+        "START": "Start",
+        "loadSettings": "Load Settings"
     },
     "headerView": {},
     "profilePageView": {},
@@ -200,7 +211,9 @@
         "YOU": "You",
         "MEMBER": "Member",
         "MEMBERS": "Members",
-        "JOINEDAT": "Joined at"
+        "JOINEDAT": "Joined at",
+        "hostedBy": "Hosted by",
+        "clubs": "Clubs"
     },
     "searchClubBottomSheet": {
         "ENTERCLUBCODE": "Enter club code",
@@ -217,7 +230,8 @@
         "NAME": "Name",
         "YOUMUSSTPROVIDEANAME": "You must provide a name",
         "DESCRIPTION": "Description",
-        "YOUMUSTPROVIDEDESCRIPTION": "'You must provide a description'"
+        "YOUMUSTPROVIDEDESCRIPTION": "'You must provide a description'",
+        "description": "Description"
     },
     "clubMainScreenNew": {
         "CREATEGAME": "+ Create Game",
@@ -236,7 +250,8 @@
     },
     "gameHistoryView": {
         "NOGAMESPLAYED": "No games played",
-        "CLUBCODE": "Club code"
+        "CLUBCODE": "Club code",
+        "gameHistory": "Game History"
     },
     "clubMembersView": {
         "ALL": "All",
@@ -246,7 +261,9 @@
         "PENDINGAPPROVAL": "[Pending Approval]",
         "APPROVE": "Approve",
         "DENY": "Deny",
-        "OWNER": "Owner"
+        "OWNER": "Owner",
+        "clubMembers": "Club Members",
+        "loadigMembers": "Loadig members"
     },
     "clubMembersDetailsView": {
         "LASTACTIVE": "Last active",
@@ -262,10 +279,10 @@
     },
     "chatScreen": {
         "MESSAGE": "Message",
-        "ENTERMESSAGE": "Enter message"
-    },
-    "messagesPageView": {
-        "ENTERMESSAGE": "Enter message"
+        "ENTERMESSAGE": "Enter message",
+        "clubChat": "Club chat",
+        "loadingMessages": "Loading messages",
+        "searchTenorGifs": "Search Tenor Gifs"
     },
     "bookmarkedHands": {
         "SUCCESS": "SUCCESS",
@@ -277,7 +294,8 @@
         "COULDNOTSHARETHEHAND": "Couldn't share the hand. Please try again later",
         "LOADINGHAND": "Loading hand ...",
         "NOBOOKMARKEDHANDS": "No bookmarked hands!",
-        "BOOKMARKEDHANDS": "Bookmarked Hands"
+        "BOOKMARKEDHANDS": "Bookmarked Hands",
+        "FETCHINGBOOKMARKS": "Fetching bookmarks"
     },
     "handWinnersView": {
         "NOWINNERDETAILSFOUND": "No winner details found",
@@ -331,5 +349,385 @@
         "HAND": "Hand",
         "COMMUNITYCARDS": "Community Cards",
         "YOURCARDS": "Your Cards"
+    },
+    "rewards": {
+        "newReward": "New Reward",
+        "cancel": "Cancel",
+        "enterSomething": "Enter something",
+        "nameCanntEmpty": "Name Can't be empty!",
+        "enterName": "Enter Name",
+        "enterAmount": "Enter Amount",
+        "amountEmptyError": "Amount should be greater than 0!",
+        "rewardAmount": "Reward Amount",
+        "type": "Type",
+        "highHand": "High Hand",
+        "track": "Track",
+        "entireGame": "Entire Game",
+        "save": "Save",
+        "rewards": "Rewards",
+        "new": "New"
+    },
+    "clubGames": {
+        "noLiveGames": "No Live Games",
+        "liveGames": "Live Games",
+        "buyIn": "BUY IN",
+        "tableFull": "Table is full",
+        "openSeats": " open seats",
+        "inWaitingList": " in the waiting list",
+        "join": "Join",
+        "joinWaitlist": "Join Waitlist"
+    },
+    "clubStatsScreen": {
+        "CLUBSTATISTICS": "Club Statistics",
+        "LOADINGSTATISTICS": "Loading Statistics..",
+        "NOLIMITHOLDEM": "No Limit Holdem",
+        "PLO": "PLO",
+        "5CARDPLO": "5 Card PLO",
+        "TOTALGAMES": "Total Games",
+        "TOTALHANDS": "Total Hands",
+        "ODDSSOFAR": "Odds so far",
+        "HAND": "Hand",
+        "HITS": "Hits",
+        "ODDS": "Odds",
+        "NA": "NA"
+    },
+    "announcementsView": {
+        "ANNOUNCEMENTS": "Announcements",
+        "NEW": "New",
+        "NOANNOUCEMENTS": "No Announcements",
+        "NEWANNOUCEMENTS": "New Announcement",
+        "ENTERTEXTHERE": "Enter text here",
+        "CANCEL": "Cancel",
+        "ANNOUNCE": "Announce",
+        "NEWANNOUCEMENTISPOSTED": "New announcement is posted.",
+        "FAILEDTOPOSTANNOUNCEMENT": "Failed to post announcement."
+    },
+    "clubMembers": {
+        "MESSAGES": "Messages",
+        "CHOOSEAMEMBER": "Choose a Member"
+    },
+    "botScriptsScreen": {
+        "FAILEDTOGETRESULT": "Failed to get Results",
+        "FAILEDTOSTART": "Failed to start",
+        "LAUNCHINGGAME": "Launching Game..",
+        "TIMEOUT": "Timeout",
+        "FAILEDTOSTARTGAME": "Failed to start Game",
+        "BOTSCRIPTS": "Bot scripts"
+    },
+    "profilePageNew": {
+        "GETTINGDETAILS": "Getting details..",
+        "MYPROFILE": "My Profile",
+        "GAMES": "Games",
+        "HANDS": "Hands",
+        "SETDISPLAYNAME": "Set display name",
+        "CHANGEDISPLAYNAME": "Change display name",
+        "SETRECOVERYEMAILADDRESS": "Set recovery Email address",
+        "CHANGERECOVERYEMAILADDRESS": "Change recovery Email address",
+        "BOOKMARKEDHANDS": "Bookmarked Hands",
+        "STATISTICS": "Statistics",
+        "CUSTOMIZE": "Customize",
+        "HELP": "Help",
+        "TELLAFRIEND": "Tell a Friend",
+        "LOGOUT": "Logout",
+        "CHANGESCREENNAME": "Change screen name",
+        "CHANGEEMAIL": "Change email",
+        "UPDATEDETAILS": "Update details",
+        "ENTERTEXT": "Enter text",
+        "SAVE": "Save",
+        "ISINVALIDEMAIL": "is invalid email",
+        "UPDATINGDETAILS": "Updating details...",
+        "USERDETAILSUPDATED": "User details updated!",
+        "FAILEDTOUPDATEUSERDETAILS": "Failed to update user details!"
+    },
+    "performanceView": {
+        "STATISTICS": "Statistics",
+        "NODATAAVAILABLE": "No data available!",
+        "HANDSTATS": "Hand Stats",
+        "PERFORMANCE": "Performance",
+        "RECENTGAMES": "Recent Games",
+        "B": "B",
+        "M": "M",
+        "K": "K"
+    },
+    "handAlltimeStatsView": {
+        "handStatistics": "Hand Statistics",
+        "game": "Game",
+        "loadingStatistics": "Loading Statistics..",
+        "allTime": "All Time",
+        "hands": "Hands",
+        "preflop": "Preflop",
+        "flop": "Flop",
+        "turn": "Turn",
+        "river": "River",
+        "showdown": "Showdown",
+        "stageStatistics": "Stage Statistics",
+        "actionStatistics": "Action Statistics",
+        "vpip": "Vpip",
+        "contBet": "Cont Bet",
+        "threeBet": "3 Bet",
+        "wtsd": "WTSD",
+        "wsd": "W$SD",
+        "headsup": "Headsup",
+        "headsupWon": "Headsup Won",
+        "WTSDWentToShowDown": "WTSD : Went To Show Down",
+        "WSDWonatShowDown": "W$SD : Won at Show Down",
+        "won": "Won"
+    },
+    "helpScreen": {
+        "appName": "Poker",
+        "helpCenter": "Help Center",
+        "requestFeature": "Request Feature",
+        "termsAndPrivacyPolicy": "Terms and Privacy Policy",
+        "licenses": "Licenses"
+    },
+    "storePage": {
+        "store": "Store",
+        "loadingProducts": "Loading products",
+        "buy": "Buy",
+        "coins": "coins"
+    },
+    "gameUpdateService": {
+        "buyInRequest": "BuyIn Request",
+        "TheHostDeniedTheBuyinRequest": "The host denied the buyin request",
+        "isInvitedToTakeTheOpenSeat": "is invited to take the open seat.",
+        "waitlist": "Waitlist",
+        "seatChangeInProgress": "Seat change in progress",
+        "seatChangeRequestedBy": "Seat change requested by",
+        "atSeatNo": "at seat no",
+        "theGameIsPaused": "The game is paused",
+        "game": "Game",
+        "player": "Player",
+        "isPromptedToSwitchToAnOpenSeat": "is prompted to switch to an open seat"
+    },
+    "customizeScreen": {
+        "customize": "Customize",
+        "chooseColor": "Choose color",
+        "appPrimaryColorWillBeAffected": "App primary color will be affected",
+        "theme": "THEME",
+        "chooseBackground": "Choose background",
+        "gameScreenBackgroudnWillBeChanged": "Game screen backgroudn will be changed",
+        "chooseTable": "Choose table",
+        "tableImageOnGameScreenWillBeChanged": "Table image on game screen will be changed"
+    },
+    "gamesPageView": {
+        "liveGames": "Live Games",
+        "noLiveGames": "No Live Games",
+        "noPlayedGames": "No Played Games",
+        "recentGames": "Recent Games"
+    },
+    "gameItem": {
+        "code": "Code",
+        "no": "No",
+        "openSeat": "Open Seat",
+        "sessionTime": "Session Time",
+        "endedAt": "Ended at",
+        "joinWaitlist": "Join Waitlist",
+        "join": "Join"
+    },
+    "tableResultScreen": {
+        "table": "Table",
+        "graph": "Graph",
+        "player": "Player",
+        "session": "Session",
+        "hands": "#Hands",
+        "buyin": "Buyin",
+        "profit": "Profit",
+        "tips": "Tips",
+        "tableResult": "Table Result",
+        "gameCode": "Game code",
+        "download": "Download",
+        "tableResultGame": "Table result Game"
+    },
+    "highHandLogView": {
+        "highHandLog": "High Hand Log",
+        "gameCode": "Game code"
+    },
+    "highhandWidget": {
+        "community": "Community",
+        "highHand": "High hand",
+        "hand": "Hand"
+    },
+    "handHistoryListView": {
+        "handHistory": "Hand History",
+        "allHands": "All Hands",
+        "winningHands": "Winning Hands"
+    },
+    "pointsLineChart": {
+        "stackTimeline": "Stack Timeline",
+        "hand": "Hand",
+        "before": "Before",
+        "after": "After"
+    },
+    "handStatsView": {
+        "handStatistics": "Hand Statistics",
+        "game": "Game",
+        "thisGame": "This Game",
+        "loadingStatistics": "Loading Statistics..",
+        "allTime": "All Time",
+        "hands": "Hands",
+        "preflop": "Preflop",
+        "flop": "Flop",
+        "turn": "Turn",
+        "river": "River",
+        "showdown": "Showdown",
+        "stageStatistics": "Stage Statistics",
+        "actionStatistics": "Action Statistics",
+        "vpip": "Vpip",
+        "contBet": "Cont Bet",
+        "threeBet": "3 Bet",
+        "wtsd": "WTSD",
+        "wsd": "W$SD",
+        "headsup": "Headsup",
+        "headsupWon": "Headsup Won",
+        "WTSDWentToShowDown": "WTSD : Went To Show Down",
+        "WSDWonatShowDown": "W$SD : Won at Show Down",
+        "won": "Won",
+        "perSymbol": "%",
+        "noHeadsupData": "No headsup data"
+    },
+    "gameHistoryDetailView": {
+        "gameDetails": "Game Details",
+        "gameCode": "Game code",
+        "handHistory": "Hand History",
+        "tableResult": "Table Result",
+        "highHandisNotTracked": "High Hand is not tracked",
+        "bigWin": "Big Win",
+        "hand": "hand",
+        "bigLoss": "Big Loss",
+        "hands": "Hands",
+        "noData": "No Data",
+        "stack": "Stack",
+        "loss": "Loss",
+        "profit": "Profit",
+        "buyIn": "Buy-in",
+        "startedBy": "Started by",
+        "endedBy": "Ended by",
+        "endedAt": "Ended at",
+        "highHandWinners": "High hand winners",
+        "highHandLog": "High Hand Log",
+        "notTracked": "Not tracked",
+        "notAvailable": "Not available"
+    },
+    "voiceTextWidget": {
+        "sec": "sec",
+        "slideToCancel": "< Slide to cancel "
+    },
+    "profilePopup": {
+        "tapToSendAnimation": "Tap to send Animation",
+        "confirm": "Confirm"
+    },
+    "seatChangeConfirmWidget": {
+        "applySeatChanges": "Apply Seat Changes?"
+    },
+    "handAnalyseView": {
+        "pendingApprovals": "Pending Approvals",
+        "requestBuyin": "request buyin",
+        "outstandingBalance": "Outstanding balance",
+        "game": "Game",
+        "code": "Code",
+        "club": "Club",
+        "exceptionOccuredDeclineRequest": "Exception occured decline Request",
+        "failedToDeclineRequest": "Failed to decline Request",
+        "noPendingApprovals": "No Pending approvals",
+        "SomethingWentWrongTryAgain": "Something went wrong. Try again!",
+        "handHistory": "Hand History",
+        "table": "Table",
+        "stackStats": "Stack Stats"
+    },
+    "centerView": {
+        "gameEnded": "Game Ended",
+        "waitingForPlayersToJoin": "Waiting for players to join",
+        "seatChangeInProgress": "Seat change in progress",
+        "pot": "Pot"
+    },
+    "centerButtonView": {
+        "game": "Game",
+        "movePlayerDescription": "Tap a seat, drag and drop on another seat to move the player",
+        "seatChangeInProgress": "Seat Change in Progress",
+        "gamePaused": "Game Paused",
+        "waitingToBeStarted": "Waiting to be started",
+        "resume": "Resume",
+        "rearrange": "Rearrange",
+        "terminate": "Terminate",
+        "start": "Start"
+    },
+    "boardView": {
+        "buyIn": "BuyIn",
+        "sitBack": "Sit Back",
+        "BuySpaceIn": "Buy In"
+    },
+    "waitingListBottomSheet": {
+        "waitingList": "Waiting List",
+        "playersInTheList": "Players in the List",
+        "waitingListIsEmpty": "Waiting list is empty.",
+        "addMeToWaitingList": "Add me to waiting list",
+        "apply": "Apply",
+        "cancel": "Cancel"
+    },
+    "seatChangeBottomSheet": {
+        "seatChange": "Seat Change",
+        "playersInTheList": "Players in the List",
+        "noSeatChangeRequests": "No Seat change requests."
+    },
+    "gameOption": {
+        "game": "Game",
+        "youWillStandupAfterThisHand": "You will standup after this hand",
+        "theGameWillEndAfterThisHand": "The game will end after this hand",
+        "theGameWillPauseAfterThisHand": "The game will pause after this hand",
+        "pause": "PAUSE",
+        "break": "BREAK",
+        "takeBreakAfterThisHand": "Take break after this hand",
+        "reload": "Reload",
+        "stackIsGreaterThankMaxBuyIn": "Stack is greater than max buyin. Cannot reload!",
+        "standup": "Standup",
+        "terminate": "Terminate",
+        "requestSeatChange": "Request seat change",
+        "seatChange": "Seat Change",
+        "waitingList": "Waiting List",
+        "addToWaitingList": "Add to waiting list",
+        "muckLosingHand": "Muck Losing Hand",
+        "promptRunItTwice": "Prompt run it twice",
+        "gameSounds": "Game Sounds",
+        "audioConference": "Audio Conference",
+        "animations": "Animations",
+        "straddle": "Straddle",
+        "autoStraddle": "Auto Straddle",
+        "elapsed": "Elapsed",
+        "hands": "Hands",
+        "session": "Session",
+        "won": "Won",
+        "betAction": "Bet Action",
+        "appliedInNextAction": "applied in next action",
+        "swipe": "Swipe",
+        "tap": "Tap"
+    },
+    "gameOptionsBottomSheet": {
+        "game": "Game",
+        "live": "Live",
+        "liveGames": "Live Games",
+        "pendingApprovals": "Pending Approvals",
+        "gameCode": "Game Code"
+    },
+    "gameChat": {
+        "typeAMessage": "Type a message"
+    },
+    "clubGraphicsViewNew": {
+        "unsettled": "Unsettled",
+        "weeklyActivity": "Weekly Activity"
+    },
+    "showGameSelectorDialog": {
+        "ChooseAGameTypeForTheNextHand": "Choose a game type for the next hand"
+    },
+    "showPlayerPopup": {
+        "note": "Note",
+        "animation": "Animation",
+        "mute": "Mute",
+        "kick": "Kick",
+        "notes": "Notes",
+        "enterTextHere": "Enter text here",
+        "cancel": "Cancel",
+        "save": "Save",
+        "notesSaved": "Notes saved",
+        "playerWillBeRemovedAfterThisHand": "Player will be removed after this hand"
     }
 }

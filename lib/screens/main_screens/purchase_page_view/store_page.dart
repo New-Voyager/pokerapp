@@ -7,11 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:get_version/get_version.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:pokerapp/models/app_coin.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_config.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
-import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/services/app/appcoin_service.dart';
 import 'package:pokerapp/widgets/cross_fade.dart';
@@ -44,9 +44,11 @@ class _StorePageState extends State<StorePage> {
   bool _updateCoins = false;
   int _coinsFrom = 0;
   int _coinsTo = 0;
-
+  AppTextScreen _appScreenText;
   @override
   void initState() {
+    _appScreenText = getAppTextScreen("storePage");
+
     final Stream<List<PurchaseDetails>> purchaseUpdated =
         InAppPurchaseConnection.instance.purchaseUpdatedStream;
     _subscription = purchaseUpdated.listen((purchaseDetailsList) {
@@ -167,7 +169,7 @@ class _StorePageState extends State<StorePage> {
           //   ],
           // ),
           AppDimensionsNew.getHorizontalSpace(24.pw),
-          HeadingWidget(heading: AppStringsNew.appCoinsName),
+          HeadingWidget(heading: _appScreenText['store']),
           Container(
             margin: EdgeInsets.only(right: 16),
             child: Column(
@@ -228,6 +230,7 @@ class _StorePageState extends State<StorePage> {
             log('Purchasing $productId no of coins: ${enabledProduct.coins}');
             await handlePurchase(iapProductFound);
           },
+          appScreenText: _appScreenText,
         ));
       }
     }
@@ -238,9 +241,7 @@ class _StorePageState extends State<StorePage> {
         child: Scaffold(
           backgroundColor: Colors.transparent,
           body: _loading
-              ? CircularProgressWidget(
-                  text: AppStringsNew.loadProductsText,
-                )
+              ? CircularProgressWidget(text: _appScreenText['loadingProducts'])
               : Column(
                   children: body,
                 ),
@@ -367,6 +368,7 @@ class PurchaseItem extends StatelessWidget {
   final double mrpPrice;
   final double offerPrice;
   final Function onBuy;
+  final AppTextScreen appScreenText;
 
   const PurchaseItem({
     Key key,
@@ -374,6 +376,7 @@ class PurchaseItem extends StatelessWidget {
     this.mrpPrice,
     this.offerPrice,
     this.onBuy,
+    @required this.appScreenText,
   }) : super(key: key);
 
   @override
@@ -395,7 +398,7 @@ class PurchaseItem extends StatelessWidget {
       child: ListTile(
         contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         title: Text(
-          "$noOfCoins coins",
+          "$noOfCoins ${appScreenText['coins']}",
           style: AppDecorators.getHeadLine4Style(theme: theme),
         ),
         leading: Image.asset(
@@ -427,7 +430,7 @@ class PurchaseItem extends StatelessWidget {
           ),
         ),
         trailing: RoundedColorButton(
-            text: AppStringsNew.buyButtonText,
+            text: appScreenText['buy'],
             backgroundColor: theme.accentColor,
             textColor: theme.primaryColorWithDark(),
             onTapFunction: onBuy),
