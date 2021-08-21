@@ -86,10 +86,8 @@ class _CenterViewState extends State<CenterView> {
             child: GameCircleButton(
               onClickHandler: () async {
                 await Navigator.of(context).pushNamed(Routes.select_table);
-               await gameState.assets.initialize();
-               setState(() {
-                 
-               });
+                await gameState.assets.initialize();
+                setState(() {});
               },
               child: Icon(Icons.edit,
                   size: 24, color: theme.primaryColorWithDark()),

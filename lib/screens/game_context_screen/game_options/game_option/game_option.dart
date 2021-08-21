@@ -4,6 +4,7 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/option_item_model.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
@@ -11,6 +12,7 @@ import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/board_view/decorative_views/table_view.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/data/box_type.dart';
@@ -19,7 +21,9 @@ import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/numeric_keyboard2.dart';
+import 'package:pokerapp/widgets/radio_list_widget.dart';
 import 'package:pokerapp/widgets/switch_widget.dart';
+import 'package:provider/provider.dart';
 
 import 'seat_change_bottom_sheet.dart';
 import 'waiting_list.dart';
@@ -168,33 +172,41 @@ class _GameOptionState extends State<GameOption> {
     gameCode = widget.gameCode;
     gameActions = [
       OptionItemModel(
-          title: _appScreenText['standup'],
-          iconData: Icons.exit_to_app_sharp,
-          onTap: (context) {
-            this.onLeave();
-          }),
+        title: _appScreenText['standup'],
+        iconData: Icons.exit_to_app_sharp,
+        onTap: (context) {
+          this.onLeave();
+        },
+      ),
       OptionItemModel(
-          title: _appScreenText['reload'],
-          iconData: Icons.shop,
-          onTap: (context) {
-            this.onReload();
-          }),
+        title: _appScreenText['reload'],
+        iconData: Icons.shop,
+        onTap: (context) {
+          this.onReload();
+        },
+      ),
     ];
 
     if (widget.gameState.running) {
-      gameActions.add(OptionItemModel(
+      gameActions.add(
+        OptionItemModel(
           title: _appScreenText['break'],
           iconData: Icons.shop,
           onTap: (context) {
             this.onBreak();
-          }));
+          },
+        ),
+      );
       if (widget.isAdmin) {
-        gameActions.add(OptionItemModel(
+        gameActions.add(
+          OptionItemModel(
             title: _appScreenText['pause'],
             iconData: Icons.pause,
             onTap: (context) {
               this.onPause();
-            }));
+            },
+          ),
+        );
       }
     }
 
@@ -219,27 +231,32 @@ class _GameOptionState extends State<GameOption> {
             isScrollControlled: true,
             builder: (ctx) {
               return SeatChangeBottomSheet(
-                  widget.gameState, widget.gameCode, widget.playerUuid);
+                widget.gameState,
+                widget.gameCode,
+                widget.playerUuid,
+              );
             },
           );
         },
       ),
     ];
 
-    gameSecondaryOptions.add(OptionItemModel(
-        title: _appScreenText['waitingList'],
-        image: "assets/images/casino.png",
-        name: _appScreenText['addToWaitingList'],
-        backGroundColor: Colors.blue,
-        onTap: (context) async {
-          await showModalBottomSheet(
-              context: context,
-              isScrollControlled: true,
-              builder: (ctx) {
-                return WaitingListBottomSheet(
-                    widget.gameState, widget.gameCode, widget.playerUuid);
-              });
-        }));
+    gameSecondaryOptions.add(
+      OptionItemModel(
+          title: _appScreenText['waitingList'],
+          image: "assets/images/casino.png",
+          name: _appScreenText['addToWaitingList'],
+          backGroundColor: Colors.blue,
+          onTap: (context) async {
+            await showModalBottomSheet(
+                context: context,
+                isScrollControlled: true,
+                builder: (ctx) {
+                  return WaitingListBottomSheet(
+                      widget.gameState, widget.gameCode, widget.playerUuid);
+                });
+          }),
+    );
   }
 
   Widget _buildCheckBox({
@@ -381,11 +398,338 @@ class _GameOptionState extends State<GameOption> {
         ),
       );
 
+  Widget _buildBasicGameOptions({
+    @required final bool isPlaying,
+    @required final AppTheme theme,
+  }) {
+    return !isPlaying
+        ? SizedBox.shrink()
+        : Container(
+            margin: EdgeInsets.only(bottom: 10),
+            padding: EdgeInsets.only(top: 16),
+            width: double.infinity,
+            decoration: AppDecorators.tileDecorationWithoutBorder(theme),
+            child: Wrap(
+              alignment: WrapAlignment.center,
+              //mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ...gameActions.map((e) => gameActionItem(e, theme)).toList(),
+              ],
+            ),
+          );
+  }
+
+  Widget _buildGameSettingOptions(AppTheme theme) {
+    return SingleChildScrollView(
+      physics: BouncingScrollPhysics(),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // allow player seat change : TODO
+          _buildCheckBox(
+            text: 'Allow player seat change',
+            value: true,
+            onChange: (bool v) async {
+              // TODO: UPDATE HERE
+              if (closed) return;
+              setState(() {});
+            },
+          ),
+
+          // allow waiting list : TODO
+          _buildCheckBox(
+            text: 'Allow waiting list',
+            value: true,
+            onChange: (bool v) async {
+              // TODO: UPDATE HERE
+              if (closed) return;
+              setState(() {});
+            },
+          ),
+
+          // bomb pot  : TODO
+          _buildCheckBox(
+            text: 'Bomb Pot',
+            value: true,
+            onChange: (bool v) async {
+              // TODO: UPDATE HERE
+              if (closed) return;
+              setState(() {});
+            },
+          ),
+
+          // TODO: SHOW THE FOLLOWING WIDGET, ONLY IF BOMB POT IS ACTIVE
+          // bomb pot relates settings, SHOW only if bomb pot is ENABLED
+          true
+              ? Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    // choose interval label
+                    Container(
+                      margin: EdgeInsets.only(
+                          bottom: 10.0, left: 10.0, right: 10.0),
+                      child: Text(
+                        'Choose Interval',
+                        style: AppDecorators.getHeadLine4Style(theme: theme),
+                      ),
+                    ),
+                    // choose interval
+                    RadioListWidget(
+                      defaultValue: 15,
+                      values: [15, 30, 60, 90, 120],
+                      onSelect: (int value) {
+                        // TODO: UPDATE THE INTERVAL FOR BOMB POT
+                      },
+                    ),
+
+                    // every hand
+                    _buildCheckBox(
+                      text: 'Every Hand',
+                      value: true,
+                      onChange: (bool v) async {
+                        // TODO: UPDATE HERE
+                        if (closed) return;
+                        setState(() {});
+                      },
+                    ),
+
+                    // double board
+                    _buildCheckBox(
+                      text: 'Double Board',
+                      value: true,
+                      onChange: (bool v) async {
+                        // TODO: UPDATE HERE
+                        if (closed) return;
+                        setState(() {});
+                      },
+                    ),
+                  ],
+                )
+              : const SizedBox.shrink(),
+
+          // audio conference
+          _buildCheckBox(
+            text: 'Audio conference',
+            value: true,
+            onChange: (bool v) async {
+              // TODO: UPDATE HERE
+              if (closed) return;
+              setState(() {});
+            },
+          ),
+
+          // results wait
+
+          // results wait label
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // label
+              Container(
+                margin: EdgeInsets.only(bottom: 10.0, left: 10.0, right: 10.0),
+                child: Text(
+                  'Pause each result (in seconds)',
+                  style: AppDecorators.getHeadLine4Style(theme: theme),
+                ),
+              ),
+
+              // result wait
+              RadioListWidget(
+                defaultValue: 5,
+                values: [3, 5, 7, 10],
+                onSelect: (int value) {
+                  // TODO: UPDATE THE INTERVAL FOR BOMB POT
+                },
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPlayerSettingOptions(AppTheme theme) {
+    return SingleChildScrollView(
+      physics: BouncingScrollPhysics(),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          /* show straddle off and auto straddle options ONLY when the UTG STRADDLE is on */
+          widget.gameState.gameInfo.utgStraddleAllowed
+              ? Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // straddle off
+                    _buildCheckBox(
+                      text: _appScreenText['straddle'],
+                      value: widget.gameState.settings.straddleOption,
+                      onChange: (bool v) async {
+                        // setting the value saves it to local storage too
+                        widget.gameState.settings.straddleOption = v;
+                        log('In toggle button widget, straddleOption = ${widget.gameState.settings.straddleOption}');
+                        if (closed) return;
+                        setState(() {});
+                      },
+                    ),
+
+                    // auto straddle
+                    _buildCheckBox(
+                      text: _appScreenText['autoStraddle'],
+                      value: widget.gameState.settings.autoStraddle,
+                      onChange: (bool v) async {
+                        if (v) {
+                          await FirebaseAnalytics().logEvent(
+                              name: "Auto_Straddle",
+                              parameters: {
+                                "name": "Auto Straddle is turned ON"
+                              });
+                        }
+                        // setting the value saves it to local storage too
+                        widget.gameState.settings.autoStraddle = v;
+                        log('In toggle button widget, autoStraddle = ${widget.gameState.settings.autoStraddle}');
+                      },
+                    ),
+                  ],
+                )
+              : const SizedBox.shrink(),
+          _buildCheckBox(
+              text: _appScreenText['muckLosingHand'],
+              value: widget.gameState.gameInfo.playerMuckLosingHand,
+              onChange: (bool v) async {
+                await GameService.updateGameConfig(widget.gameState.gameCode,
+                    muckLosingHand: v);
+                // setting the value saves it to local storage too
+                widget.gameState.gameInfo.playerMuckLosingHand = v;
+                if (closed) return;
+                setState(() {});
+              }),
+          _buildCheckBox(
+            text: _appScreenText['promptRunItTwice'],
+            value: widget.gameState.gameInfo.playerRunItTwice,
+            onChange: (bool v) async {
+              await GameService.updateGameConfig(widget.gameState.gameCode,
+                  runItTwicePrompt: v);
+              // setting the value saves it to local storage too
+              widget.gameState.gameInfo.playerRunItTwice = v;
+              if (closed) return;
+              setState(() {});
+            },
+          ),
+          _buildCheckBox(
+            text: _appScreenText['gameSounds'],
+            value: widget.gameState.settings.gameSound,
+            onChange: (bool v) async {
+              // setting the value saves it to local storage too
+              widget.gameState.settings.gameSound = v;
+              log('In toggle button widget, gameSounds = ${widget.gameState.settings.gameSound}');
+              if (closed) return;
+              setState(() {});
+            },
+          ),
+          widget.gameState.gameInfo.audioConfEnabled ?? false
+              ? _buildCheckBox(
+                  text: _appScreenText['audioConference'],
+                  value: widget.gameState.settings.audioConf,
+                  onChange: (bool v) async {
+                    // setting the value saves it to local storage too
+                    widget.gameState.settings.audioConf = v;
+                    widget.gameState.janusEngine.joinLeaveAudioConference();
+                    log('In toggle button widget, audioConf = ${widget.gameState.settings.audioConf}');
+                    if (closed) return;
+                    setState(() {});
+                  },
+                )
+              : SizedBox(),
+
+          // seat change & waiting list settings
+          ...gameSecondaryOptions
+              .map(
+                (gameSecondaryOption) => gameSecondaryOptionItem(
+                  gameSecondaryOption,
+                  context,
+                  theme,
+                ),
+              )
+              .toList(),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
-    bool isPlaying = widget.gameState.isPlaying;
     final theme = AppTheme.getTheme(context);
+
+    final bool isPlaying = widget.gameState.isPlaying;
+    final bool isHost = context.read<GameContextObject>().isHost();
+
+    // when I am HOST and PLAYING the game
+    if (isPlaying && isHost) {
+      return DefaultTabController(
+        length: 2,
+        child: NestedScrollView(
+          physics: BouncingScrollPhysics(),
+          headerSliverBuilder: (context, value) {
+            return [
+              SliverToBoxAdapter(
+                // build the basic game options
+                child: _buildBasicGameOptions(
+                  isPlaying: isPlaying,
+                  theme: theme,
+                ),
+              ),
+              SliverToBoxAdapter(
+                // show tabs for game and player settings
+                child: TabBar(
+                  tabs: [
+                    Tab(
+                      child: Text('Game Settings'),
+                    ),
+                    Tab(
+                      child: Text('Player Settings'),
+                    ),
+                  ],
+                ),
+              ),
+            ];
+          },
+
+          // show game and player settings body
+          body: TabBarView(
+            physics: BouncingScrollPhysics(),
+            children: [
+              // game settings to be shown here
+              // 1. allow seat change player
+              // 2. allow waiting list
+              // 3. bomb pot
+              // 4. audio conference
+              // 5. pause time after each result
+              _buildGameSettingOptions(theme),
+
+              // player settings to be shown here
+              // 1. muck losing hand
+              // 2. straddle
+              // 3. audio conference
+              // 4. run it twice
+              _buildPlayerSettingOptions(theme),
+            ],
+          ),
+        ),
+      );
+    }
+
+    // if I am HOST only - show game settings option
+    else if (isHost) {
+      return _buildGameSettingOptions(theme);
+    }
+
+    // if I am PLAYING only - show player settings option
+    else {
+      return _buildPlayerSettingOptions(theme);
+    }
 
     return SingleChildScrollView(
       physics: BouncingScrollPhysics(),
@@ -639,7 +983,10 @@ class _GameOptionState extends State<GameOption> {
   }
 
   gameSecondaryOptionItem(
-      OptionItemModel optionItemModel, BuildContext context, AppTheme theme) {
+    OptionItemModel optionItemModel,
+    BuildContext context,
+    AppTheme theme,
+  ) {
     return ListTile(
       onTap: () => optionItemModel.onTap(context),
       title: Text(

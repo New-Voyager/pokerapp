@@ -72,8 +72,9 @@ class AssetService {
     // Uncompression after zip is downloaded.
     if (extension == ".zip") {
       final zipFile = File(downloadToFile);
-      
-      final destinationDir = Directory("${dir.path}/$_filenameWithoutExtension");
+
+      final destinationDir =
+          Directory("${dir.path}/$_filenameWithoutExtension");
       try {
         // Decode the Zip file
         final archive = ZipDecoder().decodeBytes(zipFile.readAsBytesSync());
@@ -97,8 +98,8 @@ class AssetService {
         print(e);
       }
     } else {
-        asset.downloadedPath = downloadToFile;
-        asset.downloaded = true;
+      asset.downloadedPath = downloadToFile;
+      asset.downloaded = true;
     }
 
     return asset;
