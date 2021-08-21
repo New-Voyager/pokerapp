@@ -48,21 +48,17 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
   }
 
   void _fetchSavedItems() async {
-    AssetService.assets.forEach((element) {
-      log("Element Type : ${element.type}");
-      if (element.type == "cardface") {
-        _cardFaceAssets.add(element);
-      } else if (element.type == "cardback") {
-        _cardBackAssets.add(element);
-      } else if (element.type == "dial") {
-        _betAssets.add(element);
-      }
-    });
-    _selectedCardFaceAsset = await AssetService.getDefaultTableAsset();
-    _selectedCardBackAsset = await AssetService.getDefaultTableAsset();
-    _selectedBetAsset = await AssetService.getDefaultTableAsset();
-    // _selectedTable = await AssetService.getDefaultTableAsset();
-    // _selectedDrop = await AssetService.getDefaultBackdropAsset();
+    await AssetService.refresh();
+    _cardFaceAssets = AssetService.getCards();
+    _cardBackAssets = AssetService.getCardBacks();
+    _betAssets = AssetService.getDials();
+    for (final asset in _betAssets) {
+      await AssetService.saveFile(asset);
+    }
+    _selectedCardFaceAsset = null;
+    _selectedCardBackAsset = null;
+    _selectedBetAsset = null;
+    isDownloading = false;   
     setState(() {});
   }
 
@@ -172,8 +168,6 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
                     await AssetService.saveFile(_cardFaceAssets[index]);
                 await AssetService.hiveStore.put(_cardFaceAssets[index]);
               }
-              await AssetService.setDefaultTableAsset(
-                  asset: _cardFaceAssets[index]);
               setState(() {
                 isDownloading = false;
               });
@@ -188,9 +182,6 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
               settings.put('themeIndex', index);
 
               theme.updateThemeData(data);
-
-              final asset = await AssetService.getDefaultTableAsset();
-              log(jsonEncode(asset.toJson()));
             },
             child: Container(
               decoration: BoxDecoration(
@@ -387,8 +378,8 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  SvgPicture.network(
-                    _betAssets[index].previewLink,
+                  SvgPicture.file(
+                    File(_betAssets[index].downloadedPath),
                     allowDrawingOutsideViewBox: true,
                     placeholderBuilder: (context) => CircularProgressWidget(
                       showText: false,

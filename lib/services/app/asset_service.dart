@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:developer';
 
 import 'package:path/path.dart' as path;
 
@@ -71,7 +72,8 @@ class AssetService {
     // Uncompression after zip is downloaded.
     if (extension == ".zip") {
       final zipFile = File(downloadToFile);
-      final destinationDir = Directory("$dir/$_filenameWithoutExtension");
+      
+      final destinationDir = Directory("${dir.path}/$_filenameWithoutExtension");
       try {
         // Decode the Zip file
         final archive = ZipDecoder().decodeBytes(zipFile.readAsBytesSync());
@@ -81,22 +83,24 @@ class AssetService {
           final filename = file.name;
           if (file.isFile) {
             final data = file.content as List<int>;
-            File('$destinationDir/' + filename)
+            File('${destinationDir.path}/' + filename)
               ..createSync(recursive: true)
               ..writeAsBytesSync(data);
           } else {
             Directory('$destinationDir/' + filename)..create(recursive: true);
           }
         }
-        // await ZipFile.extractToDirectory(
-        //     zipFile: zipFile, destinationDir: destinationDir);
+        asset.downloadDir = destinationDir.path;
+        asset.downloadedPath = downloadToFile;
+        asset.downloaded = true;
       } catch (e) {
         print(e);
       }
+    } else {
+        asset.downloadedPath = downloadToFile;
+        asset.downloaded = true;
     }
 
-    asset.downloadedPath = downloadToFile;
-    asset.downloaded = true;
     return asset;
   }
 
