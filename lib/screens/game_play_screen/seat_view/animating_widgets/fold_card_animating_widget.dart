@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
@@ -13,6 +15,9 @@ class FoldCardAnimatingWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // if (!seat.player.animatingFold) {
+    //   return Container();
+    // }
     final openSeat = seat.isOpen;
     final ba = context.read<BoardAttributesObject>();
 
@@ -34,10 +39,11 @@ class FoldCardAnimatingWidget extends StatelessWidget {
       },
       duration: AppConstants.animationDuration,
       builder: (_, offset, child) {
+        log('fold animation: seat pos: ${seat.uiSeatPos.toString()} seat no: ${seat.serverSeatPos} offset: $offset duration: ${AppConstants.animationDuration}');
         /* percentage of animation done */
         double pertDone = offset.dx / offsetMapping[this.seat.uiSeatPos].dx;
 
-        /* we start fading away the card after the cards have moved 90% */
+        /* we start fading away the card after the cards have moved animatingFold90% */
         double opacityValue = pertDone > 0.90 ? (10 - 10 * pertDone) : 1.0;
 
         return Transform.translate(

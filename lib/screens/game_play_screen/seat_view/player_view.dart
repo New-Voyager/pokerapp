@@ -171,7 +171,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
       debugLabel: 'Seat:${widget.seat.serverSeatPos}',
     ); //this.globalKey;
 
-    log('potViewPos: Rebuilding Seat: ${widget.seat.serverSeatPos}');
+    log('PlayerView: Rebuilding Seat: ${widget.seat.serverSeatPos} openSeat: ${widget.seat.isOpen}');
 
     // the player tapped to see the player profile
     final gameState = GameState.getState(context);
@@ -570,6 +570,7 @@ class PlayerCardsWidget extends StatelessWidget {
     if (showdown) {
       return const SizedBox.shrink();
     } else if (seat.folded ?? false) {
+      //if (seat.player.animatingFold) {
       return Transform.translate(
         offset: Offset(
           xOffset * 0.50,
@@ -577,6 +578,15 @@ class PlayerCardsWidget extends StatelessWidget {
         ),
         child: FoldCardAnimatingWidget(seat: seat),
       );
+      // } else {
+      //   return Transform.translate(
+      //     offset: Offset(
+      //       xOffset * 0.50,
+      //       45.0,
+      //     ),
+      //     child: Container(),
+      //   );
+      // }
     } else {
       //log('Hole cards');
       return Transform.translate(
