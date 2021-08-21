@@ -52,6 +52,8 @@ import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:provider/provider.dart';
 import 'package:wakelock/wakelock.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
+import 'package:pokerapp/screens/game_play_screen/widgets/game_circle_button.dart';
 
 import '../../main.dart';
 import '../../routes.dart';
@@ -322,6 +324,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       for (int i = 0; i < _gameInfoModel.playersInSeats.length; i++) {
         if (_gameInfoModel.playersInSeats[i].playerUuid ==
             _currentPlayer.uuid) {
+          this.initPlayingTimer();
           // player is in the table
           this._joinAudio();
           break;
@@ -349,17 +352,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       _initChatListeners(gameComService.gameMessaging);
     }
 
-    // diamonds timer, which invokes every 30 seconds
-    // but adds diamonds ONLY after the duration of AppConstants.diamondUpdateDuration
-    _timer = Timer.periodic(const Duration(seconds: 30), (_) {
-      PlayerModel me;
-      try {
-        me = _gameState.getPlayers(_providerContext).me;
-      } catch (e) {}
-
-      if (me != null) _gameState.gameHiveStore.addDiamonds();
-    });
-
     return _gameInfoModel;
   }
 
@@ -369,17 +361,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   @override
   void dispose() {
     Wakelock.disable();
-    _timer?.cancel();
-
-    try {
-      _gameContextObj?.dispose();
-      _gameState?.close();
-      _audioPlayer?.dispose();
-      _voiceTextPlayer?.dispose();
-    } catch (e) {
-      log('Caught exception: ${e.toString()}');
-    }
-
     super.dispose();
   }
 
@@ -528,15 +509,48 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     super.initState();
 
     Wakelock.enable();
-
-    // Register listener for lifecycle methods
-    WidgetsBinding.instance.addObserver(this);
-    log('game screen initState');
-
     _audioPlayer = AudioPlayer();
     _voiceTextPlayer = AudioPlayer();
 
+    // Register listener for lifecycle methods
+    WidgetsBinding.instance.addObserver(this);
+    init();
+  }
+
+  void initPlayingTimer() {
+    // diamonds timer, which invokes every 30 seconds
+    // but adds diamonds ONLY after the duration of AppConstants.diamondUpdateDuration
+    _timer = Timer.periodic(const Duration(seconds: 30), (_) {
+      PlayerModel me;
+      try {
+        me = _gameState.getPlayers(_providerContext).me;
+      } catch (e) {}
+
+      if (me != null) _gameState.gameHiveStore.addDiamonds();
+    });
+  }
+
+  void reload() {
+    close();
+    init();
+  }
+
+  void init() {
+    log('game screen initState');
     _initGameInfoModel();
+  }
+
+  void close() {
+    _timer?.cancel();
+
+    try {
+      _gameContextObj?.dispose();
+      _gameState?.close();
+      _audioPlayer?.dispose();
+      _voiceTextPlayer?.dispose();
+    } catch (e) {
+      log('Caught exception: ${e.toString()}');
+    }
   }
 
   final ScrollController _gcsController = ScrollController();
@@ -743,10 +757,22 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     double divider1 =
         boardAttributes.tableDividerHeightScale * dividerTotalHeight;
 
+    final theme = AppTheme.getTheme(context);
     return Stack(
       alignment: Alignment.topCenter,
       children: [
         BackgroundView(),
+        Positioned(
+            top: 50.pw,
+            left: width - 50.pw,
+            child: GameCircleButton(
+              onClickHandler: () {
+                log('refresh button is clicked');
+                //this.reload();
+              },
+              child: Icon(Icons.refresh_rounded,
+                  size: 24.pw, color: theme.primaryColorWithDark()),
+            )),
 
         /* main view */
         Column(

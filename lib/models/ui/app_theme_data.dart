@@ -60,7 +60,7 @@ class AppThemeData {
     this.backDropAssetId = "default-backdrop",
     this.cardBackAssetId = "default-cardback",
     this.cardFaceAssetId = "default-cardface",
-    this.betAssetId : "default-bet",
+    this.betAssetId: "default-bet",
   });
 
   Map<String, dynamic> toMap() {
@@ -78,7 +78,7 @@ class AppThemeData {
       "backDropAssetId": this.backDropAssetId,
       "cardBackAssetId": this.cardBackAssetId,
       "cardFaceAssetId": this.cardFaceAssetId,
-      "betAssetId":this.betAssetId,
+      "betAssetId": this.betAssetId,
     };
   }
 }
