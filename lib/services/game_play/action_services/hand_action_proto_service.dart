@@ -527,6 +527,14 @@ class HandActionProtoService {
           continue;
         }
         final playerInSeat = playersInSeats[seatNo];
+
+        if (playerInSeat.playerId == 0) {
+          // open seat
+          final seat = _gameState.getSeat(_context, seatNo);
+          seat.player = null;
+          continue;
+        }
+
         PlayerModel playerFound;
         bool newPlayer = true;
         for (final player in players.players) {
