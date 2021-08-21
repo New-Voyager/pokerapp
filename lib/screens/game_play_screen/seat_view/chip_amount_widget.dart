@@ -157,8 +157,10 @@ class _ChipAmountWidgetState extends State<ChipAmountWidget>
   void afterFirstLayout(BuildContext context) {
     // log('potViewPos: 1 afterFirstLayout ChipAmountWidget seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos}');
     if (widget.seat.potViewPos != null) {
-      //log('potViewPos: 1 return afterFirstLayout ChipAmountWidget seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos}');
-      return;
+      String playerName = 'N/A';
+      if (widget.seat.player != null) {
+        playerName = widget.seat.player.name;
+      }
     }
     // log('potViewPos: 2 afterFirstLayout ChipAmountWidget seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos}');
     if (this.widget.animate) {
