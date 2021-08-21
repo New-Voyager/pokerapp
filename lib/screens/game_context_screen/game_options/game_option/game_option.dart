@@ -699,6 +699,7 @@ class _GameOptionState extends State<GameOption> {
 
           // show game and player settings body
           body: TabBarView(
+            physics: BouncingScrollPhysics(),
             children: [
               // game settings to be shown here
               // 1. allow seat change player
