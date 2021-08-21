@@ -207,21 +207,21 @@ class _CenterViewState extends State<CenterView> {
     @required final BoardAttributesObject boardAttributes,
   }) {
     final gameState = GameState.getState(context);
-    log('potViewPos: before game ended.');
+    //log('potViewPos: before game ended.');
     if (gameState.gameInfo.status == AppConstants.GAME_ENDED)
       return centerTextWidget(
         AppStringsNew.gameEndedText,
         boardAttributes.centerViewButtonVerticalTranslate,
       );
 
-    log('potViewPos: before waiting for players.');
+    //log('potViewPos: before waiting for players.');
     if (!gameState.botGame && gameState.playersInSeatsCount <= 1) {
       String text = 'Waiting for players to join';
       return centerTextWidget(
           text, boardAttributes.centerViewButtonVerticalTranslate);
     }
 
-    log('potViewPos: before seat change progress.');
+   // log('potViewPos: before seat change progress.');
     if (gameState.gameInfo.tableStatus ==
         AppConstants.TABLE_STATUS_HOST_SEATCHANGE_IN_PROGRESS) {
       return centerTextWidget('Seat change in progress',
@@ -232,7 +232,7 @@ class _CenterViewState extends State<CenterView> {
             AppConstants.GAME_PAUSED ||
         gameState.gameInfo.tableStatus == AppConstants.WAITING_TO_BE_STARTED;
 
-    log('potViewPos: before is paused or waiting isGameRunning: ${gameState.isGameRunning} isGamePausedOrWaiting: $isGamePausedOrWaiting ${gameState.gameInfo.tableStatus}');
+    //log('potViewPos: before is paused or waiting isGameRunning: ${gameState.isGameRunning} isGamePausedOrWaiting: $isGamePausedOrWaiting ${gameState.gameInfo.tableStatus}');
     /* if the game is paused, show the options available during game pause */
     if (isGamePausedOrWaiting && !gameState.isGameRunning) {
       print('_buildGamePauseOptions');
@@ -282,7 +282,7 @@ class _CenterViewState extends State<CenterView> {
   }
 
   Widget _buildMainCenterView(final context, final boardAttributes) {
-    log('potViewPos: building main center view');
+    //log('potViewPos: building main center view');
 
     return Transform.translate(
       offset: boardAttributes.centerViewVerticalTranslate,
@@ -338,7 +338,7 @@ class _CenterViewState extends State<CenterView> {
   }
 
   Widget _buildMultiplePots(boardAttributes) {
-    log('potViewPos: building multiple pots');
+    //log('potViewPos: building multiple pots');
     return ValueListenableBuilder2<List<int>, int>(
       vnPotChips,
       vnPotToHighlight,
