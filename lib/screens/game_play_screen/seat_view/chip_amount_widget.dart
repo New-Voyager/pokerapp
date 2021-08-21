@@ -39,7 +39,7 @@ class _ChipAmountWidgetState extends State<ChipAmountWidget>
     with AfterLayoutMixin<ChipAmountWidget> {
   @override
   Widget build(BuildContext context) {
-    log('potViewPos: Rebuilding ChipAmountWidget seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos}');
+    //log('potViewPos: Rebuilding ChipAmountWidget seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos}');
 
     bool showBet = false;
     Offset offset = Offset.zero;
@@ -157,8 +157,12 @@ class _ChipAmountWidgetState extends State<ChipAmountWidget>
   void afterFirstLayout(BuildContext context) {
     // log('potViewPos: 1 afterFirstLayout ChipAmountWidget seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos}');
     if (widget.seat.potViewPos != null) {
-      log('potViewPos: 1 return afterFirstLayout ChipAmountWidget seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos}');
-      return;
+      String playerName = 'N/A';
+      if (widget.seat.player != null) {
+        playerName = widget.seat.player.name;
+      }
+      //log('potViewPos: 1 return afterFirstLayout playerName: $playerName widget.seat.uiSeatPos: ${widget.seat.uiSeatPos.toString()} ChipAmountWidget seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos}');
+      //return;
     }
     // log('potViewPos: 2 afterFirstLayout ChipAmountWidget seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos}');
     if (this.widget.animate) {
