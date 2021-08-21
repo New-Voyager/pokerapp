@@ -45,6 +45,12 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
   AppTextScreen _appScreenText;
 
   @override
+  void dispose() {
+    _context = null;
+    super.dispose();
+  }
+
+  @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       while (mounted) {
@@ -59,6 +65,9 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
   }
 
   _pollPendingApprovals() async {
+    if (_context == null) {
+      return;
+    }
     //log('0-0-0-0- Polling for pending approvals');
     final approvals = await PlayerService.getPendingApprovals();
     final state = Provider.of<PendingApprovalsState>(_context, listen: false);
@@ -302,25 +311,6 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                                                           'exceptionOccuredDeclineRequest']);
                                                     } else if (val) {
                                                       _pollPendingApprovals();
-                                                      // Provider.of<PendingApprovalsState>(
-                                                      //         context,
-                                                      //         listen: false)
-                                                      //     .decreaseTotalPending();
-                                                      // final List<
-                                                      //         PendingApproval>
-                                                      //     list =
-                                                      //     await PlayerService
-                                                      //         .getPendingApprovals();
-                                                      // Provider.of<PendingApprovalsState>(
-                                                      //         context,
-                                                      //         listen: false)
-                                                      //     .setTotalPending(
-                                                      //         list == null
-                                                      //             ? 0
-                                                      //             : list
-                                                      //                 .length);
-                                                      // localSetState(() {});
-
                                                     } else {
                                                       toast(
                                                         _appScreenText[

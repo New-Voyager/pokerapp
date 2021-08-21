@@ -103,7 +103,8 @@ class GameUpdateService {
     if (closed) return;
 
     String messageType = data['messageType'];
-    if (messageType.indexOf('PLAYER_CONNECTIVITY') == -1) {
+    if (messageType != null &&
+        messageType.indexOf('PLAYER_CONNECTIVITY') == -1) {
       final jsonData = jsonEncode(data);
       debugPrint(jsonData);
       debugLog(_gameState.gameCode, jsonData);
@@ -284,25 +285,10 @@ class GameUpdateService {
       }
     }
 
-    // if (newPlayerModel.isMe) {
-    //   await Future.delayed(Duration(milliseconds: 100));
-    //   if (closed) return;
-    //   final mySeat = _gameState.mySeat(_context);
-    //   mySeat.player = newPlayerModel;
-    //   mySeat.notify();
-
-    //   _gameState.myState.status = PlayerStatus.WAIT_FOR_BUYIN_APPROVAL;
-    //   _gameState.myState.notify();
-    // }
     if (closed) return;
     final tableState = _gameState.getTableState(_context);
     tableState.notifyAll();
     _gameState.updatePlayers(_context);
-    // if (newPlayerModel.isMe &&
-    //     playerUpdate['status'] == AppConstants.WAIT_FOR_BUYIN) {
-    //   GamePlayScreenUtilMethods.onBuyin(_context);
-    // }
-    //}
   }
 
   void handlePlayerLeftGame({
@@ -1204,6 +1190,7 @@ class GameUpdateService {
   void resetBoard() async {
     _gameState.clear(_context);
     _gameState.resetPlayers(_context);
+    _gameState.refresh(_context);
 
     /* clean up from result views */
     /* set footer status to none  */
@@ -1214,6 +1201,8 @@ class GameUpdateService {
   }
 
   playSoundEffect(String soundFile) {
+    return;
+
     if (_gameState.settings.gameSound) {
       _gameState
           .getAudioBytes(soundFile)

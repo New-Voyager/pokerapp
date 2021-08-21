@@ -3,9 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/models/rewards_model.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
-import 'package:pokerapp/screens/club_screen/rewards_screen/create_rewards_screen.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
-import 'package:pokerapp/widgets/custom_text_button.dart';
 import 'package:provider/provider.dart';
 
 class RewardsListScreen extends StatelessWidget {
@@ -83,26 +81,4 @@ class RewardsListScreen extends StatelessWidget {
       ),
     );
   }
-
-  List<Widget> _buildActions(BuildContext context) => [
-        Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: CustomTextButton(
-            onTap: () {
-              // Navigator.push(
-              //   context,
-              //   CupertinoPageRoute(
-              //     builder: (context) => CreateRewardsScreen(),
-              //   ),
-              // );
-              _key.currentState
-                  .showBottomSheet((context) => ChangeNotifierProvider.value(
-                        value: Provider.of<RewardsModelProvider>(context),
-                        child: CreateRewardsScreen(),
-                      ));
-            },
-            text: _appScreenText['new'],
-          ),
-        ),
-      ];
 }

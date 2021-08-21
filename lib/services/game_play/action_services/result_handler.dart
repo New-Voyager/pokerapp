@@ -120,6 +120,8 @@ class ResultHandler {
     int lowWinnersTimeInMs = totalWaitTimeInMs ~/ 2;
 
     if (gameState?.settings?.gameSound ?? true) {
+      return;
+
       gameState.getAudioBytes(AppAssets.applauseSound).then((value) {
         audioPlayer.playBytes(value);
       });

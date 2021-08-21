@@ -15,7 +15,6 @@ class TableView extends StatelessWidget {
   Widget build(BuildContext context) {
     final boardAttrObj = context.read<BoardAttributesObject>();
     final gameState = GameState.getState(context);
-
     return Center(
       child: Container(
         width: boardAttrObj.tableSize.width,

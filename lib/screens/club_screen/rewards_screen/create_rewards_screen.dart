@@ -126,7 +126,7 @@ class CreateRewardsScreen extends StatelessWidget {
                         style: TextStyle(color: Colors.white),
                       ),
                       Text(
-                      _appScreenText['highHand'],
+                        _appScreenText['highHand'],
                         style: TextStyle(color: Color(0xff848484)),
                       ),
                     ],
