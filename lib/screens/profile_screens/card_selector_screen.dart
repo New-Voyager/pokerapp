@@ -58,7 +58,7 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
     _selectedCardFaceAsset = null;
     _selectedCardBackAsset = null;
     _selectedBetAsset = null;
-    isDownloading = false;   
+    isDownloading = false;
     setState(() {});
   }
 
@@ -418,30 +418,23 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
     String filePath = "";
 
     if (_tabController.index == 0) {
-      filePath = _selectedCardFaceAsset?.downloadedPath;
-      if (filePath == null) {
+      String dirPath = _selectedCardFaceAsset?.downloadDir;
+      if (dirPath == null) {
         return errorImageWidget();
       }
-      if (!filePath.contains(".zip")) {
-        return Container(
-          child: Text("No Cards!"),
-        );
-      }
-      String dirPath = filePath.split(".zip")[0];
       log("Cards dir path : $dirPath");
 
       return GridView.builder(
-        gridDelegate:
-            SliverGridDelegateWithMaxCrossAxisExtent(maxCrossAxisExtent: 150),
+        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+          maxCrossAxisExtent: 100,
+          childAspectRatio: 0.67,
+          crossAxisSpacing: 16,
+        ),
+        padding: EdgeInsets.symmetric(horizontal: 8),
         itemBuilder: (context, index) {
-          return Container(
-            margin: EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: SvgPicture.file(
-              File("$dirPath/${CardConvUtils.getCardName(index)}.svg"),
-            ),
+          return SvgPicture.file(
+            File("$dirPath/${CardConvUtils.getCardName(index)}.svg"),
+            fit: BoxFit.contain,
           );
         },
         itemCount: 52,
