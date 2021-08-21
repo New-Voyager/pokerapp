@@ -33,6 +33,12 @@ class AppThemeData {
 
   Color navFabColor;
   Color navBgColor;
+  String tableAssetId;
+  String backDropAssetId;
+  String cardFaceAssetId;
+  String cardBackAssetId;
+
+  String betAssetId;
 
   AppThemeData({
     this.primaryColor = const Color(0xFF033614), // 0xFF300614
@@ -50,6 +56,11 @@ class AppThemeData {
     this.handlogShowdownColor = const Color(0xFF44110A),
     this.navBgColor = const Color(0xFF3D5242),
     this.navFabColor = const Color(0xFF40D876),
+    this.tableAssetId = "default-table",
+    this.backDropAssetId = "default-backdrop",
+    this.cardBackAssetId = "default-cardback",
+    this.cardFaceAssetId = "default-cardface",
+    this.betAssetId : "default-bet",
   });
 
   Map<String, dynamic> toMap() {
@@ -63,6 +74,11 @@ class AppThemeData {
       "fontFamily": this.fontFamily,
       "navBgColor": this.navBgColor.value,
       "navFabColor": this.navFabColor.value,
+      "tableAssetId": this.tableAssetId,
+      "backDropAssetId": this.backDropAssetId,
+      "cardBackAssetId": this.cardBackAssetId,
+      "cardFaceAssetId": this.cardFaceAssetId,
+      "betAssetId":this.betAssetId,
     };
   }
 }

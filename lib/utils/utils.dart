@@ -131,6 +131,61 @@ class DeviceInfo {
 }
 
 class CardConvUtils {
+  static List<String> cardNamesInSequence = [
+    '2s',
+    '2h',
+    '2d',
+    '2c',
+    '3s',
+    '3h',
+    '3d',
+    '3c',
+    '4c',
+    '4s',
+    '4h',
+    '4d',
+    '5h',
+    '5d',
+    '5c',
+    '5s',
+    '6s',
+    '6h',
+    '6d',
+    '6c',
+    '7s',
+    '7h',
+    '7d',
+    '7c',
+    '8s',
+    '8h',
+    '8d',
+    '8c',
+    '9s',
+    '9h',
+    '9d',
+    '9c',
+    'Th',
+    'Td',
+    'Tc',
+    'Ts',
+    'Jc',
+    'Js',
+    'Jh',
+    'Jd',
+    'Qs',
+    'Qh',
+    'Qd',
+    'Qc',
+    'Ks',
+    'Kh',
+    'Kd',
+    'Kc',
+    'Ac',
+    'As',
+    'Ah',
+    'Ad'
+  ];
+
   static Map<int, String> cardNumbers = {
     1: '2s',
     2: '2h',
@@ -203,5 +258,12 @@ class CardConvUtils {
 
   static List<String> getCardSuits() {
     return ['c', 's', 'd', 'h'];
+  }
+
+  static String getCardName(int index) {
+    if (index < 0 || index > 51) {
+      return cardNamesInSequence[0];
+    }
+    return cardNamesInSequence[index];
   }
 }

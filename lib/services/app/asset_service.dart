@@ -1,10 +1,14 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:developer';
+
+import 'package:path/path.dart' as path;
 
 import 'package:path_provider/path_provider.dart';
 import 'package:pokerapp/resources/app_config.dart';
 import 'package:http/http.dart' as http;
 import 'package:pokerapp/services/data/asset_hive_store.dart';
+import 'package:archive/archive_io.dart';
 
 class AssetService {
   AssetService._();
@@ -28,7 +32,7 @@ class AssetService {
 
   static Future<Asset> getDefaultTableAsset() async {
     try {
-      defaultTableAsset = await hiveStore.get("default-table");
+      defaultTableAsset = hiveStore.get("default-table");
     } catch (err) {}
     return defaultTableAsset;
   }
@@ -48,12 +52,55 @@ class AssetService {
   static Future<Asset> saveFile(Asset asset) async {
     Directory dir = await getApplicationDocumentsDirectory();
 
-    final String downloadToFile =
-        '${dir.path}/${DateTime.now().millisecondsSinceEpoch.toString()}.png';
+    final link = asset.link;
+    final String _filename = path.basename(link);
+    final String _filenameWithoutExtension =
+        path.basenameWithoutExtension(link);
+    final String extension = path.extension(link);
+
+    final String downloadToFile = '${dir.path}/${asset.type}_$_filename';
+
+    log("Downloading to file : $downloadToFile");
     http.Response response = await http.get(asset.link);
-    await File(downloadToFile).writeAsBytes(response.bodyBytes);
-    asset.downloadedPath = downloadToFile;
-    asset.downloaded = true;
+
+    if (response.statusCode != 200) {
+      return asset;
+    }
+    final file = await File(downloadToFile).create(recursive: true);
+    await file.writeAsBytes(response.bodyBytes);
+
+    // Uncompression after zip is downloaded.
+    if (extension == ".zip") {
+      final zipFile = File(downloadToFile);
+      
+      final destinationDir = Directory("${dir.path}/$_filenameWithoutExtension");
+      try {
+        // Decode the Zip file
+        final archive = ZipDecoder().decodeBytes(zipFile.readAsBytesSync());
+
+        // Extract the contents of the Zip archive to disk.
+        for (final file in archive) {
+          final filename = file.name;
+          if (file.isFile) {
+            final data = file.content as List<int>;
+            File('${destinationDir.path}/' + filename)
+              ..createSync(recursive: true)
+              ..writeAsBytesSync(data);
+          } else {
+            Directory('$destinationDir/' + filename)..create(recursive: true);
+          }
+        }
+        asset.downloadDir = destinationDir.path;
+        asset.downloadedPath = downloadToFile;
+        asset.downloaded = true;
+      } catch (e) {
+        print(e);
+      }
+    } else {
+        asset.downloadedPath = downloadToFile;
+        asset.downloaded = true;
+    }
+
     return asset;
   }
 

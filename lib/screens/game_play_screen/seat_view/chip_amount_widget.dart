@@ -161,8 +161,6 @@ class _ChipAmountWidgetState extends State<ChipAmountWidget>
       if (widget.seat.player != null) {
         playerName = widget.seat.player.name;
       }
-      //log('potViewPos: 1 return afterFirstLayout playerName: $playerName widget.seat.uiSeatPos: ${widget.seat.uiSeatPos.toString()} ChipAmountWidget seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos}');
-      //return;
     }
     // log('potViewPos: 2 afterFirstLayout ChipAmountWidget seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos}');
     if (this.widget.animate) {
