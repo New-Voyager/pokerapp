@@ -15,7 +15,7 @@ class PingResponder {
   List<PingPongMessage> messages = [];
 
   // For debugging
-  bool debug = true;
+  bool debug = false;
   Random rng = new Random();
 
   PingResponder(
