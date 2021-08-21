@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/game_circle_button.dart';
 
 class HoleCardCustomizationView extends StatefulWidget {
@@ -19,7 +20,9 @@ class _HoleCardCustomizationViewState extends State<HoleCardCustomizationView> {
     final theme = AppTheme.getTheme(context);
     List<Widget> children = [];
     children.add(GameCircleButton(
-      onClickHandler: () {},
+      onClickHandler: () {
+        Navigator.of(context).pushNamed(Routes.select_cards);
+      },
       child: Icon(Icons.edit, size: 24, color: theme.primaryColorWithDark()),
     ));
     return Column(
