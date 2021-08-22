@@ -86,7 +86,7 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
             backDrop = Text('No default backdrop');
           } else {
             backDrop = Image.file(
-              File(_selectedDrop?.downloadedPath),
+              File(_selectedDrop?.downloadedPath ?? ""),
               fit: BoxFit.scaleDown,
               width: size.width,
             );
