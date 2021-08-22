@@ -57,28 +57,39 @@ class UserSettingsStore {
     }
   }
 
+  static Map<String, String> getSelectedAssets() {
+    final assets = _settingsBox.get(KEY_SELECTED_ASSETS);
+    Map <String, String> ret = Map<String, String>();
+    for (final key in assets.keys) {
+      final keyStr = key.toString();
+      final value = assets[keyStr].toString();
+      ret[keyStr] = value;
+    }
+    return ret;
+  }
+
   static String getSelectedTableId() {
-    final Map<String, String> values = _settingsBox.get(KEY_SELECTED_ASSETS);
+    final Map<String, String> values = getSelectedAssets();
     return values[KEY_SELECTED_TABLE] ?? VALUE_DEFAULT_TABLE;
   }
 
   static String getSelectedBackdropId() {
-    final Map<String, String> values = _settingsBox.get(KEY_SELECTED_ASSETS);
+    final Map<String, String> values = getSelectedAssets();
     return values[KEY_SELECTED_BACKDROP] ?? VALUE_DEFAULT_BACKDROP;
   }
 
   static String getSelectedCardFaceId() {
-    final Map<String, String> values = _settingsBox.get(KEY_SELECTED_ASSETS);
+    final Map<String, String> values = getSelectedAssets();
     return values[KEY_SELECTED_CARDFACE] ?? VALUE_DEFAULT_CARDFACE;
   }
 
   static String getSelectedCardBackId() {
-    final Map<String, String> values = _settingsBox.get(KEY_SELECTED_ASSETS);
+    final Map<String, String> values = getSelectedAssets();
     return values[KEY_SELECTED_CARDBACK] ?? VALUE_DEFAULT_CARDBACK;
   }
 
   static String getSelectedBetDial() {
-    final Map<String, String> values = _settingsBox.get(KEY_SELECTED_ASSETS);
+    final Map<String, String> values = getSelectedAssets();
     return values[KEY_SELECTED_BETDIAL] ?? VALUE_DEFAULT_BETDIAL;
   }
 }
