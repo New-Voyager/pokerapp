@@ -23,8 +23,10 @@ import 'package:pokerapp/services/app/asset_service.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/app/handlog_cache_service.dart';
 import 'package:pokerapp/services/app/user_settings_service.dart';
+import 'package:pokerapp/services/data/asset_hive_store.dart';
 import 'package:pokerapp/services/data/game_hive_store.dart';
 import 'package:pokerapp/services/data/hive_models/game_settings.dart';
+import 'package:pokerapp/services/data/user_settings_store.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/services/janus/janus.dart';
@@ -1184,63 +1186,49 @@ class GameScreenAssets {
   Future<void> initialize() async {
     cardStrImage = Map<String, Uint8List>();
     cardNumberImage = Map<int, Uint8List>();
-    String backdropImage = AppAssetsNew.defaultBackdropPath;
-    String tableImage = AppAssetsNew.defaultTablePath;
-    String betImage = AppAssetsNew.defaultBetDailPath;
-    //tableImage = AppAssets.horizontalTable;
-    //backdropImage = AppAssets.barBookshelfBackground;
-    AppTheme theme = AppTheme.getTheme(navigatorKey.currentContext);
-    if (theme.tableAssetId == 'default-table') {
-      boardBytes = (await rootBundle.load(tableImage)).buffer.asUint8List();
-    } else {
-      try {
-        boardBytes =
-            File(AssetService.hiveStore.get(theme.tableAssetId).downloadedPath)
-                .readAsBytesSync();
-      } catch (e) {
-        boardBytes = (await rootBundle.load(tableImage)).buffer.asUint8List();
-      }
+    Asset backdrop = AssetService.getAssetForId(UserSettingsStore.KEY_SELECTED_BACKDROP);
+    if (backdrop == null) {
+      backdrop = AssetService.getAssetForId(UserSettingsStore.VALUE_DEFAULT_BACKDROP);
     }
+    backdropBytes = await backdrop.getBytes();
 
-    if (UserSettingsService.isDefaultTable()) {
-      boardBytes = (await rootBundle.load(tableImage)).buffer.asUint8List();
-    } else {
-      try {
-        boardBytes = File(AssetService.hiveStore
-                .get(UserSettingsService.getSelectedTableId())
-                .downloadedPath)
-            .readAsBytesSync();
-      } catch (e) {
-        boardBytes = (await rootBundle.load(tableImage)).buffer.asUint8List();
-      }
+    Asset table = AssetService.getAssetForId(UserSettingsStore.KEY_SELECTED_TABLE);
+    if (table == null) {
+      table = AssetService.getAssetForId(UserSettingsStore.VALUE_DEFAULT_TABLE);
     }
+    boardBytes = await table.getBytes();
+    
+    Asset betImage = AssetService.getAssetForId(UserSettingsStore.KEY_SELECTED_BETDIAL);
+    if (betImage == null) {
+      betImage = AssetService.getAssetForId(UserSettingsStore.VALUE_DEFAULT_BETDIAL);
+    }
+    betImageBytes = await betImage.getBytes();
 
-    if (UserSettingsService.isDefaultBackdrop()) {
-      backdropBytes =
-          (await rootBundle.load(backdropImage)).buffer.asUint8List();
-    } else {
-      try {
-        backdropBytes = File(AssetService.hiveStore
-                .get(UserSettingsService.getSelectedTableId())
-                .downloadedPath)
-            .readAsBytesSync();
-      } catch (e) {
-        backdropBytes =
-            (await rootBundle.load(backdropImage)).buffer.asUint8List();
-      }
+    Asset cardBack = AssetService.getAssetForId(UserSettingsStore.KEY_SELECTED_CARDBACK);
+    if (cardBack == null) {
+      cardBack = AssetService.getAssetForId(UserSettingsStore.VALUE_DEFAULT_BETDIAL);
     }
-    betImageBytes = (await rootBundle.load(betImage)).buffer.asUint8List();
-    holeCardBackBytes =
-        (await rootBundle.load('assets/images/card_back/set2/Asset 7.png'))
-            .buffer
-            .asUint8List();
+    holeCardBackBytes = await cardBack.getBytes();
+
+    Asset cardFace = AssetService.getAssetForId(UserSettingsStore.KEY_SELECTED_CARDFACE);
+    if (cardFace == null) {
+      cardFace = AssetService.getAssetForId(UserSettingsStore.VALUE_DEFAULT_CARDFACE);
+    }
 
     for (int card in CardConvUtils.cardNumbers.keys) {
       final cardStr = CardConvUtils.getString(card);
-      final cardBytes =
-          (await rootBundle.load('assets/images/card_face/$card.svg'))
+      Uint8List cardBytes;
+      if (cardFace.bundled) {
+       cardBytes = (await rootBundle.load('${cardFace.downloadDir}/$card.svg'))
               .buffer
               .asUint8List();
+      } else {
+        String filename = '${cardFace.downloadDir}/$card.svg';
+        if (!File(filename).existsSync()) {
+          filename = '${cardFace.downloadDir}/$card.png';
+        }
+        cardBytes = File(filename).readAsBytesSync();
+      }
       cardStrImage[cardStr] = cardBytes;
       cardNumberImage[card] = cardBytes;
     }

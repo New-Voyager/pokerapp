@@ -1,13 +1,9 @@
 import 'dart:developer';
 
 import 'package:hive/hive.dart';
-import 'package:pokerapp/services/app/asset_service.dart';
-import 'package:pokerapp/services/data/asset_hive_store.dart';
-import 'package:pokerapp/services/data/box_type.dart';
 
 class UserSettingsStore {
   static Box _settingsBox;
-  static UserSettingsStore _userSettingStore;
   static const String KEY_SELECTED_ASSETS = "selected-assets";
   static const String KEY_SELECTED_TABLE = "selected-table";
   static const String KEY_SELECTED_BACKDROP = "selected-backdrop";
@@ -29,7 +25,6 @@ class UserSettingsStore {
       if (_settingsBox.isEmpty) {
         log("0-0-0-User Settings box is empty: Loading default values");
         await loadDefaultSettings();
-        await AssetService.setDefaultAssetsFromAssetsToFiles();
       }
     }
   }

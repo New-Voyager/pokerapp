@@ -2,13 +2,11 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:developer';
 
-import 'package:flutter/services.dart';
 import 'package:path/path.dart' as path;
 
 import 'package:path_provider/path_provider.dart';
 import 'package:pokerapp/resources/app_config.dart';
 import 'package:http/http.dart' as http;
-import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/services/data/asset_hive_store.dart';
 import 'package:archive/archive_io.dart';
 import 'package:pokerapp/services/data/user_settings_store.dart';
@@ -17,13 +15,6 @@ class AssetService {
   AssetService._();
   static AssetHiveStore hiveStore;
   static List<Asset> assets = [];
-  static Asset defaultTableAsset;
-  static Asset defaultBackdropAsset;
-
-  // static Future<void> setDefaultTableAsset({Asset asset}) async {
-  //   await hiveStore.put(asset, id: "default-table");
-  //   await getDefaultTableAsset();
-  // }
 
   static Future<void> refresh() async {
     try {
@@ -34,22 +25,15 @@ class AssetService {
   }
 
   static Future<Asset> getDefaultTableAsset() async {
-    try {
-      defaultTableAsset = hiveStore.get("default-table");
-    } catch (err) {}
-    return defaultTableAsset;
+    return hiveStore.get(UserSettingsStore.KEY_SELECTED_TABLE);
   }
-
   // static Future<void> setDefaultBackdropAsset({Asset asset}) async {
   //   await hiveStore.put(asset, id: "default-backdrop");
   //   await getDefaultBackdropAsset();
   // }
 
   static Future<Asset> getDefaultBackdropAsset() async {
-    try {
-      defaultBackdropAsset = await hiveStore.get("default-backdrop");
-    } catch (err) {}
-    return defaultBackdropAsset;
+    return hiveStore.get(UserSettingsStore.VALUE_DEFAULT_BACKDROP);
   }
 
   static Future<Asset> saveFile(Asset asset) async {
@@ -113,6 +97,16 @@ class AssetService {
       hiveStore = await AssetHiveStore.openAssetStore();
     }
     return hiveStore;
+  }
+
+  static Future<bool> exists(String id) async {
+    if (hiveStore == null) {
+      hiveStore = await AssetHiveStore.openAssetStore();
+    }
+    if (hiveStore.get(id) != null) {
+      return true;
+    }
+    return false;
   }
 
   static Future<List<Asset>> getAssets() async {
@@ -192,6 +186,12 @@ class AssetService {
     }
   }
 
+  static Future<void> putAsset(Asset asset, {String id}) async {
+    if (asset != null) {
+      await hiveStore.put(asset, id: id ?? asset.id);
+    }
+  }
+
   // static loadDefaultAssetsIntoHive() async {
   //   await loadDefaultTableAssetIntoHive();
   //   await loadDefaultAssetsIntoHive();
@@ -211,58 +211,132 @@ class AssetService {
     return hiveStore.get(id);
   }
 
-  static setDefaultAssetsFromAssetsToFiles() async {
+  static updateBundledAssets() async {
     if (hiveStore == null) {
       await getStore();
     }
-    // Load Default table asset
-    await saveDefaultTableAsset();
-    // Load default backdrop asset
-    await saveDefaultBackdropAsset();
+
+    // default assets
+    // assets/images/default/cardface
+    // assets/images/default/backdrop.png
+    // assets/images/default/betdial.svg
+    // assets/images/default/cardback.png
+    // assets/images/default/table.png
+    if (!await AssetService.exists(UserSettingsStore.VALUE_DEFAULT_CARDFACE)) {
+      Asset asset = Asset(
+            id: UserSettingsStore.VALUE_DEFAULT_CARDFACE,
+            defaultAsset: true,
+            downloadedPath:'assets/images/default/cardface',
+            downloadDir: 'assets/images/default/cardface',
+            downloaded: true,
+            name: "Default Card Face",
+            link: "",
+            previewLink: "assets/images/default/cardface/preview.png",
+            bundled: true,
+            type: 'cardface'
+          );
+      AssetService.putAsset(asset);
+    }
+
+    if (!await AssetService.exists(UserSettingsStore.VALUE_DEFAULT_TABLE)) {
+      Asset asset = Asset(
+            id: UserSettingsStore.VALUE_DEFAULT_TABLE,
+            defaultAsset: true,
+            downloadedPath:'assets/images/default/table.png',
+            downloaded: true,
+            name: "Default Table",
+            link: "",
+            bundled: true,
+            type: "table"
+          );
+      AssetService.putAsset(asset);
+    }
+
+    if (!await AssetService.exists(UserSettingsStore.VALUE_DEFAULT_BACKDROP)) {
+      Asset asset = Asset(
+            id: UserSettingsStore.VALUE_DEFAULT_BACKDROP,
+            defaultAsset: true,
+            downloadedPath:'assets/images/default/backdrop.png',
+            downloaded: true,
+            name: "Default Backdrop",
+            link: "",
+            bundled: true,
+            type: "game-background"
+          );
+      AssetService.putAsset(asset);
+    }
+
+    if (!await AssetService.exists(UserSettingsStore.VALUE_DEFAULT_CARDBACK)) {
+      Asset asset = Asset(
+            id: UserSettingsStore.VALUE_DEFAULT_CARDBACK,
+            defaultAsset: true,
+            downloadedPath:'assets/images/default/cardback.png',
+            downloaded: true,
+            name: "Default Card Back",
+            link: "",
+            bundled: true,
+            type: "cardback"
+          );
+      AssetService.putAsset(asset);
+    }
+
+    if (!await AssetService.exists(UserSettingsStore.VALUE_DEFAULT_BETDIAL)) {
+      Asset asset = Asset(
+            id: UserSettingsStore.VALUE_DEFAULT_BETDIAL,
+            defaultAsset: true,
+            downloadedPath:'assets/images/default/betdial.svg',
+            downloaded: true,
+            name: "Default Bet Dial",
+            link: "",
+            bundled: true,
+            type: "dial"
+          );
+      AssetService.putAsset(asset);
+    }
   }
 
-  static Future<void> saveDefaultTableAsset() async {
-    final tableBytes = (await rootBundle.load(AppAssetsNew.defaultTablePath))
-        .buffer
-        .asUint8List();
-    final String extension = AppAssetsNew.defaultTablePath.split(".").last;
-    Directory dir = await getApplicationDocumentsDirectory();
-    final file = await File("${dir.path}/defaultTable.$extension")
-        .create(recursive: true);
-    await file.writeAsBytes(tableBytes);
-    final Asset asset = Asset(
-      id: UserSettingsStore.VALUE_DEFAULT_TABLE,
-      defaultAsset: true,
-      downloadedPath: file.path,
-      downloaded: true,
-      name: "Default Table",
-      link: "",
-      previewLink: "",
-    );
+  // static Future<void> saveDefaultTableAsset() async {
+  //   final tableBytes = (await rootBundle.load(AppAssetsNew.defaultTablePath))
+  //       .buffer
+  //       .asUint8List();
+  //   final String extension = AppAssetsNew.defaultTablePath.split(".").last;
+  //   Directory dir = await getApplicationDocumentsDirectory();
+  //   final file = await File("${dir.path}/defaultTable.$extension")
+  //       .create(recursive: true);
+  //   await file.writeAsBytes(tableBytes);
+  //   final Asset asset = Asset(
+  //     id: UserSettingsStore.VALUE_DEFAULT_TABLE,
+  //     defaultAsset: true,
+  //     downloadedPath: file.path,
+  //     downloaded: true,
+  //     name: "Default Table",
+  //     link: "",
+  //     previewLink: "",
+  //   );
 
-    await putAssetIntoHive(asset);
-  }
+  //   await putAssetIntoHive(asset);
+  // }
 
-  static Future<void> saveDefaultBackdropAsset() async {
-    final bgdropBytes =
-        (await rootBundle.load(AppAssetsNew.defaultBackdropPath))
-            .buffer
-            .asUint8List();
-    final String extension = AppAssetsNew.defaultBackdropPath.split(".").last;
-    Directory dir = await getApplicationDocumentsDirectory();
-    final file = await File("${dir.path}/defaultBackdrop.$extension")
-        .create(recursive: true);
-    await file.writeAsBytes(bgdropBytes);
-    final Asset asset = Asset(
-      id: UserSettingsStore.VALUE_DEFAULT_BACKDROP,
-      defaultAsset: true,
-      downloadedPath: file.path,
-      downloaded: true,
-      name: "Default Backdrop",
-      link: "",
-      previewLink: "",
-    );
+  // static Future<void> saveDefaultBackdropAsset() async {
+  //   final bgdropBytes =
+  //       (await rootBundle.load(AppAssetsNew.defaultBackdropPath))
+  //           .buffer
+  //           .asUint8List();
+  //   final String extension = AppAssetsNew.defaultBackdropPath.split(".").last;
+  //   Directory dir = await getApplicationDocumentsDirectory();
+  //   final file = await File("${dir.path}/defaultBackdrop.$extension")
+  //       .create(recursive: true);
+  //   await file.writeAsBytes(bgdropBytes);
+  //   final Asset asset = Asset(
+  //     id: UserSettingsStore.VALUE_DEFAULT_BACKDROP,
+  //     defaultAsset: true,
+  //     downloadedPath: file.path,
+  //     downloaded: true,
+  //     name: "Default Backdrop",
+  //     link: "",
+  //     previewLink: "",
+  //   );
 
-    await putAssetIntoHive(asset);
-  }
+  //   await putAssetIntoHive(asset);
+  // }
 }

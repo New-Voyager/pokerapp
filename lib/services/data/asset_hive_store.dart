@@ -1,5 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
 
+import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
 
 class Asset {
@@ -10,6 +13,7 @@ class Asset {
   String type;
   int size;
   bool defaultAsset;
+  bool bundled;
   DateTime updatedDate;
   bool active;
   bool downloaded;
@@ -28,6 +32,7 @@ class Asset {
     this.downloaded,
     this.downloadDir,
     this.downloadedPath,
+    this.bundled,
   });
 
   factory Asset.fromjson(dynamic json) {
@@ -60,6 +65,9 @@ class Asset {
     if (json['downloadedPath'] != null) {
       asset.downloadedPath = json['downloadedPath'].toString();
     }
+    if (json['bundled'] ?? false) {
+      asset.bundled = json['bundled'];
+    }
     return asset;
   }
 
@@ -74,11 +82,20 @@ class Asset {
       "downloaded": downloaded,
       "downloadDir": downloadDir,
       "downloadedPath": downloadedPath,
+      "bundled": bundled,
     };
     if (updatedDate != null) {
       json["updatedDate"] = updatedDate.toIso8601String();
     }
     return jsonEncode(json);
+  }
+  
+  Future<Uint8List> getBytes() async {
+    if (this.bundled) {
+      return File(downloadedPath).readAsBytesSync();
+    } else {
+      return (await rootBundle.load(downloadedPath)).buffer.asUint8List();
+    }
   }
 }
 
@@ -110,7 +127,7 @@ class AssetHiveStore {
 
   Asset get(String id) {
     dynamic jsonString = _assetBox.get(id);
-    if (json != null) {
+    if (jsonString != null) {
       dynamic json = jsonDecode(jsonString);
       return Asset.fromjson(json);
     }

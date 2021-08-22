@@ -37,6 +37,8 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> _initializeSettings() async {
     await AssetHiveStore.openAssetStore();
+    // initialize asset store with default value
+    await AssetService.updateBundledAssets();
     await UserSettingsStore.openSettingsStore();
   }
 
