@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -7,16 +8,21 @@ import 'package:pokerapp/enums/game_status.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/enums/player_status.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/marked_cards.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/player_info.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_constants.dart';
+import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/services/agora/agora.dart';
+import 'package:pokerapp/services/app/asset_service.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/app/handlog_cache_service.dart';
+import 'package:pokerapp/services/app/user_settings_service.dart';
 import 'package:pokerapp/services/data/game_hive_store.dart';
 import 'package:pokerapp/services/data/hive_models/game_settings.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
@@ -141,7 +147,9 @@ class GameState {
   // indicates a hand in progress
   bool handInProgress = false;
 
+  // assets used in the game screen
   GameScreenAssets assets;
+
   Future<void> initialize({
     String gameCode,
     @required GameInfoModel gameInfo,
@@ -460,12 +468,17 @@ class GameState {
 
   set currentHandNum(int handNum) => this._currentHandNum = currentHandNum;
 
-  Future<void> refresh(BuildContext context) async {
+  Future<void> refresh(BuildContext context,
+      {bool rebuildSeats = false}) async {
     log('************ Refreshing game state');
     // fetch new player using GameInfo API and add to the game
     GameInfoModel gameInfo = await GameService.getGameInfo(this._gameCode);
 
     this._gameInfo = gameInfo;
+
+    if (rebuildSeats) {
+      this._seats.clear();
+    }
 
     // reset seats
     for (var seat in this._seats.values) {
@@ -484,6 +497,16 @@ class GameState {
       _playerIdsToNames[player.id] = player.name;
     }
 
+    // for (Seat seat in this._seats.values) {
+    //   seat.notify();
+    // }
+    if (rebuildSeats) {
+      log('GameState: Rebuilding all the seats again');
+      for (int seatNo = 1; seatNo <= gameInfo.maxPlayers; seatNo++) {
+        this._seats[seatNo] = Seat(seatNo, null);
+      }
+    }
+
     // show buyin button/timer if the player is in middle of buyin
     for (var player in playersInSeats) {
       player.startingStack = player.stack;
@@ -496,7 +519,6 @@ class GameState {
         player.inBreak = true;
         player.breakTimeExpAt = player.breakTimeExpAt.toLocal();
       }
-
       if (player.seatNo != 0) {
         final seat = this._seats[player.seatNo];
         seat.player = player;
@@ -540,7 +562,7 @@ class GameState {
   }
 
   void rebuildSeats() {
-    log('potViewPos: rebuilding seats.');
+    // log('potViewPos: rebuilding seats.');
     for (final seat in this._seats.values) {
       seat.notify();
     }
@@ -1162,15 +1184,52 @@ class GameScreenAssets {
   Future<void> initialize() async {
     cardStrImage = Map<String, Uint8List>();
     cardNumberImage = Map<int, Uint8List>();
-    String backdropImage = 'assets/images/backgrounds/night sky.png';
-    String tableImage = 'assets/images/table/night sky table.png';
-    String betImage = 'assets/images/betimage.svg';
+    String backdropImage = AppAssetsNew.defaultBackdropPath;
+    String tableImage = AppAssetsNew.defaultTablePath;
+    String betImage = AppAssetsNew.defaultBetDailPath;
     //tableImage = AppAssets.horizontalTable;
     //backdropImage = AppAssets.barBookshelfBackground;
+    AppTheme theme = AppTheme.getTheme(navigatorKey.currentContext);
+    if (theme.tableAssetId == 'default-table') {
+      boardBytes = (await rootBundle.load(tableImage)).buffer.asUint8List();
+    } else {
+      try {
+        boardBytes =
+            File(AssetService.hiveStore.get(theme.tableAssetId).downloadedPath)
+                .readAsBytesSync();
+      } catch (e) {
+        boardBytes = (await rootBundle.load(tableImage)).buffer.asUint8List();
+      }
+    }
 
+    if (UserSettingsService.isDefaultTable()) {
+      boardBytes = (await rootBundle.load(tableImage)).buffer.asUint8List();
+    } else {
+      try {
+        boardBytes = File(AssetService.hiveStore
+                .get(UserSettingsService.getSelectedTableId())
+                .downloadedPath)
+            .readAsBytesSync();
+      } catch (e) {
+        boardBytes = (await rootBundle.load(tableImage)).buffer.asUint8List();
+      }
+    }
+
+    if (UserSettingsService.isDefaultBackdrop()) {
+      backdropBytes =
+          (await rootBundle.load(backdropImage)).buffer.asUint8List();
+    } else {
+      try {
+        backdropBytes = File(AssetService.hiveStore
+                .get(UserSettingsService.getSelectedTableId())
+                .downloadedPath)
+            .readAsBytesSync();
+      } catch (e) {
+        backdropBytes =
+            (await rootBundle.load(backdropImage)).buffer.asUint8List();
+      }
+    }
     betImageBytes = (await rootBundle.load(betImage)).buffer.asUint8List();
-    backdropBytes = (await rootBundle.load(backdropImage)).buffer.asUint8List();
-    boardBytes = (await rootBundle.load(tableImage)).buffer.asUint8List();
     holeCardBackBytes =
         (await rootBundle.load('assets/images/card_back/set2/Asset 7.png'))
             .buffer

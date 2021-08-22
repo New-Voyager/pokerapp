@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/enums/game_type.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
@@ -113,7 +114,10 @@ class HeaderView extends StatelessWidget {
           topRight: Radius.circular(32),
         ),
       ),
-      builder: (_) => GameOptionsBottomSheet(GameState.getState(context)),
+      builder: (_) => ListenableProvider.value(
+        value: context.read<GameContextObject>(),
+        child: GameOptionsBottomSheet(GameState.getState(context)),
+      ),
     );
   }
 

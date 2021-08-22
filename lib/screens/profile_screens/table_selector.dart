@@ -6,6 +6,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/models/ui/app_theme_data.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
@@ -14,6 +15,8 @@ import 'package:pokerapp/screens/game_play_screen/main_views/board_view/board_vi
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/asset_service.dart';
 import 'package:pokerapp/services/data/asset_hive_store.dart';
+import 'package:pokerapp/services/data/box_type.dart';
+import 'package:pokerapp/services/data/hive_datasource_impl.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:provider/provider.dart';
 
@@ -83,7 +86,7 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
             backDrop = Text('No default backdrop');
           } else {
             backDrop = Image.file(
-              File(_selectedDrop?.downloadedPath),
+              File(_selectedDrop?.downloadedPath ?? ""),
               fit: BoxFit.scaleDown,
               width: size.width,
             );
@@ -201,6 +204,18 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
                         await AssetService.setDefaultTableAsset(
                             asset: _tableAssets[index]);
                         setState(() {});
+
+                        final theme = AppTheme.getTheme(context);
+                        AppThemeData data = theme.themeData;
+                        data.tableAssetId = _tableAssets[index].id;
+
+                        final settings = HiveDatasource.getInstance
+                            .getBox(BoxType.USER_SETTINGS_BOX);
+                        settings.put('theme', data.toMap());
+                        settings.put('themeIndex', index);
+
+                        theme.updateThemeData(data);
+
                         final asset = await AssetService.getDefaultTableAsset();
                         log(jsonEncode(asset.toJson()));
                       },
@@ -265,13 +280,24 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
                           log("Downloading ${_selectedDrop.id} : ${_selectedDrop.name}");
                           _backDropAssets[index] = await AssetService.saveFile(
                               _backDropAssets[index]);
-                          AssetService.hiveStore.put(_backDropAssets[index]);
-                          AssetService.setDefaultTableAsset(
-                              asset: _backDropAssets[index]);
+                          await AssetService.hiveStore
+                              .put(_backDropAssets[index]);
+                          // AssetService.setDefaultBackdropAsset(
+                          //     asset: _backDropAssets[index]);
                           setState(() {});
                         }
-                        AssetService.setDefaultBackdropAsset(
+                        await AssetService.setDefaultBackdropAsset(
                             asset: _backDropAssets[index]);
+
+                        final theme = AppTheme.getTheme(context);
+                        AppThemeData data = theme.themeData;
+                        data.backDropAssetId = _backDropAssets[index].id;
+
+                        final settings = HiveDatasource.getInstance
+                            .getBox(BoxType.USER_SETTINGS_BOX);
+                        settings.put('theme', data.toMap());
+
+                        theme.updateThemeData(data);
                       },
                       child: Container(
                         padding: EdgeInsets.symmetric(horizontal: 8),

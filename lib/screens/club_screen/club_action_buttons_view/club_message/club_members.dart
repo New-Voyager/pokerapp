@@ -52,6 +52,7 @@ class _ClubMembersState extends State<ClubMembers> with RouteAwareAnalytics {
                 isScrollControlled: true,
                 builder: (_) => ListOfClubMemberBottomSheet(
                   clubCode: widget.clubCode,
+                  appScreenText: _appScreenText,
                 ),
               ).then((value) {
                 setState(() {
