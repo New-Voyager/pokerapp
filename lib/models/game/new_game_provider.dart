@@ -138,6 +138,30 @@ class NewGameModelProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool get bombPotEnabled => settings.bombPotEnabled ?? false;
+  set bombPotEnabled(value) {
+    settings.bombPotEnabled = value;
+    notifyListeners();
+  }
+
+  int get bombPotBet => settings.bombPotBet ?? 5;
+  set bombPotBet(value) {
+    settings.bombPotBet = value;
+    notifyListeners();
+  }
+
+  bool get doubleBoardBombPot => settings.doubleBoardBombPot ?? false;
+  set doubleBoardBombPot(value) {
+    settings.doubleBoardBombPot = value;
+    notifyListeners();
+  }
+
+  int get bombPotInterval => settings.bombPotInterval ?? false;
+  set bombPotInterval(value) {
+    settings.bombPotInterval = value;
+    notifyListeners();
+  }
+
   // int get selectedGameLength {
   //   return gameLengths
   //       .indexOf(NewGameConstants.GAME_LENGTH[settings.gameLength]);

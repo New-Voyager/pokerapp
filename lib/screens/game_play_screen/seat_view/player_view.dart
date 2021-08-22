@@ -171,7 +171,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
       debugLabel: 'Seat:${widget.seat.serverSeatPos}',
     ); //this.globalKey;
 
-   // log('potViewPos: Rebuilding Seat: ${widget.seat.serverSeatPos}');
+    // log('potViewPos: Rebuilding Seat: ${widget.seat.serverSeatPos}');
 
     // the player tapped to see the player profile
     final gameState = GameState.getState(context);

@@ -31,40 +31,6 @@ class BetWidget extends StatelessWidget {
     this.remainingTime,
   });
 
-  Widget betButton1(ValueNotifier<double> vnVal) {
-    return Container(
-      width: 60.pw,
-      height: 74.ph,
-      child: Stack(fit: StackFit.expand, children: [
-        PulsatingCircleIconButton(
-          onTap: () => onSubmitCallBack?.call(vnVal.value),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                DataFormatter.chipsFormat(
-                  vnVal.value,
-                ),
-                style: TextStyle(
-                  fontSize: 10.dp,
-                  color: Colors.white,
-                ),
-              ),
-              //  SizedBox(height: 5),
-              Text(
-                "BET",
-                style: TextStyle(
-                  fontSize: 10.dp,
-                  color: Colors.white,
-                ),
-              )
-            ],
-          ),
-        ),
-      ]),
-    );
-  }
 
   // TODO: MAKE THIS CLASS A GENERAL ONE SOMEWHERE OUTSIDE IN UTILS
   // WE CAN REUSE THIS CLASS FOR OTHER PLACES AS WELL
@@ -98,7 +64,7 @@ class BetWidget extends StatelessWidget {
       show: true,
       tooltipDirection: TooltipDirection.right,
       content: Text(
-        "Tap or slide-up to confirm bet",
+        "Slide-up to confirm bet. You can change to Tap in Settings",
         style: TextStyle(
           color: Colors.black,
           fontSize: 13,

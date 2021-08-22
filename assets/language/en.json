@@ -5,7 +5,8 @@
         "NOMESSAGES": "No Messages",
         "PLAYER": "Player",
         "you": "You",
-        "hand": "Hand"
+        "hand": "Hand",
+        "inBB": "(x BBs)"
     },
     "liveGames": {
         "EMPTY_GAMECODE_ERROR": "GameCode can't be empty",
@@ -176,7 +177,7 @@
         "ADVANCESETTINGS": "Advanced Settings",
         "BUYINGAPPROVAL": "Buyin Approval",
         "BUYINGMAXWAITTIME": "Buyin max wait time (in seconds)",
-        "BREAKALLOWED": "Break allowed",
+        "breakAllowed": "Break allowed",
         "MAXBREAKTIME": "Max break time",
         "MINS": "mins",
         "USEAUDIOCONFERENCE": "Use Audio Conference    (Beta)",
@@ -193,7 +194,11 @@
         "START": "Start",
         "GAMECREATIONFAILED": "Game creation failed!",
         "CHECKBIGBLIND": "Please check Bigblind values",
-        "CHECKBUYINGMINMAX": "Please check Buyin Min and Buyin max values"
+        "CHECKBUYINGMINMAX": "Please check Buyin Min and Buyin max values",
+        "bombPotEnabled": "Enable Bomb Pot",
+        "doubleBoardBombPot": "Double board Bomb Pot",
+        "bombPotInterval": "Bomb Pot interval (in mins)",
+        "bombPotBet": "Bomb Pot bet amount (x BBs)"
     },
     "clubsPageView": {
         "UPADATESUCCESSFUL": "Update successful",
