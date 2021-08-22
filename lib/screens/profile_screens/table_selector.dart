@@ -86,7 +86,7 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
             backDrop = Text('No default backdrop');
           } else {
             backDrop = Image.file(
-              File(_selectedDrop?.downloadedPath),
+              File(_selectedDrop?.downloadedPath ?? ""),
               fit: BoxFit.scaleDown,
               width: size.width,
             );
@@ -207,7 +207,7 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
 
                         final theme = AppTheme.getTheme(context);
                         AppThemeData data = theme.themeData;
-                       data.tableAssetId = _tableAssets[index].id;
+                        data.tableAssetId = _tableAssets[index].id;
 
                         final settings = HiveDatasource.getInstance
                             .getBox(BoxType.USER_SETTINGS_BOX);
@@ -289,9 +289,9 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
                         await AssetService.setDefaultBackdropAsset(
                             asset: _backDropAssets[index]);
 
-                             final theme = AppTheme.getTheme(context);
+                        final theme = AppTheme.getTheme(context);
                         AppThemeData data = theme.themeData;
-                       data.backDropAssetId = _backDropAssets[index].id;
+                        data.backDropAssetId = _backDropAssets[index].id;
 
                         final settings = HiveDatasource.getInstance
                             .getBox(BoxType.USER_SETTINGS_BOX);

@@ -179,7 +179,7 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
               final settings =
                   HiveDatasource.getInstance.getBox(BoxType.USER_SETTINGS_BOX);
               settings.put('theme', data.toMap());
-              settings.put('themeIndex', index);
+              //settings.put('themeIndex', index);
 
               theme.updateThemeData(data);
             },

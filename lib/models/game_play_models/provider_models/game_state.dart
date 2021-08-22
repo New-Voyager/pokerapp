@@ -22,6 +22,7 @@ import 'package:pokerapp/services/agora/agora.dart';
 import 'package:pokerapp/services/app/asset_service.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/app/handlog_cache_service.dart';
+import 'package:pokerapp/services/app/user_settings_service.dart';
 import 'package:pokerapp/services/data/game_hive_store.dart';
 import 'package:pokerapp/services/data/hive_models/game_settings.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
@@ -1185,29 +1186,30 @@ class GameScreenAssets {
     cardNumberImage = Map<int, Uint8List>();
     String backdropImage = AppAssetsNew.defaultBackdropPath;
     String tableImage = AppAssetsNew.defaultTablePath;
-    String betImage = 'assets/images/betimage.svg';
+    String betImage = AppAssetsNew.defaultBetDailPath;
     //tableImage = AppAssets.horizontalTable;
     //backdropImage = AppAssets.barBookshelfBackground;
-    AppTheme theme = AppTheme.getTheme(navigatorKey.currentContext);
-    if (theme.tableAssetId == 'default-table') {
+
+    if (UserSettingsService.isDefaultTable()) {
       boardBytes = (await rootBundle.load(tableImage)).buffer.asUint8List();
     } else {
       try {
-        boardBytes =
-            File(AssetService.hiveStore.get(theme.tableAssetId).downloadedPath)
-                .readAsBytesSync();
+        boardBytes = File(AssetService.hiveStore
+                .get(UserSettingsService.getSelectedTableId())
+                .downloadedPath)
+            .readAsBytesSync();
       } catch (e) {
         boardBytes = (await rootBundle.load(tableImage)).buffer.asUint8List();
       }
     }
 
-    if (theme.backDropAssetId == 'default-backdrop') {
+    if (UserSettingsService.isDefaultBackdrop()) {
       backdropBytes =
           (await rootBundle.load(backdropImage)).buffer.asUint8List();
     } else {
       try {
         backdropBytes = File(AssetService.hiveStore
-                .get(theme.backDropAssetId)
+                .get(UserSettingsService.getSelectedTableId())
                 .downloadedPath)
             .readAsBytesSync();
       } catch (e) {
