@@ -258,8 +258,7 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
                     await AssetService.saveFile(_cardBackAssets[index]);
                 await AssetService.hiveStore.put(_cardBackAssets[index]);
               }
-              await AssetService.setDefaultTableAsset(
-                  asset: _cardBackAssets[index]);
+             
               setState(() {
                 isDownloading = false;
               });
@@ -349,7 +348,6 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
                     await AssetService.saveFile(_betAssets[index]);
                 await AssetService.hiveStore.put(_betAssets[index]);
               }
-              await AssetService.setDefaultTableAsset(asset: _betAssets[index]);
               setState(() {
                 isDownloading = false;
               });

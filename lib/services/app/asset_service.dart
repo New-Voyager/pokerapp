@@ -2,13 +2,16 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:developer';
 
+import 'package:flutter/services.dart';
 import 'package:path/path.dart' as path;
 
 import 'package:path_provider/path_provider.dart';
 import 'package:pokerapp/resources/app_config.dart';
 import 'package:http/http.dart' as http;
+import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/services/data/asset_hive_store.dart';
 import 'package:archive/archive_io.dart';
+import 'package:pokerapp/services/data/user_settings_store.dart';
 
 class AssetService {
   AssetService._();
@@ -17,10 +20,10 @@ class AssetService {
   static Asset defaultTableAsset;
   static Asset defaultBackdropAsset;
 
-  static Future<void> setDefaultTableAsset({Asset asset}) async {
-    await hiveStore.put(asset, id: "default-table");
-    await getDefaultTableAsset();
-  }
+  // static Future<void> setDefaultTableAsset({Asset asset}) async {
+  //   await hiveStore.put(asset, id: "default-table");
+  //   await getDefaultTableAsset();
+  // }
 
   static Future<void> refresh() async {
     try {
@@ -37,10 +40,10 @@ class AssetService {
     return defaultTableAsset;
   }
 
-  static Future<void> setDefaultBackdropAsset({Asset asset}) async {
-    await hiveStore.put(asset, id: "default-backdrop");
-    await getDefaultBackdropAsset();
-  }
+  // static Future<void> setDefaultBackdropAsset({Asset asset}) async {
+  //   await hiveStore.put(asset, id: "default-backdrop");
+  //   await getDefaultBackdropAsset();
+  // }
 
   static Future<Asset> getDefaultBackdropAsset() async {
     try {
@@ -181,5 +184,85 @@ class AssetService {
       }
     }
     return ret;
+  }
+
+  static Future<void> putAssetIntoHive(Asset asset, {String id}) async {
+    if (asset != null) {
+      await hiveStore.put(asset, id: id ?? asset.id);
+    }
+  }
+
+  // static loadDefaultAssetsIntoHive() async {
+  //   await loadDefaultTableAssetIntoHive();
+  //   await loadDefaultAssetsIntoHive();
+  // }
+
+  // static loadDefaultTableAssetIntoHive() async {
+  //   final Asset tabAsset = Asset();
+  //   await putAssetIntoHive(tabAsset);
+  // }
+
+  // static loadDefaultBackdropAssetIntoHive() async {
+  //   final Asset bdAsset = Asset();
+  //   await putAssetIntoHive(bdAsset);
+  // }
+
+  static Asset getAssetForId(String id) {
+    return hiveStore.get(id);
+  }
+
+  static setDefaultAssetsFromAssetsToFiles() async {
+    if (hiveStore == null) {
+      await getStore();
+    }
+    // Load Default table asset
+    await saveDefaultTableAsset();
+    // Load default backdrop asset
+    await saveDefaultBackdropAsset();
+  }
+
+  static Future<void> saveDefaultTableAsset() async {
+    final tableBytes = (await rootBundle.load(AppAssetsNew.defaultTablePath))
+        .buffer
+        .asUint8List();
+    final String extension = AppAssetsNew.defaultTablePath.split(".").last;
+    Directory dir = await getApplicationDocumentsDirectory();
+    final file = await File("${dir.path}/defaultTable.$extension")
+        .create(recursive: true);
+    await file.writeAsBytes(tableBytes);
+    final Asset asset = Asset(
+      id: UserSettingsStore.VALUE_DEFAULT_TABLE,
+      defaultAsset: true,
+      downloadedPath: file.path,
+      downloaded: true,
+      name: "Default Table",
+      link: "",
+      previewLink: "",
+    );
+
+    await putAssetIntoHive(asset);
+  }
+
+  static Future<void> saveDefaultBackdropAsset() async {
+    final bgdropBytes =
+        (await rootBundle.load(AppAssetsNew.defaultBackdropPath))
+            .buffer
+            .asUint8List();
+    final String extension = AppAssetsNew.defaultBackdropPath.split(".").last;
+    Directory dir = await getApplicationDocumentsDirectory();
+    final file = await File("${dir.path}/defaultBackdrop.$extension")
+        .create(recursive: true);
+    await file.writeAsBytes(bgdropBytes);
+    final Asset asset = Asset(
+      id: UserSettingsStore.VALUE_DEFAULT_BACKDROP,
+      defaultAsset: true,
+      downloadedPath: file.path,
+      downloaded: true,
+      name: "Default Backdrop",
+      link: "",
+      previewLink: "",
+    );
+
+    await putAssetIntoHive(asset);
   }
 }

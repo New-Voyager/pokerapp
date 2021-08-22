@@ -15,7 +15,20 @@ class Asset {
   bool downloaded;
   String downloadDir; // directory for cards
   String downloadedPath; // file name of downloaded file (for single files)
-  Asset();
+  Asset({
+    this.id,
+    this.name,
+    this.link,
+    this.previewLink,
+    this.type,
+    this.size,
+    this.defaultAsset,
+    this.updatedDate,
+    this.active,
+    this.downloaded,
+    this.downloadDir,
+    this.downloadedPath,
+  });
 
   factory Asset.fromjson(dynamic json) {
     Asset asset = Asset();

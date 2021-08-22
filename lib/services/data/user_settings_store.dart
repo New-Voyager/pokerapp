@@ -1,6 +1,8 @@
 import 'dart:developer';
 
 import 'package:hive/hive.dart';
+import 'package:pokerapp/services/app/asset_service.dart';
+import 'package:pokerapp/services/data/asset_hive_store.dart';
 import 'package:pokerapp/services/data/box_type.dart';
 
 class UserSettingsStore {
@@ -27,6 +29,7 @@ class UserSettingsStore {
       if (_settingsBox.isEmpty) {
         log("0-0-0-User Settings box is empty: Loading default values");
         await loadDefaultSettings();
+        await AssetService.setDefaultAssetsFromAssetsToFiles();
       }
     }
   }
@@ -59,7 +62,7 @@ class UserSettingsStore {
 
   static Map<String, String> getSelectedAssets() {
     final assets = _settingsBox.get(KEY_SELECTED_ASSETS);
-    Map <String, String> ret = Map<String, String>();
+    Map<String, String> ret = Map<String, String>();
     for (final key in assets.keys) {
       final keyStr = key.toString();
       final value = assets[keyStr].toString();
@@ -91,5 +94,21 @@ class UserSettingsStore {
   static String getSelectedBetDial() {
     final Map<String, String> values = getSelectedAssets();
     return values[KEY_SELECTED_BETDIAL] ?? VALUE_DEFAULT_BETDIAL;
+  }
+
+  static void setSelectedTableId(String id) {
+    final Map<String, String> values = getSelectedAssets();
+    values[KEY_SELECTED_TABLE] = id;
+    setSelectedAssets(values);
+  }
+
+  static void setSelectedBackdropId(String id) {
+    final Map<String, String> values = getSelectedAssets();
+    values[KEY_SELECTED_BACKDROP] = id;
+    setSelectedAssets(values);
+  }
+
+  static void setSelectedAssets(Map<String, String> values) {
+    _settingsBox.put(KEY_SELECTED_ASSETS, values);
   }
 }

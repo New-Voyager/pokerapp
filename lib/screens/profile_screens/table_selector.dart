@@ -14,9 +14,11 @@ import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/board_view.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/asset_service.dart';
+import 'package:pokerapp/services/app/user_settings_service.dart';
 import 'package:pokerapp/services/data/asset_hive_store.dart';
 import 'package:pokerapp/services/data/box_type.dart';
 import 'package:pokerapp/services/data/hive_datasource_impl.dart';
+import 'package:pokerapp/services/data/user_settings_store.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:provider/provider.dart';
 
@@ -63,8 +65,26 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
         _tableAssets.add(element);
       }
     });
-    _selectedTable = await AssetService.getDefaultTableAsset();
-    _selectedDrop = await AssetService.getDefaultBackdropAsset();
+
+    // Get Asset for selectedTableId
+    _selectedTable =
+        AssetService.getAssetForId(UserSettingsService.getSelectedTableId());
+    // if the asset is not found in hive request for default asset.
+    if (_selectedTable == null) {
+      _selectedTable =
+          AssetService.getAssetForId(UserSettingsStore.VALUE_DEFAULT_TABLE);
+      _tableAssets.add(_selectedTable);
+    }
+
+    // Get Asset for selected drop
+    _selectedDrop =
+        AssetService.getAssetForId(UserSettingsService.getSelectedBackdropId());
+    // if the asset is not found in hive request for default asset.
+    if (_selectedDrop == null) {
+      _selectedDrop =
+          AssetService.getAssetForId(UserSettingsStore.VALUE_DEFAULT_BACKDROP);
+      _backDropAssets.add(_selectedDrop);
+    }
     setState(() {});
   }
 
@@ -83,7 +103,7 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
         Widget backDrop;
         if (initialized) {
           if (_selectedTable == null) {
-            backDrop = Text('No default backdrop');
+            backDrop = CircularProgressWidget();
           } else {
             backDrop = Image.file(
               File(_selectedDrop?.downloadedPath ?? ""),
@@ -199,25 +219,28 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
                           log("Downloading ${_selectedTable.id} : ${_selectedTable.name}");
                           _tableAssets[index] =
                               await AssetService.saveFile(_tableAssets[index]);
+                          // Save the modified asset
                           await AssetService.hiveStore.put(_tableAssets[index]);
                         }
-                        await AssetService.setDefaultTableAsset(
-                            asset: _tableAssets[index]);
+
+                        // Update user settings
+                        await UserSettingsService.setSelectedTableId(
+                            _tableAssets[index]);
                         setState(() {});
 
-                        final theme = AppTheme.getTheme(context);
-                        AppThemeData data = theme.themeData;
-                        data.tableAssetId = _tableAssets[index].id;
+                        // final theme = AppTheme.getTheme(context);
+                        // AppThemeData data = theme.themeData;
+                        // data.tableAssetId = _tableAssets[index].id;
 
-                        final settings = HiveDatasource.getInstance
-                            .getBox(BoxType.USER_SETTINGS_BOX);
-                        settings.put('theme', data.toMap());
-                        settings.put('themeIndex', index);
+                        // final settings = HiveDatasource.getInstance
+                        //     .getBox(BoxType.USER_SETTINGS_BOX);
+                        // settings.put('theme', data.toMap());
+                        // settings.put('themeIndex', index);
 
-                        theme.updateThemeData(data);
+                        //  theme.updateThemeData(data);
 
-                        final asset = await AssetService.getDefaultTableAsset();
-                        log(jsonEncode(asset.toJson()));
+                        // final asset = await AssetService.getDefaultTableAsset();
+                        // log(jsonEncode(asset.toJson()));
                       },
                       child: Container(
                         padding: EdgeInsets.symmetric(horizontal: 8),
@@ -286,18 +309,19 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
                           //     asset: _backDropAssets[index]);
                           setState(() {});
                         }
-                        await AssetService.setDefaultBackdropAsset(
-                            asset: _backDropAssets[index]);
+                        // Update user settings
+                        await UserSettingsService.setSelectedBackdropId(
+                            _backDropAssets[index]);
 
-                        final theme = AppTheme.getTheme(context);
-                        AppThemeData data = theme.themeData;
-                        data.backDropAssetId = _backDropAssets[index].id;
+                        // final theme = AppTheme.getTheme(context);
+                        // AppThemeData data = theme.themeData;
+                        // data.backDropAssetId = _backDropAssets[index].id;
 
-                        final settings = HiveDatasource.getInstance
-                            .getBox(BoxType.USER_SETTINGS_BOX);
-                        settings.put('theme', data.toMap());
+                        // final settings = HiveDatasource.getInstance
+                        //     .getBox(BoxType.USER_SETTINGS_BOX);
+                        // settings.put('theme', data.toMap());
 
-                        theme.updateThemeData(data);
+                        // theme.updateThemeData(data);
                       },
                       child: Container(
                         padding: EdgeInsets.symmetric(horizontal: 8),
