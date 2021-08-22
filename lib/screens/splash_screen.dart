@@ -100,6 +100,11 @@ class _SplashScreenState extends State<SplashScreen> {
           fillInColor: Color(themeData['fillInColor']),
           fontFamily: themeData['fontFamily'],
           supportingColor: Color(themeData['supportingColor']),
+          tableAssetId: themeData['tableAssetId'],
+          backDropAssetId: themeData['backDropAssetId'],
+          cardBackAssetId: themeData['cardBackAssetId'],
+          cardFaceAssetId: themeData['cardFaceAssetId'],
+          betAssetId: themeData['betAssetId'],
         ),
       );
     }

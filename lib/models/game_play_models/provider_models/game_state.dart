@@ -1189,6 +1189,18 @@ class GameScreenAssets {
     String betImage = AppAssetsNew.defaultBetDailPath;
     //tableImage = AppAssets.horizontalTable;
     //backdropImage = AppAssets.barBookshelfBackground;
+    AppTheme theme = AppTheme.getTheme(navigatorKey.currentContext);
+    if (theme.tableAssetId == 'default-table') {
+      boardBytes = (await rootBundle.load(tableImage)).buffer.asUint8List();
+    } else {
+      try {
+        boardBytes =
+            File(AssetService.hiveStore.get(theme.tableAssetId).downloadedPath)
+                .readAsBytesSync();
+      } catch (e) {
+        boardBytes = (await rootBundle.load(tableImage)).buffer.asUint8List();
+      }
+    }
 
     if (UserSettingsService.isDefaultTable()) {
       boardBytes = (await rootBundle.load(tableImage)).buffer.asUint8List();
