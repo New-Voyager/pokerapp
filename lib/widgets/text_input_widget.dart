@@ -59,65 +59,67 @@ class TextInputWidget extends StatelessWidget {
           ],
         );
 
-  Widget _buildInputArea(AppTheme theme) => Container(
-        margin: const EdgeInsets.symmetric(vertical: 10.0),
-        padding: const EdgeInsets.only(bottom: 2.0),
-        decoration: BoxDecoration(
-          border: Border(
-            bottom: BorderSide(
-              width: 1.0,
-              color: theme.fillInColor,
-            ),
+  Widget _buildInputArea(AppTheme theme) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 10.0),
+      padding: const EdgeInsets.only(bottom: 2.0),
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(
+            width: 1.0,
+            color: theme.fillInColor,
           ),
         ),
-        child: Row(
-          children: [
-            /* leading */
-            leading == null
-                ? kEmpty
-                : Container(
-                    margin: const EdgeInsets.only(right: 5.0),
-                    child: Text(
-                      leading,
-                      style: TextStyle(
-                        color: theme.supportingColor,
-                        fontSize: small ? 15.0 : 20.0,
-                        fontWeight: FontWeight.w300,
-                      ),
+      ),
+      child: Row(
+        children: [
+          /* leading */
+          leading == null
+              ? kEmpty
+              : Container(
+                  margin: const EdgeInsets.only(right: 5.0),
+                  child: Text(
+                    leading,
+                    style: TextStyle(
+                      color: theme.supportingColor,
+                      fontSize: small ? 15.0 : 20.0,
+                      fontWeight: FontWeight.w300,
                     ),
                   ),
+                ),
 
-            /* main value */
-            Expanded(
-              child: Consumer<ValueNotifier<double>>(
-                builder: (_, vnValue, __) => Text(
-                  DataFormatter.chipsFormat(vnValue.value ?? 0),
-                  //vnValue.value?.toString() ?? (value?.toString() ?? ''),
-                  style: TextStyle(
-                    color: theme.supportingColor,
-                    fontSize: 15.0,
-                  ),
+          /* main value */
+          Expanded(
+            child: Consumer<ValueNotifier<double>>(
+              builder: (_, vnValue, __) => Text(
+                DataFormatter.chipsFormat(vnValue.value ?? 0),
+                //vnValue.value?.toString() ?? (value?.toString() ?? ''),
+                style: TextStyle(
+                  color: theme.supportingColor,
+                  fontSize: 15.0,
                 ),
               ),
             ),
+          ),
 
-            /* trailing */
-            trailing == null
-                ? kEmpty
-                : Container(
-                    margin: const EdgeInsets.only(left: 5.0),
-                    child: Text(
-                      trailing,
-                      style: TextStyle(
-                        color: theme.supportingColor,
-                        fontSize: small ? 12.0 : 15.0,
-                        fontWeight: FontWeight.w300,
-                      ),
+          /* trailing */
+          trailing == null
+              ? kEmpty
+              : Container(
+                  margin: const EdgeInsets.only(left: 5.0),
+                  child: Text(
+                    trailing,
+                    style: TextStyle(
+                      color: theme.supportingColor,
+                      fontSize: small ? 12.0 : 15.0,
+                      fontWeight: FontWeight.w300,
                     ),
                   ),
-          ],
-        ),
-      );
+                ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {

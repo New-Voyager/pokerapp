@@ -59,7 +59,7 @@ class UserSettingsStore {
 
   static Map<String, String> getSelectedAssets() {
     final assets = _settingsBox.get(KEY_SELECTED_ASSETS);
-    Map <String, String> ret = Map<String, String>();
+    Map<String, String> ret = Map<String, String>();
     for (final key in assets.keys) {
       final keyStr = key.toString();
       final value = assets[keyStr].toString();

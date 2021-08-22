@@ -14,6 +14,8 @@ class NewGameConstants {
 
   static const List<int> ACTION_TIMES = [10, 15, 20, 30, 45, 60];
   static const List<int> BUYIN_WAIT_TIMES = [60, 90, 120, 240, 300];
+  static const List<int> BOMB_POT_INTERVALS = [30, 45, 60, 90, 120];
+  static const List<int> BOMB_POT_BET_SIZE = [2, 3, 4, 5, 10, 15, 20];
 
   // static const Map<int, String> ACTION_TIMES = {
   //   10: "10 Seconds",
@@ -81,6 +83,18 @@ class NewGameModel {
   bool showHandRank = false;
   bool useAgora = false;
 
+  /*
+    bombPotEnabled: Boolean
+    bombPotBet: Int
+    doubleBoardBombPot: Boolean
+    bombPotInterval: Int        
+    bombPotIntervalInSecs: Int  # for tests
+  */
+  bool bombPotEnabled = false;
+  bool doubleBoardBombPot = false;
+  int bombPotInterval = 30;
+  int bombPotBet = 5; // in big blinds
+
   List<GameType> roeGames = [];
   List<GameType> dealerChoiceGames = [];
 
@@ -115,7 +129,11 @@ class NewGameModel {
       this.allowRabbitHunt,
       this.showHandRank,
       this.audioConference,
-      this.useAgora});
+      this.useAgora,
+      this.bombPotEnabled,
+      this.bombPotBet,
+      this.doubleBoardBombPot,
+      this.bombPotInterval});
 
   NewGameModel.withDefault(String clubCode) {
     this.clubCode = clubCode;
@@ -148,6 +166,10 @@ class NewGameModel {
     allowRabbitHunt = json['allowRabbitHunt'];
     showHandRank = json['showHandRank'];
     useAgora = json['useAgora'];
+    bombPotEnabled = json['bombPotEnabled'] ?? false;
+    bombPotBet = json['bombPotBet'] ?? 5;
+    doubleBoardBombPot = json['doubleBoardBombPot'] ?? false;
+    bombPotInterval = json['bombPotInterval'] ?? 30;
   }
 
   Map<String, dynamic> toJson() {
@@ -174,6 +196,10 @@ class NewGameModel {
     data['allowRabbitHunt'] = this.allowRabbitHunt;
     data['showHandRank'] = this.showHandRank;
     data['useAgora'] = this.useAgora;
+    data['bombPotEnabled'] = this.bombPotEnabled;
+    data['bombPotBet'] = this.bombPotBet;
+    data['doubleBoardBombPot'] = this.doubleBoardBombPot;
+    data['bombPotInterval'] = this.bombPotInterval;
 
     if (this.gameType == GameType.ROE) {
       data['roeGames'] = this
