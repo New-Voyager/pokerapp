@@ -92,7 +92,7 @@ class Asset {
   }
 
   Future<Uint8List> getBytes() async {
-    if (!this.bundled) {
+    if (!(this.bundled ?? false)) {
       return File(downloadedPath).readAsBytesSync();
     } else {
       try {
