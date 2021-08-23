@@ -16,6 +16,7 @@ class NewGameConstants {
   static const List<int> BUYIN_WAIT_TIMES = [60, 90, 120, 240, 300];
   static const List<int> BOMB_POT_INTERVALS = [30, 45, 60, 90, 120];
   static const List<int> BOMB_POT_BET_SIZE = [2, 3, 4, 5, 10, 15, 20];
+  static const List<int> BREAK_WAIT_TIMES = [3, 5, 10, 15, 30];
 
   // static const Map<int, String> ACTION_TIMES = {
   //   10: "10 Seconds",
@@ -82,7 +83,8 @@ class NewGameModel {
   bool allowRabbitHunt = true;
   bool showHandRank = false;
   bool useAgora = false;
-
+  bool breakAllowed = false;
+  int breakTime = 5;
   /*
     bombPotEnabled: Boolean
     bombPotBet: Int
@@ -94,6 +96,7 @@ class NewGameModel {
   bool doubleBoardBombPot = false;
   int bombPotInterval = 30;
   int bombPotBet = 5; // in big blinds
+
 
   List<GameType> roeGames = [];
   List<GameType> dealerChoiceGames = [];
@@ -133,7 +136,10 @@ class NewGameModel {
       this.bombPotEnabled,
       this.bombPotBet,
       this.doubleBoardBombPot,
-      this.bombPotInterval});
+      this.bombPotInterval,
+      this.breakAllowed,
+      this.breakTime,
+    });
 
   NewGameModel.withDefault(String clubCode) {
     this.clubCode = clubCode;
@@ -170,6 +176,9 @@ class NewGameModel {
     bombPotBet = json['bombPotBet'] ?? 5;
     doubleBoardBombPot = json['doubleBoardBombPot'] ?? false;
     bombPotInterval = json['bombPotInterval'] ?? 30;
+    seatChangeAllowed = json['seatChangeAllowed'] ?? false;
+    breakTime = json['breakTime'] ?? 5;
+    breakAllowed = json['breakAllowed'] ?? true;
   }
 
   Map<String, dynamic> toJson() {
@@ -200,6 +209,9 @@ class NewGameModel {
     data['bombPotBet'] = this.bombPotBet;
     data['doubleBoardBombPot'] = this.doubleBoardBombPot;
     data['bombPotInterval'] = this.bombPotInterval;
+    data['seatChangeAllowed'] = this.seatChangeAllowed ?? false;
+    data['breakAllowed'] = this.breakAllowed ?? true;
+    data['breakTime'] = this.breakTime ?? 5;
 
     if (this.gameType == GameType.ROE) {
       data['roeGames'] = this

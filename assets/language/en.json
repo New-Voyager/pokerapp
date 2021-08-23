@@ -178,14 +178,14 @@
         "BUYINGAPPROVAL": "Buyin Approval",
         "BUYINGMAXWAITTIME": "Buyin max wait time (in seconds)",
         "breakAllowed": "Break allowed",
-        "MAXBREAKTIME": "Max break time",
+        "maxBreakTime": "Max break time (in minutes)",
         "MINS": "mins",
         "USEAUDIOCONFERENCE": "Use Audio Conference    (Beta)",
         "USEAGORAAUDIOCONFERENCE": "Use Agora Audio Conference    (Beta)",
         "BOTGAME": "Bot Game",
         "LOCATIONCHECK": "Location Check",
         "IPCHECK": "IP Check",
-        "WAITLIST": "Waitlist",
+        "WAITLIST": "Waitlist allowed",
         "ALLOWFUNANIMATION": "Allow Fun Animations",
         "MUCKLOSINGHAND": "Muck Losing Hand",
         "SHOWPLAYERBUYING": "Show player buyin",
@@ -198,7 +198,8 @@
         "bombPotEnabled": "Enable Bomb Pot",
         "doubleBoardBombPot": "Double board Bomb Pot",
         "bombPotInterval": "Bomb Pot interval (in mins)",
-        "bombPotBet": "Bomb Pot bet amount (x BBs)"
+        "bombPotBet": "Bomb Pot bet amount (x BBs)",
+        "seatChangeAllowed": "Player Seat Change allowed"
     },
     "clubsPageView": {
         "UPADATESUCCESSFUL": "Update successful",
