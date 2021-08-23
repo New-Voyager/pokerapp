@@ -18,9 +18,10 @@ class AssetService {
 
   static Future<void> refresh() async {
     try {
-      final assets = await getAssets();
+      List<Asset> assets = await getAssets();
       hiveStore = await getStore();
       hiveStore.putAll(assets);
+      assets = await hiveStore.getAll();
     } catch (err) {}
   }
 
@@ -192,21 +193,6 @@ class AssetService {
     }
   }
 
-  // static loadDefaultAssetsIntoHive() async {
-  //   await loadDefaultTableAssetIntoHive();
-  //   await loadDefaultAssetsIntoHive();
-  // }
-
-  // static loadDefaultTableAssetIntoHive() async {
-  //   final Asset tabAsset = Asset();
-  //   await putAssetIntoHive(tabAsset);
-  // }
-
-  // static loadDefaultBackdropAssetIntoHive() async {
-  //   final Asset bdAsset = Asset();
-  //   await putAssetIntoHive(bdAsset);
-  // }
-
   static Asset getAssetForId(String id) {
     return hiveStore.get(id);
   }
@@ -235,7 +221,7 @@ class AssetService {
           previewLink: "assets/images/default/cardface/preview.png",
           bundled: true,
           type: 'cardface');
-      AssetService.putAsset(asset);
+      await AssetService.putAsset(asset);
     }
 
     if (!await AssetService.exists(UserSettingsStore.VALUE_DEFAULT_TABLE)) {
@@ -248,7 +234,7 @@ class AssetService {
           link: "",
           bundled: true,
           type: "table");
-      AssetService.putAsset(asset);
+      await AssetService.putAsset(asset);
     }
 
     if (!await AssetService.exists(UserSettingsStore.VALUE_DEFAULT_BACKDROP)) {
@@ -261,7 +247,7 @@ class AssetService {
           link: "",
           bundled: true,
           type: "game-background");
-      AssetService.putAsset(asset);
+      await AssetService.putAsset(asset);
     }
 
     if (!await AssetService.exists(UserSettingsStore.VALUE_DEFAULT_CARDBACK)) {
@@ -274,7 +260,7 @@ class AssetService {
           link: "",
           bundled: true,
           type: "cardback");
-      AssetService.putAsset(asset);
+      await AssetService.putAsset(asset);
     }
 
     if (!await AssetService.exists(UserSettingsStore.VALUE_DEFAULT_BETDIAL)) {
@@ -287,52 +273,7 @@ class AssetService {
           link: "",
           bundled: true,
           type: "dial");
-      AssetService.putAsset(asset);
+      await AssetService.putAsset(asset);
     }
   }
-
-  // static Future<void> saveDefaultTableAsset() async {
-  //   final tableBytes = (await rootBundle.load(AppAssetsNew.defaultTablePath))
-  //       .buffer
-  //       .asUint8List();
-  //   final String extension = AppAssetsNew.defaultTablePath.split(".").last;
-  //   Directory dir = await getApplicationDocumentsDirectory();
-  //   final file = await File("${dir.path}/defaultTable.$extension")
-  //       .create(recursive: true);
-  //   await file.writeAsBytes(tableBytes);
-  //   final Asset asset = Asset(
-  //     id: UserSettingsStore.VALUE_DEFAULT_TABLE,
-  //     defaultAsset: true,
-  //     downloadedPath: file.path,
-  //     downloaded: true,
-  //     name: "Default Table",
-  //     link: "",
-  //     previewLink: "",
-  //   );
-
-  //   await putAssetIntoHive(asset);
-  // }
-
-  // static Future<void> saveDefaultBackdropAsset() async {
-  //   final bgdropBytes =
-  //       (await rootBundle.load(AppAssetsNew.defaultBackdropPath))
-  //           .buffer
-  //           .asUint8List();
-  //   final String extension = AppAssetsNew.defaultBackdropPath.split(".").last;
-  //   Directory dir = await getApplicationDocumentsDirectory();
-  //   final file = await File("${dir.path}/defaultBackdrop.$extension")
-  //       .create(recursive: true);
-  //   await file.writeAsBytes(bgdropBytes);
-  //   final Asset asset = Asset(
-  //     id: UserSettingsStore.VALUE_DEFAULT_BACKDROP,
-  //     defaultAsset: true,
-  //     downloadedPath: file.path,
-  //     downloaded: true,
-  //     name: "Default Backdrop",
-  //     link: "",
-  //     previewLink: "",
-  //   );
-
-  //   await putAssetIntoHive(asset);
-  // }
 }

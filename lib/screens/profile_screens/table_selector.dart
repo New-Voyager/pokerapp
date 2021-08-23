@@ -49,13 +49,8 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
 
   void _fetchSavedItems() async {
     await AssetService.refresh();
-    AssetService.assets.forEach((element) {
-      if (element.type == "game-background") {
-        _backDropAssets.add(element);
-      } else if (element.type == "table") {
-        _tableAssets.add(element);
-      }
-    });
+    _backDropAssets = AssetService.getBackdrops();
+    _tableAssets = AssetService.getTables();
 
     // Get Asset for selectedTableId
     _selectedTable =

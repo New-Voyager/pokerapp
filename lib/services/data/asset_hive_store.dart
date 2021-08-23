@@ -131,6 +131,17 @@ class AssetHiveStore {
     return;
   }
 
+  Future<List<Asset>> getAll() async {
+    List<Asset> assetsInStore = [];
+    for (final key in _assetBox.keys) {
+      final asset = get(key.toString());
+      if (asset != null) {
+        assetsInStore.add(asset);
+      }
+    }
+    return assetsInStore;
+  }
+
   Asset get(String id) {
     dynamic jsonString = _assetBox.get(id);
     if (jsonString != null) {
