@@ -18,11 +18,22 @@ class AssetService {
 
   static Future<void> refresh() async {
     try {
+      // Fetch assets from server
       List<Asset> assets = await getAssets();
+
       hiveStore = await getStore();
-      hiveStore.putAll(assets);
-      assets = await hiveStore.getAll();
-    } catch (err) {}
+      // Sync assets with server
+      await hiveStore.putAll(assets);
+
+      // handle default assets
+      await updateBundledAssets();
+
+      assets.clear();
+      // get All assets from hive
+      assets.addAll(await hiveStore.getAll());
+    } catch (err) {
+      log(err.toString());
+    }
   }
 
   static Future<Asset> getDefaultTableAsset() async {
@@ -127,7 +138,10 @@ class AssetService {
     for (dynamic assetJson in respBody['assets']) {
       ret.add(Asset.fromjson(assetJson));
     }
-    assets = ret;
+    assets.clear();
+    // Add default Asset to assets instance
+
+    assets.addAll(ret);
     return ret;
   }
 
@@ -197,7 +211,7 @@ class AssetService {
     return hiveStore.get(id);
   }
 
-  static updateBundledAssets() async {
+  static Future<void> updateBundledAssets() async {
     if (hiveStore == null) {
       await getStore();
     }
@@ -232,6 +246,7 @@ class AssetService {
           downloaded: true,
           name: "Default Table",
           link: "",
+          previewLink: 'assets/images/default/table.png',
           bundled: true,
           type: "table");
       await AssetService.putAsset(asset);
@@ -245,6 +260,7 @@ class AssetService {
           downloaded: true,
           name: "Default Backdrop",
           link: "",
+          previewLink: 'assets/images/default/backdrop.png',
           bundled: true,
           type: "game-background");
       await AssetService.putAsset(asset);
@@ -258,6 +274,7 @@ class AssetService {
           downloaded: true,
           name: "Default Card Back",
           link: "",
+          previewLink: 'assets/images/default/cardback.png',
           bundled: true,
           type: "cardback");
       await AssetService.putAsset(asset);
@@ -271,6 +288,7 @@ class AssetService {
           downloaded: true,
           name: "Default Bet Dial",
           link: "",
+          previewLink: 'assets/images/default/betdial.svg',
           bundled: true,
           type: "dial");
       await AssetService.putAsset(asset);

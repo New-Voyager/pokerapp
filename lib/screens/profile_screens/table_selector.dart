@@ -59,7 +59,7 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
     if (_selectedTable == null) {
       _selectedTable =
           AssetService.getAssetForId(UserSettingsStore.VALUE_DEFAULT_TABLE);
-      _tableAssets.add(_selectedTable);
+      //  _tableAssets.add(_selectedTable);
     }
 
     // Get Asset for selected drop
@@ -69,7 +69,7 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
     if (_selectedDrop == null) {
       _selectedDrop =
           AssetService.getAssetForId(UserSettingsStore.VALUE_DEFAULT_BACKDROP);
-      _backDropAssets.add(_selectedDrop);
+      // _backDropAssets.add(_selectedDrop);
     }
     setState(() {});
   }
@@ -149,7 +149,7 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
   }
 
   _buildBoardView(Size boardDimensions, double tableScale, Size size) {
-    Widget table = Text('No default table');
+    Widget table = CircularProgressWidget();
     if (initialized) {
       if (_selectedTable != null) {
         if (_selectedTable.bundled ?? false) {
@@ -218,6 +218,17 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
                   itemBuilder: (context, index) {
                     final bool isSelected =
                         (_selectedTable?.id == _tableAssets[index].id);
+
+                    Widget tablePreviewWidget;
+                    if (_tableAssets[index].bundled ?? false) {
+                      tablePreviewWidget = Image.asset(
+                        _tableAssets[index].previewLink,
+                      );
+                    } else {
+                      tablePreviewWidget = CachedNetworkImage(
+                        imageUrl: _tableAssets[index].previewLink,
+                      );
+                    }
                     return InkResponse(
                       onTap: () async {
                         // _selectedTable = _tableAssets[index];
@@ -267,9 +278,7 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
                         child: Stack(
                           alignment: Alignment.center,
                           children: [
-                            CachedNetworkImage(
-                              imageUrl: _tableAssets[index].previewLink,
-                            ),
+                            tablePreviewWidget,
                             Visibility(
                               visible: isSelected,
                               child: Icon(Icons.done),
@@ -302,6 +311,17 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
                   itemBuilder: (context, index) {
                     final bool isSelected =
                         (_selectedDrop?.id == _backDropAssets[index].id);
+
+                          Widget backPreviewWidget;
+                    if (_backDropAssets[index].bundled ?? false) {
+                      backPreviewWidget = Image.asset(
+                        _backDropAssets[index].previewLink,
+                      );
+                    } else {
+                      backPreviewWidget = CachedNetworkImage(
+                        imageUrl: _backDropAssets[index].previewLink,
+                      );
+                    }
                     return InkResponse(
                       onTap: () async {
                         // _selectedTable = _tableAssets[index];
@@ -348,9 +368,7 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
                         child: Stack(
                           alignment: Alignment.center,
                           children: [
-                            CachedNetworkImage(
-                              imageUrl: _backDropAssets[index].previewLink,
-                            ),
+                           backPreviewWidget,
                             Visibility(
                               visible: isSelected,
                               child: Icon(Icons.done),
