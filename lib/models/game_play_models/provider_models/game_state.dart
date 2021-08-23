@@ -1186,8 +1186,8 @@ class GameScreenAssets {
   Future<void> initialize() async {
     cardStrImage = Map<String, Uint8List>();
     cardNumberImage = Map<int, Uint8List>();
-    Asset backdrop =
-        AssetService.getAssetForId(UserSettingsStore.KEY_SELECTED_BACKDROP);
+    Asset backdrop = 
+        AssetService.getAssetForId(UserSettingsStore.getSelectedBackdropId());
     if (backdrop == null) {
       backdrop =
           AssetService.getAssetForId(UserSettingsStore.VALUE_DEFAULT_BACKDROP);
@@ -1195,14 +1195,14 @@ class GameScreenAssets {
     backdropBytes = await backdrop.getBytes();
 
     Asset table =
-        AssetService.getAssetForId(UserSettingsStore.KEY_SELECTED_TABLE);
+        AssetService.getAssetForId(UserSettingsStore.getSelectedTableId());
     if (table == null) {
       table = AssetService.getAssetForId(UserSettingsStore.VALUE_DEFAULT_TABLE);
     }
     boardBytes = await table.getBytes();
 
     Asset betImage =
-        AssetService.getAssetForId(UserSettingsStore.KEY_SELECTED_BETDIAL);
+        AssetService.getAssetForId(UserSettingsStore.getSelectedBetDial());
     if (betImage == null) {
       betImage =
           AssetService.getAssetForId(UserSettingsStore.VALUE_DEFAULT_BETDIAL);
@@ -1210,7 +1210,7 @@ class GameScreenAssets {
     betImageBytes = await betImage.getBytes();
 
     Asset cardBack =
-        AssetService.getAssetForId(UserSettingsStore.KEY_SELECTED_CARDBACK);
+        AssetService.getAssetForId(UserSettingsStore.getSelectedCardBackId());
     if (cardBack == null) {
       cardBack =
           AssetService.getAssetForId(UserSettingsStore.VALUE_DEFAULT_CARDBACK);
@@ -1218,7 +1218,7 @@ class GameScreenAssets {
     holeCardBackBytes = await cardBack.getBytes();
 
     Asset cardFace =
-        AssetService.getAssetForId(UserSettingsStore.KEY_SELECTED_CARDFACE);
+        AssetService.getAssetForId(UserSettingsStore.getSelectedCardFaceId());
     if (cardFace == null) {
       cardFace =
           AssetService.getAssetForId(UserSettingsStore.VALUE_DEFAULT_CARDFACE);
