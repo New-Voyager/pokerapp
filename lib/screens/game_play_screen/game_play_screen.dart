@@ -793,7 +793,10 @@ class _GamePlayScreenState extends State<GamePlayScreen>
             // SizedBox(width: width, height: divider1 / 2),
 
             // main board view
-            _buildBoardView(boardDimensions, tableScale),
+            Consumer<RedrawTopSectionState>(
+            builder: (_, ___, __) {            
+              return _buildBoardView(boardDimensions, tableScale);
+            }),
 
             /* divider that divides the board view and the footer */
             Divider(color: AppColorsNew.dividerColor, thickness: 3),

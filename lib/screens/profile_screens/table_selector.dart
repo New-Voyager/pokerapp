@@ -6,7 +6,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
-import 'package:pokerapp/models/ui/app_theme_data.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
@@ -16,8 +15,6 @@ import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/asset_service.dart';
 import 'package:pokerapp/services/app/user_settings_service.dart';
 import 'package:pokerapp/services/data/asset_hive_store.dart';
-import 'package:pokerapp/services/data/box_type.dart';
-import 'package:pokerapp/services/data/hive_datasource_impl.dart';
 import 'package:pokerapp/services/data/user_settings_store.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:provider/provider.dart';
@@ -219,14 +216,18 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
                     final bool isSelected =
                         (_selectedTable?.id == _tableAssets[index].id);
 
+                    String previewLink = _tableAssets[index].previewLink;
+                    if (previewLink == null) {
+                      previewLink = _tableAssets[index].link;
+                    }
                     Widget tablePreviewWidget;
                     if (_tableAssets[index].bundled ?? false) {
                       tablePreviewWidget = Image.asset(
-                        _tableAssets[index].previewLink,
+                        _tableAssets[index].downloadedPath,
                       );
                     } else {
                       tablePreviewWidget = CachedNetworkImage(
-                        imageUrl: _tableAssets[index].previewLink,
+                        imageUrl: previewLink,
                       );
                     }
                     return InkResponse(
@@ -249,20 +250,6 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
                         await UserSettingsService.setSelectedTableId(
                             _tableAssets[index]);
                         setState(() {});
-
-                        // final theme = AppTheme.getTheme(context);
-                        // AppThemeData data = theme.themeData;
-                        // data.tableAssetId = _tableAssets[index].id;
-
-                        // final settings = HiveDatasource.getInstance
-                        //     .getBox(BoxType.USER_SETTINGS_BOX);
-                        // settings.put('theme', data.toMap());
-                        // settings.put('themeIndex', index);
-
-                        //  theme.updateThemeData(data);
-
-                        // final asset = await AssetService.getDefaultTableAsset();
-                        // log(jsonEncode(asset.toJson()));
                       },
                       child: Container(
                         padding: EdgeInsets.symmetric(horizontal: 8),
@@ -312,10 +299,10 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
                     final bool isSelected =
                         (_selectedDrop?.id == _backDropAssets[index].id);
 
-                          Widget backPreviewWidget;
+                    Widget backPreviewWidget;
                     if (_backDropAssets[index].bundled ?? false) {
                       backPreviewWidget = Image.asset(
-                        _backDropAssets[index].previewLink,
+                        _backDropAssets[index].downloadedPath,
                       );
                     } else {
                       backPreviewWidget = CachedNetworkImage(
@@ -368,7 +355,7 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
                         child: Stack(
                           alignment: Alignment.center,
                           children: [
-                           backPreviewWidget,
+                            backPreviewWidget,
                             Visibility(
                               visible: isSelected,
                               child: Icon(Icons.done),

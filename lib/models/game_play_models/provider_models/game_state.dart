@@ -86,6 +86,7 @@ class GameState {
   ListenableProvider<PopupButtonState> _popupButtonState;
   ListenableProvider<CommunicationState> _communicationStateProvider;
   ListenableProvider<StraddlePromptState> _straddlePromptState;
+  ListenableProvider<RedrawTopSectionState> _redrawTopSectionState;
 
   HoleCardsState _holeCardsState;
   ListenableProvider<HoleCardsState> _holeCardsProvider;
@@ -210,6 +211,9 @@ class GameState {
 
     this._connectionState = ListenableProvider<ServerConnectionState>(
         create: (_) => ServerConnectionState());
+
+    this._redrawTopSectionState = ListenableProvider<RedrawTopSectionState>(
+        create: (_) => RedrawTopSectionState());
 
     _communicationState = CommunicationState(this);
     this._communicationStateProvider = ListenableProvider<CommunicationState>(
@@ -624,6 +628,10 @@ class GameState {
   PopupButtonState getPopupState(BuildContext context, {bool listen = false}) =>
       Provider.of<PopupButtonState>(context, listen: listen);
 
+  RedrawTopSectionState getRedrawTopSectionState(BuildContext context,
+          {bool listen = false}) =>
+      Provider.of<RedrawTopSectionState>(context, listen: listen);
+
   CommunicationState getCommunicationState() => this._communicationState;
 
   // JanusEngine getJanusEngine(BuildContext context, {bool listen = false}) =>
@@ -719,6 +727,7 @@ class GameState {
       this._communicationStateProvider,
       this._straddlePromptState,
       this._holeCardsProvider,
+      this._redrawTopSectionState,
     ];
   }
 
@@ -1186,7 +1195,7 @@ class GameScreenAssets {
   Future<void> initialize() async {
     cardStrImage = Map<String, Uint8List>();
     cardNumberImage = Map<int, Uint8List>();
-    Asset backdrop = 
+    Asset backdrop =
         AssetService.getAssetForId(UserSettingsStore.getSelectedBackdropId());
     if (backdrop == null) {
       backdrop =
@@ -1245,6 +1254,12 @@ class GameScreenAssets {
 }
 
 class HoleCardsState extends ChangeNotifier {
+  void notify() {
+    notifyListeners();
+  }
+}
+
+class RedrawTopSectionState extends ChangeNotifier {
   void notify() {
     notifyListeners();
   }
