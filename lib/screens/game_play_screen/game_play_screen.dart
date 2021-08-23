@@ -793,8 +793,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
             // SizedBox(width: width, height: divider1 / 2),
 
             // main board view
-            Consumer<RedrawTopSectionState>(
-            builder: (_, ___, __) {            
+            Consumer<RedrawTopSectionState>(builder: (_, ___, __) {
               return _buildBoardView(boardDimensions, tableScale);
             }),
 

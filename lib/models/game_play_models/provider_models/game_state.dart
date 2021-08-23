@@ -8,21 +8,17 @@ import 'package:pokerapp/enums/game_status.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/enums/player_status.dart';
-import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/marked_cards.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/player_info.dart';
-import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_constants.dart';
-import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/services/agora/agora.dart';
 import 'package:pokerapp/services/app/asset_service.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/app/handlog_cache_service.dart';
-import 'package:pokerapp/services/app/user_settings_service.dart';
 import 'package:pokerapp/services/data/asset_hive_store.dart';
 import 'package:pokerapp/services/data/game_hive_store.dart';
 import 'package:pokerapp/services/data/hive_models/game_settings.dart';
@@ -1237,9 +1233,10 @@ class GameScreenAssets {
       final cardStr = CardConvUtils.getString(card);
       Uint8List cardBytes;
       if (cardFace.bundled) {
-        cardBytes = (await rootBundle.load('${cardFace.downloadDir}/$card.svg'))
-            .buffer
-            .asUint8List();
+        cardBytes =
+            (await rootBundle.load('${cardFace.downloadDir}/$cardStr.svg'))
+                .buffer
+                .asUint8List();
       } else {
         String filename = '${cardFace.downloadDir}/$card.svg';
         if (!File(filename).existsSync()) {

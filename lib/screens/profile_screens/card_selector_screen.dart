@@ -53,7 +53,9 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
     _cardBackAssets = AssetService.getCardBacks();
     _betAssets = AssetService.getDials();
     for (final asset in _betAssets) {
-      await AssetService.saveFile(asset);
+      if (!(asset.bundled ?? false)) {
+        await AssetService.saveFile(asset);
+      }
     }
     _selectedCardFaceAsset = null;
     _selectedCardBackAsset = null;
@@ -162,15 +164,21 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
                 isDownloading = true;
               });
 
-              if (!_selectedCardFaceAsset.downloaded) {
-                log("Downloading ${_selectedCardFaceAsset.id} : ${_selectedCardFaceAsset.name}");
-                _cardFaceAssets[index] =
-                    await AssetService.saveFile(_cardFaceAssets[index]);
-                await AssetService.hiveStore.put(_cardFaceAssets[index]);
+              if (!(_selectedCardFaceAsset.bundled ?? false)) {
+                if (!_selectedCardFaceAsset.downloaded) {
+                  log("Downloading ${_selectedCardFaceAsset.id} : ${_selectedCardFaceAsset.name}");
+                  _cardFaceAssets[index] =
+                      await AssetService.saveFile(_cardFaceAssets[index]);
+                  await AssetService.hiveStore.put(_cardFaceAssets[index]);
+                }
+                setState(() {
+                  isDownloading = false;
+                });
+              } else {
+                setState(() {
+                  isDownloading = false;
+                });
               }
-              setState(() {
-                isDownloading = false;
-              });
 
               final theme = AppTheme.getTheme(context);
               AppThemeData data = theme.themeData;
@@ -192,6 +200,10 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
               child: Stack(
                 alignment: Alignment.center,
                 children: [
+
+                  _cardFaceAssets[index].bundled ?? false ?
+                    Image.asset(_cardFaceAssets[index].previewLink, fit: BoxFit.fill)
+                  :
                   CachedNetworkImage(
                     imageUrl: _cardFaceAssets[index].previewLink,
                     fit: BoxFit.fill,
@@ -429,10 +441,18 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
         ),
         padding: EdgeInsets.symmetric(horizontal: 8),
         itemBuilder: (context, index) {
-          return SvgPicture.file(
-            File("$dirPath/${CardConvUtils.getCardName(index)}.svg"),
-            fit: BoxFit.contain,
-          );
+          if (_selectedCardFaceAsset.bundled ?? false) {
+
+            return SvgPicture.asset(
+              '${_selectedCardFaceAsset.downloadedPath}/${CardConvUtils.getCardName(index)}.svg',
+              fit: BoxFit.contain,
+            );
+          } else {
+            return SvgPicture.file(
+              File("$dirPath/${CardConvUtils.getCardName(index)}.svg"),
+              fit: BoxFit.contain,
+            );
+          }
         },
         itemCount: 52,
       );
