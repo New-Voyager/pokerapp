@@ -258,7 +258,7 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
                     await AssetService.saveFile(_cardBackAssets[index]);
                 await AssetService.hiveStore.put(_cardBackAssets[index]);
               }
-             
+
               setState(() {
                 isDownloading = false;
               });

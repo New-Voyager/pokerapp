@@ -31,7 +31,6 @@ class BetWidget extends StatelessWidget {
     this.remainingTime,
   });
 
-
   // TODO: MAKE THIS CLASS A GENERAL ONE SOMEWHERE OUTSIDE IN UTILS
   // WE CAN REUSE THIS CLASS FOR OTHER PLACES AS WELL
   Widget _buildToolTipWith({Widget child, AppTheme theme}) {

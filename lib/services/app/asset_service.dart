@@ -216,6 +216,7 @@ class AssetService {
       await getStore();
     }
 
+    await UserSettingsStore.openSettingsStore();
     // default assets
     // assets/images/default/cardface
     // assets/images/default/backdrop.png
@@ -224,73 +225,68 @@ class AssetService {
     // assets/images/default/table.png
     if (!await AssetService.exists(UserSettingsStore.VALUE_DEFAULT_CARDFACE)) {
       Asset asset = Asset(
-            id: UserSettingsStore.VALUE_DEFAULT_CARDFACE,
-            defaultAsset: true,
-            downloadedPath:'assets/images/default/cardface',
-            downloadDir: 'assets/images/default/cardface',
-            downloaded: true,
-            name: "Default Card Face",
-            link: "",
-            previewLink: "assets/images/default/cardface/preview.png",
-            bundled: true,
-            type: 'cardface'
-          );
+          id: UserSettingsStore.VALUE_DEFAULT_CARDFACE,
+          defaultAsset: true,
+          downloadedPath: 'assets/images/default/cardface',
+          downloadDir: 'assets/images/default/cardface',
+          downloaded: true,
+          name: "Default Card Face",
+          link: "",
+          previewLink: "assets/images/default/cardface/preview.png",
+          bundled: true,
+          type: 'cardface');
       AssetService.putAsset(asset);
     }
 
     if (!await AssetService.exists(UserSettingsStore.VALUE_DEFAULT_TABLE)) {
       Asset asset = Asset(
-            id: UserSettingsStore.VALUE_DEFAULT_TABLE,
-            defaultAsset: true,
-            downloadedPath:'assets/images/default/table.png',
-            downloaded: true,
-            name: "Default Table",
-            link: "",
-            bundled: true,
-            type: "table"
-          );
+          id: UserSettingsStore.VALUE_DEFAULT_TABLE,
+          defaultAsset: true,
+          downloadedPath: 'assets/images/default/table.png',
+          downloaded: true,
+          name: "Default Table",
+          link: "",
+          bundled: true,
+          type: "table");
       AssetService.putAsset(asset);
     }
 
     if (!await AssetService.exists(UserSettingsStore.VALUE_DEFAULT_BACKDROP)) {
       Asset asset = Asset(
-            id: UserSettingsStore.VALUE_DEFAULT_BACKDROP,
-            defaultAsset: true,
-            downloadedPath:'assets/images/default/backdrop.png',
-            downloaded: true,
-            name: "Default Backdrop",
-            link: "",
-            bundled: true,
-            type: "game-background"
-          );
+          id: UserSettingsStore.VALUE_DEFAULT_BACKDROP,
+          defaultAsset: true,
+          downloadedPath: 'assets/images/default/backdrop.png',
+          downloaded: true,
+          name: "Default Backdrop",
+          link: "",
+          bundled: true,
+          type: "game-background");
       AssetService.putAsset(asset);
     }
 
     if (!await AssetService.exists(UserSettingsStore.VALUE_DEFAULT_CARDBACK)) {
       Asset asset = Asset(
-            id: UserSettingsStore.VALUE_DEFAULT_CARDBACK,
-            defaultAsset: true,
-            downloadedPath:'assets/images/default/cardback.png',
-            downloaded: true,
-            name: "Default Card Back",
-            link: "",
-            bundled: true,
-            type: "cardback"
-          );
+          id: UserSettingsStore.VALUE_DEFAULT_CARDBACK,
+          defaultAsset: true,
+          downloadedPath: 'assets/images/default/cardback.png',
+          downloaded: true,
+          name: "Default Card Back",
+          link: "",
+          bundled: true,
+          type: "cardback");
       AssetService.putAsset(asset);
     }
 
     if (!await AssetService.exists(UserSettingsStore.VALUE_DEFAULT_BETDIAL)) {
       Asset asset = Asset(
-            id: UserSettingsStore.VALUE_DEFAULT_BETDIAL,
-            defaultAsset: true,
-            downloadedPath:'assets/images/default/betdial.svg',
-            downloaded: true,
-            name: "Default Bet Dial",
-            link: "",
-            bundled: true,
-            type: "dial"
-          );
+          id: UserSettingsStore.VALUE_DEFAULT_BETDIAL,
+          defaultAsset: true,
+          downloadedPath: 'assets/images/default/betdial.svg',
+          downloaded: true,
+          name: "Default Bet Dial",
+          link: "",
+          bundled: true,
+          type: "dial");
       AssetService.putAsset(asset);
     }
   }

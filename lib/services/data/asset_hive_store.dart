@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -12,13 +13,13 @@ class Asset {
   String previewLink;
   String type;
   int size;
-  bool defaultAsset;
-  bool bundled;
+  bool defaultAsset = false;
+  bool bundled = false;
   DateTime updatedDate;
   bool active;
-  bool downloaded;
-  String downloadDir; // directory for cards
-  String downloadedPath; // file name of downloaded file (for single files)
+  bool downloaded = false;
+  String downloadDir = ''; // directory for cards
+  String downloadedPath = ''; // file name of downloaded file (for single files)
   Asset({
     this.id,
     this.name,
@@ -89,12 +90,17 @@ class Asset {
     }
     return jsonEncode(json);
   }
-  
+
   Future<Uint8List> getBytes() async {
-    if (this.bundled) {
+    if (!this.bundled) {
       return File(downloadedPath).readAsBytesSync();
     } else {
-      return (await rootBundle.load(downloadedPath)).buffer.asUint8List();
+      try {
+        final loadedAsset = await rootBundle.load(downloadedPath);
+        return loadedAsset.buffer.asUint8List();
+      } catch (err) {
+        log('Error: ${err.toString()}');
+      }
     }
   }
 }

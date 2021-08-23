@@ -31,15 +31,6 @@ class TableSelectorScreen extends StatefulWidget {
 
 class _TableSelectorScreenState extends State<TableSelectorScreen>
     with SingleTickerProviderStateMixin {
-  List<String> tableImageUrls = [
-    "https://assets-pokerclubapp.nyc3.digitaloceanspaces.com/table-1/blue.png",
-    "https://assets-pokerclubapp.nyc3.digitaloceanspaces.com/table-1/darkblue.png",
-    "https://assets-pokerclubapp.nyc3.digitaloceanspaces.com/table-1/red.png",
-  ];
-  List<String> bgImageUrls = [
-    "https://assets-pokerclubapp.nyc3.digitaloceanspaces.com/background/western%20saloon.jpeg",
-    "https://assets-pokerclubapp.nyc3.digitaloceanspaces.com/background/bar_bookshelf.jpg",
-  ];
   TabController _tabController;
   int selectedTable = 0, selectedDrop = 0;
   List<Asset> _tableAssets = [];
@@ -103,13 +94,25 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
         Widget backDrop;
         if (initialized) {
           if (_selectedTable == null) {
-            backDrop = CircularProgressWidget();
+            backDrop = CircularProgressWidget(text: "Downloading...");
           } else {
-            backDrop = Image.file(
-              File(_selectedDrop?.downloadedPath ?? ""),
-              fit: BoxFit.scaleDown,
-              width: size.width,
-            );
+            if (_selectedDrop.bundled ?? false) {
+              backDrop = Image.asset(
+                _selectedDrop?.downloadedPath,
+                fit: BoxFit.scaleDown,
+                width: size.width,
+              );
+            } else {
+              if (!_selectedDrop.downloaded) {
+                backDrop = CircularProgressWidget(text: "Downloading...");
+              } else {
+                backDrop = Image.file(
+                  File(_selectedDrop?.downloadedPath ?? ""),
+                  fit: BoxFit.scaleDown,
+                  width: size.width,
+                );
+              }
+            }
           }
         } else {
           backDrop = CircularProgressWidget(text: "Downloading...");
@@ -154,12 +157,25 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
     Widget table = Text('No default table');
     if (initialized) {
       if (_selectedTable != null) {
-        table = Image.file(
-          File(_selectedTable?.downloadedPath),
-          //   fit: BoxFit.scaleDown,
-          width: boardDimensions.width,
-          height: boardDimensions.height,
-        );
+        if (_selectedTable.bundled ?? false) {
+          table = Image.asset(
+            _selectedTable?.downloadedPath,
+            //   fit: BoxFit.scaleDown,
+            width: boardDimensions.width,
+            height: boardDimensions.height,
+          );
+        } else {
+          if (!_selectedTable.downloaded) {
+            table = CircularProgressWidget(text: "Downloading...");
+          } else {
+            table = Image.file(
+              File(_selectedTable?.downloadedPath),
+              //   fit: BoxFit.scaleDown,
+              width: boardDimensions.width,
+              height: boardDimensions.height,
+            );
+          }
+        }
       }
     } else {
       table = CircularProgressWidget(text: "Downloading...");

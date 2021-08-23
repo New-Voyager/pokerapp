@@ -1186,42 +1186,51 @@ class GameScreenAssets {
   Future<void> initialize() async {
     cardStrImage = Map<String, Uint8List>();
     cardNumberImage = Map<int, Uint8List>();
-    Asset backdrop = AssetService.getAssetForId(UserSettingsStore.KEY_SELECTED_BACKDROP);
+    Asset backdrop =
+        AssetService.getAssetForId(UserSettingsStore.KEY_SELECTED_BACKDROP);
     if (backdrop == null) {
-      backdrop = AssetService.getAssetForId(UserSettingsStore.VALUE_DEFAULT_BACKDROP);
+      backdrop =
+          AssetService.getAssetForId(UserSettingsStore.VALUE_DEFAULT_BACKDROP);
     }
     backdropBytes = await backdrop.getBytes();
 
-    Asset table = AssetService.getAssetForId(UserSettingsStore.KEY_SELECTED_TABLE);
+    Asset table =
+        AssetService.getAssetForId(UserSettingsStore.KEY_SELECTED_TABLE);
     if (table == null) {
       table = AssetService.getAssetForId(UserSettingsStore.VALUE_DEFAULT_TABLE);
     }
     boardBytes = await table.getBytes();
-    
-    Asset betImage = AssetService.getAssetForId(UserSettingsStore.KEY_SELECTED_BETDIAL);
+
+    Asset betImage =
+        AssetService.getAssetForId(UserSettingsStore.KEY_SELECTED_BETDIAL);
     if (betImage == null) {
-      betImage = AssetService.getAssetForId(UserSettingsStore.VALUE_DEFAULT_BETDIAL);
+      betImage =
+          AssetService.getAssetForId(UserSettingsStore.VALUE_DEFAULT_BETDIAL);
     }
     betImageBytes = await betImage.getBytes();
 
-    Asset cardBack = AssetService.getAssetForId(UserSettingsStore.KEY_SELECTED_CARDBACK);
+    Asset cardBack =
+        AssetService.getAssetForId(UserSettingsStore.KEY_SELECTED_CARDBACK);
     if (cardBack == null) {
-      cardBack = AssetService.getAssetForId(UserSettingsStore.VALUE_DEFAULT_BETDIAL);
+      cardBack =
+          AssetService.getAssetForId(UserSettingsStore.VALUE_DEFAULT_CARDBACK);
     }
     holeCardBackBytes = await cardBack.getBytes();
 
-    Asset cardFace = AssetService.getAssetForId(UserSettingsStore.KEY_SELECTED_CARDFACE);
+    Asset cardFace =
+        AssetService.getAssetForId(UserSettingsStore.KEY_SELECTED_CARDFACE);
     if (cardFace == null) {
-      cardFace = AssetService.getAssetForId(UserSettingsStore.VALUE_DEFAULT_CARDFACE);
+      cardFace =
+          AssetService.getAssetForId(UserSettingsStore.VALUE_DEFAULT_CARDFACE);
     }
 
     for (int card in CardConvUtils.cardNumbers.keys) {
       final cardStr = CardConvUtils.getString(card);
       Uint8List cardBytes;
       if (cardFace.bundled) {
-       cardBytes = (await rootBundle.load('${cardFace.downloadDir}/$card.svg'))
-              .buffer
-              .asUint8List();
+        cardBytes = (await rootBundle.load('${cardFace.downloadDir}/$card.svg'))
+            .buffer
+            .asUint8List();
       } else {
         String filename = '${cardFace.downloadDir}/$card.svg';
         if (!File(filename).existsSync()) {
