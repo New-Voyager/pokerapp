@@ -293,11 +293,11 @@ class Routes {
             clubCode: args['clubCode'],
           ),
         );
-      case customize:
-        return _getPageRoute(
-          routeName: settings.name,
-          viewToShow: CustomizeScreen(),
-        );
+      // case customize:
+      //   return _getPageRoute(
+      //     routeName: settings.name,
+      //     viewToShow: CustomizeScreen(),
+      //   );
       case game_screen_customize:
         var gameCode = 'CUSTOMIZE';
         var customizeService = CustomizationService();

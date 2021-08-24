@@ -6,7 +6,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
-import 'package:pokerapp/models/ui/app_theme_data.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
@@ -14,9 +13,9 @@ import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/board_view.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/asset_service.dart';
+import 'package:pokerapp/services/app/user_settings_service.dart';
 import 'package:pokerapp/services/data/asset_hive_store.dart';
-import 'package:pokerapp/services/data/box_type.dart';
-import 'package:pokerapp/services/data/hive_datasource_impl.dart';
+import 'package:pokerapp/services/data/user_settings_store.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:provider/provider.dart';
 
@@ -29,15 +28,6 @@ class TableSelectorScreen extends StatefulWidget {
 
 class _TableSelectorScreenState extends State<TableSelectorScreen>
     with SingleTickerProviderStateMixin {
-  List<String> tableImageUrls = [
-    "https://assets-pokerclubapp.nyc3.digitaloceanspaces.com/table-1/blue.png",
-    "https://assets-pokerclubapp.nyc3.digitaloceanspaces.com/table-1/darkblue.png",
-    "https://assets-pokerclubapp.nyc3.digitaloceanspaces.com/table-1/red.png",
-  ];
-  List<String> bgImageUrls = [
-    "https://assets-pokerclubapp.nyc3.digitaloceanspaces.com/background/western%20saloon.jpeg",
-    "https://assets-pokerclubapp.nyc3.digitaloceanspaces.com/background/bar_bookshelf.jpg",
-  ];
   TabController _tabController;
   int selectedTable = 0, selectedDrop = 0;
   List<Asset> _tableAssets = [];
@@ -56,15 +46,28 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
 
   void _fetchSavedItems() async {
     await AssetService.refresh();
-    AssetService.assets.forEach((element) {
-      if (element.type == "game-background") {
-        _backDropAssets.add(element);
-      } else if (element.type == "table") {
-        _tableAssets.add(element);
-      }
-    });
-    _selectedTable = await AssetService.getDefaultTableAsset();
-    _selectedDrop = await AssetService.getDefaultBackdropAsset();
+    _backDropAssets = AssetService.getBackdrops();
+    _tableAssets = AssetService.getTables();
+
+    // Get Asset for selectedTableId
+    _selectedTable =
+        AssetService.getAssetForId(UserSettingsService.getSelectedTableId());
+    // if the asset is not found in hive request for default asset.
+    if (_selectedTable == null) {
+      _selectedTable =
+          AssetService.getAssetForId(UserSettingsStore.VALUE_DEFAULT_TABLE);
+      //  _tableAssets.add(_selectedTable);
+    }
+
+    // Get Asset for selected drop
+    _selectedDrop =
+        AssetService.getAssetForId(UserSettingsService.getSelectedBackdropId());
+    // if the asset is not found in hive request for default asset.
+    if (_selectedDrop == null) {
+      _selectedDrop =
+          AssetService.getAssetForId(UserSettingsStore.VALUE_DEFAULT_BACKDROP);
+      // _backDropAssets.add(_selectedDrop);
+    }
     setState(() {});
   }
 
@@ -83,13 +86,25 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
         Widget backDrop;
         if (initialized) {
           if (_selectedTable == null) {
-            backDrop = Text('No default backdrop');
+            backDrop = CircularProgressWidget(text: "Downloading...");
           } else {
-            backDrop = Image.file(
-              File(_selectedDrop?.downloadedPath ?? ""),
-              fit: BoxFit.scaleDown,
-              width: size.width,
-            );
+            if (_selectedDrop.bundled ?? false) {
+              backDrop = Image.asset(
+                _selectedDrop?.downloadedPath,
+                fit: BoxFit.scaleDown,
+                width: size.width,
+              );
+            } else {
+              if (!_selectedDrop.downloaded) {
+                backDrop = CircularProgressWidget(text: "Downloading...");
+              } else {
+                backDrop = Image.file(
+                  File(_selectedDrop?.downloadedPath ?? ""),
+                  fit: BoxFit.scaleDown,
+                  width: size.width,
+                );
+              }
+            }
           }
         } else {
           backDrop = CircularProgressWidget(text: "Downloading...");
@@ -131,15 +146,28 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
   }
 
   _buildBoardView(Size boardDimensions, double tableScale, Size size) {
-    Widget table = Text('No default table');
+    Widget table = CircularProgressWidget();
     if (initialized) {
       if (_selectedTable != null) {
-        table = Image.file(
-          File(_selectedTable?.downloadedPath),
-          //   fit: BoxFit.scaleDown,
-          width: boardDimensions.width,
-          height: boardDimensions.height,
-        );
+        if (_selectedTable.bundled ?? false) {
+          table = Image.asset(
+            _selectedTable?.downloadedPath,
+            //   fit: BoxFit.scaleDown,
+            width: boardDimensions.width,
+            height: boardDimensions.height,
+          );
+        } else {
+          if (!_selectedTable.downloaded) {
+            table = CircularProgressWidget(text: "Downloading...");
+          } else {
+            table = Image.file(
+              File(_selectedTable?.downloadedPath),
+              //   fit: BoxFit.scaleDown,
+              width: boardDimensions.width,
+              height: boardDimensions.height,
+            );
+          }
+        }
       }
     } else {
       table = CircularProgressWidget(text: "Downloading...");
@@ -187,6 +215,21 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
                   itemBuilder: (context, index) {
                     final bool isSelected =
                         (_selectedTable?.id == _tableAssets[index].id);
+
+                    String previewLink = _tableAssets[index].previewLink;
+                    if (previewLink == null) {
+                      previewLink = _tableAssets[index].link;
+                    }
+                    Widget tablePreviewWidget;
+                    if (_tableAssets[index].bundled ?? false) {
+                      tablePreviewWidget = Image.asset(
+                        _tableAssets[index].downloadedPath,
+                      );
+                    } else {
+                      tablePreviewWidget = CachedNetworkImage(
+                        imageUrl: previewLink,
+                      );
+                    }
                     return InkResponse(
                       onTap: () async {
                         // _selectedTable = _tableAssets[index];
@@ -199,25 +242,14 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
                           log("Downloading ${_selectedTable.id} : ${_selectedTable.name}");
                           _tableAssets[index] =
                               await AssetService.saveFile(_tableAssets[index]);
+                          // Save the modified asset
                           await AssetService.hiveStore.put(_tableAssets[index]);
                         }
-                        await AssetService.setDefaultTableAsset(
-                            asset: _tableAssets[index]);
+
+                        // Update user settings
+                        await UserSettingsService.setSelectedTableId(
+                            _tableAssets[index]);
                         setState(() {});
-
-                        final theme = AppTheme.getTheme(context);
-                        AppThemeData data = theme.themeData;
-                        data.tableAssetId = _tableAssets[index].id;
-
-                        final settings = HiveDatasource.getInstance
-                            .getBox(BoxType.USER_SETTINGS_BOX);
-                        settings.put('theme', data.toMap());
-                        settings.put('themeIndex', index);
-
-                        theme.updateThemeData(data);
-
-                        final asset = await AssetService.getDefaultTableAsset();
-                        log(jsonEncode(asset.toJson()));
                       },
                       child: Container(
                         padding: EdgeInsets.symmetric(horizontal: 8),
@@ -233,9 +265,7 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
                         child: Stack(
                           alignment: Alignment.center,
                           children: [
-                            CachedNetworkImage(
-                              imageUrl: _tableAssets[index].previewLink,
-                            ),
+                            tablePreviewWidget,
                             Visibility(
                               visible: isSelected,
                               child: Icon(Icons.done),
@@ -268,6 +298,17 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
                   itemBuilder: (context, index) {
                     final bool isSelected =
                         (_selectedDrop?.id == _backDropAssets[index].id);
+
+                    Widget backPreviewWidget;
+                    if (_backDropAssets[index].bundled ?? false) {
+                      backPreviewWidget = Image.asset(
+                        _backDropAssets[index].downloadedPath,
+                      );
+                    } else {
+                      backPreviewWidget = CachedNetworkImage(
+                        imageUrl: _backDropAssets[index].previewLink,
+                      );
+                    }
                     return InkResponse(
                       onTap: () async {
                         // _selectedTable = _tableAssets[index];
@@ -286,18 +327,19 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
                           //     asset: _backDropAssets[index]);
                           setState(() {});
                         }
-                        await AssetService.setDefaultBackdropAsset(
-                            asset: _backDropAssets[index]);
+                        // Update user settings
+                        await UserSettingsService.setSelectedBackdropId(
+                            _backDropAssets[index]);
 
-                        final theme = AppTheme.getTheme(context);
-                        AppThemeData data = theme.themeData;
-                        data.backDropAssetId = _backDropAssets[index].id;
+                        // final theme = AppTheme.getTheme(context);
+                        // AppThemeData data = theme.themeData;
+                        // data.backDropAssetId = _backDropAssets[index].id;
 
-                        final settings = HiveDatasource.getInstance
-                            .getBox(BoxType.USER_SETTINGS_BOX);
-                        settings.put('theme', data.toMap());
+                        // final settings = HiveDatasource.getInstance
+                        //     .getBox(BoxType.USER_SETTINGS_BOX);
+                        // settings.put('theme', data.toMap());
 
-                        theme.updateThemeData(data);
+                        // theme.updateThemeData(data);
                       },
                       child: Container(
                         padding: EdgeInsets.symmetric(horizontal: 8),
@@ -313,9 +355,7 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
                         child: Stack(
                           alignment: Alignment.center,
                           children: [
-                            CachedNetworkImage(
-                              imageUrl: _backDropAssets[index].previewLink,
-                            ),
+                            backPreviewWidget,
                             Visibility(
                               visible: isSelected,
                               child: Icon(Icons.done),
