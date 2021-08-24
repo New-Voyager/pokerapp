@@ -1,8 +1,11 @@
 import 'dart:developer';
 import 'dart:math' as math;
+import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
@@ -13,9 +16,11 @@ import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
+import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/profile_popup.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/app/player_service.dart';
+import 'package:pokerapp/services/data/asset_hive_store.dart';
 import 'package:pokerapp/services/gql_errors.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/alerts.dart';
@@ -587,4 +592,46 @@ showPlayerPopup(context, GlobalKey seatKey, GameState gameState, Seat seat) {
     }
     gameState.dismissPopup(context);
   });
+}
+
+Widget getImageWidgetFromAsset(Asset asset) {
+  if (asset.bundled ?? false) {
+    if (asset.downloaded ?? false) {
+      final String path = asset.downloadedPath;
+      log("0-0-0-Displaying with path : $path");
+      if (path.contains(".svg")) {
+        return SvgPicture.asset(path,
+            placeholderBuilder: (context) => CircularProgressWidget());
+      } else if (path.contains(".jpg") ||
+          path.contains(".png") ||
+          path.contains(".jpeg")) {
+        return Image.asset(path);
+      }
+    }
+  } else {
+    if (asset.downloaded ?? false) {
+      final String path = asset.downloadedPath;
+      log("0-0-0-Displaying with path : $path");
+      if (path.contains(".svg")) {
+        return SvgPicture.file(File(path));
+      } else if (path.contains(".jpg") ||
+          path.contains(".png") ||
+          path.contains(".jpeg")) {
+        return Image.file(File(path));
+      }
+    }
+    final String link = asset.previewLink;
+    log("0-0-0-Displaying with link : $link");
+    if (link.contains(".svg")) {
+      return SvgPicture.network(link);
+    } else if (link.contains(".jpg") ||
+        link.contains(".png") ||
+        link.contains(".jpeg")) {
+      return CachedNetworkImage(
+        imageUrl: link,
+        errorWidget: (context, url, error) => Container(),
+      );
+    }
+  }
+  return Container();
 }

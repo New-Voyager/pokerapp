@@ -13,6 +13,7 @@ import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/game_play_screen/game_play_screen.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
+import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/asset_service.dart';
 import 'package:pokerapp/services/data/asset_hive_store.dart';
 import 'package:pokerapp/services/data/box_type.dart';
@@ -189,8 +190,7 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
               AppThemeData data = theme.themeData;
               theme.updateThemeData(data);
               await customizeService.gameState.assets.initialize();
-              setState(() {
-              });
+              setState(() {});
             },
             child: Container(
               decoration: BoxDecoration(
@@ -202,13 +202,7 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  _cardFaceAssets[index].bundled ?? false
-                      ? Image.asset(_cardFaceAssets[index].previewLink,
-                          fit: BoxFit.fill)
-                      : CachedNetworkImage(
-                          imageUrl: _cardFaceAssets[index].previewLink,
-                          fit: BoxFit.fill,
-                        ),
+                  getImageWidgetFromAsset(_cardFaceAssets[index]),
                   Visibility(
                     visible: isSelected,
                     child: Container(
@@ -280,8 +274,7 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
               AppThemeData data = theme.themeData;
               theme.updateThemeData(data);
               await customizeService.gameState.assets.initialize();
-              setState(() {
-              });
+              setState(() {});
 
               //final asset = await AssetService.getDefaultTableAsset();
               //log(jsonEncode(asset.toJson()));
@@ -297,14 +290,7 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  _cardBackAssets[index].bundled ?? false ?
-                    Image.asset(
-                      _cardBackAssets[index].downloadedPath,
-                    )
-                  :
-                  CachedNetworkImage(
-                    imageUrl: _cardBackAssets[index].previewLink,
-                  ),
+                  getImageWidgetFromAsset(_cardBackAssets[index]),
                   Visibility(
                     visible: isSelected,
                     child: Container(
@@ -389,16 +375,7 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  Image.file(
-                    File(_betAssets[index].downloadedPath)
-                  ),
-                  // SvgPicture.file(
-                  //   File(_betAssets[index].downloadedPath),
-                  //   allowDrawingOutsideViewBox: true,
-                  //   placeholderBuilder: (context) => CircularProgressWidget(
-                  //     showText: false,
-                  //   ),
-                  // ),
+                  getImageWidgetFromAsset(_betAssets[index]),
                   Visibility(
                     visible: isSelected,
                     child: Container(
