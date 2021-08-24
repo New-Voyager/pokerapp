@@ -29,7 +29,7 @@ services:
     command:
       - "/bin/sh"
       - "-c"
-      - "sleep 10 && ls /app/mounted/delays.yaml | entr -r /app/game-server --server --delays /app/mounted/delays.yaml"
+      - "ls /app/mounted/delays.yaml | entr -r /app/game-server --server --delays /app/mounted/delays.yaml"
 
   nats:
     image: ${NATS_SERVER_IMAGE}
