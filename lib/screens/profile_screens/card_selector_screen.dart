@@ -166,10 +166,8 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
             onTap: () async {
               // _selectedTable = _tableAssets[index];
 
-              setState(() {
-                _selectedCardFaceAsset = _cardFaceAssets[index];
-                isDownloading = true;
-              });
+              _selectedCardFaceAsset = _cardFaceAssets[index];
+              isDownloading = true;
 
               if (!(_selectedCardFaceAsset.bundled ?? false)) {
                 if (!_selectedCardFaceAsset.downloaded) {
@@ -177,14 +175,12 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
                   _cardFaceAssets[index] =
                       await AssetService.saveFile(_cardFaceAssets[index]);
                   await AssetService.hiveStore.put(_cardFaceAssets[index]);
+                  isDownloading = false;
+                } else {
+                  isDownloading = false;
                 }
-                setState(() {
-                  isDownloading = false;
-                });
               } else {
-                setState(() {
-                  isDownloading = false;
-                });
+                isDownloading = false;
               }
               UserSettingsStore.setSelectedCardFaceId(
                   _cardFaceAssets[index].id);
@@ -192,6 +188,9 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
               final theme = AppTheme.getTheme(context);
               AppThemeData data = theme.themeData;
               theme.updateThemeData(data);
+              await customizeService.gameState.assets.initialize();
+              setState(() {
+              });
             },
             child: Container(
               decoration: BoxDecoration(
