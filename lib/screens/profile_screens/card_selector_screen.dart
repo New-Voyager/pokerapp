@@ -270,14 +270,19 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
                 _cardBackAssets[index] =
                     await AssetService.saveFile(_cardBackAssets[index]);
                 await AssetService.hiveStore.put(_cardBackAssets[index]);
-              }
-
-              setState(() {
                 isDownloading = false;
-              });
-
+              } else {
+                isDownloading = false;
+              }
               UserSettingsStore.setSelectedCardBackId(
                   _cardBackAssets[index].id);
+              final theme = AppTheme.getTheme(context);
+              AppThemeData data = theme.themeData;
+              theme.updateThemeData(data);
+              await customizeService.gameState.assets.initialize();
+              setState(() {
+              });
+
               //final asset = await AssetService.getDefaultTableAsset();
               //log(jsonEncode(asset.toJson()));
             },
@@ -292,6 +297,11 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
               child: Stack(
                 alignment: Alignment.center,
                 children: [
+                  _cardBackAssets[index].bundled ?? false ?
+                    Image.asset(
+                      _cardBackAssets[index].downloadedPath,
+                    )
+                  :
                   CachedNetworkImage(
                     imageUrl: _cardBackAssets[index].previewLink,
                   ),
@@ -379,13 +389,16 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  SvgPicture.file(
-                    File(_betAssets[index].downloadedPath),
-                    allowDrawingOutsideViewBox: true,
-                    placeholderBuilder: (context) => CircularProgressWidget(
-                      showText: false,
-                    ),
+                  Image.file(
+                    File(_betAssets[index].downloadedPath)
                   ),
+                  // SvgPicture.file(
+                  //   File(_betAssets[index].downloadedPath),
+                  //   allowDrawingOutsideViewBox: true,
+                  //   placeholderBuilder: (context) => CircularProgressWidget(
+                  //     showText: false,
+                  //   ),
+                  // ),
                   Visibility(
                     visible: isSelected,
                     child: Container(
