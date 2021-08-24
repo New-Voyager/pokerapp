@@ -83,6 +83,7 @@ class GameState {
   ListenableProvider<CommunicationState> _communicationStateProvider;
   ListenableProvider<StraddlePromptState> _straddlePromptState;
   ListenableProvider<RedrawTopSectionState> _redrawTopSectionState;
+  ListenableProvider<RedrawFooterSectionState> _redrawFooterSectionState;
 
   HoleCardsState _holeCardsState;
   ListenableProvider<HoleCardsState> _holeCardsProvider;
@@ -134,9 +135,6 @@ class GameState {
   // tracks whether buyin keyboard is shown or not
   bool buyInKeyboardShown = false;
 
-  // customization mode
-  bool customizationMode = false;
-
   // hole card order
   HoleCardOrder holecardOrder = HoleCardOrder.DEALT;
 
@@ -149,6 +147,8 @@ class GameState {
   // assets used in the game screen
   GameScreenAssets assets;
 
+  bool customizationMode = false;
+  bool showCustomizationEditFooter = true;
   Future<void> initialize({
     String gameCode,
     @required GameInfoModel gameInfo,
@@ -157,6 +157,7 @@ class GameState {
     List<PlayerInSeat> hostSeatChangeSeats,
     bool hostSeatChangeInProgress,
     bool replayMode,
+    bool customizationMode = false,
   }) async {
     this._seats = Map<int, Seat>();
     this._gameInfo = gameInfo;
@@ -164,6 +165,7 @@ class GameState {
     this._currentPlayer = currentPlayer;
     this._currentHandNum = -1;
     this._tappedSeatPos = null;
+    this.customizationMode = customizationMode;
     this.replayMode = replayMode ?? false;
 
     this._hostSeatChangeSeats = hostSeatChangeSeats;
@@ -172,10 +174,6 @@ class GameState {
     for (int seatNo = 1; seatNo <= gameInfo.maxPlayers; seatNo++) {
       this._seats[seatNo] = Seat(seatNo, null);
     }
-
-    // load assets
-    this.assets = new GameScreenAssets();
-    await this.assets.initialize();
 
     _tableState = TableState();
     if (gameInfo != null) {
@@ -210,6 +208,10 @@ class GameState {
 
     this._redrawTopSectionState = ListenableProvider<RedrawTopSectionState>(
         create: (_) => RedrawTopSectionState());
+
+    this._redrawFooterSectionState =
+        ListenableProvider<RedrawFooterSectionState>(
+            create: (_) => RedrawFooterSectionState());
 
     _communicationState = CommunicationState(this);
     this._communicationStateProvider = ListenableProvider<CommunicationState>(
@@ -281,6 +283,9 @@ class GameState {
         }
       }
     }
+    // load assets
+    this.assets = new GameScreenAssets();
+    await this.assets.initialize();
 
     final playersState = Players(
       players: players,
@@ -300,23 +305,23 @@ class GameState {
       this._myState.notify();
     }
 
-    if (!this.replayMode) {
-      gameHiveStore = GameHiveStore();
-      await gameHiveStore.open(_gameCode);
+    gameHiveStore = GameHiveStore();
+    await gameHiveStore.open(_gameInfo.gameCode);
+    if (!(this.customizationMode ?? false)) {
+      if (!this.replayMode) {
+        if (!gameHiveStore.haveGameSettings()) {
+          log('In GameState initialize(), gameBox is empty');
 
-      if (!gameHiveStore.haveGameSettings()) {
-        log('In GameState initialize(), gameBox is empty');
-
-        // create a new settings object, and init it (by init -> saves locally)
-        settings = GameSettings(gameCode, gameHiveStore);
-        await settings.init();
-      } else {
-        log('In GameState initialize(), getting gameSettings from gameBox');
-        settings = gameHiveStore.getGameSettings();
+          // create a new settings object, and init it (by init -> saves locally)
+          settings = GameSettings(gameCode, gameHiveStore);
+          await settings.init();
+        } else {
+          log('In GameState initialize(), getting gameSettings from gameBox');
+          settings = gameHiveStore.getGameSettings();
+        }
+        log('In GameState initialize(), gameSettings = $settings');
+        _communicationState.showTextChat = settings.showChat;
       }
-      log('In GameState initialize(), gameSettings = $settings');
-      _communicationState.showTextChat = settings.showChat;
-      print('makes sense');
     }
   }
 
@@ -628,6 +633,10 @@ class GameState {
           {bool listen = false}) =>
       Provider.of<RedrawTopSectionState>(context, listen: listen);
 
+  RedrawFooterSectionState getRedrawFooterSectionState(BuildContext context,
+          {bool listen = false}) =>
+      Provider.of<RedrawFooterSectionState>(context, listen: listen);
+
   CommunicationState getCommunicationState() => this._communicationState;
 
   // JanusEngine getJanusEngine(BuildContext context, {bool listen = false}) =>
@@ -724,6 +733,7 @@ class GameState {
       this._straddlePromptState,
       this._holeCardsProvider,
       this._redrawTopSectionState,
+      this._redrawFooterSectionState,
     ];
   }
 
@@ -1232,7 +1242,7 @@ class GameScreenAssets {
     for (int card in CardConvUtils.cardNumbers.keys) {
       final cardStr = CardConvUtils.getString(card);
       Uint8List cardBytes;
-      if (cardFace.bundled) {
+      if (cardFace.bundled ?? false) {
         cardBytes =
             (await rootBundle.load('${cardFace.downloadDir}/$cardStr.svg'))
                 .buffer
@@ -1241,6 +1251,12 @@ class GameScreenAssets {
         String filename = '${cardFace.downloadDir}/$card.svg';
         if (!File(filename).existsSync()) {
           filename = '${cardFace.downloadDir}/$card.png';
+          if (!File(filename).existsSync()) {
+            filename = '${cardFace.downloadDir}/$cardStr.svg';
+            if (!File(filename).existsSync()) {
+              filename = '${cardFace.downloadDir}/$cardStr.png';
+            }
+          }
         }
         cardBytes = File(filename).readAsBytesSync();
       }
@@ -1257,6 +1273,12 @@ class HoleCardsState extends ChangeNotifier {
 }
 
 class RedrawTopSectionState extends ChangeNotifier {
+  void notify() {
+    notifyListeners();
+  }
+}
+
+class RedrawFooterSectionState extends ChangeNotifier {
   void notify() {
     notifyListeners();
   }

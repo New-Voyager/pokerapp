@@ -103,6 +103,18 @@ class UserSettingsStore {
     setSelectedAssets(values);
   }
 
+  static void setSelectedCardFaceId(String id) {
+    final Map<String, String> values = getSelectedAssets();
+    values[KEY_SELECTED_CARDFACE] = id;
+    setSelectedAssets(values);
+  }
+
+  static void setSelectedCardBackId(String id) {
+    final Map<String, String> values = getSelectedAssets();
+    values[KEY_SELECTED_CARDBACK] = id;
+    setSelectedAssets(values);
+  }
+
   static void setSelectedAssets(Map<String, String> values) {
     _settingsBox.put(KEY_SELECTED_ASSETS, values);
   }

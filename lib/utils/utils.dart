@@ -240,7 +240,7 @@ class CardConvUtils {
     194: 'Ah',
     196: 'Ad'
   };
-  
+
   static getString(int cardNum) {
     return cardNumbers[cardNum];
   }
@@ -267,6 +267,4 @@ class CardConvUtils {
     }
     return cardNamesInSequence[index];
   }
-
-  
 }

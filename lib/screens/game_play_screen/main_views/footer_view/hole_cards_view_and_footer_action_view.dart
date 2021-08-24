@@ -313,8 +313,12 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
             ),
           ),
 
-          Consumer<StraddlePromptState>(
-            builder: (_, straddlePromptState, ___) => Align(
+          Consumer<StraddlePromptState>(builder: (_, straddlePromptState, ___) {
+            final gameState = GameState.getState(context);
+            if (gameState.customizationMode) {
+              return Container();
+            }
+            return Align(
               child: Transform.scale(
                 scale: 0.80,
                 child: StraddleDialog(
@@ -350,8 +354,8 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
                   },
                 ),
               ),
-            ),
-          ),
+            );
+          }),
         ],
       );
     });
