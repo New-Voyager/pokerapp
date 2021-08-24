@@ -1,3 +1,4 @@
+import 'package:pokerapp/services/data/asset_hive_store.dart';
 import 'package:pokerapp/services/data/user_settings_store.dart';
 
 class UserSettingsService {
@@ -35,5 +36,13 @@ class UserSettingsService {
 
   static String getSelectedCardBackId() {
     return UserSettingsStore.getSelectedCardBackId();
+  }
+
+  static setSelectedTableId(Asset tableAsset) {
+    UserSettingsStore.setSelectedTableId(tableAsset.id);
+  }
+
+  static setSelectedBackdropId(Asset backDropAsset) {
+    UserSettingsStore.setSelectedBackdropId(backDropAsset.id);
   }
 }

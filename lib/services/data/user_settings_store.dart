@@ -1,11 +1,9 @@
 import 'dart:developer';
 
 import 'package:hive/hive.dart';
-import 'package:pokerapp/services/data/box_type.dart';
 
 class UserSettingsStore {
   static Box _settingsBox;
-  static UserSettingsStore _userSettingStore;
   static const String KEY_SELECTED_ASSETS = "selected-assets";
   static const String KEY_SELECTED_TABLE = "selected-table";
   static const String KEY_SELECTED_BACKDROP = "selected-backdrop";
@@ -91,5 +89,33 @@ class UserSettingsStore {
   static String getSelectedBetDial() {
     final Map<String, String> values = getSelectedAssets();
     return values[KEY_SELECTED_BETDIAL] ?? VALUE_DEFAULT_BETDIAL;
+  }
+
+  static void setSelectedTableId(String id) {
+    final Map<String, String> values = getSelectedAssets();
+    values[KEY_SELECTED_TABLE] = id;
+    setSelectedAssets(values);
+  }
+
+  static void setSelectedBackdropId(String id) {
+    final Map<String, String> values = getSelectedAssets();
+    values[KEY_SELECTED_BACKDROP] = id;
+    setSelectedAssets(values);
+  }
+
+  static void setSelectedCardFaceId(String id) {
+    final Map<String, String> values = getSelectedAssets();
+    values[KEY_SELECTED_CARDFACE] = id;
+    setSelectedAssets(values);
+  }
+
+  static void setSelectedCardBackId(String id) {
+    final Map<String, String> values = getSelectedAssets();
+    values[KEY_SELECTED_CARDBACK] = id;
+    setSelectedAssets(values);
+  }
+
+  static void setSelectedAssets(Map<String, String> values) {
+    _settingsBox.put(KEY_SELECTED_ASSETS, values);
   }
 }

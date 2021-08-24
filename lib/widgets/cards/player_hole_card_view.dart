@@ -63,7 +63,10 @@ class PlayerHoleCardView extends StatelessWidget {
   Widget build(BuildContext context) {
     final gameState = GameState.getState(context);
     final cardBackBytes = gameState.assets.getHoleCardBack();
-
+    if (cardBackBytes == null) {
+      return Container();
+    }
+    
     log('Card dim dimboard: ${card.dimBoard}');
     return CardBuilderWidget(
       backCardBytes: cardBackBytes,

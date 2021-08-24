@@ -87,7 +87,9 @@ class _CenterViewState extends State<CenterView> {
               onClickHandler: () async {
                 await Navigator.of(context).pushNamed(Routes.select_table);
                 await gameState.assets.initialize();
-                setState(() {});
+                final redrawTop = gameState.getRedrawTopSectionState(context);
+                redrawTop.notify();
+                //setState(() {});
               },
               child: Icon(Icons.edit,
                   size: 24, color: theme.primaryColorWithDark()),

@@ -11,11 +11,14 @@ import 'package:pokerapp/models/ui/app_theme_data.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
+import 'package:pokerapp/screens/game_play_screen/game_play_screen.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/asset_service.dart';
 import 'package:pokerapp/services/data/asset_hive_store.dart';
 import 'package:pokerapp/services/data/box_type.dart';
 import 'package:pokerapp/services/data/hive_datasource_impl.dart';
+import 'package:pokerapp/services/data/user_settings_store.dart';
+import 'package:pokerapp/services/game_play/customization_service.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:provider/provider.dart';
 
@@ -32,6 +35,8 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
   List<Asset> _cardFaceAssets = [];
   List<Asset> _cardBackAssets = [];
   List<Asset> _betAssets = [];
+  var customizeService = CustomizationService();
+
   Asset _selectedCardFaceAsset, _selectedCardBackAsset, _selectedBetAsset;
   bool isDownloading = true;
   @override
@@ -53,11 +58,15 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
     _cardBackAssets = AssetService.getCardBacks();
     _betAssets = AssetService.getDials();
     for (final asset in _betAssets) {
-      await AssetService.saveFile(asset);
+      if (!(asset.bundled ?? false)) {
+        await AssetService.saveFile(asset);
+      }
     }
     _selectedCardFaceAsset = null;
     _selectedCardBackAsset = null;
     _selectedBetAsset = null;
+    customizeService.showFooterEditButton = false;
+    await customizeService.load();
     isDownloading = false;
     setState(() {});
   }
@@ -157,30 +166,31 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
             onTap: () async {
               // _selectedTable = _tableAssets[index];
 
-              setState(() {
-                _selectedCardFaceAsset = _cardFaceAssets[index];
-                isDownloading = true;
-              });
+              _selectedCardFaceAsset = _cardFaceAssets[index];
+              isDownloading = true;
 
-              if (!_selectedCardFaceAsset.downloaded) {
-                log("Downloading ${_selectedCardFaceAsset.id} : ${_selectedCardFaceAsset.name}");
-                _cardFaceAssets[index] =
-                    await AssetService.saveFile(_cardFaceAssets[index]);
-                await AssetService.hiveStore.put(_cardFaceAssets[index]);
-              }
-              setState(() {
+              if (!(_selectedCardFaceAsset.bundled ?? false)) {
+                if (!_selectedCardFaceAsset.downloaded) {
+                  log("Downloading ${_selectedCardFaceAsset.id} : ${_selectedCardFaceAsset.name}");
+                  _cardFaceAssets[index] =
+                      await AssetService.saveFile(_cardFaceAssets[index]);
+                  await AssetService.hiveStore.put(_cardFaceAssets[index]);
+                  isDownloading = false;
+                } else {
+                  isDownloading = false;
+                }
+              } else {
                 isDownloading = false;
-              });
+              }
+              UserSettingsStore.setSelectedCardFaceId(
+                  _cardFaceAssets[index].id);
 
               final theme = AppTheme.getTheme(context);
               AppThemeData data = theme.themeData;
-              data.cardFaceAssetId = _cardFaceAssets[index].id;
-
-              final settings =
-                  HiveDatasource.getInstance.getBox(BoxType.USER_SETTINGS_BOX);
-              settings.put('theme', data.toMap());
-              settings.put('themeIndex', index);
               theme.updateThemeData(data);
+              await customizeService.gameState.assets.initialize();
+              setState(() {
+              });
             },
             child: Container(
               decoration: BoxDecoration(
@@ -192,10 +202,13 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  CachedNetworkImage(
-                    imageUrl: _cardFaceAssets[index].previewLink,
-                    fit: BoxFit.fill,
-                  ),
+                  _cardFaceAssets[index].bundled ?? false
+                      ? Image.asset(_cardFaceAssets[index].previewLink,
+                          fit: BoxFit.fill)
+                      : CachedNetworkImage(
+                          imageUrl: _cardFaceAssets[index].previewLink,
+                          fit: BoxFit.fill,
+                        ),
                   Visibility(
                     visible: isSelected,
                     child: Container(
@@ -257,26 +270,21 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
                 _cardBackAssets[index] =
                     await AssetService.saveFile(_cardBackAssets[index]);
                 await AssetService.hiveStore.put(_cardBackAssets[index]);
-              }
-              await AssetService.setDefaultTableAsset(
-                  asset: _cardBackAssets[index]);
-              setState(() {
                 isDownloading = false;
-              });
-
+              } else {
+                isDownloading = false;
+              }
+              UserSettingsStore.setSelectedCardBackId(
+                  _cardBackAssets[index].id);
               final theme = AppTheme.getTheme(context);
               AppThemeData data = theme.themeData;
-              data.cardFaceAssetId = _cardBackAssets[index].id;
-
-              final settings =
-                  HiveDatasource.getInstance.getBox(BoxType.USER_SETTINGS_BOX);
-              settings.put('theme', data.toMap());
-              settings.put('themeIndex', index);
-
               theme.updateThemeData(data);
+              await customizeService.gameState.assets.initialize();
+              setState(() {
+              });
 
-              final asset = await AssetService.getDefaultTableAsset();
-              log(jsonEncode(asset.toJson()));
+              //final asset = await AssetService.getDefaultTableAsset();
+              //log(jsonEncode(asset.toJson()));
             },
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
@@ -289,6 +297,11 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
               child: Stack(
                 alignment: Alignment.center,
                 children: [
+                  _cardBackAssets[index].bundled ?? false ?
+                    Image.asset(
+                      _cardBackAssets[index].downloadedPath,
+                    )
+                  :
                   CachedNetworkImage(
                     imageUrl: _cardBackAssets[index].previewLink,
                   ),
@@ -349,7 +362,6 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
                     await AssetService.saveFile(_betAssets[index]);
                 await AssetService.hiveStore.put(_betAssets[index]);
               }
-              await AssetService.setDefaultTableAsset(asset: _betAssets[index]);
               setState(() {
                 isDownloading = false;
               });
@@ -377,13 +389,16 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  SvgPicture.file(
-                    File(_betAssets[index].downloadedPath),
-                    allowDrawingOutsideViewBox: true,
-                    placeholderBuilder: (context) => CircularProgressWidget(
-                      showText: false,
-                    ),
+                  Image.file(
+                    File(_betAssets[index].downloadedPath)
                   ),
+                  // SvgPicture.file(
+                  //   File(_betAssets[index].downloadedPath),
+                  //   allowDrawingOutsideViewBox: true,
+                  //   placeholderBuilder: (context) => CircularProgressWidget(
+                  //     showText: false,
+                  //   ),
+                  // ),
                   Visibility(
                     visible: isSelected,
                     child: Container(
@@ -414,6 +429,15 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
   }
 
   Widget _buildHoleCardView(AppTheme theme) {
+    var gameCode = 'CUSTOMIZE';
+    return GamePlayScreen(
+      gameCode: gameCode,
+      customizationService: customizeService,
+      showTop: false,
+    );
+  }
+
+  Widget _buildHoleCardView2(AppTheme theme) {
     String filePath = "";
 
     if (_tabController.index == 0) {
@@ -431,10 +455,17 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
         ),
         padding: EdgeInsets.symmetric(horizontal: 8),
         itemBuilder: (context, index) {
-          return SvgPicture.file(
-            File("$dirPath/${CardConvUtils.getCardName(index)}.svg"),
-            fit: BoxFit.contain,
-          );
+          if (_selectedCardFaceAsset.bundled ?? false) {
+            return SvgPicture.asset(
+              '${_selectedCardFaceAsset.downloadedPath}/${CardConvUtils.getCardName(index)}.svg',
+              fit: BoxFit.contain,
+            );
+          } else {
+            return SvgPicture.file(
+              File("$dirPath/${CardConvUtils.getCardName(index)}.svg"),
+              fit: BoxFit.contain,
+            );
+          }
         },
         itemCount: 52,
       );

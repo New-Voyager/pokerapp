@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/auth_model.dart';
@@ -36,6 +38,9 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _initializeSettings() async {
+    await AssetHiveStore.openAssetStore();
+    // initialize asset store with default value
+    await AssetService.updateBundledAssets();
     await UserSettingsStore.openSettingsStore();
   }
 
@@ -71,10 +76,12 @@ class _SplashScreenState extends State<SplashScreen> {
 
           // download assets (show status bar)
           try {
-            List<Asset> assets = await AssetService.getAssets();
-            final store = await AssetService.getStore();
-            await store.putAll(assets);
-          } catch (err) {}
+            await AssetService.refresh();
+            // final store = await AssetService.getStore();
+            // await store.putAll(AssetService.assets);
+          } catch (err) {
+            log(err.toString());
+          }
 
           goToLoginScreen = false;
         }

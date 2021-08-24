@@ -280,29 +280,6 @@ class GamePlayScreenUtilMethods {
         players: hostSeatChangePlayers);
 
     var providers = [
-      /* rabbit state */
-      ListenableProvider<RabbitState>(create: (_) => RabbitState()),
-
-      /* this is for the seat change animation values */
-      ListenableProvider<ValueNotifier<SeatChangeModel>>(
-        create: (_) => ValueNotifier<SeatChangeModel>(null),
-      ),
-
-      /* this is for general notifications */
-      ListenableProvider<ValueNotifier<GeneralNotificationModel>>(
-        create: (_) => ValueNotifier<GeneralNotificationModel>(null),
-      ),
-
-      /* this is for the highHand Notification */
-      ListenableProvider<ValueNotifier<HHNotificationModel>>(
-        create: (_) => ValueNotifier<HHNotificationModel>(null),
-      ),
-
-      /* this is for having random card back for every new hand */
-      ListenableProvider<CardDistributionModel>(
-        create: (_) => CardDistributionModel(),
-      ),
-
       /* a header object is used to update the header section of
         * the game screen - it contains data regarding the current hand no, club name,
         * club code and so on */
@@ -334,15 +311,35 @@ class GamePlayScreenUtilMethods {
           FooterStatus.None,
         ),
       ),
+    ];
 
-      /* This provider contains the sendPlayerToHandChannel function
-        * so that the function can be called from anywhere down the widget tree */
-      // Provider<Function(String)>(
-      //   create: (_) => sendPlayerToHandChannel,
-      // ),
+    //if (!gameState.customizationMode) {
+    providers.addAll([
+      /* rabbit state */
+      ListenableProvider<RabbitState>(create: (_) => RabbitState()),
+
+      /* this is for the seat change animation values */
+      ListenableProvider<ValueNotifier<SeatChangeModel>>(
+        create: (_) => ValueNotifier<SeatChangeModel>(null),
+      ),
+
+      /* this is for general notifications */
+      ListenableProvider<ValueNotifier<GeneralNotificationModel>>(
+        create: (_) => ValueNotifier<GeneralNotificationModel>(null),
+      ),
+
+      /* this is for the highHand Notification */
+      ListenableProvider<ValueNotifier<HHNotificationModel>>(
+        create: (_) => ValueNotifier<HHNotificationModel>(null),
+      ),
+
+      /* this is for having random card back for every new hand */
+      ListenableProvider<CardDistributionModel>(
+        create: (_) => CardDistributionModel(),
+      ),
 
       /* This provider holds the audioPlayer object, which facilitates playing
-        * audio in the game */
+          * audio in the game */
       Provider<AudioPlayer>(
         create: (_) => AudioPlayer(
           mode: PlayerMode.LOW_LATENCY,
@@ -357,7 +354,7 @@ class GamePlayScreenUtilMethods {
       ),
 
       /* This provider contains the remainingActionTime - this provider
-        * is used only when QUERY_CURRENT_HAND message is processed */
+          * is used only when QUERY_CURRENT_HAND message is processed */
       ListenableProvider<RemainingTime>(
         create: (_) => RemainingTime(),
       ),
@@ -376,10 +373,15 @@ class GamePlayScreenUtilMethods {
       ListenableProvider<GameChatNotifState>(
         create: (_) => GameChatNotifState(),
       ),
-    ];
+    ]);
+    //}
 
     /* add all the providers in the game state to our providers */
-    providers.addAll(gameState.providers);
+    for (final provider in gameState.providers) {
+      if (provider != null) {
+        providers.add(provider);
+      }
+    }
     return providers;
   }
 

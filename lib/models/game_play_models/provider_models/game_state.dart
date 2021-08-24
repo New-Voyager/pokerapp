@@ -8,23 +8,21 @@ import 'package:pokerapp/enums/game_status.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/enums/player_status.dart';
-import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/marked_cards.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/player_info.dart';
-import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_constants.dart';
-import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/services/agora/agora.dart';
 import 'package:pokerapp/services/app/asset_service.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/app/handlog_cache_service.dart';
-import 'package:pokerapp/services/app/user_settings_service.dart';
+import 'package:pokerapp/services/data/asset_hive_store.dart';
 import 'package:pokerapp/services/data/game_hive_store.dart';
 import 'package:pokerapp/services/data/hive_models/game_settings.dart';
+import 'package:pokerapp/services/data/user_settings_store.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/services/janus/janus.dart';
@@ -84,6 +82,8 @@ class GameState {
   ListenableProvider<PopupButtonState> _popupButtonState;
   ListenableProvider<CommunicationState> _communicationStateProvider;
   ListenableProvider<StraddlePromptState> _straddlePromptState;
+  ListenableProvider<RedrawTopSectionState> _redrawTopSectionState;
+  ListenableProvider<RedrawFooterSectionState> _redrawFooterSectionState;
 
   HoleCardsState _holeCardsState;
   ListenableProvider<HoleCardsState> _holeCardsProvider;
@@ -135,9 +135,6 @@ class GameState {
   // tracks whether buyin keyboard is shown or not
   bool buyInKeyboardShown = false;
 
-  // customization mode
-  bool customizationMode = false;
-
   // hole card order
   HoleCardOrder holecardOrder = HoleCardOrder.DEALT;
 
@@ -150,6 +147,8 @@ class GameState {
   // assets used in the game screen
   GameScreenAssets assets;
 
+  bool customizationMode = false;
+  bool showCustomizationEditFooter = true;
   Future<void> initialize({
     String gameCode,
     @required GameInfoModel gameInfo,
@@ -158,6 +157,7 @@ class GameState {
     List<PlayerInSeat> hostSeatChangeSeats,
     bool hostSeatChangeInProgress,
     bool replayMode,
+    bool customizationMode = false,
   }) async {
     this._seats = Map<int, Seat>();
     this._gameInfo = gameInfo;
@@ -165,6 +165,7 @@ class GameState {
     this._currentPlayer = currentPlayer;
     this._currentHandNum = -1;
     this._tappedSeatPos = null;
+    this.customizationMode = customizationMode;
     this.replayMode = replayMode ?? false;
 
     this._hostSeatChangeSeats = hostSeatChangeSeats;
@@ -173,10 +174,6 @@ class GameState {
     for (int seatNo = 1; seatNo <= gameInfo.maxPlayers; seatNo++) {
       this._seats[seatNo] = Seat(seatNo, null);
     }
-
-    // load assets
-    this.assets = new GameScreenAssets();
-    await this.assets.initialize();
 
     _tableState = TableState();
     if (gameInfo != null) {
@@ -208,6 +205,13 @@ class GameState {
 
     this._connectionState = ListenableProvider<ServerConnectionState>(
         create: (_) => ServerConnectionState());
+
+    this._redrawTopSectionState = ListenableProvider<RedrawTopSectionState>(
+        create: (_) => RedrawTopSectionState());
+
+    this._redrawFooterSectionState =
+        ListenableProvider<RedrawFooterSectionState>(
+            create: (_) => RedrawFooterSectionState());
 
     _communicationState = CommunicationState(this);
     this._communicationStateProvider = ListenableProvider<CommunicationState>(
@@ -279,6 +283,9 @@ class GameState {
         }
       }
     }
+    // load assets
+    this.assets = new GameScreenAssets();
+    await this.assets.initialize();
 
     final playersState = Players(
       players: players,
@@ -298,23 +305,23 @@ class GameState {
       this._myState.notify();
     }
 
-    if (!this.replayMode) {
-      gameHiveStore = GameHiveStore();
-      await gameHiveStore.open(_gameCode);
+    gameHiveStore = GameHiveStore();
+    await gameHiveStore.open(_gameInfo.gameCode);
+    if (!(this.customizationMode ?? false)) {
+      if (!this.replayMode) {
+        if (!gameHiveStore.haveGameSettings()) {
+          log('In GameState initialize(), gameBox is empty');
 
-      if (!gameHiveStore.haveGameSettings()) {
-        log('In GameState initialize(), gameBox is empty');
-
-        // create a new settings object, and init it (by init -> saves locally)
-        settings = GameSettings(gameCode, gameHiveStore);
-        await settings.init();
-      } else {
-        log('In GameState initialize(), getting gameSettings from gameBox');
-        settings = gameHiveStore.getGameSettings();
+          // create a new settings object, and init it (by init -> saves locally)
+          settings = GameSettings(gameCode, gameHiveStore);
+          await settings.init();
+        } else {
+          log('In GameState initialize(), getting gameSettings from gameBox');
+          settings = gameHiveStore.getGameSettings();
+        }
+        log('In GameState initialize(), gameSettings = $settings');
+        _communicationState.showTextChat = settings.showChat;
       }
-      log('In GameState initialize(), gameSettings = $settings');
-      _communicationState.showTextChat = settings.showChat;
-      print('makes sense');
     }
   }
 
@@ -622,6 +629,14 @@ class GameState {
   PopupButtonState getPopupState(BuildContext context, {bool listen = false}) =>
       Provider.of<PopupButtonState>(context, listen: listen);
 
+  RedrawTopSectionState getRedrawTopSectionState(BuildContext context,
+          {bool listen = false}) =>
+      Provider.of<RedrawTopSectionState>(context, listen: listen);
+
+  RedrawFooterSectionState getRedrawFooterSectionState(BuildContext context,
+          {bool listen = false}) =>
+      Provider.of<RedrawFooterSectionState>(context, listen: listen);
+
   CommunicationState getCommunicationState() => this._communicationState;
 
   // JanusEngine getJanusEngine(BuildContext context, {bool listen = false}) =>
@@ -717,6 +732,8 @@ class GameState {
       this._communicationStateProvider,
       this._straddlePromptState,
       this._holeCardsProvider,
+      this._redrawTopSectionState,
+      this._redrawFooterSectionState,
     ];
   }
 
@@ -1184,63 +1201,65 @@ class GameScreenAssets {
   Future<void> initialize() async {
     cardStrImage = Map<String, Uint8List>();
     cardNumberImage = Map<int, Uint8List>();
-    String backdropImage = AppAssetsNew.defaultBackdropPath;
-    String tableImage = AppAssetsNew.defaultTablePath;
-    String betImage = AppAssetsNew.defaultBetDailPath;
-    //tableImage = AppAssets.horizontalTable;
-    //backdropImage = AppAssets.barBookshelfBackground;
-    AppTheme theme = AppTheme.getTheme(navigatorKey.currentContext);
-    if (theme.tableAssetId == 'default-table') {
-      boardBytes = (await rootBundle.load(tableImage)).buffer.asUint8List();
-    } else {
-      try {
-        boardBytes =
-            File(AssetService.hiveStore.get(theme.tableAssetId).downloadedPath)
-                .readAsBytesSync();
-      } catch (e) {
-        boardBytes = (await rootBundle.load(tableImage)).buffer.asUint8List();
-      }
+    Asset backdrop =
+        AssetService.getAssetForId(UserSettingsStore.getSelectedBackdropId());
+    if (backdrop == null) {
+      backdrop =
+          AssetService.getAssetForId(UserSettingsStore.VALUE_DEFAULT_BACKDROP);
     }
+    backdropBytes = await backdrop.getBytes();
 
-    if (UserSettingsService.isDefaultTable()) {
-      boardBytes = (await rootBundle.load(tableImage)).buffer.asUint8List();
-    } else {
-      try {
-        boardBytes = File(AssetService.hiveStore
-                .get(UserSettingsService.getSelectedTableId())
-                .downloadedPath)
-            .readAsBytesSync();
-      } catch (e) {
-        boardBytes = (await rootBundle.load(tableImage)).buffer.asUint8List();
-      }
+    Asset table =
+        AssetService.getAssetForId(UserSettingsStore.getSelectedTableId());
+    if (table == null) {
+      table = AssetService.getAssetForId(UserSettingsStore.VALUE_DEFAULT_TABLE);
     }
+    boardBytes = await table.getBytes();
 
-    if (UserSettingsService.isDefaultBackdrop()) {
-      backdropBytes =
-          (await rootBundle.load(backdropImage)).buffer.asUint8List();
-    } else {
-      try {
-        backdropBytes = File(AssetService.hiveStore
-                .get(UserSettingsService.getSelectedTableId())
-                .downloadedPath)
-            .readAsBytesSync();
-      } catch (e) {
-        backdropBytes =
-            (await rootBundle.load(backdropImage)).buffer.asUint8List();
-      }
+    Asset betImage =
+        AssetService.getAssetForId(UserSettingsStore.getSelectedBetDial());
+    if (betImage == null) {
+      betImage =
+          AssetService.getAssetForId(UserSettingsStore.VALUE_DEFAULT_BETDIAL);
     }
-    betImageBytes = (await rootBundle.load(betImage)).buffer.asUint8List();
-    holeCardBackBytes =
-        (await rootBundle.load('assets/images/card_back/set2/Asset 7.png'))
-            .buffer
-            .asUint8List();
+    betImageBytes = await betImage.getBytes();
+
+    Asset cardBack =
+        AssetService.getAssetForId(UserSettingsStore.getSelectedCardBackId());
+    if (cardBack == null) {
+      cardBack =
+          AssetService.getAssetForId(UserSettingsStore.VALUE_DEFAULT_CARDBACK);
+    }
+    holeCardBackBytes = await cardBack.getBytes();
+
+    Asset cardFace =
+        AssetService.getAssetForId(UserSettingsStore.getSelectedCardFaceId());
+    if (cardFace == null) {
+      cardFace =
+          AssetService.getAssetForId(UserSettingsStore.VALUE_DEFAULT_CARDFACE);
+    }
 
     for (int card in CardConvUtils.cardNumbers.keys) {
       final cardStr = CardConvUtils.getString(card);
-      final cardBytes =
-          (await rootBundle.load('assets/images/card_face/$card.svg'))
-              .buffer
-              .asUint8List();
+      Uint8List cardBytes;
+      if (cardFace.bundled ?? false) {
+        cardBytes =
+            (await rootBundle.load('${cardFace.downloadDir}/$cardStr.svg'))
+                .buffer
+                .asUint8List();
+      } else {
+        String filename = '${cardFace.downloadDir}/$card.svg';
+        if (!File(filename).existsSync()) {
+          filename = '${cardFace.downloadDir}/$card.png';
+          if (!File(filename).existsSync()) {
+            filename = '${cardFace.downloadDir}/$cardStr.svg';
+            if (!File(filename).existsSync()) {
+              filename = '${cardFace.downloadDir}/$cardStr.png';
+            }
+          }
+        }
+        cardBytes = File(filename).readAsBytesSync();
+      }
       cardStrImage[cardStr] = cardBytes;
       cardNumberImage[card] = cardBytes;
     }
@@ -1248,6 +1267,18 @@ class GameScreenAssets {
 }
 
 class HoleCardsState extends ChangeNotifier {
+  void notify() {
+    notifyListeners();
+  }
+}
+
+class RedrawTopSectionState extends ChangeNotifier {
+  void notify() {
+    notifyListeners();
+  }
+}
+
+class RedrawFooterSectionState extends ChangeNotifier {
   void notify() {
     notifyListeners();
   }
