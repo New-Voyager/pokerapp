@@ -196,6 +196,128 @@ class NewGameSettings2 extends StatelessWidget {
 
   static const sepH10 = const SizedBox(width: 10.0);
 
+  Widget _buildBuyinBreakConfig(AppTheme theme, NewGameModelProvider gmp) {
+    return _buildDecoratedContainer(
+      theme: theme,
+      children: [
+        SwitchWidget(
+          value: gmp.buyInApproval,
+          label: _appScreenText['BUYINGAPPROVAL'],
+          onChange: (bool value) {
+            gmp.buyInApproval = value;
+          },
+        ),
+
+        // buy in wait time
+        Consumer<NewGameModelProvider>(
+          builder: (_, vnGmp, __) => _buildAnimatedSwitcher(
+            child: vnGmp.buyInApproval == false
+                ? const SizedBox.shrink()
+                : Column(
+                    children: [
+                      _buildLabel(_appScreenText['BUYINGMAXWAITTIME'], theme),
+                      RadioListWidget(
+                        defaultValue: gmp.buyInWaitTime,
+                        values: NewGameConstants.BUYIN_WAIT_TIMES,
+                        onSelect: (int value) {
+                          gmp.buyInWaitTime = value;
+                        },
+                      ),
+                    ],
+                  ),
+          ),
+        ),
+
+        /* seperator */
+        sepV20,
+        _buildSeperator(theme),
+
+        /* sep */
+        sepV20,
+
+        SwitchWidget(
+          value: gmp.breakAllowed,
+          label: _appScreenText['breakAllowed'],
+          onChange: (bool value) {
+            gmp.breakAllowed = value;
+          },
+        ),
+
+        // break time
+        Consumer<NewGameModelProvider>(
+          builder: (_, vnGmp, __) => _buildAnimatedSwitcher(
+            child: vnGmp.breakAllowed == false
+                ? const SizedBox.shrink()
+                : TextInputWidget(
+                    label: _appScreenText['MAXBREAKTIME'],
+                    value: 10.0,
+                    trailing: _appScreenText['MINS'],
+                    minValue: 0.0,
+                    maxValue: 100,
+                    onChange: (value) {},
+                  ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildBombPotConfig(AppTheme theme, NewGameModelProvider gmp) {
+    return _buildDecoratedContainer(
+      theme: theme,
+      children: [
+        SwitchWidget(
+          value: gmp.bombPotEnabled,
+          label: _appScreenText['bombPotEnabled'],
+          onChange: (bool value) {
+            gmp.bombPotEnabled = value;
+          },
+        ),
+
+        // bomb pot interval
+        Consumer<NewGameModelProvider>(
+          builder: (_, vnGmp, __) => _buildAnimatedSwitcher(
+            child: vnGmp.bombPotEnabled == false
+                ? const SizedBox.shrink()
+                : Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // bomb pot bet
+                      _buildLabel(_appScreenText['bombPotBet'], theme),
+
+                      RadioListWidget(
+                        defaultValue: gmp.bombPotBet,
+                        values: NewGameConstants.BOMB_POT_BET_SIZE,
+                        onSelect: (int value) {
+                          gmp.bombPotBet = value;
+                        },
+                      ),
+                      _buildLabel(_appScreenText['bombPotInterval'], theme),
+                      RadioListWidget(
+                        defaultValue: gmp.bombPotInterval,
+                        values: NewGameConstants.BOMB_POT_INTERVALS,
+                        onSelect: (int value) {
+                          gmp.bombPotInterval = value;
+                        },
+                      ),
+                      sepV20,
+
+                      SwitchWidget(
+                        value: gmp.doubleBoardBombPot,
+                        label: _appScreenText['doubleBoardBombPot'],
+                        onChange: (bool value) {
+                          gmp.doubleBoardBombPot = value;
+                        },
+                      ),
+                    ],
+                  ),
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     _appScreenText = getAppTextScreen("newGameSettings2");
@@ -513,72 +635,9 @@ class NewGameSettings2 extends StatelessWidget {
                       style: AppStylesNew.labelTextStyle),
                   title: Text(_appScreenText['ADVANCESETTINGS']),
                   children: [
-                    _buildDecoratedContainer(
-                      theme: theme,
-                      children: [
-                        SwitchWidget(
-                          value: gmp.buyInApproval,
-                          label: _appScreenText['BUYINGAPPROVAL'],
-                          onChange: (bool value) {
-                            gmp.buyInApproval = value;
-                          },
-                        ),
-
-                        // buy in wait time
-                        Consumer<NewGameModelProvider>(
-                          builder: (_, vnGmp, __) => _buildAnimatedSwitcher(
-                            child: vnGmp.buyInApproval == false
-                                ? const SizedBox.shrink()
-                                : Column(
-                                    children: [
-                                      _buildLabel(
-                                          _appScreenText['BUYINGMAXWAITTIME'],
-                                          theme),
-                                      RadioListWidget(
-                                        defaultValue: gmp.buyInWaitTime,
-                                        values:
-                                            NewGameConstants.BUYIN_WAIT_TIMES,
-                                        onSelect: (int value) {
-                                          gmp.buyInWaitTime = value;
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                          ),
-                        ),
-
-                        /* seperator */
-                        sepV20,
-                        _buildSeperator(theme),
-
-                        /* sep */
-                        sepV20,
-
-                        SwitchWidget(
-                          value: gmp.breakAllowed,
-                          label: _appScreenText['BREAKALLOWED'],
-                          onChange: (bool value) {
-                            gmp.breakAllowed = value;
-                          },
-                        ),
-
-                        // buy in wait time
-                        Consumer<NewGameModelProvider>(
-                          builder: (_, vnGmp, __) => _buildAnimatedSwitcher(
-                            child: vnGmp.breakAllowed == false
-                                ? const SizedBox.shrink()
-                                : TextInputWidget(
-                                    label: _appScreenText['MAXBREAKTIME'],
-                                    value: 10,
-                                    trailing: _appScreenText['MINS'],
-                                    minValue: 0.0,
-                                    maxValue: 100,
-                                    onChange: (value) {},
-                                  ),
-                          ),
-                        ),
-                      ],
-                    ),
+                    _buildBuyinBreakConfig(theme, gmp),
+                    sepV20,
+                    _buildBombPotConfig(theme, gmp),
 
                     /* sep */
                     sepV20,

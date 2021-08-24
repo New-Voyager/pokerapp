@@ -74,6 +74,7 @@ class _CenterViewState extends State<CenterView> {
   Widget customizationView({
     double scale = 1.0,
     Offset offset = Offset.zero,
+    GameState gameState,
   }) {
     AppTheme theme = AppTheme.getTheme(context);
     return Align(
@@ -83,8 +84,12 @@ class _CenterViewState extends State<CenterView> {
         child: Transform.scale(
             scale: scale * 1.2,
             child: GameCircleButton(
-              onClickHandler: () {
-                Navigator.of(context).pushNamed(Routes.select_table);
+              onClickHandler: () async {
+                await Navigator.of(context).pushNamed(Routes.select_table);
+                await gameState.assets.initialize();
+                final redrawTop = gameState.getRedrawTopSectionState(context);
+                redrawTop.notify();
+                //setState(() {});
               },
               child: Icon(Icons.edit,
                   size: 24, color: theme.primaryColorWithDark()),
@@ -204,21 +209,21 @@ class _CenterViewState extends State<CenterView> {
     @required final BoardAttributesObject boardAttributes,
   }) {
     final gameState = GameState.getState(context);
-    log('potViewPos: before game ended.');
+    //log('potViewPos: before game ended.');
     if (gameState.gameInfo.status == AppConstants.GAME_ENDED)
       return centerTextWidget(
         _appScreenText['gameEnded'],
         boardAttributes.centerViewButtonVerticalTranslate,
       );
 
-    log('potViewPos: before waiting for players.');
+    //log('potViewPos: before waiting for players.');
     if (!gameState.botGame && gameState.playersInSeatsCount <= 1) {
       String text = _appScreenText['waitingForPlayersToJoin'];
       return centerTextWidget(
           text, boardAttributes.centerViewButtonVerticalTranslate);
     }
 
-    log('potViewPos: before seat change progress.');
+    //log('potViewPos: before seat change progress.');
     if (gameState.gameInfo.tableStatus ==
         AppConstants.TABLE_STATUS_HOST_SEATCHANGE_IN_PROGRESS) {
       return centerTextWidget(_appScreenText['seatChangeInProgress'],
@@ -229,7 +234,7 @@ class _CenterViewState extends State<CenterView> {
             AppConstants.GAME_PAUSED ||
         gameState.gameInfo.tableStatus == AppConstants.WAITING_TO_BE_STARTED;
 
-    log('potViewPos: before is paused or waiting isGameRunning: ${gameState.isGameRunning} isGamePausedOrWaiting: $isGamePausedOrWaiting ${gameState.gameInfo.tableStatus}');
+    //log('potViewPos: before is paused or waiting isGameRunning: ${gameState.isGameRunning} isGamePausedOrWaiting: $isGamePausedOrWaiting ${gameState.gameInfo.tableStatus}');
     /* if the game is paused, show the options available during game pause */
     if (isGamePausedOrWaiting && !gameState.isGameRunning) {
       print('_buildGamePauseOptions');
@@ -257,6 +262,7 @@ class _CenterViewState extends State<CenterView> {
         return customizationView(
           offset: boardAttributes.centerViewCardShufflePosition,
           scale: boardAttributes.centerViewCenterScale,
+          gameState: gameState,
         );
       }
       if (showCardsShuffling) {
@@ -278,7 +284,7 @@ class _CenterViewState extends State<CenterView> {
   }
 
   Widget _buildMainCenterView(final context, final boardAttributes) {
-    log('potViewPos: building main center view');
+    //log('potViewPos: building main center view');
 
     return Transform.translate(
       offset: boardAttributes.centerViewVerticalTranslate,
@@ -334,7 +340,7 @@ class _CenterViewState extends State<CenterView> {
   }
 
   Widget _buildMultiplePots(boardAttributes) {
-    log('potViewPos: building multiple pots');
+    //log('potViewPos: building multiple pots');
     return ValueListenableBuilder2<List<int>, int>(
       vnPotChips,
       vnPotToHighlight,

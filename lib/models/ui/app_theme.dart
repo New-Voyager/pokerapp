@@ -8,6 +8,14 @@ class AppTheme extends ChangeNotifier {
   // constructor, which takes in app theme data
   AppTheme(this._themeData);
 
+  get themeData => _themeData;
+
+  get tableAssetId => _themeData.tableAssetId;
+  get backDropAssetId => _themeData.backDropAssetId;
+  get cardFaceAssetId => _themeData.cardFaceAssetId;
+  get cardBackAssetId => _themeData.cardBackAssetId;
+  get betAssetId => _themeData.betAssetId;
+
   get navBgColor => _themeData.navBgColor;
 
   get navFabColor => _themeData.navFabColor;

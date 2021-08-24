@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -15,10 +16,13 @@ import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/boar
 import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/services/agora/agora.dart';
+import 'package:pokerapp/services/app/asset_service.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/app/handlog_cache_service.dart';
+import 'package:pokerapp/services/data/asset_hive_store.dart';
 import 'package:pokerapp/services/data/game_hive_store.dart';
 import 'package:pokerapp/services/data/hive_models/game_settings.dart';
+import 'package:pokerapp/services/data/user_settings_store.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/services/janus/janus.dart';
@@ -78,6 +82,8 @@ class GameState {
   ListenableProvider<PopupButtonState> _popupButtonState;
   ListenableProvider<CommunicationState> _communicationStateProvider;
   ListenableProvider<StraddlePromptState> _straddlePromptState;
+  ListenableProvider<RedrawTopSectionState> _redrawTopSectionState;
+  ListenableProvider<RedrawFooterSectionState> _redrawFooterSectionState;
 
   HoleCardsState _holeCardsState;
   ListenableProvider<HoleCardsState> _holeCardsProvider;
@@ -129,9 +135,6 @@ class GameState {
   // tracks whether buyin keyboard is shown or not
   bool buyInKeyboardShown = false;
 
-  // customization mode
-  bool customizationMode = false;
-
   // hole card order
   HoleCardOrder holecardOrder = HoleCardOrder.DEALT;
 
@@ -144,6 +147,8 @@ class GameState {
   // assets used in the game screen
   GameScreenAssets assets;
 
+  bool customizationMode = false;
+  bool showCustomizationEditFooter = true;
   Future<void> initialize({
     String gameCode,
     @required GameInfoModel gameInfo,
@@ -152,6 +157,7 @@ class GameState {
     List<PlayerInSeat> hostSeatChangeSeats,
     bool hostSeatChangeInProgress,
     bool replayMode,
+    bool customizationMode = false,
   }) async {
     this._seats = Map<int, Seat>();
     this._gameInfo = gameInfo;
@@ -159,6 +165,7 @@ class GameState {
     this._currentPlayer = currentPlayer;
     this._currentHandNum = -1;
     this._tappedSeatPos = null;
+    this.customizationMode = customizationMode;
     this.replayMode = replayMode ?? false;
 
     this._hostSeatChangeSeats = hostSeatChangeSeats;
@@ -167,10 +174,6 @@ class GameState {
     for (int seatNo = 1; seatNo <= gameInfo.maxPlayers; seatNo++) {
       this._seats[seatNo] = Seat(seatNo, null);
     }
-
-    // load assets
-    this.assets = new GameScreenAssets();
-    await this.assets.initialize();
 
     _tableState = TableState();
     if (gameInfo != null) {
@@ -202,6 +205,13 @@ class GameState {
 
     this._connectionState = ListenableProvider<ServerConnectionState>(
         create: (_) => ServerConnectionState());
+
+    this._redrawTopSectionState = ListenableProvider<RedrawTopSectionState>(
+        create: (_) => RedrawTopSectionState());
+
+    this._redrawFooterSectionState =
+        ListenableProvider<RedrawFooterSectionState>(
+            create: (_) => RedrawFooterSectionState());
 
     _communicationState = CommunicationState(this);
     this._communicationStateProvider = ListenableProvider<CommunicationState>(
@@ -273,6 +283,9 @@ class GameState {
         }
       }
     }
+    // load assets
+    this.assets = new GameScreenAssets();
+    await this.assets.initialize();
 
     final playersState = Players(
       players: players,
@@ -292,23 +305,23 @@ class GameState {
       this._myState.notify();
     }
 
-    if (!this.replayMode) {
-      gameHiveStore = GameHiveStore();
-      await gameHiveStore.open(_gameCode);
+    gameHiveStore = GameHiveStore();
+    await gameHiveStore.open(_gameInfo.gameCode);
+    if (!(this.customizationMode ?? false)) {
+      if (!this.replayMode) {
+        if (!gameHiveStore.haveGameSettings()) {
+          log('In GameState initialize(), gameBox is empty');
 
-      if (!gameHiveStore.haveGameSettings()) {
-        log('In GameState initialize(), gameBox is empty');
-
-        // create a new settings object, and init it (by init -> saves locally)
-        settings = GameSettings(gameCode, gameHiveStore);
-        await settings.init();
-      } else {
-        log('In GameState initialize(), getting gameSettings from gameBox');
-        settings = gameHiveStore.getGameSettings();
+          // create a new settings object, and init it (by init -> saves locally)
+          settings = GameSettings(gameCode, gameHiveStore);
+          await settings.init();
+        } else {
+          log('In GameState initialize(), getting gameSettings from gameBox');
+          settings = gameHiveStore.getGameSettings();
+        }
+        log('In GameState initialize(), gameSettings = $settings');
+        _communicationState.showTextChat = settings.showChat;
       }
-      log('In GameState initialize(), gameSettings = $settings');
-      _communicationState.showTextChat = settings.showChat;
-      print('makes sense');
     }
   }
 
@@ -462,12 +475,17 @@ class GameState {
 
   set currentHandNum(int handNum) => this._currentHandNum = currentHandNum;
 
-  Future<void> refresh(BuildContext context) async {
+  Future<void> refresh(BuildContext context,
+      {bool rebuildSeats = false}) async {
     log('************ Refreshing game state');
     // fetch new player using GameInfo API and add to the game
     GameInfoModel gameInfo = await GameService.getGameInfo(this._gameCode);
 
     this._gameInfo = gameInfo;
+
+    if (rebuildSeats) {
+      this._seats.clear();
+    }
 
     // reset seats
     for (var seat in this._seats.values) {
@@ -486,6 +504,16 @@ class GameState {
       _playerIdsToNames[player.id] = player.name;
     }
 
+    // for (Seat seat in this._seats.values) {
+    //   seat.notify();
+    // }
+    if (rebuildSeats) {
+      log('GameState: Rebuilding all the seats again');
+      for (int seatNo = 1; seatNo <= gameInfo.maxPlayers; seatNo++) {
+        this._seats[seatNo] = Seat(seatNo, null);
+      }
+    }
+
     // show buyin button/timer if the player is in middle of buyin
     for (var player in playersInSeats) {
       player.startingStack = player.stack;
@@ -498,7 +526,6 @@ class GameState {
         player.inBreak = true;
         player.breakTimeExpAt = player.breakTimeExpAt.toLocal();
       }
-
       if (player.seatNo != 0) {
         final seat = this._seats[player.seatNo];
         seat.player = player;
@@ -542,7 +569,7 @@ class GameState {
   }
 
   void rebuildSeats() {
-    log('potViewPos: rebuilding seats.');
+    // log('potViewPos: rebuilding seats.');
     for (final seat in this._seats.values) {
       seat.notify();
     }
@@ -601,6 +628,14 @@ class GameState {
 
   PopupButtonState getPopupState(BuildContext context, {bool listen = false}) =>
       Provider.of<PopupButtonState>(context, listen: listen);
+
+  RedrawTopSectionState getRedrawTopSectionState(BuildContext context,
+          {bool listen = false}) =>
+      Provider.of<RedrawTopSectionState>(context, listen: listen);
+
+  RedrawFooterSectionState getRedrawFooterSectionState(BuildContext context,
+          {bool listen = false}) =>
+      Provider.of<RedrawFooterSectionState>(context, listen: listen);
 
   CommunicationState getCommunicationState() => this._communicationState;
 
@@ -697,6 +732,8 @@ class GameState {
       this._communicationStateProvider,
       this._straddlePromptState,
       this._holeCardsProvider,
+      this._redrawTopSectionState,
+      this._redrawFooterSectionState,
     ];
   }
 
@@ -1164,26 +1201,65 @@ class GameScreenAssets {
   Future<void> initialize() async {
     cardStrImage = Map<String, Uint8List>();
     cardNumberImage = Map<int, Uint8List>();
-    String backdropImage = 'assets/images/backgrounds/night sky.png';
-    String tableImage = 'assets/images/table/night sky table.png';
-    String betImage = 'assets/images/betimage.svg';
-    //tableImage = AppAssets.horizontalTable;
-    //backdropImage = AppAssets.barBookshelfBackground;
+    Asset backdrop =
+        AssetService.getAssetForId(UserSettingsStore.getSelectedBackdropId());
+    if (backdrop == null) {
+      backdrop =
+          AssetService.getAssetForId(UserSettingsStore.VALUE_DEFAULT_BACKDROP);
+    }
+    backdropBytes = await backdrop.getBytes();
 
-    betImageBytes = (await rootBundle.load(betImage)).buffer.asUint8List();
-    backdropBytes = (await rootBundle.load(backdropImage)).buffer.asUint8List();
-    boardBytes = (await rootBundle.load(tableImage)).buffer.asUint8List();
-    holeCardBackBytes =
-        (await rootBundle.load('assets/images/card_back/set2/Asset 7.png'))
-            .buffer
-            .asUint8List();
+    Asset table =
+        AssetService.getAssetForId(UserSettingsStore.getSelectedTableId());
+    if (table == null) {
+      table = AssetService.getAssetForId(UserSettingsStore.VALUE_DEFAULT_TABLE);
+    }
+    boardBytes = await table.getBytes();
+
+    Asset betImage =
+        AssetService.getAssetForId(UserSettingsStore.getSelectedBetDial());
+    if (betImage == null) {
+      betImage =
+          AssetService.getAssetForId(UserSettingsStore.VALUE_DEFAULT_BETDIAL);
+    }
+    betImageBytes = await betImage.getBytes();
+
+    Asset cardBack =
+        AssetService.getAssetForId(UserSettingsStore.getSelectedCardBackId());
+    if (cardBack == null) {
+      cardBack =
+          AssetService.getAssetForId(UserSettingsStore.VALUE_DEFAULT_CARDBACK);
+    }
+    holeCardBackBytes = await cardBack.getBytes();
+
+    Asset cardFace =
+        AssetService.getAssetForId(UserSettingsStore.getSelectedCardFaceId());
+    if (cardFace == null) {
+      cardFace =
+          AssetService.getAssetForId(UserSettingsStore.VALUE_DEFAULT_CARDFACE);
+    }
 
     for (int card in CardConvUtils.cardNumbers.keys) {
       final cardStr = CardConvUtils.getString(card);
-      final cardBytes =
-          (await rootBundle.load('assets/images/card_face/$card.svg'))
-              .buffer
-              .asUint8List();
+      Uint8List cardBytes;
+      if (cardFace.bundled ?? false) {
+        cardBytes =
+            (await rootBundle.load('${cardFace.downloadDir}/$cardStr.svg'))
+                .buffer
+                .asUint8List();
+      } else {
+        String filename = '${cardFace.downloadDir}/$card.svg';
+        if (!File(filename).existsSync()) {
+          filename = '${cardFace.downloadDir}/$card.png';
+          if (!File(filename).existsSync()) {
+            filename = '${cardFace.downloadDir}/$cardStr.svg';
+            if (!File(filename).existsSync()) {
+              filename = '${cardFace.downloadDir}/$cardStr.png';
+            }
+          }
+        }
+        cardBytes = File(filename).readAsBytesSync();
+      }
       cardStrImage[cardStr] = cardBytes;
       cardNumberImage[card] = cardBytes;
     }
@@ -1191,6 +1267,18 @@ class GameScreenAssets {
 }
 
 class HoleCardsState extends ChangeNotifier {
+  void notify() {
+    notifyListeners();
+  }
+}
+
+class RedrawTopSectionState extends ChangeNotifier {
+  void notify() {
+    notifyListeners();
+  }
+}
+
+class RedrawFooterSectionState extends ChangeNotifier {
   void notify() {
     notifyListeners();
   }

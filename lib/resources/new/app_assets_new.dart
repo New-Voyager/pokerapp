@@ -66,4 +66,9 @@ class AppAssetsNew {
 
   static String hostImagePath = "assets/images/host.svg";
   static String joinImagePath = "assets/images/join.svg";
+
+  static String defaultTablePath = "assets/images/table/night sky table.png";
+
+  static String defaultBackdropPath = 'assets/images/backgrounds/night sky.png';
+  static String defaultBetDailPath = 'assets/images/betimage.svg';
 }

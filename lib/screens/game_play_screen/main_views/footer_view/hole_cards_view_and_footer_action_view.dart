@@ -293,12 +293,6 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
 
         // all hole card selection button
         _buildAllHoleCardAndRabbitHuntSelectionButton(context),
-
-        Container(
-          height: 30,
-          width: 30,
-          color: Colors.red,
-        ),
       ]);
       return Stack(
         alignment: Alignment.topCenter,
@@ -319,8 +313,12 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
             ),
           ),
 
-          Consumer<StraddlePromptState>(
-            builder: (_, straddlePromptState, ___) => Align(
+          Consumer<StraddlePromptState>(builder: (_, straddlePromptState, ___) {
+            final gameState = GameState.getState(context);
+            if (gameState.customizationMode) {
+              return Container();
+            }
+            return Align(
               child: Transform.scale(
                 scale: 0.80,
                 child: StraddleDialog(
@@ -356,8 +354,8 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
                   },
                 ),
               ),
-            ),
-          ),
+            );
+          }),
         ],
       );
     });
@@ -459,12 +457,19 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
     Widget shuffleButton = Container();
     if (playerModel != null && playerModel.cards != null) {
       if (playerModel.cards.length > 2) {
-        shuffleButton = GameCircleButton(
-          onClickHandler: () {
+        Color buttonColor = theme.accentColor;
+        shuffleButton = InkWell(
+          child: Container(
+            padding: EdgeInsets.all(2.pw),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: buttonColor,
+            ),
+            child: Icon(Icons.autorenew, color: theme.primaryColorWithDark()),
+          ),
+          onTap: () {
             gameState.changeHoleCardOrder(context);
           },
-          child: Icon(Icons.autorenew,
-              size: 24, color: theme.primaryColorWithDark()),
         );
       }
     }
@@ -479,20 +484,27 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
         );
       },
       child: Transform.translate(
-          offset: Offset(0, 10.pw),
+          offset: Offset(0, 25.ph),
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
             rankText,
             SizedBox(
               height: 10.ph,
             ),
-            Stack(
-              alignment: Alignment.center,
-              children: [
-                cardsWidget,
-                shuffleButton,
-              ],
-            ),
+            Column(children: [
+              Stack(
+                alignment: Alignment.center,
+                children: [
+                  cardsWidget,
+                  //shuffleButton,
+                  // Align(
+                  //   alignment: Alignment.topRight,
+                  //   child: shuffleButton,
+                  // ),
+                ],
+              ),
+              shuffleButton,
+            ]),
             //shuffleButton,
           ])),
     );
