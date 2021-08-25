@@ -128,6 +128,8 @@ flutter:
     - assets/images/gamesettings/
     - assets/images/game-settings/
     - assets/images/name_plates/
+    - assets/images/default/cardface/
+    - assets/images/default/
     - assets/sample-data/
     - assets/sample-data/handlog/
     - assets/sample-data/handlog/holdem/

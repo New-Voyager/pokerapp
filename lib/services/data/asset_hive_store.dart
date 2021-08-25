@@ -1,5 +1,9 @@
 import 'dart:convert';
+import 'dart:developer';
+import 'dart:io';
+import 'dart:typed_data';
 
+import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
 
 class Asset {
@@ -9,13 +13,28 @@ class Asset {
   String previewLink;
   String type;
   int size;
-  bool defaultAsset;
+  bool defaultAsset = false;
+  bool bundled = false;
   DateTime updatedDate;
   bool active;
-  bool downloaded;
-  String downloadDir; // directory for cards
-  String downloadedPath; // file name of downloaded file (for single files)
-  Asset();
+  bool downloaded = false;
+  String downloadDir = ''; // directory for cards
+  String downloadedPath = ''; // file name of downloaded file (for single files)
+  Asset({
+    this.id,
+    this.name,
+    this.link,
+    this.previewLink,
+    this.type,
+    this.size,
+    this.defaultAsset,
+    this.updatedDate,
+    this.active,
+    this.downloaded,
+    this.downloadDir,
+    this.downloadedPath,
+    this.bundled,
+  });
 
   factory Asset.fromjson(dynamic json) {
     Asset asset = Asset();
@@ -47,6 +66,9 @@ class Asset {
     if (json['downloadedPath'] != null) {
       asset.downloadedPath = json['downloadedPath'].toString();
     }
+    if (json['bundled'] ?? false) {
+      asset.bundled = json['bundled'];
+    }
     return asset;
   }
 
@@ -61,11 +83,25 @@ class Asset {
       "downloaded": downloaded,
       "downloadDir": downloadDir,
       "downloadedPath": downloadedPath,
+      "bundled": bundled,
     };
     if (updatedDate != null) {
       json["updatedDate"] = updatedDate.toIso8601String();
     }
     return jsonEncode(json);
+  }
+
+  Future<Uint8List> getBytes() async {
+    if (!(this.bundled ?? false)) {
+      return File(downloadedPath).readAsBytesSync();
+    } else {
+      try {
+        final loadedAsset = await rootBundle.load(downloadedPath);
+        return loadedAsset.buffer.asUint8List();
+      } catch (err) {
+        log('Error: ${err.toString()}');
+      }
+    }
   }
 }
 
@@ -95,9 +131,20 @@ class AssetHiveStore {
     return;
   }
 
+  Future<List<Asset>> getAll() async {
+    List<Asset> assetsInStore = [];
+    for (final key in _assetBox.keys) {
+      final asset = get(key.toString());
+      if (asset != null) {
+        assetsInStore.add(asset);
+      }
+    }
+    return assetsInStore;
+  }
+
   Asset get(String id) {
     dynamic jsonString = _assetBox.get(id);
-    if (json != null) {
+    if (jsonString != null) {
       dynamic json = jsonDecode(jsonString);
       return Asset.fromjson(json);
     }
@@ -106,6 +153,7 @@ class AssetHiveStore {
 
   Future<void> open() async {
     _assetBox = await Hive.openBox('assets');
+    log("0-0-0-ASSETBOX : ${_assetBox.hashCode}");
   }
 
   void close() {

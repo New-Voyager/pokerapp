@@ -130,74 +130,48 @@ class NewGameModelProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // TODO: WE DONT HAVE A SETTING FOR BREAK ALLOWED
-  bool _breakAllowed;
-  bool get breakAllowed => _breakAllowed ?? false;
+  bool get breakAllowed => settings.breakAllowed ?? false;
   set breakAllowed(value) {
-    _breakAllowed = value;
+    settings.breakAllowed = value;
     notifyListeners();
   }
 
-  // int get selectedGameLength {
-  //   return gameLengths
-  //       .indexOf(NewGameConstants.GAME_LENGTH[settings.gameLength]);
-  // }
+  int get breakTime => settings.breakTime ?? 5;
+  set breakTime(value) {
+    settings.breakTime = value;
+    notifyListeners();
+  }
 
-  // set selectedGameLength(int index) {
-  //   if (index == -1) {
-  //   } else {
-  //     String selectedValue = gameLengths[index];
-  //     for (MapEntry e in NewGameConstants.GAME_LENGTH.entries) {
-  //       if (e.value == selectedValue) {
-  //         settings.gameLength = e.key;
-  //         break;
-  //       }
-  //     }
-  //   }
-  //   notifyListeners();
-  // }
+  bool get bombPotEnabled => settings.bombPotEnabled ?? false;
+  set bombPotEnabled(value) {
+    settings.bombPotEnabled = value;
+    notifyListeners();
+  }
 
-  // String get selectedGameLengthText {
-  //   int index =
-  //       gameLengths.indexOf(NewGameConstants.GAME_LENGTH[settings.gameLength]);
-  //   if (index != -1) {
-  //     return gameLengths[index];
-  //   }
-  //   return "";
-  // }
+  int get bombPotBet => settings.bombPotBet ?? 5;
+  set bombPotBet(value) {
+    settings.bombPotBet = value;
+    notifyListeners();
+  }
+
+  bool get doubleBoardBombPot => settings.doubleBoardBombPot ?? false;
+  set doubleBoardBombPot(value) {
+    settings.doubleBoardBombPot = value;
+    notifyListeners();
+  }
+
+  int get bombPotInterval => settings.bombPotInterval ?? false;
+  set bombPotInterval(value) {
+    settings.bombPotInterval = value;
+    notifyListeners();
+  }
 
   int get actionTime => settings.actionTime;
   set actionTime(int v) {
     settings.actionTime = v;
     notifyListeners();
   }
-  // int get selectedActionTime {
-  //   return actionTimes
-  //       .indexOf(NewGameConstants.ACTION_TIMES[settings.actionTime]);
-  // }
 
-  // set selectedActionTime(int index) {
-  //   if (index == -1) {
-  //   } else {
-  //     String selectedValue = actionTimes[index];
-  //     for (MapEntry e in NewGameConstants.ACTION_TIMES.entries) {
-  //       if (e.value == selectedValue) {
-  //         settings.actionTime = e.key;
-  //         break;
-  //       }
-  //     }
-  //   }
-  //   notifyListeners();
-  // }
-
-  // String get selectedActionTimeText {
-  //   int index =
-  //       actionTimes.indexOf(NewGameConstants.ACTION_TIMES[settings.actionTime]);
-  //   if (index != -1) {
-  //     return actionTimes[index];
-  //   }
-  //   return "";
-  // }
   set blinds(Blinds blinds) {
     settings.setBlinds(blinds);
     notifyListeners();
@@ -282,6 +256,12 @@ class NewGameModelProvider extends ChangeNotifier {
   get ipCheck => settings.ipCheck;
   set ipCheck(bool value) {
     settings.locationCheck = value;
+    notifyListeners();
+  }
+
+  get seatChangeAllowed => settings.seatChangeAllowed;
+  set seatChangeAllowed(bool value) {
+    settings.seatChangeAllowed = value;
     notifyListeners();
   }
 

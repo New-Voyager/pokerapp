@@ -25,6 +25,7 @@ import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/game_context_screen/game_chat/game_chat.dart';
+import 'package:pokerapp/screens/game_play_screen/footer_view.dart';
 import 'package:pokerapp/screens/game_play_screen/game_play_screen_util_methods.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/board_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/decorative_views/background_view.dart';
@@ -83,11 +84,14 @@ board width: 800.0 height: 492.8
 class GamePlayScreen extends StatefulWidget {
   final String gameCode;
   final CustomizationService customizationService;
-
+  final bool showTop;
+  final bool showBottom;
   // NOTE: Enable this for agora audio testing
   GamePlayScreen({
     @required this.gameCode,
     this.customizationService,
+    this.showTop = true,
+    this.showBottom = true,
   }) : assert(gameCode != null);
 
   @override
@@ -267,14 +271,19 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       _gameState.customizationMode = true;
     }
     _gameState.gameComService = gameComService;
-    await _gameState.initialize(
-      gameCode: _gameInfoModel.gameCode,
-      gameInfo: _gameInfoModel,
-      currentPlayer: _currentPlayer,
-      gameMessagingService: gameComService.gameMessaging,
-      hostSeatChangeInProgress: _hostSeatChangeInProgress,
-      hostSeatChangeSeats: _hostSeatChangeSeats,
-    );
+
+    if (widget.customizationService != null) {
+      _gameState = widget.customizationService.gameState;
+    } else {
+      await _gameState.initialize(
+        gameCode: _gameInfoModel.gameCode,
+        gameInfo: _gameInfoModel,
+        currentPlayer: _currentPlayer,
+        gameMessagingService: gameComService.gameMessaging,
+        hostSeatChangeInProgress: _hostSeatChangeInProgress,
+        hostSeatChangeSeats: _hostSeatChangeSeats,
+      );
+    }
 
     if (_gameInfoModel?.audioConfEnabled ?? false) {
       // initialize agora
@@ -756,58 +765,78 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     double tableScale = boardAttributes.tableScale;
     double divider1 =
         boardAttributes.tableDividerHeightScale * dividerTotalHeight;
-
     final theme = AppTheme.getTheme(context);
+
+    List<Widget> children = [];
+    if (this.widget.showTop) {
+      children.addAll([
+        _buildAudioWidget(),
+
+        // header view
+        HeaderView(gameState: _gameState),
+
+        // seperator
+        // SizedBox(width: width, height: divider1 / 2),
+
+        // this widget, shows which winner is currently showing - high winner / low winner
+        // this widget also acts as a natural seperator between header and board view
+        WhichWinnerWidget(seperator: divider1),
+
+        // seperator
+        // SizedBox(width: width, height: divider1 / 2),
+
+        // main board view
+        Consumer<RedrawTopSectionState>(builder: (_, ___, __) {
+          return _buildBoardView(boardDimensions, tableScale);
+        }),
+
+        /* divider that divides the board view and the footer */
+        Divider(color: AppColorsNew.dividerColor, thickness: 3),
+      ]);
+    }
+
+    if (this.widget.showBottom) {
+      children.addAll([
+        // footer section
+        Consumer<RedrawFooterSectionState>(builder: (_, ___, __) {
+          return FooterViewWidget(
+              gameCode: widget.gameCode,
+              gameContextObject: _gameContextObj,
+              currentPlayer: _gameContextObj.gameState.currentPlayer,
+              gameInfo: _gameInfoModel);
+        }),
+      ]);
+    }
     return Stack(
       alignment: Alignment.topCenter,
       children: [
-        BackgroundView(),
-        Positioned(
-            top: 50.pw,
-            left: width - 50.pw,
-            child: GameCircleButton(
-              onClickHandler: () {
-                log('refresh button is clicked');
-                //this.reload();
-              },
-              child: Icon(Icons.refresh_rounded,
-                  size: 24.pw, color: theme.primaryColorWithDark()),
-            )),
+        this.widget.showTop ? BackgroundView() : Container(),
+        this.widget.showTop
+            ? Positioned(
+                top: 50.pw,
+                left: width - 50.pw,
+                child: GameCircleButton(
+                  onClickHandler: () {
+                    log('refresh button is clicked');
+                    //this.reload();
+                  },
+                  child: Icon(Icons.refresh_rounded,
+                      size: 24.pw, color: theme.primaryColorWithDark()),
+                ))
+            : Container(),
 
         /* main view */
         Column(
-          children: [
-            _buildAudioWidget(),
-
-            // header view
-            HeaderView(gameState: _gameState),
-
-            // seperator
-            // SizedBox(width: width, height: divider1 / 2),
-
-            // this widget, shows which winner is currently showing - high winner / low winner
-            // this widget also acts as a natural seperator between header and board view
-            WhichWinnerWidget(seperator: divider1),
-
-            // seperator
-            // SizedBox(width: width, height: divider1 / 2),
-
-            // main board view
-            _buildBoardView(boardDimensions, tableScale),
-
-            /* divider that divides the board view and the footer */
-            Divider(color: AppColorsNew.dividerColor, thickness: 3),
-
-            // footer section
-            _buildFooterView(context),
-          ],
+          children: children,
         ),
 
         /* chat window widget */
-        _buildChatWindow(),
+        this.widget.showBottom ? _buildChatWindow() : Container(),
 
         /* notification view */
-        Notifications.buildNotificationWidget(),
+        this.widget.showBottom
+            ? Notifications.buildNotificationWidget()
+            : Container(),
       ],
     );
   }

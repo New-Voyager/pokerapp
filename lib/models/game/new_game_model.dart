@@ -14,6 +14,9 @@ class NewGameConstants {
 
   static const List<int> ACTION_TIMES = [10, 15, 20, 30, 45, 60];
   static const List<int> BUYIN_WAIT_TIMES = [60, 90, 120, 240, 300];
+  static const List<int> BOMB_POT_INTERVALS = [30, 45, 60, 90, 120];
+  static const List<int> BOMB_POT_BET_SIZE = [2, 3, 4, 5, 10, 15, 20];
+  static const List<int> BREAK_WAIT_TIMES = [3, 5, 10, 15, 30];
 
   // static const Map<int, String> ACTION_TIMES = {
   //   10: "10 Seconds",
@@ -80,42 +83,62 @@ class NewGameModel {
   bool allowRabbitHunt = true;
   bool showHandRank = false;
   bool useAgora = false;
+  bool breakAllowed = false;
+  int breakTime = 5;
+  /*
+    bombPotEnabled: Boolean
+    bombPotBet: Int
+    doubleBoardBombPot: Boolean
+    bombPotInterval: Int        
+    bombPotIntervalInSecs: Int  # for tests
+  */
+  bool bombPotEnabled = false;
+  bool doubleBoardBombPot = false;
+  int bombPotInterval = 30;
+  int bombPotBet = 5; // in big blinds
 
   List<GameType> roeGames = [];
   List<GameType> dealerChoiceGames = [];
 
   int buyInWaitTime;
 
-  NewGameModel(
-      {this.clubCode,
-      this.title,
-      this.gameType,
-      this.smallBlind,
-      this.bigBlind,
-      this.utgStraddleAllowed,
-      this.straddleBet,
-      this.minPlayers,
-      this.maxPlayers,
-      this.gameLength,
-      this.buyInApproval,
-      this.rakePercentage,
-      this.rakeCap,
-      this.buyInMin,
-      this.buyInMax,
-      this.actionTime,
-      this.seatChangeAllowed,
-      this.runItTwice,
-      this.ipCheck,
-      this.locationCheck,
-      this.waitList,
-      this.botGame,
-      this.muckLosingHand,
-      this.roeGames,
-      this.dealerChoiceGames,
-      this.allowRabbitHunt,
-      this.showHandRank,
-      this.audioConference,
-      this.useAgora});
+  NewGameModel({
+    this.clubCode,
+    this.title,
+    this.gameType,
+    this.smallBlind,
+    this.bigBlind,
+    this.utgStraddleAllowed,
+    this.straddleBet,
+    this.minPlayers,
+    this.maxPlayers,
+    this.gameLength,
+    this.buyInApproval,
+    this.rakePercentage,
+    this.rakeCap,
+    this.buyInMin,
+    this.buyInMax,
+    this.actionTime,
+    this.seatChangeAllowed,
+    this.runItTwice,
+    this.ipCheck,
+    this.locationCheck,
+    this.waitList,
+    this.botGame,
+    this.muckLosingHand,
+    this.roeGames,
+    this.dealerChoiceGames,
+    this.allowRabbitHunt,
+    this.showHandRank,
+    this.audioConference,
+    this.useAgora,
+    this.bombPotEnabled,
+    this.bombPotBet,
+    this.doubleBoardBombPot,
+    this.bombPotInterval,
+    this.breakAllowed,
+    this.breakTime,
+  });
 
   NewGameModel.withDefault(String clubCode) {
     this.clubCode = clubCode;
@@ -148,6 +171,13 @@ class NewGameModel {
     allowRabbitHunt = json['allowRabbitHunt'];
     showHandRank = json['showHandRank'];
     useAgora = json['useAgora'];
+    bombPotEnabled = json['bombPotEnabled'] ?? false;
+    bombPotBet = json['bombPotBet'] ?? 5;
+    doubleBoardBombPot = json['doubleBoardBombPot'] ?? false;
+    bombPotInterval = json['bombPotInterval'] ?? 30;
+    seatChangeAllowed = json['seatChangeAllowed'] ?? false;
+    breakTime = json['breakLength'] ?? 5;
+    breakAllowed = json['breakAllowed'] ?? true;
   }
 
   Map<String, dynamic> toJson() {
@@ -174,6 +204,13 @@ class NewGameModel {
     data['allowRabbitHunt'] = this.allowRabbitHunt;
     data['showHandRank'] = this.showHandRank;
     data['useAgora'] = this.useAgora;
+    data['bombPotEnabled'] = this.bombPotEnabled;
+    data['bombPotBet'] = this.bombPotBet;
+    data['doubleBoardBombPot'] = this.doubleBoardBombPot;
+    data['bombPotInterval'] = this.bombPotInterval;
+    data['seatChangeAllowed'] = this.seatChangeAllowed ?? false;
+    data['breakAllowed'] = this.breakAllowed ?? true;
+    data['breakLength'] = this.breakTime ?? 5;
 
     if (this.gameType == GameType.ROE) {
       data['roeGames'] = this
