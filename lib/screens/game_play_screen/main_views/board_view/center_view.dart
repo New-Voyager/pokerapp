@@ -132,10 +132,7 @@ class _CenterViewState extends State<CenterView> {
           builder: (_, gameStatus, tableStatus, __) {
             log('Rebuilding center view: Is game running: ${gameState.isGameRunning}');
             return CenterButtonView(
-              gameCode: this.widget.gameCode,
               isHost: this.widget.isHost,
-              gameStatus: gameState.gameInfo.status,
-              tableStatus: gameState.gameInfo.tableStatus,
               onStartGame: this.widget.onStartGame,
             );
           },
@@ -236,7 +233,7 @@ class _CenterViewState extends State<CenterView> {
 
     //log('potViewPos: before is paused or waiting isGameRunning: ${gameState.isGameRunning} isGamePausedOrWaiting: $isGamePausedOrWaiting ${gameState.gameInfo.tableStatus}');
     /* if the game is paused, show the options available during game pause */
-    if (isGamePausedOrWaiting && !gameState.isGameRunning) {
+    if (isGamePausedOrWaiting || !gameState.isGameRunning) {
       print('_buildGamePauseOptions');
       return _buildGamePauseOptions(
         gameState,

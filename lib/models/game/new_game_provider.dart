@@ -141,7 +141,7 @@ class NewGameModelProvider extends ChangeNotifier {
     settings.breakTime = value;
     notifyListeners();
   }
-  
+
   bool get bombPotEnabled => settings.bombPotEnabled ?? false;
   set bombPotEnabled(value) {
     settings.bombPotEnabled = value;

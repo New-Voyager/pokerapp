@@ -97,49 +97,48 @@ class NewGameModel {
   int bombPotInterval = 30;
   int bombPotBet = 5; // in big blinds
 
-
   List<GameType> roeGames = [];
   List<GameType> dealerChoiceGames = [];
 
   int buyInWaitTime;
 
-  NewGameModel(
-      {this.clubCode,
-      this.title,
-      this.gameType,
-      this.smallBlind,
-      this.bigBlind,
-      this.utgStraddleAllowed,
-      this.straddleBet,
-      this.minPlayers,
-      this.maxPlayers,
-      this.gameLength,
-      this.buyInApproval,
-      this.rakePercentage,
-      this.rakeCap,
-      this.buyInMin,
-      this.buyInMax,
-      this.actionTime,
-      this.seatChangeAllowed,
-      this.runItTwice,
-      this.ipCheck,
-      this.locationCheck,
-      this.waitList,
-      this.botGame,
-      this.muckLosingHand,
-      this.roeGames,
-      this.dealerChoiceGames,
-      this.allowRabbitHunt,
-      this.showHandRank,
-      this.audioConference,
-      this.useAgora,
-      this.bombPotEnabled,
-      this.bombPotBet,
-      this.doubleBoardBombPot,
-      this.bombPotInterval,
-      this.breakAllowed,
-      this.breakTime,
-    });
+  NewGameModel({
+    this.clubCode,
+    this.title,
+    this.gameType,
+    this.smallBlind,
+    this.bigBlind,
+    this.utgStraddleAllowed,
+    this.straddleBet,
+    this.minPlayers,
+    this.maxPlayers,
+    this.gameLength,
+    this.buyInApproval,
+    this.rakePercentage,
+    this.rakeCap,
+    this.buyInMin,
+    this.buyInMax,
+    this.actionTime,
+    this.seatChangeAllowed,
+    this.runItTwice,
+    this.ipCheck,
+    this.locationCheck,
+    this.waitList,
+    this.botGame,
+    this.muckLosingHand,
+    this.roeGames,
+    this.dealerChoiceGames,
+    this.allowRabbitHunt,
+    this.showHandRank,
+    this.audioConference,
+    this.useAgora,
+    this.bombPotEnabled,
+    this.bombPotBet,
+    this.doubleBoardBombPot,
+    this.bombPotInterval,
+    this.breakAllowed,
+    this.breakTime,
+  });
 
   NewGameModel.withDefault(String clubCode) {
     this.clubCode = clubCode;
@@ -177,7 +176,7 @@ class NewGameModel {
     doubleBoardBombPot = json['doubleBoardBombPot'] ?? false;
     bombPotInterval = json['bombPotInterval'] ?? 30;
     seatChangeAllowed = json['seatChangeAllowed'] ?? false;
-    breakTime = json['breakTime'] ?? 5;
+    breakTime = json['breakLength'] ?? 5;
     breakAllowed = json['breakAllowed'] ?? true;
   }
 
@@ -211,7 +210,7 @@ class NewGameModel {
     data['bombPotInterval'] = this.bombPotInterval;
     data['seatChangeAllowed'] = this.seatChangeAllowed ?? false;
     data['breakAllowed'] = this.breakAllowed ?? true;
-    data['breakTime'] = this.breakTime ?? 5;
+    data['breakLength'] = this.breakTime ?? 5;
 
     if (this.gameType == GameType.ROE) {
       data['roeGames'] = this
