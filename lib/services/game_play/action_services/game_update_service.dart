@@ -197,7 +197,8 @@ class GameUpdateService {
     // fixme: this is until all the player update messages have a newUpdate field
     if (player == null) {
       // new player
-      _gameState.refresh(_context, rebuildSeats: true);
+      //_gameState.refresh(_context, rebuildSeats: true);
+      handleNewPlayerInSeat(seatNo: seatNo, status: status);
       return;
     }
     //   return handleNewPlayer(
@@ -278,6 +279,49 @@ class GameUpdateService {
     assert(newPlayerModel != null);
     // put the status of the fetched player
     newPlayerModel?.status = playerUpdate['status'];
+
+    if (newPlayerModel.playerUuid == _gameState.currentPlayerUuid) {
+      newPlayerModel.isMe = true;
+    }
+
+    if (!newPlayerModel.isMe) {
+      bool found = _gameState.newPlayer(_context, newPlayerModel);
+      if (!found) {
+        if (newPlayerModel.stack == 0) {
+          newPlayerModel.showBuyIn = true;
+        }
+      }
+    }
+
+    if (closed) return;
+    final tableState = _gameState.getTableState(_context);
+    tableState.notifyAll();
+    _gameState.updatePlayers(_context);
+  }
+
+  void handleNewPlayerInSeat(
+      {@required int seatNo, @required String status}) async {
+    // fetch new player using GameInfo API and add to the game
+    if (closed) return;
+
+    debugLog(_gameState.gameCode, 'Fetching game information');
+    final start = DateTime.now();
+    GameInfoModel _gameInfoModel =
+        await GameService.getGameInfo(_gameState.gameCode);
+    assert(_gameInfoModel != null);
+    List<PlayerModel> playerModels = _gameInfoModel.playersInSeats;
+    PlayerModel newPlayerModel = playerModels.firstWhere(
+      (pm) => pm.seatNo == seatNo,
+      orElse: () => null,
+    ); // this must return a PLayerModel object
+    final end = DateTime.now();
+    final timeTaken = end.difference(start);
+    debugLog(_gameState.gameCode,
+        'Time taken to fetch game information: ${timeTaken.inMilliseconds}');
+
+    assert(newPlayerModel != null);
+    // put the status of the fetched player
+    newPlayerModel?.status = status;
 
     if (newPlayerModel.playerUuid == _gameState.currentPlayerUuid) {
       newPlayerModel.isMe = true;

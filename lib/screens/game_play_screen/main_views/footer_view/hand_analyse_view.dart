@@ -43,9 +43,11 @@ class HandAnalyseView extends StatefulWidget {
 class _HandAnalyseViewState extends State<HandAnalyseView> {
   BuildContext _context;
   AppTextScreen _appScreenText;
+  bool disposed = false;
 
   @override
   void initState() {
+    disposed = false;
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       while (mounted) {
         //log('0-0-0-0- inside while Polling for pending approvals');
@@ -58,7 +60,16 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
     super.initState();
   }
 
+  @override
+  void dispose() {
+    disposed = true;
+    super.dispose();
+  }
+
   _pollPendingApprovals() async {
+    if (disposed) {
+      return;
+    }
     //log('0-0-0-0- Polling for pending approvals');
     final approvals = await PlayerService.getPendingApprovals();
     final state = Provider.of<PendingApprovalsState>(_context, listen: false);
