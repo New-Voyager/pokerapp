@@ -484,29 +484,34 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
         );
       },
       child: Transform.translate(
-          offset: Offset(0, 25.ph),
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+        offset: Offset(0, 25.ph),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
             rankText,
             SizedBox(
               height: 10.ph,
             ),
-            Column(children: [
-              Stack(
-                alignment: Alignment.center,
-                children: [
-                  cardsWidget,
-                  //shuffleButton,
-                  // Align(
-                  //   alignment: Alignment.topRight,
-                  //   child: shuffleButton,
-                  // ),
-                ],
-              ),
-              shuffleButton,
-            ]),
+            Column(
+              children: [
+                Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    cardsWidget,
+                    //shuffleButton,
+                    // Align(
+                    //   alignment: Alignment.topRight,
+                    //   child: shuffleButton,
+                    // ),
+                  ],
+                ),
+                shuffleButton,
+              ],
+            ),
             //shuffleButton,
-          ])),
+          ],
+        ),
+      ),
     );
   }
 

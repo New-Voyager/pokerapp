@@ -45,4 +45,8 @@ class UserSettingsService {
   static setSelectedBackdropId(Asset backDropAsset) {
     UserSettingsStore.setSelectedBackdropId(backDropAsset.id);
   }
+
+  static setSelectedBetDialId(Asset betDialAsset) {
+    UserSettingsStore.setSelectedBetDialId(betDialAsset.id);
+  }
 }

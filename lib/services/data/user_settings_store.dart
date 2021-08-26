@@ -103,6 +103,12 @@ class UserSettingsStore {
     setSelectedAssets(values);
   }
 
+  static void setSelectedBetDialId(String id) {
+    final Map<String, String> values = getSelectedAssets();
+    values[KEY_SELECTED_BETDIAL] = id;
+    setSelectedAssets(values);
+  }
+
   static void setSelectedCardFaceId(String id) {
     final Map<String, String> values = getSelectedAssets();
     values[KEY_SELECTED_CARDFACE] = id;

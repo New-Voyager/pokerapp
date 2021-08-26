@@ -513,7 +513,7 @@ class BetIconButton extends StatelessWidget {
                     ],
                   ),
                 )
-              : Container(),
+              : SizedBox.shrink(),
         ],
       ),
     );

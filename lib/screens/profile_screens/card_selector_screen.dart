@@ -15,6 +15,7 @@ import 'package:pokerapp/screens/game_play_screen/game_play_screen.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/asset_service.dart';
+import 'package:pokerapp/services/app/user_settings_service.dart';
 import 'package:pokerapp/services/data/asset_hive_store.dart';
 import 'package:pokerapp/services/data/box_type.dart';
 import 'package:pokerapp/services/data/hive_datasource_impl.dart';
@@ -58,14 +59,21 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
     _cardFaceAssets = AssetService.getCards();
     _cardBackAssets = AssetService.getCardBacks();
     _betAssets = AssetService.getDials();
-    for (final asset in _betAssets) {
-      if (!(asset.bundled ?? false)) {
-        await AssetService.saveFile(asset);
-      }
-    }
-    _selectedCardFaceAsset = null;
-    _selectedCardBackAsset = null;
-    _selectedBetAsset = null;
+    // for (final asset in _betAssets) {
+    //   if (!(asset.bundled ?? false)) {
+    //     await AssetService.saveFile(asset);
+    //   }
+    // }
+
+    // Load saved items
+
+    _selectedCardFaceAsset =
+        AssetService.getAssetForId(UserSettingsService.getSelectedCardFaceId());
+
+    _selectedCardBackAsset =
+        AssetService.getAssetForId(UserSettingsService.getSelectedCardBackId());
+    _selectedBetAsset =
+        AssetService.getAssetForId(UserSettingsService.getSelectedBetdialId());
     customizeService.showFooterEditButton = false;
     await customizeService.load();
     isDownloading = false;
@@ -99,7 +107,7 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
                       ? CircularProgressWidget(
                           text: "Downloading...",
                         )
-                      : _buildHoleCardView(theme),
+                      : _buildHoleCardView(),
                 ),
               ],
             ),
@@ -186,9 +194,9 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
               UserSettingsStore.setSelectedCardFaceId(
                   _cardFaceAssets[index].id);
 
-              final theme = AppTheme.getTheme(context);
-              AppThemeData data = theme.themeData;
-              theme.updateThemeData(data);
+              // final theme = AppTheme.getTheme(context);
+              // AppThemeData data = theme.themeData;
+              // theme.updateThemeData(data);
               await customizeService.gameState.assets.initialize();
               setState(() {});
             },
@@ -202,7 +210,7 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  getImageWidgetFromAsset(_cardFaceAssets[index]),
+                  _cardFaceAssets[index].getImageWidgetFromAsset(),
                   Visibility(
                     visible: isSelected,
                     child: Container(
@@ -270,9 +278,9 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
               }
               UserSettingsStore.setSelectedCardBackId(
                   _cardBackAssets[index].id);
-              final theme = AppTheme.getTheme(context);
-              AppThemeData data = theme.themeData;
-              theme.updateThemeData(data);
+              // final theme = AppTheme.getTheme(context);
+              // AppThemeData data = theme.themeData;
+              // theme.updateThemeData(data);
               await customizeService.gameState.assets.initialize();
               setState(() {});
 
@@ -290,7 +298,7 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  getImageWidgetFromAsset(_cardBackAssets[index]),
+                  _cardBackAssets[index].getImageWidgetFromAsset(),
                   Visibility(
                     visible: isSelected,
                     child: Container(
@@ -352,16 +360,19 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
                 isDownloading = false;
               });
 
-              final theme = AppTheme.getTheme(context);
-              AppThemeData data = theme.themeData;
-              data.betAssetId = _betAssets[index].id;
+              UserSettingsService.setSelectedBetDialId(_betAssets[index]);
+              await customizeService.gameState.assets.initialize();
+              setState(() {});
+              // final theme = AppTheme.getTheme(context);
+              // AppThemeData data = theme.themeData;
+              // data.betAssetId = _betAssets[index].id;
 
-              final settings =
-                  HiveDatasource.getInstance.getBox(BoxType.USER_SETTINGS_BOX);
-              settings.put('theme', data.toMap());
-              settings.put('themeIndex', index);
+              // final settings =
+              //     HiveDatasource.getInstance.getBox(BoxType.USER_SETTINGS_BOX);
+              // settings.put('theme', data.toMap());
+              // settings.put('themeIndex', index);
 
-              theme.updateThemeData(data);
+              // theme.updateThemeData(data);
 
               // final asset = await AssetService.getDefaultTableAsset();
               // log(jsonEncode(asset.toJson()));
@@ -375,7 +386,7 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  getImageWidgetFromAsset(_betAssets[index]),
+                  _betAssets[index].getImageWidgetFromAsset(),
                   Visibility(
                     visible: isSelected,
                     child: Container(
@@ -405,7 +416,7 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
     );
   }
 
-  Widget _buildHoleCardView(AppTheme theme) {
+  Widget _buildHoleCardView() {
     var gameCode = 'CUSTOMIZE';
     return GamePlayScreen(
       gameCode: gameCode,

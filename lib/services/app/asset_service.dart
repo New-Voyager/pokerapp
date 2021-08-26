@@ -227,7 +227,7 @@ class AssetService {
       Asset asset = Asset(
           id: UserSettingsStore.VALUE_DEFAULT_CARDFACE,
           defaultAsset: true,
-          downloadedPath: 'assets/images/default/cardface',
+          downloadedPath: 'assets/images/default/cardface/preview.png',
           downloadDir: 'assets/images/default/cardface',
           downloaded: true,
           name: "Default Card Face",

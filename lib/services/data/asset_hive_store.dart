@@ -3,8 +3,12 @@ import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hive/hive.dart';
+import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 
 class Asset {
   String id;
@@ -96,12 +100,54 @@ class Asset {
       return File(downloadedPath).readAsBytesSync();
     } else {
       try {
-        final loadedAsset = await rootBundle.load(downloadedPath);
-        return loadedAsset.buffer.asUint8List();
+        return (await rootBundle.load(downloadedPath)).buffer.asUint8List();
+        //  return loadedAsset;
       } catch (err) {
         log('Error: ${err.toString()}');
       }
     }
+  }
+
+  Widget getImageWidgetFromAsset() {
+    if (this.bundled ?? false) {
+      if (this.downloaded ?? false) {
+        final String path = this.downloadedPath;
+        log("0-0-0-Displaying with path : $path");
+        if (path.contains(".svg")) {
+          return SvgPicture.asset(path,
+              placeholderBuilder: (context) => CircularProgressWidget());
+        } else if (path.contains(".jpg") ||
+            path.contains(".png") ||
+            path.contains(".jpeg")) {
+          return Image.asset(path);
+        }
+      }
+    } else {
+      if (this.downloaded ?? false) {
+        final String path = this.downloadedPath;
+        log("0-0-0-Displaying with path : $path");
+        if (path.contains(".svg")) {
+          return SvgPicture.file(File(path));
+        } else if (path.contains(".jpg") ||
+            path.contains(".png") ||
+            path.contains(".jpeg")) {
+          return Image.file(File(path));
+        }
+      }
+      final String link = this.previewLink;
+      log("0-0-0-Displaying with link : $link");
+      if (link.contains(".svg")) {
+        return SvgPicture.network(link);
+      } else if (link.contains(".jpg") ||
+          link.contains(".png") ||
+          link.contains(".jpeg")) {
+        return CachedNetworkImage(
+          imageUrl: link,
+          errorWidget: (context, url, error) => Container(),
+        );
+      }
+    }
+    return Container();
   }
 }
 
