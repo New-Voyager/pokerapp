@@ -22,10 +22,7 @@ class CenterButtonView extends StatelessWidget {
   final Function onStartGame;
   AppTextScreen _appScreenText;
 
-  CenterButtonView(
-      {
-      this.isHost,
-      this.onStartGame});
+  CenterButtonView({this.isHost, this.onStartGame});
 
   void _onResumePress(gameCode) {
     GameService.resumeGame(gameCode);
@@ -116,7 +113,7 @@ class CenterButtonView extends StatelessWidget {
         ));
       }
     } else if (tableState.gameStatus == AppConstants.GAME_CONFIGURED ||
-               tableState.tableStatus == AppConstants.WAITING_TO_BE_STARTED) {
+        tableState.tableStatus == AppConstants.WAITING_TO_BE_STARTED) {
       if (this.isHost) {
         if (!gameState.isGameRunning) {
           debugLog(gameState.gameCode, 'Showing start/terminate buttons');

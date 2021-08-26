@@ -155,10 +155,11 @@ class _BotScriptsScreenState extends State<BotScriptsScreen>
 
     if (newGameCode.isNotEmpty) {
       log('New gamecode: $newGameCode');
+      dynamic args = {'gameCode': newGameCode, 'botGame': true};
       Navigator.pushNamed(
         context,
         Routes.game_play,
-        arguments: newGameCode,
+        arguments: args,
       );
     } else {
       showAlertDialog(context, "${_appScreenText['TIMEOUT']}",

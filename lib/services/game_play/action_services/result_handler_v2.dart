@@ -86,6 +86,14 @@ class ResultHandlerV2 {
     for (final c in result.boards[0].cards) {
       boardCards1CO.add(CardHelper.getCard(c));
     }
+
+    if (result.wonAt == proto.HandStatus.PREFLOP) {
+      boardCards1CO = [];
+    } else if (result.wonAt == proto.HandStatus.FLOP) {
+      boardCards1CO = boardCards1CO.sublist(0, 3);
+    } else if (result.wonAt == proto.HandStatus.TURN) {
+      boardCards1CO = boardCards1CO.sublist(0, 4);
+    }
     tableState.setBoardCards(1, boardCards1CO);
 
     /* set board 2 cards */
@@ -94,6 +102,14 @@ class ResultHandlerV2 {
       for (final c in result.boards[1].cards) {
         boardCards2CO.add(CardHelper.getCard(c));
       }
+      if (result.wonAt == proto.HandStatus.PREFLOP) {
+        boardCards2CO = [];
+      } else if (result.wonAt == proto.HandStatus.FLOP) {
+        boardCards2CO = boardCards2CO.sublist(0, 3);
+      } else if (result.wonAt == proto.HandStatus.TURN) {
+        boardCards2CO = boardCards2CO.sublist(0, 4);
+      }
+
       tableState.setBoardCards(2, boardCards2CO);
       tableState.updateTwoBoardsNeeded(true);
     } else {
@@ -109,12 +125,12 @@ class ResultHandlerV2 {
      *    2. delay
      *    3. show all the low pot winners
      */
-    final boardCards = this.result.boards[0].cards;
-    List<CardObject> boardCardsUpdate = [];
-    for (final c in boardCards) {
-      boardCardsUpdate.add(CardHelper.getCard(c));
-    }
-    tableState.setBoardCards(1, boardCardsUpdate);
+    // final boardCards = this.result.boards[0].cards;
+    // List<CardObject> boardCardsUpdate = [];
+    // for (final c in boardCards) {
+    //   boardCardsUpdate.add(CardHelper.getCard(c));
+    // }
+    // tableState.setBoardCards(1, boardCardsUpdate);
     final totalPots = result.potWinners.length;
     for (int i = totalPots - 1; i >= 0; i--) {
       final potWinner = result.potWinners[i];
@@ -170,9 +186,13 @@ class ResultHandlerV2 {
           // display high banner
           tableState.setWhichWinner(AppConstants.HIGH_WINNERS);
         }
+        String rankText = boardWinners.hiRankText;
+        if (result.wonAt != proto.HandStatus.SHOW_DOWN) {
+          rankText = '';
+        }
         await _showWinners(
           board,
-          boardWinners.hiRankText,
+          rankText,
           boardWinners.hiWinners.values.toList(),
           low: false,
         );

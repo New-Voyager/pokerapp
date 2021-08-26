@@ -147,6 +147,8 @@ class GameState {
   // assets used in the game screen
   GameScreenAssets assets;
 
+  bool isBotGame = false;
+
   bool customizationMode = false;
   bool showCustomizationEditFooter = true;
   Future<void> initialize({

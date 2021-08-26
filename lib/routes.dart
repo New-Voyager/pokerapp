@@ -151,10 +151,21 @@ class Routes {
         );
 
       case game_play:
-        var gameCode = settings.arguments as String;
+        String gameCode;
+        bool botGame = false;
+        if (settings.arguments is String) {
+          gameCode = settings.arguments as String;
+        } else {
+          dynamic args = settings.arguments as dynamic;
+          gameCode = args['gameCode'] as String;
+          botGame = args['botGame'] ?? false;
+        }
         return _getPageRoute(
           routeName: settings.name,
-          viewToShow: GamePlayScreen(gameCode: gameCode),
+          viewToShow: GamePlayScreen(
+            gameCode: gameCode,
+            botGame: botGame,
+          ),
         );
 
       case new_game_settings:

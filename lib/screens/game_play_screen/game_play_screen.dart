@@ -86,10 +86,12 @@ class GamePlayScreen extends StatefulWidget {
   final CustomizationService customizationService;
   final bool showTop;
   final bool showBottom;
+  final bool botGame;
   // NOTE: Enable this for agora audio testing
   GamePlayScreen({
     @required this.gameCode,
     this.customizationService,
+    this.botGame = false,
     this.showTop = true,
     this.showBottom = true,
   }) : assert(gameCode != null);
@@ -267,6 +269,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     }
 
     _gameState = GameState();
+    _gameState.isBotGame = widget.botGame;
     if (widget.customizationService != null) {
       _gameState.customizationMode = true;
     }

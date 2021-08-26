@@ -108,7 +108,7 @@ class _CenterViewState extends State<CenterView> {
           text,
           style: TextStyle(
             color: Colors.grey,
-            fontSize: 16.dp,
+            fontSize: 12.dp,
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -232,12 +232,16 @@ class _CenterViewState extends State<CenterView> {
 
     //log('potViewPos: before is paused or waiting isGameRunning: ${gameState.isGameRunning} isGamePausedOrWaiting: $isGamePausedOrWaiting ${gameState.gameInfo.tableStatus}');
     /* if the game is paused, show the options available during game pause */
-    if (isGamePausedOrWaiting || !gameState.isGameRunning) {
-      print('_buildGamePauseOptions');
-      return _buildGamePauseOptions(
-        gameState,
-        boardAttributes.centerViewButtonVerticalTranslate,
-      );
+
+    // don't show start/pause buttons for bot script games
+    if (!gameState.isBotGame) {
+      if (isGamePausedOrWaiting || !gameState.isGameRunning) {
+        print('_buildGamePauseOptions');
+        return _buildGamePauseOptions(
+          gameState,
+          boardAttributes.centerViewButtonVerticalTranslate,
+        );
+      }
     }
 
     /* if we reach here, means, the game is RUNNING */
