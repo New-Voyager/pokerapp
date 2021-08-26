@@ -158,6 +158,7 @@ class GameUpdateService {
           );
       }
     } else if (type != null) {
+      type = type.toUpperCase();
       // new type
       switch (type) {
         case AppConstants.PLAYER_SEAT_CHANGE_PROMPT:
@@ -177,6 +178,10 @@ class GameUpdateService {
           return handleNewHighhandWinner(
             data: data,
           );
+        case AppConstants.PLAYER_UPDATE:
+          return handleNewPlayerUpdate(
+            data: data,
+          );
       }
     }
   }
@@ -191,6 +196,9 @@ class GameUpdateService {
 
     // fixme: this is until all the player update messages have a newUpdate field
     if (player == null) {
+      // new player
+      //_gameState.refresh(_context, rebuildSeats: true);
+      handleNewPlayerInSeat(seatNo: seatNo, status: status);
       return;
     }
     //   return handleNewPlayer(
@@ -218,7 +226,7 @@ class GameUpdateService {
       stack: playerUpdate['stack'],
       buyIn: playerUpdate['buyIn'],
       showBuyIn: showBuyIn,
-      status: null,
+      status: status,
     );
     if (closed) return;
     final seat = _gameState.getSeat(_context, seatNo);
@@ -271,6 +279,49 @@ class GameUpdateService {
     assert(newPlayerModel != null);
     // put the status of the fetched player
     newPlayerModel?.status = playerUpdate['status'];
+
+    if (newPlayerModel.playerUuid == _gameState.currentPlayerUuid) {
+      newPlayerModel.isMe = true;
+    }
+
+    if (!newPlayerModel.isMe) {
+      bool found = _gameState.newPlayer(_context, newPlayerModel);
+      if (!found) {
+        if (newPlayerModel.stack == 0) {
+          newPlayerModel.showBuyIn = true;
+        }
+      }
+    }
+
+    if (closed) return;
+    final tableState = _gameState.getTableState(_context);
+    tableState.notifyAll();
+    _gameState.updatePlayers(_context);
+  }
+
+  void handleNewPlayerInSeat(
+      {@required int seatNo, @required String status}) async {
+    // fetch new player using GameInfo API and add to the game
+    if (closed) return;
+
+    debugLog(_gameState.gameCode, 'Fetching game information');
+    final start = DateTime.now();
+    GameInfoModel _gameInfoModel =
+        await GameService.getGameInfo(_gameState.gameCode);
+    assert(_gameInfoModel != null);
+    List<PlayerModel> playerModels = _gameInfoModel.playersInSeats;
+    PlayerModel newPlayerModel = playerModels.firstWhere(
+      (pm) => pm.seatNo == seatNo,
+      orElse: () => null,
+    ); // this must return a PLayerModel object
+    final end = DateTime.now();
+    final timeTaken = end.difference(start);
+    debugLog(_gameState.gameCode,
+        'Time taken to fetch game information: ${timeTaken.inMilliseconds}');
+
+    assert(newPlayerModel != null);
+    // put the status of the fetched player
+    newPlayerModel?.status = status;
 
     if (newPlayerModel.playerUuid == _gameState.currentPlayerUuid) {
       newPlayerModel.isMe = true;
@@ -619,6 +670,80 @@ class GameUpdateService {
     String playerId = playerUpdate['playerId'];
 
     if (playerId == _gameState.currentPlayerId.toString()) {
+      if (playerStatus == AppConstants.PLAYING &&
+          _gameState.myState.status != PlayerStatus.PLAYING) {
+        _gameState.myState.status = PlayerStatus.PLAYING;
+        if (closed) return;
+        _gameState.myState.notify();
+      }
+    }
+
+    var jsonData = jsonEncode(newUpdate);
+    log(jsonData);
+    switch (newUpdate) {
+      case AppConstants.NEW_PLAYER:
+        return handleNewPlayer(
+          playerUpdate: playerUpdate,
+        );
+
+      case AppConstants.LEFT:
+      case AppConstants.LEFT_THE_GAME:
+        return handlePlayerLeftGame(
+          playerUpdate: playerUpdate,
+        );
+
+      case AppConstants.SWITCH_SEAT:
+        return handlePlayerSwitchSeat(
+          playerUpdate: playerUpdate,
+        );
+
+      case AppConstants.NEWUPDATE_NOT_PLAYING:
+      case AppConstants.NOT_PLAYING:
+        return handlePlayerNotPlaying(
+          playerUpdate: playerUpdate,
+        );
+
+      case AppConstants.BUYIN_TIMEDOUT:
+        return handlePlayerBuyinTimedout(
+          playerUpdate: playerUpdate,
+        );
+
+      case AppConstants.TAKE_BREAK:
+        return handlePlayerTakeBreak(
+          playerUpdate: playerUpdate,
+        );
+
+      case AppConstants.NEWUPDATE_WAIT_FOR_BUYIN_APPROVAL:
+      case AppConstants.WAIT_FOR_BUYIN_APPROVAL:
+        return handlePlayerWaitForBuyinApproval(
+          playerUpdate: playerUpdate,
+        );
+      case AppConstants.BUYIN_DENIED:
+        return handlePlayerBuyinDenied(
+          playerUpdate: playerUpdate,
+        );
+
+      case AppConstants.SIT_BACK:
+        return handlePlayerSitBack(
+          playerUpdate: playerUpdate,
+        );
+
+      default:
+        return updatePlayer(
+          playerUpdate: playerUpdate,
+        );
+    }
+  }
+
+  void handleNewPlayerUpdate({
+    var data,
+  }) {
+    var playerUpdate = data;
+    String newUpdate = playerUpdate['newUpdate'];
+    String playerStatus = playerUpdate['status'];
+    int playerId = int.parse(playerUpdate['playerId'].toString());
+
+    if (playerId == _gameState.currentPlayerId) {
       if (playerStatus == AppConstants.PLAYING &&
           _gameState.myState.status != PlayerStatus.PLAYING) {
         _gameState.myState.status = PlayerStatus.PLAYING;

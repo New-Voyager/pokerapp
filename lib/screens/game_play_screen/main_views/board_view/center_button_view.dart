@@ -18,28 +18,23 @@ import 'package:pokerapp/utils/alerts.dart';
 import 'package:provider/provider.dart';
 
 class CenterButtonView extends StatelessWidget {
-  final String tableStatus;
-  final String gameStatus;
-  final String gameCode;
   final bool isHost;
   final Function onStartGame;
   AppTextScreen _appScreenText;
 
   CenterButtonView(
-      {this.gameCode,
+      {
       this.isHost,
-      this.gameStatus,
-      this.tableStatus,
       this.onStartGame});
 
-  void _onResumePress() {
+  void _onResumePress(gameCode) {
     GameService.resumeGame(gameCode);
   }
 
   Future<void> _onTerminatePress(BuildContext context) async {
-    log('Termininating game $gameCode');
-    await GameService.endGame(gameCode);
     final gameState = GameState.getState(context);
+    log('Termininating game ${gameState.gameCode}');
+    await GameService.endGame(gameState.gameCode);
     if (!gameState.isGameRunning) {
       gameState.refresh(context);
     }
@@ -50,6 +45,8 @@ class CenterButtonView extends StatelessWidget {
       context,
       listen: false,
     );
+    final gameState = GameState.getState(context);
+
     Alerts.showNotification(
         titleText: _appScreenText['game'],
         svgPath: AppAssetsNew.seatChangeImagePath,
@@ -63,8 +60,7 @@ class CenterButtonView extends StatelessWidget {
       ..updateSeatChangeHost(gameContextObject.playerId)
       ..updateSeatChangeInProgress(true);
 
-    await SeatChangeService.hostSeatChangeBegin(gameCode);
-    final gameState = GameState.getState(context);
+    await SeatChangeService.hostSeatChangeBegin(gameState.gameCode);
     await gameState.refresh(context);
     log('status: ${gameState.gameInfo.status} table status: ${gameState.gameInfo.tableStatus}');
   }
@@ -76,6 +72,7 @@ class CenterButtonView extends StatelessWidget {
     final seatChange = Provider.of<SeatChangeNotifier>(context, listen: false);
     final gameContext = Provider.of<GameContextObject>(context, listen: false);
     final gameState = GameState.getState(context);
+    final tableState = gameState.getTableState(context);
     log('Seat Change: seat change in progress: ${gameState.playerSeatChangeInProgress} gameRunning: ${gameState.isGameRunning}');
     if (gameState.playerSeatChangeInProgress ||
         gameState.gameInfo.tableStatus ==
@@ -91,7 +88,7 @@ class CenterButtonView extends StatelessWidget {
       ));
     }
 
-    if (this.gameStatus == AppConstants.GAME_PAUSED) {
+    if (tableState.gameStatus == AppConstants.GAME_PAUSED) {
       if (!seatChange.seatChangeInProgress) {
         if (gameContext.isAdmin()) {
           log('is admin: ${gameContext.isAdmin()} isHost: ${gameContext.isHost()}');
@@ -118,7 +115,8 @@ class CenterButtonView extends StatelessWidget {
           ),
         ));
       }
-    } else if (this.tableStatus == AppConstants.WAITING_TO_BE_STARTED) {
+    } else if (tableState.gameStatus == AppConstants.GAME_CONFIGURED ||
+               tableState.tableStatus == AppConstants.WAITING_TO_BE_STARTED) {
       if (this.isHost) {
         if (!gameState.isGameRunning) {
           debugLog(gameState.gameCode, 'Showing start/terminate buttons');
@@ -148,6 +146,7 @@ class CenterButtonView extends StatelessWidget {
 
   Widget pauseButtons(BuildContext context) {
     final gameContext = Provider.of<GameContextObject>(context, listen: false);
+    final gameState = GameState.getState(context);
     log('is admin: ${gameContext.isAdmin()} isHost: ${gameContext.isHost()}');
     final providerContext = context;
     return Consumer<GameContextObject>(
@@ -184,7 +183,9 @@ class CenterButtonView extends StatelessWidget {
                             height: 48.ph,
                             width: 48.pw,
                           ),
-                          onTap: _onResumePress,
+                          onTap: () {
+                            return _onResumePress(gameState.gameCode);
+                          },
                           text: _appScreenText['resume'],
                         ),
 

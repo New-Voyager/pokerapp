@@ -196,6 +196,41 @@ class NewGameSettings2 extends StatelessWidget {
 
   static const sepH10 = const SizedBox(width: 10.0);
 
+  Widget _buildBreakConfig(AppTheme theme, NewGameModelProvider gmp) {
+    return _buildDecoratedContainer(
+      theme: theme,
+      children: [
+        SwitchWidget(
+          value: gmp.breakAllowed,
+          label: _appScreenText['breakAllowed'],
+          onChange: (bool value) {
+            gmp.breakAllowed = value;
+          },
+        ),
+
+        // break time
+        Consumer<NewGameModelProvider>(
+          builder: (_, vnGmp, __) => _buildAnimatedSwitcher(
+            child: vnGmp.breakAllowed == false
+                ? const SizedBox.shrink()
+                : Column(
+                    children: [
+                      _buildLabel(_appScreenText['maxBreakTime'], theme),
+                      RadioListWidget(
+                        defaultValue: gmp.breakTime,
+                        values: NewGameConstants.BREAK_WAIT_TIMES,
+                        onSelect: (int value) {
+                          gmp.breakTime = value;
+                        },
+                      ),
+                    ],
+                  ),
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildBuyinBreakConfig(AppTheme theme, NewGameModelProvider gmp) {
     return _buildDecoratedContainer(
       theme: theme,
@@ -224,37 +259,6 @@ class NewGameSettings2 extends StatelessWidget {
                         },
                       ),
                     ],
-                  ),
-          ),
-        ),
-
-        /* seperator */
-        sepV20,
-        _buildSeperator(theme),
-
-        /* sep */
-        sepV20,
-
-        SwitchWidget(
-          value: gmp.breakAllowed,
-          label: _appScreenText['breakAllowed'],
-          onChange: (bool value) {
-            gmp.breakAllowed = value;
-          },
-        ),
-
-        // break time
-        Consumer<NewGameModelProvider>(
-          builder: (_, vnGmp, __) => _buildAnimatedSwitcher(
-            child: vnGmp.breakAllowed == false
-                ? const SizedBox.shrink()
-                : TextInputWidget(
-                    label: _appScreenText['MAXBREAKTIME'],
-                    value: 10.0,
-                    trailing: _appScreenText['MINS'],
-                    minValue: 0.0,
-                    maxValue: 100,
-                    onChange: (value) {},
                   ),
           ),
         ),
@@ -637,6 +641,8 @@ class NewGameSettings2 extends StatelessWidget {
                   children: [
                     _buildBuyinBreakConfig(theme, gmp),
                     sepV20,
+                    _buildBreakConfig(theme, gmp),
+                    sepV20,
                     _buildBombPotConfig(theme, gmp),
 
                     /* sep */
@@ -699,6 +705,16 @@ class NewGameSettings2 extends StatelessWidget {
                           value: gmp.waitList,
                           onChange: (bool b) {
                             gmp.waitList = b;
+                          },
+                          theme: theme,
+                        ),
+
+                        /* seat change allowed */
+                        _buildRadio(
+                          label: _appScreenText['seatChangeAllowed'],
+                          value: gmp.seatChangeAllowed,
+                          onChange: (bool b) {
+                            gmp.seatChangeAllowed = b;
                           },
                           theme: theme,
                         ),

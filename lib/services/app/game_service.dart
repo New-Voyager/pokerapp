@@ -923,7 +923,7 @@ class GameService {
   }
 
   /* the following method facilitates buying chips */
-  static Future<String> buyIn(String gameCode, int amount) async {
+  static Future<bool> buyIn(String gameCode, int amount) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
 
     String _mutation = """mutation{
@@ -939,7 +939,8 @@ class GameService {
 
     if (result.hasException) return null;
 
-    return result.data['approved'];
+    final buyIn = result.data['buyIn'];
+    return buyIn['approved'];
   }
 
   /* the following method facilitates buying chips */

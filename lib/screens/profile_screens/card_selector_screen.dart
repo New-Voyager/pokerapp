@@ -189,8 +189,7 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
               AppThemeData data = theme.themeData;
               theme.updateThemeData(data);
               await customizeService.gameState.assets.initialize();
-              setState(() {
-              });
+              setState(() {});
             },
             child: Container(
               decoration: BoxDecoration(
@@ -280,8 +279,7 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
               AppThemeData data = theme.themeData;
               theme.updateThemeData(data);
               await customizeService.gameState.assets.initialize();
-              setState(() {
-              });
+              setState(() {});
 
               //final asset = await AssetService.getDefaultTableAsset();
               //log(jsonEncode(asset.toJson()));
@@ -297,14 +295,13 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  _cardBackAssets[index].bundled ?? false ?
-                    Image.asset(
-                      _cardBackAssets[index].downloadedPath,
-                    )
-                  :
-                  CachedNetworkImage(
-                    imageUrl: _cardBackAssets[index].previewLink,
-                  ),
+                  _cardBackAssets[index].bundled ?? false
+                      ? Image.asset(
+                          _cardBackAssets[index].downloadedPath,
+                        )
+                      : CachedNetworkImage(
+                          imageUrl: _cardBackAssets[index].previewLink,
+                        ),
                   Visibility(
                     visible: isSelected,
                     child: Container(
@@ -389,9 +386,7 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  Image.file(
-                    File(_betAssets[index].downloadedPath)
-                  ),
+                  Image.file(File(_betAssets[index].downloadedPath)),
                   // SvgPicture.file(
                   //   File(_betAssets[index].downloadedPath),
                   //   allowDrawingOutsideViewBox: true,

@@ -245,6 +245,18 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
                           // Save the modified asset
                           await AssetService.hiveStore.put(_tableAssets[index]);
                         }
+                        // await AssetService.setDefaultTableAsset(
+                        //     asset: _tableAssets[index]);
+                        // setState(() {});
+
+                        // final theme = AppTheme.getTheme(context);
+                        // AppThemeData data = theme.themeData;
+                        // data.tableAssetId = _tableAssets[index].id;
+
+                        // final settings = HiveDatasource.getInstance
+                        //     .getBox(BoxType.USER_SETTINGS_BOX);
+                        // settings.put('theme', data.toMap());
+                        // settings.put('themeIndex', index);
 
                         // Update user settings
                         await UserSettingsService.setSelectedTableId(
@@ -330,16 +342,6 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
                         // Update user settings
                         await UserSettingsService.setSelectedBackdropId(
                             _backDropAssets[index]);
-
-                        // final theme = AppTheme.getTheme(context);
-                        // AppThemeData data = theme.themeData;
-                        // data.backDropAssetId = _backDropAssets[index].id;
-
-                        // final settings = HiveDatasource.getInstance
-                        //     .getBox(BoxType.USER_SETTINGS_BOX);
-                        // settings.put('theme', data.toMap());
-
-                        // theme.updateThemeData(data);
                       },
                       child: Container(
                         padding: EdgeInsets.symmetric(horizontal: 8),
