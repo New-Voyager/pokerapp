@@ -50,7 +50,9 @@ class _GameOptionState extends State<GameOption> {
   bool closed = false;
   AppTextScreen _appScreenText;
   GameSettingsInput _gameSettings;
-  bool audioConf = false;
+  bool audioConfEnabled = false;
+  bool straddleEnabled = false;
+  bool bombPotEnabled = false;
 
   @override
   void dispose() {
@@ -164,7 +166,10 @@ class _GameOptionState extends State<GameOption> {
         isFetching = false;
       });
     }
-    audioConf = gameInfo.audioConfEnabled;
+    audioConfEnabled = gameInfo.audioConfEnabled;
+    straddleEnabled = gameInfo.utgStraddleAllowed;
+    // TODO modify gameinfo class to have bombpot variable
+    bombPotEnabled = true;
     log("-=-= ${gameInfo.sessionTime}");
     log("-=-= ${gameInfo.runningTime}");
     log("-=-= ${gameInfo.noHandsPlayed}");
@@ -447,17 +452,61 @@ class _GameOptionState extends State<GameOption> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // allow player seat change
+// TODO : Audio conference is already in player settings. do we need here also?
             _buildCheckBox(
-              text: 'Allow player seat change',
-              value: _gameSettings.seatChangeAllowed,
+              text: 'Double board every hand',
+              value: _gameSettings.doubleBoardEveryHand,
               onChange: (bool v) async {
-                _gameSettings.seatChangeAllowed = v;
+                _gameSettings.doubleBoardEveryHand = v;
                 await updateGameSettings();
 
                 if (closed) return;
                 setState(() {});
               },
+            ),
+            Container(
+              decoration: _gameSettings.seatChangeAllowed
+                  ? AppDecorators.tileDecorationWithoutBorder(theme)
+                  : BoxDecoration(),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // allow player seat change
+                  _buildCheckBox(
+                    text: 'Allow player seat change',
+                    value: _gameSettings.seatChangeAllowed,
+                    onChange: (bool v) async {
+                      _gameSettings.seatChangeAllowed = v;
+                      await updateGameSettings();
+
+                      if (closed) return;
+                      setState(() {});
+                    },
+                  ),
+
+                  // Prompt timeout
+                  Visibility(
+                      visible: _gameSettings.seatChangeAllowed,
+                      child: Container(
+                        padding: EdgeInsets.only(left: 16, bottom: 8),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text("Prompt timeout"),
+                            RadioListWidget(
+                                defaultValue: _gameSettings.seatChangeTimeout,
+                                values: [10, 15, 20, 30],
+                                onSelect: (int val) async {
+                                  _gameSettings.seatChangeTimeout = val;
+                                  await updateGameSettings();
+                                  if (closed) return;
+                                  setState(() {});
+                                }),
+                          ],
+                        ),
+                      )),
+                ],
+              ),
             ),
 
             // allow waiting list
@@ -552,21 +601,18 @@ class _GameOptionState extends State<GameOption> {
             // TODO: SHOW THE FOLLOWING WIDGET, ONLY IF BOMB POT IS ACTIVE
             // bomb pot relates settings, SHOW only if bomb pot is ENABLED
 
-            // audio conference
-            Visibility(
-              visible: audioConf,
-              child: _buildCheckBox(
-                text: 'Audio conference',
-                value: gameInfo.audioConfEnabled,
-                onChange: (bool v) async {
-                  gameInfo.audioConfEnabled = v;
-                  if (closed) return;
-                  setState(() {});
-                },
-              ),
+            // results wait
+            _buildCheckBox(
+              text: 'Fun Animations',
+              value: widget.gameState.settings.animations ?? true,
+              onChange: (bool v) async {
+                widget.gameState.settings.animations = v;
+                if (closed) return;
+                setState(() {});
+              },
             ),
 
-            // results wait
+// TODO : Chat option already in Player Settings
 
             // results wait label
             Column(
@@ -586,7 +632,7 @@ class _GameOptionState extends State<GameOption> {
                 // result wait
                 RadioListWidget(
                   defaultValue: _gameSettings.pauseEachResultInSecs,
-                  values: [3, 5, 7, 10],
+                  values: [3, 5, 10, 15],
                   onSelect: (int value) async {
                     _gameSettings.pauseEachResultInSecs = value;
                     await updateGameSettings();
@@ -615,44 +661,7 @@ class _GameOptionState extends State<GameOption> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            /* show straddle off and auto straddle options ONLY when the UTG STRADDLE is on */
-            widget.gameState.gameInfo.utgStraddleAllowed
-                ? Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      // straddle off
-                      _buildCheckBox(
-                        text: _appScreenText['straddle'],
-                        value: widget.gameState.settings.straddleOption,
-                        onChange: (bool v) async {
-                          // setting the value saves it to local storage too
-                          widget.gameState.settings.straddleOption = v;
-                          log('In toggle button widget, straddleOption = ${widget.gameState.settings.straddleOption}');
-                          if (closed) return;
-                          setState(() {});
-                        },
-                      ),
-
-                      // auto straddle
-                      _buildCheckBox(
-                        text: _appScreenText['autoStraddle'],
-                        value: widget.gameState.settings.autoStraddle,
-                        onChange: (bool v) async {
-                          if (v) {
-                            await FirebaseAnalytics().logEvent(
-                                name: "Auto_Straddle",
-                                parameters: {
-                                  "name": "Auto Straddle is turned ON"
-                                });
-                          }
-                          // setting the value saves it to local storage too
-                          widget.gameState.settings.autoStraddle = v;
-                          log('In toggle button widget, autoStraddle = ${widget.gameState.settings.autoStraddle}');
-                        },
-                      ),
-                    ],
-                  )
-                : const SizedBox.shrink(),
+            // Muck loosing hand
             _buildCheckBox(
                 text: _appScreenText['muckLosingHand'],
                 value: widget.gameState.gameInfo.playerMuckLosingHand,
@@ -664,13 +673,17 @@ class _GameOptionState extends State<GameOption> {
                   if (closed) return;
                   setState(() {});
                 }),
+
+            // Run it twice
             _buildCheckBox(
               text: _appScreenText['promptRunItTwice'],
-              value: widget.gameState.gameInfo.playerRunItTwice,
+              value: _gameSettings.runItTwiceAllowed,
               onChange: (bool v) async {
-                await GameService.updateGameConfig(widget.gameState.gameCode,
-                    runItTwicePrompt: v);
+                // await GameService.updateGameConfig(widget.gameState.gameCode,
+                //     runItTwicePrompt: v);
                 // setting the value saves it to local storage too
+                _gameSettings.runItTwiceAllowed = v;
+                await GameService.updateGameSettings(gameCode, _gameSettings);
                 widget.gameState.gameInfo.playerRunItTwice = v;
                 if (closed) return;
                 setState(() {});
@@ -687,20 +700,109 @@ class _GameOptionState extends State<GameOption> {
                 setState(() {});
               },
             ),
-            widget.gameState.gameInfo.audioConfEnabled ?? false
-                ? _buildCheckBox(
-                    text: _appScreenText['audioConference'],
-                    value: widget.gameState.settings.audioConf,
-                    onChange: (bool v) async {
-                      // setting the value saves it to local storage too
-                      widget.gameState.settings.audioConf = v;
-                      widget.gameState.janusEngine.joinLeaveAudioConference();
-                      log('In toggle button widget, audioConf = ${widget.gameState.settings.audioConf}');
-                      if (closed) return;
-                      setState(() {});
-                    },
-                  )
-                : SizedBox(),
+
+            Visibility(
+              visible: widget.gameState.gameInfo.audioConfEnabled ?? true,
+              child: _buildCheckBox(
+                text: _appScreenText['audioConference'],
+                value: widget.gameState.settings.audioConf,
+                onChange: (bool v) async {
+                  // setting the value saves it to local storage too
+                  widget.gameState.settings.audioConf = v;
+                  widget.gameState.janusEngine.joinLeaveAudioConference();
+                  log('In toggle button widget, audioConf = ${widget.gameState.settings.audioConf}');
+                  if (closed) return;
+                  setState(() {});
+                },
+              ),
+            ),
+
+            /* show straddle off and auto straddle options ONLY when the UTG STRADDLE is on */
+            // Straddle Checkbox
+            // TODO remove hardcoded value
+            Visibility(
+              visible:
+                  true, // widget.gameState.gameInfo.utgStraddleAllowed ?? true,
+              child: Container(
+                decoration: widget.gameState.settings.straddleOption ?? true
+                    ? AppDecorators.tileDecorationWithoutBorder(theme)
+                    : BoxDecoration(),
+                child: Column(
+                  children: [
+                    _buildCheckBox(
+                      text: _appScreenText['straddle'],
+                      value: widget.gameState.settings.straddleOption,
+                      onChange: (bool v) async {
+                        // setting the value saves it to local storage too
+                        //  TODO Need straddle in serverside.
+
+                        widget.gameState.settings.straddleOption = v;
+                        log('In toggle button widget, straddleOption = ${widget.gameState.settings.straddleOption}');
+                        if (closed) return;
+                        setState(() {});
+                      },
+                    ),
+
+                    // Need variable for tracking auto choice.
+                    Visibility(
+                      visible: widget.gameState.settings.straddleOption,
+                      child: Container(
+                        margin: EdgeInsets.only(left: 16),
+                        child: // auto straddle
+                            _buildCheckBox(
+                          text: _appScreenText['autoStraddle'],
+                          value: widget.gameState.settings.autoStraddle,
+                          onChange: (bool v) async {
+                            if (v) {
+                              await FirebaseAnalytics().logEvent(
+                                  name: "Auto_Straddle",
+                                  parameters: {
+                                    "name": "Auto Straddle is turned ON"
+                                  });
+                            }
+                            // setting the value saves it to local storage too
+                            widget.gameState.settings.autoStraddle = v;
+                            log('In toggle button widget, autoStraddle = ${widget.gameState.settings.autoStraddle}');
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            // need local variable for bombpot in gameInfo
+            Visibility(
+              visible: true, //gameInfo.bombPot,
+              child: _buildCheckBox(
+                text: "Participate in bomb pot",
+                value: true, //widget.gameState.settings.bombpot,
+                onChange: (bool v) async {
+                  // setting the value saves it to local storage too
+                  _gameSettings.bombPotEnabled = v;
+                  await updateGameSettings();
+                  // widget.gameState.settings.bombPot = v;
+                  log('In toggle button widget, gameSounds = ${widget.gameState.settings.gameSound}');
+                  if (closed) return;
+                  setState(() {});
+                },
+              ),
+            ),
+
+            _buildCheckBox(
+              text: "Chat",
+              value: widget.gameState.settings.showChat ??
+                  false, //widget.gameState.settings.bombpot,
+              onChange: (bool v) {
+                // setting the value saves it to local storage too
+                widget.gameState.settings.showChat = v;
+                // widget.gameState.settings.bombPot = v;
+                log('In toggle button widget, gameSounds = ${widget.gameState.settings.gameSound}');
+                if (closed) return;
+                setState(() {});
+              },
+            ),
 
             // seat change & waiting list settings
             ...gameSecondaryOptions
