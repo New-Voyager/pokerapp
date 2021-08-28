@@ -83,7 +83,9 @@ class GameService {
   """;
 
   static String updateGameSettingsQuery = """
-
+mutation updateInputs(\$gameCode :String!,\$inputSettings: GameSettingsUpdateInput!){
+  ret:updateGameSettings(gameCode :\$gameCode settings:\$inputSettings)
+}
   """;
 
   static String getGameSettingsQuery = """
@@ -196,13 +198,33 @@ class GameService {
 
     try {
       final GameSettingsInput gameSettings =
-          gameSettingsInputFromJson(result.data['ret']);
+          gameSettingsInputFromJson(jsonEncode(result.data['ret']));
       return gameSettings;
     } catch (e) {
       log("Exception : ${e.toString()}");
       return null;
     }
+  }
 
+  static Future<bool> updateGameSettings(
+      String gameCode, GameSettingsInput input) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    Map<String, dynamic> variables = {
+      "gameCode": gameCode,
+      "inputSettings": input.toJson()
+    };
+    QueryResult result = await _client.query(QueryOptions(
+        documentNode: gql(updateGameSettingsQuery), variables: variables));
+
+    if (result.hasException) {
+      log("Exception : ${result.exception.toString()}");
+      return false;
+    }
+
+    if (result.data['ret'] ?? true) {
+      return true;
+    }
+    return false;
   }
 
   static Future<GameHistoryDetailModel> getGameHistoryDetail(

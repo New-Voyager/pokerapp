@@ -50,6 +50,7 @@ class _GameOptionState extends State<GameOption> {
   bool closed = false;
   AppTextScreen _appScreenText;
   GameSettingsInput _gameSettings;
+  bool audioConf = false;
 
   @override
   void dispose() {
@@ -163,6 +164,7 @@ class _GameOptionState extends State<GameOption> {
         isFetching = false;
       });
     }
+    audioConf = gameInfo.audioConfEnabled;
     log("-=-= ${gameInfo.sessionTime}");
     log("-=-= ${gameInfo.runningTime}");
     log("-=-= ${gameInfo.noHandsPlayed}");
@@ -427,7 +429,17 @@ class _GameOptionState extends State<GameOption> {
           );
   }
 
+  Future<void> updateGameSettings() async {
+    final res = await GameService.updateGameSettings(gameCode, _gameSettings);
+    if (res) {
+      Alerts.showNotification(titleText: "Settings updated!");
+    }
+  }
+
   Widget _buildGameSettingOptions(AppTheme theme) {
+    if (_gameSettings == null) {
+      return CircularProgressWidget();
+    }
     return SingleChildScrollView(
       physics: BouncingScrollPhysics(),
       child: Container(
@@ -435,98 +447,123 @@ class _GameOptionState extends State<GameOption> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // allow player seat change : TODO
+            // allow player seat change
             _buildCheckBox(
               text: 'Allow player seat change',
-              value: true,
+              value: _gameSettings.seatChangeAllowed,
               onChange: (bool v) async {
-                // TODO: UPDATE HERE
+                _gameSettings.seatChangeAllowed = v;
+                await updateGameSettings();
+
                 if (closed) return;
                 setState(() {});
               },
             ),
 
-            // allow waiting list : TODO
+            // allow waiting list
             _buildCheckBox(
               text: 'Allow waiting list',
-              value: true,
+              value: _gameSettings.waitlistAllowed,
               onChange: (bool v) async {
-                // TODO: UPDATE HERE
+                _gameSettings.waitlistAllowed = v;
+                await updateGameSettings();
+
                 if (closed) return;
                 setState(() {});
               },
             ),
 
-            // bomb pot  : TODO
-            _buildCheckBox(
-              text: 'Bomb Pot',
-              value: true,
-              onChange: (bool v) async {
-                // TODO: UPDATE HERE
-                if (closed) return;
-                setState(() {});
-              },
+            // bomb pot
+            Container(
+              decoration: _gameSettings.bombPotEnabled
+                  ? AppDecorators.tileDecorationWithoutBorder(theme)
+                  : BoxDecoration(),
+              child: Column(
+                children: [
+                  _buildCheckBox(
+                    text: 'Bomb Pot',
+                    value: _gameSettings.bombPotEnabled,
+                    onChange: (bool v) async {
+                      _gameSettings.bombPotEnabled = v;
+                      await updateGameSettings();
+                      if (closed) return;
+                      setState(() {});
+                    },
+                  ),
+                  _gameSettings.bombPotEnabled
+                      ? Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16,
+                          ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              // choose interval label
+                              Container(
+                                margin: EdgeInsets.only(
+                                    bottom: 10.0, left: 10.0, right: 10.0),
+                                child: Text(
+                                  'Choose Interval',
+                                  style: AppDecorators.getHeadLine4Style(
+                                      theme: theme),
+                                ),
+                              ),
+                              // choose interval
+                              RadioListWidget(
+                                defaultValue:
+                                    _gameSettings.bombPotIntervalInSecs,
+                                values: [15, 30, 60, 90, 120],
+                                onSelect: (int value) {
+                                  _gameSettings.bombPotIntervalInSecs = value;
+                                },
+                              ),
+
+                              // every hand
+                              _buildCheckBox(
+                                text: 'Every Hand',
+                                value: _gameSettings.bombPotEveryHand,
+                                onChange: (bool v) async {
+                                  _gameSettings.bombPotEveryHand = v;
+                                  if (closed) return;
+                                  setState(() {});
+                                },
+                              ),
+
+                              // double board
+                              _buildCheckBox(
+                                text: 'Double Board',
+                                value: _gameSettings.doubleBoardBombPot,
+                                onChange: (bool v) async {
+                                  _gameSettings.doubleBoardBombPot = v;
+                                  if (closed) return;
+                                  setState(() {});
+                                },
+                              ),
+                            ],
+                          ),
+                        )
+                      : const SizedBox.shrink(),
+                ],
+              ),
             ),
+            AppDimensionsNew.getVerticalSizedBox(8),
 
             // TODO: SHOW THE FOLLOWING WIDGET, ONLY IF BOMB POT IS ACTIVE
             // bomb pot relates settings, SHOW only if bomb pot is ENABLED
-            true
-                ? Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      // choose interval label
-                      Container(
-                        margin: EdgeInsets.only(
-                            bottom: 10.0, left: 10.0, right: 10.0),
-                        child: Text(
-                          'Choose Interval',
-                          style: AppDecorators.getHeadLine4Style(theme: theme),
-                        ),
-                      ),
-                      // choose interval
-                      RadioListWidget(
-                        defaultValue: 15,
-                        values: [15, 30, 60, 90, 120],
-                        onSelect: (int value) {
-                          // TODO: UPDATE THE INTERVAL FOR BOMB POT
-                        },
-                      ),
-
-                      // every hand
-                      _buildCheckBox(
-                        text: 'Every Hand',
-                        value: true,
-                        onChange: (bool v) async {
-                          // TODO: UPDATE HERE
-                          if (closed) return;
-                          setState(() {});
-                        },
-                      ),
-
-                      // double board
-                      _buildCheckBox(
-                        text: 'Double Board',
-                        value: true,
-                        onChange: (bool v) async {
-                          // TODO: UPDATE HERE
-                          if (closed) return;
-                          setState(() {});
-                        },
-                      ),
-                    ],
-                  )
-                : const SizedBox.shrink(),
 
             // audio conference
-            _buildCheckBox(
-              text: 'Audio conference',
-              value: true,
-              onChange: (bool v) async {
-                // TODO: UPDATE HERE
-                if (closed) return;
-                setState(() {});
-              },
+            Visibility(
+              visible: audioConf,
+              child: _buildCheckBox(
+                text: 'Audio conference',
+                value: gameInfo.audioConfEnabled,
+                onChange: (bool v) async {
+                  gameInfo.audioConfEnabled = v;
+                  if (closed) return;
+                  setState(() {});
+                },
+              ),
             ),
 
             // results wait
@@ -548,10 +585,15 @@ class _GameOptionState extends State<GameOption> {
 
                 // result wait
                 RadioListWidget(
-                  defaultValue: 5,
+                  defaultValue: _gameSettings.pauseEachResultInSecs,
                   values: [3, 5, 7, 10],
-                  onSelect: (int value) {
-                    // TODO: UPDATE THE INTERVAL FOR BOMB POT
+                  onSelect: (int value) async {
+                    _gameSettings.pauseEachResultInSecs = value;
+                    await updateGameSettings();
+                    if (closed) {
+                      return;
+                    }
+                    setState(() {});
                   },
                 ),
               ],
@@ -563,6 +605,9 @@ class _GameOptionState extends State<GameOption> {
   }
 
   Widget _buildPlayerSettingOptions(AppTheme theme) {
+    if (_gameSettings == null) {
+      return CircularProgressWidget();
+    }
     return SingleChildScrollView(
       physics: BouncingScrollPhysics(),
       child: Container(
