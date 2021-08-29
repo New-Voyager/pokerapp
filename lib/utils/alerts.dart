@@ -1,10 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:overlay_support/overlay_support.dart';
+import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/overlay_notification.dart';
+import 'package:pokerapp/screens/game_screens/new_game_settings/choose_game_new.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
+import 'package:pokerapp/widgets/round_color_button.dart';
 
 class Alerts {
   static void showSnackBar(BuildContext context, String text,
@@ -82,6 +87,144 @@ class Alerts {
       ),
       position: NotificationPosition.top,
       duration: duration,
+    );
+  }
+
+  static Future<List<GameType>> showChooseGamesDailog(
+    List<GameType> existingChoices,
+    BuildContext context,
+    AppTheme theme,
+  ) async {
+    return await showDialog(
+      context: context,
+      builder: (context) {
+        List<GameType> list = [];
+        list.addAll(existingChoices);
+        return AlertDialog(
+          backgroundColor: theme.fillInColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          content: StatefulBuilder(
+            builder: (context, localSetState) {
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    "Choose Games",
+                    style: AppDecorators.getHeadLine4Style(theme: theme),
+                  ),
+                  Container(
+                    margin: EdgeInsets.symmetric(vertical: 16),
+                    child: Wrap(
+                      spacing: 4,
+                      children: [
+                        GameTypeChip(
+                          gameType: GameType.HOLDEM,
+                          selected: list.contains(GameType.HOLDEM),
+                          onTapFunc: (val) {
+                            if (val) {
+                              list.add(GameType.HOLDEM);
+                            } else {
+                              if (list.length <= 2) {
+                                toast("minimum 2 game types required");
+                                return;
+                              }
+                              list.remove(GameType.HOLDEM);
+                            }
+                            localSetState(() {});
+                          },
+                        ),
+                        GameTypeChip(
+                          gameType: GameType.PLO,
+                          selected: list.contains(GameType.PLO),
+                          onTapFunc: (val) {
+                            if (val) {
+                              list.add(GameType.PLO);
+                            } else {
+                              if (list.length <= 2) {
+                                toast("minimum 2 game types required");
+                                return;
+                              }
+                              list.remove(GameType.PLO);
+                            }
+                            localSetState(() {});
+                          },
+                        ),
+                        GameTypeChip(
+                          gameType: GameType.PLO_HILO,
+                          selected: list.contains(GameType.PLO_HILO),
+                          onTapFunc: (val) {
+                            if (val) {
+                              list.add(GameType.PLO_HILO);
+                            } else {
+                              if (list.length <= 2) {
+                                toast("minimum 2 game types required");
+                                return;
+                              }
+                              list.remove(GameType.PLO_HILO);
+                            }
+                            localSetState(() {});
+                          },
+                        ),
+                        GameTypeChip(
+                          gameType: GameType.FIVE_CARD_PLO,
+                          selected: list.contains(GameType.FIVE_CARD_PLO),
+                          onTapFunc: (val) {
+                            if (val) {
+                              list.add(GameType.FIVE_CARD_PLO);
+                            } else {
+                              if (list.length <= 2) {
+                                toast("minimum 2 game types required");
+                                return;
+                              }
+                              list.remove(GameType.FIVE_CARD_PLO);
+                            }
+                            localSetState(() {});
+                          },
+                        ),
+                        GameTypeChip(
+                          gameType: GameType.FIVE_CARD_PLO_HILO,
+                          selected: list.contains(GameType.FIVE_CARD_PLO_HILO),
+                          onTapFunc: (val) {
+                            if (val) {
+                              list.add(GameType.FIVE_CARD_PLO_HILO);
+                            } else {
+                              if (list.length <= 2) {
+                                toast("minimum 2 game types required");
+                                return;
+                              }
+                              list.remove(GameType.FIVE_CARD_PLO_HILO);
+                            }
+                            localSetState(() {});
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      RoundedColorButton(
+                        text: "Cancel",
+                        onTapFunction: () => Navigator.of(context).pop(),
+                        backgroundColor: Colors.transparent,
+                        borderColor: theme.secondaryColor,
+                      ),
+                      RoundedColorButton(
+                        text: "Save",
+                        onTapFunction: () => Navigator.of(context).pop(list),
+                        backgroundColor: theme.accentColor,
+                        textColor: theme.primaryColorWithDark(),
+                      ),
+                    ],
+                  ),
+                ],
+              );
+            },
+          ),
+        );
+      },
     );
   }
 }

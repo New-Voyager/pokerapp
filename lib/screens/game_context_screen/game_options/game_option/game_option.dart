@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game/game_settings.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
@@ -22,6 +23,7 @@ import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/numeric_keyboard2.dart';
+import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/radio_list_widget.dart';
 import 'package:pokerapp/widgets/switch_widget.dart';
 import 'package:provider/provider.dart';
@@ -453,6 +455,19 @@ class _GameOptionState extends State<GameOption> {
           mainAxisSize: MainAxisSize.min,
           children: [
 // TODO : Audio conference is already in player settings. do we need here also?
+            AppDimensionsNew.getVerticalSizedBox(8),
+            // Show chat only if he is admin
+            Visibility(
+              visible: widget.isAdmin,
+              child: _buildCheckBox(
+                text: "Audio Conference",
+                value: gameInfo.audioConfEnabled,
+                onChange: (bool v) {
+                  gameInfo.audioConfEnabled = v;
+                },
+              ),
+            ),
+
             _buildCheckBox(
               text: 'Double board every hand',
               value: _gameSettings.doubleBoardEveryHand,
@@ -611,10 +626,82 @@ class _GameOptionState extends State<GameOption> {
                 setState(() {});
               },
             ),
+            AppDimensionsNew.getVerticalSizedBox(8),
 
-// TODO : Chat option already in Player Settings
+// ROE GAMES
+            Visibility(
+              visible: widget.gameState.gameInfo.gameType == "ROE",
+              child: ListTile(
+                title: Text(
+                  "ROE games",
+                  style: AppDecorators.getHeadLine4Style(theme: theme),
+                ),
+                subtitle: Text(
+                  HelperUtils.buildGameTypeStrFromList(
+                      [GameType.HOLDEM, GameType.PLO]),
+                ),
+                trailing: IconButton(
+                  icon: Icon(Icons.mode_edit_rounded),
+                  onPressed: () async {
+                    final res = await Alerts.showChooseGamesDailog(
+                      [GameType.HOLDEM, GameType.PLO],
+                      context,
+                      theme,
+                    );
 
+                    if (res != null && res.isNotEmpty) {
+                      //TODO set the games list
+                      setState(() {});
+                    }
+                  },
+                ),
+              ),
+            ),
+
+// DEALER CHOICE GAMES
+            Visibility(
+              visible: widget.gameState.gameInfo.gameType == "DEALER_CHOICE",
+              child: ListTile(
+                title: Text(
+                  "Dealer Games",
+                  style: AppDecorators.getHeadLine4Style(theme: theme),
+                ),
+                subtitle: Text(
+                  HelperUtils.buildGameTypeStrFromList(
+                      [GameType.HOLDEM, GameType.PLO]),
+                ),
+                trailing: IconButton(
+                  icon: Icon(Icons.mode_edit_rounded),
+                  onPressed: () async {
+                    final res = await Alerts.showChooseGamesDailog(
+                      [GameType.HOLDEM, GameType.PLO],
+                      context,
+                      theme,
+                    );
+
+                    if (res != null && res.isNotEmpty) {
+                      //TODO set the games list
+                      setState(() {});
+                    }
+                  },
+                ),
+              ),
+            ),
+
+            AppDimensionsNew.getVerticalSizedBox(8),
+            // Show chat only if he is admin
+            Visibility(
+              visible: widget.isAdmin,
+              child: _buildCheckBox(
+                text: "Game Chat",
+                value: widget.gameState.settings.showChat,
+                onChange: (bool v) {
+                  widget.gameState.settings.showChat = v;
+                },
+              ),
+            ),
             // results wait label
+            AppDimensionsNew.getVerticalSizedBox(8),
             Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               mainAxisSize: MainAxisSize.min,
@@ -804,6 +891,13 @@ class _GameOptionState extends State<GameOption> {
               },
             ),
 
+            _buildCheckBox(
+              text: "Participate in Audio conference",
+              value: widget.gameState.settings.audioConf,
+              onChange: (bool v) {
+                widget.gameState.settings.audioConf = v;
+              },
+            ),
             // seat change & waiting list settings
             ...gameSecondaryOptions
                 .map(
