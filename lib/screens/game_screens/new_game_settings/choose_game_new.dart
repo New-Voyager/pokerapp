@@ -15,6 +15,7 @@ import 'package:pokerapp/screens/game_screens/new_game_settings/new_game_setting
 import 'package:pokerapp/screens/game_screens/widgets/game_type_item.dart';
 import 'package:pokerapp/services/data/box_type.dart';
 import 'package:pokerapp/services/data/hive_datasource_impl.dart';
+import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/widgets/heading_widget.dart';
 import 'package:pokerapp/widgets/round_color_button.dart';
 import 'package:provider/provider.dart';
@@ -379,139 +380,8 @@ class _ChooseGameNewState extends State<ChooseGameNew>
       GameType gameType, List<GameType> existingChoices, AppTheme theme) async {
     setState(() => _selectedGameType = null);
 
-    final List<GameType> games = await showDialog(
-      context: context,
-      builder: (context) {
-        List<GameType> list = [];
-        list.addAll(existingChoices);
-        return AlertDialog(
-          backgroundColor: theme.fillInColor,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          content: StatefulBuilder(builder: (context, localSetState) {
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  _appScreenText['CHOOSEGAMES'],
-                  style: AppDecorators.getHeadLine4Style(theme: theme),
-                ),
-                Container(
-                  margin: EdgeInsets.symmetric(vertical: 16),
-                  child: Wrap(
-                    spacing: 4,
-                    children: [
-                      GameTypeChip(
-                        gameType: GameType.HOLDEM,
-                        selected: list.contains(GameType.HOLDEM),
-                        onTapFunc: (val) {
-                          if (val) {
-                            list.add(GameType.HOLDEM);
-                          } else {
-                            if (list.length <= 2) {
-                              toast(
-                                  "${_appScreenText['MINIMUMTWOTYPESREQUIRED']}");
-                              return;
-                            }
-                            list.remove(GameType.HOLDEM);
-                          }
-                          localSetState(() {});
-                        },
-                      ),
-                      GameTypeChip(
-                        gameType: GameType.PLO,
-                        selected: list.contains(GameType.PLO),
-                        onTapFunc: (val) {
-                          if (val) {
-                            list.add(GameType.PLO);
-                          } else {
-                            if (list.length <= 2) {
-                              toast(
-                                  "${_appScreenText['MINIMUMTWOTYPESREQUIRED']}");
-                              return;
-                            }
-                            list.remove(GameType.PLO);
-                          }
-                          localSetState(() {});
-                        },
-                      ),
-                      GameTypeChip(
-                        gameType: GameType.PLO_HILO,
-                        selected: list.contains(GameType.PLO_HILO),
-                        onTapFunc: (val) {
-                          if (val) {
-                            list.add(GameType.PLO_HILO);
-                          } else {
-                            if (list.length <= 2) {
-                              toast(
-                                  "${_appScreenText['MINIMUMTWOTYPESREQUIRED']}");
-                              return;
-                            }
-                            list.remove(GameType.PLO_HILO);
-                          }
-                          localSetState(() {});
-                        },
-                      ),
-                      GameTypeChip(
-                        gameType: GameType.FIVE_CARD_PLO,
-                        selected: list.contains(GameType.FIVE_CARD_PLO),
-                        onTapFunc: (val) {
-                          if (val) {
-                            list.add(GameType.FIVE_CARD_PLO);
-                          } else {
-                            if (list.length <= 2) {
-                              toast(
-                                  "${_appScreenText['MINIMUMTWOTYPESREQUIRED']}");
-                              return;
-                            }
-                            list.remove(GameType.FIVE_CARD_PLO);
-                          }
-                          localSetState(() {});
-                        },
-                      ),
-                      GameTypeChip(
-                        gameType: GameType.FIVE_CARD_PLO_HILO,
-                        selected: list.contains(GameType.FIVE_CARD_PLO_HILO),
-                        onTapFunc: (val) {
-                          if (val) {
-                            list.add(GameType.FIVE_CARD_PLO_HILO);
-                          } else {
-                            if (list.length <= 2) {
-                              toast(
-                                  "${_appScreenText['MINIMUMTWOTYPESREQUIRED']}");
-                              return;
-                            }
-                            list.remove(GameType.FIVE_CARD_PLO_HILO);
-                          }
-                          localSetState(() {});
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    RoundedColorButton(
-                      text: _appScreenText["CANCEL"],
-                      onTapFunction: () => Navigator.of(context).pop(),
-                      backgroundColor: Colors.transparent,
-                      borderColor: theme.secondaryColor,
-                    ),
-                    RoundedColorButton(
-                      text: _appScreenText["SAVE"],
-                      onTapFunction: () => Navigator.of(context).pop(list),
-                      backgroundColor: theme.accentColor,
-                      textColor: theme.primaryColorWithDark(),
-                    ),
-                  ],
-                ),
-              ],
-            );
-          }),
-        );
-      },
-    );
+    final List<GameType> games = await Alerts.showChooseGamesDailog(
+        existingChoices, context, theme,);
 
     if (games != null && games.isNotEmpty) {
       if (gameType == GameType.ROE) {
@@ -550,6 +420,7 @@ class GameTypeChip extends StatelessWidget {
       selectedColor: theme.secondaryColor,
       backgroundColor: theme.fillInColor,
       onSelected: onTapFunc,
+      checkmarkColor: theme.primaryColorWithDark(),
     );
   }
 }

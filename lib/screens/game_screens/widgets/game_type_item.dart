@@ -5,6 +5,7 @@ import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
+import 'package:pokerapp/utils/utils.dart';
 
 class GameTypeItem extends StatelessWidget {
   final String clubCode;
@@ -90,7 +91,7 @@ class GameTypeItem extends StatelessWidget {
                     ),
                     Visibility(
                       child: Text(
-                        _buildGameTypeStrFromList(),
+                        HelperUtils.buildGameTypeStrFromList(gamesList),
                         style: AppDecorators.getSubtitle2Style(theme: theme),
                       ),
                       visible: (gamesList != null && gamesList.length > 0),
@@ -113,15 +114,5 @@ class GameTypeItem extends StatelessWidget {
     );
   }
 
-  _buildGameTypeStrFromList() {
-    if (gamesList != null) {
-      String str = "(";
-      for (var type in gamesList) {
-        str += "${gameTypeShortStr(type)}, ";
-      }
-      str += ")";
-      return "${str.replaceFirst(", )", ")")}";
-    }
-    return "";
-  }
+  
 }

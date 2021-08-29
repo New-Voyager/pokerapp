@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
@@ -160,6 +162,7 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew>
             future: ClubsService.getClubHomePageData(widget.clubCode),
             builder: (BuildContext context, snapshot) {
               ClubHomePageModel clubModel = snapshot.data;
+              log("0-0-0- ${snapshot.connectionState}");
               return Container(
                 decoration: AppDecorators.bgRadialGradient(theme),
                 child: SafeArea(

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/main.dart';
+import 'package:pokerapp/models/game/game_settings.dart';
 import 'package:pokerapp/models/game/new_game_model.dart';
 import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/models/game_model.dart';
@@ -81,6 +82,41 @@ class GameService {
       }  
   """;
 
+  static String updateGameSettingsQuery = """
+mutation updateInputs(\$gameCode :String!,\$inputSettings: GameSettingsUpdateInput!){
+  ret:updateGameSettings(gameCode :\$gameCode settings:\$inputSettings)
+}
+  """;
+
+  static String getGameSettingsQuery = """
+    query gameSettings(\$gameCode: String!) {
+      ret:gameSettings(gameCode :\$gameCode){
+        buyInApproval
+        runItTwiceAllowed
+        allowRabbitHunt
+        showHandRank
+        doubleBoardEveryHand
+        bombPotEnabled
+        bombPotBet
+        doubleBoardBombPot
+        bombPotInterval
+        bombPotIntervalInSecs
+        bombPotEveryHand
+        seatChangeAllowed
+        seatChangeTimeout
+        waitlistAllowed
+        seatChangeTimeout
+        waitlistAllowed
+        breakAllowed
+        breakLength
+        ipCheck
+        gpsCheck
+        roeGames
+        dealerChoiceGames
+      }
+    }
+""";
+
   static String stackStat = """
       query stackStat(\$gameCode: String!) {
         ret: completedGame(gameCode: \$gameCode) {
@@ -147,6 +183,48 @@ class GameService {
     } 
     */
     return result.data['ret'];
+  }
+
+  static Future<GameSettingsInput> getGameSettings(String gameCode) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    Map<String, dynamic> variables = {"gameCode": gameCode};
+    QueryResult result = await _client.query(QueryOptions(
+        documentNode: gql(getGameSettingsQuery), variables: variables));
+
+    if (result.hasException) {
+      log("Exception : ${result.exception.toString()}");
+      return null;
+    }
+
+    try {
+      final GameSettingsInput gameSettings =
+          gameSettingsInputFromJson(jsonEncode(result.data['ret']));
+      return gameSettings;
+    } catch (e) {
+      log("Exception : ${e.toString()}");
+      return null;
+    }
+  }
+
+  static Future<bool> updateGameSettings(
+      String gameCode, GameSettingsInput input) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    Map<String, dynamic> variables = {
+      "gameCode": gameCode,
+      "inputSettings": input.toJson()
+    };
+    QueryResult result = await _client.query(QueryOptions(
+        documentNode: gql(updateGameSettingsQuery), variables: variables));
+
+    if (result.hasException) {
+      log("Exception : ${result.exception.toString()}");
+      return false;
+    }
+
+    if (result.data['ret'] ?? true) {
+      return true;
+    }
+    return false;
   }
 
   static Future<GameHistoryDetailModel> getGameHistoryDetail(

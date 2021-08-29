@@ -257,7 +257,8 @@
     "gameHistoryView": {
         "NOGAMESPLAYED": "No games played",
         "CLUBCODE": "Club code",
-        "gameHistory": "Game History"
+        "gameHistory": "Game History",
+        "gameCode": "Game Code"
     },
     "clubMembersView": {
         "ALL": "All",
@@ -676,6 +677,7 @@
         "noSeatChangeRequests": "No Seat change requests."
     },
     "gameOption": {
+        "gameCode": "Game Code",
         "game": "Game",
         "youWillStandupAfterThisHand": "You will standup after this hand",
         "theGameWillEndAfterThisHand": "The game will end after this hand",

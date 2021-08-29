@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:pokerapp/enums/game_type.dart';
 
 class Screen {
   final Size _size;
@@ -266,5 +267,19 @@ class CardConvUtils {
       return cardNamesInSequence[0];
     }
     return cardNamesInSequence[index];
+  }
+}
+
+class HelperUtils{
+  static String buildGameTypeStrFromList(List<GameType> gamesList) {
+    if (gamesList != null) {
+      String str = "(";
+      for (var type in gamesList) {
+        str += "${gameTypeShortStr(type)}, ";
+      }
+      str += ")";
+      return "${str.replaceFirst(", )", ")")}";
+    }
+    return "";
   }
 }

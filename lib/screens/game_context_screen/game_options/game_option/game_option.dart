@@ -3,6 +3,8 @@ import 'dart:developer';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pokerapp/enums/game_type.dart';
+import 'package:pokerapp/models/game/game_settings.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
@@ -21,6 +23,7 @@ import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/numeric_keyboard2.dart';
+import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/radio_list_widget.dart';
 import 'package:pokerapp/widgets/switch_widget.dart';
 import 'package:provider/provider.dart';
@@ -48,6 +51,10 @@ class _GameOptionState extends State<GameOption> {
   GameInfoModel gameInfo;
   bool closed = false;
   AppTextScreen _appScreenText;
+  GameSettingsInput _gameSettings;
+  bool audioConfEnabled = false;
+  bool straddleEnabled = false;
+  bool bombPotEnabled = false;
 
   @override
   void dispose() {
@@ -148,6 +155,12 @@ class _GameOptionState extends State<GameOption> {
   List<OptionItemModel> gameSecondaryOptions;
 
   _fetchGameInfo() async {
+    // Fetch gameSettings from server
+    _gameSettings = await GameService.getGameSettings(gameCode);
+    if (_gameSettings == null) {
+      return;
+    }
+
     gameInfo = await GameService.getGameInfo(gameCode);
     if (gameInfo != null) {
       if (closed) return;
@@ -155,6 +168,10 @@ class _GameOptionState extends State<GameOption> {
         isFetching = false;
       });
     }
+    audioConfEnabled = gameInfo.audioConfEnabled;
+    straddleEnabled = gameInfo.utgStraddleAllowed;
+    // TODO modify gameinfo class to have bombpot variable
+    bombPotEnabled = true;
     log("-=-= ${gameInfo.sessionTime}");
     log("-=-= ${gameInfo.runningTime}");
     log("-=-= ${gameInfo.noHandsPlayed}");
@@ -419,154 +436,393 @@ class _GameOptionState extends State<GameOption> {
           );
   }
 
+  Future<void> updateGameSettings() async {
+    final res = await GameService.updateGameSettings(gameCode, _gameSettings);
+    if (res) {
+      Alerts.showNotification(titleText: "Settings updated!");
+    }
+  }
+
   Widget _buildGameSettingOptions(AppTheme theme) {
+    if (_gameSettings == null) {
+      return CircularProgressWidget();
+    }
     return SingleChildScrollView(
       physics: BouncingScrollPhysics(),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // allow player seat change : TODO
-          _buildCheckBox(
-            text: 'Allow player seat change',
-            value: true,
-            onChange: (bool v) async {
-              // TODO: UPDATE HERE
-              if (closed) return;
-              setState(() {});
-            },
-          ),
-
-          // allow waiting list : TODO
-          _buildCheckBox(
-            text: 'Allow waiting list',
-            value: true,
-            onChange: (bool v) async {
-              // TODO: UPDATE HERE
-              if (closed) return;
-              setState(() {});
-            },
-          ),
-
-          // bomb pot  : TODO
-          _buildCheckBox(
-            text: 'Bomb Pot',
-            value: true,
-            onChange: (bool v) async {
-              // TODO: UPDATE HERE
-              if (closed) return;
-              setState(() {});
-            },
-          ),
-
-          // TODO: SHOW THE FOLLOWING WIDGET, ONLY IF BOMB POT IS ACTIVE
-          // bomb pot relates settings, SHOW only if bomb pot is ENABLED
-          true
-              ? Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    // choose interval label
-                    Container(
-                      margin: EdgeInsets.only(
-                          bottom: 10.0, left: 10.0, right: 10.0),
-                      child: Text(
-                        'Choose Interval',
-                        style: AppDecorators.getHeadLine4Style(theme: theme),
-                      ),
-                    ),
-                    // choose interval
-                    RadioListWidget(
-                      defaultValue: 15,
-                      values: [15, 30, 60, 90, 120],
-                      onSelect: (int value) {
-                        // TODO: UPDATE THE INTERVAL FOR BOMB POT
-                      },
-                    ),
-
-                    // every hand
-                    _buildCheckBox(
-                      text: 'Every Hand',
-                      value: true,
-                      onChange: (bool v) async {
-                        // TODO: UPDATE HERE
-                        if (closed) return;
-                        setState(() {});
-                      },
-                    ),
-
-                    // double board
-                    _buildCheckBox(
-                      text: 'Double Board',
-                      value: true,
-                      onChange: (bool v) async {
-                        // TODO: UPDATE HERE
-                        if (closed) return;
-                        setState(() {});
-                      },
-                    ),
-                  ],
-                )
-              : const SizedBox.shrink(),
-
-          // audio conference
-          _buildCheckBox(
-            text: 'Audio conference',
-            value: true,
-            onChange: (bool v) async {
-              // TODO: UPDATE HERE
-              if (closed) return;
-              setState(() {});
-            },
-          ),
-
-          // results wait
-
-          // results wait label
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // label
-              Container(
-                margin: EdgeInsets.only(bottom: 10.0, left: 10.0, right: 10.0),
-                child: Text(
-                  'Pause each result (in seconds)',
-                  style: AppDecorators.getHeadLine4Style(theme: theme),
-                ),
-              ),
-
-              // result wait
-              RadioListWidget(
-                defaultValue: 5,
-                values: [3, 5, 7, 10],
-                onSelect: (int value) {
-                  // TODO: UPDATE THE INTERVAL FOR BOMB POT
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+// TODO : Audio conference is already in player settings. do we need here also?
+            AppDimensionsNew.getVerticalSizedBox(8),
+            // Show chat only if he is admin
+            Visibility(
+              visible: widget.isAdmin,
+              child: _buildCheckBox(
+                text: "Audio Conference",
+                value: gameInfo.audioConfEnabled,
+                onChange: (bool v) {
+                  gameInfo.audioConfEnabled = v;
                 },
               ),
-            ],
-          ),
-        ],
+            ),
+
+            _buildCheckBox(
+              text: 'Double board every hand',
+              value: _gameSettings.doubleBoardEveryHand,
+              onChange: (bool v) async {
+                _gameSettings.doubleBoardEveryHand = v;
+                await updateGameSettings();
+
+                if (closed) return;
+                setState(() {});
+              },
+            ),
+            Container(
+              decoration: _gameSettings.seatChangeAllowed
+                  ? AppDecorators.tileDecorationWithoutBorder(theme)
+                  : BoxDecoration(),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // allow player seat change
+                  _buildCheckBox(
+                    text: 'Allow player seat change',
+                    value: _gameSettings.seatChangeAllowed,
+                    onChange: (bool v) async {
+                      _gameSettings.seatChangeAllowed = v;
+                      await updateGameSettings();
+
+                      if (closed) return;
+                      setState(() {});
+                    },
+                  ),
+
+                  // Prompt timeout
+                  Visibility(
+                      visible: _gameSettings.seatChangeAllowed,
+                      child: Container(
+                        padding: EdgeInsets.only(left: 16, bottom: 8),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text("Prompt timeout"),
+                            RadioListWidget(
+                                defaultValue: _gameSettings.seatChangeTimeout,
+                                values: [10, 15, 20, 30],
+                                onSelect: (int val) async {
+                                  _gameSettings.seatChangeTimeout = val;
+                                  await updateGameSettings();
+                                  if (closed) return;
+                                  setState(() {});
+                                }),
+                          ],
+                        ),
+                      )),
+                ],
+              ),
+            ),
+
+            // allow waiting list
+            _buildCheckBox(
+              text: 'Allow waiting list',
+              value: _gameSettings.waitlistAllowed,
+              onChange: (bool v) async {
+                _gameSettings.waitlistAllowed = v;
+                await updateGameSettings();
+
+                if (closed) return;
+                setState(() {});
+              },
+            ),
+
+            // bomb pot
+            Container(
+              decoration: _gameSettings.bombPotEnabled
+                  ? AppDecorators.tileDecorationWithoutBorder(theme)
+                  : BoxDecoration(),
+              child: Column(
+                children: [
+                  _buildCheckBox(
+                    text: 'Bomb Pot',
+                    value: _gameSettings.bombPotEnabled,
+                    onChange: (bool v) async {
+                      _gameSettings.bombPotEnabled = v;
+                      await updateGameSettings();
+                      if (closed) return;
+                      setState(() {});
+                    },
+                  ),
+                  _gameSettings.bombPotEnabled
+                      ? Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16,
+                          ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              // choose interval label
+                              Container(
+                                margin: EdgeInsets.only(
+                                    bottom: 10.0, left: 10.0, right: 10.0),
+                                child: Text(
+                                  'Choose Interval',
+                                  style: AppDecorators.getHeadLine4Style(
+                                      theme: theme),
+                                ),
+                              ),
+                              // choose interval
+                              RadioListWidget(
+                                defaultValue:
+                                    _gameSettings.bombPotIntervalInSecs,
+                                values: [15, 30, 60, 90, 120],
+                                onSelect: (int value) {
+                                  _gameSettings.bombPotIntervalInSecs = value;
+                                },
+                              ),
+
+                              // every hand
+                              _buildCheckBox(
+                                text: 'Every Hand',
+                                value: _gameSettings.bombPotEveryHand,
+                                onChange: (bool v) async {
+                                  _gameSettings.bombPotEveryHand = v;
+                                  if (closed) return;
+                                  setState(() {});
+                                },
+                              ),
+
+                              // double board
+                              _buildCheckBox(
+                                text: 'Double Board',
+                                value: _gameSettings.doubleBoardBombPot,
+                                onChange: (bool v) async {
+                                  _gameSettings.doubleBoardBombPot = v;
+                                  if (closed) return;
+                                  setState(() {});
+                                },
+                              ),
+                            ],
+                          ),
+                        )
+                      : const SizedBox.shrink(),
+                ],
+              ),
+            ),
+            AppDimensionsNew.getVerticalSizedBox(8),
+
+            // TODO: SHOW THE FOLLOWING WIDGET, ONLY IF BOMB POT IS ACTIVE
+            // bomb pot relates settings, SHOW only if bomb pot is ENABLED
+
+            // results wait
+            _buildCheckBox(
+              text: 'Fun Animations',
+              value: widget.gameState.settings.animations ?? true,
+              onChange: (bool v) async {
+                widget.gameState.settings.animations = v;
+                if (closed) return;
+                setState(() {});
+              },
+            ),
+            AppDimensionsNew.getVerticalSizedBox(8),
+
+// ROE GAMES
+            Visibility(
+              visible: widget.gameState.gameInfo.gameType == "ROE",
+              child: ListTile(
+                title: Text(
+                  "ROE games",
+                  style: AppDecorators.getHeadLine4Style(theme: theme),
+                ),
+                subtitle: Text(
+                  HelperUtils.buildGameTypeStrFromList(
+                      [GameType.HOLDEM, GameType.PLO]),
+                ),
+                trailing: IconButton(
+                  icon: Icon(Icons.mode_edit_rounded),
+                  onPressed: () async {
+                    final res = await Alerts.showChooseGamesDailog(
+                      [GameType.HOLDEM, GameType.PLO],
+                      context,
+                      theme,
+                    );
+
+                    if (res != null && res.isNotEmpty) {
+                      //TODO set the games list
+                      setState(() {});
+                    }
+                  },
+                ),
+              ),
+            ),
+
+// DEALER CHOICE GAMES
+            Visibility(
+              visible: widget.gameState.gameInfo.gameType == "DEALER_CHOICE",
+              child: ListTile(
+                title: Text(
+                  "Dealer Games",
+                  style: AppDecorators.getHeadLine4Style(theme: theme),
+                ),
+                subtitle: Text(
+                  HelperUtils.buildGameTypeStrFromList(
+                      [GameType.HOLDEM, GameType.PLO]),
+                ),
+                trailing: IconButton(
+                  icon: Icon(Icons.mode_edit_rounded),
+                  onPressed: () async {
+                    final res = await Alerts.showChooseGamesDailog(
+                      [GameType.HOLDEM, GameType.PLO],
+                      context,
+                      theme,
+                    );
+
+                    if (res != null && res.isNotEmpty) {
+                      //TODO set the games list
+                      setState(() {});
+                    }
+                  },
+                ),
+              ),
+            ),
+
+            AppDimensionsNew.getVerticalSizedBox(8),
+            // Show chat only if he is admin
+            Visibility(
+              visible: widget.isAdmin,
+              child: _buildCheckBox(
+                text: "Game Chat",
+                value: widget.gameState.settings.showChat,
+                onChange: (bool v) {
+                  widget.gameState.settings.showChat = v;
+                },
+              ),
+            ),
+            // results wait label
+            AppDimensionsNew.getVerticalSizedBox(8),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // label
+                Container(
+                  margin:
+                      EdgeInsets.only(bottom: 10.0, left: 10.0, right: 10.0),
+                  child: Text(
+                    'Pause each result (in seconds)',
+                    style: AppDecorators.getHeadLine4Style(theme: theme),
+                  ),
+                ),
+
+                // result wait
+                RadioListWidget(
+                  defaultValue: _gameSettings.pauseEachResultInSecs,
+                  values: [3, 5, 10, 15],
+                  onSelect: (int value) async {
+                    _gameSettings.pauseEachResultInSecs = value;
+                    await updateGameSettings();
+                    if (closed) {
+                      return;
+                    }
+                    setState(() {});
+                  },
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildPlayerSettingOptions(AppTheme theme) {
+    if (_gameSettings == null) {
+      return CircularProgressWidget();
+    }
     return SingleChildScrollView(
       physics: BouncingScrollPhysics(),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          /* show straddle off and auto straddle options ONLY when the UTG STRADDLE is on */
-          widget.gameState.gameInfo.utgStraddleAllowed
-              ? Column(
-                  mainAxisSize: MainAxisSize.min,
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Muck loosing hand
+            _buildCheckBox(
+                text: _appScreenText['muckLosingHand'],
+                value: widget.gameState.gameInfo.playerMuckLosingHand,
+                onChange: (bool v) async {
+                  await GameService.updateGameConfig(widget.gameState.gameCode,
+                      muckLosingHand: v);
+                  // setting the value saves it to local storage too
+                  widget.gameState.gameInfo.playerMuckLosingHand = v;
+                  if (closed) return;
+                  setState(() {});
+                }),
+
+            // Run it twice
+            _buildCheckBox(
+              text: _appScreenText['promptRunItTwice'],
+              value: _gameSettings.runItTwiceAllowed,
+              onChange: (bool v) async {
+                // await GameService.updateGameConfig(widget.gameState.gameCode,
+                //     runItTwicePrompt: v);
+                // setting the value saves it to local storage too
+                _gameSettings.runItTwiceAllowed = v;
+                await GameService.updateGameSettings(gameCode, _gameSettings);
+                widget.gameState.gameInfo.playerRunItTwice = v;
+                if (closed) return;
+                setState(() {});
+              },
+            ),
+            _buildCheckBox(
+              text: _appScreenText['gameSounds'],
+              value: widget.gameState.settings.gameSound,
+              onChange: (bool v) async {
+                // setting the value saves it to local storage too
+                widget.gameState.settings.gameSound = v;
+                log('In toggle button widget, gameSounds = ${widget.gameState.settings.gameSound}');
+                if (closed) return;
+                setState(() {});
+              },
+            ),
+
+            Visibility(
+              visible: widget.gameState.gameInfo.audioConfEnabled ?? true,
+              child: _buildCheckBox(
+                text: _appScreenText['audioConference'],
+                value: widget.gameState.settings.audioConf,
+                onChange: (bool v) async {
+                  // setting the value saves it to local storage too
+                  widget.gameState.settings.audioConf = v;
+                  widget.gameState.janusEngine.joinLeaveAudioConference();
+                  log('In toggle button widget, audioConf = ${widget.gameState.settings.audioConf}');
+                  if (closed) return;
+                  setState(() {});
+                },
+              ),
+            ),
+
+            /* show straddle off and auto straddle options ONLY when the UTG STRADDLE is on */
+            // Straddle Checkbox
+            // TODO remove hardcoded value
+            Visibility(
+              visible:
+                  true, // widget.gameState.gameInfo.utgStraddleAllowed ?? true,
+              child: Container(
+                decoration: widget.gameState.settings.straddleOption ?? true
+                    ? AppDecorators.tileDecorationWithoutBorder(theme)
+                    : BoxDecoration(),
+                child: Column(
                   children: [
-                    // straddle off
                     _buildCheckBox(
                       text: _appScreenText['straddle'],
                       value: widget.gameState.settings.straddleOption,
                       onChange: (bool v) async {
                         // setting the value saves it to local storage too
+                        //  TODO Need straddle in serverside.
+
                         widget.gameState.settings.straddleOption = v;
                         log('In toggle button widget, straddleOption = ${widget.gameState.settings.straddleOption}');
                         if (closed) return;
@@ -574,86 +830,86 @@ class _GameOptionState extends State<GameOption> {
                       },
                     ),
 
-                    // auto straddle
-                    _buildCheckBox(
-                      text: _appScreenText['autoStraddle'],
-                      value: widget.gameState.settings.autoStraddle,
-                      onChange: (bool v) async {
-                        if (v) {
-                          await FirebaseAnalytics().logEvent(
-                              name: "Auto_Straddle",
-                              parameters: {
-                                "name": "Auto Straddle is turned ON"
-                              });
-                        }
-                        // setting the value saves it to local storage too
-                        widget.gameState.settings.autoStraddle = v;
-                        log('In toggle button widget, autoStraddle = ${widget.gameState.settings.autoStraddle}');
-                      },
+                    // Need variable for tracking auto choice.
+                    Visibility(
+                      visible: widget.gameState.settings.straddleOption,
+                      child: Container(
+                        margin: EdgeInsets.only(left: 16),
+                        child: // auto straddle
+                            _buildCheckBox(
+                          text: _appScreenText['autoStraddle'],
+                          value: widget.gameState.settings.autoStraddle,
+                          onChange: (bool v) async {
+                            if (v) {
+                              await FirebaseAnalytics().logEvent(
+                                  name: "Auto_Straddle",
+                                  parameters: {
+                                    "name": "Auto Straddle is turned ON"
+                                  });
+                            }
+                            // setting the value saves it to local storage too
+                            widget.gameState.settings.autoStraddle = v;
+                            log('In toggle button widget, autoStraddle = ${widget.gameState.settings.autoStraddle}');
+                          },
+                        ),
+                      ),
                     ),
                   ],
-                )
-              : const SizedBox.shrink(),
-          _buildCheckBox(
-              text: _appScreenText['muckLosingHand'],
-              value: widget.gameState.gameInfo.playerMuckLosingHand,
-              onChange: (bool v) async {
-                await GameService.updateGameConfig(widget.gameState.gameCode,
-                    muckLosingHand: v);
+                ),
+              ),
+            ),
+
+            // need local variable for bombpot in gameInfo
+            Visibility(
+              visible: true, //gameInfo.bombPot,
+              child: _buildCheckBox(
+                text: "Participate in bomb pot",
+                value: true, //widget.gameState.settings.bombpot,
+                onChange: (bool v) async {
+                  // setting the value saves it to local storage too
+                  _gameSettings.bombPotEnabled = v;
+                  await updateGameSettings();
+                  // widget.gameState.settings.bombPot = v;
+                  log('In toggle button widget, gameSounds = ${widget.gameState.settings.gameSound}');
+                  if (closed) return;
+                  setState(() {});
+                },
+              ),
+            ),
+
+            _buildCheckBox(
+              text: "Chat",
+              value: widget.gameState.settings.showChat ??
+                  false, //widget.gameState.settings.bombpot,
+              onChange: (bool v) {
                 // setting the value saves it to local storage too
-                widget.gameState.gameInfo.playerMuckLosingHand = v;
+                widget.gameState.settings.showChat = v;
+                // widget.gameState.settings.bombPot = v;
+                log('In toggle button widget, gameSounds = ${widget.gameState.settings.gameSound}');
                 if (closed) return;
                 setState(() {});
-              }),
-          _buildCheckBox(
-            text: _appScreenText['promptRunItTwice'],
-            value: widget.gameState.gameInfo.playerRunItTwice,
-            onChange: (bool v) async {
-              await GameService.updateGameConfig(widget.gameState.gameCode,
-                  runItTwicePrompt: v);
-              // setting the value saves it to local storage too
-              widget.gameState.gameInfo.playerRunItTwice = v;
-              if (closed) return;
-              setState(() {});
-            },
-          ),
-          _buildCheckBox(
-            text: _appScreenText['gameSounds'],
-            value: widget.gameState.settings.gameSound,
-            onChange: (bool v) async {
-              // setting the value saves it to local storage too
-              widget.gameState.settings.gameSound = v;
-              log('In toggle button widget, gameSounds = ${widget.gameState.settings.gameSound}');
-              if (closed) return;
-              setState(() {});
-            },
-          ),
-          widget.gameState.gameInfo.audioConfEnabled ?? false
-              ? _buildCheckBox(
-                  text: _appScreenText['audioConference'],
-                  value: widget.gameState.settings.audioConf,
-                  onChange: (bool v) async {
-                    // setting the value saves it to local storage too
-                    widget.gameState.settings.audioConf = v;
-                    widget.gameState.janusEngine.joinLeaveAudioConference();
-                    log('In toggle button widget, audioConf = ${widget.gameState.settings.audioConf}');
-                    if (closed) return;
-                    setState(() {});
-                  },
-                )
-              : SizedBox(),
+              },
+            ),
 
-          // seat change & waiting list settings
-          ...gameSecondaryOptions
-              .map(
-                (gameSecondaryOption) => gameSecondaryOptionItem(
-                  gameSecondaryOption,
-                  context,
-                  theme,
-                ),
-              )
-              .toList(),
-        ],
+            _buildCheckBox(
+              text: "Participate in Audio conference",
+              value: widget.gameState.settings.audioConf,
+              onChange: (bool v) {
+                widget.gameState.settings.audioConf = v;
+              },
+            ),
+            // seat change & waiting list settings
+            ...gameSecondaryOptions
+                .map(
+                  (gameSecondaryOption) => gameSecondaryOptionItem(
+                    gameSecondaryOption,
+                    context,
+                    theme,
+                  ),
+                )
+                .toList(),
+          ],
+        ),
       ),
     );
   }
@@ -665,6 +921,10 @@ class _GameOptionState extends State<GameOption> {
 
     final bool isPlaying = widget.gameState.isPlaying;
     final bool isHost = context.read<GameContextObject>().isHost();
+
+    if (_gameSettings == null) {
+      return CircularProgressWidget();
+    }
 
     // when I am HOST and PLAYING the game
     if (isPlaying && isHost) {
@@ -692,6 +952,10 @@ class _GameOptionState extends State<GameOption> {
                       child: Text('Player Settings'),
                     ),
                   ],
+                  indicatorSize: TabBarIndicatorSize.label,
+                  indicatorColor: theme.accentColor,
+                  labelColor: theme.secondaryColorWithLight(),
+                  unselectedLabelColor: theme.secondaryColorWithDark(),
                 ),
               ),
             ];
