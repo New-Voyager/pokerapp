@@ -36,8 +36,10 @@ class GameOption extends StatefulWidget {
   final String playerUuid;
   final bool isAdmin;
   final GameState gameState;
+  final bool focusOnWaitingList;
 
-  GameOption(this.gameState, this.gameCode, this.playerUuid, this.isAdmin);
+  GameOption(this.gameState, this.gameCode, this.playerUuid, this.isAdmin,
+      this.focusOnWaitingList);
 
   @override
   _GameOptionState createState() => _GameOptionState();
@@ -187,54 +189,6 @@ class _GameOptionState extends State<GameOption> {
       _fetchGameInfo();
     });
     gameCode = widget.gameCode;
-    gameActions = [
-      OptionItemModel(
-        title: _appScreenText['standup'],
-        iconData: Icons.exit_to_app_sharp,
-        onTap: (context) {
-          this.onLeave();
-        },
-      ),
-      OptionItemModel(
-        title: _appScreenText['reload'],
-        iconData: Icons.shop,
-        onTap: (context) {
-          this.onReload();
-        },
-      ),
-    ];
-
-    if (widget.gameState.running) {
-      gameActions.add(
-        OptionItemModel(
-          title: _appScreenText['break'],
-          iconData: Icons.shop,
-          onTap: (context) {
-            this.onBreak();
-          },
-        ),
-      );
-      if (widget.isAdmin) {
-        gameActions.add(
-          OptionItemModel(
-            title: _appScreenText['pause'],
-            iconData: Icons.pause,
-            onTap: (context) {
-              this.onPause();
-            },
-          ),
-        );
-      }
-    }
-
-    if (widget.isAdmin) {
-      gameActions.add(OptionItemModel(
-          title: _appScreenText['terminate'],
-          iconData: Icons.cancel_outlined,
-          onTap: (context) {
-            this.onEndGame();
-          }));
-    }
 
     gameSecondaryOptions = [
       OptionItemModel(
@@ -417,23 +371,78 @@ class _GameOptionState extends State<GameOption> {
 
   Widget _buildBasicGameOptions({
     @required final bool isPlaying,
+    @required final bool isHost,
     @required final AppTheme theme,
   }) {
-    return !isPlaying
-        ? SizedBox.shrink()
-        : Container(
-            margin: EdgeInsets.only(bottom: 10),
-            padding: EdgeInsets.only(top: 16),
-            width: double.infinity,
-            decoration: AppDecorators.tileDecorationWithoutBorder(theme),
-            child: Wrap(
-              alignment: WrapAlignment.center,
-              //mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ...gameActions.map((e) => gameActionItem(e, theme)).toList(),
-              ],
-            ),
-          );
+    List<OptionItemModel> gameActions = [];
+
+    if (isPlaying) {
+      gameActions.addAll([
+        OptionItemModel(
+          title: _appScreenText['standup'],
+          iconData: Icons.exit_to_app_sharp,
+          onTap: (context) {
+            this.onLeave();
+          },
+        ),
+        OptionItemModel(
+          title: _appScreenText['reload'],
+          iconData: Icons.shop,
+          onTap: (context) {
+            this.onReload();
+          },
+        ),
+      ]);
+    }
+
+    if (widget.gameState.isGameRunning) {
+      if (isPlaying) {
+        gameActions.add(
+          OptionItemModel(
+            title: _appScreenText['break'],
+            iconData: Icons.shop,
+            onTap: (context) {
+              this.onBreak();
+            },
+          ),
+        );
+      }
+
+      if (isHost) {
+        gameActions.add(
+          OptionItemModel(
+            title: _appScreenText['pause'],
+            iconData: Icons.pause,
+            onTap: (context) {
+              this.onPause();
+            },
+          ),
+        );
+      }
+    }
+
+    if (isHost) {
+      gameActions.add(OptionItemModel(
+          title: _appScreenText['terminate'],
+          iconData: Icons.cancel_outlined,
+          onTap: (context) {
+            this.onEndGame();
+          }));
+    }
+
+    return Container(
+      margin: EdgeInsets.only(bottom: 10),
+      padding: EdgeInsets.only(top: 16),
+      width: double.infinity,
+      decoration: AppDecorators.tileDecorationWithoutBorder(theme),
+      child: Wrap(
+        alignment: WrapAlignment.center,
+        //mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          ...gameActions.map((e) => gameActionItem(e, theme)).toList(),
+        ],
+      ),
+    );
   }
 
   Future<void> updateGameSettings() async {
@@ -737,6 +746,11 @@ class _GameOptionState extends State<GameOption> {
     );
   }
 
+  Widget _buildWaitingList(AppTheme theme) {
+    return WaitingListBottomSheet(widget.gameState, widget.gameState.gameCode,
+        widget.gameState.currentPlayerUuid);
+  }
+
   Widget _buildPlayerSettingOptions(AppTheme theme) {
     if (_gameSettings == null) {
       return CircularProgressWidget();
@@ -926,6 +940,101 @@ class _GameOptionState extends State<GameOption> {
       return CircularProgressWidget();
     }
 
+    bool gameSettings = false;
+    bool playerSettings = false;
+    bool waitingList = false;
+
+    // add children
+    List<Widget> children = [];
+    List<Widget> tabs = [];
+    int defaultIndex = 0;
+    // ishost?, can change game settings
+    if (isHost) {
+      tabs.add(Tab(
+        child: Text('Game Settings'),
+      ));
+
+      children.add(
+          // game settings to be shown here
+          // 1. allow seat change player
+          // 2. allow waiting list
+          // 3. bomb pot
+          // 4. audio conference
+          // 5. pause time after each result
+          _buildGameSettingOptions(theme));
+    }
+
+    if (isPlaying) {
+      tabs.add(Tab(
+        child: Text('Player Settings'),
+      ));
+      children.add(
+          // player settings to be shown here
+          // 1. muck losing hand
+          // 2. straddle
+          // 3. audio conference
+          // 4. run it twice
+          _buildPlayerSettingOptions(theme));
+    }
+
+    bool waitinglistAllowed = true;
+    if (waitinglistAllowed) {
+      tabs.add(Tab(
+        child: Text('Waiting List'),
+      ));
+
+      children.add(_buildWaitingList(theme));
+      if (widget.focusOnWaitingList) {
+        defaultIndex = tabs.length - 1;
+      }
+    }
+
+    if (children.length > 1) {
+      return DefaultTabController(
+        length: tabs.length,
+        initialIndex: defaultIndex,
+        child: NestedScrollView(
+          physics: BouncingScrollPhysics(),
+          headerSliverBuilder: (context, value) {
+            return [
+              SliverToBoxAdapter(
+                // build the basic game options
+                child: _buildBasicGameOptions(
+                  isPlaying: isPlaying,
+                  isHost: isHost,
+                  theme: theme,
+                ),
+              ),
+              SliverToBoxAdapter(
+                // show tabs for game and player settings
+                child: TabBar(
+                  tabs: tabs,
+                  indicatorSize: TabBarIndicatorSize.label,
+                  indicatorColor: theme.accentColor,
+                  labelColor: theme.secondaryColorWithLight(),
+                  unselectedLabelColor: theme.secondaryColorWithDark(),
+                ),
+              ),
+            ];
+          },
+
+          // show game and player settings body
+          body: TabBarView(
+            physics: BouncingScrollPhysics(),
+            children: children,
+          ),
+        ),
+      );
+    } else {
+      return children[0];
+    }
+
+    // is player?, can change player settings
+
+    // is waiting list allowed, add waiting list tab
+
+    // if game state allows waiting list, add waiting list
+
     // when I am HOST and PLAYING the game
     if (isPlaying && isHost) {
       return DefaultTabController(
@@ -964,22 +1073,7 @@ class _GameOptionState extends State<GameOption> {
           // show game and player settings body
           body: TabBarView(
             physics: BouncingScrollPhysics(),
-            children: [
-              // game settings to be shown here
-              // 1. allow seat change player
-              // 2. allow waiting list
-              // 3. bomb pot
-              // 4. audio conference
-              // 5. pause time after each result
-              _buildGameSettingOptions(theme),
-
-              // player settings to be shown here
-              // 1. muck losing hand
-              // 2. straddle
-              // 3. audio conference
-              // 4. run it twice
-              _buildPlayerSettingOptions(theme),
-            ],
+            children: [],
           ),
         ),
       );

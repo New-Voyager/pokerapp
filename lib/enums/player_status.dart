@@ -1,4 +1,5 @@
 enum PlayerStatus {
+  PLAYER_UNKNOWN_STATUS,
   NOT_PLAYING,
   PLAYING,
   IN_QUEUE,
@@ -14,7 +15,8 @@ enum PlayerStatus {
   JOINING,
   WAITLIST_SEATING,
   PENDING_UPDATES,
-  WAIT_FOR_BUYIN_APPROVAL
+  WAIT_FOR_BUYIN_APPROVAL,
+  NEED_TO_POST_BLIND,
 }
 
 PlayerStatus playerStatusFromStr(String status) {

@@ -19,7 +19,6 @@ class WaitingListBottomSheet extends StatefulWidget {
   final String gameCode;
   final String playerUuid;
   final GameState gameState;
-
   WaitingListBottomSheet(this.gameState, this.gameCode, this.playerUuid);
 
   @override
@@ -33,26 +32,29 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
   bool ischanged = false;
   bool isSwitchShow = true;
   AppTextScreen _appScreenText;
-
+  bool loading = true;
   @override
   void initState() {
     super.initState();
-
-    getAllCurretlyPlayingPlayer();
-    getAllWaitingPlayers();
+    initialize();
   }
 
-  getAllCurretlyPlayingPlayer() async {
-    GameInfoModel _gameInfoModel =
-        await GameService.getGameInfo(widget.gameCode);
+  void initialize() async {
+    loading = true;
+    await getAllCurrentlyPlayingPlayer();
+    await getAllWaitingPlayers();
+    loading = false;
+    setState(() {});
+  }
+
+  getAllCurrentlyPlayingPlayer() async {
+    GameInfoModel _gameInfoModel = widget.gameState.gameInfo;
     if (_gameInfoModel == null) {
       return false;
     }
     _gameInfoModel.playersInSeats.forEach((element) {
       if (element.playerUuid == widget.playerUuid) {
-        setState(() {
-          isSwitchShow = false;
-        });
+        isSwitchShow = false;
       }
     });
   }
@@ -63,13 +65,11 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
     print("gameCode ${widget.playerUuid}");
 
     if (result != null) {
-      setState(() {
-        allWaitingListPlayers = result;
-        allWaitingListPlayers.forEach((player) {
-          if (player.playerUuid == widget.playerUuid) {
-            isInWaitingList = true;
-          }
-        });
+      allWaitingListPlayers = result;
+      allWaitingListPlayers.forEach((player) {
+        if (player.playerUuid == widget.playerUuid) {
+          isInWaitingList = true;
+        }
       });
     }
   }
@@ -79,6 +79,9 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
     log('waiting list: build');
     _appScreenText = getAppTextScreen("waitingListBottomSheet");
 
+    if (loading) {
+      return Center(child: CircularProgressIndicator());
+    }
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
     return Consumer<AppTheme>(
@@ -87,11 +90,11 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
               height: height / 2,
               child: Scaffold(
                 backgroundColor: Colors.transparent,
-                appBar: CustomAppBar(
-                  theme: theme,
-                  context: context,
-                  titleText: _appScreenText['waitingList'],
-                ),
+                // appBar: CustomAppBar(
+                //   theme: theme,
+                //   context: context,
+                //   titleText: _appScreenText['waitingList'],
+                // ),
                 body: Column(
                   mainAxisSize: MainAxisSize.max,
                   children: [

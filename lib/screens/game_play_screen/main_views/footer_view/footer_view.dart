@@ -4,13 +4,19 @@ import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
+import 'package:pokerapp/enums/player_status.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/app_constants.dart';
+import 'package:pokerapp/screens/game_context_screen/game_options/game_option_bottom_sheet.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/animating_widgets/my_last_action_animating_widget.dart';
+import 'package:pokerapp/screens/util_screens/util.dart';
+import 'package:pokerapp/widgets/round_color_button.dart';
 import 'package:provider/provider.dart';
 import 'communication_view.dart';
 import 'customization_view.dart';
@@ -128,19 +134,79 @@ class _FooterViewState extends State<FooterView>
   }
 
   /* straddle prompt builder / footer action view builder / hole card view builder */
-  Widget _buildMainView() {
+  Widget _buildMainView(GameState gameState) {
     final width = MediaQuery.of(context).size.width;
+    final theme = AppTheme.getTheme(context);
 
-    /* build the HoleCardsViewAndFooterActionView only if me is NOT null */
-    return ValueListenableBuilder<PlayerModel>(
-      valueListenable: mePlayerModelVn,
-      builder: (_, me, __) => me == null
-          ? SizedBox(width: width)
-          : HoleCardsViewAndFooterActionView(
-              playerModel: me,
-              isHoleCardsVisibleVn: isHoleCardsVisibleVn,
+    return Consumer<MyState>(
+        builder: (BuildContext _, MyState myState, Widget __) {
+      log('footerview: my state has changed');
+      if (!gameState.isPlaying) {
+        // if i am not in the waitlist
+        if (myState.status != PlayerStatus.IN_QUEUE) {
+          return Align(
+            alignment: Alignment.center,
+            child: RoundedColorButton(
+              onTapFunction: () {
+                showModalBottomSheet(
+                  context: context,
+                  isScrollControlled: true,
+                  backgroundColor: Colors.transparent,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(32),
+                      topRight: Radius.circular(32),
+                    ),
+                  ),
+                  builder: (_) => ListenableProvider.value(
+                    value: context.read<GameContextObject>(),
+                    child: GameOptionsBottomSheet(
+                        gameState: GameState.getState(context),
+                        focusWaitingList: true),
+                  ),
+                );
+              },
+              text: "Join Waitlist",
+              backgroundColor: theme.accentColor,
+              textColor: theme.primaryColorWithDark(),
             ),
-    );
+          );
+        } else {
+          showModalBottomSheet(
+            context: context,
+            isScrollControlled: true,
+            backgroundColor: Colors.transparent,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(32),
+                topRight: Radius.circular(32),
+              ),
+            ),
+            builder: (_) => ListenableProvider.value(
+              value: context.read<GameContextObject>(),
+              child: GameOptionsBottomSheet(
+                  gameState: GameState.getState(context)),
+            ),
+          );
+
+          return SizedBox(width: width);
+        }
+      }
+
+      /* build the HoleCardsViewAndFooterActionView only if me is NOT null */
+      return ValueListenableBuilder<PlayerModel>(
+          valueListenable: mePlayerModelVn,
+          builder: (_, me, __) {
+            if (me == null) {
+              return SizedBox(width: width);
+            } else {
+              return HoleCardsViewAndFooterActionView(
+                playerModel: me,
+                isHoleCardsVisibleVn: isHoleCardsVisibleVn,
+              );
+            }
+          });
+    });
   }
 
   Widget _buildCustomizationView() {
@@ -211,17 +277,26 @@ class _FooterViewState extends State<FooterView>
   @override
   Widget build(BuildContext context) {
     final gameState = GameState.getState(context);
+    final theme = AppTheme.getTheme(context);
     List<Widget> children = [];
     if (gameState.customizationMode) {
-      children.add(_buildMainView());
+      children.add(_buildMainView(gameState));
       /* communication widgets */
       children.add(_buildCustomizationView());
+    } else if (!gameState.isPlaying) {
+      // the player can join the waitlist
+      log('Player is not playing, but can join waitlist');
+      /* hand analyse view */
+      children.add(_buildHandAnalyseView(context));
+      children.add(_buildMainView(gameState));
+      /* communication widgets */
+      children.add(_buildCommunicationWidget());
     } else {
       /* hand analyse view */
       children.add(_buildHandAnalyseView(context));
 
       /* build main view - straddle prompt, hole cards, action view*/
-      children.add(_buildMainView());
+      children.add(_buildMainView(gameState));
 
       /* communication widgets */
       children.add(_buildCommunicationWidget());

@@ -87,7 +87,9 @@ class SeatChangeService {
       QueryOptions(documentNode: gql(query), variables: variables),
     );
 
-    if (result.hasException) return null;
+    if (result.hasException) {
+      return null;
+    }
     var players = result.data['seatPositions'];
     List<PlayerInSeat> playersInSeats = [];
     for (var player in players) {

@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:dart_nats/dart_nats.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
+import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/util_service.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/routes.dart';
@@ -106,7 +107,7 @@ class Nats {
     log('subscribing to ${this._playerChannel}');
     this._playerSub = this.subClient.sub(this._playerChannel);
 
-    _playerSub.stream.listen((Message message) {
+    _playerSub.stream.listen((Message message) async {
       /*
         {
           "type": "WAITLIST_SEATING",
@@ -139,39 +140,17 @@ class Nats {
         if (json['clubName'] != null) {
           subTitle = subTitle + '\n' + 'Club: ${json["clubName"]}';
         }
+        final message =
+            'A seat open in game $game.\n\nDo you want to take the open seat?';
 
-        final alert = AlertDialog(
-          title: Text('Waitlist Seating'),
-          content: Text('$title \n$subTitle'),
-          actions: [
-            ElevatedButton(
-              //textColor: Color(0xFF6200EE),
-              onPressed: () {
-                Navigator.of(navigatorKey.currentContext).pop();
-                navigatorKey.currentState.pushNamed(
-                  Routes.game_play,
-                  arguments: gameCode,
-                );
-              },
-              child: Text('Accept'),
-            ),
-            ElevatedButton(
-              //textColor: Color(0xFF6200EE),
-              onPressed: () {
-                Navigator.of(navigatorKey.currentContext).pop();
-              },
-              child: Text('Decline'),
-            ),
-          ],
-        );
-        // show the dialog
-        showDialog(
-          context: navigatorKey.currentContext,
-          barrierDismissible: false,
-          builder: (BuildContext context) {
-            return alert;
-          },
-        );
+        final res = await showWaitlistInvitation(
+            navigatorKey.currentContext, message, 10);
+        if (res) {
+          navigatorKey.currentState.pushNamed(
+            Routes.game_play,
+            arguments: gameCode,
+          );
+        }
       }
     });
   }

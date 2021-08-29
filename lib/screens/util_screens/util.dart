@@ -9,6 +9,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/newmodels/game_model_new.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
@@ -79,6 +80,54 @@ showError(BuildContext context, {GqlError error, String message}) {
       return alert;
     },
   );
+}
+
+showWaitlistInvitation(
+    BuildContext context, String message, int duration) async {
+  AppTheme theme = AppTheme.getTheme(context);
+  final res = await showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      backgroundColor: theme.fillInColor,
+      elevation: 5,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(
+          color: theme.accentColor,
+        ),
+      ),
+      buttonPadding: EdgeInsets.all(16),
+      title: Text('Waitlist'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(message),
+        ],
+      ),
+      actions: [
+        RoundedColorButton(
+          text: 'No',
+          backgroundColor: Colors.transparent,
+          textColor: theme.supportingColor,
+          borderColor: theme.accentColor,
+          onTapFunction: () {
+            Navigator.of(context).pop();
+          },
+        ),
+        RoundedColorButton(
+          text: 'Yes',
+          backgroundColor: Colors.transparent,
+          textColor: theme.supportingColor,
+          borderColor: theme.accentColor,
+          onTapFunction: () {
+            Navigator.of(context).pop(true);
+          },
+        ),
+      ],
+    ),
+  );
+  final ret = res as bool;
+  return ret ?? false;
 }
 
 showWaitlistStatus(BuildContext context, String message, int duration) async {

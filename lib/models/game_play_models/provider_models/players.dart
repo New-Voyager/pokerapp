@@ -337,7 +337,7 @@ class MyState extends ChangeNotifier {
 
   set status(PlayerStatus status) => this._status = status;
 
-  get status => this._status;
+  PlayerStatus get status => this._status;
 
   void notify() {
     notifyListeners();

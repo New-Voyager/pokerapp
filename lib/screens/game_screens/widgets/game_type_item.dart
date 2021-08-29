@@ -113,6 +113,4 @@ class GameTypeItem extends StatelessWidget {
       ],
     );
   }
-
-  
 }

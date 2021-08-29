@@ -72,6 +72,9 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
     }
     //log('0-0-0-0- Polling for pending approvals');
     final approvals = await PlayerService.getPendingApprovals();
+    if (disposed) {
+      return;
+    }
     final state = Provider.of<PendingApprovalsState>(_context, listen: false);
     state.setPendingList(approvals);
   }

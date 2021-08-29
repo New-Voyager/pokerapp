@@ -17,6 +17,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat_change_model.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
+//import 'package:pokerapp/proto/enums.pbserver.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/screens/game_play_screen/pop_ups/seat_change_confirmation_pop_up.dart';
@@ -180,6 +181,14 @@ class GameUpdateService {
           );
         case AppConstants.PLAYER_UPDATE:
           return handleNewPlayerUpdate(
+            data: data,
+          );
+        case AppConstants.TABLE_UPDATE:
+          return handleNewTableUpdate(
+            data: data,
+          );
+        case AppConstants.GAME_STATUS:
+          return handleNewUpdateStatus(
             data: data,
           );
       }
@@ -850,6 +859,26 @@ class GameUpdateService {
     }
   }
 
+  void handleNewTableUpdate({
+    var data,
+  }) async {
+    String type = data['subType'];
+    String jsonData = jsonEncode(data);
+    log(jsonData);
+    if (type == AppConstants.SeatChangeInProgress) {
+      handlePlayerSeatChange(data: data);
+    } else if (type == AppConstants.TableHostSeatChangeProcessStart) {
+      handleHostSeatChangeStart(data: data);
+    } else if (type == AppConstants.TableHostSeatChangeMove) {
+      handleHostSeatChangeMove(data: data);
+    } else if (type == AppConstants.TableHostSeatChangeProcessEnd) {
+      handleHostSeatChangeDone(data: data);
+    } else if (type == AppConstants.TableWaitlistSeating) {
+      // show a flush bar at the top
+      handleWaitlistSeating(data: data);
+    }
+  }
+
   void handlePlayerConnectivityLost({
     List<int> playerIds,
   }) async {
@@ -967,26 +996,8 @@ class GameUpdateService {
   void handleHostSeatChangeStart({
     var data,
   }) async {
-    // if the current player is making the seat changes, then show additional buttons
-    // Confirm Changes, Cancel Changes
-    // {"gameId":"18", "gameCode":"CG-LBH8IW24N7XGE5", "messageType":"TABLE_UPDATE", "tableUpdate":{"type":"HostSeatChangeInProcessStart", "seatChangeHost":"122"}}
-
-    // for other players, show the banner sticky (stay at the top)
-    // Seat arrangement in progress
-    // final ValueNotifier<GeneralNotificationModel> valueNotifierNotModel =
-    //     Provider.of<ValueNotifier<GeneralNotificationModel>>(
-    //   _context,
-    //   listen: false,
-    // );
-
-    // valueNotifierNotModel.value = GeneralNotificationModel(
-    //   titleText: 'Seat change',
-    //   subTitleText: 'Host is making changes to the table',
-    // );
-
-    final gameCode = data["gameCode"].toString();
-    final seatChangeHost =
-        int.parse(data["tableUpdate"]["seatChangeHost"].toString());
+    final gameCode = _gameState.gameCode;
+    final seatChangeHost = int.parse(data["seatChangeHostId"].toString());
     final seatChange = Provider.of<SeatChangeNotifier>(_context, listen: false);
     seatChange.updateSeatChangeInProgress(true);
     seatChange.updateSeatChangeHost(seatChangeHost);
@@ -1026,7 +1037,7 @@ class GameUpdateService {
 
     final hostSeatChange =
         Provider.of<SeatChangeNotifier>(_context, listen: false);
-    var seatMoves = data['tableUpdate']['seatMoves'];
+    var seatMoves = data['seatMoves'];
     for (var move in seatMoves) {
       int from = int.parse(move['oldSeatNo'].toString());
       int to = int.parse(move['newSeatNo'].toString());
@@ -1040,7 +1051,7 @@ class GameUpdateService {
       /* wait for the animation to finish */
       await Future.delayed(AppConstants.seatChangeAnimationDuration);
     }
-    final gameCode = data["gameCode"].toString();
+    final gameCode = _gameState.gameCode;
     // get current seat positions
 
     final gameState = Provider.of<GameState>(
@@ -1051,9 +1062,9 @@ class GameUpdateService {
     final players = gameState.getPlayers(_context);
 
     /* refresh the player model */
-    players.refreshWithPlayerInSeat(
-      await SeatChangeService.hostSeatChangeSeatPositions(gameCode),
-    );
+    final positions =
+        await SeatChangeService.hostSeatChangeSeatPositions(gameCode);
+    players.refreshWithPlayerInSeat(positions);
   }
 
   void handleHighHand({
@@ -1247,6 +1258,85 @@ class GameUpdateService {
           duration: Duration(seconds: promptSecs - 1),
         );
       }
+    }
+  }
+
+  void handleNewUpdateStatus({
+    var data,
+  }) async {
+    String tableStatus = data['tableStatus'];
+    String gameStatus = data['gameStatus'];
+
+    /*
+      {"gameId":"90","gameCode":"CG-Z44IXIK44KWKBQW","messageType":"GAME_STATUS","status":{"status":"ACTIVE","tableStatus":"WAITING_TO_BE_STARTED"}}
+      {"gameId":"90","gameCode":"CG-Z44IXIK44KWKBQW","messageType":"GAME_STATUS","status":{"status":"PAUSED","tableStatus":"GAME_RUNNING"}}
+      else if (type == AppConstants.GAME_PAUSED) {
+      // {"gameId":"494","gameCode":"cgnmxhehyy","messageType":"GAME_STATUS","status":{"status":"PAUSED","tableStatus":"GAME_RUNNING"}}
+
+    }
+    */
+
+    final tableState = _gameState.getTableState(_context);
+
+    // if the status hasn't changed, don't do anything
+    if (gameStatus == tableState.gameStatus) {
+      if (tableStatus == tableState.tableStatus) {
+        return;
+      }
+
+      if (tableStatus == AppConstants.TABLE_STATUS_GAME_RUNNING ||
+          tableStatus == AppConstants.TABLE_STATUS_GAME_RUNNING_1) {
+        tableStatus = AppConstants.TABLE_STATUS_GAME_RUNNING;
+      }
+      if (tableStatus == tableState.tableStatus) {
+        return;
+      }
+    }
+
+    if (gameStatus == AppConstants.GAME_PAUSED) {
+      log('Game has paused. Update the state');
+      resetBoard();
+      Alerts.showNotification(
+          titleText: "${_appScreenText['game']}",
+          svgPath: 'assets/images/casino.svg',
+          subTitleText: _appScreenText['theGameIsPaused']);
+
+      _gameState.refresh(_context);
+      // paused the game
+      tableState.updateTableStatusSilent(AppConstants.GAME_PAUSED);
+      tableState.notifyAll();
+      return;
+    }
+
+    if (tableState.tableStatus != tableStatus ||
+        tableState.gameStatus != gameStatus) {
+      tableState.updateTableStatusSilent(tableStatus);
+      tableState.updateGameStatusSilent(gameStatus);
+
+      if (gameStatus == AppConstants.GAME_ACTIVE &&
+          (tableStatus == AppConstants.TABLE_STATUS_GAME_RUNNING ||
+              tableStatus == AppConstants.TABLE_STATUS_GAME_RUNNING_1)) {
+        log('Game is running. Update the state: ${_gameState.isGameRunning}');
+        //_gameState.refresh(_context);
+        /* QUERY_CURRENT_HAND is done here, only after making sure,
+        * that the game is running.
+        * This is done to get update of the game */
+        //gameContext.handActionService.queryCurrentHand();
+      } else if (gameStatus == AppConstants.GAME_ENDED) {
+        if (_gameState.handInProgress) {
+          // if we are in middle of the hand, don't close it yet
+          while (_gameState.handInProgress) {
+            await Future.delayed(Duration(milliseconds: 1000));
+          }
+        }
+        // end the game
+        log('Game has ended. Update the state');
+        resetBoard();
+        _gameState.refresh(_context);
+        tableState.updateTableStatusSilent(AppConstants.GAME_ENDED);
+      }
+
+      tableState.notifyAll();
     }
   }
 

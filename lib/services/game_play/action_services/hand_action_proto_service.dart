@@ -694,6 +694,9 @@ class HandActionProtoService {
     /* get a new card back asset to be shown */
     if (_close) return;
 
+    final myState = _gameState.getMyState(_context);
+    myState.notify();
+
     tableState.notifyAll();
     //log('Hand Message: ::handleNewHand:: END');
     _gameState.handState = HandState.NEW_HAND;

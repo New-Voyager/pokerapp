@@ -270,7 +270,7 @@ class CardConvUtils {
   }
 }
 
-class HelperUtils{
+class HelperUtils {
   static String buildGameTypeStrFromList(List<GameType> gamesList) {
     if (gamesList != null) {
       String str = "(";

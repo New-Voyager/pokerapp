@@ -116,7 +116,7 @@ class HeaderView extends StatelessWidget {
       ),
       builder: (_) => ListenableProvider.value(
         value: context.read<GameContextObject>(),
-        child: GameOptionsBottomSheet(GameState.getState(context)),
+        child: GameOptionsBottomSheet(gameState: GameState.getState(context)),
       ),
     );
   }
