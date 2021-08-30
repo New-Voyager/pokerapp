@@ -953,14 +953,14 @@ class _GameOptionState extends State<GameOption> {
       // tabs.add(Tab(
       //   child: Text('Game Settings'),
       // ));
-    tabs.add(Container(
-                    // decoration: BoxDecoration(
-                    //     borderRadius: BorderRadius.circular(50),
-                    //     border: Border.all(color: theme.accentColor, width: 1)),
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: Text("Game\nSettings", textAlign: TextAlign.center),
-                    )));
+      tabs.add(Container(
+          // decoration: BoxDecoration(
+          //     borderRadius: BorderRadius.circular(50),
+          //     border: Border.all(color: theme.accentColor, width: 1)),
+          child: Align(
+        alignment: Alignment.center,
+        child: Text("Game\nSettings", textAlign: TextAlign.center),
+      )));
       children.add(
           // game settings to be shown here
           // 1. allow seat change player
@@ -975,14 +975,17 @@ class _GameOptionState extends State<GameOption> {
       // tabs.add(Tab(
       //   child: Text('Player Settings'),
       // ));
-    tabs.add(Container(
-                    // decoration: BoxDecoration(
-                    //     borderRadius: BorderRadius.circular(50),
-                    //     border: Border.all(color: theme.accentColor, width: 1)),
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: Text("Player\nSettings", textAlign: TextAlign.center,),
-                    )));
+      tabs.add(Container(
+          // decoration: BoxDecoration(
+          //     borderRadius: BorderRadius.circular(50),
+          //     border: Border.all(color: theme.accentColor, width: 1)),
+          child: Align(
+        alignment: Alignment.center,
+        child: Text(
+          "Player\nSettings",
+          textAlign: TextAlign.center,
+        ),
+      )));
 
       children.add(
           // player settings to be shown here
@@ -998,14 +1001,15 @@ class _GameOptionState extends State<GameOption> {
       // tabs.add(Tab(
       //   child: Text('Waiting List'),
       // ));
-    tabs.add(Container(
-                    // decoration: BoxDecoration(
-                    //     borderRadius: BorderRadius.circular(50),
-                    //     border: Border.all(color: theme.accentColor, width: 1)),
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: Center(child: Text("Waiting\nList", textAlign: TextAlign.center)),
-                    )));
+      tabs.add(Container(
+          // decoration: BoxDecoration(
+          //     borderRadius: BorderRadius.circular(50),
+          //     border: Border.all(color: theme.accentColor, width: 1)),
+          child: Align(
+        alignment: Alignment.center,
+        child:
+            Center(child: Text("Waiting\nList", textAlign: TextAlign.center)),
+      )));
 
       children.add(_buildWaitingList(theme));
       if (widget.focusOnWaitingList) {
