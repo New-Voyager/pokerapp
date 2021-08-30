@@ -318,6 +318,7 @@ class Players extends ChangeNotifier {
     }
     return _players[idx];
   }
+
   void updatePlayersSilent(List<PlayerModel> players) {
     this._players = players;
     notifyAll();

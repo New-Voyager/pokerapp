@@ -448,6 +448,8 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
     final gameState = GameState.getState(context);
     final theme = AppTheme.getTheme(context);
     final playerCards = gameState.getHoleCards();
+    final boardAttributes = gameState.getBoardAttributes(context);
+
     Widget cardsWidget = cards(
       playerFolded: playerModel.playerFolded,
       cardsInt: playerCards,
@@ -484,7 +486,7 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
         );
       },
       child: Transform.translate(
-          offset: Offset(0, 25.ph),
+          offset: Offset(0, boardAttributes.holeCardOffset),
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
             rankText,
@@ -496,11 +498,6 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
                 alignment: Alignment.center,
                 children: [
                   cardsWidget,
-                  //shuffleButton,
-                  // Align(
-                  //   alignment: Alignment.topRight,
-                  //   child: shuffleButton,
-                  // ),
                 ],
               ),
               shuffleButton,

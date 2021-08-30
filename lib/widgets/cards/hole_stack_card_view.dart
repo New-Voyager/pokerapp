@@ -69,7 +69,7 @@ class HoleStackCardView extends StatelessWidget {
         if (fanOut) {
           double m = cards.length == 2 ? 0.50 : mid.toDouble();
 
-          int ss = context.read<BoardAttributesObject>().screenSize;
+          int ss = context.read<BoardAttributesObject>().screenDiagnolSize;
 
           Alignment _getAlignment(int ss) {
             if (ss <= 7) return Alignment.bottomCenter;
@@ -175,7 +175,10 @@ class HoleStackCardView extends StatelessWidget {
     }
     int mid = (cards.length ~/ 2);
 
-    final double displacementValue = boardAttributes.holeCardDisplacement;
+    double displacementValue = boardAttributes.holeCardDisplacement;
+    if (cards.length == 2) {
+      displacementValue = 2 * displacementValue;
+    }
 
     final double evenNoDisplacement = getEvenNoDisplacement(displacementValue);
 

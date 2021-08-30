@@ -363,7 +363,7 @@ class PlayerActedState {
     } else if (action == AppConstants.BOMP_BOT_PET) {
       _playerAction = HandActions.BOMB_POT_BET;
     }
-    
+
     dynamic amountStr = data['amount'];
     if (amountStr != null) {
       double amount = double.parse(amountStr.toString());
@@ -394,8 +394,8 @@ class PlayerActedState {
       _playerAction = HandActions.STRADDLE;
     } else if (action == proto.ACTION.POST_BLIND) {
       _playerAction = HandActions.POST_BLIND;
-    }    
-    
+    }
+
     _amount = amount;
     if (_amount == null) {
       _amount = 0;
