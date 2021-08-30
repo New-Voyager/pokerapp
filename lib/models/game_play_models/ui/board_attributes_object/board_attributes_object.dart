@@ -16,6 +16,12 @@ enum BoardOrientation {
   vertical,
 }
 
+enum ScreenSize {
+  lessThan7Inches,
+  equalTo7Inches,
+  greaterThan7Inches,
+}
+
 class CommunityCardAttribute {
   static Map<int, Offset> cardOffsets = Map();
 
@@ -475,7 +481,8 @@ class BoardAttributesObject extends ChangeNotifier {
   // footer view dimensions
   Size _footerSize;
   Offset _footerOffset;
-  int _screenSize;
+  int _screenDiagnolSize;
+  ScreenSize _screenSize;
 
   // seat attrib map
   Map<SeatPos, SeatPosAttribs> _seatPosAttribs;
@@ -490,15 +497,22 @@ class BoardAttributesObject extends ChangeNotifier {
     BoardOrientation orientation = BoardOrientation.horizontal,
   }) {
     //this._screenSize = screenSize.round();
-    this._screenSize = Screen.screenSize;
-    log('original screen size: $screenSize, rounded screen size: $_screenSize');
+    this._screenDiagnolSize = Screen.screenSize;
+    log('original screen size: $screenSize, rounded screen size: $_screenDiagnolSize');
     this._boardOrientation = orientation;
     this._namePlateSize = Size(70, 55);
     this._pots = [];
 
     _playersOnTableOffset = Offset(0.0, -25.0);
 
-    this._seatPosAttribs = getSeatMap(this._screenSize);
+    this._seatPosAttribs = getSeatMap(this._screenDiagnolSize);
+    if (this._screenDiagnolSize <= 7) {
+      this._screenSize = ScreenSize.lessThan7Inches;
+    } else if (this._screenSize == 7) {
+      this._screenSize = ScreenSize.equalTo7Inches;
+    } else {
+      this._screenSize = ScreenSize.greaterThan7Inches;
+    }
   }
 
   set orientation(BoardOrientation o) {
@@ -599,9 +613,9 @@ class BoardAttributesObject extends ChangeNotifier {
   get tableSize => this._tableSize;
 
   double get lottieScale {
-    if (this._screenSize <= 6) {
+    if (this._screenSize == ScreenSize.lessThan7Inches) {
       return 1.0;
-    } else if (this._screenSize == 7) {
+    } else if (this._screenSize == ScreenSize.equalTo7Inches) {
       return 1.3;
     } else {
       return 2.0;
@@ -652,12 +666,12 @@ class BoardAttributesObject extends ChangeNotifier {
   Size get footerSize => this._footerSize;
 
   SeatPosAttribs getSeatPosAttrib(SeatPos pos) {
-    return getSeatMap(this._screenSize)[pos];
+    return getSeatMap(this._screenDiagnolSize)[pos];
   }
 
   Map<SeatPos, Offset> get betAmountPosition => getBetAmountPositionMap(
         namePlateSize: this._namePlateSize,
-        deviceSize: this._screenSize,
+        deviceSize: this._screenDiagnolSize,
       );
 
   dynamic _decide({
@@ -666,22 +680,22 @@ class BoardAttributesObject extends ChangeNotifier {
     @required dynamic equalTo7Inches,
     @required dynamic greaterThan7Inches,
   }) {
-    if (this._screenSize < 6) {
+    if (this._screenDiagnolSize < 6) {
       //log('Device less than 6 inches');
       return lessThan6Inches;
     }
 
-    if (this._screenSize == 6) {
+    if (this._screenDiagnolSize == 6) {
       //log('Device is 6 inches');
       return equalTo6Inches;
     }
 
-    if (this._screenSize == 7) {
+    if (this._screenDiagnolSize == 7) {
       ///log('Device is equal to 7 inches ${this._screenSize}');
       return equalTo7Inches;
     }
 
-    if (this._screenSize > 7) {
+    if (this._screenDiagnolSize > 7) {
       //log('Device greater than 7 inches');
       return greaterThan7Inches;
     }
@@ -850,7 +864,17 @@ class BoardAttributesObject extends ChangeNotifier {
         greaterThan7Inches: 0.60,
       ) as double;
 
-  int get screenSize => this._screenSize;
+  int get screenDiagnolSize => this._screenDiagnolSize;
+  ScreenSize get screenSize => this._screenSize;
+
   Uint8List get betImage => this._betImage;
   set betImage(Uint8List betImage) => this._betImage = betImage;
+
+  double get holeCardOffset {
+    double holeCardOffset = 5.ph;
+    if (_screenSize == ScreenSize.greaterThan7Inches) {
+      holeCardOffset = 25.ph;
+    }
+    return holeCardOffset;
+  }
 }

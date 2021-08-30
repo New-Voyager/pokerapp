@@ -552,9 +552,9 @@ class HandActionProtoService {
         }
         playerObj.seatNo = seatNo;
         playerObj.stack = playerInSeat.stack.toInt();
-        if (newHand.bombPot) {
-          playerObj.stack = playerObj.stack + newHand.bombPotBet.toInt();
-        }
+        // if (newHand.bombPot) {
+        //   playerObj.stack = playerObj.stack + newHand.bombPotBet.toInt();
+        // }
         playerObj.status = playerInSeat.status.name;
         playerObj.inhand = playerInSeat.inhand;
         if (playerInSeat.buyInExpTime != null &&
@@ -572,7 +572,7 @@ class HandActionProtoService {
         }
 
         if (newPlayer) {
-          playerObj.playerUuid = playerInSeat.uuid;
+          //playerObj.playerUuid = playerInSeat.playerId;
           players.addNewPlayerSilent(playerObj);
         }
         if (playerObj.playerUuid == this._currentPlayer.uuid) {
@@ -672,6 +672,15 @@ class HandActionProtoService {
         TablePosition.BigBlind,
         coinAmount: bigBlind.toInt(),
       );
+    }
+
+    // set player actions
+    for (final seatNo in newHand.playersActed.keys) {
+      final action = newHand.playersActed[seatNo];
+      if (action.action != proto.ACTION.NOT_ACTED) {
+        final seat = _gameState.getSeat(_context, seatNo);
+        seat.player.action.setActionProto(action.action, action.amount);
+      }
     }
 
     /* marking the dealer */
@@ -1364,7 +1373,7 @@ class HandActionProtoService {
       return;
     }
     final action = seat.player.action;
-    action.setActionProto(playerActed);
+    action.setActionProto(playerActed.action, playerActed.amount);
     //log('Hand Message: ::handlePlayerActed:: player acted: $seatNo, player: ${seat.player.name} action: ${action.action.toString()}');
 
     if (seat.player.isMe) {
