@@ -354,7 +354,16 @@ class PlayerActedState {
       _playerAction = HandActions.ALLIN;
     } else if (action == AppConstants.CHECK) {
       _playerAction = HandActions.CHECK;
+    } else if (action == AppConstants.SB) {
+      _playerAction = HandActions.SB;
+    } else if (action == AppConstants.BB) {
+      _playerAction = HandActions.BB;
+    } else if (action == AppConstants.STRADDLE) {
+      _playerAction = HandActions.STRADDLE;
+    } else if (action == AppConstants.BOMP_BOT_PET) {
+      _playerAction = HandActions.BOMB_POT_BET;
     }
+    
     dynamic amountStr = data['amount'];
     if (amountStr != null) {
       double amount = double.parse(amountStr.toString());
@@ -362,23 +371,32 @@ class PlayerActedState {
     }
   }
 
-  void setActionProto(proto.HandAction handAction) {
-    if (handAction.action == proto.ACTION.BET) {
+  void setActionProto(proto.ACTION action, double amount) {
+    if (action == proto.ACTION.BET) {
       _playerAction = HandActions.BET;
-    } else if (handAction.action == proto.ACTION.RAISE) {
+    } else if (action == proto.ACTION.RAISE) {
       _playerAction = HandActions.RAISE;
-    } else if (handAction.action == proto.ACTION.CALL) {
+    } else if (action == proto.ACTION.CALL) {
       _playerAction = HandActions.CALL;
-    } else if (handAction.action == proto.ACTION.FOLD) {
+    } else if (action == proto.ACTION.FOLD) {
       _playerAction = HandActions.FOLD;
-    } else if (handAction.action == proto.ACTION.ALLIN) {
+    } else if (action == proto.ACTION.ALLIN) {
       _playerAction = HandActions.ALLIN;
-    } else if (handAction.action == proto.ACTION.CHECK) {
+    } else if (action == proto.ACTION.CHECK) {
       _playerAction = HandActions.CHECK;
-    } else if (handAction.action == proto.ACTION.BOMB_POT_BET) {
+    } else if (action == proto.ACTION.BOMB_POT_BET) {
       _playerAction = HandActions.BOMB_POT_BET;
-    }
-    _amount = handAction.amount;
+    } else if (action == proto.ACTION.SB) {
+      _playerAction = HandActions.SB;
+    } else if (action == proto.ACTION.BB) {
+      _playerAction = HandActions.BB;
+    } else if (action == proto.ACTION.STRADDLE) {
+      _playerAction = HandActions.STRADDLE;
+    } else if (action == proto.ACTION.POST_BLIND) {
+      _playerAction = HandActions.POST_BLIND;
+    }    
+    
+    _amount = amount;
     if (_amount == null) {
       _amount = 0;
     }
