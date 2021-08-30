@@ -692,7 +692,9 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
       );
     }
     bool showHandHistory = _gameDetail.playedGame;
-    if (widget.data.isHost || widget.data.isManager || widget.data.isOwner) {
+    if ((widget.data.isHost ?? false) ||
+        (widget.data.isManager ?? false) ||
+        (widget.data.isOwner ?? false)) {
       showHandHistory = true;
     }
     log('hands Played: ${_gameDetail.handsPlayed}');

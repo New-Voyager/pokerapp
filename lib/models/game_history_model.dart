@@ -242,7 +242,8 @@ class GameHistoryDetailModel extends ChangeNotifier {
       runTimeSec = 60;
     }
     runTimeStr = DataFormatter.timeFormat(runTimeSec);
-    endedAt = DateTime.parse(gameData['endedAt'].toString());
+    endedAt =
+        DateTime.parse((gameData['endedAt'] ?? DateTime.now()).toString());
     if (this.playedGame) {
       sessionTime = int.parse(gameData['sessionTime'].toString());
       sessionTimeStr = DataFormatter.timeFormat(sessionTime);
