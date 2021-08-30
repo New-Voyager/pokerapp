@@ -7,6 +7,7 @@ import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/test/test_service.dart';
@@ -118,79 +119,110 @@ class _PointsLineChart extends State<PointsLineChart> with RouteAwareAnalytics {
   @override
   Widget build(BuildContext context) {
     _tapPosition = Offset((Screen.width - 100) / 2, Screen.height - 100);
-    return Consumer<AppTheme>(
-        builder: (_, theme, __) => !loadingDone
-            ? Center(child: CircularProgressIndicator())
-            : Scaffold(
-                backgroundColor: Colors.transparent,
-                appBar: CustomAppBar(
-                  theme: theme,
-                  context: context,
-                  titleText: _appScreenText['stackTimeline'],
-                  showBackButton: widget.showBackButton,
-                ),
-                body: !loadingDone
-                    ? Center(child: CircularProgressIndicator())
-                    : SafeArea(
-                        child: Stack(
-                          children: [
-                            GestureDetector(
-                              onTapDown: (details) {
-                                setState(() {
-                                  debugPrint(
-                                      '=====================\n\nStack item tapped');
-                                  // _tapPosition = Offset(details.localPosition.dx,
-                                  //     details.localPosition.dy);
-                                });
-                              },
-                              child: GestureDetector(
-                                onTapDown: (details) {
-                                  debugPrint(
-                                      '=====================\n\LineChart item tapped');
-                                },
-                                child: charts.LineChart(
-                                  _createSampleData(theme),
-                                  animate: false,
-                                  behaviors: [
-                                    // new charts.SlidingViewport(),
-                                    charts.PanAndZoomBehavior(),
-                                    charts.SelectNearest(),
-                                  ],
-                                  selectionModels: [
-                                    charts.SelectionModelConfig(
-                                        type: charts.SelectionModelType.info,
-                                        changedListener:
-                                            (charts.SelectionModel model) {
-                                          if (model.hasDatumSelection) {
-                                            setState(() {
-                                              debugPrint(
-                                                  '\n circle tapped: ${model.hasDatumSelection}\n');
-                                              debugPrint(
-                                                  '=====================');
-                                              _selectionModel = model;
-                                              _popUpVisible = true;
-                                            });
-                                          }
-                                        })
-                                  ],
-                                  defaultRenderer:
-                                      new charts.LineRendererConfig(
-                                    includePoints: true,
-                                    radiusPx: 5,
+    return Consumer<AppTheme>(builder: (_, theme, __) {
+      return Container(
+        decoration: AppDecorators.bgRadialGradient(theme),
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: CustomAppBar(
+            theme: theme,
+            context: context,
+            titleText: _appScreenText['stackTimeline'],
+            showBackButton: widget.showBackButton,
+          ),
+          body: !loadingDone
+              ? Center(child: CircularProgressIndicator())
+              : Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Stack(
+                    children: [
+                      GestureDetector(
+                        onTapDown: (details) {
+                          setState(() {
+                            debugPrint(
+                                '=====================\n\nStack item tapped');
+                            // _tapPosition = Offset(details.localPosition.dx,
+                            //     details.localPosition.dy);
+                          });
+                        },
+                        child: GestureDetector(
+                          onTapDown: (details) {
+                            debugPrint(
+                                '=====================\n\LineChart item tapped');
+                          },
+                          child: charts.LineChart(
+                            _createSampleData(theme),
+                            animate: false,
+                            behaviors: [
+                              // new charts.SlidingViewport(),
+                              charts.PanAndZoomBehavior(),
+                              charts.SelectNearest(),
+                            ],
+                            primaryMeasureAxis: charts.NumericAxisSpec(
+                              showAxisLine: false,
+                              renderSpec: charts.GridlineRendererSpec(
+                                lineStyle: charts.LineStyleSpec(
+                                  color: charts.ColorUtil.fromDartColor(
+                                    theme.fillInColor,
+                                  ),
+                                ),
+                                labelStyle: charts.TextStyleSpec(
+                                  color: charts.ColorUtil.fromDartColor(
+                                    theme.accentColorWithLight(),
                                   ),
                                 ),
                               ),
                             ),
-                            Visibility(
-                              child: _selectionModel != null
-                                  ? _buildPopUp(context)
-                                  : Container(),
-                              visible: _popUpVisible,
+                            domainAxis: charts.NumericAxisSpec(
+                              showAxisLine: false,
+                              renderSpec: charts.GridlineRendererSpec(
+                                lineStyle: charts.LineStyleSpec(
+                                  color: charts.ColorUtil.fromDartColor(
+                                    Colors.transparent,
+                                  ),
+                                ),
+                                labelStyle: charts.TextStyleSpec(
+                                  color: charts.ColorUtil.fromDartColor(
+                                    theme.accentColorWithLight(),
+                                  ),
+                                ),
+                              ),
                             ),
-                          ],
+                            selectionModels: [
+                              charts.SelectionModelConfig(
+                                  type: charts.SelectionModelType.info,
+                                  changedListener:
+                                      (charts.SelectionModel model) {
+                                    if (model.hasDatumSelection) {
+                                      setState(() {
+                                        debugPrint(
+                                            '\n circle tapped: ${model.hasDatumSelection}\n');
+                                        debugPrint('=====================');
+                                        _selectionModel = model;
+                                        _popUpVisible = true;
+                                      });
+                                    }
+                                  })
+                            ],
+                            defaultRenderer: new charts.LineRendererConfig(
+                              includePoints: true,
+                              radiusPx: 5,
+                            ),
+                          ),
                         ),
                       ),
-              ));
+                      Visibility(
+                        child: _selectionModel != null
+                            ? _buildPopUp(context)
+                            : Container(),
+                        visible: _popUpVisible,
+                      ),
+                    ],
+                  ),
+                ),
+        ),
+      );
+    });
   }
 
   /// Create one series with sample hard coded data.
@@ -198,17 +230,18 @@ class _PointsLineChart extends State<PointsLineChart> with RouteAwareAnalytics {
       AppTheme theme) {
     return [
       new charts.Series<PlayerStackChartModel, int>(
-          id: 'Stack',
-          //colorFn: (_, __) => charts.ColorUtil.fromDartColor(Colors.transparent),
-          fillColorFn: (PlayerStackChartModel stat, __) => (stat.neutral)
-              ? charts.ColorUtil.fromDartColor(Colors.transparent)
-              : stat.red
-                  ? charts.ColorUtil.fromDartColor(Colors.red)
-                  : charts.ColorUtil.fromDartColor(Colors.green),
-          domainFn: (PlayerStackChartModel game, _) => game.handNum,
-          measureFn: (PlayerStackChartModel game, _) => game.after,
-          data: stackList,
-          seriesColor: charts.ColorUtil.fromDartColor(theme.accentColor))
+        id: 'Stack',
+        //colorFn: (_, __) => charts.ColorUtil.fromDartColor(Colors.transparent),
+        fillColorFn: (PlayerStackChartModel stat, __) => (stat.neutral)
+            ? charts.ColorUtil.fromDartColor(Colors.transparent)
+            : stat.red
+                ? charts.ColorUtil.fromDartColor(Colors.red)
+                : charts.ColorUtil.fromDartColor(Colors.green),
+        domainFn: (PlayerStackChartModel game, _) => game.handNum,
+        measureFn: (PlayerStackChartModel game, _) => game.after,
+        data: stackList,
+        seriesColor: charts.ColorUtil.fromDartColor(theme.accentColor),
+      )
     ];
   }
 
@@ -267,9 +300,9 @@ class _PointsLineChart extends State<PointsLineChart> with RouteAwareAnalytics {
           });
         },
         child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          height: 60,
-          width: 120,
+          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          height: 70,
+          width: 140,
           //color: currentStack.color,
           decoration: boxDecoration,
           child: FittedBox(
