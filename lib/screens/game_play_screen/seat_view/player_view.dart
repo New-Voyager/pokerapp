@@ -12,6 +12,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/host_seat_chang
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/widgets/blinking_widget.dart';
@@ -29,6 +30,7 @@ import 'dealer_button.dart';
 import 'name_plate_view.dart';
 import 'open_seat.dart';
 import 'dart:math' as math;
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 /* this contains the player positions <seat-no, position> mapping */
 // Map<int, Offset> playerPositions = Map();
@@ -167,6 +169,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    final theme = AppTheme.getTheme(context);
     widget.seat.key = GlobalKey(
       debugLabel: 'Seat:${widget.seat.serverSeatPos}',
     ); //this.globalKey;
@@ -273,6 +276,21 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
         );
       },
       builder: (context, List<int> candidateData, rejectedData) {
+        Offset notesOffset = Offset(0, 0);
+        SeatPos pos = widget.seatPos ?? SeatPos.bottomLeft;
+
+        if (pos == SeatPos.bottomLeft ||
+            pos == SeatPos.middleLeft ||
+            pos == SeatPos.topLeft ||
+            pos == SeatPos.topCenter ||
+            pos == SeatPos.topCenter1 ) {
+          notesOffset =
+              Offset(-((widget.boardAttributes.namePlateSize.width / 2)), 0);
+        } else {
+          notesOffset = Offset(
+              ((widget.boardAttributes.namePlateSize.width / 2)), 0);
+        }
+        log("0-0-0- Position: ${pos}, Offset : ${notesOffset} ");
         return InkWell(
           onTap: () => this.onTap(context),
           child: Stack(
@@ -305,6 +323,24 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
                 child: ActionStatusWidget(widget.seat, widget.cardsAlignment),
               ),
 
+              // player notes text
+              Visibility(
+                visible: !widget.seat.player.hasNotes && !widget.seat.isMe,
+                child: Transform.translate(
+                  offset: notesOffset,
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.note,
+                      color: theme.accentColor,
+                      size: 10.dp,
+                    ),
+                    onPressed: () async {
+                      log("0-0-0-0- clicked");
+                      await handleNotesPopup(context, widget.seat);
+                    },
+                  ),
+                ),
+              ),
               // player hole cards
               Transform.translate(
                 offset: boardAttributes.playerHoleCardOffset,
