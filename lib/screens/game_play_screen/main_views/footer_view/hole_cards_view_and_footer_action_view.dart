@@ -479,7 +479,9 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
       }
     }
     Widget rankText;
-    if (!gameState.postedBlind) {
+    log("one : ${gameState.myState.status} TWO : ${gameState.postedBlind}");
+    if (gameState.myState.status == PlayerStatus.NEED_TO_POST_BLIND &&
+        (!gameState.postedBlind)) {
       rankText = RoundedColorButton(
         backgroundColor: theme.accentColor,
         textColor: theme.primaryColorWithDark(),
