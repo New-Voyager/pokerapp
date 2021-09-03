@@ -195,8 +195,8 @@ mutation updateInputs(\$gameCode :String!,\$inputSettings: GameSettingsUpdateInp
   static Future<String> postBlinds(String gameCode) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     Map<String, dynamic> variables = {"gameCode": gameCode};
-    QueryResult result = await _client.query(QueryOptions(
-        documentNode: gql(postBlindQuery), variables: variables));
+    QueryResult result = await _client.query(
+        QueryOptions(documentNode: gql(postBlindQuery), variables: variables));
 
     if (result.hasException) {
       log(result.exception.toString());

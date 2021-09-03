@@ -303,7 +303,7 @@ class GameUpdateService {
     }
 
     if (closed) return;
-    final tableState = _gameState.getTableState(_context);
+    final tableState = _gameState.tableState;
     tableState.notifyAll();
     _gameState.updatePlayers(_context);
   }
@@ -346,7 +346,7 @@ class GameUpdateService {
     }
 
     if (closed) return;
-    final tableState = _gameState.getTableState(_context);
+    final tableState = _gameState.tableState;
     tableState.notifyAll();
     _gameState.updatePlayers(_context);
   }
@@ -414,7 +414,7 @@ class GameUpdateService {
     if (closed) return;
     _gameState.markOpenSeat(_context, seatNo);
     if (closed) return;
-    final tableState = _gameState.getTableState(_context);
+    final tableState = _gameState.tableState;
     tableState.notifyAll();
   }
 
@@ -508,7 +508,7 @@ class GameUpdateService {
       seat.notify();
     }
     if (closed) return;
-    final tableState = _gameState.getTableState(_context);
+    final tableState = _gameState.tableState;
     tableState.notifyAll();
   }
 
@@ -1147,7 +1147,7 @@ class GameUpdateService {
     }
     */
 
-    final tableState = _gameState.getTableState(_context);
+    final tableState = _gameState.tableState;
 
     if (tableState.tableStatus != tableStatus ||
         tableState.gameStatus != gameStatus) {
@@ -1276,7 +1276,7 @@ class GameUpdateService {
     }
     */
 
-    final tableState = _gameState.getTableState(_context);
+    final tableState = _gameState.tableState;
 
     // if the status hasn't changed, don't do anything
     if (gameStatus == tableState.gameStatus) {

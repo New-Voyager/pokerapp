@@ -4,7 +4,6 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:pokerapp/enums/game_status.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/enums/player_status.dart';
@@ -81,10 +80,11 @@ class GameState {
   ListenableProvider<JanusEngine> _janusEngine;
   ListenableProvider<PopupButtonState> _popupButtonState;
   ListenableProvider<CommunicationState> _communicationStateProvider;
-  ListenableProvider<StraddlePromptState> _straddlePromptState;
+  ListenableProvider<StraddlePromptState> _straddlePromptProvider;
   ListenableProvider<RedrawTopSectionState> _redrawTopSectionState;
   ListenableProvider<RedrawFooterSectionState> _redrawFooterSectionState;
 
+  StraddlePromptState _straddlePromptState;
   HoleCardsState _holeCardsState;
   ListenableProvider<HoleCardsState> _holeCardsProvider;
 
@@ -151,6 +151,8 @@ class GameState {
   GameScreenAssets assets;
 
   bool isBotGame = false;
+
+  bool uiClosing = false;
 
   bool customizationMode = false;
   bool showCustomizationEditFooter = true;
@@ -220,10 +222,12 @@ class GameState {
             create: (_) => RedrawFooterSectionState());
 
     _communicationState = CommunicationState(this);
+    _straddlePromptState = StraddlePromptState();
+
     this._communicationStateProvider = ListenableProvider<CommunicationState>(
         create: (_) => _communicationState);
-    this._straddlePromptState = ListenableProvider<StraddlePromptState>(
-        create: (_) => StraddlePromptState());
+    this._straddlePromptProvider = ListenableProvider<StraddlePromptState>(
+        create: (_) => _straddlePromptState);
     _holeCardsState = HoleCardsState();
     this._holeCardsProvider =
         ListenableProvider<HoleCardsState>(create: (_) => _holeCardsState);
@@ -307,7 +311,7 @@ class GameState {
 
     log('In GameState initialize(), _gameInfo.status = ${_gameInfo.status}');
     if (_gameInfo.status == AppConstants.GAME_ACTIVE) {
-      this._myState.gameStatus = GameStatus.RUNNING;
+      //this._myState.gameStatus = GameStatus.RUNNING;
       this._myState.notify();
     }
 
@@ -544,7 +548,7 @@ class GameState {
 
     players.updatePlayersSilent(playersInSeats);
 
-    final tableState = this._tableState; //this.getTableState(context);
+    final tableState = this._tableState;
     tableState.updateGameStatusSilent(gameInfo.status);
     tableState.updateTableStatusSilent(gameInfo.tableStatus);
     players.notifyAll();
@@ -555,8 +559,8 @@ class GameState {
 
     log('In GameState refresh(), _gameInfo.status = ${_gameInfo.status}');
     if (_gameInfo.status == AppConstants.GAME_ACTIVE &&
-        this._myState.gameStatus != GameStatus.RUNNING) {
-      this._myState.gameStatus = GameStatus.RUNNING;
+        tableState.gameStatus != AppConstants.GAME_RUNNING) {
+      //this._myState.gameStatus = GameStatus.RUNNING;
       this._myState.notify();
     }
 
@@ -593,7 +597,7 @@ class GameState {
   static GameState getState(BuildContext context) => context.read<GameState>();
 
   void clear(BuildContext context) {
-    final tableState = this.getTableState(context);
+    final tableState = this.tableState;
     final players = this.getPlayers(context);
     this.holecardOrder = HoleCardOrder.DEALT;
     // clear players
@@ -612,6 +616,8 @@ class GameState {
         context,
         listen: false,
       );
+
+  TableState get tableState => this._tableState;
 
   HandInfoState getHandInfo(BuildContext context, {bool listen = false}) =>
       Provider.of<HandInfoState>(context, listen: listen);
@@ -736,7 +742,7 @@ class GameState {
       this._janusEngine,
       this._popupButtonState,
       this._communicationStateProvider,
-      this._straddlePromptState,
+      this._straddlePromptProvider,
       this._holeCardsProvider,
       this._redrawTopSectionState,
       this._redrawFooterSectionState,
@@ -844,10 +850,8 @@ class GameState {
     return _audioCache[assetFile];
   }
 
-  StraddlePromptState straddlePromptState(BuildContext context) {
-    StraddlePromptState prompt =
-        Provider.of<StraddlePromptState>(context, listen: false);
-    return prompt;
+  StraddlePromptState get straddlePromptState {
+    return this.straddlePromptState;
   }
 
   PlayerModel getMe() {

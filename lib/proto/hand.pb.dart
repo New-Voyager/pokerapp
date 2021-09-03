@@ -669,6 +669,7 @@ class PlayerInSeatState extends $pb.GeneratedMessage {
     ..aOB(11, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'postedBlind')
     ..a<$core.int>(12, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'seatNo', $pb.PbFieldType.OU3)
     ..aOB(13, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'runItTwice')
+    ..aOB(14, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'missedBlind')
     ..hasRequiredFields = false;
 
   PlayerInSeatState._() : super();
@@ -686,6 +687,7 @@ class PlayerInSeatState extends $pb.GeneratedMessage {
     $core.bool? postedBlind,
     $core.int? seatNo,
     $core.bool? runItTwice,
+    $core.bool? missedBlind,
   }) {
     final _result = create();
     if (playerId != null) {
@@ -726,6 +728,9 @@ class PlayerInSeatState extends $pb.GeneratedMessage {
     }
     if (runItTwice != null) {
       _result.runItTwice = runItTwice;
+    }
+    if (missedBlind != null) {
+      _result.missedBlind = missedBlind;
     }
     return _result;
   }
@@ -911,6 +916,18 @@ class PlayerInSeatState extends $pb.GeneratedMessage {
   $core.bool hasRunItTwice() => $_has(12);
   @$pb.TagNumber(13)
   void clearRunItTwice() => clearField(13);
+
+  @$pb.TagNumber(14)
+  $core.bool get missedBlind => $_getBF(13);
+  @$pb.TagNumber(14)
+  set missedBlind($core.bool v) {
+    $_setBool(13, v);
+  }
+
+  @$pb.TagNumber(14)
+  $core.bool hasMissedBlind() => $_has(13);
+  @$pb.TagNumber(14)
+  void clearMissedBlind() => clearField(14);
 }
 
 class PlayerBalance extends $pb.GeneratedMessage {

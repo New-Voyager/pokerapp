@@ -116,7 +116,7 @@ class GameReplayActionService {
           .then((value) => _audioPlayer.playBytes(value));
     }
 
-    final tableState = gameState.getTableState(_context);
+    final tableState = gameState.tableState;
 
     tableState.updatePotChipsSilent(
       potChips: tableState.potChips,
@@ -140,7 +140,7 @@ class GameReplayActionService {
     final Players players = gameState.getPlayers(_context);
 
     if (_close) return;
-    final TableState tableState = gameState.getTableState(_context);
+    final TableState tableState = gameState.tableState;
 
     await gameState.animateSeatActions();
     await Future.delayed(Duration(seconds: 1));
@@ -268,7 +268,7 @@ class GameReplayActionService {
     if (_close) return;
 
     /* show card shuffling*/
-    final tableState = gameState.getTableState(_context);
+    final tableState = gameState.tableState;
     tableState.updateCardShufflingAnimation(true);
     await Future.delayed(AppConstants.cardShufflingTotalWaitDuration); // wait
     tableState.updateCardShufflingAnimation(false);

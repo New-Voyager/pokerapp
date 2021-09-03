@@ -162,7 +162,7 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew>
             future: ClubsService.getClubHomePageData(widget.clubCode),
             builder: (BuildContext context, snapshot) {
               ClubHomePageModel clubModel = snapshot.data;
-             // log("0-0-0- ${snapshot.connectionState}");
+              // log("0-0-0- ${snapshot.connectionState}");
               return Container(
                 decoration: AppDecorators.bgRadialGradient(theme),
                 child: SafeArea(

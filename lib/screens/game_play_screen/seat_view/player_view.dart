@@ -12,6 +12,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/host_seat_chang
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
+import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/widgets/blinking_widget.dart';
@@ -107,8 +108,9 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
     }
     log('seat ${widget.seat.serverSeatPos} is tapped');
     if (widget.seat.isOpen) {
+      final tableState = widget.gameState.tableState;
       if (widget.gameState.myState.status == PlayerStatus.PLAYING &&
-          widget.gameState.myState.gameStatus == GameStatus.RUNNING) {
+          tableState.gameStatus == AppConstants.GAME_RUNNING) {
         log('Ignoring the open seat tap as the player is sitting and game is running');
         return;
       }
