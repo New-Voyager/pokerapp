@@ -88,6 +88,9 @@ class GameState {
   HoleCardsState _holeCardsState;
   ListenableProvider<HoleCardsState> _holeCardsProvider;
 
+  // For posting blind
+  bool postedBlind;
+
   CommunicationState _communicationState;
   Players _players;
   TableState _tableState;
@@ -161,6 +164,7 @@ class GameState {
     bool replayMode,
     bool customizationMode = false,
   }) async {
+    this.postedBlind = true;
     this._seats = Map<int, Seat>();
     this._gameInfo = gameInfo;
     this._gameCode = gameCode;
@@ -952,6 +956,10 @@ class GameState {
     } else {
       return player.cards.reversed.toList();
     }
+  }
+
+  void setPostedBlind(bool flag) {
+    postedBlind = flag;
   }
 }
 

@@ -478,8 +478,13 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   }
 
   Future _onJoinGame(int seatPos) async {
+    log("0-0-0 Onjooin game: ");
     final gameState = GameState.getState(_providerContext);
     final me = gameState.me(_providerContext);
+
+    if (gameState.myState.status == PlayerStatus.IN_BREAK  || gameState.myState.status == PlayerStatus.NEED_TO_POST_BLIND || gameState.myState.status == PlayerStatus.JOINING) {
+      gameState.postedBlind = false;
+    }
 
     /* ignore the open seat tap as the player is seated and game is running */
     if (gameState.myState.status == PlayerStatus.PLAYING &&
