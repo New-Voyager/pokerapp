@@ -44,9 +44,9 @@ String gameTypeShortStr(GameType type) {
     case GameType.PLO_HILO:
       return appTextScreen["PLOHILO"];
     case GameType.FIVE_CARD_PLO:
-      return appTextScreen["PLOHiLO"];
-    case GameType.FIVE_CARD_PLO_HILO:
       return appTextScreen["5CARDPLO"];
+    case GameType.FIVE_CARD_PLO_HILO:
+      return appTextScreen["5CARDPLOHILO"];
     case GameType.ROE:
       return appTextScreen["ROUNDOFEACH"];
     case GameType.DEALER_CHOICE:

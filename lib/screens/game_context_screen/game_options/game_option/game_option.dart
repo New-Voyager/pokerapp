@@ -173,7 +173,7 @@ class _GameOptionState extends State<GameOption> {
     audioConfEnabled = gameInfo.audioConfEnabled;
     straddleEnabled = gameInfo.utgStraddleAllowed;
     // TODO modify gameinfo class to have bombpot variable
-    bombPotEnabled = true;
+    bombPotEnabled = _gameSettings.bombPotEnabled;
     log("-=-= ${gameInfo.sessionTime}");
     log("-=-= ${gameInfo.runningTime}");
     log("-=-= ${gameInfo.noHandsPlayed}");
@@ -820,10 +820,9 @@ class _GameOptionState extends State<GameOption> {
 
             /* show straddle off and auto straddle options ONLY when the UTG STRADDLE is on */
             // Straddle Checkbox
-            // TODO remove hardcoded value
             Visibility(
               visible:
-                  true, // widget.gameState.gameInfo.utgStraddleAllowed ?? true,
+                   widget.gameState.gameInfo.utgStraddleAllowed, // widget.gameState.gameInfo.utgStraddleAllowed ?? true,
               child: Container(
                 decoration: widget.gameState.settings.straddleOption ?? true
                     ? AppDecorators.tileDecorationWithoutBorder(theme)
@@ -835,8 +834,6 @@ class _GameOptionState extends State<GameOption> {
                       value: widget.gameState.settings.straddleOption,
                       onChange: (bool v) async {
                         // setting the value saves it to local storage too
-                        //  TODO Need straddle in serverside.
-
                         widget.gameState.settings.straddleOption = v;
                         log('In toggle button widget, straddleOption = ${widget.gameState.settings.straddleOption}');
                         if (closed) return;
