@@ -33,9 +33,13 @@ class StatusOptionsWidget extends StatelessWidget {
         children.add(getWaitListButton(_appScreenText, theme, context));
       }
     } else {
-      if (myState.status == PlayerStatus.WAIT_FOR_BUYIN) {
+      if (myState.status == PlayerStatus.WAIT_FOR_BUYIN ||
+          myState.status == PlayerStatus.WAIT_FOR_BUYIN_APPROVAL) {
         children.add(getBuyinButton(_appScreenText, theme, context));
       }
+      if (myState.status == PlayerStatus.IN_BREAK) {
+        children.add(getSitbackButton(_appScreenText, theme, context));
+      }      
     }
 
     if (children.isEmpty) {
@@ -110,6 +114,38 @@ class StatusOptionsWidget extends StatelessWidget {
         await onBuyin(appScreenText, context);
       },
       text: "Buyin",
+      backgroundColor: theme.accentColor,
+      textColor: theme.primaryColorWithDark(),
+    );
+  }
+
+  Future<SitBackResponse> onSitBack(BuildContext context) async {
+    final gameState = GameState.getState(context);
+    final gameInfo = gameState.gameInfo;
+    //sit back in the seat
+    final resp = await GameService.sitBack(gameInfo.gameCode);
+
+    // update player model and notify my state
+    final me = gameState.mySeat(context);
+    if (me != null && me.player != null) {
+      me.player.status = resp.status;
+      me.player.missedBlind = resp.missedBlind ?? false;
+      final myState = gameState.myState;
+      if (myState != null) {
+        myState.notify();
+      }
+    }
+    return resp;
+  }
+
+  Widget getSitbackButton(
+      AppTextScreen appScreenText, AppTheme theme, BuildContext context) {
+    return RoundedColorButton(
+      fontSize: 16.dp,
+      onTapFunction: () async {
+        await onSitBack(context);
+      },
+      text: "Sit Back",
       backgroundColor: theme.accentColor,
       textColor: theme.primaryColorWithDark(),
     );

@@ -137,66 +137,14 @@ class _FooterViewState extends State<FooterView>
   /* straddle prompt builder / footer action view builder / hole card view builder */
   Widget _buildMainView(GameState gameState) {
     final width = MediaQuery.of(context).size.width;
-    final theme = AppTheme.getTheme(context);
-
     return Consumer<MyState>(
         builder: (BuildContext _, MyState myState, Widget __) {
-      log('footerview: my state has changed');
+      log('footerview: my state has changed. status: ${myState.status}');
       if (!gameState.isPlaying ||
-          myState.status == PlayerStatus.WAIT_FOR_BUYIN) {
+          myState.status == PlayerStatus.WAIT_FOR_BUYIN ||
+          myState.status == PlayerStatus.WAIT_FOR_BUYIN_APPROVAL) {
         log('footerview: building status option widget');
         return StatusOptionsWidget(gameState: gameState);
-
-        return Container();
-        // if i am not in the waitlist
-        if (myState.status != PlayerStatus.IN_QUEUE) {
-          return Align(
-            alignment: Alignment.center,
-            child: RoundedColorButton(
-              onTapFunction: () {
-                showModalBottomSheet(
-                  context: context,
-                  isScrollControlled: true,
-                  backgroundColor: Colors.transparent,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(32),
-                      topRight: Radius.circular(32),
-                    ),
-                  ),
-                  builder: (_) => ListenableProvider.value(
-                    value: context.read<GameContextObject>(),
-                    child: GameOptionsBottomSheet(
-                        gameState: GameState.getState(context),
-                        focusWaitingList: true),
-                  ),
-                );
-              },
-              text: "Join Waitlist",
-              backgroundColor: theme.accentColor,
-              textColor: theme.primaryColorWithDark(),
-            ),
-          );
-        } else {
-          showModalBottomSheet(
-            context: context,
-            isScrollControlled: true,
-            backgroundColor: Colors.transparent,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(32),
-                topRight: Radius.circular(32),
-              ),
-            ),
-            builder: (_) => ListenableProvider.value(
-              value: context.read<GameContextObject>(),
-              child: GameOptionsBottomSheet(
-                  gameState: GameState.getState(context)),
-            ),
-          );
-
-          return SizedBox(width: width);
-        }
       }
 
       /* build the HoleCardsViewAndFooterActionView only if me is NOT null */

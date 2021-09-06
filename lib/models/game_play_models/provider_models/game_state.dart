@@ -81,12 +81,13 @@ class GameState {
   ListenableProvider<CommunicationState> _communicationStateProvider;
   ListenableProvider<StraddlePromptState> _straddlePromptProvider;
   ListenableProvider<RedrawTopSectionState> _redrawTopSectionState;
-  ListenableProvider<RedrawFooterSectionState> _redrawFooterSectionState;
+  ListenableProvider<RedrawFooterSectionState> _redrawFooterSectionStateProvider;
 
   StraddlePromptState _straddlePromptState;
   HoleCardsState _holeCardsState;
   ListenableProvider<HoleCardsState> _holeCardsProvider;
   TappedSeatState _tappedSeatState;
+  RedrawFooterSectionState _redrawFooterState;
 
   // For posting blind
   bool postedBlind;
@@ -219,9 +220,9 @@ class GameState {
     this._redrawTopSectionState = ListenableProvider<RedrawTopSectionState>(
         create: (_) => RedrawTopSectionState());
 
-    this._redrawFooterSectionState =
-        ListenableProvider<RedrawFooterSectionState>(
-            create: (_) => RedrawFooterSectionState());
+    this._redrawFooterState = RedrawFooterSectionState();
+    this._redrawFooterSectionStateProvider = 
+        ListenableProvider<RedrawFooterSectionState>(create: (_) => this._redrawFooterState);
 
     _communicationState = CommunicationState(this);
     _straddlePromptState = StraddlePromptState();
@@ -671,6 +672,7 @@ class GameState {
   }
 
   MyState get myState => this._myState;
+  RedrawFooterSectionState get redrawFooterState => this._redrawFooterState;
 
   Seat mySeat(BuildContext context) {
     if (context == null) {
@@ -748,7 +750,7 @@ class GameState {
       this._straddlePromptProvider,
       this._holeCardsProvider,
       this._redrawTopSectionState,
-      this._redrawFooterSectionState,
+      this._redrawFooterSectionStateProvider
     ];
   }
 

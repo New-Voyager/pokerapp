@@ -238,7 +238,8 @@ class GamePlayScreenUtilMethods {
           status == PlayerStatus.WAIT_FOR_BUYIN) {
         gameState.myState.status = PlayerStatus.WAIT_FOR_BUYIN_APPROVAL;
       }
-      gameState.myState.notify();
+      gameState.redrawFooterState.notify();
+      //gameState.myState.notify();
     }
     final tableState = gameState.tableState;
     tableState.notifyAll();
