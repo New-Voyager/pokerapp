@@ -11,6 +11,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
+import 'package:pokerapp/screens/game_play_screen/seat_view/player_view.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/utils/formatter.dart';
 
@@ -21,8 +22,10 @@ class ChipAmountWidget extends StatefulWidget {
   final BoardAttributesObject boardAttributesObject;
   final GameInfoModel gameInfo;
   final GlobalKey key;
+  final NeedRecalculating recalculatingNeeded;
 
   ChipAmountWidget({
+    @required this.recalculatingNeeded,
     @required this.animate,
     @required this.potKey,
     @required this.key,
@@ -153,18 +156,20 @@ class _ChipAmountWidgetState extends State<ChipAmountWidget>
     );
   }
 
-  @override
-  void afterFirstLayout(BuildContext context) {
-    // log('potViewPos: 1 afterFirstLayout ChipAmountWidget seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos}');
-    if (widget.seat.potViewPos != null) {
-      //log('potViewPos: 1 return afterFirstLayout ChipAmountWidget seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos}');
-      return;
-    }
-    // log('potViewPos: 2 afterFirstLayout ChipAmountWidget seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos}');
-    if (this.widget.animate) {
-      // log('potViewPos: 2 return afterFirstLayout ChipAmountWidget seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos}');
-      return;
-    }
+  void calculatePotViewPos(BuildContext context) {
+    // ONLY checking if widget.seat.potViewPos is Null is not helpful, as AFTER SEAT CHANGE, the potViewPos changes, but due to this condition
+    // the new seat position are not calculated, thus calculating the potViewPos every hand
+    // if (widget.seat.potViewPos != null && !widget.recalculatingNeeded) {
+    //   return;
+    // }
+
+    // // log('potViewPos: 2 afterFirstLayout ChipAmountWidget seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos}');
+    // when widget.animate is true, I am not in this widget
+    // if (this.widget.animate) {
+    //   // log('potViewPos: 2 return afterFirstLayout ChipAmountWidget seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos}');
+    //   return;
+    // }
+
     final potKey = widget.boardAttributesObject.getPotsKey(0);
     //  log('potViewPos: 3 afterFirstLayout potKey: $potKey ChipAmountWidget seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos}');
 
@@ -173,12 +178,27 @@ class _ChipAmountWidgetState extends State<ChipAmountWidget>
       return;
     }
 
+    log('pauldebug: CALCULATING SEAT POS');
+
     //  log('potViewPos: 4 afterFirstLayout ChipAmountWidget seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos}');
     final RenderBox potViewBox = potKey.currentContext.findRenderObject();
     final potViewPos = potViewBox.localToGlobal(Offset(0, 0));
     final RenderBox box = context.findRenderObject();
     widget.seat.potViewPos = box.globalToLocal(potViewPos);
     // log('potViewPos: Setting potViewPos for seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos}');
+  }
+
+  @override
+  void afterFirstLayout(BuildContext context) {
+    if (widget.recalculatingNeeded.value || widget.seat.potViewPos == null) {
+      calculatePotViewPos(context);
+      // widget.recalculatingNeeded.value = false;
+
+      Future.delayed(const Duration(seconds: 2)).then((_) {
+        // set to false, ONLY after recalculation for all the players are DONE
+        widget.recalculatingNeeded.value = false;
+      });
+    }
   }
 }
 

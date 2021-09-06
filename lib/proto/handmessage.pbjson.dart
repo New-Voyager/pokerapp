@@ -53,16 +53,26 @@ const PlayerStats$json = const {
     const {'1': 'in_flop', '3': 14, '4': 1, '5': 8, '10': 'inFlop'},
     const {'1': 'in_turn', '3': 15, '4': 1, '5': 8, '10': 'inTurn'},
     const {'1': 'in_river', '3': 16, '4': 1, '5': 8, '10': 'inRiver'},
+  ],
+};
+
+/// Descriptor for `PlayerStats`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List playerStatsDescriptor = $convert.base64Decode(
+    'CgtQbGF5ZXJTdGF0cxIjCg1wcmVmbG9wX3JhaXNlGAEgASgIUgxwcmVmbG9wUmFpc2USJQoOcG9zdGZsb3BfcmFpc2UYAiABKAhSDXBvc3RmbG9wUmFpc2USGwoJdGhyZWVfYmV0GAUgASgIUgh0aHJlZUJldBISCgRjYmV0GAMgASgIUgRjYmV0EhIKBHZwaXAYBCABKAhSBHZwaXASFAoFYWxsaW4YBiABKAhSBWFsbGluEigKEHdlbnRfdG9fc2hvd2Rvd24YByABKAhSDndlbnRUb1Nob3dkb3duEjEKFXdvbl9jaGlwc19hdF9zaG93ZG93bhgIIAEoCFISd29uQ2hpcHNBdFNob3dkb3duEhgKB2hlYWRzdXAYCSABKAhSB2hlYWRzdXASJQoOaGVhZHN1cF9wbGF5ZXIYCiABKARSDWhlYWRzdXBQbGF5ZXISHwoLd29uX2hlYWRzdXAYCyABKAhSCndvbkhlYWRzdXASGAoHYmFkYmVhdBgMIAEoCFIHYmFkYmVhdBIdCgppbl9wcmVmbG9wGA0gASgIUglpblByZWZsb3ASFwoHaW5fZmxvcBgOIAEoCFIGaW5GbG9wEhcKB2luX3R1cm4YDyABKAhSBmluVHVybhIZCghpbl9yaXZlchgQIAEoCFIHaW5SaXZlcg==');
+@$core.Deprecated('Use timeoutStatsDescriptor instead')
+const TimeoutStats$json = const {
+  '1': 'TimeoutStats',
+  '2': const [
     const {
       '1': 'consecutive_action_timeouts',
-      '3': 17,
+      '3': 1,
       '4': 1,
       '5': 13,
       '10': 'consecutiveActionTimeouts'
     },
     const {
       '1': 'acted_at_least_once',
-      '3': 18,
+      '3': 2,
       '4': 1,
       '5': 8,
       '10': 'actedAtLeastOnce'
@@ -70,9 +80,9 @@ const PlayerStats$json = const {
   ],
 };
 
-/// Descriptor for `PlayerStats`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List playerStatsDescriptor = $convert.base64Decode(
-    'CgtQbGF5ZXJTdGF0cxIjCg1wcmVmbG9wX3JhaXNlGAEgASgIUgxwcmVmbG9wUmFpc2USJQoOcG9zdGZsb3BfcmFpc2UYAiABKAhSDXBvc3RmbG9wUmFpc2USGwoJdGhyZWVfYmV0GAUgASgIUgh0aHJlZUJldBISCgRjYmV0GAMgASgIUgRjYmV0EhIKBHZwaXAYBCABKAhSBHZwaXASFAoFYWxsaW4YBiABKAhSBWFsbGluEigKEHdlbnRfdG9fc2hvd2Rvd24YByABKAhSDndlbnRUb1Nob3dkb3duEjEKFXdvbl9jaGlwc19hdF9zaG93ZG93bhgIIAEoCFISd29uQ2hpcHNBdFNob3dkb3duEhgKB2hlYWRzdXAYCSABKAhSB2hlYWRzdXASJQoOaGVhZHN1cF9wbGF5ZXIYCiABKARSDWhlYWRzdXBQbGF5ZXISHwoLd29uX2hlYWRzdXAYCyABKAhSCndvbkhlYWRzdXASGAoHYmFkYmVhdBgMIAEoCFIHYmFkYmVhdBIdCgppbl9wcmVmbG9wGA0gASgIUglpblByZWZsb3ASFwoHaW5fZmxvcBgOIAEoCFIGaW5GbG9wEhcKB2luX3R1cm4YDyABKAhSBmluVHVybhIZCghpbl9yaXZlchgQIAEoCFIHaW5SaXZlchI+Chtjb25zZWN1dGl2ZV9hY3Rpb25fdGltZW91dHMYESABKA1SGWNvbnNlY3V0aXZlQWN0aW9uVGltZW91dHMSLQoTYWN0ZWRfYXRfbGVhc3Rfb25jZRgSIAEoCFIQYWN0ZWRBdExlYXN0T25jZQ==');
+/// Descriptor for `TimeoutStats`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List timeoutStatsDescriptor = $convert.base64Decode(
+    'CgxUaW1lb3V0U3RhdHMSPgobY29uc2VjdXRpdmVfYWN0aW9uX3RpbWVvdXRzGAEgASgNUhljb25zZWN1dGl2ZUFjdGlvblRpbWVvdXRzEi0KE2FjdGVkX2F0X2xlYXN0X29uY2UYAiABKAhSEGFjdGVkQXRMZWFzdE9uY2U=');
 @$core.Deprecated('Use handStatsDescriptor instead')
 const HandStats$json = const {
   '1': 'HandStats',
@@ -978,10 +988,18 @@ const HandResultClient$json = const {
       '6': '.game.HandResultClient.PlayerStatsEntry',
       '10': 'playerStats'
     },
-    const {'1': 'hand_num', '3': 10, '4': 1, '5': 13, '10': 'handNum'},
+    const {
+      '1': 'timeout_stats',
+      '3': 10,
+      '4': 3,
+      '5': 11,
+      '6': '.game.HandResultClient.TimeoutStatsEntry',
+      '10': 'timeoutStats'
+    },
+    const {'1': 'hand_num', '3': 11, '4': 1, '5': 13, '10': 'handNum'},
     const {
       '1': 'tips_collected',
-      '3': 11,
+      '3': 12,
       '4': 1,
       '5': 2,
       '10': 'tipsCollected'
@@ -989,7 +1007,8 @@ const HandResultClient$json = const {
   ],
   '3': const [
     HandResultClient_PlayerInfoEntry$json,
-    HandResultClient_PlayerStatsEntry$json
+    HandResultClient_PlayerStatsEntry$json,
+    HandResultClient_TimeoutStatsEntry$json
   ],
 };
 
@@ -1027,9 +1046,26 @@ const HandResultClient_PlayerStatsEntry$json = const {
   '7': const {'7': true},
 };
 
+@$core.Deprecated('Use handResultClientDescriptor instead')
+const HandResultClient_TimeoutStatsEntry$json = const {
+  '1': 'TimeoutStatsEntry',
+  '2': const [
+    const {'1': 'key', '3': 1, '4': 1, '5': 4, '10': 'key'},
+    const {
+      '1': 'value',
+      '3': 2,
+      '4': 1,
+      '5': 11,
+      '6': '.game.TimeoutStats',
+      '10': 'value'
+    },
+  ],
+  '7': const {'7': true},
+};
+
 /// Descriptor for `HandResultClient`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List handResultClientDescriptor = $convert.base64Decode(
-    'ChBIYW5kUmVzdWx0Q2xpZW50EiAKDHJ1bl9pdF90d2ljZRgBIAEoCFIKcnVuSXRUd2ljZRIhCgxhY3RpdmVfc2VhdHMYAiADKA1SC2FjdGl2ZVNlYXRzEicKBndvbl9hdBgDIAEoDjIQLmdhbWUuSGFuZFN0YXR1c1IFd29uQXQSIwoGYm9hcmRzGAQgAygLMgsuZ2FtZS5Cb2FyZFIGYm9hcmRzEjMKC3BvdF93aW5uZXJzGAUgAygLMhIuZ2FtZS5Qb3RXaW5uZXJzVjJSCnBvdFdpbm5lcnMSJgoPcGF1c2VfdGltZV9zZWNzGAYgASgNUg1wYXVzZVRpbWVTZWNzEkcKC3BsYXllcl9pbmZvGAcgAygLMiYuZ2FtZS5IYW5kUmVzdWx0Q2xpZW50LlBsYXllckluZm9FbnRyeVIKcGxheWVySW5mbxIUCgVzY29vcBgIIAEoCFIFc2Nvb3ASSgoMcGxheWVyX3N0YXRzGAkgAygLMicuZ2FtZS5IYW5kUmVzdWx0Q2xpZW50LlBsYXllclN0YXRzRW50cnlSC3BsYXllclN0YXRzEhkKCGhhbmRfbnVtGAogASgNUgdoYW5kTnVtEiUKDnRpcHNfY29sbGVjdGVkGAsgASgCUg10aXBzQ29sbGVjdGVkGlMKD1BsYXllckluZm9FbnRyeRIQCgNrZXkYASABKA1SA2tleRIqCgV2YWx1ZRgCIAEoCzIULmdhbWUuUGxheWVySGFuZEluZm9SBXZhbHVlOgI4ARpRChBQbGF5ZXJTdGF0c0VudHJ5EhAKA2tleRgBIAEoBFIDa2V5EicKBXZhbHVlGAIgASgLMhEuZ2FtZS5QbGF5ZXJTdGF0c1IFdmFsdWU6AjgB');
+    'ChBIYW5kUmVzdWx0Q2xpZW50EiAKDHJ1bl9pdF90d2ljZRgBIAEoCFIKcnVuSXRUd2ljZRIhCgxhY3RpdmVfc2VhdHMYAiADKA1SC2FjdGl2ZVNlYXRzEicKBndvbl9hdBgDIAEoDjIQLmdhbWUuSGFuZFN0YXR1c1IFd29uQXQSIwoGYm9hcmRzGAQgAygLMgsuZ2FtZS5Cb2FyZFIGYm9hcmRzEjMKC3BvdF93aW5uZXJzGAUgAygLMhIuZ2FtZS5Qb3RXaW5uZXJzVjJSCnBvdFdpbm5lcnMSJgoPcGF1c2VfdGltZV9zZWNzGAYgASgNUg1wYXVzZVRpbWVTZWNzEkcKC3BsYXllcl9pbmZvGAcgAygLMiYuZ2FtZS5IYW5kUmVzdWx0Q2xpZW50LlBsYXllckluZm9FbnRyeVIKcGxheWVySW5mbxIUCgVzY29vcBgIIAEoCFIFc2Nvb3ASSgoMcGxheWVyX3N0YXRzGAkgAygLMicuZ2FtZS5IYW5kUmVzdWx0Q2xpZW50LlBsYXllclN0YXRzRW50cnlSC3BsYXllclN0YXRzEk0KDXRpbWVvdXRfc3RhdHMYCiADKAsyKC5nYW1lLkhhbmRSZXN1bHRDbGllbnQuVGltZW91dFN0YXRzRW50cnlSDHRpbWVvdXRTdGF0cxIZCghoYW5kX251bRgLIAEoDVIHaGFuZE51bRIlCg50aXBzX2NvbGxlY3RlZBgMIAEoAlINdGlwc0NvbGxlY3RlZBpTCg9QbGF5ZXJJbmZvRW50cnkSEAoDa2V5GAEgASgNUgNrZXkSKgoFdmFsdWUYAiABKAsyFC5nYW1lLlBsYXllckhhbmRJbmZvUgV2YWx1ZToCOAEaUQoQUGxheWVyU3RhdHNFbnRyeRIQCgNrZXkYASABKARSA2tleRInCgV2YWx1ZRgCIAEoCzIRLmdhbWUuUGxheWVyU3RhdHNSBXZhbHVlOgI4ARpTChFUaW1lb3V0U3RhdHNFbnRyeRIQCgNrZXkYASABKARSA2tleRIoCgV2YWx1ZRgCIAEoCzISLmdhbWUuVGltZW91dFN0YXRzUgV2YWx1ZToCOAE=');
 @$core.Deprecated('Use handLogV2Descriptor instead')
 const HandLogV2$json = const {
   '1': 'HandLogV2',

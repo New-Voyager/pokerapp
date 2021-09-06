@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:pokerapp/enums/game_status.dart';
 import 'package:pokerapp/enums/player_status.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
@@ -311,6 +310,14 @@ class Players extends ChangeNotifier {
     return _players[idx];
   }
 
+  PlayerModel usingId(int playerId) {
+    int idx = _players.indexWhere((p) => p.playerId == playerId);
+    if (idx == -1) {
+      return null;
+    }
+    return _players[idx];
+  }
+
   void updatePlayersSilent(List<PlayerModel> players) {
     this._players = players;
     notifyAll();
@@ -323,17 +330,18 @@ class Players extends ChangeNotifier {
 class MyState extends ChangeNotifier {
   int _seatNo = 0;
   PlayerStatus _status = PlayerStatus.NOT_PLAYING;
-  GameStatus _gameStatus = GameStatus.UNKNOWN;
+  PlayerModel _player;
 
   set seatNo(int v) {
     this._seatNo = v;
   }
 
-  set gameStatus(GameStatus gameStatus) => this._gameStatus = gameStatus;
-
-  get gameStatus => this._gameStatus;
+  set player(PlayerModel player) {
+    this._player = player;
+  }
 
   int get seatNo => this._seatNo;
+  PlayerModel get player => this._player;
 
   set status(PlayerStatus status) => this._status = status;
 

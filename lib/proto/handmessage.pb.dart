@@ -54,8 +54,6 @@ class PlayerStats extends $pb.GeneratedMessage {
     ..aOB(14, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'inFlop')
     ..aOB(15, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'inTurn')
     ..aOB(16, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'inRiver')
-    ..a<$core.int>(17, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'consecutiveActionTimeouts', $pb.PbFieldType.OU3)
-    ..aOB(18, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'actedAtLeastOnce')
     ..hasRequiredFields = false;
 
   PlayerStats._() : super();
@@ -76,8 +74,6 @@ class PlayerStats extends $pb.GeneratedMessage {
     $core.bool? inFlop,
     $core.bool? inTurn,
     $core.bool? inRiver,
-    $core.int? consecutiveActionTimeouts,
-    $core.bool? actedAtLeastOnce,
   }) {
     final _result = create();
     if (preflopRaise != null) {
@@ -127,12 +123,6 @@ class PlayerStats extends $pb.GeneratedMessage {
     }
     if (inRiver != null) {
       _result.inRiver = inRiver;
-    }
-    if (consecutiveActionTimeouts != null) {
-      _result.consecutiveActionTimeouts = consecutiveActionTimeouts;
-    }
-    if (actedAtLeastOnce != null) {
-      _result.actedAtLeastOnce = actedAtLeastOnce;
     }
     return _result;
   }
@@ -353,30 +343,95 @@ class PlayerStats extends $pb.GeneratedMessage {
   $core.bool hasInRiver() => $_has(15);
   @$pb.TagNumber(16)
   void clearInRiver() => clearField(16);
+}
 
-  @$pb.TagNumber(17)
-  $core.int get consecutiveActionTimeouts => $_getIZ(16);
-  @$pb.TagNumber(17)
+class TimeoutStats extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      const $core.bool.fromEnvironment('protobuf.omit_message_names')
+          ? ''
+          : 'TimeoutStats',
+      package: const $pb.PackageName(
+          const $core.bool.fromEnvironment('protobuf.omit_message_names')
+              ? ''
+              : 'game'),
+      createEmptyInstance: create)
+    ..a<$core.int>(
+        1,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'consecutiveActionTimeouts',
+        $pb.PbFieldType.OU3)
+    ..aOB(
+        2,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'actedAtLeastOnce')
+    ..hasRequiredFields = false;
+
+  TimeoutStats._() : super();
+  factory TimeoutStats({
+    $core.int? consecutiveActionTimeouts,
+    $core.bool? actedAtLeastOnce,
+  }) {
+    final _result = create();
+    if (consecutiveActionTimeouts != null) {
+      _result.consecutiveActionTimeouts = consecutiveActionTimeouts;
+    }
+    if (actedAtLeastOnce != null) {
+      _result.actedAtLeastOnce = actedAtLeastOnce;
+    }
+    return _result;
+  }
+  factory TimeoutStats.fromBuffer($core.List<$core.int> i,
+          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(i, r);
+  factory TimeoutStats.fromJson($core.String i,
+          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(i, r);
+  @$core.Deprecated('Using this can add significant overhead to your binary. '
+      'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+      'Will be removed in next major version')
+  TimeoutStats clone() => TimeoutStats()..mergeFromMessage(this);
+  @$core.Deprecated('Using this can add significant overhead to your binary. '
+      'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+      'Will be removed in next major version')
+  TimeoutStats copyWith(void Function(TimeoutStats) updates) =>
+      super.copyWith((message) => updates(message as TimeoutStats))
+          as TimeoutStats; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static TimeoutStats create() => TimeoutStats._();
+  TimeoutStats createEmptyInstance() => create();
+  static $pb.PbList<TimeoutStats> createRepeated() =>
+      $pb.PbList<TimeoutStats>();
+  @$core.pragma('dart2js:noInline')
+  static TimeoutStats getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<TimeoutStats>(create);
+  static TimeoutStats? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.int get consecutiveActionTimeouts => $_getIZ(0);
+  @$pb.TagNumber(1)
   set consecutiveActionTimeouts($core.int v) {
-    $_setUnsignedInt32(16, v);
+    $_setUnsignedInt32(0, v);
   }
 
-  @$pb.TagNumber(17)
-  $core.bool hasConsecutiveActionTimeouts() => $_has(16);
-  @$pb.TagNumber(17)
-  void clearConsecutiveActionTimeouts() => clearField(17);
+  @$pb.TagNumber(1)
+  $core.bool hasConsecutiveActionTimeouts() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearConsecutiveActionTimeouts() => clearField(1);
 
-  @$pb.TagNumber(18)
-  $core.bool get actedAtLeastOnce => $_getBF(17);
-  @$pb.TagNumber(18)
+  @$pb.TagNumber(2)
+  $core.bool get actedAtLeastOnce => $_getBF(1);
+  @$pb.TagNumber(2)
   set actedAtLeastOnce($core.bool v) {
-    $_setBool(17, v);
+    $_setBool(1, v);
   }
 
-  @$pb.TagNumber(18)
-  $core.bool hasActedAtLeastOnce() => $_has(17);
-  @$pb.TagNumber(18)
-  void clearActedAtLeastOnce() => clearField(18);
+  @$pb.TagNumber(2)
+  $core.bool hasActedAtLeastOnce() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearActedAtLeastOnce() => clearField(2);
 }
 
 class HandStats extends $pb.GeneratedMessage {
@@ -2766,8 +2821,9 @@ class HandResultClient extends $pb.GeneratedMessage {
     ..m<$core.int, $0.PlayerHandInfo>(7, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'playerInfo', entryClassName: 'HandResultClient.PlayerInfoEntry', keyFieldType: $pb.PbFieldType.OU3, valueFieldType: $pb.PbFieldType.OM, valueCreator: $0.PlayerHandInfo.create, packageName: const $pb.PackageName('game'))
     ..aOB(8, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'scoop')
     ..m<$fixnum.Int64, PlayerStats>(9, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'playerStats', entryClassName: 'HandResultClient.PlayerStatsEntry', keyFieldType: $pb.PbFieldType.OU6, valueFieldType: $pb.PbFieldType.OM, valueCreator: PlayerStats.create, packageName: const $pb.PackageName('game'))
-    ..a<$core.int>(10, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'handNum', $pb.PbFieldType.OU3)
-    ..a<$core.double>(11, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'tipsCollected', $pb.PbFieldType.OF)
+    ..m<$fixnum.Int64, TimeoutStats>(10, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'timeoutStats', entryClassName: 'HandResultClient.TimeoutStatsEntry', keyFieldType: $pb.PbFieldType.OU6, valueFieldType: $pb.PbFieldType.OM, valueCreator: TimeoutStats.create, packageName: const $pb.PackageName('game'))
+    ..a<$core.int>(11, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'handNum', $pb.PbFieldType.OU3)
+    ..a<$core.double>(12, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'tipsCollected', $pb.PbFieldType.OF)
     ..hasRequiredFields = false;
 
   HandResultClient._() : super();
@@ -2781,6 +2837,7 @@ class HandResultClient extends $pb.GeneratedMessage {
     $core.Map<$core.int, $0.PlayerHandInfo>? playerInfo,
     $core.bool? scoop,
     $core.Map<$fixnum.Int64, PlayerStats>? playerStats,
+    $core.Map<$fixnum.Int64, TimeoutStats>? timeoutStats,
     $core.int? handNum,
     $core.double? tipsCollected,
   }) {
@@ -2811,6 +2868,9 @@ class HandResultClient extends $pb.GeneratedMessage {
     }
     if (playerStats != null) {
       _result.playerStats.addAll(playerStats);
+    }
+    if (timeoutStats != null) {
+      _result.timeoutStats.addAll(timeoutStats);
     }
     if (handNum != null) {
       _result.handNum = handNum;
@@ -2911,28 +2971,31 @@ class HandResultClient extends $pb.GeneratedMessage {
   $core.Map<$fixnum.Int64, PlayerStats> get playerStats => $_getMap(8);
 
   @$pb.TagNumber(10)
-  $core.int get handNum => $_getIZ(9);
-  @$pb.TagNumber(10)
+  $core.Map<$fixnum.Int64, TimeoutStats> get timeoutStats => $_getMap(9);
+
+  @$pb.TagNumber(11)
+  $core.int get handNum => $_getIZ(10);
+  @$pb.TagNumber(11)
   set handNum($core.int v) {
-    $_setUnsignedInt32(9, v);
+    $_setUnsignedInt32(10, v);
   }
 
-  @$pb.TagNumber(10)
-  $core.bool hasHandNum() => $_has(9);
-  @$pb.TagNumber(10)
-  void clearHandNum() => clearField(10);
+  @$pb.TagNumber(11)
+  $core.bool hasHandNum() => $_has(10);
+  @$pb.TagNumber(11)
+  void clearHandNum() => clearField(11);
 
-  @$pb.TagNumber(11)
-  $core.double get tipsCollected => $_getN(10);
-  @$pb.TagNumber(11)
+  @$pb.TagNumber(12)
+  $core.double get tipsCollected => $_getN(11);
+  @$pb.TagNumber(12)
   set tipsCollected($core.double v) {
-    $_setFloat(10, v);
+    $_setFloat(11, v);
   }
 
-  @$pb.TagNumber(11)
-  $core.bool hasTipsCollected() => $_has(10);
-  @$pb.TagNumber(11)
-  void clearTipsCollected() => clearField(11);
+  @$pb.TagNumber(12)
+  $core.bool hasTipsCollected() => $_has(11);
+  @$pb.TagNumber(12)
+  void clearTipsCollected() => clearField(12);
 }
 
 class HandLogV2 extends $pb.GeneratedMessage {

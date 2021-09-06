@@ -12,6 +12,7 @@ import 'package:pokerapp/models/hand_history_model.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
@@ -633,8 +634,9 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
           // first
           Consumer<MyState>(
             builder: (context, myState, child) {
-              log('myState.gameStatus = ${myState.gameStatus}, myState.status = ${myState.status}');
-              return myState.gameStatus == GameStatus.RUNNING &&
+              final tableState = widget.gameState.tableState;
+              log('myState.gameStatus = ${tableState.gameStatus}, myState.status = ${myState.status}');
+              return tableState.gameStatus == AppConstants.GAME_RUNNING &&
                       myState.status == PlayerStatus.PLAYING
                   ? GameCircleButton(
                       onClickHandler: () => onClickViewHand(context),

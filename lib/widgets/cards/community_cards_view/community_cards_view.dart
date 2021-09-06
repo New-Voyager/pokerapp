@@ -119,7 +119,7 @@ class CommunityCardsView extends StatelessWidget {
     log('community cards');
 
     final gameState = GameState.getState(context);
-    final tableState = gameState.getTableState(context);
+    final tableState = gameState.tableState;
     log('Table state: dim board1: ${tableState.dimBoard1} dim board2: ${tableState.dimBoard2}');
 
     if (twoBoardsNeeded ?? false) {

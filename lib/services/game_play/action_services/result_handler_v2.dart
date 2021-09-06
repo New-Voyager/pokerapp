@@ -60,7 +60,7 @@ class ResultHandlerV2 {
   });
 
   Future<void> show() async {
-    tableState = gameState.getTableState(context);
+    tableState = gameState.tableState;
     players = gameState.getPlayers(context);
 
     // update pots

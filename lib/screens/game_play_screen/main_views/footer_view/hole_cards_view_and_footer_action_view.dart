@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
+import 'package:pokerapp/enums/player_status.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
@@ -18,11 +19,13 @@ import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/bet_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/game_circle_button.dart';
+import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_proto_service.dart';
 import 'package:pokerapp/widgets/cards/hole_stack_card_view.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:pokerapp/widgets/cards/multiple_stack_card_views.dart';
 import 'package:pokerapp/widgets/num_diamond_widget.dart';
+import 'package:pokerapp/widgets/round_color_button.dart';
 import 'package:pokerapp/widgets/straddle_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
@@ -448,6 +451,8 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
     final gameState = GameState.getState(context);
     final theme = AppTheme.getTheme(context);
     final playerCards = gameState.getHoleCards();
+    final boardAttributes = gameState.getBoardAttributes(context);
+
     Widget cardsWidget = cards(
       playerFolded: playerModel.playerFolded,
       cardsInt: playerCards,
@@ -473,7 +478,25 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
         );
       }
     }
-    Widget rankText = _getRankText(gameState, context);
+    Widget rankText;
+    log("one : ${gameState.myState.status} TWO : ${gameState.postedBlind}");
+    if (gameState.myState.status == PlayerStatus.NEED_TO_POST_BLIND &&
+        (!gameState.postedBlind)) {
+      rankText = RoundedColorButton(
+        backgroundColor: theme.accentColor,
+        textColor: theme.primaryColorWithDark(),
+        text: "Post Blind",
+        onTapFunction: () async {
+          // Post blind
+          final result = await GameService.postBlinds(gameState.gameCode);
+          if (result != null) {
+            gameState.setPostedBlind(true);
+          }
+        },
+      );
+    } else {
+      rankText = _getRankText(gameState, context);
+    }
     return GestureDetector(
       onTap: () {
         isHoleCardsVisibleVn.value = !isHoleCardsVisibleVn.value;
@@ -484,7 +507,7 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
         );
       },
       child: Transform.translate(
-          offset: Offset(0, 25.ph),
+          offset: Offset(0, boardAttributes.holeCardOffset),
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
             rankText,
@@ -496,11 +519,6 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
                 alignment: Alignment.center,
                 children: [
                   cardsWidget,
-                  //shuffleButton,
-                  // Align(
-                  //   alignment: Alignment.topRight,
-                  //   child: shuffleButton,
-                  // ),
                 ],
               ),
               shuffleButton,

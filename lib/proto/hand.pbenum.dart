@@ -15,73 +15,85 @@ class ACTION extends $pb.ProtobufEnum {
       const $core.bool.fromEnvironment('protobuf.omit_enum_names')
           ? ''
           : 'ACTION_UNKNOWN');
-  static const ACTION SB = ACTION._(1,
+  static const ACTION EMPTY_SEAT = ACTION._(
+      1,
+      const $core.bool.fromEnvironment('protobuf.omit_enum_names')
+          ? ''
+          : 'EMPTY_SEAT');
+  static const ACTION NOT_ACTED = ACTION._(
+      2,
+      const $core.bool.fromEnvironment('protobuf.omit_enum_names')
+          ? ''
+          : 'NOT_ACTED');
+  static const ACTION SB = ACTION._(3,
       const $core.bool.fromEnvironment('protobuf.omit_enum_names') ? '' : 'SB');
-  static const ACTION BB = ACTION._(2,
+  static const ACTION BB = ACTION._(4,
       const $core.bool.fromEnvironment('protobuf.omit_enum_names') ? '' : 'BB');
   static const ACTION STRADDLE = ACTION._(
-      3,
+      5,
       const $core.bool.fromEnvironment('protobuf.omit_enum_names')
           ? ''
           : 'STRADDLE');
   static const ACTION CHECK = ACTION._(
-      4,
+      6,
       const $core.bool.fromEnvironment('protobuf.omit_enum_names')
           ? ''
           : 'CHECK');
   static const ACTION CALL = ACTION._(
-      5,
+      7,
       const $core.bool.fromEnvironment('protobuf.omit_enum_names')
           ? ''
           : 'CALL');
   static const ACTION FOLD = ACTION._(
-      6,
+      8,
       const $core.bool.fromEnvironment('protobuf.omit_enum_names')
           ? ''
           : 'FOLD');
   static const ACTION BET = ACTION._(
-      7,
+      9,
       const $core.bool.fromEnvironment('protobuf.omit_enum_names')
           ? ''
           : 'BET');
   static const ACTION RAISE = ACTION._(
-      8,
+      10,
       const $core.bool.fromEnvironment('protobuf.omit_enum_names')
           ? ''
           : 'RAISE');
   static const ACTION ALLIN = ACTION._(
-      9,
+      11,
       const $core.bool.fromEnvironment('protobuf.omit_enum_names')
           ? ''
           : 'ALLIN');
   static const ACTION RUN_IT_TWICE_YES = ACTION._(
-      10,
+      12,
       const $core.bool.fromEnvironment('protobuf.omit_enum_names')
           ? ''
           : 'RUN_IT_TWICE_YES');
   static const ACTION RUN_IT_TWICE_NO = ACTION._(
-      11,
+      13,
       const $core.bool.fromEnvironment('protobuf.omit_enum_names')
           ? ''
           : 'RUN_IT_TWICE_NO');
   static const ACTION RUN_IT_TWICE_PROMPT = ACTION._(
-      12,
+      14,
       const $core.bool.fromEnvironment('protobuf.omit_enum_names')
           ? ''
           : 'RUN_IT_TWICE_PROMPT');
   static const ACTION POST_BLIND = ACTION._(
-      13,
+      15,
       const $core.bool.fromEnvironment('protobuf.omit_enum_names')
           ? ''
           : 'POST_BLIND');
   static const ACTION BOMB_POT_BET = ACTION._(
-      14,
+      16,
       const $core.bool.fromEnvironment('protobuf.omit_enum_names')
           ? ''
           : 'BOMB_POT_BET');
 
   static const $core.List<ACTION> values = <ACTION>[
     ACTION_UNKNOWN,
+    EMPTY_SEAT,
+    NOT_ACTED,
     SB,
     BB,
     STRADDLE,
@@ -177,96 +189,6 @@ class HandStatus extends $pb.ProtobufEnum {
   const HandStatus._($core.int v, $core.String n) : super(v, n);
 }
 
-class PlayerActState extends $pb.ProtobufEnum {
-  static const PlayerActState PLAYER_ACT_UNKNOWN = PlayerActState._(
-      0,
-      const $core.bool.fromEnvironment('protobuf.omit_enum_names')
-          ? ''
-          : 'PLAYER_ACT_UNKNOWN');
-  static const PlayerActState PLAYER_ACT_EMPTY_SEAT = PlayerActState._(
-      1,
-      const $core.bool.fromEnvironment('protobuf.omit_enum_names')
-          ? ''
-          : 'PLAYER_ACT_EMPTY_SEAT');
-  static const PlayerActState PLAYER_ACT_NOT_ACTED = PlayerActState._(
-      2,
-      const $core.bool.fromEnvironment('protobuf.omit_enum_names')
-          ? ''
-          : 'PLAYER_ACT_NOT_ACTED');
-  static const PlayerActState PLAYER_ACT_FOLDED = PlayerActState._(
-      3,
-      const $core.bool.fromEnvironment('protobuf.omit_enum_names')
-          ? ''
-          : 'PLAYER_ACT_FOLDED');
-  static const PlayerActState PLAYER_ACT_ALL_IN = PlayerActState._(
-      4,
-      const $core.bool.fromEnvironment('protobuf.omit_enum_names')
-          ? ''
-          : 'PLAYER_ACT_ALL_IN');
-  static const PlayerActState PLAYER_ACT_BB = PlayerActState._(
-      5,
-      const $core.bool.fromEnvironment('protobuf.omit_enum_names')
-          ? ''
-          : 'PLAYER_ACT_BB');
-  static const PlayerActState PLAYER_ACT_STRADDLE = PlayerActState._(
-      6,
-      const $core.bool.fromEnvironment('protobuf.omit_enum_names')
-          ? ''
-          : 'PLAYER_ACT_STRADDLE');
-  static const PlayerActState PLAYER_ACT_BET = PlayerActState._(
-      7,
-      const $core.bool.fromEnvironment('protobuf.omit_enum_names')
-          ? ''
-          : 'PLAYER_ACT_BET');
-  static const PlayerActState PLAYER_ACT_CALL = PlayerActState._(
-      8,
-      const $core.bool.fromEnvironment('protobuf.omit_enum_names')
-          ? ''
-          : 'PLAYER_ACT_CALL');
-  static const PlayerActState PLAYER_ACT_RAISE = PlayerActState._(
-      9,
-      const $core.bool.fromEnvironment('protobuf.omit_enum_names')
-          ? ''
-          : 'PLAYER_ACT_RAISE');
-  static const PlayerActState PLAYER_ACT_CHECK = PlayerActState._(
-      10,
-      const $core.bool.fromEnvironment('protobuf.omit_enum_names')
-          ? ''
-          : 'PLAYER_ACT_CHECK');
-  static const PlayerActState PLAYER_ACT_POST_BLIND = PlayerActState._(
-      11,
-      const $core.bool.fromEnvironment('protobuf.omit_enum_names')
-          ? ''
-          : 'PLAYER_ACT_POST_BLIND');
-  static const PlayerActState PLAYER_ACT_BOMB_POT = PlayerActState._(
-      12,
-      const $core.bool.fromEnvironment('protobuf.omit_enum_names')
-          ? ''
-          : 'PLAYER_ACT_BOMB_POT');
-
-  static const $core.List<PlayerActState> values = <PlayerActState>[
-    PLAYER_ACT_UNKNOWN,
-    PLAYER_ACT_EMPTY_SEAT,
-    PLAYER_ACT_NOT_ACTED,
-    PLAYER_ACT_FOLDED,
-    PLAYER_ACT_ALL_IN,
-    PLAYER_ACT_BB,
-    PLAYER_ACT_STRADDLE,
-    PLAYER_ACT_BET,
-    PLAYER_ACT_CALL,
-    PLAYER_ACT_RAISE,
-    PLAYER_ACT_CHECK,
-    PLAYER_ACT_POST_BLIND,
-    PLAYER_ACT_BOMB_POT,
-  ];
-
-  static final $core.Map<$core.int, PlayerActState> _byValue =
-      $pb.ProtobufEnum.initByValue(values);
-  static PlayerActState? valueOf($core.int value) => _byValue[value];
-
-  const PlayerActState._($core.int v, $core.String n) : super(v, n);
-}
-
 class FlowState extends $pb.ProtobufEnum {
   static const FlowState DEAL_HAND = FlowState._(
       0,
@@ -283,65 +205,23 @@ class FlowState extends $pb.ProtobufEnum {
       const $core.bool.fromEnvironment('protobuf.omit_enum_names')
           ? ''
           : 'PREPARE_NEXT_ACTION');
-  static const FlowState MOVE_TO_NEXT_ACTION = FlowState._(
+  static const FlowState MOVE_TO_NEXT_HAND = FlowState._(
       3,
       const $core.bool.fromEnvironment('protobuf.omit_enum_names')
           ? ''
-          : 'MOVE_TO_NEXT_ACTION');
-  static const FlowState MOVE_TO_NEXT_ROUND = FlowState._(
+          : 'MOVE_TO_NEXT_HAND');
+  static const FlowState WAIT_FOR_PENDING_UPDATE = FlowState._(
       4,
       const $core.bool.fromEnvironment('protobuf.omit_enum_names')
           ? ''
-          : 'MOVE_TO_NEXT_ROUND');
-  static const FlowState ALL_PLAYERS_ALL_IN = FlowState._(
-      5,
-      const $core.bool.fromEnvironment('protobuf.omit_enum_names')
-          ? ''
-          : 'ALL_PLAYERS_ALL_IN');
-  static const FlowState ONE_PLAYER_REMAINING = FlowState._(
-      6,
-      const $core.bool.fromEnvironment('protobuf.omit_enum_names')
-          ? ''
-          : 'ONE_PLAYER_REMAINING');
-  static const FlowState SHOWDOWN = FlowState._(
-      7,
-      const $core.bool.fromEnvironment('protobuf.omit_enum_names')
-          ? ''
-          : 'SHOWDOWN');
-  static const FlowState HAND_ENDED = FlowState._(
-      8,
-      const $core.bool.fromEnvironment('protobuf.omit_enum_names')
-          ? ''
-          : 'HAND_ENDED');
-  static const FlowState MOVE_TO_NEXT_HAND = FlowState._(
-      9,
-      const $core.bool.fromEnvironment('protobuf.omit_enum_names')
-          ? ''
-          : 'MOVE_TO_NEXT_HAND');
-  static const FlowState RUNITTWICE_UP_PROMPT = FlowState._(
-      10,
-      const $core.bool.fromEnvironment('protobuf.omit_enum_names')
-          ? ''
-          : 'RUNITTWICE_UP_PROMPT');
-  static const FlowState RUNITTWICE_PROMPT_RESPONSE = FlowState._(
-      11,
-      const $core.bool.fromEnvironment('protobuf.omit_enum_names')
-          ? ''
-          : 'RUNITTWICE_PROMPT_RESPONSE');
+          : 'WAIT_FOR_PENDING_UPDATE');
 
   static const $core.List<FlowState> values = <FlowState>[
     DEAL_HAND,
     WAIT_FOR_NEXT_ACTION,
     PREPARE_NEXT_ACTION,
-    MOVE_TO_NEXT_ACTION,
-    MOVE_TO_NEXT_ROUND,
-    ALL_PLAYERS_ALL_IN,
-    ONE_PLAYER_REMAINING,
-    SHOWDOWN,
-    HAND_ENDED,
     MOVE_TO_NEXT_HAND,
-    RUNITTWICE_UP_PROMPT,
-    RUNITTWICE_PROMPT_RESPONSE,
+    WAIT_FOR_PENDING_UPDATE,
   ];
 
   static final $core.Map<$core.int, FlowState> _byValue =

@@ -668,7 +668,8 @@ class PlayerInSeatState extends $pb.GeneratedMessage {
     ..aOB(10, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'openSeat')
     ..aOB(11, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'postedBlind')
     ..a<$core.int>(12, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'seatNo', $pb.PbFieldType.OU3)
-    ..aOS(13, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'uuid')
+    ..aOB(13, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'runItTwice')
+    ..aOB(14, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'missedBlind')
     ..hasRequiredFields = false;
 
   PlayerInSeatState._() : super();
@@ -685,7 +686,8 @@ class PlayerInSeatState extends $pb.GeneratedMessage {
     $core.bool? openSeat,
     $core.bool? postedBlind,
     $core.int? seatNo,
-    $core.String? uuid,
+    $core.bool? runItTwice,
+    $core.bool? missedBlind,
   }) {
     final _result = create();
     if (playerId != null) {
@@ -724,8 +726,11 @@ class PlayerInSeatState extends $pb.GeneratedMessage {
     if (seatNo != null) {
       _result.seatNo = seatNo;
     }
-    if (uuid != null) {
-      _result.uuid = uuid;
+    if (runItTwice != null) {
+      _result.runItTwice = runItTwice;
+    }
+    if (missedBlind != null) {
+      _result.missedBlind = missedBlind;
     }
     return _result;
   }
@@ -901,16 +906,28 @@ class PlayerInSeatState extends $pb.GeneratedMessage {
   void clearSeatNo() => clearField(12);
 
   @$pb.TagNumber(13)
-  $core.String get uuid => $_getSZ(12);
+  $core.bool get runItTwice => $_getBF(12);
   @$pb.TagNumber(13)
-  set uuid($core.String v) {
-    $_setString(12, v);
+  set runItTwice($core.bool v) {
+    $_setBool(12, v);
   }
 
   @$pb.TagNumber(13)
-  $core.bool hasUuid() => $_has(12);
+  $core.bool hasRunItTwice() => $_has(12);
   @$pb.TagNumber(13)
-  void clearUuid() => clearField(13);
+  void clearRunItTwice() => clearField(13);
+
+  @$pb.TagNumber(14)
+  $core.bool get missedBlind => $_getBF(13);
+  @$pb.TagNumber(14)
+  set missedBlind($core.bool v) {
+    $_setBool(13, v);
+  }
+
+  @$pb.TagNumber(14)
+  $core.bool hasMissedBlind() => $_has(13);
+  @$pb.TagNumber(14)
+  void clearMissedBlind() => clearField(14);
 }
 
 class PlayerBalance extends $pb.GeneratedMessage {
@@ -1253,43 +1270,40 @@ class HighHand extends $pb.GeneratedMessage {
 }
 
 class PlayerActRound extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'PlayerActRound',
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      const $core.bool.fromEnvironment('protobuf.omit_message_names')
+          ? ''
+          : 'PlayerActRound',
       package: const $pb.PackageName(
           const $core.bool.fromEnvironment('protobuf.omit_message_names')
               ? ''
               : 'game'),
       createEmptyInstance: create)
-    ..e<PlayerActState>(
-        1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'state', $pb.PbFieldType.OE,
-        defaultOrMaker: PlayerActState.PLAYER_ACT_UNKNOWN,
-        valueOf: PlayerActState.valueOf,
-        enumValues: PlayerActState.values)
+    ..e<ACTION>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'action',
+        $pb.PbFieldType.OE,
+        defaultOrMaker: ACTION.ACTION_UNKNOWN,
+        valueOf: ACTION.valueOf,
+        enumValues: ACTION.values)
     ..a<$core.double>(
         2,
-        const $core.bool.fromEnvironment('protobuf.omit_field_names')
-            ? ''
-            : 'amount',
+        const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'amount',
         $pb.PbFieldType.OF)
-    ..a<$core.double>(
-        3,
-        const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'raiseAmount',
-        $pb.PbFieldType.OF,
-        protoName: 'raiseAmount')
+    ..a<$core.double>(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'raiseAmount', $pb.PbFieldType.OF, protoName: 'raiseAmount')
     ..a<$core.int>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'actedBetIndex', $pb.PbFieldType.OU3)
     ..a<$core.double>(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'betAmount', $pb.PbFieldType.OF)
     ..hasRequiredFields = false;
 
   PlayerActRound._() : super();
   factory PlayerActRound({
-    PlayerActState? state,
+    ACTION? action,
     $core.double? amount,
     $core.double? raiseAmount,
     $core.int? actedBetIndex,
     $core.double? betAmount,
   }) {
     final _result = create();
-    if (state != null) {
-      _result.state = state;
+    if (action != null) {
+      _result.action = action;
     }
     if (amount != null) {
       _result.amount = amount;
@@ -1333,16 +1347,16 @@ class PlayerActRound extends $pb.GeneratedMessage {
   static PlayerActRound? _defaultInstance;
 
   @$pb.TagNumber(1)
-  PlayerActState get state => $_getN(0);
+  ACTION get action => $_getN(0);
   @$pb.TagNumber(1)
-  set state(PlayerActState v) {
+  set action(ACTION v) {
     setField(1, v);
   }
 
   @$pb.TagNumber(1)
-  $core.bool hasState() => $_has(0);
+  $core.bool hasAction() => $_has(0);
   @$pb.TagNumber(1)
-  void clearState() => clearField(1);
+  void clearAction() => clearField(1);
 
   @$pb.TagNumber(2)
   $core.double get amount => $_getN(1);

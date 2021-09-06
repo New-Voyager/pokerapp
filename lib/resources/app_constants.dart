@@ -170,6 +170,9 @@ class AppConstants {
   static const String BET = 'BET';
   static const String CALL = 'CALL';
   static const String ALLIN = 'ALLIN';
+  static const String SB = 'SB';
+  static const String BB = 'BB';
+  static const String BOMP_BOT_PET = 'BOMB POT';
 
   // types of winners - high and low winners
   static const String HIGH_WINNERS = 'High';

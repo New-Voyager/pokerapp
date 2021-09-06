@@ -28,6 +28,7 @@ import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/data/game_log_store.dart';
 import 'package:pokerapp/services/encryption/encryption_service.dart';
+import 'package:pokerapp/services/game_play/action_services/newhand_handler.dart';
 import 'package:pokerapp/services/game_play/action_services/result_handler.dart';
 import 'package:pokerapp/services/game_play/action_services/result_handler_v2.dart';
 import 'package:pokerapp/utils/alerts.dart';
@@ -146,6 +147,7 @@ class HandActionProtoService {
 
   void close() {
     _close = true;
+    _gameState.uiClosing = true;
     closed = true;
     _messages.clear();
     if (_retryMsg != null) {
@@ -199,7 +201,7 @@ class HandActionProtoService {
 
     gameContextObject.handActionProtoService.playerActed(
       gameContextObject.playerId,
-      handInfo.handNum,
+      gameState.handInfo.handNum,
       actionState.action.seatNo,
       action,
       amount,
@@ -414,7 +416,7 @@ class HandActionProtoService {
     @required List<int> board2Cards,
   }) async {
     final GameState gameState = GameState.getState(context);
-    final TableState tableState = gameState.getTableState(context);
+    final TableState tableState = gameState.tableState;
 
     final List<CardObject> b1 = [];
     for (final c in board1Cards) {
@@ -464,6 +466,16 @@ class HandActionProtoService {
   }
 
   Future<void> handleNewHand(proto.HandMessageItem message) async {
+    NewHandHandler handler = NewHandHandler(
+        newHand: message.newHand,
+        context: _context,
+        gameState: _gameState,
+        playSoundEffect: playSoundEffect);
+    handler.initialize();
+    await handler.handle();
+  }
+
+  Future<void> handleNewHand2(proto.HandMessageItem message) async {
     _gameState.handState = HandState.STARTED;
     _gameState.highHand = null;
     _gameState.handInProgress = true;
@@ -552,9 +564,9 @@ class HandActionProtoService {
         }
         playerObj.seatNo = seatNo;
         playerObj.stack = playerInSeat.stack.toInt();
-        if (newHand.bombPot) {
-          playerObj.stack = playerObj.stack + newHand.bombPotBet.toInt();
-        }
+        // if (newHand.bombPot) {
+        //   playerObj.stack = playerObj.stack + newHand.bombPotBet.toInt();
+        // }
         playerObj.status = playerInSeat.status.name;
         playerObj.inhand = playerInSeat.inhand;
         if (playerInSeat.buyInExpTime != null &&
@@ -572,7 +584,7 @@ class HandActionProtoService {
         }
 
         if (newPlayer) {
-          playerObj.playerUuid = playerInSeat.uuid;
+          //playerObj.playerUuid = playerInSeat.playerId;
           players.addNewPlayerSilent(playerObj);
         }
         if (playerObj.playerUuid == this._currentPlayer.uuid) {
@@ -621,7 +633,7 @@ class HandActionProtoService {
     }
 
     if (_close) return;
-    final TableState tableState = _gameState.getTableState(_context);
+    final TableState tableState = _gameState.tableState;
     // remove all the community cards
     tableState.clear();
     tableState.notifyAll();
@@ -672,6 +684,15 @@ class HandActionProtoService {
         TablePosition.BigBlind,
         coinAmount: bigBlind.toInt(),
       );
+    }
+
+    // set player actions
+    for (final seatNo in newHand.playersActed.keys) {
+      final action = newHand.playersActed[seatNo];
+      if (action.action != proto.ACTION.NOT_ACTED) {
+        final seat = _gameState.getSeat(_context, seatNo);
+        seat.player.action.setActionProto(action.action, action.amount);
+      }
     }
 
     /* marking the dealer */
@@ -750,7 +771,7 @@ class HandActionProtoService {
     }
     // if straddle prompt is true, trigger straddle state to show the dialog
     if (_gameState.straddlePrompt && _gameState.settings.straddleOption) {
-      final straddlePromptState = _gameState.straddlePromptState(_context);
+      final straddlePromptState = _gameState.straddlePromptState;
       straddlePromptState.notify();
     }
 
@@ -908,7 +929,7 @@ class HandActionProtoService {
 
     if (_close) return;
     try {
-      final TableState tableState = _gameState.getTableState(_context);
+      final TableState tableState = _gameState.tableState;
 
       tableState.clear();
       tableState.notifyAll();
@@ -985,7 +1006,7 @@ class HandActionProtoService {
     //log('Hand Message: ::handleBombPot:: START');
     if (_close) return;
     try {
-      final TableState tableState = _gameState.getTableState(_context);
+      final TableState tableState = _gameState.tableState;
       final handInfo = _gameState.getHandInfo(_context);
       tableState.clear();
       tableState.notifyAll();
@@ -1026,7 +1047,7 @@ class HandActionProtoService {
       }
 
       if (_close) return;
-      final tableState = _gameState.getTableState(_context);
+      final tableState = _gameState.tableState;
 
       tableState.updatePotChipsSilent(
         potChips: pots,
@@ -1048,7 +1069,7 @@ class HandActionProtoService {
     //log('Hand Message: ::handleStageChange:: START');
 
     if (_close) return;
-    final TableState tableState = _gameState.getTableState(_context);
+    final TableState tableState = _gameState.tableState;
 
     if (_close) return;
     final players = _gameState.getPlayers(_context);
@@ -1202,7 +1223,7 @@ class HandActionProtoService {
     final Players players = _context.read<Players>();
 
     if (_close) return;
-    final tableState = _gameState.getTableState(_context);
+    final tableState = _gameState.tableState;
 
     // if game is paused, we don't update cards
     if (_gameState.gameInfo.status == AppConstants.GAME_PAUSED) {
@@ -1348,27 +1369,26 @@ class HandActionProtoService {
     int seatNo = playerActed.seatNo;
     //log('Hand Message: ::handlePlayerActed:: START seatNo: $seatNo');
 
-    if (_close) return;
+    if (_gameState.uiClosing || _close) return;
     // show a prompt regarding last player action
-    final gameState = _context.read<GameState>();
 
-    if (_close) return;
-    final seat = gameState.getSeat(_context, seatNo);
+    final seat = _gameState.getSeat(_context, seatNo);
     // hide straddle dialog
-    if (gameState.straddlePrompt) {
-      gameState.straddlePrompt = false;
+    if (_gameState.straddlePrompt) {
+      _gameState.straddlePrompt = false;
       _context.read<StraddlePromptState>().notify();
     }
+    if (_gameState.uiClosing || _close) return;
     if (seat?.player?.action == null) {
       ////log('Hand Message: ::handlePlayerActed:: player acted: $seatNo, player: ${seat.player.name}');
       return;
     }
     final action = seat.player.action;
-    action.setActionProto(playerActed);
+    action.setActionProto(playerActed.action, playerActed.amount);
     //log('Hand Message: ::handlePlayerActed:: player acted: $seatNo, player: ${seat.player.name} action: ${action.action.toString()}');
 
     if (seat.player.isMe) {
-      final Players players = gameState.getPlayers(_context);
+      final Players players = _gameState.getPlayers(_context);
       final player = players.players.firstWhere(
         (p) => p.seatNo == seatNo,
         orElse: null,
@@ -1400,7 +1420,7 @@ class HandActionProtoService {
 
     if (_close) return;
     // before showing the prompt --> turn off the highlight on other players
-    gameState.resetActionHighlight(_context, -1);
+    _gameState.resetActionHighlight(_context, -1);
     //log('Hand Message: ::handlePlayerActed:: END');
   }
 
@@ -1454,7 +1474,7 @@ class HandActionProtoService {
 
     /* update the table pots before the result */
     final gameState = GameState.getState(context);
-    final tableState = gameState.getTableState(context);
+    final tableState = gameState.tableState;
     tableState.updatePotChipsSilent(potChips: pots);
     tableState.notifyAll();
   }
@@ -1713,7 +1733,7 @@ class HandActionProtoService {
     }
 
     if (_close) return;
-    final TableState tableState = _gameState.getTableState(_context);
+    final TableState tableState = _gameState.tableState;
     // remove all the community cards
     tableState.clear();
     tableState.notifyAll();

@@ -13,6 +13,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/widgets/blinking_widget.dart';
@@ -62,15 +63,36 @@ class PlayerView extends StatefulWidget {
   _PlayerViewState createState() => _PlayerViewState();
 }
 
+class NeedRecalculating {
+  bool value = false;
+}
+
 class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
   TableState _tableState;
+
+  HandInfoState _handInfoState;
+  NeedRecalculating _seatPosNeedsReCalculating = NeedRecalculating();
+  int _lastHandNum = 0;
 
   AnimationController _lottieController;
   AssetImage _gifAssetImage;
 
+  void handInfoStateListener() {
+    if (_handInfoState.handNum != _lastHandNum) {
+      _lastHandNum = _handInfoState.handNum;
+      log('pauldebug: SETTING TRUE');
+      _seatPosNeedsReCalculating.value = true;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+
+    _handInfoState = context.read<HandInfoState>();
+
+    // setup condition to notify when recalculating is necessary
+    _handInfoState.addListener(handInfoStateListener);
 
     _lottieController = AnimationController(
       vsync: this,
@@ -91,6 +113,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
   @override
   void dispose() {
     super.dispose();
+    _handInfoState?.removeListener(handInfoStateListener);
     _lottieController?.dispose();
   }
 
@@ -109,8 +132,9 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
     }
     log('seat ${widget.seat.serverSeatPos} is tapped');
     if (widget.seat.isOpen) {
+      final tableState = widget.gameState.tableState;
       if (widget.gameState.myState.status == PlayerStatus.PLAYING &&
-          widget.gameState.myState.gameStatus == GameStatus.RUNNING) {
+          tableState.gameStatus == AppConstants.GAME_RUNNING) {
         log('Ignoring the open seat tap as the player is sitting and game is running');
         return;
       }
@@ -255,6 +279,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
     bool animate = widget.seat.player.action.animateAction;
 
     Widget chipAmountWidget = ChipAmountWidget(
+      recalculatingNeeded: _seatPosNeedsReCalculating,
       animate: animate,
       potKey: boardAttributes.getPotsKey(0),
       key: widget.seat.betWidgetUIKey,
@@ -369,12 +394,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
 
               // /* building the chip amount widget */
               animate
-                  ? ChipAmountAnimatingWidget(
-                      key: ValueKey(_tableState.tableRefresh),
-                      seatPos: widget.seat.serverSeatPos,
-                      child: chipAmountWidget,
-                      reverse: widget.seat.player.action.winner,
-                    )
+                  ? _animatingChipAmount(chipAmountWidget)
                   : chipAmountWidget,
 
               Consumer<SeatChangeNotifier>(
@@ -444,6 +464,15 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
           ),
         );
       },
+    );
+  }
+
+  ChipAmountAnimatingWidget _animatingChipAmount(Widget chipAmountWidget) {
+    return ChipAmountAnimatingWidget(
+      key: ValueKey(_tableState.tableRefresh),
+      seatPos: widget.seat.serverSeatPos,
+      child: chipAmountWidget,
+      reverse: widget.seat.player.action.winner,
     );
   }
 

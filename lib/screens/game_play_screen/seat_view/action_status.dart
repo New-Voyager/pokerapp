@@ -22,7 +22,10 @@ class ActionStatusWidget extends StatelessWidget {
     //seat.player.status = "CHECK";
     final action = seat.player.action.action;
     String actionStr = '';
-    if (action == HandActions.BET ||
+    if (action == HandActions.SB ||
+        action == HandActions.BB ||
+        action == HandActions.POST_BLIND ||
+        action == HandActions.BET ||
         action == HandActions.CALL ||
         action == HandActions.CHECK ||
         action == HandActions.RAISE ||
@@ -36,6 +39,15 @@ class ActionStatusWidget extends StatelessWidget {
     if (seat.player.inBreak) {
       actionStr = "In Break";
     }
+
+    if (action == HandActions.POST_BLIND) {
+      actionStr = 'Blind';
+    }
+
+    if (action == HandActions.BOMB_POT_BET) {
+      actionStr = 'Bomb Pot';
+    }
+
     // decide color from the status message
     // raise, bet -> red
     // check, call -> green

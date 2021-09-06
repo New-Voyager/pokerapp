@@ -212,22 +212,22 @@ class _GameOptionState extends State<GameOption> {
       ),
     ];
 
-    gameSecondaryOptions.add(
-      OptionItemModel(
-          title: _appScreenText['waitingList'],
-          image: "assets/images/casino.png",
-          name: _appScreenText['addToWaitingList'],
-          backGroundColor: Colors.blue,
-          onTap: (context) async {
-            await showModalBottomSheet(
-                context: context,
-                isScrollControlled: true,
-                builder: (ctx) {
-                  return WaitingListBottomSheet(
-                      widget.gameState, widget.gameCode, widget.playerUuid);
-                });
-          }),
-    );
+    // gameSecondaryOptions.add(
+    //   OptionItemModel(
+    //       title: _appScreenText['waitingList'],
+    //       image: "assets/images/casino.png",
+    //       name: _appScreenText['addToWaitingList'],
+    //       backGroundColor: Colors.blue,
+    //       onTap: (context) async {
+    //         await showModalBottomSheet(
+    //             context: context,
+    //             isScrollControlled: true,
+    //             builder: (ctx) {
+    //               return WaitingListBottomSheet(
+    //                   widget.gameState, widget.gameCode, widget.playerUuid);
+    //             });
+    //       }),
+    // );
   }
 
   Widget _buildCheckBox({
@@ -950,10 +950,17 @@ class _GameOptionState extends State<GameOption> {
     int defaultIndex = 0;
     // ishost?, can change game settings
     if (isHost) {
-      tabs.add(Tab(
-        child: Text('Game Settings'),
-      ));
-
+      // tabs.add(Tab(
+      //   child: Text('Game Settings'),
+      // ));
+      tabs.add(Container(
+          // decoration: BoxDecoration(
+          //     borderRadius: BorderRadius.circular(50),
+          //     border: Border.all(color: theme.accentColor, width: 1)),
+          child: Align(
+        alignment: Alignment.center,
+        child: Text("Game\nSettings", textAlign: TextAlign.center),
+      )));
       children.add(
           // game settings to be shown here
           // 1. allow seat change player
@@ -965,9 +972,21 @@ class _GameOptionState extends State<GameOption> {
     }
 
     if (isPlaying) {
-      tabs.add(Tab(
-        child: Text('Player Settings'),
-      ));
+      // tabs.add(Tab(
+      //   child: Text('Player Settings'),
+      // ));
+      tabs.add(Container(
+          // decoration: BoxDecoration(
+          //     borderRadius: BorderRadius.circular(50),
+          //     border: Border.all(color: theme.accentColor, width: 1)),
+          child: Align(
+        alignment: Alignment.center,
+        child: Text(
+          "Player\nSettings",
+          textAlign: TextAlign.center,
+        ),
+      )));
+
       children.add(
           // player settings to be shown here
           // 1. muck losing hand
@@ -979,9 +998,18 @@ class _GameOptionState extends State<GameOption> {
 
     bool waitinglistAllowed = true;
     if (waitinglistAllowed) {
-      tabs.add(Tab(
-        child: Text('Waiting List'),
-      ));
+      // tabs.add(Tab(
+      //   child: Text('Waiting List'),
+      // ));
+      tabs.add(Container(
+          // decoration: BoxDecoration(
+          //     borderRadius: BorderRadius.circular(50),
+          //     border: Border.all(color: theme.accentColor, width: 1)),
+          child: Align(
+        alignment: Alignment.center,
+        child:
+            Center(child: Text("Waiting\nList", textAlign: TextAlign.center)),
+      )));
 
       children.add(_buildWaitingList(theme));
       if (widget.focusOnWaitingList) {
@@ -1011,7 +1039,7 @@ class _GameOptionState extends State<GameOption> {
                   tabs: tabs,
                   indicatorSize: TabBarIndicatorSize.label,
                   indicatorColor: theme.accentColor,
-                  labelColor: theme.secondaryColorWithLight(),
+                  //labelColor: theme.secondaryColorWithLight(),
                   unselectedLabelColor: theme.secondaryColorWithDark(),
                 ),
               ),
@@ -1028,316 +1056,6 @@ class _GameOptionState extends State<GameOption> {
     } else {
       return children[0];
     }
-
-    // is player?, can change player settings
-
-    // is waiting list allowed, add waiting list tab
-
-    // if game state allows waiting list, add waiting list
-
-    // when I am HOST and PLAYING the game
-    if (isPlaying && isHost) {
-      return DefaultTabController(
-        length: 2,
-        child: NestedScrollView(
-          physics: BouncingScrollPhysics(),
-          headerSliverBuilder: (context, value) {
-            return [
-              SliverToBoxAdapter(
-                // build the basic game options
-                child: _buildBasicGameOptions(
-                  isPlaying: isPlaying,
-                  theme: theme,
-                ),
-              ),
-              SliverToBoxAdapter(
-                // show tabs for game and player settings
-                child: TabBar(
-                  tabs: [
-                    Tab(
-                      child: Text('Game Settings'),
-                    ),
-                    Tab(
-                      child: Text('Player Settings'),
-                    ),
-                  ],
-                  indicatorSize: TabBarIndicatorSize.label,
-                  indicatorColor: theme.accentColor,
-                  labelColor: theme.secondaryColorWithLight(),
-                  unselectedLabelColor: theme.secondaryColorWithDark(),
-                ),
-              ),
-            ];
-          },
-
-          // show game and player settings body
-          body: TabBarView(
-            physics: BouncingScrollPhysics(),
-            children: [],
-          ),
-        ),
-      );
-    }
-
-    // if I am HOST only - show game settings option
-    else if (isHost) {
-      return _buildGameSettingOptions(theme);
-    }
-
-    // if I am PLAYING only - show player settings option
-    else {
-      return _buildPlayerSettingOptions(theme);
-    }
-
-    return SingleChildScrollView(
-      physics: BouncingScrollPhysics(),
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 16),
-        child: Column(
-          children: [
-            // game options - standup, reload, break, pause...
-            !isPlaying
-                ? SizedBox.shrink()
-                : Container(
-                    margin: EdgeInsets.only(bottom: 10),
-                    padding: EdgeInsets.only(top: 16),
-                    width: double.infinity,
-                    decoration:
-                        AppDecorators.tileDecorationWithoutBorder(theme),
-                    child: Wrap(
-                      alignment: WrapAlignment.center,
-                      //mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        ...gameActions
-                            .map((e) => gameActionItem(e, theme))
-                            .toList(),
-                      ],
-                    ),
-                  ),
-
-            // game stats - elapsed time, won, hands...
-            Container(
-              padding: EdgeInsets.all(16),
-              decoration: AppDecorators.tileDecorationWithoutBorder(theme),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(_appScreenText['elapsed'],
-                              style: AppDecorators.getSubtitle3Style(
-                                  theme: theme)),
-                          isFetching
-                              ? CircularProgressWidget(
-                                  showText: false,
-                                  height: 24,
-                                )
-                              : Text(
-                                  "${DataFormatter.timeFormat(gameInfo.runningTime)}",
-                                  style: AppDecorators.getHeadLine4Style(
-                                          theme: theme)
-                                      .copyWith(fontWeight: FontWeight.w700),
-                                ),
-                        ],
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text(
-                            _appScreenText['hands'],
-                            style:
-                                AppDecorators.getSubtitle3Style(theme: theme),
-                          ),
-                          isFetching
-                              ? CircularProgressWidget(
-                                  showText: false,
-                                  height: 24,
-                                )
-                              : Text(
-                                  "${gameInfo.noHandsPlayed}",
-                                  style: AppDecorators.getHeadLine4Style(
-                                          theme: theme)
-                                      .copyWith(fontWeight: FontWeight.w700),
-                                ),
-                        ],
-                      )
-                    ],
-                  ),
-                  AppDimensionsNew.getVerticalSizedBox(4),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      !isPlaying
-                          ? Container()
-                          : Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(_appScreenText['session'],
-                                    style: AppDecorators.getSubtitle3Style(
-                                        theme: theme)),
-                                isFetching
-                                    ? CircularProgressWidget(
-                                        showText: false,
-                                        height: 24,
-                                      )
-                                    : Text(
-                                        "${DataFormatter.timeFormat(gameInfo.sessionTime)}",
-                                        style: AppDecorators.getHeadLine4Style(
-                                                theme: theme)
-                                            .copyWith(
-                                                fontWeight: FontWeight.w700)),
-                              ],
-                            ),
-                      !isPlaying
-                          ? Container()
-                          : Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Text(
-                                  _appScreenText['won'],
-                                  style: AppDecorators.getSubtitle3Style(
-                                      theme: theme),
-                                ),
-                                isFetching
-                                    ? CircularProgressWidget(
-                                        showText: false,
-                                        height: 24,
-                                      )
-                                    : Text("${gameInfo.noHandsWon}",
-                                        style: AppDecorators.getHeadLine4Style(
-                                                theme: theme)
-                                            .copyWith(
-                                                fontWeight: FontWeight.w700)),
-                              ],
-                            )
-                    ],
-                  ),
-                ],
-              ),
-            ),
-
-            // sep
-            AppDimensionsNew.getVerticalSizedBox(10),
-
-            // tap to bet VS swipe to bet
-            Container(
-              width: double.infinity,
-              padding: EdgeInsets.all(10),
-              decoration: AppDecorators.tileDecorationWithoutBorder(theme),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // main text
-                        Text(
-                          _appScreenText['betAction'],
-                          style: AppDecorators.getHeadLine4Style(theme: theme),
-                        ),
-                        // hint text
-                        Text(
-                          '(${_appScreenText['appliedInNextAction']})',
-                          style: AppDecorators.getSubtitle1Style(theme: theme),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  // tap / swipe button
-                  // false ==> swipe is active
-                  Expanded(
-                    child: CupertinoSegmentedControl<bool>(
-                      borderColor: theme.accentColor,
-                      selectedColor: theme.accentColor,
-                      unselectedColor: theme.fillInColor,
-                      groupValue: HiveDatasource.getInstance
-                          .getBox(BoxType.USER_SETTINGS_BOX)
-                          .get('isTapForBetAction?', defaultValue: false),
-                      children: {
-                        false: Text(_appScreenText['swipe'],
-                            style:
-                                AppDecorators.getHeadLine4Style(theme: theme)),
-                        true: Text(_appScreenText['tap'],
-                            style:
-                                AppDecorators.getHeadLine4Style(theme: theme)),
-                      },
-                      onValueChanged: (bool v) async {
-                        await HiveDatasource.getInstance
-                            .getBox(BoxType.USER_SETTINGS_BOX)
-                            .put('isTapForBetAction?', v);
-                        setState(() {});
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            // Container(
-            //   padding: EdgeInsets.all(10),
-            //   decoration: AppStylesNew.actionRowDecoration,
-            //   child: _buildCheckBox(
-            //       text: 'Bet Action',
-            //       inactiveText: 'Swipe',
-            //       activeText: 'Tap',
-            //       value: HiveDatasource.getInstance
-            //           .getBox(BoxType.USER_SETTINGS_BOX)
-            //           .get('isTapForBetAction?', defaultValue: false),
-            //       onChange: (bool v) async {
-            //         HiveDatasource.getInstance
-            //             .getBox(BoxType.USER_SETTINGS_BOX)
-            //             .put(
-            //               'isTapForBetAction?',
-            //               v,
-            //             );
-            //       }),
-            // ),
-
-            // sep
-            AppDimensionsNew.getVerticalSizedBox(10),
-
-            // game settings
-            Container(
-              decoration: AppDecorators.tileDecorationWithoutBorder(theme),
-              child: _buildOtherGameOptions(theme),
-            ),
-
-            // sep
-            AppDimensionsNew.getVerticalSizedBox(10),
-
-            //game secondary options
-            Container(
-              padding: EdgeInsets.all(10),
-              decoration: AppDecorators.tileDecorationWithoutBorder(theme),
-              child: ListView.separated(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                itemCount: gameSecondaryOptions.length,
-                itemBuilder: (context, index) {
-                  return gameSecondaryOptionItem(
-                    gameSecondaryOptions[index],
-                    context,
-                    theme,
-                  );
-                },
-                separatorBuilder: (context, index) {
-                  return Divider(
-                    height: 2,
-                    color: theme.secondaryColor,
-                    endIndent: 24,
-                    indent: 24,
-                  );
-                },
-              ),
-            )
-          ],
-        ),
-      ),
-    );
   }
 
   gameSecondaryOptionItem(

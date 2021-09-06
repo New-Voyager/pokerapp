@@ -69,7 +69,7 @@ class CenterButtonView extends StatelessWidget {
     final seatChange = Provider.of<SeatChangeNotifier>(context, listen: false);
     final gameContext = Provider.of<GameContextObject>(context, listen: false);
     final gameState = GameState.getState(context);
-    final tableState = gameState.getTableState(context);
+    final tableState = gameState.tableState;
     log('Seat Change: seat change in progress: ${gameState.playerSeatChangeInProgress} gameRunning: ${gameState.isGameRunning}');
     if (gameState.playerSeatChangeInProgress ||
         gameState.gameInfo.tableStatus ==
