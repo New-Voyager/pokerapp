@@ -45,6 +45,11 @@ class PlayerModel {
   bool showFirework = false;
   String rankText = '';
   int noOfCardsVisible = 0;
+  bool missedBlind = false;
+  bool postedBlind = false;
+  bool muckLosingHand = false;
+  bool autoStraddle = false;
+  bool buttonStraddle = false;
 
   // buyin status/timer
   bool showBuyIn = false;
@@ -71,6 +76,8 @@ class PlayerModel {
   bool talking = false;
   bool showMicOn = false;
   bool showMicOff = false;
+
+  bool hasNotes = false;
 
   PlayerModel({
     String name,
@@ -113,6 +120,8 @@ class PlayerModel {
     this.playerId = int.parse(data['playerId'].toString());
     this._action = PlayerActedState();
     this._connectivity = PlayerConnectivityState();
+    // Notes
+    this.hasNotes = data['hasNotes'] ?? false;
 
     DateTime now = DateTime.now();
     if (data['buyInExpTime'] != null) {

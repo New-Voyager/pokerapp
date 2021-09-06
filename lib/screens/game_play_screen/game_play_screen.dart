@@ -373,6 +373,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   @override
   void dispose() {
     Wakelock.disable();
+    if (_gameState != null) {
+      _gameState.uiClosing = true;
+    }
     super.dispose();
   }
 
@@ -478,12 +481,20 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   }
 
   Future _onJoinGame(int seatPos) async {
+    log("0-0-0 Onjooin game: ");
     final gameState = GameState.getState(_providerContext);
+    final tableState = gameState.tableState;
     final me = gameState.me(_providerContext);
+
+    if (gameState.myState.status == PlayerStatus.IN_BREAK ||
+        gameState.myState.status == PlayerStatus.NEED_TO_POST_BLIND ||
+        gameState.myState.status == PlayerStatus.JOINING) {
+      gameState.postedBlind = false;
+    }
 
     /* ignore the open seat tap as the player is seated and game is running */
     if (gameState.myState.status == PlayerStatus.PLAYING &&
-        gameState.myState.gameStatus == GameStatus.RUNNING) {
+        tableState.gameStatus == AppConstants.GAME_RUNNING) {
       log('Ignoring the open seat tap as the player is seated and game is running');
       return;
     }
@@ -930,7 +941,8 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
   startGame() {
     GamePlayScreenUtilMethods.startGame(widget.gameCode);
-    _gameState.myState.gameStatus = GameStatus.RUNNING;
+    final tableState = _gameState.tableState;
+    tableState.updateGameStatusSilent(AppConstants.GAME_RUNNING);
     _gameState.myState.notify();
   }
 

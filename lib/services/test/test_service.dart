@@ -194,24 +194,9 @@ class TestService {
 
   static TableState _getTableState() {
     BuildContext context = _context;
-
     final gameState = Provider.of<GameState>(context, listen: false);
-    return gameState.getTableState(context);
+    return gameState.tableState;
   }
-
-  // static Future<void> distributeCards() async {
-  //   // table state
-  //   final TableState tableState = _getTableState();
-  //   tableState.updateTableStatusSilent('NEW_HAND');
-  //   tableState.notifyAll();
-
-  //   await Future.delayed(const Duration(seconds: 2));
-  //   initHandSevice();
-  //   await _handActionService.handleDealStarted();
-
-  //   // tableState.updateTableStatusSilent(null);
-  //   // tableState.notifyAll();
-  // }
 
   static Future<void> clearBoardCards() async {
     final tableState = _getTableState();
@@ -541,7 +526,7 @@ class TestService {
 
   static void fillBothBoardCards() {
     final gameState = GameState.getState(_context);
-    final TableState tableState = gameState.getTableState(_context);
+    final TableState tableState = gameState.tableState;
 
     /* board 1 */ /*
     tableState.setBoardCards(
@@ -564,7 +549,7 @@ class TestService {
 
   static void fillCenterView() {
     final gameState = GameState.getState(_context);
-    final TableState tableState = gameState.getTableState(_context);
+    final TableState tableState = gameState.tableState;
 
     tableState.addFlopCards(
       1,
@@ -610,7 +595,7 @@ class TestService {
   static void resetGameState() {
     final gameState = GameState.getState(_context);
     gameState.clear(_context);
-    gameState.getTableState(_context).notifyAll();
+    gameState.tableState.notifyAll();
     ActionState state = gameState.getActionState(_context);
     state.show = false;
 
@@ -863,20 +848,20 @@ class TestService {
     log('In TestService gameContextObj.isAdmin() = ${gameContextObj.isAdmin()}');
   }
 
-  static setGameStateActive() {
-    BuildContext context = _context;
-    final myState = Provider.of<MyState>(context, listen: false);
-    myState.gameStatus = GameStatus.RUNNING;
-    myState.notify();
-  }
+  // static setGameStateActive() {
+  //   BuildContext context = _context;
+  //   final myState = Provider.of<MyState>(context, listen: false);
+  //   myState.gameStatus = GameStatus.RUNNING;
+  //   myState.notify();
+  // }
 
-  static setGameStateInActive() {
-    BuildContext context = _context;
+  // static setGameStateInActive() {
+  //   BuildContext context = _context;
 
-    final myState = Provider.of<MyState>(context, listen: false);
-    myState.gameStatus = GameStatus.UNKNOWN;
-    myState.notify();
-  }
+  //   final myState = Provider.of<MyState>(context, listen: false);
+  //   myState.gameStatus = GameStatus.UNKNOWN;
+  //   myState.notify();
+  // }
 
   static setCurrentPlayerStatusPlaying() {
     BuildContext context = _context;

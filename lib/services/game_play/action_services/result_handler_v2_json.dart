@@ -59,7 +59,7 @@ class ResultHandlerV2Json {
   });
 
   Future<void> show() async {
-    tableState = gameState.getTableState(context);
+    tableState = gameState.tableState;
     players = gameState.getPlayers(context);
 
     // update pots
@@ -279,21 +279,24 @@ class ResultHandlerV2Json {
     /* highlight the hi winners */
     players.highlightWinnerSilent(winner.seatNo);
 
-    /* highlight the winning cards for players */
-    players.highlightCardsSilent(
-      seatNo: winner.seatNo,
-      cards: winner.playerCards,
-    );
+    // highlight winning cards and rank if we are in showdown
+    if (handResult.wonAt == AppConstants.SHOW_DOWN) {
+      /* highlight the winning cards for players */
+      players.highlightCardsSilent(
+        seatNo: winner.seatNo,
+        cards: winner.playerCards,
+      );
 
-    log('WINNER player.cards: ${winner.playerCards} boardCards: ${winner.boardCards} setState: $setState ${winner.rankStr} ${AppConstants.chipMovingAnimationDuration}');
-    /* highlight the winning cards for board 1 */
-    tableState.highlightCardsSilent(
-      boardIndex,
-      winner.boardCards,
-    );
+      log('WINNER player.cards: ${winner.playerCards} boardCards: ${winner.boardCards} setState: $setState ${winner.rankStr} ${AppConstants.chipMovingAnimationDuration}');
+      /* highlight the winning cards for board 1 */
+      tableState.highlightCardsSilent(
+        boardIndex,
+        winner.boardCards,
+      );
 
-    /* update the rank str */
-    tableState.updateRankStrSilent(rank);
+      /* update the rank str */
+      tableState.updateRankStrSilent(rank);
+    }
 
     /* update the stack amount for the winners */
     final PlayerModel player = players.getPlayerBySeat(winner.seatNo);

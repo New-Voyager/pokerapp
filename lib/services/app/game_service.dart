@@ -162,6 +162,12 @@ mutation updateInputs(\$gameCode :String!,\$inputSettings: GameSettingsUpdateInp
       }
   """;
 
+  static String postBlindQuery = """
+    mutation postBlind(\$gameCode : String!){
+      ret: postBlind(gameCode : \$gameCode)
+    }
+  """;
+
   static Future<bool> setNotesForUser(String playerUuid, String notes) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     Map<String, dynamic> variables = {"playerUuid": playerUuid, "notes": notes};
@@ -181,6 +187,27 @@ mutation updateInputs(\$gameCode :String!,\$inputSettings: GameSettingsUpdateInp
     Map<String, dynamic> variables = {"playerUuid": playerUuid};
     QueryResult result = await _client.query(QueryOptions(
         documentNode: gql(getNotesForUserQuery), variables: variables));
+
+    if (result.hasException) {
+      log(result.exception.toString());
+      return "";
+    }
+    /* Sample return data 
+    {
+      "data": {
+        "ret": "Sample notes2"
+      }
+    } 
+    */
+    return result.data['ret'];
+  }
+
+  // Post Blinds
+  static Future<String> postBlinds(String gameCode) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    Map<String, dynamic> variables = {"gameCode": gameCode};
+    QueryResult result = await _client.query(
+        QueryOptions(documentNode: gql(postBlindQuery), variables: variables));
 
     if (result.hasException) {
       log(result.exception.toString());

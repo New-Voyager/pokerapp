@@ -44,7 +44,7 @@ class ResultHandler {
   });
 
   Future<void> show() async {
-    tableState = gameState.getTableState(context);
+    tableState = gameState.tableState;
     players = gameState.getPlayers(context);
 
     /* then, change the status of the footer to show the result */

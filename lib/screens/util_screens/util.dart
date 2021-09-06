@@ -508,86 +508,8 @@ showPlayerPopup(context, GlobalKey seatKey, GameState gameState, Seat seat) {
         case 0:
           // Handling note selection
           log('user selected NOTE option');
-          final savedNotes =
-              await GameService.getNotesForUser(seat.player.playerUuid);
+          handleNotesPopup(context, seat);
 
-          final data = await showDialog(
-            context: context,
-            builder: (context) {
-              // Fetch text from API
-              TextEditingController _controller =
-                  TextEditingController(text: savedNotes);
-              return AlertDialog(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                    side: BorderSide(
-                      color: AppColorsNew.newBorderColor,
-                    )),
-                backgroundColor: AppColorsNew.newDialogBgColor,
-                title: Row(
-                  children: [
-                    Icon(
-                      Icons.note,
-                      color: AppColorsNew.labelColor,
-                    ),
-                    AppDimensionsNew.getHorizontalSpace(8),
-                    Text(
-                      _appScreenText['notes'],
-                      style: AppStylesNew.labelTextStyle,
-                    )
-                  ],
-                ),
-                content: Column(
-                  children: [
-                    TextField(
-                      controller: _controller,
-                      decoration: InputDecoration(
-                        hintText: _appScreenText['enterTextHere'],
-                        fillColor: AppColorsNew.actionRowBgColor,
-                        filled: true,
-                        border: InputBorder.none,
-                      ),
-                      minLines: 5,
-                      maxLines: 8,
-                    ),
-                    AppDimensionsNew.getVerticalSizedBox(16),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        RoundedColorButton(
-                          text: _appScreenText['cancel'],
-                          textColor: AppColorsNew.newRedButtonColor,
-                          backgroundColor: Colors.transparent,
-                          borderColor: AppColorsNew.newRedButtonColor,
-                          onTapFunction: () => Navigator.of(context).pop(),
-                        ),
-                        RoundedColorButton(
-                          text: _appScreenText['save'],
-                          textColor: AppColorsNew.darkGreenShadeColor,
-                          backgroundColor: AppColorsNew.newGreenButtonColor,
-                          borderColor: AppColorsNew.darkGreenShadeColor,
-                          onTapFunction: () =>
-                              Navigator.of(context).pop(_controller.text),
-                        ),
-                      ],
-                    ),
-                    AppDimensionsNew.getVerticalSizedBox(16),
-                  ],
-                  mainAxisSize: MainAxisSize.min,
-                ),
-              );
-            },
-          );
-          if (data != null) {
-            // API Call to save notes
-            final res =
-                await GameService.setNotesForUser(seat.player.playerUuid, data);
-            if (res) {
-              Alerts.showNotification(
-                titleText: _appScreenText['notesSaved'],
-              );
-            }
-          }
           break;
 
         // Animation
@@ -636,4 +558,86 @@ showPlayerPopup(context, GlobalKey seatKey, GameState gameState, Seat seat) {
     }
     gameState.dismissPopup(context);
   });
+}
+
+handleNotesPopup(BuildContext context, Seat seat) async {
+  AppTextScreen _appScreenText = getAppTextScreen("showPlayerPopup");
+  final savedNotes = await GameService.getNotesForUser(seat.player.playerUuid);
+
+  final data = await showDialog(
+    context: context,
+    builder: (context) {
+      // Fetch text from API
+      TextEditingController _controller =
+          TextEditingController(text: savedNotes);
+      return AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: BorderSide(
+            color: AppColorsNew.newBorderColor,
+          ),
+        ),
+        backgroundColor: AppColorsNew.newDialogBgColor,
+        title: Row(
+          children: [
+            Icon(
+              Icons.note,
+              color: AppColorsNew.labelColor,
+            ),
+            AppDimensionsNew.getHorizontalSpace(8),
+            Text(
+              _appScreenText['notes'],
+              style: AppStylesNew.labelTextStyle,
+            )
+          ],
+        ),
+        content: Column(
+          children: [
+            TextField(
+              controller: _controller,
+              decoration: InputDecoration(
+                hintText: _appScreenText['enterTextHere'],
+                fillColor: AppColorsNew.actionRowBgColor,
+                filled: true,
+                border: InputBorder.none,
+              ),
+              minLines: 5,
+              maxLines: 8,
+            ),
+            AppDimensionsNew.getVerticalSizedBox(16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                RoundedColorButton(
+                  text: _appScreenText['cancel'],
+                  textColor: AppColorsNew.newRedButtonColor,
+                  backgroundColor: Colors.transparent,
+                  borderColor: AppColorsNew.newRedButtonColor,
+                  onTapFunction: () => Navigator.of(context).pop(),
+                ),
+                RoundedColorButton(
+                  text: _appScreenText['save'],
+                  textColor: AppColorsNew.darkGreenShadeColor,
+                  backgroundColor: AppColorsNew.newGreenButtonColor,
+                  borderColor: AppColorsNew.darkGreenShadeColor,
+                  onTapFunction: () =>
+                      Navigator.of(context).pop(_controller.text),
+                ),
+              ],
+            ),
+          ],
+          mainAxisSize: MainAxisSize.min,
+        ),
+      );
+    },
+  );
+  if (data != null) {
+    // API Call to save notes
+    final res = await GameService.setNotesForUser(seat.player.playerUuid, data);
+    if (res) {
+      Alerts.showNotification(
+        titleText: _appScreenText['notesSaved'],
+      );
+    }
+  }
 }

@@ -205,6 +205,7 @@ class AppConstants {
   static const String FLOP = 'FLOP';
   static const String TURN = 'TURN';
   static const String RIVER = 'RIVER';
+  static const String SHOW_DOWN = 'SHOW_DOWN';
 
   static const String ANNOUNCEMENT = 'ANNOUNCEMENT';
   static const String DEALER_CHOICE = 'DEALER_CHOICE';
