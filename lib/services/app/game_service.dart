@@ -119,7 +119,16 @@ mutation updateInputs(\$gameCode :String!,\$inputSettings: GameSettingsUpdateInp
 """;
 
   static String getGamePlayerSettingsQuery = """
-
+query mySettings(\$gameCode:String!){
+  ret:myGameSettings(gameCode:\$gameCode){
+    autoStraddle
+    straddle
+    buttonStraddle
+    bombPotEnabled
+    muckLosingHand
+    runItTwiceEnabled
+  }
+}
   """;
 
   static String updateGamePlayerSettingsQuery = """
@@ -296,7 +305,8 @@ mutation updateInputs(\$gameCode :String!,\$inputSettings: GameSettingsUpdateInp
       "settings": input.toJson()
     };
     QueryResult result = await _client.query(QueryOptions(
-        documentNode: gql(updateGameSettingsQuery), variables: variables));
+        documentNode: gql(updateGamePlayerSettingsQuery),
+        variables: variables));
 
     if (result.hasException) {
       log("Exception : ${result.exception.toString()}");
