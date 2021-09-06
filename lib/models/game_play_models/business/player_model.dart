@@ -74,6 +74,8 @@ class PlayerModel {
   bool showMicOn = false;
   bool showMicOff = false;
 
+  bool hasNotes = false;
+
   PlayerModel({
     String name,
     int seatNo,
@@ -115,6 +117,8 @@ class PlayerModel {
     this.playerId = int.parse(data['playerId'].toString());
     this._action = PlayerActedState();
     this._connectivity = PlayerConnectivityState();
+    // Notes
+    this.hasNotes = data['hasNotes'] ?? false;
 
     DateTime now = DateTime.now();
     if (data['buyInExpTime'] != null) {
