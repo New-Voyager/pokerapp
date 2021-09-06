@@ -47,6 +47,9 @@ class PlayerModel {
   int noOfCardsVisible = 0;
   bool missedBlind = false;
   bool postedBlind = false;
+  bool muckLosingHand = false;
+  bool autoStraddle = false;
+  bool buttonStraddle = false;
 
   // buyin status/timer
   bool showBuyIn = false;

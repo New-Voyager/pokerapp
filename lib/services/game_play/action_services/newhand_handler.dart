@@ -103,6 +103,11 @@ class NewHandHandler {
         playerObj.inhand = playerInSeat.inhand;
         playerObj.missedBlind = playerInSeat.missedBlind;
         playerObj.postedBlind = playerInSeat.postedBlind;
+        playerObj.muckLosingHand = playerInSeat.muckLosingHand;
+        playerObj.buttonStraddle = playerInSeat.buttonStraddle;
+        playerObj.autoStraddle = playerInSeat.autoStraddle;
+
+        playerObj.muckLosingHand = true;
 
         if (playerInSeat.buyInExpTime != null &&
             playerInSeat.breakExpTime.length > 0 &&
