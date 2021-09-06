@@ -4,7 +4,6 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:pokerapp/enums/game_status.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/enums/player_status.dart';
@@ -76,17 +75,21 @@ class GameState {
   ListenableProvider<Players> _playersProvider;
   ListenableProvider<ActionState> _playerAction;
   ListenableProvider<MyState> _myStateProvider;
-  ListenableProvider<WaitlistState> _waitlistProvider;
   ListenableProvider<ServerConnectionState> _connectionState;
   ListenableProvider<JanusEngine> _janusEngine;
-  ListenableProvider<PopupButtonState> _popupButtonState;
+  ListenableProvider<TappedSeatState> _tappedSeatStateProvider;
   ListenableProvider<CommunicationState> _communicationStateProvider;
-  ListenableProvider<StraddlePromptState> _straddlePromptState;
+  ListenableProvider<StraddlePromptState> _straddlePromptProvider;
   ListenableProvider<RedrawTopSectionState> _redrawTopSectionState;
   ListenableProvider<RedrawFooterSectionState> _redrawFooterSectionState;
 
+  StraddlePromptState _straddlePromptState;
   HoleCardsState _holeCardsState;
   ListenableProvider<HoleCardsState> _holeCardsProvider;
+  TappedSeatState _tappedSeatState;
+
+  // For posting blind
+  bool postedBlind;
 
   CommunicationState _communicationState;
   Players _players;
@@ -149,6 +152,8 @@ class GameState {
 
   bool isBotGame = false;
 
+  bool uiClosing = false;
+
   bool customizationMode = false;
   bool showCustomizationEditFooter = true;
   Future<void> initialize({
@@ -161,6 +166,7 @@ class GameState {
     bool replayMode,
     bool customizationMode = false,
   }) async {
+    this.postedBlind = true;
     this._seats = Map<int, Seat>();
     this._gameInfo = gameInfo;
     this._gameCode = gameCode;
@@ -202,8 +208,10 @@ class GameState {
     this._markedCards =
         ListenableProvider<MarkedCards>(create: (_) => MarkedCards());
 
-    this._waitlistProvider =
-        ListenableProvider<WaitlistState>(create: (_) => WaitlistState());
+    this._tappedSeatState = TappedSeatState();
+
+    // this._waitlistProvider =
+    //     ListenableProvider<WaitlistState>(create: (_) => WaitlistState());
 
     this._connectionState = ListenableProvider<ServerConnectionState>(
         create: (_) => ServerConnectionState());
@@ -216,10 +224,12 @@ class GameState {
             create: (_) => RedrawFooterSectionState());
 
     _communicationState = CommunicationState(this);
+    _straddlePromptState = StraddlePromptState();
+
     this._communicationStateProvider = ListenableProvider<CommunicationState>(
         create: (_) => _communicationState);
-    this._straddlePromptState = ListenableProvider<StraddlePromptState>(
-        create: (_) => StraddlePromptState());
+    this._straddlePromptProvider = ListenableProvider<StraddlePromptState>(
+        create: (_) => _straddlePromptState);
     _holeCardsState = HoleCardsState();
     this._holeCardsProvider =
         ListenableProvider<HoleCardsState>(create: (_) => _holeCardsState);
@@ -248,8 +258,8 @@ class GameState {
     this._janusEngine =
         ListenableProvider<JanusEngine>(create: (_) => this.janusEngine);
 
-    this._popupButtonState =
-        ListenableProvider<PopupButtonState>(create: (_) => PopupButtonState());
+    this._tappedSeatStateProvider =
+        ListenableProvider<TappedSeatState>(create: (_) => _tappedSeatState);
 
     List<PlayerModel> players = [];
     if (gameInfo.playersInSeats != null) {
@@ -303,7 +313,7 @@ class GameState {
 
     log('In GameState initialize(), _gameInfo.status = ${_gameInfo.status}');
     if (_gameInfo.status == AppConstants.GAME_ACTIVE) {
-      this._myState.gameStatus = GameStatus.RUNNING;
+      //this._myState.gameStatus = GameStatus.RUNNING;
       this._myState.notify();
     }
 
@@ -353,8 +363,7 @@ class GameState {
         showPopup = false;
       }
       this._tappedSeatPos = null;
-      final state = this.getPopupState(context);
-      state.notify();
+      this._tappedSeatState.notify();
     }
 
     if (showPopup) {
@@ -364,17 +373,14 @@ class GameState {
         } else {
           this._tappedSeatPos = null;
         }
-
-        final state = this.getPopupState(context);
-        state.notify();
+        this._tappedSeatState.notify();
       });
     }
   }
 
   void dismissPopup(BuildContext context) {
     this._tappedSeatPos = null;
-    final state = this.getPopupState(context);
-    state.notify();
+    this._tappedSeatState.notify();
   }
 
   SeatPos get getTappedSeatPos => this._tappedSeatPos;
@@ -401,6 +407,10 @@ class GameState {
 
   int get playersInSeatsCount {
     return _players.count;
+  }
+
+  Players get players {
+    return _players;
   }
 
   bool get ended {
@@ -540,7 +550,7 @@ class GameState {
 
     players.updatePlayersSilent(playersInSeats);
 
-    final tableState = this._tableState; //this.getTableState(context);
+    final tableState = this._tableState;
     tableState.updateGameStatusSilent(gameInfo.status);
     tableState.updateTableStatusSilent(gameInfo.tableStatus);
     players.notifyAll();
@@ -551,8 +561,8 @@ class GameState {
 
     log('In GameState refresh(), _gameInfo.status = ${_gameInfo.status}');
     if (_gameInfo.status == AppConstants.GAME_ACTIVE &&
-        this._myState.gameStatus != GameStatus.RUNNING) {
-      this._myState.gameStatus = GameStatus.RUNNING;
+        tableState.gameStatus != AppConstants.GAME_RUNNING) {
+      //this._myState.gameStatus = GameStatus.RUNNING;
       this._myState.notify();
     }
 
@@ -589,7 +599,7 @@ class GameState {
   static GameState getState(BuildContext context) => context.read<GameState>();
 
   void clear(BuildContext context) {
-    final tableState = this.getTableState(context);
+    final tableState = this.tableState;
     final players = this.getPlayers(context);
     this.holecardOrder = HoleCardOrder.DEALT;
     // clear players
@@ -609,6 +619,8 @@ class GameState {
         listen: false,
       );
 
+  TableState get tableState => this._tableState;
+
   HandInfoState getHandInfo(BuildContext context, {bool listen = false}) =>
       Provider.of<HandInfoState>(context, listen: listen);
 
@@ -621,15 +633,16 @@ class GameState {
   ActionState getActionState(BuildContext context, {bool listen = false}) =>
       Provider.of<ActionState>(context, listen: listen);
 
-  WaitlistState getWaitlistState(BuildContext context, {bool listen = false}) =>
-      Provider.of<WaitlistState>(context, listen: listen);
+  // WaitlistState getWaitlistState(BuildContext context, {bool listen = false}) =>
+  //     Provider.of<WaitlistState>(context, listen: listen);
 
   ServerConnectionState getConnectionState(BuildContext context,
           {bool listen = false}) =>
       Provider.of<ServerConnectionState>(context, listen: listen);
 
-  PopupButtonState getPopupState(BuildContext context, {bool listen = false}) =>
-      Provider.of<PopupButtonState>(context, listen: listen);
+  TappedSeatState getTappedSeatState(BuildContext context,
+          {bool listen = false}) =>
+      Provider.of<TappedSeatState>(context, listen: listen);
 
   RedrawTopSectionState getRedrawTopSectionState(BuildContext context,
           {bool listen = false}) =>
@@ -727,12 +740,12 @@ class GameState {
       this._myStateProvider,
       this._markedCards,
       this._gameMessagingService,
-      this._waitlistProvider,
+      // this._waitlistProvider,
       this._connectionState,
       this._janusEngine,
-      this._popupButtonState,
+      this._tappedSeatStateProvider,
       this._communicationStateProvider,
-      this._straddlePromptState,
+      this._straddlePromptProvider,
       this._holeCardsProvider,
       this._redrawTopSectionState,
       this._redrawFooterSectionState,
@@ -840,10 +853,8 @@ class GameState {
     return _audioCache[assetFile];
   }
 
-  StraddlePromptState straddlePromptState(BuildContext context) {
-    StraddlePromptState prompt =
-        Provider.of<StraddlePromptState>(context, listen: false);
-    return prompt;
+  StraddlePromptState get straddlePromptState {
+    return this.straddlePromptState;
   }
 
   PlayerModel getMe() {
@@ -952,6 +963,16 @@ class GameState {
     } else {
       return player.cards.reversed.toList();
     }
+  }
+
+  void setPostedBlind(bool flag) {
+    postedBlind = flag;
+  }
+}
+
+class TappedSeatState extends ChangeNotifier {
+  void notify() {
+    this.notifyListeners();
   }
 }
 
@@ -1087,8 +1108,7 @@ class ServerConnectionState extends ChangeNotifier {
   }
 }
 
-// FIXME: WHAT IS THE USE OF THIS CLASS?
-class PopupButtonState extends ChangeNotifier {
+class SeatContextState extends ChangeNotifier {
   void notify() {
     notifyListeners();
   }

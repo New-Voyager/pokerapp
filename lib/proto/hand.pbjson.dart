@@ -245,12 +245,13 @@ const PlayerInSeatState$json = const {
     const {'1': 'posted_blind', '3': 11, '4': 1, '5': 8, '10': 'postedBlind'},
     const {'1': 'seat_no', '3': 12, '4': 1, '5': 13, '10': 'seatNo'},
     const {'1': 'run_it_twice', '3': 13, '4': 1, '5': 8, '10': 'runItTwice'},
+    const {'1': 'missed_blind', '3': 14, '4': 1, '5': 8, '10': 'missedBlind'},
   ],
 };
 
 /// Descriptor for `PlayerInSeatState`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List playerInSeatStateDescriptor = $convert.base64Decode(
-    'ChFQbGF5ZXJJblNlYXRTdGF0ZRIbCglwbGF5ZXJfaWQYASABKARSCHBsYXllcklkEhIKBG5hbWUYAiABKAlSBG5hbWUSKgoGc3RhdHVzGAMgASgOMhIuZ2FtZS5QbGF5ZXJTdGF0dXNSBnN0YXR1cxIUCgVzdGFjaxgEIAEoAlIFc3RhY2sSJgoFcm91bmQYBSABKA4yEC5nYW1lLkhhbmRTdGF0dXNSBXJvdW5kEiYKDnBsYXllclJlY2VpdmVkGAYgASgCUg5wbGF5ZXJSZWNlaXZlZBIlCg9idXlfaW5fZXhwX3RpbWUYByABKAlSDGJ1eUluRXhwVGltZRIkCg5icmVha19leHBfdGltZRgIIAEoCVIMYnJlYWtFeHBUaW1lEhYKBmluaGFuZBgJIAEoCFIGaW5oYW5kEhsKCW9wZW5fc2VhdBgKIAEoCFIIb3BlblNlYXQSIQoMcG9zdGVkX2JsaW5kGAsgASgIUgtwb3N0ZWRCbGluZBIXCgdzZWF0X25vGAwgASgNUgZzZWF0Tm8SIAoMcnVuX2l0X3R3aWNlGA0gASgIUgpydW5JdFR3aWNl');
+    'ChFQbGF5ZXJJblNlYXRTdGF0ZRIbCglwbGF5ZXJfaWQYASABKARSCHBsYXllcklkEhIKBG5hbWUYAiABKAlSBG5hbWUSKgoGc3RhdHVzGAMgASgOMhIuZ2FtZS5QbGF5ZXJTdGF0dXNSBnN0YXR1cxIUCgVzdGFjaxgEIAEoAlIFc3RhY2sSJgoFcm91bmQYBSABKA4yEC5nYW1lLkhhbmRTdGF0dXNSBXJvdW5kEiYKDnBsYXllclJlY2VpdmVkGAYgASgCUg5wbGF5ZXJSZWNlaXZlZBIlCg9idXlfaW5fZXhwX3RpbWUYByABKAlSDGJ1eUluRXhwVGltZRIkCg5icmVha19leHBfdGltZRgIIAEoCVIMYnJlYWtFeHBUaW1lEhYKBmluaGFuZBgJIAEoCFIGaW5oYW5kEhsKCW9wZW5fc2VhdBgKIAEoCFIIb3BlblNlYXQSIQoMcG9zdGVkX2JsaW5kGAsgASgIUgtwb3N0ZWRCbGluZBIXCgdzZWF0X25vGAwgASgNUgZzZWF0Tm8SIAoMcnVuX2l0X3R3aWNlGA0gASgIUgpydW5JdFR3aWNlEiEKDG1pc3NlZF9ibGluZBgOIAEoCFILbWlzc2VkQmxpbmQ=');
 @$core.Deprecated('Use playerBalanceDescriptor instead')
 const PlayerBalance$json = const {
   '1': 'PlayerBalance',

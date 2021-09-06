@@ -303,7 +303,7 @@ class GameUpdateService {
     }
 
     if (closed) return;
-    final tableState = _gameState.getTableState(_context);
+    final tableState = _gameState.tableState;
     tableState.notifyAll();
     _gameState.updatePlayers(_context);
   }
@@ -346,7 +346,7 @@ class GameUpdateService {
     }
 
     if (closed) return;
-    final tableState = _gameState.getTableState(_context);
+    final tableState = _gameState.tableState;
     tableState.notifyAll();
     _gameState.updatePlayers(_context);
   }
@@ -414,7 +414,7 @@ class GameUpdateService {
     if (closed) return;
     _gameState.markOpenSeat(_context, seatNo);
     if (closed) return;
-    final tableState = _gameState.getTableState(_context);
+    final tableState = _gameState.tableState;
     tableState.notifyAll();
   }
 
@@ -508,7 +508,7 @@ class GameUpdateService {
       seat.notify();
     }
     if (closed) return;
-    final tableState = _gameState.getTableState(_context);
+    final tableState = _gameState.tableState;
     tableState.notifyAll();
   }
 
@@ -926,11 +926,12 @@ class GameUpdateService {
   }) async {
     log('waitlist seating message received');
     if (closed) return;
-    final waitlistState = _gameState.getWaitlistState(_context);
-    waitlistState.fromJson(data);
-    waitlistState.notify();
+    // final waitlistState = _gameState.getWaitlistState(_context);
+    // waitlistState.fromJson(data);
+    // waitlistState.notify();
+    final playerName = data['waitlistPlayerName'];
     String message =
-        '${waitlistState.name} ${_appScreenText['isInvitedToTakeTheOpenSeat']}';
+        '$playerName ${_appScreenText['isInvitedToTakeTheOpenSeat']}';
 
     showOverlayNotification(
       (context) => OverlayNotificationWidget(
@@ -1147,7 +1148,7 @@ class GameUpdateService {
     }
     */
 
-    final tableState = _gameState.getTableState(_context);
+    final tableState = _gameState.tableState;
 
     if (tableState.tableStatus != tableStatus ||
         tableState.gameStatus != gameStatus) {
@@ -1276,7 +1277,7 @@ class GameUpdateService {
     }
     */
 
-    final tableState = _gameState.getTableState(_context);
+    final tableState = _gameState.tableState;
 
     // if the status hasn't changed, don't do anything
     if (gameStatus == tableState.gameStatus) {

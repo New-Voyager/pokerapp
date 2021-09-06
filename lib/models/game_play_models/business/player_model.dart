@@ -45,6 +45,8 @@ class PlayerModel {
   bool showFirework = false;
   String rankText = '';
   int noOfCardsVisible = 0;
+  bool missedBlind = false;
+  bool postedBlind = false;
 
   // buyin status/timer
   bool showBuyIn = false;

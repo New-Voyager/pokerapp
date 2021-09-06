@@ -240,7 +240,7 @@ class GamePlayScreenUtilMethods {
       }
       gameState.myState.notify();
     }
-    final tableState = gameState.getTableState(context);
+    final tableState = gameState.tableState;
     tableState.notifyAll();
     gameState.updatePlayers(context);
     if (newPlayerModel.isMe && status == PlayerStatus.WAIT_FOR_BUYIN) {

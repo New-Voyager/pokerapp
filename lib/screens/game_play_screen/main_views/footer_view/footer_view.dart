@@ -142,6 +142,7 @@ class _FooterViewState extends State<FooterView>
         builder: (BuildContext _, MyState myState, Widget __) {
       log('footerview: my state has changed');
       if (!gameState.isPlaying) {
+        return Container();
         // if i am not in the waitlist
         if (myState.status != PlayerStatus.IN_QUEUE) {
           return Align(
