@@ -15,6 +15,7 @@ import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/screens/game_context_screen/game_options/game_option_bottom_sheet.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/animating_widgets/my_last_action_animating_widget.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/status_options_buttons.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/widgets/round_color_button.dart';
 import 'package:provider/provider.dart';
@@ -141,7 +142,11 @@ class _FooterViewState extends State<FooterView>
     return Consumer<MyState>(
         builder: (BuildContext _, MyState myState, Widget __) {
       log('footerview: my state has changed');
-      if (!gameState.isPlaying) {
+      if (!gameState.isPlaying ||
+          myState.status == PlayerStatus.WAIT_FOR_BUYIN) {
+        log('footerview: building status option widget');
+        return StatusOptionsWidget(gameState: gameState);
+
         return Container();
         // if i am not in the waitlist
         if (myState.status != PlayerStatus.IN_QUEUE) {

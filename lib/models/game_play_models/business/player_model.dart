@@ -118,6 +118,9 @@ class PlayerModel {
     this.stack = data['stack'];
     this.status = data['status'];
     this.playerId = int.parse(data['playerId'].toString());
+    if (data['missedBlind'] != null) {
+      this.missedBlind = data['missedBlind'];
+    }
     this._action = PlayerActedState();
     this._connectivity = PlayerConnectivityState();
     // Notes

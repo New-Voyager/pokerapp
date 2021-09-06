@@ -996,7 +996,7 @@ class _GameOptionState extends State<GameOption> {
           _buildPlayerSettingOptions(theme));
     }
 
-    bool waitinglistAllowed = true;
+    bool waitinglistAllowed = gameInfo.waitlistAllowed;
     if (waitinglistAllowed) {
       // tabs.add(Tab(
       //   child: Text('Waiting List'),

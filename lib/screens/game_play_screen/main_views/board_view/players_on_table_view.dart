@@ -68,9 +68,6 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
   // find positions of parent widget
   GlobalKey _parentKey = GlobalKey();
 
-  // hold position of user tile
-  //List<GlobalKey> _playerKeys = [];
-
   // some offset
   double offset = 0;
 
@@ -98,15 +95,6 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     // cacheSeatPositions();
     super.initState();
   }
-
-  // // todo: this method can be optimized
-  // void cacheSeatPositions() {
-  //   WidgetsBinding.instance.addPostFrameCallback((_) {
-  //     for (int seatNo = 1;
-  //         seatNo <= widget.gameState.gameInfo.maxPlayers;
-  //         seatNo++) findPositionOfUser(seatNo: seatNo);
-  //   });
-  // }
 
   void _seatChangeAnimationHandler() {
     final SeatChangeNotifier hostSeatChange = Provider.of<SeatChangeNotifier>(
@@ -193,8 +181,6 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
 
     animationController.addListener(() async {
       if (animationController.isCompleted) {
-        return;
-
         /* wait before the explosion */
         // await Future.delayed(_durationWaitBeforeExplosion);
 

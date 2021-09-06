@@ -20,6 +20,16 @@ import 'package:pokerapp/services/data/hive_datasource_impl.dart';
 import 'package:pokerapp/services/gql_errors.dart';
 import 'package:tenor/tenor.dart';
 
+class JoinGameResponse {
+  String status;
+  bool missedBlind;
+}
+
+class SitBackResponse {
+  String status;
+  bool missedBlind;
+}
+
 class GameService {
   static String gameDetailQuery = """
       query completedGame(\$gameCode: String!) {
@@ -953,11 +963,14 @@ mutation updateInputs(\$gameCode :String!,\$inputSettings: GameSettingsUpdateInp
   }
 
   /* this method joins the game at a particular seat number */
-  static Future<String> joinGame(String gameCode, int seatNo) async {
+  static Future<JoinGameResponse> joinGame(String gameCode, int seatNo) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
 
     String _mutation = """mutation{
-      joinGame(gameCode: "$gameCode", seatNo: $seatNo)
+      status: joinGame(gameCode: "$gameCode", seatNo: $seatNo) {
+        status
+        missedBlind
+      }
     }
     """;
 
@@ -968,8 +981,10 @@ mutation updateInputs(\$gameCode :String!,\$inputSettings: GameSettingsUpdateInp
     if (result.hasException) {
       throw GqlError.fromException(result.exception);
     }
-
-    return result.data['joinGame'];
+    JoinGameResponse resp = JoinGameResponse();
+    resp.status = result.data['status']['status'];
+    resp.missedBlind = result.data['status']['missedBlind'];
+    return resp;
   }
 
   static Future<PlayerModel> takeSeat(String gameCode, int seatNo) async {
@@ -989,6 +1004,7 @@ mutation updateInputs(\$gameCode :String!,\$inputSettings: GameSettingsUpdateInp
         breakExpTime
         gameToken
         isBot
+        missedBlind
       }
     }
     """;
@@ -1301,7 +1317,7 @@ mutation updateInputs(\$gameCode :String!,\$inputSettings: GameSettingsUpdateInp
     return status;
   }
 
-  static Future<bool> sitBack(String gameCode) async {
+  static Future<SitBackResponse> sitBack(String gameCode) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     String _query = """
           mutation (\$gameCode: String!){
@@ -1319,9 +1335,11 @@ mutation updateInputs(\$gameCode :String!,\$inputSettings: GameSettingsUpdateInp
     if (result.hasException) return null;
 
     Map game = (result.data as LazyCacheMap).data;
-    bool status = game["status"];
+    dynamic status = game["status"];
     log('Sit back Game code: $gameCode status: $status');
-
-    return status;
+    SitBackResponse resp = SitBackResponse();
+    resp.status = status['status'];
+    resp.missedBlind = status['missedBlind'];
+    return resp;
   }
 }

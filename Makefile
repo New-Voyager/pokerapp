@@ -4,9 +4,9 @@ GCP_REGISTRY := gcr.io/voyager-01-285603
 DO_REGISTRY := registry.digitalocean.com/voyager
 REGISTRY := $(GCP_REGISTRY)
 
-API_SERVER_IMAGE := $(REGISTRY)/api-server:0.7.12
-GAME_SERVER_IMAGE := $(REGISTRY)/game-server:0.7.4
-BOTRUNNER_IMAGE := $(REGISTRY)/botrunner:0.7.3
+API_SERVER_IMAGE := $(REGISTRY)/api-server:0.7.14
+GAME_SERVER_IMAGE := $(REGISTRY)/game-server:0.7.5
+BOTRUNNER_IMAGE := $(REGISTRY)/botrunner:0.7.5
 TIMER_IMAGE := $(REGISTRY)/timer:0.5.4
 
 NATS_SERVER_IMAGE := $(REGISTRY)/nats:2.1.7-alpine3.11

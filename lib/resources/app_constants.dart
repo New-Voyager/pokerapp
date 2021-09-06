@@ -149,6 +149,7 @@ class AppConstants {
   static const String NEWUPDATE_NOT_PLAYING = 'NEWUPDATE_NOT_PLAYING';
 
   static const String IN_BREAK = 'IN_BREAK';
+  static const String IN_QUEUE = 'IN_QUEUE';
 
   /* table statuses */
   static const String WAITING_TO_BE_STARTED = 'WAITING_TO_BE_STARTED';

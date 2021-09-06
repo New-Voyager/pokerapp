@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
-import 'package:pokerapp/enums/game_status.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/enums/player_status.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
@@ -171,20 +170,25 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
 
   Widget _buildDisplayCardsWidget(
     Seat seat,
-    FooterStatus footerStatus,
-  ) =>
-      Transform.translate(
-        // TODO: NEED TO VERIFY THIS FOR DIFF SCREEN SIZES
-        offset: const Offset(0.0, 20.0),
-        child: Container(
-          height: widget.boardAttributes.namePlateSize.height,
-          width: widget.boardAttributes.namePlateSize.width,
-          child: DisplayCardsWidget(
-            seat,
-            footerStatus,
-          ),
+    HandState handState,
+  ) {
+    log('SeatView: Building display cards. State: ${handState.toString()}');
+    if (handState != HandState.RESULT) {
+      return SizedBox(width: 0, height: 0);
+    }
+
+    return Transform.translate(
+      // TODO: NEED TO VERIFY THIS FOR DIFF SCREEN SIZES
+      offset: const Offset(0.0, 20.0),
+      child: Container(
+        height: widget.boardAttributes.namePlateSize.height,
+        width: widget.boardAttributes.namePlateSize.width,
+        child: DisplayCardsWidget(
+          seat,
         ),
-      );
+      ),
+    );
+  }
 
   bool _showHoleCard(GameState gameState, Seat seat) {
     return gameState.currentPlayerId == seat.player.playerId &&
@@ -308,12 +312,12 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
             pos == SeatPos.middleLeft ||
             pos == SeatPos.topLeft ||
             pos == SeatPos.topCenter ||
-            pos == SeatPos.topCenter1 ) {
+            pos == SeatPos.topCenter1) {
           notesOffset =
               Offset(-((widget.boardAttributes.namePlateSize.width / 2)), 0);
         } else {
-          notesOffset = Offset(
-              ((widget.boardAttributes.namePlateSize.width / 2)), 0);
+          notesOffset =
+              Offset(((widget.boardAttributes.namePlateSize.width / 2)), 0);
         }
         log("0-0-0- Position: ${pos}, Offset : ${notesOffset} ");
         return InkWell(
@@ -329,17 +333,8 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
                 boardAttributes: boardAttributes,
               ),
 
-              // result cards and show selected cards by a user
-              Consumer<ValueNotifier<FooterStatus>>(
-                builder: (_, vnFooterStatus, __) => _buildDisplayCardsWidget(
-                  widget.seat,
-                  vnFooterStatus.value,
-                ),
-              ),
-              // Transform.translate(
-              //     offset: Offset(70, 40),
-              //     child:
-              //         GamePlayScreenUtilMethods.breakBuyIntimer(context, seat)),
+              // result cards shown in player view at the time of result
+              _buildDisplayCardsWidget(widget.seat, gameState.handState),
 
               // player action text
               Positioned(
@@ -366,14 +361,14 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
                   ),
                 ),
               ),
+
               // player hole cards
               Transform.translate(
                 offset: boardAttributes.playerHoleCardOffset,
                 child: Transform.scale(
                   scale: boardAttributes.playerHoleCardScale,
-                  child: _showHoleCard(gameState, widget.seat)
-                      ? _buildDisplayCardsWidget(
-                          widget.seat, FooterStatus.Result)
+                  child: gameState.handState == HandState.RESULT
+                      ? SizedBox(width: 0, height: 0)
                       : PlayerCardsWidget(
                           widget.seat,
                           this.widget.cardsAlignment,

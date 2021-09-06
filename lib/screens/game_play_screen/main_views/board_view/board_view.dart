@@ -139,12 +139,12 @@ class BoardView extends StatelessWidget {
         Align(child: StackSwitchSeatAnimatingWidget()),
 
         // building buy in button
-        Consumer<MyState>(
-          builder: (BuildContext _, MyState myState, Widget __) => Align(
-            alignment: Alignment.bottomCenter,
-            child: buyInButton(context, theme),
-          ),
-        ),
+        // Consumer<MyState>(
+        //   builder: (BuildContext _, MyState myState, Widget __) => Align(
+        //     alignment: Alignment.bottomCenter,
+        //     child: buyInButton(context, theme),
+        //   ),
+        // ),
 
         // building sit back button
         Consumer<MyState>(
@@ -292,7 +292,9 @@ class BoardView extends StatelessWidget {
             color: Colors.blueGrey,
             verticalPadding: 1,
             fontSize: 14,
-            onButtonTap: () async => {await onSitBack(context)},
+            onButtonTap: () async {
+              await onSitBack(context);
+            },
           ),
         );
       }),
@@ -324,10 +326,22 @@ class BoardView extends StatelessWidget {
     );
   }
 
-  Future<void> onSitBack(BuildContext context) async {
+  Future<SitBackResponse> onSitBack(BuildContext context) async {
     final gameState = GameState.getState(context);
     final gameInfo = gameState.gameInfo;
     //sit back in the seat
-    await GameService.sitBack(gameInfo.gameCode);
+    final resp = await GameService.sitBack(gameInfo.gameCode);
+
+    // update player model and notify my state
+    final me = gameState.mySeat(context);
+    if (me != null && me.player != null) {
+      me.player.status = resp.status;
+      me.player.missedBlind = resp.missedBlind ?? false;
+      final myState = gameState.myState;
+      if (myState != null) {
+        myState.notify();
+      }
+    }
+    return resp;
   }
 }

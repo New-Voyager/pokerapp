@@ -37,6 +37,7 @@ class GameInfoModel {
   bool allowRabbitHunt = false;
   bool showHandRank = false;
   bool botGame = false;
+  bool waitlistAllowed = false;
 
   // nats channels
   String gameToPlayerChannel;
@@ -107,6 +108,7 @@ class GameInfoModel {
     this.noHandsPlayed = data['noHandsPlayed'] ?? 0;
     this.allowRabbitHunt = data['allowRabbitHunt'] ?? true;
     this.showHandRank = data['showHandRank'] ?? false;
+    this.waitlistAllowed = data['waitlistAllowed'] ?? false;
 
     this.isHost = true;
     if (data['isHost'] != null) {
@@ -164,6 +166,7 @@ class GameInfoModel {
       tableStatus
       allowRabbitHunt
       showHandRank
+      waitlistAllowed
       botGame
 
       sessionTime

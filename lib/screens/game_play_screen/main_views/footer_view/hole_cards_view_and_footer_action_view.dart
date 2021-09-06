@@ -497,6 +497,7 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
     } else {
       rankText = _getRankText(gameState, context);
     }
+
     return GestureDetector(
       onTap: () {
         isHoleCardsVisibleVn.value = !isHoleCardsVisibleVn.value;

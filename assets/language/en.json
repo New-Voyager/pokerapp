@@ -6,7 +6,8 @@
         "PLAYER": "Player",
         "you": "You",
         "hand": "Hand",
-        "inBB": "(x BBs)"
+        "inBB": "(x BBs)",
+        "buyInEntry": "Buy In"
     },
     "liveGames": {
         "EMPTY_GAMECODE_ERROR": "GameCode can't be empty",

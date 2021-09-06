@@ -8,9 +8,8 @@ import 'package:pokerapp/utils/card_helper.dart';
 
 class DisplayCardsWidget extends StatelessWidget {
   final Seat seat;
-  final FooterStatus status;
 
-  DisplayCardsWidget(this.seat, this.status);
+  DisplayCardsWidget(this.seat);
 
   List<CardObject> _getCards(List<int> cards) {
     if (cards == null || cards.isEmpty) return [];
@@ -22,12 +21,18 @@ class DisplayCardsWidget extends StatelessWidget {
         CardObject card = CardHelper.getCard(c);
         card.cardType = CardType.PlayerCard;
 
-        /* we dim cards ONLY IF other cards are highlighted */
-
-        if (highlightedCards?.contains(c) ?? false)
-          card.highlight = true;
-        else
-          card.dim = true;
+        if (highlightedCards.isEmpty) {
+          // all losing cards
+          if (seat.player.muckLosingHand) {
+            card.cardFace = CardFace.BACK;
+          }
+        } else {
+          /* we dim cards ONLY IF other cards are highlighted */
+          if (highlightedCards?.contains(c) ?? false)
+            card.highlight = true;
+          else
+            card.dim = true;
+        }
 
         if (highlightedCards == null || highlightedCards.isEmpty)
           card.dim = false;
@@ -56,13 +61,11 @@ class DisplayCardsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool needToShowCards = this.status == FooterStatus.Result;
     final seatPlayerCards = seat.player.cards;
 
     return AnimatedSwitcher(
       duration: AppConstants.fastAnimationDuration,
-      child: needToShowCards &&
-              (seatPlayerCards != null && seatPlayerCards.isNotEmpty)
+      child: (seatPlayerCards != null && seatPlayerCards.isNotEmpty)
           ? _buildStackCardView(seatPlayerCards, context)
           : SizedBox.shrink(),
     );
