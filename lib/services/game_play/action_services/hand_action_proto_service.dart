@@ -201,7 +201,7 @@ class HandActionProtoService {
 
     gameContextObject.handActionProtoService.playerActed(
       gameContextObject.playerId,
-      handInfo.handNum,
+      gameState.handInfo.handNum,
       actionState.action.seatNo,
       action,
       amount,
@@ -471,6 +471,7 @@ class HandActionProtoService {
         context: _context,
         gameState: _gameState,
         playSoundEffect: playSoundEffect);
+    handler.initialize();
     await handler.handle();
   }
 
