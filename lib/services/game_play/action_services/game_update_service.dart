@@ -926,11 +926,12 @@ class GameUpdateService {
   }) async {
     log('waitlist seating message received');
     if (closed) return;
-    final waitlistState = _gameState.getWaitlistState(_context);
-    waitlistState.fromJson(data);
-    waitlistState.notify();
+    // final waitlistState = _gameState.getWaitlistState(_context);
+    // waitlistState.fromJson(data);
+    // waitlistState.notify();
+    final playerName = data['waitlistPlayerName'];
     String message =
-        '${waitlistState.name} ${_appScreenText['isInvitedToTakeTheOpenSeat']}';
+        '$playerName ${_appScreenText['isInvitedToTakeTheOpenSeat']}';
 
     showOverlayNotification(
       (context) => OverlayNotificationWidget(
