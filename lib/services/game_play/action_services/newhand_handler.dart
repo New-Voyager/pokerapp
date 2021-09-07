@@ -53,8 +53,15 @@ class NewHandHandler {
     final Players players = gameState.getPlayers(context);
     gameState.resetPlayers(context, notify: false);
 
-    final noOfPlayers = newHand.playersInSeats.length;
-    if (gameState.gameInfo.playersInSeats.length != noOfPlayers) {
+    // only count active players in this hand
+    int noOfPlayers = 0;
+    for (final playerInSeat in newHand.playersInSeats.values) {
+      if (playerInSeat.playerId != 0) {
+        noOfPlayers++;
+      }
+    }
+
+    if (gameState.players.count != noOfPlayers) {
       log('gameState seats does not match with new hand. * Refreshing *');
       await gameState.refresh(context);
       log('gameState seats does not match with new hand. * Refreshing Done *');
