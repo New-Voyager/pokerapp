@@ -36,7 +36,6 @@ class _CommunicationViewState extends State<CommunicationView> {
 
   @override
   Widget build(BuildContext context) {
-    log('CommunicationView:  ::build::');
     final theme = AppTheme.getTheme(context);
     final gameState = GameState.getState(context);
     final communicationState = gameState.getCommunicationState();
@@ -74,7 +73,6 @@ class _CommunicationViewState extends State<CommunicationView> {
                     children.addAll(audioChatWidgets(theme));
                   }
                 } else if (communicationState.voiceChatEnable) {
-                  log('Showing voiceChatWidgets');
                   children.addAll(voiceTextWidgets(widget.chatService));
                 }
 

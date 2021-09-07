@@ -103,7 +103,6 @@ class DataFormatter {
   static String yymmddhhmmssFormat() {
     DateTime now = DateTime.now();
     DateFormat format = DateFormat("yyyyMMddhhmmss");
-    log("0-0-0-FORMAT: ${format.format(now)} ");
     return format.format(now);
   }
 }

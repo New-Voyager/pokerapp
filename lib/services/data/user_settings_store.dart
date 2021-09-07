@@ -23,7 +23,6 @@ class UserSettingsStore {
     if (_settingsBox == null) {
       _settingsBox = await Hive.openBox("user_settings");
       if (_settingsBox.isEmpty) {
-        log("0-0-0-User Settings box is empty: Loading default values");
         await loadDefaultSettings();
       }
     }

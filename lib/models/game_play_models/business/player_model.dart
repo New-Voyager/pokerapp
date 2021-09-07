@@ -197,7 +197,6 @@ class PlayerModel {
   }
 
   set cards(List<int> v) {
-    log('HoleCards: cards set $v');
     this._cards = v;
   }
 

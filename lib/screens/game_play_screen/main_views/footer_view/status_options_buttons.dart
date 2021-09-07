@@ -19,7 +19,6 @@ class StatusOptionsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    log('StatusOptionsWidget');
     AppTextScreen _appScreenText = getAppTextScreen("seatChangeConfirmWidget");
     final mySeat = gameState.mySeat(context);
     final myState = gameState.myState;
@@ -37,7 +36,7 @@ class StatusOptionsWidget extends StatelessWidget {
           myState.status == PlayerStatus.WAIT_FOR_BUYIN_APPROVAL) {
         children.add(getBuyinButton(_appScreenText, theme, context));
       }
-      if (myState.status == PlayerStatus.IN_BREAK) {
+      if (mySeat.player.inBreak) {
         children.add(getSitbackButton(_appScreenText, theme, context));
       }      
     }

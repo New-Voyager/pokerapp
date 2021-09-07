@@ -100,7 +100,6 @@ class CardBuilderWidget extends StatelessWidget {
     bool toDim = dim;
     if (highlight) toDim = false;
 
-    log('Card dim 2: dimboard: ${card.dimBoard}');
     BoxDecoration fgDecoration;
     if (toDim) {
       fgDecoration = BoxDecoration(

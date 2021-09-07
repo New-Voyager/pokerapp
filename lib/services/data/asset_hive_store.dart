@@ -153,7 +153,6 @@ class AssetHiveStore {
 
   Future<void> open() async {
     _assetBox = await Hive.openBox('assets');
-    log("0-0-0-ASSETBOX : ${_assetBox.hashCode}");
   }
 
   void close() {

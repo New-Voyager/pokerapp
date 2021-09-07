@@ -44,8 +44,12 @@ class OpenSeat extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(5),
       child: FittedBox(
-        child: Text(
-          'Open $seatPos',
+        child: 
+        // AnimatedTextKit(repeatForever: true, animatedTexts: [
+        //       FlickerAnimatedText('Open', speed: Duration(milliseconds: 2000))
+        //     ]),
+        Text(
+          'Open',
           style: AppDecorators.getSubtitle1Style(theme: theme),
         ),
       ),
@@ -69,21 +73,14 @@ class OpenSeat extends StatelessWidget {
             alignment: Alignment.center,
             children: [
               _openSeat(theme),
-              // CircularProgressIndicator(
-              //   strokeWidth: 2.0,
-              //   valueColor : AlwaysStoppedAnimation(Colors.white),
-              // ),
             ],
           ),
-          // child: Center(
-          //   child: _openSeat(),
-          // ),
           decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: theme.primaryColorWithDark(),
               boxShadow: [
                 BoxShadow(
-                  color: theme.secondaryColor,
+                  color: theme.accentColor,
                   blurRadius: 1,
                   spreadRadius: 1,
                   offset: Offset(1, 0),

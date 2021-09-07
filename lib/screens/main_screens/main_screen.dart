@@ -142,7 +142,6 @@ class _MainScreenState extends State<MainScreen>
               fabBgColor: theme.secondaryColorWithDark(0.2),
               onItemClick: (i) {
                 setState(() => _navPos = i);
-                log("0-0-0-Current Index : $i");
                 Provider.of<AppState>(context, listen: false).setIndex(i);
               },
               items: [

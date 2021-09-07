@@ -481,7 +481,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   }
 
   Future _onJoinGame(int seatPos) async {
-    log("0-0-0 Onjooin game: ");
     final gameState = GameState.getState(_providerContext);
     final tableState = gameState.tableState;
     final me = gameState.me(_providerContext);
@@ -903,8 +902,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
   @override
   Widget build(BuildContext context) {
-    log('GamePlayScreen:  ::build::');
-
     if (TestService.isTesting) {
       try {
         this._currentPlayer = TestService.currentPlayer;

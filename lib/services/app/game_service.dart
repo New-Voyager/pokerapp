@@ -1321,7 +1321,10 @@ mutation updateInputs(\$gameCode :String!,\$inputSettings: GameSettingsUpdateInp
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     String _query = """
           mutation (\$gameCode: String!){
-            status: sitBack(gameCode: \$gameCode)
+            status: sitBack(gameCode: \$gameCode) {
+              status
+              missedBlind
+            }
           }""";
 
     Map<String, dynamic> variables = {

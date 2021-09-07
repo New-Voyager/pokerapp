@@ -632,7 +632,6 @@ class BoardAttributesObject extends ChangeNotifier {
   // returns true, if the seats needs to be rebuilt
   bool setPotsKey(int i, GlobalKey key) {
     bool ret = false;
-    log('potViewPos pot key: $i key: $key');
     if (i <= _pots.length - 1) {
       if (_pots[i].key == null) {
         ret = true;

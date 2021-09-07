@@ -475,7 +475,6 @@ class GameState {
         _tableState.tableStatus == AppConstants.TABLE_STATUS_GAME_RUNNING ||
             _tableState.tableStatus == AppConstants.TABLE_STATUS_GAME_RUNNING_1;
 
-    log('isGameRunning: tableStatus: ${_tableState.tableStatus} gameStatus: ${_tableState.gameStatus} tableRunning: $tableRunning');
     if ((_tableState.gameStatus == AppConstants.GAME_ACTIVE ||
             _tableState.gameStatus == AppConstants.GAME_CONFIGURED) &&
         tableRunning) {

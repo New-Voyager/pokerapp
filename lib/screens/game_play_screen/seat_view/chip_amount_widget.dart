@@ -178,7 +178,7 @@ class _ChipAmountWidgetState extends State<ChipAmountWidget>
       return;
     }
 
-    log('pauldebug: CALCULATING SEAT POS');
+    // log('pauldebug: CALCULATING SEAT POS');
 
     //  log('potViewPos: 4 afterFirstLayout ChipAmountWidget seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos}');
     final RenderBox potViewBox = potKey.currentContext.findRenderObject();
@@ -246,8 +246,6 @@ class _ChipAmountAnimatingWidgetState extends State<ChipAmountAnimatingWidget>
     Offset begin = Offset(0, 0);
     begin = seat.betWidgetPos;
     this.begin = begin;
-    log('Chip Animation: chip amount animation end: $end');
-    //log('reverse animation: ${widget.reverse ?? false}, winner: ${seat.player.action.winner}');
     if (widget.reverse ?? false) {
       Offset swap = end;
       end = begin;

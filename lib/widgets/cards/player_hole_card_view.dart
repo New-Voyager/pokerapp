@@ -67,7 +67,6 @@ class PlayerHoleCardView extends StatelessWidget {
       return Container();
     }
 
-    log('Card dim dimboard: ${card.dimBoard}');
     return CardBuilderWidget(
       backCardBytes: cardBackBytes,
       highlight: false,

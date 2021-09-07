@@ -302,7 +302,7 @@ class TableState extends ChangeNotifier {
       for (final card in _board1) {
         card.highlight = false;
         card.dim = false;
-        log('completed: un highlighting cards from board 1');
+        // log('completed: un highlighting cards from board 1');
       }
     } else if (boardIndex == 2 && _board2 != null) {
       for (final card in _board2) {

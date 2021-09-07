@@ -688,7 +688,7 @@ class GameUpdateService {
     }
 
     var jsonData = jsonEncode(newUpdate);
-    log(jsonData);
+    // log(jsonData);
     switch (newUpdate) {
       case AppConstants.NEW_PLAYER:
         return handleNewPlayer(
@@ -762,7 +762,7 @@ class GameUpdateService {
     }
 
     var jsonData = jsonEncode(newUpdate);
-    log(jsonData);
+    // log(jsonData);
     switch (newUpdate) {
       case AppConstants.NEW_PLAYER:
         return handleNewPlayer(
@@ -841,7 +841,7 @@ class GameUpdateService {
     var tableUpdate = data['tableUpdate'];
     String type = tableUpdate['type'];
     String jsonData = jsonEncode(data);
-    log(jsonData);
+    // log(jsonData);
     // {"gameId":"494","gameCode":"cgnmxhehyy","messageType":"TABLE_UPDATE","tableUpdate":{"type":"HostSeatChangeInProcessStart","seatChangeHost":"1927"}}
 
     // TODO: HOW TO HANDLE MULTIPLE PLAYER'S SEAT CHANGE?
@@ -864,7 +864,7 @@ class GameUpdateService {
   }) async {
     String type = data['subType'];
     String jsonData = jsonEncode(data);
-    log(jsonData);
+    // log(jsonData);
     if (type == AppConstants.SeatChangeInProgress) {
       handlePlayerSeatChange(data: data);
     } else if (type == AppConstants.TableHostSeatChangeProcessStart) {

@@ -82,19 +82,15 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
     log("AppLifeCycleState : $state");
     switch (state) {
       case AppLifecycleState.paused:
-        log("0-0-0- PAUSED");
         _disposeTimer();
         break;
       case AppLifecycleState.detached:
-        log("0-0-0- detached");
         _disposeTimer();
         break;
       case AppLifecycleState.inactive:
-        log("0-0-0- INACTIVE");
         _disposeTimer();
         break;
       case AppLifecycleState.resumed:
-        log("0-0-0- resumed");
         _initTimer();
         break;
     }
@@ -102,9 +98,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
   }
 
   _initTimer() async {
-    log("0-0-0- In Init Timer");
     if (_refreshTimer == null || !_refreshTimer.isActive) {
-      log("0-0-0- In Init Timer - Timer initialized Again!");
       _refreshTimer =
           Timer.periodic(const Duration(seconds: 30), (timer) async {
         if (mounted) {
@@ -112,10 +106,8 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
               Provider.of<AppState>(context, listen: false).currentIndex;
           if (currentIndex == 0) {
             if (_tabController.index == 0) {
-              log("0-0-0-In LiveGames Refresh");
               await _fetchLiveGames();
             } else if (_tabController.index == 1) {
-              log("0-0-0-In Game record refresh ");
               await _fetchPlayedGames();
             }
           }
@@ -125,9 +117,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
   }
 
   _disposeTimer() {
-    log("0-0-0- In dispose Timer");
     if (_refreshTimer != null || _refreshTimer.isActive) {
-      log("0-0-0- In dispose Timer - cancelled timer");
       _refreshTimer.cancel();
     }
   }

@@ -315,7 +315,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
   @override
   Widget build(BuildContext context) {
     // cacheSeatPositions();
-    log('PlayersOnTableView:  ::build::');
+    // log('PlayersOnTableView:  ::build::');
     final boardAttributes =
         GameState.getState(context).getBoardAttributes(context);
 
@@ -523,10 +523,16 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
         return Consumer2<Seat, BoardAttributesObject>(
           builder: (_, seat, boardAttributes, __) {
             bool seatActive = gameState.customizationMode;
-            if (!gameState.customizationMode &&
-                seat != null &&
-                seat.player != null) {
-              seatActive = seat.player.isActive;
+            if (!gameState.customizationMode && seat != null) {
+              if (seat.isOpen) {
+                seatActive = true;
+              } else if (seat.player != null) {
+                if (!gameState.isGameRunning) {
+                  seatActive = true;
+                } else {
+                  seatActive = seat.player.isActive;
+                }
+              }
             }
             return Transform.scale(
               scale: boardAttributes.playerViewScale,

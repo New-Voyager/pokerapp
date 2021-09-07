@@ -269,7 +269,9 @@ class NewHandHandler {
     /* get a new card back asset to be shown */
     if (gameState.uiClosing) return;
 
-    final myState = gameState.getMyState(context);
+    // gameState.redrawFooterState.notify();
+
+    final myState = gameState.myState;
     myState.player = players.me;
     myState.notify();
 

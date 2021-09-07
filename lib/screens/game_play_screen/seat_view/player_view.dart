@@ -79,7 +79,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
   void handInfoStateListener() {
     if (_handInfoState.handNum != _lastHandNum) {
       _lastHandNum = _handInfoState.handNum;
-      log('pauldebug: SETTING TRUE');
+      //log('pauldebug: SETTING TRUE');
       _seatPosNeedsReCalculating.value = true;
     }
   }
@@ -172,7 +172,6 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
     Seat seat,
     HandState handState,
   ) {
-    log('SeatView: Building display cards. State: ${handState.toString()}');
     if (handState != HandState.RESULT) {
       return SizedBox(width: 0, height: 0);
     }
@@ -319,7 +318,6 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
           notesOffset =
               Offset(((widget.boardAttributes.namePlateSize.width / 2)), 0);
         }
-        log("0-0-0- Position: ${pos}, Offset : ${notesOffset} ");
         return InkWell(
           onTap: () => this.onTap(context),
           child: Stack(
@@ -355,7 +353,6 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
                       size: 10.dp,
                     ),
                     onPressed: () async {
-                      log("0-0-0-0- clicked");
                       await handleNotesPopup(context, widget.seat);
                     },
                   ),

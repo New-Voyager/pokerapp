@@ -72,8 +72,6 @@ class CommunityCardsView extends StatelessWidget {
         _globalKeys[idx] = globalKey;
       }
 
-      log('Card dim 3: dimboard: ${card.dimBoard}');
-
       Widget communityCardView = Padding(
         padding: EdgeInsets.symmetric(horizontal: 1.5),
         child: CommunityCardView(
@@ -90,7 +88,6 @@ class CommunityCardsView extends StatelessWidget {
 
   Widget buildSingleBoardCards(int boardNo, List<CardObject> boardCards,
       {bool dimBoard = false}) {
-    log('CommunityCardsView board: $boardNo dimBoard: $dimBoard');
     /* we only need to show animation for the following 3 cases */
     if (boardCards?.length == 3)
       return FlopCommunityCards(
@@ -116,11 +113,8 @@ class CommunityCardsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    log('community cards');
-
     final gameState = GameState.getState(context);
     final tableState = gameState.tableState;
-    log('Table state: dim board1: ${tableState.dimBoard1} dim board2: ${tableState.dimBoard2}');
 
     if (twoBoardsNeeded ?? false) {
       return Transform.scale(

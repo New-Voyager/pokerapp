@@ -82,8 +82,6 @@ class GameMessagingService {
   }
 
   void handleMessage(Message natsMsg) {
-    log('chat message received: $messages');
-
     final ChatMessage message = ChatMessage.fromMessage(natsMsg.string);
 
     // handle messages
@@ -100,7 +98,6 @@ class GameMessagingService {
           if (prevM.messageId == message.messageId) return;
         }
       }
-      log('message.type = ${message.type}');
 
       if (message.type == 'TEXT') {
         if (this.onText != null) {

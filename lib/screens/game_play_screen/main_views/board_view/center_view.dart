@@ -328,7 +328,7 @@ class _CenterViewState extends State<CenterView> {
           Consumer<ValueNotifier<FooterStatus>>(
             builder: (_, vnFooterStatus, __) {
               bool showDown = vnFooterStatus.value == FooterStatus.Result;
-              log('showing rank widget: $showDown');
+              // log('showing rank widget: $showDown');
               return showDown
                   ? rankWidget(boardAttributes)
                   : potUpdatesView(boa: boardAttributes, showDown: showDown);
@@ -465,7 +465,6 @@ class _CenterViewState extends State<CenterView> {
       child: ValueListenableBuilder(
           valueListenable: vnRankStr,
           builder: (_, rankStr, __) {
-            log('rank str: $rankStr');
             return AnimatedSwitcher(
               duration: AppConstants.animationDuration,
               reverseDuration: AppConstants.animationDuration,

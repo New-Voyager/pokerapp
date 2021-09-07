@@ -320,9 +320,8 @@ class HandActionProtoService {
     // if the service is closed, don't process incoming messages
     if (closed) return;
 
-    log(messageObject.item.writeToJson());
-
-    debugLog(_gameState.gameCode, messageObject.item.writeToJson());
+    //log(messageObject.item.writeToJson());
+    //debugLog(_gameState.gameCode, messageObject.item.writeToJson());
     //debugLog(_gameState.gameCode, jsonData);
 
     String messageType = messageObject.item.messageType;
@@ -1493,8 +1492,8 @@ class HandActionProtoService {
     final json = result.toProto3Json();
     final jsonMsg = result.writeToJson();
     final out = jsonEncode(json);
-    log("$out");
-    log("\n\n$jsonMsg\n\n");
+    // log("$out");
+    // log("\n\n$jsonMsg\n\n");
     if (_close) return;
     final Players players = _gameState.getPlayers(_context);
     _gameState.resetSeatActions();

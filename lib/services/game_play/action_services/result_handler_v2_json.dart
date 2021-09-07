@@ -287,7 +287,7 @@ class ResultHandlerV2Json {
         cards: winner.playerCards,
       );
 
-      log('WINNER player.cards: ${winner.playerCards} boardCards: ${winner.boardCards} setState: $setState ${winner.rankStr} ${AppConstants.chipMovingAnimationDuration}');
+      // log('WINNER player.cards: ${winner.playerCards} boardCards: ${winner.boardCards} setState: $setState ${winner.rankStr} ${AppConstants.chipMovingAnimationDuration}');
       /* highlight the winning cards for board 1 */
       tableState.highlightCardsSilent(
         boardIndex,

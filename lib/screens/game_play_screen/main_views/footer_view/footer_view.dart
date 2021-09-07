@@ -139,10 +139,24 @@ class _FooterViewState extends State<FooterView>
     final width = MediaQuery.of(context).size.width;
     return Consumer<MyState>(
         builder: (BuildContext _, MyState myState, Widget __) {
-      log('footerview: my state has changed. status: ${myState.status}');
-      if (!gameState.isPlaying ||
+      final me = gameState.mySeat(context);
+      bool showOptionsButtons = false;
+      if (me != null && me.player != null && me.player.inBreak) {
+        //log('footerview: building status option widget: IN BREAK');
+        showOptionsButtons = true;
+      } else if (!gameState.isPlaying) {
+        // observer
+        showOptionsButtons = true;
+        //log('footerview: building status option widget: NOT PLAYING/OBSERVER');
+      } else if (
           myState.status == PlayerStatus.WAIT_FOR_BUYIN ||
           myState.status == PlayerStatus.WAIT_FOR_BUYIN_APPROVAL) {
+        showOptionsButtons = true;
+        //log('footerview: building status option widget: WAIT FOR BUYIN');
+      }
+         
+      //log('footerview: my state has changed. status: ${myState.status}');
+      if (showOptionsButtons) {
         log('footerview: building status option widget');
         return StatusOptionsWidget(gameState: gameState);
       }
