@@ -5,15 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
-import 'package:pokerapp/enums/game_status.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
-import 'package:pokerapp/enums/player_status.dart';
 import 'package:pokerapp/models/game_model.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/handlog_model.dart';
@@ -74,7 +71,7 @@ class TestService {
     final commState = gameState.getCommunicationState();
     commState.talking = true;
     //commState.muted = true;
-    gameState.myState.status = PlayerStatus.PLAYING;
+    //gameState.myState.status = PlayerStatus.PLAYING;
     commState.audioConferenceStatus = AudioConferenceStatus.CONNECTED;
     commState.notify();
   }
@@ -103,6 +100,28 @@ class TestService {
     final myState = gameState.getMyState(_context);
     //seat.player.showFirework = true;
     seat.player.rankText = 'Two Pair';
+    myState.notify();
+
+    //await Future.delayed(AppConstants.highHandFireworkAnimationDuration);
+
+    //seat.player.rankText = '';
+    //myState.notify();
+  }
+
+  static showSitBack() async {
+    final gameState = GameState.getState(_context);
+    final seat = gameState.getSeat(_context, 1);
+    final myState = gameState.getMyState(_context);
+    seat.isDealer = true;
+    seat.player.inhand = false;
+    seat.player.inBreak = true;
+    seat.player.status = AppConstants.IN_BREAK;
+    DateTime date = DateTime.now();
+    date.add(Duration(minutes: 5));
+    seat.player.breakTimeExpAt = date;
+    //myState.player = seat.player;
+    //seat.player.showFirework = true;
+    //seat.player.rankText = 'Two Pair';
     myState.notify();
 
     //await Future.delayed(AppConstants.highHandFireworkAnimationDuration);
@@ -415,7 +434,7 @@ class TestService {
       _context,
       listen: false,
     );
-    final player = gameState.me(_context);
+    final player = gameState.me;
     i++;
     /*
     113, 71: 9♠
@@ -864,19 +883,21 @@ class TestService {
   // }
 
   static setCurrentPlayerStatusPlaying() {
-    BuildContext context = _context;
-
-    final myState = Provider.of<MyState>(context, listen: false);
-    myState.status = PlayerStatus.PLAYING;
-    myState.notify();
+    final gameState = GameState.getState(_context);
+    final me = gameState.me;
+    if (me != null) {
+      me.status = AppConstants.PLAYING;
+    }
+    gameState.myState.notify();
   }
 
   static setCurrentPlayerStatusNotPlaying() {
-    BuildContext context = _context;
-
-    final myState = Provider.of<MyState>(context, listen: false);
-    myState.status = PlayerStatus.NOT_PLAYING;
-    myState.notify();
+    final gameState = GameState.getState(_context);
+    final me = gameState.me;
+    if (me != null) {
+      me.status = AppConstants.NOT_PLAYING;
+    }
+    gameState.myState.notify();
   }
 
   static void showSeatChangePrompt() async {

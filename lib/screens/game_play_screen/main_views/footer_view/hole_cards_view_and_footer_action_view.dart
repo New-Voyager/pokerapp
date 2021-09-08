@@ -420,7 +420,7 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
   }
 
   Widget _getRankText(GameState gameState, BuildContext context) {
-    final me = gameState.me(context);
+    final me = gameState.me;
     final theme = AppTheme.getTheme(context);
     Color borderColor = theme.accentColorWithDark();
     if (me == null || me.rankText == '') {
@@ -478,25 +478,9 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
         );
       }
     }
+
     Widget rankText;
-    log("one : ${gameState.myState.status} TWO : ${gameState.postedBlind}");
-    if (gameState.myState.status == PlayerStatus.NEED_TO_POST_BLIND &&
-        (!gameState.postedBlind)) {
-      rankText = RoundedColorButton(
-        backgroundColor: theme.accentColor,
-        textColor: theme.primaryColorWithDark(),
-        text: "Post Blind",
-        onTapFunction: () async {
-          // Post blind
-          final result = await GameService.postBlinds(gameState.gameCode);
-          if (result != null) {
-            gameState.setPostedBlind(true);
-          }
-        },
-      );
-    } else {
-      rankText = _getRankText(gameState, context);
-    }
+    rankText = _getRankText(gameState, context);
 
     return GestureDetector(
       onTap: () {

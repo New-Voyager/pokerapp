@@ -535,7 +535,7 @@ showPlayerPopup(context, GlobalKey seatKey, GameState gameState, Seat seat) {
           // log("SEAT TO:: ${widget.gameState.popupSelectedSeat.serverSeatPos}");
 
           gameState.gameComService.gameMessaging.sendAnimation(
-            gameState.me(context)?.seatNo,
+            gameState.me?.seatNo,
             seat.serverSeatPos,
             data['animationID'],
           );

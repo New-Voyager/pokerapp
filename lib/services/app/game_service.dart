@@ -202,7 +202,7 @@ mutation updateInputs(\$gameCode :String!,\$inputSettings: GameSettingsUpdateInp
   }
 
   // Post Blinds
-  static Future<String> postBlinds(String gameCode) async {
+  static Future<bool> postBlinds(String gameCode) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     Map<String, dynamic> variables = {"gameCode": gameCode};
     QueryResult result = await _client.query(
@@ -210,7 +210,7 @@ mutation updateInputs(\$gameCode :String!,\$inputSettings: GameSettingsUpdateInp
 
     if (result.hasException) {
       log(result.exception.toString());
-      return "";
+      return false;
     }
     /* Sample return data 
     {

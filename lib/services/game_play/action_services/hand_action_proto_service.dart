@@ -319,6 +319,7 @@ class HandActionProtoService {
   Future<void> handleMessage(HandMessageObject messageObject) async {
     // if the service is closed, don't process incoming messages
     if (closed) return;
+    if (_close || _gameState.uiClosing) return;
 
     //log(messageObject.item.writeToJson());
     //debugLog(_gameState.gameCode, messageObject.item.writeToJson());
@@ -733,7 +734,7 @@ class HandActionProtoService {
     String cards = dealCards.cards;
 
     List<int> myCards = CardHelper.getRawCardNumbers(cards);
-    if (_close) return;
+    if (_close || _gameState.uiClosing) return;
     final players = _gameState.getPlayers(_context);
 
     List<int> seatNos = players.players.map((p) => p.seatNo).toList();
@@ -750,7 +751,7 @@ class HandActionProtoService {
       int localSeatNo = mySeatNo == null
           ? seatNo
           : ((seatNo - mySeatNo) % _gameState.gameInfo.maxPlayers) + 1;
-      if (_close) return;
+      if (_close || _gameState.uiClosing) return;
       final seat = _gameState.getSeat(_context, seatNo);
       if (seat.player == null ||
           seat.player.stack == 0 ||
@@ -759,7 +760,7 @@ class HandActionProtoService {
       }
 
       // start the animation
-      if (_close) return;
+      if (_close || _gameState.uiClosing) return;
       _context.read<CardDistributionModel>().seatNo = localSeatNo;
       // wait for the animation to finish
       await Future.delayed(AppConstants.cardDistributionAnimationDuration);
@@ -775,7 +776,7 @@ class HandActionProtoService {
     }
 
     /* card distribution ends, put the value to NULL */
-    if (_close) return;
+    if (_close || _gameState.uiClosing) return;
     audioPlayer.stop();
     _context.read<CardDistributionModel>().seatNo = null;
     _gameState.handState = HandState.DEAL;
@@ -786,9 +787,9 @@ class HandActionProtoService {
   Future<void> handleYourAction(proto.HandMessageItem message) async {
     //log('Hand Message: ::handleYourAction:: START');
 
-    if (_close) return;
+    if (_close || _gameState.uiClosing) return;
     try {
-      final me = _gameState.me(_context);
+      final me = _gameState.me;
       if (me == null) {
         return;
       }
@@ -803,7 +804,7 @@ class HandActionProtoService {
 
       if (_gameState.straddleBetThisHand == true) {
         // we have the straddleBet set to true, do a bet
-        if (_close) return;
+        if (_close || _gameState.uiClosing) return;
         HandActionProtoService.takeAction(
           context: _context,
           action: AppConstants.STRADDLE,
@@ -819,7 +820,7 @@ class HandActionProtoService {
           seatAction.availableActions.map<String>((e) => e.toString()).toList();
       if (availableActions?.contains(AppConstants.RUN_IT_TWICE_PROMPT) ??
           false) {
-        if (_close) return;
+        if (_close || _gameState.uiClosing) return;
         int secondsTillTimeout = seatAction.secondsTillTimesout;
 
         return RunItTwiceDialog.promptRunItTwice(
@@ -828,14 +829,14 @@ class HandActionProtoService {
         );
       } else {
         if (availableActions?.contains(AppConstants.STRADDLE) ?? false) {
-          if (_close) return;
+          if (_close || _gameState.uiClosing) return;
         }
       }
 
-      if (_close) return;
+      if (_close || _gameState.uiClosing) return;
       _gameState.setActionProto(_context, seatAction.seatNo, seatAction);
 
-      if (_close) return;
+      if (_close || _gameState.uiClosing) return;
       if (_gameState.straddlePrompt) {
         // we are showing the straddle prompt
       } else {
@@ -968,8 +969,12 @@ class HandActionProtoService {
       for (int seatNo in seatNos) {
         if (_close) return;
         final seat = _gameState.getSeat(_context, seatNo);
+        if (seat.player != null) {
+          seat.player.noOfCardsVisible = 0;
+        }
         if (seat.player == null ||
             seat.player.stack == 0 ||
+            !seat.player.inhand ||
             seat.player.status != AppConstants.PLAYING) {
           continue;
         }
@@ -1191,7 +1196,7 @@ class HandActionProtoService {
 
   void updateRank(Map<int, String> playerCardRanks, {String rankText}) {
     if (_gameState.isPlaying) {
-      final me = _gameState.me(_context);
+      final me = _gameState.me;
       final myState = _gameState.getMyState(_context);
       if (rankText != null) {
         me.rankText = rankText;
@@ -1607,7 +1612,7 @@ class HandActionProtoService {
     await resultHandler.show();
 
     if (_gameState.isPlaying) {
-      final me = _gameState.me(_context);
+      final me = _gameState.me;
       final myState = _gameState.getMyState(_context);
       me.rankText = '';
       myState.notify();

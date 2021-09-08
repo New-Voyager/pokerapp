@@ -44,11 +44,11 @@ class OpenSeat extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(5),
       child: FittedBox(
-        child: 
-        // AnimatedTextKit(repeatForever: true, animatedTexts: [
-        //       FlickerAnimatedText('Open', speed: Duration(milliseconds: 2000))
-        //     ]),
-        Text(
+        child:
+            // AnimatedTextKit(repeatForever: true, animatedTexts: [
+            //       FlickerAnimatedText('Open', speed: Duration(milliseconds: 2000))
+            //     ]),
+            Text(
           'Open',
           style: AppDecorators.getSubtitle1Style(theme: theme),
         ),

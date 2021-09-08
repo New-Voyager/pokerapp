@@ -62,6 +62,9 @@ class ResultHandlerV2 {
   Future<void> show() async {
     tableState = gameState.tableState;
     players = gameState.getPlayers(context);
+    for (final player in players.players) {
+      player.winner = false;
+    }
 
     // update pots
     tableState.updatePotChipsSilent(
@@ -254,6 +257,7 @@ class ResultHandlerV2 {
       if (i == winners.length - 1) {
         setState = true;
       }
+
       this.showWinner(
         rank: rank,
         winner: winningPlayer,
@@ -292,6 +296,10 @@ class ResultHandlerV2 {
     final bool setState = false,
   }) async {
     /* highlight the hi winners */
+    final player = players.getPlayerBySeat(winner.seatNo);
+    // if (player != null) {
+    //   player.winner = true;
+    // }
     players.highlightWinnerSilent(winner.seatNo);
 
     // highlight winning cards and rank if we are in showdown
@@ -314,7 +322,6 @@ class ResultHandlerV2 {
     }
 
     /* update the stack amount for the winners */
-    final PlayerModel player = players.getPlayerBySeat(winner.seatNo);
     if (player != null) {
       player.action.amount = winner.amount.toDouble();
       player.action.winner = true;

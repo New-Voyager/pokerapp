@@ -622,6 +622,46 @@ class BoardAttributesObject extends ChangeNotifier {
     }
   }
 
+  double get betImageScale {
+    if (this._screenSize == ScreenSize.lessThan7Inches) {
+      return 1.5;
+    } else if (this._screenSize == ScreenSize.equalTo7Inches) {
+      return 2.0;
+    } else {
+      return 2.2;
+    }
+  }
+
+  double get betSliderScale {
+    if (this._screenSize == ScreenSize.lessThan7Inches) {
+      return 1.5;
+    } else if (this._screenSize == ScreenSize.equalTo7Inches) {
+      return 2.0;
+    } else {
+      return 2.5;
+    }
+  }
+
+  double get betWidgetBottomGap {
+    if (this._screenSize == ScreenSize.lessThan7Inches) {
+      return 1.ph;
+    } else if (this._screenSize == ScreenSize.equalTo7Inches) {
+      return 20.ph;
+    } else {
+      return 60.ph;
+    }
+  }
+
+  double get betWidgetBetChipBottomGap {
+    if (this._screenSize == ScreenSize.lessThan7Inches) {
+      return 10.ph;
+    } else if (this._screenSize == ScreenSize.equalTo7Inches) {
+      return 10.ph;
+    } else {
+      return 20.ph;
+    }
+  }
+
   GlobalKey getPotsKey(int i) {
     if (this._pots.length == 0 || i >= _pots.length) {
       return null;
@@ -842,19 +882,23 @@ class BoardAttributesObject extends ChangeNotifier {
       ) as double;
 
   /* player hole card configurations */
-  Offset get playerHoleCardOffset => _decide(
-        lessThan6Inches: Offset.zero,
-        equalTo6Inches: Offset.zero,
-        equalTo7Inches: Offset(10.0, -10.0),
-        greaterThan7Inches: Offset(10.0, -10.0),
-      ) as Offset;
+  Offset get playerHoleCardOffset {
+    return _decide(
+      lessThan6Inches: Offset.zero,
+      equalTo6Inches: Offset.zero,
+      equalTo7Inches: Offset(5.pw, -10.ph),
+      greaterThan7Inches: Offset(0, -5.ph),
+    ) as Offset;
+  }
 
-  double get playerHoleCardScale => _decide(
-        lessThan6Inches: 1.0,
-        equalTo6Inches: 1.0,
-        equalTo7Inches: 1.5,
-        greaterThan7Inches: 1.5,
-      ) as double;
+  double get playerHoleCardScale {
+    return _decide(
+      lessThan6Inches: 1.0,
+      equalTo6Inches: 1.0,
+      equalTo7Inches: 1.5,
+      greaterThan7Inches: 1.0,
+    ) as double;
+  }
 
   double get tableDividerHeightScale => _decide(
         lessThan6Inches: 0.40,

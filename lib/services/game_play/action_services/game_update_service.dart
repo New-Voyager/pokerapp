@@ -403,7 +403,7 @@ class GameUpdateService {
     if (seat != null && seat.player != null && seat.player.isMe) {
       seat.player.showBuyIn = true;
       seat.notify();
-      _gameState.myState.status = PlayerStatus.NOT_PLAYING;
+      //_gameState.myState.status = PlayerStatus.NOT_PLAYING;
       _gameState.myState.notify();
     }
 
@@ -679,15 +679,16 @@ class GameUpdateService {
     String playerId = playerUpdate['playerId'];
 
     if (playerId == _gameState.currentPlayerId.toString()) {
+      final me = _gameState.me;
       if (playerStatus == AppConstants.PLAYING &&
-          _gameState.myState.status != PlayerStatus.PLAYING) {
-        _gameState.myState.status = PlayerStatus.PLAYING;
+          me != null &&
+          me.status != AppConstants.PLAYING) {
+        me.status = AppConstants.PLAYING;
         if (closed) return;
         _gameState.myState.notify();
       }
     }
 
-    var jsonData = jsonEncode(newUpdate);
     // log(jsonData);
     switch (newUpdate) {
       case AppConstants.NEW_PLAYER:
@@ -753,16 +754,16 @@ class GameUpdateService {
     int playerId = int.parse(playerUpdate['playerId'].toString());
 
     if (playerId == _gameState.currentPlayerId) {
+      final me = _gameState.me;
       if (playerStatus == AppConstants.PLAYING &&
-          _gameState.myState.status != PlayerStatus.PLAYING) {
-        _gameState.myState.status = PlayerStatus.PLAYING;
+          me != null &&
+          me.status != AppConstants.PLAYING) {
+        me.status = AppConstants.PLAYING;
         if (closed) return;
         _gameState.myState.notify();
       }
     }
 
-    var jsonData = jsonEncode(newUpdate);
-    // log(jsonData);
     switch (newUpdate) {
       case AppConstants.NEW_PLAYER:
         return handleNewPlayer(
@@ -840,9 +841,6 @@ class GameUpdateService {
   }) async {
     var tableUpdate = data['tableUpdate'];
     String type = tableUpdate['type'];
-    String jsonData = jsonEncode(data);
-    // log(jsonData);
-    // {"gameId":"494","gameCode":"cgnmxhehyy","messageType":"TABLE_UPDATE","tableUpdate":{"type":"HostSeatChangeInProcessStart","seatChangeHost":"1927"}}
 
     // TODO: HOW TO HANDLE MULTIPLE PLAYER'S SEAT CHANGE?
     if (type == AppConstants.SeatChangeInProgress) {

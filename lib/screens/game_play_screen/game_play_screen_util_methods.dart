@@ -60,6 +60,16 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
+          label: 'Show Sitback',
+          labelBackgroundColor: Colors.black,
+          onTap: () => TestService.showSitBack(),
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
           label: 'Show Result',
           labelBackgroundColor: Colors.black,
           onTap: () => TestService.showHandResult2(),
@@ -234,10 +244,10 @@ class GamePlayScreenUtilMethods {
       mySeat.player = newPlayerModel;
       mySeat.notify();
 
-      if (status == PlayerStatus.WAIT_FOR_BUYIN_APPROVAL ||
-          status == PlayerStatus.WAIT_FOR_BUYIN) {
-        gameState.myState.status = PlayerStatus.WAIT_FOR_BUYIN_APPROVAL;
-      }
+      // if (status == PlayerStatus.WAIT_FOR_BUYIN_APPROVAL ||
+      //     status == PlayerStatus.WAIT_FOR_BUYIN) {
+      //   gameState.myState.status = PlayerStatus.WAIT_FOR_BUYIN_APPROVAL;
+      // }
       gameState.redrawFooterState.notify();
       //gameState.myState.notify();
     }
