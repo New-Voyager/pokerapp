@@ -8,11 +8,13 @@ class UtilActionServices {
   UtilActionServices._();
 
   static void showCardsOfFoldedPlayers(
+    int myPlayerId,
     BuildContext context,
     ChatMessage chatMessage,
   ) async {
     final String fromPlayerID = chatMessage.fromPlayer.toString();
-    final String myPlayerID = context.read<Players>().me?.playerId?.toString();
+    final gameState = GameState.getState(context);
+    final String myPlayerID = myPlayerId.toString();
 
     // we dont need to proceed showing empty cards
     if (chatMessage.cards.isEmpty) return;

@@ -1218,7 +1218,7 @@ class HandActionProtoService {
 
   Future<void> handleQueryCurrentHand(proto.HandMessageItem message) async {
     final currentHandState = message.currentHandState;
-    // log('Current hand state: $currentHandState');
+    log('Current hand state: $currentHandState');
 
     // current players cards
     String playerCards = currentHandState.playerCards;
