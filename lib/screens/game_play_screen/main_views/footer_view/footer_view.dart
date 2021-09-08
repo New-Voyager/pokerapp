@@ -140,24 +140,27 @@ class _FooterViewState extends State<FooterView>
     return Consumer<MyState>(
         builder: (BuildContext _, MyState myState, Widget __) {
       final me = gameState.mySeat(context);
+
       bool showOptionsButtons = false;
-      if (me != null && me.player != null && me.player.inBreak) {
-        //log('footerview: building status option widget: IN BREAK');
-        showOptionsButtons = true;
+      log('Status: My state is changed.');
+      if (me != null && me.player != null) {
+        if (me.player.inBreak) {
+          //log('footerview: building status option widget: IN BREAK');
+          showOptionsButtons = true;
+        } else if (me.player.status == AppConstants.WAIT_FOR_BUYIN ||
+            me.player.status == AppConstants.WAIT_FOR_BUYIN_APPROVAL) {
+          showOptionsButtons = true;
+        } else if (me.player.missedBlind) {
+          showOptionsButtons = true;
+        }
       } else if (!gameState.isPlaying) {
-        // observer
-        showOptionsButtons = true;
-        //log('footerview: building status option widget: NOT PLAYING/OBSERVER');
-      } else if (
-          myState.status == PlayerStatus.WAIT_FOR_BUYIN ||
-          myState.status == PlayerStatus.WAIT_FOR_BUYIN_APPROVAL) {
-        showOptionsButtons = true;
-        //log('footerview: building status option widget: WAIT FOR BUYIN');
+        if (gameState.gameInfo.waitlistAllowed) {
+          // observer
+          showOptionsButtons = true;
+        }
       }
-         
-      //log('footerview: my state has changed. status: ${myState.status}');
       if (showOptionsButtons) {
-        log('footerview: building status option widget');
+        log('Status: building status option widget');
         return StatusOptionsWidget(gameState: gameState);
       }
 

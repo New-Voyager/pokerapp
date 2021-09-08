@@ -7,10 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:pokerapp/enums/player_status.dart';
 import 'package:pokerapp/models/game_play_models/business/game_chat_notfi_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/game_circle_button.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/voice_text_widget.dart';
 //import 'package:pokerapp/services/agora/agora.dart';
@@ -47,11 +47,11 @@ class _CommunicationViewState extends State<CommunicationView> {
         builder: (context, _) => Consumer<CommunicationState>(
               builder: (context, communicationState, __) {
                 List<Widget> children = [];
-                log('PlayerStatus = ${gameState.myState.status}, '
+                String status = gameState.myStatus;
+                log('PlayerStatus = ${status}, '
                     'audioConferenceStatus = ${communicationState.audioConferenceStatus}, '
                     'voiceChatEnable = ${communicationState.voiceChatEnable}');
-
-                if (gameState.myState.status == PlayerStatus.PLAYING &&
+                if (status == AppConstants.PLAYING &&
                     (communicationState.audioConferenceStatus ==
                             AudioConferenceStatus.CONNECTED ||
                         communicationState.audioConferenceStatus ==

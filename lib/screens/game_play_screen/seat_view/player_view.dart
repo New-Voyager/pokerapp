@@ -4,7 +4,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/enums/game_type.dart';
-import 'package:pokerapp/enums/player_status.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
@@ -132,7 +131,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
     log('seat ${widget.seat.serverSeatPos} is tapped');
     if (widget.seat.isOpen) {
       final tableState = widget.gameState.tableState;
-      if (widget.gameState.myState.status == PlayerStatus.PLAYING &&
+      if (widget.gameState.myStatus == AppConstants.PLAYING &&
           tableState.gameStatus == AppConstants.GAME_RUNNING) {
         log('Ignoring the open seat tap as the player is sitting and game is running');
         return;
@@ -146,7 +145,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
         listen: false,
       );
 
-      final me = gameState.me(context);
+      final me = gameState.me;
       // If user is not playing do not show dialog
       // if (me == null) {
       //   return;
@@ -175,10 +174,14 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
     if (handState != HandState.RESULT) {
       return SizedBox(width: 0, height: 0);
     }
+    // log('Status: seat: ${seat.player.name} inhand: ${seat.player.inhand}');x
+    if (seat.player != null && !seat.player.inhand) {
+      return SizedBox(width: 0, height: 0);
+    }
 
     return Transform.translate(
       // TODO: NEED TO VERIFY THIS FOR DIFF SCREEN SIZES
-      offset: const Offset(0.0, 20.0),
+      offset: Offset(0.0, 20.ph),
       child: Container(
         height: widget.boardAttributes.namePlateSize.height,
         width: widget.boardAttributes.namePlateSize.width,
@@ -187,11 +190,6 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
         ),
       ),
     );
-  }
-
-  bool _showHoleCard(GameState gameState, Seat seat) {
-    return gameState.currentPlayerId == seat.player.playerId &&
-        gameState.currentPlayerUuid == '';
   }
 
   @override
@@ -256,7 +254,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
     bool isDealer = false;
 
     if (!openSeat) {
-      if (widget.seat.player.playerType == TablePosition.Dealer) {
+      if (widget.seat.isDealer) {
         isDealer = true;
       }
     }

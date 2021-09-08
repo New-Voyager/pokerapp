@@ -6,7 +6,9 @@ import 'package:pokerapp/models/game_play_models/provider_models/game_context.da
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/screens/game_context_screen/game_options/game_option_bottom_sheet.dart';
+import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/utils/numeric_keyboard2.dart';
 import 'package:pokerapp/widgets/round_color_button.dart';
@@ -21,24 +23,33 @@ class StatusOptionsWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     AppTextScreen _appScreenText = getAppTextScreen("seatChangeConfirmWidget");
     final mySeat = gameState.mySeat(context);
-    final myState = gameState.myState;
     final theme = AppTheme.getTheme(context);
     final width = MediaQuery.of(context).size.width;
 
     List<Widget> children = [];
     // if i am not in the waitlist
-    if (mySeat == null && myState.status != PlayerStatus.IN_QUEUE) {
+    if (mySeat == null &&
+        gameState.gameInfo.playerGameStatus != AppConstants.IN_QUEUE) {
       if (gameState.gameInfo.waitlistAllowed) {
         children.add(getWaitListButton(_appScreenText, theme, context));
       }
     } else {
-      if (myState.status == PlayerStatus.WAIT_FOR_BUYIN ||
-          myState.status == PlayerStatus.WAIT_FOR_BUYIN_APPROVAL) {
-        children.add(getBuyinButton(_appScreenText, theme, context));
+      log('Status: myState ${mySeat.player.status} missedBlind: ${mySeat.player.missedBlind} postedBlind: ${mySeat.player.postedBlind}');
+      if (mySeat.player != null) {
+        if (mySeat.player.status == AppConstants.WAIT_FOR_BUYIN ||
+            mySeat.player.status == AppConstants.WAIT_FOR_BUYIN_APPROVAL) {
+          children.add(getBuyinButton(_appScreenText, theme, context));
+        }
+        if (mySeat.player.inBreak) {
+          children.add(getSitbackButton(_appScreenText, theme, context));
+        } else {
+          if (mySeat.player.status == AppConstants.PLAYING) {
+            if (mySeat.player.missedBlind && !mySeat.player.postedBlind) {
+              children.add(getPostBlindButton(_appScreenText, theme, context));
+            }
+          }
+        }
       }
-      if (mySeat.player.inBreak) {
-        children.add(getSitbackButton(_appScreenText, theme, context));
-      }      
     }
 
     if (children.isEmpty) {
@@ -47,10 +58,15 @@ class StatusOptionsWidget extends StatelessWidget {
 
     children.insert(0, SizedBox(height: 10.ph));
 
-    return Align(
-        alignment: Alignment.topCenter,
-        child: Column(
-            mainAxisAlignment: MainAxisAlignment.start, children: children));
+    return Stack(alignment: Alignment.center, children: [
+      SizedBox(width: width),
+      Column(mainAxisAlignment: MainAxisAlignment.center, children: children)
+    ]);
+
+    // return Align(
+    //         alignment: Alignment.bottomCenter,
+    //         child: Column(
+    //             mainAxisAlignment: MainAxisAlignment.start, children: children));
   }
 
   Widget getWaitListButton(
@@ -119,16 +135,22 @@ class StatusOptionsWidget extends StatelessWidget {
   }
 
   Future<SitBackResponse> onSitBack(BuildContext context) async {
+    log('Sitback: onSitBack');
     final gameState = GameState.getState(context);
     final gameInfo = gameState.gameInfo;
     //sit back in the seat
     final resp = await GameService.sitBack(gameInfo.gameCode);
+    if (resp == null) {
+      showError(context, message: 'Could not sitback in the table');
+    }
 
     // update player model and notify my state
     final me = gameState.mySeat(context);
-    if (me != null && me.player != null) {
+    if (me != null && me.player != null && resp != null) {
       me.player.status = resp.status;
       me.player.missedBlind = resp.missedBlind ?? false;
+      me.player.inBreak = false;
+      log('Sitback: missed blind: ${me.player.missedBlind} status: ${me.player.status}');
       final myState = gameState.myState;
       if (myState != null) {
         myState.notify();
@@ -145,6 +167,36 @@ class StatusOptionsWidget extends StatelessWidget {
         await onSitBack(context);
       },
       text: "Sit Back",
+      backgroundColor: theme.accentColor,
+      textColor: theme.primaryColorWithDark(),
+    );
+  }
+
+  Future<void> onPostBlind(BuildContext context) async {
+    final gameState = GameState.getState(context);
+    final gameInfo = gameState.gameInfo;
+    // post blind
+    await GameService.postBlinds(gameInfo.gameCode);
+
+    // update player model and notify my state
+    final me = gameState.mySeat(context);
+    if (me != null && me.player != null) {
+      me.player.postedBlind = true;
+      final myState = gameState.myState;
+      if (myState != null) {
+        myState.notify();
+      }
+    }
+  }
+
+  Widget getPostBlindButton(
+      AppTextScreen appScreenText, AppTheme theme, BuildContext context) {
+    return RoundedColorButton(
+      fontSize: 16.dp,
+      onTapFunction: () async {
+        await onPostBlind(context);
+      },
+      text: "Post Blind",
       backgroundColor: theme.accentColor,
       textColor: theme.primaryColorWithDark(),
     );

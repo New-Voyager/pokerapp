@@ -22,9 +22,13 @@ class DisplayCardsWidget extends StatelessWidget {
         card.cardType = CardType.PlayerCard;
 
         if (highlightedCards.isEmpty) {
-          // all losing cards
-          if (seat.player.muckLosingHand) {
-            card.cardFace = CardFace.BACK;
+          if (seat.player.action != null && seat.player.action.winner) {
+            // show cards
+            card.dim = true;
+          } else {
+            if (seat.player.muckLosingHand) {
+              card.cardFace = CardFace.BACK;
+            }
           }
         } else {
           /* we dim cards ONLY IF other cards are highlighted */

@@ -253,7 +253,7 @@ class Players extends ChangeNotifier {
 
   void visibleCardNumbersForAllSilent(int n) {
     for (int i = 0; i < _players.length; i++) {
-      if (_players[i].status == AppConstants.PLAYING) {
+      if (_players[i].status == AppConstants.PLAYING && _players[i].inhand) {
         _players[i].noOfCardsVisible = n;
       } else {
         _players[i].noOfCardsVisible = 0;
@@ -328,24 +328,24 @@ class Players extends ChangeNotifier {
 //  * The states that affect the current player.
 //  */
 class MyState extends ChangeNotifier {
-  int _seatNo = 0;
-  PlayerStatus _status = PlayerStatus.NOT_PLAYING;
-  PlayerModel _player;
+  // int _seatNo = 0;
+  // PlayerStatus _status = PlayerStatus.NOT_PLAYING;
+  // PlayerModel _player;
 
-  set seatNo(int v) {
-    this._seatNo = v;
-  }
+  // set seatNo(int v) {
+  //   this._seatNo = v;
+  // }
 
-  set player(PlayerModel player) {
-    this._player = player;
-  }
+  // set player(PlayerModel player) {
+  //   this._player = player;
+  // }
 
-  int get seatNo => this._seatNo;
-  PlayerModel get player => this._player;
+  // int get seatNo => this._seatNo;
+  // PlayerModel get player => this._player;
 
-  set status(PlayerStatus status) => this._status = status;
+  // set status(PlayerStatus status) => this._status = status;
 
-  PlayerStatus get status => this._status;
+  // PlayerStatus get status => this._status;
 
   void notify() {
     notifyListeners();

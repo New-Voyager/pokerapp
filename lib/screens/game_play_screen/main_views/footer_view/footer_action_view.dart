@@ -13,6 +13,7 @@ import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/bet_widget.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_proto_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
+import 'package:pokerapp/widgets/round_color_button.dart';
 import 'package:provider/provider.dart';
 
 const shrinkedBox = const SizedBox.shrink(
@@ -38,6 +39,7 @@ class _FooterActionViewState extends State<FooterActionView> {
   String selectedOptionText;
   bool bet = false;
   bool raise = false;
+  bool betWidgetShown = false;
 
   void _betOrRaise(double val) {
     _showOptions = false;
@@ -226,12 +228,14 @@ class _FooterActionViewState extends State<FooterActionView> {
     playerAction.actions.map((e) => log("player actionsL:  ${e.actionName} "));
     // final allin = playerAction?.actions
     //     ?.firstWhere((element) => element.actionName == ALLIN, orElse: null);
-    var actionButtons = [];
-    actionButtons = playerAction?.actions?.map<Widget>(
-      (action) {
-        switch (action.actionName) {
+    List<Widget> actionButtons = [];
+
+    for (final action in playerAction?.actions) {
+      Widget actionWidget = SizedBox();
+      bool closeButton = false;
+      switch (action.actionName) {
           case FOLD:
-            return _buildRoundButton(
+            actionWidget = _buildRoundButton(
               text: action.actionName,
               onTap: () => _fold(
                 action.actionValue,
@@ -239,29 +243,45 @@ class _FooterActionViewState extends State<FooterActionView> {
               ),
               theme: theme,
             );
+            break;
           case CHECK:
-            return _buildRoundButton(
+            actionWidget = _buildRoundButton(
               text: action.actionName,
               onTap: () => _check(
                 context: context,
               ),
               theme: theme,
             );
+            break;
 
           /* on tapping on BET this button should highlight and show further options */
           case BET:
             bet = true;
-            return _buildRoundButton(
-              isSelected: _showOptions,
-              text: action.actionName,
-              onTap: () => setState(() {
-                _showOptions = !_showOptions;
-                widget.isBetWidgetVisible?.call(_showOptions);
-              }),
-              theme: theme,
-            );
+            if (!betWidgetShown) {
+              actionWidget = _buildRoundButton(
+                isSelected: _showOptions,
+                text: action.actionName,
+                onTap: () => setState(() {
+                  _showOptions = !_showOptions;
+                  betWidgetShown = true;
+                  widget.isBetWidgetVisible?.call(_showOptions);
+                }),
+                theme: theme,
+              );
+            } else {
+              closeButton = true;
+              actionWidget = CloseCircleButton(theme: theme,
+                onTap: (BuildContext context) {
+                  setState(() {
+                    _showOptions = !_showOptions;
+                    betWidgetShown = false;
+                    widget.isBetWidgetVisible?.call(_showOptions);
+                  });
+              },);
+            }
+            break;
           case CALL:
-            return _buildRoundButton(
+            actionWidget = _buildRoundButton(
               text: action.actionName + ' ' + action.actionValue.toString(),
               onTap: () => _call(
                 playerAction.callAmount,
@@ -269,11 +289,12 @@ class _FooterActionViewState extends State<FooterActionView> {
               ),
               theme: theme,
             );
+            break;
 
           /* on tapping on RAISE this button should highlight and show further options */
           case RAISE:
             raise = true;
-            return _buildRoundButton(
+            actionWidget = _buildRoundButton(
               isSelected: _showOptions,
               text: action.actionName,
               onTap: () => setState(() {
@@ -282,11 +303,13 @@ class _FooterActionViewState extends State<FooterActionView> {
               }),
               theme: theme,
             );
+            break;
         }
-
-        return SizedBox.shrink();
-      },
-    )?.toList();
+        if (closeButton) {
+          actionButtons.add(SizedBox(width: 10.pw));
+        }
+        actionButtons.add(actionWidget);
+    }
 
     if ((!bet) && (!raise) && (allin != null)) {
       actionButtons.add(_buildRoundButton(

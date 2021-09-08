@@ -34,7 +34,6 @@ import 'host_seat_change.dart';
 import 'player_action.dart';
 import 'players.dart';
 import 'table_state.dart';
-import 'waitlist_state.dart';
 
 enum HandState {
   UNKNOWN,
@@ -81,7 +80,8 @@ class GameState {
   ListenableProvider<CommunicationState> _communicationStateProvider;
   ListenableProvider<StraddlePromptState> _straddlePromptProvider;
   ListenableProvider<RedrawTopSectionState> _redrawTopSectionState;
-  ListenableProvider<RedrawFooterSectionState> _redrawFooterSectionStateProvider;
+  ListenableProvider<RedrawFooterSectionState>
+      _redrawFooterSectionStateProvider;
 
   StraddlePromptState _straddlePromptState;
   HoleCardsState _holeCardsState;
@@ -90,7 +90,7 @@ class GameState {
   RedrawFooterSectionState _redrawFooterState;
 
   // For posting blind
-  bool postedBlind;
+  // bool postedBlind;
 
   CommunicationState _communicationState;
   Players _players;
@@ -167,7 +167,7 @@ class GameState {
     bool replayMode,
     bool customizationMode = false,
   }) async {
-    this.postedBlind = true;
+    // this.postedBlind = true;
     this._seats = Map<int, Seat>();
     this._gameInfo = gameInfo;
     this._gameCode = gameCode;
@@ -221,8 +221,9 @@ class GameState {
         create: (_) => RedrawTopSectionState());
 
     this._redrawFooterState = RedrawFooterSectionState();
-    this._redrawFooterSectionStateProvider = 
-        ListenableProvider<RedrawFooterSectionState>(create: (_) => this._redrawFooterState);
+    this._redrawFooterSectionStateProvider =
+        ListenableProvider<RedrawFooterSectionState>(
+            create: (_) => this._redrawFooterState);
 
     _communicationState = CommunicationState(this);
     _straddlePromptState = StraddlePromptState();
@@ -267,7 +268,7 @@ class GameState {
       players = gameInfo.playersInSeats;
     }
 
-    final values = PlayerStatus.values;
+    //final values = PlayerStatus.values;
     for (var player in players) {
       if (player.playerId != null) {
         _playerIdsToNames[player.playerId] = player.name;
@@ -278,8 +279,8 @@ class GameState {
           player.status = AppConstants.NOT_PLAYING;
         }
         //log('name: ${player.name} player status: ${player.status}');
-        this._myState.status = values
-            .firstWhere((e) => e.toString() == 'PlayerStatus.' + player.status);
+        // this._myState.status = values
+        //     .firstWhere((e) => e.toString() == 'PlayerStatus.' + player.status);
       }
       if (player.buyInTimeExpAt != null && player.stack == 0) {
         // show buyin button/timer if the player is in middle of buyin
@@ -753,8 +754,20 @@ class GameState {
     ];
   }
 
-  PlayerModel me(BuildContext context) {
+  // PlayerModel me(BuildContext context) {
+  //   return _players.me;
+  // }
+
+  PlayerModel get me {
     return _players.me;
+  }
+
+  String get myStatus {
+    final me = this.me;
+    if (me != null) {
+      return me.status;
+    }
+    return '';
   }
 
   PlayerModel fromSeat(BuildContext context, int seatNo) {
@@ -803,6 +816,15 @@ class GameState {
       BuildContext context, int seatNo, proto.NextSeatAction seatAction) {
     final actionState = getActionState(context);
     actionState.setActionProto(seatNo, seatAction);
+  }
+
+  void resetDealerButton() {
+    for (final seat in this._seats.values) {
+      if (seat.player == null) {
+        continue;
+      }
+      seat.isDealer = false;
+    }
   }
 
   void resetSeatActions({bool newHand}) {
@@ -964,10 +986,6 @@ class GameState {
     } else {
       return player.cards.reversed.toList();
     }
-  }
-
-  void setPostedBlind(bool flag) {
-    postedBlind = flag;
   }
 }
 

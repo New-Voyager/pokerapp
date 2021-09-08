@@ -635,9 +635,11 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
           Consumer<MyState>(
             builder: (context, myState, child) {
               final tableState = widget.gameState.tableState;
-              log('myState.gameStatus = ${tableState.gameStatus}, myState.status = ${myState.status}');
+              String status = widget.gameState.myStatus;
+
+              log('myState.gameStatus = ${tableState.gameStatus}, myState.status = $status');
               return tableState.gameStatus == AppConstants.GAME_RUNNING &&
-                      myState.status == PlayerStatus.PLAYING
+                      status == AppConstants.PLAYING
                   ? GameCircleButton(
                       onClickHandler: () => onClickViewHand(context),
                       imagePath: AppAssetsNew.lastHandPath,

@@ -280,18 +280,18 @@ class AssetService {
       await AssetService.putAsset(asset);
     }
 
-    if (!await AssetService.exists(UserSettingsStore.VALUE_DEFAULT_BETDIAL)) {
-      Asset asset = Asset(
-          id: UserSettingsStore.VALUE_DEFAULT_BETDIAL,
-          defaultAsset: true,
-          downloadedPath: 'assets/images/default/betdial.svg',
-          downloaded: true,
-          name: "Default Bet Dial",
-          link: "",
-          previewLink: 'assets/images/default/betdial.svg',
-          bundled: true,
-          type: "dial");
-      await AssetService.putAsset(asset);
-    }
+    // if (!await AssetService.exists(UserSettingsStore.VALUE_DEFAULT_BETDIAL)) {
+    Asset asset = Asset(
+        id: UserSettingsStore.VALUE_DEFAULT_BETDIAL,
+        defaultAsset: true,
+        downloadedPath: 'assets/images/default/betdial.png',
+        downloaded: true,
+        name: "Default Bet Dial",
+        link: "",
+        previewLink: 'assets/images/default/betdial.png',
+        bundled: true,
+        type: "dial");
+    await AssetService.putAsset(asset);
+    //}
   }
 }

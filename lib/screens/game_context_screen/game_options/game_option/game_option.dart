@@ -119,7 +119,7 @@ class _GameOptionState extends State<GameOption> {
     Navigator.of(context).pop();
 
     // get current player's stack
-    final me = widget.gameState.me(context);
+    final me = widget.gameState.me;
 
     if (me != null) {
       if (me.stack >= widget.gameState.gameInfo.buyInMax) {
@@ -1017,7 +1017,7 @@ class _GameOptionState extends State<GameOption> {
       }
     }
 
-    if (children.length > 1) {
+    if (children.length >= 1 && (isHost || isPlaying)) {
       return DefaultTabController(
         length: tabs.length,
         initialIndex: defaultIndex,
