@@ -8,6 +8,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/player_action.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/screens/game_play_screen/widgets/jumping_text_widget.dart';
 import 'package:pokerapp/services/data/box_type.dart';
 import 'package:pokerapp/services/data/hive_datasource_impl.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
@@ -15,7 +16,6 @@ import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/numeric_keyboard2.dart';
 import 'package:pokerapp/widgets/round_color_button.dart';
 import 'package:provider/provider.dart';
-import 'package:simple_tooltip/simple_tooltip.dart';
 import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 
 class BetWidget extends StatelessWidget {
@@ -41,6 +41,7 @@ class BetWidget extends StatelessWidget {
     int betTooltipCount =
         userSettingsBox.get(betTooltipCountKey, defaultValue: 0) as int;
 
+    // NUMBER OF TIMES WE WANT TO SHOW THE HINT WIDGET
     if (betTooltipCount >= 3) {
       // we dont need to show BET tooltip anymore
       return child;
@@ -50,25 +51,15 @@ class BetWidget extends StatelessWidget {
     // increment the tool tip count
     userSettingsBox.put(betTooltipCountKey, betTooltipCount + 1);
 
-    return SimpleTooltip(
-      // ui
-      backgroundColor: Colors.white,
-      borderColor: theme.accentColor,
-      ballonPadding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
+    return Stack(
+      alignment: Alignment.topCenter,
+      children: [
+        // swipe up arrow
+        JumpingTextWidget(text: 'Swipe up to bet'),
 
-      // others
-      animationDuration: Duration(seconds: 1),
-      show: true,
-      tooltipDirection: TooltipDirection.right,
-      content: Text(
-        "Slide-up to confirm bet. You can change to Tap in Settings",
-        style: TextStyle(
-          color: Colors.black,
-          fontSize: 13,
-          decoration: TextDecoration.none,
-        ),
-      ),
-      child: child,
+        // main child
+        child,
+      ],
     );
   }
 
@@ -91,7 +82,7 @@ class BetWidget extends StatelessWidget {
     final boardAttributes = gameState.getBoardAttributes(context);
     final imageBytes = gameState.assets.getBetImage();
     Widget betImage;
-    final double s = 40.0.dp;
+    final double s = 30.0.dp;
 
     betImage = Image.memory(
       imageBytes,
