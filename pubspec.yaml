@@ -9,23 +9,14 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
-  flutter:
-    sdk: flutter
+  after_layout: ^1.1.0
+  agora_rtc_engine: 4.0.5-rc.0
+  animated_text_kit: ^4.1.1
+  archive: ^3.1.2
   audio_recorder:
     git:
       url: https://github.com/New-Voyager/audio_recorder.git
       ref: master
-  dart_nats:
-    git:
-      url: https://github.com/New-Voyager/dart-nats.git
-      ref: master
-  tenor:
-    git:
-      url: https://github.com/New-Voyager/tenor.git
-      ref: master
-  after_layout: ^1.1.0
-  agora_rtc_engine: 4.0.5-rc.0
-  animated_text_kit: ^4.1.1
   audioplayers: 0.17.0
   badges: ^2.0.1
   blinking_text: ^1.0.1+2
@@ -35,6 +26,10 @@ dependencies:
   cryptography: ^2.0.1
   cupertino_icons: ^0.1.3
   curved_bottom_navigation: ^1.0.0
+  dart_nats:
+    git:
+      url: https://github.com/New-Voyager/dart-nats.git
+      ref: master
   device_info: ^2.0.2
   equatable: ^1.2.5
   firebase_analytics: ^8.0.2
@@ -42,6 +37,8 @@ dependencies:
   firebase_messaging: ^10.0.0
   flip_card: ^0.4.4
   flushbar: ^1.10.4
+  flutter:
+    sdk: flutter
   flutter_bloc: ^6.1.2
   flutter_circular_slider: ^2.5.0
   flutter_gifimage: ^1.0.1
@@ -78,13 +75,16 @@ dependencies:
   sliding_up_panel: ^1.0.2
   splashscreen: ^1.3.5
   stream_channel: ^2.1.0
+  tenor:
+    git:
+      url: https://github.com/New-Voyager/tenor.git
+      ref: master
   timer_count_down: ^1.0.4+1
   tuple: ^1.0.3
   uuid: ^3.0.4
   wakelock: ^0.5.2
   web_socket_channel: ^2.0.0
   zflutter: ^0.0.1+2
-  archive: ^3.1.2
 
 dependency_overrides:
   http: ^0.12.2
@@ -103,10 +103,10 @@ dependency_overrides:
   archive: ^3.0.0
 
 dev_dependencies:
-  flutter_test:
-    sdk: flutter
   build_runner: ^2.0.4
   flutter_native_splash: ^1.2.0
+  flutter_test:
+    sdk: flutter
   hive_generator: ^1.1.0
 
 flutter:
