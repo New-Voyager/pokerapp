@@ -674,23 +674,13 @@ class GameState {
   MyState get myState => this._myState;
   RedrawFooterSectionState get redrawFooterState => this._redrawFooterState;
 
-  Seat mySeat(BuildContext context) {
-    if (context == null) {
-      for (final seat in _seats.values) {
-        if (seat.isMe) {
-          return seat;
-        }
+  Seat get mySeat {
+    for (final seat in _seats.values) {
+      if (seat.isMe) {
+        return seat;
       }
-      return null;
-    } else {
-      final players = getPlayers(context);
-      final me = players.me;
-      if (me == null) {
-        return null;
-      }
-      final seat = getSeat(context, me.seatNo);
-      return seat;
     }
+    return null;
   }
 
   BoardAttributesObject getBoardAttributes(
@@ -771,11 +761,13 @@ class GameState {
   }
 
   PlayerModel fromSeat(BuildContext context, int seatNo) {
+    if (this.uiClosing) null;
     Players players = getPlayers(context);
     return players.fromSeat(seatNo);
   }
 
   void updatePlayers(BuildContext context) {
+    if (this.uiClosing) return;
     final players = getPlayers(context);
     players.notifyAll();
   }
@@ -785,6 +777,7 @@ class GameState {
     if (newPlayer.playerId != null) {
       _playerIdsToNames[newPlayer.playerId] = newPlayer.name;
     }
+    seats[newPlayer.seatNo].player = newPlayer;
     return players.addNewPlayerSilent(newPlayer);
   }
 

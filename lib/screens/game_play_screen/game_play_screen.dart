@@ -431,11 +431,13 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     Alerts.showRabbitHuntNotification(chatMessage: message);
   }
 
-  void _onCards(ChatMessage message) =>
-      UtilActionServices.showCardsOfFoldedPlayers(
-        _providerContext,
-        message,
-      );
+  void _onCards(ChatMessage message) {
+    UtilActionServices.showCardsOfFoldedPlayers(
+      _gameState.currentPlayerId,
+      _gameState,
+      message,
+    );
+  }
 
   void _onAudio(ChatMessage message) async {
     log('Audio message is sent ${message.messageId} from player ${message.fromPlayer}');

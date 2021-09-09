@@ -234,81 +234,83 @@ class _FooterActionViewState extends State<FooterActionView> {
       Widget actionWidget = SizedBox();
       bool closeButton = false;
       switch (action.actionName) {
-          case FOLD:
-            actionWidget = _buildRoundButton(
-              text: action.actionName,
-              onTap: () => _fold(
-                action.actionValue,
-                context: context,
-              ),
-              theme: theme,
-            );
-            break;
-          case CHECK:
-            actionWidget = _buildRoundButton(
-              text: action.actionName,
-              onTap: () => _check(
-                context: context,
-              ),
-              theme: theme,
-            );
-            break;
+        case FOLD:
+          actionWidget = _buildRoundButton(
+            text: action.actionName,
+            onTap: () => _fold(
+              action.actionValue,
+              context: context,
+            ),
+            theme: theme,
+          );
+          break;
+        case CHECK:
+          actionWidget = _buildRoundButton(
+            text: action.actionName,
+            onTap: () => _check(
+              context: context,
+            ),
+            theme: theme,
+          );
+          break;
 
-          /* on tapping on BET this button should highlight and show further options */
-          case BET:
-            bet = true;
-            if (!betWidgetShown) {
-              actionWidget = _buildRoundButton(
-                isSelected: _showOptions,
-                text: action.actionName,
-                onTap: () => setState(() {
-                  _showOptions = !_showOptions;
-                  betWidgetShown = true;
-                  widget.isBetWidgetVisible?.call(_showOptions);
-                }),
-                theme: theme,
-              );
-            } else {
-              closeButton = true;
-              actionWidget = CloseCircleButton(theme: theme,
-                onTap: (BuildContext context) {
-                  setState(() {
-                    _showOptions = !_showOptions;
-                    betWidgetShown = false;
-                    widget.isBetWidgetVisible?.call(_showOptions);
-                  });
-              },);
-            }
-            break;
-          case CALL:
-            actionWidget = _buildRoundButton(
-              text: action.actionName + ' ' + action.actionValue.toString(),
-              onTap: () => _call(
-                playerAction.callAmount,
-                context: context,
-              ),
-              theme: theme,
-            );
-            break;
-
-          /* on tapping on RAISE this button should highlight and show further options */
-          case RAISE:
-            raise = true;
+        /* on tapping on BET this button should highlight and show further options */
+        case BET:
+          bet = true;
+          if (!betWidgetShown) {
             actionWidget = _buildRoundButton(
               isSelected: _showOptions,
               text: action.actionName,
               onTap: () => setState(() {
                 _showOptions = !_showOptions;
+                betWidgetShown = true;
                 widget.isBetWidgetVisible?.call(_showOptions);
               }),
               theme: theme,
             );
-            break;
-        }
-        if (closeButton) {
-          actionButtons.add(SizedBox(width: 10.pw));
-        }
-        actionButtons.add(actionWidget);
+          } else {
+            closeButton = true;
+            actionWidget = CloseCircleButton(
+              theme: theme,
+              onTap: (BuildContext context) {
+                setState(() {
+                  _showOptions = !_showOptions;
+                  betWidgetShown = false;
+                  widget.isBetWidgetVisible?.call(_showOptions);
+                });
+              },
+            );
+          }
+          break;
+        case CALL:
+          actionWidget = _buildRoundButton(
+            text: action.actionName + ' ' + action.actionValue.toString(),
+            onTap: () => _call(
+              playerAction.callAmount,
+              context: context,
+            ),
+            theme: theme,
+          );
+          break;
+
+        /* on tapping on RAISE this button should highlight and show further options */
+        case RAISE:
+          raise = true;
+          actionWidget = _buildRoundButton(
+            isSelected: _showOptions,
+            text: action.actionName,
+            onTap: () => setState(() {
+              _showOptions = !_showOptions;
+              widget.isBetWidgetVisible?.call(_showOptions);
+            }),
+            theme: theme,
+          );
+          break;
+      }
+      if (closeButton) {
+        actionButtons.add(SizedBox(width: 10.pw));
+      }
+      actionButtons.add(actionWidget);
     }
 
     if ((!bet) && (!raise) && (allin != null)) {
