@@ -23,6 +23,11 @@ class TableState extends ChangeNotifier {
   String get whichWinner => _whichWinner;
   String _whichWinner;
 
+  // This flag is used when processing query current state response
+  // if we are in middle of hand result animation, wait for the next hand
+  // to update the table
+  bool resultInProgress = false;
+
   bool get showCardsShuffling => _showCardsShuffling;
   bool _showCardsShuffling;
 

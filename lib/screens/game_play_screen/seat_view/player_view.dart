@@ -150,10 +150,12 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
       // if (me == null) {
       //   return;
       // }
-      final mySeat = gameState.mySeat(context);
-      if (!widget.gameState.currentPlayer.isAdmin() && !(mySeat != null))
-        return;
-
+      final mySeat = gameState.mySeat;
+      if (!widget.gameState.currentPlayer.isAdmin()) {
+        if (mySeat == null) {
+          return;
+        }
+      }
       if (me != null && widget.seat.serverSeatPos == mySeat.serverSeatPos) {
         return;
       }

@@ -191,8 +191,7 @@ class RoundSecondaryColorButton extends StatelessWidget {
 class CloseCircleButton extends StatelessWidget {
   final AppTheme theme;
   final Function(BuildContext) onTap;
-  CloseCircleButton(
-      {@required this.theme, @required this.onTap});
+  CloseCircleButton({@required this.theme, @required this.onTap});
 
   @override
   Widget build(BuildContext context) {

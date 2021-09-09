@@ -398,7 +398,7 @@ showPlayerPopup(context, GlobalKey seatKey, GameState gameState, Seat seat) {
   );
 
   double menuItemHeight = 40;
-  final mySeat = gameState.mySeat(context);
+  final mySeat = gameState.mySeat;
   showMenu(
     context: context,
     color: AppColorsNew.actionRowBgColor,

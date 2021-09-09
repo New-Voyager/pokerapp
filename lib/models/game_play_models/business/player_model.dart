@@ -382,6 +382,10 @@ class PlayerActedState {
   }
 
   void setActionProto(proto.ACTION action, double amount) {
+    _sb = false;
+    _bb = false;
+    _straddle = false;
+
     if (action == proto.ACTION.BET) {
       _playerAction = HandActions.BET;
     } else if (action == proto.ACTION.RAISE) {
@@ -398,10 +402,13 @@ class PlayerActedState {
       _playerAction = HandActions.BOMB_POT_BET;
     } else if (action == proto.ACTION.SB) {
       _playerAction = HandActions.SB;
+      _sb = true;
     } else if (action == proto.ACTION.BB) {
       _playerAction = HandActions.BB;
+      _bb = true;
     } else if (action == proto.ACTION.STRADDLE) {
       _playerAction = HandActions.STRADDLE;
+      _straddle = true;
     } else if (action == proto.ACTION.POST_BLIND) {
       _playerAction = HandActions.POST_BLIND;
     }
