@@ -777,7 +777,7 @@ class GameState {
     if (newPlayer.playerId != null) {
       _playerIdsToNames[newPlayer.playerId] = newPlayer.name;
     }
-    seats[newPlayer.seatNo].player = newPlayer;
+    _seats[newPlayer.seatNo].player = newPlayer;
     return players.addNewPlayerSilent(newPlayer);
   }
 
