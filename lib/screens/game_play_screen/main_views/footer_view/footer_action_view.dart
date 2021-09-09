@@ -375,11 +375,9 @@ class _FooterActionViewState extends State<FooterActionView> {
             mainAxisSize: MainAxisSize.min,
             children: [
               /* bet widget */
-              Expanded(
-                child: Transform.scale(
-                  scale: boardAttributes.footerActionViewScale,
-                  child: _buildBetWidget(actionState.action, 30),
-                ),
+              Transform.scale(
+                scale: boardAttributes.footerActionViewScale,
+                child: _buildBetWidget(actionState.action, 30),
               ),
 
               /* bottom row */
