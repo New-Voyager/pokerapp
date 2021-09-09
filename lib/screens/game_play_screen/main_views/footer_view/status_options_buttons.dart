@@ -22,7 +22,7 @@ class StatusOptionsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     AppTextScreen _appScreenText = getAppTextScreen("seatChangeConfirmWidget");
-    final mySeat = gameState.mySeat(context);
+    final mySeat = gameState.mySeat;
     final theme = AppTheme.getTheme(context);
     final width = MediaQuery.of(context).size.width;
 
@@ -145,7 +145,7 @@ class StatusOptionsWidget extends StatelessWidget {
     }
 
     // update player model and notify my state
-    final me = gameState.mySeat(context);
+    final me = gameState.mySeat;
     if (me != null && me.player != null && resp != null) {
       me.player.status = resp.status;
       me.player.missedBlind = resp.missedBlind ?? false;
@@ -179,7 +179,7 @@ class StatusOptionsWidget extends StatelessWidget {
     await GameService.postBlinds(gameInfo.gameCode);
 
     // update player model and notify my state
-    final me = gameState.mySeat(context);
+    final me = gameState.mySeat;
     if (me != null && me.player != null) {
       me.player.postedBlind = true;
       final myState = gameState.myState;

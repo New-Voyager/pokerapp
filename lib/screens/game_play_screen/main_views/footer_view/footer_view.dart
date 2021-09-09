@@ -139,7 +139,7 @@ class _FooterViewState extends State<FooterView>
     final width = MediaQuery.of(context).size.width;
     return Consumer<MyState>(
         builder: (BuildContext _, MyState myState, Widget __) {
-      final me = gameState.mySeat(context);
+      final me = gameState.mySeat;
 
       bool showOptionsButtons = false;
       log('Status: My state is changed.');

@@ -195,12 +195,14 @@ class Players extends ChangeNotifier {
   }
 
   // TODO: WE DONT NEED THIS METHOD
-  void updateStackBulkSilent(var stackData) {
+  void updateStackBulkSilent(Map<dynamic, dynamic> stackData) {
     Map<int, int> stacks = Map<int, int>();
 
-    stackData.forEach((key, value) =>
-        stacks[int.parse(key.toString())] = int.parse(value.toString()));
-
+    // stackData.forEach((key, value) =>
+    //     stacks[int.parse(key.toString())] = int.parse(value.toString()));
+    for (final key in stackData.keys) {
+      stacks[key.toInt()] = stackData[key].toInt();
+    }
     // stacks contains, <seatNo, stack> mapping
     stacks.forEach((seatNo, stack) {
       int idx = _players.indexWhere((p) => p.seatNo == seatNo);

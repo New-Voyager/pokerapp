@@ -29,7 +29,7 @@ class Agora extends ChangeNotifier {
       this.state,
       this.gameState});
   Future initEngine() async {
-    mySeat = this.gameState.mySeat(null);
+    mySeat = this.gameState.mySeat;
     engine = await RtcEngine.create(appId);
     this._addListeners();
     await engine.enableAudio();

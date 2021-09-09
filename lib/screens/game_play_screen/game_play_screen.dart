@@ -432,11 +432,11 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   }
 
   void _onCards(ChatMessage message) {
-      UtilActionServices.showCardsOfFoldedPlayers(
-        _gameState.currentPlayerId,
-        _providerContext,
-        message,
-      );
+    UtilActionServices.showCardsOfFoldedPlayers(
+      _gameState.currentPlayerId,
+      _gameState,
+      message,
+    );
   }
 
   void _onAudio(ChatMessage message) async {

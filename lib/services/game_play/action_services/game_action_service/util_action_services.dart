@@ -9,17 +9,17 @@ class UtilActionServices {
 
   static void showCardsOfFoldedPlayers(
     int myPlayerId,
-    BuildContext context,
+    GameState gameState,
     ChatMessage chatMessage,
   ) async {
     final String fromPlayerID = chatMessage.fromPlayer.toString();
-    final gameState = GameState.getState(context);
+    //final gameState = GameState.getState(context);
     final String myPlayerID = myPlayerId.toString();
 
     // we dont need to proceed showing empty cards
     if (chatMessage.cards.isEmpty) return;
 
-    final int handNum = context.read<HandInfoState>().handNum;
+    final int handNum = gameState.handInfo.handNum;
     final int receivedHandNum = int.parse(chatMessage.text ?? '-1');
 
     // if we receive an old hand message, discard it
@@ -29,10 +29,7 @@ class UtilActionServices {
     if (fromPlayerID == myPlayerID) return;
 
     // print('this is here');
-    final Players players = Provider.of<Players>(
-      context,
-      listen: false,
-    );
+    final Players players = gameState.players;
 
     players.updateCardSilent(
       chatMessage.seatNo,

@@ -240,8 +240,8 @@ class GamePlayScreenUtilMethods {
     }
     if (newPlayerModel.isMe) {
       await Future.delayed(Duration(milliseconds: 100));
-      final mySeat = gameState.mySeat(context);
-      mySeat.player = newPlayerModel;
+      final mySeat = gameState.mySeat;
+      //mySeat.player = newPlayerModel;
       mySeat.notify();
 
       // if (status == PlayerStatus.WAIT_FOR_BUYIN_APPROVAL ||
