@@ -51,21 +51,25 @@ showAlertDialog(BuildContext context, String title, String message) {
 }
 
 showError(BuildContext context, {GqlError error, String message}) {
+  final theme = AppTheme.getTheme(context);
   // translate to other languages here
   if (error != null) {
     message = error.message;
   }
 
   // set up the button
-  Widget okButton = ElevatedButton(
-    child: Text("Close"),
-    onPressed: () {
+  Widget okButton = RoundedColorButton(
+    text: "Close",
+    backgroundColor: theme.accentColor,
+    textColor: theme.primaryColorWithDark(),
+    onTapFunction: () {
       Navigator.of(context).pop();
     },
   );
 
   // set up the AlertDialog
   AlertDialog alert = AlertDialog(
+    backgroundColor: theme.fillInColor,
     title: Text('Error'),
     content: Text(message),
     actions: [

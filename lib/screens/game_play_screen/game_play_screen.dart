@@ -984,7 +984,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
   void startLocationUpdate() async {
     log("0-0-0- START Location update ");
-    if (mounted) {
+    if (mounted && (_gameState?.gameInfo?.gpsCheck ?? false)) {
       HelperUtils.initTimer(
         period: Duration(seconds: 60),
         repeatFunction: (_) => sendLocation(),

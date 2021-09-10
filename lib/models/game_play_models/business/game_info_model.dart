@@ -60,6 +60,9 @@ class GameInfoModel {
   String agoraToken;
   String agoraAppId;
 
+  bool ipCheck;
+  bool gpsCheck;
+
   // all players in the game
   Map<int, GamePlayer> allPlayers = Map<int, GamePlayer>();
 
@@ -75,6 +78,8 @@ class GameInfoModel {
   });
 
   GameInfoModel.fromJson(var data, {int maxPlayers}) {
+    this.ipCheck = data['ipCheck'] ?? false;
+    this.gpsCheck = data['gpsCheck'] ?? false;
     this.gameID = data['gameID'] ?? 0;
     this.gameCode = data['gameCode'];
     this.clubCode = data['clubCode'];
@@ -173,6 +178,9 @@ class GameInfoModel {
       runningTime
       noHandsWon
       noHandsPlayed
+
+      ipCheck
+      gpsCheck
 
       seatInfo {
         availableSeats

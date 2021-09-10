@@ -1337,7 +1337,7 @@ mutation updateInputs(\$gameCode :String!,\$inputSettings: GameSettingsUpdateInp
   static Future<SitBackResponse> sitBack(String gameCode) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     String _query = """
-          mutation (\$gameCode: String!,\$locatioon: LocationInput!){
+          mutation (\$gameCode: String!,\$location: LocationInput!){
             status: sitBack(gameCode: \$gameCode,location:\$location) {
               status
               missedBlind
