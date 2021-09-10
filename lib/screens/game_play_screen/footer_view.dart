@@ -33,7 +33,9 @@ class FooterViewWidget extends StatelessWidget {
           gameContext: gameContextObject,
           gameCode: gameCode,
           playerUuid: currentPlayer.uuid,
-          chatVisibilityChange: () => this.toggleChatVisibility(context),
+          chatVisibilityChange: () {
+            this.toggleChatVisibility(context);
+          },
           clubCode: gameInfo.clubCode,
         ),
       ),

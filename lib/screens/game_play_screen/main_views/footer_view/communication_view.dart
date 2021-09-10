@@ -51,6 +51,27 @@ class _CommunicationViewState extends State<CommunicationView> {
                 log('PlayerStatus = ${status}, '
                     'audioConferenceStatus = ${communicationState.audioConferenceStatus}, '
                     'voiceChatEnable = ${communicationState.voiceChatEnable}');
+                if (communicationState.showTextChat) {
+                  children.add(
+                    Consumer<GameChatNotifState>(
+                      builder: (_, gcns, __) => Badge(
+                        animationType: BadgeAnimationType.scale,
+                        showBadge: gcns.hasUnreadMessages,
+                        position: BadgePosition.topEnd(top: 0, end: 0),
+                        badgeContent: Text(gcns.count.toString()),
+                        child: GameCircleButton(
+                          onClickHandler: () {
+                            log('on chat clicked');
+                            widget.chatVisibilityChange();
+                          },
+                            //,
+                          child: chat,
+                        ),
+                      ),
+                    ),
+                  );
+                  children.add(SizedBox(height: 10.dp,));
+                }                    
                 if (status == AppConstants.PLAYING &&
                     (communicationState.audioConferenceStatus ==
                             AudioConferenceStatus.CONNECTED ||
@@ -76,22 +97,6 @@ class _CommunicationViewState extends State<CommunicationView> {
                   children.addAll(voiceTextWidgets(widget.chatService));
                 }
 
-                if (communicationState.showTextChat) {
-                  children.add(
-                    Consumer<GameChatNotifState>(
-                      builder: (_, gcns, __) => Badge(
-                        animationType: BadgeAnimationType.scale,
-                        showBadge: gcns.hasUnreadMessages,
-                        position: BadgePosition.topEnd(top: 0, end: 0),
-                        badgeContent: Text(gcns.count.toString()),
-                        child: GameCircleButton(
-                          onClickHandler: widget.chatVisibilityChange,
-                          child: chat,
-                        ),
-                      ),
-                    ),
-                  );
-                }
 
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.end,

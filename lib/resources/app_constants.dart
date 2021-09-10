@@ -35,6 +35,10 @@ class AppConstants {
     milliseconds: 800,
   );
 
+  static const Duration bombPotTotalWaitDuration = const Duration(
+    milliseconds: 2000,
+  );
+
   static const Duration cardShufflingWaitDuration = const Duration(
     milliseconds: 200,
   );

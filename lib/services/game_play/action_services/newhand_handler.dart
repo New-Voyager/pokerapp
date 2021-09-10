@@ -317,7 +317,12 @@ class NewHandHandler {
 
       /* show card shuffling*/
       tableState.updateCardShufflingAnimation(true);
-      await Future.delayed(AppConstants.cardShufflingTotalWaitDuration); // wait
+      if (gameState.handInfo.bombPot) {
+        await Future.delayed(AppConstants.bombPotTotalWaitDuration); // wait
+      } else {
+        await Future.delayed(
+            AppConstants.cardShufflingTotalWaitDuration); // wait
+      }
       tableState.updateCardShufflingAnimation(false);
       /* end card shuffling animation */
 

@@ -58,8 +58,8 @@ class GameCircleButton extends StatelessWidget {
       buttonColor = AppColorsNew.disabledColor;
     }
     final button = Container(
-      height: 32.pw,
-      width: 32.pw,
+      height: 36.pw,
+      width: 36.pw,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: buttonColor,
