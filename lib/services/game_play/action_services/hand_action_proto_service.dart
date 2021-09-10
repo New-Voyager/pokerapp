@@ -1149,18 +1149,18 @@ class HandActionProtoService {
     action.setActionProto(playerActed.action, playerActed.amount);
     //log('Hand Message: ::handlePlayerActed:: player acted: $seatNo, player: ${seat.player.name} action: ${action.action.toString()}');
 
-    if (seat.player.isMe) {
-      final Players players = _gameState.getPlayers(_context);
-      final player = players.players.firstWhere(
-        (p) => p.seatNo == seatNo,
-        orElse: null,
-      );
-      if (player != null) {
-        player.action = action;
-        // notify of the last action
-        players.notifyAll();
-      }
-    }
+    // if (seat.player.isMe) {
+    //   final Players players = _gameState.getPlayers(_context);
+    //   final player = players.players.firstWhere(
+    //     (p) => p.seatNo == seatNo,
+    //     orElse: null,
+    //   );
+    //   if (player != null) {
+    //     player.action = action;
+    //     // notify of the last action
+    //     players.notifyAll();
+    //   }
+    // }
 
     // play the bet-raise sound effect
     if (action.action == HandActions.BET ||
