@@ -5,6 +5,7 @@ import 'package:after_layout/after_layout.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:dart_nats/dart_nats.dart' as nats;
 import 'package:flutter/material.dart';
+import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/enums/game_status.dart';
 import 'package:pokerapp/enums/player_status.dart';
@@ -37,7 +38,9 @@ import 'package:pokerapp/screens/util_screens/util.dart';
 //import 'package:pokerapp/services/agora/agora.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/app/player_service.dart';
+import 'package:pokerapp/services/data/box_type.dart';
 import 'package:pokerapp/services/data/game_log_store.dart';
+import 'package:pokerapp/services/data/hive_datasource_impl.dart';
 import 'package:pokerapp/services/encryption/encryption_service.dart';
 import 'package:pokerapp/services/game_play/action_services/game_action_service/util_action_services.dart';
 import 'package:pokerapp/services/game_play/action_services/game_update_service.dart';
@@ -60,6 +63,8 @@ import '../../main.dart';
 import '../../routes.dart';
 import '../../services/test/test_service.dart';
 import 'game_play_screen_util_methods.dart';
+
+import 'package:geolocator/geolocator.dart';
 
 // FIXME: THIS NEEDS TO BE CHANGED AS PER DEVICE CONFIG
 const kScrollOffsetPosition = 40.0;
@@ -108,6 +113,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   @override
   String get routeName => Routes.game_play;
 
+  // StreamSubscription<Position> positionStream;
   bool _initiated;
   BuildContext _providerContext;
   PlayerInfo _currentPlayer;
@@ -123,6 +129,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   GameState _gameState;
   List<PlayerInSeat> _hostSeatChangeSeats;
   bool _hostSeatChangeInProgress;
+  WidgetsBinding _binding = WidgetsBinding.instance;
+  Timer _locationTimer;
+  bool _locationAlertShown = false;
 
   /* _init function is run only for the very first time,
   * and only once, the initial game screen is populated from here
@@ -376,6 +385,13 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     if (_gameState != null) {
       _gameState.uiClosing = true;
     }
+    // if (positionStream != null) {
+    //   positionStream.cancel();
+    // }
+    if (_binding != null) {
+      _binding.removeObserver(this);
+    }
+
     super.dispose();
   }
 
@@ -530,9 +546,12 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     Wakelock.enable();
     _audioPlayer = AudioPlayer();
     _voiceTextPlayer = AudioPlayer();
-
     // Register listener for lifecycle methods
-    WidgetsBinding.instance.addObserver(this);
+    _binding.addObserver(this);
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      startLocationUpdate();
+    });
+
     init();
   }
 
@@ -943,20 +962,103 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   // Lifeccyle Methods
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    log("AppLifeCycleState : $state");
+    log("AppLifeCycleState GameScreen: $state");
     switch (state) {
       case AppLifecycleState.paused:
       case AppLifecycleState.detached:
       case AppLifecycleState.inactive:
         log("Leaving AudioConference from Lifecycle");
         leaveAudioConference();
+        stopLocationUpdate();
         break;
       case AppLifecycleState.resumed:
         log("Joining AudioConference from Lifecycle");
         _joinAudio();
+        startLocationUpdate();
         break;
     }
     super.didChangeAppLifecycleState(state);
+  }
+
+  void stopLocationUpdate() {
+    log("0-0-0- STOP Location update ");
+    HelperUtils.cancelTimer(timer: _locationTimer);
+  }
+
+  void startLocationUpdate() async {
+    log("0-0-0- START Location update ");
+    if (mounted) {
+      HelperUtils.initTimer(
+        period: Duration(seconds: 60),
+        repeatFunction: (_) => sendLocation(),
+        timer: _locationTimer,
+      );
+    }
+  }
+
+  Future<void> sendLocation() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        toast("Location is denied.");
+        return Future.error('Location permissions are denied');
+      }
+    }
+    // Test if location services are enabled.
+    try {
+      serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    } catch (e) {
+      toast("Exception : ${e.toString()}", duration: Duration(seconds: 3));
+    }
+    if (!serviceEnabled) {
+      if (_locationAlertShown) {
+        return;
+      }
+      toast("Location is disabled.", duration: Duration(seconds: 3));
+      _locationAlertShown = true;
+      await Alerts.showCustomDialog(
+          title: Text("Location disabled."),
+          descriptionText:
+              "Please enable location setting. It is mandatory for playing this game.",
+          onOkTapFunction: () async {
+            await Geolocator.openLocationSettings();
+          },
+          context: context,
+          okButtonText: "Open Settings");
+      _locationAlertShown = false;
+      return Future.error('Location services are disabled.');
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      // Permissions are denied forever, handle appropriately.
+      toast("Location is denied, Please enable it in settings.",
+          duration: Duration(seconds: 3));
+
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
+
+    // When we reach here, permissions are granted and we can
+    // continue accessing the position of the device.
+    Position position = await Geolocator.getCurrentPosition();
+    await GameService.updateLocation(position);
+    log("0-0-0- Location send to server : ${position.toJson()}");
+    HelperUtils.saveLocationToHive(position);
+    // positionStream = Geolocator.getPositionStream(
+    //   desiredAccuracy: LocationAccuracy.medium,
+    // ).listen((Position newPosition) async {
+    //   Position oldLocation = HelperUtils.getSavedLocation();
+    //   double distance = Geolocator.distanceBetween(newPosition.latitude,
+    //       newPosition.longitude, oldLocation.latitude, oldLocation.longitude);
+    //   HelperUtils.saveLocationToHive(newPosition);
+    //   if (distance.abs() > 500) {
+    //     // Update Location to Server.
+    //     await GameService.updateLocation(newPosition);
+    //   }
+    // });
   }
 
   leaveAudioConference() {

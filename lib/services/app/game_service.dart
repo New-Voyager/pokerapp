@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/main.dart';
@@ -1344,5 +1345,23 @@ mutation updateInputs(\$gameCode :String!,\$inputSettings: GameSettingsUpdateInp
     resp.status = status['status'];
     resp.missedBlind = status['missedBlind'];
     return resp;
+  }
+
+  static Future<void> updateLocation(Position position) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    Map<String, dynamic> variables = {
+      "lat": position.latitude,
+      "long": position.longitude
+    };
+    String _query = """
+      mutation location(\$location:LocationInput!){
+        ret:updateLocation(location:\$location)
+      }
+    """;
+    QueryResult result = await _client.mutate(
+      MutationOptions(documentNode: gql(_query), variables: variables),
+    );
+
+    if (result.hasException) return null;
   }
 }

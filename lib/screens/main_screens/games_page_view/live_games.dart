@@ -21,6 +21,7 @@ import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
+import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
 import 'package:pokerapp/widgets/heading_widget.dart';
 import 'package:pokerapp/widgets/round_color_button.dart';
@@ -42,6 +43,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
 
   Timer _refreshTimer;
   AppTextScreen _appScreenText;
+  bool _isCurrentScreen = true;
 
   @override
   void initState() {
@@ -97,8 +99,26 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
     super.didChangeAppLifecycleState(state);
   }
 
-  _initTimer() async {
-    if (_refreshTimer == null || !_refreshTimer.isActive) {
+  _initTimer() {
+    HelperUtils.initTimer(
+      period: Duration(seconds: 30),
+      repeatFunction: (_) async {
+        log("0-0-0- Mounted : $mounted : Current screen : $_isCurrentScreen");
+        if (mounted && _isCurrentScreen) {
+          final int currentIndex =
+              Provider.of<AppState>(context, listen: false).currentIndex;
+          if (currentIndex == 0) {
+            if (_tabController.index == 0) {
+              await _fetchLiveGames();
+            } else if (_tabController.index == 1) {
+              await _fetchPlayedGames();
+            }
+          }
+        }
+      },
+      timer: _refreshTimer,
+    );
+    /*  if (_refreshTimer == null || !_refreshTimer.isActive) {
       _refreshTimer =
           Timer.periodic(const Duration(seconds: 30), (timer) async {
         if (mounted) {
@@ -113,13 +133,11 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
           }
         }
       });
-    }
+    } */
   }
 
   _disposeTimer() {
-    if (_refreshTimer != null || _refreshTimer.isActive) {
-      _refreshTimer.cancel();
-    }
+    HelperUtils.cancelTimer(timer: _refreshTimer);
   }
 
   // _serverPolling() async {
@@ -375,12 +393,14 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                                           game: liveGames[index],
                                           onTapFunction: () async {
                                             _disposeTimer();
+                                            _isCurrentScreen = false;
                                             await Navigator.of(context)
                                                 .pushNamed(
                                               Routes.game_play,
                                               arguments:
                                                   liveGames[index].gameCode,
                                             );
+                                            _isCurrentScreen = true;
                                             // Refreshes livegames again
                                             _initTimer();
                                           },

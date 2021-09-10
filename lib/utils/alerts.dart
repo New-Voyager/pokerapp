@@ -5,9 +5,12 @@ import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
+import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/overlay_notification.dart';
 import 'package:pokerapp/screens/game_screens/new_game_settings/choose_game_new.dart';
+import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/widgets/round_color_button.dart';
 
@@ -222,6 +225,49 @@ class Alerts {
                 ],
               );
             },
+          ),
+        );
+      },
+    );
+  }
+
+  static Future<void> showCustomDialog({
+    BuildContext context,
+    Text title,
+    String descriptionText,
+    String okButtonText,
+    Function() onOkTapFunction,
+  }) async {
+    final theme = AppTheme.getTheme(context);
+    await showGeneralDialog(
+      context: context,
+      pageBuilder: (context, animation, secondaryAnimation) {
+        return AlertDialog(
+          backgroundColor: theme.fillInColor,
+          title: title,
+          content: Column(
+            children: [
+              Text(descriptionText),
+              AppDimensionsNew.getVerticalSizedBox(16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  RoundedColorButton(
+                    text: "CANCEL",
+                    onTapFunction: () => Navigator.of(context).pop(),
+                    backgroundColor: Colors.transparent,
+                    borderColor: theme.secondaryColor,
+                  ),
+                  RoundedColorButton(
+                    text: okButtonText,
+                    onTapFunction: onOkTapFunction,
+                    backgroundColor: theme.accentColor,
+                    textColor: theme.primaryColorWithDark(),
+                  ),
+                ],
+              ),
+            ],
+            mainAxisSize: MainAxisSize.min,
           ),
         );
       },

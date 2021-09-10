@@ -1,9 +1,13 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:geolocator_platform_interface/src/models/position.dart';
 import 'package:pokerapp/enums/game_type.dart';
+import 'package:pokerapp/services/data/box_type.dart';
+import 'package:pokerapp/services/data/hive_datasource_impl.dart';
 
 class Screen {
   final Size _size;
@@ -271,6 +275,7 @@ class CardConvUtils {
 }
 
 class HelperUtils {
+  HelperUtils._();
   static String buildGameTypeStrFromList(List<GameType> gamesList) {
     if (gamesList != null) {
       String str = "(";
@@ -281,5 +286,54 @@ class HelperUtils {
       return "${str.replaceFirst(", )", ")")}";
     }
     return "";
+  }
+
+  static void saveLocationToHive(Position position) {
+    HiveDatasource.getInstance
+        .getBox(BoxType.PROFILE_BOX)
+        .put("LOCATION", position.toJson());
+  }
+
+  static Position getSavedLocation() {
+    Position position = Position.fromMap(
+        HiveDatasource.getInstance.getBox(BoxType.PROFILE_BOX).get("LOCATION"));
+    if (position == null) {
+      position = Position(
+        latitude: 0,
+        longitude: 0,
+        isMocked: true,
+        speed: 0,
+        heading: 0,
+        accuracy: 0,
+        altitude: 0,
+        floor: 0,
+        speedAccuracy: 0,
+        timestamp: DateTime.now(),
+      );
+    }
+    return position;
+  }
+
+// Initialize timer
+  static void initTimer({
+    @required Duration period,
+    @required Function(Timer) repeatFunction,
+    @required Timer timer,
+  }) async {
+    if (timer != null) {
+      timer.cancel();
+    }
+    if (timer == null || !timer.isActive) {
+      timer = Timer.periodic(const Duration(seconds: 30), repeatFunction);
+    }
+  }
+
+// Cancel Timer
+  static void cancelTimer({
+    @required Timer timer,
+  }) async {
+    if (timer != null && timer.isActive) {
+      timer.cancel();
+    }
   }
 }

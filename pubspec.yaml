@@ -51,6 +51,7 @@ dependencies:
   flutter_udid: ^1.0.1
   flutter_webrtc: ^0.6.5
   font_awesome_flutter: ^8.8.1
+  geolocator: ^7.6.0
   get_it: ^6.1.1
   get_version: any
   graphql_flutter: ^3.0.1
