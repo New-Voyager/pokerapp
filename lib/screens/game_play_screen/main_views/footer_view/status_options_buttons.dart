@@ -163,6 +163,7 @@ class StatusOptionsWidget extends StatelessWidget {
             return BlinkText(
                 printDuration(Duration(seconds: remainingSec.toInt())),
                 style: AppStylesNew.itemInfoTextStyle.copyWith(
+                  fontSize: fontSize.dp,
                   color: Colors.white,
                 ),
                 beginColor: Colors.white,
