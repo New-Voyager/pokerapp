@@ -19,6 +19,7 @@ import 'package:pokerapp/models/waiting_list_model.dart';
 import 'package:pokerapp/services/data/box_type.dart';
 import 'package:pokerapp/services/data/hive_datasource_impl.dart';
 import 'package:pokerapp/services/gql_errors.dart';
+import 'package:pokerapp/utils/utils.dart';
 import 'package:tenor/tenor.dart';
 
 class JoinGameResponse {
@@ -967,17 +968,26 @@ mutation updateInputs(\$gameCode :String!,\$inputSettings: GameSettingsUpdateInp
   static Future<JoinGameResponse> joinGame(String gameCode, int seatNo) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
 
-    String _mutation = """mutation{
-      status: joinGame(gameCode: "$gameCode", seatNo: $seatNo) {
+    String _mutation = """
+    mutation joinGame(\$gameCode: String!, \$seatNo : Int!,\$location : LocationInput!){
+      status: joinGame(gameCode: \$gameCode, seatNo: \$seatNo, location : \$location) {
         status
         missedBlind
       }
     }
     """;
 
-    QueryResult result = await _client.mutate(
-      MutationOptions(documentNode: gql(_mutation)),
-    );
+    final Position position = HelperUtils.getSavedLocation();
+    Map<String, dynamic> variables = {
+      "gameCode": gameCode,
+      "seatNo": seatNo,
+      "location": {"lat": position.latitude, "long": position.longitude}
+    };
+
+    QueryResult result = await _client.mutate(MutationOptions(
+      documentNode: gql(_mutation),
+      variables: variables,
+    ));
 
     if (result.hasException) {
       throw GqlError.fromException(result.exception);
@@ -991,8 +1001,9 @@ mutation updateInputs(\$gameCode :String!,\$inputSettings: GameSettingsUpdateInp
   static Future<PlayerModel> takeSeat(String gameCode, int seatNo) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
 
-    String _mutation = """mutation (\$gameCode: String! \$seatNo: Int!) {
-      takeSeat(gameCode: \$gameCode, seatNo: \$seatNo) {
+    String _mutation =
+        """mutation (\$gameCode: String! \$seatNo: Int!,\$location:LocationInput!) {
+      takeSeat(gameCode: \$gameCode, seatNo: \$seatNo, location:\$location) {
         seatNo
         playerUuid
         playerId
@@ -1009,9 +1020,14 @@ mutation updateInputs(\$gameCode :String!,\$inputSettings: GameSettingsUpdateInp
       }
     }
     """;
+    final Position position = HelperUtils.getSavedLocation();
     Map<String, dynamic> variables = {
       "gameCode": gameCode,
       "seatNo": seatNo,
+      "location": {
+        "lat": position.latitude,
+        "long": position.longitude,
+      }
     };
 
     QueryResult result = await _client.mutate(
@@ -1321,15 +1337,17 @@ mutation updateInputs(\$gameCode :String!,\$inputSettings: GameSettingsUpdateInp
   static Future<SitBackResponse> sitBack(String gameCode) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     String _query = """
-          mutation (\$gameCode: String!){
-            status: sitBack(gameCode: \$gameCode) {
+          mutation (\$gameCode: String!,\$locatioon: LocationInput!){
+            status: sitBack(gameCode: \$gameCode,location:\$location) {
               status
               missedBlind
             }
           }""";
 
+    final Position position = HelperUtils.getSavedLocation();
     Map<String, dynamic> variables = {
       "gameCode": gameCode,
+      "location": {"lat": position.latitude, "long": position.longitude}
     };
 
     QueryResult result = await _client.mutate(

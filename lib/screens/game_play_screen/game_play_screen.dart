@@ -132,6 +132,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   WidgetsBinding _binding = WidgetsBinding.instance;
   Timer _locationTimer;
   bool _locationAlertShown = false;
+  Timer _timer;
 
   /* _init function is run only for the very first time,
   * and only once, the initial game screen is populated from here
@@ -376,8 +377,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     return _gameInfoModel;
   }
 
-  Timer _timer;
-
   /* dispose method for closing connections and un subscribing to channels */
   @override
   void dispose() {
@@ -535,6 +534,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     final GameInfoModel gameInfoModel = await _init();
     if (mounted) {
       setState(() => _gameInfoModel = gameInfoModel);
+      startLocationUpdate();
     }
     _queryCurrentHandIfNeeded();
   }
@@ -548,9 +548,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     _voiceTextPlayer = AudioPlayer();
     // Register listener for lifecycle methods
     _binding.addObserver(this);
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      startLocationUpdate();
-    });
 
     init();
   }
