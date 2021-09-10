@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:blinking_text/blinking_text.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/player_status.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
@@ -7,6 +8,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_constants.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/game_context_screen/game_options/game_option_bottom_sheet.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/game_service.dart';
@@ -14,6 +16,7 @@ import 'package:pokerapp/utils/numeric_keyboard2.dart';
 import 'package:pokerapp/widgets/round_color_button.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
+import 'package:timer_count_down/timer_count_down.dart';
 
 class StatusOptionsWidget extends StatelessWidget {
   final GameState gameState;
@@ -34,14 +37,22 @@ class StatusOptionsWidget extends StatelessWidget {
         children.add(getWaitListButton(_appScreenText, theme, context));
       }
     } else {
+      final buttonCountdownSpace = 10.ph;
+      final countDownFontSize = 14;
       log('Status: myState ${mySeat.player.status} missedBlind: ${mySeat.player.missedBlind} postedBlind: ${mySeat.player.postedBlind}');
       if (mySeat.player != null) {
         if (mySeat.player.status == AppConstants.WAIT_FOR_BUYIN ||
             mySeat.player.status == AppConstants.WAIT_FOR_BUYIN_APPROVAL) {
           children.add(getBuyinButton(_appScreenText, theme, context));
+          children.add(SizedBox(height: buttonCountdownSpace));
+          children.add(getCountdown(mySeat.player.buyInTimeExpAt,
+              fontSize: countDownFontSize));
         }
         if (mySeat.player.inBreak) {
           children.add(getSitbackButton(_appScreenText, theme, context));
+          children.add(SizedBox(height: buttonCountdownSpace));
+          children.add(getCountdown(mySeat.player.breakTimeExpAt,
+              fontSize: countDownFontSize));
         } else {
           if (mySeat.player.status == AppConstants.PLAYING) {
             if (mySeat.player.missedBlind && !mySeat.player.postedBlind) {
@@ -132,6 +143,42 @@ class StatusOptionsWidget extends StatelessWidget {
       backgroundColor: theme.accentColor,
       textColor: theme.primaryColorWithDark(),
     );
+  }
+
+  Widget getCountdown(DateTime expiresAt,
+      {Function onFinished, int fontSize = 14}) {
+    var remainingDuration = expiresAt.difference(DateTime.now());
+    if (remainingDuration.isNegative) {
+      remainingDuration = Duration.zero;
+    }
+    return Countdown(
+        seconds: remainingDuration.inSeconds,
+        onFinished: () {
+          if (onFinished != null) {
+            onFinished();
+          }
+        },
+        build: (_, remainingSec) {
+          if (remainingSec <= 10) {
+            return BlinkText(
+                printDuration(Duration(seconds: remainingSec.toInt())),
+                style: AppStylesNew.itemInfoTextStyle.copyWith(
+                  color: Colors.white,
+                ),
+                beginColor: Colors.white,
+                endColor: Colors.orange,
+                times: remainingSec.toInt(),
+                duration: Duration(seconds: 1));
+          } else {
+            return Text(
+              printDuration(Duration(seconds: remainingSec.toInt())),
+              style: AppStylesNew.itemInfoTextStyle.copyWith(
+                fontSize: fontSize.dp,
+                color: Colors.white,
+              ),
+            );
+          }
+        });
   }
 
   Future<SitBackResponse> onSitBack(BuildContext context) async {

@@ -761,7 +761,7 @@ class GameState {
   }
 
   PlayerModel fromSeat(BuildContext context, int seatNo) {
-    if (this.uiClosing) null;
+    if (this.uiClosing) return null;
     Players players = getPlayers(context);
     return players.fromSeat(seatNo);
   }
