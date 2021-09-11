@@ -242,6 +242,7 @@ class TestService {
       1,
       [130, 152, 193].map<CardObject>((e) => CardHelper.getCard(e)).toList(),
     );
+    tableState.updateRankStrSilent('Straight');
     tableState.notifyAll();
   }
 

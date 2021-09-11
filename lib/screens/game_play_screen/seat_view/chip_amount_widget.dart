@@ -42,7 +42,7 @@ class _ChipAmountWidgetState extends State<ChipAmountWidget>
     with AfterLayoutMixin<ChipAmountWidget> {
   @override
   Widget build(BuildContext context) {
-    //log('potViewPos: Rebuilding ChipAmountWidget seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos}');
+    log('ChipAmountWidget: Rebuilding ChipAmountWidget seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos}');
 
     bool showBet = false;
     Offset offset = Offset.zero;
@@ -170,10 +170,12 @@ class _ChipAmountWidgetState extends State<ChipAmountWidget>
     //   return;
     // }
 
-    final potKey = widget.boardAttributesObject.getPotsKey(0);
-    //  log('potViewPos: 3 afterFirstLayout potKey: $potKey ChipAmountWidget seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos}');
+    final potKey = widget.boardAttributesObject.potKey; //.getPotsKey(0);
+    log('333 ChipAmountWidget: 3 afterFirstLayout potKey: $potKey ChipAmountWidget seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos}');
 
     if (potKey == null || potKey.currentContext == null) {
+      log('444 ChipAmountWidget: Rebuilding ChipAmountWidget seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos} potKey: $potKey');
+
       // log('potViewPos: 3 return afterFirstLayout ChipAmountWidget seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos} potKey: ${potKey} potKey.currentContext: ${potKey.currentContext}');
       return;
     }
@@ -190,7 +192,10 @@ class _ChipAmountWidgetState extends State<ChipAmountWidget>
 
   @override
   void afterFirstLayout(BuildContext context) {
+    log('111 ChipAmountWidget: Rebuilding ChipAmountWidget seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos}');
+
     if (widget.recalculatingNeeded.value || widget.seat.potViewPos == null) {
+      log('222 ChipAmountWidget: Rebuilding ChipAmountWidget seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos}');
       calculatePotViewPos(context);
       // widget.recalculatingNeeded.value = false;
 

@@ -382,7 +382,9 @@ class HandActionProtoService {
           return;
 
         case AppConstants.PLAYER_ACTED:
-          return handlePlayerActed(message);
+          final handler = PlayerActionHandler(_gameState, this.playSoundEffect);
+          await handler.handlePlayerActed(message);
+          return;
 
         case AppConstants.YOUR_ACTION:
           final handler = PlayerActionHandler(_gameState, this.playSoundEffect);
@@ -965,6 +967,7 @@ class HandActionProtoService {
 
     if (_close) return;
     final TableState tableState = _gameState.tableState;
+    tableState.updatePotChipUpdatesSilent(0);
 
     if (_close) return;
     final players = _gameState.getPlayers(_context);
@@ -1124,66 +1127,6 @@ class HandActionProtoService {
       );
     }
     //log('Hand Message: ::handleAnnouncement:: END');
-  }
-
-  Future<void> handlePlayerActed(proto.HandMessageItem message) async {
-    final playerActed = message.playerActed;
-    int seatNo = playerActed.seatNo;
-    //log('Hand Message: ::handlePlayerActed:: START seatNo: $seatNo');
-
-    if (_gameState.uiClosing || _close) return;
-    // show a prompt regarding last player action
-
-    final seat = _gameState.getSeat(_context, seatNo);
-    // hide straddle dialog
-    if (_gameState.straddlePrompt) {
-      _gameState.straddlePrompt = false;
-      _context.read<StraddlePromptState>().notify();
-    }
-    if (_gameState.uiClosing || _close) return;
-    if (seat?.player?.action == null) {
-      ////log('Hand Message: ::handlePlayerActed:: player acted: $seatNo, player: ${seat.player.name}');
-      return;
-    }
-    final action = seat.player.action;
-    action.setActionProto(playerActed.action, playerActed.amount);
-    //log('Hand Message: ::handlePlayerActed:: player acted: $seatNo, player: ${seat.player.name} action: ${action.action.toString()}');
-
-    // if (seat.player.isMe) {
-    //   final Players players = _gameState.getPlayers(_context);
-    //   final player = players.players.firstWhere(
-    //     (p) => p.seatNo == seatNo,
-    //     orElse: null,
-    //   );
-    //   if (player != null) {
-    //     player.action = action;
-    //     // notify of the last action
-    //     players.notifyAll();
-    //   }
-    // }
-
-    // play the bet-raise sound effect
-    if (action.action == HandActions.BET ||
-        action.action == HandActions.RAISE ||
-        action.action == HandActions.CALL) {
-      playSoundEffect(AppAssets.betRaiseSound);
-    } else if (action.action == HandActions.FOLD) {
-      playSoundEffect(AppAssets.foldSound);
-      seat.player.playerFolded = true;
-      seat.player.animatingFold = true;
-    } else if (action.action == HandActions.CHECK) {
-      playSoundEffect(AppAssets.checkSound);
-    }
-    seat.notify();
-    int stack = playerActed.stack?.toInt();
-    if (stack != null) {
-      seat.player.stack = stack;
-    }
-
-    if (_close) return;
-    // before showing the prompt --> turn off the highlight on other players
-    _gameState.resetActionHighlight(_context, -1);
-    //log('Hand Message: ::handlePlayerActed:: END');
   }
 
   /* seat-no, list of cards mapping */

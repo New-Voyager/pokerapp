@@ -284,7 +284,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
     Widget chipAmountWidget = ChipAmountWidget(
       recalculatingNeeded: _seatPosNeedsReCalculating,
       animate: animate,
-      potKey: boardAttributes.getPotsKey(0),
+      potKey: boardAttributes.potKey,
       key: widget.seat.betWidgetUIKey,
       seat: widget.seat,
       boardAttributesObject: boardAttributes,

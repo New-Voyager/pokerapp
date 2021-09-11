@@ -87,19 +87,7 @@ class GameReplayActionService {
       if (_close) return;
       final seat = gameState.getSeat(_context, action.seatNo);
       seat.player.action.setAction(action);
-
-      // players.updateStatusSilent(
-      //   idx,
-      //   handActionsToString(action.action),
-      // );
-
       seat.player.stack = action.stack;
-
-      // players.updateStackWithValueSilent(
-      //   action.seatNo,
-      //   action.stack,
-      // );
-
       seat.notify();
     }
 
@@ -124,11 +112,10 @@ class GameReplayActionService {
     );
 
     tableState.notifyAll();
-    // players.notifyAll();
 
     // reset highlight for other players
     if (_close) return;
-    gameState.resetActionHighlight(_context, -1);
+    gameState.resetActionHighlight(-1);
   }
 
   Future<void> _stageUpdateUtilAction(GameReplayAction action) async {
