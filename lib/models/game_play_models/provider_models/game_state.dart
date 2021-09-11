@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
-import 'package:pokerapp/enums/player_status.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/marked_cards.dart';
@@ -67,27 +66,36 @@ List<HoleCardOrder> holeCardOrders = [
  * All the other states in the game play screen are managed by this game state object.
  */
 class GameState {
-  ListenableProvider<MarkedCards> _markedCards;
+  ListenableProvider<MarkedCards> _markedCardsProvider;
   Provider<GameMessagingService> _gameMessagingService;
   ListenableProvider<HandInfoState> _handInfoProvider;
   ListenableProvider<TableState> _tableStateProvider;
   ListenableProvider<Players> _playersProvider;
-  ListenableProvider<ActionState> _playerAction;
+  ListenableProvider<ActionState> _playerActionProvider;
   ListenableProvider<MyState> _myStateProvider;
-  ListenableProvider<ServerConnectionState> _connectionState;
+  ListenableProvider<ServerConnectionState> _connectionStateProvider;
   ListenableProvider<JanusEngine> _janusEngine;
   ListenableProvider<TappedSeatState> _tappedSeatStateProvider;
   ListenableProvider<CommunicationState> _communicationStateProvider;
   ListenableProvider<StraddlePromptState> _straddlePromptProvider;
-  ListenableProvider<RedrawTopSectionState> _redrawTopSectionState;
+  ListenableProvider<RedrawTopSectionState> _redrawTopSectionStateProvider;
   ListenableProvider<RedrawFooterSectionState>
       _redrawFooterSectionStateProvider;
+  ListenableProvider<CardDistributionState> _cardDistribProvider;
+  ListenableProvider<HandChangeState> _handChangeStateProvider;
+  ListenableProvider<HoleCardsState> _holeCardsProvider;
 
   StraddlePromptState _straddlePromptState;
   HoleCardsState _holeCardsState;
-  ListenableProvider<HoleCardsState> _holeCardsProvider;
   TappedSeatState _tappedSeatState;
   RedrawFooterSectionState _redrawFooterState;
+  RedrawTopSectionState _redrawTopState;
+  ActionState _actionState;
+  MarkedCards _markedCardsState;
+  CardDistributionState _cardDistribState;
+  ServerConnectionState _connectionState;
+  HandChangeState _handChangeState;
+  GameMessagingService _gameMessageService;
 
   // For posting blind
   // bool postedBlind;
@@ -145,6 +153,9 @@ class GameState {
   // last hand number
   int lastHandNum = 0;
 
+  // indicates whether this hand result was showdown or not
+  bool showdown = false;
+
   // indicates a hand in progress
   bool handInProgress = false;
 
@@ -190,8 +201,13 @@ class GameState {
       _tableState.updateTableStatusSilent(gameInfo.tableStatus);
     }
 
+    _actionState = ActionState();
+    _markedCardsState = MarkedCards();
+    _cardDistribState = CardDistributionState();
+    _gameMessageService = gameMessagingService;
+
     this._gameMessagingService = Provider<GameMessagingService>(
-      create: (_) => gameMessagingService,
+      create: (_) => _gameMessageService,
     );
 
     this._handInfo = HandInfoState();
@@ -199,26 +215,34 @@ class GameState {
         ListenableProvider<HandInfoState>(create: (_) => this._handInfo);
     this._tableStateProvider =
         ListenableProvider<TableState>(create: (_) => _tableState);
-    this._playerAction =
-        ListenableProvider<ActionState>(create: (_) => ActionState());
+    this._playerActionProvider =
+        ListenableProvider<ActionState>(create: (_) => _actionState);
 
     this._myState = MyState();
     this._myStateProvider =
         ListenableProvider<MyState>(create: (_) => this._myState);
     /* provider for holding the marked cards */
-    this._markedCards =
-        ListenableProvider<MarkedCards>(create: (_) => MarkedCards());
+    this._markedCardsProvider =
+        ListenableProvider<MarkedCards>(create: (_) => _markedCardsState);
+    this._cardDistribProvider = ListenableProvider<CardDistributionState>(
+        create: (_) => _cardDistribState);
 
     this._tappedSeatState = TappedSeatState();
+    this._connectionState = ServerConnectionState();
+    this._redrawTopState = RedrawTopSectionState();
+    this._handChangeState = HandChangeState();
 
     // this._waitlistProvider =
     //     ListenableProvider<WaitlistState>(create: (_) => WaitlistState());
 
-    this._connectionState = ListenableProvider<ServerConnectionState>(
-        create: (_) => ServerConnectionState());
+    this._handChangeStateProvider =
+        ListenableProvider<HandChangeState>(create: (_) => _handChangeState);
+    this._connectionStateProvider = ListenableProvider<ServerConnectionState>(
+        create: (_) => _connectionState);
 
-    this._redrawTopSectionState = ListenableProvider<RedrawTopSectionState>(
-        create: (_) => RedrawTopSectionState());
+    this._redrawTopSectionStateProvider =
+        ListenableProvider<RedrawTopSectionState>(
+            create: (_) => _redrawTopState);
 
     this._redrawFooterState = RedrawFooterSectionState();
     this._redrawFooterSectionStateProvider =
@@ -380,7 +404,7 @@ class GameState {
     }
   }
 
-  void dismissPopup(BuildContext context) {
+  void dismissPopup() {
     this._tappedSeatPos = null;
     this._tappedSeatState.notify();
   }
@@ -418,6 +442,14 @@ class GameState {
   bool get ended {
     return this._gameInfo.status == AppConstants.GAME_ENDED;
   }
+
+  MarkedCards get markedCardsState => this._markedCardsState;
+
+  CardDistributionState get cardDistributionState => this._cardDistribState;
+
+  HandChangeState get handChangeState => this._handChangeState;
+
+  ListenableProvider<HandChangeState> get handChangeStateProvider => this._handChangeStateProvider;
 
   bool get started {
     return this._gameInfo.status == AppConstants.GAME_ACTIVE;
@@ -488,8 +520,7 @@ class GameState {
 
   set currentHandNum(int handNum) => this._currentHandNum = currentHandNum;
 
-  Future<void> refresh(BuildContext context,
-      {bool rebuildSeats = false}) async {
+  Future<void> refresh({bool rebuildSeats = false}) async {
     log('************ Refreshing game state');
     // fetch new player using GameInfo API and add to the game
     GameInfoModel gameInfo = await GameService.getGameInfo(this._gameCode);
@@ -599,10 +630,14 @@ class GameState {
 
   static GameState getState(BuildContext context) => context.read<GameState>();
 
-  void clear(BuildContext context) {
+  void clear() {
     final tableState = this.tableState;
-    final players = this.getPlayers(context);
+    final players = this.players;
     this.holecardOrder = HoleCardOrder.DEALT;
+    this.showdown = false;
+    handState = HandState.UNKNOWN;
+    _cardDistribState._distributeToSeatNo = null;
+    _markedCardsState.clear();
     // clear players
     players.clear();
     if (players.me != null) {
@@ -614,65 +649,14 @@ class GameState {
     tableState.notifyAll();
   }
 
-  GameMessagingService getGameMessagingService(BuildContext context) =>
-      Provider.of<GameMessagingService>(
-        context,
-        listen: false,
-      );
-
+  GameMessagingService get gameMessageService => this._gameMessageService;
   TableState get tableState => this._tableState;
 
-  HandInfoState getHandInfo(BuildContext context, {bool listen = false}) =>
-      Provider.of<HandInfoState>(context, listen: listen);
-
-  TableState getTableState(BuildContext context, {bool listen = false}) =>
-      Provider.of<TableState>(context, listen: listen);
-
-  Players getPlayers(BuildContext context, {bool listen = false}) =>
-      Provider.of<Players>(context, listen: listen);
-
-  ActionState getActionState(BuildContext context, {bool listen = false}) =>
-      Provider.of<ActionState>(context, listen: listen);
-
-  // WaitlistState getWaitlistState(BuildContext context, {bool listen = false}) =>
-  //     Provider.of<WaitlistState>(context, listen: listen);
-
-  ServerConnectionState getConnectionState(BuildContext context,
-          {bool listen = false}) =>
-      Provider.of<ServerConnectionState>(context, listen: listen);
-
-  TappedSeatState getTappedSeatState(BuildContext context,
-          {bool listen = false}) =>
-      Provider.of<TappedSeatState>(context, listen: listen);
-
-  RedrawTopSectionState getRedrawTopSectionState(BuildContext context,
-          {bool listen = false}) =>
-      Provider.of<RedrawTopSectionState>(context, listen: listen);
-
-  RedrawFooterSectionState getRedrawFooterSectionState(BuildContext context,
-          {bool listen = false}) =>
-      Provider.of<RedrawFooterSectionState>(context, listen: listen);
-
-  CommunicationState getCommunicationState() => this._communicationState;
-
-  // JanusEngine getJanusEngine(BuildContext context, {bool listen = false}) =>
-  //     Provider.of<JanusEngine>(context, listen: listen);
-
-  MarkedCards getMarkedCards(
-    BuildContext context, {
-    bool listen = false,
-  }) =>
-      Provider.of<MarkedCards>(
-        context,
-        listen: listen,
-      );
-
-  MyState getMyState(BuildContext context, {bool listen: false}) {
-    return Provider.of<MyState>(context, listen: listen);
-  }
+  CommunicationState get communicationState => this._communicationState;
 
   MyState get myState => this._myState;
   RedrawFooterSectionState get redrawFooterState => this._redrawFooterState;
+  RedrawTopSectionState get redrawTopSectionState => this._redrawTopState;
 
   Seat get mySeat {
     for (final seat in _seats.values) {
@@ -690,16 +674,12 @@ class GameState {
     return Provider.of<BoardAttributesObject>(context, listen: listen);
   }
 
-  Seat getSeatWithoutCtx(int seatNo) {
+  Seat getSeat(int seatNo) {
     return this._seats[seatNo];
   }
 
-  Seat getSeat(BuildContext context, int seatNo, {bool listen: false}) {
-    return this._seats[seatNo];
-  }
-
-  void markOpenSeat(BuildContext context, int seatNo) {
-    final seat = getSeat(context, seatNo);
+  void markOpenSeat(int seatNo) {
+    final seat = getSeat(seatNo);
     seat.player = null;
     seat.notify();
   }
@@ -714,14 +694,14 @@ class GameState {
     }
   }
 
-  void setPlayers(BuildContext ctx, List<PlayerModel> players) {
+  void setPlayers(List<PlayerModel> players) {
     for (final player in players) {
       if (player.playerId != null) {
         _playerIdsToNames[player.playerId] = player.name;
       }
     }
 
-    this.getPlayers(ctx).update(players);
+    this.players.update(players);
   }
 
   Map<int, String> get playerIdToNames => this._playerIdsToNames;
@@ -731,25 +711,23 @@ class GameState {
       this._handInfoProvider,
       this._tableStateProvider,
       this._playersProvider,
-      this._playerAction,
+      this._playerActionProvider,
       this._myStateProvider,
-      this._markedCards,
+      this._markedCardsProvider,
       this._gameMessagingService,
       // this._waitlistProvider,
-      this._connectionState,
+      this._connectionStateProvider,
       this._janusEngine,
       this._tappedSeatStateProvider,
       this._communicationStateProvider,
       this._straddlePromptProvider,
       this._holeCardsProvider,
-      this._redrawTopSectionState,
-      this._redrawFooterSectionStateProvider
+      this._redrawTopSectionStateProvider,
+      this._redrawFooterSectionStateProvider,
+      this._cardDistribProvider,
+      this._handChangeStateProvider,
     ];
   }
-
-  // PlayerModel me(BuildContext context) {
-  //   return _players.me;
-  // }
 
   PlayerModel get me {
     return _players.me;
@@ -763,20 +741,18 @@ class GameState {
     return '';
   }
 
-  PlayerModel fromSeat(BuildContext context, int seatNo) {
-    if (this.uiClosing) null;
-    Players players = getPlayers(context);
-    return players.fromSeat(seatNo);
+  PlayerModel fromSeat(int seatNo) {
+    if (this.uiClosing) return null;
+    return this._seats[seatNo].player;
   }
 
-  void updatePlayers(BuildContext context) {
+  void updatePlayers() {
     if (this.uiClosing) return;
-    final players = getPlayers(context);
-    players.notifyAll();
+    this.players.notifyAll();
   }
 
-  bool newPlayer(BuildContext context, PlayerModel newPlayer) {
-    final players = this._players; //getPlayers(context);
+  bool newPlayer(PlayerModel newPlayer) {
+    final players = this._players;
     if (newPlayer.playerId != null) {
       _playerIdsToNames[newPlayer.playerId] = newPlayer.name;
     }
@@ -784,34 +760,34 @@ class GameState {
     return players.addNewPlayerSilent(newPlayer);
   }
 
-  void removePlayer(BuildContext context, int seatNo) {
-    final players = getPlayers(context);
-    final seat = getSeat(context, seatNo);
+  void removePlayer(int seatNo) {
+    final players = this.players;
+    final seat = getSeat(seatNo);
     if (seat != null && seat.player != null) {
       this.janusEngine.leaveChannel();
     }
     players.removePlayerSilent(seatNo);
   }
 
-  void resetPlayers(BuildContext context, {bool notify = true}) {
-    final players = this.getPlayers(context);
-    players.clear(notify: notify);
+  void resetPlayers({bool notify = true}) {
+    this.players.clear(notify: notify);
   }
 
-  void showAction(BuildContext context, bool show, {bool notify = false}) {
-    final actionState = getActionState(context);
-    actionState.show = show;
+  ActionState get actionState => this._actionState;
+
+  void showAction(bool show, {bool notify = false}) {
+    _actionState.show = show;
+    if (notify) {
+      _actionState.notify();
+    }
   }
 
-  void setAction(BuildContext context, int seatNo, var seatAction) {
-    final actionState = getActionState(context);
-    actionState.setAction(seatNo, seatAction);
+  void setAction(int seatNo, var seatAction) {
+    _actionState.setAction(seatNo, seatAction);
   }
 
-  void setActionProto(
-      BuildContext context, int seatNo, proto.NextSeatAction seatAction) {
-    final actionState = getActionState(context);
-    actionState.setActionProto(seatNo, seatAction);
+  void setActionProto(int seatNo, proto.NextSeatAction seatAction) {
+    _actionState.setActionProto(seatNo, seatAction);
   }
 
   void resetDealerButton() {
@@ -873,7 +849,7 @@ class GameState {
   }
 
   StraddlePromptState get straddlePromptState {
-    return this.straddlePromptState;
+    return this._straddlePromptState;
   }
 
   PlayerModel getMe() {
@@ -885,7 +861,7 @@ class GameState {
     return null;
   }
 
-  void changeHoleCardOrder(BuildContext context) {
+  void changeHoleCardOrder() {
     int i = HoleCardOrder.values.indexOf(holecardOrder);
     if (i == -1) {
     } else {
@@ -1101,6 +1077,10 @@ class ActionState extends ChangeNotifier {
 
   PlayerAction get action {
     return this._currentAction;
+  }
+
+  void notify() {
+    this.notifyListeners();
   }
 }
 
@@ -1318,5 +1298,22 @@ class RedrawTopSectionState extends ChangeNotifier {
 class RedrawFooterSectionState extends ChangeNotifier {
   void notify() {
     notifyListeners();
+  }
+}
+
+class CardDistributionState extends ChangeNotifier {
+  int _distributeToSeatNo;
+
+  set seatNo(int seatNo) {
+    _distributeToSeatNo = seatNo;
+    notifyListeners();
+  }
+
+  int get seatNo => _distributeToSeatNo;
+}
+
+class HandChangeState extends ChangeNotifier {
+  void notify() {
+    this.notifyListeners();
   }
 }

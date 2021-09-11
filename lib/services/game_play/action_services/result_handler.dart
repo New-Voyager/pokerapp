@@ -45,13 +45,13 @@ class ResultHandler {
 
   Future<void> show() async {
     tableState = gameState.tableState;
-    players = gameState.getPlayers(context);
-
+    players = gameState.players;
+    gameState.handState = HandState.RESULT;
     /* then, change the status of the footer to show the result */
-    Provider.of<ValueNotifier<FooterStatus>>(
-      context,
-      listen: false,
-    ).value = FooterStatus.Result;
+    // Provider.of<ValueNotifier<FooterStatus>>(
+    //   context,
+    //   listen: false,
+    // ).value = FooterStatus.Result;
 
     if (isRunItTwice) {
       await showRunItTwiceBoards();
@@ -102,7 +102,7 @@ class ResultHandler {
     tableState.clear();
     tableState.notifyAll();
 
-    gameState.resetPlayers(context);
+    gameState.resetPlayers();
   }
 
   Future<void> processHiLoWinners({

@@ -268,8 +268,12 @@ class Players extends ChangeNotifier {
       );
 
   void removeCardsFromAllSilent() {
-    for (int i = 0; i < _players.length; i++) _players[i].noOfCardsVisible = 0;
-    for (int i = 0; i < _players.length; i++) _players[i].cards = null;
+    for (int i = 0; i < _players.length; i++) {
+      _players[i].noOfCardsVisible = 0;
+      _players[i].cards = null;
+      _players[i].revealCards = [];
+    }
+
   }
 
   void removeActionsAllSilent() {

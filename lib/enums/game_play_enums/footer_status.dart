@@ -1,6 +1,6 @@
-enum FooterStatus {
-  Action,
-  Prompt,
-  Result,
-  None,
-}
+// enum FooterStatus {
+//   Action,
+//   Prompt,
+//   Result,
+//   None,
+// }

@@ -230,7 +230,7 @@ class GameMessagingService {
       'sent': DateTime.now().toUtc().toIso8601String(),
       'text': currentHandNum,
     });
-
+    log('GameScreen: $body');
     this.client.pubString(this.chatChannel, body);
   }
 }

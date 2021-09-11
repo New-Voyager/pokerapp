@@ -246,7 +246,7 @@ class _ChipAmountAnimatingWidgetState extends State<ChipAmountAnimatingWidget>
     );
 
     final gameState = GameState.getState(context);
-    final seat = gameState.getSeat(context, widget.seatPos);
+    final seat = gameState.getSeat(widget.seatPos);
     Offset end = seat.potViewPos;
     Offset begin = Offset(0, 0);
     begin = seat.betWidgetPos;

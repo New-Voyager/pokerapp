@@ -38,7 +38,7 @@ class _CommunicationViewState extends State<CommunicationView> {
   Widget build(BuildContext context) {
     final theme = AppTheme.getTheme(context);
     final gameState = GameState.getState(context);
-    final communicationState = gameState.getCommunicationState();
+    final communicationState = gameState.communicationState;
     final chat = SvgPicture.asset('assets/images/game/chat.svg',
         width: 16, height: 16, color: theme.primaryColorWithDark());
 

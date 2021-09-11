@@ -4,7 +4,6 @@ import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
@@ -88,7 +87,7 @@ class _CenterViewState extends State<CenterView> {
               onClickHandler: () async {
                 await Navigator.of(context).pushNamed(Routes.select_table);
                 await gameState.assets.initialize();
-                final redrawTop = gameState.getRedrawTopSectionState(context);
+                final redrawTop = gameState.redrawTopSectionState;
                 redrawTop.notify();
               },
               child: Icon(Icons.edit,

@@ -118,8 +118,8 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     hostSeatChange.addListener(() {
       final int fromSeatNo = hostSeatChange.fromSeatNo;
       final int toSeatNo = hostSeatChange.toSeatNo;
-      final fromSeat = widget.gameState.getSeat(context, fromSeatNo);
-      final toSeat = widget.gameState.getSeat(context, toSeatNo);
+      final fromSeat = widget.gameState.getSeat(fromSeatNo);
+      final toSeat = widget.gameState.getSeat(toSeatNo);
 
       if (fromSeatNo == null || toSeatNo == null) return;
       if (fromSeatNo == 0 || toSeatNo == 0) return;
@@ -274,7 +274,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
   Size getPlayerWidgetSize(int seatNo) {
     final gameState = GameState.getState(context);
 
-    final seat = gameState.getSeat(context, seatNo);
+    final seat = gameState.getSeat(seatNo);
     final RenderBox renderBox = seat.key.currentContext.findRenderObject();
 
     return renderBox.size;
@@ -283,7 +283,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
   Offset findPositionOfUser({int seatNo}) {
     final gameState = GameState.getState(context);
     /* if available in cache, get from there */
-    final seat = gameState.getSeat(context, seatNo);
+    final seat = gameState.getSeat(seatNo);
     if (seat == null) {
       return Offset(0, 0);
     }
