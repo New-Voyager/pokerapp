@@ -35,6 +35,7 @@ class PlayerModel {
   String status = '';
   bool inhand = false;
   List<int> _cards = [];
+  List<int> revealCards = [];
   List<int> highlightCards = [];
   PlayerActedState _action;
   PlayerConnectivityState _connectivity;

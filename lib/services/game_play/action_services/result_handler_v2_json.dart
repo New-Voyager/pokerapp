@@ -60,7 +60,9 @@ class ResultHandlerV2Json {
 
   Future<void> show() async {
     tableState = gameState.tableState;
-    players = gameState.getPlayers(context);
+    players = gameState.players;
+    gameState.handState = HandState.RESULT;
+    gameState.handChangeState.notify();
 
     // update pots
     tableState.updatePotChipsSilent(
@@ -101,7 +103,7 @@ class ResultHandlerV2Json {
     }
 
     /* then, change the status of the footer to show the result */
-    context.read<ValueNotifier<FooterStatus>>().value = FooterStatus.Result;
+    // context.read<ValueNotifier<FooterStatus>>().value = FooterStatus.Result;
 
     /**
      * DO the following for each pot:

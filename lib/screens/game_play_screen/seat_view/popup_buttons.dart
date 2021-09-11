@@ -314,7 +314,7 @@ class _PopupWidget extends State<PopupWidget> with TickerProviderStateMixin {
             break;
         }
       }
-      widget.gameState.dismissPopup(context);
+      widget.gameState.dismissPopup();
     });
   }
 

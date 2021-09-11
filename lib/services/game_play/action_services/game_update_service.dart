@@ -255,7 +255,7 @@ class GameUpdateService {
 
     // update my state to remove buyin button
     if (player.isMe) {
-      final myState = _gameState.getMyState(_context);
+      final myState = _gameState.myState;
       myState.notify();
     }
   }
@@ -294,7 +294,7 @@ class GameUpdateService {
     }
 
     if (!newPlayerModel.isMe) {
-      bool found = _gameState.newPlayer(_context, newPlayerModel);
+      bool found = _gameState.newPlayer(newPlayerModel);
       if (!found) {
         if (newPlayerModel.stack == 0) {
           newPlayerModel.showBuyIn = true;
@@ -337,7 +337,7 @@ class GameUpdateService {
     }
 
     if (!newPlayerModel.isMe) {
-      bool found = _gameState.newPlayer(_context, newPlayerModel);
+      bool found = _gameState.newPlayer(newPlayerModel);
       if (!found) {
         if (newPlayerModel.stack == 0) {
           newPlayerModel.showBuyIn = true;
@@ -389,7 +389,7 @@ class GameUpdateService {
       final seat = _gameState.getSeat(seatNo);
       // update my state to show sitback button
       if (seat != null && seat.player != null && seat.player.isMe) {
-        final myState = _gameState.getMyState(_context);
+        final myState = _gameState.myState;
         myState.notify();
       }
 
@@ -444,7 +444,7 @@ class GameUpdateService {
       final oldSeat = _gameState.getSeat(oldSeatNo);
       oldSeat.player = null;
       if (closed || _gameState.uiClosing) return;
-      _gameState.refresh(_context);
+      _gameState.refresh();
       // final newSeat = gameState.getSeat(context, oldSeatNo);
       // oldSeat.player = null;
 
@@ -499,7 +499,7 @@ class GameUpdateService {
           // update my state to show sitback button
           if (seat.player.isMe) {
             if (closed || _gameState.uiClosing) return;
-            final myState = _gameState.getMyState(_context);
+            final myState = _gameState.myState;
             myState.notify();
           }
           break;
@@ -522,7 +522,7 @@ class GameUpdateService {
     final seat = gameState.getSeat(seatNo);
     log('Buyin is denied');
     if (closed || _gameState.uiClosing) return;
-    final players = gameState.getPlayers(_context);
+    final players = gameState.players;
     players.removePlayerSilent(seatNo);
     bool isMe = false;
     if (seat.player.isMe) {
@@ -533,7 +533,7 @@ class GameUpdateService {
 
     if (isMe) {
       if (closed || _gameState.uiClosing) return;
-      final myState = gameState.getMyState(_context);
+      final myState = gameState.myState;
       myState.notify();
 
       showAlertDialog(_context, _appScreenText['buyInRequest'],
@@ -569,7 +569,7 @@ class GameUpdateService {
           // update my state to show sitback button
           if (seat.player.isMe) {
             if (closed || _gameState.uiClosing) return;
-            final myState = _gameState.getMyState(_context);
+            final myState = _gameState.myState;
             myState.notify();
           }
           break;
@@ -601,7 +601,7 @@ class GameUpdateService {
           // update my state to show sitback button
           if (seat.player.isMe) {
             if (closed || _gameState.uiClosing) return;
-            final myState = _gameState.getMyState(_context);
+            final myState = _gameState.myState;
             myState.notify();
           }
           break;
@@ -828,12 +828,12 @@ class GameUpdateService {
     /* clean up from result views */
     /* set footer status to none  */
     if (closed || _gameState.uiClosing) return;
-    Provider.of<ValueNotifier<FooterStatus>>(
-      _context,
-      listen: false,
-    ).value = FooterStatus.None;
+    // Provider.of<ValueNotifier<FooterStatus>>(
+    //   _context,
+    //   listen: false,
+    // ).value = FooterStatus.None;
     if (closed || _gameState.uiClosing) return;
-    _gameState.clear(_context);
+    _gameState.clear();
   }
 
   void handleTableUpdate({
@@ -1025,7 +1025,7 @@ class GameUpdateService {
     final seatChange = Provider.of<SeatChangeNotifier>(_context, listen: false);
     seatChange.updateSeatChangeInProgress(false);
     seatChange.notifyAll();
-    _gameState.refresh(_context);
+    _gameState.refresh();
   }
 
   void handleHostSeatChangeMove({
@@ -1058,7 +1058,7 @@ class GameUpdateService {
       listen: false,
     );
 
-    final players = gameState.getPlayers(_context);
+    final players = gameState.players;
 
     /* refresh the player model */
     final positions =
@@ -1172,7 +1172,7 @@ class GameUpdateService {
         // end the game
         log('Game has ended. Update the state');
         resetBoard();
-        _gameState.refresh(_context);
+        _gameState.refresh();
         tableState.updateTableStatusSilent(AppConstants.GAME_ENDED);
       } else if (gameStatus == AppConstants.GAME_PAUSED) {
         log('Game has paused. Update the state');
@@ -1182,7 +1182,7 @@ class GameUpdateService {
             svgPath: 'assets/images/casino.svg',
             subTitleText: _appScreenText['theGameIsPaused']);
 
-        _gameState.refresh(_context);
+        _gameState.refresh();
         // paused the game
         tableState.updateTableStatusSilent(AppConstants.GAME_PAUSED);
       }
@@ -1215,7 +1215,7 @@ class GameUpdateService {
       _context,
       listen: false,
     )..updateSeatChangeInProgress(true);
-    _gameState.refresh(_context);
+    _gameState.refresh();
 
     final playerId = data['playerId'];
     final player = _gameState.getSeatByPlayer(playerId);
@@ -1300,7 +1300,7 @@ class GameUpdateService {
           svgPath: 'assets/images/casino.svg',
           subTitleText: _appScreenText['theGameIsPaused']);
 
-      _gameState.refresh(_context);
+      _gameState.refresh();
       // paused the game
       tableState.updateTableStatusSilent(AppConstants.GAME_PAUSED);
       tableState.notifyAll();
@@ -1331,7 +1331,7 @@ class GameUpdateService {
         // end the game
         log('Game has ended. Update the state');
         resetBoard();
-        _gameState.refresh(_context);
+        _gameState.refresh();
         tableState.updateTableStatusSilent(AppConstants.GAME_ENDED);
       }
 
@@ -1372,7 +1372,7 @@ class GameUpdateService {
 
     /* wait for the animation to finish */
     await Future.delayed(AppConstants.seatChangeAnimationDuration);
-    _gameState.refresh(_context);
+    _gameState.refresh();
 
     // we refresh, when we get the PLAYER_SEAT_CHANGE_DONE message
   }
@@ -1402,16 +1402,16 @@ class GameUpdateService {
   }
 
   void resetBoard() async {
-    _gameState.clear(_context);
+    _gameState.clear();
     _gameState.resetPlayers();
-    _gameState.refresh(_context);
+    _gameState.refresh();
 
     /* clean up from result views */
     /* set footer status to none  */
-    Provider.of<ValueNotifier<FooterStatus>>(
-      _context,
-      listen: false,
-    ).value = FooterStatus.None;
+    // Provider.of<ValueNotifier<FooterStatus>>(
+    //   _context,
+    //   listen: false,
+    // ).value = FooterStatus.None;
   }
 
   playSoundEffect(String soundFile) {

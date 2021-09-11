@@ -1,12 +1,9 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/enums/game_type.dart';
-import 'package:pokerapp/models/game_play_models/business/card_distribution_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/marked_cards.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
@@ -19,14 +16,12 @@ import 'package:provider/provider.dart';
 
 class NewHandHandler {
   proto.NewHand newHand;
-  BuildContext context;
   GameState gameState;
   Function(String) playSoundEffect;
   GameType gameType;
 
   NewHandHandler({
     @required this.newHand,
-    @required this.context,
     @required this.gameState,
     @required this.playSoundEffect,
   });
@@ -39,7 +34,7 @@ class NewHandHandler {
     gameType = GameType.values
         .firstWhere((element) => element.index == newHand.gameType.value);
 
-    final handInfo = gameState.getHandInfo(context);
+    final handInfo = gameState.handInfo;
     handInfo.update(
       handNum: newHand.handNum,
       noCards: newHand.noCards,
@@ -53,7 +48,7 @@ class NewHandHandler {
   }
 
   Future<void> updatePlayers() async {
-    final Players players = gameState.getPlayers(context);
+    final Players players = gameState.players;
     gameState.resetPlayers(notify: false);
 
     // only count active players in this hand
@@ -66,7 +61,7 @@ class NewHandHandler {
 
     if (gameState.players.count != noOfPlayers) {
       log('gameState seats does not match with new hand. * Refreshing *');
-      await gameState.refresh(context);
+      await gameState.refresh();
       log('gameState seats does not match with new hand. * Refreshing Done *');
     }
 
@@ -173,7 +168,7 @@ class NewHandHandler {
         // the game state does not have all the players, refresh
         if (gameState.uiClosing) return;
         log('gameState seats does not match with new hand. * Refreshing *');
-        await gameState.refresh(context);
+        await gameState.refresh();
         log('gameState seats does not match with new hand. * Refreshing Done *');
       } else {
         break;
@@ -183,6 +178,7 @@ class NewHandHandler {
 
   Future<void> handle() async {
     gameState.handState = HandState.STARTED;
+    gameState.handChangeState.notify();
     gameState.highHand = null;
     gameState.handInProgress = true;
     ////log('Hand Message: ::handleNewHand:: START');
@@ -190,7 +186,7 @@ class NewHandHandler {
 
     // clear marked cards here
     if (gameState.uiClosing) return;
-    context.read<MarkedCards>().clear();
+    gameState.markedCardsState.clear();
 
     if (gameState.uiClosing) return;
     await updatePlayers();
@@ -215,8 +211,9 @@ class NewHandHandler {
     tableState.notifyAll();
 
     if (gameState.uiClosing) return;
-    context.read<ValueNotifier<FooterStatus>>().value = FooterStatus.None;
-    final Players players = gameState.getPlayers(context);
+
+    //context.read<ValueNotifier<FooterStatus>>().value = FooterStatus.None;
+    final Players players = gameState.players;
 
     // next action seat is me
     if (!newHand.bombPot) {
@@ -328,18 +325,15 @@ class NewHandHandler {
 
       if (gameState.uiClosing) return;
 
-      final players = gameState.getPlayers(context);
+      final players = gameState.players;
       List<int> seatNos = players.players.map((p) => p.seatNo).toList();
       seatNos.sort();
 
       if (gameState.uiClosing) return;
 
-      final handInfo = gameState.getHandInfo(context);
+      final handInfo = gameState.handInfo;
 
       if (gameState.uiClosing) return;
-
-      CardDistributionModel cardDistributionModel =
-          context.read<CardDistributionModel>();
 
       /* distribute cards to the players */
       /* this for loop will distribute cards one by one to all the players */
@@ -353,7 +347,7 @@ class NewHandHandler {
         }
 
         // start the animation
-        cardDistributionModel.seatNo = seatNo;
+        gameState.cardDistributionState.seatNo = seatNo;
         if (gameState.uiClosing) return;
 
         // wait for the animation to finish
@@ -366,7 +360,7 @@ class NewHandHandler {
       //}
 
       /* card distribution ends, put the value to NULL */
-      cardDistributionModel.seatNo = null;
+      gameState.cardDistributionState.seatNo = null;
       // tableState.updateTableStatusSilent(null);
       if (gameState.uiClosing) return;
       // tableState.notifyAll();

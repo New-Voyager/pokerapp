@@ -1,9 +1,12 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
@@ -22,13 +25,13 @@ import 'hand_action_proto_service.dart';
  * This class is written to breakdown the handler code into managable chunks. 
  */
 class PlayerActionHandler {
+  BuildContext _context;
   GameState _gameState;
   Function(String) playSoundEffect;
 
-  PlayerActionHandler(this._gameState, this.playSoundEffect);
+  PlayerActionHandler(this._context, this._gameState, this.playSoundEffect);
 
-  Future<void> handleQueryCurrentHand(
-      BuildContext context, proto.HandMessageItem message) async {
+  Future<void> handleQueryCurrentHand(proto.HandMessageItem message) async {
     final currentHandState = message.currentHandState;
     log('Current hand state: $currentHandState');
     if (_gameState.uiClosing) return;
@@ -44,7 +47,7 @@ class PlayerActionHandler {
     }
 
     if (_gameState.uiClosing) return;
-    final handInfo = _gameState.getHandInfo(context);
+    final handInfo = _gameState.handInfo;
 
     // am I playing this game?
     final mySeat = _gameState.mySeat;
@@ -223,19 +226,18 @@ class PlayerActionHandler {
 
     proto.HandMessageItem actionChange = proto.HandMessageItem();
     actionChange.actionChange = proto.ActionChange(seatNo: nextSeatToAct);
-    handleNextAction(context, actionChange);
+    handleNextAction(actionChange);
 
     if (mySeat != null && nextSeatToAct == mySeat.serverSeatPos) {
       // i am next to act
       proto.HandMessageItem yourAction = proto.HandMessageItem();
       yourAction.seatAction = currentHandState.nextSeatAction;
-      handleYourAction(context, yourAction);
+      handleYourAction(yourAction);
     }
     players.notifyAll();
   }
 
-  Future<void> handleNextAction(
-      BuildContext context, proto.HandMessageItem message) async {
+  Future<void> handleNextAction(proto.HandMessageItem message) async {
     // Audio.stop(context: context); fixme: this also does not play when we need to notify the user of his/her turn
     // log('handle next action start');        // reset result in progress flag
 
@@ -255,7 +257,7 @@ class PlayerActionHandler {
         // hide action widget
 
         if (_gameState.uiClosing) return;
-        _gameState.showAction(context, false);
+        _gameState.showAction(false);
       }
       // log('next action seat: $seatNo player: ${player.name}');
       // highlight next action player
@@ -286,8 +288,7 @@ class PlayerActionHandler {
     }
   }
 
-  Future<void> handleYourAction(
-      BuildContext context, proto.HandMessageItem message) async {
+  Future<void> handleYourAction(proto.HandMessageItem message) async {
     if (_gameState.uiClosing) return;
     try {
       final me = _gameState.me;
@@ -306,8 +307,11 @@ class PlayerActionHandler {
       if (_gameState.straddleBetThisHand == true) {
         // we have the straddleBet set to true, do a bet
         if (_gameState.uiClosing) return;
+        final gameContextObject = _context.read<GameContextObject>();
+
         HandActionProtoService.takeAction(
-          context: context,
+          gameContextObject: gameContextObject,
+          gameState: _gameState,
           action: AppConstants.STRADDLE,
           amount: 2 * _gameState.gameInfo.bigBlind,
         );
@@ -325,7 +329,7 @@ class PlayerActionHandler {
         int secondsTillTimeout = seatAction.secondsTillTimesout;
 
         return RunItTwiceDialog.promptRunItTwice(
-          context: context,
+          context: _context,
           expTime: secondsTillTimeout,
         );
       } else {
@@ -335,14 +339,14 @@ class PlayerActionHandler {
       }
 
       if (_gameState.uiClosing) return;
-      _gameState.setActionProto(context, seatAction.seatNo, seatAction);
+      _gameState.setActionProto(seatAction.seatNo, seatAction);
 
       if (_gameState.uiClosing) return;
       if (_gameState.straddlePrompt) {
         // we are showing the straddle prompt
       } else {
         // don't show
-        _gameState.showAction(context, true);
+        _gameState.showAction(true);
       }
     } finally {
       //log('Hand Message: ::handleYourAction:: END');
@@ -357,7 +361,7 @@ class PlayerActionHandler {
     if (_gameState.uiClosing) return;
     // show a prompt regarding last player action
 
-    final seat = _gameState.getSeatWithoutCtx(seatNo);
+    final seat = _gameState.getSeat(seatNo);
     // hide straddle dialog
     if (_gameState.straddlePrompt) {
       _gameState.straddlePrompt = false;

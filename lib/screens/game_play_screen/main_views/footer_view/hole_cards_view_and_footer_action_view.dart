@@ -4,7 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
-import 'package:pokerapp/enums/player_status.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
@@ -41,8 +40,8 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
 
   final ValueNotifier<bool> _showDarkBackgroundVn = ValueNotifier(false);
 
-  bool _showAllCardSelectionButton(BuildContext context, var vnfs) {
-    final bool isInResult = vnfs.value == FooterStatus.Result;
+  bool _showAllCardSelectionButton(BuildContext context, bool isInResult) {
+    //final bool isInResult = vnfs.value == FooterStatus.Result;
     return isInResult && (playerModel?.isActive ?? false);
   }
 
@@ -231,20 +230,19 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
   }
 
   Widget _buildAllHoleCardAndRabbitHuntSelectionButton(context) {
-    final bool isRabbitHuntAllowed = Provider.of<GameState>(
-      context,
-      listen: false,
-    ).gameInfo.allowRabbitHunt;
+    final gameState = GameState.getState(context);
+    final bool isRabbitHuntAllowed = gameState.gameInfo.allowRabbitHunt;
 
-    return Consumer2<ValueNotifier<FooterStatus>, RabbitState>(
+    return Consumer2<HandChangeState, RabbitState>(
       builder: (context, vnfs, rb, __) {
-        final bool _showEye = _showAllCardSelectionButton(context, vnfs);
+        final bool _showEye = _showAllCardSelectionButton(
+            context, gameState.handState == HandState.RESULT);
         final bool _showRabbit = rb.show && isRabbitHuntAllowed;
 
         return Visibility(
           // if in result and (a reason to show), we show the bar
-          visible:
-              vnfs.value == FooterStatus.Result && (_showEye || _showRabbit),
+          visible: gameState.handState == HandState.RESULT &&
+              (_showEye || _showRabbit),
           child: Container(
             padding: EdgeInsets.symmetric(vertical: 10.0),
             color: Colors.black.withOpacity(0.70),
@@ -288,8 +286,9 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
 
       children.addAll([
         // // main hole card view
-        Consumer3<StraddlePromptState, HoleCardsState, MyState>(
-          builder: (_, __, ___, ____, _____) => _buildHoleCardView(context),
+        Consumer4<StraddlePromptState, HoleCardsState, MyState, MarkedCards>(
+          builder: (_, __, ___, ____, markedCards, _____) =>
+              _buildHoleCardView(context),
         ),
 
         // all hole card selection button
@@ -341,15 +340,18 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
                       if (straddleChoice == true) {
                         // act now
                         log('Player wants to straddle');
+                        final gameContextObject =
+                            context.read<GameContextObject>();
                         HandActionProtoService.takeAction(
-                          context: context,
+                          gameContextObject: gameContextObject,
+                          gameState: gameState,
                           action: AppConstants.STRADDLE,
                           amount: 2 * gameState.gameInfo.bigBlind,
                         );
                       } else {
                         log('Player does not want to straddle');
                         // show action buttons
-                        gameState.showAction(context, true);
+                        gameState.showAction(true);
                       }
                     }
                   },
@@ -471,7 +473,7 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
             child: Icon(Icons.autorenew, color: theme.primaryColorWithDark()),
           ),
           onTap: () {
-            gameState.changeHoleCardOrder(context);
+            gameState.changeHoleCardOrder();
           },
         );
       }

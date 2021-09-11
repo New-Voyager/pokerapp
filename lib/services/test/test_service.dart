@@ -68,7 +68,7 @@ class TestService {
 
   static showMicAnimation() {
     final gameState = GameState.getState(_context);
-    final commState = gameState.getCommunicationState();
+    final commState = gameState.communicationState;
     commState.talking = true;
     //commState.muted = true;
     //gameState.myState.status = PlayerStatus.PLAYING;
@@ -97,7 +97,7 @@ class TestService {
   static showRank() async {
     final gameState = GameState.getState(_context);
     final seat = gameState.getSeat(1);
-    final myState = gameState.getMyState(_context);
+    final myState = gameState.myState;
     //seat.player.showFirework = true;
     seat.player.rankText = 'Two Pair';
     myState.notify();
@@ -111,7 +111,7 @@ class TestService {
   static showSitBack() async {
     final gameState = GameState.getState(_context);
     final seat = gameState.getSeat(1);
-    final myState = gameState.getMyState(_context);
+    final myState = gameState.myState;
     seat.isDealer = true;
     seat.player.inhand = false;
     seat.player.inBreak = true;
@@ -314,7 +314,7 @@ class TestService {
 
   static Future<void> buyInTest() async {
     final gameState = Provider.of<GameState>(_context, listen: false);
-    final players = gameState.getPlayers(_context);
+    final players = gameState.players;
     final now = DateTime.now();
     var exp = DateTime.now();
     exp = exp.add(Duration(seconds: 20));
@@ -358,7 +358,7 @@ class TestService {
     BuildContext context = _context;
 
     final gameState = Provider.of<GameState>(context, listen: false);
-    final actionState = gameState.getActionState(context);
+    final actionState = gameState.actionState;
 
     final seatActionJsonStr = '''
         {
@@ -384,8 +384,8 @@ class TestService {
         }''';
     final seatAction = jsonDecode(seatActionJsonStr);
     // actionState.setAction(1, seatAction);
-    gameState.setAction(context, 1, seatAction);
-    gameState.showAction(context, true);
+    gameState.setAction(1, seatAction);
+    gameState.showAction(true);
 
     actionState.notifyListeners();
   }
@@ -452,7 +452,7 @@ class TestService {
     */
     player.cards = [161, 200, 168, 177, 194];
     player.rankText = 'Full House';
-    final myState = gameState.getMyState(_context);
+    final myState = gameState.myState;
     myState.notify();
     // int r = i % 4;
     // if (r == 1) {
@@ -466,7 +466,7 @@ class TestService {
     // }
 
     player.noOfCardsVisible = player.cards.length;
-    final players = gameState.getPlayers(_context);
+    final players = gameState.players;
     players.notifyAll();
   }
 
@@ -513,7 +513,7 @@ class TestService {
 
     /* refresh */
     final gameState = GameState.getState(_context);
-    gameState.refresh(_context);
+    gameState.refresh();
   }
 
   // static void reloadStack() {
@@ -600,9 +600,9 @@ class TestService {
 
   static void resetGameState() {
     final gameState = GameState.getState(_context);
-    gameState.clear(_context);
+    gameState.clear();
     gameState.tableState.notifyAll();
-    ActionState state = gameState.getActionState(_context);
+    ActionState state = gameState.actionState;
     state.show = false;
 
     gameState.resetSeatActions();
@@ -610,7 +610,7 @@ class TestService {
     for (final seat in seats) {
       seat.player.noOfCardsVisible = 2;
     }
-    final players = gameState.getPlayers(_context);
+    final players = gameState.players;
     players.notifyAll();
 
     /* wait then run fold */
@@ -772,7 +772,7 @@ class TestService {
 
   static void showPlayerStatus() {
     final gameState = GameState.getState(_context);
-    final players = gameState.getPlayers(_context);
+    final players = gameState.players;
 
     for (int i = 1; i < 10; i++) {
       final seat = gameState.getSeat(i);
@@ -788,9 +788,9 @@ class TestService {
 
   static void showDownCards() {
     final gameState = GameState.getState(_context);
-    final players = gameState.getPlayers(_context);
+    final players = gameState.players;
 
-    _context.read<ValueNotifier<FooterStatus>>().value = FooterStatus.Result;
+    // _context.read<ValueNotifier<FooterStatus>>().value = FooterStatus.Result;
 
     for (int i = 1; i < 10; i++) {
       players.updateCardSilent(i, [50, 50, 50, 50, 50]);
@@ -801,9 +801,9 @@ class TestService {
 
   static void removeShowDownCards() {
     final gameState = GameState.getState(_context);
-    final players = gameState.getPlayers(_context);
+    final players = gameState.players;
 
-    _context.read<ValueNotifier<FooterStatus>>().value = FooterStatus.None;
+    // _context.read<ValueNotifier<FooterStatus>>().value = FooterStatus.None;
 
     for (int i = 1; i < 10; i++) {
       players.updateCardSilent(i, []);
@@ -908,7 +908,6 @@ class TestService {
   }
 
   static setPlayerTalking() {
-    BuildContext context = _context;
     final gameState = GameState.getState(_context);
     for (int seatNo = 1; seatNo <= gameState.gameInfo.maxPlayers; seatNo++) {
       final seat1 = gameState.getSeat(seatNo);

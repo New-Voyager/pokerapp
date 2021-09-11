@@ -126,7 +126,7 @@ class _FooterActionViewState extends State<FooterActionView> {
 
     /* finally change the state to no more allow user to take action */
     final gameState = Provider.of<GameState>(context, listen: false);
-    gameState.showAction(context, false);
+    gameState.showAction(false);
   }
 
   /* this function actually makes the connection with the GameComService
@@ -135,12 +135,17 @@ class _FooterActionViewState extends State<FooterActionView> {
     BuildContext context,
     String action,
     int amount,
-  }) =>
-      HandActionProtoService.takeAction(
-        context: context,
-        action: action,
-        amount: amount,
-      );
+  }) {
+    final gameContextObj = context.read<GameContextObject>();
+    final gameState = context.read<GameState>();
+
+    HandActionProtoService.takeAction(
+      gameContextObject: gameContextObj,
+      gameState: gameState,
+      action: action,
+      amount: amount,
+    );
+  }
 
   /* These utility function actually takes actions */
 

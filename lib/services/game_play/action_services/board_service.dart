@@ -11,14 +11,14 @@ class BoardService {
       context,
       listen: false,
     );
-    gameState.clear(context);
+    gameState.clear();
     gameState.resetPlayers();
 
     /* clean up from result views */
     /* set footer status to none  */
-    Provider.of<ValueNotifier<FooterStatus>>(
-      context,
-      listen: false,
-    ).value = FooterStatus.None;
+    // Provider.of<ValueNotifier<FooterStatus>>(
+    //   context,
+    //   listen: false,
+    // ).value = FooterStatus.None;
   }
 }

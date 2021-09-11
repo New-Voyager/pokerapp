@@ -55,11 +55,11 @@ class HoleStackCardView extends StatelessWidget {
           child: Builder(
             builder: (context) => PlayerHoleCardView(
               marked: markedCards.isMarked(cards[i]),
-              onMarkTapCallback: () => markedCards.mark(
-                cards[i],
-                context.read<ValueNotifier<FooterStatus>>().value ==
-                    FooterStatus.Result,
-              ),
+              onMarkTapCallback: () {
+                final gameState = GameState.getState(context);
+                markedCards.mark(
+                    cards[i], gameState.handState == HandState.RESULT);
+              },
               card: cards[i],
               dim: deactivated,
               isCardVisible: isCardVisible,
@@ -164,10 +164,7 @@ class HoleStackCardView extends StatelessWidget {
     final GameState gameState = GameState.getState(context);
     final boardAttributes = gameState.getBoardAttributes(context);
 
-    final MarkedCards markedCards = gameState.getMarkedCards(
-      context,
-      listen: true,
-    );
+    final MarkedCards markedCards = gameState.markedCardsState;
     log('HoleCards: build cards: $cards');
     if (cards == null || cards.isEmpty) {
       log('HoleCards: build cards are not shown $cards');

@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_proto_service.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/widgets/general_dialog_widget.dart';
+import 'package:provider/provider.dart';
 
 /* this dialog handles the timer, as well as the messages sent to the server, when on tapped / on dismissed */
 
@@ -46,9 +49,12 @@ class RunItTwiceDialog {
     if (TestService.isTesting)
       return print('run it twice prompt response: $playerAction');
 
+    final gameContextObj = context.read<GameContextObject>();
+    final gameState = context.read<GameState>();
     /* send the player action, as PLAYER_ACTED message: RUN_IT_TWICE_YES or RUN_IT_TWICE_NO */
     HandActionProtoService.takeAction(
-      context: context,
+      gameState: gameState,
+      gameContextObject: gameContextObj,
       action: playerAction,
     );
   }
