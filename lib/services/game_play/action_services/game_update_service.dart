@@ -199,7 +199,7 @@ class GameUpdateService {
     @required var playerUpdate,
   }) async {
     int seatNo = playerUpdate['seatNo'];
-    final player = _gameState.fromSeat(_context, seatNo);
+    final player = _gameState.fromSeat(seatNo);
     final status = playerUpdate['status'];
     final newUpdate = playerUpdate['newUpdate'];
 
@@ -238,7 +238,7 @@ class GameUpdateService {
       status: status,
     );
     if (closed || _gameState.uiClosing) return;
-    final seat = _gameState.getSeat(_context, seatNo);
+    final seat = _gameState.getSeat(seatNo);
     seat.notify();
 
     // wait for "AppConstants.userPopUpMessageHoldDuration" showing the BUY-IN amount
@@ -305,7 +305,7 @@ class GameUpdateService {
     if (closed || _gameState.uiClosing) return;
     final tableState = _gameState.tableState;
     tableState.notifyAll();
-    _gameState.updatePlayers(_context);
+    _gameState.updatePlayers();
   }
 
   void handleNewPlayerInSeat(
@@ -348,7 +348,7 @@ class GameUpdateService {
     if (closed || _gameState.uiClosing) return;
     final tableState = _gameState.tableState;
     tableState.notifyAll();
-    _gameState.updatePlayers(_context);
+    _gameState.updatePlayers();
   }
 
   void handlePlayerLeftGame({
@@ -371,7 +371,7 @@ class GameUpdateService {
     @required var playerUpdate,
   }) {
     int seatNo = playerUpdate['seatNo'];
-    final seat = _gameState.getSeat(_context, seatNo);
+    final seat = _gameState.getSeat(seatNo);
     if (seat.isMe) {
       if (_gameState.buyInKeyboardShown) {
         Navigator.pop(_context);
@@ -386,7 +386,7 @@ class GameUpdateService {
   }) {
     int seatNo = playerUpdate['seatNo'];
     if (seatNo != null) {
-      final seat = _gameState.getSeat(_context, seatNo);
+      final seat = _gameState.getSeat(seatNo);
       // update my state to show sitback button
       if (seat != null && seat.player != null && seat.player.isMe) {
         final myState = _gameState.getMyState(_context);
@@ -399,7 +399,7 @@ class GameUpdateService {
 
   void removePlayer(int seatNo) {
     if (closed || _gameState.uiClosing) return;
-    final seat = _gameState.getSeat(_context, seatNo);
+    final seat = _gameState.getSeat(seatNo);
     if (seat != null && seat.player != null && seat.player.isMe) {
       seat.player.showBuyIn = true;
       seat.notify();
@@ -408,11 +408,11 @@ class GameUpdateService {
     }
 
     if (closed || _gameState.uiClosing) return;
-    _gameState.removePlayer(_context, seatNo);
+    _gameState.removePlayer(seatNo);
     if (closed || _gameState.uiClosing) return;
-    _gameState.updatePlayers(_context);
+    _gameState.updatePlayers();
     if (closed || _gameState.uiClosing) return;
-    _gameState.markOpenSeat(_context, seatNo);
+    _gameState.markOpenSeat(seatNo);
     if (closed || _gameState.uiClosing) return;
     final tableState = _gameState.tableState;
     tableState.notifyAll();
@@ -429,8 +429,8 @@ class GameUpdateService {
     int stack = playerUpdate['stack'] as int;
 
     final gameInfo = _gameState.gameInfo;
-    final player1 = _gameState.fromSeat(_context, oldSeatNo);
-    final player1Seat = _gameState.getSeat(_context, oldSeatNo);
+    final player1 = _gameState.fromSeat(oldSeatNo);
+    final player1Seat = _gameState.getSeat(oldSeatNo);
 
     if (player1 == null) return;
     if (player1Seat == null) return;
@@ -441,7 +441,7 @@ class GameUpdateService {
         gameInfo.tableStatus == 'WAITING_TO_BE_STARTED') {
       // switch seat for the player
       if (closed || _gameState.uiClosing) return;
-      final oldSeat = _gameState.getSeat(_context, oldSeatNo);
+      final oldSeat = _gameState.getSeat(oldSeatNo);
       oldSeat.player = null;
       if (closed || _gameState.uiClosing) return;
       _gameState.refresh(_context);
@@ -467,7 +467,7 @@ class GameUpdateService {
       vnSeatChangeModel.value = null;
     }
     if (closed || _gameState.uiClosing) return;
-    _gameState.updatePlayers(_context);
+    _gameState.updatePlayers();
   }
 
   void handlePlayerWaitForBuyinApproval({
@@ -475,7 +475,7 @@ class GameUpdateService {
   }) async {
     int seatNo = playerUpdate['seatNo'];
     if (closed || _gameState.uiClosing) return;
-    final seat = _gameState.getSeat(_context, seatNo);
+    final seat = _gameState.getSeat(seatNo);
 
     GameInfoModel _gameInfoModel =
         await GameService.getGameInfo(_gameState.gameCode);
@@ -519,7 +519,7 @@ class GameUpdateService {
     final GameState gameState = GameState.getState(_context);
     int seatNo = playerUpdate['seatNo'];
     if (closed || _gameState.uiClosing) return;
-    final seat = gameState.getSeat(_context, seatNo);
+    final seat = gameState.getSeat(seatNo);
     log('Buyin is denied');
     if (closed || _gameState.uiClosing) return;
     final players = gameState.getPlayers(_context);
@@ -548,7 +548,7 @@ class GameUpdateService {
     final GameState gameState = GameState.getState(_context);
     int seatNo = playerUpdate['seatNo'];
     if (closed || _gameState.uiClosing) return;
-    final seat = gameState.getSeat(_context, seatNo);
+    final seat = gameState.getSeat(seatNo);
     GameInfoModel _gameInfoModel =
         await GameService.getGameInfo(_gameState.gameCode);
     assert(_gameInfoModel != null);
@@ -585,7 +585,7 @@ class GameUpdateService {
     if (closed || _gameState.uiClosing) return;
     final GameState gameState = GameState.getState(_context);
     int seatNo = playerUpdate['seatNo'];
-    final seat = gameState.getSeat(_context, seatNo);
+    final seat = gameState.getSeat(seatNo);
     GameInfoModel _gameInfoModel =
         await GameService.getGameInfo(_gameState.gameCode);
     assert(_gameInfoModel != null);
@@ -823,7 +823,7 @@ class GameUpdateService {
   removes community cards, pots and everything */
   void _clearTable() {
     if (closed || _gameState.uiClosing) return;
-    _gameState.resetPlayers(_context);
+    _gameState.resetPlayers();
 
     /* clean up from result views */
     /* set footer status to none  */
@@ -953,7 +953,7 @@ class GameUpdateService {
         tableUpdate['seatChangeSeatNo'].map<int>((s) => int.parse(s)).toList();
 
     if (closed || _gameState.uiClosing) return;
-    final player = _gameState.fromSeat(_context, seatChangeSeatNo[0]);
+    final player = _gameState.fromSeat(seatChangeSeatNo[0]);
     assert(player != null);
 
     /* If I am in this list, show me a confirmation popup */
@@ -1118,9 +1118,9 @@ class GameUpdateService {
       );
 
       // show firework
-      final player = gameState.fromSeat(_context, seatNo);
+      final player = gameState.fromSeat(seatNo);
       player.showFirework = true;
-      final seat = gameState.getSeat(_context, seatNo);
+      final seat = gameState.getSeat(seatNo);
       playSoundEffect(AppAssets.fireworksSound);
       seat.notify();
       await Future.delayed(AppConstants.notificationDuration);
@@ -1224,7 +1224,7 @@ class GameUpdateService {
     final openedSeat = int.parse(data['openedSeat'].toString());
     final openSeats = await GameService.getOpenSeats(_gameState.gameCode);
     for (final seatNo in openSeats) {
-      final seat = _gameState.getSeat(_context, seatNo);
+      final seat = _gameState.getSeat(seatNo);
       if (seat != null) {
         seat.notify();
       }
@@ -1403,7 +1403,7 @@ class GameUpdateService {
 
   void resetBoard() async {
     _gameState.clear(_context);
-    _gameState.resetPlayers(_context);
+    _gameState.resetPlayers();
     _gameState.refresh(_context);
 
     /* clean up from result views */

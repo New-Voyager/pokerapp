@@ -554,7 +554,7 @@ class HandActionProtoService {
 
         if (playerInSeat.playerId == 0) {
           // open seat
-          final seat = _gameState.getSeat(_context, seatNo);
+          final seat = _gameState.getSeat(seatNo);
           seat.player = null;
           continue;
         }
@@ -602,7 +602,7 @@ class HandActionProtoService {
         if (playerObj.playerUuid == this._currentPlayer.uuid) {
           playerObj.isMe = true;
         }
-        final seat = _gameState.getSeat(_context, seatNo);
+        final seat = _gameState.getSeat(seatNo);
         seat.player = playerObj;
       }
 
@@ -634,12 +634,12 @@ class HandActionProtoService {
     }
 
     if (!newHand.bombPot) {
-      final sbSeat = _gameState.getSeat(_context, sbPos);
+      final sbSeat = _gameState.getSeat(sbPos);
       sbSeat.player.action.sb = true;
       sbSeat.player.action.amount = _gameState.gameInfo.smallBlind.toDouble();
 
       if (_close) return;
-      final bbSeat = _gameState.getSeat(_context, bbPos);
+      final bbSeat = _gameState.getSeat(bbPos);
       bbSeat.player.action.bb = true;
       bbSeat.player.action.amount = _gameState.gameInfo.bigBlind.toDouble();
     }
@@ -651,7 +651,7 @@ class HandActionProtoService {
     tableState.notifyAll();
 
     if (_close) return;
-    _gameState.resetPlayers(_context, notify: false);
+    _gameState.resetPlayers(notify: false);
 
     if (_close) return;
     _context.read<ValueNotifier<FooterStatus>>().value = FooterStatus.None;
@@ -659,7 +659,7 @@ class HandActionProtoService {
     // next action seat is me
     if (!newHand.bombPot) {
       final nextActionSeat =
-          _gameState.getSeat(_context, newHand.nextActionSeat);
+          _gameState.getSeat(newHand.nextActionSeat);
       if (nextActionSeat != null && nextActionSeat.isMe) {
         // if straddle is allowed, my stack size > straddle value, and I haven't turned off straddle option
         if (_gameState.gameInfo.utgStraddleAllowed &&
@@ -702,7 +702,7 @@ class HandActionProtoService {
     for (final seatNo in newHand.playersActed.keys) {
       final action = newHand.playersActed[seatNo];
       if (action.action != proto.ACTION.NOT_ACTED) {
-        final seat = _gameState.getSeat(_context, seatNo);
+        final seat = _gameState.getSeat(seatNo);
         seat.player.action.setActionProto(action.action, action.amount);
       }
     }
@@ -713,7 +713,7 @@ class HandActionProtoService {
     if (dealerIdx == -1) {
       /* we have a open seat, set the dealer */
       if (_close) return;
-      final Seat seat = _gameState.getSeat(_context, dealerPos);
+      final Seat seat = _gameState.getSeat(dealerPos);
       seat.isDealer = true;
     } else {
       players.updatePlayerTypeSilent(
@@ -764,7 +764,7 @@ class HandActionProtoService {
           ? seatNo
           : ((seatNo - mySeatNo) % _gameState.gameInfo.maxPlayers) + 1;
       if (_close || _gameState.uiClosing) return;
-      final seat = _gameState.getSeat(_context, seatNo);
+      final seat = _gameState.getSeat(seatNo);
       if (seat.player == null ||
           seat.player.stack == 0 ||
           seat.player.status != AppConstants.PLAYING) {
@@ -861,7 +861,7 @@ class HandActionProtoService {
       /* for distributing the ith card, go through all the players, and give them */
       for (int seatNo in seatNos) {
         if (_close) return;
-        final seat = _gameState.getSeat(_context, seatNo);
+        final seat = _gameState.getSeat(seatNo);
         if (seat.player != null) {
           seat.player.noOfCardsVisible = 0;
         }
@@ -1211,7 +1211,7 @@ class HandActionProtoService {
     for (final seatNo in result.playerInfo.keys) {
       final playerInfo = result.playerInfo[seatNo];
       if (playerInfo.playedUntil == proto.HandStatus.SHOW_DOWN) {
-        final seat = _gameState.getSeat(_context, seatNo);
+        final seat = _gameState.getSeat(seatNo);
         seat.player.cards = playerInfo.cards;
       }
     }
@@ -1444,7 +1444,7 @@ class HandActionProtoService {
     tableState.notifyAll();
 
     if (_close) return;
-    _gameState.resetPlayers(_context, notify: true);
+    _gameState.resetPlayers(notify: true);
 
     if (_close) return;
     _context.read<ValueNotifier<FooterStatus>>().value = FooterStatus.None;

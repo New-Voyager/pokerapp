@@ -54,7 +54,7 @@ class NewHandHandler {
 
   Future<void> updatePlayers() async {
     final Players players = gameState.getPlayers(context);
-    gameState.resetPlayers(context, notify: false);
+    gameState.resetPlayers(notify: false);
 
     // only count active players in this hand
     int noOfPlayers = 0;
@@ -88,7 +88,7 @@ class NewHandHandler {
 
         if (playerInSeat.playerId == 0) {
           // open seat
-          final seat = gameState.getSeat(context, seatNo);
+          final seat = gameState.getSeat(seatNo);
           seat.player = null;
           continue;
         }
@@ -144,7 +144,7 @@ class NewHandHandler {
         if (playerObj.playerUuid == gameState.currentPlayerUuid) {
           playerObj.isMe = true;
         }
-        final seat = gameState.getSeat(context, seatNo);
+        final seat = gameState.getSeat(seatNo);
         seat.player = playerObj;
       }
 
@@ -198,12 +198,12 @@ class NewHandHandler {
     if (gameState.uiClosing) return;
 
     if (!newHand.bombPot) {
-      final sbSeat = gameState.getSeat(context, newHand.sbPos);
+      final sbSeat = gameState.getSeat(newHand.sbPos);
       sbSeat.player.action.sb = true;
       sbSeat.player.action.amount = gameState.gameInfo.smallBlind.toDouble();
 
       if (gameState.uiClosing) return;
-      final bbSeat = gameState.getSeat(context, newHand.bbPos);
+      final bbSeat = gameState.getSeat(newHand.bbPos);
       bbSeat.player.action.bb = true;
       bbSeat.player.action.amount = gameState.gameInfo.bigBlind.toDouble();
     }
@@ -220,7 +220,7 @@ class NewHandHandler {
 
     // next action seat is me
     if (!newHand.bombPot) {
-      final nextActionSeat = gameState.getSeat(context, newHand.nextActionSeat);
+      final nextActionSeat = gameState.getSeat(newHand.nextActionSeat);
       if (nextActionSeat != null && nextActionSeat.isMe) {
         // if straddle is allowed, my stack size > straddle value, and I haven't turned off straddle option
         if (gameState.gameInfo.utgStraddleAllowed &&
@@ -266,7 +266,7 @@ class NewHandHandler {
     for (final seatNo in newHand.playersActed.keys) {
       final action = newHand.playersActed[seatNo];
       if (action.action != proto.ACTION.NOT_ACTED) {
-        final seat = gameState.getSeat(context, seatNo);
+        final seat = gameState.getSeat(seatNo);
         seat.player.action.setActionProto(action.action, action.amount);
       }
     }
@@ -274,7 +274,7 @@ class NewHandHandler {
     /* marking the dealer */
     // it could be a dead button
     if (gameState.uiClosing) return;
-    final Seat seat = gameState.getSeat(context, newHand.buttonPos);
+    final Seat seat = gameState.getSeat(newHand.buttonPos);
     seat.isDealer = true;
 
     gameState.handInfo.notify();
@@ -347,7 +347,7 @@ class NewHandHandler {
       /* for distributing the ith card, go through all the players, and give them */
       for (int seatNo in seatNos) {
         if (gameState.uiClosing) return;
-        final seat = gameState.getSeat(context, seatNo);
+        final seat = gameState.getSeat(seatNo);
         if (seat.player == null || !seat.player.inhand) {
           continue;
         }

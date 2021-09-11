@@ -39,7 +39,7 @@ class CardDistributionAnimatingWidget extends StatelessWidget {
     }
 
     final gameState = GameState.getState(context);
-    final seat = gameState.getSeat(context, seatNo);
+    final seat = gameState.getSeat(seatNo);
     if (seat == null || seat.key == null) {
       return Offset(0, 0);
     }

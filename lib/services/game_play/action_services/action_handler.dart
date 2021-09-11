@@ -68,7 +68,7 @@ class PlayerActionHandler {
     );
 
     // update button
-    final buttonSeat = _gameState.getSeat(context, currentHandState.buttonPos);
+    final buttonSeat = _gameState.getSeat(currentHandState.buttonPos);
     if (buttonSeat != null) {
       buttonSeat.isDealer = true;
     }
@@ -199,7 +199,7 @@ class PlayerActionHandler {
     );
 
     if (nextSeatToAct == -1) return;
-    final seatToAct = _gameState.getSeat(context, nextSeatToAct);
+    final seatToAct = _gameState.getSeat(nextSeatToAct);
     if (seatToAct != null) {
       seatToAct.setActionTimer(_gameState.gameInfo.actionTime,
           remainingTime: remainingActionTime);
@@ -208,7 +208,7 @@ class PlayerActionHandler {
     // setup player bet amount
     for (final seatNo in currentHandState.playersActed.keys) {
       final seatAct = currentHandState.playersActed[seatNo];
-      final seat = _gameState.getSeat(context, seatNo);
+      final seat = _gameState.getSeat(seatNo);
       if (seat != null) {
         PlayerActedState acted = PlayerActedState();
         seat.player.inhand = true;
@@ -248,7 +248,7 @@ class PlayerActionHandler {
       final TableState tableState = _gameState.tableState;
 
       if (_gameState.uiClosing) return;
-      final player = _gameState.fromSeat(context, seatNo);
+      final player = _gameState.fromSeat(seatNo);
       assert(player != null);
 
       if (!player.isMe) {
@@ -262,7 +262,7 @@ class PlayerActionHandler {
       player.highlight = true;
 
       if (_gameState.uiClosing) return;
-      final seat = _gameState.getSeat(context, seatNo);
+      final seat = _gameState.getSeat(seatNo);
       seat.setActionTimer(_gameState.gameInfo.actionTime);
       seat.notify();
 

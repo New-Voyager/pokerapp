@@ -12,7 +12,7 @@ class BoardService {
       listen: false,
     );
     gameState.clear(context);
-    gameState.resetPlayers(context);
+    gameState.resetPlayers();
 
     /* clean up from result views */
     /* set footer status to none  */

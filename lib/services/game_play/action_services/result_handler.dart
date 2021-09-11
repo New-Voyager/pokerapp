@@ -102,7 +102,7 @@ class ResultHandler {
     tableState.clear();
     tableState.notifyAll();
 
-    gameState.resetPlayers(context);
+    gameState.resetPlayers();
   }
 
   Future<void> processHiLoWinners({

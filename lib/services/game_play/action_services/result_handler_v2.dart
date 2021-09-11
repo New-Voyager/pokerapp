@@ -223,7 +223,7 @@ class ResultHandlerV2 {
     if (replay) return;
     resetResult();
     // remove all the community cards
-    gameState.resetPlayers(context);
+    gameState.resetPlayers();
     tableState.clear();
     tableState.notifyAll();
   }

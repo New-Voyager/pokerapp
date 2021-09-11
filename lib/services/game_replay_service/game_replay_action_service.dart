@@ -37,10 +37,10 @@ class GameReplayActionService {
     final gameState = GameState.getState(_context);
 
     if (_close) return;
-    final player = gameState.fromSeat(_context, action.action.seatNo);
+    final player = gameState.fromSeat(action.action.seatNo);
 
     if (_close) return;
-    final seat = gameState.getSeat(_context, action.action.seatNo);
+    final seat = gameState.getSeat(action.action.seatNo);
 
     assert(player != null && seat != null);
 
@@ -85,7 +85,7 @@ class GameReplayActionService {
       players.notifyAll();
     } else {
       if (_close) return;
-      final seat = gameState.getSeat(_context, action.seatNo);
+      final seat = gameState.getSeat(action.seatNo);
       seat.player.action.setAction(action);
       seat.player.stack = action.stack;
       seat.notify();

@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
-import 'package:pokerapp/enums/player_status.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/marked_cards.dart';
@@ -694,12 +693,12 @@ class GameState {
     return this._seats[seatNo];
   }
 
-  Seat getSeat(BuildContext context, int seatNo, {bool listen: false}) {
+  Seat getSeat(int seatNo) {
     return this._seats[seatNo];
   }
 
-  void markOpenSeat(BuildContext context, int seatNo) {
-    final seat = getSeat(context, seatNo);
+  void markOpenSeat(int seatNo) {
+    final seat = getSeat(seatNo);
     seat.player = null;
     seat.notify();
   }
@@ -763,16 +762,14 @@ class GameState {
     return '';
   }
 
-  PlayerModel fromSeat(BuildContext context, int seatNo) {
+  PlayerModel fromSeat(int seatNo) {
     if (this.uiClosing) null;
-    Players players = getPlayers(context);
-    return players.fromSeat(seatNo);
+    return this._seats[seatNo].player;
   }
 
-  void updatePlayers(BuildContext context) {
+  void updatePlayers() {
     if (this.uiClosing) return;
-    final players = getPlayers(context);
-    players.notifyAll();
+    this.players.notifyAll();
   }
 
   bool newPlayer(BuildContext context, PlayerModel newPlayer) {
@@ -784,18 +781,17 @@ class GameState {
     return players.addNewPlayerSilent(newPlayer);
   }
 
-  void removePlayer(BuildContext context, int seatNo) {
-    final players = getPlayers(context);
-    final seat = getSeat(context, seatNo);
+  void removePlayer(int seatNo) {
+    final players = this.players;
+    final seat = getSeat(seatNo);
     if (seat != null && seat.player != null) {
       this.janusEngine.leaveChannel();
     }
     players.removePlayerSilent(seatNo);
   }
 
-  void resetPlayers(BuildContext context, {bool notify = true}) {
-    final players = this.getPlayers(context);
-    players.clear(notify: notify);
+  void resetPlayers({bool notify = true}) {
+    this.players.clear(notify: notify);
   }
 
   void showAction(BuildContext context, bool show, {bool notify = false}) {
