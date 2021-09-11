@@ -348,4 +348,55 @@ class PlayerActionHandler {
       //log('Hand Message: ::handleYourAction:: END');
     }
   }
+
+  Future<void> handlePlayerActed(proto.HandMessageItem message) async {
+    final playerActed = message.playerActed;
+    int seatNo = playerActed.seatNo;
+    //log('Hand Message: ::handlePlayerActed:: START seatNo: $seatNo');
+
+    if (_gameState.uiClosing) return;
+    // show a prompt regarding last player action
+
+    final seat = _gameState.getSeatWithoutCtx(seatNo);
+    // hide straddle dialog
+    if (_gameState.straddlePrompt) {
+      _gameState.straddlePrompt = false;
+      _gameState.straddlePromptState.notify();
+    }
+    if (_gameState.uiClosing) return;
+    if (seat?.player?.action == null) {
+      ////log('Hand Message: ::handlePlayerActed:: player acted: $seatNo, player: ${seat.player.name}');
+      return;
+    }
+    final action = seat.player.action;
+    action.setActionProto(playerActed.action, playerActed.amount);
+
+    // play the bet-raise sound effect
+    if (action.action == HandActions.BET ||
+        action.action == HandActions.RAISE ||
+        action.action == HandActions.CALL) {
+      playSoundEffect(AppAssets.betRaiseSound);
+    } else if (action.action == HandActions.FOLD) {
+      playSoundEffect(AppAssets.foldSound);
+      seat.player.playerFolded = true;
+      seat.player.animatingFold = true;
+    } else if (action.action == HandActions.CHECK) {
+      playSoundEffect(AppAssets.checkSound);
+    }
+    seat.notify();
+    int stack = playerActed.stack?.toInt();
+    if (stack != null) {
+      seat.player.stack = stack;
+    }
+
+    if (_gameState.uiClosing) return;
+    // before showing the prompt --> turn off the highlight on other players
+    _gameState.resetActionHighlight(-1);
+
+    // update pot chip updates
+    _gameState.tableState
+        .updatePotChipUpdatesSilent(playerActed.potUpdates.toInt());
+    _gameState.tableState.notifyAll();
+    //log('Hand Message: ::handlePlayerActed:: END');
+  }
 }

@@ -690,6 +690,10 @@ class GameState {
     return Provider.of<BoardAttributesObject>(context, listen: listen);
   }
 
+  Seat getSeatWithoutCtx(int seatNo) {
+    return this._seats[seatNo];
+  }
+
   Seat getSeat(BuildContext context, int seatNo, {bool listen: false}) {
     return this._seats[seatNo];
   }
@@ -700,8 +704,7 @@ class GameState {
     seat.notify();
   }
 
-  void resetActionHighlight(BuildContext context, int nextActionSeatNo,
-      {bool listen: false}) {
+  void resetActionHighlight(int nextActionSeatNo) {
     for (final seat in this._seats.values) {
       if (seat.player != null && seat.player.highlight) {
         // debugPrint('*** seatNo: ${seat.serverSeatPos} highlight: ${seat.player.highlight} nextActionSeatNo: $nextActionSeatNo');

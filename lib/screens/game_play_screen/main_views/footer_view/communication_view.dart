@@ -64,14 +64,15 @@ class _CommunicationViewState extends State<CommunicationView> {
                             log('on chat clicked');
                             widget.chatVisibilityChange();
                           },
-                            //,
                           child: chat,
                         ),
                       ),
                     ),
                   );
-                  children.add(SizedBox(height: 10.dp,));
-                }                    
+                  children.add(SizedBox(
+                    height: 10.dp,
+                  ));
+                }
                 if (status == AppConstants.PLAYING &&
                     (communicationState.audioConferenceStatus ==
                             AudioConferenceStatus.CONNECTED ||
@@ -96,7 +97,6 @@ class _CommunicationViewState extends State<CommunicationView> {
                 } else if (communicationState.voiceChatEnable) {
                   children.addAll(voiceTextWidgets(widget.chatService));
                 }
-
 
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.end,

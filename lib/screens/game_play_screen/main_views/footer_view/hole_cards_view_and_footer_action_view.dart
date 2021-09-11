@@ -19,13 +19,11 @@ import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/bet_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/game_circle_button.dart';
-import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_proto_service.dart';
 import 'package:pokerapp/widgets/cards/hole_stack_card_view.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:pokerapp/widgets/cards/multiple_stack_card_views.dart';
 import 'package:pokerapp/widgets/num_diamond_widget.dart';
-import 'package:pokerapp/widgets/round_color_button.dart';
 import 'package:pokerapp/widgets/straddle_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
@@ -422,7 +420,7 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
   Widget _getRankText(GameState gameState, BuildContext context) {
     final me = gameState.me;
     final theme = AppTheme.getTheme(context);
-    Color borderColor = theme.accentColorWithDark();
+    Color borderColor = theme.secondaryColor;
     if (me == null || me.rankText == '') {
       borderColor = Colors.transparent;
     }
@@ -431,8 +429,8 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
         ? const SizedBox.shrink()
         : Container(
             padding: EdgeInsets.symmetric(
-              horizontal: 14.pw,
-              vertical: 3.ph,
+              horizontal: 8.pw,
+              vertical: 2.ph,
             ),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(6.pw),
@@ -440,7 +438,7 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
             ),
             child: Text(
               me.rankText,
-              style: AppDecorators.getHeadLine5Style(theme: theme),
+              style: AppDecorators.getHeadLine6Style(theme: theme),
             ),
           );
     return rankText;

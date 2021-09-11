@@ -43,6 +43,7 @@ class HandAction extends $pb.GeneratedMessage {
     ..aOB(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'timedOut')
     ..a<$core.int>(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'actionTime', $pb.PbFieldType.OU3)
     ..a<$core.double>(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'stack', $pb.PbFieldType.OF)
+    ..a<$core.double>(7, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'potUpdates', $pb.PbFieldType.OF)
     ..hasRequiredFields = false;
 
   HandAction._() : super();
@@ -53,6 +54,7 @@ class HandAction extends $pb.GeneratedMessage {
     $core.bool? timedOut,
     $core.int? actionTime,
     $core.double? stack,
+    $core.double? potUpdates,
   }) {
     final _result = create();
     if (seatNo != null) {
@@ -72,6 +74,9 @@ class HandAction extends $pb.GeneratedMessage {
     }
     if (stack != null) {
       _result.stack = stack;
+    }
+    if (potUpdates != null) {
+      _result.potUpdates = potUpdates;
     }
     return _result;
   }
@@ -172,6 +177,18 @@ class HandAction extends $pb.GeneratedMessage {
   $core.bool hasStack() => $_has(5);
   @$pb.TagNumber(6)
   void clearStack() => clearField(6);
+
+  @$pb.TagNumber(7)
+  $core.double get potUpdates => $_getN(6);
+  @$pb.TagNumber(7)
+  set potUpdates($core.double v) {
+    $_setFloat(6, v);
+  }
+
+  @$pb.TagNumber(7)
+  $core.bool hasPotUpdates() => $_has(6);
+  @$pb.TagNumber(7)
+  void clearPotUpdates() => clearField(7);
 }
 
 class HandActionLog extends $pb.GeneratedMessage {

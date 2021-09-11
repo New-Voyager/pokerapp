@@ -126,6 +126,10 @@ class TableState extends ChangeNotifier {
     this._potUpdatesChips = potUpdatesChips;
   }
 
+  void updatePotChipUpdatesSilent(int potUpdatesChips) {
+    this._potUpdatesChips = potUpdatesChips;
+  }
+
   void setBoardCards(int boardIndex, List<CardObject> cards) {
     if (boardIndex == 1) {
       if (cards.length > 5) {
