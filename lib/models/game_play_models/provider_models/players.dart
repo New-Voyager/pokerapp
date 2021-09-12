@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:pokerapp/enums/player_status.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/resources/app_constants.dart';
@@ -269,8 +268,12 @@ class Players extends ChangeNotifier {
       );
 
   void removeCardsFromAllSilent() {
-    for (int i = 0; i < _players.length; i++) _players[i].noOfCardsVisible = 0;
-    for (int i = 0; i < _players.length; i++) _players[i].cards = null;
+    for (int i = 0; i < _players.length; i++) {
+      _players[i].noOfCardsVisible = 0;
+      _players[i].cards = null;
+      _players[i].revealCards = [];
+    }
+
   }
 
   void removeActionsAllSilent() {

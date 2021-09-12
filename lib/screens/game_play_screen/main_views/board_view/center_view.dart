@@ -4,7 +4,6 @@ import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
@@ -18,6 +17,7 @@ import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/center_button_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/pots_view.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/board_view/rank_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/game_circle_button.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/formatter.dart';
@@ -87,7 +87,7 @@ class _CenterViewState extends State<CenterView> {
               onClickHandler: () async {
                 await Navigator.of(context).pushNamed(Routes.select_table);
                 await gameState.assets.initialize();
-                final redrawTop = gameState.getRedrawTopSectionState(context);
+                final redrawTop = gameState.redrawTopSectionState;
                 redrawTop.notify();
               },
               child: Icon(Icons.edit,
@@ -232,22 +232,28 @@ class _CenterViewState extends State<CenterView> {
 
     //log('potViewPos: before is paused or waiting isGameRunning: ${gameState.isGameRunning} isGamePausedOrWaiting: $isGamePausedOrWaiting ${gameState.gameInfo.tableStatus}');
     /* if the game is paused, show the options available during game pause */
-
+    List<Widget> children = [];
     // don't show start/pause buttons for bot script games
     if (!gameState.isBotGame) {
       if (isGamePausedOrWaiting || !gameState.isGameRunning) {
         print('_buildGamePauseOptions');
-        return _buildGamePauseOptions(
-          gameState,
-          boardAttributes.centerViewButtonVerticalTranslate,
-        );
+        children.add(Align(
+            alignment: Alignment.center,
+            child: _buildGamePauseOptions(
+              gameState,
+              boardAttributes.centerViewButtonVerticalTranslate,
+            )));
       }
     }
 
     /* if we reach here, means, the game is RUNNING */
     /* The following view, shows the community cards
      and the pot chips, if they are nulls, put the default values */
-    return _buildMainCenterView(context, boardAttributes);
+    children.add(_buildMainCenterView(context, boardAttributes));
+    return Stack(
+      alignment: Alignment.topCenter,
+      children: children,
+    );
   }
 
   @override
@@ -258,45 +264,82 @@ class _CenterViewState extends State<CenterView> {
     return ValueListenableBuilder3<String, String, bool>(
         vnGameStatus, vnTableStatus, vnShowCardShuffling,
         builder: (_, gameStatus, tableStatus, showCardsShuffling, __) {
+      List<Widget> children = [];
       if (gameState.customizationMode) {
-        return customizationView(
+        children.add(customizationView(
           offset: boardAttributes.centerViewCardShufflePosition,
           scale: boardAttributes.centerViewCenterScale,
           gameState: gameState,
-        );
+        ));
       }
       if (showCardsShuffling) {
-        return (gameState?.handInfo?.bombPot ?? false)
+        children.add((gameState?.handInfo?.bombPot ?? false)
             ? _bombPotAnimation()
             : _positionAnimationShuffleCardView(
                 offset: boardAttributes.centerViewCardShufflePosition,
                 scale: boardAttributes.centerViewCenterScale,
                 child: AnimatingShuffleCardView(),
-              );
+              ));
       }
-      return _mainBuild(
+      children.add(_mainBuild(
         context,
         tableStatus: tableStatus,
         gameStatus: gameStatus,
         boardAttributes: boardAttributes,
+      ));
+
+      return Stack(
+        alignment: Alignment.topCenter,
+        children: children,
       );
     });
   }
 
-  Widget _buildMainCenterView(final context, final boardAttributes) {
+  Widget _buildMainCenterView(
+      final context, final BoardAttributesObject boardAttributes) {
     //log('potViewPos: building main center view');
+
+    /**
+     * Pots on the board have two controls stacked on each other.
+     * emptyPotsView: Always created with transparent color. Used for identifying the location where the chips moved from the players.
+     * multiplePots: Multiple pots above the community cards 
+     */
+    final potKey = GlobalKey();
+    final emptyPotsView = PotsView(
+      isBoardHorizontal: this.widget.isBoardHorizontal,
+      potChip: 0,
+      uiKey: potKey,
+      highlight: false,
+      transparent: true,
+    );
+    boardAttributes.potKey = potKey;
+    log('ChipAmountWidget: buildMainCenterView. potKey: ${boardAttributes.potKey}');
+
+    Widget multiplePots = _buildMultiplePots(boardAttributes);
+
+    Widget potsStack = Stack(
+      alignment: Alignment.topCenter,
+      children: [
+        emptyPotsView,
+        multiplePots,
+      ],
+    );
+    /* main pot view */
+    Widget pots = Transform.scale(
+      scale: boardAttributes.centerPotScale,
+      alignment: Alignment.topCenter,
+      child: potsStack,
+    );
+
+    final theme = AppTheme.getTheme(context);
 
     return Transform.translate(
       offset: boardAttributes.centerViewVerticalTranslate,
       child: Column(
         mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          /* main pot view */
-          Transform.scale(
-            scale: boardAttributes.centerPotScale,
-            alignment: Alignment.topCenter,
-            child: _buildMultiplePots(boardAttributes),
-          ),
+          pots,
 
           // divider
           SizedBox(height: boardAttributes.centerGap),
@@ -324,16 +367,12 @@ class _CenterViewState extends State<CenterView> {
           // divider
           SizedBox(height: boardAttributes.centerGap),
 
-          /* potUpdates view OR the rank widget (rank widget is shown only when we have a result) */
-          Consumer<ValueNotifier<FooterStatus>>(
-            builder: (_, vnFooterStatus, __) {
-              bool showDown = vnFooterStatus.value == FooterStatus.Result;
-              // log('showing rank widget: $showDown');
-              return showDown
-                  ? rankWidget(boardAttributes)
-                  : potUpdatesView(boa: boardAttributes, showDown: showDown);
-            },
-          ),
+          Stack(
+            children: [
+              RankWidget(boardAttributes, theme, vnRankStr),
+              potUpdatesView(boa: boardAttributes)
+            ],
+          )
         ],
       ),
     );
@@ -370,29 +409,9 @@ class _CenterViewState extends State<CenterView> {
             dim: dimView,
           );
 
-          if (boardAttributes.setPotsKey(i, potKey)) {
-            rebuildSeats = true;
-          }
           pots.add(potsView);
         }
 
-        // transparent pots to occupy the space
-        if (pots.length == 0) {
-          final potKey = GlobalKey();
-
-          final emptyPotsView = PotsView(
-            isBoardHorizontal: this.widget.isBoardHorizontal,
-            potChip: 0,
-            uiKey: potKey,
-            highlight: false,
-            transparent: true,
-          );
-
-          if (boardAttributes.setPotsKey(0, potKey)) {
-            rebuildSeats = true;
-          }
-          pots.add(emptyPotsView);
-        }
         if (rebuildSeats) {
           Future.delayed(Duration(milliseconds: 100), () {
             final gameState = GameState.getState(context);
@@ -408,18 +427,17 @@ class _CenterViewState extends State<CenterView> {
   }
 
   double _getOpacityForPotUpdatesView({
-    final bool showDown,
     final int potChipsUpdates,
   }) {
-    return showDown || (potChipsUpdates == null || potChipsUpdates == 0)
-        ? 0
-        : 1;
+    return (potChipsUpdates == null || potChipsUpdates == 0) ? 0 : 1;
   }
 
-  Widget potUpdatesView({
-    final BoardAttributesObject boa,
-    final bool showDown,
-  }) {
+  Widget potUpdatesView({final BoardAttributesObject boa}) {
+    final gameState = GameState.getState(context);
+    if (gameState.handState == HandState.RESULT) {
+      return SizedBox.shrink();
+    }
+
     return Transform.scale(
       scale: boa.centerPotUpdatesScale,
       alignment: Alignment.bottomCenter,
@@ -427,7 +445,6 @@ class _CenterViewState extends State<CenterView> {
         valueListenable: vnPotChipsUpdates,
         builder: (_, potChipsUpdates, __) => Opacity(
           opacity: _getOpacityForPotUpdatesView(
-            showDown: showDown,
             potChipsUpdates: potChipsUpdates,
           ),
           child: Container(
@@ -442,51 +459,13 @@ class _CenterViewState extends State<CenterView> {
             child: Text(
               '${_appScreenText['pot']}: ${DataFormatter.chipsFormat(potChipsUpdates?.toDouble())}',
               style: AppStylesNew.itemInfoTextStyleHeavy.copyWith(
-                fontSize: 13,
+                fontSize: 13.dp,
                 fontWeight: FontWeight.w400,
               ),
             ),
           ),
         ),
       ),
-    );
-  }
-
-  bool _hideRankStr(String rankStr) {
-    return rankStr == null || rankStr.trim().isEmpty;
-  }
-
-  Widget rankWidget(BoardAttributesObject boa) {
-    final theme = AppTheme.getTheme(context);
-    var textStyle = AppStylesNew.footerResultTextStyle4
-        .copyWith(fontSize: 20.dp, color: Colors.white);
-    return Transform.scale(
-      scale: boa.centerRankStrScale,
-      child: ValueListenableBuilder(
-          valueListenable: vnRankStr,
-          builder: (_, rankStr, __) {
-            return AnimatedSwitcher(
-              duration: AppConstants.animationDuration,
-              reverseDuration: AppConstants.animationDuration,
-              child: _hideRankStr(rankStr)
-                  ? const SizedBox.shrink()
-                  : Container(
-                      margin: EdgeInsets.only(top: 5.0),
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 40.pw,
-                        vertical: 2.pw,
-                      ),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(100.0),
-                        color: theme.accentColorWithDark(),
-                      ),
-                      child: Text(
-                        rankStr,
-                        style: textStyle,
-                      ),
-                    ),
-            );
-          }),
     );
   }
 }

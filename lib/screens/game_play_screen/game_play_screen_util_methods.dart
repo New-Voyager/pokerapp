@@ -5,10 +5,8 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:blinking_text/blinking_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/enums/player_status.dart';
-import 'package:pokerapp/models/game_play_models/business/card_distribution_model.dart';
 import 'package:pokerapp/models/game_play_models/business/game_chat_notfi_state.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
@@ -54,6 +52,16 @@ class GamePlayScreenUtilMethods {
       overlayOpacity: 0.1,
       icon: Icons.all_inclusive_rounded,
       children: [
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
+          label: 'Flop Cards',
+          labelBackgroundColor: Colors.black,
+          onTap: () => TestService.addFlopCards(),
+        ),
         SpeedDialChild(
           child: Icon(
             Icons.adb_rounded,
@@ -169,20 +177,6 @@ class GamePlayScreenUtilMethods {
     );
   }
 
-  /* After the entire table is drawn, if the current player (isMe == true)
-    * is waiting for buyIn,then show the footer prompt */
-  // static void checkForCurrentUserPrompt(BuildContext context) {
-  //   final players =
-  //       Provider.of<GameState>(context, listen: false).getPlayers(context);
-
-  //   if (players.showBuyinPrompt) {
-  //     Provider.of<ValueNotifier<FooterStatus>>(
-  //       context,
-  //       listen: false,
-  //     ).value = FooterStatus.Prompt;
-  //   }
-  // }
-
   static void startGame(String gameCode) async {
     developer.log('Starting the game');
     await GameService.startGame(gameCode);
@@ -234,7 +228,7 @@ class GamePlayScreenUtilMethods {
     if (newPlayerModel.playerUuid == gameState.currentPlayerUuid) {
       newPlayerModel.isMe = true;
     }
-    gameState.newPlayer(context, newPlayerModel);
+    gameState.newPlayer(newPlayerModel);
     if (newPlayerModel.stack == 0) {
       newPlayerModel.showBuyIn = true;
     }
@@ -253,7 +247,7 @@ class GamePlayScreenUtilMethods {
     }
     final tableState = gameState.tableState;
     tableState.notifyAll();
-    gameState.updatePlayers(context);
+    gameState.updatePlayers();
     if (newPlayerModel.isMe && status == PlayerStatus.WAIT_FOR_BUYIN) {
       GamePlayScreenUtilMethods.onBuyin(context);
     }
@@ -317,18 +311,15 @@ class GamePlayScreenUtilMethods {
       /* footer view, is maintained by this Provider - either how action buttons,
         * OR prompt for buy in are shown
         * */
-      ListenableProvider<ValueNotifier<FooterStatus>>(
-        create: (_) => ValueNotifier(
-          FooterStatus.None,
-        ),
-      ),
+      // ListenableProvider<ValueNotifier<FooterStatus>>(
+      //   create: (_) => ValueNotifier(
+      //     FooterStatus.None,
+      //   ),
+      // ),
     ];
 
     //if (!gameState.customizationMode) {
     providers.addAll([
-      /* rabbit state */
-      ListenableProvider<RabbitState>(create: (_) => RabbitState()),
-
       /* this is for the seat change animation values */
       ListenableProvider<ValueNotifier<SeatChangeModel>>(
         create: (_) => ValueNotifier<SeatChangeModel>(null),
@@ -342,11 +333,6 @@ class GamePlayScreenUtilMethods {
       /* this is for the highHand Notification */
       ListenableProvider<ValueNotifier<HHNotificationModel>>(
         create: (_) => ValueNotifier<HHNotificationModel>(null),
-      ),
-
-      /* this is for having random card back for every new hand */
-      ListenableProvider<CardDistributionModel>(
-        create: (_) => CardDistributionModel(),
       ),
 
       /* This provider holds the audioPlayer object, which facilitates playing
@@ -369,11 +355,6 @@ class GamePlayScreenUtilMethods {
       ListenableProvider<RemainingTime>(
         create: (_) => RemainingTime(),
       ),
-
-      /* communication provider */
-      // ListenableProvider<ValueNotifier<Agora>>(
-      //   create: (_) => ValueNotifier(agora),
-      // ),
 
       /* Provider to deal with host seat change functionality */
       ListenableProvider<SeatChangeNotifier>(
@@ -436,7 +417,7 @@ class GamePlayScreenUtilMethods {
           if (seat.isMe) {
             // hide buyin button
             final gameState = GameState.getState(context);
-            final players = gameState.getPlayers(context);
+            final players = gameState.players;
             seat.player.showBuyIn = false;
             players.notifyAll();
             seat.notify();

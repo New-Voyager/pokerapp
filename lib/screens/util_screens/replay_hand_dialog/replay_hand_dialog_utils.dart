@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
-import 'package:pokerapp/models/game_play_models/business/card_distribution_model.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
@@ -47,17 +45,12 @@ class ReplayHandScreenUtils {
         create: (_) => gameState,
       ),
 
-      /* footer status */
-      ListenableProvider<ValueNotifier<FooterStatus>>(
-        create: (_) => ValueNotifier(
-          FooterStatus.None,
-        ),
-      ),
-
-      /* this is for having random card back for every new hand */
-      ListenableProvider<CardDistributionModel>(
-        create: (_) => CardDistributionModel(),
-      ),
+      // /* footer status */
+      // ListenableProvider<ValueNotifier<FooterStatus>>(
+      //   create: (_) => ValueNotifier(
+      //     FooterStatus.None,
+      //   ),
+      // ),
 
       /* board object used for changing board attributes */
       /* default is horizontal view */

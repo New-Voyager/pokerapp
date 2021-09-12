@@ -150,7 +150,7 @@ class JanusEngine extends ChangeNotifier {
       try {
         final response = await plugin.send(data: join);
         log('janus: joined audio room ${this.roomId} ${jsonEncode(response)}');
-        this.gameState.getCommunicationState().connected();
+        this.gameState.communicationState.connected();
 
         log('janus: current player $playerId joined the conference. Creating offer for the audio conference');
         // player joined
@@ -165,7 +165,7 @@ class JanusEngine extends ChangeNotifier {
       } catch (err) {
         debugPrint('No room in that name. error: ${err.toString()}');
         log('janus: failed to join audio room ${this.roomId} ${err.toString()}');
-        this.gameState.getCommunicationState().failed();
+        this.gameState.communicationState.failed();
       }
     } else {
       // echo test
@@ -178,7 +178,7 @@ class JanusEngine extends ChangeNotifier {
       try {
         final response = await plugin.send(data: echoAudio);
         debugPrint('Joined the room ${jsonEncode(response)}');
-        this.gameState.getCommunicationState().connected();
+        this.gameState.communicationState.connected();
       } catch (err) {
         debugPrint('No room in that name. error: ${err.toString()}');
       }
@@ -235,7 +235,7 @@ class JanusEngine extends ChangeNotifier {
             seat.player.talking = true;
             debugPrint('seat info $seat');
             if (seat.player.isMe) {
-              gameState.getCommunicationState().talking = true;
+              gameState.communicationState.talking = true;
             }
 
             seat.notify();
@@ -245,7 +245,7 @@ class JanusEngine extends ChangeNotifier {
             seat.player.talking = false;
             debugPrint('seat info $seat');
             if (seat.player.isMe) {
-              gameState.getCommunicationState().talking = false;
+              gameState.communicationState.talking = false;
             }
             seat.notify();
           }
@@ -298,7 +298,7 @@ class JanusEngine extends ChangeNotifier {
       }
       log('janus: engine ${this.roomId} disposed');
       if (notify) {
-        gameState.getCommunicationState().left();
+        gameState.communicationState.left();
       }
     } catch (err) {
       log('Leaving channel caught exception');
@@ -316,7 +316,7 @@ class JanusEngine extends ChangeNotifier {
           seat.player.muted = element['muted'] ?? false;
           if (seat.player.muted) {
             if (seat.player.isMe) {
-              gameState.getCommunicationState().muted = true;
+              gameState.communicationState.muted = true;
             }
             seat.player.showMicOff = true;
             seat.notify();
@@ -326,7 +326,7 @@ class JanusEngine extends ChangeNotifier {
             });
           } else {
             if (seat.player.isMe) {
-              gameState.getCommunicationState().muted = false;
+              gameState.communicationState.muted = false;
             }
             seat.player.showMicOn = true;
             seat.notify();
@@ -339,12 +339,12 @@ class JanusEngine extends ChangeNotifier {
           if (seat.player.talking) {
             log('Audio ${seat.player.name} is talking');
             if (seat.player.isMe) {
-              gameState.getCommunicationState().talking = true;
+              gameState.communicationState.talking = true;
             }
           } else {
             log('Audio ${seat.player.name} is not talking');
             if (seat.player.isMe) {
-              gameState.getCommunicationState().talking = false;
+              gameState.communicationState.talking = false;
             }
           }
 

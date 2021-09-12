@@ -38,7 +38,7 @@ class _CommunicationViewState extends State<CommunicationView> {
   Widget build(BuildContext context) {
     final theme = AppTheme.getTheme(context);
     final gameState = GameState.getState(context);
-    final communicationState = gameState.getCommunicationState();
+    final communicationState = gameState.communicationState;
     final chat = SvgPicture.asset('assets/images/game/chat.svg',
         width: 16, height: 16, color: theme.primaryColorWithDark());
 
@@ -64,14 +64,15 @@ class _CommunicationViewState extends State<CommunicationView> {
                             log('on chat clicked');
                             widget.chatVisibilityChange();
                           },
-                            //,
                           child: chat,
                         ),
                       ),
                     ),
                   );
-                  children.add(SizedBox(height: 10.dp,));
-                }                    
+                  children.add(SizedBox(
+                    height: 10.dp,
+                  ));
+                }
                 if (status == AppConstants.PLAYING &&
                     (communicationState.audioConferenceStatus ==
                             AudioConferenceStatus.CONNECTED ||
@@ -96,7 +97,6 @@ class _CommunicationViewState extends State<CommunicationView> {
                 } else if (communicationState.voiceChatEnable) {
                   children.addAll(voiceTextWidgets(widget.chatService));
                 }
-
 
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.end,

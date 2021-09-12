@@ -1,8 +1,6 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
-import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
-import 'package:pokerapp/models/game_play_models/business/card_distribution_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
@@ -37,10 +35,10 @@ class GameReplayActionService {
     final gameState = GameState.getState(_context);
 
     if (_close) return;
-    final player = gameState.fromSeat(_context, action.action.seatNo);
+    final player = gameState.fromSeat(action.action.seatNo);
 
     if (_close) return;
-    final seat = gameState.getSeat(_context, action.action.seatNo);
+    final seat = gameState.getSeat(action.action.seatNo);
 
     assert(player != null && seat != null);
 
@@ -85,21 +83,9 @@ class GameReplayActionService {
       players.notifyAll();
     } else {
       if (_close) return;
-      final seat = gameState.getSeat(_context, action.seatNo);
+      final seat = gameState.getSeat(action.seatNo);
       seat.player.action.setAction(action);
-
-      // players.updateStatusSilent(
-      //   idx,
-      //   handActionsToString(action.action),
-      // );
-
       seat.player.stack = action.stack;
-
-      // players.updateStackWithValueSilent(
-      //   action.seatNo,
-      //   action.stack,
-      // );
-
       seat.notify();
     }
 
@@ -124,11 +110,10 @@ class GameReplayActionService {
     );
 
     tableState.notifyAll();
-    // players.notifyAll();
 
     // reset highlight for other players
     if (_close) return;
-    gameState.resetActionHighlight(_context, -1);
+    gameState.resetActionHighlight(-1);
   }
 
   Future<void> _stageUpdateUtilAction(GameReplayAction action) async {
@@ -137,7 +122,7 @@ class GameReplayActionService {
     if (_close) return;
     final gameState = GameState.getState(_context);
     if (_close) return;
-    final Players players = gameState.getPlayers(_context);
+    final Players players = gameState.players;
 
     if (_close) return;
     final TableState tableState = gameState.tableState;
@@ -196,7 +181,7 @@ class GameReplayActionService {
     gameState.resetSeatActions();
 
     if (_close) return;
-    final Players players = gameState.getPlayers(_context);
+    final Players players = gameState.players;
 
     /* clear players for showdown */
     players.clearForShowdown();
@@ -204,7 +189,9 @@ class GameReplayActionService {
     if (_close) return;
 
     /* then, change the status of the footer to show the result */
-    _context.read<ValueNotifier<FooterStatus>>().value = FooterStatus.Result;
+    gameState.handState = HandState.RESULT;
+
+    // _context.read<ValueNotifier<FooterStatus>>().value = FooterStatus.Result;
 
     /* remove all highlight - silently */
     players.removeAllHighlightsSilent();
@@ -259,10 +246,10 @@ class GameReplayActionService {
         .then((value) => _audioPlayer.playBytes(value));
 
     if (_close) return;
-    final players = gameState.getPlayers(_context);
+    final players = gameState.players;
 
     if (_close) return;
-    final handInfo = gameState.getHandInfo(_context);
+    final handInfo = gameState.handInfo;
     handInfo.update(noCards: action.noCards);
 
     if (_close) return;
@@ -293,7 +280,7 @@ class GameReplayActionService {
       if (_close) return;
 
       // start the animation
-      _context.read<CardDistributionModel>().seatNo = localSeatNo;
+      gameState.cardDistributionState.seatNo = localSeatNo;
       // wait for the animation to finish
       await Future.delayed(AppConstants.cardDistributionAnimationDuration);
 

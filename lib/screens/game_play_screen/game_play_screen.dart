@@ -5,9 +5,6 @@ import 'package:after_layout/after_layout.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:dart_nats/dart_nats.dart' as nats;
 import 'package:flutter/material.dart';
-import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
-import 'package:pokerapp/enums/game_status.dart';
-import 'package:pokerapp/enums/player_status.dart';
 import 'package:pokerapp/models/game_play_models/business/game_chat_notfi_state.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
@@ -195,7 +192,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         log('agora: Player ${player.name} has joined audio conference');
         debugLog(widget.gameCode,
             'Player ${player.name} has joined audio conference');
-        this._gameState.getCommunicationState().notify();
+        this._gameState.communicationState.notify();
       } catch (err) {
         debugLog(widget.gameCode,
             'Player ${player.name} failed to join audio conference. Error: ${err.toString()}');
@@ -357,8 +354,8 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     // setting voiceChatEnable to true if gameComService is active
     log('gameComService.active = ${gameComService.active}');
     if (gameComService.active) {
-      _gameState.getCommunicationState().voiceChatEnable = true;
-      _gameState.getCommunicationState().notify();
+      _gameState.communicationState.voiceChatEnable = true;
+      _gameState.communicationState.notify();
     }
     if (!TestService.isTesting && widget.customizationService == null) {
       _initChatListeners(gameComService.gameMessaging);
@@ -381,8 +378,8 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
   void _sendMarkedCards(BuildContext context) {
     if (TestService.isTesting || widget.customizationService != null) return;
-
-    final MarkedCards markedCards = _gameState.getMarkedCards(context);
+    log('GameScreen: Trying to sending marked cards');
+    final MarkedCards markedCards = _gameState.markedCardsState;
 
     /* collect the cards needs to be revealed */
     List<CardObject> _cardsToBeRevealed = markedCards.getCards();
@@ -391,13 +388,17 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       cardNumbers.add(c.cardNum);
     }
 
+    if (cardNumbers.length == 0) {
+      return;
+    }
+    markedCards.cardsSent(cardNumbers);
+    log('GameScreen: Sending cards');
+
     /* clear all the marked cards */
     // FIXME: markedCards.clear();
 
-    final gameService = _gameState.getGameMessagingService(context);
-    final Players players = _gameState.getPlayers(context);
-
-    gameService.sendCards(
+    final Players players = _gameState.players;
+    _gameState.gameMessageService.sendCards(
       context.read<HandInfoState>().handNum,
       cardNumbers,
       players.me?.seatNo,
@@ -405,7 +406,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   }
 
   void _initSendCardAfterFold(BuildContext context) {
-    final vnFooterStatus = context.read<ValueNotifier<FooterStatus>>();
     final MarkedCards markedCards = context.read<MarkedCards>();
 
     void onMarkingCards() {
@@ -413,17 +413,19 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       _sendMarkedCards(context);
     }
 
-    vnFooterStatus.addListener(() {
-      if (vnFooterStatus.value == FooterStatus.Result) {
+    _gameState.handChangeState.addListener(() {
+      log('GameScreen: Hand State: ${_gameState.handState.toString()}');
+      if (_gameState.handState == HandState.RESULT) {
         // send the marked cards for the first time
         _sendMarkedCards(context);
 
         // start listening for changes in markedCards value
         markedCards.addListener(onMarkingCards);
-      } else {
-        markedCards.clear();
-        markedCards.removeListener(onMarkingCards);
-      }
+      } 
+      // else {
+      //   markedCards.clear();
+      //   markedCards.removeListener(onMarkingCards);
+      // }
     });
   }
 
@@ -542,7 +544,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     _timer = Timer.periodic(const Duration(seconds: 30), (_) {
       PlayerModel me;
       try {
-        me = _gameState.getPlayers(_providerContext).me;
+        me = _gameState.players.me;
       } catch (e) {}
 
       if (me != null) _gameState.gameHiveStore.addDiamonds();

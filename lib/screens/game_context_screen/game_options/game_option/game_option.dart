@@ -14,14 +14,10 @@ import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
-import 'package:pokerapp/screens/game_play_screen/main_views/board_view/decorative_views/table_view.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/game_service.dart';
-import 'package:pokerapp/services/data/box_type.dart';
-import 'package:pokerapp/services/data/hive_datasource_impl.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/alerts.dart';
-import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/numeric_keyboard2.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/radio_list_widget.dart';
@@ -77,7 +73,7 @@ class _GameOptionState extends State<GameOption> {
 
     if (!widget.gameState.running) {
       await GameService.leaveGame(this.gameCode);
-      widget.gameState.refresh(context);
+      widget.gameState.refresh();
     }
   }
 
@@ -92,7 +88,7 @@ class _GameOptionState extends State<GameOption> {
       GameService.endGame(this.gameCode);
     } else {
       await GameService.endGame(this.gameCode);
-      widget.gameState.refresh(context);
+      widget.gameState.refresh();
     }
   }
 
@@ -321,8 +317,8 @@ class _GameOptionState extends State<GameOption> {
                 // setting the value saves it to local storage too
                 widget.gameState.settings.showChat = v;
                 log('In toggle button widget, showChat = ${widget.gameState.settings.showChat}');
-                widget.gameState.getCommunicationState().showTextChat = v;
-                widget.gameState.getCommunicationState().notify();
+                widget.gameState.communicationState.showTextChat = v;
+                widget.gameState.communicationState.notify();
                 setState(() {});
               },
             ),

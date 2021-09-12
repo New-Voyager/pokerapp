@@ -2,7 +2,6 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
@@ -189,6 +188,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
         width: widget.boardAttributes.namePlateSize.width,
         child: DisplayCardsWidget(
           seat,
+          widget.gameState.showdown,
         ),
       ),
     );
@@ -207,15 +207,8 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
     final gameState = GameState.getState(context);
     bool openSeat = widget.seat.isOpen;
     bool isMe = widget.seat.isMe;
-    FooterStatus footerStatus = Provider.of<ValueNotifier<FooterStatus>>(
-      context,
-      listen: false,
-    ).value;
 
-    bool showdown = false;
-    if (footerStatus == FooterStatus.Result) {
-      showdown = true;
-    }
+    bool showdown = widget.gameState.showdown;
 
     // if open seat, just show open seat widget
     if (openSeat) {
@@ -284,7 +277,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
     Widget chipAmountWidget = ChipAmountWidget(
       recalculatingNeeded: _seatPosNeedsReCalculating,
       animate: animate,
-      potKey: boardAttributes.getPotsKey(0),
+      potKey: boardAttributes.potKey,
       key: widget.seat.betWidgetUIKey,
       seat: widget.seat,
       boardAttributesObject: boardAttributes,
@@ -359,7 +352,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
                 ),
               ),
 
-              // player hole cards
+              // player hole cards (tilted card on the bottom left)
               Transform.translate(
                 offset: boardAttributes.playerHoleCardOffset,
                 child: Transform.scale(
@@ -613,7 +606,7 @@ class PlayerCardsWidget extends StatelessWidget {
     if (this.noCards == 5) shiftMultiplier = 1.7;
     if (this.noCards == 4) shiftMultiplier = 1.45;
     if (this.noCards == 3) shiftMultiplier = 1.25;
-
+    log('PlayerCardsWidget: building ${seat.serverSeatPos}');
     double xOffset;
     if (showdown)
       xOffset = (alignment == Alignment.centerLeft ? 1 : -1) *
@@ -627,7 +620,7 @@ class PlayerCardsWidget extends StatelessWidget {
     if (showdown) {
       return const SizedBox.shrink();
     } else if (seat.folded ?? false) {
-      //if (seat.player.animatingFold) {
+      log('PlayerCardsWidget: [${seat.serverSeatPos}] Folded cards');
       return Transform.translate(
         offset: Offset(
           xOffset * 0.50,
@@ -635,17 +628,9 @@ class PlayerCardsWidget extends StatelessWidget {
         ),
         child: FoldCardAnimatingWidget(seat: seat),
       );
-      // } else {
-      //   return Transform.translate(
-      //     offset: Offset(
-      //       xOffset * 0.50,
-      //       45.0,
-      //     ),
-      //     child: Container(),
-      //   );
-      // }
     } else {
       //log('Hole cards');
+      log('PlayerCardsWidget: [${seat.serverSeatPos}] Hidden cards');
       return Transform.translate(
         offset: Offset(
           xOffset * 0.50,

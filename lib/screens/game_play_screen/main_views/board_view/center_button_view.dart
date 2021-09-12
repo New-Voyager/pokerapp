@@ -33,7 +33,7 @@ class CenterButtonView extends StatelessWidget {
     log('Termininating game ${gameState.gameCode}');
     await GameService.endGame(gameState.gameCode);
     if (!gameState.isGameRunning) {
-      gameState.refresh(context);
+      gameState.refresh();
     }
   }
 
@@ -58,7 +58,7 @@ class CenterButtonView extends StatelessWidget {
       ..updateSeatChangeInProgress(true);
 
     await SeatChangeService.hostSeatChangeBegin(gameState.gameCode);
-    await gameState.refresh(context);
+    await gameState.refresh();
     log('status: ${gameState.gameInfo.status} table status: ${gameState.gameInfo.tableStatus}');
   }
 

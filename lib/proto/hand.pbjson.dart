@@ -88,12 +88,13 @@ const HandAction$json = const {
     const {'1': 'timed_out', '3': 4, '4': 1, '5': 8, '10': 'timedOut'},
     const {'1': 'action_time', '3': 5, '4': 1, '5': 13, '10': 'actionTime'},
     const {'1': 'stack', '3': 6, '4': 1, '5': 2, '10': 'stack'},
+    const {'1': 'pot_updates', '3': 7, '4': 1, '5': 2, '10': 'potUpdates'},
   ],
 };
 
 /// Descriptor for `HandAction`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List handActionDescriptor = $convert.base64Decode(
-    'CgpIYW5kQWN0aW9uEhcKB3NlYXRfbm8YASABKA1SBnNlYXRObxIkCgZhY3Rpb24YAiABKA4yDC5nYW1lLkFDVElPTlIGYWN0aW9uEhYKBmFtb3VudBgDIAEoAlIGYW1vdW50EhsKCXRpbWVkX291dBgEIAEoCFIIdGltZWRPdXQSHwoLYWN0aW9uX3RpbWUYBSABKA1SCmFjdGlvblRpbWUSFAoFc3RhY2sYBiABKAJSBXN0YWNr');
+    'CgpIYW5kQWN0aW9uEhcKB3NlYXRfbm8YASABKA1SBnNlYXRObxIkCgZhY3Rpb24YAiABKA4yDC5nYW1lLkFDVElPTlIGYWN0aW9uEhYKBmFtb3VudBgDIAEoAlIGYW1vdW50EhsKCXRpbWVkX291dBgEIAEoCFIIdGltZWRPdXQSHwoLYWN0aW9uX3RpbWUYBSABKA1SCmFjdGlvblRpbWUSFAoFc3RhY2sYBiABKAJSBXN0YWNrEh8KC3BvdF91cGRhdGVzGAcgASgCUgpwb3RVcGRhdGVz');
 @$core.Deprecated('Use handActionLogDescriptor instead')
 const HandActionLog$json = const {
   '1': 'HandActionLog',

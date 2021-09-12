@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:pokerapp/models/game_play_models/business/card_distribution_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
@@ -39,7 +38,7 @@ class CardDistributionAnimatingWidget extends StatelessWidget {
     }
 
     final gameState = GameState.getState(context);
-    final seat = gameState.getSeat(context, seatNo);
+    final seat = gameState.getSeat(seatNo);
     if (seat == null || seat.key == null) {
       return Offset(0, 0);
     }
@@ -59,7 +58,7 @@ class CardDistributionAnimatingWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<CardDistributionModel>(
+    return Consumer<CardDistributionState>(
       key: _globalKey,
       builder: (_, model, __) {
         if (model.seatNo == null) return SizedBox.shrink();
