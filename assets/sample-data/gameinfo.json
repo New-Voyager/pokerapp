@@ -22,6 +22,7 @@
 		"buyInMin": 30,
 		"smallBlind": 1,
 		"bigBlind": 2,
+		"allowRabbitHunt": true,
 		"status": "ACTIVE",
 		"tableStatus": "GAME_RUNNING",
 		"seatInfo": {

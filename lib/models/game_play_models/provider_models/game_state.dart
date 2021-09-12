@@ -12,6 +12,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/marked_cards.da
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/player_info.dart';
+import 'package:pokerapp/models/rabbit_state.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/services/agora/agora.dart';
 import 'package:pokerapp/services/app/asset_service.dart';
@@ -84,6 +85,8 @@ class GameState {
   ListenableProvider<CardDistributionState> _cardDistribProvider;
   ListenableProvider<HandChangeState> _handChangeStateProvider;
   ListenableProvider<HoleCardsState> _holeCardsProvider;
+  /* rabbit state */
+  ListenableProvider<RabbitState> _rabbitStateProvider;
 
   StraddlePromptState _straddlePromptState;
   HoleCardsState _holeCardsState;
@@ -96,6 +99,7 @@ class GameState {
   ServerConnectionState _connectionState;
   HandChangeState _handChangeState;
   GameMessagingService _gameMessageService;
+  RabbitState _rabbitState;
 
   // For posting blind
   // bool postedBlind;
@@ -231,6 +235,7 @@ class GameState {
     this._connectionState = ServerConnectionState();
     this._redrawTopState = RedrawTopSectionState();
     this._handChangeState = HandChangeState();
+    this._rabbitState = RabbitState();
 
     // this._waitlistProvider =
     //     ListenableProvider<WaitlistState>(create: (_) => WaitlistState());
@@ -259,6 +264,7 @@ class GameState {
     _holeCardsState = HoleCardsState();
     this._holeCardsProvider =
         ListenableProvider<HoleCardsState>(create: (_) => _holeCardsState);
+    this._rabbitStateProvider = ListenableProvider<RabbitState>(create: (_) => _rabbitState);
 
     this.janusEngine = JanusEngine(
         gameState: this,
@@ -503,6 +509,8 @@ class GameState {
 
   HandInfoState get handInfo => this._handInfo;
 
+  RabbitState get rabbitState => this._rabbitState;
+
   bool get isGameRunning {
     bool tableRunning =
         _tableState.tableStatus == AppConstants.TABLE_STATUS_GAME_RUNNING ||
@@ -726,6 +734,7 @@ class GameState {
       this._redrawFooterSectionStateProvider,
       this._cardDistribProvider,
       this._handChangeStateProvider,
+      this._rabbitStateProvider,
     ];
   }
 
