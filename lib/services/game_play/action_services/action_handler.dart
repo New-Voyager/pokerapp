@@ -7,7 +7,6 @@ import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/proto/hand.pb.dart';
@@ -38,7 +37,6 @@ class PlayerActionHandler {
 
     // current players cards
     String playerCards = currentHandState.playerCards;
-    final Players players = _gameState.players;
     final tableState = _gameState.tableState;
 
     // if game is paused, we don't update cards
@@ -73,13 +71,13 @@ class PlayerActionHandler {
     // update button
     final buttonSeat = _gameState.getSeat(currentHandState.buttonPos);
     if (buttonSeat != null) {
-      buttonSeat.isDealer = true;
+      buttonSeat.dealer = true;
     }
 
     /* set the noOfVisible cards for other players */
     int noOfCards = currentHandState.noCards;
     handInfo.update(noCards: noOfCards);
-    players.visibleCardNumbersForAllSilent(noOfCards);
+    _gameState.setPlayerNoCards(noOfCards);
 
     // boardCards update if available
     //String currentRound = currentHandState.currentRound.name;
@@ -193,9 +191,7 @@ class PlayerActionHandler {
 
     if (_gameState.uiClosing) return;
 
-    players.updateStackBulkSilent(
-      currentHandState.playersStack,
-    );
+    _gameState.updatePlayersStack(currentHandState.playersStack);
 
     int nextSeatToAct = int.parse(
       currentHandState.nextSeatToAct?.toString() ?? '-1',
@@ -234,7 +230,7 @@ class PlayerActionHandler {
       yourAction.seatAction = currentHandState.nextSeatAction;
       handleYourAction(yourAction);
     }
-    players.notifyAll();
+    _gameState.notifyAllSeats();
   }
 
   Future<void> handleNextAction(proto.HandMessageItem message) async {

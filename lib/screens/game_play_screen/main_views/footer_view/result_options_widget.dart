@@ -26,16 +26,16 @@ class ResultOptionsWidget extends StatelessWidget {
     return Consumer2<HandChangeState, RabbitState>(
       builder: (context, vnfs, rb, __) {
         bool _showEye = false;
-        // if (gameState.mySeat != null && !gameState.mySeat.player.inhand) {
-        //   return Container();
-        // }
-        // _showEye = gameState.handState == HandState.RESULT;
-        // final bool _showRabbit = rb.show && isRabbitHuntAllowed;
-        // final bool visibility = gameState.handState == HandState.RESULT &&
-        //       (_showEye || _showRabbit);
-        //log('RabbitState: building: visibility: $visibility handState: ${gameState.handState} _showEye: $_showEye rb.show: ${rb.show} rabbitHuntAllowed: $isRabbitHuntAllowed');
-        bool visibility = true;
-        bool _showRabbit = true;
+        if (gameState.mySeat != null && !gameState.mySeat.player.inhand) {
+          return Container();
+        }
+        _showEye = gameState.handState == HandState.RESULT;
+        final bool _showRabbit = rb.show && isRabbitHuntAllowed;
+        final bool visibility = gameState.handState == HandState.RESULT &&
+              (_showEye || _showRabbit);
+        log('RabbitState: building: visibility: $visibility handState: ${gameState.handState} _showEye: $_showEye rb.show: ${rb.show} rabbitHuntAllowed: $isRabbitHuntAllowed');
+        // bool visibility = true;
+        // bool _showRabbit = true;
 
         return Visibility(
           // if in result and (a reason to show), we show the bar

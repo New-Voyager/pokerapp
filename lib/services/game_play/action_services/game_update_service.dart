@@ -11,7 +11,6 @@ import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/notification_models/general_notification_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/notification_models/hh_notification_model.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat_change_model.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
@@ -304,7 +303,7 @@ class GameUpdateService {
     if (closed || _gameState.uiClosing) return;
     final tableState = _gameState.tableState;
     tableState.notifyAll();
-    _gameState.updatePlayers();
+    _gameState.notifyAllSeats();
   }
 
   void handleNewPlayerInSeat(
@@ -347,7 +346,7 @@ class GameUpdateService {
     if (closed || _gameState.uiClosing) return;
     final tableState = _gameState.tableState;
     tableState.notifyAll();
-    _gameState.updatePlayers();
+    _gameState.notifyAllSeats();
   }
 
   void handlePlayerLeftGame({
@@ -409,7 +408,7 @@ class GameUpdateService {
     if (closed || _gameState.uiClosing) return;
     _gameState.removePlayer(seatNo);
     if (closed || _gameState.uiClosing) return;
-    _gameState.updatePlayers();
+    _gameState.notifyAllSeats();
     if (closed || _gameState.uiClosing) return;
     _gameState.markOpenSeat(seatNo);
     if (closed || _gameState.uiClosing) return;
@@ -466,7 +465,7 @@ class GameUpdateService {
       vnSeatChangeModel.value = null;
     }
     if (closed || _gameState.uiClosing) return;
-    _gameState.updatePlayers();
+    _gameState.notifyAllSeats();
   }
 
   void handlePlayerWaitForBuyinApproval({
@@ -521,8 +520,7 @@ class GameUpdateService {
     final seat = gameState.getSeat(seatNo);
     log('Buyin is denied');
     if (closed || _gameState.uiClosing) return;
-    final players = gameState.players;
-    players.removePlayerSilent(seatNo);
+    gameState.removePlayer(seatNo);
     bool isMe = false;
     if (seat.player.isMe) {
       isMe = true;
@@ -623,24 +621,23 @@ class GameUpdateService {
     int newStack = int.parse(data['newStack'].toString());
     int reloadAmount = int.parse(data['reloadAmount'].toString());
 
-    final _players = _context.read<Players>();
+    // final _players = _context.read<Players>();
+    // _players.updateStackReloadStateSilent(
+    //     playerId,
+    //     StackReloadState(
+    //       oldStack: oldStack,
+    //       newStack: newStack,
+    //       reloadAmount: reloadAmount,
+    //     ));
 
-    _players.updateStackReloadStateSilent(
-        playerId,
-        StackReloadState(
-          oldStack: oldStack,
-          newStack: newStack,
-          reloadAmount: reloadAmount,
-        ));
+    // _players.notifyAll();
 
-    _players.notifyAll();
+    // // wait for the animation to end
+    // await Future.delayed(const Duration(milliseconds: 2000));
 
-    // wait for the animation to end
-    await Future.delayed(const Duration(milliseconds: 2000));
-
-    // finally end animation
-    _players.updateStackReloadStateSilent(playerId, null);
-    _players.notifyAll();
+    // // finally end animation
+    // _players.updateStackReloadStateSilent(playerId, null);
+    // _players.notifyAll();
   }
 
   void handleNewHighhandWinner({
@@ -821,16 +818,6 @@ class GameUpdateService {
   /* this method clears the result views and
   removes community cards, pots and everything */
   void _clearTable() {
-    if (closed || _gameState.uiClosing) return;
-    _gameState.resetPlayers();
-
-    /* clean up from result views */
-    /* set footer status to none  */
-    if (closed || _gameState.uiClosing) return;
-    // Provider.of<ValueNotifier<FooterStatus>>(
-    //   _context,
-    //   listen: false,
-    // ).value = FooterStatus.None;
     if (closed || _gameState.uiClosing) return;
     _gameState.clear();
   }
@@ -1057,12 +1044,10 @@ class GameUpdateService {
       listen: false,
     );
 
-    final players = gameState.players;
-
     /* refresh the player model */
     final positions =
         await SeatChangeService.hostSeatChangeSeatPositions(gameCode);
-    players.refreshWithPlayerInSeat(positions);
+    gameState.seatChangePlayersUpdate(positions, notify: true);
   }
 
   void handleHighHand({
@@ -1402,15 +1387,7 @@ class GameUpdateService {
 
   void resetBoard() async {
     _gameState.clear();
-    _gameState.resetPlayers();
     _gameState.refresh();
-
-    /* clean up from result views */
-    /* set footer status to none  */
-    // Provider.of<ValueNotifier<FooterStatus>>(
-    //   _context,
-    //   listen: false,
-    // ).value = FooterStatus.None;
   }
 
   playSoundEffect(String soundFile) {

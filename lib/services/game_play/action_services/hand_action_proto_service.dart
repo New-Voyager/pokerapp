@@ -5,11 +5,8 @@ import 'package:fixnum/fixnum.dart' as $fixnum;
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_type.dart';
-import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/marked_cards.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
@@ -25,7 +22,6 @@ import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/encryption/encryption_service.dart';
 import 'package:pokerapp/services/game_play/action_services/action_handler.dart';
 import 'package:pokerapp/services/game_play/action_services/newhand_handler.dart';
-import 'package:pokerapp/services/game_play/action_services/result_handler.dart';
 import 'package:pokerapp/services/game_play/action_services/result_handler_v2.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/card_helper.dart';
@@ -491,14 +487,15 @@ class HandActionProtoService {
 
     List<int> myCards = CardHelper.getRawCardNumbers(cards);
     if (_close || _gameState.uiClosing) return;
-    final players = _gameState.players;
 
-    List<int> seatNos = players.players.map((p) => p.seatNo).toList();
-    seatNos.sort();
-    players.updateCardSilent(mySeatNo, myCards);
+    if (_gameState.mySeat != null) {
+      _gameState.mySeat.player.cards = myCards;
+    }
     _gameState.currentCards = myCards;
     log('my cards: ${_gameState.currentCards}');
 
+    List<int> seatNos = _gameState.playersInGame.map((p) => p.seatNo).toList();
+    seatNos.sort();
     /* distribute cards to the players */
     /* this for loop will distribute cards one by one to all the players */
     //for (int i = 0; i < myCards.length; i++) {
@@ -520,11 +517,13 @@ class HandActionProtoService {
       _gameState.cardDistributionState.seatNo = localSeatNo;
       // wait for the animation to finish
       await Future.delayed(AppConstants.cardDistributionAnimationDuration);
-
-      //debugPrint('Setting cards for $seatNo');
-      players.updateVisibleCardNumberSilent(seatNo, myCards.length);
-      players.notifyAll();
+      final playerInSeat = _gameState.getSeat(seatNo);
+      if (playerInSeat != null && playerInSeat.player != null && playerInSeat.player.inhand) {
+        playerInSeat.player.noOfCardsVisible = myCards.length;
+        playerInSeat.notify();
+      }
     }
+
     // if straddle prompt is true, trigger straddle state to show the dialog
     if (_gameState.straddlePrompt && _gameState.settings.straddleOption) {
       final straddlePromptState = _gameState.straddlePromptState;
@@ -584,8 +583,8 @@ class HandActionProtoService {
 
       if (_close) return;
 
-      final players = _gameState.players;
-      List<int> seatNos = players.players.map((p) => p.seatNo).toList();
+      final players = _gameState.playersInGame;
+      List<int> seatNos = players.map((p) => p.seatNo).toList();
       seatNos.sort();
 
       if (_close) return;
@@ -621,20 +620,18 @@ class HandActionProtoService {
         await Future.delayed(AppConstants.cardDistributionAnimationDuration);
         if (_close) return;
 
-        players.updateVisibleCardNumberSilent(seatNo, handInfo.noCards);
-        players.notifyAll();
+        final playerInSeat = _gameState.getSeat(seatNo);
+        if (playerInSeat != null && playerInSeat.player != null && playerInSeat.player.inhand) {
+          playerInSeat.player.noOfCardsVisible = handInfo.noCards;
+          playerInSeat.notify();
+        }
       }
-      //}
-
       /* card distribution ends, put the value to NULL */
       _gameState.cardDistributionState.seatNo = null;
       // tableState.updateTableStatusSilent(null);
-      if (_close) return;
-      // tableState.notifyAll();
-      // no of cards in this game
-      players.visibleCardNumbersForAllSilent(handInfo.noCards);
-      if (_close) return;
-      players.notifyAll();
+      if (_gameState.uiClosing) return;
+      _gameState.setPlayerNoCards(handInfo.noCards);
+      _gameState.notifyAllSeats();
     } finally {
       //log('Hand Message: ::handleDealStarted:: END');
     }
@@ -654,8 +651,7 @@ class HandActionProtoService {
       playSoundEffect(AppAssets.betRaiseSound);
 
       // place players bets
-      final players = _gameState.players;
-      for (final player in players.players) {
+      for (final player in _gameState.playersInGame) {
         if (player.inhand) {
           // get the seat
           Seat seat = _gameState.getSeatByPlayer(player.playerId);
@@ -669,8 +665,8 @@ class HandActionProtoService {
         }
       }
       if (_close) return;
-      players.notifyAll();
       tableState.notifyAll();
+      _gameState.notifyAllSeats();
     } finally {
       //log('Hand Message: ::handleDealStarted:: END');
     }
@@ -711,7 +707,6 @@ class HandActionProtoService {
     tableState.updatePotChipUpdatesSilent(0);
 
     if (_close) return;
-    final players = _gameState.players;
 
     // show the move coin to pot animation, after that update the pot
     await _gameState.animateSeatActions();
@@ -734,7 +729,7 @@ class HandActionProtoService {
     updatePot(pots, stage, _context);
 
     _gameState.handChangeState.notify();
-    players.notifyAll();
+    _gameState.notifyAllSeats();
 
     Map<int, String> playerCardRanks;
     // update the community cards
@@ -939,20 +934,10 @@ class HandActionProtoService {
           );
     }
 
-    //_gameState.handState = HandState.RESULT;
-    final json = result.toProto3Json();
-    final jsonMsg = result.writeToJson();
-    final out = jsonEncode(json);
-    // log("$out");
-    // log("\n\n$jsonMsg\n\n");
     if (_close) return;
-    final Players players = _gameState.players;
     _gameState.resetSeatActions();
     _gameState.lastHandNum = result.handNum;
-    players.clearForShowdown();
-    //log('Hand Message: ::handleResult:: START');
 
-    int myID = players?.me?.playerId ?? 0;
     for (final seatNo in result.playerInfo.keys) {
       final playerInfo = result.playerInfo[seatNo];
       if (playerInfo.playedUntil == proto.HandStatus.SHOW_DOWN) {
@@ -977,104 +962,6 @@ class HandActionProtoService {
       );
       await resultHandler.show();
     } catch (err) {}
-    _gameState.handState = HandState.ENDED;
-    _gameState.handInProgress = false;
-    //log('Hand Message: ::handleResult:: END');
-  }
-
-  Future<void> handleResult(proto.HandMessageItem message) async {
-    /* invoke rabbit state */
-    if (_close) return;
-
-    _gameState.handState = HandState.RESULT;
-
-    if (_close) return;
-    final Players players = _gameState.players;
-    _gameState.resetSeatActions();
-    players.clearForShowdown();
-    //log('Hand Message: ::handleResult:: START');
-
-    // get hand winners data and update results
-    final handResult = message.handResult;
-
-    log('MY CARDS ${players.me.cards}');
-    log('MY CARDS ${players.me.cardObjects}');
-
-    /* showdown time, show other players cards */
-    players.updateUserCardsSilent(
-      _getCards(handResult, players?.me?.playerId ?? 0),
-    );
-
-    /* check if the result is a run it twice result */
-    final bool isRunItTwice = handResult.runItTwice;
-
-    List<int> boardCards = [];
-    List<int> boardCards2 = [];
-    if (handResult.boardCards != null) {
-      for (final c in handResult.boardCards) {
-        boardCards.add(int.parse(c.toString()));
-      }
-    }
-    if (handResult.boardCards2 != null) {
-      for (final c in handResult.boardCards2) {
-        boardCards2.add(int.parse(c.toString()));
-      }
-    }
-
-    final runItTwiceResult = handResult.handLog.runItTwiceResult;
-    final potWinners = handResult.handLog.potWinners;
-    final wonAt = handResult.handLog.wonAt;
-
-    if (wonAt.name == 'FLOP') {
-      boardCards = boardCards.sublist(0, 3);
-    } else if (wonAt.name == 'TURN') {
-      boardCards = boardCards.sublist(0, 4);
-    } else if (wonAt.name == 'PREFLOP') {
-      boardCards = [];
-    }
-
-    if (_close) return;
-    updatePotBeforeResultStatic(
-      potWinners: potWinners,
-      runItTwiceResult: runItTwiceResult,
-      isRunItTwice: isRunItTwice,
-      context: _context,
-    );
-
-    if (_close) return;
-
-    ResultHandler resultHandler = ResultHandler(
-      isRunItTwice: isRunItTwice,
-      runItTwiceResult: runItTwiceResult,
-      potWinners: potWinners,
-      boardCards: boardCards,
-      boardCards2: boardCards2,
-      gameState: _gameState,
-      context: _context,
-      audioPlayer: audioPlayer,
-      replay: false,
-    );
-    await resultHandler.show();
-
-    if (_gameState.isPlaying) {
-      final me = _gameState.me;
-      final myState = _gameState.myState;
-      me.rankText = '';
-      myState.notify();
-    }
-
-    // clear rabbit state
-    if (_close) return;
-    _gameState.rabbitState.resultDone();
-
-    if (_close) return;
-    if (_gameState.highHand != null) {
-      // animate high hand
-      log('highhand');
-      await showHighHands(_gameState.highHand);
-      _gameState.highHand = null;
-    }
-
     _gameState.handState = HandState.ENDED;
     _gameState.handInProgress = false;
     //log('Hand Message: ::handleResult:: END');
@@ -1188,7 +1075,7 @@ class HandActionProtoService {
     tableState.notifyAll();
 
     if (_close) return;
-    _gameState.resetPlayers(notify: true);
+    _gameState.clear();
 
     if (_close) return;
     // _context.read<ValueNotifier<FooterStatus>>().value = FooterStatus.None;

@@ -18,7 +18,6 @@ import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat_change_model.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
-import 'package:pokerapp/models/rabbit_state.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
@@ -247,7 +246,7 @@ class GamePlayScreenUtilMethods {
     }
     final tableState = gameState.tableState;
     tableState.notifyAll();
-    gameState.updatePlayers();
+    gameState.notifyAllSeats();
     if (newPlayerModel.isMe && status == PlayerStatus.WAIT_FOR_BUYIN) {
       GamePlayScreenUtilMethods.onBuyin(context);
     }
@@ -417,9 +416,8 @@ class GamePlayScreenUtilMethods {
           if (seat.isMe) {
             // hide buyin button
             final gameState = GameState.getState(context);
-            final players = gameState.players;
             seat.player.showBuyIn = false;
-            players.notifyAll();
+            gameState.notifyAllSeats();
             seat.notify();
           }
         },
