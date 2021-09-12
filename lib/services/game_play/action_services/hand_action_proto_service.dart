@@ -1065,7 +1065,7 @@ class HandActionProtoService {
 
     // clear rabbit state
     if (_close) return;
-    _context.read<RabbitState>().resultDone();
+    _gameState.rabbitState.resultDone();
 
     if (_close) return;
     if (_gameState.highHand != null) {
