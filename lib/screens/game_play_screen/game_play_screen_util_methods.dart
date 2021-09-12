@@ -5,7 +5,6 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:blinking_text/blinking_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/enums/player_status.dart';
 import 'package:pokerapp/models/game_play_models/business/game_chat_notfi_state.dart';
@@ -321,9 +320,6 @@ class GamePlayScreenUtilMethods {
 
     //if (!gameState.customizationMode) {
     providers.addAll([
-      /* rabbit state */
-      ListenableProvider<RabbitState>(create: (_) => RabbitState()),
-
       /* this is for the seat change animation values */
       ListenableProvider<ValueNotifier<SeatChangeModel>>(
         create: (_) => ValueNotifier<SeatChangeModel>(null),
@@ -359,11 +355,6 @@ class GamePlayScreenUtilMethods {
       ListenableProvider<RemainingTime>(
         create: (_) => RemainingTime(),
       ),
-
-      /* communication provider */
-      // ListenableProvider<ValueNotifier<Agora>>(
-      //   create: (_) => ValueNotifier(agora),
-      // ),
 
       /* Provider to deal with host seat change functionality */
       ListenableProvider<SeatChangeNotifier>(

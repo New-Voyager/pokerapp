@@ -4,7 +4,6 @@ import 'dart:typed_data';
 import 'package:fixnum/fixnum.dart' as $fixnum;
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
-import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
@@ -480,254 +479,6 @@ class HandActionProtoService {
     await handler.handle();
   }
 
-  Future<void> handleNewHand2(proto.HandMessageItem message) async {
-    _gameState.handState = HandState.STARTED;
-    _gameState.highHand = null;
-    _gameState.handInProgress = true;
-    ////log('Hand Message: ::handleNewHand:: START');
-    playSoundEffect(AppAssets.newHandSound);
-
-    /* data contains the dealer, small blind and big blind seat Positions
-    * Update the Players object with these information */
-    final newHand = message.newHand;
-
-    // there are seat nos
-    int dealerPos = newHand.buttonPos;
-    int sbPos = newHand.sbPos;
-    int bbPos = newHand.bbPos;
-    int noCards = newHand.noCards;
-    double bigBlind = newHand.bigBlind;
-    double smallBlind = newHand.smallBlind;
-    int handNum = newHand.handNum;
-
-    GameType gameType = GameType.values
-        .firstWhere((element) => element.index == newHand.gameType.value);
-    _gameState.resetSeatActions(newHand: true);
-
-    // clear marked cards here
-    if (_close) return;
-    _context.read<MarkedCards>().clear();
-
-    if (_close) return;
-    final handInfo = _gameState.handInfo;
-    handInfo.update(
-      handNum: handNum,
-      noCards: noCards,
-      gameType: gameType,
-      smallBlind: smallBlind,
-      bigBlind: bigBlind,
-      bombPot: newHand.bombPot,
-      bombPotBet: newHand.bombPotBet,
-      doubleBoard: newHand.doubleBoardBombPot,
-    );
-
-    // set small blind and big blind
-    if (_close) return;
-    final noOfPlayers = newHand.playersInSeats.length;
-    if (_gameState.gameInfo.playersInSeats.length != noOfPlayers) {
-      log('gameState seats does not match with new hand. * Refreshing *');
-      await _gameState.refresh();
-      log('gameState seats does not match with new hand. * Refreshing Done *');
-    }
-
-    if (_close) return;
-    final Players players = _gameState.players;
-
-    // update player's state and stack
-    final playersInSeats = newHand.playersInSeats;
-    int retryCount = 0;
-    while (retryCount < 2) {
-      retryCount++;
-      // show buyin button/timer if the player is in middle of buyin
-      for (final seatNo in playersInSeats.keys) {
-        if (seatNo == 0) {
-          continue;
-        }
-        final playerInSeat = playersInSeats[seatNo];
-
-        if (playerInSeat.playerId == 0) {
-          // open seat
-          final seat = _gameState.getSeat(seatNo);
-          seat.player = null;
-          continue;
-        }
-
-        PlayerModel playerFound;
-        bool newPlayer = true;
-        for (final player in players.players) {
-          if (player.playerId == playerInSeat.playerId.toInt()) {
-            playerFound = player;
-            break;
-          }
-        }
-        PlayerModel playerObj;
-        if (playerFound != null) {
-          newPlayer = false;
-          playerObj = playerFound;
-        } else {
-          playerObj = new PlayerModel();
-        }
-        playerObj.seatNo = seatNo;
-        playerObj.stack = playerInSeat.stack.toInt();
-        // if (newHand.bombPot) {
-        //   playerObj.stack = playerObj.stack + newHand.bombPotBet.toInt();
-        // }
-        playerObj.status = playerInSeat.status.name;
-        playerObj.inhand = playerInSeat.inhand;
-        if (playerInSeat.buyInExpTime != null &&
-            playerInSeat.breakExpTime.length > 0 &&
-            playerInSeat.stack == 0) {
-          playerObj.showBuyIn = true;
-          final buyInTimeExpAt = DateTime.tryParse(playerInSeat.buyInExpTime);
-          playerObj.buyInTimeExpAt = buyInTimeExpAt.toLocal();
-        }
-        if (playerInSeat.breakExpTime != null &&
-            playerInSeat.breakExpTime.length > 0) {
-          playerObj.inBreak = true;
-          final time = DateTime.tryParse(playerInSeat.breakExpTime);
-          playerObj.breakTimeExpAt = time.toLocal();
-        }
-
-        if (newPlayer) {
-          //playerObj.playerUuid = playerInSeat.playerId;
-          players.addNewPlayerSilent(playerObj);
-        }
-        if (playerObj.playerUuid == this._currentPlayer.uuid) {
-          playerObj.isMe = true;
-        }
-        final seat = _gameState.getSeat(seatNo);
-        seat.player = playerObj;
-      }
-
-      // make sure no two users in the same seat
-      Map<int, int> seatNos = Map<int, int>();
-      for (final player in players.players) {
-        if (!seatNos.containsKey(player.seatNo)) {
-          seatNos[player.seatNo] = 1;
-        } else {
-          seatNos[player.seatNo] = seatNos[player.seatNo] + 1;
-        }
-      }
-      bool refresh = false;
-      for (final seatNo in seatNos.keys) {
-        if (seatNos[seatNo] > 1) {
-          refresh = true;
-          break;
-        }
-      }
-      if (refresh) {
-        // the game state does not have all the players, refresh
-        if (_close) return;
-        log('gameState seats does not match with new hand. * Refreshing *');
-        await _gameState.refresh();
-        log('gameState seats does not match with new hand. * Refreshing Done *');
-      } else {
-        break;
-      }
-    }
-
-    if (!newHand.bombPot) {
-      final sbSeat = _gameState.getSeat(sbPos);
-      sbSeat.player.action.sb = true;
-      sbSeat.player.action.amount = _gameState.gameInfo.smallBlind.toDouble();
-
-      if (_close) return;
-      final bbSeat = _gameState.getSeat(bbPos);
-      bbSeat.player.action.bb = true;
-      bbSeat.player.action.amount = _gameState.gameInfo.bigBlind.toDouble();
-    }
-
-    if (_close) return;
-    final TableState tableState = _gameState.tableState;
-    // remove all the community cards
-    tableState.clear();
-    tableState.notifyAll();
-
-    if (_close) return;
-    _gameState.clear();
-    _gameState.resetPlayers(notify: false);
-
-    if (_close) return;
-    // _context.read<ValueNotifier<FooterStatus>>().value = FooterStatus.None;
-
-    // next action seat is me
-    if (!newHand.bombPot) {
-      final nextActionSeat = _gameState.getSeat(newHand.nextActionSeat);
-      if (nextActionSeat != null && nextActionSeat.isMe) {
-        // if straddle is allowed, my stack size > straddle value, and I haven't turned off straddle option
-        if (_gameState.gameInfo.utgStraddleAllowed &&
-            nextActionSeat.player.stack >= 2 * _gameState.gameInfo.bigBlind) {
-          // set straddlePrompt true
-          if (_gameState.settings.straddleOption) {
-            // we show the straddle dialog only when the auto straddle is off
-            if (_gameState.settings.autoStraddle == true) {
-              // set straddle bet
-              _gameState.straddleBetThisHand = true;
-            } else {
-              // prompt for the straddle dialog
-              _gameState.straddlePrompt = true;
-            }
-          }
-        }
-      }
-
-      /* marking the small blind */
-      int smallBlindIdx = players.players.indexWhere((p) => p.seatNo == sbPos);
-      assert(smallBlindIdx != -1);
-
-      players.updatePlayerTypeSilent(
-        smallBlindIdx,
-        TablePosition.SmallBlind,
-        coinAmount: smallBlind.toInt(),
-      );
-
-      /* marking the big blind */
-      int bigBlindIdx = players.players.indexWhere((p) => p.seatNo == bbPos);
-      assert(bigBlindIdx != -1);
-      players.updatePlayerTypeSilent(
-        bigBlindIdx,
-        TablePosition.BigBlind,
-        coinAmount: bigBlind.toInt(),
-      );
-    }
-
-    // set player actions
-    for (final seatNo in newHand.playersActed.keys) {
-      final action = newHand.playersActed[seatNo];
-      if (action.action != proto.ACTION.NOT_ACTED) {
-        final seat = _gameState.getSeat(seatNo);
-        seat.player.action.setActionProto(action.action, action.amount);
-      }
-    }
-
-    /* marking the dealer */
-    int dealerIdx = players.players.indexWhere((p) => p.seatNo == dealerPos);
-
-    if (dealerIdx == -1) {
-      /* we have a open seat, set the dealer */
-      if (_close) return;
-      final Seat seat = _gameState.getSeat(dealerPos);
-      seat.isDealer = true;
-    } else {
-      players.updatePlayerTypeSilent(
-        dealerIdx,
-        TablePosition.Dealer,
-      );
-      handInfo.notify();
-      players.notifyAll();
-    }
-
-    /* get a new card back asset to be shown */
-    if (_close) return;
-
-    final myState = _gameState.myState;
-    myState.notify();
-
-    tableState.notifyAll();
-    //log('Hand Message: ::handleNewHand:: END');
-    _gameState.handState = HandState.NEW_HAND;
-  }
-
   Future<void> handleDeal(proto.HandMessageItem message) async {
     //log('Hand Message: ::handleDeal:: START');
 
@@ -1181,12 +932,12 @@ class HandActionProtoService {
   Future<void> handleResult2(proto.HandResultClient result) async {
     if (_close) return;
 
-    // if (_gameState.isPlaying) {
-    //   _context.read<RabbitState>().putResultProto(
-    //         result,
-    //         myCards: _gameState.getPlayers(_context).me.cards,
-    //       );
-    // }
+    if (_gameState.isPlaying) {
+      _context.read<RabbitState>().putResultProto(
+            result,
+            myCards: _gameState.mySeat.player.cards,
+          );
+    }
 
     //_gameState.handState = HandState.RESULT;
     final json = result.toProto3Json();
@@ -1234,13 +985,6 @@ class HandActionProtoService {
   Future<void> handleResult(proto.HandMessageItem message) async {
     /* invoke rabbit state */
     if (_close) return;
-
-    if (_gameState.isPlaying) {
-      _context.read<RabbitState>().putResultProto(
-            message.handResult,
-            myCards: _gameState.mySeat.player.cards,
-          );
-    }
 
     _gameState.handState = HandState.RESULT;
 

@@ -33,7 +33,7 @@ class PlayerModel {
   int startingStack = 0;
   String avatarUrl = '';
   String status = '';
-  bool inhand = false;
+  bool _inhand = false;
   List<int> _cards = [];
   List<int> revealCards = [];
   List<int> highlightCards = [];
@@ -194,6 +194,11 @@ class PlayerModel {
       return false;
     }
     return this.inhand;
+  }
+
+  bool get inhand => this._inhand;
+  set inhand(bool b) {
+    this._inhand = b;
   }
 
   set cards(List<int> v) {
