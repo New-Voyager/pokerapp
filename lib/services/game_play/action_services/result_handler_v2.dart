@@ -56,6 +56,7 @@ class ResultHandlerV2 {
 
   Future<void> show() async {
     log('HandMessage: result show');
+    log('Result: pauseTimeSecs: ${result.pauseTimeSecs}');
 
     tableState = gameState.tableState;
     for (final seat in gameState.seats) {

@@ -231,6 +231,7 @@ class PlayerActionHandler {
       handleYourAction(yourAction);
     }
     _gameState.notifyAllSeats();
+    _gameState.myState.notify();
   }
 
   Future<void> handleNextAction(proto.HandMessageItem message) async {

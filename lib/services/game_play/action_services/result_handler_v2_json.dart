@@ -55,6 +55,7 @@ class ResultHandlerV2Json {
   });
 
   Future<void> show() async {
+    log('Result: pauseTimeInMs: ${handResult.pauseTimeInMs}');
     tableState = gameState.tableState;
     gameState.handState = HandState.RESULT;
     gameState.handChangeState.notify();
