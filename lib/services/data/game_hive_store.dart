@@ -11,8 +11,8 @@ class GameHiveStore {
 
   static const _GAME_SETTINGS_KEY = 'game_settings';
 
-  GameSettings getGameSettings() {
-    return GameSettings.fromJson(
+  GameConfiguration getGameConfiguration() {
+    return GameConfiguration.fromJson(
         jsonDecode(_gameBox.get(_GAME_SETTINGS_KEY)), this);
   }
 
@@ -20,7 +20,7 @@ class GameHiveStore {
     return _gameBox.containsKey(_GAME_SETTINGS_KEY);
   }
 
-  Future<void> putGameSettings(GameSettings gameSettings) {
+  Future<void> putGameSettings(GameConfiguration gameSettings) {
     return _gameBox.put(_GAME_SETTINGS_KEY, jsonEncode(gameSettings));
   }
 

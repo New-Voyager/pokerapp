@@ -207,14 +207,14 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     Offset from;
     Offset to;
     print(
-      'Here ${message.messageId} from player ${message.fromSeat} to ${message.toSeat}. Animation: ${message.animationID} Enabled: ${widget.gameState.settings.animations}',
+      'Here ${message.messageId} from player ${message.fromSeat} to ${message.toSeat}. Animation: ${message.animationID} Enabled: ${widget.gameState.config.animations}',
     );
 
     if (message.fromSeat == null || message.toSeat == null) {
       return;
     }
 
-    if (!widget.gameState.settings.animations) {
+    if (!widget.gameState.config.animations) {
       // animation is disabled
       return;
     }

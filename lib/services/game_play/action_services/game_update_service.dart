@@ -181,6 +181,10 @@ class GameUpdateService {
           return handleNewPlayerUpdate(
             data: data,
           );
+        case AppConstants.GAME_SETTINGS_CHANGED:
+          return handleGameSettingsChanged(
+            data: data,
+          );          
         case AppConstants.TABLE_UPDATE:
           return handleNewTableUpdate(
             data: data,
@@ -843,6 +847,13 @@ class GameUpdateService {
     }
   }
 
+  void handleGameSettingsChanged({
+    var data,
+  }) async {
+    // refresh game settings
+    _gameState.refreshGameSettings();
+  }
+
   void handleNewTableUpdate({
     var data,
   }) async {
@@ -1397,7 +1408,7 @@ class GameUpdateService {
   playSoundEffect(String soundFile) {
     return;
 
-    if (_gameState.settings.gameSound) {
+    if (_gameState.config.gameSound) {
       _gameState
           .getAudioBytes(soundFile)
           .then((value) => audioPlayer.playBytes(value));

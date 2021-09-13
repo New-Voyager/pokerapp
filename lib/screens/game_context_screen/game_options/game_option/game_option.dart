@@ -50,7 +50,7 @@ class _GameOptionState extends State<GameOption> {
   GameInfoModel gameInfo;
   bool closed = false;
   AppTextScreen _appScreenText;
-  GameSettingsInput _gameSettings;
+  GameSettings _gameSettings;
   GamePlayerSettingsInput _gamePlayerSettings;
   bool audioConfEnabled = false;
   bool straddleEnabled = false;
@@ -284,11 +284,11 @@ class _GameOptionState extends State<GameOption> {
             ),
             _buildCheckBox(
               text: _appScreenText['gameSounds'],
-              value: widget.gameState.settings.gameSound,
+              value: widget.gameState.config.gameSound,
               onChange: (bool v) async {
                 // setting the value saves it to local storage too
-                widget.gameState.settings.gameSound = v;
-                log('In toggle button widget, gameSounds = ${widget.gameState.settings.gameSound}');
+                widget.gameState.config.gameSound = v;
+                log('In toggle button widget, gameSounds = ${widget.gameState.config.gameSound}');
                 if (closed) return;
                 setState(() {});
               },
@@ -296,12 +296,12 @@ class _GameOptionState extends State<GameOption> {
             widget.gameState.gameInfo.audioConfEnabled ?? false
                 ? _buildCheckBox(
                     text: _appScreenText['audioConference'],
-                    value: widget.gameState.settings.audioConf,
+                    value: widget.gameState.config.audioConf,
                     onChange: (bool v) async {
                       // setting the value saves it to local storage too
-                      widget.gameState.settings.audioConf = v;
+                      widget.gameState.config.audioConf = v;
                       widget.gameState.janusEngine.joinLeaveAudioConference();
-                      log('In toggle button widget, audioConf = ${widget.gameState.settings.audioConf}');
+                      log('In toggle button widget, audioConf = ${widget.gameState.config.audioConf}');
                       if (closed) return;
                       setState(() {});
                     },
@@ -309,21 +309,21 @@ class _GameOptionState extends State<GameOption> {
                 : SizedBox(),
             _buildCheckBox(
               text: _appScreenText['animations'],
-              value: widget.gameState.settings.animations,
+              value: widget.gameState.config.animations,
               onChange: (bool v) async {
                 // setting the value saves it to local storage too
-                widget.gameState.settings.animations = v;
-                log('In toggle button widget, animations = ${widget.gameState.settings.animations}');
+                widget.gameState.config.animations = v;
+                log('In toggle button widget, animations = ${widget.gameState.config.animations}');
                 setState(() {});
               },
             ),
             _buildCheckBox(
               text: _appScreenText['animations'],
-              value: widget.gameState.settings.showChat,
+              value: widget.gameState.config.showChat,
               onChange: (bool v) async {
                 // setting the value saves it to local storage too
-                widget.gameState.settings.showChat = v;
-                log('In toggle button widget, showChat = ${widget.gameState.settings.showChat}');
+                widget.gameState.config.showChat = v;
+                log('In toggle button widget, showChat = ${widget.gameState.config.showChat}');
                 widget.gameState.communicationState.showTextChat = v;
                 widget.gameState.communicationState.notify();
                 setState(() {});
@@ -338,11 +338,11 @@ class _GameOptionState extends State<GameOption> {
                       // straddle off
                       _buildCheckBox(
                         text: _appScreenText['straddle'],
-                        value: widget.gameState.settings.straddleOption,
+                        value: widget.gameState.config.straddleOption,
                         onChange: (bool v) async {
                           // setting the value saves it to local storage too
-                          widget.gameState.settings.straddleOption = v;
-                          log('In toggle button widget, straddleOption = ${widget.gameState.settings.straddleOption}');
+                          widget.gameState.config.straddleOption = v;
+                          log('In toggle button widget, straddleOption = ${widget.gameState.config.straddleOption}');
                           if (closed) return;
                           setState(() {});
                         },
@@ -351,7 +351,7 @@ class _GameOptionState extends State<GameOption> {
                       // auto straddle
                       _buildCheckBox(
                         text: _appScreenText['autoStraddle'],
-                        value: widget.gameState.settings.autoStraddle,
+                        value: widget.gameState.config.autoStraddle,
                         onChange: (bool v) async {
                           if (v) {
                             await FirebaseAnalytics().logEvent(
@@ -361,8 +361,8 @@ class _GameOptionState extends State<GameOption> {
                                 });
                           }
                           // setting the value saves it to local storage too
-                          widget.gameState.settings.autoStraddle = v;
-                          log('In toggle button widget, autoStraddle = ${widget.gameState.settings.autoStraddle}');
+                          widget.gameState.config.autoStraddle = v;
+                          log('In toggle button widget, autoStraddle = ${widget.gameState.config.autoStraddle}');
                         },
                       ),
                     ],
@@ -639,9 +639,9 @@ class _GameOptionState extends State<GameOption> {
             // results wait
             _buildCheckBox(
               text: 'Fun Animations',
-              value: widget.gameState.settings.animations ?? true,
+              value: widget.gameState.config.animations ?? true,
               onChange: (bool v) async {
-                widget.gameState.settings.animations = v;
+                widget.gameState.config.animations = v;
                 if (closed) return;
                 setState(() {});
               },
@@ -714,9 +714,9 @@ class _GameOptionState extends State<GameOption> {
               visible: widget.isAdmin,
               child: _buildCheckBox(
                 text: "Game Chat",
-                value: widget.gameState.settings.showChat,
+                value: widget.gameState.config.showChat,
                 onChange: (bool v) {
-                  widget.gameState.settings.showChat = v;
+                  widget.gameState.config.showChat = v;
                 },
               ),
             ),
@@ -731,17 +731,17 @@ class _GameOptionState extends State<GameOption> {
                   margin:
                       EdgeInsets.only(bottom: 10.0, left: 10.0, right: 10.0),
                   child: Text(
-                    'Pause each result (in seconds)',
+                    'Pause showdown (in seconds)',
                     style: AppDecorators.getHeadLine4Style(theme: theme),
                   ),
                 ),
 
                 // result wait
                 RadioListWidget(
-                  defaultValue: _gameSettings.pauseEachResultInSecs,
+                  defaultValue: _gameSettings.resultPauseTime,
                   values: [3, 5, 10, 15],
                   onSelect: (int value) async {
-                    _gameSettings.pauseEachResultInSecs = value;
+                    _gameSettings.resultPauseTime = value;
                     await updateGameSettings();
                     if (closed) {
                       return;
@@ -776,12 +776,12 @@ class _GameOptionState extends State<GameOption> {
             // Muck loosing hand
             _buildCheckBox(
                 text: _appScreenText['muckLosingHand'],
-                value: widget.gameState.settings.muckLosingHand ?? false,
+                value: widget.gameState.config.muckLosingHand ?? false,
                 onChange: (bool v) async {
                   await GameService.updateGameConfig(widget.gameState.gameCode,
                       muckLosingHand: v);
                   // setting the value saves it to local storage too
-                  widget.gameState.settings.muckLosingHand = v;
+                  widget.gameState.config.muckLosingHand = v;
                   //update player settings to server.
                   _gamePlayerSettings.muckLosingHand = v;
                   await updateGamePlayerSettings();
@@ -807,11 +807,11 @@ class _GameOptionState extends State<GameOption> {
             // Game sounds
             _buildCheckBox(
               text: _appScreenText['gameSounds'],
-              value: widget.gameState.settings.gameSound,
+              value: widget.gameState.config.gameSound,
               onChange: (bool v) async {
                 // setting the value saves it to local storage too
-                widget.gameState.settings.gameSound = v;
-                log('In toggle button widget, gameSounds = ${widget.gameState.settings.gameSound}');
+                widget.gameState.config.gameSound = v;
+                log('In toggle button widget, gameSounds = ${widget.gameState.config.gameSound}');
                 if (closed) return;
                 setState(() {});
               },
@@ -822,12 +822,12 @@ class _GameOptionState extends State<GameOption> {
               visible: widget.gameState.gameInfo.audioConfEnabled ?? true,
               child: _buildCheckBox(
                 text: _appScreenText['audioConference'],
-                value: widget.gameState.settings.audioConf,
+                value: widget.gameState.config.audioConf,
                 onChange: (bool v) async {
                   // setting the value saves it to local storage too
-                  widget.gameState.settings.audioConf = v;
+                  widget.gameState.config.audioConf = v;
                   widget.gameState.janusEngine.joinLeaveAudioConference();
-                  log('In toggle button widget, audioConf = ${widget.gameState.settings.audioConf}');
+                  log('In toggle button widget, audioConf = ${widget.gameState.config.audioConf}');
                   if (closed) return;
                   setState(() {});
                 },
@@ -852,10 +852,10 @@ class _GameOptionState extends State<GameOption> {
                       onChange: (bool v) async {
                         // setting the value saves it to local storage too
 
-                        widget.gameState.settings.straddleOption = v;
+                        widget.gameState.config.straddleOption = v;
                         _gamePlayerSettings.straddle = v;
                         await updateGamePlayerSettings();
-                        log('In toggle button widget, straddleOption = ${widget.gameState.settings.straddleOption}');
+                        log('In toggle button widget, straddleOption = ${widget.gameState.config.straddleOption}');
                         if (closed) return;
                         setState(() {});
                       },
@@ -869,7 +869,7 @@ class _GameOptionState extends State<GameOption> {
                         child: // auto straddle
                             _buildCheckBox(
                           text: _appScreenText['autoStraddle'],
-                          value: widget.gameState.settings.autoStraddle,
+                          value: widget.gameState.config.autoStraddle,
                           onChange: (bool v) async {
                             if (v) {
                               await FirebaseAnalytics().logEvent(
@@ -879,10 +879,10 @@ class _GameOptionState extends State<GameOption> {
                                   });
                             }
                             // setting the value saves it to local storage too
-                            widget.gameState.settings.autoStraddle = v;
+                            widget.gameState.config.autoStraddle = v;
                             _gamePlayerSettings.autoStraddle = v;
                             await updateGamePlayerSettings();
-                            log('In toggle button widget, autoStraddle = ${widget.gameState.settings.autoStraddle}');
+                            log('In toggle button widget, autoStraddle = ${widget.gameState.config.autoStraddle}');
                           },
                         ),
                       ),
@@ -897,13 +897,13 @@ class _GameOptionState extends State<GameOption> {
               visible: _gamePlayerSettings.bombPotEnabled, //gameInfo.bombPot,
               child: _buildCheckBox(
                 text: "Participate in bomb pot",
-                value: true, //widget.gameState.settings.bombpot,
+                value: true, //widget.gameState.config.bombpot,
                 onChange: (bool v) async {
                   // setting the value saves it to local storage too
                   _gamePlayerSettings.bombPotEnabled = v;
                   await updateGamePlayerSettings();
-                  // widget.gameState.settings.bombPot = v;
-                  log('In toggle button widget, gameSounds = ${widget.gameState.settings.gameSound}');
+                  // widget.gameState.config.bombPot = v;
+                  log('In toggle button widget, gameSounds = ${widget.gameState.config.gameSound}');
                   if (closed) return;
                   setState(() {});
                 },
@@ -913,13 +913,13 @@ class _GameOptionState extends State<GameOption> {
 // Chat setting
             _buildCheckBox(
               text: "Chat",
-              value: widget.gameState.settings.showChat ??
-                  false, //widget.gameState.settings.bombpot,
+              value: widget.gameState.config.showChat ??
+                  false, //widget.gameState.config.bombpot,
               onChange: (bool v) {
                 // setting the value saves it to local storage too
-                widget.gameState.settings.showChat = v;
-                // widget.gameState.settings.bombPot = v;
-                log('In toggle button widget, gameSounds = ${widget.gameState.settings.gameSound}');
+                widget.gameState.config.showChat = v;
+                // widget.gameState.config.bombPot = v;
+                log('In toggle button widget, gameSounds = ${widget.gameState.config.gameSound}');
                 if (closed) return;
                 setState(() {});
               },
@@ -928,9 +928,9 @@ class _GameOptionState extends State<GameOption> {
 // Participate in audio conference
             _buildCheckBox(
               text: "Participate in Audio conference",
-              value: widget.gameState.settings.audioConf,
+              value: widget.gameState.config.audioConf,
               onChange: (bool v) {
-                widget.gameState.settings.audioConf = v;
+                widget.gameState.config.audioConf = v;
               },
             ),
             // seat change & waiting list settings

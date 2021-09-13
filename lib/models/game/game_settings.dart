@@ -1,13 +1,12 @@
 import 'dart:convert';
 
-GameSettingsInput gameSettingsInputFromJson(String str) =>
-    GameSettingsInput.fromJson(json.decode(str));
+GameSettings gameSettingsInputFromJson(String str) =>
+    GameSettings.fromJson(json.decode(str));
 
-String gameSettingsInputToJson(GameSettingsInput data) =>
-    json.encode(data.toJson());
+String gameSettingsInputToJson(GameSettings data) => json.encode(data.toJson());
 
-class GameSettingsInput {
-  GameSettingsInput({
+class GameSettings {
+  GameSettings({
     this.buyInApproval,
     this.runItTwiceAllowed,
     this.allowRabbitHunt,
@@ -24,7 +23,7 @@ class GameSettingsInput {
     this.waitlistAllowed,
     this.breakAllowed,
     this.breakLength,
-    this.pauseEachResultInSecs,
+    this.resultPauseTime,
     this.ipCheck,
     this.gpsCheck,
     this.roeGames,
@@ -47,36 +46,38 @@ class GameSettingsInput {
   bool waitlistAllowed;
   bool breakAllowed;
   int breakLength;
-  int pauseEachResultInSecs;
+  int resultPauseTime;
   bool ipCheck;
   bool gpsCheck;
   List roeGames;
   List dealerChoiceGames;
 
-  factory GameSettingsInput.fromJson(Map<String, dynamic> json) =>
-      GameSettingsInput(
-        buyInApproval: json["buyInApproval"] ?? false,
-        runItTwiceAllowed: json["runItTwiceAllowed"] ?? false,
-        allowRabbitHunt: json["allowRabbitHunt"] ?? false,
-        showHandRank: json["showHandRank"] ?? false,
-        doubleBoardEveryHand: json["doubleBoardEveryHand"] ?? false,
-        bombPotEnabled: json["bombPotEnabled"] ?? false,
-        bombPotBet: json["bombPotBet"] ?? 1,
-        doubleBoardBombPot: json["doubleBoardBombPot"] ?? false,
-        bombPotInterval: json["bombPotInterval"] ?? 15,
-       // bombPotIntervalInSecs: json["bombPotIntervalInSecs"] ?? 15,
-        bombPotEveryHand: json["bombPotEveryHand"] ?? false,
-        seatChangeAllowed: json["seatChangeAllowed"] ?? false,
-        seatChangeTimeout: json["seatChangeTimeout"] ?? 10,
-        waitlistAllowed: json["waitlistAllowed"] ?? false,
-        breakAllowed: json["breakAllowed"] ?? false,
-        breakLength: json["breakLength"] ?? 10,
-        pauseEachResultInSecs: json["pauseEachResultInSecs"] ?? 5,
-        ipCheck: json["ipCheck"] ?? false,
-        gpsCheck: json["gpsCheck"] ?? false,
-        roeGames: json["roeGames"] ?? [],
-        dealerChoiceGames: json["dealerChoiceGames"] ?? [],
-      );
+  factory GameSettings.fromJson(Map<String, dynamic> json) {
+    final gameSettings = GameSettings(
+      buyInApproval: json["buyInApproval"] ?? false,
+      runItTwiceAllowed: json["runItTwiceAllowed"] ?? false,
+      allowRabbitHunt: json["allowRabbitHunt"] ?? false,
+      showHandRank: json["showHandRank"] ?? false,
+      doubleBoardEveryHand: json["doubleBoardEveryHand"] ?? false,
+      bombPotEnabled: json["bombPotEnabled"] ?? false,
+      bombPotBet: json["bombPotBet"] ?? 1,
+      doubleBoardBombPot: json["doubleBoardBombPot"] ?? false,
+      bombPotInterval: json["bombPotInterval"] ?? 15,
+      // bombPotIntervalInSecs: json["bombPotIntervalInSecs"] ?? 15,
+      bombPotEveryHand: json["bombPotEveryHand"] ?? false,
+      seatChangeAllowed: json["seatChangeAllowed"] ?? false,
+      seatChangeTimeout: json["seatChangeTimeout"] ?? 10,
+      waitlistAllowed: json["waitlistAllowed"] ?? false,
+      breakAllowed: json["breakAllowed"] ?? false,
+      breakLength: json["breakLength"] ?? 10,
+      resultPauseTime: json["resultPauseTime"] ?? 5,
+      ipCheck: json["ipCheck"] ?? false,
+      gpsCheck: json["gpsCheck"] ?? false,
+      roeGames: json["roeGames"] ?? [],
+      dealerChoiceGames: json["dealerChoiceGames"] ?? [],
+    );
+    return gameSettings;
+  }
 
   Map<String, dynamic> toJson() => {
         "buyInApproval": buyInApproval,
@@ -88,14 +89,14 @@ class GameSettingsInput {
         "bombPotBet": bombPotBet,
         "doubleBoardBombPot": doubleBoardBombPot,
         "bombPotInterval": bombPotInterval,
-       // "bombPotIntervalInSecs": bombPotIntervalInSecs,
+        // "bombPotIntervalInSecs": bombPotIntervalInSecs,
         "bombPotEveryHand": bombPotEveryHand,
         "seatChangeAllowed": seatChangeAllowed,
         "seatChangeTimeout": seatChangeTimeout,
         "waitlistAllowed": waitlistAllowed,
         "breakAllowed": breakAllowed,
         "breakLength": breakLength,
-        // "pauseEachResultInSecs": pauseEachResultInSecs,
+        "resultPauseTime": resultPauseTime,
         "ipCheck": ipCheck,
         "gpsCheck": gpsCheck,
         "roeGames": roeGames,

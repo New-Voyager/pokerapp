@@ -353,13 +353,17 @@ class PlayerActionHandler {
     final playerActed = message.playerActed;
     int seatNo = playerActed.seatNo;
     log('HandMessage: ${message.playerActed.seatNo} action: ${message.playerActed.action.name}');
-
+    
     //log('Hand Message: ::handlePlayerActed:: START seatNo: $seatNo');
 
     if (_gameState.uiClosing) return;
     // show a prompt regarding last player action
 
     final seat = _gameState.getSeat(seatNo);
+    if (seat.isMe) {
+      _gameState.showAction(false);
+      _gameState.myState.notify();
+    }
     // hide straddle dialog
     if (_gameState.straddlePrompt) {
       _gameState.straddlePrompt = false;

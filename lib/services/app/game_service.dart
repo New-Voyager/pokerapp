@@ -124,6 +124,7 @@ mutation updateInputs(\$gameCode :String!,\$inputSettings: GameSettingsUpdateInp
         gpsCheck
         roeGames
         dealerChoiceGames
+        resultPauseTime
       }
     }
 """;
@@ -242,7 +243,7 @@ query mySettings(\$gameCode:String!){
     return result.data['ret'];
   }
 
-  static Future<GameSettingsInput> getGameSettings(String gameCode) async {
+  static Future<GameSettings> getGameSettings(String gameCode) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     Map<String, dynamic> variables = {"gameCode": gameCode};
     QueryResult result = await _client.query(QueryOptions(
@@ -254,7 +255,7 @@ query mySettings(\$gameCode:String!){
     }
 
     try {
-      final GameSettingsInput gameSettings =
+      final GameSettings gameSettings =
           gameSettingsInputFromJson(jsonEncode(result.data['ret']));
       return gameSettings;
     } catch (e) {
@@ -264,7 +265,7 @@ query mySettings(\$gameCode:String!){
   }
 
   static Future<bool> updateGameSettings(
-      String gameCode, GameSettingsInput input) async {
+      String gameCode, GameSettings input) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     Map<String, dynamic> variables = {
       "gameCode": gameCode,

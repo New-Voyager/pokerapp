@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
+import 'package:pokerapp/models/game/game_settings.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/marked_cards.dart';
@@ -118,6 +119,8 @@ class GameState {
 
   String _gameCode;
   GameInfoModel _gameInfo;
+  GameSettings _gameSettings;
+
   Map<int, Seat> _seats = Map<int, Seat>();
   List<PlayerModel> _playersInGame;
 
@@ -139,7 +142,7 @@ class GameState {
   bool hostSeatChangeInProgress = false;
 
   bool gameSounds = true;
-  GameSettings settings;
+  GameConfiguration config;
   GameHiveStore gameHiveStore;
   bool replayMode = false;
 
@@ -364,14 +367,14 @@ class GameState {
           log('In GameState initialize(), gameBox is empty');
 
           // create a new settings object, and init it (by init -> saves locally)
-          settings = GameSettings(gameCode, gameHiveStore);
-          await settings.init();
+          config = GameConfiguration(gameCode, gameHiveStore);
+          await config.init();
         } else {
           log('In GameState initialize(), getting gameSettings from gameBox');
-          settings = gameHiveStore.getGameSettings();
+          config = gameHiveStore.getGameConfiguration();
         }
-        log('In GameState initialize(), gameSettings = $settings');
-        _communicationState.showTextChat = settings.showChat;
+        log('In GameState initialize(), gameSettings = $config');
+        _communicationState.showTextChat = config.showChat;
       }
     }
   }
@@ -614,6 +617,12 @@ class GameState {
     }
 
     this._handInfo.notify();
+  }
+
+  Future<void> refreshGameSettings() async {
+    log('************ Refreshing game state');
+    // fetch new player using GameInfo API and add to the game
+    final gameSettings = await GameService.getGameSettings(this.gameCode);
   }
 
   void seatPlayer(int seatNo, PlayerModel player) {

@@ -1,6 +1,6 @@
 import 'package:pokerapp/services/data/game_hive_store.dart';
 
-class GameSettings {
+class GameConfiguration {
   GameHiveStore _gameHiveStore;
 
   // this function is invoked everytime something in game settings changes
@@ -61,7 +61,7 @@ class GameSettings {
     _save();
   }
 
-  GameSettings(this._gameCode, this._gameHiveStore);
+  GameConfiguration(this._gameCode, this._gameHiveStore);
 
   // this method only to be called for the first time
   Future<void> init() async {
@@ -79,7 +79,7 @@ class GameSettings {
         'showChat': this._showChat,
       };
 
-  GameSettings.fromJson(Map<String, dynamic> json, this._gameHiveStore) {
+  GameConfiguration.fromJson(Map<String, dynamic> json, this._gameHiveStore) {
     this._gameCode = json['gameCode'];
     this._muckLosingHand = json['muckLosingHand'];
     this._gameSound = json['gameSound'];

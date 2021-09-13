@@ -527,7 +527,7 @@ class HandActionProtoService {
     }
 
     // if straddle prompt is true, trigger straddle state to show the dialog
-    if (_gameState.straddlePrompt && _gameState.settings.straddleOption) {
+    if (_gameState.straddlePrompt && _gameState.config.straddleOption) {
       final straddlePromptState = _gameState.straddlePromptState;
       straddlePromptState.notify();
     }
@@ -545,12 +545,12 @@ class HandActionProtoService {
     return;
 
     if (_gameState != null &&
-        _gameState.settings != null &&
-        _gameState.settings.gameSound) {
+        _gameState.config != null &&
+        _gameState.config.gameSound) {
       _gameState
           .getAudioBytes(soundFile)
           .then((value) => audioPlayer.playBytes(value));
-      // log('In playSoundEffect(), gameSounds = ${_gameState.settings.gameSound}');
+      // log('In playSoundEffect(), gameSounds = ${_gameState.config.gameSound}');
     }
   }
 
