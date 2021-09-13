@@ -1317,6 +1317,10 @@ class GameUpdateService {
         resetBoard();
         _gameState.refresh();
         tableState.updateTableStatusSilent(AppConstants.GAME_ENDED);
+        if (_gameState.mySeat != null && _gameState.mySeat.player != null) {
+          _gameState.mySeat.player.reset();
+        }
+        _gameState.myState.notify();
       }
 
       tableState.notifyAll();
