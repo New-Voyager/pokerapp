@@ -166,7 +166,7 @@ class GameReplayActionService {
 
     final GameState gameState = GameState.getState(_context);
     gameState.resetSeatActions();
-    for(final player in gameState.playersInGame) {
+    for (final player in gameState.playersInGame) {
       player.winner = false;
       player.highlightCards = [];
       player.highlight = false;

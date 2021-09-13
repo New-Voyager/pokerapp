@@ -85,6 +85,7 @@ class GameState {
   ListenableProvider<HoleCardsState> _holeCardsProvider;
   /* rabbit state */
   ListenableProvider<RabbitState> _rabbitStateProvider;
+  ListenableProvider<SeatsOnTableState> _seatsOnTableProvider;
 
   StraddlePromptState _straddlePromptState;
   HoleCardsState _holeCardsState;
@@ -98,6 +99,7 @@ class GameState {
   HandChangeState _handChangeState;
   GameMessagingService _gameMessageService;
   RabbitState _rabbitState;
+  SeatsOnTableState _seatsOnTableState;
 
   // For posting blind
   // bool postedBlind;
@@ -236,6 +238,7 @@ class GameState {
     this._redrawTopState = RedrawTopSectionState();
     this._handChangeState = HandChangeState();
     this._rabbitState = RabbitState();
+    this._seatsOnTableState = SeatsOnTableState();
 
     // this._waitlistProvider =
     //     ListenableProvider<WaitlistState>(create: (_) => WaitlistState());
@@ -264,7 +267,10 @@ class GameState {
     _holeCardsState = HoleCardsState();
     this._holeCardsProvider =
         ListenableProvider<HoleCardsState>(create: (_) => _holeCardsState);
-    this._rabbitStateProvider = ListenableProvider<RabbitState>(create: (_) => _rabbitState);
+    this._rabbitStateProvider =
+        ListenableProvider<RabbitState>(create: (_) => _rabbitState);
+    this._seatsOnTableProvider = ListenableProvider<SeatsOnTableState>(
+        create: (_) => _seatsOnTableState);
 
     this.janusEngine = JanusEngine(
         gameState: this,
@@ -298,6 +304,7 @@ class GameState {
       players = gameInfo.playersInSeats;
     }
 
+    this._playersInGame = [];
     //final values = PlayerStatus.values;
     for (var player in players) {
       if (player.playerId != null) {
@@ -326,6 +333,8 @@ class GameState {
           log('now: ${now.toIso8601String()} breakTimeExpAt: ${player.breakTimeExpAt.toIso8601String()} break time expires in ${diff.inSeconds}');
         }
       }
+      player.inhand = true;
+      this._playersInGame.add(player);
     }
     // load assets
     this.assets = new GameScreenAssets();
@@ -453,7 +462,8 @@ class GameState {
 
   HandChangeState get handChangeState => this._handChangeState;
 
-  ListenableProvider<HandChangeState> get handChangeStateProvider => this._handChangeStateProvider;
+  ListenableProvider<HandChangeState> get handChangeStateProvider =>
+      this._handChangeStateProvider;
 
   bool get started {
     return this._gameInfo.status == AppConstants.GAME_ACTIVE;
@@ -508,6 +518,8 @@ class GameState {
   HandInfoState get handInfo => this._handInfo;
 
   RabbitState get rabbitState => this._rabbitState;
+
+  SeatsOnTableState get seatsOnTableState => this._seatsOnTableState;
 
   bool get isGameRunning {
     bool tableRunning =
@@ -703,7 +715,8 @@ class GameState {
     _playersInGame = players;
   }
 
-  void seatChangePlayersUpdate(List<PlayerInSeat> playersInSeats, {bool notify}) {
+  void seatChangePlayersUpdate(List<PlayerInSeat> playersInSeats,
+      {bool notify}) {
     assert(playersInSeats != null);
 
     _playersInGame.clear();
@@ -743,6 +756,7 @@ class GameState {
       this._cardDistribProvider,
       this._handChangeStateProvider,
       this._rabbitStateProvider,
+      this._seatsOnTableProvider,
     ];
   }
 
@@ -768,9 +782,10 @@ class GameState {
   }
 
   void notifyAllSeats() {
-    for(final seat in _seats.values) {
-      seat.notify();
-    }
+    this._seatsOnTableState.notify();
+    // for(final seat in _seats.values) {
+    //   seat.notify();
+    // }
   }
 
   bool newPlayer(PlayerModel newPlayer) {
@@ -800,11 +815,11 @@ class GameState {
   }
 
   void resetSeats({bool notify = true}) {
-    for(final player in _playersInGame) {
+    for (final player in _playersInGame) {
       player.reset();
     }
     if (notify) {
-      for(final seat in _seats.values) {
+      for (final seat in _seats.values) {
         seat.notify();
       }
     }
@@ -841,7 +856,7 @@ class GameState {
       seat.player.action.animateAction = false;
       // if newHand is true, we pass 'false' flag to say don't stick any action to player.
       // otherwise stick last player action to nameplate
-      seat.player.reset(
+      seat.player.resetSeatAction(
           stickAction: (newHand ?? false)
               ? false
               : (seat.player.action.action == HandActions.ALLIN));
@@ -901,7 +916,8 @@ class GameState {
 
   void setPlayerNoCards(int n) {
     for (int i = 0; i < _playersInGame.length; i++) {
-      if (_playersInGame[i].status == AppConstants.PLAYING && _playersInGame[i].inhand) {
+      if (_playersInGame[i].status == AppConstants.PLAYING &&
+          _playersInGame[i].inhand) {
         _playersInGame[i].noOfCardsVisible = n;
       } else {
         _playersInGame[i].noOfCardsVisible = 0;
@@ -1367,11 +1383,16 @@ class HandChangeState extends ChangeNotifier {
   }
 }
 
-
 // /**
 //  * The states that affect the current player.
 //  */
 class MyState extends ChangeNotifier {
+  void notify() {
+    notifyListeners();
+  }
+}
+
+class SeatsOnTableState extends ChangeNotifier {
   void notify() {
     notifyListeners();
   }

@@ -52,7 +52,6 @@ class Seat extends ChangeNotifier {
   bool dealer;
   bool bb;
 
-
   Seat(int serverSeatPos, PlayerModel player) {
     this._openSeat = false;
     if (player == null) {

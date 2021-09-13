@@ -75,19 +75,19 @@ class BoardView extends StatelessWidget {
 
         /* players */
         Transform.translate(
-            offset: boardAttributes.playerOnTableOffset,
-            child: PlayersOnTableView(
-              gameComService: gameComService,
-              isBoardHorizontal:
-                  boardAttributes.orientation == BoardOrientation.horizontal,
-              widthOfBoard: dimensions.width,
-              heightOfBoard: dimensions.height,
-              onUserTap: onUserTap,
-              maxPlayers: gameInfo.maxPlayers,
-              audioPlayer: audioPlayer,
-              gameState: gameState,
-            ),
+          offset: boardAttributes.playerOnTableOffset,
+          child: PlayersOnTableView(
+            gameComService: gameComService,
+            isBoardHorizontal:
+                boardAttributes.orientation == BoardOrientation.horizontal,
+            widthOfBoard: dimensions.width,
+            heightOfBoard: dimensions.height,
+            onUserTap: onUserTap,
+            maxPlayers: gameInfo.maxPlayers,
+            audioPlayer: audioPlayer,
+            gameState: gameState,
           ),
+        ),
 
         /* center view */
         Positioned(

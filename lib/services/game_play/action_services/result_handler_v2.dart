@@ -55,12 +55,22 @@ class ResultHandlerV2 {
   });
 
   Future<void> show() async {
+    log('HandMessage: result show');
+
     tableState = gameState.tableState;
-    for (final player in gameState.playersInGame) {
-      player.winner = false;
-      player.highlight = false;
-      player.highlightCards = [];
+    for (final seat in gameState.seats) {
+      if (seat.player != null) {
+        final playerInfo = result.playerInfo[seat.player.seatNo];
+        seat.player.winner = false;
+        seat.player.highlight = false;
+        seat.player.highlightCards = [];
+        seat.player.cards = playerInfo.cards;
+        log('UpdateSeat: updating cards for seat: ${seat.player.seatNo} player: ${seat.player.name} cards: ${seat.player.cards}');
+      }
     }
+    log('UpdateSeat: updating all seats');
+    gameState.seatsOnTableState.notify();
+    log('UpdateSeat: updating all seats notified');
 
     // update pots
     tableState.updatePotChipsSilent(
@@ -189,6 +199,14 @@ class ResultHandlerV2 {
         if (result.wonAt != proto.HandStatus.SHOW_DOWN) {
           rankText = '';
         }
+
+        for (final seat in gameState.seats) {
+          if (seat.player != null) {
+            final playerInfo = result.playerInfo[seat.player.seatNo];
+            seat.player.cards = playerInfo.cards;
+            log('UpdateSeat: show winnners updating cards for seat: ${seat.player.seatNo} player: ${seat.player.name} cards: ${seat.player.cards}');
+          }
+        }
         await _showWinners(
           board,
           rankText,
@@ -222,6 +240,7 @@ class ResultHandlerV2 {
     gameState.clear();
     tableState.clear();
     tableState.notifyAll();
+    gameState.myState.notify();
   }
 
   void playApplause() {
@@ -274,13 +293,17 @@ class ResultHandlerV2 {
       player.winner = false;
       player.highlight = false;
       player.highlightCards = [];
+      player.cards = [];
+      player.animatingFold = false;
+      player.playerFolded = false;
+      player.rankText = '';
     }
 
     tableState.updateRankStrSilent(null);
 
     gameState.resetSeatActions(newHand: true);
     tableState.refreshTable();
-      gameState.notifyAllSeats();
+    gameState.notifyAllSeats();
     // refresh community cards already calls notifyListeners
     tableState.refreshCommunityCards();
   }
@@ -298,7 +321,7 @@ class ResultHandlerV2 {
     // highlight winning cards and rank if we are in showdown
     if (result.wonAt == proto.HandStatus.SHOW_DOWN) {
       /* highlight the winning cards for players */
-      seat.player.cards = winner.playerCards;
+      seat.player.highlightCards = winner.playerCards;
       // log('WINNER player.cards: ${winner.playerCards} boardCards: ${winner.boardCards} setState: $setState ${winner.rankStr} ${AppConstants.chipMovingAnimationDuration}');
       /* highlight the winning cards for board 1 */
       tableState.highlightCardsSilent(

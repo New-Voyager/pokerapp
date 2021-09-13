@@ -518,7 +518,9 @@ class HandActionProtoService {
       // wait for the animation to finish
       await Future.delayed(AppConstants.cardDistributionAnimationDuration);
       final playerInSeat = _gameState.getSeat(seatNo);
-      if (playerInSeat != null && playerInSeat.player != null && playerInSeat.player.inhand) {
+      if (playerInSeat != null &&
+          playerInSeat.player != null &&
+          playerInSeat.player.inhand) {
         playerInSeat.player.noOfCardsVisible = myCards.length;
         playerInSeat.notify();
       }
@@ -535,7 +537,7 @@ class HandActionProtoService {
     audioPlayer.stop();
     _gameState.cardDistributionState.seatNo = null;
     _gameState.handState = HandState.DEAL;
-
+    _gameState.myState.notify();
     //log('Hand Message: ::handleDeal:: END');
   }
 
@@ -621,7 +623,9 @@ class HandActionProtoService {
         if (_close) return;
 
         final playerInSeat = _gameState.getSeat(seatNo);
-        if (playerInSeat != null && playerInSeat.player != null && playerInSeat.player.inhand) {
+        if (playerInSeat != null &&
+            playerInSeat.player != null &&
+            playerInSeat.player.inhand) {
           playerInSeat.player.noOfCardsVisible = handInfo.noCards;
           playerInSeat.notify();
         }

@@ -252,7 +252,7 @@ class ResultHandlerV2Json {
     int boardIndex = 1,
   }) {
     tableState.unHighlightCardsSilent(boardIndex);
-    
+
     for (final player in gameState.playersInGame) {
       player.winner = false;
       player.highlight = false;

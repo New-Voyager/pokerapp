@@ -317,71 +317,73 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
         GameState.getState(context).getBoardAttributes(context);
 
     // am I on this table?
-    return Transform.translate(
-      key: _parentKey,
-      offset: Offset(
-        0.0,
-        -offset,
-      ),
-      child: Stack(
-        alignment:
-            widget.isBoardHorizontal ? Alignment.topLeft : Alignment.center,
-        children: [
-          // position the users
+    return Consumer<SeatsOnTableState>(builder: (_, __, ___) {
+      return Transform.translate(
+        key: _parentKey,
+        offset: Offset(
+          0.0,
+          -offset,
+        ),
+        child: Stack(
+          alignment:
+              widget.isBoardHorizontal ? Alignment.topLeft : Alignment.center,
+          children: [
+            // position the users
 
-          ...getPlayers(context),
+            ...getPlayers(context),
 
-          isAnimating && animation != null
-              ? AnimatedBuilder(
-                  child: Container(
-                    height: _animatingAssetContainerSize,
-                    width: _animatingAssetContainerSize,
-                    child: SvgPicture.asset(
-                      'assets/animations/$animationAssetID.svg',
+            isAnimating && animation != null
+                ? AnimatedBuilder(
+                    child: Container(
+                      height: _animatingAssetContainerSize,
+                      width: _animatingAssetContainerSize,
+                      child: SvgPicture.asset(
+                        'assets/animations/$animationAssetID.svg',
+                      ),
                     ),
-                  ),
-                  animation: animation,
-                  builder: (_, child) => Transform.translate(
-                    offset: animation.value,
-                    child: Transform.scale(
-                        scale: boardAttributes.lottieScale, child: child),
-                  ),
-                )
-              : SizedBox.shrink(),
-
-          isLottieAnimationAnimating
-              ? Transform.translate(
-                  offset: lottieAnimationPosition,
-                  child: Container(
-                    height: _lottieAnimationContainerSize,
-                    width: _lottieAnimationContainerSize,
-                    child: Transform.scale(
-                        scale: boardAttributes.lottieScale,
-                        child: Lottie.asset(
-                          'assets/animations/$animationAssetID.json',
-                          controller: _lottieController,
-                        )),
-                  ),
-                )
-              : SizedBox.shrink(),
-
-          isSeatChanging
-              ? Positioned(
-                  left: seatChangeAnimation.value.dx,
-                  top: seatChangeAnimation.value.dy,
-                  child: Consumer<BoardAttributesObject>(
-                    builder: (_, boardAttributes, __) => NamePlateWidget(
-                      getSeats(context, widget.gameState.playersInGame)[
-                          seatChangerPlayer - 1],
-                      globalKey: null,
-                      boardAttributes: boardAttributes,
+                    animation: animation,
+                    builder: (_, child) => Transform.translate(
+                      offset: animation.value,
+                      child: Transform.scale(
+                          scale: boardAttributes.lottieScale, child: child),
                     ),
-                  ),
-                )
-              : SizedBox.shrink(),
-        ],
-      ),
-    );
+                  )
+                : SizedBox.shrink(),
+
+            isLottieAnimationAnimating
+                ? Transform.translate(
+                    offset: lottieAnimationPosition,
+                    child: Container(
+                      height: _lottieAnimationContainerSize,
+                      width: _lottieAnimationContainerSize,
+                      child: Transform.scale(
+                          scale: boardAttributes.lottieScale,
+                          child: Lottie.asset(
+                            'assets/animations/$animationAssetID.json',
+                            controller: _lottieController,
+                          )),
+                    ),
+                  )
+                : SizedBox.shrink(),
+
+            isSeatChanging
+                ? Positioned(
+                    left: seatChangeAnimation.value.dx,
+                    top: seatChangeAnimation.value.dy,
+                    child: Consumer<BoardAttributesObject>(
+                      builder: (_, boardAttributes, __) => NamePlateWidget(
+                        getSeats(context, widget.gameState.playersInGame)[
+                            seatChangerPlayer - 1],
+                        globalKey: null,
+                        boardAttributes: boardAttributes,
+                      ),
+                    ),
+                  )
+                : SizedBox.shrink(),
+          ],
+        ),
+      );
+    });
   }
 
   List<Widget> getPlayers(BuildContext context) {
@@ -392,8 +394,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
 
     if (TestService.isTesting) {
       me = this.widget.gameState.me;
-    }
-    else {
+    } else {
       me = widget.gameState.me;
     }
 

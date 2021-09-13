@@ -171,6 +171,7 @@ class NamePlateWidget extends StatelessWidget {
           int total = seat.actionTimer.getTotalTime();
           int remainingSeconds = time.toInt() ~/ 1000;
           seat.setProgressTime(total - remainingSeconds);
+          // log('ProgressBar: seatNo: ${seat.player.seatNo} $total remaining: $remainingSeconds');
 
           //int progress = seat.actionTimer.getProgressTime();
           int currentProgress = total * 1000 - time.toInt();

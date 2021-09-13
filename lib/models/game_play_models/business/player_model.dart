@@ -218,6 +218,16 @@ class PlayerModel {
 
   void reset({bool stickAction}) {
     this.highlight = false;
+    this.winner = false;
+    this.rankText = '';
+    this.showFirework = false;
+    this.cards = [];
+    this.highlightCards = [];
+    this._action.reset(stickAction: stickAction);
+    this._connectivity.reset();
+  }
+
+  void resetSeatAction({bool stickAction}) {
     this._action.reset(stickAction: stickAction);
     this._connectivity.reset();
   }

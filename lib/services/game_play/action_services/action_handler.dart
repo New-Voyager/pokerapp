@@ -236,7 +236,6 @@ class PlayerActionHandler {
   Future<void> handleNextAction(proto.HandMessageItem message) async {
     // Audio.stop(context: context); fixme: this also does not play when we need to notify the user of his/her turn
     // log('handle next action start');        // reset result in progress flag
-
     try {
       var actionChange = message.actionChange;
       int seatNo = actionChange.seatNo;
@@ -253,7 +252,7 @@ class PlayerActionHandler {
         // hide action widget
 
         if (_gameState.uiClosing) return;
-        _gameState.showAction(false);
+        _gameState.showAction(false, notify: true);
       }
       // log('next action seat: $seatNo player: ${player.name}');
       // highlight next action player
@@ -342,7 +341,7 @@ class PlayerActionHandler {
         // we are showing the straddle prompt
       } else {
         // don't show
-        _gameState.showAction(true);
+        _gameState.showAction(true, notify: true);
       }
     } finally {
       //log('Hand Message: ::handleYourAction:: END');
@@ -352,6 +351,8 @@ class PlayerActionHandler {
   Future<void> handlePlayerActed(proto.HandMessageItem message) async {
     final playerActed = message.playerActed;
     int seatNo = playerActed.seatNo;
+    log('HandMessage: ${message.playerActed.seatNo} action: ${message.playerActed.action.name}');
+
     //log('Hand Message: ::handlePlayerActed:: START seatNo: $seatNo');
 
     if (_gameState.uiClosing) return;
@@ -380,6 +381,7 @@ class PlayerActionHandler {
       playSoundEffect(AppAssets.foldSound);
       seat.player.playerFolded = true;
       seat.player.animatingFold = true;
+      seat.notify();
     } else if (action.action == HandActions.CHECK) {
       playSoundEffect(AppAssets.checkSound);
     }

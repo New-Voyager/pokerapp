@@ -228,7 +228,6 @@ class NewHandHandler {
       }
     }
 
-
     // set player actions
     for (final seatNo in newHand.playersActed.keys) {
       final action = newHand.playersActed[seatNo];
@@ -249,11 +248,11 @@ class NewHandHandler {
     if (gameState.me != null) {
       gameState.me.rankText = '';
     }
+    gameState.handState = HandState.NEW_HAND;
     myState.notify();
     gameState.handInfo.notify();
     gameState.notifyAllSeats();
     tableState.notifyAll();
-    gameState.handState = HandState.NEW_HAND;
   }
 
   Future<void> showDeal() async {

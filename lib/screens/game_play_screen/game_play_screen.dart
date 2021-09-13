@@ -420,7 +420,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
         // start listening for changes in markedCards value
         markedCards.addListener(onMarkingCards);
-      } 
+      }
       // else {
       //   markedCards.clear();
       //   markedCards.removeListener(onMarkingCards);

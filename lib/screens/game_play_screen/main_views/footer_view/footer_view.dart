@@ -98,22 +98,19 @@ class _FooterViewState extends State<FooterView>
   void _init() {
     // get the game card visibility state from local storage
     _gameState = GameState.getState(context);
-    isHoleCardsVisibleVn.value = _gameState.gameHiveStore.getHoleCardsVisibilityState();
+    isHoleCardsVisibleVn.value =
+        _gameState.gameHiveStore.getHoleCardsVisibilityState();
 
     // _players = context.read<Players>();
     // mePlayerModelVn.value = _players?.me?.copyWith();
 
     // // listen for changes in my PlayerModel state
     // _players?.addListener(onPlayersChanges);
-    if (_gameState.mySeat != null) {
-      _gameState.mySeat.addListener(onPlayersChanges);
-    }
+    _gameState.myState.addListener(onPlayersChanges);
   }
 
   void _dispose() {
-    if (_gameState.mySeat != null) {
-      _gameState.mySeat.removeListener(onPlayersChanges);
-    }
+    _gameState.myState.removeListener(onPlayersChanges);
   }
 
   /* hand analyse view builder */
