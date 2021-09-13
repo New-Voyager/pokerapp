@@ -182,7 +182,7 @@ class HandService {
         .query(QueryOptions(documentNode: gql(query), variables: variables));
 
     if (result.hasException) return null;
-    final handResultData = jsonDecode(result.data['handResult']['data']);
+    final handResultData = result.data['handResult']['data'];
     final me = await AuthService.get();
     final handLog = HandResultData.fromJson(handResultData);
     handLog.myPlayerId = me.playerId;

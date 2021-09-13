@@ -373,7 +373,7 @@ class _FooterActionViewState extends State<FooterActionView> {
 
     return IntrinsicHeight(
       child: Container(
-        color: theme.primaryColor.withOpacity(0.80),
+        color: theme.primaryColor.withOpacity(1),
         child: Consumer<ActionState>(
           key: ValueKey('buildActionButtons'),
           builder: (_, actionState, __) => Column(

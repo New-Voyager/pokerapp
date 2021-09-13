@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/proto/hand.pb.dart' as proto;
@@ -12,7 +11,6 @@ import 'package:pokerapp/proto/handmessage.pb.dart' as proto;
 import 'package:pokerapp/proto/enums.pb.dart' as proto;
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
-import 'package:provider/provider.dart';
 
 class NewHandHandler {
   proto.NewHand newHand;
@@ -48,9 +46,6 @@ class NewHandHandler {
   }
 
   Future<void> updatePlayers() async {
-    final Players players = gameState.players;
-    gameState.resetPlayers(notify: false);
-
     // only count active players in this hand
     int noOfPlayers = 0;
     for (final playerInSeat in newHand.playersInSeats.values) {
@@ -59,7 +54,7 @@ class NewHandHandler {
       }
     }
 
-    if (gameState.players.count != noOfPlayers) {
+    if (gameState.playersInGame.length != noOfPlayers) {
       log('gameState seats does not match with new hand. * Refreshing *');
       await gameState.refresh();
       log('gameState seats does not match with new hand. * Refreshing Done *');
@@ -90,7 +85,7 @@ class NewHandHandler {
 
         PlayerModel playerFound;
         bool newPlayer = true;
-        for (final player in players.players) {
+        for (final player in gameState.playersInGame) {
           if (player.playerId == playerInSeat.playerId.toInt()) {
             playerFound = player;
             break;
@@ -134,18 +129,19 @@ class NewHandHandler {
 
         if (newPlayer) {
           //playerObj.playerUuid = playerInSeat.playerId;
-          players.addNewPlayerSilent(playerObj);
+          gameState.newPlayer(playerObj);
         }
         if (playerObj.playerUuid == gameState.currentPlayerUuid) {
           playerObj.isMe = true;
         }
         final seat = gameState.getSeat(seatNo);
         seat.player = playerObj;
+        // log('****** INHAND: NEWHAND seatNo: ${seatNo} seatNo: ${playerObj.seatNo} name: ${playerObj.name} inhand: ${playerObj.inhand}');
       }
 
       // make sure no two users in the same seat
       Map<int, int> seatNos = Map<int, int>();
-      for (final player in players.players) {
+      for (final player in gameState.playersInGame) {
         if (!seatNos.containsKey(player.seatNo)) {
           seatNos[player.seatNo] = 1;
         } else {
@@ -184,9 +180,8 @@ class NewHandHandler {
     ////log('Hand Message: ::handleNewHand:: START');
     playSoundEffect(AppAssets.newHandSound);
 
-    // clear marked cards here
     if (gameState.uiClosing) return;
-    gameState.markedCardsState.clear();
+    gameState.clear();
 
     if (gameState.uiClosing) return;
     await updatePlayers();
@@ -212,9 +207,6 @@ class NewHandHandler {
 
     if (gameState.uiClosing) return;
 
-    //context.read<ValueNotifier<FooterStatus>>().value = FooterStatus.None;
-    final Players players = gameState.players;
-
     // next action seat is me
     if (!newHand.bombPot) {
       final nextActionSeat = gameState.getSeat(newHand.nextActionSeat);
@@ -235,28 +227,6 @@ class NewHandHandler {
           }
         }
       }
-
-      // update blinds
-      /* marking the small blind */
-      int smallBlindIdx =
-          players.players.indexWhere((p) => p.seatNo == newHand.sbPos);
-      assert(smallBlindIdx != -1);
-
-      players.updatePlayerTypeSilent(
-        smallBlindIdx,
-        TablePosition.SmallBlind,
-        coinAmount: newHand.smallBlind.toInt(),
-      );
-
-      /* marking the big blind */
-      int bigBlindIdx =
-          players.players.indexWhere((p) => p.seatNo == newHand.bbPos);
-      assert(bigBlindIdx != -1);
-      players.updatePlayerTypeSilent(
-        bigBlindIdx,
-        TablePosition.BigBlind,
-        coinAmount: newHand.bigBlind.toInt(),
-      );
     }
 
     // set player actions
@@ -272,24 +242,18 @@ class NewHandHandler {
     // it could be a dead button
     if (gameState.uiClosing) return;
     final Seat seat = gameState.getSeat(newHand.buttonPos);
-    seat.isDealer = true;
-
-    gameState.handInfo.notify();
-    players.notifyAll();
-
+    seat.dealer = true;
     /* get a new card back asset to be shown */
     if (gameState.uiClosing) return;
-
-    // gameState.redrawFooterState.notify();
-
     final myState = gameState.myState;
-    if (players.me != null) {
-      players.me.rankText = '';
+    if (gameState.me != null) {
+      gameState.me.rankText = '';
     }
-    myState.notify();
-
-    tableState.notifyAll();
     gameState.handState = HandState.NEW_HAND;
+    myState.notify();
+    gameState.handInfo.notify();
+    gameState.notifyAllSeats();
+    tableState.notifyAll();
   }
 
   Future<void> showDeal() async {
@@ -325,8 +289,7 @@ class NewHandHandler {
 
       if (gameState.uiClosing) return;
 
-      final players = gameState.players;
-      List<int> seatNos = players.players.map((p) => p.seatNo).toList();
+      List<int> seatNos = gameState.playersInGame.map((p) => p.seatNo).toList();
       seatNos.sort();
 
       if (gameState.uiClosing) return;
@@ -353,21 +316,15 @@ class NewHandHandler {
         // wait for the animation to finish
         await Future.delayed(AppConstants.cardDistributionAnimationDuration);
         if (gameState.uiClosing) return;
-
-        players.updateVisibleCardNumberSilent(seatNo, handInfo.noCards);
-        players.notifyAll();
+        seat.player.noOfCardsVisible = handInfo.noCards;
+        seat.notify();
       }
       //}
 
       /* card distribution ends, put the value to NULL */
       gameState.cardDistributionState.seatNo = null;
-      // tableState.updateTableStatusSilent(null);
       if (gameState.uiClosing) return;
-      // tableState.notifyAll();
-      // no of cards in this game
-      players.visibleCardNumbersForAllSilent(handInfo.noCards);
-      if (gameState.uiClosing) return;
-      players.notifyAll();
+      gameState.notifyAllSeats();
     } finally {
       //log('Hand Message: ::handleDealStarted:: END');
     }

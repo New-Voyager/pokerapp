@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart';
@@ -33,7 +34,7 @@ class PlayerModel {
   int startingStack = 0;
   String avatarUrl = '';
   String status = '';
-  bool _inhand = false;
+  bool _inhand = true;
   List<int> _cards = [];
   List<int> revealCards = [];
   List<int> highlightCards = [];
@@ -190,10 +191,13 @@ class PlayerModel {
   }
 
   bool get isActive {
+    bool playerFolded = false;
     if (this.playerFolded ?? false) {
-      return false;
+      playerFolded = true;
     }
-    return this.inhand;
+
+    // log('INHAND: seatNo: $seatNo name: $name playerFolded: $playerFolded inhand: $_inhand1 active: ${!playerFolded && this.inhand}');
+    return !playerFolded && this.inhand;
   }
 
   bool get inhand => this._inhand;
@@ -218,6 +222,16 @@ class PlayerModel {
 
   void reset({bool stickAction}) {
     this.highlight = false;
+    this.winner = false;
+    this.rankText = '';
+    this.showFirework = false;
+    this.cards = [];
+    this.highlightCards = [];
+    this._action.reset(stickAction: stickAction);
+    this._connectivity.reset();
+  }
+
+  void resetSeatAction({bool stickAction}) {
     this._action.reset(stickAction: stickAction);
     this._connectivity.reset();
   }

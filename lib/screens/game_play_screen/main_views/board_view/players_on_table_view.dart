@@ -7,7 +7,6 @@ import 'package:lottie/lottie.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
@@ -30,7 +29,6 @@ const Duration _animatingWidgetDuration = const Duration(milliseconds: 1000);
 // This view uses Stack layout to place the UserView on top of the table.
 class PlayersOnTableView extends StatefulWidget {
   final Function(int index) onUserTap;
-  final Players players;
   final isBoardHorizontal;
   final double heightOfBoard;
   final double widthOfBoard;
@@ -41,7 +39,6 @@ class PlayersOnTableView extends StatefulWidget {
 
   PlayersOnTableView({
     @required this.gameComService,
-    @required this.players,
     @required this.isBoardHorizontal,
     @required this.widthOfBoard,
     @required this.heightOfBoard,
@@ -320,71 +317,73 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
         GameState.getState(context).getBoardAttributes(context);
 
     // am I on this table?
-    return Transform.translate(
-      key: _parentKey,
-      offset: Offset(
-        0.0,
-        -offset,
-      ),
-      child: Stack(
-        alignment:
-            widget.isBoardHorizontal ? Alignment.topLeft : Alignment.center,
-        children: [
-          // position the users
+    return Consumer<SeatsOnTableState>(builder: (_, __, ___) {
+      return Transform.translate(
+        key: _parentKey,
+        offset: Offset(
+          0.0,
+          -offset,
+        ),
+        child: Stack(
+          alignment:
+              widget.isBoardHorizontal ? Alignment.topLeft : Alignment.center,
+          children: [
+            // position the users
 
-          ...getPlayers(context),
+            ...getPlayers(context),
 
-          isAnimating && animation != null
-              ? AnimatedBuilder(
-                  child: Container(
-                    height: _animatingAssetContainerSize,
-                    width: _animatingAssetContainerSize,
-                    child: SvgPicture.asset(
-                      'assets/animations/$animationAssetID.svg',
+            isAnimating && animation != null
+                ? AnimatedBuilder(
+                    child: Container(
+                      height: _animatingAssetContainerSize,
+                      width: _animatingAssetContainerSize,
+                      child: SvgPicture.asset(
+                        'assets/animations/$animationAssetID.svg',
+                      ),
                     ),
-                  ),
-                  animation: animation,
-                  builder: (_, child) => Transform.translate(
-                    offset: animation.value,
-                    child: Transform.scale(
-                        scale: boardAttributes.lottieScale, child: child),
-                  ),
-                )
-              : SizedBox.shrink(),
-
-          isLottieAnimationAnimating
-              ? Transform.translate(
-                  offset: lottieAnimationPosition,
-                  child: Container(
-                    height: _lottieAnimationContainerSize,
-                    width: _lottieAnimationContainerSize,
-                    child: Transform.scale(
-                        scale: boardAttributes.lottieScale,
-                        child: Lottie.asset(
-                          'assets/animations/$animationAssetID.json',
-                          controller: _lottieController,
-                        )),
-                  ),
-                )
-              : SizedBox.shrink(),
-
-          isSeatChanging
-              ? Positioned(
-                  left: seatChangeAnimation.value.dx,
-                  top: seatChangeAnimation.value.dy,
-                  child: Consumer<BoardAttributesObject>(
-                    builder: (_, boardAttributes, __) => NamePlateWidget(
-                      getSeats(context, widget.players.players)[
-                          seatChangerPlayer - 1],
-                      globalKey: null,
-                      boardAttributes: boardAttributes,
+                    animation: animation,
+                    builder: (_, child) => Transform.translate(
+                      offset: animation.value,
+                      child: Transform.scale(
+                          scale: boardAttributes.lottieScale, child: child),
                     ),
-                  ),
-                )
-              : SizedBox.shrink(),
-        ],
-      ),
-    );
+                  )
+                : SizedBox.shrink(),
+
+            isLottieAnimationAnimating
+                ? Transform.translate(
+                    offset: lottieAnimationPosition,
+                    child: Container(
+                      height: _lottieAnimationContainerSize,
+                      width: _lottieAnimationContainerSize,
+                      child: Transform.scale(
+                          scale: boardAttributes.lottieScale,
+                          child: Lottie.asset(
+                            'assets/animations/$animationAssetID.json',
+                            controller: _lottieController,
+                          )),
+                    ),
+                  )
+                : SizedBox.shrink(),
+
+            isSeatChanging
+                ? Positioned(
+                    left: seatChangeAnimation.value.dx,
+                    top: seatChangeAnimation.value.dy,
+                    child: Consumer<BoardAttributesObject>(
+                      builder: (_, boardAttributes, __) => NamePlateWidget(
+                        getSeats(context, widget.gameState.playersInGame)[
+                            seatChangerPlayer - 1],
+                        globalKey: null,
+                        boardAttributes: boardAttributes,
+                      ),
+                    ),
+                  )
+                : SizedBox.shrink(),
+          ],
+        ),
+      );
+    });
   }
 
   List<Widget> getPlayers(BuildContext context) {
@@ -393,23 +392,16 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
 
     final currPlayerID = gameState.currentPlayerId;
 
-    if (TestService.isTesting)
-      me = this.widget.players.me;
-    else
-      try {
-        me = this
-            .widget
-            .players
-            .players
-            .firstWhere((p) => p.playerId == currPlayerID);
-      } catch (_) {
-        me = this.widget.players.me;
-      }
+    if (TestService.isTesting) {
+      me = this.widget.gameState.me;
+    } else {
+      me = widget.gameState.me;
+    }
 
     final maxPlayers = gameState.gameInfo?.maxPlayers ?? 9;
     index = -1;
     // update seat states in game state
-    final seatsState = this.getSeats(context, widget.players.players);
+    final seatsState = this.getSeats(context, widget.gameState.playersInGame);
     final boardAttribs =
         Provider.of<BoardAttributesObject>(context, listen: false);
 
@@ -473,12 +465,11 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     *  also UserObject objects, and we need all
     * the 9 objects in an array to build the entire table + users
     * */
-    final gameState = Provider.of<GameState>(context, listen: false);
     for (PlayerModel model in users) {
-      gameState.seatPlayer(model.seatNo, model);
+      widget.gameState.seatPlayer(model.seatNo, model);
     }
 
-    return gameState.seats;
+    return widget.gameState.seats;
   }
 
   Widget _positionedForUsers({

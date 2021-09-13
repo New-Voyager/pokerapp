@@ -224,7 +224,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
         seatChangeSeat: seatChangeSeat,
       );
 
-      if (widget.seat.isDealer)
+      if (widget.seat.dealer)
         return Stack(
           alignment: Alignment.center,
           children: [
@@ -249,7 +249,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
     bool isDealer = false;
 
     if (!openSeat) {
-      if (widget.seat.isDealer) {
+      if (widget.seat.dealer) {
         isDealer = true;
       }
     }

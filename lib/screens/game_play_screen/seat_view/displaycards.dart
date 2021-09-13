@@ -18,8 +18,6 @@ class DisplayCardsWidget extends StatelessWidget {
 
     List<int> highlightedCards = seat.player.highlightCards;
 
-    log('Reveal Cards Seat: ${seat.serverSeatPos} cards: ${seat.player.cards} reveal cards: ${seat.player.revealCards}');
-
     List<CardObject> cardObjects = [];
     for (int cardNum in cards) {
       CardObject card = CardHelper.getCard(cardNum);
@@ -36,7 +34,7 @@ class DisplayCardsWidget extends StatelessWidget {
           card.highlight = true;
         }
       } else if (seat.player.muckLosingHand) {
-        // this player is not a winner 
+        // this player is not a winner
         card.cardFace = CardFace.BACK;
       }
 
@@ -68,6 +66,8 @@ class DisplayCardsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    log('UpdateSeat: DisplayCardsWidget Seat: ${seat.serverSeatPos} player: ${seat.player.name} cards: ${seat.player.cards} reveal cards: ${seat.player.revealCards}');
+    // log('UpdateSeat: seat no: ${seat.player.seatNo} updating cards widget: ${seat.player.cards}');
     final seatPlayerCards = seat.player.cards;
 
     return AnimatedSwitcher(

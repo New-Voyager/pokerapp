@@ -2,9 +2,7 @@ import 'dart:developer';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
-import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/handlog_model.dart';
@@ -46,7 +44,6 @@ class ResultHandlerV2Json {
   bool replay;
 
   TableState tableState;
-  Players players;
 
   ResultHandlerV2Json({
     @required this.gameState,
@@ -59,7 +56,6 @@ class ResultHandlerV2Json {
 
   Future<void> show() async {
     tableState = gameState.tableState;
-    players = gameState.players;
     gameState.handState = HandState.RESULT;
     gameState.handChangeState.notify();
 
@@ -201,7 +197,7 @@ class ResultHandlerV2Json {
     if (replay) return;
     resetResult();
     // remove all the community cards
-    gameState.resetPlayers();
+    gameState.clear();
     tableState.clear();
     tableState.notifyAll();
   }
@@ -256,18 +252,19 @@ class ResultHandlerV2Json {
     int boardIndex = 1,
   }) {
     tableState.unHighlightCardsSilent(boardIndex);
-    players.removeAllHighlightsSilent();
-    players.removeWinnerHighlightSilent();
-    players.unHighlightCardsSilentForAll();
+
+    for (final player in gameState.playersInGame) {
+      player.winner = false;
+      player.highlight = false;
+      player.highlightCards = [];
+    }
 
     tableState.updateRankStrSilent(null);
 
     gameState.resetSeatActions(newHand: true);
 
-    players.notifyAll();
+    gameState.notifyAllSeats();
     tableState.refreshTable();
-    // tableState.notifyAll();
-    // refresh community cards already calls notifyListeners
     tableState.refreshCommunityCards();
   }
 
@@ -278,15 +275,13 @@ class ResultHandlerV2Json {
     final bool setState = false,
   }) async {
     /* highlight the hi winners */
-    players.highlightWinnerSilent(winner.seatNo);
+    final seat = gameState.getSeat(winner.seatNo);
+    seat.player.highlight = true;
 
     // highlight winning cards and rank if we are in showdown
     if (handResult.wonAt == AppConstants.SHOW_DOWN) {
       /* highlight the winning cards for players */
-      players.highlightCardsSilent(
-        seatNo: winner.seatNo,
-        cards: winner.playerCards,
-      );
+      seat.player.highlightCards = winner.playerCards;
 
       // log('WINNER player.cards: ${winner.playerCards} boardCards: ${winner.boardCards} setState: $setState ${winner.rankStr} ${AppConstants.chipMovingAnimationDuration}');
       /* highlight the winning cards for board 1 */
@@ -300,32 +295,22 @@ class ResultHandlerV2Json {
     }
 
     /* update the stack amount for the winners */
-    final PlayerModel player = players.getPlayerBySeat(winner.seatNo);
-    if (player != null) {
-      player.action.amount = winner.amount.toDouble();
-      player.action.winner = true;
-    }
+    seat.player.action.amount = winner.amount.toDouble();
+    seat.player.action.winner = true;
 
     /** set state */
     if (setState) {
       /* update state */
-      players.notifyAll();
       tableState.notifyAll();
       tableState.refreshCommunityCards();
+      gameState.notifyAllSeats();
 
       /* finally animate the moving stack */
       gameState.animateSeatActions();
 
       /* wait for the animation to finish */
       await Future.delayed(AppConstants.chipMovingAnimationDuration);
-
-      /* update the actual stack */
-      // players.addStackWithValueSilent(
-      //   winner.seatNo,
-      //   int(winner.amount),
-      // );
-
-      players.notifyAll();
+      gameState.notifyAllSeats();
     }
   }
 }

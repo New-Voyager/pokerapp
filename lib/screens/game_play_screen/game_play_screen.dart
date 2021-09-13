@@ -12,7 +12,6 @@ import 'package:pokerapp/models/game_play_models/provider_models/game_context.da
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/marked_cards.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/player_info.dart';
@@ -397,11 +396,11 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     /* clear all the marked cards */
     // FIXME: markedCards.clear();
 
-    final Players players = _gameState.players;
+    final me = _gameState.me;
     _gameState.gameMessageService.sendCards(
       context.read<HandInfoState>().handNum,
       cardNumbers,
-      players.me?.seatNo,
+      me?.seatNo,
     );
   }
 
@@ -421,7 +420,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
         // start listening for changes in markedCards value
         markedCards.addListener(onMarkingCards);
-      } 
+      }
       // else {
       //   markedCards.clear();
       //   markedCards.removeListener(onMarkingCards);
@@ -544,7 +543,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     _timer = Timer.periodic(const Duration(seconds: 30), (_) {
       PlayerModel me;
       try {
-        me = _gameState.players.me;
+        me = _gameState.me;
       } catch (e) {}
 
       if (me != null) _gameState.gameHiveStore.addDiamonds();
