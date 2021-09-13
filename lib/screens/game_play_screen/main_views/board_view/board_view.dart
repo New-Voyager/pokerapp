@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
@@ -75,22 +74,18 @@ class BoardView extends StatelessWidget {
         ),
 
         /* players */
-        Consumer<Players>(
-          builder: (BuildContext _, Players players, Widget __) =>
-              Transform.translate(
-            offset: boardAttributes.playerOnTableOffset,
-            child: PlayersOnTableView(
-              players: players,
-              gameComService: gameComService,
-              isBoardHorizontal:
-                  boardAttributes.orientation == BoardOrientation.horizontal,
-              widthOfBoard: dimensions.width,
-              heightOfBoard: dimensions.height,
-              onUserTap: onUserTap,
-              maxPlayers: gameInfo.maxPlayers,
-              audioPlayer: audioPlayer,
-              gameState: gameState,
-            ),
+        Transform.translate(
+          offset: boardAttributes.playerOnTableOffset,
+          child: PlayersOnTableView(
+            gameComService: gameComService,
+            isBoardHorizontal:
+                boardAttributes.orientation == BoardOrientation.horizontal,
+            widthOfBoard: dimensions.width,
+            heightOfBoard: dimensions.height,
+            onUserTap: onUserTap,
+            maxPlayers: gameInfo.maxPlayers,
+            audioPlayer: audioPlayer,
+            gameState: gameState,
           ),
         ),
 

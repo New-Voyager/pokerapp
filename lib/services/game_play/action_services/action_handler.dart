@@ -1,10 +1,12 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/proto/hand.pb.dart';
@@ -22,20 +24,19 @@ import 'hand_action_proto_service.dart';
  * This class is written to breakdown the handler code into managable chunks. 
  */
 class PlayerActionHandler {
+  BuildContext _context;
   GameState _gameState;
   Function(String) playSoundEffect;
 
-  PlayerActionHandler(this._gameState, this.playSoundEffect);
+  PlayerActionHandler(this._context, this._gameState, this.playSoundEffect);
 
-  Future<void> handleQueryCurrentHand(
-      BuildContext context, proto.HandMessageItem message) async {
+  Future<void> handleQueryCurrentHand(proto.HandMessageItem message) async {
     final currentHandState = message.currentHandState;
     log('Current hand state: $currentHandState');
     if (_gameState.uiClosing) return;
 
     // current players cards
     String playerCards = currentHandState.playerCards;
-    final Players players = _gameState.players;
     final tableState = _gameState.tableState;
 
     // if game is paused, we don't update cards
@@ -44,7 +45,7 @@ class PlayerActionHandler {
     }
 
     if (_gameState.uiClosing) return;
-    final handInfo = _gameState.getHandInfo(context);
+    final handInfo = _gameState.handInfo;
 
     // am I playing this game?
     final mySeat = _gameState.mySeat;
@@ -68,15 +69,15 @@ class PlayerActionHandler {
     );
 
     // update button
-    final buttonSeat = _gameState.getSeat(context, currentHandState.buttonPos);
+    final buttonSeat = _gameState.getSeat(currentHandState.buttonPos);
     if (buttonSeat != null) {
-      buttonSeat.isDealer = true;
+      buttonSeat.dealer = true;
     }
 
     /* set the noOfVisible cards for other players */
     int noOfCards = currentHandState.noCards;
     handInfo.update(noCards: noOfCards);
-    players.visibleCardNumbersForAllSilent(noOfCards);
+    _gameState.setPlayerNoCards(noOfCards);
 
     // boardCards update if available
     //String currentRound = currentHandState.currentRound.name;
@@ -190,16 +191,14 @@ class PlayerActionHandler {
 
     if (_gameState.uiClosing) return;
 
-    players.updateStackBulkSilent(
-      currentHandState.playersStack,
-    );
+    _gameState.updatePlayersStack(currentHandState.playersStack);
 
     int nextSeatToAct = int.parse(
       currentHandState.nextSeatToAct?.toString() ?? '-1',
     );
 
     if (nextSeatToAct == -1) return;
-    final seatToAct = _gameState.getSeat(context, nextSeatToAct);
+    final seatToAct = _gameState.getSeat(nextSeatToAct);
     if (seatToAct != null) {
       seatToAct.setActionTimer(_gameState.gameInfo.actionTime,
           remainingTime: remainingActionTime);
@@ -208,7 +207,7 @@ class PlayerActionHandler {
     // setup player bet amount
     for (final seatNo in currentHandState.playersActed.keys) {
       final seatAct = currentHandState.playersActed[seatNo];
-      final seat = _gameState.getSeat(context, seatNo);
+      final seat = _gameState.getSeat(seatNo);
       if (seat != null) {
         PlayerActedState acted = PlayerActedState();
         seat.player.inhand = true;
@@ -223,22 +222,20 @@ class PlayerActionHandler {
 
     proto.HandMessageItem actionChange = proto.HandMessageItem();
     actionChange.actionChange = proto.ActionChange(seatNo: nextSeatToAct);
-    handleNextAction(context, actionChange);
+    handleNextAction(actionChange);
 
     if (mySeat != null && nextSeatToAct == mySeat.serverSeatPos) {
       // i am next to act
       proto.HandMessageItem yourAction = proto.HandMessageItem();
       yourAction.seatAction = currentHandState.nextSeatAction;
-      handleYourAction(context, yourAction);
+      handleYourAction(yourAction);
     }
-    players.notifyAll();
+    _gameState.notifyAllSeats();
   }
 
-  Future<void> handleNextAction(
-      BuildContext context, proto.HandMessageItem message) async {
+  Future<void> handleNextAction(proto.HandMessageItem message) async {
     // Audio.stop(context: context); fixme: this also does not play when we need to notify the user of his/her turn
     // log('handle next action start');        // reset result in progress flag
-
     try {
       var actionChange = message.actionChange;
       int seatNo = actionChange.seatNo;
@@ -248,21 +245,21 @@ class PlayerActionHandler {
       final TableState tableState = _gameState.tableState;
 
       if (_gameState.uiClosing) return;
-      final player = _gameState.fromSeat(context, seatNo);
+      final player = _gameState.fromSeat(seatNo);
       assert(player != null);
 
       if (!player.isMe) {
         // hide action widget
 
         if (_gameState.uiClosing) return;
-        _gameState.showAction(context, false);
+        _gameState.showAction(false);
       }
       // log('next action seat: $seatNo player: ${player.name}');
       // highlight next action player
       player.highlight = true;
 
       if (_gameState.uiClosing) return;
-      final seat = _gameState.getSeat(context, seatNo);
+      final seat = _gameState.getSeat(seatNo);
       seat.setActionTimer(_gameState.gameInfo.actionTime);
       seat.notify();
 
@@ -286,8 +283,7 @@ class PlayerActionHandler {
     }
   }
 
-  Future<void> handleYourAction(
-      BuildContext context, proto.HandMessageItem message) async {
+  Future<void> handleYourAction(proto.HandMessageItem message) async {
     if (_gameState.uiClosing) return;
     try {
       final me = _gameState.me;
@@ -306,8 +302,11 @@ class PlayerActionHandler {
       if (_gameState.straddleBetThisHand == true) {
         // we have the straddleBet set to true, do a bet
         if (_gameState.uiClosing) return;
+        final gameContextObject = _context.read<GameContextObject>();
+
         HandActionProtoService.takeAction(
-          context: context,
+          gameContextObject: gameContextObject,
+          gameState: _gameState,
           action: AppConstants.STRADDLE,
           amount: 2 * _gameState.gameInfo.bigBlind,
         );
@@ -325,7 +324,7 @@ class PlayerActionHandler {
         int secondsTillTimeout = seatAction.secondsTillTimesout;
 
         return RunItTwiceDialog.promptRunItTwice(
-          context: context,
+          context: _context,
           expTime: secondsTillTimeout,
         );
       } else {
@@ -335,17 +334,75 @@ class PlayerActionHandler {
       }
 
       if (_gameState.uiClosing) return;
-      _gameState.setActionProto(context, seatAction.seatNo, seatAction);
+      _gameState.setActionProto(seatAction.seatNo, seatAction);
 
       if (_gameState.uiClosing) return;
       if (_gameState.straddlePrompt) {
         // we are showing the straddle prompt
       } else {
         // don't show
-        _gameState.showAction(context, true);
+        _gameState.showAction(true);
       }
     } finally {
       //log('Hand Message: ::handleYourAction:: END');
     }
+  }
+
+  Future<void> handlePlayerActed(proto.HandMessageItem message) async {
+    final playerActed = message.playerActed;
+    int seatNo = playerActed.seatNo;
+    log('HandMessage: ${message.playerActed.seatNo} action: ${message.playerActed.action.name}');
+
+    //log('Hand Message: ::handlePlayerActed:: START seatNo: $seatNo');
+
+    if (_gameState.uiClosing) return;
+    // show a prompt regarding last player action
+
+    final seat = _gameState.getSeat(seatNo);
+    // hide straddle dialog
+    if (_gameState.straddlePrompt) {
+      _gameState.straddlePrompt = false;
+      _gameState.straddlePromptState.notify();
+    }
+    if (_gameState.uiClosing) return;
+    if (seat?.player?.action == null) {
+      ////log('Hand Message: ::handlePlayerActed:: player acted: $seatNo, player: ${seat.player.name}');
+      return;
+    }
+    final action = seat.player.action;
+    action.setActionProto(playerActed.action, playerActed.amount);
+
+    // play the bet-raise sound effect
+    if (action.action == HandActions.BET ||
+        action.action == HandActions.RAISE ||
+        action.action == HandActions.CALL) {
+      playSoundEffect(AppAssets.betRaiseSound);
+    } else if (action.action == HandActions.FOLD) {
+      playSoundEffect(AppAssets.foldSound);
+      seat.player.playerFolded = true;
+      seat.player.animatingFold = true;
+      seat.notify();
+      if (seat.isMe) {
+        // player folded
+        _gameState.myState.notify();
+      }
+    } else if (action.action == HandActions.CHECK) {
+      playSoundEffect(AppAssets.checkSound);
+    }
+    seat.notify();
+    int stack = playerActed.stack?.toInt();
+    if (stack != null) {
+      seat.player.stack = stack;
+    }
+
+    if (_gameState.uiClosing) return;
+    // before showing the prompt --> turn off the highlight on other players
+    _gameState.resetActionHighlight(-1);
+
+    // update pot chip updates
+    _gameState.tableState
+        .updatePotChipUpdatesSilent(playerActed.potUpdates.toInt());
+    _gameState.tableState.notifyAll();
+    //log('Hand Message: ::handlePlayerActed:: END');
   }
 }

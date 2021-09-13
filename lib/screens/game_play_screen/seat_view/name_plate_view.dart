@@ -171,6 +171,7 @@ class NamePlateWidget extends StatelessWidget {
           int total = seat.actionTimer.getTotalTime();
           int remainingSeconds = time.toInt() ~/ 1000;
           seat.setProgressTime(total - remainingSeconds);
+          // log('ProgressBar: seatNo: ${seat.player.seatNo} $total remaining: $remainingSeconds');
 
           //int progress = seat.actionTimer.getProgressTime();
           int currentProgress = total * 1000 - time.toInt();
@@ -252,7 +253,9 @@ class NamePlateWidget extends StatelessWidget {
   }
 
   Widget bottomWidget(BuildContext context, AppTheme theme) {
-    if (seat.player.inBreak && seat.player.breakTimeExpAt != null) {
+    if (seat.player.inBreak &&
+        seat.player.breakTimeExpAt != null &&
+        !seat.player.isMe) {
       return GamePlayScreenUtilMethods.breakBuyIntimer(
         context,
         seat,
@@ -261,7 +264,8 @@ class NamePlateWidget extends StatelessWidget {
 
     if (seat.player.action.action != HandActions.ALLIN &&
         seat.player.stack == 0 &&
-        seat.player.buyInTimeExpAt != null) {
+        seat.player.buyInTimeExpAt != null &&
+        !seat.player.isMe) {
       return GamePlayScreenUtilMethods.breakBuyIntimer(context, seat);
     } else {
       if (seat.player != null) {

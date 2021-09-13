@@ -4,6 +4,7 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_type.dart';
+import 'package:pokerapp/models/game/game_player_settings.dart';
 import 'package:pokerapp/models/game/game_settings.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
@@ -14,14 +15,10 @@ import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
-import 'package:pokerapp/screens/game_play_screen/main_views/board_view/decorative_views/table_view.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/game_service.dart';
-import 'package:pokerapp/services/data/box_type.dart';
-import 'package:pokerapp/services/data/hive_datasource_impl.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/alerts.dart';
-import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/numeric_keyboard2.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/radio_list_widget.dart';
@@ -54,6 +51,7 @@ class _GameOptionState extends State<GameOption> {
   bool closed = false;
   AppTextScreen _appScreenText;
   GameSettingsInput _gameSettings;
+  GamePlayerSettingsInput _gamePlayerSettings;
   bool audioConfEnabled = false;
   bool straddleEnabled = false;
   bool bombPotEnabled = false;
@@ -77,7 +75,7 @@ class _GameOptionState extends State<GameOption> {
 
     if (!widget.gameState.running) {
       await GameService.leaveGame(this.gameCode);
-      widget.gameState.refresh(context);
+      widget.gameState.refresh();
     }
   }
 
@@ -92,7 +90,7 @@ class _GameOptionState extends State<GameOption> {
       GameService.endGame(this.gameCode);
     } else {
       await GameService.endGame(this.gameCode);
-      widget.gameState.refresh(context);
+      widget.gameState.refresh();
     }
   }
 
@@ -160,6 +158,11 @@ class _GameOptionState extends State<GameOption> {
     // Fetch gameSettings from server
     _gameSettings = await GameService.getGameSettings(gameCode);
     if (_gameSettings == null) {
+      return;
+    }
+
+    _gamePlayerSettings = await GameService.getGamePlayerSettings(gameCode);
+    if (_gamePlayerSettings == null) {
       return;
     }
 
@@ -321,8 +324,8 @@ class _GameOptionState extends State<GameOption> {
                 // setting the value saves it to local storage too
                 widget.gameState.settings.showChat = v;
                 log('In toggle button widget, showChat = ${widget.gameState.settings.showChat}');
-                widget.gameState.getCommunicationState().showTextChat = v;
-                widget.gameState.getCommunicationState().notify();
+                widget.gameState.communicationState.showTextChat = v;
+                widget.gameState.communicationState.notify();
                 setState(() {});
               },
             ),
@@ -447,6 +450,14 @@ class _GameOptionState extends State<GameOption> {
 
   Future<void> updateGameSettings() async {
     final res = await GameService.updateGameSettings(gameCode, _gameSettings);
+    if (res) {
+      Alerts.showNotification(titleText: "Settings updated!");
+    }
+  }
+
+  Future<void> updateGamePlayerSettings() async {
+    final res = await GameService.updateGamePlayerSettings(
+        gameCode, _gamePlayerSettings);
     if (res) {
       Alerts.showNotification(titleText: "Settings updated!");
     }
@@ -765,12 +776,15 @@ class _GameOptionState extends State<GameOption> {
             // Muck loosing hand
             _buildCheckBox(
                 text: _appScreenText['muckLosingHand'],
-                value: widget.gameState.gameInfo.playerMuckLosingHand,
+                value: widget.gameState.settings.muckLosingHand ?? false,
                 onChange: (bool v) async {
                   await GameService.updateGameConfig(widget.gameState.gameCode,
                       muckLosingHand: v);
                   // setting the value saves it to local storage too
-                  widget.gameState.gameInfo.playerMuckLosingHand = v;
+                  widget.gameState.settings.muckLosingHand = v;
+                  //update player settings to server.
+                  _gamePlayerSettings.muckLosingHand = v;
+                  await updateGamePlayerSettings();
                   if (closed) return;
                   setState(() {});
                 }),
@@ -778,18 +792,19 @@ class _GameOptionState extends State<GameOption> {
             // Run it twice
             _buildCheckBox(
               text: _appScreenText['promptRunItTwice'],
-              value: _gameSettings.runItTwiceAllowed,
+              value: _gamePlayerSettings.runItTwiceEnabled,
               onChange: (bool v) async {
                 // await GameService.updateGameConfig(widget.gameState.gameCode,
                 //     runItTwicePrompt: v);
                 // setting the value saves it to local storage too
-                _gameSettings.runItTwiceAllowed = v;
-                await GameService.updateGameSettings(gameCode, _gameSettings);
-                widget.gameState.gameInfo.playerRunItTwice = v;
+                _gamePlayerSettings.runItTwiceEnabled = v;
+                await updateGamePlayerSettings();
                 if (closed) return;
                 setState(() {});
               },
             ),
+
+            // Game sounds
             _buildCheckBox(
               text: _appScreenText['gameSounds'],
               value: widget.gameState.settings.gameSound,
@@ -802,6 +817,7 @@ class _GameOptionState extends State<GameOption> {
               },
             ),
 
+/* 
             Visibility(
               visible: widget.gameState.gameInfo.audioConfEnabled ?? true,
               child: _buildCheckBox(
@@ -818,26 +834,27 @@ class _GameOptionState extends State<GameOption> {
               ),
             ),
 
-            /* show straddle off and auto straddle options ONLY when the UTG STRADDLE is on */
+           */ /* show straddle off and auto straddle options ONLY when the UTG STRADDLE is on */
+
             // Straddle Checkbox
-            // TODO remove hardcoded value
             Visibility(
-              visible:
-                  true, // widget.gameState.gameInfo.utgStraddleAllowed ?? true,
+              visible: _gamePlayerSettings.straddle ??
+                  false, // widget.gameState.gameInfo.utgStraddleAllowed ?? true,
               child: Container(
-                decoration: widget.gameState.settings.straddleOption ?? true
+                decoration: _gamePlayerSettings.straddle ?? true
                     ? AppDecorators.tileDecorationWithoutBorder(theme)
                     : BoxDecoration(),
                 child: Column(
                   children: [
                     _buildCheckBox(
                       text: _appScreenText['straddle'],
-                      value: widget.gameState.settings.straddleOption,
+                      value: _gamePlayerSettings.straddle,
                       onChange: (bool v) async {
                         // setting the value saves it to local storage too
-                        //  TODO Need straddle in serverside.
 
                         widget.gameState.settings.straddleOption = v;
+                        _gamePlayerSettings.straddle = v;
+                        await updateGamePlayerSettings();
                         log('In toggle button widget, straddleOption = ${widget.gameState.settings.straddleOption}');
                         if (closed) return;
                         setState(() {});
@@ -846,7 +863,7 @@ class _GameOptionState extends State<GameOption> {
 
                     // Need variable for tracking auto choice.
                     Visibility(
-                      visible: widget.gameState.settings.straddleOption,
+                      visible: _gamePlayerSettings.autoStraddle,
                       child: Container(
                         margin: EdgeInsets.only(left: 16),
                         child: // auto straddle
@@ -863,6 +880,8 @@ class _GameOptionState extends State<GameOption> {
                             }
                             // setting the value saves it to local storage too
                             widget.gameState.settings.autoStraddle = v;
+                            _gamePlayerSettings.autoStraddle = v;
+                            await updateGamePlayerSettings();
                             log('In toggle button widget, autoStraddle = ${widget.gameState.settings.autoStraddle}');
                           },
                         ),
@@ -875,14 +894,14 @@ class _GameOptionState extends State<GameOption> {
 
             // need local variable for bombpot in gameInfo
             Visibility(
-              visible: true, //gameInfo.bombPot,
+              visible: _gamePlayerSettings.bombPotEnabled, //gameInfo.bombPot,
               child: _buildCheckBox(
                 text: "Participate in bomb pot",
                 value: true, //widget.gameState.settings.bombpot,
                 onChange: (bool v) async {
                   // setting the value saves it to local storage too
-                  _gameSettings.bombPotEnabled = v;
-                  await updateGameSettings();
+                  _gamePlayerSettings.bombPotEnabled = v;
+                  await updateGamePlayerSettings();
                   // widget.gameState.settings.bombPot = v;
                   log('In toggle button widget, gameSounds = ${widget.gameState.settings.gameSound}');
                   if (closed) return;
@@ -891,6 +910,7 @@ class _GameOptionState extends State<GameOption> {
               ),
             ),
 
+// Chat setting
             _buildCheckBox(
               text: "Chat",
               value: widget.gameState.settings.showChat ??
@@ -905,6 +925,7 @@ class _GameOptionState extends State<GameOption> {
               },
             ),
 
+// Participate in audio conference
             _buildCheckBox(
               text: "Participate in Audio conference",
               value: widget.gameState.settings.audioConf,

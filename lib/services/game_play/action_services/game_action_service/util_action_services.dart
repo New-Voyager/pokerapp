@@ -1,8 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
-import 'package:provider/provider.dart';
 
 class UtilActionServices {
   UtilActionServices._();
@@ -26,15 +23,13 @@ class UtilActionServices {
     if (handNum != receivedHandNum) return;
 
     // if I am the sender and the receiver, discard it
-    if (fromPlayerID == myPlayerID) return;
+    // if (fromPlayerID == myPlayerID) return;
 
     // print('this is here');
-    final Players players = gameState.players;
-
-    players.updateCardSilent(
-      chatMessage.seatNo,
-      chatMessage.cards,
-    );
-    players.notifyAll();
+    final seat = gameState.getSeat(chatMessage.seatNo);
+    if (seat != null) {
+      seat.player.revealCards.addAll(chatMessage.cards);
+      seat.notify();
+    }
   }
 }

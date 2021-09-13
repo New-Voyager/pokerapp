@@ -45,31 +45,6 @@ class CommunityCardAttribute {
   static getOffsetPosition(int idx) => cardOffsets[idx];
 }
 
-class PotAttribute {
-  GlobalKey _key;
-  Offset _globalPos;
-  Map<int, Offset> _seatDistance;
-
-  PotAttribute() {
-    _key = null;
-    _seatDistance = Map<int, Offset>();
-  }
-
-  void setSeatDistance(int seatNo, Offset distance) {
-    _seatDistance[seatNo] = distance;
-  }
-
-  Offset getSeatDistance(int seatNo) {
-    return _seatDistance[seatNo];
-  }
-
-  get key => this._key;
-  set key(GlobalKey key) => this._key = key;
-
-  get globalPos => this._globalPos;
-  set globalPos(Offset pos) => this._globalPos = pos;
-}
-
 enum SeatPos {
   bottomCenter,
   bottomLeft,
@@ -473,8 +448,6 @@ class BoardAttributesObject extends ChangeNotifier {
 
   Size _namePlateSize;
 
-  List<PotAttribute> _pots;
-
   // player view attributes
   Offset _playersOnTableOffset;
 
@@ -490,6 +463,9 @@ class BoardAttributesObject extends ChangeNotifier {
   // bet image
   Uint8List _betImage;
 
+  // center pot view key
+  GlobalKey _potKey;
+
   BoardAttributesObject({
     /*
     * This screen size is diagonal inches*/
@@ -501,7 +477,6 @@ class BoardAttributesObject extends ChangeNotifier {
     log('original screen size: $screenSize, rounded screen size: $_screenDiagnolSize');
     this._boardOrientation = orientation;
     this._namePlateSize = Size(70, 55);
-    this._pots = [];
 
     _playersOnTableOffset = Offset(0.0, -25.0);
 
@@ -514,6 +489,9 @@ class BoardAttributesObject extends ChangeNotifier {
       this._screenSize = ScreenSize.greaterThan7Inches;
     }
   }
+
+  GlobalKey get potKey => _potKey;
+  set potKey(GlobalKey key) => _potKey = key;
 
   set orientation(BoardOrientation o) {
     if (_boardOrientation == o) return;
@@ -548,7 +526,7 @@ class BoardAttributesObject extends ChangeNotifier {
     if (_boardOrientation == BoardOrientation.horizontal) {
       return {
         SeatPos.topCenter: Offset(25, 40),
-        SeatPos.bottomCenter: Offset(20, -40),
+        SeatPos.bottomCenter: Offset(30, -40),
         SeatPos.middleLeft: Offset(50, 0),
         SeatPos.middleRight: Offset(-50, 0),
         SeatPos.topRight: Offset(-40, 30),
@@ -659,33 +637,6 @@ class BoardAttributesObject extends ChangeNotifier {
       return 10.ph;
     } else {
       return 20.ph;
-    }
-  }
-
-  GlobalKey getPotsKey(int i) {
-    if (this._pots.length == 0 || i >= _pots.length) {
-      return null;
-    }
-    return this._pots[i].key;
-  }
-
-  // returns true, if the seats needs to be rebuilt
-  bool setPotsKey(int i, GlobalKey key) {
-    bool ret = false;
-    if (i <= _pots.length - 1) {
-      if (_pots[i].key == null) {
-        ret = true;
-      }
-      _pots[i].key = key;
-      return ret;
-    }
-    if (i == _pots.length) {
-      PotAttribute attr = PotAttribute();
-      attr.key = key;
-      _pots.add(attr);
-      return true;
-    } else {
-      throw Exception('Invalid index');
     }
   }
 
@@ -813,8 +764,8 @@ class BoardAttributesObject extends ChangeNotifier {
   }
 
   double get holeCardSizeRatio => _decide(
-        lessThan6Inches: _getScaleBasedOnNoOfCards * 3.0,
-        equalTo6Inches: _getScaleBasedOnNoOfCards * 3.4,
+        lessThan6Inches: _getScaleBasedOnNoOfCards * 4.0,
+        equalTo6Inches: _getScaleBasedOnNoOfCards * 4.0,
         equalTo7Inches: _getScaleBasedOnNoOfCards * 4.0,
         greaterThan7Inches: _getScaleBasedOnNoOfCards * 4.0,
       ) as double;

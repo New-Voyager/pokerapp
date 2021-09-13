@@ -560,7 +560,7 @@ showPlayerPopup(context, GlobalKey seatKey, GameState gameState, Seat seat) {
           break;
       }
     }
-    gameState.dismissPopup(context);
+    gameState.dismissPopup();
   });
 }
 

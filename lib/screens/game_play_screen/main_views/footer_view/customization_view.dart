@@ -25,7 +25,7 @@ class _HoleCardCustomizationViewState extends State<HoleCardCustomizationView> {
         onClickHandler: () async {
           await Navigator.of(context).pushNamed(Routes.select_cards);
           await gameState.assets.initialize();
-          final redrawBottom = gameState.getRedrawFooterSectionState(context);
+          final redrawBottom = gameState.redrawFooterState;
           redrawBottom.notify();
         },
         child: Icon(Icons.edit, size: 24, color: theme.primaryColorWithDark()),
