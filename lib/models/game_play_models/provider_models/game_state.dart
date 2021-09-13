@@ -827,11 +827,9 @@ class GameState {
 
   ActionState get actionState => this._actionState;
 
-  void showAction(bool show, {bool notify = false}) {
+  void showAction(bool show) {
     _actionState.show = show;
-    if (notify) {
-      _actionState.notify();
-    }
+    _actionState.notify();
   }
 
   void setAction(int seatNo, var seatAction) {

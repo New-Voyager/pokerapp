@@ -252,7 +252,7 @@ class PlayerActionHandler {
         // hide action widget
 
         if (_gameState.uiClosing) return;
-        _gameState.showAction(false, notify: true);
+        _gameState.showAction(false);
       }
       // log('next action seat: $seatNo player: ${player.name}');
       // highlight next action player
@@ -341,7 +341,7 @@ class PlayerActionHandler {
         // we are showing the straddle prompt
       } else {
         // don't show
-        _gameState.showAction(true, notify: true);
+        _gameState.showAction(true);
       }
     } finally {
       //log('Hand Message: ::handleYourAction:: END');
@@ -382,6 +382,10 @@ class PlayerActionHandler {
       seat.player.playerFolded = true;
       seat.player.animatingFold = true;
       seat.notify();
+      if (seat.isMe) {
+        // player folded
+        _gameState.myState.notify();
+      }
     } else if (action.action == HandActions.CHECK) {
       playSoundEffect(AppAssets.checkSound);
     }

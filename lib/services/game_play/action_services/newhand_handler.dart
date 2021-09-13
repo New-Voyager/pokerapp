@@ -136,6 +136,7 @@ class NewHandHandler {
         }
         final seat = gameState.getSeat(seatNo);
         seat.player = playerObj;
+        // log('****** INHAND: NEWHAND seatNo: ${seatNo} seatNo: ${playerObj.seatNo} name: ${playerObj.name} inhand: ${playerObj.inhand}');
       }
 
       // make sure no two users in the same seat
