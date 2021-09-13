@@ -140,7 +140,7 @@ class ResultOptionsWidget extends StatelessWidget {
                           Transform.scale(
                             scale: 1.5,
                             child: StackCardView00(
-                              cards: [145, 146],
+                              cards: rs.myCards,
                             ),
                           ),
                         ],
@@ -260,13 +260,13 @@ class ResultOptionsWidget extends StatelessWidget {
         ? Transform.scale(
             scale: 1.5,
             child: StackCardView00(
-              cards: [97, 98, 100, 104, 113], //rs.communityCards,
+              cards: rs.communityCards,
             ),
           )
         : Transform.scale(
             scale: 1.5,
             child: StackCardView00(
-              cards: [97, 98, 100, 104, 113], //_getHiddenCards(rs),
+              cards: _getHiddenCards(rs),
             ),
           );
   }
