@@ -4,20 +4,15 @@ import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
-import 'package:pokerapp/enums/player_status.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_constants.dart';
-import 'package:pokerapp/screens/game_context_screen/game_options/game_option_bottom_sheet.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/animating_widgets/my_last_action_animating_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/status_options_buttons.dart';
-import 'package:pokerapp/screens/util_screens/util.dart';
-import 'package:pokerapp/widgets/round_color_button.dart';
 import 'package:provider/provider.dart';
 import 'communication_view.dart';
 import 'customization_view.dart';
@@ -57,8 +52,7 @@ class _FooterViewState extends State<FooterView>
   PlayerActedState _myAction;
 
   final Function eq = const ListEquality().equals;
-
-  Players _players;
+  GameState _gameState;
 
   bool _needsRebuilding(PlayerModel me) {
     bool cardsChanged = true;
@@ -74,7 +68,7 @@ class _FooterViewState extends State<FooterView>
   }
 
   void onPlayersChanges() {
-    final PlayerModel me = _players?.me;
+    final PlayerModel me = _gameState.me;
 
     if (me == null) {
       return;
@@ -103,18 +97,20 @@ class _FooterViewState extends State<FooterView>
   /* init */
   void _init() {
     // get the game card visibility state from local storage
+    _gameState = GameState.getState(context);
     isHoleCardsVisibleVn.value =
-        context.read<GameState>().gameHiveStore.getHoleCardsVisibilityState();
+        _gameState.gameHiveStore.getHoleCardsVisibilityState();
 
-    _players = context.read<Players>();
-    mePlayerModelVn.value = _players?.me?.copyWith();
+    // _players = context.read<Players>();
+    // mePlayerModelVn.value = _players?.me?.copyWith();
 
-    // listen for changes in my PlayerModel state
-    _players?.addListener(onPlayersChanges);
+    // // listen for changes in my PlayerModel state
+    // _players?.addListener(onPlayersChanges);
+    _gameState.myState.addListener(onPlayersChanges);
   }
 
   void _dispose() {
-    _players?.removeListener(onPlayersChanges);
+    _gameState.myState.removeListener(onPlayersChanges);
   }
 
   /* hand analyse view builder */

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
-import 'package:pokerapp/models/game_play_models/business/player_model.dart';
+
+import 'player_model.dart';
 
 class GamePlayer {
   int id;

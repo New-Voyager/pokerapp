@@ -47,8 +47,9 @@ class RabbitState extends ChangeNotifier {
     notifyListeners();
   }
 
-  void putResult(HandStatus wonAt, int handNo, List<int> communityCards, List<int> mycards) {
-    if (wonAt != HandStatus.FLOP && wonAt != HandStatus.TURN) return;  
+  void putResult(HandStatus wonAt, int handNo, List<int> communityCards,
+      List<int> mycards) {
+    if (wonAt != HandStatus.FLOP && wonAt != HandStatus.TURN) return;
     _show = true;
     _communityCards = communityCards;
     _myCards = myCards;
@@ -65,13 +66,15 @@ class RabbitState extends ChangeNotifier {
     notifyListeners();
   }
 
-  void putResultProto(proto.HandResultClient result, {List<int> myCards = const []}) {
+  void putResultProto(proto.HandResultClient result,
+      {List<int> myCards = const []}) {
     if (result == null) return _clear();
     // if run it twice, do nothing
     if (result.boards.length >= 2) return;
 
     // if wonAt is not FLOP or TURN, we dont proceed
-    if (result.wonAt != HandStatus.FLOP && result.wonAt != HandStatus.TURN) return;
+    if (result.wonAt != HandStatus.FLOP && result.wonAt != HandStatus.TURN)
+      return;
 
     // fill in the values
     _show = true;

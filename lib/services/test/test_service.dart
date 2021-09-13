@@ -34,7 +34,7 @@ import 'iap_test.dart';
 
 class TestService {
   static bool get isTesting {
-    return true;
+    return false;
   }
 
   static var _showResult = false;
@@ -112,7 +112,7 @@ class TestService {
     final gameState = GameState.getState(_context);
     final seat = gameState.getSeat(1);
     final myState = gameState.myState;
-    seat.isDealer = true;
+    seat.dealer = true;
     seat.player.inhand = false;
     seat.player.inBreak = true;
     seat.player.status = AppConstants.IN_BREAK;
@@ -313,15 +313,14 @@ class TestService {
   }
 
   static Future<void> buyInTest() async {
-    final gameState = Provider.of<GameState>(_context, listen: false);
-    final players = gameState.players;
+    final gameState = GameState.getState(_context);
     final now = DateTime.now();
     var exp = DateTime.now();
     exp = exp.add(Duration(seconds: 20));
-    players.me.buyInTimeExpAt = exp.toUtc();
-    log('now: ${now.toIso8601String()} exp: ${exp.toIso8601String()} utc: ${players.me.buyInTimeExpAt.toIso8601String()}');
-    players.me.showBuyIn = true;
-    players.me.stack = 0;
+    gameState.me.buyInTimeExpAt = exp.toUtc();
+    log('now: ${now.toIso8601String()} exp: ${exp.toIso8601String()} utc: ${gameState.me.buyInTimeExpAt.toIso8601String()}');
+    gameState.me.showBuyIn = true;
+    gameState.me.stack = 0;
 
     final seat4 = gameState.getSeat(4);
     exp = now.add(Duration(seconds: 30));
@@ -329,8 +328,7 @@ class TestService {
     seat4.player.stack = 0;
     seat4.player.buyInTimeExpAt = exp.toUtc();
     // redraw seat
-    final seat = gameState.getSeat(players.me.seatNo);
-    players.notifyAll();
+    final seat = gameState.getSeat(gameState.me.seatNo);
     seat.notify();
   }
 
@@ -471,8 +469,7 @@ class TestService {
     // }
 
     player.noOfCardsVisible = player.cards.length;
-    final players = gameState.players;
-    players.notifyAll();
+    gameState.notifyAllSeats();
   }
 
   // static Future<void> sendNewHand() async {
@@ -506,7 +503,7 @@ class TestService {
     final gameState = GameState.getState(_context);
     final seat = gameState.getSeat(5);
 
-    seat.isDealer = true;
+    seat.dealer = true;
   }
 
   static void seatChange() {
@@ -615,8 +612,7 @@ class TestService {
     for (final seat in seats) {
       seat.player.noOfCardsVisible = 2;
     }
-    final players = gameState.players;
-    players.notifyAll();
+    gameState.notifyAllSeats();
 
     /* wait then run fold */
     //Future.delayed(const Duration(milliseconds: 800)).then((value) => fold());
@@ -777,7 +773,7 @@ class TestService {
 
   static void showPlayerStatus() {
     final gameState = GameState.getState(_context);
-    final players = gameState.players;
+    final players = gameState.playersInGame;
 
     for (int i = 1; i < 10; i++) {
       final seat = gameState.getSeat(i);
@@ -788,33 +784,33 @@ class TestService {
       ));
     }
 
-    players.notifyAll();
+    gameState.notifyAllSeats();
   }
 
   static void showDownCards() {
     final gameState = GameState.getState(_context);
-    final players = gameState.players;
+    final players = gameState.playersInGame;
 
     // _context.read<ValueNotifier<FooterStatus>>().value = FooterStatus.Result;
 
     for (int i = 1; i < 10; i++) {
-      players.updateCardSilent(i, [50, 50, 50, 50, 50]);
+      players[i].cards = [50, 50, 50, 50, 50];
     }
 
-    players.notifyAll();
+    gameState.notifyAllSeats();
   }
 
   static void removeShowDownCards() {
     final gameState = GameState.getState(_context);
-    final players = gameState.players;
+    final players = gameState.playersInGame;
 
     // _context.read<ValueNotifier<FooterStatus>>().value = FooterStatus.None;
 
     for (int i = 1; i < 10; i++) {
-      players.updateCardSilent(i, []);
+      players[i].cards = [];
     }
 
-    players.notifyAll();
+    gameState.notifyAllSeats();
   }
 
   // static void dealerChoiceGame() async {
