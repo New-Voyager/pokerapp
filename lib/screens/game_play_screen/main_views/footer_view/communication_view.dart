@@ -51,7 +51,10 @@ class _CommunicationViewState extends State<CommunicationView> {
                 log('PlayerStatus = ${status}, '
                     'audioConferenceStatus = ${communicationState.audioConferenceStatus}, '
                     'voiceChatEnable = ${communicationState.voiceChatEnable}');
-                if (communicationState.showTextChat) {
+                bool gameChatEnabled = (gameState.gameSettings.chat ?? true);
+                bool playerChatEnabled =
+                    (gameState.playerLocalConfig.showChat ?? true);
+                if (gameChatEnabled && playerChatEnabled) {
                   children.add(
                     Consumer<GameChatNotifState>(
                       builder: (_, gcns, __) => Badge(
@@ -92,9 +95,11 @@ class _CommunicationViewState extends State<CommunicationView> {
                   } else {
                     // when the user turns off audio conf
                     log('User turned off audio conf, showing audioChatWidgets');
-                    children.addAll(audioChatWidgets(theme));
+                    if (gameState.gameSettings.chat ?? true) {
+                      children.addAll(voiceTextWidgets(widget.chatService));
+                    }
                   }
-                } else if (communicationState.voiceChatEnable) {
+                } else if (gameChatEnabled && playerChatEnabled) {
                   children.addAll(voiceTextWidgets(widget.chatService));
                 }
 
@@ -390,14 +395,6 @@ class _CommunicationViewState extends State<CommunicationView> {
 
   voiceTextWidgets(GameMessagingService chatService) {
     return <Widget>[
-      // Padding(
-      //   padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
-      //   child: Icon(
-      //     Icons.circle,
-      //     size: 15,
-      //     color: Colors.grey,
-      //   ),
-      // ),
       VoiceTextWidget(
         recordStart: () => record(),
         recordStop: (int dur) {
@@ -405,22 +402,6 @@ class _CommunicationViewState extends State<CommunicationView> {
         },
         recordCancel: () => stopRecording(true, 0),
       ),
-    ];
-  }
-
-  audioChatWidgets(AppTheme theme) {
-    return [
-      GestureDetector(
-        onLongPress: () => onMicPress(context),
-        onLongPressEnd: (LongPressEndDetails details) =>
-            onMicPressEnd(context, details),
-        child: Icon(
-          Icons.mic,
-          color: theme.accentColor,
-          size: 34.pw,
-        ),
-      ),
-      SizedBox(height: 15),
     ];
   }
 

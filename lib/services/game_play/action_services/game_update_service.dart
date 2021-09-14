@@ -902,7 +902,7 @@ class GameUpdateService {
     var data,
   }) async {
     // refresh game settings
-    _gameState.refreshGameSettings();
+    await _gameState.refreshSettings();
     _gameState.gameSettingsState.notify();
   }
 
@@ -1460,7 +1460,7 @@ class GameUpdateService {
   playSoundEffect(String soundFile) {
     return;
 
-    if (_gameState.config.gameSound) {
+    if (_gameState.playerLocalConfig.gameSound) {
       _gameState
           .getAudioBytes(soundFile)
           .then((value) => audioPlayer.playBytes(value));

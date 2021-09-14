@@ -399,6 +399,91 @@ showPlayerPopup(context, GlobalKey seatKey, GameState gameState, Seat seat) {
 
   double menuItemHeight = 40;
   final mySeat = gameState.mySeat;
+  List<PopupMenuItem> items = [];
+  int noteIdx = -1;
+  int animationIdx = -1;
+  int kickIdx = -1;
+  int muteIdx = -1;
+  if (mySeat != null) {
+    noteIdx = items.length;
+    items.add(PopupMenuItem(
+      height: menuItemHeight,
+      value: 0,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Text(
+            _appScreenText['note'],
+          ),
+          Icon(
+            Icons.note,
+            color: AppColorsNew.yellowAccentColor,
+          ),
+        ],
+      ),
+    ));
+    if (gameState.gameSettings.funAnimations ?? true) {
+      animationIdx = items.length;
+      items.add(PopupMenuItem(
+        value: 1,
+        height: menuItemHeight,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              _appScreenText['animation'],
+            ),
+            Icon(
+              Icons.note,
+              color: AppColorsNew.yellowAccentColor,
+            ),
+          ],
+        ),
+      ));
+    }
+  }
+  if (gameState.currentPlayer.isAdmin()) {
+    kickIdx = items.length;
+    items.add(PopupMenuItem(
+      value: 3,
+      height: menuItemHeight,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Text(
+            _appScreenText['kick'],
+          ),
+          Icon(
+            Icons.ios_share,
+            color: AppColorsNew.yellowAccentColor,
+          ),
+        ],
+      ),
+    ));
+
+    muteIdx = items.length;
+    items.add(PopupMenuItem(
+      value: 2,
+      height: menuItemHeight,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Text(
+            _appScreenText['mute'],
+          ),
+          Icon(
+            Icons.volume_off,
+            color: AppColorsNew.yellowAccentColor,
+          ),
+        ],
+      ),
+    ));
+  }
+
+  if (items.length == 0) {
+    return;
+  }
+
   showMenu(
     context: context,
     color: AppColorsNew.actionRowBgColor,
@@ -409,154 +494,49 @@ showPlayerPopup(context, GlobalKey seatKey, GameState gameState, Seat seat) {
       ),
     ),
     position: position,
-    items: <PopupMenuEntry>[
-      (mySeat != null)
-          ? PopupMenuItem(
-              height: menuItemHeight,
-              value: 0,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text(
-                    _appScreenText['note'],
-                  ),
-                  Icon(
-                    Icons.note,
-                    color: AppColorsNew.yellowAccentColor,
-                  ),
-                ],
-              ),
-            )
-          : PopupMenuItem(child: SizedBox.shrink(), height: 0),
-      (mySeat != null)
-          ? PopupMenuItem(
-              value: 1,
-              height: menuItemHeight,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    _appScreenText['animation'],
-                  ),
-                  Icon(
-                    Icons.note,
-                    color: AppColorsNew.yellowAccentColor,
-                  ),
-                  // Lottie.asset(
-                  //   'assets/animations/chicken.json',
-                  //   height: 32,
-                  //   width: 32,
-                  //   controller: _controller,
-                  //   onLoaded: (composition) {
-                  //     // Configure the AnimationController with the duration of the
-                  //     // Lottie file and start the animation.
-                  //     _controller
-                  //       ..duration = composition.duration
-                  //       ..forward();
-                  //   },
-                  // ),
-                ],
-              ),
-            )
-          : PopupMenuItem(child: SizedBox.shrink(), height: 0),
-      (gameState.currentPlayer.isAdmin())
-          ? PopupMenuItem(
-              value: 2,
-              height: menuItemHeight,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text(
-                    _appScreenText['mute'],
-                  ),
-                  Icon(
-                    Icons.volume_off,
-                    color: AppColorsNew.yellowAccentColor,
-                  ),
-                ],
-              ),
-            )
-          : PopupMenuItem(child: SizedBox.shrink(), height: 0),
-      (gameState.currentPlayer.isAdmin())
-          ? PopupMenuItem(
-              value: 3,
-              height: menuItemHeight,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text(
-                    _appScreenText['kick'],
-                  ),
-                  Icon(
-                    Icons.ios_share,
-                    color: AppColorsNew.yellowAccentColor,
-                  ),
-                ],
-              ),
-            )
-          : PopupMenuItem(
-              child: SizedBox.shrink(),
-              height: 0,
-            ),
-    ],
+    items: items,
   ).then<void>((delta) async {
     // delta would be null if user taps on outside the popup menu
     // (causing it to close without making selection)
 
     if (delta != null) {
-      switch (delta) {
-        case 0:
-          // Handling note selection
-          log('user selected NOTE option');
-          handleNotesPopup(context, seat);
+      if (delta == noteIdx) {
+        handleNotesPopup(context, seat);
+      } else if (delta == animationIdx) {
+        final data = await showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              backgroundColor: Colors.transparent,
+              elevation: 10,
+              contentPadding: EdgeInsets.zero,
+              content: ProfilePopup(
+                seat: gameState.popupSelectedSeat,
+              ),
+            );
+          },
+        );
 
-          break;
+        if (data == null) return;
+        // log("SEATNO1:: ${widget.gameState.myState.seatNo}");
+        // log("SEATNO2:: ${widget.gameState.getMyState(context).seatNo}");
+        // log("SEAT FROM:: ${widget.gameState.me(context).seatNo}");
+        // log("SEAT TO:: ${widget.gameState.popupSelectedSeat.serverSeatPos}");
 
-        // Animation
-        case 1:
-          final data = await showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                backgroundColor: Colors.transparent,
-                elevation: 10,
-                contentPadding: EdgeInsets.zero,
-                content: ProfilePopup(
-                  seat: gameState.popupSelectedSeat,
-                ),
-              );
-            },
-          );
-
-          if (data == null) return;
-          // log("SEATNO1:: ${widget.gameState.myState.seatNo}");
-          // log("SEATNO2:: ${widget.gameState.getMyState(context).seatNo}");
-          // log("SEAT FROM:: ${widget.gameState.me(context).seatNo}");
-          // log("SEAT TO:: ${widget.gameState.popupSelectedSeat.serverSeatPos}");
-
-          gameState.gameComService.gameMessaging.sendAnimation(
-            gameState.me?.seatNo,
-            seat.serverSeatPos,
-            data['animationID'],
-          );
-          break;
-
-// Mute option
-        case 2:
-          log('user selected mute option');
-          break;
-
-        // Kickoption
-        case 3:
-          log('calling kickPlayer with ${gameState.gameCode} and ${seat.player.playerUuid}');
-          PlayerService.kickPlayer(gameState.gameCode, seat.player.playerUuid);
-          Alerts.showNotification(
-              titleText: _appScreenText['playerWillBeRemovedAfterThisHand'],
-              duration: Duration(seconds: 5));
-          break;
+        gameState.gameComService.gameMessaging.sendAnimation(
+          gameState.me?.seatNo,
+          seat.serverSeatPos,
+          data['animationID'],
+        );
+      } else if (delta == muteIdx) {
+      } else if (delta == kickIdx) {
+        PlayerService.kickPlayer(gameState.gameCode, seat.player.playerUuid);
+        Alerts.showNotification(
+            titleText: _appScreenText['playerWillBeRemovedAfterThisHand'],
+            duration: Duration(seconds: 5));
       }
+      gameState.dismissPopup();
     }
-    gameState.dismissPopup();
   });
 }
 
