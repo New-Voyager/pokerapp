@@ -643,9 +643,63 @@ class _GameOptionState extends State<GameOption> {
               ),
             ),
             AppDimensionsNew.getVerticalSizedBox(8),
-
-            // TODO: SHOW THE FOLLOWING WIDGET, ONLY IF BOMB POT IS ACTIVE
-            // bomb pot relates settings, SHOW only if bomb pot is ENABLED
+            // bomb pot
+            Container(
+              decoration: _gameSettings.breakAllowed
+                  ? AppDecorators.tileDecorationWithoutBorder(theme)
+                  : BoxDecoration(),
+              child: Column(
+                children: [
+                  _buildCheckBox(
+                    text: 'Player Break Allowed',
+                    value: _gameSettings.breakAllowed,
+                    onChange: (bool v) async {
+                      _gameSettings.breakAllowed = v;
+                      if (_gameSettings.breakLength == null || _gameSettings.breakLength == 0) {
+                        _gameSettings.breakLength = 3;
+                      }
+                      await updateGameSettings();
+                      if (closed) return;
+                      setState(() {});
+                    },
+                  ),
+                  _gameSettings.breakAllowed
+                      ? Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16,
+                          ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              // choose interval label
+                              Container(
+                                margin: EdgeInsets.only(
+                                    bottom: 10.0, left: 10.0, right: 10.0),
+                                child: Text(
+                                  'Break Length (in mins)',
+                                  style: AppDecorators.getHeadLine4Style(
+                                      theme: theme),
+                                ),
+                              ),
+                              // choose interval
+                              RadioListWidget(
+                                defaultValue:
+                                    _gameSettings.breakLength == null ? 3 :
+                                     _gameSettings.breakLength,
+                                values: [1, 3, 5, 10, 15],
+                                onSelect: (int value) async {
+                                  _gameSettings.breakLength = value;
+                                  await updateGameSettings();
+                                },
+                              ),
+                            ],
+                          ),
+                        )
+                      : const SizedBox.shrink(),
+                ],
+              ),
+            ),
 
             // results wait
             _buildCheckBox(

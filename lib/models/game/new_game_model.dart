@@ -83,7 +83,7 @@ class NewGameModel {
   bool allowRabbitHunt = true;
   bool showHandRank = false;
   bool useAgora = false;
-  bool breakAllowed = false;
+  bool breakAllowed = true;
   int breakTime = 5;
   /*
     bombPotEnabled: Boolean
