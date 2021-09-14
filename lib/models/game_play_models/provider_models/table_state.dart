@@ -68,6 +68,8 @@ class TableState extends ChangeNotifier {
     _twoBoardsNeeded = false;
     _potToHighlight = -1;
     _whichWinner = null;
+    this.dimBoard1 = false;
+    this.dimBoard2 = false;
   }
 
   void notifyAll() => notifyListeners();

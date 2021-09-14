@@ -282,6 +282,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         hostSeatChangeInProgress: _hostSeatChangeInProgress,
         hostSeatChangeSeats: _hostSeatChangeSeats,
       );
+      await _gameState.refreshGameSettings();
     }
 
     if (_gameInfoModel?.audioConfEnabled ?? false) {

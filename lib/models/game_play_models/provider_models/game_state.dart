@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
+import 'package:pokerapp/models/game/game_settings.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/marked_cards.dart';
@@ -13,6 +14,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/models/rabbit_state.dart';
+import 'package:pokerapp/proto/hand.pbenum.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/services/agora/agora.dart';
 import 'package:pokerapp/services/app/asset_service.dart';
@@ -82,10 +84,12 @@ class GameState {
       _redrawFooterSectionStateProvider;
   ListenableProvider<CardDistributionState> _cardDistribProvider;
   ListenableProvider<HandChangeState> _handChangeStateProvider;
+  ListenableProvider<HandResultState> _handResultStateProvider;
   ListenableProvider<HoleCardsState> _holeCardsProvider;
   /* rabbit state */
   ListenableProvider<RabbitState> _rabbitStateProvider;
   ListenableProvider<SeatsOnTableState> _seatsOnTableProvider;
+  ListenableProvider<GameSettingsState> _gameSettingsProvider;
 
   StraddlePromptState _straddlePromptState;
   HoleCardsState _holeCardsState;
@@ -97,9 +101,11 @@ class GameState {
   CardDistributionState _cardDistribState;
   ServerConnectionState _connectionState;
   HandChangeState _handChangeState;
+  HandResultState _handResultState;
   GameMessagingService _gameMessageService;
   RabbitState _rabbitState;
   SeatsOnTableState _seatsOnTableState;
+  GameSettingsState _gameSettingsState;
 
   // For posting blind
   // bool postedBlind;
@@ -115,9 +121,12 @@ class GameState {
   MyState _myState;
   SeatPos _tappedSeatPos;
   HandState handState = HandState.UNKNOWN;
+  HandStatus wonat;
 
   String _gameCode;
   GameInfoModel _gameInfo;
+  GameSettings _gameSettings;
+
   Map<int, Seat> _seats = Map<int, Seat>();
   List<PlayerModel> _playersInGame;
 
@@ -139,8 +148,9 @@ class GameState {
   bool hostSeatChangeInProgress = false;
 
   bool gameSounds = true;
-  GameSettings settings;
+  GameConfiguration config;
   GameHiveStore gameHiveStore;
+  GameSettings gameSettings; // server settings
   bool replayMode = false;
 
   // high-hand state
@@ -184,6 +194,7 @@ class GameState {
     bool customizationMode = false,
   }) async {
     // this.postedBlind = true;
+    this.wonat = HandStatus.HandStatus_UNKNOWN;
     this._seats = Map<int, Seat>();
     this._gameInfo = gameInfo;
     this._gameCode = gameCode;
@@ -237,14 +248,19 @@ class GameState {
     this._connectionState = ServerConnectionState();
     this._redrawTopState = RedrawTopSectionState();
     this._handChangeState = HandChangeState();
+    this._handResultState = HandResultState();
     this._rabbitState = RabbitState();
     this._seatsOnTableState = SeatsOnTableState();
+    this._gameSettingsState = GameSettingsState();
 
     // this._waitlistProvider =
     //     ListenableProvider<WaitlistState>(create: (_) => WaitlistState());
 
     this._handChangeStateProvider =
         ListenableProvider<HandChangeState>(create: (_) => _handChangeState);
+    this._handResultStateProvider =
+        ListenableProvider<HandResultState>(create: (_) => _handResultState);
+
     this._connectionStateProvider = ListenableProvider<ServerConnectionState>(
         create: (_) => _connectionState);
 
@@ -271,6 +287,8 @@ class GameState {
         ListenableProvider<RabbitState>(create: (_) => _rabbitState);
     this._seatsOnTableProvider = ListenableProvider<SeatsOnTableState>(
         create: (_) => _seatsOnTableState);
+    this._gameSettingsProvider = ListenableProvider<GameSettingsState>(
+        create: (_) => _gameSettingsState);
 
     this.janusEngine = JanusEngine(
         gameState: this,
@@ -364,14 +382,14 @@ class GameState {
           log('In GameState initialize(), gameBox is empty');
 
           // create a new settings object, and init it (by init -> saves locally)
-          settings = GameSettings(gameCode, gameHiveStore);
-          await settings.init();
+          config = GameConfiguration(gameCode, gameHiveStore);
+          await config.init();
         } else {
           log('In GameState initialize(), getting gameSettings from gameBox');
-          settings = gameHiveStore.getGameSettings();
+          config = gameHiveStore.getGameConfiguration();
         }
-        log('In GameState initialize(), gameSettings = $settings');
-        _communicationState.showTextChat = settings.showChat;
+        log('In GameState initialize(), gameSettings = $config');
+        _communicationState.showTextChat = config.showChat;
       }
     }
   }
@@ -462,6 +480,8 @@ class GameState {
 
   HandChangeState get handChangeState => this._handChangeState;
 
+  HandResultState get handResultState => this._handResultState;
+
   ListenableProvider<HandChangeState> get handChangeStateProvider =>
       this._handChangeStateProvider;
 
@@ -521,6 +541,8 @@ class GameState {
 
   SeatsOnTableState get seatsOnTableState => this._seatsOnTableState;
 
+  GameSettingsState get gameSettingsState => this._gameSettingsState;
+
   bool get isGameRunning {
     bool tableRunning =
         _tableState.tableStatus == AppConstants.TABLE_STATUS_GAME_RUNNING ||
@@ -537,6 +559,13 @@ class GameState {
   int get currentHandNum => this._currentHandNum;
 
   set currentHandNum(int handNum) => this._currentHandNum = currentHandNum;
+
+  Future<void> refreshSettings() async {
+    log('************ Refreshing game state');
+    // fetch new player using GameInfo API and add to the game
+    GameSettings gameSettings = await GameService.getGameSettings(gameCode);
+    this.gameSettings = gameSettings;
+  }
 
   Future<void> refresh({bool rebuildSeats = false}) async {
     log('************ Refreshing game state');
@@ -614,6 +643,13 @@ class GameState {
     }
 
     this._handInfo.notify();
+  }
+
+  Future<void> refreshGameSettings() async {
+    log('************ Refreshing game state');
+    // fetch new player using GameInfo API and add to the game
+    final gameSettings = await GameService.getGameSettings(this.gameCode);
+    this.gameSettings = gameSettings;
   }
 
   void seatPlayer(int seatNo, PlayerModel player) {
@@ -755,8 +791,10 @@ class GameState {
       this._redrawFooterSectionStateProvider,
       this._cardDistribProvider,
       this._handChangeStateProvider,
+      this._handResultStateProvider,
       this._rabbitStateProvider,
       this._seatsOnTableProvider,
+      this._gameSettingsProvider,
     ];
   }
 
@@ -1381,6 +1419,12 @@ class HandChangeState extends ChangeNotifier {
   }
 }
 
+class HandResultState extends ChangeNotifier {
+  void notify() {
+    this.notifyListeners();
+  }
+}
+
 // /**
 //  * The states that affect the current player.
 //  */
@@ -1391,6 +1435,12 @@ class MyState extends ChangeNotifier {
 }
 
 class SeatsOnTableState extends ChangeNotifier {
+  void notify() {
+    notifyListeners();
+  }
+}
+
+class GameSettingsState extends ChangeNotifier {
   void notify() {
     notifyListeners();
   }

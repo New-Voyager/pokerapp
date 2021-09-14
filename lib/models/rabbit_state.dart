@@ -50,6 +50,7 @@ class RabbitState extends ChangeNotifier {
   void putResult(HandStatus wonAt, int handNo, List<int> communityCards,
       List<int> mycards) {
     if (wonAt != HandStatus.FLOP && wonAt != HandStatus.TURN) return;
+    _wonAt = wonAt;
     _show = true;
     _communityCards = communityCards;
     _myCards = myCards;
@@ -78,16 +79,16 @@ class RabbitState extends ChangeNotifier {
 
     // fill in the values
     _show = true;
-    _wonAt = wonAt;
+    _wonAt = result.wonAt;
     _handNo = result.handNum;
     _communityCards = result.boards[0].cards;
     _myCards = myCards;
 
     // fill revealed cards
-    if (wonAt == AppConstants.FLOP) {
+    if (_wonAt == HandStatus.FLOP) {
       // we already have 3 cards at table
       _revealedCards = _communityCards.sublist(3);
-    } else if (wonAt == AppConstants.TURN) {
+    } else if (_wonAt == HandStatus.TURN) {
       // we already have 4 cards at table
       _revealedCards = _communityCards.sublist(4);
     }

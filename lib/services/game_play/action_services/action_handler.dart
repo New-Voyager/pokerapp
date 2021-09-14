@@ -231,6 +231,7 @@ class PlayerActionHandler {
       handleYourAction(yourAction);
     }
     _gameState.notifyAllSeats();
+    _gameState.myState.notify();
   }
 
   Future<void> handleNextAction(proto.HandMessageItem message) async {
@@ -359,6 +360,10 @@ class PlayerActionHandler {
     // show a prompt regarding last player action
 
     final seat = _gameState.getSeat(seatNo);
+    if (seat.isMe) {
+      _gameState.showAction(false);
+      _gameState.myState.notify();
+    }
     // hide straddle dialog
     if (_gameState.straddlePrompt) {
       _gameState.straddlePrompt = false;
