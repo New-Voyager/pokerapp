@@ -353,7 +353,7 @@ class PlayerActionHandler {
     final playerActed = message.playerActed;
     int seatNo = playerActed.seatNo;
     log('HandMessage: ${message.playerActed.seatNo} action: ${message.playerActed.action.name}');
-    
+
     //log('Hand Message: ::handlePlayerActed:: START seatNo: $seatNo');
 
     if (_gameState.uiClosing) return;

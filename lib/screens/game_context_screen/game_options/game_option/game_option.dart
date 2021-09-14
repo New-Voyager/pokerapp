@@ -214,23 +214,6 @@ class _GameOptionState extends State<GameOption> {
         },
       ),
     ];
-
-    // gameSecondaryOptions.add(
-    //   OptionItemModel(
-    //       title: _appScreenText['waitingList'],
-    //       image: "assets/images/casino.png",
-    //       name: _appScreenText['addToWaitingList'],
-    //       backGroundColor: Colors.blue,
-    //       onTap: (context) async {
-    //         await showModalBottomSheet(
-    //             context: context,
-    //             isScrollControlled: true,
-    //             builder: (ctx) {
-    //               return WaitingListBottomSheet(
-    //                   widget.gameState, widget.gameCode, widget.playerUuid);
-    //             });
-    //       }),
-    // );
   }
 
   Widget _buildCheckBox({
@@ -569,6 +552,9 @@ class _GameOptionState extends State<GameOption> {
                     value: _gameSettings.bombPotEnabled,
                     onChange: (bool v) async {
                       _gameSettings.bombPotEnabled = v;
+                      if (_gameSettings.bombPotIntervalInSecs == 0) {
+                        _gameSettings.bombPotIntervalInSecs = 30*60;
+                      }
                       await updateGameSettings();
                       if (closed) return;
                       setState(() {});
@@ -596,10 +582,33 @@ class _GameOptionState extends State<GameOption> {
                               // choose interval
                               RadioListWidget(
                                 defaultValue:
-                                    _gameSettings.bombPotIntervalInSecs,
-                                values: [15, 30, 60, 90, 120],
-                                onSelect: (int value) {
-                                  _gameSettings.bombPotIntervalInSecs = value;
+                                    _gameSettings.bombPotInterval == null ? 30 :
+                                     _gameSettings.bombPotInterval,
+                                values: [2, 15, 30, 60, 90, 120],
+                                onSelect: (int value) async {
+                                  _gameSettings.bombPotInterval = value;
+                                  await updateGameSettings();
+                                },
+                              ),
+                              // choose bomb pot size
+                              Container(
+                                margin: EdgeInsets.only(
+                                    bottom: 10.0, left: 10.0, right: 10.0),
+                                child: Text(
+                                  'Bomb Pot Bet Size (x BB)',
+                                  style: AppDecorators.getHeadLine4Style(
+                                      theme: theme),
+                                ),
+                              ),
+                              // choose interval
+                              RadioListWidget(
+                                defaultValue:
+                                    _gameSettings.bombPotBet == null ? 5 :
+                                     _gameSettings.bombPotBet,
+                                values: [2, 5, 10, 15, 20],
+                                onSelect: (int value) async {
+                                  _gameSettings.bombPotBet = value;
+                                  await updateGameSettings();
                                 },
                               ),
 
@@ -610,6 +619,7 @@ class _GameOptionState extends State<GameOption> {
                                 onChange: (bool v) async {
                                   _gameSettings.bombPotEveryHand = v;
                                   if (closed) return;
+                                  await updateGameSettings();
                                   setState(() {});
                                 },
                               ),
@@ -621,6 +631,7 @@ class _GameOptionState extends State<GameOption> {
                                 onChange: (bool v) async {
                                   _gameSettings.doubleBoardBombPot = v;
                                   if (closed) return;
+                                  await updateGameSettings();
                                   setState(() {});
                                 },
                               ),

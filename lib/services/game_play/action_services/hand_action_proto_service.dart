@@ -932,10 +932,10 @@ class HandActionProtoService {
     if (_close) return;
 
     if (_gameState.isPlaying) {
-      _context.read<RabbitState>().putResultProto(
-            result,
-            myCards: _gameState.mySeat.player.cards,
-          );
+      _gameState.rabbitState.putResultProto(
+        result,
+        myCards: _gameState.mySeat.player.cards,
+      );
     }
 
     if (_close) return;
