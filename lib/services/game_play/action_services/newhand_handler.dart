@@ -215,9 +215,9 @@ class NewHandHandler {
         if (gameState.gameInfo.utgStraddleAllowed &&
             nextActionSeat.player.stack >= 2 * gameState.gameInfo.bigBlind) {
           // set straddlePrompt true
-          if (gameState.settings.straddleOption) {
+          if (gameState.config.straddleOption) {
             // we show the straddle dialog only when the auto straddle is off
-            if (gameState.settings.autoStraddle == true) {
+            if (gameState.config.autoStraddle == true) {
               // set straddle bet
               gameState.straddleBetThisHand = true;
             } else {

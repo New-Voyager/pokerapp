@@ -181,6 +181,10 @@ class GameUpdateService {
           return handleNewPlayerUpdate(
             data: data,
           );
+        case AppConstants.GAME_SETTINGS_CHANGED:
+          return handleGameSettingsChanged(
+            data: data,
+          );
         case AppConstants.TABLE_UPDATE:
           return handleNewTableUpdate(
             data: data,
@@ -468,6 +472,48 @@ class GameUpdateService {
     _gameState.notifyAllSeats();
   }
 
+  void handlePlayerWaitForBuyin({
+    @required var playerUpdate,
+  }) async {
+    int seatNo = playerUpdate['seatNo'];
+    if (closed || _gameState.uiClosing) return;
+    final seat = _gameState.getSeat(seatNo);
+
+    GameInfoModel _gameInfoModel =
+        await GameService.getGameInfo(_gameState.gameCode);
+    assert(_gameInfoModel != null);
+
+    if (seat != null && seat.player != null) {
+      seat.player.waitForBuyInApproval = true;
+      seat.player.status = PlayerStatus.WAIT_FOR_BUYIN
+          .toString()
+          .replaceAll('PlayerStatus.', '');
+      // get break exp time
+      for (final player in _gameInfoModel.playersInSeats) {
+        if (player.seatNo == seat.serverSeatPos) {
+          seat.player.buyInTimeExpAt = player.buyInTimeExpAt.toLocal();
+          DateTime now = DateTime.now();
+          if (seat.player.buyInTimeExpAt != null) {
+            final diff = seat.player.buyInTimeExpAt.difference(now);
+            log('now: ${now.toIso8601String()} buyInTimeExpAt: ${seat.player.buyInTimeExpAt.toIso8601String()} buyInTimeExpAt time expires in ${diff.inSeconds}');
+          }
+
+          // update my state to show sitback button
+          if (seat.player.isMe) {
+            if (closed || _gameState.uiClosing) return;
+            final myState = _gameState.myState;
+            myState.notify();
+          }
+          break;
+        }
+      }
+      seat.notify();
+    }
+    if (closed || _gameState.uiClosing) return;
+    final tableState = _gameState.tableState;
+    tableState.notifyAll();
+  }
+
   void handlePlayerWaitForBuyinApproval({
     @required var playerUpdate,
   }) async {
@@ -724,6 +770,11 @@ class GameUpdateService {
         return handlePlayerWaitForBuyinApproval(
           playerUpdate: playerUpdate,
         );
+      case AppConstants.WAIT_FOR_BUYIN:
+        return handlePlayerWaitForBuyin(
+          playerUpdate: playerUpdate,
+        );
+
       case AppConstants.BUYIN_DENIED:
         return handlePlayerBuyinDenied(
           playerUpdate: playerUpdate,
@@ -798,6 +849,10 @@ class GameUpdateService {
         return handlePlayerWaitForBuyinApproval(
           playerUpdate: playerUpdate,
         );
+      case AppConstants.WAIT_FOR_BUYIN:
+        return handlePlayerWaitForBuyin(
+          playerUpdate: playerUpdate,
+        );
       case AppConstants.BUYIN_DENIED:
         return handlePlayerBuyinDenied(
           playerUpdate: playerUpdate,
@@ -841,6 +896,14 @@ class GameUpdateService {
       // show a flush bar at the top
       handleWaitlistSeating(data: data);
     }
+  }
+
+  void handleGameSettingsChanged({
+    var data,
+  }) async {
+    // refresh game settings
+    _gameState.refreshGameSettings();
+    _gameState.gameSettingsState.notify();
   }
 
   void handleNewTableUpdate({
@@ -1397,7 +1460,7 @@ class GameUpdateService {
   playSoundEffect(String soundFile) {
     return;
 
-    if (_gameState.settings.gameSound) {
+    if (_gameState.config.gameSound) {
       _gameState
           .getAudioBytes(soundFile)
           .then((value) => audioPlayer.playBytes(value));

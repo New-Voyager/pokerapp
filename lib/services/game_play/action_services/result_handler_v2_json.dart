@@ -55,6 +55,12 @@ class ResultHandlerV2Json {
   });
 
   Future<void> show() async {
+    log('Result: pauseTimeInMs: ${handResult.pauseTimeInMs}');
+
+    if (gameState.mySeat != null) {
+      gameState.showAction(false);
+      gameState.myState.notify();
+    }
     tableState = gameState.tableState;
     gameState.handState = HandState.RESULT;
     gameState.handChangeState.notify();
@@ -205,7 +211,7 @@ class ResultHandlerV2Json {
   void playApplause() {
     return;
 
-    if (gameState?.settings?.gameSound ?? true) {
+    if (gameState?.config?.gameSound ?? true) {
       gameState.getAudioBytes(AppAssets.applauseSound).then((value) {
         audioPlayer.playBytes(value);
       });

@@ -379,7 +379,7 @@ class JanusEngine extends ChangeNotifier {
   }
 
   void joinLeaveAudioConference() {
-    if (gameState.settings.audioConf) {
+    if (gameState.config.audioConf) {
       log('joining audio conference');
       joinChannel(this.janusToken);
     } else {

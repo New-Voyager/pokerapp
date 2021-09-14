@@ -56,7 +56,7 @@ class ResultHandlerV2 {
 
   Future<void> show() async {
     log('HandMessage: result show');
-
+    log('Result: pauseTimeSecs: ${result.pauseTimeSecs}');
     tableState = gameState.tableState;
     for (final seat in gameState.seats) {
       if (seat.player != null) {
@@ -68,6 +68,7 @@ class ResultHandlerV2 {
         log('UpdateSeat: updating cards for seat: ${seat.player.seatNo} player: ${seat.player.name} cards: ${seat.player.cards}');
       }
     }
+    gameState.wonat = result.wonAt;
     log('UpdateSeat: updating all seats');
     gameState.seatsOnTableState.notify();
     log('UpdateSeat: updating all seats notified');
@@ -149,6 +150,32 @@ class ResultHandlerV2 {
           break;
         }
       }
+    }
+
+    // mark all winners
+    for (int i = totalPots - 1; i >= 0; i--) {
+      final potWinner = result.potWinners[i];
+      for (final boardWinners in potWinner.boardWinners) {
+        // hi winners
+        for (final seatNo in boardWinners.hiWinners.keys) {
+          final seat = gameState.getSeat(seatNo);
+          if (seat.player != null) {
+            seat.player.winner = true;
+          }
+        }
+
+        for (final seatNo in boardWinners.lowWinners.keys) {
+          final seat = gameState.getSeat(seatNo);
+          if (seat.player != null) {
+            seat.player.winner = true;
+          }
+        }
+      }
+    }
+    gameState.handResultState.notify();
+
+    for (final seat in gameState.seats) {
+      log('ResultMessage: ${seat.serverSeatPos} name: ${seat.player.name} winner: ${seat.player.winner}');
     }
 
     for (int i = totalPots - 1; i >= 0; i--) {
@@ -245,7 +272,7 @@ class ResultHandlerV2 {
 
   void playApplause() {
     return;
-    if (gameState?.settings?.gameSound ?? true) {
+    if (gameState?.config?.gameSound ?? true) {
       gameState.getAudioBytes(AppAssets.applauseSound).then((value) {
         audioPlayer.playBytes(value);
       });
@@ -290,7 +317,7 @@ class ResultHandlerV2 {
   }) {
     tableState.unHighlightCardsSilent(boardIndex);
     for (final player in gameState.playersInGame) {
-      player.winner = false;
+      // player.winner = false;
       player.highlight = false;
       player.highlightCards = [];
       player.cards = [];
@@ -314,6 +341,10 @@ class ResultHandlerV2 {
     final boardIndex = 1,
     final bool setState = false,
   }) async {
+    for (final seat in gameState.seats) {
+      log('ResultMessage 111: ${seat.serverSeatPos} name: ${seat.player.name} winner: ${seat.player.winner}');
+    }
+
     /* highlight the hi winners */
     final seat = gameState.getSeat(winner.seatNo);
     seat.player.winner = true;

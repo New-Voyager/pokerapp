@@ -32,8 +32,8 @@ class StraddleWidget extends StatelessWidget {
               final straddleChoice = optionAutoValue[2];
 
               // put the settings in the game state settings
-              gameState.settings.straddleOption = straddleOption;
-              gameState.settings.autoStraddle = autoStraddle;
+              gameState.config.straddleOption = straddleOption;
+              gameState.config.autoStraddle = autoStraddle;
 
               if (straddleChoice != null) {
                 gameState.straddlePrompt = false;

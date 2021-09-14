@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/rabbit_state.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/proto/hand.pb.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
@@ -27,18 +28,35 @@ class ResultOptionsWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final gameState = GameState.getState(context);
     final bool isRabbitHuntAllowed = gameState.gameInfo.allowRabbitHunt;
-
-    return Consumer2<HandChangeState, RabbitState>(
+    return Consumer2<HandResultState, RabbitState>(
       builder: (context, vnfs, rb, __) {
         bool _showEye = false;
         if (gameState.mySeat != null && !gameState.mySeat.player.inhand) {
           return Container();
         }
+
+        if (gameState.handState != HandState.RESULT) {
+          return Container();
+        }
+        // Eye: To mark all cards to be revealed
+        // If we are in result and this player is a winner, then we show his cards
+        // So there is no need to show the eye icon
         _showEye = gameState.handState == HandState.RESULT;
-        final bool _showRabbit = rb.show && isRabbitHuntAllowed;
+        if (gameState.mySeat.player.winner) {
+          _showEye = false;
+        }
+
+        bool _showRabbit = false;
+        if (isRabbitHuntAllowed) {
+          // if the hand hasn't ended in showdown, don't show the rabbit
+          if (gameState.wonat == HandStatus.FLOP ||
+              gameState.wonat == HandStatus.TURN) {
+            _showRabbit = true;
+          }
+        }
         final bool visibility = gameState.handState == HandState.RESULT &&
             (_showEye || _showRabbit);
-        log('RabbitState: building: visibility: $visibility handState: ${gameState.handState} _showEye: $_showEye rb.show: ${rb.show} rabbitHuntAllowed: $isRabbitHuntAllowed');
+        log('RabbitState: building: visibility: $visibility wonAt: ${gameState.wonat.toString()} community cards: ${rb.communityCards} winner: ${gameState.mySeat.player.winner} handState: ${gameState.handState} _showEye: $_showEye rb.show: ${rb.show} rabbitHuntAllowed: $isRabbitHuntAllowed');
         // bool visibility = true;
         // bool _showRabbit = true;
 
