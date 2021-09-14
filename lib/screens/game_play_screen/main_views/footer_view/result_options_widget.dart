@@ -11,6 +11,7 @@ import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/game_circle_button.dart';
 import 'package:pokerapp/widgets/cards/multiple_stack_card_views.dart';
 import 'package:pokerapp/widgets/num_diamond_widget.dart';
+import 'package:pokerapp/widgets/round_color_button.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
@@ -109,7 +110,7 @@ class ResultOptionsWidget extends StatelessWidget {
                   //   borderRadius: BorderRadius.circular(15.0),
                   // ),
                   child: Column(
-                    //mainAxisSize: MainAxisSize.min,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       // diamond widget
                       Provider.value(
@@ -149,16 +150,6 @@ class ResultOptionsWidget extends StatelessWidget {
                       // sep
                       const SizedBox(height: 15.0),
 
-                      // show REVEAL button / share button
-                      Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 20.0),
-                        child: Consumer<ValueNotifier<bool>>(
-                          builder: (_, vnIsRevealed, __) => vnIsRevealed.value
-                              ? _buildShareButton(context, theme, rs)
-                              : _buildRevealButton(vnIsRevealed, theme),
-                        ),
-                      ),
-
                       // sep
                       Text("Community cards"),
                       AppDimensionsNew.getVerticalSizedBox(16),
@@ -168,6 +159,18 @@ class ResultOptionsWidget extends StatelessWidget {
                           scale: 1.2,
                           child:
                               _buildCommunityCardWidget(rs, vnIsRevealed.value),
+                        ),
+                      ),
+
+                      AppDimensionsNew.getVerticalSizedBox(32),
+
+                      // show REVEAL button / share button
+                      Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 20.0),
+                        child: Consumer<ValueNotifier<bool>>(
+                          builder: (_, vnIsRevealed, __) => vnIsRevealed.value
+                              ? _buildShareButton(context, theme, rs)
+                              : _buildRevealButton(vnIsRevealed, theme),
                         ),
                       ),
                     ],
@@ -213,12 +216,15 @@ class ResultOptionsWidget extends StatelessWidget {
         const SizedBox(width: 10.0),
 
         // visible button
-        GestureDetector(
-          onTap: () => _onRevealButtonTap(vnIsRevealed),
-          child: Icon(
-            Icons.visibility_outlined,
-            color: theme.accentColor,
-            size: 30.0,
+
+        RoundedColorButton(
+          onTapFunction: () => _onRevealButtonTap(vnIsRevealed),
+          backgroundColor: theme.accentColor,
+          textColor: theme.primaryColorWithDark(),
+          text: "REVEAL",
+          icon: Icon(
+            Icons.visibility,
+            color: theme.primaryColorWithDark(),
           ),
         ),
       ],
@@ -229,16 +235,29 @@ class ResultOptionsWidget extends StatelessWidget {
       BuildContext context, AppTheme theme, RabbitState rs) {
     return Align(
       alignment: Alignment.center,
-      child: GestureDetector(
-        onTap: () {
+      child: RoundedColorButton(
+        onTapFunction: () {
           _onShareButtonTap(context, rs);
         },
-        child: Icon(
+        text: "SHARE",
+        backgroundColor: theme.accentColor,
+        textColor: theme.primaryColorWithDark(),
+        icon: Icon(
           Icons.share_rounded,
-          color: theme.accentColor,
-          size: 30.0,
+          color: theme.primaryColorWithDark(),
         ),
       ),
+      // icon: Icons.share_rounded,
+      // iconColor: theme.accentColor,
+
+      // GestureDetector(
+      //   onTap: ,
+      //   child: Icon(
+      //     Icons.share_rounded,
+      //     color: theme.accentColor,
+      //     size: 30.0,
+      //   ),
+      // ),
     );
   }
 
@@ -256,6 +275,12 @@ class ResultOptionsWidget extends StatelessWidget {
   }
 
   Widget _buildCommunityCardWidget(RabbitState rs, bool isRevealed) {
+    return Transform.scale(
+      scale: 1.5,
+      child: RabbitCardView(
+        state: rs,
+      ),
+    );
     return isRevealed
         ? Transform.scale(
             scale: 1.5,
