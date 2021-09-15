@@ -11,6 +11,8 @@ class GameSettings {
     this.runItTwiceAllowed,
     this.allowRabbitHunt,
     this.showHandRank,
+    this.funAnimations,
+    this.chat,
     this.doubleBoardEveryHand,
     this.bombPotEnabled,
     this.bombPotBet,
@@ -32,6 +34,8 @@ class GameSettings {
   bool buyInApproval;
   bool runItTwiceAllowed;
   bool allowRabbitHunt;
+  bool funAnimations;
+  bool chat;
   bool showHandRank;
   bool doubleBoardEveryHand;
   bool bombPotEnabled;
@@ -57,6 +61,8 @@ class GameSettings {
       runItTwiceAllowed: json["runItTwiceAllowed"] ?? false,
       allowRabbitHunt: json["allowRabbitHunt"] ?? false,
       showHandRank: json["showHandRank"] ?? false,
+      funAnimations: json["funAnimations"] ?? true,
+      chat: json["chat"] ?? true,
       doubleBoardEveryHand: json["doubleBoardEveryHand"] ?? false,
       bombPotEnabled: json["bombPotEnabled"] ?? false,
       bombPotBet: json["bombPotBet"] ?? 5,
@@ -83,6 +89,8 @@ class GameSettings {
         "runItTwiceAllowed": runItTwiceAllowed,
         "allowRabbitHunt": allowRabbitHunt,
         "showHandRank": showHandRank,
+        "funAnimations": funAnimations,
+        "chat": chat,
         "doubleBoardEveryHand": doubleBoardEveryHand,
         "bombPotEnabled": bombPotEnabled,
         "bombPotBet": bombPotBet,

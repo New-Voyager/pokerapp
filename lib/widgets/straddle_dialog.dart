@@ -30,8 +30,8 @@ class _StraddleDialogState extends State<StraddleDialog> {
     super.initState();
 
     // fetch the option and auto value from the game state settings object
-    _option = widget.gameState.config.straddleOption;
-    _auto = widget.gameState.config.autoStraddle;
+    _option = widget.gameState.playerLocalConfig.straddle;
+    _auto = widget.gameState.playerSettings.autoStraddle;
   }
 
   void _onValuePress(bool value, BuildContext context) {

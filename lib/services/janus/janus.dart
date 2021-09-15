@@ -379,13 +379,13 @@ class JanusEngine extends ChangeNotifier {
   }
 
   void joinLeaveAudioConference() {
-    if (gameState.config.audioConf) {
-      log('joining audio conference');
-      joinChannel(this.janusToken);
-    } else {
-      log('leaving audio conference');
-      leaveChannel();
-    }
+    // if (gameState.playerLocalConfig.audioConf) {
+    //   log('joining audio conference');
+    //   joinChannel(this.janusToken);
+    // } else {
+    //   log('leaving audio conference');
+    //   leaveChannel();
+    // }
   }
 
   Future<dynamic> getParticipants() async {

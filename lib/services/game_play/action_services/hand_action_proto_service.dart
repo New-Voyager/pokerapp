@@ -527,7 +527,7 @@ class HandActionProtoService {
     }
 
     // if straddle prompt is true, trigger straddle state to show the dialog
-    if (_gameState.straddlePrompt && _gameState.config.straddleOption) {
+    if (_gameState.straddlePrompt && _gameState.playerLocalConfig.straddle) {
       final straddlePromptState = _gameState.straddlePromptState;
       straddlePromptState.notify();
     }
@@ -545,8 +545,8 @@ class HandActionProtoService {
     return;
 
     if (_gameState != null &&
-        _gameState.config != null &&
-        _gameState.config.gameSound) {
+        _gameState.playerLocalConfig != null &&
+        _gameState.playerLocalConfig.gameSound) {
       _gameState
           .getAudioBytes(soundFile)
           .then((value) => audioPlayer.playBytes(value));
@@ -574,12 +574,18 @@ class HandActionProtoService {
 
       if (_close) return;
 
-      // play the deal sound effect
-      playSoundEffect(AppAssets.dealSound);
-
       /* show card shuffling*/
-      tableState.updateCardShufflingAnimation(true);
-      await Future.delayed(AppConstants.cardShufflingTotalWaitDuration); // wait
+      if (_gameState.handInfo.bombPot) {
+        tableState.updateCardShufflingAnimation(true);
+        playSoundEffect(AppAssets.dealSound); // bomb sound
+        await Future.delayed(AppConstants.bombPotTotalWaitDuration); // wait
+      } else {
+        // play the deal sound effect
+        playSoundEffect(AppAssets.dealSound);
+        tableState.updateCardShufflingAnimation(true);
+        await Future.delayed(
+            AppConstants.cardShufflingTotalWaitDuration); // wait
+      }
       tableState.updateCardShufflingAnimation(false);
       /* end card shuffling animation */
 

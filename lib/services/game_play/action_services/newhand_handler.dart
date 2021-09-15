@@ -110,8 +110,10 @@ class NewHandHandler {
         playerObj.muckLosingHand = playerInSeat.muckLosingHand;
         playerObj.buttonStraddle = playerInSeat.buttonStraddle;
         playerObj.autoStraddle = playerInSeat.autoStraddle;
+        playerObj.playerFolded = false;
+        playerObj.revealCards = [];
 
-        playerObj.muckLosingHand = true;
+        // playerObj.muckLosingHand = true;
 
         if (playerInSeat.buyInExpTime != null &&
             playerInSeat.breakExpTime.length > 0 &&
@@ -215,9 +217,9 @@ class NewHandHandler {
         if (gameState.gameInfo.utgStraddleAllowed &&
             nextActionSeat.player.stack >= 2 * gameState.gameInfo.bigBlind) {
           // set straddlePrompt true
-          if (gameState.config.straddleOption) {
+          if (gameState.playerLocalConfig.straddle) {
             // we show the straddle dialog only when the auto straddle is off
-            if (gameState.config.autoStraddle == true) {
+            if (gameState.playerSettings.autoStraddle == true) {
               // set straddle bet
               gameState.straddleBetThisHand = true;
             } else {
