@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
@@ -108,7 +109,122 @@ class ResultOptionsWidget extends StatelessWidget {
   void onRabbitTap(RabbitState rs, BuildContext context) async {
     // show a popup
     final AppTheme theme = AppTheme.getTheme(context);
-    await showModalBottomSheet(
+    await showGeneralDialog(
+      context: context,
+      pageBuilder: (_, __, ___) {
+        //final theme = AppTheme.getTheme(context);
+        return Align(
+          alignment: Alignment.bottomCenter,
+          child: Material(
+            color: Colors.transparent,
+            child: ListenableProvider(
+                create: (_) {
+                  return ValueNotifier<bool>(false);
+                },
+                child: Container(
+                  height: MediaQuery.of(context).size.height * 0.5,
+                  margin: EdgeInsets.all(16),
+                  padding:
+                      EdgeInsets.only(bottom: 24, top: 8, right: 8, left: 8),
+                  // width: MediaQuery.of(context).size.width * 0.70,
+                  // height: 200.ph,
+                  decoration: AppDecorators.bgRadialGradient(theme).copyWith(
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: theme.accentColor),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // diamond widget
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          IconButton(
+                            onPressed: () => Navigator.of(context).pop(),
+                            icon: Icon(
+                              Icons.cancel,
+                              color: theme.accentColor,
+                            ),
+                          ),
+                          Provider.value(
+                            value: context.read<GameState>(),
+                            child: Consumer<ValueNotifier<bool>>(
+                              builder: (_, __, ___) => NumDiamondWidget(),
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      // sep
+                      const SizedBox(height: 8.0),
+                      /* hand number */
+                      Text(
+                        'Hand #${rs.handNo ?? 1}',
+                        style: AppDecorators.getHeadLine3Style(theme: theme)
+                            .copyWith(color: theme.secondaryColor),
+                      ),
+
+                      // sep
+                      const SizedBox(height: 15.0),
+
+                      /* your cards */
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text('Your cards'),
+                          const SizedBox(height: 10.0),
+                          Transform.scale(
+                            scale: 1.5,
+                            child: StackCardView00(
+                              cards: rs.myCards,
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      // sep
+                      const SizedBox(height: 15.0),
+
+                      // sep
+                      Text("Community cards"),
+                      AppDimensionsNew.getVerticalSizedBox(16),
+                      // finally show here the community cards
+                      Consumer<ValueNotifier<bool>>(
+                        builder: (_, vnIsRevealed, __) => Transform.scale(
+                          scale: 1.2,
+                          child:
+                              _buildCommunityCardWidget(rs, vnIsRevealed.value),
+                        ),
+                      ),
+
+                      AppDimensionsNew.getVerticalSizedBox(32),
+
+                      // show REVEAL button / share button
+                      Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 20.0),
+                        child: Consumer<ValueNotifier<bool>>(
+                          builder: (_, vnIsRevealed, __) => vnIsRevealed.value
+                              ? _buildShareButton(context, theme, rs)
+                              : _buildRevealButton(vnIsRevealed, theme),
+                        ),
+                      ),
+                    ],
+                  ),
+                )),
+          ),
+        );
+      },
+      transitionBuilder: (context, anim1, anim2, child) {
+        return SlideTransition(
+          position:
+              Tween(begin: Offset(0.2, 1), end: Offset(0, 0)).animate(anim1),
+          child: child,
+        );
+      },
+      barrierColor: Colors.black.withOpacity(0.5),
+      transitionDuration: Duration(milliseconds: 300),
+    );
+    /*  await showModalBottomSheet(
         context: context,
         backgroundColor: theme.fillInColor,
         builder: (_) {
@@ -118,7 +234,7 @@ class ResultOptionsWidget extends StatelessWidget {
                 return ValueNotifier<bool>(false);
               },
               child: Align(
-                alignment: Alignment.center,
+                alignment: Alignment.topCenter,
                 child: Container(
                   padding: EdgeInsets.all(16),
                   // width: MediaQuery.of(context).size.width * 0.70,
@@ -196,6 +312,7 @@ class ResultOptionsWidget extends StatelessWidget {
                 ),
               ));
         });
+  */
   }
 
   // reveal button tap
@@ -239,7 +356,7 @@ class ResultOptionsWidget extends StatelessWidget {
           onTapFunction: () => _onRevealButtonTap(vnIsRevealed),
           backgroundColor: theme.accentColor,
           textColor: theme.primaryColorWithDark(),
-          text: "REVEAL",
+          text: "Reveal",
           icon: Icon(
             Icons.visibility,
             color: theme.primaryColorWithDark(),
@@ -257,7 +374,7 @@ class ResultOptionsWidget extends StatelessWidget {
         onTapFunction: () {
           _onShareButtonTap(context, rs);
         },
-        text: "SHARE",
+        text: "Share",
         backgroundColor: theme.accentColor,
         textColor: theme.primaryColorWithDark(),
         icon: Icon(
@@ -293,12 +410,12 @@ class ResultOptionsWidget extends StatelessWidget {
   }
 
   Widget _buildCommunityCardWidget(RabbitState rs, bool isRevealed) {
-    return Transform.scale(
-      scale: 1.5,
-      child: RabbitCardView(
-        state: rs,
-      ),
-    );
+    // return Transform.scale(
+    //   scale: 1.5,
+    //   child: RabbitCardView(
+    //     state: rs,
+    //   ),
+    // );
     return isRevealed
         ? Transform.scale(
             scale: 1.5,

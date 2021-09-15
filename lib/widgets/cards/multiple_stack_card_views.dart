@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/rabbit_state.dart';
@@ -191,38 +193,39 @@ class StackCardView02 extends StatelessWidget {
   }
 }
 
-class RabbitCardView extends StatelessWidget {
-  final RabbitState state;
-  RabbitCardView({
-    this.state,
-  });
+// class RabbitCardView extends StatelessWidget {
+//   final RabbitState state;
+//   RabbitCardView({
+//     this.state,
+//   });
 
-  @override
-  Widget build(BuildContext context) {
-    List<Widget> cardViews = [];
-    final cards = this.state.communityCards;
-    final revealed = this.state.revealedCards;
-    for (int i = 0; i < cards.length - 2 + revealed.length ;i++) {
-      CardObject card = CardHelper.getCard(cards[i]);
-      card.cardType = CardType.HandLogOrHandHistoryCard;
-      cardViews.add(card.widget);
-      cardViews.add(SizedBox(width: 2.0));
-    }
+//   @override
+//   Widget build(BuildContext context) {
+//     List<Widget> cardViews = [];
+//     final cards = this.state.communityCards;
+//     final revealed = this.state.revealedCards;
+//     for (int i = 0; i < cards.length - 2 + revealed.length; i++) {
+//       CardObject card = CardHelper.getCard(cards[i]);
+//       card.cardType = CardType.HandLogOrHandHistoryCard;
+//       cardViews.add(card.widget);
+//       cardViews.add(SizedBox(width: 2.0));
+//     }
 
-      for (int i = 0; i < 2 - revealed.length; i++) {
-        CardObject card = CardHelper.getCard(0);
-        card.cardType = CardType.HandLogOrHandHistoryCard;
-        card.cardFace = CardFace.BACK;
-        Widget stackedWidget = Stack(children: [
-          card.widget,
-          Center(
-            child: Icon(Icons.visibility, color: Colors.amber),
-          ),
-        ]);
-        cardViews.add(stackedWidget);
-        cardViews.add(SizedBox(width: 2.0));
-      }
+//     log("Revealed data. : ${revealed.length}");
+//     for (int i = 0; i < 2 - revealed.length; i++) {
+//       CardObject card = CardHelper.getCard(0);
+//       card.cardType = CardType.HandLogOrHandHistoryCard;
+//       card.cardFace = CardFace.BACK;
+//       // Widget stackedWidget = Stack(children: [
+//       //   card.widget,
+//       //   Center(
+//       //     child: Icon(Icons.visibility, color: Colors.amber),
+//       //   ),
+//       // ]);
+//       cardViews.add(card.widget);
+//       cardViews.add(SizedBox(width: 2.0));
+//     }
 
-    return Row(mainAxisSize: MainAxisSize.min, children: cardViews);
-  }
-}
+//     return Row(mainAxisSize: MainAxisSize.min, children: cardViews);
+//   }
+// }
