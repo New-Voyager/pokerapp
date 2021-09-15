@@ -130,7 +130,7 @@ class ResultOptionsWidget extends StatelessWidget {
                   // height: 200.ph,
                   decoration: AppDecorators.bgRadialGradient(theme).copyWith(
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: theme.accentColor),
+                    border: Border.all(color: theme.accentColor, width: 3),
                   ),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
