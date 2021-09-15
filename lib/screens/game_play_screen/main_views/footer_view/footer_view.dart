@@ -187,10 +187,13 @@ class _FooterViewState extends State<FooterView>
   Widget _buildCommunicationWidget() => Positioned(
         right: 0,
         top: 0,
-        child: CommunicationView(
-          widget.chatVisibilityChange,
-          widget.gameContext.gameComService.gameMessaging,
-        ),
+        child: Consumer2<GameSettingsState, CommunicationState>(
+            builder: (_, __, ____, ___) {
+          return CommunicationView(
+            widget.chatVisibilityChange,
+            widget.gameContext.gameComService.gameMessaging,
+          );
+        }),
       );
 
   Widget _buildSeatConfirmWidget(BuildContext context) {

@@ -272,7 +272,7 @@ class ResultHandlerV2 {
 
   void playApplause() {
     return;
-    if (gameState?.config?.gameSound ?? true) {
+    if (gameState?.playerLocalConfig?.gameSound ?? true) {
       gameState.getAudioBytes(AppAssets.applauseSound).then((value) {
         audioPlayer.playBytes(value);
       });
@@ -322,7 +322,6 @@ class ResultHandlerV2 {
       player.highlightCards = [];
       player.cards = [];
       player.animatingFold = false;
-      player.playerFolded = false;
       player.rankText = '';
     }
 

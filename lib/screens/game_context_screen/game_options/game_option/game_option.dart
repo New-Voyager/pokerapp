@@ -39,7 +39,7 @@ class GameOption extends StatefulWidget {
       this.focusOnWaitingList);
 
   @override
-  _GameOptionState createState() => _GameOptionState();
+  _GameOptionState createState() => _GameOptionState(gameState);
 }
 
 class _GameOptionState extends State<GameOption> {
@@ -51,10 +51,15 @@ class _GameOptionState extends State<GameOption> {
   bool closed = false;
   AppTextScreen _appScreenText;
   GameSettings _gameSettings;
-  GamePlayerSettingsInput _gamePlayerSettings;
+  GamePlayerSettings _gamePlayerSettings;
   bool audioConfEnabled = false;
   bool straddleEnabled = false;
   bool bombPotEnabled = false;
+
+  _GameOptionState(GameState gameState) {
+    this._gameSettings = gameState.gameSettings;
+    this.gameInfo = gameState.gameInfo;
+  }
 
   @override
   void dispose() {
@@ -154,66 +159,49 @@ class _GameOptionState extends State<GameOption> {
 
   List<OptionItemModel> gameSecondaryOptions;
 
-  _fetchGameInfo() async {
-    // Fetch gameSettings from server
-    _gameSettings = await GameService.getGameSettings(gameCode);
-    if (_gameSettings == null) {
-      return;
-    }
-
-    _gamePlayerSettings = await GameService.getGamePlayerSettings(gameCode);
-    if (_gamePlayerSettings == null) {
-      return;
-    }
-
+  Future<void> _fetchGameInfo() async {
     gameInfo = await GameService.getGameInfo(gameCode);
     if (gameInfo != null) {
-      if (closed) return;
-      setState(() {
-        isFetching = false;
-      });
+      audioConfEnabled = gameInfo.audioConfEnabled;
+      straddleEnabled = gameInfo.utgStraddleAllowed;
     }
-    audioConfEnabled = gameInfo.audioConfEnabled;
-    straddleEnabled = gameInfo.utgStraddleAllowed;
-    // TODO modify gameinfo class to have bombpot variable
-    bombPotEnabled = true;
-    log("-=-= ${gameInfo.sessionTime}");
-    log("-=-= ${gameInfo.runningTime}");
-    log("-=-= ${gameInfo.noHandsPlayed}");
-    log("-=-= ${gameInfo.noHandsWon}");
   }
 
   @override
   void initState() {
     super.initState();
     _appScreenText = getAppTextScreen("gameOption");
-
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      _fetchGameInfo();
-    });
     gameCode = widget.gameCode;
-
-    gameSecondaryOptions = [
-      OptionItemModel(
-        title: _appScreenText['seatChange'],
-        image: "assets/images/casino.png",
-        name: _appScreenText['requestSeatChange'],
-        backGroundColor: Colors.redAccent,
-        onTap: (context) async {
-          await showModalBottomSheet(
-            context: context,
-            isScrollControlled: true,
-            builder: (ctx) {
-              return SeatChangeBottomSheet(
-                widget.gameState,
-                widget.gameCode,
-                widget.playerUuid,
+    _gameSettings = widget.gameState.gameSettings;
+    _gamePlayerSettings = widget.gameState.playerSettings;
+    gameSecondaryOptions = [];
+    _fetchGameInfo().then((value) {
+      if (_gameSettings.seatChangeAllowed) {
+        gameSecondaryOptions.add(
+          OptionItemModel(
+            title: _appScreenText['seatChange'],
+            image: "assets/images/casino.png",
+            name: _appScreenText['requestSeatChange'],
+            backGroundColor: Colors.redAccent,
+            onTap: (context) async {
+              await showModalBottomSheet(
+                context: context,
+                isScrollControlled: true,
+                builder: (ctx) {
+                  return SeatChangeBottomSheet(
+                    widget.gameState,
+                    widget.gameCode,
+                    widget.playerUuid,
+                  );
+                },
               );
             },
-          );
-        },
-      ),
-    ];
+          ),
+        );
+      }
+      isFetching = false;
+      setState(() {});
+    });
   }
 
   Widget _buildCheckBox({
@@ -236,124 +224,6 @@ class _GameOptionState extends State<GameOption> {
       ),
     );
   }
-
-  Widget _buildOtherGameOptions(AppTheme theme) => Container(
-        padding: const EdgeInsets.all(5.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _buildCheckBox(
-                text: _appScreenText['muckLosingHand'],
-                value: widget.gameState.gameInfo.playerMuckLosingHand,
-                onChange: (bool v) async {
-                  await GameService.updateGameConfig(widget.gameState.gameCode,
-                      muckLosingHand: v);
-                  // setting the value saves it to local storage too
-                  widget.gameState.gameInfo.playerMuckLosingHand = v;
-                  if (closed) return;
-                  setState(() {});
-                }),
-            _buildCheckBox(
-              text: _appScreenText['promptRunItTwice'],
-              value: widget.gameState.gameInfo.playerRunItTwice,
-              onChange: (bool v) async {
-                await GameService.updateGameConfig(widget.gameState.gameCode,
-                    runItTwicePrompt: v);
-                // setting the value saves it to local storage too
-                widget.gameState.gameInfo.playerRunItTwice = v;
-                if (closed) return;
-                setState(() {});
-              },
-            ),
-            _buildCheckBox(
-              text: _appScreenText['gameSounds'],
-              value: widget.gameState.config.gameSound,
-              onChange: (bool v) async {
-                // setting the value saves it to local storage too
-                widget.gameState.config.gameSound = v;
-                log('In toggle button widget, gameSounds = ${widget.gameState.config.gameSound}');
-                if (closed) return;
-                setState(() {});
-              },
-            ),
-            widget.gameState.gameInfo.audioConfEnabled ?? false
-                ? _buildCheckBox(
-                    text: _appScreenText['audioConference'],
-                    value: widget.gameState.config.audioConf,
-                    onChange: (bool v) async {
-                      // setting the value saves it to local storage too
-                      widget.gameState.config.audioConf = v;
-                      widget.gameState.janusEngine.joinLeaveAudioConference();
-                      log('In toggle button widget, audioConf = ${widget.gameState.config.audioConf}');
-                      if (closed) return;
-                      setState(() {});
-                    },
-                  )
-                : SizedBox(),
-            _buildCheckBox(
-              text: _appScreenText['animations'],
-              value: widget.gameState.config.animations,
-              onChange: (bool v) async {
-                // setting the value saves it to local storage too
-                widget.gameState.config.animations = v;
-                log('In toggle button widget, animations = ${widget.gameState.config.animations}');
-                setState(() {});
-              },
-            ),
-            _buildCheckBox(
-              text: _appScreenText['animations'],
-              value: widget.gameState.config.showChat,
-              onChange: (bool v) async {
-                // setting the value saves it to local storage too
-                widget.gameState.config.showChat = v;
-                log('In toggle button widget, showChat = ${widget.gameState.config.showChat}');
-                widget.gameState.communicationState.showTextChat = v;
-                widget.gameState.communicationState.notify();
-                setState(() {});
-              },
-            ),
-
-            /* show straddle off and auto straddle options ONLY when the UTG STRADDLE is on */
-            widget.gameState.gameInfo.utgStraddleAllowed
-                ? Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      // straddle off
-                      _buildCheckBox(
-                        text: _appScreenText['straddle'],
-                        value: widget.gameState.config.straddleOption,
-                        onChange: (bool v) async {
-                          // setting the value saves it to local storage too
-                          widget.gameState.config.straddleOption = v;
-                          log('In toggle button widget, straddleOption = ${widget.gameState.config.straddleOption}');
-                          if (closed) return;
-                          setState(() {});
-                        },
-                      ),
-
-                      // auto straddle
-                      _buildCheckBox(
-                        text: _appScreenText['autoStraddle'],
-                        value: widget.gameState.config.autoStraddle,
-                        onChange: (bool v) async {
-                          if (v) {
-                            await FirebaseAnalytics().logEvent(
-                                name: "Auto_Straddle",
-                                parameters: {
-                                  "name": "Auto Straddle is turned ON"
-                                });
-                          }
-                          // setting the value saves it to local storage too
-                          widget.gameState.config.autoStraddle = v;
-                          log('In toggle button widget, autoStraddle = ${widget.gameState.config.autoStraddle}');
-                        },
-                      ),
-                    ],
-                  )
-                : const SizedBox.shrink(),
-          ],
-        ),
-      );
 
   Widget _buildBasicGameOptions({
     @required final bool isPlaying,
@@ -553,7 +423,7 @@ class _GameOptionState extends State<GameOption> {
                     onChange: (bool v) async {
                       _gameSettings.bombPotEnabled = v;
                       if (_gameSettings.bombPotIntervalInSecs == 0) {
-                        _gameSettings.bombPotIntervalInSecs = 30*60;
+                        _gameSettings.bombPotIntervalInSecs = 30 * 60;
                       }
                       await updateGameSettings();
                       if (closed) return;
@@ -582,8 +452,9 @@ class _GameOptionState extends State<GameOption> {
                               // choose interval
                               RadioListWidget(
                                 defaultValue:
-                                    _gameSettings.bombPotInterval == null ? 30 :
-                                     _gameSettings.bombPotInterval,
+                                    _gameSettings.bombPotInterval == null
+                                        ? 30
+                                        : _gameSettings.bombPotInterval,
                                 values: [2, 15, 30, 60, 90, 120],
                                 onSelect: (int value) async {
                                   _gameSettings.bombPotInterval = value;
@@ -602,9 +473,9 @@ class _GameOptionState extends State<GameOption> {
                               ),
                               // choose interval
                               RadioListWidget(
-                                defaultValue:
-                                    _gameSettings.bombPotBet == null ? 5 :
-                                     _gameSettings.bombPotBet,
+                                defaultValue: _gameSettings.bombPotBet == null
+                                    ? 5
+                                    : _gameSettings.bombPotBet,
                                 values: [2, 5, 10, 15, 20],
                                 onSelect: (int value) async {
                                   _gameSettings.bombPotBet = value;
@@ -643,23 +514,165 @@ class _GameOptionState extends State<GameOption> {
               ),
             ),
             AppDimensionsNew.getVerticalSizedBox(8),
+            // break allowed
+            Container(
+              decoration: _gameSettings.breakAllowed
+                  ? AppDecorators.tileDecorationWithoutBorder(theme)
+                  : BoxDecoration(),
+              child: Column(
+                children: [
+                  _buildCheckBox(
+                    text: 'Player Break Allowed',
+                    value: _gameSettings.breakAllowed,
+                    onChange: (bool v) async {
+                      _gameSettings.breakAllowed = v;
+                      if (_gameSettings.breakLength == null ||
+                          _gameSettings.breakLength == 0) {
+                        _gameSettings.breakLength = 3;
+                      }
+                      await updateGameSettings();
+                      if (closed) return;
+                      setState(() {});
+                    },
+                  ),
+                  _gameSettings.breakAllowed
+                      ? Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16,
+                          ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              // choose interval label
+                              Container(
+                                margin: EdgeInsets.only(
+                                    bottom: 10.0, left: 10.0, right: 10.0),
+                                child: Text(
+                                  'Break Length (in mins)',
+                                  style: AppDecorators.getHeadLine4Style(
+                                      theme: theme),
+                                ),
+                              ),
+                              // choose interval
+                              RadioListWidget(
+                                defaultValue: _gameSettings.breakLength == null
+                                    ? 3
+                                    : _gameSettings.breakLength,
+                                values: [1, 3, 5, 10, 15],
+                                onSelect: (int value) async {
+                                  _gameSettings.breakLength = value;
+                                  await updateGameSettings();
+                                },
+                              ),
+                            ],
+                          ),
+                        )
+                      : const SizedBox.shrink(),
+                ],
+              ),
+            ),
 
-            // TODO: SHOW THE FOLLOWING WIDGET, ONLY IF BOMB POT IS ACTIVE
-            // bomb pot relates settings, SHOW only if bomb pot is ENABLED
+            AppDimensionsNew.getVerticalSizedBox(8),
+            // player seat change
+            Container(
+              decoration: _gameSettings.seatChangeAllowed
+                  ? AppDecorators.tileDecorationWithoutBorder(theme)
+                  : BoxDecoration(),
+              child: Column(
+                children: [
+                  _buildCheckBox(
+                    text: 'Player Seat Change Allowed',
+                    value: _gameSettings.seatChangeAllowed,
+                    onChange: (bool v) async {
+                      _gameSettings.seatChangeAllowed = v;
+                      if (_gameSettings.seatChangeTimeout == null ||
+                          _gameSettings.seatChangeTimeout == 0) {
+                        _gameSettings.seatChangeTimeout = 10;
+                      }
+                      await updateGameSettings();
+                      if (closed) return;
+                      setState(() {});
+                    },
+                  ),
+                  _gameSettings.seatChangeAllowed
+                      ? Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16,
+                          ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              // choose interval label
+                              Container(
+                                margin: EdgeInsets.only(
+                                    bottom: 10.0, left: 10.0, right: 10.0),
+                                child: Text(
+                                  'Prompt Timeout (in seconds)',
+                                  style: AppDecorators.getHeadLine4Style(
+                                      theme: theme),
+                                ),
+                              ),
+                              // choose interval
+                              RadioListWidget(
+                                defaultValue:
+                                    _gameSettings.seatChangeTimeout == null
+                                        ? 10
+                                        : _gameSettings.seatChangeTimeout,
+                                values: [5, 10, 15],
+                                onSelect: (int value) async {
+                                  _gameSettings.seatChangeTimeout = value;
+                                  await updateGameSettings();
+                                },
+                              ),
+                            ],
+                          ),
+                        )
+                      : const SizedBox.shrink(),
+                ],
+              ),
+            ),
 
-            // results wait
+            AppDimensionsNew.getVerticalSizedBox(8),
+            _buildCheckBox(
+              text: 'Run It Twice Allowed',
+              value: _gameSettings.runItTwiceAllowed ?? false,
+              onChange: (bool v) async {
+                _gameSettings.runItTwiceAllowed = v;
+                if (closed) return;
+                await updateGameSettings();
+                setState(() {});
+              },
+            ),
+
+            AppDimensionsNew.getVerticalSizedBox(8),
+            // show animations
             _buildCheckBox(
               text: 'Fun Animations',
-              value: widget.gameState.config.animations ?? true,
+              value: _gameSettings.funAnimations ?? false,
               onChange: (bool v) async {
-                widget.gameState.config.animations = v;
+                _gameSettings.funAnimations = v;
                 if (closed) return;
+                await updateGameSettings();
                 setState(() {});
               },
             ),
             AppDimensionsNew.getVerticalSizedBox(8),
 
-// ROE GAMES
+            // show animations
+            _buildCheckBox(
+              text: 'Chat allowed',
+              value: _gameSettings.chat ?? false,
+              onChange: (bool v) async {
+                _gameSettings.chat = v;
+                if (closed) return;
+                await updateGameSettings();
+                setState(() {});
+              },
+            ),
+
+            // ROE GAMES
             Visibility(
               visible: widget.gameState.gameInfo.gameType == "ROE",
               child: ListTile(
@@ -720,17 +733,6 @@ class _GameOptionState extends State<GameOption> {
             ),
 
             AppDimensionsNew.getVerticalSizedBox(8),
-            // Show chat only if he is admin
-            Visibility(
-              visible: widget.isAdmin,
-              child: _buildCheckBox(
-                text: "Game Chat",
-                value: widget.gameState.config.showChat,
-                onChange: (bool v) {
-                  widget.gameState.config.showChat = v;
-                },
-              ),
-            ),
             // results wait label
             AppDimensionsNew.getVerticalSizedBox(8),
             Column(
@@ -777,6 +779,169 @@ class _GameOptionState extends State<GameOption> {
     if (_gameSettings == null) {
       return CircularProgressWidget();
     }
+    List<Widget> children = [];
+    // Muck loosing hand
+    children.add(_buildCheckBox(
+        text: _appScreenText['muckLosingHand'],
+        value: widget.gameState.playerSettings.muckLosingHand ?? false,
+        onChange: (bool v) async {
+          await GameService.updateGameConfig(widget.gameState.gameCode,
+              muckLosingHand: v);
+          // setting the value saves it to local storage too
+          widget.gameState.playerSettings.muckLosingHand = v;
+          //update player settings to server.
+          _gamePlayerSettings.muckLosingHand = v;
+          await updateGamePlayerSettings();
+          if (closed) return;
+          setState(() {});
+        }));
+
+    if (widget.gameState.gameSettings.runItTwiceAllowed) {
+      // Run it twice
+      children.add(_buildCheckBox(
+        text: _appScreenText['promptRunItTwice'],
+        value: _gamePlayerSettings.runItTwiceEnabled,
+        onChange: (bool v) async {
+          _gamePlayerSettings.runItTwiceEnabled = v;
+          await updateGamePlayerSettings();
+          if (closed) return;
+          setState(() {});
+        },
+      ));
+    }
+
+    // Game sounds
+    children.add(_buildCheckBox(
+      text: _appScreenText['gameSounds'],
+      value: widget.gameState.playerLocalConfig.gameSound,
+      onChange: (bool v) async {
+        // setting the value saves it to local storage too
+        widget.gameState.playerLocalConfig.gameSound = v;
+        log('In toggle button widget, gameSounds = ${widget.gameState.playerLocalConfig.gameSound}');
+        if (closed) return;
+        setState(() {});
+      },
+    ));
+
+/* 
+    Visibility(
+      visible: widget.gameState.gameInfo.audioConfEnabled ?? true,
+      child: _buildCheckBox(
+        text: _appScreenText['audioConference'],
+        value: widget.gameState.config.audioConf,
+        onChange: (bool v) async {
+          // setting the value saves it to local storage too
+          widget.gameState.config.audioConf = v;
+          widget.gameState.janusEngine.joinLeaveAudioConference();
+          log('In toggle button widget, audioConf = ${widget.gameState.config.audioConf}');
+          if (closed) return;
+          setState(() {});
+        },
+      ),
+    ),
+
+    */ /* show straddle off and auto straddle options ONLY when the UTG STRADDLE is on */
+
+    // UTG straddle
+    if (widget.gameState.gameInfo.utgStraddleAllowed) {
+      children.add(Container(
+        decoration: widget.gameState.gameInfo.utgStraddleAllowed ?? false
+            ? AppDecorators.tileDecorationWithoutBorder(theme)
+            : BoxDecoration(),
+        child: Column(
+          children: [
+            _buildCheckBox(
+              text: 'UTG Straddle',
+              value: widget.gameState.playerLocalConfig.straddle,
+              onChange: (bool v) async {
+                widget.gameState.playerLocalConfig.straddle = v;
+                if (!v) {
+                  _gamePlayerSettings.autoStraddle = false;
+                }
+                await updateGamePlayerSettings();
+                log('In toggle button widget, straddleOption = ${widget.gameState.playerLocalConfig.straddle}');
+                if (closed) return;
+                setState(() {});
+              },
+            ),
+            widget.gameState.playerLocalConfig.straddle
+                ? Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 16,
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        // choose interval label
+                        Container(
+                          margin: EdgeInsets.only(
+                              bottom: 10.0, left: 10.0, right: 10.0),
+                          child: _buildCheckBox(
+                            text: 'Auto',
+                            value: widget.gameState.playerSettings.autoStraddle,
+                            onChange: (bool v) async {
+                              widget.gameState.playerSettings.autoStraddle = v;
+                              _gamePlayerSettings.autoStraddle = v;
+                              await updateGamePlayerSettings();
+                              log('In toggle button widget, straddleOption = ${widget.gameState.playerLocalConfig.straddle}');
+                              if (closed) return;
+                              setState(() {});
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                : const SizedBox.shrink(),
+          ],
+        ),
+      ));
+    }
+
+    // need local variable for bombpot in gameInfo
+    children.add(Visibility(
+      visible: widget.gameState.gameSettings.bombPotEnabled,
+      child: _buildCheckBox(
+        text: "Participate in Bomb Pot",
+        value: _gamePlayerSettings.bombPotEnabled,
+        onChange: (bool v) async {
+          // setting the value saves it to local storage too
+          _gamePlayerSettings.bombPotEnabled = v;
+          widget.gameState.playerSettings.bombPotEnabled = v;
+          await updateGamePlayerSettings();
+          // widget.gameState.config.bombPot = v;
+          log('In toggle button widget, gameSounds = ${widget.gameState.playerLocalConfig.gameSound}');
+          if (closed) return;
+          setState(() {});
+        },
+      ),
+    ));
+
+    // Chat setting
+    children.add(_buildCheckBox(
+      text: _appScreenText['chat'],
+      value: widget.gameState.playerLocalConfig.showChat ??
+          false, //widget.gameState.config.bombpot,
+      onChange: (bool v) {
+        // setting the value saves it to local storage too
+        widget.gameState.playerLocalConfig.showChat = v;
+        // widget.gameState.config.bombPot = v;
+        log('In toggle button widget, gameSounds = ${widget.gameState.playerLocalConfig.gameSound}');
+        if (closed) return;
+        setState(() {});
+        widget.gameState.communicationState.notify();
+      },
+    ));
+
+// Participate in audio conference
+    // _buildCheckBox(
+    //   text: "Participate in Audio conference",
+    //   value: widget.gameState.playerSettings.audioConf,
+    //   onChange: (bool v) {
+    //     widget.gameState.config.audioConf = v;
+    //   },
+    // ),
     return SingleChildScrollView(
       physics: BouncingScrollPhysics(),
       child: Container(
@@ -784,166 +949,7 @@ class _GameOptionState extends State<GameOption> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Muck loosing hand
-            _buildCheckBox(
-                text: _appScreenText['muckLosingHand'],
-                value: widget.gameState.config.muckLosingHand ?? false,
-                onChange: (bool v) async {
-                  await GameService.updateGameConfig(widget.gameState.gameCode,
-                      muckLosingHand: v);
-                  // setting the value saves it to local storage too
-                  widget.gameState.config.muckLosingHand = v;
-                  //update player settings to server.
-                  _gamePlayerSettings.muckLosingHand = v;
-                  await updateGamePlayerSettings();
-                  if (closed) return;
-                  setState(() {});
-                }),
-
-            // Run it twice
-            _buildCheckBox(
-              text: _appScreenText['promptRunItTwice'],
-              value: _gamePlayerSettings.runItTwiceEnabled,
-              onChange: (bool v) async {
-                // await GameService.updateGameConfig(widget.gameState.gameCode,
-                //     runItTwicePrompt: v);
-                // setting the value saves it to local storage too
-                _gamePlayerSettings.runItTwiceEnabled = v;
-                await updateGamePlayerSettings();
-                if (closed) return;
-                setState(() {});
-              },
-            ),
-
-            // Game sounds
-            _buildCheckBox(
-              text: _appScreenText['gameSounds'],
-              value: widget.gameState.config.gameSound,
-              onChange: (bool v) async {
-                // setting the value saves it to local storage too
-                widget.gameState.config.gameSound = v;
-                log('In toggle button widget, gameSounds = ${widget.gameState.config.gameSound}');
-                if (closed) return;
-                setState(() {});
-              },
-            ),
-
-/* 
-            Visibility(
-              visible: widget.gameState.gameInfo.audioConfEnabled ?? true,
-              child: _buildCheckBox(
-                text: _appScreenText['audioConference'],
-                value: widget.gameState.config.audioConf,
-                onChange: (bool v) async {
-                  // setting the value saves it to local storage too
-                  widget.gameState.config.audioConf = v;
-                  widget.gameState.janusEngine.joinLeaveAudioConference();
-                  log('In toggle button widget, audioConf = ${widget.gameState.config.audioConf}');
-                  if (closed) return;
-                  setState(() {});
-                },
-              ),
-            ),
-
-           */ /* show straddle off and auto straddle options ONLY when the UTG STRADDLE is on */
-
-            // Straddle Checkbox
-            Visibility(
-              visible: _gamePlayerSettings.straddle ??
-                  false, // widget.gameState.gameInfo.utgStraddleAllowed ?? true,
-              child: Container(
-                decoration: _gamePlayerSettings.straddle ?? true
-                    ? AppDecorators.tileDecorationWithoutBorder(theme)
-                    : BoxDecoration(),
-                child: Column(
-                  children: [
-                    _buildCheckBox(
-                      text: _appScreenText['straddle'],
-                      value: _gamePlayerSettings.straddle,
-                      onChange: (bool v) async {
-                        // setting the value saves it to local storage too
-
-                        widget.gameState.config.straddleOption = v;
-                        _gamePlayerSettings.straddle = v;
-                        await updateGamePlayerSettings();
-                        log('In toggle button widget, straddleOption = ${widget.gameState.config.straddleOption}');
-                        if (closed) return;
-                        setState(() {});
-                      },
-                    ),
-
-                    // Need variable for tracking auto choice.
-                    Visibility(
-                      visible: _gamePlayerSettings.autoStraddle,
-                      child: Container(
-                        margin: EdgeInsets.only(left: 16),
-                        child: // auto straddle
-                            _buildCheckBox(
-                          text: _appScreenText['autoStraddle'],
-                          value: widget.gameState.config.autoStraddle,
-                          onChange: (bool v) async {
-                            if (v) {
-                              await FirebaseAnalytics().logEvent(
-                                  name: "Auto_Straddle",
-                                  parameters: {
-                                    "name": "Auto Straddle is turned ON"
-                                  });
-                            }
-                            // setting the value saves it to local storage too
-                            widget.gameState.config.autoStraddle = v;
-                            _gamePlayerSettings.autoStraddle = v;
-                            await updateGamePlayerSettings();
-                            log('In toggle button widget, autoStraddle = ${widget.gameState.config.autoStraddle}');
-                          },
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-
-            // need local variable for bombpot in gameInfo
-            Visibility(
-              visible: _gamePlayerSettings.bombPotEnabled, //gameInfo.bombPot,
-              child: _buildCheckBox(
-                text: "Participate in bomb pot",
-                value: true, //widget.gameState.config.bombpot,
-                onChange: (bool v) async {
-                  // setting the value saves it to local storage too
-                  _gamePlayerSettings.bombPotEnabled = v;
-                  await updateGamePlayerSettings();
-                  // widget.gameState.config.bombPot = v;
-                  log('In toggle button widget, gameSounds = ${widget.gameState.config.gameSound}');
-                  if (closed) return;
-                  setState(() {});
-                },
-              ),
-            ),
-
-// Chat setting
-            _buildCheckBox(
-              text: "Chat",
-              value: widget.gameState.config.showChat ??
-                  false, //widget.gameState.config.bombpot,
-              onChange: (bool v) {
-                // setting the value saves it to local storage too
-                widget.gameState.config.showChat = v;
-                // widget.gameState.config.bombPot = v;
-                log('In toggle button widget, gameSounds = ${widget.gameState.config.gameSound}');
-                if (closed) return;
-                setState(() {});
-              },
-            ),
-
-// Participate in audio conference
-            _buildCheckBox(
-              text: "Participate in Audio conference",
-              value: widget.gameState.config.audioConf,
-              onChange: (bool v) {
-                widget.gameState.config.audioConf = v;
-              },
-            ),
+            ...children,
             // seat change & waiting list settings
             ...gameSecondaryOptions
                 .map(
@@ -968,7 +974,7 @@ class _GameOptionState extends State<GameOption> {
     final bool isPlaying = widget.gameState.isPlaying;
     final bool isHost = context.read<GameContextObject>().isHost();
 
-    if (_gameSettings == null) {
+    if (_gameSettings == null || isFetching) {
       return CircularProgressWidget();
     }
 

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
+import 'package:pokerapp/models/game/game_player_settings.dart';
 import 'package:pokerapp/models/game/game_settings.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
@@ -126,6 +127,7 @@ class GameState {
   String _gameCode;
   GameInfoModel _gameInfo;
   GameSettings _gameSettings;
+  GamePlayerSettings _playerSettings;
 
   Map<int, Seat> _seats = Map<int, Seat>();
   List<PlayerModel> _playersInGame;
@@ -148,9 +150,8 @@ class GameState {
   bool hostSeatChangeInProgress = false;
 
   bool gameSounds = true;
-  GameConfiguration config;
+  GameLocalConfig playerLocalConfig;
   GameHiveStore gameHiveStore;
-  GameSettings gameSettings; // server settings
   bool replayMode = false;
 
   // high-hand state
@@ -203,6 +204,8 @@ class GameState {
     this._tappedSeatPos = null;
     this.customizationMode = customizationMode;
     this.replayMode = replayMode ?? false;
+    this._gameSettings = GameSettings();
+    this._playerSettings = GamePlayerSettings();
 
     this._hostSeatChangeSeats = hostSeatChangeSeats;
     this.hostSeatChangeInProgress = hostSeatChangeInProgress ?? false;
@@ -382,14 +385,14 @@ class GameState {
           log('In GameState initialize(), gameBox is empty');
 
           // create a new settings object, and init it (by init -> saves locally)
-          config = GameConfiguration(gameCode, gameHiveStore);
-          await config.init();
+          playerLocalConfig = GameLocalConfig(gameCode, gameHiveStore);
+          await playerLocalConfig.init();
         } else {
           log('In GameState initialize(), getting gameSettings from gameBox');
-          config = gameHiveStore.getGameConfiguration();
+          playerLocalConfig = gameHiveStore.getGameConfiguration();
         }
-        log('In GameState initialize(), gameSettings = $config');
-        _communicationState.showTextChat = config.showChat;
+        log('In GameState initialize(), gameSettings = $playerLocalConfig');
+        _communicationState.showTextChat = playerLocalConfig.showChat;
       }
     }
   }
@@ -543,6 +546,10 @@ class GameState {
 
   GameSettingsState get gameSettingsState => this._gameSettingsState;
 
+  GameSettings get gameSettings => this._gameSettings;
+
+  GamePlayerSettings get playerSettings => this._playerSettings;
+
   bool get isGameRunning {
     bool tableRunning =
         _tableState.tableStatus == AppConstants.TABLE_STATUS_GAME_RUNNING ||
@@ -563,13 +570,51 @@ class GameState {
   Future<void> refreshSettings() async {
     log('************ Refreshing game state');
     // fetch new player using GameInfo API and add to the game
-    GameSettings gameSettings = await GameService.getGameSettings(gameCode);
-    this.gameSettings = gameSettings;
+    GameSettings settings = await GameService.getGameSettings(gameCode);
+
+    // copy values here (we need to keep the reference)
+    this._gameSettings.buyInApproval = settings.buyInApproval;
+    this._gameSettings.runItTwiceAllowed = settings.runItTwiceAllowed;
+    this._gameSettings.allowRabbitHunt = settings.allowRabbitHunt;
+    this._gameSettings.showHandRank = settings.showHandRank;
+    this._gameSettings.doubleBoardEveryHand = settings.doubleBoardEveryHand;
+    this._gameSettings.bombPotEnabled = settings.bombPotEnabled;
+    this._gameSettings.bombPotBet = settings.bombPotBet;
+    this._gameSettings.doubleBoardBombPot = settings.doubleBoardBombPot;
+    this._gameSettings.bombPotInterval = settings.bombPotInterval;
+    this._gameSettings.bombPotIntervalInSecs = settings.bombPotIntervalInSecs;
+    this._gameSettings.bombPotEveryHand = settings.bombPotEveryHand;
+    this._gameSettings.seatChangeAllowed = settings.seatChangeAllowed;
+    this._gameSettings.seatChangeTimeout = settings.seatChangeTimeout;
+    this._gameSettings.waitlistAllowed = settings.waitlistAllowed;
+    this._gameSettings.breakAllowed = settings.breakAllowed;
+    this._gameSettings.breakLength = settings.breakLength;
+    this._gameSettings.resultPauseTime = settings.resultPauseTime;
+    this._gameSettings.ipCheck = settings.ipCheck;
+    this._gameSettings.gpsCheck = settings.gpsCheck;
+    this._gameSettings.funAnimations = settings.funAnimations;
+    this._gameSettings.chat = settings.chat;
+    this._gameSettings.roeGames = [];
+    this._gameSettings.roeGames.addAll(settings.roeGames);
+    this._gameSettings.dealerChoiceGames = [];
+    this._gameSettings.dealerChoiceGames.addAll(settings.dealerChoiceGames);
+  }
+
+  Future<void> refreshPlayerSettings() async {
+    log('************ Refreshing game state');
+    GamePlayerSettings settings =
+        await GameService.getGamePlayerSettings(gameCode);
+
+    // copy values here (we need to keep the reference)
+    this._playerSettings.autoStraddle = settings.autoStraddle;
+    this._playerSettings.bombPotEnabled = settings.bombPotEnabled;
+    this._playerSettings.buttonStraddle = settings.buttonStraddle;
+    this._playerSettings.muckLosingHand = settings.muckLosingHand;
+    this._playerSettings.runItTwiceEnabled = settings.runItTwiceEnabled;
   }
 
   Future<void> refresh({bool rebuildSeats = false}) async {
     log('************ Refreshing game state');
-    // fetch new player using GameInfo API and add to the game
     GameInfoModel gameInfo = await GameService.getGameInfo(this._gameCode);
 
     this._gameInfo = gameInfo;
@@ -643,13 +688,6 @@ class GameState {
     }
 
     this._handInfo.notify();
-  }
-
-  Future<void> refreshGameSettings() async {
-    log('************ Refreshing game state');
-    // fetch new player using GameInfo API and add to the game
-    final gameSettings = await GameService.getGameSettings(this.gameCode);
-    this.gameSettings = gameSettings;
   }
 
   void seatPlayer(int seatNo, PlayerModel player) {
