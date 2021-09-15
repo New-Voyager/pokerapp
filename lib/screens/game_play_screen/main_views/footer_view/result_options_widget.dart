@@ -146,12 +146,9 @@ class ResultOptionsWidget extends StatelessWidget {
                               color: theme.accentColor,
                             ),
                           ),
-                          Provider.value(
-                            value: context.read<GameState>(),
-                            child: Consumer<ValueNotifier<bool>>(
-                              builder: (_, __, ___) => NumDiamondWidget(),
-                            ),
-                          ),
+                          Consumer<ValueNotifier<bool>>(
+                              builder: (_, __, ___) =>
+                                  NumDiamondWidget(gameState.gameHiveStore)),
                         ],
                       ),
 
@@ -224,95 +221,6 @@ class ResultOptionsWidget extends StatelessWidget {
       barrierColor: Colors.black.withOpacity(0.5),
       transitionDuration: Duration(milliseconds: 300),
     );
-    /*  await showModalBottomSheet(
-        context: context,
-        backgroundColor: theme.fillInColor,
-        builder: (_) {
-          final theme = AppTheme.getTheme(context);
-          return ListenableProvider(
-              create: (_) {
-                return ValueNotifier<bool>(false);
-              },
-              child: Align(
-                alignment: Alignment.topCenter,
-                child: Container(
-                  padding: EdgeInsets.all(16),
-                  // width: MediaQuery.of(context).size.width * 0.70,
-                  // height: 200.ph,
-                  // decoration: BoxDecoration(
-                  //   color: theme.primaryColor,
-                  //   borderRadius: BorderRadius.circular(15.0),
-                  // ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      // diamond widget
-                      Provider.value(
-                        value: context.read<GameState>(),
-                        child: Consumer<ValueNotifier<bool>>(
-                          builder: (_, __, ___) => NumDiamondWidget(),
-                        ),
-                      ),
-
-                      // sep
-                      const SizedBox(height: 8.0),
-                      /* hand number */
-                      Text(
-                        'Hand #${rs.handNo ?? 1}',
-                        style: AppDecorators.getHeadLine3Style(theme: theme)
-                            .copyWith(color: theme.secondaryColor),
-                      ),
-
-                      // sep
-                      const SizedBox(height: 15.0),
-
-                      /* your cards */
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text('Your cards'),
-                          const SizedBox(height: 10.0),
-                          Transform.scale(
-                            scale: 1.5,
-                            child: StackCardView00(
-                              cards: rs.myCards,
-                            ),
-                          ),
-                        ],
-                      ),
-
-                      // sep
-                      const SizedBox(height: 15.0),
-
-                      // sep
-                      Text("Community cards"),
-                      AppDimensionsNew.getVerticalSizedBox(16),
-                      // finally show here the community cards
-                      Consumer<ValueNotifier<bool>>(
-                        builder: (_, vnIsRevealed, __) => Transform.scale(
-                          scale: 1.2,
-                          child:
-                              _buildCommunityCardWidget(rs, vnIsRevealed.value),
-                        ),
-                      ),
-
-                      AppDimensionsNew.getVerticalSizedBox(32),
-
-                      // show REVEAL button / share button
-                      Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 20.0),
-                        child: Consumer<ValueNotifier<bool>>(
-                          builder: (_, vnIsRevealed, __) => vnIsRevealed.value
-                              ? _buildShareButton(context, theme, rs)
-                              : _buildRevealButton(vnIsRevealed, theme),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ));
-        });
-  */
   }
 
   // reveal button tap
@@ -478,11 +386,9 @@ class ResultOptionsWidget extends StatelessWidget {
                     const SizedBox(height: 15.0),
 
                     // diamond widget
-                    Provider.value(
-                      value: context.read<GameState>(),
-                      child: Consumer<ValueNotifier<bool>>(
-                        builder: (_, __, ___) => NumDiamondWidget(),
-                      ),
+                    Consumer<ValueNotifier<bool>>(
+                      builder: (_, __, ___) =>
+                          NumDiamondWidget(gameState.gameHiveStore),
                     ),
 
                     // sep

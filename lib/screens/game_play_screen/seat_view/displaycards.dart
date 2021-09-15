@@ -16,7 +16,7 @@ class DisplayCardsWidget extends StatelessWidget {
   List<CardObject> _getCards(List<int> cards) {
     if (cards == null || cards.isEmpty) return [];
     log('DisplayCards: name: ${seat.player.name} muck: ${seat.player.muckLosingHand} folded: ${seat.folded} seat.player.isActive: ${seat.player.isActive} reveal: ${seat.player.revealCards}');
-    
+
     if (seat.player != null && seat.player.playerFolded) {
       if (seat.player.revealCards.length == 0) {
         return [];

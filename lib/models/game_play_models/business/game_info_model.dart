@@ -31,6 +31,7 @@ class GameInfoModel {
   bool playerMuckLosingHand;
   bool playerRunItTwice;
   bool utgStraddleAllowed;
+  bool buttonStraddleAllowed;
   int sessionTime = 0;
   int runningTime = 0;
   int noHandsWon = 0;
@@ -90,6 +91,7 @@ class GameInfoModel {
     this.status = data['status'];
     this.tableStatus = data['tableStatus'];
     this.utgStraddleAllowed = data['utgStraddleAllowed'] ?? true;
+    this.buttonStraddleAllowed = data['buttonStraddleAllowed'] ?? false;
     this.availableSeats = data['seatInfo']['availableSeats']
         .map<int>((e) => int.parse(e.toString()))
         .toList();
@@ -163,6 +165,7 @@ class GameInfoModel {
       smallBlind
       bigBlind
       utgStraddleAllowed
+      buttonStraddleAllowed
       status
       tableStatus
       allowRabbitHunt

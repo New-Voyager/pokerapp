@@ -901,6 +901,23 @@ class _GameOptionState extends State<GameOption> {
 
     // need local variable for bombpot in gameInfo
     children.add(Visibility(
+      visible: widget.gameState.gameInfo.buttonStraddleAllowed,
+      child: _buildCheckBox(
+        text: "Button Straddle",
+        value: _gamePlayerSettings.buttonStraddle,
+        onChange: (bool v) async {
+          // setting the value saves it to local storage too
+          _gamePlayerSettings.buttonStraddle = v;
+          widget.gameState.playerSettings.buttonStraddle = v;
+          await updateGamePlayerSettings();
+          if (closed) return;
+          setState(() {});
+        },
+      ),
+    ));
+
+    // need local variable for bombpot in gameInfo
+    children.add(Visibility(
       visible: widget.gameState.gameSettings.bombPotEnabled,
       child: _buildCheckBox(
         text: "Participate in Bomb Pot",
