@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer' as dev;
 import 'dart:io';
 import 'dart:math';
 import 'package:device_info/device_info.dart';
@@ -295,10 +296,13 @@ class HelperUtils {
   }
 
   static Position getSavedLocation() {
-    Position position = Position.fromMap(
-        HiveDatasource.getInstance.getBox(BoxType.PROFILE_BOX).get("LOCATION"));
-    if (position == null) {
-      position = Position(
+    final locationData = HiveDatasource.getInstance
+        .getBox(BoxType.PROFILE_BOX)
+        .get("LOCATION", defaultValue: null);
+
+    if (locationData == null)
+      // we do not have any saved location data
+      return Position(
         latitude: 0,
         longitude: 0,
         isMocked: true,
@@ -310,28 +314,29 @@ class HelperUtils {
         speedAccuracy: 0,
         timestamp: DateTime.now(),
       );
-    }
-    return position;
+
+    return Position.fromMap(locationData);
   }
 
 // Initialize timer
   static void initTimer({
     @required Duration period,
-    @required Function(Timer) repeatFunction,
+    @required void repeatFunction(Timer t),
     @required Timer timer,
-  }) async {
+  }) {
     if (timer != null) {
       timer.cancel();
     }
     if (timer == null || !timer.isActive) {
-      timer = Timer.periodic(const Duration(seconds: 30), repeatFunction);
+      timer = Timer.periodic(period, repeatFunction);
+      repeatFunction(null);
     }
   }
 
 // Cancel Timer
   static void cancelTimer({
     @required Timer timer,
-  }) async {
+  }) {
     if (timer != null && timer.isActive) {
       timer.cancel();
     }

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/club_members_model.dart';
@@ -212,7 +214,9 @@ class ClubInteriorService {
   }
 
   static Future<String> approveClubMember(
-      String clubCode, String playerID) async {
+    String clubCode,
+    String playerID,
+  ) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     Map<String, dynamic> variables = {
       "clubCode": clubCode,

@@ -6,7 +6,6 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:dart_nats/dart_nats.dart' as nats;
 import 'package:flutter/material.dart';
 import 'package:overlay_support/overlay_support.dart';
-import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/enums/game_status.dart';
 import 'package:pokerapp/enums/player_status.dart';
 import 'package:pokerapp/models/game_play_models/business/game_chat_notfi_state.dart';
@@ -295,6 +294,8 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         hostSeatChangeInProgress: _hostSeatChangeInProgress,
         hostSeatChangeSeats: _hostSeatChangeSeats,
       );
+
+      startLocationUpdate();
     }
 
     if (_gameInfoModel?.audioConfEnabled ?? false) {
@@ -526,7 +527,8 @@ class _GamePlayScreenState extends State<GamePlayScreen>
           gameState: gameState,
         );
       } catch (e) {
-        showError(context, error: e);
+        log('game_play_screen: error: $e');
+        // showError(context, error: e);
         return;
       }
       // join audio
@@ -538,7 +540,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     final GameInfoModel gameInfoModel = await _init();
     if (mounted) {
       setState(() => _gameInfoModel = gameInfoModel);
-      startLocationUpdate();
     }
     _queryCurrentHandIfNeeded();
   }
@@ -988,20 +989,51 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     HelperUtils.cancelTimer(timer: _locationTimer);
   }
 
-  void startLocationUpdate() async {
-    log("0-0-0- START Location update ");
-    if (mounted && (_gameState?.gameInfo?.gpsCheck ?? false)) {
+  void startLocationUpdate() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // we care about the location only when we have already build the app
+      log("0-0-0- START Location update ");
+      // if (mounted && (_gameState?.gameInfo?.gpsCheck ?? false)) {
       HelperUtils.initTimer(
-        period: Duration(seconds: 60),
-        repeatFunction: (_) => sendLocation(),
+        period: Duration(minutes: 1),
+        repeatFunction: this.sendLocation,
         timer: _locationTimer,
       );
-    }
+      // }
+    });
   }
 
-  Future<void> sendLocation() async {
+  // void sendLocationNew(Timer _) async {
+  //   Location location = new Location();
+
+  //   bool _serviceEnabled;
+  //   PermissionStatus _permissionGranted;
+  //   LocationData _locationData;
+
+  //   _serviceEnabled = await location.serviceEnabled();
+  //   if (!_serviceEnabled) {
+  //     _serviceEnabled = await location.requestService();
+  //     if (!_serviceEnabled) {
+  //       return;
+  //     }
+  //   }
+
+  //   _permissionGranted = await location.hasPermission();
+  //   if (_permissionGranted == PermissionStatus.denied) {
+  //     _permissionGranted = await location.requestPermission();
+  //     if (_permissionGranted != PermissionStatus.granted) {
+  //       return;
+  //     }
+  //   }
+
+  //   _locationData = await location.getLocation();
+  //   log('pauldebug location data: ${_locationData.latitude} ${_locationData.longitude}');
+  // }
+
+  void sendLocation(Timer _) async {
     bool serviceEnabled;
     LocationPermission permission;
+
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();

@@ -1099,6 +1099,8 @@ query mySettings(\$gameCode:String!){
       MutationOptions(documentNode: gql(_mutation), variables: variables),
     );
 
+    log('pauldebug location: ${result.exception}');
+
     if (result.hasException) {
       throw GqlError.fromException(result.exception);
     }
