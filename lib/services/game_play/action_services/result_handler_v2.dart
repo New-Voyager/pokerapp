@@ -322,7 +322,6 @@ class ResultHandlerV2 {
       player.highlightCards = [];
       player.cards = [];
       player.animatingFold = false;
-      player.playerFolded = false;
       player.rankText = '';
     }
 

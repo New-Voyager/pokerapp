@@ -796,17 +796,19 @@ class _GameOptionState extends State<GameOption> {
           setState(() {});
         }));
 
-    // Run it twice
-    children.add(_buildCheckBox(
-      text: _appScreenText['promptRunItTwice'],
-      value: _gamePlayerSettings.runItTwiceEnabled,
-      onChange: (bool v) async {
-        _gamePlayerSettings.runItTwiceEnabled = v;
-        await updateGamePlayerSettings();
-        if (closed) return;
-        setState(() {});
-      },
-    ));
+    if (widget.gameState.gameSettings.runItTwiceAllowed) {
+      // Run it twice
+      children.add(_buildCheckBox(
+        text: _appScreenText['promptRunItTwice'],
+        value: _gamePlayerSettings.runItTwiceEnabled,
+        onChange: (bool v) async {
+          _gamePlayerSettings.runItTwiceEnabled = v;
+          await updateGamePlayerSettings();
+          if (closed) return;
+          setState(() {});
+        },
+      ));
+    }
 
     // Game sounds
     children.add(_buildCheckBox(
@@ -840,60 +842,62 @@ class _GameOptionState extends State<GameOption> {
 
     */ /* show straddle off and auto straddle options ONLY when the UTG STRADDLE is on */
 
-    // break allowed
-    children.add(Container(
-      decoration: widget.gameState.gameInfo.utgStraddleAllowed ?? false
-          ? AppDecorators.tileDecorationWithoutBorder(theme)
-          : BoxDecoration(),
-      child: Column(
-        children: [
-          _buildCheckBox(
-            text: 'UTG Straddle',
-            value: widget.gameState.playerLocalConfig.straddle,
-            onChange: (bool v) async {
-              widget.gameState.playerLocalConfig.straddle = v;
-              if (!v) {
-                _gamePlayerSettings.autoStraddle = false;
-              }
-              await updateGamePlayerSettings();
-              log('In toggle button widget, straddleOption = ${widget.gameState.playerLocalConfig.straddle}');
-              if (closed) return;
-              setState(() {});
-            },
-          ),
-          widget.gameState.playerLocalConfig.straddle
-              ? Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 16,
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      // choose interval label
-                      Container(
-                        margin: EdgeInsets.only(
-                            bottom: 10.0, left: 10.0, right: 10.0),
-                        child: _buildCheckBox(
-                          text: 'Auto',
-                          value: widget.gameState.playerSettings.autoStraddle,
-                          onChange: (bool v) async {
-                            widget.gameState.playerSettings.autoStraddle = v;
-                            _gamePlayerSettings.autoStraddle = v;
-                            await updateGamePlayerSettings();
-                            log('In toggle button widget, straddleOption = ${widget.gameState.playerLocalConfig.straddle}');
-                            if (closed) return;
-                            setState(() {});
-                          },
+    // UTG straddle
+    if (widget.gameState.gameInfo.utgStraddleAllowed) {
+      children.add(Container(
+        decoration: widget.gameState.gameInfo.utgStraddleAllowed ?? false
+            ? AppDecorators.tileDecorationWithoutBorder(theme)
+            : BoxDecoration(),
+        child: Column(
+          children: [
+            _buildCheckBox(
+              text: 'UTG Straddle',
+              value: widget.gameState.playerLocalConfig.straddle,
+              onChange: (bool v) async {
+                widget.gameState.playerLocalConfig.straddle = v;
+                if (!v) {
+                  _gamePlayerSettings.autoStraddle = false;
+                }
+                await updateGamePlayerSettings();
+                log('In toggle button widget, straddleOption = ${widget.gameState.playerLocalConfig.straddle}');
+                if (closed) return;
+                setState(() {});
+              },
+            ),
+            widget.gameState.playerLocalConfig.straddle
+                ? Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 16,
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        // choose interval label
+                        Container(
+                          margin: EdgeInsets.only(
+                              bottom: 10.0, left: 10.0, right: 10.0),
+                          child: _buildCheckBox(
+                            text: 'Auto',
+                            value: widget.gameState.playerSettings.autoStraddle,
+                            onChange: (bool v) async {
+                              widget.gameState.playerSettings.autoStraddle = v;
+                              _gamePlayerSettings.autoStraddle = v;
+                              await updateGamePlayerSettings();
+                              log('In toggle button widget, straddleOption = ${widget.gameState.playerLocalConfig.straddle}');
+                              if (closed) return;
+                              setState(() {});
+                            },
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                )
-              : const SizedBox.shrink(),
-        ],
-      ),
-    ));
+                      ],
+                    ),
+                  )
+                : const SizedBox.shrink(),
+          ],
+        ),
+      ));
+    }
 
     // need local variable for bombpot in gameInfo
     children.add(Visibility(

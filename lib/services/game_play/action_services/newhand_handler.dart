@@ -110,8 +110,10 @@ class NewHandHandler {
         playerObj.muckLosingHand = playerInSeat.muckLosingHand;
         playerObj.buttonStraddle = playerInSeat.buttonStraddle;
         playerObj.autoStraddle = playerInSeat.autoStraddle;
+        playerObj.playerFolded = false;
+        playerObj.revealCards = [];
 
-        playerObj.muckLosingHand = true;
+        // playerObj.muckLosingHand = true;
 
         if (playerInSeat.buyInExpTime != null &&
             playerInSeat.breakExpTime.length > 0 &&

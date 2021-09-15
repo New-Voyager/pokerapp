@@ -15,7 +15,13 @@ class DisplayCardsWidget extends StatelessWidget {
 
   List<CardObject> _getCards(List<int> cards) {
     if (cards == null || cards.isEmpty) return [];
-
+    log('DisplayCards: name: ${seat.player.name} muck: ${seat.player.muckLosingHand} folded: ${seat.folded} seat.player.isActive: ${seat.player.isActive} reveal: ${seat.player.revealCards}');
+    
+    if (seat.player != null && seat.player.playerFolded) {
+      if (seat.player.revealCards.length == 0) {
+        return [];
+      }
+    }
     List<int> highlightedCards = seat.player.highlightCards;
 
     List<CardObject> cardObjects = [];
@@ -35,6 +41,10 @@ class DisplayCardsWidget extends StatelessWidget {
         }
       } else if (seat.player.muckLosingHand) {
         // this player is not a winner
+        card.cardFace = CardFace.BACK;
+      }
+
+      if (seat.player.playerFolded) {
         card.cardFace = CardFace.BACK;
       }
 
