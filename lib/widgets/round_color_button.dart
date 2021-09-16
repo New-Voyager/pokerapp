@@ -12,6 +12,7 @@ class RoundedColorButton extends StatelessWidget {
   final Color textColor;
   final Color borderColor;
   final double fontSize;
+  final Icon icon;
   RoundedColorButton({
     Key key,
     this.onTapFunction,
@@ -20,6 +21,7 @@ class RoundedColorButton extends StatelessWidget {
     this.textColor,
     this.borderColor,
     this.fontSize,
+    this.icon,
   }) : super(key: key);
 
   @override
@@ -30,14 +32,26 @@ class RoundedColorButton extends StatelessWidget {
         onTapFunction();
       },
       child: Container(
-        child: Text(
-          text,
-          style: AppStylesNew.joinTextStyle.copyWith(
-            color: textColor ?? AppColorsNew.newTextColor,
-            fontWeight: FontWeight.normal,
-            fontSize: fontSize ?? 10.dp,
-          ),
-          textAlign: TextAlign.center,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Visibility(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: icon,
+              ),
+              visible: icon != null,
+            ),
+            Text(
+              text,
+              style: AppStylesNew.joinTextStyle.copyWith(
+                color: textColor ?? AppColorsNew.newTextColor,
+                fontWeight: FontWeight.normal,
+                fontSize: fontSize ?? 10.dp,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
         ),
         padding: EdgeInsets.symmetric(
           horizontal: 14.pw,

@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
@@ -7,9 +8,12 @@ import 'package:pokerapp/models/rabbit_state.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/proto/hand.pb.dart';
 import 'package:pokerapp/resources/app_assets.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
+import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/game_circle_button.dart';
 import 'package:pokerapp/widgets/cards/multiple_stack_card_views.dart';
 import 'package:pokerapp/widgets/num_diamond_widget.dart';
+import 'package:pokerapp/widgets/round_color_button.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
@@ -104,40 +108,73 @@ class ResultOptionsWidget extends StatelessWidget {
 
   void onRabbitTap(RabbitState rs, BuildContext context) async {
     // show a popup
-    await showDialog(
-        context: context,
-        builder: (_) {
-          final theme = AppTheme.getTheme(context);
-          return ListenableProvider(
-              create: (_) {
-                return ValueNotifier<bool>(false);
-              },
-              child: Align(
-                alignment: Alignment.center,
+    final AppTheme theme = AppTheme.getTheme(context);
+    await showGeneralDialog(
+      context: context,
+      pageBuilder: (_, __, ___) {
+        //final theme = AppTheme.getTheme(context);
+        return Align(
+          alignment: Alignment.bottomCenter,
+          child: Material(
+            color: Colors.transparent,
+            child: ListenableProvider(
+                create: (_) {
+                  return ValueNotifier<bool>(false);
+                },
                 child: Container(
-                  width: MediaQuery.of(context).size.width * 0.70,
-                  height: 200.ph,
-                  decoration: BoxDecoration(
-                    color: theme.primaryColor,
-                    borderRadius: BorderRadius.circular(15.0),
+                  height: MediaQuery.of(context).size.height * 0.5,
+                  margin: EdgeInsets.all(16),
+                  padding:
+                      EdgeInsets.only(bottom: 24, top: 8, right: 8, left: 8),
+                  // width: MediaQuery.of(context).size.width * 0.70,
+                  // height: 200.ph,
+                  decoration: AppDecorators.bgRadialGradient(theme).copyWith(
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: theme.accentColor, width: 3),
                   ),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
+                      // diamond widget
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          IconButton(
+                            onPressed: () => Navigator.of(context).pop(),
+                            icon: Icon(
+                              Icons.cancel,
+                              color: theme.accentColor,
+                            ),
+                          ),
+                          Consumer<ValueNotifier<bool>>(
+                              builder: (_, __, ___) =>
+                                  NumDiamondWidget(gameState.gameHiveStore)),
+                        ],
+                      ),
+
+                      // sep
+                      const SizedBox(height: 8.0),
                       /* hand number */
-                      Text('Hand #${rs.handNo}'),
+                      Text(
+                        'Hand #${rs.handNo ?? 1}',
+                        style: AppDecorators.getHeadLine3Style(theme: theme)
+                            .copyWith(color: theme.secondaryColor),
+                      ),
 
                       // sep
                       const SizedBox(height: 15.0),
 
                       /* your cards */
-                      Row(
+                      Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text('Your cards:'),
-                          const SizedBox(width: 10.0),
-                          StackCardView00(
-                            cards: rs.myCards,
+                          Text('Your cards'),
+                          const SizedBox(height: 10.0),
+                          Transform.scale(
+                            scale: 1.5,
+                            child: StackCardView00(
+                              cards: rs.myCards,
+                            ),
                           ),
                         ],
                       ),
@@ -145,16 +182,19 @@ class ResultOptionsWidget extends StatelessWidget {
                       // sep
                       const SizedBox(height: 15.0),
 
-                      // diamond widget
-                      Provider.value(
-                        value: context.read<GameState>(),
-                        child: Consumer<ValueNotifier<bool>>(
-                          builder: (_, __, ___) => NumDiamondWidget(),
+                      // sep
+                      Text("Community cards"),
+                      AppDimensionsNew.getVerticalSizedBox(16),
+                      // finally show here the community cards
+                      Consumer<ValueNotifier<bool>>(
+                        builder: (_, vnIsRevealed, __) => Transform.scale(
+                          scale: 1.2,
+                          child:
+                              _buildCommunityCardWidget(rs, vnIsRevealed.value),
                         ),
                       ),
 
-                      // sep
-                      const SizedBox(height: 15.0),
+                      AppDimensionsNew.getVerticalSizedBox(32),
 
                       // show REVEAL button / share button
                       Container(
@@ -165,22 +205,22 @@ class ResultOptionsWidget extends StatelessWidget {
                               : _buildRevealButton(vnIsRevealed, theme),
                         ),
                       ),
-
-                      // sep
-
-                      // finally show here the community cards
-                      Consumer<ValueNotifier<bool>>(
-                        builder: (_, vnIsRevealed, __) => Transform.scale(
-                          scale: 1.2,
-                          child:
-                              _buildCommunityCardWidget(rs, vnIsRevealed.value),
-                        ),
-                      ),
                     ],
                   ),
-                ),
-              ));
-        });
+                )),
+          ),
+        );
+      },
+      transitionBuilder: (context, anim1, anim2, child) {
+        return SlideTransition(
+          position:
+              Tween(begin: Offset(0.2, 1), end: Offset(0, 0)).animate(anim1),
+          child: child,
+        );
+      },
+      barrierColor: Colors.black.withOpacity(0.5),
+      transitionDuration: Duration(milliseconds: 300),
+    );
   }
 
   // reveal button tap
@@ -209,7 +249,7 @@ class ResultOptionsWidget extends StatelessWidget {
 
   Widget _buildRevealButton(ValueNotifier<bool> vnIsRevealed, AppTheme theme) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         // diamond icons
         _buildDiamond(),
@@ -219,12 +259,15 @@ class ResultOptionsWidget extends StatelessWidget {
         const SizedBox(width: 10.0),
 
         // visible button
-        GestureDetector(
-          onTap: () => _onRevealButtonTap(vnIsRevealed),
-          child: Icon(
-            Icons.visibility_outlined,
-            color: theme.accentColor,
-            size: 30.0,
+
+        RoundedColorButton(
+          onTapFunction: () => _onRevealButtonTap(vnIsRevealed),
+          backgroundColor: theme.accentColor,
+          textColor: theme.primaryColorWithDark(),
+          text: "Reveal",
+          icon: Icon(
+            Icons.visibility,
+            color: theme.primaryColorWithDark(),
           ),
         ),
       ],
@@ -234,17 +277,30 @@ class ResultOptionsWidget extends StatelessWidget {
   Widget _buildShareButton(
       BuildContext context, AppTheme theme, RabbitState rs) {
     return Align(
-      alignment: Alignment.centerRight,
-      child: GestureDetector(
-        onTap: () {
+      alignment: Alignment.center,
+      child: RoundedColorButton(
+        onTapFunction: () {
           _onShareButtonTap(context, rs);
         },
-        child: Icon(
+        text: "Share",
+        backgroundColor: theme.accentColor,
+        textColor: theme.primaryColorWithDark(),
+        icon: Icon(
           Icons.share_rounded,
-          color: theme.accentColor,
-          size: 30.0,
+          color: theme.primaryColorWithDark(),
         ),
       ),
+      // icon: Icons.share_rounded,
+      // iconColor: theme.accentColor,
+
+      // GestureDetector(
+      //   onTap: ,
+      //   child: Icon(
+      //     Icons.share_rounded,
+      //     color: theme.accentColor,
+      //     size: 30.0,
+      //   ),
+      // ),
     );
   }
 
@@ -262,12 +318,24 @@ class ResultOptionsWidget extends StatelessWidget {
   }
 
   Widget _buildCommunityCardWidget(RabbitState rs, bool isRevealed) {
+    // return Transform.scale(
+    //   scale: 1.5,
+    //   child: RabbitCardView(
+    //     state: rs,
+    //   ),
+    // );
     return isRevealed
-        ? StackCardView00(
-            cards: rs.communityCards,
+        ? Transform.scale(
+            scale: 1.5,
+            child: StackCardView00(
+              cards: rs.communityCards,
+            ),
           )
-        : StackCardView00(
-            cards: _getHiddenCards(rs),
+        : Transform.scale(
+            scale: 1.5,
+            child: StackCardView00(
+              cards: _getHiddenCards(rs),
+            ),
           );
   }
 
@@ -318,11 +386,9 @@ class ResultOptionsWidget extends StatelessWidget {
                     const SizedBox(height: 15.0),
 
                     // diamond widget
-                    Provider.value(
-                      value: context.read<GameState>(),
-                      child: Consumer<ValueNotifier<bool>>(
-                        builder: (_, __, ___) => NumDiamondWidget(),
-                      ),
+                    Consumer<ValueNotifier<bool>>(
+                      builder: (_, __, ___) =>
+                          NumDiamondWidget(gameState.gameHiveStore),
                     ),
 
                     // sep

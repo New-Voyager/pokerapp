@@ -456,6 +456,9 @@ class TestService {
     List<int> communityCards = [161, 200, 168, 177, 194];
 
     final rabbitState = gameState.rabbitState;
+    player.noOfCardsVisible = player.cards.length;
+    gameState.handState = HandState.RESULT;
+    gameState.notifyAllSeats();
     rabbitState.putResult(HandStatus.FLOP, 1, communityCards, player.cards);
     // int r = i % 4;
     // if (r == 1) {
@@ -468,8 +471,7 @@ class TestService {
     //   player.cards[0] = 196;
     // }
 
-    player.noOfCardsVisible = player.cards.length;
-    gameState.notifyAllSeats();
+    //gameState.myState.notify();
   }
 
   // static Future<void> sendNewHand() async {
