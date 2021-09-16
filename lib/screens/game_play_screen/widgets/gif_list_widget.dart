@@ -5,7 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:pokerapp/services/app/game_service.dart';
-import 'package:tenor/tenor.dart';
+import 'package:pokerapp/services/tenor/src/model/tenor_result.dart';
 
 class GifListWidget extends StatelessWidget {
   final List<TenorResult> gifs;

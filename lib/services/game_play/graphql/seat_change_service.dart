@@ -16,7 +16,7 @@ class SeatChangeService {
       "gameCode": gameCode,
     };
     QueryResult result = await _client.mutate(
-      MutationOptions(documentNode: gql(_mutation), variables: variables),
+      MutationOptions(document: gql(_mutation), variables: variables),
     );
 
     if (result.hasException) return null;
@@ -37,7 +37,7 @@ class SeatChangeService {
       "cancel": cancel,
     };
     QueryResult result = await _client.mutate(
-      MutationOptions(documentNode: gql(_mutation), variables: variables),
+      MutationOptions(document: gql(_mutation), variables: variables),
     );
 
     if (result.hasException) return null;
@@ -58,7 +58,7 @@ class SeatChangeService {
       "seatNo2": seat2
     };
     QueryResult result = await _client.mutate(
-      MutationOptions(documentNode: gql(_mutation), variables: variables),
+      MutationOptions(document: gql(_mutation), variables: variables),
     );
 
     if (result.hasException) return null;
@@ -84,7 +84,7 @@ class SeatChangeService {
     };
 
     QueryResult result = await _client.query(
-      QueryOptions(documentNode: gql(query), variables: variables),
+      QueryOptions(document: gql(query), variables: variables),
     );
 
     if (result.hasException) {

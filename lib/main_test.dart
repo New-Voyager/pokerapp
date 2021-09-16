@@ -1,7 +1,9 @@
+import 'dart:io';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
@@ -11,7 +13,6 @@ import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/services/data/hive_datasource_impl.dart';
 import 'package:pokerapp/services/nats/nats.dart';
 import 'package:provider/provider.dart';
-import 'package:sizer/sizer.dart';
 import 'main.dart';
 
 import 'flavor_config.dart';
@@ -19,8 +20,9 @@ import 'flavor_config.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // Register all the models and services before the app starts
-  InAppPurchaseConnection.enablePendingPurchases();
-
+  if (Platform.isAndroid) {
+    InAppPurchaseAndroidPlatformAddition.enablePendingPurchases();
+  } 
   await HiveDatasource.getInstance.init();
 
   var testFlavorApp = FlavorConfig(
@@ -85,7 +87,7 @@ class MyApp extends StatelessWidget {
                 child: LayoutBuilder(
                   builder: (context, constraints) => OrientationBuilder(
                     builder: (context, orientation) {
-                      SizerUtil().init(constraints, orientation);
+                      //SizerUtil().init(constraints, orientation);
                       return MaterialApp(
                         title: FlavorConfig.of(context).appName,
                         debugShowCheckedModeBanner: false,

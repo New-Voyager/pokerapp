@@ -30,7 +30,6 @@ import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 
-import 'iap_test.dart';
 
 class TestService {
   static bool get isTesting {
@@ -47,7 +46,6 @@ class TestService {
 
   static BuildContext _context;
   //static HandActionService _handActionService;
-  static InAppPurchaseTest _testIap;
   static HandActionProtoService _handActionProtoService;
   TestService._();
 
@@ -157,12 +155,12 @@ class TestService {
 
   static List<int> get pots => _pots;
 
-  static void testIap() {
-    if (_testIap == null) {
-      _testIap = new InAppPurchaseTest();
-    }
-    _testIap.loadProducts();
-  }
+  // static void testIap() {
+  //   if (_testIap == null) {
+  //     _testIap = new InAppPurchaseTest();
+  //   }
+  //   _testIap.loadProducts();
+  // }
 
   static Future<void> load() async {
     if (isTesting) {
@@ -408,10 +406,10 @@ class TestService {
     seat.notify();
   }
 
-  static Future<void> showFlushBar() async {
-    String message = 'emma is invited to take the open seat';
-    showWaitlistStatus(_context, message, 10);
-  }
+  // static Future<void> showFlushBar() async {
+  //   String message = 'emma is invited to take the open seat';
+  //   showWaitlistStatus(_context, message, 10);
+  // }
 
   static int i = 0;
   static Future<void> showHoleCards() async {

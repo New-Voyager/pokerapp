@@ -44,7 +44,7 @@ class PlayerService {
     }
 
     QueryResult result = await _client.query(
-      QueryOptions(documentNode: gql(_query), variables: variables),
+      QueryOptions(document: gql(_query), variables: variables),
     );
 
     if (result.hasException) return null;
@@ -68,7 +68,7 @@ class PlayerService {
     """;
 
     QueryResult result = await _client.query(
-      QueryOptions(documentNode: gql(_query), variables: variables),
+      QueryOptions(document: gql(_query), variables: variables),
     );
 
     if (result.hasException) return null;
@@ -92,7 +92,7 @@ class PlayerService {
           }""";
 
     QueryResult result = await _client.query(
-      QueryOptions(documentNode: gql(_query), variables: variables),
+      QueryOptions(document: gql(_query), variables: variables),
     );
 
     if (result.hasException) return null;
@@ -107,7 +107,7 @@ class PlayerService {
     String _query = """query { approvals: pendingApprovals {name} }""";
 
     QueryResult result = await _client.query(
-      QueryOptions(documentNode: gql(_query)),
+      QueryOptions(document: gql(_query)),
     );
 
     if (result.hasException) return null;
@@ -133,7 +133,7 @@ class PlayerService {
     }""";
 
     QueryResult result = await _client.query(
-      QueryOptions(documentNode: gql(_query)),
+      QueryOptions(document: gql(_query)),
     );
 
     if (result.hasException) return null;
@@ -164,7 +164,7 @@ class PlayerService {
 
     print(_query);
     QueryResult result = await _client.query(
-      QueryOptions(documentNode: gql(_query), variables: variables),
+      QueryOptions(document: gql(_query), variables: variables),
     );
 
     if (result.hasException) return null;
@@ -191,7 +191,7 @@ class PlayerService {
 
     print(_query);
     QueryResult result = await _client.query(
-      QueryOptions(documentNode: gql(_query), variables: variables),
+      QueryOptions(document: gql(_query), variables: variables),
     );
 
     if (result.hasException) return null;
@@ -217,7 +217,7 @@ class PlayerService {
 
     print(_query);
     QueryResult result = await _client.query(
-      QueryOptions(documentNode: gql(_query), variables: variables),
+      QueryOptions(document: gql(_query), variables: variables),
     );
 
     if (result.hasException) return null;

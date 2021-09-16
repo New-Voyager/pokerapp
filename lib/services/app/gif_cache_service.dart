@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:http/http.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pokerapp/services/app/tenor_service.dart';
+import 'package:pokerapp/services/tenor/src/model/tenor_result.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:tenor/tenor.dart';
 
 class GifCacheService {
   GifCacheService._();
@@ -72,7 +72,7 @@ class GifCacheService {
           '${dir.path}/${DateTime.now().millisecondsSinceEpoch.toString()}.gif';
 
       /* download the file */
-      Response response = await get(previewUrl);
+      Response response = await get(Uri.parse(previewUrl));
       await File(downloadToFile).writeAsBytes(response.bodyBytes);
 
       print('downloaded :$query GIF to: $downloadToFile');

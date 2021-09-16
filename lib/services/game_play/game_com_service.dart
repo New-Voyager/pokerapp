@@ -1,12 +1,13 @@
 import 'dart:developer';
 import 'dart:typed_data';
 
-import 'package:dart_nats/dart_nats.dart';
 import 'package:flutter/foundation.dart';
 import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/services/connectivity_check/ping_responder.dart';
+import 'package:pokerapp/services/nats/message.dart';
 import 'package:pokerapp/services/nats/nats.dart';
+import 'package:pokerapp/services/nats/subscription.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 
 class GameComService {

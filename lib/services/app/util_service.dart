@@ -19,7 +19,7 @@ class UtilService {
       return natsUrl;
     }
 
-    http.Response response = await http.get('$apiServerUrl/nats-urls');
+    http.Response response = await http.get(Uri.parse('$apiServerUrl/nats-urls'));
 
     String resBody = response.body;
 

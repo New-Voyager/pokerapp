@@ -12,7 +12,7 @@ class GraphQLConfiguration {
   }
 
   HttpLink httpLink() {
-    return HttpLink(uri: apiURL);
+    return HttpLink(apiURL);
   }
 
   AuthLink authLink() {
@@ -32,7 +32,7 @@ class GraphQLConfiguration {
     return ValueNotifier(
       GraphQLClient(
         link: authLink().concat(httpLink()),
-        cache: OptimisticCache(dataIdFromObject: typenameDataIdFromObject),
+        cache: GraphQLCache(),
       ),
     );
   }
@@ -40,7 +40,7 @@ class GraphQLConfiguration {
   GraphQLClient clientToQuery({bool noAuthLink = false}) {
     return GraphQLClient(
       link: authLink().concat(httpLink()),
-      cache: OptimisticCache(dataIdFromObject: typenameDataIdFromObject),
+      cache: GraphQLCache(),
     );
   }
 }

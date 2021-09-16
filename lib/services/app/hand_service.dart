@@ -156,7 +156,7 @@ class HandService {
     };
     // print(allHands);
     QueryResult result = await _client
-        .query(QueryOptions(documentNode: gql(allHands), variables: variables));
+        .query(QueryOptions(document: gql(allHands), variables: variables));
 
     if (result.hasException) return null;
 
@@ -179,7 +179,7 @@ class HandService {
     }
     log("variables: $variables");
     QueryResult result = await _client
-        .query(QueryOptions(documentNode: gql(query), variables: variables));
+        .query(QueryOptions(document: gql(query), variables: variables));
 
     if (result.hasException) return null;
     final handResultData = result.data['handResult']['data'];
@@ -203,7 +203,7 @@ class HandService {
     log("CODE IN GRAPHQL : $clubCode");
 
     QueryResult result = await _client.mutate(MutationOptions(
-        documentNode: gql(shareHandMutation), variables: variables));
+        document: gql(shareHandMutation), variables: variables));
     if (result.hasException) {
       print(result.exception);
       return false;
@@ -221,7 +221,7 @@ class HandService {
 
     log("Variables : $variables");
     QueryResult result = await _client.mutate(
-        MutationOptions(documentNode: gql(bookmarkHand), variables: variables));
+        MutationOptions(document: gql(bookmarkHand), variables: variables));
     //print("Bookmarking API : ${result.data.values}");
 
     if (result.hasException) {
@@ -238,7 +238,7 @@ class HandService {
 
     log("Variables : $variables");
     QueryResult result = await _client.mutate(MutationOptions(
-        documentNode: gql(removeBookmarkedHand), variables: variables));
+        document: gql(removeBookmarkedHand), variables: variables));
     //print("Bookmarking API : ${result.data.values}");
 
     if (result.hasException) {
@@ -251,7 +251,7 @@ class HandService {
   static getBookMarkedHands() async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     QueryResult result = await _client.query(QueryOptions(
-      documentNode: gql(bookmarkedHands),
+      document: gql(bookmarkedHands),
     ));
 
     if (result.hasException) {
@@ -269,7 +269,7 @@ class HandService {
     };
 
     QueryResult result = await _client.query(QueryOptions(
-        documentNode: gql(bookmarkedHandsForGame), variables: variables));
+        document: gql(bookmarkedHandsForGame), variables: variables));
 
     if (result.hasException) {
       print("Exception in BookmarkHand for game: ${result.exception}");
@@ -284,7 +284,7 @@ class HandService {
     Map<String, dynamic> variables = {"gameCode": gameCode, "handNum": handNum};
 
     QueryResult result = await _client.mutate(MutationOptions(
-        documentNode: gql(debugHandLogQuery), variables: variables));
+        document: gql(debugHandLogQuery), variables: variables));
 
     if (result.hasException) {
       print(

@@ -60,7 +60,7 @@ class AssetService {
     final String downloadToFile = '${dir.path}/${asset.type}_$_filename';
 
     log("Downloading to file : $downloadToFile");
-    http.Response response = await http.get(asset.link);
+    http.Response response = await http.get(Uri.parse(asset.link));
 
     if (response.statusCode != 200) {
       return asset;
@@ -127,7 +127,7 @@ class AssetService {
       return assets;
     }
     final response = await http.get(
-      '$apiServerUrl/assets',
+      Uri.parse('$apiServerUrl/assets'),
     );
 
     if (response.statusCode != 200) {

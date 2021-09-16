@@ -99,7 +99,7 @@ class ClubInteriorService {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     Map<String, dynamic> variables = {"clubCode": clubCode};
     QueryResult result = await _client.query(
-        QueryOptions(documentNode: gql(searchClub), variables: variables));
+        QueryOptions(document: gql(searchClub), variables: variables));
     if (result.hasException) return null;
 
     final jsonResponse = result.data['club'];
@@ -115,7 +115,7 @@ class ClubInteriorService {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     Map<String, dynamic> variables = {"clubCode": clubCode, "filter": filter};
     QueryResult result = await _client.query(
-        QueryOptions(documentNode: gql(membersQuery), variables: variables));
+        QueryOptions(document: gql(membersQuery), variables: variables));
 
     if (result.hasException) return [];
 
@@ -178,7 +178,7 @@ class ClubInteriorService {
       "update": update,
     };
     QueryResult result = await _client.mutate(MutationOptions(
-        documentNode: gql(updateClubMemberMutation), variables: variables));
+        document: gql(updateClubMemberMutation), variables: variables));
     if (result.hasException) return false;
     return true;
   }
@@ -189,7 +189,7 @@ class ClubInteriorService {
       "clubCode": clubCode,
     };
     QueryResult result = await _client.query(QueryOptions(
-        documentNode: gql(gameHistoryQuery), variables: variables));
+        document: gql(gameHistoryQuery), variables: variables));
 
     if (result.hasException) return [];
 
@@ -204,7 +204,7 @@ class ClubInteriorService {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     Map<String, dynamic> variables = {"clubCode": clubCode};
     QueryResult result = await _client.mutate(MutationOptions(
-        documentNode: gql(joinClubQuery), variables: variables));
+        document: gql(joinClubQuery), variables: variables));
     if (result.hasException) return null;
 
     final jsonResponse = result.data['status'].toString();
@@ -219,7 +219,7 @@ class ClubInteriorService {
       "playerId": playerID
     };
     QueryResult result = await _client.mutate(MutationOptions(
-        documentNode: gql(approveMember), variables: variables));
+        document: gql(approveMember), variables: variables));
     if (result.hasException) return null;
     final jsonResponse = result.data['status'].toString();
     return jsonResponse;
@@ -232,7 +232,7 @@ class ClubInteriorService {
       "playerId": playerID
     };
     QueryResult result = await _client.mutate(
-        MutationOptions(documentNode: gql(denyMember), variables: variables));
+        MutationOptions(document: gql(denyMember), variables: variables));
     if (result.hasException) return null;
     print("result.hasException ${result.hasException}");
     print("result.data['status'] ${result.data['status']}");

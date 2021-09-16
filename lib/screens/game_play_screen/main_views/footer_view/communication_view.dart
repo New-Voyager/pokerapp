@@ -1,7 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:audio_recorder/audio_recorder.dart';
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -19,6 +18,7 @@ import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/widgets/blinking_widget.dart';
 import 'package:provider/provider.dart';
+import 'package:record/record.dart';
 
 class CommunicationView extends StatefulWidget {
   final Function chatVisibilityChange;
@@ -33,7 +33,18 @@ class CommunicationView extends StatefulWidget {
 class _CommunicationViewState extends State<CommunicationView> {
   bool _recordingCancelled;
   String _audioFile;
-
+  final _audioRecorder = Record();
+  bool _isRecording = false;
+  @override
+  void initState() {
+    // TODO: implement initState
+    _isRecording = false;
+    super.initState();
+  }
+  @override
+  void dispose() {
+    _audioRecorder.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     final theme = AppTheme.getTheme(context);
@@ -411,9 +422,9 @@ class _CommunicationViewState extends State<CommunicationView> {
   }
 
   void onMicPressEnd(BuildContext context, LongPressEndDetails details) async {
-    if (await AudioRecorder.isRecording) {
+    if (await _audioRecorder.isRecording()) {
       log('Stop recording');
-      await AudioRecorder.stop();
+      await _audioRecorder.stop();
       var outputFile = File(_audioFile);
       if (outputFile.existsSync()) {
         var length = await outputFile.length();
@@ -430,9 +441,9 @@ class _CommunicationViewState extends State<CommunicationView> {
   }
 
   stopRecording(bool cancelled, int duration) async {
-    if (await AudioRecorder.isRecording) {
+    if (await _audioRecorder.isRecording()) {
       log('Stop recording');
-      await AudioRecorder.stop();
+      await _audioRecorder.stop();
       var outputFile = File(_audioFile);
       if (outputFile.existsSync()) {
         var length = await outputFile.length();
@@ -465,6 +476,6 @@ class _CommunicationViewState extends State<CommunicationView> {
       log('audio file $outputFile is deleted');
       outputFile.deleteSync();
     }
-    AudioRecorder.start(path: outputFile.path);
+    _audioRecorder.start(path: outputFile.path);
   }
 }

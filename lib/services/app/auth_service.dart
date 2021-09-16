@@ -42,7 +42,7 @@ class AuthService {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     Map<String, dynamic> variables = {"input": input.toJson()};
     QueryResult result = await _client.query(QueryOptions(
-        documentNode: gql(updatUserDetailsQuery), variables: variables));
+        document: gql(updatUserDetailsQuery), variables: variables));
 
     if (result.hasException) {
       log(result.exception.toString());
@@ -110,7 +110,7 @@ class AuthService {
     String apiServerUrl = AppConfig.apiUrl;
 
     final response = await http.post(
-      '$apiServerUrl/auth/new-login',
+      Uri.parse('$apiServerUrl/auth/new-login'),
       headers: header,
       body: body,
     );
@@ -154,7 +154,7 @@ class AuthService {
     String apiServerUrl = AppConfig.apiUrl;
 
     final response = await http.post(
-      '$apiServerUrl/auth/signup',
+      Uri.parse('$apiServerUrl/auth/signup'),
       headers: header,
       body: body,
     );
@@ -189,7 +189,7 @@ class AuthService {
     String apiServerUrl = AppConfig.apiUrl;
 
     final response = await http.post(
-      '$apiServerUrl/auth/recovery-code',
+      Uri.parse('$apiServerUrl/auth/recovery-code'),
       headers: header,
       body: body,
     );
@@ -231,7 +231,7 @@ class AuthService {
     String apiServerUrl = AppConfig.apiUrl;
 
     final response = await http.post(
-      '$apiServerUrl/auth/login-recovery-code',
+      Uri.parse('$apiServerUrl/auth/login-recovery-code'),
       headers: header,
       body: body,
     );
@@ -268,7 +268,7 @@ class AuthService {
   static getPlayerInfo() async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     QueryResult result = await _client.query(QueryOptions(
-        documentNode: gql(getPlayerInfoQuery), variables: {"getPrivs": true}));
+        document: gql(getPlayerInfoQuery), variables: {"getPrivs": true}));
 
     if (result.hasException) {
       log(result.exception.toString());

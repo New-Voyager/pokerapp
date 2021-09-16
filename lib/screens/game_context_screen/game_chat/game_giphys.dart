@@ -10,7 +10,7 @@ import 'package:pokerapp/screens/game_play_screen/widgets/gif_list_widget.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/app/tenor_service.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
-import 'package:tenor/tenor.dart';
+import 'package:pokerapp/services/tenor/src/model/tenor_result.dart';
 
 import 'add_favourite_giphy.dart';
 

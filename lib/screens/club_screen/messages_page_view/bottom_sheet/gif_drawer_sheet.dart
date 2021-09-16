@@ -7,8 +7,8 @@ import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/gif_list_widget.dart';
 import 'package:pokerapp/services/app/tenor_service.dart';
+import 'package:pokerapp/services/tenor/src/model/tenor_result.dart';
 import 'package:provider/provider.dart';
-import 'package:tenor/tenor.dart';
 
 // FIXME : is it duplicate of game_giphies.dart?
 class GifDrawerSheet extends StatefulWidget {

@@ -4,8 +4,9 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:get_version/get_version.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:in_app_purchase_android/in_app_purchase_android.dart';
+
 import 'package:pokerapp/models/app_coin.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
@@ -31,7 +32,7 @@ class StorePage extends StatefulWidget {
 
 class _StorePageState extends State<StorePage> {
   /// The In App Purchase plugin
-  final InAppPurchaseConnection _connection = InAppPurchaseConnection.instance;
+  final InAppPurchase _connection = InAppPurchase.instance;
   StreamSubscription<List<PurchaseDetails>> _subscription;
   List<String> _notFoundIds = [];
   List<IapAppCoinProduct> _enabledProducts = [];
@@ -50,7 +51,7 @@ class _StorePageState extends State<StorePage> {
     _appScreenText = getAppTextScreen("storePage");
 
     final Stream<List<PurchaseDetails>> purchaseUpdated =
-        InAppPurchaseConnection.instance.purchaseUpdatedStream;
+        InAppPurchase.instance.purchaseStream;
     _subscription = purchaseUpdated.listen((purchaseDetailsList) {
       _listenToPurchaseUpdated(purchaseDetailsList);
     }, onDone: () {
@@ -66,13 +67,13 @@ class _StorePageState extends State<StorePage> {
     String projectAppID;
     String appVersion;
     String platformVersion;
-    try {
-      projectAppID = await GetVersion.appID;
-      appVersion = await GetVersion.projectVersion;
-      platformVersion = await GetVersion.platformVersion;
-    } catch (e) {
-      projectAppID = 'Failed to get app ID.';
-    }
+    // try {
+    //   projectAppID = await GetVersion.appID;
+    //   appVersion = await GetVersion.projectVersion;
+    //   platformVersion = await GetVersion.platformVersion;
+    // } catch (e) {
+    //   projectAppID = 'Failed to get app ID.';
+    // }
     log('Project App ID: $projectAppID appVersion: $appVersion platformVersion: $platformVersion');
 
     _enabledProducts = await AppCoinService.availableProducts();
@@ -124,21 +125,21 @@ class _StorePageState extends State<StorePage> {
       return;
     }
 
-    final QueryPurchaseDetailsResponse purchaseResponse =
-        await _connection.queryPastPurchases();
-    if (purchaseResponse.error != null) {
-      // handle query past purchase error..
-    }
-    final List<PurchaseDetails> verifiedPurchases = [];
-    for (PurchaseDetails purchase in purchaseResponse.pastPurchases) {
-      if (await _verifyPurchase(purchase)) {
-        verifiedPurchases.add(purchase);
-      }
-    }
+    // final QueryPurchaseDetailsResponse purchaseResponse =
+    //     await _connection.
+    // if (purchaseResponse.error != null) {
+    //   // handle query past purchase error..
+    // }
+    // final List<PurchaseDetails> verifiedPurchases = [];
+    // for (PurchaseDetails purchase in purchaseResponse.pastPurchases) {
+    //   if (await _verifyPurchase(purchase)) {
+    //     verifiedPurchases.add(purchase);
+    //   }
+    // }
     setState(() {
       _isAvailable = isAvailable;
       _iapProducts = productDetailResponse.productDetails;
-      _purchases = verifiedPurchases;
+      //_purchases = verifiedPurchases;
       _notFoundIds = productDetailResponse.notFoundIDs;
       _purchasePending = false;
       _loading = false;
@@ -291,11 +292,10 @@ class _StorePageState extends State<StorePage> {
       */
       String sourceType = 'UNKNOWN';
       String receipt = '';
-      if (purchaseDetails.verificationData.source == IAPSource.GooglePlay) {
+      if (Platform.isAndroid) {
         sourceType = 'GOOGLE_PLAY_STORE';
         receipt = purchaseDetails.verificationData.localVerificationData;
-      } else if (purchaseDetails.verificationData.source ==
-          IAPSource.AppStore) {
+      } else if (Platform.isIOS) {
         sourceType = 'IOS_APP_STORE';
         receipt = purchaseDetails.verificationData.serverVerificationData;
       }
@@ -332,6 +332,7 @@ class _StorePageState extends State<StorePage> {
 
   void _listenToPurchaseUpdated(List<PurchaseDetails> purchaseDetailsList) {
     purchaseDetailsList.forEach((PurchaseDetails purchaseDetails) async {
+
       if (purchaseDetails.status == PurchaseStatus.pending) {
         showPendingUI();
       } else {
@@ -347,18 +348,19 @@ class _StorePageState extends State<StorePage> {
             _handleInvalidPurchase(purchaseDetails);
             return;
           }
-        }
-        if (Platform.isAndroid) {
+          if (Platform.isAndroid) {
           if (!_kAutoConsume && purchaseDetails.productID == _kConsumableId) {
-            await InAppPurchaseConnection.instance
-                .consumePurchase(purchaseDetails);
+            final InAppPurchaseAndroidPlatformAddition androidAddition =
+                _connection.getPlatformAddition<
+                    InAppPurchaseAndroidPlatformAddition>();
+            await androidAddition.consumePurchase(purchaseDetails);
           }
         }
         if (purchaseDetails.pendingCompletePurchase) {
-          await InAppPurchaseConnection.instance
-              .completePurchase(purchaseDetails);
+          await _connection.completePurchase(purchaseDetails);
         }
       }
+    }
     });
   }
 }

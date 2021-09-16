@@ -1,5 +1,7 @@
 import 'package:pokerapp/services/app/gif_cache_service.dart';
-import 'package:tenor/tenor.dart';
+import 'package:pokerapp/services/tenor/src/model/tenor_response.dart';
+import 'package:pokerapp/services/tenor/src/model/tenor_result.dart';
+import 'package:pokerapp/services/tenor/src/tenor.dart';
 
 class TenorService {
   static final String _token = "Poker Club App	64Q3AL13ME20";

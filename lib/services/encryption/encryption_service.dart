@@ -20,7 +20,7 @@ class EncryptionService {
     }""";
 
     QueryResult result = await _client.query(
-      QueryOptions(documentNode: gql(_query)),
+      QueryOptions(document: gql(_query)),
     );
 
     if (result.hasException) {

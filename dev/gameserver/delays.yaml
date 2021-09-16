@@ -1,4 +1,0 @@
-# Delays in milliseconds.
-
-pendingUpdatesRetry: 5000
-resultPerWinner: 5000

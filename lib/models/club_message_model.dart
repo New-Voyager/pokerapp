@@ -60,7 +60,7 @@ class ClubMessageModel {
     this.playerTags,
   });
 
-  ClubMessageModel.fromJson(LazyCacheMap jsonData) {
+  ClubMessageModel.fromJson(dynamic jsonData) {
     /* this function converts the server response
     to app objects */
 

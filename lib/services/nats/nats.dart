@@ -1,15 +1,18 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:dart_nats/dart_nats.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/util_service.dart';
+import 'package:pokerapp/services/nats/message.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/main.dart';
 import 'package:provider/provider.dart';
+
+import 'client.dart';
+import 'subscription.dart';
 
 class Nats {
   Client _client;

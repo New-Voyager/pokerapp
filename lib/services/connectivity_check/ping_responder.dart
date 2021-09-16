@@ -3,8 +3,9 @@ import 'dart:math';
 import 'dart:typed_data';
 import 'package:pokerapp/proto/handmessage.pb.dart' as proto;
 import 'package:fixnum/fixnum.dart' as $fixnum;
+import 'package:pokerapp/services/nats/client.dart';
+import 'package:pokerapp/services/nats/message.dart';
 
-import 'package:dart_nats/dart_nats.dart';
 
 class PingResponder {
   int playerId;
