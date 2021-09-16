@@ -75,17 +75,15 @@ android {
         dev{
             dimension "default"
             applicationId "com.voyagerent.pokerclub.dev"
-            //applicationId "com.voyagerent.pokerclubtest"
-            //-*applicationIdSuffix ".dev"
         }
 
-        flavorTest{
-            dimension "default"
-        }
+        // flavorTest{
+        //     dimension "default"
+        // }
 
-        prod{
-            dimension "default"
-        }
+        // prod{
+        //     dimension "default"
+        // }
     }
 
 }
