@@ -66,7 +66,16 @@ class _FooterActionViewState extends State<FooterActionView> {
             color: isSelected
                 ? theme.primaryColorWithDark()
                 : theme.supportingColor);
-    Color btnColor = theme.primaryColor;
+    Color btnColor = theme.accentColor;
+    if (text.toLowerCase().contains("fold")) {
+      btnColor = Colors.blueGrey.shade600;
+    } else if (text.toLowerCase().contains("call")) {
+      btnColor = Colors.green.shade600;
+    } else if (text.toLowerCase().contains("bet")) {
+      btnColor = Colors.redAccent.shade700;
+    } else if (text.toLowerCase().contains("check")) {
+      btnColor = Colors.green.shade700;
+    }
     if (disable) {
       btnColor = Colors.grey;
       btnTextStyle = AppDecorators.getSubtitle3Style(theme: theme);
@@ -80,14 +89,20 @@ class _FooterActionViewState extends State<FooterActionView> {
       margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
       padding: const EdgeInsets.all(2.0),
       decoration: BoxDecoration(
-        color: isSelected ? theme.accentColor : Colors.transparent,
-        shape: BoxShape.rectangle,
-        border: Border.all(
-          color: theme.accentColor,
-          width: 1.0,
-        ),
-        borderRadius: BorderRadius.circular(16),
-      ),
+          color: btnColor,
+          shape: BoxShape.rectangle,
+          border: Border.all(
+            color: btnColor,
+            width: 1.0,
+          ),
+          borderRadius: BorderRadius.circular(8),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black,
+              spreadRadius: 0.1,
+              blurRadius: 5,
+            ),
+          ]),
       child: Center(
         child: FittedBox(
           fit: BoxFit.fitHeight,
@@ -96,9 +111,8 @@ class _FooterActionViewState extends State<FooterActionView> {
             textAlign: TextAlign.center,
             style: btnTextStyle.copyWith(
               fontSize: 10.dp,
-              color: isSelected
-                  ? theme.primaryColorWithDark()
-                  : theme.supportingColor,
+              fontWeight: FontWeight.w600,
+              color: Colors.white,
             ),
           ),
         ),
@@ -373,7 +387,7 @@ class _FooterActionViewState extends State<FooterActionView> {
 
     return IntrinsicHeight(
       child: Container(
-        color: theme.primaryColor.withOpacity(1),
+        color: Colors.black.withOpacity(0.5),
         child: Consumer<ActionState>(
           key: ValueKey('buildActionButtons'),
           builder: (_, actionState, __) => Column(
