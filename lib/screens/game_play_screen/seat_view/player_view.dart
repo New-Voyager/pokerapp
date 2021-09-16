@@ -336,7 +336,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
 
               // player notes text
               Visibility(
-                visible: !widget.seat.player.hasNotes && !widget.seat.isMe,
+                visible: widget.seat.player.hasNotes && !widget.seat.isMe,
                 child: Transform.translate(
                   offset: notesOffset,
                   child: IconButton(

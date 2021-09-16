@@ -31,10 +31,11 @@
 					"name": "poker club",
 					"playerId": "1",
 					"seatNo": 1,
-					"playerUuid": "185ecfc9c80b5ee6",
+					"playerUuid": "371e8c15-39cb-4bd9-a932-ced7a9dd6aac",
 					"stack": 98,
 					"buyIn": 100,
-					"status": "PLAYING"
+					"status": "PLAYING",
+					"me": true
 				},
 				{
 					"name": "yong",
@@ -58,11 +59,10 @@
 					"name": "paul",
 					"playerId": "4",
 					"seatNo": 4,
-					"playerUuid": "371e8c15-39cb-4bd9-a932-ced7a9dd6aac",
+					"playerUuid": "371e8c15-39cb-4bd9-a932-ced7a9dd6bcd",
 					"stack": 129,
 					"buyIn": 400,
-					"status": "PLAYING",
-					"me": true
+					"status": "PLAYING"
 				},
 				{
 					"name": "jim",

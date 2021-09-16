@@ -20,13 +20,37 @@ class ClubStatsModel {
   Map<String, int> plo;
   Map<String, int> fivecardPlo;
 
-  factory ClubStatsModel.fromJson(Map<String, dynamic> json) => ClubStatsModel(
-        holdem:
-            Map.from(json["holdem"]).map((k, v) => MapEntry<String, int>(k, v)),
-        plo: Map.from(json["plo"]).map((k, v) => MapEntry<String, int>(k, v)),
-        fivecardPlo: Map.from(json["fivecard_plo"])
-            .map((k, v) => MapEntry<String, int>(k, v)),
+  factory ClubStatsModel.fromJson(Map<String, dynamic> json){
+    final holdem = Map<String, int>();
+    for (final key in json["holdem"].keys) {
+      if (key == '__typename') {
+        continue;
+      }
+      holdem[key] = json["holdem"][key];
+    }
+
+    final plo = Map<String, int>();
+    for (final key in json["plo"].keys) {
+      if (key == '__typename') {
+        continue;
+      }
+      plo[key] = json["plo"][key];
+    }
+
+    final fivecardPlo = Map<String, int>();
+    for (final key in json["fivecard_plo"].keys) {
+      if (key == '__typename') {
+        continue;
+      }
+      fivecardPlo[key] = json["fivecard_plo"][key];
+    }
+
+    return ClubStatsModel(
+        holdem: holdem,
+        plo: plo,
+        fivecardPlo: fivecardPlo,
       );
+  }
 
   Map<String, dynamic> toJson() => {
         "holdem":

@@ -22,7 +22,7 @@ class AppCoinService {
     };
     QueryResult result = await _client.mutate(
       MutationOptions(
-        documentNode: gql(query),
+        document: gql(query),
         variables: variables,
       ),
     );
@@ -48,7 +48,7 @@ class AppCoinService {
 
     QueryResult result = await _client.query(
       QueryOptions(
-        documentNode: gql(query),
+        document: gql(query),
       ),
     );
     if (result.hasException) return 0;
@@ -69,7 +69,7 @@ class AppCoinService {
 
     QueryResult result = await _client.query(
       QueryOptions(
-        documentNode: gql(query),
+        document: gql(query),
       ),
     );
     if (result.hasException) return [];

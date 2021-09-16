@@ -1,9 +1,10 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/flavor_config.dart';
 import 'package:pokerapp/models/app_state.dart';
@@ -16,15 +17,15 @@ import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/services/data/hive_datasource_impl.dart';
 import 'package:pokerapp/services/nats/nats.dart';
 import 'package:provider/provider.dart';
-import 'package:sizer/sizer.dart';
 import 'main.dart';
 import 'models/ui/app_text.dart';
-
+import 'package:sizer/sizer.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // Register all the models and services before the app starts
-  InAppPurchaseConnection.enablePendingPurchases();
-
+  if (Platform.isAndroid) {
+    InAppPurchaseAndroidPlatformAddition.enablePendingPurchases();
+  }
   await HiveDatasource.getInstance.init();
 
   var devFlavorApp = FlavorConfig(
@@ -129,8 +130,12 @@ class _MyAppState extends State<MyApp> {
         child: OverlaySupport.global(
           child: LayoutBuilder(
             builder: (context, constraints) => OrientationBuilder(
-              builder: (context, orientation) {
-                SizerUtil().init(constraints, orientation);
+              builder:
+               (context, orientation) {
+                 return Sizer(
+      builder: (context, orientation, deviceType) {
+                // SizerUtil().init(constraints, orientation);
+                //SizerUtil().setScreenSize(constraints, orientation);
                 return MaterialApp(
                   title: FlavorConfig.of(context).appName,
                   debugShowCheckedModeBanner: false,
@@ -145,8 +150,10 @@ class _MyAppState extends State<MyApp> {
                   navigatorObservers: [routeObserver],
                 );
               },
-            ),
+            );
+               }
           ),
+        ),
         ),
       ),
     );

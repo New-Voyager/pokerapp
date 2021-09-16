@@ -19,7 +19,7 @@ import 'package:pokerapp/models/waiting_list_model.dart';
 import 'package:pokerapp/services/data/box_type.dart';
 import 'package:pokerapp/services/data/hive_datasource_impl.dart';
 import 'package:pokerapp/services/gql_errors.dart';
-import 'package:tenor/tenor.dart';
+import 'package:pokerapp/services/tenor/src/model/tenor_result.dart';
 
 class JoinGameResponse {
   String status;
@@ -194,7 +194,7 @@ query mySettings(\$gameCode:String!){
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     Map<String, dynamic> variables = {"playerUuid": playerUuid, "notes": notes};
     QueryResult result = await _client.query(QueryOptions(
-        documentNode: gql(addNotesForUserQuery), variables: variables));
+        document: gql(addNotesForUserQuery), variables: variables));
 
     if (result.hasException) {
       log(result.exception.toString());
@@ -208,7 +208,7 @@ query mySettings(\$gameCode:String!){
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     Map<String, dynamic> variables = {"playerUuid": playerUuid};
     QueryResult result = await _client.query(QueryOptions(
-        documentNode: gql(getNotesForUserQuery), variables: variables));
+        document: gql(getNotesForUserQuery), variables: variables));
 
     if (result.hasException) {
       log(result.exception.toString());
@@ -229,7 +229,7 @@ query mySettings(\$gameCode:String!){
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     Map<String, dynamic> variables = {"gameCode": gameCode};
     QueryResult result = await _client.query(
-        QueryOptions(documentNode: gql(postBlindQuery), variables: variables));
+        QueryOptions(document: gql(postBlindQuery), variables: variables));
 
     if (result.hasException) {
       log(result.exception.toString());
@@ -249,7 +249,7 @@ query mySettings(\$gameCode:String!){
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     Map<String, dynamic> variables = {"gameCode": gameCode};
     QueryResult result = await _client.query(QueryOptions(
-        documentNode: gql(getGameSettingsQuery), variables: variables));
+        document: gql(getGameSettingsQuery), variables: variables));
 
     if (result.hasException) {
       log("Exception : ${result.exception.toString()}");
@@ -274,7 +274,7 @@ query mySettings(\$gameCode:String!){
       "inputSettings": input.toJson()
     };
     QueryResult result = await _client.query(QueryOptions(
-        documentNode: gql(updateGameSettingsQuery), variables: variables));
+        document: gql(updateGameSettingsQuery), variables: variables));
 
     if (result.hasException) {
       log("Exception : ${result.exception.toString()}");
@@ -292,7 +292,7 @@ query mySettings(\$gameCode:String!){
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     Map<String, dynamic> variables = {"gameCode": gameCode};
     QueryResult result = await _client.query(QueryOptions(
-        documentNode: gql(getGamePlayerSettingsQuery), variables: variables));
+        document: gql(getGamePlayerSettingsQuery), variables: variables));
 
     if (result.hasException) {
       log("Exception : ${result.exception.toString()}");
@@ -318,7 +318,7 @@ query mySettings(\$gameCode:String!){
       "settings": input.toJson()
     };
     QueryResult result = await _client.query(QueryOptions(
-        documentNode: gql(updateGamePlayerSettingsQuery),
+        document: gql(updateGamePlayerSettingsQuery),
         variables: variables));
 
     if (result.hasException) {
@@ -339,9 +339,13 @@ query mySettings(\$gameCode:String!){
       "gameCode": model.gameCode,
     };
     QueryResult result = await _client.query(
-        QueryOptions(documentNode: gql(gameDetailQuery), variables: variables));
+        QueryOptions(document: gql(gameDetailQuery), variables: variables));
 
-    if (result.hasException) return null;
+     if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
 
     // instantiate game history detail object
     model.jsonData = result.data;
@@ -355,9 +359,13 @@ query mySettings(\$gameCode:String!){
       "gameCode": gameCode,
     };
     QueryResult result = await _client.query(
-        QueryOptions(documentNode: gql(stackStat), variables: variables));
+        QueryOptions(document: gql(stackStat), variables: variables));
 
-    if (result.hasException) return null;
+     if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
 
     // return stack stat
     return result.data['ret']['stackStat'];
@@ -369,9 +377,13 @@ query mySettings(\$gameCode:String!){
       "gameCode": gameCode,
     };
     QueryResult result = await _client.query(
-        QueryOptions(documentNode: gql(liveStackStat), variables: variables));
+        QueryOptions(document: gql(liveStackStat), variables: variables));
 
-    if (result.hasException) return null;
+     if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
 
     // return stack stat
     return result.data['stackStat'];
@@ -582,7 +594,7 @@ query mySettings(\$gameCode:String!){
     final List<GameModelNew> liveGames = [];
 
     QueryResult result =
-        await _client.query(QueryOptions(documentNode: gql(liveGamesNewQuery)));
+        await _client.query(QueryOptions(document: gql(liveGamesNewQuery)));
 
     // print("result.data ${result.data} ${result.hasException}");
     if (result.hasException) {
@@ -606,7 +618,7 @@ query mySettings(\$gameCode:String!){
     List<GameHistoryModel> pastGames = [];
 
     QueryResult result =
-        await _client.query(QueryOptions(documentNode: gql(pastGamesQuery)));
+        await _client.query(QueryOptions(document: gql(pastGamesQuery)));
     // print("result.data ${result.data} ${result.hasException}");
     if (result.hasException) {
       log("Exception In GraphQl Response: ${result.exception}");
@@ -633,7 +645,7 @@ query mySettings(\$gameCode:String!){
       "gameCode": gameCode,
     };
     QueryResult result = await _client.query(
-        QueryOptions(documentNode: gql(openSeatsQuery), variables: variables));
+        QueryOptions(document: gql(openSeatsQuery), variables: variables));
 
     // print("result.data ${result.data} ${result.hasException}");
     if (result.hasException) {
@@ -659,7 +671,7 @@ query mySettings(\$gameCode:String!){
     };
     QueryResult result = await _client.mutate(
       MutationOptions(
-        documentNode: gql(beginHostSeatChangeQuery),
+        document: gql(beginHostSeatChangeQuery),
         variables: variables,
       ),
     );
@@ -675,7 +687,7 @@ query mySettings(\$gameCode:String!){
     QueryResult result;
 
     result = await _client.query(QueryOptions(
-      documentNode: gql(favouriteGiphiesQuery),
+      document: gql(favouriteGiphiesQuery),
     ));
 
     if (result.hasException) return [];
@@ -773,7 +785,7 @@ query mySettings(\$gameCode:String!){
     };
     QueryResult result = await _client.mutate(
       MutationOptions(
-        documentNode: gql(changeWaitlistOrderQuery),
+        document: gql(changeWaitlistOrderQuery),
         variables: variables,
       ),
     );
@@ -789,7 +801,7 @@ query mySettings(\$gameCode:String!){
     };
     QueryResult result = await _client.mutate(
       MutationOptions(
-        documentNode: gql(addToWaitListQuery),
+        document: gql(addToWaitListQuery),
         variables: variables,
       ),
     );
@@ -806,7 +818,7 @@ query mySettings(\$gameCode:String!){
     };
     QueryResult result = await _client.mutate(
       MutationOptions(
-        documentNode: gql(removeFromWaitlistQuery),
+        document: gql(removeFromWaitlistQuery),
         variables: variables,
       ),
     );
@@ -824,8 +836,12 @@ query mySettings(\$gameCode:String!){
       "gameCode": gameCode,
     };
     QueryResult result = await _client.query(
-        QueryOptions(documentNode: gql(waitlistQuery), variables: variables));
-    if (result.hasException) return null;
+        QueryOptions(document: gql(waitlistQuery), variables: variables));
+     if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
     List players = result.data['waitingList'];
     waitingListPlayers = players.map((e) {
       WaitingListModel player = WaitingListModel.fromJson(e);
@@ -847,7 +863,7 @@ query mySettings(\$gameCode:String!){
     }
     QueryResult result = await _client.mutate(
       MutationOptions(
-        documentNode: gql(requestForSeatChangeQuery),
+        document: gql(requestForSeatChangeQuery),
         variables: variables,
       ),
     );
@@ -864,9 +880,13 @@ query mySettings(\$gameCode:String!){
       "gameCode": gameCode,
     };
     QueryResult result = await _client.query(QueryOptions(
-        documentNode: gql(listOfSeatChangeQuery), variables: variables));
+        document: gql(listOfSeatChangeQuery), variables: variables));
 
-    if (result.hasException) return null;
+     if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
     List games = result.data['seatChangeRequests'];
     seatChangePlayers = games.map((e) {
       SeatChangeModel player = SeatChangeModel.fromJson(e);
@@ -880,9 +900,13 @@ query mySettings(\$gameCode:String!){
     List<GameModel> allLiveGames = [];
 
     QueryResult result =
-        await _client.query(QueryOptions(documentNode: gql(liveGameQuery)));
+        await _client.query(QueryOptions(document: gql(liveGameQuery)));
 
-    if (result.hasException) return null;
+     if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
 
     List games = result.data['liveGames'];
     allLiveGames = games.map((e) {
@@ -898,9 +922,13 @@ query mySettings(\$gameCode:String!){
       "gameCode": gameCode,
     };
     QueryResult result = await _client.query(QueryOptions(
-        documentNode: gql(gameResultTableQuery), variables: variables));
+        document: gql(gameResultTableQuery), variables: variables));
 
-    if (result.hasException) return null;
+     if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
 
     return TableRecord.fromJson(result.data['gameResultTable']);
   }
@@ -911,9 +939,13 @@ query mySettings(\$gameCode:String!){
       "gameCode": gameCode,
     };
     QueryResult result = await _client.query(QueryOptions(
-        documentNode: gql(downloadResultQuery), variables: variables));
+        document: gql(downloadResultQuery), variables: variables));
 
-    if (result.hasException) return null;
+     if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
 
     return result.data['result'].toString();
   }
@@ -926,9 +958,13 @@ query mySettings(\$gameCode:String!){
       "gameCode": gameCode,
     };
     QueryResult result = await _client.query(QueryOptions(
-        documentNode: gql(highhandLogQuery), variables: variables));
+        document: gql(highhandLogQuery), variables: variables));
 
-    if (result.hasException) return null;
+     if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
 
     List hhWinnersData = result.data['hhWinners'];
     log = hhWinnersData.map((e) {
@@ -960,7 +996,7 @@ query mySettings(\$gameCode:String!){
 
     QueryResult result = await _client.mutate(
       MutationOptions(
-        documentNode: gql(updatePlayerGameConfig),
+        document: gql(updatePlayerGameConfig),
         variables: variables,
       ),
     );
@@ -979,12 +1015,16 @@ query mySettings(\$gameCode:String!){
     Map<String, dynamic> variables = {"gameCode": gameCode, "seatNo": seatNo};
     QueryResult result = await _client.mutate(
       MutationOptions(
-        documentNode: gql(_mutation),
+        document: gql(_mutation),
         variables: variables,
       ),
     );
 
-    if (result.hasException) return null;
+     if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
 
     return result.data['confirmSeatChange'];
   }
@@ -1001,12 +1041,16 @@ query mySettings(\$gameCode:String!){
     };
     QueryResult result = await _client.mutate(
       MutationOptions(
-        documentNode: gql(_mutation),
+        document: gql(_mutation),
         variables: variables,
       ),
     );
 
-    if (result.hasException) return null;
+     if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
 
     return result.data['declineSeatChange'];
   }
@@ -1018,10 +1062,14 @@ query mySettings(\$gameCode:String!){
     String _query = GameInfoModel.query(gameCode);
 
     QueryResult result = await _client.query(
-      QueryOptions(documentNode: gql(_query)),
+      QueryOptions(document: gql(_query)),
     );
 
-    if (result.hasException) return null;
+     if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
 
     final jsonResponse = result.data['gameInfo'];
     // JsonEncoder encoder = new JsonEncoder.withIndent('  ');
@@ -1043,7 +1091,7 @@ query mySettings(\$gameCode:String!){
     """;
 
     QueryResult result = await _client.mutate(
-      MutationOptions(documentNode: gql(_mutation)),
+      MutationOptions(document: gql(_mutation)),
     );
 
     if (result.hasException) {
@@ -1082,7 +1130,7 @@ query mySettings(\$gameCode:String!){
     };
 
     QueryResult result = await _client.mutate(
-      MutationOptions(documentNode: gql(_mutation), variables: variables),
+      MutationOptions(document: gql(_mutation), variables: variables),
     );
 
     if (result.hasException) {
@@ -1103,10 +1151,14 @@ query mySettings(\$gameCode:String!){
     """;
 
     QueryResult result = await _client.mutate(
-      MutationOptions(documentNode: gql(_mutation)),
+      MutationOptions(document: gql(_mutation)),
     );
 
-    if (result.hasException) return null;
+     if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
 
     return result.data['switchSeat'];
   }
@@ -1123,10 +1175,14 @@ query mySettings(\$gameCode:String!){
     """;
 
     QueryResult result = await _client.mutate(
-      MutationOptions(documentNode: gql(_mutation)),
+      MutationOptions(document: gql(_mutation)),
     );
 
-    if (result.hasException) return null;
+     if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
 
     final buyIn = result.data['buyIn'];
     return buyIn['approved'];
@@ -1148,10 +1204,14 @@ query mySettings(\$gameCode:String!){
     };
 
     QueryResult result = await _client.mutate(
-      MutationOptions(documentNode: gql(_mutation), variables: variables),
+      MutationOptions(document: gql(_mutation), variables: variables),
     );
 
-    if (result.hasException) return null;
+     if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
 
     return result.data['approved'];
   }
@@ -1174,13 +1234,17 @@ query mySettings(\$gameCode:String!){
     };
 
     QueryResult result = await _client.mutate(
-      MutationOptions(documentNode: gql(_query), variables: variables),
+      MutationOptions(document: gql(_query), variables: variables),
     );
 
     print(result.exception);
-    if (result.hasException) return null;
+     if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
 
-    Map game = (result.data as LazyCacheMap).data['configuredGame'];
+    Map game = (result.data as dynamic).data['configuredGame'];
     String gameCode = game["gameCode"];
     log('Created game: $gameCode');
     return gameCode;
@@ -1202,13 +1266,17 @@ query mySettings(\$gameCode:String!){
     };
 
     QueryResult result = await _client.mutate(
-      MutationOptions(documentNode: gql(_query), variables: variables),
+      MutationOptions(document: gql(_query), variables: variables),
     );
 
     print(result.exception);
-    if (result.hasException) return null;
+     if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
 
-    Map game = (result.data as LazyCacheMap).data['configuredGame'];
+    Map game = (result.data as dynamic).data['configuredGame'];
     String gameCode = game["gameCode"];
     log('Created game: $gameCode');
     return gameCode;
@@ -1225,11 +1293,15 @@ query mySettings(\$gameCode:String!){
     };
 
     QueryResult result = await _client.mutate(
-      MutationOptions(documentNode: gql(_query), variables: variables),
+      MutationOptions(document: gql(_query), variables: variables),
     );
 
-    if (result.hasException) return null;
-    Map game = (result.data as LazyCacheMap).data;
+     if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
+    Map game = (result.data as dynamic).data;
     String status = game["status"];
     log('Game code: $gameCode status: $status');
     return status;
@@ -1247,12 +1319,16 @@ query mySettings(\$gameCode:String!){
     };
 
     QueryResult result = await _client.mutate(
-      MutationOptions(documentNode: gql(_query), variables: variables),
+      MutationOptions(document: gql(_query), variables: variables),
     );
 
-    if (result.hasException) return null;
+     if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
 
-    Map game = (result.data as LazyCacheMap).data;
+    Map game = (result.data as dynamic).data;
     String status = game["status"];
     log('Game code: $gameCode status: $status');
 
@@ -1271,12 +1347,16 @@ query mySettings(\$gameCode:String!){
     };
 
     QueryResult result = await _client.mutate(
-      MutationOptions(documentNode: gql(_query), variables: variables),
+      MutationOptions(document: gql(_query), variables: variables),
     );
 
-    if (result.hasException) return null;
+     if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
 
-    Map game = (result.data as LazyCacheMap).data;
+    Map game = (result.data as dynamic).data;
     String status = game["status"];
     log('Game code: $gameCode status: $status');
 
@@ -1294,10 +1374,14 @@ query mySettings(\$gameCode:String!){
       "gameCode": gameCode,
     };
     QueryResult result = await _client.mutate(
-      MutationOptions(documentNode: gql(_mutation), variables: variables),
+      MutationOptions(document: gql(_mutation), variables: variables),
     );
 
-    if (result.hasException) return null;
+     if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
 
     // FIXME: We need to get the proper return value
     return "ended";
@@ -1311,10 +1395,14 @@ query mySettings(\$gameCode:String!){
       "gameCode": gameCode,
     };
     QueryResult result = await _client.mutate(
-      MutationOptions(documentNode: gql(leaveGameQuery), variables: variables),
+      MutationOptions(document: gql(leaveGameQuery), variables: variables),
     );
 
-    if (result.hasException) return null;
+     if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
 
     // FIXME: We need to get the proper return value
     return "ended";
@@ -1333,7 +1421,7 @@ query mySettings(\$gameCode:String!){
     };
 
     QueryResult result = await _client.query(
-      QueryOptions(documentNode: gql(_query), variables: variables),
+      QueryOptions(document: gql(_query), variables: variables),
     );
 
     if (result.hasException) return '';
@@ -1352,7 +1440,7 @@ query mySettings(\$gameCode:String!){
     };
     QueryResult result = await _client.mutate(
       MutationOptions(
-        documentNode: gql(dealerChoiceQuery),
+        document: gql(dealerChoiceQuery),
         variables: variables,
       ),
     );
@@ -1373,12 +1461,16 @@ query mySettings(\$gameCode:String!){
     };
 
     QueryResult result = await _client.mutate(
-      MutationOptions(documentNode: gql(_query), variables: variables),
+      MutationOptions(document: gql(_query), variables: variables),
     );
 
-    if (result.hasException) return null;
+     if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
 
-    Map game = (result.data as LazyCacheMap).data;
+    Map game = (result.data as dynamic).data;
     bool status = game["status"];
     log('Take break Game code: $gameCode status: $status');
 
@@ -1400,12 +1492,16 @@ query mySettings(\$gameCode:String!){
     };
 
     QueryResult result = await _client.mutate(
-      MutationOptions(documentNode: gql(_query), variables: variables),
+      MutationOptions(document: gql(_query), variables: variables),
     );
 
-    if (result.hasException) return null;
+     if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
 
-    Map game = (result.data as LazyCacheMap).data;
+    Map game = (result.data as dynamic).data;
     dynamic status = game["status"];
     log('Sit back Game code: $gameCode status: $status');
     SitBackResponse resp = SitBackResponse();

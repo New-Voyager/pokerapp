@@ -12,7 +12,7 @@ class UserGamesService {
 
     QueryResult result = await _client.query(
       QueryOptions(
-        documentNode: gql(
+        document: gql(
           liveOrPlayedGames == LiveOrPlayedGames.LiveGames
               ? GameModel.queryLiveGames
               : GameModel.queryPlayedGames,

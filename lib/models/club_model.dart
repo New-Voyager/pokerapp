@@ -42,7 +42,7 @@ class ClubModel {
   });
 
   // todo: at a later point, more fields can be added
-  ClubModel.fromJson(LazyCacheMap jsonData) {
+  ClubModel.fromJson(dynamic jsonData) {
     /* this function converts the server response
     to app objects */
 

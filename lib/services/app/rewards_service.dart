@@ -26,7 +26,7 @@ class RewardService {
       "input": input,
     };
     QueryResult result = await _client.mutate(MutationOptions(
-        documentNode: gql(createRewardMutation), variables: variables));
+        document: gql(createRewardMutation), variables: variables));
     if (result.hasException) return false;
     log(result.data.toString());
     return true;
@@ -49,7 +49,7 @@ class RewardService {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     Map<String, dynamic> variables = {"clubCode": clubCode};
     QueryResult result = await _client.query(
-        QueryOptions(documentNode: gql(getRewardsQuery), variables: variables));
+        QueryOptions(document: gql(getRewardsQuery), variables: variables));
 
     if (result.hasException) return [];
 

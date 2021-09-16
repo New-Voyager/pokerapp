@@ -193,22 +193,30 @@ query clubStats(\$clubCode: String!) {
       "gameCode": gameCode,
     };
     QueryResult result = await _client.query(QueryOptions(
-        documentNode: gql(getStatsForGameQuery), variables: variables));
+        document: gql(getStatsForGameQuery), variables: variables));
 
-    if (result.hasException) return null;
+     if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
 
-    final handStats = HandStatsModel.fromJson(result.data.data);
+    final handStats = HandStatsModel.fromJson(result.data['data']);
     return handStats;
   }
 
   static Future<HandStatsModel> getAlltimeStatsOnly() async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     QueryResult result = await _client
-        .query(QueryOptions(documentNode: gql(getAllTimeStatsOnlyQuery)));
+        .query(QueryOptions(document: gql(getAllTimeStatsOnlyQuery)));
 
-    if (result.hasException) return null;
+     if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
 
-    final handStats = StatModel.fromJson(result.data.data['playerHandStats']);
+    final handStats = StatModel.fromJson(result.data['data']['playerHandStats']);
     return HandStatsModel(
       alltime: handStats,
     );
@@ -220,23 +228,31 @@ query clubStats(\$clubCode: String!) {
       "clubCode": clubCode,
     };
     QueryResult result = await _client.query(
-        QueryOptions(documentNode: gql(clubStatsQuery), variables: variables));
+        QueryOptions(document: gql(clubStatsQuery), variables: variables));
 
-    if (result.hasException) return null;
+     if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
 
-    final clubStats = ClubStatsModel.fromJson(result.data.data);
+    final clubStats = ClubStatsModel.fromJson(result.data);
     return clubStats;
   }
 
   static Future<PlayerPerformanceList> getPlayerRecentPerformance() async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     QueryResult result = await _client
-        .query(QueryOptions(documentNode: gql(playerRecentPerformanceQuery)));
+        .query(QueryOptions(document: gql(playerRecentPerformanceQuery)));
 
-    if (result.hasException) return null;
+     if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
 
     final performance =
-        PlayerPerformanceList.fromJson(result.data.data['perf']);
+        PlayerPerformanceList.fromJson(result.data['perf']);
     return performance;
   }
 }

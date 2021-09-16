@@ -30,7 +30,7 @@ class CustomizationService {
             "myInfo": {
               "id": 1,
               "uuid": "371e8c15-39cb-4bd9-a932-ced7a9dd6aac",
-              "name": "tom"
+              "name": "poker club"
             },
             "role": {
               "isHost": true,

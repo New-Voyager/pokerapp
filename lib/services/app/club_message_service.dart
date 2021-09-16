@@ -16,7 +16,7 @@ class ClubMessageService {
     log(mutation);
 
     _client.mutate(
-      MutationOptions(documentNode: gql(mutation)),
+      MutationOptions(document: gql(mutation)),
     );
   }
 
@@ -41,7 +41,7 @@ class ClubMessageService {
     /* messages query */
     var result = await _client.mutate(
       MutationOptions(
-        documentNode: gql(query),
+        document: gql(query),
         variables: variables,
       ),
     );
@@ -58,7 +58,7 @@ class ClubMessageService {
     /* messages query */
     QueryResult result = await _client.query(
       QueryOptions(
-        documentNode: gql(_query),
+        document: gql(_query),
       ),
     );
     bool newMessagesAdded = false;

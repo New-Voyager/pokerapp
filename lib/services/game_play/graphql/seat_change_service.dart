@@ -16,10 +16,14 @@ class SeatChangeService {
       "gameCode": gameCode,
     };
     QueryResult result = await _client.mutate(
-      MutationOptions(documentNode: gql(_mutation), variables: variables),
+      MutationOptions(document: gql(_mutation), variables: variables),
     );
 
-    if (result.hasException) return null;
+     if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
 
     return result.data['seatChange'];
   }
@@ -37,10 +41,14 @@ class SeatChangeService {
       "cancel": cancel,
     };
     QueryResult result = await _client.mutate(
-      MutationOptions(documentNode: gql(_mutation), variables: variables),
+      MutationOptions(document: gql(_mutation), variables: variables),
     );
 
-    if (result.hasException) return null;
+     if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
     return result.data['seatChange'];
   }
 
@@ -58,10 +66,14 @@ class SeatChangeService {
       "seatNo2": seat2
     };
     QueryResult result = await _client.mutate(
-      MutationOptions(documentNode: gql(_mutation), variables: variables),
+      MutationOptions(document: gql(_mutation), variables: variables),
     );
 
-    if (result.hasException) return null;
+     if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
     return result.data['seatChange'];
   }
 
@@ -84,7 +96,7 @@ class SeatChangeService {
     };
 
     QueryResult result = await _client.query(
-      QueryOptions(documentNode: gql(query), variables: variables),
+      QueryOptions(document: gql(query), variables: variables),
     );
 
     if (result.hasException) {

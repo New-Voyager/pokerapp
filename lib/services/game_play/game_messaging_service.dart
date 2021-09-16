@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:pokerapp/models/rabbit_state.dart';
+import 'package:pokerapp/services/nats/client.dart';
+import 'package:pokerapp/services/nats/message.dart';
 import 'package:uuid/uuid.dart';
 
-import 'package:dart_nats/dart_nats.dart';
 import 'dart:developer';
 
 import 'package:pokerapp/models/player_info.dart';

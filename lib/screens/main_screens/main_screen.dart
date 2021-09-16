@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:curved_bottom_navigation/curved_bottom_navigation.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/app_state.dart';
@@ -24,6 +23,7 @@ import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/utils.dart';
+import 'package:pokerapp/widgets/curved_bottom_navigation.dart';
 import 'package:provider/provider.dart';
 
 import '../../flavor_banner.dart';

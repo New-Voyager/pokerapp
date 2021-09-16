@@ -44,10 +44,14 @@ class PlayerService {
     }
 
     QueryResult result = await _client.query(
-      QueryOptions(documentNode: gql(_query), variables: variables),
+      QueryOptions(document: gql(_query), variables: variables),
     );
 
-    if (result.hasException) return null;
+    if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
     debugPrint(jsonEncode(result.data));
     return PlayerInfo.fromJson(result.data);
   }
@@ -68,10 +72,14 @@ class PlayerService {
     """;
 
     QueryResult result = await _client.query(
-      QueryOptions(documentNode: gql(_query), variables: variables),
+      QueryOptions(document: gql(_query), variables: variables),
     );
 
-    if (result.hasException) return null;
+     if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
 
     var playerInfo = new Map<int, PlayerInfo>();
     for (var player in result.data['players']) {
@@ -92,10 +100,14 @@ class PlayerService {
           }""";
 
     QueryResult result = await _client.query(
-      QueryOptions(documentNode: gql(_query), variables: variables),
+      QueryOptions(document: gql(_query), variables: variables),
     );
 
-    if (result.hasException) return null;
+     if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
 
     bool ret = result.data['ret'];
     return ret;
@@ -107,10 +119,14 @@ class PlayerService {
     String _query = """query { approvals: pendingApprovals {name} }""";
 
     QueryResult result = await _client.query(
-      QueryOptions(documentNode: gql(_query)),
+      QueryOptions(document: gql(_query)),
     );
 
-    if (result.hasException) return null;
+     if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
 
     var ret = result.data['approvals'] as List;
     return ret.length;
@@ -133,10 +149,14 @@ class PlayerService {
     }""";
 
     QueryResult result = await _client.query(
-      QueryOptions(documentNode: gql(_query)),
+      QueryOptions(document: gql(_query)),
     );
 
-    if (result.hasException) return null;
+     if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
 
     var resp = result.data['approvals'] as List;
     List<PendingApproval> ret = [];
@@ -164,10 +184,14 @@ class PlayerService {
 
     print(_query);
     QueryResult result = await _client.query(
-      QueryOptions(documentNode: gql(_query), variables: variables),
+      QueryOptions(document: gql(_query), variables: variables),
     );
 
-    if (result.hasException) return null;
+     if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
 
     log("Result ${result.data['ret']}");
 
@@ -191,10 +215,14 @@ class PlayerService {
 
     print(_query);
     QueryResult result = await _client.query(
-      QueryOptions(documentNode: gql(_query), variables: variables),
+      QueryOptions(document: gql(_query), variables: variables),
     );
 
-    if (result.hasException) return null;
+     if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
 
     log("Result ${result.data}");
 
@@ -217,10 +245,14 @@ class PlayerService {
 
     print(_query);
     QueryResult result = await _client.query(
-      QueryOptions(documentNode: gql(_query), variables: variables),
+      QueryOptions(document: gql(_query), variables: variables),
     );
 
-    if (result.hasException) return null;
+     if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
 
     log("kickPlayer Result ${result.data}");
 

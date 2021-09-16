@@ -158,7 +158,7 @@ class ClubsService {
       };
       result = await _client.mutate(
         MutationOptions(
-          documentNode: gql(markMemberReadQuery),
+          document: gql(markMemberReadQuery),
           variables: variables,
         ),
       );
@@ -168,7 +168,7 @@ class ClubsService {
       };
       result = await _client.mutate(
         MutationOptions(
-          documentNode: gql(markreadHostQuery),
+          document: gql(markreadHostQuery),
           variables: variables,
         ),
       );
@@ -189,7 +189,7 @@ class ClubsService {
 
     QueryResult result;
     result = await _client.query(QueryOptions(
-        documentNode: gql(hostMessageSummaryQuery), variables: variables));
+        document: gql(hostMessageSummaryQuery), variables: variables));
 
     print("result.data ${result.data} ${result.hasException}");
     if (result.hasException) return [];
@@ -210,7 +210,7 @@ class ClubsService {
       Map<String, dynamic> variables = {"clubCode": clubCode, "player": player};
       QueryResult result;
       result = await _client.query(QueryOptions(
-          documentNode: gql(memberMessagesQuery), variables: variables));
+          document: gql(memberMessagesQuery), variables: variables));
 
       print("result.data ${result.data} ${result.hasException}");
       if (result.hasException) return [];
@@ -221,7 +221,7 @@ class ClubsService {
       Map<String, dynamic> variables = {"clubCode": clubCode};
       QueryResult result;
       result = await _client.query(QueryOptions(
-          documentNode: gql(hostmessagesQuery), variables: variables));
+          document: gql(hostmessagesQuery), variables: variables));
       print("result.data ${result.data} ${result.hasException}");
       if (result.hasException) return [];
       result.data['messagesFromHost'].forEach((e) {
@@ -252,14 +252,14 @@ class ClubsService {
     if (player != null) {
       result = await _client.mutate(
         MutationOptions(
-          documentNode: gql(sendPlayerMessageQuery),
+          document: gql(sendPlayerMessageQuery),
           variables: variables,
         ),
       );
     } else {
       result = await _client.mutate(
         MutationOptions(
-          documentNode: gql(playerToHostQuery),
+          document: gql(playerToHostQuery),
           variables: variables,
         ),
       );
@@ -276,7 +276,7 @@ class ClubsService {
     };
 
     QueryResult result = await _client.mutate(
-      MutationOptions(documentNode: gql(_query), variables: variables),
+      MutationOptions(document: gql(_query), variables: variables),
     );
 
     if (result.hasException) return false;
@@ -298,7 +298,7 @@ class ClubsService {
     };
 
     QueryResult result = await _client.mutate(
-      MutationOptions(documentNode: gql(_query), variables: variables),
+      MutationOptions(document: gql(_query), variables: variables),
     );
 
     if (result.hasException) return false;
@@ -316,12 +316,16 @@ class ClubsService {
     };
 
     QueryResult result = await _client.mutate(
-      MutationOptions(documentNode: gql(_query), variables: variables),
+      MutationOptions(document: gql(_query), variables: variables),
     );
 
     print(result.exception);
 
-    if (result.hasException) return null;
+     if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
 
     String clubCode = result.data['createClub'];
 
@@ -340,7 +344,7 @@ class ClubsService {
 
     QueryResult result = await _client.mutate(
       MutationOptions(
-          documentNode: gql(createAnnouncmentQuery), variables: variables),
+          document: gql(createAnnouncmentQuery), variables: variables),
     );
 
     print(result.exception);
@@ -359,7 +363,7 @@ class ClubsService {
     Map<String, dynamic> variables = {"clubCode": clubCode};
     QueryResult result = await _client.query(
       QueryOptions(
-          documentNode: gql(getAnnouncementsQuery), variables: variables),
+          document: gql(getAnnouncementsQuery), variables: variables),
     );
 
     if (result.hasException) return [];
@@ -377,7 +381,7 @@ class ClubsService {
 
     QueryResult result = await _client.query(
       QueryOptions(
-        documentNode: gql(myClubs),
+        document: gql(myClubs),
       ),
     );
 
@@ -399,14 +403,18 @@ class ClubsService {
 
     QueryResult result = await _client.query(
       QueryOptions(
-        documentNode: gql(ClubHomePageModel.query),
+        document: gql(ClubHomePageModel.query),
         variables: variables,
       ),
     );
 
     // log('query result: ${result.exception}');
 
-    if (result.hasException) return null;
+     if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
 
     String weeklyData =
         await rootBundle.loadString("assets/sample-data/weekly-data.json");

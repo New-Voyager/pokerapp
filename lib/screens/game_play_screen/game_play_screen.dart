@@ -3,7 +3,6 @@ import 'dart:developer';
 
 import 'package:after_layout/after_layout.dart';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:dart_nats/dart_nats.dart' as nats;
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/business/game_chat_notfi_state.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
@@ -43,6 +42,7 @@ import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/services/game_play/graphql/seat_change_service.dart';
 import 'package:pokerapp/services/janus/janus.dart';
+import 'package:pokerapp/services/nats/message.dart';
 import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
@@ -686,7 +686,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       _gameContextObj.gameUpdateService.loop();
 
       _gameContextObj.gameComService.gameToPlayerChannelStream
-          ?.listen((nats.Message message) {
+          ?.listen((Message message) {
         if (!_gameContextObj.gameComService.active) return;
 
         // log('gameToPlayerChannel(${message.subject}): ${message.string}');
@@ -715,7 +715,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
       if (!TestService.isTesting && widget.customizationService == null) {
         _gameContextObj.gameComService.handToAllChannelStream.listen(
-          (nats.Message message) {
+          (Message message) {
             if (!_gameContextObj.gameComService.active) return;
 
             if (_gameContextObj.handActionProtoService == null) return;
@@ -731,7 +731,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         );
 
         _gameContextObj.gameComService.handToPlayerChannelStream.listen(
-          (nats.Message message) {
+          (Message message) {
             if (!_gameContextObj.gameComService.active) return;
 
             if (_gameContextObj.handActionProtoService == null) return;
