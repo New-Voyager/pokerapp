@@ -41,7 +41,7 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
   bool isDownloading = true;
   @override
   void initState() {
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 2, vsync: this);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _fetchSavedItems();
     });
@@ -123,9 +123,9 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
               Text(
                 "Card Back",
               ),
-              Text(
-                "Bet Dial",
-              ),
+              // Text(
+              //   "Bet Dial",
+              // ),
             ],
             controller: _tabController,
             indicatorSize: TabBarIndicatorSize.label,
@@ -143,7 +143,7 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
               _buildCardBackWidget(theme, size),
 
               //BetWidget
-              _buildBetWidget(theme, size),
+              //_buildBetWidget(theme, size),
             ],
           )),
         ],
@@ -430,62 +430,6 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
       customizationService: customizeService,
       showTop: false,
     );
-  }
-
-  Widget _buildHoleCardView2(AppTheme theme) {
-    String filePath = "";
-
-    if (_tabController.index == 0) {
-      String dirPath = _selectedCardFaceAsset?.downloadDir;
-      if (dirPath == null) {
-        return errorImageWidget();
-      }
-      log("Cards dir path : $dirPath");
-
-      return GridView.builder(
-        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-          maxCrossAxisExtent: 100,
-          childAspectRatio: 0.67,
-          crossAxisSpacing: 16,
-        ),
-        padding: EdgeInsets.symmetric(horizontal: 8),
-        itemBuilder: (context, index) {
-          if (_selectedCardFaceAsset.bundled ?? false) {
-            return SvgPicture.asset(
-              '${_selectedCardFaceAsset.downloadedPath}/${CardConvUtils.getCardName(index)}.svg',
-              fit: BoxFit.contain,
-            );
-          } else {
-            return SvgPicture.file(
-              File("$dirPath/${CardConvUtils.getCardName(index)}.svg"),
-              fit: BoxFit.contain,
-            );
-          }
-        },
-        itemCount: 52,
-      );
-    } else if (_tabController.index == 1) {
-      filePath = _selectedCardBackAsset?.downloadedPath;
-      if (filePath == null) {
-        return errorImageWidget();
-      }
-      return Container(
-        child: Image.file(
-          File(filePath),
-        ),
-      );
-    } else if (_tabController.index == 2) {
-      filePath = _selectedBetAsset?.downloadedPath;
-      if (filePath == null) {
-        return errorImageWidget();
-      }
-      return Container(
-        child: SvgPicture.file(
-          File(filePath),
-        ),
-      );
-    }
-    return errorImageWidget();
   }
 
   errorImageWidget() {

@@ -377,8 +377,13 @@ class GameState {
       this._myState.notify();
     }
 
+    String code = gameCode;
+    if (code == null) {
+      code = _gameInfo.gameCode;
+    }
     gameHiveStore = GameHiveStore();
-    await gameHiveStore.open(gameCode);
+    await gameHiveStore.open(code);
+
     if (!(this.customizationMode ?? false)) {
       if (!this.replayMode) {
         if (!gameHiveStore.haveGameSettings()) {
