@@ -19,7 +19,7 @@ class SeatChangeService {
       MutationOptions(document: gql(_mutation), variables: variables),
     );
 
-     if (result.hasException) {
+    if (result.hasException) {
       if (result.exception.graphqlErrors.length > 0) {
         return null;
       }
@@ -44,7 +44,7 @@ class SeatChangeService {
       MutationOptions(document: gql(_mutation), variables: variables),
     );
 
-     if (result.hasException) {
+    if (result.hasException) {
       if (result.exception.graphqlErrors.length > 0) {
         return null;
       }
@@ -69,7 +69,7 @@ class SeatChangeService {
       MutationOptions(document: gql(_mutation), variables: variables),
     );
 
-     if (result.hasException) {
+    if (result.hasException) {
       if (result.exception.graphqlErrors.length > 0) {
         return null;
       }

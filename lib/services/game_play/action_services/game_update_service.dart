@@ -23,6 +23,7 @@ import 'package:pokerapp/screens/game_play_screen/seat_view/count_down_timer.dar
 import 'package:pokerapp/screens/game_play_screen/widgets/overlay_notification.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/game_service.dart';
+import 'package:pokerapp/services/audio/audio_service.dart';
 import 'package:pokerapp/services/data/game_log_store.dart';
 import 'package:pokerapp/services/game_play/graphql/seat_change_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
@@ -1168,7 +1169,7 @@ class GameUpdateService {
       final player = gameState.fromSeat(seatNo);
       player.showFirework = true;
       final seat = gameState.getSeat(seatNo);
-      playSoundEffect(AppAssets.fireworksSound);
+      AudioService.playFireworks(mute: _gameState.playerLocalConfig.mute);
       seat.notify();
       await Future.delayed(AppConstants.notificationDuration);
 
@@ -1455,16 +1456,5 @@ class GameUpdateService {
   void resetBoard() async {
     _gameState.clear();
     _gameState.refresh();
-  }
-
-  playSoundEffect(String soundFile) {
-    return;
-
-    if (_gameState.playerLocalConfig.gameSound) {
-      _gameState
-          .getAudioBytes(soundFile)
-          .then((value) => audioPlayer.playBytes(value));
-      // log('In playSoundEffect(), gameSounds = ${_gameState.settings.gameSound}');
-    }
   }
 }

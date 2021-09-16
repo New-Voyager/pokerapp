@@ -1,4 +1,3 @@
-import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:pokerapp/utils/formatter.dart';
 
 class ClubModel {

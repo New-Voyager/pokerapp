@@ -75,7 +75,7 @@ class PlayerService {
       QueryOptions(document: gql(_query), variables: variables),
     );
 
-     if (result.hasException) {
+    if (result.hasException) {
       if (result.exception.graphqlErrors.length > 0) {
         return null;
       }
@@ -103,7 +103,7 @@ class PlayerService {
       QueryOptions(document: gql(_query), variables: variables),
     );
 
-     if (result.hasException) {
+    if (result.hasException) {
       if (result.exception.graphqlErrors.length > 0) {
         return null;
       }
@@ -122,7 +122,7 @@ class PlayerService {
       QueryOptions(document: gql(_query)),
     );
 
-     if (result.hasException) {
+    if (result.hasException) {
       if (result.exception.graphqlErrors.length > 0) {
         return null;
       }
@@ -152,7 +152,7 @@ class PlayerService {
       QueryOptions(document: gql(_query)),
     );
 
-     if (result.hasException) {
+    if (result.hasException) {
       if (result.exception.graphqlErrors.length > 0) {
         return null;
       }
@@ -187,7 +187,7 @@ class PlayerService {
       QueryOptions(document: gql(_query), variables: variables),
     );
 
-     if (result.hasException) {
+    if (result.hasException) {
       if (result.exception.graphqlErrors.length > 0) {
         return null;
       }
@@ -218,7 +218,7 @@ class PlayerService {
       QueryOptions(document: gql(_query), variables: variables),
     );
 
-     if (result.hasException) {
+    if (result.hasException) {
       if (result.exception.graphqlErrors.length > 0) {
         return null;
       }
@@ -248,7 +248,7 @@ class PlayerService {
       QueryOptions(document: gql(_query), variables: variables),
     );
 
-     if (result.hasException) {
+    if (result.hasException) {
       if (result.exception.graphqlErrors.length > 0) {
         return null;
       }

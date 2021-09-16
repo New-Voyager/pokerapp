@@ -20,7 +20,7 @@ class ClubStatsModel {
   Map<String, int> plo;
   Map<String, int> fivecardPlo;
 
-  factory ClubStatsModel.fromJson(Map<String, dynamic> json){
+  factory ClubStatsModel.fromJson(Map<String, dynamic> json) {
     final holdem = Map<String, int>();
     for (final key in json["holdem"].keys) {
       if (key == '__typename') {
@@ -46,10 +46,10 @@ class ClubStatsModel {
     }
 
     return ClubStatsModel(
-        holdem: holdem,
-        plo: plo,
-        fivecardPlo: fivecardPlo,
-      );
+      holdem: holdem,
+      plo: plo,
+      fivecardPlo: fivecardPlo,
+    );
   }
 
   Map<String, dynamic> toJson() => {

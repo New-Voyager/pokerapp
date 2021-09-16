@@ -19,6 +19,10 @@ class GameLocalConfig {
     _save();
   }
 
+  get mute {
+    return !_gameSound;
+  }
+
   bool get animations => _animations;
   bool _animations = true;
   set animations(bool value) {

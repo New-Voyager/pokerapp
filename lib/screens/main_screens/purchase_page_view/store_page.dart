@@ -332,7 +332,6 @@ class _StorePageState extends State<StorePage> {
 
   void _listenToPurchaseUpdated(List<PurchaseDetails> purchaseDetailsList) {
     purchaseDetailsList.forEach((PurchaseDetails purchaseDetails) async {
-
       if (purchaseDetails.status == PurchaseStatus.pending) {
         showPendingUI();
       } else {
@@ -349,18 +348,18 @@ class _StorePageState extends State<StorePage> {
             return;
           }
           if (Platform.isAndroid) {
-          if (!_kAutoConsume && purchaseDetails.productID == _kConsumableId) {
-            final InAppPurchaseAndroidPlatformAddition androidAddition =
-                _connection.getPlatformAddition<
-                    InAppPurchaseAndroidPlatformAddition>();
-            await androidAddition.consumePurchase(purchaseDetails);
+            if (!_kAutoConsume && purchaseDetails.productID == _kConsumableId) {
+              final InAppPurchaseAndroidPlatformAddition androidAddition =
+                  _connection.getPlatformAddition<
+                      InAppPurchaseAndroidPlatformAddition>();
+              await androidAddition.consumePurchase(purchaseDetails);
+            }
+          }
+          if (purchaseDetails.pendingCompletePurchase) {
+            await _connection.completePurchase(purchaseDetails);
           }
         }
-        if (purchaseDetails.pendingCompletePurchase) {
-          await _connection.completePurchase(purchaseDetails);
-        }
       }
-    }
     });
   }
 }

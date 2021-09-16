@@ -20,6 +20,7 @@ import 'package:provider/provider.dart';
 import 'main.dart';
 import 'models/ui/app_text.dart';
 import 'package:sizer/sizer.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // Register all the models and services before the app starts
@@ -129,31 +130,29 @@ class _MyAppState extends State<MyApp> {
         ],
         child: OverlaySupport.global(
           child: LayoutBuilder(
-            builder: (context, constraints) => OrientationBuilder(
-              builder:
-               (context, orientation) {
-                 return Sizer(
-      builder: (context, orientation, deviceType) {
-                // SizerUtil().init(constraints, orientation);
-                //SizerUtil().setScreenSize(constraints, orientation);
-                return MaterialApp(
-                  title: FlavorConfig.of(context).appName,
-                  debugShowCheckedModeBanner: false,
-                  navigatorKey: navigatorKey,
-                  theme: ThemeData(
-                    colorScheme: ColorScheme.dark(),
-                    visualDensity: VisualDensity.adaptivePlatformDensity,
-                    fontFamily: AppAssetsNew.fontFamilyPoppins,
-                  ),
-                  onGenerateRoute: Routes.generateRoute,
-                  initialRoute: Routes.initial,
-                  navigatorObservers: [routeObserver],
-                );
-              },
-            );
-               }
+            builder: (context, constraints) =>
+                OrientationBuilder(builder: (context, orientation) {
+              return Sizer(
+                builder: (context, orientation, deviceType) {
+                  // SizerUtil().init(constraints, orientation);
+                  //SizerUtil().setScreenSize(constraints, orientation);
+                  return MaterialApp(
+                    title: FlavorConfig.of(context).appName,
+                    debugShowCheckedModeBanner: false,
+                    navigatorKey: navigatorKey,
+                    theme: ThemeData(
+                      colorScheme: ColorScheme.dark(),
+                      visualDensity: VisualDensity.adaptivePlatformDensity,
+                      fontFamily: AppAssetsNew.fontFamilyPoppins,
+                    ),
+                    onGenerateRoute: Routes.generateRoute,
+                    initialRoute: Routes.initial,
+                    navigatorObservers: [routeObserver],
+                  );
+                },
+              );
+            }),
           ),
-        ),
         ),
       ),
     );

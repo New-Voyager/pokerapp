@@ -1,4 +1,3 @@
-
 /// determines the type of categories returned
 ///
 /// values: (featured | emoji | trending)

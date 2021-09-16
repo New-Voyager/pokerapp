@@ -158,7 +158,7 @@ class HandService {
     QueryResult result = await _client
         .query(QueryOptions(document: gql(allHands), variables: variables));
 
-     if (result.hasException) {
+    if (result.hasException) {
       if (result.exception.graphqlErrors.length > 0) {
         return null;
       }
@@ -185,7 +185,7 @@ class HandService {
     QueryResult result = await _client
         .query(QueryOptions(document: gql(query), variables: variables));
 
-     if (result.hasException) {
+    if (result.hasException) {
       if (result.exception.graphqlErrors.length > 0) {
         return null;
       }

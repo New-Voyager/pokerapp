@@ -220,8 +220,8 @@ class ClubsService {
     } else {
       Map<String, dynamic> variables = {"clubCode": clubCode};
       QueryResult result;
-      result = await _client.query(QueryOptions(
-          document: gql(hostmessagesQuery), variables: variables));
+      result = await _client.query(
+          QueryOptions(document: gql(hostmessagesQuery), variables: variables));
       print("result.data ${result.data} ${result.hasException}");
       if (result.hasException) return [];
       result.data['messagesFromHost'].forEach((e) {
@@ -321,7 +321,7 @@ class ClubsService {
 
     print(result.exception);
 
-     if (result.hasException) {
+    if (result.hasException) {
       if (result.exception.graphqlErrors.length > 0) {
         return null;
       }
@@ -362,8 +362,7 @@ class ClubsService {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     Map<String, dynamic> variables = {"clubCode": clubCode};
     QueryResult result = await _client.query(
-      QueryOptions(
-          document: gql(getAnnouncementsQuery), variables: variables),
+      QueryOptions(document: gql(getAnnouncementsQuery), variables: variables),
     );
 
     if (result.hasException) return [];
@@ -410,7 +409,7 @@ class ClubsService {
 
     // log('query result: ${result.exception}');
 
-     if (result.hasException) {
+    if (result.hasException) {
       if (result.exception.graphqlErrors.length > 0) {
         return null;
       }

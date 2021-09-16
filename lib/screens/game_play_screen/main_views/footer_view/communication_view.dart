@@ -41,10 +41,12 @@ class _CommunicationViewState extends State<CommunicationView> {
     _isRecording = false;
     super.initState();
   }
+
   @override
   void dispose() {
     _audioRecorder.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     final theme = AppTheme.getTheme(context);
