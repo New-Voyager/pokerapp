@@ -22,7 +22,7 @@ void main() async {
   // Register all the models and services before the app starts
   if (Platform.isAndroid) {
     InAppPurchaseAndroidPlatformAddition.enablePendingPurchases();
-  } 
+  }
   await HiveDatasource.getInstance.init();
 
   var testFlavorApp = FlavorConfig(

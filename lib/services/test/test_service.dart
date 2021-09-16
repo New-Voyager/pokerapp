@@ -30,7 +30,6 @@ import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 
-
 class TestService {
   static bool get isTesting {
     return false;

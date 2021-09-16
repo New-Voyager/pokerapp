@@ -146,7 +146,7 @@ class GameReplayController {
   /* this method initializes the controller, i.e puts data into the provider models
     & other initial setups are done here*/
   void initController(BuildContext context) {
-    _actionService = GameReplayActionService(context, this._audioPlayer);
+    _actionService = GameReplayActionService(context);
 
     isPlaying.listen((bool _isPlaying) {
       if (_isPlaying) _load(_getNextAction());

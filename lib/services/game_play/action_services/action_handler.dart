@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:pokerapp/services/audio/audio_service.dart';
 import 'package:provider/provider.dart';
 
 import 'package:pokerapp/enums/game_type.dart';
@@ -26,9 +27,8 @@ import 'hand_action_proto_service.dart';
 class PlayerActionHandler {
   BuildContext _context;
   GameState _gameState;
-  Function(String) playSoundEffect;
 
-  PlayerActionHandler(this._context, this._gameState, this.playSoundEffect);
+  PlayerActionHandler(this._context, this._gameState);
 
   Future<void> handleQueryCurrentHand(proto.HandMessageItem message) async {
     final currentHandState = message.currentHandState;
@@ -298,7 +298,7 @@ class PlayerActionHandler {
       }
 
       /* play an sound effect alerting the user */
-      playSoundEffect(AppAssets.playerTurnSound);
+      AudioService.playYourAction(mute: _gameState.playerLocalConfig.mute);
 
       if (_gameState.straddleBetThisHand == true) {
         // we have the straddleBet set to true, do a bet
@@ -381,9 +381,9 @@ class PlayerActionHandler {
     if (action.action == HandActions.BET ||
         action.action == HandActions.RAISE ||
         action.action == HandActions.CALL) {
-      playSoundEffect(AppAssets.betRaiseSound);
+      AudioService.playBet(mute: _gameState.playerLocalConfig.mute);
     } else if (action.action == HandActions.FOLD) {
-      playSoundEffect(AppAssets.foldSound);
+      AudioService.playFold(mute: _gameState.playerLocalConfig.mute);
       seat.player.playerFolded = true;
       seat.player.animatingFold = true;
       seat.notify();
@@ -392,7 +392,7 @@ class PlayerActionHandler {
         _gameState.myState.notify();
       }
     } else if (action.action == HandActions.CHECK) {
-      playSoundEffect(AppAssets.checkSound);
+      AudioService.playCheck(mute: _gameState.playerLocalConfig.mute);
     }
     seat.notify();
     int stack = playerActed.stack?.toInt();

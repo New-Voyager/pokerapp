@@ -318,8 +318,7 @@ query mySettings(\$gameCode:String!){
       "settings": input.toJson()
     };
     QueryResult result = await _client.query(QueryOptions(
-        document: gql(updateGamePlayerSettingsQuery),
-        variables: variables));
+        document: gql(updateGamePlayerSettingsQuery), variables: variables));
 
     if (result.hasException) {
       log("Exception : ${result.exception.toString()}");
@@ -341,7 +340,7 @@ query mySettings(\$gameCode:String!){
     QueryResult result = await _client.query(
         QueryOptions(document: gql(gameDetailQuery), variables: variables));
 
-     if (result.hasException) {
+    if (result.hasException) {
       if (result.exception.graphqlErrors.length > 0) {
         return null;
       }
@@ -358,10 +357,10 @@ query mySettings(\$gameCode:String!){
     Map<String, dynamic> variables = {
       "gameCode": gameCode,
     };
-    QueryResult result = await _client.query(
-        QueryOptions(document: gql(stackStat), variables: variables));
+    QueryResult result = await _client
+        .query(QueryOptions(document: gql(stackStat), variables: variables));
 
-     if (result.hasException) {
+    if (result.hasException) {
       if (result.exception.graphqlErrors.length > 0) {
         return null;
       }
@@ -379,7 +378,7 @@ query mySettings(\$gameCode:String!){
     QueryResult result = await _client.query(
         QueryOptions(document: gql(liveStackStat), variables: variables));
 
-     if (result.hasException) {
+    if (result.hasException) {
       if (result.exception.graphqlErrors.length > 0) {
         return null;
       }
@@ -837,7 +836,7 @@ query mySettings(\$gameCode:String!){
     };
     QueryResult result = await _client.query(
         QueryOptions(document: gql(waitlistQuery), variables: variables));
-     if (result.hasException) {
+    if (result.hasException) {
       if (result.exception.graphqlErrors.length > 0) {
         return null;
       }
@@ -882,7 +881,7 @@ query mySettings(\$gameCode:String!){
     QueryResult result = await _client.query(QueryOptions(
         document: gql(listOfSeatChangeQuery), variables: variables));
 
-     if (result.hasException) {
+    if (result.hasException) {
       if (result.exception.graphqlErrors.length > 0) {
         return null;
       }
@@ -902,7 +901,7 @@ query mySettings(\$gameCode:String!){
     QueryResult result =
         await _client.query(QueryOptions(document: gql(liveGameQuery)));
 
-     if (result.hasException) {
+    if (result.hasException) {
       if (result.exception.graphqlErrors.length > 0) {
         return null;
       }
@@ -924,7 +923,7 @@ query mySettings(\$gameCode:String!){
     QueryResult result = await _client.query(QueryOptions(
         document: gql(gameResultTableQuery), variables: variables));
 
-     if (result.hasException) {
+    if (result.hasException) {
       if (result.exception.graphqlErrors.length > 0) {
         return null;
       }
@@ -938,10 +937,10 @@ query mySettings(\$gameCode:String!){
     Map<String, dynamic> variables = {
       "gameCode": gameCode,
     };
-    QueryResult result = await _client.query(QueryOptions(
-        document: gql(downloadResultQuery), variables: variables));
+    QueryResult result = await _client.query(
+        QueryOptions(document: gql(downloadResultQuery), variables: variables));
 
-     if (result.hasException) {
+    if (result.hasException) {
       if (result.exception.graphqlErrors.length > 0) {
         return null;
       }
@@ -957,10 +956,10 @@ query mySettings(\$gameCode:String!){
     Map<String, dynamic> variables = {
       "gameCode": gameCode,
     };
-    QueryResult result = await _client.query(QueryOptions(
-        document: gql(highhandLogQuery), variables: variables));
+    QueryResult result = await _client.query(
+        QueryOptions(document: gql(highhandLogQuery), variables: variables));
 
-     if (result.hasException) {
+    if (result.hasException) {
       if (result.exception.graphqlErrors.length > 0) {
         return null;
       }
@@ -1020,7 +1019,7 @@ query mySettings(\$gameCode:String!){
       ),
     );
 
-     if (result.hasException) {
+    if (result.hasException) {
       if (result.exception.graphqlErrors.length > 0) {
         return null;
       }
@@ -1046,7 +1045,7 @@ query mySettings(\$gameCode:String!){
       ),
     );
 
-     if (result.hasException) {
+    if (result.hasException) {
       if (result.exception.graphqlErrors.length > 0) {
         return null;
       }
@@ -1065,7 +1064,7 @@ query mySettings(\$gameCode:String!){
       QueryOptions(document: gql(_query)),
     );
 
-     if (result.hasException) {
+    if (result.hasException) {
       if (result.exception.graphqlErrors.length > 0) {
         return null;
       }
@@ -1154,7 +1153,7 @@ query mySettings(\$gameCode:String!){
       MutationOptions(document: gql(_mutation)),
     );
 
-     if (result.hasException) {
+    if (result.hasException) {
       if (result.exception.graphqlErrors.length > 0) {
         return null;
       }
@@ -1178,7 +1177,7 @@ query mySettings(\$gameCode:String!){
       MutationOptions(document: gql(_mutation)),
     );
 
-     if (result.hasException) {
+    if (result.hasException) {
       if (result.exception.graphqlErrors.length > 0) {
         return null;
       }
@@ -1207,7 +1206,7 @@ query mySettings(\$gameCode:String!){
       MutationOptions(document: gql(_mutation), variables: variables),
     );
 
-     if (result.hasException) {
+    if (result.hasException) {
       if (result.exception.graphqlErrors.length > 0) {
         return null;
       }
@@ -1238,7 +1237,7 @@ query mySettings(\$gameCode:String!){
     );
 
     print(result.exception);
-     if (result.hasException) {
+    if (result.hasException) {
       if (result.exception.graphqlErrors.length > 0) {
         return null;
       }
@@ -1270,7 +1269,7 @@ query mySettings(\$gameCode:String!){
     );
 
     print(result.exception);
-     if (result.hasException) {
+    if (result.hasException) {
       if (result.exception.graphqlErrors.length > 0) {
         return null;
       }
@@ -1296,7 +1295,7 @@ query mySettings(\$gameCode:String!){
       MutationOptions(document: gql(_query), variables: variables),
     );
 
-     if (result.hasException) {
+    if (result.hasException) {
       if (result.exception.graphqlErrors.length > 0) {
         return null;
       }
@@ -1322,7 +1321,7 @@ query mySettings(\$gameCode:String!){
       MutationOptions(document: gql(_query), variables: variables),
     );
 
-     if (result.hasException) {
+    if (result.hasException) {
       if (result.exception.graphqlErrors.length > 0) {
         return null;
       }
@@ -1350,7 +1349,7 @@ query mySettings(\$gameCode:String!){
       MutationOptions(document: gql(_query), variables: variables),
     );
 
-     if (result.hasException) {
+    if (result.hasException) {
       if (result.exception.graphqlErrors.length > 0) {
         return null;
       }
@@ -1377,7 +1376,7 @@ query mySettings(\$gameCode:String!){
       MutationOptions(document: gql(_mutation), variables: variables),
     );
 
-     if (result.hasException) {
+    if (result.hasException) {
       if (result.exception.graphqlErrors.length > 0) {
         return null;
       }
@@ -1398,7 +1397,7 @@ query mySettings(\$gameCode:String!){
       MutationOptions(document: gql(leaveGameQuery), variables: variables),
     );
 
-     if (result.hasException) {
+    if (result.hasException) {
       if (result.exception.graphqlErrors.length > 0) {
         return null;
       }
@@ -1464,7 +1463,7 @@ query mySettings(\$gameCode:String!){
       MutationOptions(document: gql(_query), variables: variables),
     );
 
-     if (result.hasException) {
+    if (result.hasException) {
       if (result.exception.graphqlErrors.length > 0) {
         return null;
       }
@@ -1495,7 +1494,7 @@ query mySettings(\$gameCode:String!){
       MutationOptions(document: gql(_query), variables: variables),
     );
 
-     if (result.hasException) {
+    if (result.hasException) {
       if (result.exception.graphqlErrors.length > 0) {
         return null;
       }

@@ -19,6 +19,7 @@ import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/game_service.dart';
+import 'package:pokerapp/services/audio/audio_service.dart';
 import 'package:pokerapp/services/encryption/encryption_service.dart';
 import 'package:pokerapp/services/game_play/action_services/action_handler.dart';
 import 'package:pokerapp/services/game_play/action_services/newhand_handler.dart';
@@ -357,26 +358,22 @@ class HandActionProtoService {
           return handleDeal(message);
 
         case AppConstants.QUERY_CURRENT_HAND:
-          final handler = PlayerActionHandler(
-              this._context, _gameState, this.playSoundEffect);
+          final handler = PlayerActionHandler(this._context, _gameState);
           await handler.handleQueryCurrentHand(message);
           return;
 
         case AppConstants.NEXT_ACTION:
-          final handler = PlayerActionHandler(
-              this._context, _gameState, this.playSoundEffect);
+          final handler = PlayerActionHandler(this._context, _gameState);
           await handler.handleNextAction(message);
           return;
 
         case AppConstants.PLAYER_ACTED:
-          final handler = PlayerActionHandler(
-              this._context, _gameState, this.playSoundEffect);
+          final handler = PlayerActionHandler(this._context, _gameState);
           await handler.handlePlayerActed(message);
           return;
 
         case AppConstants.YOUR_ACTION:
-          final handler = PlayerActionHandler(
-              this._context, _gameState, this.playSoundEffect);
+          final handler = PlayerActionHandler(this._context, _gameState);
           await handler.handleYourAction(message);
           return;
 
@@ -467,10 +464,8 @@ class HandActionProtoService {
     // reset result in progress flag
     _gameState.tableState.resultInProgress = false;
 
-    NewHandHandler handler = NewHandHandler(
-        newHand: message.newHand,
-        gameState: _gameState,
-        playSoundEffect: playSoundEffect);
+    NewHandHandler handler =
+        NewHandHandler(newHand: message.newHand, gameState: _gameState);
     handler.initialize();
     await handler.handle();
   }
@@ -479,7 +474,7 @@ class HandActionProtoService {
     //log('Hand Message: ::handleDeal:: START');
 
     // play the deal sound effect
-    playSoundEffect(AppAssets.dealSound);
+    AudioService.playDeal(mute: _gameState.playerLocalConfig.mute);
 
     final dealCards = message.dealCards;
     int mySeatNo = dealCards.seatNo;
@@ -541,19 +536,6 @@ class HandActionProtoService {
     //log('Hand Message: ::handleDeal:: END');
   }
 
-  playSoundEffect(String soundFile) {
-    return;
-
-    if (_gameState != null &&
-        _gameState.playerLocalConfig != null &&
-        _gameState.playerLocalConfig.gameSound) {
-      _gameState
-          .getAudioBytes(soundFile)
-          .then((value) => audioPlayer.playBytes(value));
-      // log('In playSoundEffect(), gameSounds = ${_gameState.config.gameSound}');
-    }
-  }
-
   Future<void> handleDealStarted({
     bool fromGameReplay = false,
     int testNo = 2, // works only if in testing mode
@@ -577,11 +559,11 @@ class HandActionProtoService {
       /* show card shuffling*/
       if (_gameState.handInfo.bombPot) {
         tableState.updateCardShufflingAnimation(true);
-        playSoundEffect(AppAssets.dealSound); // bomb sound
+        AudioService.playDeal(mute: _gameState.playerLocalConfig.mute);
         await Future.delayed(AppConstants.bombPotTotalWaitDuration); // wait
       } else {
         // play the deal sound effect
-        playSoundEffect(AppAssets.dealSound);
+        AudioService.playDeal(mute: _gameState.playerLocalConfig.mute);
         tableState.updateCardShufflingAnimation(true);
         await Future.delayed(
             AppConstants.cardShufflingTotalWaitDuration); // wait
@@ -658,7 +640,7 @@ class HandActionProtoService {
       if (_close) return;
 
       // play the bet sound effect
-      playSoundEffect(AppAssets.betRaiseSound);
+      AudioService.playBet(mute: _gameState.playerLocalConfig.mute);
 
       // place players bets
       for (final player in _gameState.playersInGame) {
@@ -745,7 +727,7 @@ class HandActionProtoService {
     // update the community cards
     if (stage == 'flop') {
       _gameState.handState = HandState.FLOP;
-      playSoundEffect(AppAssets.flopSound);
+      // AudioService.playFlop(mute: _gameState.playerLocalConfig.mute);
       var board = message.flop.boards[0];
       List<CardObject> cards = [];
       for (int i = 0; i < 3; i++) {
@@ -773,7 +755,7 @@ class HandActionProtoService {
           );
           cards.add(c);
         }
-        playSoundEffect(AppAssets.flopSound);
+        AudioService.playFlop(mute: _gameState.playerLocalConfig.mute);
         tableState.addFlopCards(2, cards);
         tableState.updateTwoBoardsNeeded(true);
         tableState.notifyAll();
@@ -785,7 +767,7 @@ class HandActionProtoService {
       playerCardRanks = message.flop.playerCardRanks;
     } else if (stage == 'turn') {
       _gameState.handState = HandState.TURN;
-      playSoundEffect(AppAssets.flopSound);
+      AudioService.playFlop(mute: _gameState.playerLocalConfig.mute);
       var board = message.turn.boards[0];
       var turnCard = board.cards[3];
       playerCardRanks = message.turn.playerCardRanks;
@@ -800,19 +782,19 @@ class HandActionProtoService {
         }
         turnCard = board.cards[3];
         tableState.addTurnOrRiverCard(2, CardHelper.getCard(turnCard));
-        playSoundEffect(AppAssets.flopSound);
+        AudioService.playFlop(mute: _gameState.playerLocalConfig.mute);
         tableState.notifyAll();
         await Future.delayed(Duration(seconds: 1));
         audioPlayer.stop();
       }
     } else if (stage == 'river') {
       _gameState.handState = HandState.RIVER;
-      playSoundEffect(AppAssets.flopSound);
+      AudioService.playFlop(mute: _gameState.playerLocalConfig.mute);
       var board = message.river.boards[0];
       var riverCard = board.cards[4];
       playerCardRanks = message.river.playerCardRanks;
       tableState.addTurnOrRiverCard(1, CardHelper.getCard(riverCard));
-      playSoundEffect(AppAssets.flopSound);
+      AudioService.playFlop(mute: _gameState.playerLocalConfig.mute);
       tableState.notifyAll();
       await Future.delayed(Duration(seconds: 1));
       audioPlayer.stop();
@@ -825,7 +807,7 @@ class HandActionProtoService {
         audioPlayer.stop();
         riverCard = board.cards[4];
         tableState.addTurnOrRiverCard(2, CardHelper.getCard(riverCard));
-        playSoundEffect(AppAssets.flopSound);
+        AudioService.playFlop(mute: _gameState.playerLocalConfig.mute);
         tableState.notifyAll();
         await Future.delayed(Duration(seconds: 1));
         audioPlayer.stop();
@@ -1032,7 +1014,7 @@ class HandActionProtoService {
     // notify to build the table (community cards)
     tableState.setBoardCards(1, boardCards);
     tableState.notifyAll();
-    playSoundEffect(AppAssets.fireworksSound);
+    AudioService.playFireworks(mute: _gameState.playerLocalConfig.mute);
 
     // notify to build the players
     for (final s in playerSeats) s.notify();

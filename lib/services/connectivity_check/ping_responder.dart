@@ -6,7 +6,6 @@ import 'package:fixnum/fixnum.dart' as $fixnum;
 import 'package:pokerapp/services/nats/client.dart';
 import 'package:pokerapp/services/nats/message.dart';
 
-
 class PingResponder {
   int playerId;
   Stream<Message> stream;

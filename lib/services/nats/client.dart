@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
-
 import 'common.dart';
 import 'inbox.dart';
 import 'message.dart';
@@ -150,57 +149,58 @@ class Client {
       _processMsg();
     }
     while (true) {
-        ///find endline
-        var nextLineIndex = _buffer.indexWhere((c) {
-          if (c == 13) {
-            return true;
-          }
-          return false;
-        });
-        if (nextLineIndex == -1) return;
-        
-         var line = String.fromCharCodes(_buffer.sublist(0, nextLineIndex)); // retest
-
-        if (_buffer.length > nextLineIndex + 2) {
-          _buffer.removeRange(0, nextLineIndex + 2);
-        } else {
-          _buffer = [];
+      ///find endline
+      var nextLineIndex = _buffer.indexWhere((c) {
+        if (c == 13) {
+          return true;
         }
+        return false;
+      });
+      if (nextLineIndex == -1) return;
 
-        ///decode operation
-        var i = line.indexOf(' ');
-        String op, data;
-        if (i != -1) {
-          op = line.substring(0, i).trim().toLowerCase();
-          data = line.substring(i).trim();
-        } else {
-          op = line.trim().toLowerCase();
-          data = '';
-        }
+      var line =
+          String.fromCharCodes(_buffer.sublist(0, nextLineIndex)); // retest
 
-        ///process operation
-        switch (op) {
-          case 'msg':
-            _receiveState = _ReceiveState.msg;
-            _receiveLine1 = line;
-            _processMsg();
-            break;
-          case 'info':
-            _info = Info.fromJson(jsonDecode(data));
-            break;
-          case 'ping':
-            _add('pong');
-            break;
-          case '-err':
-            _processErr(data);
-            break;
-          case 'pong':
-            _pingCompleter.complete();
-            break;
-          case '+ok':
+      if (_buffer.length > nextLineIndex + 2) {
+        _buffer.removeRange(0, nextLineIndex + 2);
+      } else {
+        _buffer = [];
+      }
+
+      ///decode operation
+      var i = line.indexOf(' ');
+      String op, data;
+      if (i != -1) {
+        op = line.substring(0, i).trim().toLowerCase();
+        data = line.substring(i).trim();
+      } else {
+        op = line.trim().toLowerCase();
+        data = '';
+      }
+
+      ///process operation
+      switch (op) {
+        case 'msg':
+          _receiveState = _ReceiveState.msg;
+          _receiveLine1 = line;
+          _processMsg();
+          break;
+        case 'info':
+          _info = Info.fromJson(jsonDecode(data));
+          break;
+        case 'ping':
+          _add('pong');
+          break;
+        case '-err':
+          _processErr(data);
+          break;
+        case 'pong':
+          _pingCompleter.complete();
+          break;
+        case '+ok':
           //do nothing
-            break;
-        }
+          break;
+      }
     }
   }
 

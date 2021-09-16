@@ -103,7 +103,7 @@ class _FooterViewState extends State<FooterView>
       visible = true;
     } else {
       visible = _gameState.gameHiveStore.getHoleCardsVisibilityState();
-    }  
+    }
     isHoleCardsVisibleVn.value = visible;
 
     // _players = context.read<Players>();
@@ -166,18 +166,17 @@ class _FooterViewState extends State<FooterView>
       }
 
       /* build the HoleCardsViewAndFooterActionView only if me is NOT null */
-      return Consumer<MyState>(
-          builder: (_, ___, __) {
-            final me = gameState.me;
-            if (me == null) {
-              return SizedBox(width: width);
-            } else {
-              return HoleCardsViewAndFooterActionView(
-                playerModel: me,
-                isHoleCardsVisibleVn: isHoleCardsVisibleVn,
-              );
-            }
-          });
+      return Consumer<MyState>(builder: (_, ___, __) {
+        final me = gameState.me;
+        if (me == null) {
+          return SizedBox(width: width);
+        } else {
+          return HoleCardsViewAndFooterActionView(
+            playerModel: me,
+            isHoleCardsVisibleVn: isHoleCardsVisibleVn,
+          );
+        }
+      });
 
       // return ValueListenableBuilder<PlayerModel>(
       //     valueListenable: mePlayerModelVn,

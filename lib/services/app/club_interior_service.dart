@@ -98,9 +98,9 @@ class ClubInteriorService {
   static Future<SearchClub> searchClubHelper(String clubCode) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     Map<String, dynamic> variables = {"clubCode": clubCode};
-    QueryResult result = await _client.query(
-        QueryOptions(document: gql(searchClub), variables: variables));
-     if (result.hasException) {
+    QueryResult result = await _client
+        .query(QueryOptions(document: gql(searchClub), variables: variables));
+    if (result.hasException) {
       if (result.exception.graphqlErrors.length > 0) {
         return null;
       }
@@ -118,8 +118,8 @@ class ClubInteriorService {
       String clubCode, Map<String, dynamic> filter) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     Map<String, dynamic> variables = {"clubCode": clubCode, "filter": filter};
-    QueryResult result = await _client.query(
-        QueryOptions(document: gql(membersQuery), variables: variables));
+    QueryResult result = await _client
+        .query(QueryOptions(document: gql(membersQuery), variables: variables));
 
     if (result.hasException) return [];
 
@@ -192,8 +192,8 @@ class ClubInteriorService {
     Map<String, dynamic> variables = {
       "clubCode": clubCode,
     };
-    QueryResult result = await _client.query(QueryOptions(
-        document: gql(gameHistoryQuery), variables: variables));
+    QueryResult result = await _client.query(
+        QueryOptions(document: gql(gameHistoryQuery), variables: variables));
 
     if (result.hasException) return [];
 
@@ -207,9 +207,9 @@ class ClubInteriorService {
   static Future<String> joinClub(String clubCode) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     Map<String, dynamic> variables = {"clubCode": clubCode};
-    QueryResult result = await _client.mutate(MutationOptions(
-        document: gql(joinClubQuery), variables: variables));
-     if (result.hasException) {
+    QueryResult result = await _client.mutate(
+        MutationOptions(document: gql(joinClubQuery), variables: variables));
+    if (result.hasException) {
       if (result.exception.graphqlErrors.length > 0) {
         return null;
       }
@@ -226,9 +226,9 @@ class ClubInteriorService {
       "clubCode": clubCode,
       "playerId": playerID
     };
-    QueryResult result = await _client.mutate(MutationOptions(
-        document: gql(approveMember), variables: variables));
-     if (result.hasException) {
+    QueryResult result = await _client.mutate(
+        MutationOptions(document: gql(approveMember), variables: variables));
+    if (result.hasException) {
       if (result.exception.graphqlErrors.length > 0) {
         return null;
       }
@@ -245,7 +245,7 @@ class ClubInteriorService {
     };
     QueryResult result = await _client.mutate(
         MutationOptions(document: gql(denyMember), variables: variables));
-     if (result.hasException) {
+    if (result.hasException) {
       if (result.exception.graphqlErrors.length > 0) {
         return null;
       }

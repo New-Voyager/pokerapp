@@ -1,4 +1,3 @@
-
 import 'server_request.dart';
 
 /// Request Gif with `Search` parameter

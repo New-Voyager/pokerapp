@@ -1,4 +1,3 @@
-
 import 'package:pokerapp/services/tenor/src/model/category.dart';
 import 'package:pokerapp/services/tenor/src/utility/enums.dart';
 

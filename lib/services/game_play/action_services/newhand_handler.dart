@@ -11,17 +11,16 @@ import 'package:pokerapp/proto/handmessage.pb.dart' as proto;
 import 'package:pokerapp/proto/enums.pb.dart' as proto;
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
+import 'package:pokerapp/services/audio/audio_service.dart';
 
 class NewHandHandler {
   proto.NewHand newHand;
   GameState gameState;
-  Function(String) playSoundEffect;
   GameType gameType;
 
   NewHandHandler({
     @required this.newHand,
     @required this.gameState,
-    @required this.playSoundEffect,
   });
 
   void resetBoard() {}
@@ -180,7 +179,7 @@ class NewHandHandler {
     gameState.highHand = null;
     gameState.handInProgress = true;
     ////log('Hand Message: ::handleNewHand:: START');
-    playSoundEffect(AppAssets.newHandSound);
+    AudioService.playNewHand(mute: gameState.playerLocalConfig.mute);
 
     if (gameState.uiClosing) return;
     gameState.clear();
@@ -276,7 +275,7 @@ class NewHandHandler {
       if (gameState.uiClosing) return;
 
       // play the deal sound effect
-      playSoundEffect(AppAssets.dealSound);
+      AudioService.playDeal(mute: gameState.playerLocalConfig.mute);
 
       /* show card shuffling*/
       tableState.updateCardShufflingAnimation(true);

@@ -1,4 +1,3 @@
-
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -31,7 +30,8 @@ class CurvedBottomNavigation extends ImplicitlyAnimatedWidget {
   _MyBottomNavigationState createState() => _MyBottomNavigationState();
 }
 
-class _MyBottomNavigationState extends AnimatedWidgetBaseState<CurvedBottomNavigation> {
+class _MyBottomNavigationState
+    extends AnimatedWidgetBaseState<CurvedBottomNavigation> {
   List<Tween<double>> _itemsTranslationY;
   Tween<double> _selectedPercentTween;
 
@@ -43,7 +43,8 @@ class _MyBottomNavigationState extends AnimatedWidgetBaseState<CurvedBottomNavig
 
   @override
   Widget build(BuildContext context) {
-    final double additionalBottomPadding = math.max(MediaQuery.of(context).padding.bottom, 0.0);
+    final double additionalBottomPadding =
+        math.max(MediaQuery.of(context).padding.bottom, 0.0);
 
     return SizedBox(
       width: double.infinity,
@@ -84,7 +85,8 @@ class _MyBottomNavigationState extends AnimatedWidgetBaseState<CurvedBottomNavig
                         widget.onItemClick(pos);
                       },
                       child: Transform.translate(
-                        offset: Offset(0, _itemsTranslationY[pos].evaluate(animation)),
+                        offset: Offset(
+                            0, _itemsTranslationY[pos].evaluate(animation)),
                         child: iconWidget,
                       ),
                     ),
@@ -208,5 +210,4 @@ class _MyBottomNavigationCustomPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(CustomPainter oldDelegate) => true;
-
 }

@@ -6,10 +6,8 @@ import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/handlog_model.dart';
-import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/utils/card_helper.dart';
-import 'package:provider/provider.dart';
 
 class Winner {
   int seatNo;
@@ -206,16 +204,6 @@ class ResultHandlerV2Json {
     gameState.clear();
     tableState.clear();
     tableState.notifyAll();
-  }
-
-  void playApplause() {
-    return;
-
-    if (gameState?.playerLocalConfig?.gameSound ?? true) {
-      gameState.getAudioBytes(AppAssets.applauseSound).then((value) {
-        audioPlayer.playBytes(value);
-      });
-    }
   }
 
   Future<void> _showWinners(

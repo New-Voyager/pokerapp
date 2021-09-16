@@ -6,8 +6,8 @@ import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_replay_models/game_replay_action.dart';
 import 'package:pokerapp/models/handlog_model.dart';
-import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
+import 'package:pokerapp/services/audio/audio_service.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_proto_service.dart';
 import 'package:pokerapp/services/game_play/action_services/result_handler_v2_json.dart';
 import 'package:pokerapp/utils/card_helper.dart';
@@ -16,8 +16,7 @@ import 'package:provider/provider.dart';
 class GameReplayActionService {
   final BuildContext _context;
   bool _close = false;
-  final AudioPlayer _audioPlayer;
-  GameReplayActionService(this._context, this._audioPlayer);
+  GameReplayActionService(this._context);
 
   void close() => _close = true;
 
@@ -66,9 +65,7 @@ class GameReplayActionService {
     assert(seat != null);
 
     if (action.action == HandActions.FOLD) {
-      gameState
-          .getAudioBytes(AppAssets.foldSound)
-          .then((value) => _audioPlayer.playBytes(value));
+      AudioService.playFold();
       seat.player.playerFolded = true;
     } else {
       if (_close) return;
@@ -81,13 +78,9 @@ class GameReplayActionService {
 
     // playing audio for action
     if (action.action == HandActions.CHECK) {
-      gameState
-          .getAudioBytes(AppAssets.checkSound)
-          .then((value) => _audioPlayer.playBytes(value));
+      AudioService.playCheck();
     } else {
-      gameState
-          .getAudioBytes(AppAssets.betRaiseSound)
-          .then((value) => _audioPlayer.playBytes(value));
+      AudioService.playBet();
     }
 
     final tableState = gameState.tableState;
@@ -220,9 +213,7 @@ class GameReplayActionService {
   Future<void> _distributeCards({GameReplayAction action}) async {
     if (_close) return;
     GameState gameState = GameState.getState(_context);
-    gameState
-        .getAudioBytes(AppAssets.dealSound)
-        .then((value) => _audioPlayer.playBytes(value));
+    AudioService.playDeal();
 
     if (_close) return;
     final handInfo = gameState.handInfo;
