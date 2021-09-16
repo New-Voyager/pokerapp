@@ -126,16 +126,13 @@ class HandActionProtoService {
   EncryptionService _encryptionService;
   RetrySendingProtoMsg _retryMsg;
   pi.PlayerInfo _currentPlayer;
-  AudioPlayer audioPlayer;
 
   HandActionProtoService(
     this._context,
     this._gameState,
     this._gameComService,
     this._encryptionService,
-    this._currentPlayer, {
-    this.audioPlayer,
-  });
+    this._currentPlayer,);
 
   void close() {
     _close = true;
@@ -529,7 +526,6 @@ class HandActionProtoService {
 
     /* card distribution ends, put the value to NULL */
     if (_close || _gameState.uiClosing) return;
-    audioPlayer.stop();
     _gameState.cardDistributionState.seatNo = null;
     _gameState.handState = HandState.DEAL;
     _gameState.myState.notify();
@@ -562,7 +558,7 @@ class HandActionProtoService {
         AudioService.playDeal(mute: _gameState.playerLocalConfig.mute);
         await Future.delayed(AppConstants.bombPotTotalWaitDuration); // wait
       } else {
-        // play the deal sound effect
+        // play shuffling sound
         AudioService.playDeal(mute: _gameState.playerLocalConfig.mute);
         tableState.updateCardShufflingAnimation(true);
         await Future.delayed(
@@ -742,7 +738,6 @@ class HandActionProtoService {
       tableState.addFlopCards(1, cards);
       tableState.notifyAll();
       await Future.delayed(Duration(seconds: 1));
-      audioPlayer.stop();
 
       if (message.flop.boards.length >= 2) {
         cards = [];
@@ -760,7 +755,6 @@ class HandActionProtoService {
         tableState.updateTwoBoardsNeeded(true);
         tableState.notifyAll();
         await Future.delayed(Duration(seconds: 1));
-        audioPlayer.stop();
       } else {
         tableState.updateTwoBoardsNeeded(false);
       }
@@ -774,7 +768,6 @@ class HandActionProtoService {
       tableState.addTurnOrRiverCard(1, CardHelper.getCard(turnCard));
       tableState.notifyAll();
       await Future.delayed(Duration(seconds: 1));
-      audioPlayer.stop();
       if (message.turn.boards.length == 2) {
         board = message.turn.boards[1];
         if (!tableState.twoBoardsNeeded) {
@@ -785,7 +778,6 @@ class HandActionProtoService {
         AudioService.playFlop(mute: _gameState.playerLocalConfig.mute);
         tableState.notifyAll();
         await Future.delayed(Duration(seconds: 1));
-        audioPlayer.stop();
       }
     } else if (stage == 'river') {
       _gameState.handState = HandState.RIVER;
@@ -797,27 +789,21 @@ class HandActionProtoService {
       AudioService.playFlop(mute: _gameState.playerLocalConfig.mute);
       tableState.notifyAll();
       await Future.delayed(Duration(seconds: 1));
-      audioPlayer.stop();
       if (message.river.boards.length == 2) {
         board = message.river.boards[1];
         if (!tableState.twoBoardsNeeded) {
           tableState.updateTwoBoardsNeeded(true);
           // flop the cards here (run it twice)
         }
-        audioPlayer.stop();
         riverCard = board.cards[4];
         tableState.addTurnOrRiverCard(2, CardHelper.getCard(riverCard));
         AudioService.playFlop(mute: _gameState.playerLocalConfig.mute);
         tableState.notifyAll();
         await Future.delayed(Duration(seconds: 1));
-        audioPlayer.stop();
       }
     }
     if (_close) return;
     updateRank(playerCardRanks);
-
-    audioPlayer.stop();
-    // log('stage update end');
   }
 
   void updateRank(Map<int, String> playerCardRanks, {String rankText}) {
@@ -949,7 +935,6 @@ class HandActionProtoService {
         result: result,
         gameState: _gameState,
         context: _context,
-        audioPlayer: audioPlayer,
         replay: false,
       );
       await resultHandler.show();

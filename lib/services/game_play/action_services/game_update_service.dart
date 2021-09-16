@@ -15,8 +15,6 @@ import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat_change_model.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
-//import 'package:pokerapp/proto/enums.pbserver.dart';
-import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/screens/game_play_screen/pop_ups/seat_change_confirmation_pop_up.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/count_down_timer.dart';
@@ -37,9 +35,7 @@ class GameUpdateService {
   bool closed = false;
   AppTextScreen _appScreenText = getAppTextScreen("gameUpdateService");
 
-  AudioPlayer audioPlayer;
-
-  GameUpdateService(this._context, this._gameState, this.audioPlayer);
+  GameUpdateService(this._context, this._gameState);
 
   void close() {
     closed = true;
@@ -48,7 +44,6 @@ class GameUpdateService {
 
   void clear() {
     _messages.clear();
-    this.audioPlayer?.stop();
   }
 
   loop() async {

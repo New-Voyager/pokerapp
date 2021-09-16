@@ -110,7 +110,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
   // String _audioToken = '';
   // bool liveAudio = true;
-  AudioPlayer _audioPlayer;
   AudioPlayer _voiceTextPlayer;
 
   //Agora agora;
@@ -162,13 +161,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
   Future _joinAudio() async {
     return;
-    try {
-      if (_audioPlayer != null) {
-        _audioPlayer.resume();
-      }
-    } catch (err) {
-      log('Error when resuming audio');
-    }
+
     if (!_gameState.audioConfEnabled) {
       try {
         if (_voiceTextPlayer != null) {
@@ -531,7 +524,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     super.initState();
 
     Wakelock.enable();
-    _audioPlayer = AudioPlayer();
     _voiceTextPlayer = AudioPlayer();
 
     // Register listener for lifecycle methods
@@ -568,7 +560,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     try {
       _gameContextObj?.dispose();
       _gameState?.close();
-      _audioPlayer?.dispose();
       _voiceTextPlayer?.dispose();
     } catch (e) {
       log('Caught exception: ${e.toString()}');
@@ -645,7 +636,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         child: BoardView(
           gameComService: _gameContextObj?.gameComService,
           gameInfo: _gameInfoModel,
-          audioPlayer: _audioPlayer,
           onUserTap: _onJoinGame,
           onStartGame: startGame,
         ),
@@ -682,7 +672,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
             * as there will be Listeners implemented down this hierarchy level */
 
       _gameContextObj.gameUpdateService =
-          GameUpdateService(_providerContext, _gameState, this._audioPlayer);
+          GameUpdateService(_providerContext, _gameState);
       _gameContextObj.gameUpdateService.loop();
 
       _gameContextObj.gameComService.gameToPlayerChannelStream
@@ -708,7 +698,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         _gameContextObj.gameComService,
         _gameContextObj.encryptionService,
         _gameContextObj.currentPlayer,
-        audioPlayer: _audioPlayer,
       );
 
       _gameContextObj.handActionProtoService.loop();
@@ -966,7 +955,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
   leaveAudioConference() {
     if (_gameState != null) {
-      _audioPlayer?.pause();
       _voiceTextPlayer?.pause();
       _gameState.janusEngine?.leaveChannel();
       if (_gameState.useAgora) {

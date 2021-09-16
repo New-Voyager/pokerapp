@@ -1243,7 +1243,7 @@ query mySettings(\$gameCode:String!){
       }
     }
 
-    Map game = (result.data as dynamic).data['configuredGame'];
+    Map game = result.data['configuredGame'];
     String gameCode = game["gameCode"];
     log('Created game: $gameCode');
     return gameCode;
@@ -1275,7 +1275,7 @@ query mySettings(\$gameCode:String!){
       }
     }
 
-    Map game = (result.data as dynamic).data['configuredGame'];
+    Map game = result.data['configuredGame'];
     String gameCode = game["gameCode"];
     log('Created game: $gameCode');
     return gameCode;
@@ -1300,7 +1300,7 @@ query mySettings(\$gameCode:String!){
         return null;
       }
     }
-    Map game = (result.data as dynamic).data;
+    Map game = result.data;
     String status = game["status"];
     log('Game code: $gameCode status: $status');
     return status;
@@ -1327,7 +1327,7 @@ query mySettings(\$gameCode:String!){
       }
     }
 
-    Map game = (result.data as dynamic).data;
+    Map game = result.data;
     String status = game["status"];
     log('Game code: $gameCode status: $status');
 
@@ -1355,7 +1355,7 @@ query mySettings(\$gameCode:String!){
       }
     }
 
-    Map game = (result.data as dynamic).data;
+    Map game = result.data;
     String status = game["status"];
     log('Game code: $gameCode status: $status');
 

@@ -114,4 +114,12 @@ class AudioService {
   static playFireworks({bool mute}) {
     playSound(fireworksSound, mute: mute);
   }
+
+  static playAnimationSound(String animationId, {bool mute}) async {
+    final animationSound = 'assets/animations/$animationId.mp3';
+    final audioBytes = await getAudioBytes(animationSound);
+    if (audioBytes != null) {
+      playSound(animationSound, mute: mute);
+    }
+  }
 }
