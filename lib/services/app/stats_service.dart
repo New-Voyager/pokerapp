@@ -195,7 +195,11 @@ query clubStats(\$clubCode: String!) {
     QueryResult result = await _client.query(QueryOptions(
         document: gql(getStatsForGameQuery), variables: variables));
 
-    if (result.hasException) return null;
+     if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
 
     final handStats = HandStatsModel.fromJson(result.data['data']);
     return handStats;
@@ -206,7 +210,11 @@ query clubStats(\$clubCode: String!) {
     QueryResult result = await _client
         .query(QueryOptions(document: gql(getAllTimeStatsOnlyQuery)));
 
-    if (result.hasException) return null;
+     if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
 
     final handStats = StatModel.fromJson(result.data['data']['playerHandStats']);
     return HandStatsModel(
@@ -222,9 +230,13 @@ query clubStats(\$clubCode: String!) {
     QueryResult result = await _client.query(
         QueryOptions(document: gql(clubStatsQuery), variables: variables));
 
-    if (result.hasException) return null;
+     if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
 
-    final clubStats = ClubStatsModel.fromJson(result.data['data']);
+    final clubStats = ClubStatsModel.fromJson(result.data);
     return clubStats;
   }
 
@@ -233,10 +245,14 @@ query clubStats(\$clubCode: String!) {
     QueryResult result = await _client
         .query(QueryOptions(document: gql(playerRecentPerformanceQuery)));
 
-    if (result.hasException) return null;
+     if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
 
     final performance =
-        PlayerPerformanceList.fromJson(result.data['data']['perf']);
+        PlayerPerformanceList.fromJson(result.data['perf']);
     return performance;
   }
 }

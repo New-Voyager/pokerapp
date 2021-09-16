@@ -321,7 +321,11 @@ class ClubsService {
 
     print(result.exception);
 
-    if (result.hasException) return null;
+     if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
 
     String clubCode = result.data['createClub'];
 
@@ -406,7 +410,11 @@ class ClubsService {
 
     // log('query result: ${result.exception}');
 
-    if (result.hasException) return null;
+     if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
 
     String weeklyData =
         await rootBundle.loadString("assets/sample-data/weekly-data.json");

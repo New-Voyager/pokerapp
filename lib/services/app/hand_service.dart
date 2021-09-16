@@ -158,7 +158,11 @@ class HandService {
     QueryResult result = await _client
         .query(QueryOptions(document: gql(allHands), variables: variables));
 
-    if (result.hasException) return null;
+     if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
 
     // instantiate game history detail object
     model.jsonData = result.data;
@@ -181,7 +185,11 @@ class HandService {
     QueryResult result = await _client
         .query(QueryOptions(document: gql(query), variables: variables));
 
-    if (result.hasException) return null;
+     if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
     final handResultData = result.data['handResult']['data'];
     final me = await AuthService.get();
     final handLog = HandResultData.fromJson(handResultData);

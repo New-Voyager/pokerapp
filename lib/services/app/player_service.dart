@@ -47,7 +47,11 @@ class PlayerService {
       QueryOptions(document: gql(_query), variables: variables),
     );
 
-    if (result.hasException) return null;
+    if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
     debugPrint(jsonEncode(result.data));
     return PlayerInfo.fromJson(result.data);
   }
@@ -71,7 +75,11 @@ class PlayerService {
       QueryOptions(document: gql(_query), variables: variables),
     );
 
-    if (result.hasException) return null;
+     if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
 
     var playerInfo = new Map<int, PlayerInfo>();
     for (var player in result.data['players']) {
@@ -95,7 +103,11 @@ class PlayerService {
       QueryOptions(document: gql(_query), variables: variables),
     );
 
-    if (result.hasException) return null;
+     if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
 
     bool ret = result.data['ret'];
     return ret;
@@ -110,7 +122,11 @@ class PlayerService {
       QueryOptions(document: gql(_query)),
     );
 
-    if (result.hasException) return null;
+     if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
 
     var ret = result.data['approvals'] as List;
     return ret.length;
@@ -136,7 +152,11 @@ class PlayerService {
       QueryOptions(document: gql(_query)),
     );
 
-    if (result.hasException) return null;
+     if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
 
     var resp = result.data['approvals'] as List;
     List<PendingApproval> ret = [];
@@ -167,7 +187,11 @@ class PlayerService {
       QueryOptions(document: gql(_query), variables: variables),
     );
 
-    if (result.hasException) return null;
+     if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
 
     log("Result ${result.data['ret']}");
 
@@ -194,7 +218,11 @@ class PlayerService {
       QueryOptions(document: gql(_query), variables: variables),
     );
 
-    if (result.hasException) return null;
+     if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
 
     log("Result ${result.data}");
 
@@ -220,7 +248,11 @@ class PlayerService {
       QueryOptions(document: gql(_query), variables: variables),
     );
 
-    if (result.hasException) return null;
+     if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
 
     log("kickPlayer Result ${result.data}");
 

@@ -100,7 +100,11 @@ class ClubInteriorService {
     Map<String, dynamic> variables = {"clubCode": clubCode};
     QueryResult result = await _client.query(
         QueryOptions(document: gql(searchClub), variables: variables));
-    if (result.hasException) return null;
+     if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
 
     final jsonResponse = result.data['club'];
 
@@ -205,7 +209,11 @@ class ClubInteriorService {
     Map<String, dynamic> variables = {"clubCode": clubCode};
     QueryResult result = await _client.mutate(MutationOptions(
         document: gql(joinClubQuery), variables: variables));
-    if (result.hasException) return null;
+     if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
 
     final jsonResponse = result.data['status'].toString();
     return jsonResponse;
@@ -220,7 +228,11 @@ class ClubInteriorService {
     };
     QueryResult result = await _client.mutate(MutationOptions(
         document: gql(approveMember), variables: variables));
-    if (result.hasException) return null;
+     if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
     final jsonResponse = result.data['status'].toString();
     return jsonResponse;
   }
@@ -233,7 +245,11 @@ class ClubInteriorService {
     };
     QueryResult result = await _client.mutate(
         MutationOptions(document: gql(denyMember), variables: variables));
-    if (result.hasException) return null;
+     if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
     print("result.hasException ${result.hasException}");
     print("result.data['status'] ${result.data['status']}");
     final jsonResponse = result.data['status'].toString();
