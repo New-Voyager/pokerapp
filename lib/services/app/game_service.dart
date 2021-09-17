@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:location/location.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game/game_player_settings.dart';
@@ -1102,11 +1103,13 @@ query mySettings(\$gameCode:String!){
     return resp;
   }
 
-  static Future<PlayerModel> takeSeat(String gameCode, int seatNo) async {
+  static Future<PlayerModel> takeSeat(String gameCode, int seatNo,
+      {LocationData location}) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
 
-    String _mutation = """mutation (\$gameCode: String! \$seatNo: Int!) {
-      takeSeat(gameCode: \$gameCode, seatNo: \$seatNo) {
+    String _mutation =
+        """mutation (\$gameCode: String! \$seatNo: Int! \$location: LocationInput) {
+      takeSeat(gameCode: \$gameCode, seatNo: \$seatNo, location: \$location) {
         seatNo
         playerUuid
         playerId
@@ -1127,6 +1130,13 @@ query mySettings(\$gameCode:String!){
       "gameCode": gameCode,
       "seatNo": seatNo,
     };
+
+    if (location != null) {
+      variables["location"] = {
+        "lat": location.latitude,
+        "long": location.longitude
+      };
+    }
 
     QueryResult result = await _client.mutate(
       MutationOptions(document: gql(_mutation), variables: variables),

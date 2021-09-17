@@ -71,7 +71,7 @@ class NewGameModel {
   int buyInMin = 30;
   int buyInMax = 100;
   int actionTime = 30;
-  bool locationCheck = false;
+  bool locationCheck = true;
   bool ipCheck = false;
   bool runItTwice = false;
   bool seatChangeAllowed = false;
@@ -178,6 +178,8 @@ class NewGameModel {
     seatChangeAllowed = json['seatChangeAllowed'] ?? false;
     breakTime = json['breakLength'] ?? 5;
     breakAllowed = json['breakAllowed'] ?? true;
+    ipCheck = json['ipCheck'] ?? false;
+    locationCheck = json['gpsCheck'] ?? false;
   }
 
   Map<String, dynamic> toJson() {
@@ -210,7 +212,13 @@ class NewGameModel {
     data['bombPotInterval'] = this.bombPotInterval;
     data['seatChangeAllowed'] = this.seatChangeAllowed ?? false;
     data['breakAllowed'] = this.breakAllowed ?? true;
-    data['breakLength'] = this.breakTime ?? 5;
+    if (this.breakTime == null) {
+      data['breakLength'] = 5;
+    } else {
+      data['breakLength'] = this.breakTime;
+    }
+    data['gpsCheck'] = this.locationCheck ?? false;
+    data['ipCheck'] = this.ipCheck ?? false;
 
     if (this.gameType == GameType.ROE) {
       data['roeGames'] = this

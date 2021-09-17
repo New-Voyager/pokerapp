@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:location/location.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/models/game/game_player_settings.dart';
@@ -18,7 +19,6 @@ import 'package:pokerapp/models/rabbit_state.dart';
 import 'package:pokerapp/proto/hand.pbenum.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/services/agora/agora.dart';
-import 'package:pokerapp/services/app/asset_service.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/app/handlog_cache_service.dart';
 import 'package:pokerapp/services/data/game_hive_store.dart';
@@ -183,6 +183,10 @@ class GameState {
 
   bool customizationMode = false;
   bool showCustomizationEditFooter = true;
+
+  // location of the current player (valid only if the game requires gps check)
+  LocationData currentLocation;
+
   Future<void> initialize({
     String gameCode,
     @required GameInfoModel gameInfo,

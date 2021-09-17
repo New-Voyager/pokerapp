@@ -132,7 +132,8 @@ class HandActionProtoService {
     this._gameState,
     this._gameComService,
     this._encryptionService,
-    this._currentPlayer,);
+    this._currentPlayer,
+  );
 
   void close() {
     _close = true;
