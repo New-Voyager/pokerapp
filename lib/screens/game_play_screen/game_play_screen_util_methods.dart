@@ -202,14 +202,8 @@ class GamePlayScreenUtilMethods {
     int seatNumber = seatPos;
     debugLog(gameCode,
         'Player ${gameState.currentPlayer.name} joining at seat $seatNumber');
-    // final resp = await GameService.joinGame(
-    //   gameCode,
-    //   seatNumber,
-    // );
-    final newPlayerModel = await GameService.takeSeat(
-      gameCode,
-      seatNumber,
-    );
+    final newPlayerModel = await GameService.takeSeat(gameCode, seatNumber,
+        location: gameState.currentLocation);
     debugLog(gameCode,
         'Player ${gameState.currentPlayer.name} join response: ${newPlayerModel.toString()}');
     PlayerStatus status = playerStatusFromStr(newPlayerModel.status);

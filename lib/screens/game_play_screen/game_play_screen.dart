@@ -56,6 +56,7 @@ import '../../main.dart';
 import '../../routes.dart';
 import '../../services/test/test_service.dart';
 import 'game_play_screen_util_methods.dart';
+import 'location_updates.dart';
 
 // FIXME: THIS NEEDS TO BE CHANGED AS PER DEVICE CONFIG
 const kScrollOffsetPosition = 40.0;
@@ -118,6 +119,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   GameState _gameState;
   List<PlayerInSeat> _hostSeatChangeSeats;
   bool _hostSeatChangeInProgress;
+  WidgetsBinding _binding = WidgetsBinding.instance;
+  LocationUpdates _locationUpdates;
+  Timer _timer;
 
   /* _init function is run only for the very first time,
   * and only once, the initial game screen is populated from here
@@ -358,8 +362,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     return _gameInfoModel;
   }
 
-  Timer _timer;
-
   /* dispose method for closing connections and un subscribing to channels */
   @override
   void dispose() {
@@ -367,6 +369,11 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     if (_gameState != null) {
       _gameState.uiClosing = true;
     }
+
+    if (_binding != null) {
+      _binding.removeObserver(this);
+    }
+
     super.dispose();
   }
 
@@ -496,6 +503,15 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       await GameService.switchSeat(widget.gameCode, seatPos);
     } else {
       try {
+        if (_gameState.gameInfo.gpsCheck) {
+          _locationUpdates = LocationUpdates(_gameState);
+          if (!await _locationUpdates.requestPermission()) {
+            // TODO: Show error dialog
+            log('Player ${me.name} did not allow to get location');
+            return;
+          }
+        }
+
         await GamePlayScreenUtilMethods.joinGame(
           context: _providerContext,
           seatPos: seatPos,
@@ -528,6 +544,8 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
     // Register listener for lifecycle methods
     WidgetsBinding.instance.addObserver(this);
+    _binding.addObserver(this);
+
     init();
   }
 
@@ -558,6 +576,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     _timer?.cancel();
 
     try {
+      if (_locationUpdates != null) {
+        _locationUpdates.stop();
+      }
       _gameContextObj?.dispose();
       _gameState?.close();
       _voiceTextPlayer?.dispose();
@@ -944,10 +965,16 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       case AppLifecycleState.inactive:
         log("Leaving AudioConference from Lifecycle");
         leaveAudioConference();
+        if (_locationUpdates != null) {
+          _locationUpdates.stop();
+        }
         break;
       case AppLifecycleState.resumed:
         log("Joining AudioConference from Lifecycle");
         _joinAudio();
+        if (_locationUpdates != null) {
+          _locationUpdates.start();
+        }
         break;
     }
     super.didChangeAppLifecycleState(state);

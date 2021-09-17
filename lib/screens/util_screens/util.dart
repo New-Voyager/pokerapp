@@ -408,7 +408,7 @@ showPlayerPopup(context, GlobalKey seatKey, GameState gameState, Seat seat) {
     noteIdx = items.length;
     items.add(PopupMenuItem(
       height: menuItemHeight,
-      value: 0,
+      value: noteIdx,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
@@ -425,7 +425,7 @@ showPlayerPopup(context, GlobalKey seatKey, GameState gameState, Seat seat) {
     if (gameState.gameSettings.funAnimations ?? true) {
       animationIdx = items.length;
       items.add(PopupMenuItem(
-        value: 1,
+        value: animationIdx,
         height: menuItemHeight,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -445,7 +445,7 @@ showPlayerPopup(context, GlobalKey seatKey, GameState gameState, Seat seat) {
   if (gameState.currentPlayer.isAdmin()) {
     kickIdx = items.length;
     items.add(PopupMenuItem(
-      value: 3,
+      value: kickIdx,
       height: menuItemHeight,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -463,7 +463,7 @@ showPlayerPopup(context, GlobalKey seatKey, GameState gameState, Seat seat) {
 
     muteIdx = items.length;
     items.add(PopupMenuItem(
-      value: 2,
+      value: muteIdx,
       height: menuItemHeight,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
