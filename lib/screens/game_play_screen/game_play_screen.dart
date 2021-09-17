@@ -32,6 +32,7 @@ import 'package:pokerapp/screens/util_screens/util.dart';
 //import 'package:pokerapp/services/agora/agora.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/app/player_service.dart';
+import 'package:pokerapp/services/audio/audio_service.dart';
 import 'package:pokerapp/services/data/game_log_store.dart';
 import 'package:pokerapp/services/encryption/encryption_service.dart';
 import 'package:pokerapp/services/game_play/action_services/game_action_service/util_action_services.dart';
@@ -41,12 +42,15 @@ import 'package:pokerapp/services/game_play/customization_service.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/services/game_play/graphql/seat_change_service.dart';
+import 'package:pokerapp/services/gql_errors.dart';
 import 'package:pokerapp/services/janus/janus.dart';
 import 'package:pokerapp/services/nats/message.dart';
 import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
+import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/utils/utils.dart';
+import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:provider/provider.dart';
 import 'package:wakelock/wakelock.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
@@ -334,6 +338,12 @@ class _GamePlayScreenState extends State<GamePlayScreen>
           this.initPlayingTimer();
           // player is in the table
           this._joinAudio();
+
+          // if gps check is enabled
+          if (_gameInfoModel.gpsCheck) {
+            _locationUpdates = new LocationUpdates(_gameState);
+            _locationUpdates.start();
+          }
           break;
         }
       }
@@ -366,6 +376,10 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   @override
   void dispose() {
     Wakelock.disable();
+    if (_locationUpdates != null) {
+      _locationUpdates.stop();
+      _locationUpdates = null;
+    }
     if (_gameState != null) {
       _gameState.uiClosing = true;
     }
@@ -502,13 +516,21 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       log('Player ${me.name} switches seat to $seatPos');
       await GameService.switchSeat(widget.gameCode, seatPos);
     } else {
+
       try {
-        if (_gameState.gameInfo.gpsCheck) {
-          _locationUpdates = LocationUpdates(_gameState);
-          if (!await _locationUpdates.requestPermission()) {
-            // TODO: Show error dialog
-            log('Player ${me.name} did not allow to get location');
-            return;
+        // show connection dialog
+        ConnectionDialog.show(context: context, loadingText: "Joining...");
+        LocationUpdates locationUpdates;
+        if (_locationUpdates == null) {
+          if (_gameState.gameInfo.gpsCheck || _gameState.gameInfo.ipCheck) {
+            locationUpdates = LocationUpdates(_gameState);
+
+            if (_gameState.gameInfo.gpsCheck &&
+                !await locationUpdates.requestPermission()) {
+              // TODO: Show error dialog
+              log('Player ${me.name} did not allow to get location');
+              return;
+            }
           }
         }
 
@@ -518,8 +540,32 @@ class _GamePlayScreenState extends State<GamePlayScreen>
           gameCode: widget.gameCode,
           gameState: gameState,
         );
+        // close connection dialog
+        Navigator.pop(context);
+
+        if (_gameState.gameInfo.gpsCheck || _gameState.gameInfo.ipCheck) {
+          _locationUpdates = locationUpdates;
+          _locationUpdates.start();
+        }
       } catch (e) {
-        showError(context, error: e);
+        // close connection dialog
+        Navigator.pop(context);
+
+        if (e is GqlError) {
+          if (e.code != null) {
+            if (e.code == 'LOC_PROXMITY_ERROR') {
+              showErrorDialog(context, 'Error',
+                  'GPS check is enabled in this game. You are close to another player.');
+            } else if (e.code == 'SAME_IP_ERROR') {
+              showErrorDialog(context, 'Error',
+                  'IP check is enabled in this game. There is another player in the table with the same IP.');
+            }
+          } else {
+            showErrorDialog(context, 'Error', e.message);
+          }
+        } else {
+          showErrorDialog(context, 'Error', e.message);
+        }
         return;
       }
       // join audio
@@ -965,11 +1011,13 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       case AppLifecycleState.inactive:
         log("Leaving AudioConference from Lifecycle");
         leaveAudioConference();
+        AudioService.stop();
         if (_locationUpdates != null) {
           _locationUpdates.stop();
         }
         break;
       case AppLifecycleState.resumed:
+        AudioService.resume();
         log("Joining AudioConference from Lifecycle");
         _joinAudio();
         if (_locationUpdates != null) {

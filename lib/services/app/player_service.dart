@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:flutter/widgets.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:location/location.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
 import 'package:pokerapp/models/player_info.dart';
@@ -257,5 +258,22 @@ class PlayerService {
     log("kickPlayer Result ${result.data}");
 
     return result.data['ret'];
+  }
+
+  static Future<void> updateLocation(LocationData position) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    Map<String, dynamic> variables = {
+      "location": {"lat": position.latitude, "long": position.longitude}
+    };
+    String _query = """
+      mutation location(\$location:LocationInput!){
+        ret:updateLocation(location:\$location)
+      }
+    """;
+    QueryResult result = await _client.mutate(
+      MutationOptions(document: gql(_query), variables: variables),
+    );
+
+    if (result.hasException) return null;
   }
 }

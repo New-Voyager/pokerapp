@@ -1486,11 +1486,12 @@ query mySettings(\$gameCode:String!){
     return status;
   }
 
-  static Future<SitBackResponse> sitBack(String gameCode) async {
+  static Future<SitBackResponse> sitBack(String gameCode,
+      {LocationData location}) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     String _query = """
-          mutation (\$gameCode: String!){
-            status: sitBack(gameCode: \$gameCode) {
+          mutation (\$gameCode: String! \$location: LocationInput){
+            status: sitBack(gameCode: \$gameCode location: \$location) {
               status
               missedBlind
             }
@@ -1499,6 +1500,12 @@ query mySettings(\$gameCode:String!){
     Map<String, dynamic> variables = {
       "gameCode": gameCode,
     };
+    if (location != null) {
+      variables["location"] = {
+        "lat": location.latitude,
+        "long": location.longitude
+      };
+    }
 
     QueryResult result = await _client.mutate(
       MutationOptions(document: gql(_query), variables: variables),
@@ -1506,7 +1513,7 @@ query mySettings(\$gameCode:String!){
 
     if (result.hasException) {
       if (result.exception.graphqlErrors.length > 0) {
-        return null;
+        throw GqlError.fromException(result.exception);
       }
     }
 

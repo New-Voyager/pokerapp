@@ -4,6 +4,7 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
+import 'package:pokerapp/services/audio/audio_service.dart';
 
 class OpenSeat extends StatelessWidget {
   final int seatPos;
@@ -64,6 +65,7 @@ class OpenSeat extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         onTap: () {
           log('Pressed $seatPos');
+          AudioService.playClickSound();
           this.onUserTap(seatPos);
         },
         child: Container(
