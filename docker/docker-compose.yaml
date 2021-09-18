@@ -114,6 +114,17 @@ services:
       API_SERVER_URL: http://api-server:9501
       LOG_LEVEL: debug
 
+  scheduler:
+    image: ${SCHEDULER_IMAGE}
+    tty: true
+    restart: always
+    ports:
+      - 8083:8083
+    environment:
+      API_SERVER_URL: http://api-server:9501
+      LOG_LEVEL: debug
+      POST_PROCESSING_TIMEOUT_SEC: 120
+
 volumes:
   db-data:
       
