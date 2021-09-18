@@ -45,6 +45,7 @@ class _CommunicationViewState extends State<CommunicationView> {
   @override
   void dispose() {
     _audioRecorder.dispose();
+    super.dispose();
   }
 
   @override

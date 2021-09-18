@@ -255,7 +255,7 @@ class NewGameModelProvider extends ChangeNotifier {
 
   get ipCheck => settings.ipCheck;
   set ipCheck(bool value) {
-    settings.locationCheck = value;
+    settings.ipCheck = value;
     notifyListeners();
   }
 

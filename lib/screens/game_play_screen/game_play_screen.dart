@@ -518,9 +518,8 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     } else {
 
       try {
-        // show connection dialog
-        ConnectionDialog.show(context: context, loadingText: "Joining...");
         LocationUpdates locationUpdates;
+        // show connection dialog
         if (_locationUpdates == null) {
           if (_gameState.gameInfo.gpsCheck || _gameState.gameInfo.ipCheck) {
             locationUpdates = LocationUpdates(_gameState);
@@ -533,15 +532,12 @@ class _GamePlayScreenState extends State<GamePlayScreen>
             }
           }
         }
-
         await GamePlayScreenUtilMethods.joinGame(
           context: _providerContext,
           seatPos: seatPos,
           gameCode: widget.gameCode,
           gameState: gameState,
         );
-        // close connection dialog
-        Navigator.pop(context);
 
         if (_gameState.gameInfo.gpsCheck || _gameState.gameInfo.ipCheck) {
           _locationUpdates = locationUpdates;
@@ -549,7 +545,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         }
       } catch (e) {
         // close connection dialog
-        Navigator.pop(context);
+        //ConnectionDialog.dismiss(context: context);
 
         if (e is GqlError) {
           if (e.code != null) {
