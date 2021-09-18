@@ -13,6 +13,7 @@ import 'package:pokerapp/screens/game_context_screen/game_options/game_option_bo
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/utils/numeric_keyboard2.dart';
+import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:pokerapp/widgets/round_color_button.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
@@ -187,9 +188,18 @@ class StatusOptionsWidget extends StatelessWidget {
     final gameState = GameState.getState(context);
     final gameInfo = gameState.gameInfo;
     //sit back in the seat
-    final resp = await GameService.sitBack(gameInfo.gameCode);
-    if (resp == null) {
-      showError(context, message: 'Could not sitback in the table');
+    SitBackResponse resp;
+    try {
+      resp = await GameService.sitBack(gameInfo.gameCode,
+          location: gameState.currentLocation);
+    } catch (e) {
+      if (e.code != null && e.code == 'LOC_PROXMITY_ERROR') {
+        showErrorDialog(context, 'Error',
+            'GPS check is enabled in this game. You are close to another player.');
+      } else {
+        showErrorDialog(context, 'Error', e.message);
+      }
+      return null;
     }
 
     // update player model and notify my state

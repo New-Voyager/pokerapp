@@ -71,8 +71,8 @@ class NewGameModel {
   int buyInMin = 30;
   int buyInMax = 100;
   int actionTime = 30;
-  bool locationCheck = true;
-  bool ipCheck = false;
+  bool locationCheck = false;
+  bool ipCheck = true;
   bool runItTwice = false;
   bool seatChangeAllowed = false;
   bool waitList = false;

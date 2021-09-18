@@ -25,6 +25,7 @@ import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/data/game_hive_store.dart';
 import 'package:pokerapp/services/data/game_log_store.dart';
+import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 import 'package:timer_count_down/timer_count_down.dart';
@@ -196,68 +197,68 @@ class GamePlayScreenUtilMethods {
 
     developer.log('joining game with seat no $seatPos');
 
-    // if setPos is -1 that means block this function call
-    if (seatPos == -1) return PlayerStatus.NOT_PLAYING;
+    try {
+      ConnectionDialog.show(context: context, loadingText: "Joining...");
+      // if setPos is -1 that means block this function call
+      if (seatPos == -1) return PlayerStatus.NOT_PLAYING;
 
-    int seatNumber = seatPos;
-    debugLog(gameCode,
-        'Player ${gameState.currentPlayer.name} joining at seat $seatNumber');
-    final newPlayerModel = await GameService.takeSeat(gameCode, seatNumber,
-        location: gameState.currentLocation);
-    debugLog(gameCode,
-        'Player ${gameState.currentPlayer.name} join response: ${newPlayerModel.toString()}');
-    PlayerStatus status = playerStatusFromStr(newPlayerModel.status);
-    if (gameState.useAgora) {
-      debugLog(gameCode, 'Fetching agora token');
-      log('Fetching agora token');
-      final audioToken = await GameService.getLiveAudioToken(
-        gameCode,
-      );
-      debugLog(gameCode, 'agora token: $audioToken');
-      log('agora token: $audioToken');
-      gameState.agoraToken = audioToken;
-    }
-    assert(newPlayerModel != null);
-    if (newPlayerModel.playerUuid == gameState.currentPlayerUuid) {
-      newPlayerModel.isMe = true;
-    }
-    gameState.newPlayer(newPlayerModel);
-    if (newPlayerModel.stack == 0) {
-      newPlayerModel.showBuyIn = true;
-    }
-    if (newPlayerModel.isMe) {
-      await Future.delayed(Duration(milliseconds: 100));
-      final mySeat = gameState.mySeat;
-      //mySeat.player = newPlayerModel;
-      mySeat.notify();
+      int seatNumber = seatPos;
+      debugLog(gameCode,
+          'Player ${gameState.currentPlayer.name} joining at seat $seatNumber');
+      final newPlayerModel = await GameService.takeSeat(gameCode, seatNumber,
+          location: gameState.currentLocation);
+      debugLog(gameCode,
+          'Player ${gameState.currentPlayer.name} join response: ${newPlayerModel.toString()}');
+      PlayerStatus status = playerStatusFromStr(newPlayerModel.status);
+      if (gameState.useAgora) {
+        debugLog(gameCode, 'Fetching agora token');
+        log('Fetching agora token');
+        final audioToken = await GameService.getLiveAudioToken(
+          gameCode,
+        );
+        debugLog(gameCode, 'agora token: $audioToken');
+        log('agora token: $audioToken');
+        gameState.agoraToken = audioToken;
+      }
+      assert(newPlayerModel != null);
+      if (newPlayerModel.playerUuid == gameState.currentPlayerUuid) {
+        newPlayerModel.isMe = true;
+      }
+      gameState.newPlayer(newPlayerModel);
+      if (newPlayerModel.stack == 0) {
+        newPlayerModel.showBuyIn = true;
+      }
+      GameHiveStore ghs = gameState.gameHiveStore;
+      // we can offer user inital reward here, as well as reset timers here
+      if (ghs.isFirstJoin()) {
+        // on first join, we give 10 diamonds
+        ghs.addDiamonds(num: 10);
 
-      // if (status == PlayerStatus.WAIT_FOR_BUYIN_APPROVAL ||
-      //     status == PlayerStatus.WAIT_FOR_BUYIN) {
-      //   gameState.myState.status = PlayerStatus.WAIT_FOR_BUYIN_APPROVAL;
-      // }
-      gameState.redrawFooterState.notify();
-      //gameState.myState.notify();
-    }
-    final tableState = gameState.tableState;
-    tableState.notifyAll();
-    gameState.notifyAllSeats();
-    if (newPlayerModel.isMe && status == PlayerStatus.WAIT_FOR_BUYIN) {
-      GamePlayScreenUtilMethods.onBuyin(context);
-    }
+        // MARK first join is done
+        ghs.setIsFirstJoinDone();
+      } else {
+        // for any subsequent joins, reset the timer
+        ghs.updateLastDiamondUpdateTime();
+      }
+      ConnectionDialog.dismiss(context: context);
+      if (newPlayerModel.isMe) {
+        await Future.delayed(Duration(milliseconds: 100));
+        final mySeat = gameState.mySeat;
+        mySeat.notify();
+        gameState.redrawFooterState.notify();
+      }
+      final tableState = gameState.tableState;
+      tableState.notifyAll();
+      gameState.notifyAllSeats();
+      if (newPlayerModel.isMe && status == PlayerStatus.WAIT_FOR_BUYIN) {
+        GamePlayScreenUtilMethods.onBuyin(context);
+      }
 
-    GameHiveStore ghs = gameState.gameHiveStore;
-    // we can offer user inital reward here, as well as reset timers here
-    if (ghs.isFirstJoin()) {
-      // on first join, we give 10 diamonds
-      ghs.addDiamonds(num: 10);
-
-      // MARK first join is done
-      ghs.setIsFirstJoinDone();
-    } else {
-      // for any subsequent joins, reset the timer
-      ghs.updateLastDiamondUpdateTime();
+      return status;
+    } catch(err) {
+      ConnectionDialog.dismiss(context: context);
+      throw err;
     }
-    return status;
   }
 
   /* provider method, returns list of all the providers used in the below hierarchy */
