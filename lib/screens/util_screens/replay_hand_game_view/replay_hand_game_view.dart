@@ -32,7 +32,6 @@ class ReplayHandGameView extends StatelessWidget {
               gameInfo: gameInfoModel,
               onUserTap: (_) {},
               onStartGame: () {},
-              audioPlayer: null,
             ),
           ),
         ),

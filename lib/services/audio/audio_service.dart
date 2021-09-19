@@ -20,8 +20,17 @@ const String fireworksSound = 'assets/animations/fireworks.mp3';
 class AudioService {
   static AudioPlayer audioPlayer;
   static Map<String, Uint8List> _audioCache = Map<String, Uint8List>();
-
+  static bool play = true;
   AudioService._();
+
+  static stop() {
+    play = false;
+  }
+
+  static resume() {
+    play = true;
+  }
+
   static Future<void> init() async {
     if (audioPlayer == null) {
       audioPlayer = new AudioPlayer();
@@ -66,6 +75,9 @@ class AudioService {
   }
 
   static playSound(String soundFile, {bool mute}) {
+    if (!play) {
+      return;
+    }
     log('Playing click sound');
     if (mute ?? false) {
       return;
@@ -113,5 +125,13 @@ class AudioService {
 
   static playFireworks({bool mute}) {
     playSound(fireworksSound, mute: mute);
+  }
+
+  static playAnimationSound(String animationId, {bool mute}) async {
+    final animationSound = 'assets/animations/$animationId.mp3';
+    final audioBytes = await getAudioBytes(animationSound);
+    if (audioBytes != null) {
+      playSound(animationSound, mute: mute);
+    }
   }
 }

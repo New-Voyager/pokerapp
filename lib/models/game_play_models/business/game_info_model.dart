@@ -40,6 +40,8 @@ class GameInfoModel {
   bool showHandRank = false;
   bool botGame = false;
   bool waitlistAllowed = false;
+  bool ipCheck = false;
+  bool gpsCheck = false;
 
   // nats channels
   String gameToPlayerChannel;
@@ -112,6 +114,8 @@ class GameInfoModel {
     this.allowRabbitHunt = data['allowRabbitHunt'] ?? true;
     this.showHandRank = data['showHandRank'] ?? false;
     this.waitlistAllowed = data['waitlistAllowed'] ?? false;
+    this.ipCheck = data['ipCheck'] ?? false;
+    this.gpsCheck = data['gpsCheck'] ?? false;
 
     this.isHost = true;
     if (data['isHost'] != null) {
@@ -172,6 +176,8 @@ class GameInfoModel {
       showHandRank
       waitlistAllowed
       botGame
+      ipCheck
+      gpsCheck
 
       sessionTime
       runningTime

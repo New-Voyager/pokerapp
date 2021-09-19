@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:location/location.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game/game_player_settings.dart';
@@ -1102,11 +1103,13 @@ query mySettings(\$gameCode:String!){
     return resp;
   }
 
-  static Future<PlayerModel> takeSeat(String gameCode, int seatNo) async {
+  static Future<PlayerModel> takeSeat(String gameCode, int seatNo,
+      {LocationData location}) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
 
-    String _mutation = """mutation (\$gameCode: String! \$seatNo: Int!) {
-      takeSeat(gameCode: \$gameCode, seatNo: \$seatNo) {
+    String _mutation =
+        """mutation (\$gameCode: String! \$seatNo: Int! \$location: LocationInput) {
+      takeSeat(gameCode: \$gameCode, seatNo: \$seatNo, location: \$location) {
         seatNo
         playerUuid
         playerId
@@ -1127,6 +1130,13 @@ query mySettings(\$gameCode:String!){
       "gameCode": gameCode,
       "seatNo": seatNo,
     };
+
+    if (location != null) {
+      variables["location"] = {
+        "lat": location.latitude,
+        "long": location.longitude
+      };
+    }
 
     QueryResult result = await _client.mutate(
       MutationOptions(document: gql(_mutation), variables: variables),
@@ -1243,7 +1253,7 @@ query mySettings(\$gameCode:String!){
       }
     }
 
-    Map game = (result.data as dynamic).data['configuredGame'];
+    Map game = result.data['configuredGame'];
     String gameCode = game["gameCode"];
     log('Created game: $gameCode');
     return gameCode;
@@ -1275,7 +1285,7 @@ query mySettings(\$gameCode:String!){
       }
     }
 
-    Map game = (result.data as dynamic).data['configuredGame'];
+    Map game = result.data['configuredGame'];
     String gameCode = game["gameCode"];
     log('Created game: $gameCode');
     return gameCode;
@@ -1300,7 +1310,7 @@ query mySettings(\$gameCode:String!){
         return null;
       }
     }
-    Map game = (result.data as dynamic).data;
+    Map game = result.data;
     String status = game["status"];
     log('Game code: $gameCode status: $status');
     return status;
@@ -1327,7 +1337,7 @@ query mySettings(\$gameCode:String!){
       }
     }
 
-    Map game = (result.data as dynamic).data;
+    Map game = result.data;
     String status = game["status"];
     log('Game code: $gameCode status: $status');
 
@@ -1355,7 +1365,7 @@ query mySettings(\$gameCode:String!){
       }
     }
 
-    Map game = (result.data as dynamic).data;
+    Map game = result.data;
     String status = game["status"];
     log('Game code: $gameCode status: $status');
 
@@ -1476,11 +1486,12 @@ query mySettings(\$gameCode:String!){
     return status;
   }
 
-  static Future<SitBackResponse> sitBack(String gameCode) async {
+  static Future<SitBackResponse> sitBack(String gameCode,
+      {LocationData location}) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     String _query = """
-          mutation (\$gameCode: String!){
-            status: sitBack(gameCode: \$gameCode) {
+          mutation (\$gameCode: String! \$location: LocationInput){
+            status: sitBack(gameCode: \$gameCode location: \$location) {
               status
               missedBlind
             }
@@ -1489,6 +1500,12 @@ query mySettings(\$gameCode:String!){
     Map<String, dynamic> variables = {
       "gameCode": gameCode,
     };
+    if (location != null) {
+      variables["location"] = {
+        "lat": location.latitude,
+        "long": location.longitude
+      };
+    }
 
     QueryResult result = await _client.mutate(
       MutationOptions(document: gql(_query), variables: variables),
@@ -1496,7 +1513,7 @@ query mySettings(\$gameCode:String!){
 
     if (result.hasException) {
       if (result.exception.graphqlErrors.length > 0) {
-        return null;
+        throw GqlError.fromException(result.exception);
       }
     }
 

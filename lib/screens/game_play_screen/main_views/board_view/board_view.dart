@@ -14,14 +14,12 @@ import 'package:pokerapp/screens/game_play_screen/main_views/board_view/players_
 import 'package:pokerapp/screens/game_play_screen/seat_view/animating_widgets/stack_switch_seat_animating_widget.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:provider/provider.dart';
-import 'package:audioplayers/audioplayers.dart';
 
 class BoardView extends StatelessWidget {
   final GameComService gameComService;
   final GameInfoModel gameInfo;
   final Function(int index) onUserTap;
   final Function() onStartGame;
-  final AudioPlayer audioPlayer;
   AppTextScreen _appScreenText;
 
   BoardView({
@@ -29,7 +27,6 @@ class BoardView extends StatelessWidget {
     @required this.onUserTap,
     @required this.onStartGame,
     @required this.gameComService,
-    @required this.audioPlayer,
   });
 
   final GlobalKey boardViewKey = GlobalKey();
@@ -84,7 +81,6 @@ class BoardView extends StatelessWidget {
             heightOfBoard: dimensions.height,
             onUserTap: onUserTap,
             maxPlayers: gameInfo.maxPlayers,
-            audioPlayer: audioPlayer,
             gameState: gameState,
           ),
         ),

@@ -32,6 +32,7 @@ import 'package:pokerapp/screens/util_screens/util.dart';
 //import 'package:pokerapp/services/agora/agora.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/app/player_service.dart';
+import 'package:pokerapp/services/audio/audio_service.dart';
 import 'package:pokerapp/services/data/game_log_store.dart';
 import 'package:pokerapp/services/encryption/encryption_service.dart';
 import 'package:pokerapp/services/game_play/action_services/game_action_service/util_action_services.dart';
@@ -41,12 +42,15 @@ import 'package:pokerapp/services/game_play/customization_service.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/services/game_play/graphql/seat_change_service.dart';
+import 'package:pokerapp/services/gql_errors.dart';
 import 'package:pokerapp/services/janus/janus.dart';
 import 'package:pokerapp/services/nats/message.dart';
 import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
+import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/utils/utils.dart';
+import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:provider/provider.dart';
 import 'package:wakelock/wakelock.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
@@ -56,6 +60,7 @@ import '../../main.dart';
 import '../../routes.dart';
 import '../../services/test/test_service.dart';
 import 'game_play_screen_util_methods.dart';
+import 'location_updates.dart';
 
 // FIXME: THIS NEEDS TO BE CHANGED AS PER DEVICE CONFIG
 const kScrollOffsetPosition = 40.0;
@@ -110,7 +115,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
   // String _audioToken = '';
   // bool liveAudio = true;
-  AudioPlayer _audioPlayer;
   AudioPlayer _voiceTextPlayer;
 
   //Agora agora;
@@ -119,6 +123,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   GameState _gameState;
   List<PlayerInSeat> _hostSeatChangeSeats;
   bool _hostSeatChangeInProgress;
+  WidgetsBinding _binding = WidgetsBinding.instance;
+  LocationUpdates _locationUpdates;
+  Timer _timer;
 
   /* _init function is run only for the very first time,
   * and only once, the initial game screen is populated from here
@@ -162,13 +169,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
   Future _joinAudio() async {
     return;
-    try {
-      if (_audioPlayer != null) {
-        _audioPlayer.resume();
-      }
-    } catch (err) {
-      log('Error when resuming audio');
-    }
+
     if (!_gameState.audioConfEnabled) {
       try {
         if (_voiceTextPlayer != null) {
@@ -337,6 +338,12 @@ class _GamePlayScreenState extends State<GamePlayScreen>
           this.initPlayingTimer();
           // player is in the table
           this._joinAudio();
+
+          // if gps check is enabled
+          if (_gameInfoModel.gpsCheck) {
+            _locationUpdates = new LocationUpdates(_gameState);
+            _locationUpdates.start();
+          }
           break;
         }
       }
@@ -365,15 +372,22 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     return _gameInfoModel;
   }
 
-  Timer _timer;
-
   /* dispose method for closing connections and un subscribing to channels */
   @override
   void dispose() {
     Wakelock.disable();
+    if (_locationUpdates != null) {
+      _locationUpdates.stop();
+      _locationUpdates = null;
+    }
     if (_gameState != null) {
       _gameState.uiClosing = true;
     }
+
+    if (_binding != null) {
+      _binding.removeObserver(this);
+    }
+
     super.dispose();
   }
 
@@ -502,15 +516,52 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       log('Player ${me.name} switches seat to $seatPos');
       await GameService.switchSeat(widget.gameCode, seatPos);
     } else {
+
       try {
+        LocationUpdates locationUpdates;
+        // show connection dialog
+        if (_locationUpdates == null) {
+          if (_gameState.gameInfo.gpsCheck || _gameState.gameInfo.ipCheck) {
+            locationUpdates = LocationUpdates(_gameState);
+
+            if (_gameState.gameInfo.gpsCheck &&
+                !await locationUpdates.requestPermission()) {
+              // TODO: Show error dialog
+              log('Player ${me.name} did not allow to get location');
+              return;
+            }
+          }
+        }
         await GamePlayScreenUtilMethods.joinGame(
           context: _providerContext,
           seatPos: seatPos,
           gameCode: widget.gameCode,
           gameState: gameState,
         );
+
+        if (_gameState.gameInfo.gpsCheck || _gameState.gameInfo.ipCheck) {
+          _locationUpdates = locationUpdates;
+          _locationUpdates.start();
+        }
       } catch (e) {
-        showError(context, error: e);
+        // close connection dialog
+        //ConnectionDialog.dismiss(context: context);
+
+        if (e is GqlError) {
+          if (e.code != null) {
+            if (e.code == 'LOC_PROXMITY_ERROR') {
+              showErrorDialog(context, 'Error',
+                  'GPS check is enabled in this game. You are close to another player.');
+            } else if (e.code == 'SAME_IP_ERROR') {
+              showErrorDialog(context, 'Error',
+                  'IP check is enabled in this game. There is another player in the table with the same IP.');
+            }
+          } else {
+            showErrorDialog(context, 'Error', e.message);
+          }
+        } else {
+          showErrorDialog(context, 'Error', e.message);
+        }
         return;
       }
       // join audio
@@ -531,11 +582,12 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     super.initState();
 
     Wakelock.enable();
-    _audioPlayer = AudioPlayer();
     _voiceTextPlayer = AudioPlayer();
 
     // Register listener for lifecycle methods
     WidgetsBinding.instance.addObserver(this);
+    _binding.addObserver(this);
+
     init();
   }
 
@@ -566,9 +618,11 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     _timer?.cancel();
 
     try {
+      if (_locationUpdates != null) {
+        _locationUpdates.stop();
+      }
       _gameContextObj?.dispose();
       _gameState?.close();
-      _audioPlayer?.dispose();
       _voiceTextPlayer?.dispose();
     } catch (e) {
       log('Caught exception: ${e.toString()}');
@@ -645,7 +699,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         child: BoardView(
           gameComService: _gameContextObj?.gameComService,
           gameInfo: _gameInfoModel,
-          audioPlayer: _audioPlayer,
           onUserTap: _onJoinGame,
           onStartGame: startGame,
         ),
@@ -682,7 +735,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
             * as there will be Listeners implemented down this hierarchy level */
 
       _gameContextObj.gameUpdateService =
-          GameUpdateService(_providerContext, _gameState, this._audioPlayer);
+          GameUpdateService(_providerContext, _gameState);
       _gameContextObj.gameUpdateService.loop();
 
       _gameContextObj.gameComService.gameToPlayerChannelStream
@@ -708,7 +761,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         _gameContextObj.gameComService,
         _gameContextObj.encryptionService,
         _gameContextObj.currentPlayer,
-        audioPlayer: _audioPlayer,
       );
 
       _gameContextObj.handActionProtoService.loop();
@@ -955,10 +1007,18 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       case AppLifecycleState.inactive:
         log("Leaving AudioConference from Lifecycle");
         leaveAudioConference();
+        AudioService.stop();
+        if (_locationUpdates != null) {
+          _locationUpdates.stop();
+        }
         break;
       case AppLifecycleState.resumed:
+        AudioService.resume();
         log("Joining AudioConference from Lifecycle");
         _joinAudio();
+        if (_locationUpdates != null) {
+          _locationUpdates.start();
+        }
         break;
     }
     super.didChangeAppLifecycleState(state);
@@ -966,7 +1026,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
   leaveAudioConference() {
     if (_gameState != null) {
-      _audioPlayer?.pause();
       _voiceTextPlayer?.pause();
       _gameState.janusEngine?.leaveChannel();
       if (_gameState.useAgora) {

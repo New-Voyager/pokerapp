@@ -5,7 +5,7 @@ class ConnectionDialog {
   static show({@required BuildContext context, String loadingText}) {
     showDialog(
       context: context,
-      barrierColor: Colors.black.withOpacity(0.8),
+      barrierColor: Colors.black.withOpacity(0.4),
       barrierDismissible: false,
       useRootNavigator: true,
       builder: (context) {

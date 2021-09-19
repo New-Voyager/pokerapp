@@ -12,6 +12,7 @@ import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/boar
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/name_plate_view.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/player_view.dart';
+import 'package:pokerapp/services/audio/audio_service.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/test/test_service.dart';
@@ -35,7 +36,6 @@ class PlayersOnTableView extends StatefulWidget {
   final GameComService gameComService;
   final GameState gameState;
   final int maxPlayers;
-  final AudioPlayer audioPlayer;
 
   PlayersOnTableView({
     @required this.gameComService,
@@ -45,7 +45,6 @@ class PlayersOnTableView extends StatefulWidget {
     @required this.onUserTap,
     @required this.maxPlayers,
     @required this.gameState,
-    @required this.audioPlayer,
   });
 
   @override
@@ -186,14 +185,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
 
         /* finally drive the lottie animation */
         // play the audio
-        final animationSound = 'assets/animations/$animationAssetID.mp3';
-        Uint8List data = await widget.gameState.getAudioBytes(animationSound);
-        if (data != null && data.length > 0) {
-          widget.audioPlayer.playBytes(data);
-          log('Loading file $animationSound');
-        } else {
-          log('$animationSound is in cache');
-        }
+        AudioService.playAnimationSound(animationAssetID);
 
         setState(() {
           isLottieAnimationAnimating = true;

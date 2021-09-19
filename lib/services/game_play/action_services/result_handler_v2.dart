@@ -1,11 +1,11 @@
 import 'dart:developer';
 
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
+import 'package:pokerapp/services/audio/audio_service.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:pokerapp/proto/hand.pb.dart' as proto;
 import 'package:pokerapp/proto/handmessage.pb.dart' as proto;
@@ -37,7 +37,6 @@ class Winner {
 class ResultHandlerV2 {
   proto.HandResultClient result;
   BuildContext context;
-  AudioPlayer audioPlayer;
   GameState gameState;
   bool hiLoGame;
   bool replay;
@@ -48,7 +47,6 @@ class ResultHandlerV2 {
     @required this.gameState,
     @required this.context,
     @required this.result,
-    @required this.audioPlayer,
     this.hiLoGame = false,
     this.replay = false,
   });
@@ -233,6 +231,7 @@ class ResultHandlerV2 {
             log('UpdateSeat: show winnners updating cards for seat: ${seat.player.seatNo} player: ${seat.player.name} cards: ${seat.player.cards}');
           }
         }
+        AudioService.playApplause(mute: gameState.playerLocalConfig.mute);
         await _showWinners(
           board,
           rankText,
@@ -298,7 +297,6 @@ class ResultHandlerV2 {
       );
     }
     await Future.delayed(Duration(milliseconds: result.pauseTimeSecs));
-    audioPlayer?.stop();
   }
 
   /* only resets the highlights, and winners */

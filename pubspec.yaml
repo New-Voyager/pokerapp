@@ -52,6 +52,7 @@ dependencies:
   in_app_purchase: 1.0.8
   intl: ^0.17.0
   just_audio: ^0.9.11
+  location: ^4.2.0
   lottie: ^1.1.0
   overlay_support: ^1.2.1
   path_provider: ^2.0.4
