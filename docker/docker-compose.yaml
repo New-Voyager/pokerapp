@@ -68,6 +68,7 @@ services:
       NATS_URL: nats://nats:4222
       BOTRUNNER_URL: http://botrunner:8081
       TIMER_URL: http://timer:8082
+      SCHEDULER_URL: http://scheduler:8083
       REDIS_HOST: redis
       REDIS_PORT: 6379
       POSTGRES_HOST: 'postgres'
