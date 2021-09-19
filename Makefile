@@ -4,10 +4,11 @@ GCP_REGISTRY := gcr.io/voyager-01-285603
 DO_REGISTRY := registry.digitalocean.com/voyager
 REGISTRY := $(GCP_REGISTRY)
 
-API_SERVER_IMAGE := $(REGISTRY)/api-server:0.7.31
-GAME_SERVER_IMAGE := $(REGISTRY)/game-server:0.7.12
-BOTRUNNER_IMAGE := $(REGISTRY)/botrunner:0.7.15
-TIMER_IMAGE := $(REGISTRY)/timer:0.5.4
+API_SERVER_IMAGE := $(REGISTRY)/api-server:0.7.39
+GAME_SERVER_IMAGE := $(REGISTRY)/game-server:0.7.15
+BOTRUNNER_IMAGE := $(REGISTRY)/botrunner:0.7.18
+TIMER_IMAGE := $(REGISTRY)/timer:0.5.9
+SCHEDULER_IMAGE := $(REGISTRY)/scheduler:0.1.5
 
 NATS_SERVER_IMAGE := $(REGISTRY)/nats:2.1.7-alpine3.11
 REDIS_IMAGE := $(REGISTRY)/redis:6.0.9
@@ -33,6 +34,7 @@ pull: login
 	docker pull $(POSTGRES_IMAGE)
 	docker pull $(BOTRUNNER_IMAGE)
 	docker pull $(TIMER_IMAGE)
+	docker pull $(SCHEDULER_IMAGE)
 
 .PHONY: load-data
 load-data:
@@ -53,6 +55,7 @@ stack-up: create-network login
 		echo "POSTGRES_IMAGE=$(POSTGRES_IMAGE)" >> .env && \
 		echo "BOTRUNNER_IMAGE=$(BOTRUNNER_IMAGE)" >> .env && \
 		echo "TIMER_IMAGE=$(TIMER_IMAGE)" >> .env && \
+		echo "SCHEDULER_IMAGE=$(SCHEDULER_IMAGE)" >> .env && \
 		echo "PROJECT_ROOT=$(PWD)" >> .env && \
 		docker-compose up -d
 
@@ -81,6 +84,7 @@ stack-reset: create-network login
 		echo "POSTGRES_IMAGE=$(POSTGRES_IMAGE)" >> .env && \
 		echo "BOTRUNNER_IMAGE=$(BOTRUNNER_IMAGE)" >> .env && \
 		echo "TIMER_IMAGE=$(TIMER_IMAGE)" >> .env && \
+		echo "SCHEDULER_IMAGE=$(SCHEDULER_IMAGE)" >> .env && \
 		echo "PROJECT_ROOT=$(PWD)" >> .env && \
 		docker-compose up -d
 #
