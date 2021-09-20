@@ -15,6 +15,8 @@ import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/services/app/appcoin_service.dart';
+import 'package:pokerapp/utils/alerts.dart';
+import 'package:pokerapp/widgets/card_form_text_field.dart';
 import 'package:pokerapp/widgets/cross_fade.dart';
 import 'package:pokerapp/widgets/heading_widget.dart';
 import 'package:pokerapp/widgets/round_color_button.dart';
@@ -155,55 +157,7 @@ class _StorePageState extends State<StorePage> {
   @override
   Widget build(BuildContext context) {
     final theme = AppTheme.getTheme(context);
-    List<Widget> body = [
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          // Row(
-          //   children: [
-          //     //BackArrowWidget(),
-          //     AppDimensionsNew.getHorizontalSpace(16),
-          //     Text(
-          //       "App Coins",
-          //       style: AppStylesNew.appBarTitleTextStyle,
-          //     ),
-          //   ],
-          // ),
-          AppDimensionsNew.getHorizontalSpace(24.pw),
-          HeadingWidget(heading: _appScreenText['store']),
-          Container(
-            margin: EdgeInsets.only(right: 16),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  margin: EdgeInsets.symmetric(horizontal: 16),
-                  child: Image.asset(
-                    'assets/images/appcoin.png',
-                    height: 24.pw,
-                    width: 24.pw,
-                  ),
-                ),
-                _updateCoins
-                    ? CrossFade<int>(
-                        onFadeComplete: onUpdateComplete,
-                        initialData: _coinsFrom,
-                        data: _coinsTo,
-                        builder: (value) => Text(
-                          '$value',
-                          style: AppDecorators.getSubtitle1Style(theme: theme),
-                        ),
-                      )
-                    : Text(
-                        '${AppConfig.availableCoins}',
-                        style: AppDecorators.getSubtitle1Style(theme: theme),
-                      ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    ];
+    List<Widget> body = [];
     if (!_loading) {
       _enabledProducts.sort((a, b) => a.coins.compareTo(b.coins));
       for (final enabledProduct in _enabledProducts) {
@@ -223,16 +177,18 @@ class _StorePageState extends State<StorePage> {
           continue;
         }
 
-        body.add(PurchaseItem(
-          mrpPrice: iapProductFound.rawPrice,
-          offerPrice: iapProductFound.rawPrice,
-          noOfCoins: enabledProduct.coins,
-          onBuy: () async {
-            log('Purchasing $productId no of coins: ${enabledProduct.coins}');
-            await handlePurchase(iapProductFound);
-          },
-          appScreenText: _appScreenText,
-        ));
+        body.add(
+          PurchaseItem(
+            mrpPrice: iapProductFound.rawPrice,
+            offerPrice: iapProductFound.rawPrice,
+            noOfCoins: enabledProduct.coins,
+            onBuy: () async {
+              log('Purchasing $productId no of coins: ${enabledProduct.coins}');
+              await handlePurchase(iapProductFound);
+            },
+            appScreenText: _appScreenText,
+          ),
+        );
       }
     }
 
@@ -244,11 +200,118 @@ class _StorePageState extends State<StorePage> {
           body: _loading
               ? CircularProgressWidget(text: _appScreenText['loadingProducts'])
               : Column(
-                  children: body,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        // Row(
+                        //   children: [
+                        //     //BackArrowWidget(),
+                        //     AppDimensionsNew.getHorizontalSpace(16),
+                        //     Text(
+                        //       "App Coins",
+                        //       style: AppStylesNew.appBarTitleTextStyle,
+                        //     ),
+                        //   ],
+                        // ),
+                        Container(
+                          padding: EdgeInsets.only(left: 16),
+                          child: RoundedColorButton(
+                            text: "Redeem",
+                            backgroundColor: theme.accentColor,
+                            textColor: theme.primaryColorWithDark(),
+                            onTapFunction: () {
+                              _handleRedeem(theme, context);
+                            },
+                          ),
+                        ),
+                        // AppDimensionsNew.getHorizontalSpace(24.pw),
+                        HeadingWidget(heading: _appScreenText['store']),
+                        Container(
+                          margin: EdgeInsets.only(right: 16),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(
+                                margin: EdgeInsets.symmetric(horizontal: 16),
+                                child: Image.asset(
+                                  'assets/images/appcoin.png',
+                                  height: 24.pw,
+                                  width: 24.pw,
+                                ),
+                              ),
+                              _updateCoins
+                                  ? CrossFade<int>(
+                                      onFadeComplete: onUpdateComplete,
+                                      initialData: _coinsFrom,
+                                      data: _coinsTo,
+                                      builder: (value) => Text(
+                                        '$value',
+                                        style: AppDecorators.getSubtitle1Style(
+                                            theme: theme),
+                                      ),
+                                    )
+                                  : Text(
+                                      '${AppConfig.availableCoins}',
+                                      style: AppDecorators.getSubtitle1Style(
+                                          theme: theme),
+                                    ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    Expanded(
+                      child: Column(children: body),
+                    ),
+                  ],
                 ),
         ),
       ),
     );
+  }
+
+  _handleRedeem(AppTheme theme, BuildContext context) async {
+    final TextEditingController controller = TextEditingController();
+    final result = await showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        contentPadding: EdgeInsets.zero,
+        backgroundColor: theme.fillInColor,
+        title: Text("Promotion Code"),
+        content: Container(
+          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CardFormTextField(
+                theme: theme,
+                controller: controller,
+                hintText: "Enter code",
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                child: RoundedColorButton(
+                  text: "Ok",
+                  backgroundColor: theme.accentColor,
+                  textColor: theme.primaryColorWithDark(),
+                  onTapFunction: () => Navigator.of(context).pop(controller.text.toString()),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    if (result != null && controller.text.toString().isNotEmpty) {
+      Alerts.showNotification(titleText: "Redeemed coins");
+      ///TODO
+    }
   }
 
   void showPendingUI() {
