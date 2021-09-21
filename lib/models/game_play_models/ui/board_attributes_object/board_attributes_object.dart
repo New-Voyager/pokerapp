@@ -770,6 +770,13 @@ class BoardAttributesObject extends ChangeNotifier {
         greaterThan7Inches: _getScaleBasedOnNoOfCards * 4.0,
       ) as double;
 
+  double get communityCardDoubleBoardScaleFactor => _decide(
+        lessThan6Inches: 0.90,
+        equalTo6Inches: 0.90,
+        equalTo7Inches: 0.90,
+        greaterThan7Inches: 0.90,
+      ) as double;
+
   double get communityCardSizeScales => _decide(
         lessThan6Inches: 0.85,
         equalTo6Inches: 1.0,
