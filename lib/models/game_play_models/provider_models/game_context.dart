@@ -4,6 +4,7 @@ import 'package:pokerapp/services/encryption/encryption_service.dart';
 import 'package:pokerapp/services/game_play/action_services/game_update_service.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_proto_service.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
+import 'package:pokerapp/services/ion/ion.dart';
 
 import 'game_state.dart';
 
@@ -20,6 +21,7 @@ class GameContextObject extends ChangeNotifier {
   GameUpdateService gameUpdateService;
   GameComService gameComService;
   EncryptionService encryptionService;
+  IonAudioConferenceService ionAudioConferenceService;
 
   GameContextObject({
     @required String gameCode,
@@ -39,6 +41,18 @@ class GameContextObject extends ChangeNotifier {
     this.gameState = gameState;
     this.gameUpdateService = gameUpdateService;
     this.handActionProtoService = handActionProtoService;
+  }
+
+  void initializeAudioConf() {
+    if (this.ionAudioConferenceService != null) {
+      return;
+    }
+    this.ionAudioConferenceService = IonAudioConferenceService(
+        gameState,
+        gameComService.chat,
+        gameState.gameInfo.sfuUrl,
+        gameState.gameInfo.gameCode,
+        this._currentPlayer);
   }
 
   set gameEnded(bool ended) {
@@ -71,6 +85,7 @@ class GameContextObject extends ChangeNotifier {
   @override
   void dispose() {
     //handActionService?.close();
+    this.ionAudioConferenceService.close();
     gameUpdateService?.close();
     gameComService?.dispose();
     encryptionService?.dispose();

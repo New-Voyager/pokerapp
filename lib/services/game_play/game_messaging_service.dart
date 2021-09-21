@@ -35,6 +35,7 @@ class GameMessagingService {
   Function onAnimation;
   Function onCards;
   Function onRabbitHunt;
+  Function onAudioConfMessage;
 
   Uuid uuid;
 
@@ -45,6 +46,7 @@ class GameMessagingService {
     void onAnimation(ChatMessage _),
     void onCards(ChatMessage _),
     void onRabbitHunt(ChatMessage _),
+    void onAudioConfMessage(dynamic _),
   }) {
     if (onAudio != null) {
       this.onAudio = onAudio;
@@ -68,6 +70,10 @@ class GameMessagingService {
 
     if (onRabbitHunt != null) {
       this.onRabbitHunt = onRabbitHunt;
+    }
+
+    if (onAudioConfMessage != null) {
+      this.onAudioConfMessage = onAudioConfMessage;
     }
   }
 
@@ -142,6 +148,11 @@ class GameMessagingService {
         if (this.onRabbitHunt != null) {
           this.onRabbitHunt(message);
         }
+      }
+
+      // audio conf message
+      if (message.type == 'AUDIOCONF') {
+        this.onAudioConfMessage(message.data);
       }
     }
   }
@@ -234,6 +245,30 @@ class GameMessagingService {
     log('GameScreen: $body');
     this.client.pubString(this.chatChannel, body);
   }
+
+  void sendAudioConfResponse(String streamId) {
+    dynamic body = jsonEncode({
+      'id': uuid.v1(),
+      'playerID': this.currentPlayer.id,
+      'name': this.currentPlayer.name,
+      'playerUuid': this.currentPlayer.uuid,
+      'streamId': streamId,
+      'method': 'PUBLISH',
+      'type': 'AUDIOCONF',
+      'sent': DateTime.now().toUtc().toIso8601String(),
+    });
+    this.client.pubString(this.chatChannel, body);
+  }
+
+  void sendAudioConfRequest() {
+    dynamic body = jsonEncode({
+      'id': uuid.v1(),
+      'method': 'REQUEST_STREAM_ID',
+      'type': 'AUDIOCONF',
+      'sent': DateTime.now().toUtc().toIso8601String(),
+    });
+    this.client.pubString(this.chatChannel, body);
+  }
 }
 
 class ChatMessage {
@@ -254,6 +289,7 @@ class ChatMessage {
   int seatNo;
   List<int> cards;
   String fromName;
+  String data;
 
   int handNo;
   List<int> playerCards;
@@ -266,10 +302,16 @@ class ChatMessage {
 
     try {
       var message = jsonDecode(data);
-      ChatMessage msg = new ChatMessage();
+      String type = message['type'].toString();
 
-      msg.type = message['type'].toString();
-      msg.fromName = message['name'].toString();
+      ChatMessage msg = new ChatMessage();
+      msg.type = 'TEST';
+      msg.type = type;
+      msg.data = data;
+
+      if (message['name'] != null) {
+        msg.fromName = message['name'].toString();
+      }
 
       if (msg.type == 'TEXT') {
         msg.text = message['text'].toString();
@@ -307,11 +349,15 @@ class ChatMessage {
             message['playerID'] == null ? '0' : message['playerID'].toString());
       }
 
-      msg.received = DateTime.parse(message['sent'].toString());
-      msg.messageId = message['id'].toString();
-
+      if (message['sent'] != null) {
+        msg.received = DateTime.parse(message['sent'].toString());
+      }
+      if (message['id'] != null) {
+        msg.messageId = message['id'].toString();
+      }
       return msg;
-    } catch (Exception) {
+    } catch (err) {
+      log('Error: ${err.toString()}');
       return null;
     }
   }

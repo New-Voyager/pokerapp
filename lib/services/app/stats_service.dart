@@ -201,7 +201,7 @@ query clubStats(\$clubCode: String!) {
       }
     }
 
-    final handStats = HandStatsModel.fromJson(result.data['data']);
+    final handStats = HandStatsModel.fromJson(result.data);
     return handStats;
   }
 

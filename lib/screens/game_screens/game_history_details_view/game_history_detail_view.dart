@@ -263,6 +263,17 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
   }
 
   Widget actionTile(AppTheme theme) {
+    if (!_gameDetail.dataAggregated) {
+      return Container(
+          height: 150.ph,
+          decoration: AppDecorators.tileDecoration(theme),
+          child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Center(
+                  child: Text('Not Available',
+                      style: AppDecorators.getSubtitle3Style(theme: theme)))));
+    }
+
     return InkWell(
       onTap: () {
         if (_gameDetail.playedGame) {

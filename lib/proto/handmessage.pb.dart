@@ -41,19 +41,72 @@ class PlayerStats extends $pb.GeneratedMessage {
             ? ''
             : 'cbet')
     ..aOB(
-        4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'vpip')
-    ..aOB(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'threeBet')
-    ..aOB(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'allin')
-    ..aOB(7, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'wentToShowdown')
-    ..aOB(8, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'wonChipsAtShowdown')
-    ..aOB(9, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'headsup')
-    ..a<$fixnum.Int64>(10, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'headsupPlayer', $pb.PbFieldType.OU6, defaultOrMaker: $fixnum.Int64.ZERO)
-    ..aOB(11, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'wonHeadsup')
-    ..aOB(12, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'badbeat')
-    ..aOB(13, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'inPreflop')
-    ..aOB(14, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'inFlop')
-    ..aOB(15, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'inTurn')
-    ..aOB(16, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'inRiver')
+        4,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'vpip')
+    ..aOB(
+        5,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'threeBet')
+    ..aOB(
+        6,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'allin')
+    ..aOB(
+        7,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'wentToShowdown')
+    ..aOB(
+        8,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'wonChipsAtShowdown')
+    ..aOB(
+        9,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'headsup')
+    ..a<$fixnum.Int64>(
+        10,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'headsupPlayer',
+        $pb.PbFieldType.OU6,
+        defaultOrMaker: $fixnum.Int64.ZERO)
+    ..aOB(
+        11,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'wonHeadsup')
+    ..aOB(
+        12,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'badbeat')
+    ..aOB(
+        13,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'inPreflop')
+    ..aOB(
+        14,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'inFlop')
+    ..aOB(
+        15,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'inTurn')
+    ..aOB(
+        16,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'inRiver')
     ..hasRequiredFields = false;
 
   PlayerStats._() : super();
@@ -460,8 +513,15 @@ class HandStats extends $pb.GeneratedMessage {
             ? ''
             : 'endedAtTurn')
     ..aOB(
-        4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'endedAtRiver')
-    ..aOB(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'endedAtShowdown')
+        4,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'endedAtRiver')
+    ..aOB(
+        5,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'endedAtShowdown')
     ..hasRequiredFields = false;
 
   HandStats._() : super();
@@ -601,22 +661,106 @@ class NewHand extends $pb.GeneratedMessage {
         $pb.PbFieldType.OU3)
     ..a<$core.int>(
         3,
-        const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'sbPos',
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'sbPos',
         $pb.PbFieldType.OU3)
-    ..a<$core.int>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'bbPos', $pb.PbFieldType.OU3)
-    ..a<$core.int>(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'nextActionSeat', $pb.PbFieldType.OU3)
-    ..m<$core.int, $core.String>(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'playerCards', entryClassName: 'NewHand.PlayerCardsEntry', keyFieldType: $pb.PbFieldType.OU3, valueFieldType: $pb.PbFieldType.OS, packageName: const $pb.PackageName('game'))
-    ..e<$1.GameType>(7, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'gameType', $pb.PbFieldType.OE, defaultOrMaker: $1.GameType.UNKNOWN, valueOf: $1.GameType.valueOf, enumValues: $1.GameType.values)
-    ..a<$core.int>(8, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'noCards', $pb.PbFieldType.OU3)
-    ..a<$core.double>(9, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'smallBlind', $pb.PbFieldType.OF)
-    ..a<$core.double>(10, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'bigBlind', $pb.PbFieldType.OF)
-    ..a<$core.double>(11, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'bringIn', $pb.PbFieldType.OF)
-    ..a<$core.double>(12, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'straddle', $pb.PbFieldType.OF)
-    ..m<$core.int, $0.PlayerInSeatState>(13, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'playersInSeats', entryClassName: 'NewHand.PlayersInSeatsEntry', keyFieldType: $pb.PbFieldType.OU3, valueFieldType: $pb.PbFieldType.OM, valueCreator: $0.PlayerInSeatState.create, packageName: const $pb.PackageName('game'))
-    ..m<$core.int, $0.PlayerActRound>(14, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'playersActed', entryClassName: 'NewHand.PlayersActedEntry', keyFieldType: $pb.PbFieldType.OU3, valueFieldType: $pb.PbFieldType.OM, valueCreator: $0.PlayerActRound.create, packageName: const $pb.PackageName('game'))
-    ..aOB(15, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'bombPot')
-    ..aOB(16, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'doubleBoardBombPot')
-    ..a<$core.double>(17, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'bombPotBet', $pb.PbFieldType.OF)
+    ..a<$core.int>(
+        4,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'bbPos',
+        $pb.PbFieldType.OU3)
+    ..a<$core.int>(
+        5,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'nextActionSeat',
+        $pb.PbFieldType.OU3)
+    ..m<$core.int, $core.String>(
+        6,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'playerCards',
+        entryClassName: 'NewHand.PlayerCardsEntry',
+        keyFieldType: $pb.PbFieldType.OU3,
+        valueFieldType: $pb.PbFieldType.OS,
+        packageName: const $pb.PackageName('game'))
+    ..e<$1.GameType>(
+        7,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'gameType',
+        $pb.PbFieldType.OE,
+        defaultOrMaker: $1.GameType.UNKNOWN,
+        valueOf: $1.GameType.valueOf,
+        enumValues: $1.GameType.values)
+    ..a<$core.int>(
+        8,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'noCards',
+        $pb.PbFieldType.OU3)
+    ..a<$core.double>(
+        9,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'smallBlind',
+        $pb.PbFieldType.OF)
+    ..a<$core.double>(
+        10,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'bigBlind',
+        $pb.PbFieldType.OF)
+    ..a<$core.double>(
+        11,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'bringIn',
+        $pb.PbFieldType.OF)
+    ..a<$core.double>(
+        12,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'straddle',
+        $pb.PbFieldType.OF)
+    ..m<$core.int, $0.PlayerInSeatState>(
+        13,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'playersInSeats',
+        entryClassName: 'NewHand.PlayersInSeatsEntry',
+        keyFieldType: $pb.PbFieldType.OU3,
+        valueFieldType: $pb.PbFieldType.OM,
+        valueCreator: $0.PlayerInSeatState.create,
+        packageName: const $pb.PackageName('game'))
+    ..m<$core.int, $0.PlayerActRound>(
+        14,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'playersActed',
+        entryClassName: 'NewHand.PlayersActedEntry',
+        keyFieldType: $pb.PbFieldType.OU3,
+        valueFieldType: $pb.PbFieldType.OM,
+        valueCreator: $0.PlayerActRound.create,
+        packageName: const $pb.PackageName('game'))
+    ..aOB(
+        15,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'bombPot')
+    ..aOB(
+        16,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'doubleBoardBombPot')
+    ..a<$core.double>(
+        17,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'bombPotBet',
+        $pb.PbFieldType.OF)
     ..hasRequiredFields = false;
 
   NewHand._() : super();
@@ -919,7 +1063,10 @@ class HandDealCards extends $pb.GeneratedMessage {
             ? ''
             : 'cards')
     ..aOS(
-        3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'cardsStr',
+        3,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'cardsStr',
         protoName: 'cardsStr')
     ..hasRequiredFields = false;
 
@@ -1029,9 +1176,17 @@ class ActionChange extends $pb.GeneratedMessage {
         $pb.PbFieldType.PF)
     ..a<$core.double>(
         3,
-        const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'potUpdates',
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'potUpdates',
         $pb.PbFieldType.OF)
-    ..pc<$0.SeatsInPots>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'seatsPots', $pb.PbFieldType.PM, subBuilder: $0.SeatsInPots.create)
+    ..pc<$0.SeatsInPots>(
+        4,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'seatsPots',
+        $pb.PbFieldType.PM,
+        subBuilder: $0.SeatsInPots.create)
     ..hasRequiredFields = false;
 
   ActionChange._() : super();
@@ -1115,10 +1270,14 @@ class ActionChange extends $pb.GeneratedMessage {
 }
 
 class Flop extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'Flop',
-      package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names')
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      const $core.bool.fromEnvironment('protobuf.omit_message_names')
           ? ''
-          : 'game'),
+          : 'Flop',
+      package: const $pb.PackageName(
+          const $core.bool.fromEnvironment('protobuf.omit_message_names')
+              ? ''
+              : 'game'),
       createEmptyInstance: create)
     ..p<$core.int>(
         1,
@@ -1126,7 +1285,11 @@ class Flop extends $pb.GeneratedMessage {
             ? ''
             : 'board',
         $pb.PbFieldType.PU3)
-    ..aOS(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'cardsStr',
+    ..aOS(
+        2,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'cardsStr',
         protoName: 'cardsStr')
     ..p<$core.double>(
         3,
@@ -1134,15 +1297,38 @@ class Flop extends $pb.GeneratedMessage {
             ? ''
             : 'pots',
         $pb.PbFieldType.PF)
-    ..pc<$0.SeatsInPots>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'seatsPots', $pb.PbFieldType.PM,
+    ..pc<$0.SeatsInPots>(
+        4,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'seatsPots',
+        $pb.PbFieldType.PM,
         subBuilder: $0.SeatsInPots.create)
-    ..m<$core.int, $core.double>(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'playerBalance',
+    ..m<$core.int, $core.double>(
+        5,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'playerBalance',
         entryClassName: 'Flop.PlayerBalanceEntry',
         keyFieldType: $pb.PbFieldType.OU3,
         valueFieldType: $pb.PbFieldType.OF,
         packageName: const $pb.PackageName('game'))
-    ..m<$core.int, $core.String>(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'playerCardRanks', entryClassName: 'Flop.PlayerCardRanksEntry', keyFieldType: $pb.PbFieldType.OU3, valueFieldType: $pb.PbFieldType.OS, packageName: const $pb.PackageName('game'))
-    ..pc<$0.Board>(7, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'boards', $pb.PbFieldType.PM, subBuilder: $0.Board.create)
+    ..m<$core.int, $core.String>(
+        6,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'playerCardRanks',
+        entryClassName: 'Flop.PlayerCardRanksEntry',
+        keyFieldType: $pb.PbFieldType.OU3,
+        valueFieldType: $pb.PbFieldType.OS,
+        packageName: const $pb.PackageName('game'))
+    ..pc<$0.Board>(
+        7,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'boards',
+        $pb.PbFieldType.PM,
+        subBuilder: $0.Board.create)
     ..hasRequiredFields = false;
 
   Flop._() : super();
@@ -1259,13 +1445,49 @@ class Turn extends $pb.GeneratedMessage {
             : 'turnCard',
         $pb.PbFieldType.OU3)
     ..aOS(
-        3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'cardsStr',
+        3,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'cardsStr',
         protoName: 'cardsStr')
-    ..p<$core.double>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'pots', $pb.PbFieldType.PF)
-    ..pc<$0.SeatsInPots>(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'seatsPots', $pb.PbFieldType.PM, subBuilder: $0.SeatsInPots.create)
-    ..m<$core.int, $core.double>(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'playerBalance', entryClassName: 'Turn.PlayerBalanceEntry', keyFieldType: $pb.PbFieldType.OU3, valueFieldType: $pb.PbFieldType.OF, packageName: const $pb.PackageName('game'))
-    ..m<$core.int, $core.String>(7, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'playerCardRanks', entryClassName: 'Turn.PlayerCardRanksEntry', keyFieldType: $pb.PbFieldType.OU3, valueFieldType: $pb.PbFieldType.OS, packageName: const $pb.PackageName('game'))
-    ..pc<$0.Board>(8, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'boards', $pb.PbFieldType.PM, subBuilder: $0.Board.create)
+    ..p<$core.double>(
+        4,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'pots',
+        $pb.PbFieldType.PF)
+    ..pc<$0.SeatsInPots>(
+        5,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'seatsPots',
+        $pb.PbFieldType.PM,
+        subBuilder: $0.SeatsInPots.create)
+    ..m<$core.int, $core.double>(
+        6,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'playerBalance',
+        entryClassName: 'Turn.PlayerBalanceEntry',
+        keyFieldType: $pb.PbFieldType.OU3,
+        valueFieldType: $pb.PbFieldType.OF,
+        packageName: const $pb.PackageName('game'))
+    ..m<$core.int, $core.String>(
+        7,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'playerCardRanks',
+        entryClassName: 'Turn.PlayerCardRanksEntry',
+        keyFieldType: $pb.PbFieldType.OU3,
+        valueFieldType: $pb.PbFieldType.OS,
+        packageName: const $pb.PackageName('game'))
+    ..pc<$0.Board>(
+        8,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'boards',
+        $pb.PbFieldType.PM,
+        subBuilder: $0.Board.create)
     ..hasRequiredFields = false;
 
   Turn._() : super();
@@ -1398,13 +1620,49 @@ class River extends $pb.GeneratedMessage {
             : 'riverCard',
         $pb.PbFieldType.OU3)
     ..aOS(
-        3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'cardsStr',
+        3,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'cardsStr',
         protoName: 'cardsStr')
-    ..p<$core.double>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'pots', $pb.PbFieldType.PF)
-    ..pc<$0.SeatsInPots>(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'seatsPots', $pb.PbFieldType.PM, subBuilder: $0.SeatsInPots.create)
-    ..m<$core.int, $core.double>(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'playerBalance', entryClassName: 'River.PlayerBalanceEntry', keyFieldType: $pb.PbFieldType.OU3, valueFieldType: $pb.PbFieldType.OF, packageName: const $pb.PackageName('game'))
-    ..m<$core.int, $core.String>(7, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'playerCardRanks', entryClassName: 'River.PlayerCardRanksEntry', keyFieldType: $pb.PbFieldType.OU3, valueFieldType: $pb.PbFieldType.OS, packageName: const $pb.PackageName('game'))
-    ..pc<$0.Board>(9, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'boards', $pb.PbFieldType.PM, subBuilder: $0.Board.create)
+    ..p<$core.double>(
+        4,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'pots',
+        $pb.PbFieldType.PF)
+    ..pc<$0.SeatsInPots>(
+        5,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'seatsPots',
+        $pb.PbFieldType.PM,
+        subBuilder: $0.SeatsInPots.create)
+    ..m<$core.int, $core.double>(
+        6,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'playerBalance',
+        entryClassName: 'River.PlayerBalanceEntry',
+        keyFieldType: $pb.PbFieldType.OU3,
+        valueFieldType: $pb.PbFieldType.OF,
+        packageName: const $pb.PackageName('game'))
+    ..m<$core.int, $core.String>(
+        7,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'playerCardRanks',
+        entryClassName: 'River.PlayerCardRanksEntry',
+        keyFieldType: $pb.PbFieldType.OU3,
+        valueFieldType: $pb.PbFieldType.OS,
+        packageName: const $pb.PackageName('game'))
+    ..pc<$0.Board>(
+        9,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'boards',
+        $pb.PbFieldType.PM,
+        subBuilder: $0.Board.create)
     ..hasRequiredFields = false;
 
   River._() : super();
@@ -1595,13 +1853,21 @@ class SeatCards extends $pb.GeneratedMessage {
 }
 
 class Showdown extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'Showdown',
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      const $core.bool.fromEnvironment('protobuf.omit_message_names')
+          ? ''
+          : 'Showdown',
       package: const $pb.PackageName(
           const $core.bool.fromEnvironment('protobuf.omit_message_names')
               ? ''
               : 'game'),
       createEmptyInstance: create)
-    ..pc<SeatCards>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'seatCards', $pb.PbFieldType.PM,
+    ..pc<SeatCards>(
+        1,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'seatCards',
+        $pb.PbFieldType.PM,
         subBuilder: SeatCards.create)
     ..p<$core.double>(
         2,
@@ -1609,10 +1875,18 @@ class Showdown extends $pb.GeneratedMessage {
             ? ''
             : 'pots',
         $pb.PbFieldType.PF)
-    ..pc<$0.SeatsInPots>(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'seatsPots', $pb.PbFieldType.PM,
+    ..pc<$0.SeatsInPots>(
+        3,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'seatsPots',
+        $pb.PbFieldType.PM,
         subBuilder: $0.SeatsInPots.create)
     ..m<$core.int, $core.double>(
-        4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'playerBalance',
+        4,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'playerBalance',
         entryClassName: 'Showdown.PlayerBalanceEntry',
         keyFieldType: $pb.PbFieldType.OU3,
         valueFieldType: $pb.PbFieldType.OF,
@@ -1681,27 +1955,57 @@ class Showdown extends $pb.GeneratedMessage {
 }
 
 class RunItTwiceBoards extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'RunItTwiceBoards',
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      const $core.bool.fromEnvironment('protobuf.omit_message_names')
+          ? ''
+          : 'RunItTwiceBoards',
       package: const $pb.PackageName(
           const $core.bool.fromEnvironment('protobuf.omit_message_names')
               ? ''
               : 'game'),
       createEmptyInstance: create)
-    ..p<$core.int>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'board1', $pb.PbFieldType.PU3,
+    ..p<$core.int>(
+        1,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'board1',
+        $pb.PbFieldType.PU3,
         protoName: 'board_1')
     ..p<$core.int>(
-        2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'board2', $pb.PbFieldType.PU3,
+        2,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'board2',
+        $pb.PbFieldType.PU3,
         protoName: 'board_2')
     ..e<$0.HandStatus>(
-        3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'stage', $pb.PbFieldType.OE,
+        3,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'stage',
+        $pb.PbFieldType.OE,
         defaultOrMaker: $0.HandStatus.HandStatus_UNKNOWN,
         valueOf: $0.HandStatus.valueOf,
         enumValues: $0.HandStatus.values)
     ..pc<$0.SeatsInPots>(
-        4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'seatsPots', $pb.PbFieldType.PM,
+        4,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'seatsPots',
+        $pb.PbFieldType.PM,
         subBuilder: $0.SeatsInPots.create)
-    ..a<$core.int>(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'seat1', $pb.PbFieldType.OU3)
-    ..a<$core.int>(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'seat2', $pb.PbFieldType.OU3)
+    ..a<$core.int>(
+        5,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'seat1',
+        $pb.PbFieldType.OU3)
+    ..a<$core.int>(
+        6,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'seat2',
+        $pb.PbFieldType.OU3)
     ..hasRequiredFields = false;
 
   RunItTwiceBoards._() : super();
@@ -1872,16 +2176,25 @@ class RunItTwiceResult extends $pb.GeneratedMessage {
       const $core.bool.fromEnvironment('protobuf.omit_message_names')
           ? ''
           : 'RunItTwiceResult',
-      package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names')
-          ? ''
-          : 'game'),
+      package: const $pb.PackageName(
+          const $core.bool.fromEnvironment('protobuf.omit_message_names')
+              ? ''
+              : 'game'),
       createEmptyInstance: create)
-    ..e<$0.HandStatus>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'runItTwiceStartedAt', $pb.PbFieldType.OE,
+    ..e<$0.HandStatus>(
+        1,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'runItTwiceStartedAt',
+        $pb.PbFieldType.OE,
         defaultOrMaker: $0.HandStatus.HandStatus_UNKNOWN,
         valueOf: $0.HandStatus.valueOf,
         enumValues: $0.HandStatus.values)
     ..m<$core.int, $0.PotWinners>(
-        2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'board1Winners',
+        2,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'board1Winners',
         protoName: 'board_1_winners',
         entryClassName: 'RunItTwiceResult.Board1WinnersEntry',
         keyFieldType: $pb.PbFieldType.OU3,
@@ -1889,7 +2202,10 @@ class RunItTwiceResult extends $pb.GeneratedMessage {
         valueCreator: $0.PotWinners.create,
         packageName: const $pb.PackageName('game'))
     ..m<$core.int, $0.PotWinners>(
-        3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'board2Winners',
+        3,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'board2Winners',
         protoName: 'board_2_winners',
         entryClassName: 'RunItTwiceResult.Board2WinnersEntry',
         keyFieldType: $pb.PbFieldType.OU3,
@@ -1963,36 +2279,114 @@ class RunItTwiceResult extends $pb.GeneratedMessage {
 }
 
 class HandLog extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'HandLog',
-      package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names')
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      const $core.bool.fromEnvironment('protobuf.omit_message_names')
           ? ''
-          : 'game'),
+          : 'HandLog',
+      package: const $pb.PackageName(
+          const $core.bool.fromEnvironment('protobuf.omit_message_names')
+              ? ''
+              : 'game'),
       createEmptyInstance: create)
-    ..aOM<$0.HandActionLog>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'preflopActions',
-        subBuilder: $0.HandActionLog.create)
-    ..aOM<$0.HandActionLog>(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'flopActions',
-        subBuilder: $0.HandActionLog.create)
-    ..aOM<$0.HandActionLog>(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'turnActions',
+    ..aOM<$0.HandActionLog>(
+        1,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'preflopActions',
         subBuilder: $0.HandActionLog.create)
     ..aOM<$0.HandActionLog>(
-        4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'riverActions',
+        2,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'flopActions',
+        subBuilder: $0.HandActionLog.create)
+    ..aOM<$0.HandActionLog>(
+        3,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'turnActions',
+        subBuilder: $0.HandActionLog.create)
+    ..aOM<$0.HandActionLog>(
+        4,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'riverActions',
         subBuilder: $0.HandActionLog.create)
     ..m<$core.int, $0.PotWinners>(
-        5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'potWinners',
+        5,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'potWinners',
         entryClassName: 'HandLog.PotWinnersEntry',
         keyFieldType: $pb.PbFieldType.OU3,
         valueFieldType: $pb.PbFieldType.OM,
         valueCreator: $0.PotWinners.create,
         packageName: const $pb.PackageName('game'))
-    ..e<$0.HandStatus>(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'wonAt', $pb.PbFieldType.OE, defaultOrMaker: $0.HandStatus.HandStatus_UNKNOWN, valueOf: $0.HandStatus.valueOf, enumValues: $0.HandStatus.values)
-    ..aOM<Showdown>(8, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'showDown', subBuilder: Showdown.create)
-    ..a<$fixnum.Int64>(9, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'handStartedAt', $pb.PbFieldType.OU6, defaultOrMaker: $fixnum.Int64.ZERO)
-    ..a<$fixnum.Int64>(11, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'handEndedAt', $pb.PbFieldType.OU6, defaultOrMaker: $fixnum.Int64.ZERO)
-    ..aOB(12, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'runItTwice')
-    ..aOM<RunItTwiceResult>(13, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'runItTwiceResult', subBuilder: RunItTwiceResult.create)
-    ..pc<$0.SeatsInPots>(14, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'seatsPotsShowdown', $pb.PbFieldType.PM, subBuilder: $0.SeatsInPots.create)
-    ..pc<$0.Board>(15, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'boards', $pb.PbFieldType.PM, subBuilder: $0.Board.create)
-    ..m<$core.int, $0.PotWinnersV2>(16, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'potWinners2', protoName: 'pot_winners_2', entryClassName: 'HandLog.PotWinners2Entry', keyFieldType: $pb.PbFieldType.OU3, valueFieldType: $pb.PbFieldType.OM, valueCreator: $0.PotWinnersV2.create, packageName: const $pb.PackageName('game'))
+    ..e<$0.HandStatus>(
+        6,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'wonAt',
+        $pb.PbFieldType.OE,
+        defaultOrMaker: $0.HandStatus.HandStatus_UNKNOWN,
+        valueOf: $0.HandStatus.valueOf,
+        enumValues: $0.HandStatus.values)
+    ..aOM<Showdown>(
+        8,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'showDown',
+        subBuilder: Showdown.create)
+    ..a<$fixnum.Int64>(
+        9,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'handStartedAt',
+        $pb.PbFieldType.OU6,
+        defaultOrMaker: $fixnum.Int64.ZERO)
+    ..a<$fixnum.Int64>(
+        11,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'handEndedAt',
+        $pb.PbFieldType.OU6,
+        defaultOrMaker: $fixnum.Int64.ZERO)
+    ..aOB(
+        12,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'runItTwice')
+    ..aOM<RunItTwiceResult>(
+        13,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'runItTwiceResult',
+        subBuilder: RunItTwiceResult.create)
+    ..pc<$0.SeatsInPots>(
+        14,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'seatsPotsShowdown',
+        $pb.PbFieldType.PM,
+        subBuilder: $0.SeatsInPots.create)
+    ..pc<$0.Board>(
+        15,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'boards',
+        $pb.PbFieldType.PM,
+        subBuilder: $0.Board.create)
+    ..m<$core.int, $0.PotWinnersV2>(
+        16,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'potWinners2',
+        protoName: 'pot_winners_2',
+        entryClassName: 'HandLog.PotWinners2Entry',
+        keyFieldType: $pb.PbFieldType.OU3,
+        valueFieldType: $pb.PbFieldType.OM,
+        valueCreator: $0.PotWinnersV2.create,
+        packageName: const $pb.PackageName('game'))
     ..hasRequiredFields = false;
 
   HandLog._() : super();
@@ -2238,21 +2632,70 @@ class PlayerInfo extends $pb.GeneratedMessage {
               ? ''
               : 'game'),
       createEmptyInstance: create)
-    ..a<$fixnum.Int64>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'id',
+    ..a<$fixnum.Int64>(
+        1,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'id',
         $pb.PbFieldType.OU6,
         defaultOrMaker: $fixnum.Int64.ZERO)
     ..p<$core.int>(
         2,
-        const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'cards',
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'cards',
         $pb.PbFieldType.PU3)
-    ..p<$core.int>(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'bestCards', $pb.PbFieldType.PU3)
-    ..a<$core.int>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'rank', $pb.PbFieldType.OU3)
-    ..e<$0.HandStatus>(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'playedUntil', $pb.PbFieldType.OE, defaultOrMaker: $0.HandStatus.HandStatus_UNKNOWN, valueOf: $0.HandStatus.valueOf, enumValues: $0.HandStatus.values)
-    ..aOM<$0.HandPlayerBalance>(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'balance', subBuilder: $0.HandPlayerBalance.create)
-    ..p<$core.int>(7, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'hhCards', $pb.PbFieldType.PU3)
-    ..a<$core.int>(8, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'hhRank', $pb.PbFieldType.OU3)
-    ..a<$core.double>(9, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'received', $pb.PbFieldType.OF)
-    ..a<$core.double>(10, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'rakePaid', $pb.PbFieldType.OF)
+    ..p<$core.int>(
+        3,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'bestCards',
+        $pb.PbFieldType.PU3)
+    ..a<$core.int>(
+        4,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'rank',
+        $pb.PbFieldType.OU3)
+    ..e<$0.HandStatus>(
+        5,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'playedUntil',
+        $pb.PbFieldType.OE,
+        defaultOrMaker: $0.HandStatus.HandStatus_UNKNOWN,
+        valueOf: $0.HandStatus.valueOf,
+        enumValues: $0.HandStatus.values)
+    ..aOM<$0.HandPlayerBalance>(
+        6,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'balance',
+        subBuilder: $0.HandPlayerBalance.create)
+    ..p<$core.int>(
+        7,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'hhCards',
+        $pb.PbFieldType.PU3)
+    ..a<$core.int>(
+        8,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'hhRank',
+        $pb.PbFieldType.OU3)
+    ..a<$core.double>(
+        9,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'received',
+        $pb.PbFieldType.OF)
+    ..a<$core.double>(
+        10,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'rakePaid',
+        $pb.PbFieldType.OF)
     ..hasRequiredFields = false;
 
   PlayerInfo._() : super();
@@ -2424,14 +2867,21 @@ class PlayerInfo extends $pb.GeneratedMessage {
 }
 
 class HandResult extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'HandResult',
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      const $core.bool.fromEnvironment('protobuf.omit_message_names')
+          ? ''
+          : 'HandResult',
       package: const $pb.PackageName(
           const $core.bool.fromEnvironment('protobuf.omit_message_names')
               ? ''
               : 'game'),
       createEmptyInstance: create)
     ..a<$fixnum.Int64>(
-        1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'gameId', $pb.PbFieldType.OU6,
+        1,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'gameId',
+        $pb.PbFieldType.OU6,
         defaultOrMaker: $fixnum.Int64.ZERO)
     ..a<$core.int>(
         2,
@@ -2441,29 +2891,129 @@ class HandResult extends $pb.GeneratedMessage {
         $pb.PbFieldType.OU3)
     ..e<$1.GameType>(
         3,
-        const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'gameType',
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'gameType',
         $pb.PbFieldType.OE,
         defaultOrMaker: $1.GameType.UNKNOWN,
         valueOf: $1.GameType.valueOf,
         enumValues: $1.GameType.values)
-    ..a<$core.int>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'noCards', $pb.PbFieldType.OU3)
-    ..aOM<HandLog>(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'handLog', subBuilder: HandLog.create)
-    ..p<$core.int>(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'rewardTrackingIds', $pb.PbFieldType.PU3)
-    ..p<$core.int>(7, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'boardCards', $pb.PbFieldType.PU3)
-    ..p<$core.int>(8, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'boardCards2', $pb.PbFieldType.PU3, protoName: 'board_cards_2')
-    ..p<$core.int>(9, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'flop', $pb.PbFieldType.PU3)
-    ..a<$core.int>(10, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'turn', $pb.PbFieldType.OU3)
-    ..a<$core.int>(11, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'river', $pb.PbFieldType.OU3)
-    ..m<$core.int, PlayerInfo>(12, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'players', entryClassName: 'HandResult.PlayersEntry', keyFieldType: $pb.PbFieldType.OU3, valueFieldType: $pb.PbFieldType.OM, valueCreator: PlayerInfo.create, packageName: const $pb.PackageName('game'))
-    ..a<$core.double>(13, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'rakeCollected', $pb.PbFieldType.OF)
-    ..aOM<$0.HighHand>(14, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'highHand', subBuilder: $0.HighHand.create)
-    ..m<$fixnum.Int64, PlayerStats>(15, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'playerStats', entryClassName: 'HandResult.PlayerStatsEntry', keyFieldType: $pb.PbFieldType.OU6, valueFieldType: $pb.PbFieldType.OM, valueCreator: PlayerStats.create, packageName: const $pb.PackageName('game'))
-    ..aOM<HandStats>(16, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'handStats', subBuilder: HandStats.create)
-    ..aOB(17, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'runItTwice')
-    ..a<$core.double>(18, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'smallBlind', $pb.PbFieldType.OF)
-    ..a<$core.double>(19, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'bigBlind', $pb.PbFieldType.OF)
-    ..a<$core.double>(20, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'ante', $pb.PbFieldType.OF)
-    ..a<$core.int>(21, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'maxPlayers', $pb.PbFieldType.OU3)
+    ..a<$core.int>(
+        4,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'noCards',
+        $pb.PbFieldType.OU3)
+    ..aOM<HandLog>(
+        5,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'handLog',
+        subBuilder: HandLog.create)
+    ..p<$core.int>(
+        6,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'rewardTrackingIds',
+        $pb.PbFieldType.PU3)
+    ..p<$core.int>(
+        7,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'boardCards',
+        $pb.PbFieldType.PU3)
+    ..p<$core.int>(
+        8,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'boardCards2',
+        $pb.PbFieldType.PU3,
+        protoName: 'board_cards_2')
+    ..p<$core.int>(
+        9,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'flop',
+        $pb.PbFieldType.PU3)
+    ..a<$core.int>(
+        10,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'turn',
+        $pb.PbFieldType.OU3)
+    ..a<$core.int>(
+        11,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'river',
+        $pb.PbFieldType.OU3)
+    ..m<$core.int, PlayerInfo>(
+        12,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'players',
+        entryClassName: 'HandResult.PlayersEntry',
+        keyFieldType: $pb.PbFieldType.OU3,
+        valueFieldType: $pb.PbFieldType.OM,
+        valueCreator: PlayerInfo.create,
+        packageName: const $pb.PackageName('game'))
+    ..a<$core.double>(
+        13,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'rakeCollected',
+        $pb.PbFieldType.OF)
+    ..aOM<$0.HighHand>(
+        14,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'highHand',
+        subBuilder: $0.HighHand.create)
+    ..m<$fixnum.Int64, PlayerStats>(
+        15,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'playerStats',
+        entryClassName: 'HandResult.PlayerStatsEntry',
+        keyFieldType: $pb.PbFieldType.OU6,
+        valueFieldType: $pb.PbFieldType.OM,
+        valueCreator: PlayerStats.create,
+        packageName: const $pb.PackageName('game'))
+    ..aOM<HandStats>(
+        16,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'handStats',
+        subBuilder: HandStats.create)
+    ..aOB(
+        17,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'runItTwice')
+    ..a<$core.double>(
+        18,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'smallBlind',
+        $pb.PbFieldType.OF)
+    ..a<$core.double>(
+        19,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'bigBlind',
+        $pb.PbFieldType.OF)
+    ..a<$core.double>(
+        20,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'ante',
+        $pb.PbFieldType.OF)
+    ..a<$core.int>(
+        21,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'maxPlayers',
+        $pb.PbFieldType.OU3)
     ..hasRequiredFields = false;
 
   HandResult._() : super();
@@ -2810,20 +3360,80 @@ class HandResultClient extends $pb.GeneratedMessage {
         $pb.PbFieldType.PU3)
     ..e<$0.HandStatus>(
         3,
-        const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'wonAt',
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'wonAt',
         $pb.PbFieldType.OE,
         defaultOrMaker: $0.HandStatus.HandStatus_UNKNOWN,
         valueOf: $0.HandStatus.valueOf,
         enumValues: $0.HandStatus.values)
-    ..pc<$0.Board>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'boards', $pb.PbFieldType.PM, subBuilder: $0.Board.create)
-    ..pc<$0.PotWinnersV2>(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'potWinners', $pb.PbFieldType.PM, subBuilder: $0.PotWinnersV2.create)
-    ..a<$core.int>(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'pauseTimeSecs', $pb.PbFieldType.OU3)
-    ..m<$core.int, $0.PlayerHandInfo>(7, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'playerInfo', entryClassName: 'HandResultClient.PlayerInfoEntry', keyFieldType: $pb.PbFieldType.OU3, valueFieldType: $pb.PbFieldType.OM, valueCreator: $0.PlayerHandInfo.create, packageName: const $pb.PackageName('game'))
-    ..aOB(8, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'scoop')
-    ..m<$fixnum.Int64, PlayerStats>(9, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'playerStats', entryClassName: 'HandResultClient.PlayerStatsEntry', keyFieldType: $pb.PbFieldType.OU6, valueFieldType: $pb.PbFieldType.OM, valueCreator: PlayerStats.create, packageName: const $pb.PackageName('game'))
-    ..m<$fixnum.Int64, TimeoutStats>(10, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'timeoutStats', entryClassName: 'HandResultClient.TimeoutStatsEntry', keyFieldType: $pb.PbFieldType.OU6, valueFieldType: $pb.PbFieldType.OM, valueCreator: TimeoutStats.create, packageName: const $pb.PackageName('game'))
-    ..a<$core.int>(11, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'handNum', $pb.PbFieldType.OU3)
-    ..a<$core.double>(12, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'tipsCollected', $pb.PbFieldType.OF)
+    ..pc<$0.Board>(
+        4,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'boards',
+        $pb.PbFieldType.PM,
+        subBuilder: $0.Board.create)
+    ..pc<$0.PotWinnersV2>(
+        5,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'potWinners',
+        $pb.PbFieldType.PM,
+        subBuilder: $0.PotWinnersV2.create)
+    ..a<$core.int>(
+        6,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'pauseTimeSecs',
+        $pb.PbFieldType.OU3)
+    ..m<$core.int, $0.PlayerHandInfo>(
+        7,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'playerInfo',
+        entryClassName: 'HandResultClient.PlayerInfoEntry',
+        keyFieldType: $pb.PbFieldType.OU3,
+        valueFieldType: $pb.PbFieldType.OM,
+        valueCreator: $0.PlayerHandInfo.create,
+        packageName: const $pb.PackageName('game'))
+    ..aOB(
+        8,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'scoop')
+    ..m<$fixnum.Int64, PlayerStats>(
+        9,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'playerStats',
+        entryClassName: 'HandResultClient.PlayerStatsEntry',
+        keyFieldType: $pb.PbFieldType.OU6,
+        valueFieldType: $pb.PbFieldType.OM,
+        valueCreator: PlayerStats.create,
+        packageName: const $pb.PackageName('game'))
+    ..m<$fixnum.Int64, TimeoutStats>(
+        10,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'timeoutStats',
+        entryClassName: 'HandResultClient.TimeoutStatsEntry',
+        keyFieldType: $pb.PbFieldType.OU6,
+        valueFieldType: $pb.PbFieldType.OM,
+        valueCreator: TimeoutStats.create,
+        packageName: const $pb.PackageName('game'))
+    ..a<$core.int>(
+        11,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'handNum',
+        $pb.PbFieldType.OU3)
+    ..a<$core.double>(
+        12,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'tipsCollected',
+        $pb.PbFieldType.OF)
     ..hasRequiredFields = false;
 
   HandResultClient._() : super();
@@ -2999,26 +3609,53 @@ class HandResultClient extends $pb.GeneratedMessage {
 }
 
 class HandLogV2 extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'HandLogV2',
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      const $core.bool.fromEnvironment('protobuf.omit_message_names')
+          ? ''
+          : 'HandLogV2',
       package: const $pb.PackageName(
           const $core.bool.fromEnvironment('protobuf.omit_message_names')
               ? ''
               : 'game'),
       createEmptyInstance: create)
     ..aOM<$0.HandActionLog>(
-        1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'preflopActions',
+        1,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'preflopActions',
         subBuilder: $0.HandActionLog.create)
     ..aOM<$0.HandActionLog>(
-        2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'flopActions',
+        2,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'flopActions',
         subBuilder: $0.HandActionLog.create)
     ..aOM<$0.HandActionLog>(
-        3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'turnActions',
+        3,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'turnActions',
         subBuilder: $0.HandActionLog.create)
     ..aOM<$0.HandActionLog>(
-        4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'riverActions',
+        4,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'riverActions',
         subBuilder: $0.HandActionLog.create)
-    ..a<$fixnum.Int64>(9, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'handStartedAt', $pb.PbFieldType.OU6, defaultOrMaker: $fixnum.Int64.ZERO)
-    ..a<$fixnum.Int64>(11, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'handEndedAt', $pb.PbFieldType.OU6, defaultOrMaker: $fixnum.Int64.ZERO)
+    ..a<$fixnum.Int64>(
+        9,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'handStartedAt',
+        $pb.PbFieldType.OU6,
+        defaultOrMaker: $fixnum.Int64.ZERO)
+    ..a<$fixnum.Int64>(
+        11,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'handEndedAt',
+        $pb.PbFieldType.OU6,
+        defaultOrMaker: $fixnum.Int64.ZERO)
     ..hasRequiredFields = false;
 
   HandLogV2._() : super();
@@ -3159,14 +3796,21 @@ class HandLogV2 extends $pb.GeneratedMessage {
 }
 
 class HandResultServer extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'HandResultServer',
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      const $core.bool.fromEnvironment('protobuf.omit_message_names')
+          ? ''
+          : 'HandResultServer',
       package: const $pb.PackageName(
           const $core.bool.fromEnvironment('protobuf.omit_message_names')
               ? ''
               : 'game'),
       createEmptyInstance: create)
     ..a<$fixnum.Int64>(
-        1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'gameId', $pb.PbFieldType.OU6,
+        1,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'gameId',
+        $pb.PbFieldType.OU6,
         defaultOrMaker: $fixnum.Int64.ZERO)
     ..a<$core.int>(
         2,
@@ -3176,22 +3820,78 @@ class HandResultServer extends $pb.GeneratedMessage {
         $pb.PbFieldType.OU3)
     ..e<$1.GameType>(
         3,
-        const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'gameType',
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'gameType',
         $pb.PbFieldType.OE,
         defaultOrMaker: $1.GameType.UNKNOWN,
         valueOf: $1.GameType.valueOf,
         enumValues: $1.GameType.values)
-    ..a<$core.int>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'noCards', $pb.PbFieldType.OU3)
-    ..aOM<HandLog>(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'handLog', subBuilder: HandLog.create)
-    ..aOM<HandStats>(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'handStats', subBuilder: HandStats.create)
-    ..aOB(8, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'runItTwice')
-    ..a<$core.int>(9, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'buttonPos', $pb.PbFieldType.OU3)
-    ..a<$core.double>(10, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'smallBlind', $pb.PbFieldType.OF)
-    ..a<$core.double>(11, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'bigBlind', $pb.PbFieldType.OF)
-    ..a<$core.double>(12, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'ante', $pb.PbFieldType.OF)
-    ..a<$core.int>(13, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'maxPlayers', $pb.PbFieldType.OU3)
-    ..aOM<HandResultClient>(14, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'result', subBuilder: HandResultClient.create)
-    ..aOM<HandLogV2>(15, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'log', subBuilder: HandLogV2.create)
+    ..a<$core.int>(
+        4,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'noCards',
+        $pb.PbFieldType.OU3)
+    ..aOM<HandLog>(
+        5,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'handLog',
+        subBuilder: HandLog.create)
+    ..aOM<HandStats>(
+        6,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'handStats',
+        subBuilder: HandStats.create)
+    ..aOB(
+        8,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'runItTwice')
+    ..a<$core.int>(
+        9,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'buttonPos',
+        $pb.PbFieldType.OU3)
+    ..a<$core.double>(
+        10,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'smallBlind',
+        $pb.PbFieldType.OF)
+    ..a<$core.double>(
+        11,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'bigBlind',
+        $pb.PbFieldType.OF)
+    ..a<$core.double>(
+        12,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'ante',
+        $pb.PbFieldType.OF)
+    ..a<$core.int>(
+        13,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'maxPlayers',
+        $pb.PbFieldType.OU3)
+    ..aOM<HandResultClient>(
+        14,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'result',
+        subBuilder: HandResultClient.create)
+    ..aOM<HandLogV2>(
+        15,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'log',
+        subBuilder: HandLogV2.create)
     ..hasRequiredFields = false;
 
   HandResultServer._() : super();
@@ -3654,12 +4354,44 @@ class HandMessage extends $pb.GeneratedMessage {
             : 'handNum',
         $pb.PbFieldType.OU3)
     ..a<$core.int>(
-        4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'seatNo', $pb.PbFieldType.OU3)
-    ..a<$fixnum.Int64>(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'playerId', $pb.PbFieldType.OU6, defaultOrMaker: $fixnum.Int64.ZERO)
-    ..aOS(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'messageId')
-    ..aOS(7, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'gameToken')
-    ..e<$0.HandStatus>(8, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'handStatus', $pb.PbFieldType.OE, defaultOrMaker: $0.HandStatus.HandStatus_UNKNOWN, valueOf: $0.HandStatus.valueOf, enumValues: $0.HandStatus.values)
-    ..pc<HandMessageItem>(9, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'messages', $pb.PbFieldType.PM, subBuilder: HandMessageItem.create)
+        4,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'seatNo',
+        $pb.PbFieldType.OU3)
+    ..a<$fixnum.Int64>(
+        5,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'playerId',
+        $pb.PbFieldType.OU6,
+        defaultOrMaker: $fixnum.Int64.ZERO)
+    ..aOS(
+        6,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'messageId')
+    ..aOS(
+        7,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'gameToken')
+    ..e<$0.HandStatus>(
+        8,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'handStatus',
+        $pb.PbFieldType.OE,
+        defaultOrMaker: $0.HandStatus.HandStatus_UNKNOWN,
+        valueOf: $0.HandStatus.valueOf,
+        enumValues: $0.HandStatus.values)
+    ..pc<HandMessageItem>(
+        9,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'messages',
+        $pb.PbFieldType.PM,
+        subBuilder: HandMessageItem.create)
     ..hasRequiredFields = false;
 
   HandMessage._() : super();
@@ -3841,15 +4573,26 @@ class DealerChoice extends $pb.GeneratedMessage {
               : 'game'),
       createEmptyInstance: create)
     ..a<$fixnum.Int64>(
-        1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'playerId', $pb.PbFieldType.OU6,
+        1,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'playerId',
+        $pb.PbFieldType.OU6,
         defaultOrMaker: $fixnum.Int64.ZERO)
     ..pc<$1.GameType>(
         2,
-        const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'games',
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'games',
         $pb.PbFieldType.PE,
         valueOf: $1.GameType.valueOf,
         enumValues: $1.GameType.values)
-    ..a<$core.int>(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'timeout', $pb.PbFieldType.OU3)
+    ..a<$core.int>(
+        3,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'timeout',
+        $pb.PbFieldType.OU3)
     ..hasRequiredFields = false;
 
   DealerChoice._() : super();
@@ -3942,10 +4685,24 @@ class PingPongMessage extends $pb.GeneratedMessage {
             : 'gameId',
         $pb.PbFieldType.OU6,
         defaultOrMaker: $fixnum.Int64.ZERO)
-    ..aOS(2,
-        const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'gameCode')
-    ..a<$fixnum.Int64>(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'playerId', $pb.PbFieldType.OU6, defaultOrMaker: $fixnum.Int64.ZERO)
-    ..a<$core.int>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'seq', $pb.PbFieldType.OU3)
+    ..aOS(
+        2,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'gameCode')
+    ..a<$fixnum.Int64>(
+        3,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'playerId',
+        $pb.PbFieldType.OU6,
+        defaultOrMaker: $fixnum.Int64.ZERO)
+    ..a<$core.int>(
+        4,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'seq',
+        $pb.PbFieldType.OU3)
     ..hasRequiredFields = false;
 
   PingPongMessage._() : super();
@@ -4091,42 +4848,148 @@ class HandMessageItem extends $pb.GeneratedMessage {
     29: HandMessageItem_Content.handResultClient,
     0: HandMessageItem_Content.notSet
   };
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'HandMessageItem',
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      const $core.bool.fromEnvironment('protobuf.omit_message_names')
+          ? ''
+          : 'HandMessageItem',
       package: const $pb.PackageName(
           const $core.bool.fromEnvironment('protobuf.omit_message_names')
               ? ''
               : 'game'),
       createEmptyInstance: create)
-    ..oo(0,
-        [12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29])
+    ..oo(0, [
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29
+    ])
     ..aOS(
         7,
         const $core.bool.fromEnvironment('protobuf.omit_field_names')
             ? ''
             : 'messageType')
     ..aOM<$0.NextSeatAction>(
-        12, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'seatAction',
+        12,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'seatAction',
         subBuilder: $0.NextSeatAction.create)
     ..aOM<HandDealCards>(
-        13, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'dealCards',
+        13,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'dealCards',
         subBuilder: HandDealCards.create)
-    ..aOM<NewHand>(14, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'newHand',
+    ..aOM<NewHand>(
+        14,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'newHand',
         subBuilder: NewHand.create)
-    ..aOM<$0.HandAction>(15, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'playerActed', subBuilder: $0.HandAction.create)
-    ..aOM<ActionChange>(16, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'actionChange', subBuilder: ActionChange.create)
-    ..aOM<HandResult>(17, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'handResult', subBuilder: HandResult.create)
-    ..aOM<Flop>(18, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'flop', subBuilder: Flop.create)
-    ..aOM<Turn>(19, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'turn', subBuilder: Turn.create)
-    ..aOM<River>(20, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'river', subBuilder: River.create)
-    ..aOM<Showdown>(21, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'showdown', subBuilder: Showdown.create)
-    ..aOM<NoMoreActions>(22, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'noMoreActions', subBuilder: NoMoreActions.create)
-    ..aOM<$0.CurrentHandState>(23, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'currentHandState', subBuilder: $0.CurrentHandState.create)
-    ..aOM<MsgAcknowledgement>(24, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'msgAck', subBuilder: MsgAcknowledgement.create)
-    ..aOM<$0.HighHand>(25, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'highHand', subBuilder: $0.HighHand.create)
-    ..aOM<RunItTwiceBoards>(26, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'runItTwice', subBuilder: RunItTwiceBoards.create)
-    ..aOM<Announcement>(27, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'announcement', subBuilder: Announcement.create)
-    ..aOM<DealerChoice>(28, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'dealerChoice', subBuilder: DealerChoice.create)
-    ..aOM<HandResultClient>(29, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'handResultClient', subBuilder: HandResultClient.create)
+    ..aOM<$0.HandAction>(
+        15,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'playerActed',
+        subBuilder: $0.HandAction.create)
+    ..aOM<ActionChange>(
+        16,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'actionChange',
+        subBuilder: ActionChange.create)
+    ..aOM<HandResult>(
+        17,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'handResult',
+        subBuilder: HandResult.create)
+    ..aOM<Flop>(
+        18,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'flop',
+        subBuilder: Flop.create)
+    ..aOM<Turn>(
+        19,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'turn',
+        subBuilder: Turn.create)
+    ..aOM<River>(
+        20,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'river',
+        subBuilder: River.create)
+    ..aOM<Showdown>(
+        21,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'showdown',
+        subBuilder: Showdown.create)
+    ..aOM<NoMoreActions>(
+        22,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'noMoreActions',
+        subBuilder: NoMoreActions.create)
+    ..aOM<$0.CurrentHandState>(
+        23,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'currentHandState',
+        subBuilder: $0.CurrentHandState.create)
+    ..aOM<MsgAcknowledgement>(
+        24,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'msgAck',
+        subBuilder: MsgAcknowledgement.create)
+    ..aOM<$0.HighHand>(
+        25,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'highHand',
+        subBuilder: $0.HighHand.create)
+    ..aOM<RunItTwiceBoards>(
+        26,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'runItTwice',
+        subBuilder: RunItTwiceBoards.create)
+    ..aOM<Announcement>(
+        27,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'announcement',
+        subBuilder: Announcement.create)
+    ..aOM<DealerChoice>(
+        28,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'dealerChoice',
+        subBuilder: DealerChoice.create)
+    ..aOM<HandResultClient>(
+        29,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'handResultClient',
+        subBuilder: HandResultClient.create)
     ..hasRequiredFields = false;
 
   HandMessageItem._() : super();

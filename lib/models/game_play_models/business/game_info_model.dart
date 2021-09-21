@@ -42,6 +42,7 @@ class GameInfoModel {
   bool waitlistAllowed = false;
   bool ipCheck = false;
   bool gpsCheck = false;
+  String sfuUrl = 'http://67.205.136.63:7000';
 
   // nats channels
   String gameToPlayerChannel;

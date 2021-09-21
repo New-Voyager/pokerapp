@@ -5,7 +5,12 @@ import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 import 'round_color_button.dart';
 
-showErrorDialog(BuildContext context, String title, String error) async {
+showErrorDialog(BuildContext context, String title, String error,
+    {bool info}) async {
+  Color titleColor = Colors.red;
+  if (info) {
+    titleColor = Colors.white;
+  }
   // show a popup
   final AppTheme theme = AppTheme.getTheme(context);
   await showGeneralDialog(
@@ -32,7 +37,7 @@ showErrorDialog(BuildContext context, String title, String error) async {
                     child: Text(
                       title,
                       style: AppDecorators.getHeadLine3Style(theme: theme)
-                          .copyWith(color: Colors.red),
+                          .copyWith(color: titleColor),
                     ),
                   ),
                   // sep
