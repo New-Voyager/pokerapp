@@ -4,7 +4,7 @@ import 'package:pokerapp/services/data/game_log_store.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/widgets/rounded_accent_button.dart';
 
-import 'debug_view.dart';
+import '../debug_view.dart';
 
 class DebugLogBottomSheet extends StatefulWidget {
   final gameCode;
