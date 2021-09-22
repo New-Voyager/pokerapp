@@ -97,29 +97,31 @@ class IonAudioConferenceService {
   IonBaseConnector _connector;
   IonSDKSFU _rtc;
   String _streamId;
+  bool _inConference = false;
+  bool _closed = false;
 
   List<Participant> participants = [];
   IonAudioConferenceService(this.gameState, this.chatService, this.sfuUrl,
       this.confRoom, this.player);
 
   join() async {
-    return;
     try {
-      if (_connector != null) {
-        return;
-      }
+      _closed = false;
       _connector = IonBaseConnector(sfuUrl);
       _rtc = new IonSDKSFU(_connector);
       _rtc.ontrack = onTrack;
       _rtc.onspeaker = onSpeakers;
       await _rtc.connect();
+      if (_closed) return;
       String playerId = this.player.id.toString();
       await _rtc.join(this.confRoom, playerId);
+      if (_closed) return;
       log('ION: $playerId joined the conference');
       var localStream = await LocalStream.getUserMedia(
           constraints: Constraints(audio: true, video: false));
 
       await _rtc.publish(localStream);
+      if (_closed) return;
       log('RTC: name: $playerId  stream id ${localStream.stream.id}');
       _streamId = localStream.stream.id;
       Participant participant = Participant(stream: localStream, remote: false);
@@ -130,6 +132,7 @@ class IonAudioConferenceService {
       chatService.onAudioConfMessage = onAudioConfMessage;
       chatService.sendAudioConfResponse(localStream.stream.id);
       chatService.sendAudioConfRequest();
+      _inConference = true;
     } catch (err) {
       close();
       throw err;
@@ -156,16 +159,30 @@ class IonAudioConferenceService {
         }
       }
       me.dispose();
+
+      gameState.communicationState.talking = false;
+      final mySeat = gameState.mySeat;
+      if (mySeat != null) {
+        mySeat.player.talking = false;
+        mySeat.notify();
+      }
+      _inConference = false;
     }
+    gameState.communicationState.audioConferenceStatus =
+        AudioConferenceStatus.LEFT;
+    close();
   }
 
   close() {
+    _closed = true;
     if (_rtc != null) {
       _rtc.close();
     }
+    _rtc = null;
     if (_connector != null) {
       _connector.close();
     }
+    _connector = null;
   }
 
   onTrack(MediaStreamTrack track, RemoteStream remoteStream) {
@@ -286,5 +303,58 @@ class IonAudioConferenceService {
       }
     }
     return null;
+  }
+
+  Participant me() {
+    Participant meObject;
+    for (final participant in participants) {
+      if (participant.playerId == this.player.id) {
+        meObject = participant;
+        break;
+      }
+    }
+    return meObject;
+  }
+
+  void muteAll() {
+    // if the current player is in the conference, mute
+    if (_inConference) {
+      for (final participant in participants) {
+        if (participant.playerId == this.player.id) {
+          // me
+          continue;
+        }
+        participant.mute();
+      }
+    }
+  }
+
+  void unmuteAll() {
+    // if the current player is in the conference, mute
+    if (_inConference) {
+      for (final participant in participants) {
+        participant.unmute();
+      }
+    }
+  }
+
+  void mute() {
+    // if the current player is in the conference, mute
+    if (_inConference) {
+      final me = this.me();
+      if (me != null && !me.isMuted) {
+        me.mute();
+      }
+    }
+  }
+
+  void unmute() {
+    // if the current player is in the conference, mute
+    if (_inConference) {
+      final me = this.me();
+      if (me != null && me.isMuted) {
+        me.unmute();
+      }
+    }
   }
 }

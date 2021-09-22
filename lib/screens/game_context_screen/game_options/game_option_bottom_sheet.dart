@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/option_item_model.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
@@ -10,8 +11,10 @@ import 'game_option/game_option.dart';
 
 class GameOptionsBottomSheet extends StatefulWidget {
   final GameState gameState;
+  final GameContextObject gameContextObj;
   final bool focusWaitingList;
-  GameOptionsBottomSheet({this.gameState, this.focusWaitingList = false});
+  GameOptionsBottomSheet(
+      {this.gameContextObj, this.gameState, this.focusWaitingList = false});
 
   @override
   _GameOptionsState createState() => _GameOptionsState();
@@ -75,6 +78,7 @@ class _GameOptionsState extends State<GameOptionsBottomSheet> {
           /* build other options */
           Expanded(
             child: GameOption(
+              widget.gameContextObj,
               widget.gameState,
               widget.gameState.gameCode,
               currentPlayer.uuid,

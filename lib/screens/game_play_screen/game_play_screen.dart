@@ -170,16 +170,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
   Future _joinAudio() async {
     _gameState.gameInfo.audioConfEnabled = true;
-    if (_gameState.audioConfEnabled) {
-      try {
-        _gameContextObj.initializeAudioConf();
-        await _gameContextObj.ionAudioConferenceService.join();
-        this._gameState.communicationState.notify();
-      } catch (err) {
-        this._gameState.gameInfo.audioConfEnabled = false;
-        showErrorDialog(context, 'Error', 'Joining audio conference failed');
-      }
-    }
+    _gameContextObj.joinAudio(context);
     return;
 
     if (!_gameState.audioConfEnabled) {
@@ -474,9 +465,8 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
   void _onAudio(ChatMessage message) async {
     log('Audio message is sent ${message.messageId} from player ${message.fromPlayer}');
-    return;
-    final gameState = GameState.getState(_providerContext);
-    final seat = gameState.getSeatByPlayer(message.fromPlayer);
+    // final gameState = GameState.getState(_providerContext);
+    final seat = _gameState.getSeatByPlayer(message.fromPlayer);
     if (_voiceTextPlayer != null &&
         message.audio != null &&
         message.audio.length > 0) {
@@ -484,14 +474,10 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         seat.player.talking = true;
         seat.notify();
         try {
-          int res = await _voiceTextPlayer.playBytes(message.audio);
-          if (res == 1) {
-            log("Pls wait for ${message.duration} seconds");
-            await Future.delayed(Duration(seconds: message.duration ?? 0));
-          }
-
-          seat.player.talking = false;
-          seat.notify();
+          _voiceTextPlayer.playBytes(message.audio).then((value) {
+            seat.player.talking = false;
+            seat.notify();
+          });
         } catch (e) {
           // ignore the exception
         }
@@ -501,7 +487,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
           int res = await _voiceTextPlayer.playBytes(message.audio);
           if (res == 1) {
             log("Playing observer sound");
-            await Future.delayed(Duration(seconds: message.duration ?? 0));
+            //await Future.delayed(Duration(seconds: message.duration ?? 0));
           }
         } catch (e) {
           // ignore the exception
@@ -1063,9 +1049,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       if (_gameState.useAgora) {
         _gameState.agoraEngine?.leaveChannel();
       }
-      if (_gameContextObj.ionAudioConferenceService != null) {
-        _gameContextObj.ionAudioConferenceService.leave();
-      }
+      _gameContextObj.leaveAudio();
     }
   }
 }

@@ -104,6 +104,7 @@ class HeaderView extends StatelessWidget {
       // show backdrop options
       return;
     }
+    final gameContextObj = context.read<GameContextObject>();
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -116,7 +117,9 @@ class HeaderView extends StatelessWidget {
       ),
       builder: (_) => ListenableProvider.value(
         value: context.read<GameContextObject>(),
-        child: GameOptionsBottomSheet(gameState: GameState.getState(context)),
+        child: GameOptionsBottomSheet(
+            gameContextObj: gameContextObj,
+            gameState: GameState.getState(context)),
       ),
     );
   }

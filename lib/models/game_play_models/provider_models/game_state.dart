@@ -1124,6 +1124,9 @@ class GameState {
             seat.notify();
           }
         }
+        if (player.isMe) {
+          this.communicationState.talking = true;
+        }
       }
     }
   }
@@ -1137,6 +1140,9 @@ class GameState {
         player.talking = false;
         final seat = getSeat(player.seatNo);
         seat.notify();
+        if (player.isMe) {
+          this.communicationState.talking = false;
+        }
       }
     }
   }
@@ -1298,14 +1304,22 @@ enum AudioConferenceStatus {
   ERROR,
 }
 
+class MeTalkingState extends ChangeNotifier {
+  void notify() {
+    this.notifyListeners();
+  }
+}
+
 class CommunicationState extends ChangeNotifier {
   AudioConferenceStatus _audioConferenceStatus = AudioConferenceStatus.ERROR;
   bool showTextChat = true;
   bool audioConfEnabled = false;
   bool voiceChatEnable = false;
+  bool _mutedAll = false;
   bool _muted = false;
   bool _talking = false;
   final GameState gameState;
+  MeTalkingState talkingState = new MeTalkingState();
 
   CommunicationState(this.gameState);
 
@@ -1321,9 +1335,16 @@ class CommunicationState extends ChangeNotifier {
 
   bool get muted => _muted ?? false;
 
+  set mutedAll(bool v) {
+    _mutedAll = v;
+    notifyListeners();
+  }
+
+  bool get mutedAll => _mutedAll ?? false;
+
   set talking(bool v) {
     _talking = v;
-    notifyListeners();
+    talkingState.notify();
   }
 
   bool get talking => _talking ?? false;
