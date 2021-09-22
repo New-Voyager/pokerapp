@@ -31,6 +31,8 @@ class CommunicationView extends StatefulWidget {
 }
 
 class _CommunicationViewState extends State<CommunicationView> {
+  final ValueNotifier<bool> _vnShowAudioConfOptions =
+      ValueNotifier<bool>(false);
   bool _recordingCancelled;
   String _audioFile;
   final _audioRecorder = Record();
@@ -70,6 +72,7 @@ class _CommunicationViewState extends State<CommunicationView> {
                     (gameState.playerLocalConfig.showChat ?? true);
                 if (gameChatEnabled && playerChatEnabled) {
                   children.add(
+                    // chat button
                     Consumer<GameChatNotifState>(
                       builder: (_, gcns, __) => Badge(
                         animationType: BadgeAnimationType.scale,
@@ -86,36 +89,140 @@ class _CommunicationViewState extends State<CommunicationView> {
                       ),
                     ),
                   );
+
+                  // gap
                   children.add(SizedBox(
                     height: 10.dp,
                   ));
                 }
-                if (status == AppConstants.PLAYING &&
-                    (communicationState.audioConferenceStatus ==
-                            AudioConferenceStatus.CONNECTED ||
-                        communicationState.audioConferenceStatus ==
-                            AudioConferenceStatus.LEFT)) {
-                  if (gameState.audioConfEnabled) {
-                    if (gameState.useAgora) {
-                      // debugLog(gameState.gameCode, 'Show agora audio widgets');
-                      // log('Show agora audio widgets');
-                      children.addAll(agoraAudioWidgets(
-                          gameState, communicationState, theme));
-                    } else {
-                      log('User is playing and audio conference connected, showing janusAudioWidgets');
-                      children.addAll(janusAudioWidgets(
-                          gameState, communicationState, theme));
-                    }
-                  } else {
-                    // when the user turns off audio conf
-                    log('User turned off audio conf, showing audioChatWidgets');
-                    if (gameState.gameSettings.chat ?? true) {
-                      children.addAll(voiceTextWidgets(widget.chatService));
-                    }
-                  }
-                } else if (gameChatEnabled && playerChatEnabled) {
-                  children.addAll(voiceTextWidgets(widget.chatService));
-                }
+
+                // mic button
+                children.add(
+                  Stack(
+                    alignment: Alignment.centerRight,
+                    children: [
+                      // main button to show mic
+                      GameCircleButton(
+                        onClickHandler: () {
+                          _vnShowAudioConfOptions.value = true;
+                        },
+                        child: SvgPicture.asset(
+                          'assets/images/game/mic.svg',
+                          width: 16,
+                          height: 16,
+                          color: theme.primaryColorWithDark(),
+                        ),
+                      ),
+
+                      // other buttons
+                      ValueListenableBuilder<bool>(
+                        valueListenable: _vnShowAudioConfOptions,
+                        builder: (_, showAudioConfOptions, child) =>
+                            AnimatedSwitcher(
+                          transitionBuilder: (child, animation) =>
+                              SizeTransition(
+                            axis: Axis.horizontal,
+                            sizeFactor: animation,
+                            child: child,
+                          ),
+                          duration: const Duration(milliseconds: 200),
+                          child: showAudioConfOptions
+                              ? Container(
+                                  color: theme.primaryColorWithDark(),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      // mute button
+                                      GameCircleButton(
+                                        onClickHandler: () {
+                                          // handle on mute tap
+                                        },
+                                        child: Icon(
+                                          Icons.mic_rounded,
+                                          size: 24,
+                                          color: theme.primaryColorWithDark(),
+                                        ),
+                                      ),
+
+                                      // sep
+                                      const SizedBox(width: 10),
+
+                                      // hangup button
+                                      GameCircleButton(
+                                        onClickHandler: () {
+                                          // handle on hangup
+                                        },
+                                        child: Icon(
+                                          Icons.call_end,
+                                          size: 24,
+                                          color: theme.primaryColorWithDark(),
+                                        ),
+                                      ),
+
+                                      // sep
+                                      const SizedBox(width: 10),
+
+                                      // mute all button
+                                      GameCircleButton(
+                                        onClickHandler: () {
+                                          // handle on mute all
+                                        },
+                                        child: Icon(
+                                          Icons.mic_off_rounded,
+                                          size: 24,
+                                          color: theme.primaryColorWithDark(),
+                                        ),
+                                      ),
+
+                                      // sep
+                                      const SizedBox(width: 10),
+
+                                      // close button
+                                      GameCircleButton(
+                                        onClickHandler: () {
+                                          _vnShowAudioConfOptions.value = false;
+                                        },
+                                        child: Icon(
+                                          Icons.close,
+                                          size: 24,
+                                          color: theme.primaryColorWithDark(),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              : const SizedBox.shrink(),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+                // if (status == AppConstants.PLAYING &&
+                //     (communicationState.audioConferenceStatus ==
+                //             AudioConferenceStatus.CONNECTED ||
+                //         communicationState.audioConferenceStatus ==
+                //             AudioConferenceStatus.LEFT)) {
+                //   if (gameState.audioConfEnabled) {
+                //     if (gameState.useAgora) {
+                //       // debugLog(gameState.gameCode, 'Show agora audio widgets');
+                //       // log('Show agora audio widgets');
+                //       children.addAll(agoraAudioWidgets(
+                //           gameState, communicationState, theme));
+                //     } else {
+                //       log('User is playing and audio conference connected, showing janusAudioWidgets');
+                //       children.addAll(janusAudioWidgets(
+                //           gameState, communicationState, theme));
+                //     }
+                //   } else {
+                //     // when the user turns off audio conf
+                //     log('User turned off audio conf, showing audioChatWidgets');
+                //     if (gameState.gameSettings.chat ?? true) {
+                //       children.addAll(voiceTextWidgets(widget.chatService));
+                //     }
+                //   }
+                // } else if (gameChatEnabled && playerChatEnabled) {
+                //   children.addAll(voiceTextWidgets(widget.chatService));
+                // }
 
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
