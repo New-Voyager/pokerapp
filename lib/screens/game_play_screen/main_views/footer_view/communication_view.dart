@@ -7,6 +7,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:pokerapp/models/game_play_models/business/game_chat_notfi_state.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_constants.dart';
@@ -23,8 +24,10 @@ import 'package:record/record.dart';
 class CommunicationView extends StatefulWidget {
   final Function chatVisibilityChange;
   final GameMessagingService chatService;
+  final GameContextObject gameContextObject;
 
-  CommunicationView(this.chatVisibilityChange, this.chatService);
+  CommunicationView(
+      this.chatVisibilityChange, this.chatService, this.gameContextObject);
 
   @override
   _CommunicationViewState createState() => _CommunicationViewState();
@@ -97,137 +100,19 @@ class _CommunicationViewState extends State<CommunicationView> {
                 }
 
                 // mic button
-                children.add(
-                  Stack(
-                    alignment: Alignment.centerRight,
-                    children: [
-                      // main button to show mic
-                      GameCircleButton(
-                        onClickHandler: () {
-                          _vnShowAudioConfOptions.value = true;
-                        },
-                        child: SvgPicture.asset(
-                          'assets/images/game/mic.svg',
-                          width: 16,
-                          height: 16,
-                          color: theme.primaryColorWithDark(),
-                        ),
-                      ),
+                bool showVoiceText = true;
+                if (gameState.audioConfEnabled &&
+                    gameState.playerLocalConfig.inAudioConference) {
+                  if (communicationState.audioConferenceStatus ==
+                      AudioConferenceStatus.CONNECTED) {
+                    children.add(audioConferenceWidget(gameState, theme));
+                    showVoiceText = false;
+                  }
+                }
 
-                      // other buttons
-                      ValueListenableBuilder<bool>(
-                        child: Container(
-                          color: theme.primaryColorWithDark(),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              // mute button
-                              GameCircleButton(
-                                onClickHandler: () {
-                                  // handle on mute tap
-                                  log('onClickHandler: handle on mute tap');
-                                },
-                                child: Icon(
-                                  Icons.mic_rounded,
-                                  size: 24,
-                                  color: theme.primaryColorWithDark(),
-                                ),
-                              ),
-
-                              // sep
-                              const SizedBox(width: 10),
-
-                              // hangup button
-                              GameCircleButton(
-                                onClickHandler: () {
-                                  // handle on hangup
-                                  log('onClickHandler: handle on hangup');
-                                },
-                                child: Icon(
-                                  Icons.call_end,
-                                  size: 24,
-                                  color: theme.primaryColorWithDark(),
-                                ),
-                              ),
-
-                              // sep
-                              const SizedBox(width: 10),
-
-                              // mute all button
-                              GameCircleButton(
-                                onClickHandler: () {
-                                  // handle on mute all
-                                  log('onClickHandler: handle on mute all');
-                                },
-                                child: Icon(
-                                  Icons.mic_off_rounded,
-                                  size: 24,
-                                  color: theme.primaryColorWithDark(),
-                                ),
-                              ),
-
-                              // sep
-                              const SizedBox(width: 10),
-
-                              // close button
-                              GameCircleButton(
-                                onClickHandler: () {
-                                  _vnShowAudioConfOptions.value = false;
-                                },
-                                child: Icon(
-                                  Icons.close,
-                                  size: 24,
-                                  color: theme.primaryColorWithDark(),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        valueListenable: _vnShowAudioConfOptions,
-                        builder: (_, showAudioConfOptions, child) =>
-                            AnimatedSwitcher(
-                          transitionBuilder: (child, animation) =>
-                              SizeTransition(
-                            axis: Axis.horizontal,
-                            sizeFactor: animation,
-                            child: child,
-                          ),
-                          duration: AppConstants.fastestAnimationDuration,
-                          child: showAudioConfOptions
-                              ? child
-                              : const SizedBox.shrink(),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-                // if (status == AppConstants.PLAYING &&
-                //     (communicationState.audioConferenceStatus ==
-                //             AudioConferenceStatus.CONNECTED ||
-                //         communicationState.audioConferenceStatus ==
-                //             AudioConferenceStatus.LEFT)) {
-                //   if (gameState.audioConfEnabled) {
-                //     if (gameState.useAgora) {
-                //       // debugLog(gameState.gameCode, 'Show agora audio widgets');
-                //       // log('Show agora audio widgets');
-                //       children.addAll(agoraAudioWidgets(
-                //           gameState, communicationState, theme));
-                //     } else {
-                //       log('User is playing and audio conference connected, showing janusAudioWidgets');
-                //       children.addAll(janusAudioWidgets(
-                //           gameState, communicationState, theme));
-                //     }
-                //   } else {
-                //     // when the user turns off audio conf
-                //     log('User turned off audio conf, showing audioChatWidgets');
-                //     if (gameState.gameSettings.chat ?? true) {
-                //       children.addAll(voiceTextWidgets(widget.chatService));
-                //     }
-                //   }
-                // } else if (gameChatEnabled && playerChatEnabled) {
-                //   children.addAll(voiceTextWidgets(widget.chatService));
-                // }
-
+                if (showVoiceText) {
+                  children.addAll(voiceTextWidgets(widget.chatService));
+                }
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: children,
@@ -592,4 +477,229 @@ class _CommunicationViewState extends State<CommunicationView> {
     }
     _audioRecorder.start(path: outputFile.path);
   }
+
+  Widget audioConferenceWidget(GameState gameState, AppTheme theme) {
+    return Stack(
+      alignment: Alignment.centerRight,
+      children: [
+        ListenableProvider<MeTalkingState>(
+          create: (_) => gameState.communicationState.talkingState,
+          child: Consumer<MeTalkingState>(
+              builder: (_, __, ___) => audioConferenceMic(gameState, theme)),
+        ),
+
+        // other buttons
+        ValueListenableBuilder<bool>(
+            valueListenable: _vnShowAudioConfOptions,
+            builder: (_, showAudioConfOptions, child) {
+              IconData myMic = Icons.mic_rounded;
+              if (gameState.communicationState.muted) {
+                myMic = Icons.mic_off_rounded;
+              }
+
+              IconData soundOn = Icons.volume_up_sharp;
+              if (gameState.communicationState.mutedAll) {
+                soundOn = Icons.volume_off_sharp;
+              }
+
+              return AnimatedSwitcher(
+                transitionBuilder: (child, animation) => SizeTransition(
+                  axis: Axis.horizontal,
+                  sizeFactor: animation,
+                  child: child,
+                ),
+                duration: const Duration(milliseconds: 200),
+                child: showAudioConfOptions
+                    ? Container(
+                        color: theme.primaryColorWithDark(),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            // mute button
+                            GameCircleButton(
+                              onClickHandler: () {
+                                // handle on mute tap
+                                if (!gameState.communicationState.muted) {
+                                  widget.gameContextObject
+                                      .ionAudioConferenceService
+                                      .mute();
+                                  gameState.communicationState.muted = true;
+                                } else {
+                                  widget.gameContextObject
+                                      .ionAudioConferenceService
+                                      .unmute();
+                                  gameState.communicationState.muted = false;
+                                }
+                              },
+                              child: Icon(
+                                myMic,
+                                size: 24,
+                                color: theme.primaryColorWithDark(),
+                              ),
+                            ),
+
+                            // sep
+                            const SizedBox(width: 10),
+
+                            // hangup button
+                            GameCircleButton(
+                              onClickHandler: () {
+                                _vnShowAudioConfOptions.value = false;
+                                // handle on hangup
+                                gameState.playerLocalConfig.inAudioConference =
+                                    false;
+                                widget
+                                    .gameContextObject.ionAudioConferenceService
+                                    .leave();
+                                gameState.communicationState.notify();
+                              },
+                              child: Icon(
+                                Icons.call_end,
+                                size: 24,
+                                color: theme.primaryColorWithDark(),
+                              ),
+                            ),
+
+                            // sep
+                            const SizedBox(width: 10),
+                            // audio on off
+                            GameCircleButton(
+                              onClickHandler: () {
+                                // handle on mute all
+                                if (!gameState.communicationState.mutedAll) {
+                                  widget.gameContextObject
+                                      .ionAudioConferenceService
+                                      .muteAll();
+                                  gameState.communicationState.mutedAll = true;
+                                } else {
+                                  widget.gameContextObject
+                                      .ionAudioConferenceService
+                                      .unmuteAll();
+                                  gameState.communicationState.mutedAll = false;
+                                }
+                              },
+                              child: Icon(
+                                soundOn,
+                                size: 24,
+                                color: theme.primaryColorWithDark(),
+                              ),
+                            ),
+                            // sep
+                            const SizedBox(width: 10),
+
+                            // close button
+                            GameCircleButton(
+                              onClickHandler: () {
+                                _vnShowAudioConfOptions.value = false;
+                              },
+                              child: Icon(
+                                Icons.close,
+                                size: 24,
+                                color: theme.primaryColorWithDark(),
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    : const SizedBox.shrink(),
+              );
+            }),
+      ],
+    );
+  }
+
+  Widget audioConferenceMic(GameState gameState, AppTheme theme) {
+    log('AUDIOCONF: Mic is rebuilding');
+    Color iconColor = Colors.grey;
+    Widget mic;
+    CommunicationState state = gameState.communicationState;
+    if (state != null) {
+      if (state.audioConferenceStatus == AudioConferenceStatus.CONNECTING) {
+        iconColor = Colors.yellow;
+      } else if (state.audioConferenceStatus ==
+          AudioConferenceStatus.CONNECTED) {
+        iconColor = Colors.green;
+      }
+
+      log('Audio status: ${state.audioConferenceStatus.toString()} iconColor: ${iconColor.toString()} muted: ${state.muted} talking: ${state.talking}');
+
+      if (state?.talking ?? false) {
+        mic = talkingAnimation(() async {
+          log('AUDIOCONF: mic is tapped');
+          _vnShowAudioConfOptions.value = true;
+          if (state.audioConferenceStatus == AudioConferenceStatus.CONNECTED) {}
+        }, theme);
+      }
+    }
+
+    if (mic == null) {
+      Widget child;
+      if (state.muted) {
+        child = SvgPicture.asset('assets/images/game/mic-mute.svg',
+            width: 16, height: 16, color: Colors.black);
+      } else {
+        child = SvgPicture.asset('assets/images/game/mic.svg',
+            width: 16, height: 16, color: Colors.black);
+      }
+      mic = GameCircleButton(
+          onClickHandler: () async {
+            log('mic is tapped');
+            _vnShowAudioConfOptions.value = true;
+
+            // if (state.audioConferenceStatus ==
+            //     AudioConferenceStatus.CONNECTED) {
+            //   if (gameState.agoraEngine.micMuted) {
+            //     Alerts.showNotification(
+            //         titleText: "Conference",
+            //         svgPath: 'assets/images/game/conf-on.svg',
+            //         subTitleText: 'Mic is unmuted');
+            //   } else {
+            //     Alerts.showNotification(
+            //         titleText: "Conference",
+            //         svgPath: 'assets/images/game/conf-on.svg',
+            //         subTitleText: 'Mic is muted');
+            //   }
+            //   gameState.agoraEngine.switchMicrophone();
+            // }
+          },
+          child: child);
+      log('audio is ${state.muted ? "muted" : "on"}: $mic');
+    }
+
+    if (state.audioConferenceStatus == AudioConferenceStatus.LEFT) {
+      Widget child = SvgPicture.asset('assets/images/game/mic-mute.svg',
+          width: 16, height: 16, color: Colors.black);
+
+      mic = GameCircleButton(
+          disabled: true, onClickHandler: () async {}, child: child);
+    }
+    return mic;
+  }
 }
+
+// if (status == AppConstants.PLAYING &&
+//     (communicationState.audioConferenceStatus ==
+//             AudioConferenceStatus.CONNECTED ||
+//         communicationState.audioConferenceStatus ==
+//             AudioConferenceStatus.LEFT)) {
+//   if (gameState.audioConfEnabled) {
+//     if (gameState.useAgora) {
+//       // debugLog(gameState.gameCode, 'Show agora audio widgets');
+//       // log('Show agora audio widgets');
+//       children.addAll(agoraAudioWidgets(
+//           gameState, communicationState, theme));
+//     } else {
+//       log('User is playing and audio conference connected, showing janusAudioWidgets');
+//       children.addAll(janusAudioWidgets(
+//           gameState, communicationState, theme));
+//     }
+//   } else {
+//     // when the user turns off audio conf
+//     log('User turned off audio conf, showing audioChatWidgets');
+//     if (gameState.gameSettings.chat ?? true) {
+//       children.addAll(voiceTextWidgets(widget.chatService));
+//     }
+//   }
+// } else if (gameChatEnabled && playerChatEnabled) {
+//   children.addAll(voiceTextWidgets(widget.chatService));
+// }
