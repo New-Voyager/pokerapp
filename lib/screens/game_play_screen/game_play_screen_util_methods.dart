@@ -255,7 +255,7 @@ class GamePlayScreenUtilMethods {
       }
 
       return status;
-    } catch(err) {
+    } catch (err) {
       ConnectionDialog.dismiss(context: context);
       throw err;
     }

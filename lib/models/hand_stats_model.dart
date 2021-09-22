@@ -96,32 +96,35 @@ class StatModel {
   int totalHands;
   List<HeadsupHandDetail> headsupHandDetails;
 
-  factory StatModel.fromJson(Map<String, dynamic> json) => StatModel(
-        inPreflop: json["inPreflop"],
-        inFlop: json["inFlop"],
-        inTurn: json["inTurn"],
-        inRiver: json["inRiver"],
-        wentToShowDown: json["wentToShowDown"],
-        wonAtShowDown: json["wonAtShowDown"],
-        headsupHands: json["headsupHands"],
-        wonHeadsupHands: json["wonHeadsupHands"],
-        headsupHandSummary: json["headsupHandSummary"] == null
-            ? null
-            : Map.from(json["headsupHandSummary"]).map((k, v) =>
-                MapEntry<String, HeadsupHandSummary>(
-                    k, HeadsupHandSummary.fromJson(v))),
-        preflopRaise: json["preflopRaise"],
-        postflopRaise: json["postflopRaise"],
-        threeBet: json["threeBet"],
-        contBet: json["contBet"],
-        vpipCount: json["vpipCount"],
-        allInCount: json["allInCount"],
-        totalHands: json["totalHands"],
-        headsupHandDetails: json["headsupHandDetails"] == null
-            ? null
-            : List<HeadsupHandDetail>.from(json["headsupHandDetails"]
-                .map((x) => HeadsupHandDetail.fromJson(x))),
-      );
+  factory StatModel.fromJson(Map<String, dynamic> json) {
+    final stats = StatModel(
+      inPreflop: json["inPreflop"],
+      inFlop: json["inFlop"],
+      inTurn: json["inTurn"],
+      inRiver: json["inRiver"],
+      wentToShowDown: json["wentToShowDown"],
+      wonAtShowDown: json["wonAtShowDown"],
+      headsupHands: json["headsupHands"],
+      wonHeadsupHands: json["wonHeadsupHands"],
+      headsupHandSummary: json["headsupHandSummary"] == null
+          ? null
+          : Map.from(json["headsupHandSummary"]).map((k, v) =>
+              MapEntry<String, HeadsupHandSummary>(
+                  k, HeadsupHandSummary.fromJson(v))),
+      preflopRaise: json["preflopRaise"],
+      postflopRaise: json["postflopRaise"],
+      threeBet: json["threeBet"],
+      contBet: json["contBet"],
+      vpipCount: json["vpipCount"],
+      allInCount: json["allInCount"],
+      totalHands: json["totalHands"],
+      headsupHandDetails: json["headsupHandDetails"] == null
+          ? null
+          : List<HeadsupHandDetail>.from(json["headsupHandDetails"]
+              .map((x) => HeadsupHandDetail.fromJson(x))),
+    );
+    return stats;
+  }
 
   Map<String, dynamic> toJson() => {
         "inPreflop": inPreflop,

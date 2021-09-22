@@ -52,23 +52,12 @@ class GameService {
           sessionTimeStr
           smallBlind
           bigBlind
-          balance
-          handsWon
           handsPlayed
-          bigWin
-          bigWinHand
-          bigLoss
-          bigLossHand
-          preflopHands
-          flopHands
-          turnHands
-          riverHands
-          showdownHands
-          balance
           handsDealt
           profit
           buyIn
           highHandTracked
+          dataAggregated
           stackStat {
             handNum
             before

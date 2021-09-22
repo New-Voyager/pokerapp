@@ -1106,6 +1106,40 @@ class GameState {
       return player.cards.reversed.toList();
     }
   }
+
+  void talking(List<int> players) {
+    for (final playerId in players) {
+      PlayerModel player;
+      for (final playerInSeat in _playersInGame) {
+        if (playerInSeat.playerId == playerId) {
+          player = playerInSeat;
+          break;
+        }
+      }
+      if (player != null) {
+        player.talking = true;
+        if (player.seatNo > 0) {
+          final seat = getSeat(player.seatNo);
+          if (seat != null) {
+            seat.notify();
+          }
+        }
+      }
+    }
+  }
+
+  void stoppedTalking(List<int> players) {
+    for (final playerId in players) {
+      final player = this
+          ._playersInGame
+          .firstWhere((element) => element.playerId == playerId, orElse: null);
+      if (player != null) {
+        player.talking = false;
+        final seat = getSeat(player.seatNo);
+        seat.notify();
+      }
+    }
+  }
 }
 
 class TappedSeatState extends ChangeNotifier {

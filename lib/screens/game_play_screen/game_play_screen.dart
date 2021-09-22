@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:after_layout/after_layout.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:pokerapp/models/game_play_models/business/game_chat_notfi_state.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
@@ -168,6 +169,17 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   }
 
   Future _joinAudio() async {
+    _gameState.gameInfo.audioConfEnabled = true;
+    if (_gameState.audioConfEnabled) {
+      try {
+        _gameContextObj.initializeAudioConf();
+        await _gameContextObj.ionAudioConferenceService.join();
+        this._gameState.communicationState.notify();
+      } catch (err) {
+        this._gameState.gameInfo.audioConfEnabled = false;
+        showErrorDialog(context, 'Error', 'Joining audio conference failed');
+      }
+    }
     return;
 
     if (!_gameState.audioConfEnabled) {
@@ -380,6 +392,10 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       _locationUpdates.stop();
       _locationUpdates = null;
     }
+    if (_gameContextObj.ionAudioConferenceService != null) {
+      _gameContextObj.ionAudioConferenceService.leave();
+    }
+
     if (_gameState != null) {
       _gameState.uiClosing = true;
     }
@@ -503,7 +519,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     final gameState = GameState.getState(_providerContext);
     final tableState = gameState.tableState;
     final me = gameState.me;
-
+    gameState.gameInfo.audioConfEnabled = true;
     /* ignore the open seat tap as the player is seated and game is running */
     if (me != null &&
         me.status == AppConstants.PLAYING &&
@@ -516,7 +532,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       log('Player ${me.name} switches seat to $seatPos');
       await GameService.switchSeat(widget.gameCode, seatPos);
     } else {
-
       try {
         LocationUpdates locationUpdates;
         // show connection dialog
@@ -532,6 +547,20 @@ class _GamePlayScreenState extends State<GamePlayScreen>
             }
           }
         }
+
+        if (gameState.gameInfo.audioConfEnabled) {
+          if (!await Permission.microphone.isGranted) {
+            showErrorDialog(context, 'Permission',
+                'Game uses audio conference. Please grant mic access to participate in Audio conference.',
+                info: true);
+            // request audio permission
+            PermissionStatus status = await Permission.microphone.request();
+            if (status != PermissionStatus.granted) {
+              gameState.gameInfo.audioConfEnabled = false;
+            }
+          }
+        }
+
         await GamePlayScreenUtilMethods.joinGame(
           context: _providerContext,
           seatPos: seatPos,
@@ -543,6 +572,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
           _locationUpdates = locationUpdates;
           _locationUpdates.start();
         }
+
+        // join audio conference
+        await _joinAudio();
       } catch (e) {
         // close connection dialog
         //ConnectionDialog.dismiss(context: context);
@@ -1030,6 +1062,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       _gameState.janusEngine?.leaveChannel();
       if (_gameState.useAgora) {
         _gameState.agoraEngine?.leaveChannel();
+      }
+      if (_gameContextObj.ionAudioConferenceService != null) {
+        _gameContextObj.ionAudioConferenceService.leave();
       }
     }
   }

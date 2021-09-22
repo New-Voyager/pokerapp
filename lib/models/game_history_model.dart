@@ -176,6 +176,7 @@ class GameHistoryDetailModel extends ChangeNotifier {
   String endedBy;
   bool isHost;
   bool isManager;
+  bool dataAggregated = false;
 
   List<HandData> handsData = [];
   List<HighHandWinner> hhWinners = [];
@@ -209,21 +210,24 @@ class GameHistoryDetailModel extends ChangeNotifier {
           .toList();
       stack.sort((a, b) => a.handNum.compareTo(b.handNum));
 
-      preflopHands = int.parse(gameData['preflopHands'].toString());
-      flopHands = int.parse(gameData['flopHands'].toString());
-      turnHands = int.parse(gameData['turnHands'].toString());
-      riverHands = int.parse(gameData['riverHands'].toString());
-      showdownHands = int.parse(gameData['showdownHands'].toString());
+      dataAggregated = gameData['dataAggregated'] ?? false;
       handsPlayed = int.parse(gameData['handsPlayed'].toString());
-
-      // build hands stats
-      handsData
-          .add(new HandData('Pre-flop', (preflopHands / handsPlayed) * 100.0));
-      handsData.add(new HandData('Flop', (flopHands / handsPlayed) * 100.0));
-      handsData.add(new HandData('Turn', (turnHands / handsPlayed) * 100.0));
-      handsData.add(new HandData('River', (riverHands / handsPlayed) * 100.0));
-      handsData
-          .add(new HandData('Showdown', (showdownHands / handsPlayed) * 100.0));
+      if (dataAggregated) {
+        preflopHands = int.parse(gameData['preflopHands'].toString());
+        flopHands = int.parse(gameData['flopHands'].toString());
+        turnHands = int.parse(gameData['turnHands'].toString());
+        riverHands = int.parse(gameData['riverHands'].toString());
+        showdownHands = int.parse(gameData['showdownHands'].toString());
+        // build hands stats
+        handsData.add(
+            new HandData('Pre-flop', (preflopHands / handsPlayed) * 100.0));
+        handsData.add(new HandData('Flop', (flopHands / handsPlayed) * 100.0));
+        handsData.add(new HandData('Turn', (turnHands / handsPlayed) * 100.0));
+        handsData
+            .add(new HandData('River', (riverHands / handsPlayed) * 100.0));
+        handsData.add(
+            new HandData('Showdown', (showdownHands / handsPlayed) * 100.0));
+      }
     }
 
     if (this.hhTracked) {
@@ -236,7 +240,7 @@ class GameHistoryDetailModel extends ChangeNotifier {
     }
     gameType = gameData['gameType'];
     gameHands = int.parse(gameData['handsDealt'].toString());
-    runTimeStr = gameData['runTimeStr'].toString();
+    // runTimeStr = gameData['runTimeStr'].toString();
     int runTimeSec = (int.parse(gameData['runTime'].toString()) / 1000).round();
     if (runTimeSec < 60) {
       runTimeSec = 60;

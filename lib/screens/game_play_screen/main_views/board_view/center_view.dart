@@ -327,7 +327,7 @@ class _CenterViewState extends State<CenterView> {
     /* main pot view */
     Widget pots = Transform.scale(
       scale: boardAttributes.centerPotScale,
-      alignment: Alignment.topCenter,
+      alignment: Alignment.bottomCenter,
       child: potsStack,
     );
 
@@ -364,10 +364,12 @@ class _CenterViewState extends State<CenterView> {
               );
             },
           ),
+
           // divider
           SizedBox(height: boardAttributes.centerGap),
 
           Stack(
+            alignment: Alignment.topCenter,
             children: [
               RankWidget(boardAttributes, theme, vnRankStr),
               potUpdatesView(boa: boardAttributes)

@@ -18,8 +18,9 @@ class RankWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var textStyle = AppStylesNew.footerResultTextStyle4
-        .copyWith(fontSize: 18.dp, color: Colors.white);
+        .copyWith(fontSize: 16.dp, color: Colors.white);
     return Transform.scale(
+      alignment: Alignment.topCenter,
       scale: boardAttributes.centerRankStrScale,
       child: ValueListenableBuilder(
           valueListenable: rankTextNotifier,
@@ -30,9 +31,9 @@ class RankWidget extends StatelessWidget {
               child: _hideRankStr(rankStr)
                   ? const SizedBox.shrink()
                   : Container(
-                      margin: EdgeInsets.only(top: 5.0),
+                      // margin: EdgeInsets.only(top: 5.0),
                       padding: EdgeInsets.symmetric(
-                        horizontal: 20.pw,
+                        horizontal: 15.pw,
                         vertical: 2.pw,
                       ),
                       decoration: BoxDecoration(

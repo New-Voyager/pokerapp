@@ -157,10 +157,10 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
               horizontal: 8.pw,
               vertical: 2.ph,
             ),
-            child:Text(
-                  me.rankText,
-                  style: AppDecorators.getHeadLine6Style(theme: theme),
-                ),
+            child: Text(
+              me.rankText,
+              style: AppDecorators.getHeadLine6Style(theme: theme),
+            ),
           );
     return rankText;
   }
