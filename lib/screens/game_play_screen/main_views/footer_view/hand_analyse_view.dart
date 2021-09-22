@@ -14,6 +14,7 @@ import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/debuglog_bottomsheet.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/game_info_bottom_sheet.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/player_stats_bottomsheet.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/table_result_bottomsheet.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/game_circle_button.dart';
@@ -39,6 +40,8 @@ class HandAnalyseView extends StatefulWidget {
 }
 
 class _HandAnalyseViewState extends State<HandAnalyseView> {
+  final ValueNotifier<bool> vnShowMenuItems = ValueNotifier<bool>(false);
+
   BuildContext _context;
   AppTextScreen _appScreenText;
   bool disposed = false;
@@ -126,6 +129,17 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
           gameCode: widget.gameState.gameCode,
           gameState: widget.gameState,
         );
+      },
+    );
+  }
+
+  Future<void> onGameInfoBottomSheet(BuildContext context) async {
+    // final model = HandHistoryListModel(widget.gameState.gameCode, true);
+    showBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (_) {
+        return GameInfoBottomSheet();
       },
     );
   }
@@ -627,6 +641,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
     return Align(
       alignment: Alignment.topLeft,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // first
           Consumer<MyState>(
@@ -666,10 +681,8 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
             },
           ),
 
-          GameCircleButton(
-            iconData: Icons.menu,
-            onClickHandler: () => onMoreOptionsPress(context),
-          ),
+          // build the menu widget, and on tap expand the options from left
+          _buildMenuWidget(context),
 
           // GameCircleButton(
           //   iconData: Icons.adb,
@@ -691,9 +704,126 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
     );
   }
 
-  void onMoreOptionsPress(BuildContext context) {
-    log('onMoreOptionsPress');
-    showMoreOptions(context);
+  // void onMoreOptionsPress(BuildContext context) {
+  //   log('onMoreOptionsPress');
+  //   // showMoreOptions(context);
+
+  //   // slide in from left
+  //   vnShowMenuItems.value = true;
+  // }
+
+  Widget _buildMenuButton({
+    @required String title,
+    IconData iconData,
+    String imagePath,
+    VoidCallback onClick,
+  }) {
+    final tmp = title.split(' ');
+    if (tmp.length > 1) {
+      title = tmp[0] + '\n' + tmp[1];
+    }
+
+    return Container(
+      margin: EdgeInsets.only(right: 10.0),
+      child: GestureDetector(
+        onTap: onClick,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // button
+            GameCircleButton(
+              iconData: iconData,
+              imagePath: imagePath,
+            ),
+
+            // text
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.white),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMenuWidget(BuildContext context) {
+    return Stack(
+      alignment: Alignment.centerLeft,
+      children: [
+        // MAIN MENU
+        GameCircleButton(
+          iconData: Icons.menu,
+          onClickHandler: () => vnShowMenuItems.value = true,
+        ),
+
+        // Other options
+        ValueListenableBuilder(
+          valueListenable: vnShowMenuItems,
+          child: Container(
+            color: Colors.black,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // other menu buttons
+
+                // menu close button
+                _buildMenuButton(
+                  title: 'Close',
+                  iconData: Icons.close_rounded,
+                  onClick: () => vnShowMenuItems.value = false,
+                ),
+
+                // last hand
+                _buildMenuButton(
+                  title: 'Prev',
+                  iconData: Icons.history_edu_rounded,
+                  onClick: () => onClickViewHandAnalysis(context),
+                ),
+
+                // game history
+                _buildMenuButton(
+                  title: 'History',
+                  iconData: Icons.history_rounded,
+                  onClick: () => onClickViewHandAnalysis(context),
+                ),
+
+                // game info
+                _buildMenuButton(
+                  title: 'Info',
+                  iconData: Icons.info_outline_rounded,
+                  onClick: () => onGameInfoBottomSheet(context),
+                ),
+
+                // game info
+                _buildMenuButton(
+                  title: 'Table',
+                  iconData: Icons.tablet_rounded,
+                  onClick: () => onTableBottomSheet(context),
+                ),
+
+                // result
+                _buildMenuButton(
+                  title: 'Result',
+                  iconData: Icons.assessment_rounded,
+                  onClick: () => onPlayerStatsBottomSheet(context),
+                ),
+              ],
+            ),
+          ),
+          builder: (_, showMenu, child) => AnimatedSwitcher(
+            duration: AppConstants.fastestAnimationDuration,
+            transitionBuilder: (child, animation) => SizeTransition(
+              axis: Axis.horizontal,
+              sizeFactor: animation,
+              child: child,
+            ),
+            child: showMenu ? child : const SizedBox.shrink(),
+          ),
+        ),
+      ],
+    );
   }
 
   void onShowDebugLog(BuildContext context) {

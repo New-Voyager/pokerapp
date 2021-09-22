@@ -116,6 +116,73 @@ class _CommunicationViewState extends State<CommunicationView> {
 
                       // other buttons
                       ValueListenableBuilder<bool>(
+                        child: Container(
+                          color: theme.primaryColorWithDark(),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              // mute button
+                              GameCircleButton(
+                                onClickHandler: () {
+                                  // handle on mute tap
+                                  log('onClickHandler: handle on mute tap');
+                                },
+                                child: Icon(
+                                  Icons.mic_rounded,
+                                  size: 24,
+                                  color: theme.primaryColorWithDark(),
+                                ),
+                              ),
+
+                              // sep
+                              const SizedBox(width: 10),
+
+                              // hangup button
+                              GameCircleButton(
+                                onClickHandler: () {
+                                  // handle on hangup
+                                  log('onClickHandler: handle on hangup');
+                                },
+                                child: Icon(
+                                  Icons.call_end,
+                                  size: 24,
+                                  color: theme.primaryColorWithDark(),
+                                ),
+                              ),
+
+                              // sep
+                              const SizedBox(width: 10),
+
+                              // mute all button
+                              GameCircleButton(
+                                onClickHandler: () {
+                                  // handle on mute all
+                                  log('onClickHandler: handle on mute all');
+                                },
+                                child: Icon(
+                                  Icons.mic_off_rounded,
+                                  size: 24,
+                                  color: theme.primaryColorWithDark(),
+                                ),
+                              ),
+
+                              // sep
+                              const SizedBox(width: 10),
+
+                              // close button
+                              GameCircleButton(
+                                onClickHandler: () {
+                                  _vnShowAudioConfOptions.value = false;
+                                },
+                                child: Icon(
+                                  Icons.close,
+                                  size: 24,
+                                  color: theme.primaryColorWithDark(),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                         valueListenable: _vnShowAudioConfOptions,
                         builder: (_, showAudioConfOptions, child) =>
                             AnimatedSwitcher(
@@ -125,72 +192,9 @@ class _CommunicationViewState extends State<CommunicationView> {
                             sizeFactor: animation,
                             child: child,
                           ),
-                          duration: const Duration(milliseconds: 200),
+                          duration: AppConstants.fastestAnimationDuration,
                           child: showAudioConfOptions
-                              ? Container(
-                                  color: theme.primaryColorWithDark(),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      // mute button
-                                      GameCircleButton(
-                                        onClickHandler: () {
-                                          // handle on mute tap
-                                        },
-                                        child: Icon(
-                                          Icons.mic_rounded,
-                                          size: 24,
-                                          color: theme.primaryColorWithDark(),
-                                        ),
-                                      ),
-
-                                      // sep
-                                      const SizedBox(width: 10),
-
-                                      // hangup button
-                                      GameCircleButton(
-                                        onClickHandler: () {
-                                          // handle on hangup
-                                        },
-                                        child: Icon(
-                                          Icons.call_end,
-                                          size: 24,
-                                          color: theme.primaryColorWithDark(),
-                                        ),
-                                      ),
-
-                                      // sep
-                                      const SizedBox(width: 10),
-
-                                      // mute all button
-                                      GameCircleButton(
-                                        onClickHandler: () {
-                                          // handle on mute all
-                                        },
-                                        child: Icon(
-                                          Icons.mic_off_rounded,
-                                          size: 24,
-                                          color: theme.primaryColorWithDark(),
-                                        ),
-                                      ),
-
-                                      // sep
-                                      const SizedBox(width: 10),
-
-                                      // close button
-                                      GameCircleButton(
-                                        onClickHandler: () {
-                                          _vnShowAudioConfOptions.value = false;
-                                        },
-                                        child: Icon(
-                                          Icons.close,
-                                          size: 24,
-                                          color: theme.primaryColorWithDark(),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                )
+                              ? child
                               : const SizedBox.shrink(),
                         ),
                       ),
