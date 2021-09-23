@@ -559,6 +559,7 @@ class HandActionProtoService {
         AudioService.playDeal(mute: _gameState.playerLocalConfig.mute);
         await Future.delayed(AppConstants.bombPotTotalWaitDuration); // wait
       } else {
+        // play the deal sound effect
         AudioService.playDeal(mute: _gameState.playerLocalConfig.mute);
         tableState.updateCardShufflingAnimation(true);
         await Future.delayed(

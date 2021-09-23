@@ -92,7 +92,7 @@ class AudioService {
   }
 
   static playCheck({bool mute}) {
-    // playSound(checkSound, mute: mute);
+    playSound(checkSound, mute: mute);
   }
 
   static playFold({bool mute}) {
