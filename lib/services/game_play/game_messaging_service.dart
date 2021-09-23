@@ -151,7 +151,7 @@ class GameMessagingService {
       }
 
       // audio conf message
-      if (message.type == 'AUDIOCONF') {
+      if (message.type == 'AUDIOCONF' && this.onAudioConfMessage != null) {
         this.onAudioConfMessage(message.data);
       }
     }

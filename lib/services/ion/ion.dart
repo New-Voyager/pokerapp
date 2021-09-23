@@ -106,6 +106,9 @@ class IonAudioConferenceService {
 
   join() async {
     try {
+      if (_connector != null) {
+        return;
+      }
       _closed = false;
       _connector = IonBaseConnector(sfuUrl);
       _rtc = new IonSDKSFU(_connector);
