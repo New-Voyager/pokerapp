@@ -8,7 +8,7 @@ import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/routes.dart';
-import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/handlog_bottomsheet.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/bottom_sheets/handlog_bottomsheet.dart';
 import 'package:pokerapp/screens/util_screens/replay_hand_dialog/replay_hand_dialog.dart';
 import 'package:pokerapp/services/app/hand_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
@@ -154,26 +154,6 @@ class _PlayedHandsScreenState extends State<PlayedHandsScreen> {
 
   void onHistoryItemTapped(context, int index) async {
     if (widget.isInBottomSheet) {
-      // showBottomSheet(
-      //   context: context,
-      // //  isScrollControlled: true,
-      //   backgroundColor: Colors.transparent,
-      //   shape: RoundedRectangleBorder(
-      //     borderRadius: BorderRadius.only(
-      //       topLeft: Radius.circular(AppDimensionsNew.bottomSheetRadius),
-      //       topRight: Radius.circular(AppDimensionsNew.bottomSheetRadius),
-      //     ),
-      //   ),
-      //   builder: (ctx) => Container(
-      //     height: MediaQuery.of(context).size.height / 2,
-      //     child: HandLogView(
-      //       this.widget.gameCode,
-      //       widget.history[index].handNum,
-      //       clubCode: widget.clubCode,
-      //       isBottomSheet: true,
-      //     ),
-      //   ),
-      // );
       showBottomSheet(
         context: context,
 
