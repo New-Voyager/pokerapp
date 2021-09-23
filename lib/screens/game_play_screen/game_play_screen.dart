@@ -167,7 +167,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   }
 
   Future _joinAudio() async {
-    _gameState.gameInfo.audioConfEnabled = true;
+    _gameState.gameInfo.audioConfEnabled = false;
     _gameContextObj.joinAudio(context);
     return;
 
