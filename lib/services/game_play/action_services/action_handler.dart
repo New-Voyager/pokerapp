@@ -395,10 +395,12 @@ class PlayerActionHandler {
       AudioService.playCheck(mute: _gameState.playerLocalConfig.mute);
     }
     seat.notify();
+
     int stack = playerActed.stack?.toInt();
     if (stack != null) {
       seat.player.stack = stack;
     }
+    log('NEW_HAND: handlePlayerActed player: ${seat.player.name} stack ${seat.player.stack}');
 
     if (_gameState.uiClosing) return;
     // before showing the prompt --> turn off the highlight on other players

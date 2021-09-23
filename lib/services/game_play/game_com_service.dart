@@ -19,6 +19,7 @@ class GameComService {
   String handToAllChannel;
   String handToPlayerChannel;
   String playerToHandChannel;
+  String handToPlayerTextChannel;
   String gameChatChannel;
   String pingChannel;
   String pongChannel;
@@ -26,6 +27,7 @@ class GameComService {
   Subscription _gameToPlayerChannelSubs;
   Subscription _handToAllChannelSubs;
   Subscription _handToPlayerChannelSubs;
+  Subscription _handToPlayerTextChannelSubs;
   Subscription _gameChatChannelSubs;
   Subscription _pingChannelSubs;
 
@@ -48,6 +50,7 @@ class GameComService {
     @required this.handToAllChannel,
     @required this.handToPlayerChannel,
     @required this.playerToHandChannel,
+    @required this.handToPlayerTextChannel,
     @required this.gameChatChannel,
     @required this.pingChannel,
     @required this.pongChannel,
@@ -70,6 +73,10 @@ class GameComService {
 
     log('subscribing to ${this.handToPlayerChannel}');
     _handToPlayerChannelSubs = nats.subClient.sub(this.handToPlayerChannel);
+
+    log('subscribing to ${this.handToPlayerTextChannel}');
+    _handToPlayerTextChannelSubs =
+        nats.subClient.sub(this.handToPlayerTextChannel);
 
     log('subscribing to ${this.gameChatChannel}');
     _gameChatChannelSubs = nats.subClient.sub(this.gameChatChannel);
@@ -120,6 +127,9 @@ class GameComService {
     _handToPlayerChannelSubs?.unSub();
     _handToPlayerChannelSubs?.close();
 
+    _handToPlayerTextChannelSubs?.unSub();
+    _handToPlayerTextChannelSubs?.close();
+
     _gameChatChannelSubs?.unSub();
     _gameChatChannelSubs?.close();
     gameMessaging.close();
@@ -141,6 +151,11 @@ class GameComService {
   Stream<Message> get handToAllChannelStream {
     assert(active);
     return _handToAllChannelSubs.stream;
+  }
+
+  Stream<Message> get handToPlayerTextChannelStream {
+    assert(active);
+    return _handToPlayerTextChannelSubs.stream;
   }
 
   Stream<Message> get handToPlayerChannelStream {

@@ -9,7 +9,6 @@ import 'package:pokerapp/models/game_play_models/provider_models/table_state.dar
 import 'package:pokerapp/proto/hand.pb.dart' as proto;
 import 'package:pokerapp/proto/handmessage.pb.dart' as proto;
 import 'package:pokerapp/proto/enums.pb.dart' as proto;
-import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/services/audio/audio_service.dart';
 
@@ -99,6 +98,7 @@ class NewHandHandler {
         }
         playerObj.seatNo = seatNo;
         playerObj.stack = playerInSeat.stack.toInt();
+        log('NEW_HAND: updatePlayers player ${playerObj.name} stack: ${playerObj.stack}');
         // if (newHand.bombPot) {
         //   playerObj.stack = playerObj.stack + newHand.bombPotBet.toInt();
         // }

@@ -124,11 +124,11 @@ class _CommunicationViewState extends State<CommunicationView> {
   Widget talkingAnimation(Function onTap, AppTheme theme) {
     Widget child = BlinkWidget(
       children: [
-        SvgPicture.asset('assets/images/game/mic-step1.svg',
-            width: 16, height: 16, color: theme.primaryColorWithDark()),
         SvgPicture.asset('assets/images/game/mic-step2.svg',
             width: 16, height: 16, color: theme.primaryColorWithDark()),
         SvgPicture.asset('assets/images/game/mic-step3.svg',
+            width: 16, height: 16, color: theme.primaryColorWithDark()),
+        SvgPicture.asset('assets/images/game/mic-step2.svg',
             width: 16, height: 16, color: theme.primaryColorWithDark()),
         SvgPicture.asset('assets/images/game/mic-step1.svg',
             width: 16, height: 16, color: theme.primaryColorWithDark()),

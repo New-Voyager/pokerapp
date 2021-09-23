@@ -274,17 +274,17 @@ class _FooterViewState extends State<FooterView>
     } else if (!gameState.isPlaying) {
       // the player can join the waitlist
       log('Player is not playing, but can join waitlist');
+      children.add(_buildMainView(gameState));
       /* hand analyse view */
       children.add(_buildHandAnalyseView(context));
-      children.add(_buildMainView(gameState));
       /* communication widgets */
       children.add(_buildCommunicationWidget());
     } else {
-      /* hand analyse view */
-      children.add(_buildHandAnalyseView(context));
-
       /* build main view - straddle prompt, hole cards, action view*/
       children.add(_buildMainView(gameState));
+
+      /* hand analyse view */
+      children.add(_buildHandAnalyseView(context));
 
       /* communication widgets */
       children.add(_buildCommunicationWidget());

@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:typed_data';
 import 'package:fixnum/fixnum.dart' as $fixnum;
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
@@ -12,10 +11,8 @@ import 'package:pokerapp/models/game_play_models/provider_models/table_state.dar
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/newmodels/game_model_new.dart';
 import 'package:pokerapp/models/player_info.dart' as pi;
-import 'package:pokerapp/models/rabbit_state.dart';
 import 'package:pokerapp/proto/hand.pb.dart' as proto;
 import 'package:pokerapp/proto/handmessage.pb.dart' as proto;
-import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/game_service.dart';
@@ -530,6 +527,7 @@ class HandActionProtoService {
     _gameState.cardDistributionState.seatNo = null;
     _gameState.handState = HandState.DEAL;
     _gameState.myState.notify();
+    AudioService.stop();
     //log('Hand Message: ::handleDeal:: END');
   }
 
@@ -560,7 +558,7 @@ class HandActionProtoService {
         await Future.delayed(AppConstants.bombPotTotalWaitDuration); // wait
       } else {
         // play the deal sound effect
-        AudioService.playDeal(mute: _gameState.playerLocalConfig.mute);
+        //AudioService.playDeal(mute: _gameState.playerLocalConfig.mute);
         tableState.updateCardShufflingAnimation(true);
         await Future.delayed(
             AppConstants.cardShufflingTotalWaitDuration); // wait
@@ -647,7 +645,7 @@ class HandActionProtoService {
 
           // update player bet & player stack
           seat.player.action.setBombPotAction(handInfo.bombPotBet);
-          player.stack = player.stack - handInfo.bombPotBet.toInt();
+          // player.stack = player.stack - handInfo.bombPotBet.toInt();
 
           // notify seat
           seat.notify();

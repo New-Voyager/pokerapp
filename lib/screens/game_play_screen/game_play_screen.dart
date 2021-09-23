@@ -29,8 +29,6 @@ import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/footer_
 import 'package:pokerapp/screens/game_play_screen/main_views/header_view/header_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/which_winner_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/notifications/notifications.dart';
-import 'package:pokerapp/screens/util_screens/util.dart';
-//import 'package:pokerapp/services/agora/agora.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/app/player_service.dart';
 import 'package:pokerapp/services/audio/audio_service.dart';
@@ -39,6 +37,7 @@ import 'package:pokerapp/services/encryption/encryption_service.dart';
 import 'package:pokerapp/services/game_play/action_services/game_action_service/util_action_services.dart';
 import 'package:pokerapp/services/game_play/action_services/game_update_service.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_proto_service.dart';
+import 'package:pokerapp/services/game_play/action_services/hand_player_text_service.dart';
 import 'package:pokerapp/services/game_play/customization_service.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
@@ -49,7 +48,6 @@ import 'package:pokerapp/services/nats/message.dart';
 import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
-import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:provider/provider.dart';
@@ -252,6 +250,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       handToAllChannel: _gameInfoModel.handToAllChannel,
       handToPlayerChannel: _gameInfoModel.handToPlayerChannel,
       playerToHandChannel: _gameInfoModel.playerToHandChannel,
+      handToPlayerTextChannel: _gameInfoModel.handToPlayerTextChannel,
       gameChatChannel: _gameInfoModel.gameChatChannel,
       pingChannel: _gameInfoModel.pingChannel,
       pongChannel: _gameInfoModel.pongChannel,
@@ -744,81 +743,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     );
   }
 
-  void _setupGameContextObject() {
-    if (_gameContextObj.gameUpdateService == null) {
-      /* setup the listeners to the channels
-            * Any messages received from these channel updates,
-            * will be taken care of by the respective class
-            * and actions will be taken in the UI
-            * as there will be Listeners implemented down this hierarchy level */
-
-      _gameContextObj.gameUpdateService =
-          GameUpdateService(_providerContext, _gameState);
-      _gameContextObj.gameUpdateService.loop();
-
-      _gameContextObj.gameComService.gameToPlayerChannelStream
-          ?.listen((Message message) {
-        if (!_gameContextObj.gameComService.active) return;
-
-        // log('gameToPlayerChannel(${message.subject}): ${message.string}');
-
-        /* This stream will receive game related messages
-                            * e.g.
-                            * 1. Player Actions - Sitting on table, getting more chips, leaving game, taking break,
-                            * 2. Game Actions - New hand, informing about Next actions, PLayer Acted
-                            *  */
-
-        _gameContextObj.gameUpdateService.handle(message.string);
-      });
-    }
-
-    if (_gameContextObj.handActionProtoService == null) {
-      _gameContextObj.handActionProtoService = HandActionProtoService(
-        _providerContext,
-        _gameState,
-        _gameContextObj.gameComService,
-        _gameContextObj.encryptionService,
-        _gameContextObj.currentPlayer,
-      );
-
-      _gameContextObj.handActionProtoService.loop();
-
-      if (!TestService.isTesting && widget.customizationService == null) {
-        _gameContextObj.gameComService.handToAllChannelStream.listen(
-          (Message message) {
-            if (!_gameContextObj.gameComService.active) return;
-
-            if (_gameContextObj.handActionProtoService == null) return;
-
-            /* This stream receives hand related messages that is common to all players
-                              * e.g
-                              * New Hand - contains hand status, dealerPos, sbPos, bbPos, nextActionSeat
-                              * Next Action - contains the seat No which is to act next
-                              *
-                              * This stream also contains the output for the query of current hand */
-            _gameContextObj.handActionProtoService.handle(message.data);
-          },
-        );
-
-        _gameContextObj.gameComService.handToPlayerChannelStream.listen(
-          (Message message) {
-            if (!_gameContextObj.gameComService.active) return;
-
-            if (_gameContextObj.handActionProtoService == null) return;
-
-            /* This stream receives hand related messages that is specific to THIS player only
-                              * e.g
-                              * Deal - contains seat No and cards
-                              * Your Action - seat No, available actions & amounts */
-
-            _gameContextObj.handActionProtoService
-                .handle(message.data, encrypted: true);
-          },
-        );
-      }
-    }
-  }
-
   void _queryCurrentHandIfNeeded() {
     /* THIS METHOD QUERIES THE CURRENT HAND AND POPULATE THE
        GAME SCREEN, IF AND ONLY IF THE GAME IS ALREADY PLAYING */
@@ -955,7 +879,11 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         /* this function listens for marked cards in the result and sends as necessary */
         _initSendCardAfterFold(_providerContext);
 
-        if (_gameContextObj != null) _setupGameContextObject();
+        if (_gameContextObj != null) {
+          if (!TestService.isTesting && widget.customizationService == null) {
+            _gameContextObj.setup(context);
+          }
+        }
 
         /* set proper context for test service */
         TestService.context = context;
@@ -1031,11 +959,13 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         }
         break;
       case AppLifecycleState.resumed:
-        AudioService.resume();
-        log("Joining AudioConference from Lifecycle");
-        _joinAudio();
-        if (_locationUpdates != null) {
-          _locationUpdates.start();
+        if (_gameState != null && !_gameState.uiClosing) {
+          AudioService.resume();
+          log("Joining AudioConference from Lifecycle");
+          _joinAudio();
+          if (_locationUpdates != null) {
+            _locationUpdates.start();
+          }
         }
         break;
     }

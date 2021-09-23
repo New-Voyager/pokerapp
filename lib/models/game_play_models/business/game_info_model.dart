@@ -47,6 +47,7 @@ class GameInfoModel {
   // nats channels
   String gameToPlayerChannel;
   String playerToHandChannel;
+  String handToPlayerTextChannel;
   String handToAllChannel;
   String handToPlayerChannel;
   String gameChatChannel;
@@ -126,6 +127,7 @@ class GameInfoModel {
     // Nats Server channels
     this.gameToPlayerChannel = data['gameToPlayerChannel'];
     this.playerToHandChannel = data['playerToHandChannel'];
+    this.handToPlayerTextChannel = data['handToPlayerTextChannel'];
     this.handToAllChannel = data['handToAllChannel'];
     this.handToPlayerChannel = data['handToPlayerChannel'];
     this.gameChatChannel = data['gameChatChannel'];
@@ -212,6 +214,7 @@ class GameInfoModel {
       playerToHandChannel
       handToAllChannel
       handToPlayerChannel
+      handToPlayerTextChannel
       gameChatChannel
       pingChannel
       pongChannel

@@ -24,6 +24,7 @@ import 'package:pokerapp/screens/game_play_screen/widgets/game_circle_button.dar
 import 'package:pokerapp/screens/game_play_screen/widgets/icon_with_badge.dart';
 import 'package:pokerapp/services/app/player_service.dart';
 import 'package:provider/provider.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class HandAnalyseView extends StatefulWidget {
   final String clubCode;
@@ -279,6 +280,9 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // build the menu widget, and on tap expand the options from left
+          _buildMenuWidget(context),
+          SizedBox(height: 10.ph),
           // Pending approval button
           Consumer2<PendingApprovalsState, GameContextObject>(
             builder: (context, value, gameContextObj, child) {
@@ -299,9 +303,6 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
               );
             },
           ),
-
-          // build the menu widget, and on tap expand the options from left
-          _buildMenuWidget(context),
         ],
       ),
     );
@@ -382,7 +383,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
         ValueListenableBuilder(
           valueListenable: vnShowMenuItems,
           child: Container(
-            color: Colors.black,
+            color: theme.primaryColorWithDark(0.5),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [

@@ -500,12 +500,6 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
         child: BlinkWidget(
           children: [
             SvgPicture.asset(
-              'assets/images/speak/speak-one.svg',
-              width: 16,
-              height: 16,
-              color: Colors.cyan,
-            ),
-            SvgPicture.asset(
               'assets/images/speak/speak-two.svg',
               width: 16,
               height: 16,
@@ -519,6 +513,12 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
             ),
             SvgPicture.asset(
               'assets/images/speak/speak-two.svg',
+              width: 16,
+              height: 16,
+              color: Colors.cyan,
+            ),
+            SvgPicture.asset(
+              'assets/images/speak/speak-one.svg',
               width: 16,
               height: 16,
               color: Colors.cyan,

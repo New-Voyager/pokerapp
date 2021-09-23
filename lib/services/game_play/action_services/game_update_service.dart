@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/enums/player_status.dart';
@@ -229,32 +228,44 @@ class GameUpdateService {
       showBuyIn = true;
     }
 
-    player.update(
-      stack: playerUpdate['stack'],
-      buyIn: playerUpdate['buyIn'],
-      showBuyIn: showBuyIn,
-      status: status,
-    );
-    if (closed || _gameState.uiClosing) return;
-    final seat = _gameState.getSeat(seatNo);
-    seat.notify();
-
     // wait for "AppConstants.userPopUpMessageHoldDuration" showing the BUY-IN amount
     // after that remove the buyIn amount information
     await Future.delayed(AppConstants.userPopUpMessageHoldDuration);
+    final seat = _gameState.getSeat(seatNo);
 
-    player.update(
-      stack: playerUpdate['stack'],
-      showBuyIn: false,
-      status: null,
-    );
-    seat.notify();
-    if (closed || _gameState.uiClosing) return;
+    bool update = true;
+    if (_gameState.handInProgress && seat != null) {
+      // if this seat is already in the hand, don't update the stack
+      // this message is a late arrival from NATS
 
-    // update my state to remove buyin button
-    if (player.isMe) {
-      final myState = _gameState.myState;
-      myState.notify();
+      // is this player in hand?
+      if (seat.player.inhand) {
+        update = false;
+      }
+    }
+    if (update || showBuyIn) {
+      player.update(
+        stack: playerUpdate['stack'],
+        buyIn: playerUpdate['buyIn'],
+        showBuyIn: showBuyIn,
+        status: status,
+      );
+      if (closed || _gameState.uiClosing) return;
+      seat.notify();
+
+      // player.update(
+      //   stack: playerUpdate['stack'],
+      //   showBuyIn: false,
+      //   status: null,
+      // );
+      // seat.notify();
+      // if (closed || _gameState.uiClosing) return;
+
+      // update my state to remove buyin button
+      if (player.isMe) {
+        final myState = _gameState.myState;
+        myState.notify();
+      }
     }
   }
 
@@ -662,24 +673,20 @@ class GameUpdateService {
     int oldStack = int.parse(data['oldStack'].toString());
     int newStack = int.parse(data['newStack'].toString());
     int reloadAmount = int.parse(data['reloadAmount'].toString());
-
-    // final _players = _context.read<Players>();
-    // _players.updateStackReloadStateSilent(
-    //     playerId,
-    //     StackReloadState(
-    //       oldStack: oldStack,
-    //       newStack: newStack,
-    //       reloadAmount: reloadAmount,
-    //     ));
-
-    // _players.notifyAll();
-
-    // // wait for the animation to end
-    // await Future.delayed(const Duration(milliseconds: 2000));
-
-    // // finally end animation
-    // _players.updateStackReloadStateSilent(playerId, null);
-    // _players.notifyAll();
+    final reloadState = StackReloadState(
+      oldStack: oldStack,
+      newStack: newStack,
+      reloadAmount: reloadAmount,
+    );
+    final seat = _gameState.getSeatByPlayer(playerId);
+    if (seat != null) {
+      seat.player.stackReloadState = reloadState;
+      // seat.notify();
+      // wait for the animation to end
+      await Future.delayed(const Duration(milliseconds: 2000));
+      seat.player.stackReloadState = null;
+      seat.notify();
+    }
   }
 
   void handleNewHighhandWinner({
