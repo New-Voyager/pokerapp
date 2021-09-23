@@ -44,6 +44,13 @@ class GameLocalConfig {
     _save();
   }
 
+  bool _inAudioConference = true;
+  bool get inAudioConference => _inAudioConference;
+  set inAudioConference(bool value) {
+    _inAudioConference = value;
+    _save();
+  }
+
   GameLocalConfig(this._gameCode, this._gameHiveStore);
 
   // this method only to be called for the first time
@@ -57,6 +64,7 @@ class GameLocalConfig {
         'animations': this._animations,
         'showChat': this._showChat,
         'straddle': this._straddle,
+        'inAudioConference': this._inAudioConference,
       };
 
   GameLocalConfig.fromJson(Map<String, dynamic> json, this._gameHiveStore) {
@@ -65,5 +73,6 @@ class GameLocalConfig {
     this._animations = json['animations'];
     this._showChat = json['showChat'];
     this._straddle = json['straddle'];
+    this._inAudioConference = json['inAudioConference'];
   }
 }

@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -13,15 +14,16 @@ import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
-import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/debuglog_bottomsheet.dart';
-import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/player_stats_bottomsheet.dart';
-import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/table_result_bottomsheet.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/bottom_sheets/debuglog_bottomsheet.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/bottom_sheets/game_info_bottom_sheet.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/bottom_sheets/hand_history_bottomsheet.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/bottom_sheets/last_hand_analyse_bottomsheet.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/bottom_sheets/player_stats_bottomsheet.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/bottom_sheets/table_result_bottomsheet.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/game_circle_button.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/icon_with_badge.dart';
 import 'package:pokerapp/services/app/player_service.dart';
 import 'package:provider/provider.dart';
-import 'hand_history_bottomsheet.dart';
-import 'last_hand_analyse_bottomsheet.dart';
 
 class HandAnalyseView extends StatefulWidget {
   final String clubCode;
@@ -39,6 +41,8 @@ class HandAnalyseView extends StatefulWidget {
 }
 
 class _HandAnalyseViewState extends State<HandAnalyseView> {
+  final ValueNotifier<bool> vnShowMenuItems = ValueNotifier<bool>(false);
+
   BuildContext _context;
   AppTextScreen _appScreenText;
   bool disposed = false;
@@ -130,6 +134,17 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
     );
   }
 
+  Future<void> onGameInfoBottomSheet(BuildContext context) async {
+    // final model = HandHistoryListModel(widget.gameState.gameCode, true);
+    showBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (_) {
+        return GameInfoBottomSheet();
+      },
+    );
+  }
+
   Widget _buildStatefulBuilder(double height, BuildContext context) {
     final theme = AppTheme.getTheme(context);
     return StatefulBuilder(builder: (context, localSetState) {
@@ -177,175 +192,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                                     ),
                                     itemBuilder: (context, index) {
                                       final item = list[index];
-                                      return Container(
-                                        decoration:
-                                            AppDecorators.tileDecoration(theme),
-                                        padding: EdgeInsets.all(8),
-                                        margin: EdgeInsets.symmetric(
-                                            horizontal: 16, vertical: 8),
-                                        child: ListTile(
-                                          title: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              SizedBox(
-                                                height: 16,
-                                              ),
-                                              RichText(
-                                                text: TextSpan(
-                                                  text: "${item.name}",
-                                                  style: AppDecorators
-                                                      .getHeadLine4Style(
-                                                          theme: theme),
-                                                  children: [
-                                                    TextSpan(
-                                                      text:
-                                                          " ${_appScreenText['requestBuyin']}",
-                                                      style: AppDecorators
-                                                          .getSubtitle3Style(
-                                                              theme: theme),
-                                                    ),
-                                                    TextSpan(
-                                                      text: " ${item.amount}",
-                                                      style: AppDecorators
-                                                          .getAccentTextStyle(
-                                                              theme: theme),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              Text(
-                                                "${_appScreenText['outstandingBalance']}: ${item.balance}",
-                                                style: AppDecorators
-                                                    .getHeadLine4Style(
-                                                        theme: theme),
-                                              ),
-                                              SizedBox(
-                                                height: 16,
-                                              ),
-                                            ],
-                                          ),
-                                          subtitle: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                "${_appScreenText['game']}: ${item.gameType}",
-                                                style: AppDecorators
-                                                    .getSubtitle1Style(
-                                                        theme: theme),
-                                              ),
-                                              Text(
-                                                "${_appScreenText['code']}: ${item.gameCode}",
-                                                style: AppDecorators
-                                                    .getSubtitle1Style(
-                                                        theme: theme),
-                                              ),
-                                              Text(
-                                                "${_appScreenText['club']}: ${item.clubCode}",
-                                                style: AppDecorators
-                                                    .getSubtitle1Style(
-                                                        theme: theme),
-                                              ),
-                                              SizedBox(
-                                                height: 16,
-                                              )
-                                            ],
-                                          ),
-                                          trailing: Container(
-                                            width: 100,
-                                            child: Row(
-                                              children: [
-                                                IconButton(
-                                                    icon: Icon(
-                                                      Icons.check_circle,
-                                                      color: Colors.green,
-                                                    ),
-                                                    onPressed: () async {
-                                                      final bool val =
-                                                          await PlayerService
-                                                              .approveBuyInRequest(
-                                                        item.gameCode,
-                                                        item.playerUuid,
-                                                      );
-                                                      if (val == null) {
-                                                        log("Exception in approve request");
-                                                      } else if (val) {
-                                                        _pollPendingApprovals();
-                                                        // Provider.of<PendingApprovalsState>(
-                                                        //         context,
-                                                        //         listen: false)
-                                                        //     .decreaseTotalPending();
-                                                        // final List<
-                                                        //         PendingApproval>
-                                                        //     list =
-                                                        //     await PlayerService
-                                                        //         .getPendingApprovals();
-                                                        // Provider.of<PendingApprovalsState>(
-                                                        //         context,
-                                                        //         listen: false)
-                                                        //     .setTotalPending(
-                                                        //         list == null
-                                                        //             ? 0
-                                                        //             : list
-                                                        //                 .length);
-                                                        // localSetState(() {});
-                                                      } else {
-                                                        log("Failed to approve request");
-                                                      }
-                                                    }),
-                                                IconButton(
-                                                  icon: Icon(
-                                                    Icons.cancel_rounded,
-                                                    color: theme
-                                                        .negativeOrErrorColor,
-                                                  ),
-                                                  onPressed: () async {
-                                                    final bool val =
-                                                        await PlayerService
-                                                            .declineBuyInRequest(
-                                                      item.gameCode,
-                                                      item.playerUuid,
-                                                    );
-
-                                                    if (val == null) {
-                                                      toast(_appScreenText[
-                                                          'exceptionOccuredDeclineRequest']);
-                                                    } else if (val) {
-                                                      _pollPendingApprovals();
-                                                      // Provider.of<PendingApprovalsState>(
-                                                      //         context,
-                                                      //         listen: false)
-                                                      //     .decreaseTotalPending();
-                                                      // final List<
-                                                      //         PendingApproval>
-                                                      //     list =
-                                                      //     await PlayerService
-                                                      //         .getPendingApprovals();
-                                                      // Provider.of<PendingApprovalsState>(
-                                                      //         context,
-                                                      //         listen: false)
-                                                      //     .setTotalPending(
-                                                      //         list == null
-                                                      //             ? 0
-                                                      //             : list
-                                                      //                 .length);
-                                                      // localSetState(() {});
-
-                                                    } else {
-                                                      toast(
-                                                        _appScreenText[
-                                                            'failedToDeclineRequest'],
-                                                      );
-                                                    }
-                                                  },
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      );
+                                      return pendingApprovalsItem(theme, item);
                                     },
                                   ),
                                 );
@@ -411,197 +258,6 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
         ),
       );
     });
-    /*    return Container(
-      decoration: AppStylesNew.BgGreenRadialGradient,
-      child: StatefulBuilder(
-        builder: (context, localSetState) => Column(
-          mainAxisSize: MainAxisSize.min,
-
-          // title
-          children: [
-            ListTile(
-              title: Text(
-                "Pending approvals",
-                style: AppStylesNew.clubCodeStyle,
-              ),
-            ),
-
-            // main body
-            FutureBuilder(
-              future: PlayerService.getPendingApprovals(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done) {
-                  if (snapshot.hasData) {
-                    List<PendingApproval> list = snapshot.data;
-
-                    if (list.length > 0) {
-                      return Container(
-                        constraints: BoxConstraints(
-                            minHeight: height / 3, maxHeight: height / 2),
-                        child: ListView.separated(
-                          itemCount: list.length,
-                          shrinkWrap: true,
-                          separatorBuilder: (context, index) => Divider(
-                            height: 8,
-                            color: Colors.black45,
-                          ),
-                          itemBuilder: (context, index) {
-                            final item = list[index];
-                            return ListTile(
-                              tileColor: AppColorsNew.cardBackgroundColor,
-                              title: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  SizedBox(
-                                    height: 16,
-                                  ),
-                                  Text(
-                                    "${item.name} request buyin ${item.amount}",
-                                    style: AppStylesNew.itemInfoTextStyle
-                                        .copyWith(fontSize: 14),
-                                  ),
-                                  Text("Outstanding balance: ${item.balance}",
-                                      style: AppStylesNew.itemInfoTextStyle),
-                                  SizedBox(
-                                    height: 16,
-                                  ),
-                                ],
-                              ),
-                              subtitle: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Game: ${item.gameType}",
-                                    style: AppStylesNew.itemInfoTextStyle,
-                                  ),
-                                  Text(
-                                    "Code: ${item.gameCode}",
-                                    style: AppStylesNew.itemInfoTextStyle,
-                                  ),
-                                  Text(
-                                    "Club: ${item.clubCode}",
-                                    style: AppStylesNew.itemInfoTextStyle,
-                                  ),
-                                  SizedBox(
-                                    height: 16,
-                                  )
-                                ],
-                              ),
-                              trailing: Container(
-                                width: 100,
-                                child: Row(
-                                  children: [
-                                    IconButton(
-                                        icon: Icon(
-                                          Icons.check_circle,
-                                          color: Colors.green,
-                                        ),
-                                        onPressed: () async {
-                                          final bool val = await PlayerService
-                                              .approveBuyInRequest(
-                                            item.gameCode,
-                                            item.playerUuid,
-                                          );
-                                          if (val == null) {
-                                            log("Exception in approve request");
-                                          } else if (val) {
-                                            Provider.of<PendingApprovalsState>(
-                                                    context,
-                                                    listen: false)
-                                                .decreaseTotalPending();
-                                            final List<PendingApproval> list =
-                                                await PlayerService
-                                                    .getPendingApprovals();
-                                            Provider.of<PendingApprovalsState>(
-                                                    context,
-                                                    listen: false)
-                                                .setTotalPending(list == null
-                                                    ? 0
-                                                    : list.length);
-                                            localSetState(() {});
-                                          } else {
-                                            log("Failed to approve request");
-                                          }
-                                        }),
-                                    IconButton(
-                                      icon: Icon(
-                                        Icons.cancel_rounded,
-                                        color: Colors.red,
-                                      ),
-                                      onPressed: () async {
-                                        final bool val = await PlayerService
-                                            .declineBuyInRequest(
-                                          item.gameCode,
-                                          item.playerUuid,
-                                        );
-
-                                        if (val == null) {
-                                          toast(
-                                              "Exception occured decline Request");
-                                        } else if (val) {
-                                          Provider.of<PendingApprovalsState>(
-                                                  context,
-                                                  listen: false)
-                                              .decreaseTotalPending();
-                                          final List<PendingApproval> list =
-                                              await PlayerService
-                                                  .getPendingApprovals();
-                                          Provider.of<PendingApprovalsState>(
-                                                  context,
-                                                  listen: false)
-                                              .setTotalPending(list == null
-                                                  ? 0
-                                                  : list.length);
-                                          localSetState(() {});
-                                        } else {
-                                          toast(
-                                            "Failed to decline Request",
-                                          );
-                                        }
-                                      },
-                                    )
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      );
-                    } else {
-                      return Container(
-                        height: height / 4,
-                        child: Center(
-                          child: Text(
-                            "No pending approvals.",
-                            style: AppStylesNew.subTitleTextStyle,
-                          ),
-                        ),
-                      );
-                    }
-                  } else {
-                    return Container(
-                      height: height / 4,
-                      child: Center(
-                        child: Text("Something went wrong. Try again!"),
-                      ),
-                    );
-                  }
-                } else {
-                  return Container(
-                    height: height / 4,
-                    child: Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  );
-                }
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  */
   }
 
   Future<void> onClickPendingBuyInApprovals(BuildContext context) async {
@@ -611,12 +267,6 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
       backgroundColor: Colors.transparent,
       builder: (ctx) => _buildStatefulBuilder(height, context),
     );
-    // await showModalBottomSheet(
-    //   context: context,
-    //   isScrollControlled: true,
-    //   backgroundColor: AppColorsNew.screenBackgroundColor.withOpacity(0.75),
-    //   builder:
-    // );
   }
 
   @override
@@ -627,24 +277,8 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
     return Align(
       alignment: Alignment.topLeft,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // first
-          Consumer<MyState>(
-            builder: (context, myState, child) {
-              final tableState = widget.gameState.tableState;
-              String status = widget.gameState.myStatus;
-
-              log('myState.gameStatus = ${tableState.gameStatus}, myState.status = $status');
-              return tableState.gameStatus == AppConstants.GAME_RUNNING &&
-                      status == AppConstants.PLAYING
-                  ? GameCircleButton(
-                      onClickHandler: () => onClickViewHand(context),
-                      imagePath: AppAssetsNew.lastHandPath,
-                    )
-                  : const SizedBox.shrink();
-            },
-          ),
-
           // Pending approval button
           Consumer2<PendingApprovalsState, GameContextObject>(
             builder: (context, value, gameContextObj, child) {
@@ -666,34 +300,270 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
             },
           ),
 
-          GameCircleButton(
-            iconData: Icons.menu,
-            onClickHandler: () => onMoreOptionsPress(context),
-          ),
-
-          // GameCircleButton(
-          //   iconData: Icons.adb,
-          //   onClickHandler: () => onShowDebugLog(context),
-          // ),
-
-          // // rabbit button
-          // Consumer<RabbitState>(
-          //   builder: (context, rb, __) =>
-          //       rb.show && widget.gameState.gameInfo.allowRabbitHunt
-          //           ? GameCircleButton(
-          //               onClickHandler: () => onRabbitTap(rb.copy(), context),
-          //               imagePath: AppAssets.rabbit,
-          //             )
-          //           : const SizedBox.shrink(),
-          // ),
+          // build the menu widget, and on tap expand the options from left
+          _buildMenuWidget(context),
         ],
       ),
     );
   }
 
-  void onMoreOptionsPress(BuildContext context) {
-    log('onMoreOptionsPress');
-    showMoreOptions(context);
+  // void onMoreOptionsPress(BuildContext context) {
+  //   log('onMoreOptionsPress');
+  //   // showMoreOptions(context);
+
+  //   // slide in from left
+  //   vnShowMenuItems.value = true;
+  // }
+
+  Widget _buildMenuButton({
+    @required String title,
+    Widget child,
+    IconData iconData,
+    String imagePath,
+    VoidCallback onClick,
+  }) {
+    final tmp = title.split(' ');
+    if (tmp.length > 1) {
+      title = tmp[0] + '\n' + tmp[1];
+    }
+
+    return Container(
+      margin: EdgeInsets.only(right: 10.0),
+      child: GestureDetector(
+        onTap: onClick,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // button
+            GameCircleButton(
+              child: child,
+              iconData: iconData,
+              imagePath: imagePath,
+            ),
+
+            // text
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.white),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMenuWidget(BuildContext context) {
+    AppTheme theme = AppTheme.getTheme(context);
+    Widget optionButton = Transform.rotate(
+        angle: math.pi / 2,
+        child: Icon(
+          Icons.expand_less,
+          color:
+              theme.primaryColorWithDark(), //AppColorsNew.newGreenButtonColor,
+        ));
+    Widget closeButton = Transform.rotate(
+        angle: -math.pi / 2,
+        child: Icon(
+          Icons.expand_less,
+          color:
+              theme.primaryColorWithDark(), //AppColorsNew.newGreenButtonColor,
+        ));
+    return Stack(
+      alignment: Alignment.centerLeft,
+      children: [
+        // MAIN MENU
+        GameCircleButton(
+          child: optionButton,
+          onClickHandler: () => vnShowMenuItems.value = true,
+        ),
+
+        // Other options
+        ValueListenableBuilder(
+          valueListenable: vnShowMenuItems,
+          child: Container(
+            color: Colors.black,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // other menu buttons
+
+                // menu close button
+                _buildMenuButton(
+                    title: 'Close',
+                    child: closeButton,
+                    onClick: () {
+                      vnShowMenuItems.value = false;
+                    }),
+
+                // last hand
+                _buildMenuButton(
+                    title: 'Prev',
+                    imagePath: AppAssetsNew.lastHandPath,
+                    onClick: () {
+                      vnShowMenuItems.value = false;
+                      onClickViewHand(context);
+                    }),
+
+                // game history
+                _buildMenuButton(
+                    title: 'History',
+                    imagePath: AppAssetsNew.handHistoryPath,
+                    onClick: () {
+                      vnShowMenuItems.value = false;
+                      onClickViewHandAnalysis(context);
+                    }),
+
+                // game info
+                _buildMenuButton(
+                    title: 'Info',
+                    iconData: Icons.info_outline_rounded,
+                    onClick: () {
+                      vnShowMenuItems.value = false;
+                      // onGameInfoBottomSheet(context);
+                    }),
+
+                // result table
+                _buildMenuButton(
+                    title: 'Result',
+                    imagePath: AppAssetsNew.tableResultPath,
+                    onClick: () {
+                      vnShowMenuItems.value = false;
+                      onTableBottomSheet(context);
+                    }),
+
+                // player stack
+                _buildMenuButton(
+                    title: 'Stats',
+                    imagePath: AppAssetsNew.playerStatsPath,
+                    onClick: () {
+                      vnShowMenuItems.value = false;
+                      onPlayerStatsBottomSheet(context);
+                    }),
+              ],
+            ),
+          ),
+          builder: (_, showMenu, child) => AnimatedSwitcher(
+            duration: AppConstants.fastestAnimationDuration,
+            transitionBuilder: (child, animation) => SizeTransition(
+              axis: Axis.horizontal,
+              sizeFactor: animation,
+              child: child,
+            ),
+            child: showMenu ? child : const SizedBox.shrink(),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget pendingApprovalsItem(AppTheme theme, PendingApproval item) {
+    return Container(
+      decoration: AppDecorators.tileDecoration(theme),
+      padding: EdgeInsets.all(8),
+      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: ListTile(
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              height: 16,
+            ),
+            RichText(
+              text: TextSpan(
+                text: "${item.name}",
+                style: AppDecorators.getHeadLine4Style(theme: theme),
+                children: [
+                  TextSpan(
+                    text: " ${_appScreenText['requestBuyin']}",
+                    style: AppDecorators.getSubtitle3Style(theme: theme),
+                  ),
+                  TextSpan(
+                    text: " ${item.amount}",
+                    style: AppDecorators.getAccentTextStyle(theme: theme),
+                  ),
+                ],
+              ),
+            ),
+            Text(
+              "${_appScreenText['outstandingBalance']}: ${item.balance}",
+              style: AppDecorators.getHeadLine4Style(theme: theme),
+            ),
+            SizedBox(
+              height: 16,
+            ),
+          ],
+        ),
+        subtitle: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "${_appScreenText['game']}: ${item.gameType}",
+              style: AppDecorators.getSubtitle1Style(theme: theme),
+            ),
+            Text(
+              "${_appScreenText['code']}: ${item.gameCode}",
+              style: AppDecorators.getSubtitle1Style(theme: theme),
+            ),
+            Text(
+              "${_appScreenText['club']}: ${item.clubCode}",
+              style: AppDecorators.getSubtitle1Style(theme: theme),
+            ),
+            SizedBox(
+              height: 16,
+            )
+          ],
+        ),
+        trailing: Container(
+          width: 100,
+          child: Row(
+            children: [
+              IconButton(
+                  icon: Icon(
+                    Icons.check_circle,
+                    color: Colors.green,
+                  ),
+                  onPressed: () async {
+                    final bool val = await PlayerService.approveBuyInRequest(
+                      item.gameCode,
+                      item.playerUuid,
+                    );
+                    if (val == null) {
+                      log("Exception in approve request");
+                    } else if (val) {
+                      _pollPendingApprovals();
+                    } else {
+                      log("Failed to approve request");
+                    }
+                  }),
+              IconButton(
+                icon: Icon(
+                  Icons.cancel_rounded,
+                  color: theme.negativeOrErrorColor,
+                ),
+                onPressed: () async {
+                  final bool val = await PlayerService.declineBuyInRequest(
+                    item.gameCode,
+                    item.playerUuid,
+                  );
+
+                  if (val == null) {
+                    toast(_appScreenText['exceptionOccuredDeclineRequest']);
+                  } else if (val) {
+                    _pollPendingApprovals();
+                  } else {
+                    toast(
+                      _appScreenText['failedToDeclineRequest'],
+                    );
+                  }
+                },
+              )
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   void onShowDebugLog(BuildContext context) {
@@ -819,168 +689,4 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
       },
     );
   }
-
-  // void onRabbitTap(RabbitState rs, BuildContext context) async {
-  //   // reveal button tap
-  //   void _onRevealButtonTap(ValueNotifier<bool> vnIsRevealed) async {
-  //     // deduct two diamonds
-  //     final bool deducted =
-  //         await context.read<GameState>().gameHiveStore.deductDiamonds();
-
-  //     // show community cards - only if deduction was possible
-  //     if (deducted) vnIsRevealed.value = true;
-  //   }
-
-  //   // share button tap
-  //   void _onShareButtonTap() {
-  //     // collect all the necessary data and send in the game chat channel
-  //     context.read<GameState>().gameComService.chat.sendRabbitHunt(rs);
-
-  //     // pop out the dialog
-  //     Navigator.pop(context);
-  //   }
-
-  //   Widget _buildDiamond() => SvgPicture.asset(
-  //         AppAssets.diamond,
-  //         width: 20.0,
-  //         color: Colors.cyan,
-  //       );
-
-  //   Widget _buildRevealButton(ValueNotifier<bool> vnIsRevealed) => Row(
-  //         mainAxisAlignment: MainAxisAlignment.end,
-  //         children: [
-  //           // diamond icons
-  //           _buildDiamond(),
-  //           _buildDiamond(),
-
-  //           // sep
-  //           const SizedBox(width: 10.0),
-
-  //           // visible button
-  //           GestureDetector(
-  //             onTap: () => _onRevealButtonTap(vnIsRevealed),
-  //             child: Icon(
-  //               Icons.visibility_outlined,
-  //               color: AppColorsNew.newGreenButtonColor,
-  //               size: 30.0,
-  //             ),
-  //           ),
-  //         ],
-  //       );
-
-  //   Widget _buildShareButton() => Align(
-  //         alignment: Alignment.centerRight,
-  //         child: GestureDetector(
-  //           onTap: _onShareButtonTap,
-  //           child: Icon(
-  //             Icons.share_rounded,
-  //             color: AppColorsNew.newGreenButtonColor,
-  //             size: 30.0,
-  //           ),
-  //         ),
-  //       );
-
-  //   List<int> _getHiddenCards() {
-  //     List<int> cards = List.of(rs.communityCards);
-
-  //     if (rs.revealedCards.length == 2) {
-  //       cards[3] = cards[4] = 0;
-  //     } else {
-  //       cards[4] = 0;
-  //     }
-
-  //     return cards;
-  //   }
-
-  //   Widget _buildCommunityCardWidget(bool isRevealed) => isRevealed
-  //       ? StackCardView00(
-  //           cards: rs.communityCards,
-  //         )
-  //       : StackCardView00(
-  //           cards: _getHiddenCards(),
-  //         );
-
-  //   // show a popup
-  //   await showDialog(
-  //     context: context,
-  //     builder: (_) => ListenableProvider.value(
-  //       // pass down the cards back string asset to the new dialog
-  //       value: context.read<ValueNotifier<String>>(),
-  //       child: ListenableProvider(
-  //         create: (_) => ValueNotifier<bool>(false),
-  //         child: Align(
-  //           alignment: Alignment.center,
-  //           child: Container(
-  //             width: MediaQuery.of(context).size.width * 0.70,
-  //             decoration: BoxDecoration(
-  //               color: AppColorsNew.darkGreenShadeColor,
-  //               borderRadius: BorderRadius.circular(15.0),
-  //             ),
-  //             padding: const EdgeInsets.all(20.0),
-  //             child: Column(
-  //               mainAxisSize: MainAxisSize.min,
-  //               children: [
-  //                 /* hand number */
-  //                 Text('Hand #${rs.handNo}'),
-
-  //                 // sep
-  //                 const SizedBox(height: 15.0),
-
-  //                 /* your cards */
-  //                 Row(
-  //                   mainAxisAlignment: MainAxisAlignment.center,
-  //                   children: [
-  //                     Text('Your cards:'),
-  //                     const SizedBox(width: 10.0),
-  //                     StackCardView00(
-  //                       cards: rs.myCards,
-  //                     ),
-  //                   ],
-  //                 ),
-
-  //                 // sep
-  //                 const SizedBox(height: 15.0),
-
-  //                 // diamond widget
-  //                 Provider.value(
-  //                   value: context.read<GameState>(),
-  //                   child: Consumer<ValueNotifier<bool>>(
-  //                     builder: (_, __, ___) => NumDiamondWidget(),
-  //                   ),
-  //                 ),
-
-  //                 // sep
-  //                 const SizedBox(height: 15.0),
-
-  //                 // show REVEAL button / share button
-  //                 Container(
-  //                   margin: const EdgeInsets.symmetric(horizontal: 20.0),
-  //                   child: Consumer<ValueNotifier<bool>>(
-  //                     builder: (_, vnIsRevealed, __) => vnIsRevealed.value
-  //                         ? _buildShareButton()
-  //                         : _buildRevealButton(vnIsRevealed),
-  //                   ),
-  //                 ),
-
-  //                 // sep
-  //                 const SizedBox(height: 15.0),
-
-  //                 // finally show here the community cards
-  //                 Consumer<ValueNotifier<bool>>(
-  //                   builder: (_, vnIsRevealed, __) => Transform.scale(
-  //                     scale: 1.2,
-  //                     child: _buildCommunityCardWidget(vnIsRevealed.value),
-  //                   ),
-  //                 ),
-  //               ],
-  //             ),
-  //           ),
-  //         ),
-  //       ),
-  //     ),
-  //   );
-
-  //   // as soon as the dialog is closed, nullify the result
-  //   context.read<RabbitState>().putResult(null);
-  // }
 }

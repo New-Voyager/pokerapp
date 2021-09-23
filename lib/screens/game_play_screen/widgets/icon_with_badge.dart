@@ -18,7 +18,7 @@ class IconWithBadge extends StatelessWidget {
         children: [
           Container(
             margin: EdgeInsets.only(top: 5),
-            padding: EdgeInsets.all(5),
+            padding: EdgeInsets.only(top: 5, bottom: 5),
             child: child,
           ),
           Visibility(

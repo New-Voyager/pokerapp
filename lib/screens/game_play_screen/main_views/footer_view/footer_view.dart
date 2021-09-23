@@ -209,6 +209,7 @@ class _FooterViewState extends State<FooterView>
           return CommunicationView(
             widget.chatVisibilityChange,
             widget.gameContext.gameComService.gameMessaging,
+            widget.gameContext,
           );
         }),
       );

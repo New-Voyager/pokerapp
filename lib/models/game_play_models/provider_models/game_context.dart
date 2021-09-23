@@ -5,6 +5,7 @@ import 'package:pokerapp/services/game_play/action_services/game_update_service.
 import 'package:pokerapp/services/game_play/action_services/hand_action_proto_service.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/ion/ion.dart';
+import 'package:pokerapp/widgets/dialogs.dart';
 
 import 'game_state.dart';
 
@@ -91,5 +92,33 @@ class GameContextObject extends ChangeNotifier {
     encryptionService?.dispose();
     handActionProtoService?.close();
     super.dispose();
+  }
+
+  void joinAudio(BuildContext context) async {
+    if (gameState.audioConfEnabled) {
+      try {
+        this.initializeAudioConf();
+        await this.ionAudioConferenceService.join();
+        gameState.communicationState.audioConferenceStatus =
+            AudioConferenceStatus.CONNECTED;
+        this.gameState.playerLocalConfig.inAudioConference = true;
+        this.gameState.communicationState.notify();
+      } catch (err) {
+        gameState.communicationState.audioConferenceStatus =
+            AudioConferenceStatus.ERROR;
+        this.gameState.gameInfo.audioConfEnabled = false;
+        showErrorDialog(context, 'Error', 'Joining audio conference failed');
+      }
+    }
+  }
+
+  leaveAudio() {
+    if (gameState != null) {
+      if (this.ionAudioConferenceService != null) {
+        this.ionAudioConferenceService.leave();
+      }
+      gameState.communicationState.audioConferenceStatus =
+          AudioConferenceStatus.LEFT;
+    }
   }
 }

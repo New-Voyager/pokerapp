@@ -33,10 +33,11 @@ class GameOption extends StatefulWidget {
   final String playerUuid;
   final bool isAdmin;
   final GameState gameState;
+  final GameContextObject gameContextObject;
   final bool focusOnWaitingList;
 
-  GameOption(this.gameState, this.gameCode, this.playerUuid, this.isAdmin,
-      this.focusOnWaitingList);
+  GameOption(this.gameContextObject, this.gameState, this.gameCode,
+      this.playerUuid, this.isAdmin, this.focusOnWaitingList);
 
   @override
   _GameOptionState createState() => _GameOptionState(gameState);
@@ -780,6 +781,26 @@ class _GameOptionState extends State<GameOption> {
       return CircularProgressWidget();
     }
     List<Widget> children = [];
+
+    if (widget.gameState.audioConfEnabled) {
+      children.add(_buildCheckBox(
+          text: 'Participate in Audio Conference',
+          value: widget.gameState.playerLocalConfig.inAudioConference ?? false,
+          onChange: (bool v) async {
+            widget.gameState.playerLocalConfig.inAudioConference = v;
+            if (v) {
+              // join
+              widget.gameContextObject.joinAudio(context);
+            } else {
+              widget.gameContextObject.leaveAudio();
+            }
+
+            widget.gameState.communicationState.notify();
+            if (closed) return;
+            setState(() {});
+          }));
+    }
+
     // Muck loosing hand
     children.add(_buildCheckBox(
         text: _appScreenText['muckLosingHand'],

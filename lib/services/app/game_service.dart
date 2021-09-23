@@ -66,6 +66,12 @@ class GameService {
           isHost
           isManager
           isOwner
+
+          preflopHands
+          flopHands
+          turnHands
+          riverHands
+          showdownHands
         }
         hhWinners: highHandWinners(gameCode: \$gameCode) {
             rank

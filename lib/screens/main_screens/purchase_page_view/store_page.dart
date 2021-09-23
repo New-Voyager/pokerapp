@@ -299,7 +299,8 @@ class _StorePageState extends State<StorePage> {
                   text: "Ok",
                   backgroundColor: theme.accentColor,
                   textColor: theme.primaryColorWithDark(),
-                  onTapFunction: () => Navigator.of(context).pop(controller.text.toString()),
+                  onTapFunction: () =>
+                      Navigator.of(context).pop(controller.text.toString()),
                 ),
               ),
             ],
@@ -310,6 +311,7 @@ class _StorePageState extends State<StorePage> {
 
     if (result != null && controller.text.toString().isNotEmpty) {
       Alerts.showNotification(titleText: "Redeemed coins");
+
       ///TODO
     }
   }
