@@ -187,6 +187,9 @@ class GameState {
   // location of the current player (valid only if the game requires gps check)
   LocationData currentLocation;
 
+  // players with notes
+  MyPlayerNotes playersWithNotes;
+
   Future<void> initialize({
     String gameCode,
     @required GameInfoModel gameInfo,
@@ -696,6 +699,45 @@ class GameState {
     }
 
     this._handInfo.notify();
+  }
+
+  PlayerModel getPlayerById(int playerId) {
+    for (final player in _playersInGame) {
+      if (player.playerId == playerId) {
+        return player;
+      }
+    }
+    return null;
+  }
+
+  Future<void> refreshNotes() async {
+    try {
+      // final playerIds = this._playersInGame.map((e) => e.playerId).toList();
+      // final playerNotes = await PlayerService.getPlayerNotes(playerIds);
+      final playerNotes = await GameService.getPlayersWithNotes(gameCode);
+      playersWithNotes = playerNotes;
+      updatePlayersWithNotes();
+    } catch (err) {
+      log('Error when fetching player notes');
+    }
+  }
+
+  void updatePlayersWithNotes() {
+    if (playersWithNotes == null) {
+      return;
+    }
+    for (final playerInSeat in _playersInGame) {
+      playerInSeat.hasNotes = false;
+      playerInSeat.notes = '';
+    }
+
+    for (final notesPlayer in playersWithNotes.players) {
+      final playerInSeat = this.getPlayerById(notesPlayer.playerId);
+      if (playerInSeat != null) {
+        playerInSeat.hasNotes = true;
+        playerInSeat.notes = notesPlayer.notes;
+      }
+    }
   }
 
   void seatPlayer(int seatNo, PlayerModel player) {

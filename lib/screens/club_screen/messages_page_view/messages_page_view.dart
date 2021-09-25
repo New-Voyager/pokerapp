@@ -237,6 +237,7 @@ class _MessagesPageViewState extends State<MessagesPageView>
         messageTimeInEpoc: m.messageTimeInEpoc,
         sender: m.sender,
         sharedHand: m.sharedHand,
+        playerName: m.playerName,
       );
       if (i == 0) {
         chat.isGroupLatest = true;

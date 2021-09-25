@@ -287,6 +287,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       );
       await _gameState.refreshSettings();
       await _gameState.refreshPlayerSettings();
+      await _gameState.refreshNotes();
     }
 
     if (_gameInfoModel?.audioConfEnabled ?? false) {
@@ -535,7 +536,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
         if (gameState.gameInfo.audioConfEnabled) {
           if (!await Permission.microphone.isGranted) {
-            showErrorDialog(context, 'Permission',
+            await showErrorDialog(context, 'Permission',
                 'Game uses audio conference. Please grant mic access to participate in Audio conference.',
                 info: true);
             // request audio permission
