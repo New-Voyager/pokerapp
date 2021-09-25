@@ -188,6 +188,10 @@ class GameUpdateService {
           return handleNewUpdateStatus(
             data: data,
           );
+        case AppConstants.GAME_ENDING:
+          return handleGameEnding(
+            data: data,
+          );
       }
     }
   }
@@ -1308,6 +1312,13 @@ class GameUpdateService {
         );
       }
     }
+  }
+
+  void handleGameEnding({var data}) async {
+    Alerts.showNotification(
+        titleText: _appScreenText['game'],
+        svgPath: 'assets/images/casino.svg',
+        subTitleText: _appScreenText['theGameWillEndAfterThisHand']);
   }
 
   void handleNewUpdateStatus({
