@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game/new_game_model.dart';
@@ -118,9 +120,11 @@ class NewGameModelProvider extends ChangeNotifier {
   //   settings.gameLength = value;
   //   notifyListeners();
   // }
-  int get gameLengthInHrs => settings.gameLength;
+  int get gameLengthInHrs => settings.gameLengthInHrs;
   set gameLengthInHrs(value) {
-    settings.gameLength = value;
+    settings.gameLengthInHrs = value;
+    settings.gameLength = value * 60;
+    log('settings.gameLength: ${settings.gameLength}, inHrs: ${settings.gameLengthInHrs}');
     notifyListeners();
   }
 
