@@ -247,6 +247,7 @@ class GamePlayScreenUtilMethods {
         mySeat.notify();
         gameState.redrawFooterState.notify();
       }
+      await gameState.refreshNotes();
       final tableState = gameState.tableState;
       tableState.notifyAll();
       gameState.notifyAllSeats();

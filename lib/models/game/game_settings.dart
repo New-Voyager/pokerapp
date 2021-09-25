@@ -27,6 +27,7 @@ class GameSettings {
     this.resultPauseTime,
     this.ipCheck,
     this.gpsCheck,
+    this.showResult,
     this.roeGames,
     this.dealerChoiceGames,
   });
@@ -52,6 +53,7 @@ class GameSettings {
   int resultPauseTime;
   bool ipCheck;
   bool gpsCheck;
+  bool showResult;
   List roeGames;
   List dealerChoiceGames;
 
@@ -78,6 +80,7 @@ class GameSettings {
       resultPauseTime: json["resultPauseTime"] ?? 5,
       ipCheck: json["ipCheck"] ?? false,
       gpsCheck: json["gpsCheck"] ?? false,
+      showResult: json["showResult"] ?? false,
       roeGames: json["roeGames"] ?? [],
       dealerChoiceGames: json["dealerChoiceGames"] ?? [],
     );
@@ -106,6 +109,7 @@ class GameSettings {
         "resultPauseTime": resultPauseTime,
         "ipCheck": ipCheck,
         "gpsCheck": gpsCheck,
+        "showResult":showResult,
         "roeGames": roeGames,
         "dealerChoiceGames": dealerChoiceGames,
       };

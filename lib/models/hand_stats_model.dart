@@ -23,10 +23,11 @@ class HandStatsModel {
     for (final player in json['gamePlayers']) {
       playerIdToName[player['id']] = player['name'];
     }
-
+    final thisGame = StatModel.fromJson(json["playerGameStats"]);
+    final allTime = StatModel.fromJson(json["playerHandStats"]);
     return HandStatsModel(
-      thisGame: StatModel.fromJson(json["playerGameStats"]),
-      alltime: StatModel.fromJson(json["playerHandStats"]),
+      thisGame: thisGame,
+      alltime: allTime,
       playerIdToName: playerIdToName,
     );
   }
@@ -97,6 +98,13 @@ class StatModel {
   List<HeadsupHandDetail> headsupHandDetails;
 
   factory StatModel.fromJson(Map<String, dynamic> json) {
+    List<HeadsupHandDetail> headsupDetails = [];
+    if (json["headsupHandDetails"] != null) {
+      for (final headsup in json["headsupHandDetails"]) {
+        headsupDetails.add(HeadsupHandDetail.fromJson(headsup));
+      }
+    }
+
     final stats = StatModel(
       inPreflop: json["inPreflop"],
       inFlop: json["inFlop"],
@@ -118,10 +126,7 @@ class StatModel {
       vpipCount: json["vpipCount"],
       allInCount: json["allInCount"],
       totalHands: json["totalHands"],
-      headsupHandDetails: json["headsupHandDetails"] == null
-          ? null
-          : List<HeadsupHandDetail>.from(json["headsupHandDetails"]
-              .map((x) => HeadsupHandDetail.fromJson(x))),
+      headsupHandDetails: headsupDetails,
     );
     return stats;
   }
@@ -163,12 +168,13 @@ class HeadsupHandDetail {
   int otherPlayer;
   bool won;
 
-  factory HeadsupHandDetail.fromJson(Map<String, dynamic> json) =>
-      HeadsupHandDetail(
-        handNum: json["handNum"],
-        otherPlayer: json["otherPlayer"],
-        won: json["won"],
-      );
+  factory HeadsupHandDetail.fromJson(Map<String, dynamic> json) {
+    return HeadsupHandDetail(
+      handNum: json["handNum"],
+      otherPlayer: int.parse(json["otherPlayer"].toString()),
+      won: json["won"],
+    );
+  }
 
   Map<String, dynamic> toJson() => {
         "handNum": handNum,

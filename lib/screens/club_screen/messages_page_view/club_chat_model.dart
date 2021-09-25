@@ -12,6 +12,7 @@ class ClubChatModel {
   final int messageTimeInEpoc;
   final String sender;
   final SharedHandMsg sharedHand;
+  final String playerName;
 
   bool isGroupLatest;
   bool isGroupFirst;
@@ -30,5 +31,6 @@ class ClubChatModel {
     this.isGroupFirst,
     this.sender,
     this.sharedHand,
+    this.playerName,
   });
 }

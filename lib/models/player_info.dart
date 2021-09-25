@@ -48,3 +48,28 @@ class PlayerInfo {
     return role.isHost || role.isOwner || role.isManager;
   }
 }
+
+class PlayerNotes {
+  int playerId;
+  String playerUuid;
+  String notes;
+}
+
+class MyPlayerNotes {
+  List<PlayerNotes> players = [];
+  Map<int, PlayerNotes> playersMap = Map<int, PlayerNotes>();
+  MyPlayerNotes();
+
+  factory MyPlayerNotes.fromJson(dynamic data) {
+    MyPlayerNotes playersNotes = MyPlayerNotes();
+    for (dynamic notes in data) {
+      final player = PlayerNotes();
+      player.notes = notes['notes'];
+      player.playerId = int.parse(notes['playerId'].toString());
+      player.playerUuid = notes['playerUuid'];
+      playersNotes.players.add(player);
+      playersNotes.playersMap[player.playerId] = player;
+    }
+    return playersNotes;
+  }
+}

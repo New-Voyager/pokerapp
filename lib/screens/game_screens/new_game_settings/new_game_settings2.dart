@@ -661,14 +661,14 @@ class NewGameSettings2 extends StatelessWidget {
                         ),
 
                         /* allow audio conference */
-                        _buildRadio(
-                          label: _appScreenText['USEAGORAAUDIOCONFERENCE'],
-                          value: gmp.useAgora,
-                          onChange: (bool b) {
-                            gmp.useAgora = b;
-                          },
-                          theme: theme,
-                        ),
+                        // _buildRadio(
+                        //   label: _appScreenText['USEAGORAAUDIOCONFERENCE'],
+                        //   value: gmp.useAgora,
+                        //   onChange: (bool b) {
+                        //     gmp.useAgora = b;
+                        //   },
+                        //   theme: theme,
+                        // ),
 
                         /* bot games */
                         _buildRadio(

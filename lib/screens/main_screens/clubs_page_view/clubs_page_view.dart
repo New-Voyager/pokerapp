@@ -338,7 +338,10 @@ class _ClubsPageViewState extends State<ClubsPageView>
                                   itemBuilder: (_, index) {
                                     var club = _clubs[index];
                                     return InkWell(
-                                      onTap: () => this.openClub(context, club),
+                                      onTap: () {
+                                        log('Opening club ${club.clubCode}');
+                                        this.openClub(context, club);
+                                      },
                                       onLongPress: () => _showClubOptions(
                                         club,
                                         ctx,
