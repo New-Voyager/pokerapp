@@ -65,6 +65,7 @@ class NewGameModel {
   int minPlayers = 2;
   int maxPlayers = 9;
   int gameLength = 60;
+  int gameLengthInHrs = 1;
   bool buyInApproval = true;
   double rakePercentage = 0;
   double rakeCap = 0;

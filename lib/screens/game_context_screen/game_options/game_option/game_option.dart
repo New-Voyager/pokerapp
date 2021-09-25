@@ -88,11 +88,6 @@ class _GameOptionState extends State<GameOption> {
   void onEndGame() async {
     Navigator.of(context).pop();
     if (widget.gameState.isGameRunning) {
-      Alerts.showNotification(
-          titleText: _appScreenText['game'],
-          svgPath: 'assets/images/casino.svg',
-          subTitleText: _appScreenText['theGameWillEndAfterThisHand']);
-      // We need to broadcast to all the players
       GameService.endGame(this.gameCode);
     } else {
       await GameService.endGame(this.gameCode);
