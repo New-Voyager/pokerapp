@@ -52,6 +52,16 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
       log("Listeners//..");
       setState(() {});
     });
+
+    // context.read<AppState>().addListener(() async {
+    //   int currentIndex = context.read<AppState>().currentIndex;
+    //   if (currentIndex == 0) {
+    //     log('live games screen refreshing');
+    //     _fetchLiveGames();
+    //     _fetchPlayedGames();
+    //   }
+    // });
+
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       TestService.isTesting ? _loadTestLiveGames() : _fetchLiveGames();
@@ -140,27 +150,47 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
   // }
 
   _fetchLiveGames() async {
-    ConnectionDialog.show(
-      context: context,
-      loadingText: _appScreenText['GETTINGGAMES'],
-    );
-    liveGames.clear();
-    liveGames.addAll(await GameService.getLiveGamesNew());
-    setState(() => _isLoading = false);
-    ConnectionDialog.dismiss(context: context);
+    log('fetching live games');
+    final updatedLiveGames = await GameService.getLiveGamesNew();
+    bool refresh = false;
+    if (updatedLiveGames.length == liveGames.length) {
+      final prevList = liveGames.map((e) => e.gameCode).toSet();
+      for (final liveGame in updatedLiveGames) {
+        if (!prevList.contains(liveGame.gameCode)) {
+          refresh = true;
+          break;
+        }
+      }
+    } else {
+      refresh = true;
+    }
+    if (refresh) {
+      liveGames.clear();
+      liveGames.addAll(updatedLiveGames);
+      setState(() => _isLoading = false);
+    }
   }
 
   _fetchPlayedGames() async {
-    ConnectionDialog.show(
-      context: context,
-      loadingText: _appScreenText['GETTINGGAMES'],
-    );
-    playedGames.clear();
-    //print('fetching live games');
-
-    playedGames.addAll(await GameService.getPastGames());
-    setState(() => _isPlayedGamesLoading = false);
-    ConnectionDialog.dismiss(context: context);
+    log('fetching played games');
+    final updatedPlayedGames = await GameService.getPastGames();
+    bool refresh = false;
+    if (updatedPlayedGames.length == playedGames.length) {
+      final prevList = playedGames.map((e) => e.gameCode).toSet();
+      for (final pastGame in updatedPlayedGames) {
+        if (!prevList.contains(pastGame.gameCode)) {
+          refresh = true;
+          break;
+        }
+      }
+    } else {
+      refresh = true;
+    }
+    if (refresh) {
+      playedGames.clear();
+      playedGames.addAll(updatedPlayedGames);
+      setState(() => _isPlayedGamesLoading = false);
+    }
   }
 
   _loadTestLiveGames() async {
@@ -181,6 +211,77 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
       _isPlayedGamesLoading = false;
     });
     ConnectionDialog.dismiss(context: context);
+  }
+
+  Future<void> hostGame() async {
+    final dynamic result =
+        await Navigator.of(context).pushNamed(Routes.new_game_settings);
+    if (result != null) {
+      /* show game settings dialog */
+      await NewGameSettings2.show(
+        context,
+        clubCode: "",
+        mainGameType: result['gameType'],
+        subGameTypes: List.from(
+              result['gameTypes'],
+            ) ??
+            [],
+      );
+    }
+  }
+
+  Future<void> joinGame(AppTheme appTheme) async {
+    String gameCode = "";
+    final String result = await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        actionsPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        backgroundColor: appTheme.fillInColor,
+        title: Text(
+          _appScreenText['GAMECODE'],
+          style: AppDecorators.getSubtitle2Style(theme: appTheme),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CardFormTextField(
+              theme: appTheme,
+              hintText: _appScreenText['ENTERGAMECODE'],
+              onChanged: (val) {
+                //log("VALUE : $val");
+                gameCode = val;
+              },
+              keyboardType: TextInputType.name,
+            ),
+          ],
+        ),
+        actions: [
+          RoundedColorButton(
+            text: _appScreenText['JOIN'],
+            backgroundColor: appTheme.accentColor,
+            textColor: appTheme.primaryColorWithDark(),
+            onTapFunction: () async {
+              if (gameCode.isEmpty) {
+                toast(_appScreenText['GAMECODECANTBEEMPTY']);
+                return;
+              }
+
+              Navigator.of(context).pop(gameCode);
+            },
+          ),
+        ],
+      ),
+    );
+
+    if (result != null) {
+      // Check game exists or not
+      final gameInfo = await GameService.getGameInfo(gameCode);
+      if (gameInfo == null) {
+        Alerts.showNotification(titleText: _appScreenText['GAMENOTFOUND']);
+      } else {
+        Navigator.of(context).pushNamed(Routes.game_play, arguments: result);
+      }
+    }
   }
 
   @override
@@ -204,20 +305,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                       RoundedColorButton(
                         onTapFunction: () async {
                           _disposeTimer();
-                          final dynamic result = await Navigator.of(context)
-                              .pushNamed(Routes.new_game_settings);
-                          if (result != null) {
-                            /* show game settings dialog */
-                            await NewGameSettings2.show(
-                              context,
-                              clubCode: "",
-                              mainGameType: result['gameType'],
-                              subGameTypes: List.from(
-                                    result['gameTypes'],
-                                  ) ??
-                                  [],
-                            );
-                          }
+                          await hostGame();
                           _initTimer();
                         },
                         text: _appScreenText["HOST"],
@@ -230,63 +318,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                       RoundedColorButton(
                         onTapFunction: () async {
                           _disposeTimer();
-                          String gameCode = "";
-                          final String result = await showDialog(
-                            context: context,
-                            builder: (context) => AlertDialog(
-                              actionsPadding: EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 8),
-                              backgroundColor: appTheme.fillInColor,
-                              title: Text(
-                                _appScreenText['GAMECODE'],
-                                style: AppDecorators.getSubtitle2Style(
-                                    theme: appTheme),
-                              ),
-                              content: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  CardFormTextField(
-                                    theme: appTheme,
-                                    hintText: _appScreenText['ENTERGAMECODE'],
-                                    onChanged: (val) {
-                                      //log("VALUE : $val");
-                                      gameCode = val;
-                                    },
-                                    keyboardType: TextInputType.name,
-                                  ),
-                                ],
-                              ),
-                              actions: [
-                                RoundedColorButton(
-                                  text: _appScreenText['JOIN'],
-                                  backgroundColor: appTheme.accentColor,
-                                  textColor: appTheme.primaryColorWithDark(),
-                                  onTapFunction: () async {
-                                    if (gameCode.isEmpty) {
-                                      toast(_appScreenText[
-                                          'GAMECODECANTBEEMPTY']);
-                                      return;
-                                    }
-
-                                    Navigator.of(context).pop(gameCode);
-                                  },
-                                ),
-                              ],
-                            ),
-                          );
-
-                          if (result != null) {
-                            // Check game exists or not
-                            final gameInfo =
-                                await GameService.getGameInfo(gameCode);
-                            if (gameInfo == null) {
-                              Alerts.showNotification(
-                                  titleText: _appScreenText['GAMENOTFOUND']);
-                            } else {
-                              Navigator.of(context).pushNamed(Routes.game_play,
-                                  arguments: result);
-                            }
-                          }
+                          await joinGame(appTheme);
                           _initTimer();
                         },
                         backgroundColor: appTheme.accentColor,

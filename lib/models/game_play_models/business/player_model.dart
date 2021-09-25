@@ -79,6 +79,7 @@ class PlayerModel {
   bool showMicOff = false;
 
   bool hasNotes = false;
+  String notes = '';
 
   PlayerModel({
     String name,

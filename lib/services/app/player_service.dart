@@ -276,4 +276,32 @@ class PlayerService {
 
     if (result.hasException) return null;
   }
+
+  static Future<MyPlayerNotes> getPlayerNotes(List<int> playerIds) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    String _query = """
+    query notesForPlayers(\$playerIds:[Int!]) {
+        notes: notesForPlayers(playerIds:\$playerIds) {
+          notes
+          playerId
+          playerUuid
+        }
+      }
+    """;
+    Map<String, dynamic> variables = {"playerIds": playerIds};
+    QueryResult result = await _client.query(
+      QueryOptions(document: gql(_query), variables: variables),
+    );
+
+    if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
+
+    var resp = result.data['notes'] as List;
+    final playerNotes = MyPlayerNotes.fromJson(resp);
+    return playerNotes;
+  }
 }

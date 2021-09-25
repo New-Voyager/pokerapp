@@ -25,7 +25,8 @@ class MessageItem extends StatelessWidget {
   final ClubChatModel messageModel;
   final AuthModel currentUser;
   final Map<String, String> players;
-
+  bool clubMessage = false;
+  String text = '';
   MessageItem({
     @required this.messageModel,
     @required this.currentUser,
@@ -37,8 +38,25 @@ class MessageItem extends StatelessWidget {
   Widget build(BuildContext context) {
     /* ui */
 
-    final bool isMe = currentUser.uuid == messageModel.sender;
+    bool isMe = currentUser.uuid == messageModel.sender;
     final theme = AppTheme.getTheme(context);
+    text = messageModel.text;
+    if (messageModel.messageType == MessageType.JOIN_CLUB ||
+        messageModel.messageType == MessageType.KICKED_OUT ||
+        messageModel.messageType == MessageType.LEAVE_CLUB) {
+      isMe = false;
+      clubMessage = true;
+      // return _buildClubMessage(context, theme, messageModel);
+      if (messageModel.messageType == MessageType.JOIN_CLUB) {
+        text = '${messageModel.playerName} joined the club';
+      }
+      if (messageModel.messageType == MessageType.KICKED_OUT) {
+        text = '${messageModel.playerName} is kicked out';
+      }
+      if (messageModel.messageType == MessageType.LEAVE_CLUB) {
+        text = '${messageModel.playerName} left the club';
+      }
+    }
     if (isMe) {
       return Row(
         mainAxisAlignment: MainAxisAlignment.end,
@@ -54,12 +72,52 @@ class MessageItem extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        _buildAvatar(theme),
+        clubMessage ? Container() : _buildAvatar(theme),
         SizedBox(width: 5),
         _buildTile(context, isMe, messageModel.isGroupLatest, theme),
       ],
     );
   }
+
+//   Widget _buildClubMessage(BuildContext context, AppTheme theme, ClubChatModel messageModel) {
+//     if (messageModel.messageType == MessageType.JOIN_CLUB ||
+//         messageModel.messageType == MessageType.KICKED_OUT ||
+//         messageModel.messageType == MessageType.LEAVE_CLUB) {
+//       String text = '';
+//       if (messageModel.messageType == MessageType.JOIN_CLUB) {
+//         text = '${messageModel.playerName} joined the club';
+//       }
+//       if (messageModel.messageType == MessageType.KICKED_OUT) {
+//         text = '${messageModel.playerName} is kicked out';
+//       }
+//       if (messageModel.messageType == MessageType.LEAVE_CLUB) {
+//         text = '${messageModel.playerName} left the club';
+//       }
+
+//       return
+//       Container(
+//           constraints: BoxConstraints(
+//             maxWidth: MediaQuery.of(context).size.width * 0.70,
+//           ),
+//           padding: EdgeInsets.all(10.0),
+//           decoration: BoxDecoration(
+//             borderRadius: BorderRadius.circular(5.0),
+//             color: Colors.blueGrey), // theme.primaryColorWithDark()),
+//           child: Padding(
+//             padding: EdgeInsets.all(20),
+//             child:       Container(
+//                       padding: EdgeInsets.all(3),
+//                       child: Text(
+//                         text,
+//                         style: AppDecorators.getHeadLine4Style(theme: theme),
+//                       ),
+//                     ),
+//           )
+//           );
+// ;
+//       //return _buildClubMessage(context, _appScreenText, messageModel);
+//     }
+//   }
 
   Widget _buildAvatar(AppTheme theme) {
     if (messageModel.isGroupLatest)
@@ -85,7 +143,7 @@ class MessageItem extends StatelessWidget {
     return Expanded(
       child: Stack(
         children: [
-          if (isGroupLatest) triangle,
+          if (isGroupLatest && !clubMessage) triangle,
           Padding(
             padding: EdgeInsets.only(
               left: !isGroupLatest ? 20 : 0,
@@ -229,10 +287,16 @@ class MessageItem extends StatelessWidget {
     if (messageModel.messageType == MessageType.HAND) {
       return _buildSharedHand(context, isMe, theme);
     }
-    AppTextScreen _appScreenText = getAppTextScreen("global");
 
+    AppTextScreen _appScreenText = getAppTextScreen("global");
+    Alignment alignment = isMe ? Alignment.centerRight : Alignment.centerLeft;
+    Color tileColor = isMe ? theme.fillInColor : theme.primaryColorWithDark();
+    if (clubMessage) {
+      tileColor = theme.accentColorWithDark(0.3);
+      alignment = Alignment.center;
+    }
     return Align(
-      alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
+      alignment: alignment,
       child: IntrinsicWidth(
         child: Container(
           constraints: BoxConstraints(
@@ -242,21 +306,22 @@ class MessageItem extends StatelessWidget {
               messageModel.messageType == MessageType.GIPHY ? 0 : 5.0),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(5.0),
-            color: isMe ? theme.fillInColor : theme.primaryColorWithDark(),
+            color: tileColor,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               if (messageModel.isGroupFirst)
-                Padding(
-                  padding: const EdgeInsets.all(3.0),
-                  child: Text(
-                    isMe ? _appScreenText['you'] : playerName,
-                    style: AppDecorators.getAccentTextStyle(theme: theme)
-                        .copyWith(
-                            fontWeight: FontWeight.normal, fontSize: 10.dp),
+                if (!clubMessage)
+                  Padding(
+                    padding: const EdgeInsets.all(3.0),
+                    child: Text(
+                      isMe ? _appScreenText['you'] : playerName,
+                      style: AppDecorators.getAccentTextStyle(theme: theme)
+                          .copyWith(
+                              fontWeight: FontWeight.normal, fontSize: 10.dp),
+                    ),
                   ),
-                ),
               messageModel.messageType == MessageType.GIPHY
                   ? GiphyImageWidget(
                       imgUrl: messageModel.giphyLink,
@@ -268,7 +333,7 @@ class MessageItem extends StatelessWidget {
                   : Container(
                       padding: EdgeInsets.all(3),
                       child: Text(
-                        messageModel.text,
+                        text,
                         style: AppDecorators.getHeadLine4Style(theme: theme),
                       ),
                     ),
