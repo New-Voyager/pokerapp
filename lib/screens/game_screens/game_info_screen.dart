@@ -115,57 +115,98 @@ class _GameInfoScreenState extends State<GameInfoScreen> {
             child: SingleChildScrollView(
               child: (gameSettings == null || loading)
                   ? Center(child: CircularProgressWidget())
-                  : Table(
-                      border: TableBorder.all(
-                        color: theme.fillInColor.withOpacity(0.5),
-                      ),
-                      columnWidths: {
-                        0: FixedColumnWidth(
-                            MediaQuery.of(context).size.width * 0.6),
-                        1: FixedColumnWidth(
-                            MediaQuery.of(context).size.width * 0.3),
-                      },
+                  : Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _buildOneRow(
-                            col1: "Buyin",
-                            col2: "${gameInfo.buyInMin}/${gameInfo.buyInMax}"),
-                        _buildOneRow(
-                            col1: "Run it twice Allowed",
-                            col2: _getYesNo(gameSettings?.runItTwiceAllowed)),
-                        _buildOneRow(
-                            col1: "Bomb Pot enabled",
-                            col2: _getYesNo(gameSettings?.bombPotEnabled)),
-                        _buildOneRow(
-                            col1: "Bomb Pot Interval",
-                            col2: gameSettings?.bombPotInterval?.toString()),
-                        _buildOneRow(
-                            col1: "Dual Board Bomb Pot",
-                            col2: _getYesNo(gameSettings?.doubleBoardBombPot)),
-                        _buildOneRow(
-                            col1: "UTG Straddle Allowed",
-                            col2: _getYesNo(gameInfo.utgStraddleAllowed)),
-                        _buildOneRow(
-                            col1: "Animations",
-                            col2: _getYesNo(gameSettings?.funAnimations)),
-                        _buildOneRow(
-                            col1: "Chat Allowed",
-                            col2: _getYesNo(gameSettings?.chat)),
-                        _buildOneRow(
-                            col1: "Show result",
-                            col2: _getYesNo(gameSettings?.showResult)),
-                        gameTypeFromStr(gameInfo.gameType) == GameType.ROE
-                            ? _buildOneRow(
-                                col1: "ROE games",
-                                col2: HelperUtils.buildGameTypeStrFromList(
-                                    gameSettings.roeGames))
-                            : TableRow(),
-                        gameTypeFromStr(gameInfo.gameType) ==
-                                GameType.DEALER_CHOICE
-                            ? _buildOneRow(
-                                col1: "Dealer Choice games",
-                                col2: HelperUtils.buildGameTypeStrFromList(
-                                    gameSettings.dealerChoiceGames))
-                            : TableRow(),
+                        Table(
+                          border: TableBorder.all(
+                            color: theme.fillInColor.withOpacity(0.5),
+                          ),
+                          columnWidths: {
+                            0: FixedColumnWidth(
+                                MediaQuery.of(context).size.width * 0.6),
+                            1: FixedColumnWidth(
+                                MediaQuery.of(context).size.width * 0.3),
+                          },
+                          children: [
+                            _buildOneRow(
+                                col1: "Buyin",
+                                col2:
+                                    "${gameInfo.buyInMin}/${gameInfo.buyInMax}"),
+                            _buildOneRow(
+                                col1: "Run it twice Allowed",
+                                col2:
+                                    _getYesNo(gameSettings?.runItTwiceAllowed)),
+                            _buildOneRow(
+                                col1: "Bomb Pot enabled",
+                                col2: _getYesNo(gameSettings?.bombPotEnabled)),
+                            _buildOneRow(
+                                col1: "Bomb Pot Interval",
+                                col2:
+                                    gameSettings?.bombPotInterval?.toString()),
+                            _buildOneRow(
+                                col1: "Dual Board Bomb Pot",
+                                col2: _getYesNo(
+                                    gameSettings?.doubleBoardBombPot)),
+                            _buildOneRow(
+                                col1: "UTG Straddle Allowed",
+                                col2: _getYesNo(gameInfo.utgStraddleAllowed)),
+                            _buildOneRow(
+                                col1: "Animations",
+                                col2: _getYesNo(gameSettings?.funAnimations)),
+                            _buildOneRow(
+                                col1: "Chat Allowed",
+                                col2: _getYesNo(gameSettings?.chat)),
+                            _buildOneRow(
+                                col1: "Show result",
+                                col2: _getYesNo(gameSettings?.showResult)),
+                          ],
+                        ),
+                        AppDimensionsNew.getVerticalSizedBox(8),
+                        Visibility(
+                          visible: gameTypeFromStr(gameInfo.gameType) ==
+                              GameType.ROE,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "ROE Games",
+                                style: AppDecorators.getHeadLine4Style(
+                                    theme: theme),
+                              ),
+                              Text(
+                                "${HelperUtils.buildGameTypeStrFromListDynamic(gameSettings.roeGames)}",
+                                style: AppDecorators.getHeadLine4Style(
+                                        theme: theme)
+                                    .copyWith(
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Visibility(
+                          visible: gameTypeFromStr(gameInfo.gameType) ==
+                              GameType.DEALER_CHOICE,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Dealer Choice Games",
+                                style: AppDecorators.getHeadLine4Style(
+                                    theme: theme),
+                              ),
+                              Text(
+                                "${HelperUtils.buildGameTypeStrFromListDynamic(gameSettings.dealerChoiceGames)}",
+                                style: AppDecorators.getHeadLine4Style(
+                                        theme: theme)
+                                    .copyWith(
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ],
                     ),
             ),
