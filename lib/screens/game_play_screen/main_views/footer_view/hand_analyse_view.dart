@@ -141,7 +141,9 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
       context: context,
       backgroundColor: Colors.transparent,
       builder: (_) {
-        return GameInfoBottomSheet();
+        return GameInfoBottomSheet(
+          gameState: widget.gameState,
+        );
       },
     );
   }
@@ -421,7 +423,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                     iconData: Icons.info_outline_rounded,
                     onClick: () {
                       vnShowMenuItems.value = false;
-                      // onGameInfoBottomSheet(context);
+                      onGameInfoBottomSheet(context);
                     }),
 
                 // result table
