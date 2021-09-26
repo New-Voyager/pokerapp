@@ -29,7 +29,11 @@ class AppConstants {
 
   static const int maxDiamondNumber = 20;
 
+  static const int maxTimeBankSecs = 20;
+
   static const Duration diamondUpdateDuration = const Duration(minutes: 1);
+
+  static const Duration timebankUpdateDuration = const Duration(minutes: 1);
 
   static const Duration cardShufflingTotalWaitDuration = const Duration(
     milliseconds: 800,

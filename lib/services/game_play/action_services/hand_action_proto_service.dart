@@ -940,6 +940,13 @@ class HandActionProtoService {
     } catch (err) {}
     _gameState.handState = HandState.ENDED;
     _gameState.handInProgress = false;
+
+    // is the current player in the hand
+    final me = _gameState.me;
+    if (me != null && !me.inBreak) {
+      _gameState.gameHiveStore.handEnded();
+    }
+
     //log('Hand Message: ::handleResult:: END');
   }
 

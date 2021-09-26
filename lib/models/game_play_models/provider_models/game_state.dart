@@ -388,7 +388,7 @@ class GameState {
       code = _gameInfo.gameCode;
     }
     gameHiveStore = GameHiveStore();
-    await gameHiveStore.open(code);
+    await gameHiveStore.initialize(code);
 
     if (!(this.customizationMode ?? false)) {
       if (!this.replayMode) {
