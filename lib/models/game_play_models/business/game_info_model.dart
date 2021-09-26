@@ -32,6 +32,7 @@ class GameInfoModel {
   bool playerRunItTwice;
   bool utgStraddleAllowed;
   bool buttonStraddleAllowed;
+  int buttonStraddleBet = 2;
   int sessionTime = 0;
   int runningTime = 0;
   int noHandsWon = 0;
@@ -96,6 +97,7 @@ class GameInfoModel {
     this.tableStatus = data['tableStatus'];
     this.utgStraddleAllowed = data['utgStraddleAllowed'] ?? true;
     this.buttonStraddleAllowed = data['buttonStraddleAllowed'] ?? false;
+    this.buttonStraddleBet = data['buttonStraddleBet'] ?? 2;
     this.availableSeats = data['seatInfo']['availableSeats']
         .map<int>((e) => int.parse(e.toString()))
         .toList();
@@ -173,6 +175,7 @@ class GameInfoModel {
       bigBlind
       utgStraddleAllowed
       buttonStraddleAllowed
+      buttonStraddleBet
       status
       tableStatus
       allowRabbitHunt

@@ -62,6 +62,8 @@ class NewGameModel {
   double straddleBet = 4.0;
   double ante = 0.0;
   bool utgStraddleAllowed = false;
+  bool buttonStraddle = false;
+  int buttonStraddleBet = 2; // 2 times big blind default
   int minPlayers = 2;
   int maxPlayers = 9;
   int gameLength = 60;
@@ -181,6 +183,8 @@ class NewGameModel {
     breakAllowed = json['breakAllowed'] ?? true;
     ipCheck = json['ipCheck'] ?? false;
     locationCheck = json['gpsCheck'] ?? false;
+    buttonStraddle = json['buttonStraddleAllowed'] ?? false;
+    buttonStraddleBet = json['buttonStraddleBet'] ?? 2;
   }
 
   Map<String, dynamic> toJson() {
@@ -190,6 +194,8 @@ class NewGameModel {
     data['smallBlind'] = this.smallBlind;
     data['bigBlind'] = this.bigBlind;
     data['utgStraddleAllowed'] = this.utgStraddleAllowed;
+    data['buttonStraddleAllowed'] = this.buttonStraddle;
+    data['buttonStraddleBet'] = this.buttonStraddleBet;
     data['straddleBet'] = this.straddleBet;
     data['minPlayers'] = this.minPlayers;
     data['maxPlayers'] = this.maxPlayers;

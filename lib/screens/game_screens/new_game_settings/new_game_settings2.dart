@@ -231,7 +231,7 @@ class NewGameSettings2 extends StatelessWidget {
     );
   }
 
-  Widget _buildBuyinBreakConfig(AppTheme theme, NewGameModelProvider gmp) {
+  Widget _buildBuyinConfig(AppTheme theme, NewGameModelProvider gmp) {
     return _buildDecoratedContainer(
       theme: theme,
       children: [
@@ -258,6 +258,61 @@ class NewGameSettings2 extends StatelessWidget {
                           gmp.buyInWaitTime = value;
                         },
                       ),
+                    ],
+                  ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildButtonStraddleConfig(AppTheme theme, NewGameModelProvider gmp) {
+    return _buildDecoratedContainer(
+      theme: theme,
+      children: [
+        SwitchWidget(
+          value: gmp.buttonStraddle,
+          label: 'Button Straddle', //_appScreenText['BUYINGAPPROVAL'],
+          onChange: (bool value) {
+            gmp.buttonStraddle = value;
+          },
+        ),
+
+        // buy in wait time
+        Consumer<NewGameModelProvider>(
+          builder: (_, vnGmp, __) => _buildAnimatedSwitcher(
+            child: vnGmp.buttonStraddle == false
+                ? const SizedBox.shrink()
+                : Column(
+                    children: [
+                      Align(
+                          alignment: Alignment.topLeft,
+                          child: _buildLabel('Straddle Max Bet (x BB)', theme)),
+                      Text(
+                        vnGmp.buttonStraddleBetAmount.toString(),
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.w900),
+                      ),
+                      Slider(
+                        value: vnGmp.buttonStraddleBetAmount.toDouble(),
+                        thumbColor: theme.accentColor,
+                        activeColor: theme.secondaryColor,
+                        inactiveColor: theme.primaryColorWithDark(),
+                        min: 2,
+                        max: 10,
+                        divisions: 8,
+                        label: vnGmp.buttonStraddleBetAmount.round().toString(),
+                        onChanged: (double value) {
+                          vnGmp.buttonStraddleBetAmount = value.toInt();
+                        },
+                      )
+                      // RadioListWidget(
+                      //   defaultValue: gmp.buyInWaitTime,
+                      //   values: NewGameConstants.BUYIN_WAIT_TIMES,
+                      //   onSelect: (int value) {
+                      //     gmp.buyInWaitTime = value;
+                      //   },
+                      // ),
                     ],
                   ),
           ),
@@ -621,6 +676,8 @@ class NewGameSettings2 extends StatelessWidget {
                   theme: theme,
                 ),
                 sepV20,
+                _buildButtonStraddleConfig(theme, gmp),
+                sepV20,
 
                 /* allow run it twice */
                 _buildRadio(
@@ -639,7 +696,7 @@ class NewGameSettings2 extends StatelessWidget {
                       style: AppStylesNew.labelTextStyle),
                   title: Text(_appScreenText['ADVANCESETTINGS']),
                   children: [
-                    _buildBuyinBreakConfig(theme, gmp),
+                    _buildBuyinConfig(theme, gmp),
                     sepV20,
                     _buildBreakConfig(theme, gmp),
                     sepV20,

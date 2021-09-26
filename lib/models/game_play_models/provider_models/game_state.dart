@@ -620,6 +620,7 @@ class GameState {
     this._playerSettings.autoStraddle = settings.autoStraddle;
     this._playerSettings.bombPotEnabled = settings.bombPotEnabled;
     this._playerSettings.buttonStraddle = settings.buttonStraddle;
+    this._playerSettings.buttonStraddleBet = settings.buttonStraddleBet;
     this._playerSettings.muckLosingHand = settings.muckLosingHand;
     this._playerSettings.runItTwiceEnabled = settings.runItTwiceEnabled;
   }

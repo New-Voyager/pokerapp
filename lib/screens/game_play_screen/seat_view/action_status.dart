@@ -91,7 +91,7 @@ class ActionStatusWidget extends StatelessWidget {
     }
 
     Color fgColor = Colors.white;
-    return AppStylesNew.userPopUpMessageTextStyle.copyWith(
-        fontSize: 10.dp, color: fgColor, backgroundColor: statusColor);
+    return AppStylesNew.userPopUpMessageTextStyle
+        .copyWith(fontSize: 8.dp, color: fgColor, backgroundColor: statusColor);
   }
 }
