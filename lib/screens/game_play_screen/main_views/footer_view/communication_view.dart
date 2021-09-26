@@ -101,7 +101,9 @@ class _CommunicationViewState extends State<CommunicationView> {
 
                 // mic button
                 bool showVoiceText = true;
-                if (gameState.audioConfEnabled &&
+                bool audioConf = gameState.audioConfEnabled ?? false;
+
+                if (audioConf &&
                     gameState.playerLocalConfig.inAudioConference) {
                   if (communicationState.audioConferenceStatus ==
                       AudioConferenceStatus.CONNECTED) {

@@ -214,60 +214,60 @@ Map<SeatPos, SeatPosAttribs> getSeatMap(int deviceSize) {
     /* bottom center */
     SeatPos.bottomCenter: SeatPosAttribs(
       Alignment.bottomCenter,
-      Offset(0, -10),
+      Offset(0, 10),
       Alignment.centerRight,
     ),
 
     /* bottom left and bottom right  */
     SeatPos.bottomLeft: SeatPosAttribs(
       Alignment.bottomLeft,
-      Offset(20, -20),
+      Offset(10, 0),
       Alignment.centerRight,
     ),
     SeatPos.bottomRight: SeatPosAttribs(
       Alignment.bottomRight,
-      Offset(-20, -20),
+      Offset(-10, 0),
       Alignment.centerLeft,
     ),
 
     /* middle left and middle right */
     SeatPos.middleLeft: SeatPosAttribs(
       Alignment.centerLeft,
-      Offset(10, 0),
+      Offset(3, 25),
       Alignment.centerRight,
     ),
     SeatPos.middleRight: SeatPosAttribs(
       Alignment.centerRight,
-      Offset(-10, 0),
+      Offset(-3, 40),
       Alignment.centerLeft,
     ),
 
     /* top left and top right  */
     SeatPos.topLeft: SeatPosAttribs(
       Alignment.topLeft,
-      Offset(20, 40),
+      Offset(3, 65),
       Alignment.centerRight,
     ),
     SeatPos.topRight: SeatPosAttribs(
       Alignment.topRight,
-      Offset(-20, 40),
+      Offset(-3, 75),
       Alignment.centerLeft,
     ),
 
     /* center, center right & center left */
     SeatPos.topCenter: SeatPosAttribs(
       Alignment.topCenter,
-      Offset(0, 20),
+      Offset(0, 0),
       Alignment.centerRight,
     ),
     SeatPos.topCenter1: SeatPosAttribs(
       Alignment.topCenter,
-      Offset(-45, 20),
+      Offset(-35, 0),
       Alignment.centerRight,
     ),
     SeatPos.topCenter2: SeatPosAttribs(
       Alignment.topCenter,
-      Offset(45, 20),
+      Offset(80, 0),
       Alignment.centerLeft,
     ),
   };
@@ -283,26 +283,26 @@ Map<SeatPos, Offset> getBetAmountPositionMap({
     return {
       /* bottom, bottom left and bottom right */
       SeatPos.bottomCenter: Offset(
-        0,
-        -namePlateSize.height * 0.80,
+        -20,
+        -namePlateSize.height * 0.90,
       ),
       SeatPos.bottomLeft: Offset(
         namePlateSize.width * 0.60,
         -namePlateSize.height * 0.80,
       ),
       SeatPos.bottomRight: Offset(
-        -namePlateSize.width * 0.60,
+        -namePlateSize.width * 0.90,
         -namePlateSize.height * 0.80,
       ),
 
       /* middle left and middle right */
       SeatPos.middleLeft: Offset(
         namePlateSize.width * 0.10,
-        namePlateSize.height * 0.60,
+        namePlateSize.height * 0.70,
       ),
       SeatPos.middleRight: Offset(
-        0,
-        namePlateSize.height * 0.60,
+        -namePlateSize.width,
+        -namePlateSize.height * 0.20,
       ),
 
       /* top left and top right */
@@ -318,15 +318,15 @@ Map<SeatPos, Offset> getBetAmountPositionMap({
       /* center, center left and center right */
       SeatPos.topCenter: Offset(
         namePlateSize.width * 0.20,
-        namePlateSize.height * 0.60,
+        namePlateSize.height * 0.70,
       ),
       SeatPos.topCenter1: Offset(
         namePlateSize.width * 0.20,
-        namePlateSize.height * 0.60,
+        namePlateSize.height * 0.70,
       ),
       SeatPos.topCenter2: Offset(
-        namePlateSize.width * 0.20,
-        namePlateSize.height * 0.60,
+        namePlateSize.width * -0.30,
+        namePlateSize.height * 0.70,
       ),
     };
 
