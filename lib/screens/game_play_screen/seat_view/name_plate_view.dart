@@ -203,13 +203,20 @@ class NamePlateWidget extends StatelessWidget {
       //);
     } else {
       //log('Rebuilding no highlight');
-      plateWidget = Nameplate.fromSvgString(
-          remainingTime: 0,
-          totalTime: 0,
+      plateWidget = 
+      CountdownMs(
+          totalSeconds: 20,
+          currentSeconds: 20,
+          build: (_, time) {
+          return Nameplate.fromSvgString(
+          remainingTime: time~/1000,
+          totalTime: 20,
           svg: namePlateStr,
           size: containerSize,
           progressPath: progressPathStr,
           progressRatio: progressRatio);
+          }
+      );
 
       // plateWidget = SvgPicture.string(namePlateStr);
       // plateWidget = PlateWidget(
@@ -224,8 +231,8 @@ class NamePlateWidget extends StatelessWidget {
       alignment: Alignment.center,
       clipBehavior: Clip.hardEdge,
       children: [
-        SvgPicture.string(namePlateStr, width: 100, height: 60),
-        //plateWidget,
+        // SvgPicture.string(namePlateStr, width: 100, height: 60),
+        plateWidget,
         Positioned.fill(
             child: Align(
                 alignment: Alignment.topCenter,
@@ -302,6 +309,8 @@ class NamePlateWidget extends StatelessWidget {
         namePlate,
       ]);
     }
+
+    plateWidget = namePlate;
     Widget ret = Opacity(
         opacity: childWhenDragging ? 0.50 : 1.0,
         child: Container(
