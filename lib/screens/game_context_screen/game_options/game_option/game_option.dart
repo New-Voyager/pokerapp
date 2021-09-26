@@ -771,6 +771,14 @@ class _GameOptionState extends State<GameOption> {
         widget.gameState.currentPlayerUuid);
   }
 
+  Widget _buildLabel(String label, AppTheme theme) => Padding(
+        padding: const EdgeInsets.symmetric(vertical: 5.0),
+        child: Text(
+          label,
+          style: AppDecorators.getHeadLine4Style(theme: theme),
+        ),
+      );
+
   Widget _buildPlayerSettingOptions(AppTheme theme) {
     if (_gameSettings == null) {
       return CircularProgressWidget();
@@ -915,22 +923,123 @@ class _GameOptionState extends State<GameOption> {
       ));
     }
 
+    if (gameInfo.buttonStraddleAllowed) {
+      int straddleRange = gameInfo.buttonStraddleBet - 2;
+      if (straddleRange == 0) {
+        // only 2x bb straddle is available
+        children.add(_buildCheckBox(
+          text: 'Button Straddle',
+          value: _gamePlayerSettings.buttonStraddle,
+          onChange: (bool v) async {
+            // setting the value saves it to local storage too
+            _gamePlayerSettings.buttonStraddle = v;
+            if (closed) return;
+            setState(() {});
+          },
+        ));
+      } else {
+        children.add(
+          Container(
+            decoration: _gamePlayerSettings.buttonStraddle
+                ? AppDecorators.tileDecorationWithoutBorder(theme)
+                : BoxDecoration(),
+            child: Column(
+              children: [
+                _buildCheckBox(
+                  text: 'Button Straddle',
+                  value: _gamePlayerSettings.buttonStraddle,
+                  onChange: (bool v) async {
+                    _gamePlayerSettings.buttonStraddle = v;
+                    await updateGamePlayerSettings();
+                    if (closed) return;
+                    setState(() {});
+                  },
+                ),
+                _gamePlayerSettings.buttonStraddle
+                    ? Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 16,
+                        ),
+                        child: ListenableProvider<ValueNotifier<double>>(
+                            create: (_) => ValueNotifier<double>(
+                                  _gamePlayerSettings.buttonStraddleBet
+                                      .toDouble(),
+                                ),
+                            builder: (BuildContext context, _) {
+                              final valueNotifierVal =
+                                  context.read<ValueNotifier<double>>();
+                              return Column(
+                                children: [
+                                  Align(
+                                      alignment: Alignment.topLeft,
+                                      child: _buildLabel(
+                                          'Straddle Bet (x BB)', theme)),
+                                  Text(
+                                    _gamePlayerSettings.buttonStraddleBet
+                                        .toString(),
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w900),
+                                  ),
+                                  ValueListenableBuilder<double>(
+                                      valueListenable: valueNotifierVal,
+                                      builder: (_, double straddleAmount, __) {
+                                        return Slider(
+                                          value: _gamePlayerSettings
+                                              .buttonStraddleBet
+                                              .toDouble(),
+                                          thumbColor: theme.accentColor,
+                                          activeColor: theme.secondaryColor,
+                                          inactiveColor:
+                                              theme.primaryColorWithDark(),
+                                          min: 2,
+                                          max: gameInfo.buttonStraddleBet
+                                              .toDouble(),
+                                          divisions:
+                                              gameInfo.buttonStraddleBet - 2,
+                                          label: _gamePlayerSettings
+                                              .buttonStraddleBet
+                                              .round()
+                                              .toString(),
+                                          onChanged: (double value) async {
+                                            _gamePlayerSettings
+                                                    .buttonStraddleBet =
+                                                value.toInt();
+                                            updateGamePlayerSettings()
+                                                .then((value) {
+                                              if (closed) return;
+                                              setState(() {});
+                                            });
+                                          },
+                                        );
+                                      })
+                                ],
+                              );
+                            }))
+                    : const SizedBox.shrink(),
+              ],
+            ),
+          ),
+        );
+      }
+    }
+
     // need local variable for bombpot in gameInfo
-    children.add(Visibility(
-      visible: widget.gameState.gameInfo.buttonStraddleAllowed,
-      child: _buildCheckBox(
-        text: "Button Straddle",
-        value: _gamePlayerSettings.buttonStraddle,
-        onChange: (bool v) async {
-          // setting the value saves it to local storage too
-          _gamePlayerSettings.buttonStraddle = v;
-          widget.gameState.playerSettings.buttonStraddle = v;
-          await updateGamePlayerSettings();
-          if (closed) return;
-          setState(() {});
-        },
-      ),
-    ));
+    // children.add(Visibility(
+    //   visible: widget.gameState.gameInfo.buttonStraddleAllowed,
+    //   child: _buildCheckBox(
+    //     text: "Button Straddle",
+    //     value: _gamePlayerSettings.buttonStraddle,
+    //     onChange: (bool v) async {
+    //       // setting the value saves it to local storage too
+    //       _gamePlayerSettings.buttonStraddle = v;
+    //       widget.gameState.playerSettings.buttonStraddle = v;
+    //       await updateGamePlayerSettings();
+    //       if (closed) return;
+    //       setState(() {});
+    //     },
+    //   ),
+    // ));
 
     // need local variable for bombpot in gameInfo
     children.add(Visibility(

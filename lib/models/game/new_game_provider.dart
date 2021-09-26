@@ -134,6 +134,18 @@ class NewGameModelProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool get buttonStraddle => settings.buttonStraddle ?? false;
+  set buttonStraddle(value) {
+    settings.buttonStraddle = value;
+    notifyListeners();
+  }
+
+  int get buttonStraddleBetAmount => settings.buttonStraddleBet ?? false;
+  set buttonStraddleBetAmount(value) {
+    settings.buttonStraddleBet = value;
+    notifyListeners();
+  }
+
   bool get breakAllowed => settings.breakAllowed ?? false;
   set breakAllowed(value) {
     settings.breakAllowed = value;
