@@ -52,46 +52,46 @@ class GamePlayScreenUtilMethods {
       overlayOpacity: 0.1,
       icon: Icons.all_inclusive_rounded,
       children: [
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          label: 'Flop Cards',
-          labelBackgroundColor: Colors.black,
-          onTap: () => TestService.addFlopCards(),
-        ),
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          label: 'Show Sitback',
-          labelBackgroundColor: Colors.black,
-          onTap: () => TestService.showSitBack(),
-        ),
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          label: 'Show Result',
-          labelBackgroundColor: Colors.black,
-          onTap: () => TestService.showHandResult2(),
-        ),
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          label: 'Show Action View',
-          labelBackgroundColor: Colors.black,
-          onTap: () => TestService.testBetWidget(),
-        ),
+        // SpeedDialChild(
+        //   child: Icon(
+        //     Icons.adb_rounded,
+        //     color: Colors.white,
+        //   ),
+        //   backgroundColor: Colors.red,
+        //   label: 'Flop Cards',
+        //   labelBackgroundColor: Colors.black,
+        //   onTap: () => TestService.addFlopCards(),
+        // ),
+        // SpeedDialChild(
+        //   child: Icon(
+        //     Icons.adb_rounded,
+        //     color: Colors.white,
+        //   ),
+        //   backgroundColor: Colors.red,
+        //   label: 'Show Sitback',
+        //   labelBackgroundColor: Colors.black,
+        //   onTap: () => TestService.showSitBack(),
+        // ),
+        // SpeedDialChild(
+        //   child: Icon(
+        //     Icons.adb_rounded,
+        //     color: Colors.white,
+        //   ),
+        //   backgroundColor: Colors.red,
+        //   label: 'Show Result',
+        //   labelBackgroundColor: Colors.black,
+        //   onTap: () => TestService.showHandResult2(),
+        // ),
+        // SpeedDialChild(
+        //   child: Icon(
+        //     Icons.adb_rounded,
+        //     color: Colors.white,
+        //   ),
+        //   backgroundColor: Colors.red,
+        //   label: 'Show Action View',
+        //   labelBackgroundColor: Colors.black,
+        //   onTap: () => TestService.testBetWidget(),
+        // ),
         SpeedDialChild(
           child: Icon(
             Icons.adb_rounded,
@@ -170,7 +170,18 @@ class GamePlayScreenUtilMethods {
           backgroundColor: Colors.red,
           labelBackgroundColor: Colors.black,
           label: 'Show Bets',
-          onTap: () => TestService.testBetWidget(),
+          onTap: () => TestService.showBets(),
+        ),
+
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
+          labelBackgroundColor: Colors.black,
+          label: 'Simulate Bet Movement',
+          onTap: () => TestService.simulateBetMovement(),
         ),
       ],
       backgroundColor: AppColorsNew.appAccentColor,

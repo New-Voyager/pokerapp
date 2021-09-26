@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
@@ -12,8 +13,9 @@ import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/screens/game_play_screen/game_play_screen_util_methods.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/animating_widgets/stack_reload_animating_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/milliseconds_counter.dart';
-import 'package:pokerapp/screens/game_play_screen/widgets/plate_border.dart';
+import 'package:pokerapp/widgets/nameplate.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_svg/svg.dart';
 
 class NamePlateWidget extends StatelessWidget {
   final GlobalKey globalKey;
@@ -101,9 +103,9 @@ class NamePlateWidget extends StatelessWidget {
       );
     } else if (highlight) {
       shadow = BoxShadow(
-        color: highlightColor.withAlpha(120),
-        blurRadius: 20.0,
-        spreadRadius: 20.0,
+        color: highlightColor.withAlpha(80),
+        blurRadius: 10.0,
+        spreadRadius: 10.0,
       );
     } else {
       if (hostSeatChange?.seatChangeInProgress ?? false) {
@@ -157,41 +159,164 @@ class NamePlateWidget extends StatelessWidget {
 [log] Rebuilding highlight remaining: 7 total: 30 current: 23
 [log] Timer remaining: 22977 total: 30 current: 7
 */
+    Size containerSize = Size(100, 60);
+    Size svgSize = Size(400, 240);
+    //Size progressSize = Size(370, 130);
+    Size progressRatio = Size(1.0, 1.0);
+    //Size(containerSize.width/svgSize.width,
+    //                          containerSize.height/svgSize.height);
     if (seat.player?.highlight ?? false) {
       int current = seat.actionTimer.getProgressTime();
       int total = seat.actionTimer.getTotalTime();
       final int totalMs = seat.actionTimer.getTotalTime() * 1000;
 
       //log('Rebuilding highlight remaining: ${remaining} total: ${total} current: ${current}');
+      //int total = seat.actionTimer.getTotalTime();
+      // int remainingSeconds = time.toInt() ~/ 1000;
 
-      plateWidget = CountdownMs(
-        totalSeconds: total,
-        currentSeconds: current,
-        build: (_, time) {
-          int total = seat.actionTimer.getTotalTime();
-          int remainingSeconds = time.toInt() ~/ 1000;
-          seat.setProgressTime(total - remainingSeconds);
-          // log('ProgressBar: seatNo: ${seat.player.seatNo} $total remaining: $remainingSeconds');
+      plateWidget = Nameplate.fromSvgString(
+          remainingTime: current,
+          totalTime: total,
+          svg: namePlateStr,
+          size: containerSize,
+          progressPath: progressPathStr,
+          progressRatio: progressRatio);
+      // plateWidget = CountdownMs(
+      //   totalSeconds: total,
+      //   currentSeconds: current,
+      //   build: (_, time) {
+      //     int total = seat.actionTimer.getTotalTime();
+      //     int remainingSeconds = time.toInt() ~/ 1000;
+      //     seat.setProgressTime(total - remainingSeconds);
+      //     // log('ProgressBar: seatNo: ${seat.player.seatNo} $total remaining: $remainingSeconds');
 
-          //int progress = seat.actionTimer.getProgressTime();
-          int currentProgress = total * 1000 - time.toInt();
-          //log('Rebuilding highlight remaining: ${time.toInt() ~/ 1000} total: ${total} current: ${total - remainingSeconds}');
+      //     //int progress = seat.actionTimer.getProgressTime();
+      //     int currentProgress = total * 1000 - time.toInt();
+      //     //log('Rebuilding highlight remaining: ${time.toInt() ~/ 1000} total: ${total} current: ${total - remainingSeconds}');
 
-          return PlateWidget(
-            currentProgress,
-            totalMs,
-            showProgress: true,
-          );
-        },
-      );
+      //     return PlateWidget(
+      //       currentProgress,
+      //       totalMs,
+      //       showProgress: true,
+      //     );
+      //   },
+      //);
     } else {
       //log('Rebuilding no highlight');
-      plateWidget = PlateWidget(
-        0,
-        0,
-        showProgress: false,
-      );
+      plateWidget = Nameplate.fromSvgString(
+          remainingTime: 0,
+          totalTime: 0,
+          svg: namePlateStr,
+          size: containerSize,
+          progressPath: progressPathStr,
+          progressRatio: progressRatio);
+
+      // plateWidget = SvgPicture.string(namePlateStr);
+      // plateWidget = PlateWidget(
+      //   0,
+      //   0,
+      //   showProgress: false,
+      // );
     }
+    // return SvgPicture.string(namePlateStr, width: 60, height: 50);
+
+    Stack namePlate = Stack(
+      alignment: Alignment.center,
+      clipBehavior: Clip.hardEdge,
+      children: [
+        SvgPicture.string(namePlateStr, width: 100, height: 60),
+        //plateWidget,
+        Positioned.fill(
+            child: Align(
+                alignment: Alignment.topCenter,
+                child: AnimatedOpacity(
+                  duration: AppConstants.animationDuration,
+                  opacity: seat.isOpen ? 0.0 : 1.0,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(height: 2),
+                      // player name
+                      FittedBox(
+                        child: Text(
+                          seat.player?.name ?? '',
+                          style: AppDecorators.getSubtitle1Style(theme: theme),
+                        ),
+                      ),
+                      SizedBox(height: 2),
+                      // divider
+                      PlayerViewDivider(),
+                      SizedBox(height: 2),
+
+                      // bottom widget - to show stack, sit back time, etc.
+                      Align(
+                        alignment: Alignment.topRight,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 5),
+                          child: FittedBox(
+                            child: bottomWidget(context, theme),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ))),
+      ],
+    );
+
+    //Widget plateWidget;
+    if (seat.player?.highlight ?? false) {
+      int current = seat.actionTimer.getProgressTime();
+      int total = seat.actionTimer.getTotalTime();
+      plateWidget = CountdownMs(
+          totalSeconds: total,
+          currentSeconds: current,
+          build: (_, time) {
+            double value = (time / (total * 1000));
+            double percent = 1 - value;
+            seat.actionTimer.setProgressTime(time ~/ 1000);
+            Animation<Color> color =
+                AlwaysStoppedAnimation<Color>(Colors.green);
+            if (percent >= 0.75) {
+              color = AlwaysStoppedAnimation<Color>(Colors.red);
+            } else if (percent >= 0.50) {
+              color = AlwaysStoppedAnimation<Color>(Colors.yellow);
+            }
+            Widget ret = Column(children: [
+              Transform.rotate(
+                  angle: -math.pi,
+                  child: LinearProgressIndicator(
+                    minHeight: 5,
+                    value: value,
+                    backgroundColor: Colors.transparent,
+                    valueColor: color,
+                  )),
+              namePlate,
+            ]);
+            return ret;
+          });
+    } else {
+      plateWidget = Column(children: [
+        SizedBox(height: 5),
+        namePlate,
+      ]);
+    }
+    Widget ret = Opacity(
+        opacity: childWhenDragging ? 0.50 : 1.0,
+        child: Container(
+            width: 100,
+            height: 75,
+            //width: boardAttributes.namePlateSize.width,
+            //height: boardAttributes.namePlateSize.height,
+            padding: const EdgeInsets.symmetric(
+              vertical: 5.0,
+            ),
+            decoration: BoxDecoration(
+              boxShadow: shadow,
+            ),
+            child: plateWidget));
+    return ret;
 
     return Opacity(
       opacity: childWhenDragging ? 0.50 : 1.0,

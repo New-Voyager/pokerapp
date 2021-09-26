@@ -285,9 +285,11 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         hostSeatChangeInProgress: _hostSeatChangeInProgress,
         hostSeatChangeSeats: _hostSeatChangeSeats,
       );
-      await _gameState.refreshSettings();
-      await _gameState.refreshPlayerSettings();
-      await _gameState.refreshNotes();
+      if (!TestService.isTesting) {
+        await _gameState.refreshSettings();
+        await _gameState.refreshPlayerSettings();
+        await _gameState.refreshNotes();
+      }
     }
 
     if (_gameInfoModel?.audioConfEnabled ?? false) {

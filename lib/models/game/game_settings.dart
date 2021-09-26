@@ -109,7 +109,7 @@ class GameSettings {
         "resultPauseTime": resultPauseTime,
         "ipCheck": ipCheck,
         "gpsCheck": gpsCheck,
-        "showResult":showResult,
+        "showResult": showResult,
         "roeGames": roeGames,
         "dealerChoiceGames": dealerChoiceGames,
       };

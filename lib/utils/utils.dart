@@ -284,7 +284,7 @@ class HelperUtils {
   }
 
   static buildGameTypeStrFromListDynamic(List gamesList) {
- if (gamesList != null) {
+    if (gamesList != null) {
       String str = "(";
       for (var type in gamesList) {
         str += "${gameTypeShortStr(gameTypeFromStr(type))}, ";

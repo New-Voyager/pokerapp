@@ -183,7 +183,7 @@ class TestService {
         //_currentPlayer = PlayerInfo.fromJson(jsonData["currentPlayer"]);
       }
       // 2 4 6 8 9
-      var maxPlayers = 4;
+      var maxPlayers = 9;
       if (jsonData["gameInfo"] != null) {
         // todo: debug remove: change the max Players in a game here
         _gameInfo = GameInfoModel.fromJson(
@@ -257,56 +257,62 @@ class TestService {
 
     final gameState = Provider.of<GameState>(context, listen: false);
     gameState.resetSeatActions();
+    for (final seat in gameState.seats) {
+      if (seat.player != null) {
+        seat.player.action.setActionProto(ACTION.BET, 40.0);
+      }
+    }
+    gameState.notifyAllSeats();
 
-    final seat1 = gameState.getSeat(1);
-    seat1.player.action.button = true;
+    // final seat1 = gameState.getSeat(1);
+    // seat1.player.action.button = true;
 
-    final seat2 = gameState.getSeat(2);
-    seat2.player.action.amount = 1;
-    seat2.player.action.sb = true;
+    // final seat2 = gameState.getSeat(2);
+    // seat2.player.action.amount = 1;
+    // seat2.player.action.sb = true;
 
-    final seat3 = gameState.getSeat(3);
-    seat3.player.action.amount = 2;
-    seat3.player.action.bb = true;
+    // final seat3 = gameState.getSeat(3);
+    // seat3.player.action.amount = 2;
+    // seat3.player.action.bb = true;
 
-    final seat4 = gameState.getSeat(4);
-    seat4.player.action.amount = 4;
-    seat4.player.action.straddle = true;
+    // final seat4 = gameState.getSeat(4);
+    // seat4.player.action.amount = 4;
+    // seat4.player.action.straddle = true;
 
-    // final seat5 = gameState.getSeat(5);
-    // seat5.player.action.setAction(jsonDecode('''
+    // // final seat5 = gameState.getSeat(5);
+    // // seat5.player.action.setAction(jsonDecode('''
+    // //       {
+    // //         "action": "CALL",
+    // //         "amount": 4.0
+    // //       }
+    // //     '''));
+
+    // for (final seat in gameState.seats) {
+    //   if (seat.serverSeatPos <= 5) {
+    //     seat.notify();
+    //     continue;
+    //   }
+
+    //   if (seat.serverSeatPos == 6) {
+    //     dynamic json = jsonDecode('''
+    //       {
+    //         "action": "BET",
+    //         "amount": 20.0
+    //       }
+    //     ''');
+    //     seat.player.action.setAction(json);
+    //   } else {
+    //     dynamic json = jsonDecode('''
     //       {
     //         "action": "CALL",
-    //         "amount": 4.0
+    //         "amount": 20.0
     //       }
-    //     '''));
+    //     ''');
+    //     seat.player.action.setAction(json);
+    //   }
 
-    for (final seat in gameState.seats) {
-      if (seat.serverSeatPos <= 5) {
-        seat.notify();
-        continue;
-      }
-
-      if (seat.serverSeatPos == 6) {
-        dynamic json = jsonDecode('''
-          {
-            "action": "BET",
-            "amount": 20.0
-          }
-        ''');
-        seat.player.action.setAction(json);
-      } else {
-        dynamic json = jsonDecode('''
-          {
-            "action": "CALL",
-            "amount": 20.0
-          }
-        ''');
-        seat.player.action.setAction(json);
-      }
-
-      seat.notify();
-    }
+    //   seat.notify();
+    // }
   }
 
   static Future<void> buyInTest() async {
