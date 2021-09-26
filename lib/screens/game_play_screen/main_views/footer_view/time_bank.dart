@@ -20,29 +20,43 @@ class _TimeBankWidgetState extends State<TimeBankWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(alignment: Alignment.center, children: [
+    log('timebank: rebuild timebank widget');
+    List<Widget> children = [];
+    children.add(
       GameCircleButton(
         iconData: Icons.access_alarms,
         onClickHandler: () {
           log('timebank: on timebank clicked');
+          animate = false;
+          setState(() {});
           animate = true;
           setState(() {});
         },
       ),
-      Visibility(
-          visible: animate,
-          child: TweenAnimationBuilder<double>(
-            tween: Tween<double>(begin: 0, end: 1),
-            duration: const Duration(milliseconds: 1500),
-            builder: (BuildContext context, double v, Widget child) {
-              return Opacity(
-                  opacity: 1 - v,
-                  child: Transform.translate(
-                      offset: Offset(-40, -v * 30),
-                      child: Text('+ ' + widget.time.toString())));
-            },
-            child: const Icon(Icons.aspect_ratio),
-          ))
-    ]);
+    );
+    if (animate) {
+      log('timebank: animation is added');
+      final animation = TweenAnimationBuilder<double>(
+        tween: Tween<double>(begin: 0, end: 1),
+        onEnd: () {
+          animate = false;
+          setState(() {
+            
+          });
+        },
+        duration: const Duration(milliseconds: 1000),
+        builder: (BuildContext context, double v, Widget child) {
+          // log('timebank: animating time: value: $v');
+          return Opacity(
+              opacity: 1 - v,
+              child: Transform.translate(
+                  offset: Offset(-40, -v * 30),
+                  child: Text('+ ' + widget.time.toString())));
+        },
+        child: const Icon(Icons.aspect_ratio),
+      );
+      children.add(animation);
+    }
+    return Stack(alignment: Alignment.center, children: children);
   }
 }
