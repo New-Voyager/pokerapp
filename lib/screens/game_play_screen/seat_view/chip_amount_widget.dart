@@ -118,18 +118,19 @@ class _ChipAmountWidgetState extends State<ChipAmountWidget>
     final widthSep = SizedBox(width: 2.0);
 
     final SeatPos seatPos = widget.seat.uiSeatPos;
+    children.add(coin);
+    children.add(widthSep);
+    children.add(amount);
 
-    if (seatPos == SeatPos.middleRight ||
-        seatPos == SeatPos.bottomRight ||
-        seatPos == SeatPos.topRight) {
-      children.add(amount);
-      children.add(widthSep);
-      children.add(coin);
-    } else {
-      children.add(coin);
-      children.add(widthSep);
-      children.add(amount);
-    }
+    // if (seatPos == SeatPos.topCenter ||
+    //     seatPos == SeatPos.topCenter1 ||
+    //     seatPos == SeatPos.topCenter2) {
+    //   children = [];
+    //   children.add(coin);
+    //   children.add(widthSep);
+    //   children.add(amount);
+    // } else {
+    // }
 
     CrossAxisAlignment crossAxisAlignment;
 
@@ -140,7 +141,7 @@ class _ChipAmountWidgetState extends State<ChipAmountWidget>
     else
       crossAxisAlignment = CrossAxisAlignment.center;
 
-    betWidget = Row(
+    betWidget = Column(
       crossAxisAlignment: crossAxisAlignment,
       mainAxisSize: MainAxisSize.min,
       children: children,

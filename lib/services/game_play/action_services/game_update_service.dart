@@ -188,6 +188,10 @@ class GameUpdateService {
           return handleNewUpdateStatus(
             data: data,
           );
+        case AppConstants.GAME_ENDING:
+          return handleGameEnding(
+            data: data,
+          );
       }
     }
   }
@@ -315,6 +319,10 @@ class GameUpdateService {
     final tableState = _gameState.tableState;
     tableState.notifyAll();
     _gameState.notifyAllSeats();
+    _gameState.refreshNotes().then((value) {
+      if (closed || _gameState.uiClosing) return;
+      _gameState.notifyAllSeats();
+    });
   }
 
   void handleNewPlayerInSeat(
@@ -327,6 +335,12 @@ class GameUpdateService {
     GameInfoModel _gameInfoModel =
         await GameService.getGameInfo(_gameState.gameCode);
     assert(_gameInfoModel != null);
+    // if the player is already in the seat, ignore this message
+    final seat = _gameState.getSeat(seatNo);
+    if (seat.player != null) {
+      return;
+    }
+
     List<PlayerModel> playerModels = _gameInfoModel.playersInSeats;
     PlayerModel newPlayerModel = playerModels.firstWhere(
       (pm) => pm.seatNo == seatNo,
@@ -1308,6 +1322,13 @@ class GameUpdateService {
         );
       }
     }
+  }
+
+  void handleGameEnding({var data}) async {
+    Alerts.showNotification(
+        titleText: _appScreenText['game'],
+        svgPath: 'assets/images/casino.svg',
+        subTitleText: _appScreenText['theGameWillEndAfterThisHand']);
   }
 
   void handleNewUpdateStatus({

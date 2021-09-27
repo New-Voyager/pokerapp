@@ -97,7 +97,7 @@ class AppDecorators {
   static TextStyle getSubtitle1Style({@required AppTheme theme}) {
     return TextStyle(
       color: theme.supportingColorWithLight(),
-      fontSize: 8.dp,
+      fontSize: 10.dp,
       fontWeight: FontWeight.w300,
     );
   }

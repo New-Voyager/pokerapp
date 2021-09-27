@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game/new_game_model.dart';
@@ -118,15 +120,29 @@ class NewGameModelProvider extends ChangeNotifier {
   //   settings.gameLength = value;
   //   notifyListeners();
   // }
-  int get gameLengthInHrs => settings.gameLength;
+  int get gameLengthInHrs => settings.gameLengthInHrs;
   set gameLengthInHrs(value) {
-    settings.gameLength = value;
+    settings.gameLengthInHrs = value;
+    settings.gameLength = value * 60;
+    log('settings.gameLength: ${settings.gameLength}, inHrs: ${settings.gameLengthInHrs}');
     notifyListeners();
   }
 
   bool get buyInApproval => settings.buyInApproval ?? false;
   set buyInApproval(value) {
     settings.buyInApproval = value;
+    notifyListeners();
+  }
+
+  bool get buttonStraddle => settings.buttonStraddle ?? false;
+  set buttonStraddle(value) {
+    settings.buttonStraddle = value;
+    notifyListeners();
+  }
+
+  int get buttonStraddleBetAmount => settings.buttonStraddleBet ?? false;
+  set buttonStraddleBetAmount(value) {
+    settings.buttonStraddleBet = value;
     notifyListeners();
   }
 

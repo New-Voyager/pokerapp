@@ -121,7 +121,7 @@ class GameContextObject extends ChangeNotifier {
         gameState.communicationState.audioConferenceStatus =
             AudioConferenceStatus.ERROR;
         this.gameState.gameInfo.audioConfEnabled = false;
-        showErrorDialog(context, 'Error', 'Joining audio conference failed');
+        // showErrorDialog(context, 'Error', 'Joining audio conference failed');
       }
     }
   }

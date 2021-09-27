@@ -14,6 +14,7 @@ class GamePlayerSettings {
   GamePlayerSettings({
     this.autoStraddle,
     this.buttonStraddle,
+    this.buttonStraddleBet,
     this.bombPotEnabled,
     this.muckLosingHand,
     this.runItTwiceEnabled,
@@ -24,15 +25,22 @@ class GamePlayerSettings {
   bool bombPotEnabled;
   bool muckLosingHand;
   bool runItTwiceEnabled;
+  int buttonStraddleBet;
 
-  factory GamePlayerSettings.fromJson(Map<String, dynamic> json) =>
-      GamePlayerSettings(
-        autoStraddle: json["autoStraddle"],
-        buttonStraddle: json["buttonStraddle"],
-        bombPotEnabled: json["bombPotEnabled"],
-        muckLosingHand: json["muckLosingHand"],
-        runItTwiceEnabled: json["runItTwiceEnabled"],
-      );
+  factory GamePlayerSettings.fromJson(Map<String, dynamic> json) {
+    final settings = GamePlayerSettings(
+      autoStraddle: json["autoStraddle"],
+      buttonStraddle: json["buttonStraddle"],
+      bombPotEnabled: json["bombPotEnabled"],
+      muckLosingHand: json["muckLosingHand"],
+      runItTwiceEnabled: json["runItTwiceEnabled"],
+      buttonStraddleBet: json["buttonStraddleBet"] ?? 2,
+    );
+    if (settings.buttonStraddleBet == null) {
+      settings.buttonStraddleBet = 2;
+    }
+    return settings;
+  }
 
   Map<String, dynamic> toJson() => {
         "autoStraddle": autoStraddle,
@@ -40,5 +48,6 @@ class GamePlayerSettings {
         "bombPotEnabled": bombPotEnabled,
         "muckLosingHand": muckLosingHand,
         "runItTwiceEnabled": runItTwiceEnabled,
+        "buttonStraddleBet": buttonStraddleBet,
       };
 }
