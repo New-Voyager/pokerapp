@@ -903,6 +903,8 @@ class HandActionProtoService {
 
   Future<void> handleResult2(proto.HandResultClient result) async {
     if (_close) return;
+    _gameState.actionState.reset();
+    _gameState.actionState.notify();
 
     if (_gameState.isPlaying) {
       _gameState.rabbitState.putResultProto(
