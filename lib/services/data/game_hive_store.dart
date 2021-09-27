@@ -47,7 +47,7 @@ if (now - lastHandTime) > 10*60 {
 */
 
 int kDefaultDiamonds = 5;
-int kDefaultTimebankSecs = 5;
+int kDefaultTimebankSecs = 20;
 
 class GameHiveStore {
   Box _gameBox;
@@ -122,7 +122,10 @@ class GameHiveStore {
     final diamonds = box.get(_DIAMONDS, defaultValue: null) as int;
     if (diamonds == null) {
       _gameBox.put(_DIAMONDS, kDefaultDiamonds);
-      _gameBox.put(_TIMEBANK, kDefaultTimebankSecs);
+    }
+    final timebank = box.get(_TIMEBANK, defaultValue: null) as int;
+    if (timebank == null) {
+      _gameBox.put(_TIMEBANK, 20);
     }
   }
 

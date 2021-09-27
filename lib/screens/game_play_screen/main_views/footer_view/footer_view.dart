@@ -206,10 +206,6 @@ class _FooterViewState extends State<FooterView>
   }
 
   Widget _buildCommunicationWidget() {
-    AppTheme theme = AppTheme.getTheme(context);
-    final timeBank = SvgPicture.asset('assets/images/game/chat.svg',
-        width: 16, height: 16, color: theme.primaryColorWithDark());
-
     return Positioned(
       right: 0,
       top: 0,
@@ -223,7 +219,16 @@ class _FooterViewState extends State<FooterView>
           );
         }),
         SizedBox(height: 20),
-        TimeBankWidget(5)
+        Consumer<ActionState>(
+          builder: (_, __, ___) {
+            // show time widget if the player is acting
+            if (_gameState.actionState.show) {
+              return TimeBankWidget(_gameState);
+            } else {
+              return Container();
+            }
+          }
+        ),
       ]),
     );
   }

@@ -247,6 +247,26 @@ class HandActionProtoService {
     _retryMsg.run();
   }
 
+  extendTime(int playerId, int seatNo, int handNum, int time) {
+    final messageItem = proto.HandMessageItem(
+      messageType: 'EXTEND_ACTION_TIMER',
+      extendTimer: proto.ExtendTimer(
+        seatNo: seatNo,
+        extendBySec: time
+      ),
+    );
+    int msgId = MessageId.incrementAndGet(_gameState.gameCode);
+    String messageId = msgId.toString();
+    final handMessage = proto.HandMessage(
+        gameCode: _gameState.gameCode,
+        handNum: handNum,
+        seatNo: seatNo,
+        messageId: messageId,
+        messages: [messageItem]);
+    final binMessage = handMessage.writeToBuffer();
+    this._gameComService.sendProtoPlayerToHandChannel(binMessage);
+  }
+
   queryCurrentHand() {
     int msgId = MessageId.incrementAndGet(_gameState.gameCode);
     String messageId = msgId.toString();

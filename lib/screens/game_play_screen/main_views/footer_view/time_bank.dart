@@ -1,22 +1,24 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/game_circle_button.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
+int minExtendTime = 5;
 class TimeBankWidget extends StatefulWidget {
-  final int time;
-  TimeBankWidget(this.time);
+  final GameState gameState;
+  TimeBankWidget(this.gameState);
 
   @override
-  _TimeBankWidgetState createState() => _TimeBankWidgetState(time);
+  _TimeBankWidgetState createState() => _TimeBankWidgetState();
 }
 
 class _TimeBankWidgetState extends State<TimeBankWidget> {
   bool animate = false;
   int time = 0;
-  _TimeBankWidgetState(this.time);
+  _TimeBankWidgetState();
   @override
   void initState() {
     super.initState();
@@ -27,12 +29,25 @@ class _TimeBankWidgetState extends State<TimeBankWidget> {
     log('timebank: rebuild timebank widget');
     final theme = AppTheme.getTheme(context);
     List<Widget> children = [];
+
+    // if no time left in the bank return empty container
+    if (widget.gameState.gameHiveStore.getTimeBankTime() <= 0) {
+      return Container();
+    }
+
     children.add(
       GameCircleButton(
         iconData: Icons.access_alarms,
-        onClickHandler: () {
+        onClickHandler: () async {
           log('timebank: on timebank clicked');
           animate = false;
+          int extendTime = minExtendTime;
+          if (widget.gameState.gameHiveStore.getTimeBankTime() < extendTime) {
+            extendTime = widget.gameState.gameHiveStore.getTimeBankTime();
+          }
+          time += extendTime;
+          await widget.gameState.gameHiveStore.deductTimebank(num: minExtendTime);
+          log ('Remaining timebank: ${widget.gameState.gameHiveStore.getTimeBankTime()}');
           setState(() {});
           animate = true;
           setState(() {});
@@ -45,7 +60,6 @@ class _TimeBankWidgetState extends State<TimeBankWidget> {
         tween: Tween<double>(begin: 0, end: 1),
         onEnd: () {
           animate = false;
-          time += 5;
           setState(() {});
         },
         duration: const Duration(milliseconds: 2000),
@@ -54,7 +68,7 @@ class _TimeBankWidgetState extends State<TimeBankWidget> {
           return Opacity(
               opacity: 1 - v,
               child: Transform.translate(
-                  offset: Offset(-50.pw, -v * 30.ph),
+                  offset: Offset(-50.pw, -v * 60.ph),
                   child: Text(
                     '+' + time.toString(),
                     style: TextStyle(
