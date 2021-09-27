@@ -754,7 +754,7 @@ class NewHand extends $pb.GeneratedMessage {
         16,
         const $core.bool.fromEnvironment('protobuf.omit_field_names')
             ? ''
-            : 'doubleBoardBombPot')
+            : 'doubleBoard')
     ..a<$core.double>(
         17,
         const $core.bool.fromEnvironment('protobuf.omit_field_names')
@@ -780,7 +780,7 @@ class NewHand extends $pb.GeneratedMessage {
     $core.Map<$core.int, $0.PlayerInSeatState>? playersInSeats,
     $core.Map<$core.int, $0.PlayerActRound>? playersActed,
     $core.bool? bombPot,
-    $core.bool? doubleBoardBombPot,
+    $core.bool? doubleBoard,
     $core.double? bombPotBet,
   }) {
     final _result = create();
@@ -829,8 +829,8 @@ class NewHand extends $pb.GeneratedMessage {
     if (bombPot != null) {
       _result.bombPot = bombPot;
     }
-    if (doubleBoardBombPot != null) {
-      _result.doubleBoardBombPot = doubleBoardBombPot;
+    if (doubleBoard != null) {
+      _result.doubleBoard = doubleBoard;
     }
     if (bombPotBet != null) {
       _result.bombPotBet = bombPotBet;
@@ -1017,16 +1017,16 @@ class NewHand extends $pb.GeneratedMessage {
   void clearBombPot() => clearField(15);
 
   @$pb.TagNumber(16)
-  $core.bool get doubleBoardBombPot => $_getBF(15);
+  $core.bool get doubleBoard => $_getBF(15);
   @$pb.TagNumber(16)
-  set doubleBoardBombPot($core.bool v) {
+  set doubleBoard($core.bool v) {
     $_setBool(15, v);
   }
 
   @$pb.TagNumber(16)
-  $core.bool hasDoubleBoardBombPot() => $_has(15);
+  $core.bool hasDoubleBoard() => $_has(15);
   @$pb.TagNumber(16)
-  void clearDoubleBoardBombPot() => clearField(16);
+  void clearDoubleBoard() => clearField(16);
 
   @$pb.TagNumber(17)
   $core.double get bombPotBet => $_getN(16);
@@ -1187,6 +1187,12 @@ class ActionChange extends $pb.GeneratedMessage {
             : 'seatsPots',
         $pb.PbFieldType.PM,
         subBuilder: $0.SeatsInPots.create)
+    ..a<$core.double>(
+        5,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'betAmount',
+        $pb.PbFieldType.OF)
     ..hasRequiredFields = false;
 
   ActionChange._() : super();
@@ -1195,6 +1201,7 @@ class ActionChange extends $pb.GeneratedMessage {
     $core.Iterable<$core.double>? pots,
     $core.double? potUpdates,
     $core.Iterable<$0.SeatsInPots>? seatsPots,
+    $core.double? betAmount,
   }) {
     final _result = create();
     if (seatNo != null) {
@@ -1208,6 +1215,9 @@ class ActionChange extends $pb.GeneratedMessage {
     }
     if (seatsPots != null) {
       _result.seatsPots.addAll(seatsPots);
+    }
+    if (betAmount != null) {
+      _result.betAmount = betAmount;
     }
     return _result;
   }
@@ -1267,6 +1277,18 @@ class ActionChange extends $pb.GeneratedMessage {
 
   @$pb.TagNumber(4)
   $core.List<$0.SeatsInPots> get seatsPots => $_getList(3);
+
+  @$pb.TagNumber(5)
+  $core.double get betAmount => $_getN(4);
+  @$pb.TagNumber(5)
+  set betAmount($core.double v) {
+    $_setFloat(4, v);
+  }
+
+  @$pb.TagNumber(5)
+  $core.bool hasBetAmount() => $_has(4);
+  @$pb.TagNumber(5)
+  void clearBetAmount() => clearField(5);
 }
 
 class Flop extends $pb.GeneratedMessage {
@@ -4822,6 +4844,7 @@ enum HandMessageItem_Content {
   announcement,
   dealerChoice,
   handResultClient,
+  extendTimer,
   notSet
 }
 
@@ -4846,6 +4869,7 @@ class HandMessageItem extends $pb.GeneratedMessage {
     27: HandMessageItem_Content.announcement,
     28: HandMessageItem_Content.dealerChoice,
     29: HandMessageItem_Content.handResultClient,
+    30: HandMessageItem_Content.extendTimer,
     0: HandMessageItem_Content.notSet
   };
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(
@@ -4875,7 +4899,8 @@ class HandMessageItem extends $pb.GeneratedMessage {
       26,
       27,
       28,
-      29
+      29,
+      30
     ])
     ..aOS(
         7,
@@ -4990,6 +5015,12 @@ class HandMessageItem extends $pb.GeneratedMessage {
             ? ''
             : 'handResultClient',
         subBuilder: HandResultClient.create)
+    ..aOM<$0.ExtendTimer>(
+        30,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'extendTimer',
+        subBuilder: $0.ExtendTimer.create)
     ..hasRequiredFields = false;
 
   HandMessageItem._() : super();
@@ -5013,6 +5044,7 @@ class HandMessageItem extends $pb.GeneratedMessage {
     Announcement? announcement,
     DealerChoice? dealerChoice,
     HandResultClient? handResultClient,
+    $0.ExtendTimer? extendTimer,
   }) {
     final _result = create();
     if (messageType != null) {
@@ -5071,6 +5103,9 @@ class HandMessageItem extends $pb.GeneratedMessage {
     }
     if (handResultClient != null) {
       _result.handResultClient = handResultClient;
+    }
+    if (extendTimer != null) {
+      _result.extendTimer = extendTimer;
     }
     return _result;
   }
@@ -5368,4 +5403,18 @@ class HandMessageItem extends $pb.GeneratedMessage {
   void clearHandResultClient() => clearField(29);
   @$pb.TagNumber(29)
   HandResultClient ensureHandResultClient() => $_ensure(18);
+
+  @$pb.TagNumber(30)
+  $0.ExtendTimer get extendTimer => $_getN(19);
+  @$pb.TagNumber(30)
+  set extendTimer($0.ExtendTimer v) {
+    setField(30, v);
+  }
+
+  @$pb.TagNumber(30)
+  $core.bool hasExtendTimer() => $_has(19);
+  @$pb.TagNumber(30)
+  void clearExtendTimer() => clearField(30);
+  @$pb.TagNumber(30)
+  $0.ExtendTimer ensureExtendTimer() => $_ensure(19);
 }

@@ -98,6 +98,16 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
+          label: 'Show Bet Widget',
+          labelBackgroundColor: Colors.black,
+          onTap: () => TestService.testBetWidget(),
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
           label: 'Show Rank',
           labelBackgroundColor: Colors.black,
           onTap: () => TestService.showRank(),

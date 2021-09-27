@@ -39,7 +39,7 @@ class NewHandHandler {
       bigBlind: newHand.bigBlind,
       bombPot: newHand.bombPot,
       bombPotBet: newHand.bombPotBet,
-      doubleBoard: newHand.doubleBoardBombPot,
+      doubleBoard: newHand.doubleBoard,
     );
   }
 
@@ -183,6 +183,8 @@ class NewHandHandler {
     gameState.handChangeState.notify();
     gameState.highHand = null;
     gameState.handInProgress = true;
+    gameState.actionState.reset();
+    gameState.actionState.notify();
     ////log('Hand Message: ::handleNewHand:: START');
     AudioService.playNewHand(mute: gameState.playerLocalConfig.mute);
 

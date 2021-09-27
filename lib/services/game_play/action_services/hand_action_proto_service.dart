@@ -353,22 +353,22 @@ class HandActionProtoService {
           return handleDeal(message);
 
         case AppConstants.QUERY_CURRENT_HAND:
-          final handler = PlayerActionHandler(this._context, _gameState);
+          final handler = PlayerActionHandler(this._context, _gameState, this);
           await handler.handleQueryCurrentHand(message);
           return;
 
         case AppConstants.NEXT_ACTION:
-          final handler = PlayerActionHandler(this._context, _gameState);
+          final handler = PlayerActionHandler(this._context, _gameState, this);
           await handler.handleNextAction(message);
           return;
 
         case AppConstants.PLAYER_ACTED:
-          final handler = PlayerActionHandler(this._context, _gameState);
+          final handler = PlayerActionHandler(this._context, _gameState, this);
           await handler.handlePlayerActed(message);
           return;
 
         case AppConstants.YOUR_ACTION:
-          final handler = PlayerActionHandler(this._context, _gameState);
+          final handler = PlayerActionHandler(this._context, _gameState, this);
           await handler.handleYourAction(message);
           return;
 

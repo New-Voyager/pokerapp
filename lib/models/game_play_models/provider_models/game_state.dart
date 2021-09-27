@@ -963,6 +963,10 @@ class GameState {
     _actionState.setAction(seatNo, seatAction);
   }
 
+  void showCheckFold() {
+    _actionState.showCheckFold = true;
+  }
+
   void setActionProto(int seatNo, proto.NextSeatAction seatAction) {
     _actionState.setActionProto(seatNo, seatAction);
   }
@@ -1287,14 +1291,40 @@ class HandInfoState extends ChangeNotifier {
 class ActionState extends ChangeNotifier {
   PlayerAction _currentAction;
   bool _showAction = false;
+  bool _showCheckFold = false;
+  bool _checkFoldSelected = false;
+
+  void reset() {
+    _showAction = false;
+    _showCheckFold = false;
+    _checkFoldSelected = false;
+  }
 
   set show(bool v) {
+    _showCheckFold = false;
     _showAction = v;
     this.notifyListeners();
   }
 
+  set showCheckFold(bool v) {
+    _showCheckFold = true;
+    _showAction = false;
+    this.notifyListeners();
+  }
+
+  set checkFoldSelected(bool v) {
+    _checkFoldSelected = v;
+    this.notifyListeners();
+  }
+
+  bool get checkFoldSelected => _checkFoldSelected;
+
   bool get show {
     return this._showAction;
+  }
+
+  bool get showCheckFold {
+    return this._showCheckFold;
   }
 
   void setAction(int seatNo, var seatAction) {

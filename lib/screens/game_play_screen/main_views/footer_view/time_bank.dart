@@ -1,7 +1,9 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/game_circle_button.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class TimeBankWidget extends StatefulWidget {
   final int time;
@@ -21,6 +23,7 @@ class _TimeBankWidgetState extends State<TimeBankWidget> {
   @override
   Widget build(BuildContext context) {
     log('timebank: rebuild timebank widget');
+    final theme = AppTheme.getTheme(context);
     List<Widget> children = [];
     children.add(
       GameCircleButton(
@@ -40,9 +43,7 @@ class _TimeBankWidgetState extends State<TimeBankWidget> {
         tween: Tween<double>(begin: 0, end: 1),
         onEnd: () {
           animate = false;
-          setState(() {
-            
-          });
+          setState(() {});
         },
         duration: const Duration(milliseconds: 1000),
         builder: (BuildContext context, double v, Widget child) {
@@ -50,8 +51,15 @@ class _TimeBankWidgetState extends State<TimeBankWidget> {
           return Opacity(
               opacity: 1 - v,
               child: Transform.translate(
-                  offset: Offset(-40, -v * 30),
-                  child: Text('+ ' + widget.time.toString())));
+                  offset: Offset(-30.pw, -v * 30.ph),
+                  child: Text(
+                    '+' + widget.time.toString(),
+                    style: TextStyle(
+                      fontSize: 16.dp,
+                      color: theme.accentColor,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  )));
         },
         child: const Icon(Icons.aspect_ratio),
       );

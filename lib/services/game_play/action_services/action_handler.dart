@@ -27,8 +27,10 @@ import 'hand_action_proto_service.dart';
 class PlayerActionHandler {
   BuildContext _context;
   GameState _gameState;
+  HandActionProtoService _handActionProtoService;
 
-  PlayerActionHandler(this._context, this._gameState);
+  PlayerActionHandler(
+      this._context, this._gameState, this._handActionProtoService);
 
   Future<void> handleQueryCurrentHand(proto.HandMessageItem message) async {
     final currentHandState = message.currentHandState;
@@ -251,9 +253,16 @@ class PlayerActionHandler {
 
       if (!player.isMe) {
         // hide action widget
-
         if (_gameState.uiClosing) return;
         _gameState.showAction(false);
+
+        // can I show check/fold button?
+        final me = _gameState.me;
+        if (me != null) {
+          if (me.isActive) {
+            _gameState.showCheckFold();
+          }
+        }
       }
       // log('next action seat: $seatNo player: ${player.name}');
       // highlight next action player
@@ -314,6 +323,41 @@ class PlayerActionHandler {
 
         // once, the first bet is done, set straddleBet to false, and wait for next hand
         return _gameState.straddleBetThisHand = false;
+      }
+
+      if (_gameState.actionState.checkFoldSelected) {
+        // the player has chosen check/fold option
+        // do we have that option in the list
+        bool checkAvailable = false;
+        bool foldAvailable = false;
+        for (final action in seatAction.availableActions) {
+          if (action == ACTION.CHECK) {
+            checkAvailable = true;
+          }
+          if (action == ACTION.FOLD) {
+            foldAvailable = true;
+          }
+        }
+
+        if (checkAvailable) {
+          _handActionProtoService.playerActed(
+              me.playerId,
+              _gameState.handInfo.handNum,
+              me.seatNo,
+              ACTION.CHECK.toString(),
+              0);
+          return;
+        }
+
+        if (foldAvailable) {
+          _handActionProtoService.playerActed(
+              me.playerId,
+              _gameState.handInfo.handNum,
+              me.seatNo,
+              ACTION.FOLD.toString(),
+              0);
+          return;
+        }
       }
 
       /* this part handles if we receive a prompt for run it twice */
