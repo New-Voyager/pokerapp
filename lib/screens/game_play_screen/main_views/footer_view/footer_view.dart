@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
@@ -13,6 +14,7 @@ import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/animating_widgets/my_last_action_animating_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/status_options_buttons.dart';
+import 'package:pokerapp/screens/game_play_screen/widgets/game_circle_button.dart';
 import 'package:provider/provider.dart';
 import 'communication_view.dart';
 import 'customization_view.dart';
@@ -20,6 +22,8 @@ import 'hand_analyse_view.dart';
 import 'hole_cards_view_and_footer_action_view.dart';
 import 'seat_change_confirm_widget.dart';
 import 'package:collection/collection.dart';
+
+import 'time_bank.dart';
 
 class FooterView extends StatefulWidget {
   final String gameCode;
@@ -201,10 +205,12 @@ class _FooterViewState extends State<FooterView>
     );
   }
 
-  Widget _buildCommunicationWidget() => Positioned(
-        right: 0,
-        top: 0,
-        child: Consumer2<GameSettingsState, CommunicationState>(
+  Widget _buildCommunicationWidget() {
+    return Positioned(
+      right: 0,
+      top: 0,
+      child: Column(children: [
+        Consumer2<GameSettingsState, CommunicationState>(
             builder: (_, __, ____, ___) {
           return CommunicationView(
             widget.chatVisibilityChange,
@@ -212,7 +218,20 @@ class _FooterViewState extends State<FooterView>
             widget.gameContext,
           );
         }),
-      );
+        SizedBox(height: 20),
+        Consumer<ActionState>(
+          builder: (_, __, ___) {
+            // show time widget if the player is acting
+            if (_gameState.actionState.show) {
+              return TimeBankWidget(_gameState);
+            } else {
+              return Container();
+            }
+          }
+        ),
+      ]),
+    );
+  }
 
   Widget _buildSeatConfirmWidget(BuildContext context) {
     final gameContextObject = context.read<GameContextObject>();

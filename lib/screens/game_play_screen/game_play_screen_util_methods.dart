@@ -98,6 +98,16 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
+          label: 'Show Bet Widget',
+          labelBackgroundColor: Colors.black,
+          onTap: () => TestService.testBetWidget(),
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
           label: 'Show Rank',
           labelBackgroundColor: Colors.black,
           onTap: () => TestService.showRank(),
@@ -239,18 +249,11 @@ class GamePlayScreenUtilMethods {
       if (newPlayerModel.stack == 0) {
         newPlayerModel.showBuyIn = true;
       }
-      GameHiveStore ghs = gameState.gameHiveStore;
-      // we can offer user inital reward here, as well as reset timers here
-      if (ghs.isFirstJoin()) {
-        // on first join, we give 10 diamonds
-        ghs.addDiamonds(num: 10);
 
-        // MARK first join is done
-        ghs.setIsFirstJoinDone();
-      } else {
-        // for any subsequent joins, reset the timer
-        ghs.updateLastDiamondUpdateTime();
-      }
+      // update hive store
+      GameHiveStore ghs = gameState.gameHiveStore;
+      ghs.initialize(gameState.gameCode);
+
       ConnectionDialog.dismiss(context: context);
       if (newPlayerModel.isMe) {
         await Future.delayed(Duration(milliseconds: 100));
