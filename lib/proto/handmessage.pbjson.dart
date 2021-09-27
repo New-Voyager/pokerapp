@@ -163,13 +163,7 @@ const NewHand$json = const {
       '10': 'playersActed'
     },
     const {'1': 'bomb_pot', '3': 15, '4': 1, '5': 8, '10': 'bombPot'},
-    const {
-      '1': 'double_board_bomb_pot',
-      '3': 16,
-      '4': 1,
-      '5': 8,
-      '10': 'doubleBoardBombPot'
-    },
+    const {'1': 'double_board', '3': 16, '4': 1, '5': 8, '10': 'doubleBoard'},
     const {'1': 'bomb_pot_bet', '3': 17, '4': 1, '5': 2, '10': 'bombPotBet'},
   ],
   '3': const [
@@ -225,7 +219,7 @@ const NewHand_PlayersActedEntry$json = const {
 
 /// Descriptor for `NewHand`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List newHandDescriptor = $convert.base64Decode(
-    'CgdOZXdIYW5kEhkKCGhhbmRfbnVtGAEgASgNUgdoYW5kTnVtEh0KCmJ1dHRvbl9wb3MYAiABKA1SCWJ1dHRvblBvcxIVCgZzYl9wb3MYAyABKA1SBXNiUG9zEhUKBmJiX3BvcxgEIAEoDVIFYmJQb3MSKAoQbmV4dF9hY3Rpb25fc2VhdBgFIAEoDVIObmV4dEFjdGlvblNlYXQSQQoMcGxheWVyX2NhcmRzGAYgAygLMh4uZ2FtZS5OZXdIYW5kLlBsYXllckNhcmRzRW50cnlSC3BsYXllckNhcmRzEisKCWdhbWVfdHlwZRgHIAEoDjIOLmdhbWUuR2FtZVR5cGVSCGdhbWVUeXBlEhkKCG5vX2NhcmRzGAggASgNUgdub0NhcmRzEh8KC3NtYWxsX2JsaW5kGAkgASgCUgpzbWFsbEJsaW5kEhsKCWJpZ19ibGluZBgKIAEoAlIIYmlnQmxpbmQSGQoIYnJpbmdfaW4YCyABKAJSB2JyaW5nSW4SGgoIc3RyYWRkbGUYDCABKAJSCHN0cmFkZGxlEksKEHBsYXllcnNfaW5fc2VhdHMYDSADKAsyIS5nYW1lLk5ld0hhbmQuUGxheWVyc0luU2VhdHNFbnRyeVIOcGxheWVyc0luU2VhdHMSRAoNcGxheWVyc19hY3RlZBgOIAMoCzIfLmdhbWUuTmV3SGFuZC5QbGF5ZXJzQWN0ZWRFbnRyeVIMcGxheWVyc0FjdGVkEhkKCGJvbWJfcG90GA8gASgIUgdib21iUG90EjEKFWRvdWJsZV9ib2FyZF9ib21iX3BvdBgQIAEoCFISZG91YmxlQm9hcmRCb21iUG90EiAKDGJvbWJfcG90X2JldBgRIAEoAlIKYm9tYlBvdEJldBo+ChBQbGF5ZXJDYXJkc0VudHJ5EhAKA2tleRgBIAEoDVIDa2V5EhQKBXZhbHVlGAIgASgJUgV2YWx1ZToCOAEaWgoTUGxheWVyc0luU2VhdHNFbnRyeRIQCgNrZXkYASABKA1SA2tleRItCgV2YWx1ZRgCIAEoCzIXLmdhbWUuUGxheWVySW5TZWF0U3RhdGVSBXZhbHVlOgI4ARpVChFQbGF5ZXJzQWN0ZWRFbnRyeRIQCgNrZXkYASABKA1SA2tleRIqCgV2YWx1ZRgCIAEoCzIULmdhbWUuUGxheWVyQWN0Um91bmRSBXZhbHVlOgI4AQ==');
+    'CgdOZXdIYW5kEhkKCGhhbmRfbnVtGAEgASgNUgdoYW5kTnVtEh0KCmJ1dHRvbl9wb3MYAiABKA1SCWJ1dHRvblBvcxIVCgZzYl9wb3MYAyABKA1SBXNiUG9zEhUKBmJiX3BvcxgEIAEoDVIFYmJQb3MSKAoQbmV4dF9hY3Rpb25fc2VhdBgFIAEoDVIObmV4dEFjdGlvblNlYXQSQQoMcGxheWVyX2NhcmRzGAYgAygLMh4uZ2FtZS5OZXdIYW5kLlBsYXllckNhcmRzRW50cnlSC3BsYXllckNhcmRzEisKCWdhbWVfdHlwZRgHIAEoDjIOLmdhbWUuR2FtZVR5cGVSCGdhbWVUeXBlEhkKCG5vX2NhcmRzGAggASgNUgdub0NhcmRzEh8KC3NtYWxsX2JsaW5kGAkgASgCUgpzbWFsbEJsaW5kEhsKCWJpZ19ibGluZBgKIAEoAlIIYmlnQmxpbmQSGQoIYnJpbmdfaW4YCyABKAJSB2JyaW5nSW4SGgoIc3RyYWRkbGUYDCABKAJSCHN0cmFkZGxlEksKEHBsYXllcnNfaW5fc2VhdHMYDSADKAsyIS5nYW1lLk5ld0hhbmQuUGxheWVyc0luU2VhdHNFbnRyeVIOcGxheWVyc0luU2VhdHMSRAoNcGxheWVyc19hY3RlZBgOIAMoCzIfLmdhbWUuTmV3SGFuZC5QbGF5ZXJzQWN0ZWRFbnRyeVIMcGxheWVyc0FjdGVkEhkKCGJvbWJfcG90GA8gASgIUgdib21iUG90EiEKDGRvdWJsZV9ib2FyZBgQIAEoCFILZG91YmxlQm9hcmQSIAoMYm9tYl9wb3RfYmV0GBEgASgCUgpib21iUG90QmV0Gj4KEFBsYXllckNhcmRzRW50cnkSEAoDa2V5GAEgASgNUgNrZXkSFAoFdmFsdWUYAiABKAlSBXZhbHVlOgI4ARpaChNQbGF5ZXJzSW5TZWF0c0VudHJ5EhAKA2tleRgBIAEoDVIDa2V5Ei0KBXZhbHVlGAIgASgLMhcuZ2FtZS5QbGF5ZXJJblNlYXRTdGF0ZVIFdmFsdWU6AjgBGlUKEVBsYXllcnNBY3RlZEVudHJ5EhAKA2tleRgBIAEoDVIDa2V5EioKBXZhbHVlGAIgASgLMhQuZ2FtZS5QbGF5ZXJBY3RSb3VuZFIFdmFsdWU6AjgB');
 @$core.Deprecated('Use handDealCardsDescriptor instead')
 const HandDealCards$json = const {
   '1': 'HandDealCards',
@@ -254,12 +248,13 @@ const ActionChange$json = const {
       '6': '.game.SeatsInPots',
       '10': 'seatsPots'
     },
+    const {'1': 'bet_amount', '3': 5, '4': 1, '5': 2, '10': 'betAmount'},
   ],
 };
 
 /// Descriptor for `ActionChange`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List actionChangeDescriptor = $convert.base64Decode(
-    'CgxBY3Rpb25DaGFuZ2USFwoHc2VhdF9ubxgBIAEoDVIGc2VhdE5vEhIKBHBvdHMYAiADKAJSBHBvdHMSHwoLcG90X3VwZGF0ZXMYAyABKAJSCnBvdFVwZGF0ZXMSMAoKc2VhdHNfcG90cxgEIAMoCzIRLmdhbWUuU2VhdHNJblBvdHNSCXNlYXRzUG90cw==');
+    'CgxBY3Rpb25DaGFuZ2USFwoHc2VhdF9ubxgBIAEoDVIGc2VhdE5vEhIKBHBvdHMYAiADKAJSBHBvdHMSHwoLcG90X3VwZGF0ZXMYAyABKAJSCnBvdFVwZGF0ZXMSMAoKc2VhdHNfcG90cxgEIAMoCzIRLmdhbWUuU2VhdHNJblBvdHNSCXNlYXRzUG90cxIdCgpiZXRfYW1vdW50GAUgASgCUgliZXRBbW91bnQ=');
 @$core.Deprecated('Use flopDescriptor instead')
 const Flop$json = const {
   '1': 'Flop',
@@ -1433,6 +1428,15 @@ const HandMessageItem$json = const {
       '9': 0,
       '10': 'handResultClient'
     },
+    const {
+      '1': 'extend_timer',
+      '3': 30,
+      '4': 1,
+      '5': 11,
+      '6': '.game.ExtendTimer',
+      '9': 0,
+      '10': 'extendTimer'
+    },
   ],
   '8': const [
     const {'1': 'content'},
@@ -1441,4 +1445,4 @@ const HandMessageItem$json = const {
 
 /// Descriptor for `HandMessageItem`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List handMessageItemDescriptor = $convert.base64Decode(
-    'Cg9IYW5kTWVzc2FnZUl0ZW0SIQoMbWVzc2FnZV90eXBlGAcgASgJUgttZXNzYWdlVHlwZRI3CgtzZWF0X2FjdGlvbhgMIAEoCzIULmdhbWUuTmV4dFNlYXRBY3Rpb25IAFIKc2VhdEFjdGlvbhI0CgpkZWFsX2NhcmRzGA0gASgLMhMuZ2FtZS5IYW5kRGVhbENhcmRzSABSCWRlYWxDYXJkcxIqCghuZXdfaGFuZBgOIAEoCzINLmdhbWUuTmV3SGFuZEgAUgduZXdIYW5kEjUKDHBsYXllcl9hY3RlZBgPIAEoCzIQLmdhbWUuSGFuZEFjdGlvbkgAUgtwbGF5ZXJBY3RlZBI5Cg1hY3Rpb25fY2hhbmdlGBAgASgLMhIuZ2FtZS5BY3Rpb25DaGFuZ2VIAFIMYWN0aW9uQ2hhbmdlEjMKC2hhbmRfcmVzdWx0GBEgASgLMhAuZ2FtZS5IYW5kUmVzdWx0SABSCmhhbmRSZXN1bHQSIAoEZmxvcBgSIAEoCzIKLmdhbWUuRmxvcEgAUgRmbG9wEiAKBHR1cm4YEyABKAsyCi5nYW1lLlR1cm5IAFIEdHVybhIjCgVyaXZlchgUIAEoCzILLmdhbWUuUml2ZXJIAFIFcml2ZXISLAoIc2hvd2Rvd24YFSABKAsyDi5nYW1lLlNob3dkb3duSABSCHNob3dkb3duEj0KD25vX21vcmVfYWN0aW9ucxgWIAEoCzITLmdhbWUuTm9Nb3JlQWN0aW9uc0gAUg1ub01vcmVBY3Rpb25zEkYKEmN1cnJlbnRfaGFuZF9zdGF0ZRgXIAEoCzIWLmdhbWUuQ3VycmVudEhhbmRTdGF0ZUgAUhBjdXJyZW50SGFuZFN0YXRlEjMKB21zZ19hY2sYGCABKAsyGC5nYW1lLk1zZ0Fja25vd2xlZGdlbWVudEgAUgZtc2dBY2sSLQoJaGlnaF9oYW5kGBkgASgLMg4uZ2FtZS5IaWdoSGFuZEgAUghoaWdoSGFuZBI6CgxydW5faXRfdHdpY2UYGiABKAsyFi5nYW1lLlJ1bkl0VHdpY2VCb2FyZHNIAFIKcnVuSXRUd2ljZRI4Cgxhbm5vdW5jZW1lbnQYGyABKAsyEi5nYW1lLkFubm91bmNlbWVudEgAUgxhbm5vdW5jZW1lbnQSOQoNZGVhbGVyX2Nob2ljZRgcIAEoCzISLmdhbWUuRGVhbGVyQ2hvaWNlSABSDGRlYWxlckNob2ljZRJGChJoYW5kX3Jlc3VsdF9jbGllbnQYHSABKAsyFi5nYW1lLkhhbmRSZXN1bHRDbGllbnRIAFIQaGFuZFJlc3VsdENsaWVudEIJCgdjb250ZW50');
+    'Cg9IYW5kTWVzc2FnZUl0ZW0SIQoMbWVzc2FnZV90eXBlGAcgASgJUgttZXNzYWdlVHlwZRI3CgtzZWF0X2FjdGlvbhgMIAEoCzIULmdhbWUuTmV4dFNlYXRBY3Rpb25IAFIKc2VhdEFjdGlvbhI0CgpkZWFsX2NhcmRzGA0gASgLMhMuZ2FtZS5IYW5kRGVhbENhcmRzSABSCWRlYWxDYXJkcxIqCghuZXdfaGFuZBgOIAEoCzINLmdhbWUuTmV3SGFuZEgAUgduZXdIYW5kEjUKDHBsYXllcl9hY3RlZBgPIAEoCzIQLmdhbWUuSGFuZEFjdGlvbkgAUgtwbGF5ZXJBY3RlZBI5Cg1hY3Rpb25fY2hhbmdlGBAgASgLMhIuZ2FtZS5BY3Rpb25DaGFuZ2VIAFIMYWN0aW9uQ2hhbmdlEjMKC2hhbmRfcmVzdWx0GBEgASgLMhAuZ2FtZS5IYW5kUmVzdWx0SABSCmhhbmRSZXN1bHQSIAoEZmxvcBgSIAEoCzIKLmdhbWUuRmxvcEgAUgRmbG9wEiAKBHR1cm4YEyABKAsyCi5nYW1lLlR1cm5IAFIEdHVybhIjCgVyaXZlchgUIAEoCzILLmdhbWUuUml2ZXJIAFIFcml2ZXISLAoIc2hvd2Rvd24YFSABKAsyDi5nYW1lLlNob3dkb3duSABSCHNob3dkb3duEj0KD25vX21vcmVfYWN0aW9ucxgWIAEoCzITLmdhbWUuTm9Nb3JlQWN0aW9uc0gAUg1ub01vcmVBY3Rpb25zEkYKEmN1cnJlbnRfaGFuZF9zdGF0ZRgXIAEoCzIWLmdhbWUuQ3VycmVudEhhbmRTdGF0ZUgAUhBjdXJyZW50SGFuZFN0YXRlEjMKB21zZ19hY2sYGCABKAsyGC5nYW1lLk1zZ0Fja25vd2xlZGdlbWVudEgAUgZtc2dBY2sSLQoJaGlnaF9oYW5kGBkgASgLMg4uZ2FtZS5IaWdoSGFuZEgAUghoaWdoSGFuZBI6CgxydW5faXRfdHdpY2UYGiABKAsyFi5nYW1lLlJ1bkl0VHdpY2VCb2FyZHNIAFIKcnVuSXRUd2ljZRI4Cgxhbm5vdW5jZW1lbnQYGyABKAsyEi5nYW1lLkFubm91bmNlbWVudEgAUgxhbm5vdW5jZW1lbnQSOQoNZGVhbGVyX2Nob2ljZRgcIAEoCzISLmdhbWUuRGVhbGVyQ2hvaWNlSABSDGRlYWxlckNob2ljZRJGChJoYW5kX3Jlc3VsdF9jbGllbnQYHSABKAsyFi5nYW1lLkhhbmRSZXN1bHRDbGllbnRIAFIQaGFuZFJlc3VsdENsaWVudBI2CgxleHRlbmRfdGltZXIYHiABKAsyES5nYW1lLkV4dGVuZFRpbWVySABSC2V4dGVuZFRpbWVyQgkKB2NvbnRlbnQ=');

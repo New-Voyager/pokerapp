@@ -1,8 +1,53 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:hive/hive.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'hive_models/game_settings.dart';
+
+/*
+The players earn diamonds and timebank for each game as they play longer in a game.
+After a hand ends (result), it will be determined whether next time window is reached
+to earn new diamonds or timebank.
+
+This class will track last hand time the player played as well to track the player's
+break and leaving/returning scenarios.
+
+If the current hand time is greater than 10 minutes from last updated hand time, then
+the player was in a longer break or left/returned to the game.
+
+
+if (now - lastHandTime) > 10*60 {
+  // greater than 5 minutes
+  // player went on a break
+  // don't add diamonds or time bank
+
+  // update last updated time
+  // update last diamond time
+  // update last timebank time
+} else {
+  update lastHandTime
+
+  if (now - lastTimeBankTime > 15*60) {
+    // 15 minutes
+    if (timebank < max) {
+      add time to timebank
+    }
+    update last timebank time
+  }
+
+  if (now - lastDiamondTime > 15*60) {
+    // 15 minutes
+    if (diamonds < max) {
+      add diamons to diamonds
+    }
+    update last diamond time
+  }
+}
+*/
+
+int kDefaultDiamonds = 5;
+int kDefaultTimebankSecs = 20;
 
 class GameHiveStore {
   Box _gameBox;
@@ -38,57 +83,9 @@ class GameHiveStore {
 
   static const _DIAMONDS = 'diamonds';
   static const _DIAMONDS_UPDATE = 'diamonds_update';
-  static const _IS_FIRST_JOIN = 'is_first_join';
-
-  bool isFirstJoin() => _gameBox.get(
-        _IS_FIRST_JOIN,
-        defaultValue: true,
-      ) as bool;
-
-  Future<void> setIsFirstJoinDone() => _gameBox.put(_IS_FIRST_JOIN, false);
-
-  DateTime _getLastDiamondUpdateTime() {
-    final String lastUpdateTime = _gameBox.get(_DIAMONDS_UPDATE);
-
-    // send back the earliest time possible
-    if (lastUpdateTime == null) return DateTime.fromMicrosecondsSinceEpoch(0);
-
-    return DateTime.parse(lastUpdateTime);
-  }
-
-  /* this function is made public, because, if I rejoin the game,
-  I need to start the timer fresh */
-
-  Future<void> updateLastDiamondUpdateTime() => _gameBox.put(
-        _DIAMONDS_UPDATE,
-        DateTime.now().toIso8601String(),
-      );
 
   Future<void> _addDiamonds(int num) {
     return _gameBox.put(_DIAMONDS, getDiamonds() + num);
-  }
-
-  Future<void> addDiamonds({int num = 2}) async {
-    // we do not allow diamonds more than maxDiamondNumber
-    if (getDiamonds() >= AppConstants.maxDiamondNumber) return;
-
-    // if game box is not init and not opened, do nothing
-    if (!(_gameBox?.isOpen ?? false)) return;
-
-    final DateTime now = DateTime.now();
-    final DateTime lastUpdatedTime = _getLastDiamondUpdateTime();
-
-    final Duration duration = now.difference(lastUpdatedTime);
-
-    if (duration.compareTo(AppConstants.diamondUpdateDuration) == 1) {
-      // if we have waited for AppConstants.diamondUpdateDuration duration, add diamonds
-
-      // update the last diamond update time
-      await updateLastDiamondUpdateTime();
-
-      // update diamonds
-      return _addDiamonds(num);
-    }
   }
 
   int getDiamonds() => _gameBox.get(_DIAMONDS, defaultValue: 0) as int;
@@ -97,9 +94,94 @@ class GameHiveStore {
 
   Future<bool> deductDiamonds({int num = 2}) async {
     if (getDiamonds() < num) return false;
-
     await _addDiamonds(-num);
     return true;
+  }
+
+  static const _TIMEBANK = 'timebank';
+  static const _TIMEBANK_UPDATE = 'timebank_update';
+  Future<void> _addTimeToTimeBank(int num) async {
+    return _gameBox.put(_TIMEBANK, getTimeBankTime() + num);
+  }
+
+  int getTimeBankTime() => _gameBox.get(_TIMEBANK, defaultValue: 0) as int;
+
+  Future<void> clearTimebank() => _gameBox.put(_TIMEBANK, 0);
+
+  Future<bool> deductTimebank({int num = 5}) async {
+    if (getTimeBankTime() < num) return false;
+
+    await _addTimeToTimeBank(-num);
+    return true;
+  }
+
+  void initialize(String gameCode) async {
+    // open the box
+    final box = await open(gameCode);
+    // if this box was not already initialized, add default values
+    final diamonds = box.get(_DIAMONDS, defaultValue: null) as int;
+    if (diamonds == null) {
+      _gameBox.put(_DIAMONDS, kDefaultDiamonds);
+    }
+    final timebank = box.get(_TIMEBANK, defaultValue: null) as int;
+    if (timebank == null) {
+      _gameBox.put(_TIMEBANK, 20);
+    }
+  }
+
+  static const _LASTHAND_LONG_BREAK_TIME = 10 * 60 * 1000; // 10 minutes
+  static const _LASTHAND_TIME = 'lasthand_time';
+  void handEnded() async {
+    try {
+      // a hand ended
+      final String lastHandTimeStr = _gameBox.get(_LASTHAND_TIME);
+
+      final DateTime now = DateTime.now();
+      // send back the earliest time possible
+      if (lastHandTimeStr == null) {
+        // first hand
+        _gameBox.put(_DIAMONDS_UPDATE, now.toIso8601String());
+        _gameBox.put(_LASTHAND_TIME, now.toIso8601String());
+        _gameBox.put(_TIMEBANK_UPDATE, now.toIso8601String());
+        return;
+      }
+      final DateTime lastHandTime = DateTime.parse(lastHandTimeStr);
+      final diffSinceLastHand = now.difference(lastHandTime).inSeconds;
+      if (diffSinceLastHand >= _LASTHAND_LONG_BREAK_TIME) {
+        // assuming a hand will be end within 10 minutes
+        // either the player was in a long break or left/returned to the game
+        _gameBox.put(_DIAMONDS_UPDATE, now.toIso8601String());
+        _gameBox.put(_TIMEBANK_UPDATE, now.toIso8601String());
+        _gameBox.put(_LASTHAND_TIME, now.toIso8601String());
+        return;
+      }
+      final String lastDiamondTimeStr = _gameBox.get(_DIAMONDS_UPDATE);
+      final DateTime lastDiamondTime = DateTime.parse(lastDiamondTimeStr);
+      final String lastTimebankTimeStr = _gameBox.get(_TIMEBANK_UPDATE);
+      final DateTime lastTimebankTime = DateTime.parse(lastTimebankTimeStr);
+
+      final diffSinceLastDiamond = now.difference(lastDiamondTime).inSeconds;
+      if (diffSinceLastDiamond >=
+          AppConstants.diamondUpdateDuration.inSeconds) {
+        // the player earned new diamonds
+        if (getDiamonds() < AppConstants.maxDiamondNumber) {
+          _addDiamonds(kDefaultDiamonds);
+        }
+        _gameBox.put(_DIAMONDS_UPDATE, now.toIso8601String());
+      }
+
+      final diffSinceLastTimebank = now.difference(lastTimebankTime).inSeconds;
+      if (diffSinceLastTimebank >=
+          AppConstants.timebankUpdateDuration.inSeconds) {
+        // the player earned new time for timebank
+        if (getTimeBankTime() < AppConstants.maxTimeBankSecs) {
+          _addTimeToTimeBank(kDefaultTimebankSecs);
+        }
+        _gameBox.put(_TIMEBANK_UPDATE, now.toIso8601String());
+      }
+    } catch (err) {
+      log('Failed to update diamonds/timebank. ${err.toString()}');
+    }
   }
 
   Future<Box> open(String gameCode) async {

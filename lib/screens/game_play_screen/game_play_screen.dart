@@ -124,7 +124,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   bool _hostSeatChangeInProgress;
   WidgetsBinding _binding = WidgetsBinding.instance;
   LocationUpdates _locationUpdates;
-  Timer _timer;
+  // Timer _timer;
 
   /* _init function is run only for the very first time,
   * and only once, the initial game screen is populated from here
@@ -167,7 +167,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   }
 
   Future _joinAudio() async {
-    _gameState.gameInfo.audioConfEnabled = true;
+    _gameState.gameInfo.audioConfEnabled = false;
     _gameContextObj.joinAudio(context);
     return;
 
@@ -340,7 +340,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       for (int i = 0; i < _gameInfoModel.playersInSeats.length; i++) {
         if (_gameInfoModel.playersInSeats[i].playerUuid ==
             _currentPlayer.uuid) {
-          this.initPlayingTimer();
+          // this.initPlayingTimer();
           // player is in the table
           this._joinAudio();
 
@@ -611,18 +611,18 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     init();
   }
 
-  void initPlayingTimer() {
-    // diamonds timer, which invokes every 30 seconds
-    // but adds diamonds ONLY after the duration of AppConstants.diamondUpdateDuration
-    _timer = Timer.periodic(const Duration(seconds: 30), (_) {
-      PlayerModel me;
-      try {
-        me = _gameState.me;
-      } catch (e) {}
+  // void initPlayingTimer() {
+  //   // diamonds timer, which invokes every 30 seconds
+  //   // but adds diamonds ONLY after the duration of AppConstants.diamondUpdateDuration
+  //   _timer = Timer.periodic(const Duration(seconds: 30), (_) {
+  //     PlayerModel me;
+  //     try {
+  //       me = _gameState.me;
+  //     } catch (e) {}
 
-      if (me != null) _gameState.gameHiveStore.addDiamonds();
-    });
-  }
+  //     if (me != null) _gameState.gameHiveStore.addDiamonds();
+  //   });
+  // }
 
   void reload() {
     close();
@@ -635,7 +635,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   }
 
   void close() {
-    _timer?.cancel();
+    // _timer?.cancel();
 
     try {
       if (_locationUpdates != null) {
