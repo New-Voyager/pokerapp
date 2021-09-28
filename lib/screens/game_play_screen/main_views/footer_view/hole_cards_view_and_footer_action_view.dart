@@ -93,11 +93,13 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
         ),
       );
 
-  Widget _buildFooterActionView(BuildContext context, GameContextObject gco) =>
+  Widget _buildFooterActionView(BuildContext context, GameContextObject gco,
+          ActionState actionState) =>
       FooterActionView(
         gameContext: gco,
         isBetWidgetVisible: (bool isBetWidgetVisible) =>
             _showDarkBackgroundVn.value = isBetWidgetVisible,
+        actionState: actionState,
       );
 
   @override
@@ -124,8 +126,8 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
         Align(
           alignment: Alignment.bottomCenter,
           child: Consumer<ActionState>(builder: (context, actionState, __) {
-            if (actionState.show) {
-              return _buildFooterActionView(context, gco);
+            if (actionState.show || actionState.showCheckFold) {
+              return _buildFooterActionView(context, gco, actionState);
             } else {
               return SizedBox.shrink();
             }

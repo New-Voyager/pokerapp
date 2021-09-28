@@ -23,7 +23,7 @@ String gameTypeStr(GameType type) {
     case GameType.FIVE_CARD_PLO:
       return appTextScreen['FIVECARDPLO'];
     case GameType.FIVE_CARD_PLO_HILO:
-      return appTextScreen['FIVECARDPLOHILO'];
+      return appTextScreen['5CARDPLOHILO'];
     case GameType.ROE:
       return appTextScreen['ROE'];
     case GameType.DEALER_CHOICE:

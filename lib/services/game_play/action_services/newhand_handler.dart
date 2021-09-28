@@ -39,7 +39,7 @@ class NewHandHandler {
       bigBlind: newHand.bigBlind,
       bombPot: newHand.bombPot,
       bombPotBet: newHand.bombPotBet,
-      doubleBoard: newHand.doubleBoardBombPot,
+      doubleBoard: newHand.doubleBoard,
     );
   }
 
@@ -66,6 +66,7 @@ class NewHandHandler {
       log('NEW_HAND: Player: ${playerInSeat.name} seatNo: $seatNo status: ${playerInSeat.status} missedBlind: ${playerInSeat.missedBlind} postedBlind: ${playerInSeat.postedBlind} inhand: ${playerInSeat.inhand} stack: ${playerInSeat.stack} breakTime: ${playerInSeat.breakExpTime}');
     }
     int retryCount = 0;
+    bool newPlayerInTable = false;
     while (retryCount < 2) {
       // show buyin button/timer if the player is in middle of buyin
       for (final seatNo in playersInSeats.keys) {
@@ -131,6 +132,7 @@ class NewHandHandler {
         if (newPlayer) {
           //playerObj.playerUuid = playerInSeat.playerId;
           gameState.newPlayer(playerObj);
+          newPlayerInTable = true;
         }
         if (playerObj.playerUuid == gameState.currentPlayerUuid) {
           playerObj.isMe = true;
@@ -171,6 +173,9 @@ class NewHandHandler {
         break;
       }
     }
+    // if (newPlayerInTable) {
+    //   await gameState.refreshNotes();
+    // }
   }
 
   Future<void> handle() async {
@@ -178,6 +183,8 @@ class NewHandHandler {
     gameState.handChangeState.notify();
     gameState.highHand = null;
     gameState.handInProgress = true;
+    gameState.actionState.reset();
+    gameState.actionState.notify();
     ////log('Hand Message: ::handleNewHand:: START');
     AudioService.playNewHand(mute: gameState.playerLocalConfig.mute);
 
@@ -253,6 +260,16 @@ class NewHandHandler {
     gameState.handState = HandState.NEW_HAND;
     myState.notify();
     gameState.handInfo.notify();
+
+    if (gameState.playersWithNotes == null) {
+      gameState.refreshNotes().then((value) {
+        if (!gameState.uiClosing) {
+          gameState.notifyAllSeats();
+        }
+      });
+    } else {
+      gameState.updatePlayersWithNotes();
+    }
     gameState.notifyAllSeats();
     tableState.notifyAll();
   }

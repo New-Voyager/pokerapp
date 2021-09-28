@@ -1,7 +1,12 @@
+import 'dart:convert';
+
 enum MessageType {
   TEXT,
   HAND,
   GIPHY,
+  JOIN_CLUB,
+  LEAVE_CLUB,
+  KICKED_OUT,
 }
 
 class SharedHandMsg {
@@ -46,6 +51,7 @@ class ClubMessageModel {
   String playerTags;
   int messageTimeInEpoc;
   String sender;
+  String playerName;
   SharedHandMsg sharedHand;
 
   ClubMessageModel({
@@ -74,6 +80,15 @@ class ClubMessageModel {
       case 'GIPHY':
         this.messageType = MessageType.GIPHY;
         break;
+      case 'JOIN_CLUB':
+        this.messageType = MessageType.JOIN_CLUB;
+        break;
+      case 'LEAVE_CLUB':
+        this.messageType = MessageType.LEAVE_CLUB;
+        break;
+      case 'KICKED_OUT':
+        this.messageType = MessageType.KICKED_OUT;
+        break;
       default:
         this.messageType = MessageType.TEXT;
     }
@@ -98,6 +113,11 @@ class ClubMessageModel {
         sharedHand['sharedByPlayerName'],
         sharedHand['data'],
       );
+    } else if (this.messageType == MessageType.JOIN_CLUB ||
+        this.messageType == MessageType.LEAVE_CLUB ||
+        this.messageType == MessageType.KICKED_OUT) {
+      dynamic clubMsg = jsonDecode(this.text);
+      this.playerName = clubMsg['name'];
     }
   }
 

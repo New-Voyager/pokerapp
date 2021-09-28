@@ -23,10 +23,11 @@ const shrinkedBox = const SizedBox.shrink(
 class FooterActionView extends StatefulWidget {
   final GameContextObject gameContext;
   final Function isBetWidgetVisible;
-
+  final ActionState actionState;
   FooterActionView({
     this.gameContext,
     this.isBetWidgetVisible(bool _),
+    this.actionState,
   });
 
   @override
@@ -115,6 +116,78 @@ class _FooterActionViewState extends State<FooterActionView> {
               color: Colors.white,
             ),
           ),
+        ),
+      ),
+    );
+
+    if (disable) {
+      return button;
+    }
+
+    return InkWell(
+      onTap: onTap,
+      child: button,
+    );
+  }
+
+  Widget _buildCheckFoldButton({
+    String text = 'Button',
+    Function onTap,
+    bool isSelected = false,
+    bool disable = false,
+    AppTheme theme,
+  }) {
+    TextStyle btnTextStyle = AppDecorators.getHeadLine4Style(theme: theme)
+        .copyWith(
+            color: isSelected
+                ? theme.primaryColorWithDark()
+                : theme.supportingColor);
+    Color btnColor = theme.accentColor;
+    btnColor = isSelected ? Colors.blueGrey : Colors.black;
+    Color borderColor = Colors.white;
+
+    final button = AnimatedContainer(
+      duration: AppConstants.fastAnimationDuration,
+      curve: Curves.bounceInOut,
+      height: 32.ph,
+      width: 150.pw,
+      margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+      padding: EdgeInsets.all(5.ph),
+      decoration: BoxDecoration(
+          color: btnColor,
+          shape: BoxShape.rectangle,
+          border: Border.all(
+            color: borderColor,
+            width: 1.ph,
+          ),
+          borderRadius: BorderRadius.circular(10.pw),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black,
+              spreadRadius: 0.1,
+              blurRadius: 5,
+            ),
+          ]),
+      child: Center(
+        child: Row(
+          children: [
+            isSelected
+                ? Icon(Icons.check_circle_outline_rounded)
+                : Icon(Icons.circle_outlined),
+            SizedBox(width: 5.ph),
+            FittedBox(
+              fit: BoxFit.fitHeight,
+              child: Text(
+                text,
+                textAlign: TextAlign.center,
+                style: btnTextStyle.copyWith(
+                  fontSize: 10.dp,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
+                ),
+              ),
+            )
+          ],
         ),
       ),
     );
@@ -359,6 +432,25 @@ class _FooterActionViewState extends State<FooterActionView> {
     );
   }
 
+  Widget _buildCheckFoldWidget(ActionState actionState, AppTheme theme) {
+    List<Widget> actionButtons = [];
+    Widget actionWidget = _buildCheckFoldButton(
+        isSelected: actionState.checkFoldSelected,
+        theme: theme,
+        text: '  Check/Fold  ',
+        onTap: () {
+          actionState.checkFoldSelected = !actionState.checkFoldSelected;
+          actionState.notify();
+        });
+    actionButtons.add(actionWidget);
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.max,
+      children: actionButtons,
+    );
+  }
+
   Widget _buildBetWidget(PlayerAction playerAction, int remainingTime) {
     return AnimatedSwitcher(
       duration: AppConstants.fastestAnimationDuration,
@@ -384,35 +476,52 @@ class _FooterActionViewState extends State<FooterActionView> {
   Widget build(BuildContext context) {
     final boardAttributes = context.read<BoardAttributesObject>();
     final theme = AppTheme.getTheme(context);
-
     return IntrinsicHeight(
       child: Container(
         color: Colors.black.withOpacity(0.5),
         child: Consumer<ActionState>(
-          key: ValueKey('buildActionButtons'),
-          builder: (_, actionState, __) => Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              /* bet widget */
-              Expanded(
-                child: Transform.scale(
-                  scale: boardAttributes.footerActionViewScale,
-                  child: _buildBetWidget(actionState.action, 30),
-                ),
-              ),
+            key: ValueKey('buildActionButtons'),
+            builder: (_, actionState, __) {
+              List<Widget> children = [];
+              if (actionState.show) {
+                children.addAll([
+                  /* bet widget */
+                  Expanded(
+                    child: Transform.scale(
+                      scale: boardAttributes.footerActionViewScale,
+                      child: _buildBetWidget(actionState.action, 30),
+                    ),
+                  ),
 
-              /* bottom row */
-              Transform.scale(
-                scale: boardAttributes.footerActionViewScale,
-                alignment: Alignment.bottomCenter,
-                child: Container(
-                  padding: EdgeInsets.symmetric(vertical: 4.0),
-                  child: _buildActionWidgets(actionState.action, theme),
-                ),
-              ),
-            ],
-          ),
-        ),
+                  /* bottom row */
+                  Transform.scale(
+                    scale: boardAttributes.footerActionViewScale,
+                    alignment: Alignment.bottomCenter,
+                    child: Container(
+                      padding: EdgeInsets.symmetric(vertical: 4.0),
+                      child: _buildActionWidgets(actionState.action, theme),
+                    ),
+                  ),
+                ]);
+              } else if (actionState.showCheckFold) {
+                children.add(
+                  /* bottom row */
+                  Transform.scale(
+                    scale: boardAttributes.footerActionViewScale,
+                    alignment: Alignment.bottomCenter,
+                    child: Container(
+                      padding: EdgeInsets.symmetric(vertical: 4.0),
+                      child: _buildCheckFoldWidget(actionState, theme),
+                    ),
+                  ),
+                );
+              }
+
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: children,
+              );
+            }),
       ),
     );
   }

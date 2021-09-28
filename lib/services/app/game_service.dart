@@ -14,6 +14,7 @@ import 'package:pokerapp/models/game_model.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/newmodels/game_model_new.dart';
+import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/models/seat_change_model.dart';
 import 'package:pokerapp/models/table_record.dart';
 import 'package:pokerapp/models/waiting_list_model.dart';
@@ -1519,5 +1520,33 @@ query mySettings(\$gameCode:String!){
     resp.status = status['status'];
     resp.missedBlind = status['missedBlind'];
     return resp;
+  }
+
+  static Future<MyPlayerNotes> getPlayersWithNotes(String gameCode) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    String _query = """
+    query notesForPlayers(\$gameCode:String!) {
+        notes:   playersWithNotes(gameCode:\$gameCode) {
+          notes
+          playerId
+          playerUuid
+        }
+      }
+    """;
+    Map<String, dynamic> variables = {"gameCode": gameCode};
+    QueryResult result = await _client.query(
+      QueryOptions(document: gql(_query), variables: variables),
+    );
+
+    if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
+
+    var resp = result.data['notes'] as List;
+    final playerNotes = MyPlayerNotes.fromJson(resp);
+    return playerNotes;
   }
 }

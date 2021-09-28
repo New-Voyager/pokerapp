@@ -52,15 +52,55 @@ class GamePlayScreenUtilMethods {
       overlayOpacity: 0.1,
       icon: Icons.all_inclusive_rounded,
       children: [
+        // SpeedDialChild(
+        //   child: Icon(
+        //     Icons.adb_rounded,
+        //     color: Colors.white,
+        //   ),
+        //   backgroundColor: Colors.red,
+        //   label: 'Flop Cards',
+        //   labelBackgroundColor: Colors.black,
+        //   onTap: () => TestService.addFlopCards(),
+        // ),
+        // SpeedDialChild(
+        //   child: Icon(
+        //     Icons.adb_rounded,
+        //     color: Colors.white,
+        //   ),
+        //   backgroundColor: Colors.red,
+        //   label: 'Show Sitback',
+        //   labelBackgroundColor: Colors.black,
+        //   onTap: () => TestService.showSitBack(),
+        // ),
+        // SpeedDialChild(
+        //   child: Icon(
+        //     Icons.adb_rounded,
+        //     color: Colors.white,
+        //   ),
+        //   backgroundColor: Colors.red,
+        //   label: 'Show Result',
+        //   labelBackgroundColor: Colors.black,
+        //   onTap: () => TestService.showHandResult2(),
+        // ),
+        // SpeedDialChild(
+        //   child: Icon(
+        //     Icons.adb_rounded,
+        //     color: Colors.white,
+        //   ),
+        //   backgroundColor: Colors.red,
+        //   label: 'Show Action View',
+        //   labelBackgroundColor: Colors.black,
+        //   onTap: () => TestService.testBetWidget(),
+        // ),
         SpeedDialChild(
           child: Icon(
             Icons.adb_rounded,
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
-          label: 'Flop Cards',
+          label: 'Action',
           labelBackgroundColor: Colors.black,
-          onTap: () => TestService.addFlopCards(),
+          onTap: () => TestService.setActionTimer(),
         ),
         SpeedDialChild(
           child: Icon(
@@ -68,27 +108,7 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
-          label: 'Show Sitback',
-          labelBackgroundColor: Colors.black,
-          onTap: () => TestService.showSitBack(),
-        ),
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          label: 'Show Result',
-          labelBackgroundColor: Colors.black,
-          onTap: () => TestService.showHandResult2(),
-        ),
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          label: 'Show Action View',
+          label: 'Show Bet Widget',
           labelBackgroundColor: Colors.black,
           onTap: () => TestService.testBetWidget(),
         ),
@@ -170,7 +190,18 @@ class GamePlayScreenUtilMethods {
           backgroundColor: Colors.red,
           labelBackgroundColor: Colors.black,
           label: 'Show Bets',
-          onTap: () => TestService.testBetWidget(),
+          onTap: () => TestService.showBets(),
+        ),
+
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
+          labelBackgroundColor: Colors.black,
+          label: 'Simulate Bet Movement',
+          onTap: () => TestService.simulateBetMovement(),
         ),
       ],
       backgroundColor: AppColorsNew.appAccentColor,
@@ -228,18 +259,11 @@ class GamePlayScreenUtilMethods {
       if (newPlayerModel.stack == 0) {
         newPlayerModel.showBuyIn = true;
       }
-      GameHiveStore ghs = gameState.gameHiveStore;
-      // we can offer user inital reward here, as well as reset timers here
-      if (ghs.isFirstJoin()) {
-        // on first join, we give 10 diamonds
-        ghs.addDiamonds(num: 10);
 
-        // MARK first join is done
-        ghs.setIsFirstJoinDone();
-      } else {
-        // for any subsequent joins, reset the timer
-        ghs.updateLastDiamondUpdateTime();
-      }
+      // update hive store
+      GameHiveStore ghs = gameState.gameHiveStore;
+      ghs.initialize(gameState.gameCode);
+
       ConnectionDialog.dismiss(context: context);
       if (newPlayerModel.isMe) {
         await Future.delayed(Duration(milliseconds: 100));
@@ -247,6 +271,7 @@ class GamePlayScreenUtilMethods {
         mySeat.notify();
         gameState.redrawFooterState.notify();
       }
+      await gameState.refreshNotes();
       final tableState = gameState.tableState;
       tableState.notifyAll();
       gameState.notifyAllSeats();

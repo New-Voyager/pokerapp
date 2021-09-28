@@ -128,8 +128,10 @@ services:
       - 8083:8083
     environment:
       API_SERVER_INTERNAL_URL: http://api-server:9502
-      LOG_LEVEL: debug
+      LOG_LEVEL: info
       POST_PROCESSING_TIMEOUT_SEC: 120
+      EXPIRE_GAMES_INTERVAL_SEC: 30
+      EXPIRE_GAMES_TIMEOUT_SEC: 30
 
 volumes:
   db-data:

@@ -187,6 +187,9 @@ class GameState {
   // location of the current player (valid only if the game requires gps check)
   LocationData currentLocation;
 
+  // players with notes
+  MyPlayerNotes playersWithNotes;
+
   Future<void> initialize({
     String gameCode,
     @required GameInfoModel gameInfo,
@@ -385,7 +388,7 @@ class GameState {
       code = _gameInfo.gameCode;
     }
     gameHiveStore = GameHiveStore();
-    await gameHiveStore.open(code);
+    await gameHiveStore.initialize(code);
 
     if (!(this.customizationMode ?? false)) {
       if (!this.replayMode) {
@@ -617,6 +620,7 @@ class GameState {
     this._playerSettings.autoStraddle = settings.autoStraddle;
     this._playerSettings.bombPotEnabled = settings.bombPotEnabled;
     this._playerSettings.buttonStraddle = settings.buttonStraddle;
+    this._playerSettings.buttonStraddleBet = settings.buttonStraddleBet;
     this._playerSettings.muckLosingHand = settings.muckLosingHand;
     this._playerSettings.runItTwiceEnabled = settings.runItTwiceEnabled;
   }
@@ -696,6 +700,45 @@ class GameState {
     }
 
     this._handInfo.notify();
+  }
+
+  PlayerModel getPlayerById(int playerId) {
+    for (final player in _playersInGame) {
+      if (player.playerId == playerId) {
+        return player;
+      }
+    }
+    return null;
+  }
+
+  Future<void> refreshNotes() async {
+    try {
+      // final playerIds = this._playersInGame.map((e) => e.playerId).toList();
+      // final playerNotes = await PlayerService.getPlayerNotes(playerIds);
+      final playerNotes = await GameService.getPlayersWithNotes(gameCode);
+      playersWithNotes = playerNotes;
+      updatePlayersWithNotes();
+    } catch (err) {
+      log('Error when fetching player notes');
+    }
+  }
+
+  void updatePlayersWithNotes() {
+    if (playersWithNotes == null) {
+      return;
+    }
+    for (final playerInSeat in _playersInGame) {
+      playerInSeat.hasNotes = false;
+      playerInSeat.notes = '';
+    }
+
+    for (final notesPlayer in playersWithNotes.players) {
+      final playerInSeat = this.getPlayerById(notesPlayer.playerId);
+      if (playerInSeat != null) {
+        playerInSeat.hasNotes = true;
+        playerInSeat.notes = notesPlayer.notes;
+      }
+    }
   }
 
   void seatPlayer(int seatNo, PlayerModel player) {
@@ -918,6 +961,10 @@ class GameState {
 
   void setAction(int seatNo, var seatAction) {
     _actionState.setAction(seatNo, seatAction);
+  }
+
+  void showCheckFold() {
+    _actionState.showCheckFold = true;
   }
 
   void setActionProto(int seatNo, proto.NextSeatAction seatAction) {
@@ -1244,14 +1291,40 @@ class HandInfoState extends ChangeNotifier {
 class ActionState extends ChangeNotifier {
   PlayerAction _currentAction;
   bool _showAction = false;
+  bool _showCheckFold = false;
+  bool _checkFoldSelected = false;
+
+  void reset() {
+    _showAction = false;
+    _showCheckFold = false;
+    _checkFoldSelected = false;
+  }
 
   set show(bool v) {
+    _showCheckFold = false;
     _showAction = v;
     this.notifyListeners();
   }
 
+  set showCheckFold(bool v) {
+    _showCheckFold = true;
+    _showAction = false;
+    this.notifyListeners();
+  }
+
+  set checkFoldSelected(bool v) {
+    _checkFoldSelected = v;
+    this.notifyListeners();
+  }
+
+  bool get checkFoldSelected => _checkFoldSelected;
+
   bool get show {
     return this._showAction;
+  }
+
+  bool get showCheckFold {
+    return this._showCheckFold;
   }
 
   void setAction(int seatNo, var seatAction) {

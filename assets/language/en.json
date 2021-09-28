@@ -503,6 +503,7 @@
         "seatChangeRequestedBy": "Seat change requested by",
         "atSeatNo": "at seat no",
         "theGameIsPaused": "The game is paused",
+        "theGameWillEndAfterThisHand": "The game will end after this hand",
         "game": "Game",
         "player": "Player",
         "isPromptedToSwitchToAnOpenSeat": "is prompted to switch to an open seat"
@@ -682,7 +683,6 @@
         "gameCode": "Game Code",
         "game": "Game",
         "youWillStandupAfterThisHand": "You will standup after this hand",
-        "theGameWillEndAfterThisHand": "The game will end after this hand",
         "theGameWillPauseAfterThisHand": "The game will pause after this hand",
         "pause": "Pause",
         "break": "Break",

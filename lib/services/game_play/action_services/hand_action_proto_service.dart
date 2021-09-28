@@ -247,6 +247,25 @@ class HandActionProtoService {
     _retryMsg.run();
   }
 
+  extendTime(int playerId, int seatNo, int handNum, int time) {
+    final messageItem = proto.HandMessageItem(
+      messageType: 'EXTEND_ACTION_TIMER',
+      extendTimer: proto.ExtendTimer(seatNo: seatNo, extendBySec: time),
+    );
+    int msgId = MessageId.incrementAndGet(_gameState.gameCode);
+    String messageId = msgId.toString();
+    final playerId64 = $fixnum.Int64(playerId);
+    final handMessage = proto.HandMessage(
+        gameCode: _gameState.gameCode,
+        playerId: playerId64,
+        handNum: handNum,
+        seatNo: seatNo,
+        messageId: messageId,
+        messages: [messageItem]);
+    final binMessage = handMessage.writeToBuffer();
+    this._gameComService.sendProtoPlayerToHandChannel(binMessage);
+  }
+
   queryCurrentHand() {
     int msgId = MessageId.incrementAndGet(_gameState.gameCode);
     String messageId = msgId.toString();
@@ -353,23 +372,27 @@ class HandActionProtoService {
           return handleDeal(message);
 
         case AppConstants.QUERY_CURRENT_HAND:
-          final handler = PlayerActionHandler(this._context, _gameState);
+          final handler = PlayerActionHandler(this._context, _gameState, this);
           await handler.handleQueryCurrentHand(message);
           return;
 
         case AppConstants.NEXT_ACTION:
-          final handler = PlayerActionHandler(this._context, _gameState);
+          final handler = PlayerActionHandler(this._context, _gameState, this);
           await handler.handleNextAction(message);
           return;
 
         case AppConstants.PLAYER_ACTED:
-          final handler = PlayerActionHandler(this._context, _gameState);
+          final handler = PlayerActionHandler(this._context, _gameState, this);
           await handler.handlePlayerActed(message);
           return;
 
         case AppConstants.YOUR_ACTION:
-          final handler = PlayerActionHandler(this._context, _gameState);
+          final handler = PlayerActionHandler(this._context, _gameState, this);
           await handler.handleYourAction(message);
+          return;
+
+        case AppConstants.EXTEND_ACTION_TIMER:
+          await handleExtendTimer(message);
           return;
 
         case AppConstants.FLOP:
@@ -827,6 +850,16 @@ class HandActionProtoService {
     }
   }
 
+  Future<void> handleExtendTimer(proto.HandMessageItem message) async {
+    final extendTimer = message.extendTimer;
+    final seat = _gameState.getSeat(extendTimer.seatNo);
+    if (seat != null) {
+      int total = seat.actionTimer.getTotalTime() + extendTimer.extendBySec;
+      seat.setActionTimer(total, remainingTime: extendTimer.remainingSec);
+      seat.notify();
+    }
+  }
+
   Future<void> handleAnnouncement(proto.HandMessageItem message) async {
     //log('Hand Message: ::handleAnnouncement:: START');
 
@@ -903,6 +936,8 @@ class HandActionProtoService {
 
   Future<void> handleResult2(proto.HandResultClient result) async {
     if (_close) return;
+    _gameState.actionState.reset();
+    _gameState.actionState.notify();
 
     if (_gameState.isPlaying) {
       _gameState.rabbitState.putResultProto(
@@ -940,6 +975,13 @@ class HandActionProtoService {
     } catch (err) {}
     _gameState.handState = HandState.ENDED;
     _gameState.handInProgress = false;
+
+    // is the current player in the hand
+    final me = _gameState.me;
+    if (me != null && !me.inBreak) {
+      _gameState.gameHiveStore.handEnded();
+    }
+
     //log('Hand Message: ::handleResult:: END');
   }
 

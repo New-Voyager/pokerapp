@@ -319,15 +319,18 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
       builder: (context, List<int> candidateData, rejectedData) {
         Offset notesOffset = Offset(0, 0);
         SeatPos pos = widget.seatPos ?? SeatPos.bottomLeft;
-
+        double actionLeft;
+        double actionRight;
         if (pos == SeatPos.bottomLeft ||
             pos == SeatPos.middleLeft ||
             pos == SeatPos.topLeft ||
             pos == SeatPos.topCenter ||
             pos == SeatPos.topCenter1) {
+          actionLeft = 0;
           notesOffset =
-              Offset(-((widget.boardAttributes.namePlateSize.width / 2)), 0);
+              Offset(-((widget.boardAttributes.namePlateSize.width / 1.5)), 0);
         } else {
+          actionRight = 0;
           notesOffset =
               Offset(((widget.boardAttributes.namePlateSize.width / 2)), 0);
         }
@@ -337,6 +340,8 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
             clipBehavior: Clip.none,
             alignment: Alignment.center,
             children: [
+              // Container(width: 100, height: 60, color: Colors.grey[900]),
+              //SvgPicture.string(namePlateStr, width: 60, height: 50),
               // // main user body
               NamePlateWidget(
                 widget.seat,
@@ -349,8 +354,9 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
 
               // player action text
               Positioned(
-                top: -6,
-                left: 0,
+                top: -15,
+                left: actionLeft,
+                right: actionRight,
                 child: ActionStatusWidget(widget.seat, widget.cardsAlignment),
               ),
 
@@ -643,7 +649,7 @@ class PlayerCardsWidget extends StatelessWidget {
       log('PlayerCardsWidget: [${seat.serverSeatPos}] Folded cards');
       return Transform.translate(
         offset: Offset(
-          xOffset * 0.50,
+          xOffset * 0.30,
           45.0,
         ),
         child: FoldCardAnimatingWidget(seat: seat),
@@ -653,11 +659,11 @@ class PlayerCardsWidget extends StatelessWidget {
       log('PlayerCardsWidget: [${seat.serverSeatPos}] Hidden cards');
       return Transform.translate(
         offset: Offset(
-          xOffset * 0.50,
+          xOffset * 0.90,
           25.0,
         ),
         child: Transform.scale(
-          scale: 0.75,
+          scale: 1.0,
           child: HiddenCardView(noOfCards: this.noCards),
         ),
       );
