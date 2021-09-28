@@ -161,12 +161,24 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
         return;
       }
 
-      Alerts.showBottomSheetDailog(
+      final data = await Alerts.showBottomSheetDailog(
         child: NamePlateDailog(
+          gameContext: context,
           gameState: gameState,
+          seatKey: widget.seat.key,
+          seat: widget.seat,
         ),
         context: context,
       );
+
+      if (data != null && data['type'] != null && data['type'] == "animation") {
+        gameState.gameComService.gameMessaging.sendAnimation(
+          gameState.me?.seatNo,
+          widget.seat.serverSeatPos,
+          data['animationID'],
+        );
+        await gameState.gameHiveStore.deductDiamonds();
+      }
       // show popup menu
       // showPlayerPopup(context, widget.seat.key, widget.gameState, widget.seat);
 

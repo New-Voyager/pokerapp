@@ -237,11 +237,12 @@ class Alerts {
       barrierDismissible: true,
       pageBuilder: (_, __, ___) {
         final theme = AppTheme.getTheme(context);
-        return Align(
-          alignment: Alignment.bottomCenter,
-          child: Material(
-            color: Colors.transparent,
-            child: Container(
+        return _SystemPadding(
+          child: Align(
+            alignment: Alignment.bottomCenter,
+            child: Material(
+              color: Colors.transparent,
+              child: Container(
                 height: MediaQuery.of(context).size.height * 0.5,
                 margin: EdgeInsets.all(16),
                 padding: EdgeInsets.only(bottom: 24, top: 8, right: 8, left: 8),
@@ -251,7 +252,9 @@ class Alerts {
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(color: theme.accentColor, width: 3),
                 ),
-                child: child),
+                child: child,
+              ),
+            ),
           ),
         );
       },
@@ -262,9 +265,24 @@ class Alerts {
           child: child,
         );
       },
-      barrierLabel:"",
+      barrierLabel: "",
       barrierColor: Colors.black.withOpacity(0.5),
-      transitionDuration: Duration(milliseconds: 300),
+      transitionDuration: Duration(milliseconds: 200),
     );
+  }
+}
+
+class _SystemPadding extends StatelessWidget {
+  final Widget child;
+
+  _SystemPadding({Key key, this.child}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    var mediaQuery = MediaQuery.of(context);
+    return new AnimatedContainer(
+        padding: mediaQuery.viewInsets,
+        duration: const Duration(milliseconds: 100),
+        child: child);
   }
 }

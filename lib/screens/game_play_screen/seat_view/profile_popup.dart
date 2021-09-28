@@ -38,7 +38,9 @@ class _ProfilePopupState extends State<ProfilePopup> {
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(_appScreenText['tapToSendAnimation'],
-            style: AppDecorators.getHeadLine4Style(theme: theme)),
+            style: AppDecorators.getSubtitle2Style(theme: theme)),
+        Text(_appScreenText['note'],
+            style: AppDecorators.getSubtitle1Style(theme: theme)),
         AppDimensionsNew.getVerticalSizedBox(8),
         getStickers(),
       ],
@@ -123,6 +125,7 @@ class _ProfilePopupState extends State<ProfilePopup> {
                     Navigator.pop(
                       context,
                       {
+                        "type" : "animation",
                         "isMicOn": _isMicOn,
                         "isChatOn": _isChatOn,
                         "animationID": animationObject.id,
