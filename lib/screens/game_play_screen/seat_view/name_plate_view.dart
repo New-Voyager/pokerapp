@@ -15,7 +15,6 @@ import 'package:pokerapp/screens/game_play_screen/seat_view/animating_widgets/st
 import 'package:pokerapp/screens/game_play_screen/widgets/milliseconds_counter.dart';
 import 'package:pokerapp/widgets/nameplate.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_svg/svg.dart';
 
 class NamePlateWidget extends StatelessWidget {
   final GlobalKey globalKey;
@@ -159,50 +158,32 @@ class NamePlateWidget extends StatelessWidget {
 [log] Rebuilding highlight remaining: 7 total: 30 current: 23
 [log] Timer remaining: 22977 total: 30 current: 7
 */
-    Size containerSize = Size(100, 60);
-    Size svgSize = Size(400, 240);
-    //Size progressSize = Size(370, 130);
+    Size containerSize = Size(200, 120);
+    // Size svgSize = Size(400, 240);
     Size progressRatio = Size(1.0, 1.0);
-    //Size(containerSize.width/svgSize.width,
-    //                          containerSize.height/svgSize.height);
     if (seat.player?.highlight ?? false) {
-      int current = seat.actionTimer.getProgressTime();
       int total = seat.actionTimer.getTotalTime();
-      final int totalMs = seat.actionTimer.getTotalTime() * 1000;
-
-      //log('Rebuilding highlight remaining: ${remaining} total: ${total} current: ${current}');
-      //int total = seat.actionTimer.getTotalTime();
-      // int remainingSeconds = time.toInt() ~/ 1000;
-
-      plateWidget = Nameplate.fromSvgString(
-          remainingTime: current,
-          totalTime: total,
-          svg: namePlateStr,
-          size: containerSize,
-          progressPath: progressPathStr,
-          progressRatio: progressRatio);
-      // plateWidget = CountdownMs(
-      //   totalSeconds: total,
-      //   currentSeconds: current,
-      //   build: (_, time) {
-      //     int total = seat.actionTimer.getTotalTime();
-      //     int remainingSeconds = time.toInt() ~/ 1000;
-      //     seat.setProgressTime(total - remainingSeconds);
-      //     // log('ProgressBar: seatNo: ${seat.player.seatNo} $total remaining: $remainingSeconds');
-
-      //     //int progress = seat.actionTimer.getProgressTime();
-      //     int currentProgress = total * 1000 - time.toInt();
-      //     //log('Rebuilding highlight remaining: ${time.toInt() ~/ 1000} total: ${total} current: ${total - remainingSeconds}');
-
-      //     return PlateWidget(
-      //       currentProgress,
-      //       totalMs,
-      //       showProgress: true,
-      //     );
-      //   },
-      //);
+      log('Nameplate: total: $total progress: ${seat.actionTimer.getProgressTime()}');
+      int progressTime = 0;
+      plateWidget = CountdownMs(
+          totalSeconds: seat.actionTimer.getTotalTime(),
+          currentSeconds: seat.actionTimer.getProgressTime(),
+          build: (_, time) {
+            seat.actionTimer.setProgressTime(time ~/ 1000);
+            int currentProgress = time ~/ 1000;
+            if (progressTime != currentProgress) {
+              log('Nameplate: total: $total progress: ${currentProgress}');
+              progressTime = currentProgress;
+            }
+            return Nameplate.fromSvgString(
+                remainingTime: time.toInt(),
+                totalTime: total * 1000, // in milliseconds
+                svg: namePlateStr,
+                size: containerSize,
+                progressPath: progressPathStr,
+                progressRatio: progressRatio);
+          });
     } else {
-      //log('Rebuilding no highlight');
       plateWidget = Nameplate.fromSvgString(
           remainingTime: 0,
           totalTime: 0,
@@ -210,22 +191,14 @@ class NamePlateWidget extends StatelessWidget {
           size: containerSize,
           progressPath: progressPathStr,
           progressRatio: progressRatio);
-
-      // plateWidget = SvgPicture.string(namePlateStr);
-      // plateWidget = PlateWidget(
-      //   0,
-      //   0,
-      //   showProgress: false,
-      // );
     }
-    // return SvgPicture.string(namePlateStr, width: 60, height: 50);
 
     Stack namePlate = Stack(
       alignment: Alignment.center,
       clipBehavior: Clip.hardEdge,
       children: [
-        SvgPicture.string(namePlateStr, width: 100, height: 60),
-        //plateWidget,
+        // SvgPicture.string(namePlateStr, width: 100, height: 60),
+        plateWidget,
         Positioned.fill(
             child: Align(
                 alignment: Alignment.topCenter,
@@ -302,6 +275,8 @@ class NamePlateWidget extends StatelessWidget {
         namePlate,
       ]);
     }
+
+    plateWidget = namePlate;
     Widget ret = Opacity(
         opacity: childWhenDragging ? 0.50 : 1.0,
         child: Container(
@@ -317,64 +292,6 @@ class NamePlateWidget extends StatelessWidget {
             ),
             child: plateWidget));
     return ret;
-
-    return Opacity(
-      opacity: childWhenDragging ? 0.50 : 1.0,
-      child: Container(
-        width: boardAttributes.namePlateSize.width,
-        height: boardAttributes.namePlateSize.height,
-        padding: const EdgeInsets.symmetric(
-          vertical: 5.0,
-        ),
-        decoration: BoxDecoration(
-          boxShadow: shadow,
-        ),
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            // name plate
-            Container(
-              width: double.infinity,
-              height: double.infinity,
-              child: plateWidget,
-            ),
-
-            /* main body contents */
-            AnimatedOpacity(
-              duration: AppConstants.animationDuration,
-              opacity: seat.isOpen ? 0.0 : 1.0,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // player name
-                  FittedBox(
-                    child: Text(
-                      seat.player?.name ?? '',
-                      style: AppDecorators.getSubtitle1Style(theme: theme),
-                    ),
-                  ),
-
-                  // divider
-                  PlayerViewDivider(),
-
-                  // bottom widget - to show stack, sit back time, etc.
-                  Align(
-                    alignment: Alignment.topRight,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 5),
-                      child: FittedBox(
-                        child: bottomWidget(context, theme),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
   }
 
   Widget bottomWidget(BuildContext context, AppTheme theme) {
@@ -415,50 +332,6 @@ class NamePlateWidget extends StatelessWidget {
 
     return _buildStackTextWidget(seat.player.stack);
   }
-
-  // Widget buyInTimer(BuildContext context, int time) {
-  //   return Countdown(
-  //       seconds: time,
-  //       onFinished: () {
-  //         if (seat.isMe) {
-  //           // hide buyin button
-  //           final gameState = GameState.getState(context);
-  //           final players = gameState.getPlayers(context);
-  //           seat.player.showBuyIn = false;
-  //           players.notifyAll();
-  //           seat.notify();
-  //         }
-  //       },
-  //       build: (_, time) {
-  //         if (time <= 10) {
-  //           return BlinkText(_printDuration(Duration(seconds: time.toInt())),
-  //               style: AppStylesNew.itemInfoTextStyle.copyWith(
-  //                 color: Colors.white,
-  //               ),
-  //               beginColor: Colors.white,
-  //               endColor: Colors.orange,
-  //               times: time.toInt(),
-  //               duration: Duration(seconds: 1));
-  //         } else {
-  //           return Text(
-  //             _printDuration(Duration(seconds: time.toInt())),
-  //             style: AppStylesNew.itemInfoTextStyle.copyWith(
-  //               color: Colors.white,
-  //             ),
-  //           );
-  //         }
-  //       });
-  // }
-
-  // String _printDuration(Duration duration) {
-  //   String twoDigits(int n) => n.toString().padLeft(2, "0");
-  //   if (duration.inSeconds <= 0) {
-  //     return '0:00';
-  //   }
-  //   String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
-  //   String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
-  //   return "$twoDigitMinutes:$twoDigitSeconds";
-  // }
 }
 
 class PlayerViewDivider extends StatelessWidget {

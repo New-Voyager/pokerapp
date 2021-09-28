@@ -124,9 +124,8 @@ class BetWidget extends StatelessWidget {
       ),
     );
 
-    final bool isBetByTapActive = HiveDatasource.getInstance
-        .getBox(BoxType.USER_SETTINGS_BOX)
-        .get('isTapForBetAction?', defaultValue: false);
+    final bool isBetByTapActive =
+        gameState.playerLocalConfig.tapOrSwipeBetAction;
 
     final Widget mainWidget = _buildToolTipWith(
       child: IntrinsicWidth(

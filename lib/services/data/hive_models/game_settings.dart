@@ -51,6 +51,19 @@ class GameLocalConfig {
     _save();
   }
 
+  bool get tapOrSwipeBetAction {
+    if (_tapOrSwipeBetAction == null) {
+      return true;
+    }
+    return _tapOrSwipeBetAction;
+  }
+
+  bool _tapOrSwipeBetAction = false;
+  set tapOrSwipeBetAction(bool value) {
+    _tapOrSwipeBetAction = value;
+    _save();
+  }
+
   GameLocalConfig(this._gameCode, this._gameHiveStore);
 
   // this method only to be called for the first time
@@ -65,6 +78,7 @@ class GameLocalConfig {
         'showChat': this._showChat,
         'straddle': this._straddle,
         'inAudioConference': this._inAudioConference,
+        'tapOrSwipeBetAction': this._tapOrSwipeBetAction,
       };
 
   GameLocalConfig.fromJson(Map<String, dynamic> json, this._gameHiveStore) {
@@ -74,5 +88,6 @@ class GameLocalConfig {
     this._showChat = json['showChat'];
     this._straddle = json['straddle'];
     this._inAudioConference = json['inAudioConference'];
+    this._tapOrSwipeBetAction = json['tapOrSwipeBetAction'];
   }
 }

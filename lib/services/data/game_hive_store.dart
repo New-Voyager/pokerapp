@@ -47,7 +47,7 @@ if (now - lastHandTime) > 10*60 {
 */
 
 int kDefaultDiamonds = 5;
-int kDefaultTimebankSecs = 20;
+int kDefaultTimebankSecs = 5;
 
 class GameHiveStore {
   Box _gameBox;
@@ -133,6 +133,10 @@ class GameHiveStore {
   static const _LASTHAND_TIME = 'lasthand_time';
   void handEnded() async {
     try {
+      // if (getTimeBankTime() < AppConstants.maxTimeBankSecs) {
+      //   _addTimeToTimeBank(kDefaultTimebankSecs);
+      // }
+
       // a hand ended
       final String lastHandTimeStr = _gameBox.get(_LASTHAND_TIME);
 

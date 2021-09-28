@@ -14,6 +14,7 @@ import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/game_service.dart';
@@ -847,24 +848,63 @@ class _GameOptionState extends State<GameOption> {
       },
     ));
 
-/* 
-    Visibility(
-      visible: widget.gameState.gameInfo.audioConfEnabled ?? true,
-      child: _buildCheckBox(
-        text: _appScreenText['audioConference'],
-        value: widget.gameState.config.audioConf,
-        onChange: (bool v) async {
-          // setting the value saves it to local storage too
-          widget.gameState.config.audioConf = v;
-          widget.gameState.janusEngine.joinLeaveAudioConference();
-          log('In toggle button widget, audioConf = ${widget.gameState.config.audioConf}');
-          if (closed) return;
-          setState(() {});
-        },
-      ),
-    ),
+    // tap to bet VS swipe to bet
+    children.add(Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(10),
+      decoration: AppStylesNew.actionRowDecoration,
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // main text
+                const Text(
+                  'Bet Action',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18.0,
+                  ),
+                ),
+                // hint text
+                const Text(
+                  '(applied in next action)',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 13.0,
+                  ),
+                ),
+              ],
+            ),
+          ),
 
-    */ /* show straddle off and auto straddle options ONLY when the UTG STRADDLE is on */
+          // tap / swipe button
+          // false ==> swipe is active
+          Expanded(
+            child: CupertinoSegmentedControl<bool>(
+              borderColor: theme.accentColor, //const Color(0xff40D876),
+              selectedColor: theme.secondaryColor, //const Color(0xff40D876),
+              groupValue:
+                  widget.gameState.playerLocalConfig.tapOrSwipeBetAction,
+              children: {
+                false: Text('Swipe', style: TextStyle(fontSize: 18.0)),
+                true: Text('Tap', style: TextStyle(fontSize: 18.0)),
+              },
+              onValueChanged: (bool v) async {
+                widget.gameState.playerLocalConfig.tapOrSwipeBetAction = v;
+                await updateGamePlayerSettings();
+                log('In toggle button widget, tapOrSwipeBetAction = ${widget.gameState.playerLocalConfig.tapOrSwipeBetAction}');
+                if (closed) return;
+                setState(() {});
+              },
+            ),
+          ),
+        ],
+      ),
+    ));
+
+    /* show straddle off and auto straddle options ONLY when the UTG STRADDLE is on */
 
     // UTG straddle
     if (widget.gameState.gameInfo.utgStraddleAllowed) {

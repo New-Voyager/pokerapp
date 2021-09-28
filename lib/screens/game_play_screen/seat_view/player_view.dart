@@ -320,7 +320,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
             clipBehavior: Clip.none,
             alignment: Alignment.center,
             children: [
-              Container(width: 100, height: 60, color: Colors.grey[900]),
+              // Container(width: 100, height: 60, color: Colors.grey[900]),
               //SvgPicture.string(namePlateStr, width: 60, height: 50),
               // // main user body
               NamePlateWidget(
