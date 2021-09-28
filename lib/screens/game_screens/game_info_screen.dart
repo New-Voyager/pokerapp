@@ -2,15 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game/game_settings.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
-import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/utils.dart';
-import 'package:provider/single_child_widget.dart';
 
 class GameInfoScreen extends StatefulWidget {
   final GameState gameState;
@@ -24,9 +23,12 @@ class _GameInfoScreenState extends State<GameInfoScreen> {
   AppTheme theme;
   bool loading = true;
   GameSettings gameSettings;
+  AppTextScreen appScreenText;
 
   @override
   void initState() {
+    appScreenText = getAppTextScreen("gameInfoScreen");
+
     super.initState();
     WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
       _fetchGameSettings();
@@ -62,7 +64,7 @@ class _GameInfoScreenState extends State<GameInfoScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                "code: ",
+                appScreenText["code"] + ': ',
                 style: AppDecorators.getSubtitle1Style(theme: theme),
               ),
               Text(
@@ -83,7 +85,7 @@ class _GameInfoScreenState extends State<GameInfoScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Running time",
+                      appScreenText["runningTime"],
                       style: AppDecorators.getSubtitle1Style(theme: theme),
                     ),
                     Text(
@@ -97,11 +99,11 @@ class _GameInfoScreenState extends State<GameInfoScreen> {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      "Hands Dealt",
+                      appScreenText["handsDealt"],
                       style: AppDecorators.getSubtitle1Style(theme: theme),
                     ),
                     Text(
-                      "${gameInfo.noHandsPlayed}",
+                      "${gameInfo.handNum}",
                       style: AppDecorators.getAccentTextStyle(theme: theme)
                           .copyWith(fontWeight: FontWeight.normal),
                     ),
@@ -130,35 +132,35 @@ class _GameInfoScreenState extends State<GameInfoScreen> {
                           },
                           children: [
                             _buildOneRow(
-                                col1: "Buyin",
+                                col1: appScreenText["buyIn"],
                                 col2:
                                     "${gameInfo.buyInMin}/${gameInfo.buyInMax}"),
                             _buildOneRow(
-                                col1: "Run it twice Allowed",
+                                col1: appScreenText["runitTwiceAllowed"],
                                 col2:
                                     _getYesNo(gameSettings?.runItTwiceAllowed)),
                             _buildOneRow(
-                                col1: "Bomb Pot enabled",
+                                col1: appScreenText["bombPotEnabled"],
                                 col2: _getYesNo(gameSettings?.bombPotEnabled)),
                             _buildOneRow(
-                                col1: "Bomb Pot Interval",
+                                col1: appScreenText["bombPotInterval"],
                                 col2:
                                     gameSettings?.bombPotInterval?.toString()),
                             _buildOneRow(
-                                col1: "Dual Board Bomb Pot",
+                                col1: appScreenText["doubleBoardBombPot"],
                                 col2: _getYesNo(
                                     gameSettings?.doubleBoardBombPot)),
                             _buildOneRow(
-                                col1: "UTG Straddle Allowed",
+                                col1: appScreenText["utgStraddleAllowed"],
                                 col2: _getYesNo(gameInfo.utgStraddleAllowed)),
                             _buildOneRow(
-                                col1: "Animations",
+                                col1: appScreenText["animations"],
                                 col2: _getYesNo(gameSettings?.funAnimations)),
                             _buildOneRow(
-                                col1: "Chat Allowed",
+                                col1: appScreenText["chatEnabled"],
                                 col2: _getYesNo(gameSettings?.chat)),
                             _buildOneRow(
-                                col1: "Show result",
+                                col1: appScreenText["showResult"],
                                 col2: _getYesNo(gameSettings?.showResult)),
                           ],
                         ),
@@ -241,8 +243,8 @@ class _GameInfoScreenState extends State<GameInfoScreen> {
 
   _getYesNo(bool val) {
     if (val ?? false) {
-      return "No";
+      return "Yes";
     }
-    return "Yes";
+    return "No";
   }
 }
