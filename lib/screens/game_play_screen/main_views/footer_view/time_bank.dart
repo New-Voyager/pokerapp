@@ -1,12 +1,16 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
+import 'package:provider/provider.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/game_circle_button.dart';
+import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 int minExtendTime = 5;
+
 class TimeBankWidget extends StatefulWidget {
   final GameState gameState;
   TimeBankWidget(this.gameState);
@@ -18,9 +22,14 @@ class TimeBankWidget extends StatefulWidget {
 class _TimeBankWidgetState extends State<TimeBankWidget> {
   bool animate = false;
   int time = 0;
+  int availableTime;
   _TimeBankWidgetState();
   @override
   void initState() {
+    availableTime = widget.gameState.gameHiveStore.getTimeBankTime();
+    if (TestService.isTesting) {
+      availableTime = 20;
+    }
     super.initState();
   }
 
@@ -28,10 +37,12 @@ class _TimeBankWidgetState extends State<TimeBankWidget> {
   Widget build(BuildContext context) {
     log('timebank: rebuild timebank widget');
     final theme = AppTheme.getTheme(context);
+    final gameState = GameState.getState(context);
+    final gameContextObj = context.read<GameContextObject>();
     List<Widget> children = [];
 
     // if no time left in the bank return empty container
-    if (widget.gameState.gameHiveStore.getTimeBankTime() <= 0) {
+    if (availableTime <= 0) {
       return Container();
     }
 
@@ -42,12 +53,34 @@ class _TimeBankWidgetState extends State<TimeBankWidget> {
           log('timebank: on timebank clicked');
           animate = false;
           int extendTime = minExtendTime;
-          if (widget.gameState.gameHiveStore.getTimeBankTime() < extendTime) {
-            extendTime = widget.gameState.gameHiveStore.getTimeBankTime();
+          if (availableTime < extendTime) {
+            extendTime =
+                availableTime; //widget.gameState.gameHiveStore.getTimeBankTime();
           }
           time += extendTime;
-          await widget.gameState.gameHiveStore.deductTimebank(num: minExtendTime);
-          log ('Remaining timebank: ${widget.gameState.gameHiveStore.getTimeBankTime()}');
+          await widget.gameState.gameHiveStore
+              .deductTimebank(num: minExtendTime);
+          availableTime -= extendTime;
+
+          // my seat
+          final mySeat = gameState.mySeat;
+          if (mySeat != null) {
+            if (!TestService.isTesting) {
+              log('TimeBank: extend time $extendTime');
+              gameContextObj.handActionProtoService.extendTime(
+                  mySeat.player.playerId,
+                  mySeat.serverSeatPos,
+                  gameState.handInfo.handNum,
+                  extendTime);
+            }
+            int total = mySeat.actionTimer.getTotalTime() + extendTime;
+            int remainingTime =
+                mySeat.actionTimer.getProgressTime() + extendTime;
+            mySeat.actionTimer.setTime(total, remainingTime);
+            mySeat.notify();
+          }
+
+          log('Remaining timebank: ${widget.gameState.gameHiveStore.getTimeBankTime()}');
           setState(() {});
           animate = true;
           setState(() {});

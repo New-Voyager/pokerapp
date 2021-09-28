@@ -250,15 +250,14 @@ class HandActionProtoService {
   extendTime(int playerId, int seatNo, int handNum, int time) {
     final messageItem = proto.HandMessageItem(
       messageType: 'EXTEND_ACTION_TIMER',
-      extendTimer: proto.ExtendTimer(
-        seatNo: seatNo,
-        extendBySec: time
-      ),
+      extendTimer: proto.ExtendTimer(seatNo: seatNo, extendBySec: time),
     );
     int msgId = MessageId.incrementAndGet(_gameState.gameCode);
     String messageId = msgId.toString();
+    final playerId64 = $fixnum.Int64(playerId);
     final handMessage = proto.HandMessage(
         gameCode: _gameState.gameCode,
+        playerId: playerId64,
         handNum: handNum,
         seatNo: seatNo,
         messageId: messageId,
@@ -390,6 +389,10 @@ class HandActionProtoService {
         case AppConstants.YOUR_ACTION:
           final handler = PlayerActionHandler(this._context, _gameState, this);
           await handler.handleYourAction(message);
+          return;
+
+        case AppConstants.EXTEND_ACTION_TIMER:
+          await handleExtendTimer(message);
           return;
 
         case AppConstants.FLOP:
@@ -844,6 +847,16 @@ class HandActionProtoService {
           }
         }
       }
+    }
+  }
+
+  Future<void> handleExtendTimer(proto.HandMessageItem message) async {
+    final extendTimer = message.extendTimer;
+    final seat = _gameState.getSeat(extendTimer.seatNo);
+    if (seat != null) {
+      int total = seat.actionTimer.getTotalTime() + extendTimer.extendBySec;
+      seat.setActionTimer(total, remainingTime: extendTimer.remainingSec);
+      seat.notify();
     }
   }
 

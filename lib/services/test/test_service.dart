@@ -31,7 +31,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/host_seat_chang
 
 class TestService {
   static bool get isTesting {
-    return true;
+    return false;
   }
 
   static var _showResult = false;
@@ -182,7 +182,7 @@ class TestService {
         //_currentPlayer = PlayerInfo.fromJson(jsonData["currentPlayer"]);
       }
       // 2 4 6 8 9
-      var maxPlayers = 9;
+      var maxPlayers = 2;
       if (jsonData["gameInfo"] != null) {
         // todo: debug remove: change the max Players in a game here
         _gameInfo = GameInfoModel.fromJson(
@@ -621,6 +621,14 @@ class TestService {
 
     /* wait then run fold */
     //Future.delayed(const Duration(milliseconds: 800)).then((value) => fold());
+  }
+
+  static void setActionTimer() {
+    final gameState = GameState.getState(_context);
+    final seat1 = gameState.getSeat(1);
+    seat1.actionTimer.setTime(30, 30);
+    seat1.player.highlight = true;
+    seat1.notify();
   }
 
 //   static void sendRunItTwiceMessage() {
