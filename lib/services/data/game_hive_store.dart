@@ -47,7 +47,7 @@ if (now - lastHandTime) > 10*60 {
 */
 
 int kDefaultDiamonds = 5;
-int kDefaultTimebankSecs = 20;
+int kDefaultTimebankSecs = 5;
 
 class GameHiveStore {
   Box _gameBox;

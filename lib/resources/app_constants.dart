@@ -29,7 +29,7 @@ class AppConstants {
 
   static const int maxDiamondNumber = 20;
 
-  static const int maxTimeBankSecs = 20;
+  static const int maxTimeBankSecs = 30;
 
   static const Duration diamondUpdateDuration = const Duration(minutes: 1);
 
