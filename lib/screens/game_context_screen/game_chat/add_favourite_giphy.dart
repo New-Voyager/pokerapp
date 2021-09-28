@@ -60,12 +60,14 @@ class AddFavouriteGiphy extends StatelessWidget {
             textAlignVertical: TextAlignVertical.center,
             textAlign: TextAlign.start,
             decoration: InputDecoration(
-              hintText: 'Your preset message',
+              hintText: 'Enter Text',
               hintStyle: TextStyle(
                 color: AppColorsNew.lightGrayTextColor,
               ),
               border: InputBorder.none,
             ),
+            minLines: 2,
+            maxLines: 4,
           ),
         ),
 

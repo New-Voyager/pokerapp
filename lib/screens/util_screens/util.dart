@@ -10,6 +10,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/newmodels/game_model_new.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
@@ -20,7 +21,9 @@ import 'package:pokerapp/services/app/player_service.dart';
 import 'package:pokerapp/services/gql_errors.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/alerts.dart';
+import 'package:pokerapp/widgets/num_diamond_widget.dart';
 import 'package:pokerapp/widgets/round_color_button.dart';
+import 'package:provider/provider.dart';
 
 showAlertDialog(BuildContext context, String title, String message) {
   // set up the button
@@ -503,19 +506,95 @@ showPlayerPopup(context, GlobalKey seatKey, GameState gameState, Seat seat) {
       if (delta == noteIdx) {
         handleNotesPopup(context, seat);
       } else if (delta == animationIdx) {
-        final data = await showDialog(
+        final AppTheme theme = AppTheme.getTheme(context);
+        final Map data = await showGeneralDialog(
           context: context,
-          builder: (context) {
-            return AlertDialog(
-              backgroundColor: Colors.transparent,
-              elevation: 10,
-              contentPadding: EdgeInsets.zero,
-              content: ProfilePopup(
-                seat: gameState.popupSelectedSeat,
+          pageBuilder: (_, __, ___) {
+            //final theme = AppTheme.getTheme(context);
+            return Align(
+              alignment: Alignment.bottomCenter,
+              child: Material(
+                color: Colors.transparent,
+                child: ListenableProvider(
+                    create: (_) {
+                      return ValueNotifier<bool>(false);
+                    },
+                    child: Container(
+                      height: MediaQuery.of(context).size.height * 0.5,
+                      margin: EdgeInsets.all(16),
+                      padding: EdgeInsets.only(
+                          bottom: 24, top: 8, right: 8, left: 8),
+                      // width: MediaQuery.of(context).size.width * 0.70,
+                      // height: 200.ph,
+                      decoration:
+                          AppDecorators.bgRadialGradient(theme).copyWith(
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: theme.accentColor, width: 3),
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // diamond widget
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              IconButton(
+                                onPressed: () => Navigator.of(context).pop(),
+                                icon: Icon(
+                                  Icons.cancel,
+                                  color: theme.accentColor,
+                                ),
+                              ),
+                              Consumer<ValueNotifier<bool>>(
+                                  builder: (_, __, ___) => NumDiamondWidget(
+                                      gameState.gameHiveStore)),
+                            ],
+                          ),
+
+                          // sep
+                          const SizedBox(height: 8.0),
+                          /* hand number */
+
+                          ProfilePopup(),
+                          AppDimensionsNew.getVerticalSizedBox(32),
+
+                          // show REVEAL button / share button
+                          Container(
+                            margin:
+                                const EdgeInsets.symmetric(horizontal: 20.0),
+                            child: Text(
+                                "Note : For each animation, 2 diamonds will be deducted!"),
+                          ),
+                        ],
+                      ),
+                    )),
               ),
             );
           },
+          transitionBuilder: (context, anim1, anim2, child) {
+            return SlideTransition(
+              position: Tween(begin: Offset(0.2, 1), end: Offset(0, 0))
+                  .animate(anim1),
+              child: child,
+            );
+          },
+          barrierColor: Colors.black.withOpacity(0.5),
+          transitionDuration: Duration(milliseconds: 300),
         );
+
+        //  await showModalBottomSheet(
+        //   context: context,
+        //   builder: (context) {
+        //     final theme = AppTheme.getTheme(context);
+        //     return Container(
+        //       decoration: AppDecorators.bgRadialGradient(theme),
+        //       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        //       child: ProfilePopup(
+        //         seat: gameState.popupSelectedSeat,
+        //       ),
+        //     );
+        //   },
+        // );
 
         if (data == null) return;
         // log("SEATNO1:: ${widget.gameState.myState.seatNo}");

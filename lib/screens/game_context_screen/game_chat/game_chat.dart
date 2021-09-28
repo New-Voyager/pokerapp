@@ -136,7 +136,10 @@ class _GameChatState extends State<GameChat> {
 
   Widget _buildChatBubble(ChatMessage message, AppTheme theme) {
     bool isMe = myID == message.fromPlayer;
-
+    String text = message.text;
+    if (text != null) {
+      text = text.replaceFirst('LOCAL:', '');
+    }
     return Align(
       alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
       child: IntrinsicWidth(
@@ -180,7 +183,7 @@ class _GameChatState extends State<GameChat> {
               // message / gif
               message.text != null
                   ? Text(
-                      message.text,
+                      text,
                       style: AppDecorators.getHeadLine4Style(theme: theme),
                     )
                   : AttributedGifWidget(url: message.giphyLink),

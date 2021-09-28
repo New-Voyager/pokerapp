@@ -227,4 +227,62 @@ class Alerts {
       },
     );
   }
+
+  static dynamic showBottomSheetDailog({
+    @required BuildContext context,
+    @required Widget child,
+  }) async {
+    return await showGeneralDialog(
+      context: context,
+      barrierDismissible: true,
+      pageBuilder: (_, __, ___) {
+        final theme = AppTheme.getTheme(context);
+        return _SystemPadding(
+          child: Align(
+            alignment: Alignment.bottomCenter,
+            child: Material(
+              color: Colors.transparent,
+              child: Container(
+                height: MediaQuery.of(context).size.height * 0.5,
+                margin: EdgeInsets.all(16),
+                padding: EdgeInsets.only(bottom: 24, top: 8, right: 8, left: 8),
+                // width: MediaQuery.of(context).size.width * 0.70,
+                // height: 200.ph,
+                decoration: AppDecorators.bgRadialGradient(theme).copyWith(
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: theme.accentColor, width: 3),
+                ),
+                child: child,
+              ),
+            ),
+          ),
+        );
+      },
+      transitionBuilder: (context, anim1, anim2, child) {
+        return SlideTransition(
+          position:
+              Tween(begin: Offset(0.2, 1), end: Offset(0, 0)).animate(anim1),
+          child: child,
+        );
+      },
+      barrierLabel: "",
+      barrierColor: Colors.black.withOpacity(0.5),
+      transitionDuration: Duration(milliseconds: 200),
+    );
+  }
+}
+
+class _SystemPadding extends StatelessWidget {
+  final Widget child;
+
+  _SystemPadding({Key key, this.child}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    var mediaQuery = MediaQuery.of(context);
+    return new AnimatedContainer(
+        padding: mediaQuery.viewInsets,
+        duration: const Duration(milliseconds: 100),
+        child: child);
+  }
 }

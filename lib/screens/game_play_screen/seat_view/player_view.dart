@@ -12,7 +12,9 @@ import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/boar
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
+import 'package:pokerapp/screens/game_play_screen/widgets/nameplate_dialog.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
+import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/widgets/blinking_widget.dart';
 import 'package:pokerapp/widgets/cards/hidden_card_view.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/displaycards.dart';
@@ -159,8 +161,26 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
         return;
       }
 
+      final data = await Alerts.showBottomSheetDailog(
+        child: NamePlateDailog(
+          gameContext: context,
+          gameState: gameState,
+          seatKey: widget.seat.key,
+          seat: widget.seat,
+        ),
+        context: context,
+      );
+
+      if (data != null && data['type'] != null && data['type'] == "animation") {
+        gameState.gameComService.gameMessaging.sendAnimation(
+          gameState.me?.seatNo,
+          widget.seat.serverSeatPos,
+          data['animationID'],
+        );
+        await gameState.gameHiveStore.deductDiamonds();
+      }
       // show popup menu
-      showPlayerPopup(context, widget.seat.key, widget.gameState, widget.seat);
+      // showPlayerPopup(context, widget.seat.key, widget.gameState, widget.seat);
 
       // Enable this for popup buttons
       // gameState.setTappedSeatPos(
