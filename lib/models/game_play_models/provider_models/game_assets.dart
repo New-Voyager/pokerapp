@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -33,7 +34,9 @@ class GameScreenAssets {
   }
 
   Uint8List getHoleCard(int card) {
-    return cardNumberImage[card];
+    Uint8List bytes = cardNumberImage[card];
+    log('Customize: $card: bytes length ${bytes.length}');
+    return bytes;
   }
 
   Uint8List getHoleCardStr(String card) {
@@ -84,6 +87,23 @@ class GameScreenAssets {
       cardFace =
           AssetService.getAssetForId(UserSettingsStore.VALUE_DEFAULT_CARDFACE);
     }
+    try {
+      log('Customize: Loading cards');
+      await loadCards(cardFace);
+      log('Customize: Loading cards successful');
+    } catch(err) {
+      log('Customize: Loading default cards');
+      // fall back to default card
+      cardFace =
+          AssetService.getAssetForId(UserSettingsStore.VALUE_DEFAULT_CARDFACE);
+      await loadCards(cardFace);
+      log('Customize: Loading default cards successful');
+    }
+  }
+
+  void loadCards(Asset cardFace) async {
+    cardStrImage.clear();
+    cardNumberImage.clear();
 
     for (int card in CardConvUtils.cardNumbers.keys) {
       final cardStr = CardConvUtils.getString(card);
@@ -104,10 +124,13 @@ class GameScreenAssets {
             }
           }
         }
+        if (!File(filename).existsSync()) {
+          // switch to default design
+        }
         cardBytes = File(filename).readAsBytesSync();
       }
       cardStrImage[cardStr] = cardBytes;
       cardNumberImage[card] = cardBytes;
-    }
+    }    
   }
 }

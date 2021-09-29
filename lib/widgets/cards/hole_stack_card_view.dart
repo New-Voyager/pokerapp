@@ -159,14 +159,13 @@ class HoleStackCardView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     context.read<BoardAttributesObject>().noOfCards = cards?.length ?? 0;
-
     final GameState gameState = GameState.getState(context);
     final boardAttributes = gameState.getBoardAttributes(context);
 
     final MarkedCards markedCards = gameState.markedCardsState;
     //log('HoleCards: build cards: $cards');
     if (cards == null || cards.isEmpty) {
-      log('HoleCards: build cards are empty. $cards');
+      log('Customize: HoleCards: build cards are empty. $cards');
       return const SizedBox.shrink();
     }
     int mid = (cards.length ~/ 2);

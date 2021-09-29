@@ -146,6 +146,7 @@ class _FooterViewState extends State<FooterView>
     return Consumer<MyState>(
         builder: (BuildContext _, MyState myState, Widget __) {
       final me = gameState.mySeat;
+      log('Customize: _buildMainView');
 
       bool showOptionsButtons = false;
       log('Status: My state is changed.');
@@ -173,7 +174,7 @@ class _FooterViewState extends State<FooterView>
       /* build the HoleCardsViewAndFooterActionView only if me is NOT null */
       return Consumer<MyState>(builder: (_, ___, __) {
         final me = gameState.me;
-        if (me == null) {
+        if (me == null && !gameState.customizationMode) {
           return SizedBox(width: width);
         } else {
           return HoleCardsViewAndFooterActionView(
@@ -182,19 +183,6 @@ class _FooterViewState extends State<FooterView>
           );
         }
       });
-
-      // return ValueListenableBuilder<PlayerModel>(
-      //     valueListenable: mePlayerModelVn,
-      //     builder: (_, me, __) {
-      //       if (me == null) {
-      //         return SizedBox(width: width);
-      //       } else {
-      //         return HoleCardsViewAndFooterActionView(
-      //           playerModel: me,
-      //           isHoleCardsVisibleVn: isHoleCardsVisibleVn,
-      //         );
-      //       }
-      //     });
     });
   }
 
