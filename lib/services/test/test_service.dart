@@ -19,7 +19,6 @@ import 'package:pokerapp/proto/handmessage.pb.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/screens/game_play_screen/pop_ups/seat_change_confirmation_pop_up.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/overlay_notification.dart';
-import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_proto_service.dart';
 import 'package:pokerapp/services/test/hand_messages.dart';
 import 'package:pokerapp/utils/card_helper.dart';
@@ -131,8 +130,8 @@ class TestService {
     final data = jsonDecode('''  {
                   "myInfo": {
                     "id": 1,
-                    "uuid": "185ecfc9c80b5ee6",
-                    "name": "s"
+                    "uuid": "371e8c15-39cb-4bd9-a932-ced7a9dd6aac",
+                    "name": "poker club"
                   },
                   "role": {
                     "isHost": true,
@@ -183,7 +182,7 @@ class TestService {
         //_currentPlayer = PlayerInfo.fromJson(jsonData["currentPlayer"]);
       }
       // 2 4 6 8 9
-      var maxPlayers = 9;
+      var maxPlayers = 2;
       if (jsonData["gameInfo"] != null) {
         // todo: debug remove: change the max Players in a game here
         _gameInfo = GameInfoModel.fromJson(
@@ -384,9 +383,10 @@ class TestService {
           }]
         }''';
     final seatAction = jsonDecode(seatActionJsonStr);
-    // actionState.setAction(1, seatAction);
+    actionState.setAction(1, seatAction);
     gameState.setAction(1, seatAction);
-    gameState.showAction(true);
+    gameState.showCheckFold();
+    //gameState.showAction(true);
 
     actionState.notifyListeners();
   }
@@ -458,11 +458,11 @@ class TestService {
 
     List<int> communityCards = [161, 200, 168, 177, 194];
 
-    final rabbitState = gameState.rabbitState;
-    player.noOfCardsVisible = player.cards.length;
-    gameState.handState = HandState.RESULT;
+    // final rabbitState = gameState.rabbitState;
+    // player.noOfCardsVisible = player.cards.length;
+    // gameState.handState = HandState.RESULT;
     gameState.notifyAllSeats();
-    rabbitState.putResult(HandStatus.FLOP, 1, communityCards, player.cards);
+    // rabbitState.putResult(HandStatus.FLOP, 1, communityCards, player.cards);
     // int r = i % 4;
     // if (r == 1) {
     //   player.cards[0] = 184;
@@ -621,6 +621,14 @@ class TestService {
 
     /* wait then run fold */
     //Future.delayed(const Duration(milliseconds: 800)).then((value) => fold());
+  }
+
+  static void setActionTimer() {
+    final gameState = GameState.getState(_context);
+    final seat1 = gameState.getSeat(1);
+    seat1.actionTimer.setTime(30, 30);
+    seat1.player.highlight = true;
+    seat1.notify();
   }
 
 //   static void sendRunItTwiceMessage() {

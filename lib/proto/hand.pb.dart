@@ -325,6 +325,117 @@ class HandActionLog extends $pb.GeneratedMessage {
   $core.List<SeatsInPots> get seatsPots => $_getList(3);
 }
 
+class ExtendTimer extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      const $core.bool.fromEnvironment('protobuf.omit_message_names')
+          ? ''
+          : 'ExtendTimer',
+      package: const $pb.PackageName(
+          const $core.bool.fromEnvironment('protobuf.omit_message_names')
+              ? ''
+              : 'game'),
+      createEmptyInstance: create)
+    ..a<$core.int>(
+        1,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'seatNo',
+        $pb.PbFieldType.OU3)
+    ..a<$core.int>(
+        2,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'extendBySec',
+        $pb.PbFieldType.OU3)
+    ..a<$core.int>(
+        3,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'remainingSec',
+        $pb.PbFieldType.OU3)
+    ..hasRequiredFields = false;
+
+  ExtendTimer._() : super();
+  factory ExtendTimer({
+    $core.int? seatNo,
+    $core.int? extendBySec,
+    $core.int? remainingSec,
+  }) {
+    final _result = create();
+    if (seatNo != null) {
+      _result.seatNo = seatNo;
+    }
+    if (extendBySec != null) {
+      _result.extendBySec = extendBySec;
+    }
+    if (remainingSec != null) {
+      _result.remainingSec = remainingSec;
+    }
+    return _result;
+  }
+  factory ExtendTimer.fromBuffer($core.List<$core.int> i,
+          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(i, r);
+  factory ExtendTimer.fromJson($core.String i,
+          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(i, r);
+  @$core.Deprecated('Using this can add significant overhead to your binary. '
+      'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+      'Will be removed in next major version')
+  ExtendTimer clone() => ExtendTimer()..mergeFromMessage(this);
+  @$core.Deprecated('Using this can add significant overhead to your binary. '
+      'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+      'Will be removed in next major version')
+  ExtendTimer copyWith(void Function(ExtendTimer) updates) =>
+      super.copyWith((message) => updates(message as ExtendTimer))
+          as ExtendTimer; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static ExtendTimer create() => ExtendTimer._();
+  ExtendTimer createEmptyInstance() => create();
+  static $pb.PbList<ExtendTimer> createRepeated() => $pb.PbList<ExtendTimer>();
+  @$core.pragma('dart2js:noInline')
+  static ExtendTimer getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<ExtendTimer>(create);
+  static ExtendTimer? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.int get seatNo => $_getIZ(0);
+  @$pb.TagNumber(1)
+  set seatNo($core.int v) {
+    $_setUnsignedInt32(0, v);
+  }
+
+  @$pb.TagNumber(1)
+  $core.bool hasSeatNo() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearSeatNo() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.int get extendBySec => $_getIZ(1);
+  @$pb.TagNumber(2)
+  set extendBySec($core.int v) {
+    $_setUnsignedInt32(1, v);
+  }
+
+  @$pb.TagNumber(2)
+  $core.bool hasExtendBySec() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearExtendBySec() => clearField(2);
+
+  @$pb.TagNumber(3)
+  $core.int get remainingSec => $_getIZ(2);
+  @$pb.TagNumber(3)
+  set remainingSec($core.int v) {
+    $_setUnsignedInt32(2, v);
+  }
+
+  @$pb.TagNumber(3)
+  $core.bool hasRemainingSec() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearRemainingSec() => clearField(3);
+}
+
 class BetRaiseOption extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(
       const $core.bool.fromEnvironment('protobuf.omit_message_names')
@@ -873,6 +984,12 @@ class PlayerInSeatState extends $pb.GeneratedMessage {
         const $core.bool.fromEnvironment('protobuf.omit_field_names')
             ? ''
             : 'muckLosingHand')
+    ..a<$core.int>(
+        18,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'buttonStraddleBet',
+        $pb.PbFieldType.OU3)
     ..hasRequiredFields = false;
 
   PlayerInSeatState._() : super();
@@ -894,6 +1011,7 @@ class PlayerInSeatState extends $pb.GeneratedMessage {
     $core.bool? autoStraddle,
     $core.bool? buttonStraddle,
     $core.bool? muckLosingHand,
+    $core.int? buttonStraddleBet,
   }) {
     final _result = create();
     if (playerId != null) {
@@ -946,6 +1064,9 @@ class PlayerInSeatState extends $pb.GeneratedMessage {
     }
     if (muckLosingHand != null) {
       _result.muckLosingHand = muckLosingHand;
+    }
+    if (buttonStraddleBet != null) {
+      _result.buttonStraddleBet = buttonStraddleBet;
     }
     return _result;
   }
@@ -1179,6 +1300,18 @@ class PlayerInSeatState extends $pb.GeneratedMessage {
   $core.bool hasMuckLosingHand() => $_has(16);
   @$pb.TagNumber(17)
   void clearMuckLosingHand() => clearField(17);
+
+  @$pb.TagNumber(18)
+  $core.int get buttonStraddleBet => $_getIZ(17);
+  @$pb.TagNumber(18)
+  set buttonStraddleBet($core.int v) {
+    $_setUnsignedInt32(17, v);
+  }
+
+  @$pb.TagNumber(18)
+  $core.bool hasButtonStraddleBet() => $_has(17);
+  @$pb.TagNumber(18)
+  void clearButtonStraddleBet() => clearField(18);
 }
 
 class PlayerBalance extends $pb.GeneratedMessage {

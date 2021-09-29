@@ -623,7 +623,8 @@
     },
     "profilePopup": {
         "tapToSendAnimation": "Tap to send Animation",
-        "confirm": "Confirm"
+        "confirm": "Confirm",
+        "note": "2 diamonds per animation!"
     },
     "seatChangeConfirmWidget": {
         "applySeatChanges": "Apply Seat Changes?"
@@ -737,7 +738,24 @@
         "enterTextHere": "Enter text here",
         "cancel": "Cancel",
         "save": "Save",
-        "notesSaved": "Notes saved",
+        "notesSaved": "Notes saved",   
+             "availableDiamonds" : "Available diamonds",
+
         "playerWillBeRemovedAfterThisHand": "Player will be removed after this hand"
+    },
+    "gameInfoScreen": {
+        "code": "Code",
+        "runningTime": "Running Time",
+        "handsDealt": "Hands Dealt",
+        "buyIn": "Buyin",
+        "runitTwiceAllowed": "Run it twice allowed",
+        "bombPotEnabled": "Bomb Pot enabled",
+        "bombPotInterval": "Bomb Pot Interval",
+        "doubleBoardBombPot": "Double Board Bomb Pot",
+        "utgStraddleAllowed": "UTG Straddle Allowed",
+        "animations": "Animations",
+        "chatEnabled": "Chat Enabled",
+        "showResult": "Show result"
     }
+  
 }

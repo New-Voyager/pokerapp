@@ -123,6 +123,19 @@ const HandActionLog$json = const {
 /// Descriptor for `HandActionLog`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List handActionLogDescriptor = $convert.base64Decode(
     'Cg1IYW5kQWN0aW9uTG9nEhsKCXBvdF9zdGFydBgBIAEoAlIIcG90U3RhcnQSEgoEcG90cxgCIAMoAlIEcG90cxIqCgdhY3Rpb25zGAMgAygLMhAuZ2FtZS5IYW5kQWN0aW9uUgdhY3Rpb25zEjAKCnNlYXRzX3BvdHMYBCADKAsyES5nYW1lLlNlYXRzSW5Qb3RzUglzZWF0c1BvdHM=');
+@$core.Deprecated('Use extendTimerDescriptor instead')
+const ExtendTimer$json = const {
+  '1': 'ExtendTimer',
+  '2': const [
+    const {'1': 'seat_no', '3': 1, '4': 1, '5': 13, '10': 'seatNo'},
+    const {'1': 'extend_by_sec', '3': 2, '4': 1, '5': 13, '10': 'extendBySec'},
+    const {'1': 'remaining_sec', '3': 3, '4': 1, '5': 13, '10': 'remainingSec'},
+  ],
+};
+
+/// Descriptor for `ExtendTimer`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List extendTimerDescriptor = $convert.base64Decode(
+    'CgtFeHRlbmRUaW1lchIXCgdzZWF0X25vGAEgASgNUgZzZWF0Tm8SIgoNZXh0ZW5kX2J5X3NlYxgCIAEoDVILZXh0ZW5kQnlTZWMSIwoNcmVtYWluaW5nX3NlYxgDIAEoDVIMcmVtYWluaW5nU2Vj');
 @$core.Deprecated('Use betRaiseOptionDescriptor instead')
 const BetRaiseOption$json = const {
   '1': 'BetRaiseOption',
@@ -262,12 +275,19 @@ const PlayerInSeatState$json = const {
       '5': 8,
       '10': 'muckLosingHand'
     },
+    const {
+      '1': 'button_straddle_bet',
+      '3': 18,
+      '4': 1,
+      '5': 13,
+      '10': 'buttonStraddleBet'
+    },
   ],
 };
 
 /// Descriptor for `PlayerInSeatState`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List playerInSeatStateDescriptor = $convert.base64Decode(
-    'ChFQbGF5ZXJJblNlYXRTdGF0ZRIbCglwbGF5ZXJfaWQYASABKARSCHBsYXllcklkEhIKBG5hbWUYAiABKAlSBG5hbWUSKgoGc3RhdHVzGAMgASgOMhIuZ2FtZS5QbGF5ZXJTdGF0dXNSBnN0YXR1cxIUCgVzdGFjaxgEIAEoAlIFc3RhY2sSJgoFcm91bmQYBSABKA4yEC5nYW1lLkhhbmRTdGF0dXNSBXJvdW5kEiYKDnBsYXllclJlY2VpdmVkGAYgASgCUg5wbGF5ZXJSZWNlaXZlZBIlCg9idXlfaW5fZXhwX3RpbWUYByABKAlSDGJ1eUluRXhwVGltZRIkCg5icmVha19leHBfdGltZRgIIAEoCVIMYnJlYWtFeHBUaW1lEhYKBmluaGFuZBgJIAEoCFIGaW5oYW5kEhsKCW9wZW5fc2VhdBgKIAEoCFIIb3BlblNlYXQSIQoMcG9zdGVkX2JsaW5kGAsgASgIUgtwb3N0ZWRCbGluZBIXCgdzZWF0X25vGAwgASgNUgZzZWF0Tm8SIAoMcnVuX2l0X3R3aWNlGA0gASgIUgpydW5JdFR3aWNlEiEKDG1pc3NlZF9ibGluZBgOIAEoCFILbWlzc2VkQmxpbmQSIwoNYXV0b19zdHJhZGRsZRgPIAEoCFIMYXV0b1N0cmFkZGxlEicKD2J1dHRvbl9zdHJhZGRsZRgQIAEoCFIOYnV0dG9uU3RyYWRkbGUSKAoQbXVja19sb3NpbmdfaGFuZBgRIAEoCFIObXVja0xvc2luZ0hhbmQ=');
+    'ChFQbGF5ZXJJblNlYXRTdGF0ZRIbCglwbGF5ZXJfaWQYASABKARSCHBsYXllcklkEhIKBG5hbWUYAiABKAlSBG5hbWUSKgoGc3RhdHVzGAMgASgOMhIuZ2FtZS5QbGF5ZXJTdGF0dXNSBnN0YXR1cxIUCgVzdGFjaxgEIAEoAlIFc3RhY2sSJgoFcm91bmQYBSABKA4yEC5nYW1lLkhhbmRTdGF0dXNSBXJvdW5kEiYKDnBsYXllclJlY2VpdmVkGAYgASgCUg5wbGF5ZXJSZWNlaXZlZBIlCg9idXlfaW5fZXhwX3RpbWUYByABKAlSDGJ1eUluRXhwVGltZRIkCg5icmVha19leHBfdGltZRgIIAEoCVIMYnJlYWtFeHBUaW1lEhYKBmluaGFuZBgJIAEoCFIGaW5oYW5kEhsKCW9wZW5fc2VhdBgKIAEoCFIIb3BlblNlYXQSIQoMcG9zdGVkX2JsaW5kGAsgASgIUgtwb3N0ZWRCbGluZBIXCgdzZWF0X25vGAwgASgNUgZzZWF0Tm8SIAoMcnVuX2l0X3R3aWNlGA0gASgIUgpydW5JdFR3aWNlEiEKDG1pc3NlZF9ibGluZBgOIAEoCFILbWlzc2VkQmxpbmQSIwoNYXV0b19zdHJhZGRsZRgPIAEoCFIMYXV0b1N0cmFkZGxlEicKD2J1dHRvbl9zdHJhZGRsZRgQIAEoCFIOYnV0dG9uU3RyYWRkbGUSKAoQbXVja19sb3NpbmdfaGFuZBgRIAEoCFIObXVja0xvc2luZ0hhbmQSLgoTYnV0dG9uX3N0cmFkZGxlX2JldBgSIAEoDVIRYnV0dG9uU3RyYWRkbGVCZXQ=');
 @$core.Deprecated('Use playerBalanceDescriptor instead')
 const PlayerBalance$json = const {
   '1': 'PlayerBalance',

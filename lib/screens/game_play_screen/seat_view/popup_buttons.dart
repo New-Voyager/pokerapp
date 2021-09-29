@@ -272,16 +272,11 @@ class _PopupWidget extends State<PopupWidget> with TickerProviderStateMixin {
             log('user selected NOTE option');
             break;
           case 1:
-            final data = await showDialog(
+            final data = await showModalBottomSheet(
               context: context,
               builder: (context) {
-                return AlertDialog(
-                  backgroundColor: Colors.transparent,
-                  elevation: 10,
-                  contentPadding: EdgeInsets.zero,
-                  content: ProfilePopup(
-                    seat: widget.gameState.popupSelectedSeat,
-                  ),
+                return ProfilePopup(
+                  seat: widget.gameState.popupSelectedSeat,
                 );
               },
             );

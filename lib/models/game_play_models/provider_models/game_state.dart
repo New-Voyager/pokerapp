@@ -237,6 +237,14 @@ class GameState {
     );
 
     this._handInfo = HandInfoState();
+    this._handInfo.update(
+          handNum: gameInfo.handNum,
+          gameType: gameTypeFromStr(gameInfo.gameType),
+          smallBlind: gameInfo.smallBlind.toDouble(),
+          bigBlind: gameInfo.bigBlind.toDouble(),
+          notify: false,
+        );
+
     this._handInfoProvider =
         ListenableProvider<HandInfoState>(create: (_) => this._handInfo);
     this._tableStateProvider =
@@ -388,7 +396,7 @@ class GameState {
       code = _gameInfo.gameCode;
     }
     gameHiveStore = GameHiveStore();
-    await gameHiveStore.open(code);
+    await gameHiveStore.initialize(code);
 
     if (!(this.customizationMode ?? false)) {
       if (!this.replayMode) {
@@ -963,6 +971,10 @@ class GameState {
     _actionState.setAction(seatNo, seatAction);
   }
 
+  void showCheckFold() {
+    _actionState.showCheckFold = true;
+  }
+
   void setActionProto(int seatNo, proto.NextSeatAction seatAction) {
     _actionState.setActionProto(seatNo, seatAction);
   }
@@ -1260,7 +1272,8 @@ class HandInfoState extends ChangeNotifier {
       double bigBlind,
       bool bombPot,
       bool doubleBoard,
-      double bombPotBet}) {
+      double bombPotBet,
+      bool notify = true}) {
     if (noCards != null) this._noCards = noCards;
     if (gameType != null) this._gameType = gameType;
     if (handNum != null) this._handNum = handNum;
@@ -1272,7 +1285,9 @@ class HandInfoState extends ChangeNotifier {
       this._doubleBoard = doubleBoard;
       this._bombPotBet = bombPotBet;
     }
-    this.notifyListeners();
+    if (notify) {
+      this.notifyListeners();
+    }
   }
 
   void notify() {
@@ -1287,14 +1302,40 @@ class HandInfoState extends ChangeNotifier {
 class ActionState extends ChangeNotifier {
   PlayerAction _currentAction;
   bool _showAction = false;
+  bool _showCheckFold = false;
+  bool _checkFoldSelected = false;
+
+  void reset() {
+    _showAction = false;
+    _showCheckFold = false;
+    _checkFoldSelected = false;
+  }
 
   set show(bool v) {
+    _showCheckFold = false;
     _showAction = v;
     this.notifyListeners();
   }
 
+  set showCheckFold(bool v) {
+    _showCheckFold = true;
+    _showAction = false;
+    this.notifyListeners();
+  }
+
+  set checkFoldSelected(bool v) {
+    _checkFoldSelected = v;
+    this.notifyListeners();
+  }
+
+  bool get checkFoldSelected => _checkFoldSelected;
+
   bool get show {
     return this._showAction;
+  }
+
+  bool get showCheckFold {
+    return this._showCheckFold;
   }
 
   void setAction(int seatNo, var seatAction) {

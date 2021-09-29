@@ -29,7 +29,11 @@ class AppConstants {
 
   static const int maxDiamondNumber = 20;
 
+  static const int maxTimeBankSecs = 30;
+
   static const Duration diamondUpdateDuration = const Duration(minutes: 1);
+
+  static const Duration timebankUpdateDuration = const Duration(minutes: 1);
 
   static const Duration cardShufflingTotalWaitDuration = const Duration(
     milliseconds: 800,
@@ -207,6 +211,7 @@ class AppConstants {
   static const String PLAYER_CONNECTIVITY_LOST = 'PLAYER_CONNECTIVITY_LOST';
   static const String PLAYER_CONNECTIVITY_RESTORED =
       'PLAYER_CONNECTIVITY_RESTORED';
+  static const String EXTEND_ACTION_TIMER = 'EXTEND_ACTION_TIMER';
 
   static const String PREFLOP = 'PREFLOP';
   static const String FLOP = 'FLOP';

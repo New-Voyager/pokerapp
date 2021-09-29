@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/animation_assets.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
@@ -31,10 +33,14 @@ class _ProfilePopupState extends State<ProfilePopup> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = AppTheme.getTheme(context);
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(_appScreenText['tapToSendAnimation']),
+        Text(_appScreenText['tapToSendAnimation'],
+            style: AppDecorators.getSubtitle2Style(theme: theme)),
+        Text(_appScreenText['note'],
+            style: AppDecorators.getSubtitle1Style(theme: theme)),
         AppDimensionsNew.getVerticalSizedBox(8),
         getStickers(),
       ],
@@ -119,6 +125,7 @@ class _ProfilePopupState extends State<ProfilePopup> {
                     Navigator.pop(
                       context,
                       {
+                        "type": "animation",
                         "isMicOn": _isMicOn,
                         "isChatOn": _isChatOn,
                         "animationID": animationObject.id,

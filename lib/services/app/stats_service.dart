@@ -1,6 +1,6 @@
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:pokerapp/main.dart';
-import 'package:pokerapp/models/club_stats_model.dart';
+import 'package:pokerapp/models/highrank_stats_model.dart';
 import 'package:pokerapp/models/hand_stats_model.dart';
 import 'package:pokerapp/models/player_performance_model.dart';
 
@@ -87,7 +87,6 @@ query () {
   """;
 
   static final String clubStatsQuery = """
-
 query clubStats(\$clubCode: String!) {
   holdem: clubStats(gameType: HOLDEM, clubCode: \$clubCode) {
     straightAFlush
@@ -117,6 +116,8 @@ query clubStats(\$clubCode: String!) {
 
     totalHands
     totalGames
+    totalPlayersInHand
+    totalPlayersInShowdown    
   }
   plo: clubStats(gameType: PLO, clubCode: \$clubCode) {
     straightAFlush
@@ -146,9 +147,10 @@ query clubStats(\$clubCode: String!) {
 
     totalHands
     totalGames
-
+    totalPlayersInHand
+    totalPlayersInShowdown    
   }
-    fivecard_plo: clubStats(gameType: FIVE_CARD_PLO, clubCode: \$clubCode) {
+  fivecard_plo: clubStats(gameType: FIVE_CARD_PLO, clubCode: \$clubCode) {
     straightAFlush
     straightKFlush
     straightQFlush
@@ -176,6 +178,107 @@ query clubStats(\$clubCode: String!) {
 
     totalHands
     totalGames
+    totalPlayersInHand
+    totalPlayersInShowdown    
+  }
+}
+
+  """;
+
+  static final String systemStatsQuery = """
+query systemStats {
+  holdem: systemStats(gameType: HOLDEM) {
+    straightAFlush
+    straightKFlush
+    straightQFlush
+    straightJFlush
+    straightTFlush
+    straight9Flush
+    straight8Flush
+    straight7Flush
+    straight6Flush
+    straight5Flush
+
+    fourAAAA
+    fourKKKK
+    fourQQQQ
+    fourJJJJ
+    fourTTTT
+    four9999
+    four8888
+    four7777
+    four6666
+    four5555
+    four4444
+    four3333
+    four2222
+
+    totalHands
+    totalGames
+    totalPlayersInHand
+    totalPlayersInShowdown    
+  }
+  plo: systemStats(gameType: PLO) {
+    straightAFlush
+    straightKFlush
+    straightQFlush
+    straightJFlush
+    straightTFlush
+    straight9Flush
+    straight8Flush
+    straight7Flush
+    straight6Flush
+    straight5Flush
+
+    fourAAAA
+    fourKKKK
+    fourQQQQ
+    fourJJJJ
+    fourTTTT
+    four9999
+    four8888
+    four7777
+    four6666
+    four5555
+    four4444
+    four3333
+    four2222
+
+    totalHands
+    totalGames
+    totalPlayersInHand
+    totalPlayersInShowdown    
+  }
+  fivecard_plo: systemStats(gameType: FIVE_CARD_PLO) {
+    straightAFlush
+    straightKFlush
+    straightQFlush
+    straightJFlush
+    straightTFlush
+    straight9Flush
+    straight8Flush
+    straight7Flush
+    straight6Flush
+    straight5Flush
+
+    fourAAAA
+    fourKKKK
+    fourQQQQ
+    fourJJJJ
+    fourTTTT
+    four9999
+    four8888
+    four7777
+    four6666
+    four5555
+    four4444
+    four3333
+    four2222
+
+    totalHands
+    totalGames
+    totalPlayersInHand
+    totalPlayersInShowdown    
   }
 }
 
@@ -223,7 +326,7 @@ query clubStats(\$clubCode: String!) {
     );
   }
 
-  static Future<ClubStatsModel> getClubStats(String clubCode) async {
+  static Future<HighRankStatsModel> getClubStats(String clubCode) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     Map<String, dynamic> variables = {
       "clubCode": clubCode,
@@ -237,8 +340,23 @@ query clubStats(\$clubCode: String!) {
       }
     }
 
-    final clubStats = ClubStatsModel.fromJson(result.data);
+    final clubStats = HighRankStatsModel.fromJson(result.data);
     return clubStats;
+  }
+
+  static Future<HighRankStatsModel> getSystemStats() async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    QueryResult result =
+        await _client.query(QueryOptions(document: gql(systemStatsQuery)));
+
+    if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
+
+    final systemStats = HighRankStatsModel.fromJson(result.data);
+    return systemStats;
   }
 
   static Future<PlayerPerformanceList> getPlayerRecentPerformance() async {
