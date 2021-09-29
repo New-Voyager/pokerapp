@@ -1077,6 +1077,11 @@ class GameState {
   }
 
   List<int> getHoleCards() {
+    if (this.customizationMode) {
+      // we are in customization mode
+      return [177, 168];
+    }
+
     final player = this.me;
     if (player == null) {
       return [];
