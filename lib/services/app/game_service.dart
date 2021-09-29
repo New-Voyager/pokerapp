@@ -194,7 +194,7 @@ query mySettings(\$gameCode:String!){
         text
         createdAt
         expiresAt
-        level
+        
       }
     } 
   """;
@@ -218,9 +218,9 @@ query mySettings(\$gameCode:String!){
       if (result.data['ret'] != null) {
         //log(result.data['ret'][0]);
         list = result.data['ret']
-        .map<AnnouncementModel>(
-            (var announce) => AnnouncementModel.fromJson(announce))
-        .toList();
+            .map<AnnouncementModel>(
+                (var announce) => AnnouncementModel.fromJson(announce))
+            .toList();
       }
       return list;
     } catch (e) {

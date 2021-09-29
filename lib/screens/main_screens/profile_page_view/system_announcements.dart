@@ -60,22 +60,43 @@ class _SystemAnnouncementsState extends State<SystemAnnouncements> {
                         AnnouncementModel model = announcements[index];
                         Widget icon = Icon(Icons.info_outline);
                         if (model.level == 'IMPORTANT') {
-                            icon = SvgPicture.asset(
-                              "assets/icons/critical.svg",
-                                color: theme.accentColor,
-                            );
+                          icon = SvgPicture.asset(
+                            "assets/icons/critical.svg",
+                            color: theme.accentColor,
+                          );
                         }
                         return Container(
                           decoration:
                               AppDecorators.tileDecorationWithoutBorder(theme),
                           margin:
                               EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                          child: ListTile(
-                            leading: icon,
-                            title: Text("${model.text}"),
-                            subtitle: Text(
-                                "${DateFormat("dd-MMM-yyyy").format((DateTime.parse(model.createdAt.toString())))}"),
-                          ),
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                          child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      padding: EdgeInsets.all(8),
+                                      child: icon,
+                                    ),
+                                    Expanded(
+                                      child: Text("${model.text}",
+                                          style:
+                                              AppDecorators.getHeadLine4Style(
+                                                  theme: theme)),
+                                    ),
+                                  ],
+                                ),
+                                Text(
+                                  "${DateFormat("dd-MMM-yyyy").format((DateTime.parse(model.createdAt.toString())))}",
+                                  textAlign: TextAlign.end,
+                                  style: AppDecorators.getSubtitle1Style(
+                                      theme: theme),
+                                )
+                              ]),
                         );
                       },
                     ),
