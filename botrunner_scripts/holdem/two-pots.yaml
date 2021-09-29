@@ -37,8 +37,8 @@ tester:
 auto-play: false
 
 bot-config:
-  min-action-pause-time: 500
-  max-action-pause-time: 1000
+  min-action-delay: 500
+  max-action-delay: 1000
 
 # deal the following hands in the table
 hands:
