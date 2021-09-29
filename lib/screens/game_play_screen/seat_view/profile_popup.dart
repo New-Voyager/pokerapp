@@ -125,7 +125,7 @@ class _ProfilePopupState extends State<ProfilePopup> {
                     Navigator.pop(
                       context,
                       {
-                        "type" : "animation",
+                        "type": "animation",
                         "isMicOn": _isMicOn,
                         "isChatOn": _isChatOn,
                         "animationID": animationObject.id,

@@ -173,9 +173,14 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
     final playerCards = gameState.getHoleCards();
     final boardAttributes = gameState.getBoardAttributes(context);
     log('Holecards: rebuilding. Hole cards: ${playerCards}');
+    bool playerFolded = false;
+    if (playerModel != null) {
+      playerFolded = playerModel.playerFolded;
+    }
 
     Widget cardsWidget = cards(
-      playerFolded: playerModel.playerFolded,
+      gameState: gameState,
+      playerFolded: playerFolded,
       cardsInt: playerCards,
       straddlePrompt: gameState.straddlePrompt,
     );
@@ -235,6 +240,7 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
   }
 
   Widget cards({
+    GameState gameState,
     List<int> cardsInt,
     @required playerFolded,
     bool straddlePrompt,
@@ -252,12 +258,18 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
     return ValueListenableBuilder<bool>(
       valueListenable: isHoleCardsVisibleVn,
       builder: (_, isCardVisible, __) {
-        //
-        log('HoleCards: isCardVisible: $isCardVisible cards: $cards cardsInt: $cardsInt');
+
+        bool cardVisible = isCardVisible;
+        if (gameState.customizationMode) {
+          cardVisible = true;
+        }
+        
+        
+        log('Customize: HoleCards: isCardVisible: $isCardVisible cards: $cards cardsInt: $cardsInt');
         return HoleStackCardView(
           cards: cards,
           deactivated: playerFolded ?? false,
-          isCardVisible: straddlePrompt ? false : isCardVisible,
+          isCardVisible: straddlePrompt ? false : cardVisible,
         );
       },
     );

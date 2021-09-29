@@ -237,6 +237,14 @@ class GameState {
     );
 
     this._handInfo = HandInfoState();
+    this._handInfo.update(
+          handNum: gameInfo.handNum,
+          gameType: gameTypeFromStr(gameInfo.gameType),
+          smallBlind: gameInfo.smallBlind.toDouble(),
+          bigBlind: gameInfo.bigBlind.toDouble(),
+          notify: false,
+        );
+
     this._handInfoProvider =
         ListenableProvider<HandInfoState>(create: (_) => this._handInfo);
     this._tableStateProvider =
@@ -1069,6 +1077,11 @@ class GameState {
   }
 
   List<int> getHoleCards() {
+    if (this.customizationMode) {
+      // we are in customization mode
+      return [177, 168];
+    }
+
     final player = this.me;
     if (player == null) {
       return [];
@@ -1264,7 +1277,8 @@ class HandInfoState extends ChangeNotifier {
       double bigBlind,
       bool bombPot,
       bool doubleBoard,
-      double bombPotBet}) {
+      double bombPotBet,
+      bool notify = true}) {
     if (noCards != null) this._noCards = noCards;
     if (gameType != null) this._gameType = gameType;
     if (handNum != null) this._handNum = handNum;
@@ -1276,7 +1290,9 @@ class HandInfoState extends ChangeNotifier {
       this._doubleBoard = doubleBoard;
       this._bombPotBet = bombPotBet;
     }
-    this.notifyListeners();
+    if (notify) {
+      this.notifyListeners();
+    }
   }
 
   void notify() {

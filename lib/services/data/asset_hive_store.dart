@@ -128,7 +128,35 @@ class AssetHiveStore {
         await _assetBox.put(asset.id, asset.toJson());
       }
     }
+
+    // remove assets that are removed
+    final assetsInStore = await getAll();
+    final assetIds = assetsInStore.map((e) => e.id);
+    final assetsIdsInServer = assets.map((e) => e.id).toSet();
+    for (final assetId in assetIds) {
+      if (!assetsIdsInServer.contains(assetId)) {
+        log('$assetId is not found in the server. Deleting the assets');
+        // asset is not in the server
+        // remove this asset locally
+        removeAsset(assetId);
+      }
+    }
     return;
+  }
+
+  void removeAsset(String assetId) {
+    final asset = get(assetId);
+    if (asset != null) {
+      try {
+        if (Directory(asset.downloadDir).existsSync()) {
+          Directory(asset.downloadDir).deleteSync(recursive: true);
+        }
+        if (File(asset.downloadedPath).existsSync()) {
+          File(asset.downloadedPath).deleteSync();
+        }
+      } catch(err) {}
+      _assetBox.delete(assetId);
+    }
   }
 
   Future<List<Asset>> getAll() async {

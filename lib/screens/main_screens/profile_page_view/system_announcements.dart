@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:pokerapp/models/announcement_model.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
@@ -57,13 +58,20 @@ class _SystemAnnouncementsState extends State<SystemAnnouncements> {
                       physics: ClampingScrollPhysics(),
                       itemBuilder: (context, index) {
                         AnnouncementModel model = announcements[index];
+                        Widget icon = Icon(Icons.info_outline);
+                        if (model.level == 'IMPORTANT') {
+                            icon = SvgPicture.asset(
+                              "assets/icons/critical.svg",
+                                color: theme.accentColor,
+                            );
+                        }
                         return Container(
                           decoration:
                               AppDecorators.tileDecorationWithoutBorder(theme),
                           margin:
                               EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                           child: ListTile(
-                            leading: Icon(Icons.announcement),
+                            leading: icon,
                             title: Text("${model.text}"),
                             subtitle: Text(
                                 "${DateFormat("dd-MMM-yyyy").format((DateTime.parse(model.createdAt.toString())))}"),

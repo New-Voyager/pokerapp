@@ -446,7 +446,7 @@
         "UPDATINGDETAILS": "Updating details...",
         "USERDETAILSUPDATED": "User details updated!",
         "FAILEDTOUPDATEUSERDETAILS": "Failed to update user details!",
-        "SYSTEMANNOUNCEMENT": "System Announcements"
+        "SYSTEMANNOUNCEMENT": "Announcements"
     },
     "performanceView": {
         "STATISTICS": "Statistics",
@@ -744,6 +744,20 @@
         "playerWillBeRemovedAfterThisHand": "Player will be removed after this hand"
     },
     "systemAnnouncement": {
-        "title": "System Announcement"
+        "title": "Announcements"
+    },
+    "gameInfoScreen": {
+        "code": "Code",
+        "runningTime": "Running Time",
+        "handsDealt": "Hands Dealt",
+        "buyIn": "Buyin",
+        "runitTwiceAllowed": "Run it twice allowed",
+        "bombPotEnabled": "Bomb Pot enabled",
+        "bombPotInterval": "Bomb Pot Interval",
+        "doubleBoardBombPot": "Double Board Bomb Pot",
+        "utgStraddleAllowed": "UTG Straddle Allowed",
+        "animations": "Animations",
+        "chatEnabled": "Chat Enabled",
+        "showResult": "Show result"
     }
 }

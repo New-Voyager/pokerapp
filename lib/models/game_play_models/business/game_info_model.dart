@@ -43,6 +43,7 @@ class GameInfoModel {
   bool waitlistAllowed = false;
   bool ipCheck = false;
   bool gpsCheck = false;
+  int handNum = 0;
   String sfuUrl = 'http://67.205.136.63:7000';
 
   // nats channels
@@ -120,6 +121,7 @@ class GameInfoModel {
     this.waitlistAllowed = data['waitlistAllowed'] ?? false;
     this.ipCheck = data['ipCheck'] ?? false;
     this.gpsCheck = data['gpsCheck'] ?? false;
+    this.handNum = data['handNum'] ?? 0;
 
     this.isHost = true;
     if (data['isHost'] != null) {
@@ -184,6 +186,7 @@ class GameInfoModel {
       botGame
       ipCheck
       gpsCheck
+      handNum
 
       sessionTime
       runningTime

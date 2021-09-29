@@ -4,13 +4,14 @@
 
 import 'dart:convert';
 
-ClubStatsModel clubStatsModelFromJson(String str) =>
-    ClubStatsModel.fromJson(json.decode(str));
+HighRankStatsModel highRankStatsModelFromJson(String str) =>
+    HighRankStatsModel.fromJson(json.decode(str));
 
-String clubStatsModelToJson(ClubStatsModel data) => json.encode(data.toJson());
+String highRankStatsModelToJson(HighRankStatsModel data) =>
+    json.encode(data.toJson());
 
-class ClubStatsModel {
-  ClubStatsModel({
+class HighRankStatsModel {
+  HighRankStatsModel({
     this.holdem,
     this.plo,
     this.fivecardPlo,
@@ -20,7 +21,7 @@ class ClubStatsModel {
   Map<String, int> plo;
   Map<String, int> fivecardPlo;
 
-  factory ClubStatsModel.fromJson(Map<String, dynamic> json) {
+  factory HighRankStatsModel.fromJson(Map<String, dynamic> json) {
     final holdem = Map<String, int>();
     for (final key in json["holdem"].keys) {
       if (key == '__typename') {
@@ -45,7 +46,7 @@ class ClubStatsModel {
       fivecardPlo[key] = json["fivecard_plo"][key];
     }
 
-    return ClubStatsModel(
+    return HighRankStatsModel(
       holdem: holdem,
       plo: plo,
       fivecardPlo: fivecardPlo,

@@ -332,7 +332,7 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                         text: _appScreenText[
                                             'SYSTEMANNOUNCEMENT'],
                                         imagePath:
-                                            AppAssetsNew.customizeImagePath,
+                                            AppAssetsNew.announcementImagePath,
                                         index: 2,
                                         onTapFunction: () {
                                           Navigator.of(context).pushNamed(
