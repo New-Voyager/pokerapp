@@ -329,6 +329,22 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                         },
                                       ),
                                       ListTileItem(
+                                        text: _appScreenText[
+                                            'SYSTEMANNOUNCEMENT'],
+                                        imagePath:
+                                            AppAssetsNew.customizeImagePath,
+                                        index: 2,
+                                        onTapFunction: () {
+                                          Navigator.of(context).pushNamed(
+                                            Routes.system_announcements,
+                                          );
+
+                                          // Navigator.of(context).pushNamed(
+                                          //   Routes.customize,
+                                          // );
+                                        },
+                                      ),
+                                      ListTileItem(
                                         text: _appScreenText['HELP'],
                                         imagePath: AppAssetsNew
                                             .bookmarkedHandsImagePath,

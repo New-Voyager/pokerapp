@@ -23,7 +23,7 @@ class CustomAppBar extends AppBar {
           key: key,
           backgroundColor: Colors.transparent,
           elevation: 0,
-          leadingWidth: 100.pw,
+          // leadingWidth: 50.pw,
           leading:
               (showBackButton ?? true) ? BackArrowWidget() : SizedBox.shrink(),
           title: Column(
