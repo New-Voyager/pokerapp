@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:after_layout/after_layout.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:pokerapp/models/game_play_models/business/game_chat_notfi_state.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
@@ -34,16 +35,12 @@ import 'package:pokerapp/services/audio/audio_service.dart';
 import 'package:pokerapp/services/data/game_log_store.dart';
 import 'package:pokerapp/services/encryption/encryption_service.dart';
 import 'package:pokerapp/services/game_play/action_services/game_action_service/util_action_services.dart';
-import 'package:pokerapp/services/game_play/action_services/game_update_service.dart';
-import 'package:pokerapp/services/game_play/action_services/hand_action_proto_service.dart';
-import 'package:pokerapp/services/game_play/action_services/hand_player_text_service.dart';
 import 'package:pokerapp/services/game_play/customization_service.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/services/game_play/graphql/seat_change_service.dart';
 import 'package:pokerapp/services/gql_errors.dart';
 import 'package:pokerapp/services/janus/janus.dart';
-import 'package:pokerapp/services/nats/message.dart';
 import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
@@ -166,7 +163,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   }
 
   Future _joinAudio() async {
-    _gameState.gameInfo.audioConfEnabled = false;
     _gameContextObj.joinAudio(context);
     return;
 
@@ -777,12 +773,35 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     final theme = AppTheme.getTheme(context);
 
     List<Widget> children = [];
+
     if (this.widget.showTop) {
+      Widget headerView;
+      if (_gameState.customizationMode) {
+        headerView = Align(
+          alignment: Alignment.centerLeft,
+          child: InkWell(
+              borderRadius: BorderRadius.circular(32.pw),
+              onTap: () => Navigator.of(context).pop(),
+              child: Container(
+                decoration: AppDecorators.bgRadialGradient(theme),
+                child: SvgPicture.asset(
+                  'assets/images/backarrow.svg',
+                  color: AppColorsNew.newGreenButtonColor,
+                  width: 32.pw,
+                  height: 32.ph,
+                  fit: BoxFit.cover,
+                ),
+              )),
+        );
+      } else {
+        headerView = HeaderView(gameState: _gameState);
+      }
+
       children.addAll([
-        _buildAudioWidget(),
+        //_buildAudioWidget(),
 
         // header view
-        HeaderView(gameState: _gameState),
+        headerView,
 
         // seperator
         // SizedBox(width: width, height: divider1 / 2),
@@ -822,16 +841,19 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       alignment: Alignment.topCenter,
       children: [
         this.widget.showTop ? BackgroundView() : Container(),
-        this.widget.showTop
+        this.widget.showTop && _gameState.customizationMode
             ? Positioned(
                 top: 50.pw,
                 left: width - 50.pw,
                 child: GameCircleButton(
-                  onClickHandler: () {
-                    log('refresh button is clicked');
-                    //this.reload();
+                  onClickHandler: () async {
+                    await Navigator.of(context).pushNamed(Routes.select_table);
+                    await _gameState.assets.initialize();
+                    final redrawTop = _gameState.redrawTopSectionState;
+                    redrawTop.notify();
+                    setState(() {});
                   },
-                  child: Icon(Icons.refresh_rounded,
+                  child: Icon(Icons.edit,
                       size: 24.pw, color: theme.primaryColorWithDark()),
                 ))
             : Container(),

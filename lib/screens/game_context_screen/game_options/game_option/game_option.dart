@@ -238,16 +238,19 @@ class _GameOptionState extends State<GameOption> {
             this.onLeave();
           },
         ),
-        OptionItemModel(
-          title: _appScreenText['reload'],
-          iconData: Icons.shop,
-          onTap: (context) {
-            this.onReload();
-          },
-        ),
       ]);
+      final me = widget.gameState.me;
+      if (me != null && me.stack < widget.gameState.gameInfo.buyInMax) {
+        gameActions.add(OptionItemModel(
+            title: _appScreenText['reload'],
+            iconData: Icons.shop,
+            onTap: (context) {
+              this.onReload();
+            },
+          ));
+      }
     }
-
+ 
     if (widget.gameState.isGameRunning) {
       if (isPlaying) {
         gameActions.add(

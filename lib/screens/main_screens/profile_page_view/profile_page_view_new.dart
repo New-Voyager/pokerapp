@@ -262,6 +262,21 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                           // Fetch user details from server
                                         },
                                       ),
+                                      ListTileItem(
+                                        text: _appScreenText['customizeGameScreen'],
+                                        imagePath:
+                                            AppAssetsNew.customizeImagePath,
+                                        index: 2,
+                                        onTapFunction: () {
+                                          Navigator.of(context).pushNamed(
+                                            Routes.game_screen_customize,
+                                          );
+
+                                          // Navigator.of(context).pushNamed(
+                                          //   Routes.customize,
+                                          // );
+                                        },
+                                      ),                                      
                                     ],
                                   ),
                                 ),
@@ -316,29 +331,6 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      // Container(
-                                      //   margin:
-                                      //       EdgeInsets.symmetric(horizontal: 16),
-                                      //   child: Text(
-                                      //     "Other Settings",
-                                      //     style: AppStylesNew.labelTextStyle,
-                                      //   ),
-                                      // ),
-                                      ListTileItem(
-                                        text: _appScreenText['CUSTOMIZE'],
-                                        imagePath:
-                                            AppAssetsNew.customizeImagePath,
-                                        index: 2,
-                                        onTapFunction: () {
-                                          Navigator.of(context).pushNamed(
-                                            Routes.game_screen_customize,
-                                          );
-
-                                          // Navigator.of(context).pushNamed(
-                                          //   Routes.customize,
-                                          // );
-                                        },
-                                      ),
                                       ListTileItem(
                                         text: _appScreenText[
                                             'SYSTEMANNOUNCEMENT'],
