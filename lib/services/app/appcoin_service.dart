@@ -2,6 +2,12 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/app_coin.dart';
 
+class RedeemPromotionResult {
+  bool success;
+  int availableCoins;
+  String error;
+}
+
 class AppCoinService {
   AppCoinService._();
 
@@ -79,5 +85,31 @@ class AppCoinService {
       products.add(IapAppCoinProduct.fromJson(productJson));
     }
     return products;
+  }
+
+  static Future<RedeemPromotionResult> redeemCode(String code) async {
+    String query = '''
+      mutation (\$code: String!)  {
+        redeemPromotionCode(code: \$code) {
+          success
+          availableCoins
+          error
+        }
+      }   
+    ''';
+
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    Map<String, dynamic> variables = {"code": code};
+    final result = await _client.mutate(MutationOptions(
+      document: gql(query),
+      variables: variables,
+    ));
+    if (result.hasException) return null;
+    final redeem = result.data['redeemPromotionCode'];
+    RedeemPromotionResult resp = RedeemPromotionResult();
+    resp.availableCoins = redeem['availableCoins'] as int;
+    resp.error = redeem['error'] as String;
+    resp.success = redeem['success'];
+    return resp;
   }
 }

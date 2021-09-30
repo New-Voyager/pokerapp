@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 //import 'package:get_version/get_version.dart';
@@ -15,6 +16,8 @@ import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
+import 'package:pokerapp/services/app/stats_service.dart';
+import 'package:pokerapp/services/data/hive_models/player_state.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
@@ -34,7 +37,8 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
   TextEditingController _controller;
   AuthModel _currentUser;
   AppTextScreen _appScreenText;
-
+  int _totalGames;
+  int _totalHands;
   @override
   void initState() {
     super.initState();
@@ -48,6 +52,13 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
 
   _fetchMyProfile() async {
     _currentUser = await AuthService.getPlayerInfo();
+    final stats = await StatsService.getAlltimeStatsOnly();
+    _totalGames = 0;
+    _totalHands = 0;
+    if (stats != null) {
+      _totalGames = stats.alltime.totalGames;
+      _totalHands = stats.alltime.totalHands;
+    }
     if (_currentUser != null) {
       _displayName = _currentUser.name;
 
@@ -92,7 +103,7 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                 horizontal: 16, vertical: 4),
                             child: Column(
                               children: [
-                                Row(
+                                Column(
                                   children: [
                                     Container(
                                       alignment: Alignment.center,
@@ -129,20 +140,20 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                               style: AppDecorators
                                                   .getHeadLine4Style(
                                                       theme: theme)),
-                                          AppDimensionsNew.getHorizontalSpace(
-                                              8),
-                                          RoundIconButton(
-                                            icon: Icons.edit,
-                                            bgColor: theme.fillInColor,
-                                            iconColor: theme.accentColor,
-                                            size: 16,
-                                            onTap: () async {
-                                              await _updateUserDetails(
-                                                  UpdateType.SCREEN_NAME,
-                                                  theme);
-                                              // Fetch user details from server
-                                            },
-                                          ),
+                                          // AppDimensionsNew.getHorizontalSpace(
+                                          //     8),
+                                          // RoundIconButton(
+                                          //   icon: Icons.edit,
+                                          //   bgColor: theme.fillInColor,
+                                          //   iconColor: theme.accentColor,
+                                          //   size: 16,
+                                          //   onTap: () async {
+                                          //     await _updateUserDetails(
+                                          //         UpdateType.SCREEN_NAME,
+                                          //         theme);
+                                          //     // Fetch user details from server
+                                          //   },
+                                          // ),
                                         ],
                                       ),
                                     ),
@@ -165,7 +176,7 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                                     theme: theme),
                                           ),
                                           Text(
-                                            "254",
+                                            _totalGames.toString(),
                                             style:
                                                 AppDecorators.getHeadLine4Style(
                                                     theme: theme),
@@ -181,7 +192,7 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                                   .getSubtitle3Style(
                                                       theme: theme)),
                                           Text(
-                                            "3254",
+                                            _totalHands.toString(),
                                             style:
                                                 AppDecorators.getHeadLine4Style(
                                                     theme: theme),
@@ -334,10 +345,17 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                         imagePath:
                                             AppAssetsNew.announcementImagePath,
                                         index: 2,
+                                        badgeCount:
+                                            playerState.unreadAnnouncements,
                                         onTapFunction: () {
+                                          // mark as read
+                                          playerState
+                                              .updateSysAnnounceReadDate();
+                                          playerState.unreadAnnouncements = 0;
                                           Navigator.of(context).pushNamed(
                                             Routes.system_announcements,
                                           );
+                                          setState(() {});
 
                                           // Navigator.of(context).pushNamed(
                                           //   Routes.customize,
@@ -484,6 +502,7 @@ class ListTileItem extends StatelessWidget {
   final String subTitleText;
   final String imagePath;
   final int index;
+  final int badgeCount;
   final Function onTapFunction;
   ListTileItem(
       {Key key,
@@ -491,6 +510,7 @@ class ListTileItem extends StatelessWidget {
       this.subTitleText,
       this.imagePath,
       this.index,
+      this.badgeCount,
       this.onTapFunction})
       : super(key: key);
   final List list = [
@@ -505,6 +525,18 @@ class ListTileItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = AppTheme.getTheme(context);
+    Widget tileText = Text(
+      text,
+      style: AppDecorators.getHeadLine4Style(theme: theme),
+    );
+    if (badgeCount != null) {
+      tileText = Badge(
+          animationType: BadgeAnimationType.scale,
+          showBadge: badgeCount > 0,
+          position: BadgePosition.topEnd(top: 0, end: -80),
+          badgeContent: Text(badgeCount.toString()),
+          child: tileText);
+    }
     return InkWell(
       onTap: onTapFunction,
       child: Container(
@@ -526,10 +558,7 @@ class ListTileItem extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    text,
-                    style: AppDecorators.getHeadLine4Style(theme: theme),
-                  ),
+                  tileText,
                   Visibility(
                     visible: subTitleText != null,
                     child: Text(

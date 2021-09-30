@@ -194,7 +194,7 @@ query mySettings(\$gameCode:String!){
         text
         createdAt
         expiresAt
-        
+        level
       }
     } 
   """;

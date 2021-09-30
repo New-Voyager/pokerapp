@@ -1028,7 +1028,7 @@ class _GameOptionState extends State<GameOption> {
                                           value: _gamePlayerSettings
                                               .buttonStraddleBet
                                               .toDouble(),
-                                         // thumbColor: theme.accentColor,
+                                          // thumbColor: theme.accentColor,
                                           activeColor: theme.secondaryColor,
                                           inactiveColor:
                                               theme.primaryColorWithDark(),

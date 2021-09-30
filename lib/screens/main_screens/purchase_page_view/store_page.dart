@@ -18,9 +18,12 @@ import 'package:pokerapp/services/app/appcoin_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
 import 'package:pokerapp/widgets/cross_fade.dart';
+import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:pokerapp/widgets/heading_widget.dart';
 import 'package:pokerapp/widgets/round_color_button.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
+
+import 'coin_update.dart';
 
 const bool _kAutoConsume = true;
 const String _kConsumableId = 'chips';
@@ -48,6 +51,7 @@ class _StorePageState extends State<StorePage> {
   int _coinsFrom = 0;
   int _coinsTo = 0;
   AppTextScreen _appScreenText;
+  final ValueNotifier<bool> _updateCoinState = ValueNotifier<bool>(false);
   @override
   void initState() {
     _appScreenText = getAppTextScreen("storePage");
@@ -227,38 +231,17 @@ class _StorePageState extends State<StorePage> {
                         ),
                         // AppDimensionsNew.getHorizontalSpace(24.pw),
                         HeadingWidget(heading: _appScreenText['store']),
-                        Container(
-                          margin: EdgeInsets.only(right: 16),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Container(
-                                margin: EdgeInsets.symmetric(horizontal: 16),
-                                child: Image.asset(
-                                  'assets/images/appcoin.png',
-                                  height: 24.pw,
-                                  width: 24.pw,
-                                ),
-                              ),
-                              _updateCoins
-                                  ? CrossFade<int>(
-                                      onFadeComplete: onUpdateComplete,
-                                      initialData: _coinsFrom,
-                                      data: _coinsTo,
-                                      builder: (value) => Text(
-                                        '$value',
-                                        style: AppDecorators.getSubtitle1Style(
-                                            theme: theme),
-                                      ),
-                                    )
-                                  : Text(
-                                      '${AppConfig.availableCoins}',
-                                      style: AppDecorators.getSubtitle1Style(
-                                          theme: theme),
-                                    ),
-                            ],
-                          ),
-                        ),
+
+                        ValueListenableBuilder<bool>(
+                          builder:
+                              (BuildContext context, bool value, Widget child) {
+                            // This builder will only get called when the _counter
+                            // is updated.
+                            return CoinWidget(AppConfig.availableCoins,
+                                _coinsTo - _coinsFrom, _updateCoins);
+                          },
+                          valueListenable: _updateCoinState,
+                        )
                       ],
                     ),
                     Expanded(
@@ -310,7 +293,53 @@ class _StorePageState extends State<StorePage> {
     );
 
     if (result != null && controller.text.toString().isNotEmpty) {
-      Alerts.showNotification(titleText: "Redeemed coins");
+      // redeem coins
+      try {
+        String code = controller.text.toString().trim();
+        code = code.toUpperCase();
+        _coinsFrom = AppConfig.availableCoins;
+
+        final result = await AppCoinService.redeemCode(code);
+        if (result.error != null) {
+          /*
+          PROMOTION_EXPIRED = 'PROMOTION_EXPIRED',
+          PROMOTION_INVALID = 'PROMOTION_INVALID',
+          PROMOTION_CONSUMED = 'PROMOTION_CONSUMED',
+          PROMOTION_MAX_LIMIT_REACHED = 'PROMOTION_MAX_LIMIT_REACHED',
+          PROMOTION_UNAUTHORIZED = 'PROMOTION_UNAUTHORIZED',
+          */
+          String error;
+          if (result.error == 'PROMOTION_EXPIRED') {
+            error = 'Promotion is expired';
+          } else if (result.error == 'PROMOTION_INVALID') {
+            error = 'Invalid promotion code';
+          } else if (result.error == 'PROMOTION_CONSUMED') {
+            error = 'Promotion is already used';
+          } else if (result.error == 'PROMOTION_MAX_LIMIT_REACHED') {
+            error = 'Promotion limit has been reached';
+          } else if (result.error == 'PROMOTION_UNAUTHORIZED') {
+            error = 'Unauthorized promotion code';
+          }
+          showErrorDialog(context, 'Error', error);
+        } else {
+          final availableCoins = await AppCoinService.availableCoins();
+          // int availableAppCoins = AppConfig.availableCoins;
+          AppConfig.setAvailableCoins(availableCoins);
+          _coinsTo = AppConfig.availableCoins;
+          debugPrint('Available coins ${AppConfig.availableCoins}');
+          _updateCoins = true;
+          _updateCoinState.value = _updateCoins;
+          setState(() {});
+          await Future.delayed(Duration(seconds: 1), () {
+            _updateCoins = false;
+            _updateCoinState.value = _updateCoins;
+            setState(() {});
+          });
+          // Alerts.showNotification(titleText: "Available coins ${result.availableCoins}");
+        }
+      } catch (err) {
+        await showErrorDialog(context, 'Error', 'Failed to redeem code');
+      }
 
       ///TODO
     }

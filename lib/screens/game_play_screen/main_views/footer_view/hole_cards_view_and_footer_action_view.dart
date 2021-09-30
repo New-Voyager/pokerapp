@@ -258,13 +258,11 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
     return ValueListenableBuilder<bool>(
       valueListenable: isHoleCardsVisibleVn,
       builder: (_, isCardVisible, __) {
-
         bool cardVisible = isCardVisible;
         if (gameState.customizationMode) {
           cardVisible = true;
         }
-        
-        
+
         log('Customize: HoleCards: isCardVisible: $isCardVisible cards: $cards cardsInt: $cardsInt');
         return HoleStackCardView(
           cards: cards,

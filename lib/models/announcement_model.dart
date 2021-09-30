@@ -37,4 +37,8 @@ class AnnouncementModel {
         "expiresAt": expiresAt.toIso8601String(),
         "level": level,
       };
+
+  bool get isImportant {
+    return level == 'IMPORTANT';
+  }
 }
