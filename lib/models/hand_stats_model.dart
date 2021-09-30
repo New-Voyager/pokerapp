@@ -77,6 +77,7 @@ class StatModel {
     this.allInCount,
     this.totalHands,
     this.headsupHandDetails,
+    this.totalGames,
   });
 
   int inPreflop;
@@ -95,6 +96,7 @@ class StatModel {
   int vpipCount;
   int allInCount;
   int totalHands;
+  int totalGames;
   List<HeadsupHandDetail> headsupHandDetails;
 
   factory StatModel.fromJson(Map<String, dynamic> json) {
@@ -127,6 +129,7 @@ class StatModel {
       allInCount: json["allInCount"],
       totalHands: json["totalHands"],
       headsupHandDetails: headsupDetails,
+      totalGames: json['totalGames'],
     );
     return stats;
   }
@@ -151,6 +154,7 @@ class StatModel {
         "vpipCount": vpipCount,
         "allInCount": allInCount,
         "totalHands": totalHands,
+        "totalGames": totalGames,
         "headsupHandDetails": headsupHandDetails == null
             ? null
             : List<dynamic>.from(headsupHandDetails.map((x) => x.toJson())),

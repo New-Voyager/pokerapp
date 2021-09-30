@@ -6,6 +6,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:location/location.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/main.dart';
+import 'package:pokerapp/models/announcement_model.dart';
 import 'package:pokerapp/models/game/game_player_settings.dart';
 import 'package:pokerapp/models/game/game_settings.dart';
 import 'package:pokerapp/models/game/new_game_model.dart';
@@ -186,6 +187,47 @@ query mySettings(\$gameCode:String!){
       ret: postBlind(gameCode : \$gameCode)
     }
   """;
+
+  static String systemAnnouncementsQuery = """
+    query fetch{
+      ret:systemAnnouncements{
+        text
+        createdAt
+        expiresAt
+        level
+      }
+    } 
+  """;
+
+  static Future<List<AnnouncementModel>> getSystemAnnouncements() async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    QueryResult result = await _client.query(
+      QueryOptions(
+        document: gql(systemAnnouncementsQuery),
+      ),
+    );
+
+    List<AnnouncementModel> list = [];
+
+    if (result.hasException) {
+      log("Exception : ${result.exception.toString()}");
+      return list;
+    }
+
+    try {
+      if (result.data['ret'] != null) {
+        //log(result.data['ret'][0]);
+        list = result.data['ret']
+            .map<AnnouncementModel>(
+                (var announce) => AnnouncementModel.fromJson(announce))
+            .toList();
+      }
+      return list;
+    } catch (e) {
+      log("Exception : ${e.toString()}");
+      return list;
+    }
+  }
 
   static Future<bool> setNotesForUser(String playerUuid, String notes) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();

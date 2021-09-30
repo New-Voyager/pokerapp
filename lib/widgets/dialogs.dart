@@ -6,7 +6,7 @@ import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'round_color_button.dart';
 
 showErrorDialog(BuildContext context, String title, String error,
-    {bool info}) async {
+    {bool info = false}) async {
   Color titleColor = Colors.red;
   if (info) {
     titleColor = Colors.white;

@@ -154,7 +154,7 @@ class AssetHiveStore {
         if (File(asset.downloadedPath).existsSync()) {
           File(asset.downloadedPath).deleteSync();
         }
-      } catch(err) {}
+      } catch (err) {}
       _assetBox.delete(assetId);
     }
   }

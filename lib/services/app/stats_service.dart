@@ -61,9 +61,10 @@ query (\$gameCode: String!) {
   """;
   static final String getAllTimeStatsOnlyQuery = """
 
-query () {
+query {
   playerHandStats {
     totalHands
+    totalGames
     inPreflop
     inFlop
     inTurn
@@ -319,8 +320,7 @@ query systemStats {
       }
     }
 
-    final handStats =
-        StatModel.fromJson(result.data['data']['playerHandStats']);
+    final handStats = StatModel.fromJson(result.data['playerHandStats']);
     return HandStatsModel(
       alltime: handStats,
     );

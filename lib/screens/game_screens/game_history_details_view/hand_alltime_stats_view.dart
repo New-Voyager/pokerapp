@@ -50,8 +50,6 @@ class _HandAlltimeStatsViewState extends State<HandAlltimeStatsView>
     log("Fetching alltimeStats only");
     stats = await StatsService.getAlltimeStatsOnly();
     if (stats != null) {
-      // stats.loadData();
-
       setState(() {});
     }
   }

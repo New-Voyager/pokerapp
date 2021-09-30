@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/announcement_model.dart';
 import 'package:pokerapp/models/app_state.dart';
 import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
@@ -15,15 +16,18 @@ import 'package:pokerapp/screens/main_screens/games_page_view/live_games.dart';
 import 'package:pokerapp/screens/main_screens/profile_page_view/profile_page_view_new.dart';
 import 'package:pokerapp/screens/main_screens/purchase_page_view/store_page.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
+import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/app/gif_cache_service.dart';
 import 'package:pokerapp/services/app/loadassets_service.dart';
 import 'package:pokerapp/services/app/player_service.dart';
+import 'package:pokerapp/services/data/hive_models/player_state.dart';
 import 'package:pokerapp/services/firebase/push_notification_service.dart';
 import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/curved_bottom_navigation.dart';
+import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:provider/provider.dart';
 
 import '../../flavor_banner.dart';
@@ -62,9 +66,14 @@ class _MainScreenState extends State<MainScreen>
       AppConstants.GIF_CATEGORIES,
     );
     log('device name: ${DeviceInfo.name}');
-
+    await playerState.open();
     if (!TestService.isTesting) {
       _currentPlayer = await PlayerService.getMyInfo(null);
+      playerState.updatePlayerInfo(
+        playerId: _currentPlayer.id,
+        playerUuid: _currentPlayer.uuid,
+        playerName: _currentPlayer.name,
+      );
       final natsClient = Provider.of<Nats>(context, listen: false);
       _nats = natsClient;
       await natsClient.init(_currentPlayer.channel);
@@ -89,6 +98,27 @@ class _MainScreenState extends State<MainScreen>
     }
     assetLoader.load();
 
+    // read announcments
+    final announcements = await GameService.getSystemAnnouncements();
+
+    // if there are announcements marked as important, show in a dialog
+    List<AnnouncementModel> important = [];
+    int unreadAnnouncements = 0;
+    for (final announcement in announcements) {
+      if (announcement.createdAt.isAfter(playerState.lastReadSysAnnounceDate)) {
+        if (announcement.isImportant) {
+          important.add(announcement);
+        }
+        unreadAnnouncements++;
+      }
+    }
+    playerState.unreadAnnouncements = unreadAnnouncements;
+    if (important.length > 0) {
+      String importantAnnouncements =
+          important.map((e) => e.text).toList().join("\n");
+      showErrorDialog(context, 'Announcement', importantAnnouncements,
+          info: true);
+    }
     // WidgetsBinding.instance.addPostFrameCallback((_) async {
     // });
   }
@@ -108,6 +138,11 @@ class _MainScreenState extends State<MainScreen>
   @override
   void dispose() {
     super.dispose();
+
+    if (playerState != null) {
+      playerState.close();
+    }
+
     if (_nats != null) {
       _nats.close();
     }

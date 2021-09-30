@@ -295,7 +295,7 @@ class NewGameSettings2 extends StatelessWidget {
                       ),
                       Slider(
                         value: vnGmp.buttonStraddleBetAmount.toDouble(),
-                        thumbColor: theme.accentColor,
+                        //thumbColor: theme.accentColor,
                         activeColor: theme.secondaryColor,
                         inactiveColor: theme.primaryColorWithDark(),
                         min: 2,

@@ -91,7 +91,7 @@ class GameScreenAssets {
       log('Customize: Loading cards');
       await loadCards(cardFace);
       log('Customize: Loading cards successful');
-    } catch(err) {
+    } catch (err) {
       log('Customize: Loading default cards');
       // fall back to default card
       cardFace =
@@ -131,6 +131,6 @@ class GameScreenAssets {
       }
       cardStrImage[cardStr] = cardBytes;
       cardNumberImage[card] = cardBytes;
-    }    
+    }
   }
 }

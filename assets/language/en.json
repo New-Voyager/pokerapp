@@ -445,7 +445,8 @@
         "ISINVALIDEMAIL": "is invalid email",
         "UPDATINGDETAILS": "Updating details...",
         "USERDETAILSUPDATED": "User details updated!",
-        "FAILEDTOUPDATEUSERDETAILS": "Failed to update user details!"
+        "FAILEDTOUPDATEUSERDETAILS": "Failed to update user details!",
+        "SYSTEMANNOUNCEMENT": "Announcements"
     },
     "performanceView": {
         "STATISTICS": "Statistics",
@@ -738,10 +739,12 @@
         "enterTextHere": "Enter text here",
         "cancel": "Cancel",
         "save": "Save",
-        "notesSaved": "Notes saved",   
-             "availableDiamonds" : "Available diamonds",
-
+        "notesSaved": "Notes saved",
+        "availableDiamonds": "Available diamonds",
         "playerWillBeRemovedAfterThisHand": "Player will be removed after this hand"
+    },
+    "systemAnnouncement": {
+        "title": "Announcements"
     },
     "gameInfoScreen": {
         "code": "Code",
@@ -757,5 +760,4 @@
         "chatEnabled": "Chat Enabled",
         "showResult": "Show result"
     }
-  
 }
