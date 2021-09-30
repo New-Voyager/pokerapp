@@ -851,6 +851,20 @@ class _GameOptionState extends State<GameOption> {
       },
     ));
 
+    // Animations
+    children.add(_buildCheckBox(
+      text: 'Animations',
+      value: widget.gameState.playerLocalConfig.animations,
+      onChange: (bool v) async {
+        // setting the value saves it to local storage too
+        widget.gameState.playerLocalConfig.animations = v;
+        log('In toggle button widget, animations = ${widget.gameState.playerLocalConfig.animations}');
+        if (closed) return;
+        setState(() {});
+      },
+    ));
+
+
     // tap to bet VS swipe to bet
     children.add(Container(
       width: double.infinity,

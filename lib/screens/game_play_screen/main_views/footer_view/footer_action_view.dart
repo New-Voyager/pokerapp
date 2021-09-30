@@ -476,12 +476,22 @@ class _FooterActionViewState extends State<FooterActionView> {
   Widget build(BuildContext context) {
     final boardAttributes = context.read<BoardAttributesObject>();
     final theme = AppTheme.getTheme(context);
+    final gameState = GameState.getState(context);
+
     return IntrinsicHeight(
       child: Container(
         color: Colors.black.withOpacity(0.5),
         child: Consumer<ActionState>(
             key: ValueKey('buildActionButtons'),
             builder: (_, actionState, __) {
+              if (gameState.handState == HandState.DEAL ||
+                  gameState.handState == HandState.RESULT ||
+                  gameState.handState == HandState.SHOWDOWN ||
+                  gameState.handState == HandState.ENDED ||
+                  gameState.me == null ||
+                  !gameState.me.inhand) {
+                    return Container();
+              }
               List<Widget> children = [];
               if (actionState.show) {
                 children.addAll([

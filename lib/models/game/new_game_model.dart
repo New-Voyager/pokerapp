@@ -82,7 +82,7 @@ class NewGameModel {
   bool botGame = true;
   Rewards rewards;
   bool muckLosingHand = false;
-  bool audioConference = false;
+  bool audioConference = true;
   bool allowRabbitHunt = true;
   bool showHandRank = false;
   bool useAgora = false;

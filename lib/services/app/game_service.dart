@@ -23,6 +23,7 @@ import 'package:pokerapp/services/data/box_type.dart';
 import 'package:pokerapp/services/data/hive_datasource_impl.dart';
 import 'package:pokerapp/services/gql_errors.dart';
 import 'package:pokerapp/services/tenor/src/model/tenor_result.dart';
+import 'package:pokerapp/widgets/dialogs.dart';
 
 class JoinGameResponse {
   String status;
@@ -100,6 +101,7 @@ mutation updateInputs(\$gameCode :String!,\$inputSettings: GameSettingsUpdateInp
   static String getGameSettingsQuery = """
     query gameSettings(\$gameCode: String!) {
       ret:gameSettings(gameCode :\$gameCode){
+        audioConfEnabled
         buyInApproval
         runItTwiceAllowed
         allowRabbitHunt
@@ -1280,21 +1282,28 @@ query mySettings(\$gameCode:String!){
       "gameInput": input.toJson(),
     };
 
-    QueryResult result = await _client.mutate(
-      MutationOptions(document: gql(_query), variables: variables),
-    );
+    try {
+      QueryResult result = await _client.mutate(
+        MutationOptions(document: gql(_query), variables: variables),
+      );
 
-    print(result.exception);
-    if (result.hasException) {
-      if (result.exception.graphqlErrors.length > 0) {
-        return null;
+
+      print(result.exception);
+      if (result.hasException) {
+        if (result.exception.graphqlErrors.length > 0) {
+          return null;
+        }
       }
-    }
 
-    Map game = result.data['configuredGame'];
-    String gameCode = game["gameCode"];
-    log('Created game: $gameCode');
-    return gameCode;
+      Map game = result.data['configuredGame'];
+      String gameCode = game["gameCode"];
+      log('Created game: $gameCode');
+      return gameCode;
+  } catch(err) {
+    log('Error: ${err.toString()}');
+    return null;
+  }
+
   }
 
   static Future<String> configurePlayerGame(
