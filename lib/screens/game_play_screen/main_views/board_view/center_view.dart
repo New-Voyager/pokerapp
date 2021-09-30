@@ -71,32 +71,6 @@ class _CenterViewState extends State<CenterView> {
         ),
       );
 
-  Widget customizationView({
-    double scale = 1.0,
-    Offset offset = Offset.zero,
-    GameState gameState,
-  }) {
-    AppTheme theme = AppTheme.getTheme(context);
-    return Align(
-      alignment: Alignment.center,
-      child: Transform.translate(
-        offset: offset,
-        child: Transform.scale(
-            scale: scale * 1.2,
-            child: GameCircleButton(
-              onClickHandler: () async {
-                await Navigator.of(context).pushNamed(Routes.select_table);
-                await gameState.assets.initialize();
-                final redrawTop = gameState.redrawTopSectionState;
-                redrawTop.notify();
-              },
-              child: Icon(Icons.edit,
-                  size: 24, color: theme.primaryColorWithDark()),
-            )),
-      ),
-    );
-  }
-
   Widget centerTextWidget(
     String text,
     Offset offset,
@@ -265,13 +239,6 @@ class _CenterViewState extends State<CenterView> {
         vnGameStatus, vnTableStatus, vnShowCardShuffling,
         builder: (_, gameStatus, tableStatus, showCardsShuffling, __) {
       List<Widget> children = [];
-      if (gameState.customizationMode) {
-        children.add(customizationView(
-          offset: boardAttributes.centerViewCardShufflePosition,
-          scale: boardAttributes.centerViewCenterScale,
-          gameState: gameState,
-        ));
-      }
       if (showCardsShuffling) {
         children.add((gameState?.handInfo?.bombPot ?? false)
             ? _bombPotAnimation()
