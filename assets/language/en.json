@@ -446,7 +446,14 @@
         "UPDATINGDETAILS": "Updating details...",
         "USERDETAILSUPDATED": "User details updated!",
         "FAILEDTOUPDATEUSERDETAILS": "Failed to update user details!",
-        "SYSTEMANNOUNCEMENT": "Announcements"
+        "SYSTEMANNOUNCEMENT": "Announcements",
+        "APPNAME": "Poker Club",
+        "PRIVACYPOLICY": "Privacy Policy",
+        "TOC": "Terms & Conditions",
+        "ATTRIBUTIONS": "Attributions",
+        "ABOUT": "About",
+        "requestFeature": "Request Feature",
+        "reportBug": "Report Bug"
     },
     "performanceView": {
         "STATISTICS": "Statistics",

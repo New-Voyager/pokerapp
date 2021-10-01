@@ -16,6 +16,7 @@ import 'package:pokerapp/screens/profile_screens/card_selector_screen.dart';
 import 'package:pokerapp/screens/profile_screens/customize_view.dart';
 import 'package:pokerapp/screens/profile_screens/help_screen.dart';
 import 'package:pokerapp/screens/profile_screens/performance_view.dart';
+import 'package:pokerapp/screens/profile_screens/privacy_policy.dart';
 import 'package:pokerapp/screens/profile_screens/table_selector.dart';
 import 'package:pokerapp/services/game_play/customization_service.dart';
 import 'package:provider/provider.dart';
@@ -121,6 +122,14 @@ class Routes {
   static const String select_table = "/select_table";
   // gamescreen holecard view.
   static const String select_cards = "/select_card";
+
+  // gamescreen holecard view.
+  static const String privacy_policy = "/privacy_policy";
+
+  // gamescreen holecard view.
+  static const String terms_conditions = "/terms_conditions";
+  // gamescreen holecard view.
+  static const String attributions = "/attributions";
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -436,6 +445,27 @@ class Routes {
         return _getPageRoute(
           routeName: settings.name,
           viewToShow: CardSelectorScreen(),
+        );
+      case privacy_policy:
+        return _getPageRoute(
+          routeName: settings.name,
+          viewToShow: PrivacyPolicyScreen(
+            title: "Privacy Policy",
+          ),
+        );
+      case terms_conditions:
+        return _getPageRoute(
+          routeName: settings.name,
+          viewToShow: PrivacyPolicyScreen(
+            title: "Terms and Conditions",
+          ),
+        );
+      case attributions:
+        return _getPageRoute(
+          routeName: settings.name,
+          viewToShow: PrivacyPolicyScreen(
+            title: "Attributions",
+          ),
         );
 
       default:

@@ -380,11 +380,13 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
   }
 
   _openPrivacyPolicy() {
-    toast(_appScreenText['OPENINGPRIVACYPOLICYURL']);
+    Navigator.of(context).pushNamed(Routes.privacy_policy);
+    //toast(_appScreenText['OPENINGPRIVACYPOLICYURL']);
   }
 
   _openTermsOfService() {
-    toast(_appScreenText['OPENINGTERMSANDCONDITIONURL']);
+    //toast(_appScreenText['OPENINGTERMSANDCONDITIONURL']);
+    Navigator.of(context).pushNamed(Routes.terms_conditions);
   }
 
   _handleSignUpClick() async {

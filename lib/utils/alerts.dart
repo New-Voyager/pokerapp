@@ -228,6 +228,48 @@ class Alerts {
     );
   }
 
+  static dynamic showDailog({
+    @required BuildContext context,
+    @required Widget child,
+  }) async {
+    return await showGeneralDialog(
+      context: context,
+      barrierDismissible: true,
+      pageBuilder: (_, __, ___) {
+        final theme = AppTheme.getTheme(context);
+        return _SystemPadding(
+          child: Align(
+            alignment: Alignment.center,
+            child: Material(
+              color: Colors.transparent,
+              child: Container(
+                height: MediaQuery.of(context).size.height * 0.5,
+                margin: EdgeInsets.all(16),
+                padding: EdgeInsets.only(bottom: 24, top: 8, right: 8, left: 8),
+                // width: MediaQuery.of(context).size.width * 0.70,
+                // height: 200.ph,
+                decoration: AppDecorators.bgRadialGradient(theme).copyWith(
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: theme.accentColor, width: 3),
+                ),
+                child: child,
+              ),
+            ),
+          ),
+        );
+      },
+      transitionBuilder: (context, anim1, anim2, child) {
+        return FadeTransition(
+          opacity: anim1,
+          child: child,
+        );
+      },
+      barrierLabel: "",
+      barrierColor: Colors.black.withOpacity(0.5),
+      transitionDuration: Duration(milliseconds: 200),
+    );
+  }
+
   static dynamic showBottomSheetDailog({
     @required BuildContext context,
     @required Widget child,
