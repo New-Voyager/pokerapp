@@ -31,7 +31,7 @@ class Nameplate extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final path = parseSvgPathData(progressPath);
-    // log('Path view box boundary: ${path.getBounds()}');
+    // log('Path: view box boundary: ${path.getBounds()}');
     Widget progressWidget = Container();
     if (totalTime != 0) {
       progressWidget = SizedBox(
@@ -55,6 +55,24 @@ class Nameplate extends StatelessWidget {
         ),
       );
     }
+
+    Widget svgImage = SizedBox(
+        width: size.width,
+        height: size.height,
+        child: FittedBox(
+          fit: BoxFit.contain,
+          alignment: Alignment.center,
+          clipBehavior: Clip.hardEdge,
+          child: SizedBox.fromSize(
+            size: Size(size.width, size.height),
+            child:  SvgPicture.string(
+                    svg,
+                  width: size.width,
+                height: size.height,
+              ),
+          ),
+        ));
+
     return Container(
       width: size.width,
       height: size.height,
@@ -62,11 +80,12 @@ class Nameplate extends StatelessWidget {
         alignment: Alignment.center,
         children: [
           // svg
-          SvgPicture.string(
-            svg,
-            width: size.width,
-            height: size.height,
-          ),
+          // SvgPicture.string(
+          //   svg,
+          //   width: size.width,
+          //   height: size.height,
+          // ),
+          svgImage,
           progressWidget,
         ],
       ),
@@ -128,6 +147,7 @@ class FilledPathPainter extends CustomPainter {
 
     // print(
     //     'Path bounds: $pathBounds, viewBoxSize: $viewBoxSize Canvas Size: $size');
+    log('Path: Path bounds: $pathBounds, viewBoxSize: $viewBoxSize Canvas Size: $size');
 
     double aspectRat = pathBounds.width / pathBounds.height;
 
