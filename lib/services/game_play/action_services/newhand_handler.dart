@@ -25,7 +25,7 @@ class NewHandHandler {
   void resetBoard() {}
 
   void initialize() {
-    gameState.resetSeatActions(newHand: true);
+    gameState.resetSeats();
     gameState.resetDealerButton();
     gameType = GameType.values
         .firstWhere((element) => element.index == newHand.gameType.value);

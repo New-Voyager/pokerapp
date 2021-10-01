@@ -94,6 +94,7 @@ class _CenterViewState extends State<CenterView> {
     GameState gameState,
     Offset centerViewButtonOffset,
   ) {
+    log('Center: center_view _buildGamePauseOptions');
     return Transform.translate(
       offset: centerViewButtonOffset,
       child: Consumer2<SeatChangeNotifier, TableState>(
@@ -103,7 +104,7 @@ class _CenterViewState extends State<CenterView> {
           vnGameStatus,
           vnTableStatus,
           builder: (_, gameStatus, tableStatus, __) {
-            log('Rebuilding center view: Is game running: ${gameState.isGameRunning}');
+            log('Center: Rebuilding center view: Is game running: ${gameState.isGameRunning}');
             return CenterButtonView(
               isHost: this.widget.isHost,
               onStartGame: this.widget.onStartGame,
@@ -179,6 +180,7 @@ class _CenterViewState extends State<CenterView> {
     @required final BoardAttributesObject boardAttributes,
   }) {
     final gameState = GameState.getState(context);
+    log('Center: CenterView _mainBuild status: ${gameState.gameInfo.status}');
     //log('potViewPos: before game ended.');
     if (gameState.gameInfo.status == AppConstants.GAME_ENDED)
       return centerTextWidget(
@@ -187,7 +189,9 @@ class _CenterViewState extends State<CenterView> {
       );
 
     //log('potViewPos: before waiting for players.');
-    if (!gameState.botGame && gameState.playersInSeatsCount <= 1) {
+    if (!gameState.botGame &&
+        gameState.playersInSeatsCount <= 1 &&
+        gameState.gameInfo.status != AppConstants.GAME_CONFIGURED) {
       String text = _appScreenText['waitingForPlayersToJoin'];
       return centerTextWidget(
           text, boardAttributes.centerViewButtonVerticalTranslate);
@@ -234,6 +238,7 @@ class _CenterViewState extends State<CenterView> {
   Widget build(BuildContext context) {
     final gameState = Provider.of<GameState>(context, listen: false);
     final boardAttributes = gameState.getBoardAttributes(context);
+    log('Center: CenterView build');
 
     return ValueListenableBuilder3<String, String, bool>(
         vnGameStatus, vnTableStatus, vnShowCardShuffling,

@@ -1287,7 +1287,6 @@ query mySettings(\$gameCode:String!){
         MutationOptions(document: gql(_query), variables: variables),
       );
 
-
       print(result.exception);
       if (result.hasException) {
         if (result.exception.graphqlErrors.length > 0) {
@@ -1299,11 +1298,10 @@ query mySettings(\$gameCode:String!){
       String gameCode = game["gameCode"];
       log('Created game: $gameCode');
       return gameCode;
-  } catch(err) {
-    log('Error: ${err.toString()}');
-    return null;
-  }
-
+    } catch (err) {
+      log('Error: ${err.toString()}');
+      return null;
+    }
   }
 
   static Future<String> configurePlayerGame(

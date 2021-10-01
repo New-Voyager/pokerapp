@@ -9,17 +9,16 @@ class ClubChatModel {
   final int handNum;
   final String giphyLink;
   final String playerTags;
-  final int messageTimeInEpoc;
   final String sender;
   final SharedHandMsg sharedHand;
   final String playerName;
+  final DateTime messageTime;
 
   bool isGroupLatest;
   bool isGroupFirst;
 
   ClubChatModel({
     this.id,
-    this.messageTimeInEpoc,
     this.clubCode,
     this.messageType,
     this.text,
@@ -32,5 +31,6 @@ class ClubChatModel {
     this.sender,
     this.sharedHand,
     this.playerName,
+    this.messageTime,
   });
 }

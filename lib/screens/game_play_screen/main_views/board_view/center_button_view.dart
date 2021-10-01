@@ -64,6 +64,7 @@ class CenterButtonView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    log('Center: Center buttons build');
     _appScreenText = getAppTextScreen("centerButtonView");
 
     final seatChange = Provider.of<SeatChangeNotifier>(context, listen: false);
@@ -241,9 +242,9 @@ class CenterButtonView extends StatelessWidget {
       // if this is not bot game and the player count is less than 2
       // don't allow the player to start the game
       final gameState = GameState.getState(context);
-      if (!gameState.botGame && gameState.playersInSeatsCount <= 1) {
-        return SizedBox.shrink();
-      }
+      // if (!gameState.botGame && gameState.playersInSeatsCount <= 1) {
+      //   return SizedBox.shrink();
+      // }
 
       return Center(
         child: Container(
@@ -263,7 +264,10 @@ class CenterButtonView extends StatelessWidget {
                   height: 48.ph,
                   width: 48.pw,
                 ),
-                onTap: this.onStartGame,
+                onTap: () {
+                  log('Center: Starting the game ${gameState.gameCode}');
+                  this.onStartGame();
+                },
                 text: _appScreenText['start'],
               ),
               IconAndTitleWidget(

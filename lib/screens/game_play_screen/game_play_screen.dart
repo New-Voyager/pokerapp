@@ -44,6 +44,7 @@ import 'package:pokerapp/services/janus/janus.dart';
 import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
+import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:provider/provider.dart';
@@ -353,7 +354,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       _initChatListeners(gameComService.gameMessaging);
     }
 
-
     if (_gameInfoModel?.audioConfEnabled ?? false) {
       // initialize agora
       // agora = Agora(
@@ -371,7 +371,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         }
       }
     } else {}
-
 
     return _gameInfoModel;
   }
@@ -963,11 +962,20 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   @override
   void afterFirstLayout(BuildContext context) {}
 
-  startGame() {
-    GamePlayScreenUtilMethods.startGame(widget.gameCode);
-    final tableState = _gameState.tableState;
-    tableState.updateGameStatusSilent(AppConstants.GAME_RUNNING);
-    _gameState.myState.notify();
+  startGame() async {
+    try {
+      ConnectionDialog.show(context: context, loadingText: "Starting...");
+      await GamePlayScreenUtilMethods.startGame(widget.gameCode);
+      await _gameState.refresh();
+      ConnectionDialog.dismiss(context: context);
+    } catch (err) {
+      ConnectionDialog.dismiss(context: context);
+      showErrorDialog(context, 'Error',
+          'Failed to start the game. Error: ${err.toString()}');
+    }
+    // final tableState = _gameState.tableState;
+    // tableState.updateGameStatusSilent(AppConstants.GAME_RUNNING);
+    // _gameState.myState.notify();
   }
 
   // Lifeccyle Methods

@@ -49,7 +49,8 @@ class ClubMessageModel {
   int handNum;
   String giphyLink;
   String playerTags;
-  int messageTimeInEpoc;
+  //int messageTimeInEpoc;
+  DateTime messageTime;
   String sender;
   String playerName;
   SharedHandMsg sharedHand;
@@ -99,7 +100,12 @@ class ClubMessageModel {
     this.handNum = jsonData['handNum'];
     this.giphyLink = jsonData['giphyLink'];
     this.playerTags = jsonData['playerTags'];
-    this.messageTimeInEpoc = jsonData['messageTimeInEpoc'];
+    //this.messageTimeInEpoc = jsonData['messageTimeInEpoc'];
+    try {
+      this.messageTime = DateTime.parse(jsonData['messageTime'] as String);
+    } catch (err) {
+      this.messageTime = DateTime.now();
+    }
     this.sender = jsonData['sender'];
 
     if (this.messageType == MessageType.HAND) {
@@ -167,6 +173,7 @@ class ClubMessageModel {
       giphyLink
       sender
       playerTags
+      messageTime
       messageTimeInEpoc
       sharedHand {
         handNum
@@ -192,6 +199,7 @@ class ClubMessageModel {
       giphyLink
       sender
       playerTags
+      messageTime
       messageTimeInEpoc
       sharedHand {
         handNum

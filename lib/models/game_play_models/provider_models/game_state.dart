@@ -951,8 +951,12 @@ class GameState {
 
   void resetSeats({bool notify = true}) {
     for (final player in _playersInGame) {
-      player.reset();
+      player.reset(stickAction: false);
     }
+    for (final seat in _seats.values) {
+      seat.dealer = false;
+    }
+
     if (notify) {
       for (final seat in _seats.values) {
         seat.notify();
