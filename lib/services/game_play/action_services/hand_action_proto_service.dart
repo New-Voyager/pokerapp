@@ -378,15 +378,24 @@ class HandActionProtoService {
 
         case AppConstants.NEXT_ACTION:
           final handler = PlayerActionHandler(this._context, _gameState, this);
+          if (_gameState.handState == HandState.DEAL) {
+            _gameState.handState = HandState.PREFLOP;
+          }
           await handler.handleNextAction(message);
           return;
 
         case AppConstants.PLAYER_ACTED:
+          if (_gameState.handState == HandState.DEAL) {
+            _gameState.handState = HandState.PREFLOP;
+          }
           final handler = PlayerActionHandler(this._context, _gameState, this);
           await handler.handlePlayerActed(message);
           return;
 
         case AppConstants.YOUR_ACTION:
+          if (_gameState.handState == HandState.DEAL) {
+            _gameState.handState = HandState.PREFLOP;
+          }
           final handler = PlayerActionHandler(this._context, _gameState, this);
           await handler.handleYourAction(message);
           return;
@@ -397,17 +406,20 @@ class HandActionProtoService {
 
         case AppConstants.FLOP:
           ////log('Hand Message: ::handleStageChange:: FLOP');
+          _gameState.handState = HandState.FLOP;
           await handleStageChange(message, 'flop');
           ////log('Hand Message: ::handleStageChange:: FLOP DONE');
           return;
 
         case AppConstants.TURN:
+          _gameState.handState = HandState.TURN;
           ////log('Hand Message: ::handleStageChange:: TURN');
           await handleStageChange(message, 'turn');
           ////log('Hand Message: ::handleStageChange:: TURN DONE');
           return;
 
         case AppConstants.RIVER:
+          _gameState.handState = HandState.RIVER;
           ////log('Hand Message: ::handleStageChange:: RIVER');
           await handleStageChange(message, 'river');
           ////log('Hand Message: ::handleStageChange:: RIVER DONE');

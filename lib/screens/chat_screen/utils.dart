@@ -29,5 +29,6 @@ String formatDate(DateTime date) {
 }
 
 String dateString(DateTime date) {
-  return DateFormat('hh:mm aaa').format(date);
+  // convert to local time
+  return DateFormat('hh:mm aaa').format(date.toLocal());
 }

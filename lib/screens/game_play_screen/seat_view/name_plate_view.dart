@@ -163,7 +163,7 @@ class NamePlateWidget extends StatelessWidget {
     Size progressRatio = Size(1.0, 1.0);
     if (seat.player?.highlight ?? false) {
       int total = seat.actionTimer.getTotalTime();
-      log('Nameplate: total: $total progress: ${seat.actionTimer.getProgressTime()}');
+      // log('Nameplate: total: $total progress: ${seat.actionTimer.getProgressTime()}');
       int progressTime = 0;
       plateWidget = CountdownMs(
           totalSeconds: seat.actionTimer.getTotalTime(),
@@ -172,7 +172,7 @@ class NamePlateWidget extends StatelessWidget {
             seat.actionTimer.setProgressTime(time ~/ 1000);
             int currentProgress = time ~/ 1000;
             if (progressTime != currentProgress) {
-              log('Nameplate: total: $total progress: ${currentProgress}');
+              // log('Nameplate: total: $total progress: ${currentProgress}');
               progressTime = currentProgress;
             }
             return Nameplate.fromSvgString(

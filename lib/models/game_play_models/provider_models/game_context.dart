@@ -102,7 +102,7 @@ class GameContextObject extends ChangeNotifier {
   }
 
   void joinAudio(BuildContext context) async {
-    if (gameState.audioConfEnabled) {
+    if (gameState.gameInfo.audioConfEnabled ?? false) {
       try {
         if (_joiningAudio || _joinedAudio) {
           return;
@@ -137,6 +137,8 @@ class GameContextObject extends ChangeNotifier {
       gameState.communicationState.audioConferenceStatus =
           AudioConferenceStatus.LEFT;
     }
+    _joinedAudio = false;
+    _joiningAudio = false;
   }
 
   void setup(BuildContext context) {

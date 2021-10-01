@@ -416,6 +416,8 @@ class _FooterActionViewState extends State<FooterActionView> {
       ));
     }
 
+    log('BetAction: actionButtons.length ${actionButtons.length}');
+
     /*  if (actionButtons.length > 0 && actionButtons.length < 3 && allin != null) {
       actionButtons.add(_buildRoundButton(
         text: allin.actionName + '\n' + allin.actionValue.toString(),
@@ -476,12 +478,23 @@ class _FooterActionViewState extends State<FooterActionView> {
   Widget build(BuildContext context) {
     final boardAttributes = context.read<BoardAttributesObject>();
     final theme = AppTheme.getTheme(context);
+    final gameState = GameState.getState(context);
+
     return IntrinsicHeight(
       child: Container(
         color: Colors.black.withOpacity(0.5),
         child: Consumer<ActionState>(
             key: ValueKey('buildActionButtons'),
             builder: (_, actionState, __) {
+              log('BetAction: build actionState.show ${actionState.show} handState: ${gameState.handState.toString()}');
+              if (gameState.handState == HandState.RESULT ||
+                  gameState.handState == HandState.SHOWDOWN ||
+                  gameState.handState == HandState.ENDED ||
+                  gameState.me == null ||
+                  !gameState.me.inhand) {
+                return Container();
+              }
+
               List<Widget> children = [];
               if (actionState.show) {
                 children.addAll([

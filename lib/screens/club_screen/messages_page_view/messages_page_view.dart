@@ -200,27 +200,6 @@ class _MessagesPageViewState extends State<MessagesPageView>
     );
   }
 
-  // Widget _buildAppBar() {
-  //   return AppBar(
-  //     backgroundColor: chatHeaderColor,
-  //     leading: IconButton(
-  //       iconSize: 24,
-  //       icon: Icon(
-  //         Icons.arrow_back_ios,
-  //         color: AppColorsNew.appAccentColor,
-  //       ),
-  //       onPressed: () {
-  //         Navigator.of(context).pop();
-  //       },
-  //     ),
-  //     centerTitle: false,
-  //     title: Text(
-  //       'Club Chat',
-  //       style: AppStylesNew.titleBarTextStyle.copyWith(fontSize: 16),
-  //     ),
-  //   );
-  // }
-
   List<ClubChatModel> _convert() {
     List<ClubChatModel> chats = [];
     for (int i = 0; i < messages.length; i++) {
@@ -234,7 +213,8 @@ class _MessagesPageViewState extends State<MessagesPageView>
         handNum: m.handNum,
         giphyLink: m.giphyLink,
         playerTags: m.playerTags,
-        messageTimeInEpoc: m.messageTimeInEpoc,
+        messageTime: m.messageTime,
+        //messageTimeInEpoc: m.messageTimeInEpoc,
         sender: m.sender,
         sharedHand: m.sharedHand,
         playerName: m.playerName,

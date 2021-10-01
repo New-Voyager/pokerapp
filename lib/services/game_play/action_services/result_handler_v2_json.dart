@@ -250,6 +250,7 @@ class ResultHandlerV2Json {
     for (final player in gameState.playersInGame) {
       player.winner = false;
       player.highlight = false;
+      player.action.reset();
       player.highlightCards = [];
     }
 

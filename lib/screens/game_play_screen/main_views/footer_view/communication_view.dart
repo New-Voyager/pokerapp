@@ -596,9 +596,7 @@ class _CommunicationViewState extends State<CommunicationView> {
                                   // handle on hangup
                                   gameState.playerLocalConfig
                                       .inAudioConference = false;
-                                  widget.gameContextObject
-                                      .ionAudioConferenceService
-                                      .leave();
+                                  widget.gameContextObject.leaveAudio();
                                   gameState.communicationState.notify();
                                 }),
 

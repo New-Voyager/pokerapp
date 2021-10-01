@@ -44,6 +44,7 @@ import 'package:pokerapp/services/janus/janus.dart';
 import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
+import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:provider/provider.dart';
@@ -162,65 +163,67 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     return gameInfo;
   }
 
-  Future _joinAudio() async {
-    _gameContextObj.joinAudio(context);
-    return;
+  // Future _joinAudio() async {
+  //   if (_gameState.gameInfo.audioConfEnabled ?? false) {
+  //     _gameContextObj.joinAudio(context);
+  //   }
+  //   return;
 
-    if (!_gameState.audioConfEnabled) {
-      try {
-        if (_voiceTextPlayer != null) {
-          _voiceTextPlayer.resume();
-        }
-      } catch (err) {
-        log('Error when resuming audio');
-      }
-      return;
-    }
+  //   if (!_gameState.audioConfEnabled) {
+  //     try {
+  //       if (_voiceTextPlayer != null) {
+  //         _voiceTextPlayer.resume();
+  //       }
+  //     } catch (err) {
+  //       log('Error when resuming audio');
+  //     }
+  //     return;
+  //   }
 
-    final player = _gameState.currentPlayer;
-    if (_gameState.useAgora) {
-      try {
-        debugLog(widget.gameCode,
-            'agora: Player ${player.name} is joining audio conference');
-        log('agora: Player ${player.name} is joining audio conference');
+  //   final player = _gameState.currentPlayer;
+  //   if (_gameState.useAgora) {
+  //     try {
+  //       debugLog(widget.gameCode,
+  //           'agora: Player ${player.name} is joining audio conference');
+  //       log('agora: Player ${player.name} is joining audio conference');
 
-        _gameState.agoraEngine.joinChannel(_gameState.agoraToken);
-        log('agora: Player ${player.name} has joined audio conference');
-        debugLog(widget.gameCode,
-            'Player ${player.name} has joined audio conference');
-        this._gameState.communicationState.notify();
-      } catch (err) {
-        debugLog(widget.gameCode,
-            'Player ${player.name} failed to join audio conference. Error: ${err.toString()}');
-        log('Error when resuming audio');
-      }
-    } else {
-      try {
-        debugLog(widget.gameCode,
-            'Player ${player.name} is joining audio conference');
-        _gameState.janusEngine.joinChannel('test');
-        debugLog(widget.gameCode,
-            'Player ${player.name} has joined audio conference');
-      } catch (err) {
-        debugLog(widget.gameCode,
-            'Player ${player.name} failed to join audio conference. Error: ${err.toString()}');
-        log('Error when resuming audio');
-      }
-    }
-    return;
+  //       _gameState.agoraEngine.joinChannel(_gameState.agoraToken);
+  //       log('agora: Player ${player.name} has joined audio conference');
+  //       debugLog(widget.gameCode,
+  //           'Player ${player.name} has joined audio conference');
+  //       this._gameState.communicationState.notify();
+  //     } catch (err) {
+  //       debugLog(widget.gameCode,
+  //           'Player ${player.name} failed to join audio conference. Error: ${err.toString()}');
+  //       log('Error when resuming audio');
+  //     }
+  //   } else {
+  //     try {
+  //       debugLog(widget.gameCode,
+  //           'Player ${player.name} is joining audio conference');
+  //       _gameState.janusEngine.joinChannel('test');
+  //       debugLog(widget.gameCode,
+  //           'Player ${player.name} has joined audio conference');
+  //     } catch (err) {
+  //       debugLog(widget.gameCode,
+  //           'Player ${player.name} failed to join audio conference. Error: ${err.toString()}');
+  //       log('Error when resuming audio');
+  //     }
+  //   }
+  //   return;
 
-    // agora code
-    // this._audioToken = await GameService.getLiveAudioToken(widget.gameCode);
-    // print('Audio token: ${this._audioToken}');
-    // print('audio token: ${this._audioToken}');
-    // if (this._audioToken != null && this._audioToken != '') {
-    //   agora.initEngine().then((_) async {
-    //     print('Joining audio channel ${widget.gameCode}');
-    //     await agora.joinChannel(this._audioToken);
-    //     print('Joined audio channel ${widget.gameCode}');
-    //   });
-    // }
-  }
+  //   // agora code
+  //   // this._audioToken = await GameService.getLiveAudioToken(widget.gameCode);
+  //   // print('Audio token: ${this._audioToken}');
+  //   // print('audio token: ${this._audioToken}');
+  //   // if (this._audioToken != null && this._audioToken != '') {
+  //   //   agora.initEngine().then((_) async {
+  //   //     print('Joining audio channel ${widget.gameCode}');
+  //   //     await agora.joinChannel(this._audioToken);
+  //   //     print('Joined audio channel ${widget.gameCode}');
+  //   //   });
+  //   // }
+  // }
 
   /* The init method returns a Future of all the initial game constants
   * This method is also responsible for subscribing to the NATS channels */
@@ -287,24 +290,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       }
     }
 
-    if (_gameInfoModel?.audioConfEnabled ?? false) {
-      // initialize agora
-      // agora = Agora(
-      //     gameCode: widget.gameCode,
-      //     uuid: this._currentPlayer.uuid,
-      //     playerId: this._currentPlayer.id);
-
-      // if the current player is in the table, then join audio
-      for (int i = 0; i < _gameInfoModel.playersInSeats.length; i++) {
-        if (_gameInfoModel.playersInSeats[i].playerUuid ==
-            _currentPlayer.uuid) {
-          // player is in the table
-          await this._joinAudio();
-          break;
-        }
-      }
-    } else {}
-
     // _audioPlayer = AudioPlayer();
 
     if (TestService.isTesting || widget.customizationService != null) {
@@ -337,7 +322,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
             _currentPlayer.uuid) {
           // this.initPlayingTimer();
           // player is in the table
-          this._joinAudio();
+          _gameContextObj.joinAudio(context);
 
           // if gps check is enabled
           if (_gameInfoModel.gpsCheck) {
@@ -368,6 +353,24 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     if (!TestService.isTesting && widget.customizationService == null) {
       _initChatListeners(gameComService.gameMessaging);
     }
+
+    if (_gameInfoModel?.audioConfEnabled ?? false) {
+      // initialize agora
+      // agora = Agora(
+      //     gameCode: widget.gameCode,
+      //     uuid: this._currentPlayer.uuid,
+      //     playerId: this._currentPlayer.id);
+
+      // if the current player is in the table, then join audio
+      for (int i = 0; i < _gameInfoModel.playersInSeats.length; i++) {
+        if (_gameInfoModel.playersInSeats[i].playerUuid ==
+            _currentPlayer.uuid) {
+          // player is in the table
+          _gameContextObj.joinAudio(context);
+          break;
+        }
+      }
+    } else {}
 
     return _gameInfoModel;
   }
@@ -502,7 +505,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     final gameState = GameState.getState(_providerContext);
     final tableState = gameState.tableState;
     final me = gameState.me;
-    gameState.gameInfo.audioConfEnabled = true;
     /* ignore the open seat tap as the player is seated and game is running */
     if (me != null &&
         me.status == AppConstants.PLAYING &&
@@ -557,7 +559,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         }
 
         // join audio conference
-        await _joinAudio();
+        _gameContextObj.joinAudio(context);
       } catch (e) {
         // close connection dialog
         //ConnectionDialog.dismiss(context: context);
@@ -580,7 +582,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         return;
       }
       // join audio
-      await _joinAudio();
+      _gameContextObj.joinAudio(context);
     }
   }
 
@@ -960,11 +962,20 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   @override
   void afterFirstLayout(BuildContext context) {}
 
-  startGame() {
-    GamePlayScreenUtilMethods.startGame(widget.gameCode);
-    final tableState = _gameState.tableState;
-    tableState.updateGameStatusSilent(AppConstants.GAME_RUNNING);
-    _gameState.myState.notify();
+  startGame() async {
+    try {
+      ConnectionDialog.show(context: context, loadingText: "Starting...");
+      await GamePlayScreenUtilMethods.startGame(widget.gameCode);
+      await _gameState.refresh();
+      ConnectionDialog.dismiss(context: context);
+    } catch (err) {
+      ConnectionDialog.dismiss(context: context);
+      showErrorDialog(context, 'Error',
+          'Failed to start the game. Error: ${err.toString()}');
+    }
+    // final tableState = _gameState.tableState;
+    // tableState.updateGameStatusSilent(AppConstants.GAME_RUNNING);
+    // _gameState.myState.notify();
   }
 
   // Lifeccyle Methods
@@ -986,7 +997,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         if (_gameState != null && !_gameState.uiClosing) {
           AudioService.resume();
           log("Joining AudioConference from Lifecycle");
-          _joinAudio();
+          _gameContextObj.joinAudio(context);
           if (_locationUpdates != null) {
             _locationUpdates.start();
           }

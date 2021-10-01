@@ -263,7 +263,8 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                         },
                                       ),
                                       ListTileItem(
-                                        text: _appScreenText['customizeGameScreen'],
+                                        text: _appScreenText[
+                                            'customizeGameScreen'],
                                         imagePath:
                                             AppAssetsNew.customizeImagePath,
                                         index: 2,
@@ -276,7 +277,7 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                           //   Routes.customize,
                                           // );
                                         },
-                                      ),                                      
+                                      ),
                                     ],
                                   ),
                                 ),

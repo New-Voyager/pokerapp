@@ -82,7 +82,7 @@ class NewGameModel {
   bool botGame = true;
   Rewards rewards;
   bool muckLosingHand = false;
-  bool audioConference = false;
+  bool audioConference = true;
   bool allowRabbitHunt = true;
   bool showHandRank = false;
   bool useAgora = false;
@@ -188,6 +188,7 @@ class NewGameModel {
   }
 
   Map<String, dynamic> toJson() {
+    this.smallBlind = (this.bigBlind / 2).toInt().toDouble();
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['title'] = this.title;
     data['gameType'] = this.gameType.toString().replaceFirst('GameType.', '');

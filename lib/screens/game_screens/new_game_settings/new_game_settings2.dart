@@ -15,7 +15,7 @@ import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/widgets/button_widget.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
-import 'package:pokerapp/widgets/custom_text_button.dart';
+import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:pokerapp/widgets/heading_widget.dart';
 import 'package:pokerapp/widgets/radio_list_widget.dart';
 import 'package:pokerapp/widgets/round_color_button.dart';
@@ -34,34 +34,6 @@ class NewGameSettings2 extends StatelessWidget {
         Routes.game_play,
         arguments: gameCode,
       );
-
-  static Future<void> _showError(
-      BuildContext context, String title, String error) async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(title),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Text(error),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            CustomTextButton(
-              text: _appScreenText['OK'],
-              onTap: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
 
   static Future<void> show(
     BuildContext context, {
@@ -105,7 +77,7 @@ class NewGameSettings2 extends StatelessWidget {
     if (gameCode != null)
       _joinGame(context, gameCode);
     else
-      _showError(context, _appScreenText['ERROR'],
+      showErrorDialog(context, _appScreenText['ERROR'],
           _appScreenText['CREATINGGAMEFAILED']);
   }
 

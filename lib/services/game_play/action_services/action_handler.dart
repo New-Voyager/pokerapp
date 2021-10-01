@@ -240,6 +240,8 @@ class PlayerActionHandler {
     // Audio.stop(context: context); fixme: this also does not play when we need to notify the user of his/her turn
     // log('handle next action start');        // reset result in progress flag
     try {
+      // stop game audio
+      AudioService.stop();
       var actionChange = message.actionChange;
       int seatNo = actionChange.seatNo;
       //log('Hand Message: ::handleNextAction:: START seatNo: $seatNo');

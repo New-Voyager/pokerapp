@@ -70,10 +70,10 @@ Select your phone on the devices drop-down then Run main.dart.
 
 ## To build for test releases
 flutter build  apk  --release --split-per-abi
-Upload token: qf4U9aqAL4RLK3oMJdEhAIkTWfgYT3qVAwOaxYIiEY
+Upload token: PHPZRIDzEHNwmvf9hDfxznGolzanbZfhZpXtrDtO7K
 https://www.diawi.com/
 
-curl https://upload.diawi.com/ -F token='qf4U9aqAL4RLK3oMJdEhAIkTWfgYT3qVAwOaxYIiEY' \
+curl https://upload.diawi.com/ -F token='PHPZRIDzEHNwmvf9hDfxznGolzanbZfhZpXtrDtO7K' \
 -F file=@build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk
 
 ## To run from command line

@@ -242,15 +242,15 @@ class _GameOptionState extends State<GameOption> {
       final me = widget.gameState.me;
       if (me != null && me.stack < widget.gameState.gameInfo.buyInMax) {
         gameActions.add(OptionItemModel(
-            title: _appScreenText['reload'],
-            iconData: Icons.shop,
-            onTap: (context) {
-              this.onReload();
-            },
-          ));
+          title: _appScreenText['reload'],
+          iconData: Icons.shop,
+          onTap: (context) {
+            this.onReload();
+          },
+        ));
       }
     }
- 
+
     if (widget.gameState.isGameRunning) {
       if (isPlaying) {
         gameActions.add(
@@ -846,6 +846,19 @@ class _GameOptionState extends State<GameOption> {
         // setting the value saves it to local storage too
         widget.gameState.playerLocalConfig.gameSound = v;
         log('In toggle button widget, gameSounds = ${widget.gameState.playerLocalConfig.gameSound}');
+        if (closed) return;
+        setState(() {});
+      },
+    ));
+
+    // Animations
+    children.add(_buildCheckBox(
+      text: 'Animations',
+      value: widget.gameState.playerLocalConfig.animations,
+      onChange: (bool v) async {
+        // setting the value saves it to local storage too
+        widget.gameState.playerLocalConfig.animations = v;
+        log('In toggle button widget, animations = ${widget.gameState.playerLocalConfig.animations}');
         if (closed) return;
         setState(() {});
       },

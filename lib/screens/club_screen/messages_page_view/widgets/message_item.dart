@@ -79,46 +79,6 @@ class MessageItem extends StatelessWidget {
     );
   }
 
-//   Widget _buildClubMessage(BuildContext context, AppTheme theme, ClubChatModel messageModel) {
-//     if (messageModel.messageType == MessageType.JOIN_CLUB ||
-//         messageModel.messageType == MessageType.KICKED_OUT ||
-//         messageModel.messageType == MessageType.LEAVE_CLUB) {
-//       String text = '';
-//       if (messageModel.messageType == MessageType.JOIN_CLUB) {
-//         text = '${messageModel.playerName} joined the club';
-//       }
-//       if (messageModel.messageType == MessageType.KICKED_OUT) {
-//         text = '${messageModel.playerName} is kicked out';
-//       }
-//       if (messageModel.messageType == MessageType.LEAVE_CLUB) {
-//         text = '${messageModel.playerName} left the club';
-//       }
-
-//       return
-//       Container(
-//           constraints: BoxConstraints(
-//             maxWidth: MediaQuery.of(context).size.width * 0.70,
-//           ),
-//           padding: EdgeInsets.all(10.0),
-//           decoration: BoxDecoration(
-//             borderRadius: BorderRadius.circular(5.0),
-//             color: Colors.blueGrey), // theme.primaryColorWithDark()),
-//           child: Padding(
-//             padding: EdgeInsets.all(20),
-//             child:       Container(
-//                       padding: EdgeInsets.all(3),
-//                       child: Text(
-//                         text,
-//                         style: AppDecorators.getHeadLine4Style(theme: theme),
-//                       ),
-//                     ),
-//           )
-//           );
-// ;
-//       //return _buildClubMessage(context, _appScreenText, messageModel);
-//     }
-//   }
-
   Widget _buildAvatar(AppTheme theme) {
     if (messageModel.isGroupLatest)
       return ChatUserAvatar(
@@ -181,8 +141,8 @@ class MessageItem extends StatelessWidget {
       'uuid': messageModel.sharedHand.sharedByPlayerUuid,
       'name': messageModel.sharedHand.sharedByPlayerName
     };
-    log("TIME : ${DateTime.fromMillisecondsSinceEpoch(messageModel.messageTimeInEpoc)}");
-    log("TIME : ${DateTime.now().millisecondsSinceEpoch}");
+    // log("TIME : ${DateTime.fromMillisecondsSinceEpoch(messageModel.messageTimeInEpoc)}");
+    // log("TIME : ${DateTime.now().millisecondsSinceEpoch}");
 
     return Container(
         padding: EdgeInsets.all(8),
@@ -208,7 +168,7 @@ class MessageItem extends StatelessWidget {
                     children: [
                       RichText(
                         text: TextSpan(
-                          text: "$playerName",
+                          text: playerName,
                           style: AppDecorators.getAccentTextStyle(theme: theme),
                           children: [
                             TextSpan(
@@ -270,8 +230,7 @@ class MessageItem extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   ChatTimeWidget(
-                    date: DateTime.fromMillisecondsSinceEpoch(
-                        messageModel.messageTimeInEpoc),
+                    date: messageModel.messageTime,
                     isSender: isMe,
                   )
                 ],
@@ -325,9 +284,7 @@ class MessageItem extends StatelessWidget {
               messageModel.messageType == MessageType.GIPHY
                   ? GiphyImageWidget(
                       imgUrl: messageModel.giphyLink,
-                      date: DateTime.fromMillisecondsSinceEpoch(
-                        messageModel.messageTimeInEpoc,
-                      ),
+                      date: messageModel.messageTime,
                       isMe: isMe,
                     )
                   : Container(
@@ -344,9 +301,7 @@ class MessageItem extends StatelessWidget {
               if (messageModel.messageType != MessageType.GIPHY)
                 ChatTimeWidget(
                   isSender: isMe,
-                  date: DateTime.fromMillisecondsSinceEpoch(
-                    messageModel.messageTimeInEpoc,
-                  ),
+                  date: messageModel.messageTime,
                 ),
             ],
           ),
