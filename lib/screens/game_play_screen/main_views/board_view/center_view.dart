@@ -338,7 +338,7 @@ class _CenterViewState extends State<CenterView> {
           ),
 
           // divider
-          SizedBox(height: boardAttributes.centerGap),
+          SizedBox(height: boardAttributes.potsViewGap),
 
           Stack(
             alignment: Alignment.topCenter,

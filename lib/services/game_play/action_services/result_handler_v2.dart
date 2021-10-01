@@ -171,9 +171,11 @@ class ResultHandlerV2 {
     }
     gameState.handResultState.notify();
 
-    for (final seat in gameState.seats) {
-      log('ResultMessage: ${seat.serverSeatPos} name: ${seat.player.name} winner: ${seat.player.winner}');
-    }
+    // for (final seat in gameState.seats) {
+    //   if (seat.player != null) {
+    //     log('ResultMessage: ${seat.serverSeatPos} name: ${seat.player.name} winner: ${seat.player.winner}');
+    //   }
+    // }
 
     for (int i = totalPots - 1; i >= 0; i--) {
       final potWinner = result.potWinners[i];
@@ -328,9 +330,9 @@ class ResultHandlerV2 {
     final boardIndex = 1,
     final bool setState = false,
   }) async {
-    for (final seat in gameState.seats) {
-      log('ResultMessage 111: ${seat.serverSeatPos} name: ${seat.player.name} winner: ${seat.player.winner}');
-    }
+    // for (final seat in gameState.seats) {
+    //   log('ResultMessage 111: ${seat.serverSeatPos} name: ${seat.player.name} winner: ${seat.player.winner}');
+    // }
 
     /* highlight the hi winners */
     final seat = gameState.getSeat(winner.seatNo);

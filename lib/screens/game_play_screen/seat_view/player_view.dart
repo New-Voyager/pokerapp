@@ -202,7 +202,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
 
     return Transform.translate(
       // TODO: NEED TO VERIFY THIS FOR DIFF SCREEN SIZES
-      offset: Offset(0.0, 20.ph),
+      offset: Offset(0.0, 10.ph),
       child: Container(
         height: widget.boardAttributes.namePlateSize.height,
         width: widget.boardAttributes.namePlateSize.width,

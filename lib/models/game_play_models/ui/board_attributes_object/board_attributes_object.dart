@@ -715,7 +715,7 @@ class BoardAttributesObject extends ChangeNotifier {
         lessThan6Inches: Offset(0.0, 15.0),
         equalTo6Inches: Offset(0.0, 10.0),
         equalTo7Inches: Offset.zero,
-        greaterThan7Inches: Offset(0.0, 70.0),
+        greaterThan7Inches: Offset(0.0, 60.ph),
       ) as Offset;
 
   double get centerPotScale => _decide(
@@ -729,7 +729,7 @@ class BoardAttributesObject extends ChangeNotifier {
         lessThan6Inches: 0.85,
         equalTo6Inches: 1.0,
         equalTo7Inches: 1.0,
-        greaterThan7Inches: 1.5,
+        greaterThan7Inches: 1.0,
       ) as double;
 
   double get centerRankStrScale => _decide(
@@ -788,7 +788,14 @@ class BoardAttributesObject extends ChangeNotifier {
         lessThan6Inches: 0.0,
         equalTo6Inches: 0.0,
         equalTo7Inches: 10.0,
-        greaterThan7Inches: 15.0,
+        greaterThan7Inches: 2.ph,
+      ) as double;
+
+  double get potsViewGap => _decide(
+        lessThan6Inches: 0.0,
+        equalTo6Inches: 0.0,
+        equalTo7Inches: 10.0,
+        greaterThan7Inches: 2.ph,
       ) as double;
 
   /* table center view offsets, scaling and sizes */
