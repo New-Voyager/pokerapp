@@ -13,6 +13,7 @@ import 'package:pokerapp/services/data/box_type.dart';
 import 'package:pokerapp/services/data/hive_datasource_impl.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/formatter.dart';
+import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/widgets/button_widget.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
@@ -64,14 +65,19 @@ class NewGameSettings2 extends StatelessWidget {
     gm.dealerChoiceGames = subGameTypes;
 
     String gameCode;
-
-    if (clubCode != null && clubCode.isNotEmpty) {
-      gameCode = await GameService.configureClubGame(
-        clubCode,
-        gm,
-      );
-    } else {
-      gameCode = await GameService.configurePlayerGame(gm);
+    try {
+      ConnectionDialog.show(context: context, loadingText: 'Hosting Game...');
+      if (clubCode != null && clubCode.isNotEmpty) {
+        gameCode = await GameService.configureClubGame(
+          clubCode,
+          gm,
+        );
+      } else {
+        gameCode = await GameService.configurePlayerGame(gm);
+      }
+      ConnectionDialog.dismiss(context: context);
+    } catch(err) {
+      ConnectionDialog.dismiss(context: context);
     }
 
     if (gameCode != null)
