@@ -44,8 +44,7 @@ class CenterView extends StatefulWidget {
   _CenterViewState createState() => _CenterViewState();
 }
 
-class _CenterViewState extends State<CenterView> 
-  with WidgetsBindingObserver {
+class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
   TableState get tableState => widget.tableState;
   AppTextScreen _appScreenText;
 
@@ -171,11 +170,12 @@ class _CenterViewState extends State<CenterView>
       final boardAttributes = gameState.getBoardAttributes(context);
       // get pot view position and store in board attributes
       if (boardAttributes.potKey != null) {
-        final RenderBox potViewBox = boardAttributes.potKey.currentContext.findRenderObject();
+        final RenderBox potViewBox =
+            boardAttributes.potKey.currentContext.findRenderObject();
         boardAttributes.potGlobalPos = potViewBox.localToGlobal(Offset(0, 0));
         log('BoardView global potViewPos: ${boardAttributes.potGlobalPos}');
       }
-    });    
+    });
   }
 
   @override
@@ -183,7 +183,6 @@ class _CenterViewState extends State<CenterView>
     tableState.removeListener(tableStateListener);
     super.dispose();
   }
-
 
   Widget _mainBuild(
     BuildContext context, {

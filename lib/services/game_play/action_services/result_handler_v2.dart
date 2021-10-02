@@ -56,7 +56,7 @@ class ResultHandlerV2 {
     log('Result: pauseTimeSecs: ${result.pauseTimeSecs}');
     tableState = gameState.tableState;
     for (final seat in gameState.seats) {
-      if (seat.player != null) {
+      if (seat != null && seat.player != null) {
         final playerInfo = result.playerInfo[seat.player.seatNo];
         if (playerInfo == null) {
           continue;
@@ -231,7 +231,7 @@ class ResultHandlerV2 {
         }
 
         for (final seat in gameState.seats) {
-          if (seat.player != null) {
+          if (seat != null && seat.player != null) {
             final playerInfo = result.playerInfo[seat.player.seatNo];
             seat.player.cards = playerInfo.cards;
             log('UpdateSeat: show winnners updating cards for seat: ${seat.player.seatNo} player: ${seat.player.name} cards: ${seat.player.cards}');

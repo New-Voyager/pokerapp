@@ -191,7 +191,7 @@ class NewGameModel {
   }
 
   Map<String, dynamic> toJson() {
-    this.smallBlind = (this.bigBlind / 2).toInt().toDouble();
+    this.smallBlind = (this.bigBlind ~/ 2).toDouble();
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['title'] = this.title;
     data['gameType'] = this.gameType.toString().replaceFirst('GameType.', '');

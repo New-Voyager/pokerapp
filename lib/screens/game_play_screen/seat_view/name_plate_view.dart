@@ -44,17 +44,19 @@ class NamePlateWidget extends StatelessWidget {
         Widget displayWidget;
 
         if (gameContextObject.isHost() && hostSeatChange.seatChangeInProgress) {
-          log('SeatChange: Seat change in progress: building seat [${seat.serverSeatPos}]');
+          log('SeatChange: Seat change in progress: building seat [${seat.seatPos.toString()}]');
           displayWidget = Draggable(
             data: seat.serverSeatPos,
-            onDragEnd: (_) {
-              hostSeatChange.onSeatDragEnd();
+            onDragEnd: (DraggableDetails details) {
+              log('SeatChange: Drag ended [${seat.seatPos.toString()} player: ${seat.player?.name}}]');
+              hostSeatChange.onSeatDragEnd(details);
             },
             onDragStarted: () {
-              hostSeatChange.onSeatDragStart(seat.serverSeatPos);
+              log('SeatChange: Dragging [${seat.seatPos.toString()} player: ${seat.player?.name}}]');
+              hostSeatChange.onSeatDragStart(seat);
             },
             onDraggableCanceled: (_, __) {
-              hostSeatChange.onSeatDragEnd();
+              hostSeatChange.onSeatDragEnd(null);
             },
             feedback: buildSeat(
               context,
@@ -111,20 +113,20 @@ class NamePlateWidget extends StatelessWidget {
         //log('SeatChange: [${seat.serverSeatPos}] Seat change in progress');
         SeatChangeStatus seatChangeStatus;
         // are we dragging?
-        if (seat.serverSeatPos != null) {
+        if (seat != null) {
           seatChangeStatus =
-              hostSeatChange.allSeatChangeStatus[seat.serverSeatPos];
+              hostSeatChange.allSeatChangeStatus[seat.localSeatPos];
         }
         if (seatChangeStatus != null) {
           if (seatChangeStatus.isDragging || isFeedback) {
-            log('SeatChange: [${seat.serverSeatPos}] seatChangeStatus.isDragging: ${seatChangeStatus.isDragging} isFeedback: $isFeedback');
+            log('SeatChange: [${seat.localSeatPos}] seatChangeStatus.isDragging: ${seatChangeStatus.isDragging} isFeedback: $isFeedback');
             shadow = BoxShadow(
               color: Colors.green,
               blurRadius: 20.0,
               spreadRadius: 8.0,
             );
           } else if (seatChangeStatus.isDropAble) {
-            log('SeatChange: [${seat.serverSeatPos}] seatChangeStatus.isDropAble: ${seatChangeStatus.isDropAble} isFeedback: $isFeedback');
+            log('SeatChange: [${seat.localSeatPos}] seatChangeStatus.isDropAble: ${seatChangeStatus.isDropAble} isFeedback: $isFeedback');
             shadow = BoxShadow(
               color: Colors.blue,
               blurRadius: 20.0,
@@ -238,6 +240,8 @@ class NamePlateWidget extends StatelessWidget {
       ],
     );
 
+    log('SeatView: Nameplate build ${seat.serverSeatPos}:L${seat.localSeatPos} pos: ${seat.seatPos.toString()} player: ${seat.player?.name} highlight: ${seat.player?.highlight}');
+
     //Widget plateWidget;
     if (seat.player?.highlight ?? false) {
       int current = seat.actionTimer.getProgressTime();
@@ -295,6 +299,10 @@ class NamePlateWidget extends StatelessWidget {
   }
 
   Widget bottomWidget(BuildContext context, AppTheme theme) {
+    if (seat.player == null) {
+      return Container();
+    }
+
     if (seat.player.inBreak &&
         seat.player.breakTimeExpAt != null &&
         !seat.player.isMe) {

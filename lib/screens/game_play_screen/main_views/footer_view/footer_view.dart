@@ -229,12 +229,10 @@ class _FooterViewState extends State<FooterView>
     // FIXME: REBUILD-FIX: need to check if seat change prompts are rebuilding as expected
     return Consumer<SeatChangeNotifier>(
       builder: (_, hostSeatChange, __) {
-        final bool seatChangeInProgress = hostSeatChange.seatChangeInProgress ||
-            gameState.hostSeatChangeInProgress;
-
-        final bool showSeatChangeConfirmWidget = seatChangeInProgress &&
-            isHost &&
-            !gameState.playerSeatChangeInProgress;
+        final bool showSeatChangeConfirmWidget =
+            gameState.hostSeatChangeInProgress &&
+                isHost &&
+                !gameState.playerSeatChangeInProgress;
 
         return showSeatChangeConfirmWidget
             ? Align(
@@ -281,6 +279,10 @@ class _FooterViewState extends State<FooterView>
       // the player can join the waitlist
       log('Player is not playing, but can join waitlist');
       children.add(_buildMainView(gameState));
+
+      /* seat confirm widget */
+      children.add(_buildSeatConfirmWidget(context));
+
       /* hand analyse view */
       children.add(_buildHandAnalyseView(context));
       /* communication widgets */

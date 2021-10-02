@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
@@ -18,7 +19,7 @@ import 'package:provider/provider.dart';
 class BoardView extends StatelessWidget {
   final GameComService gameComService;
   final GameInfoModel gameInfo;
-  final Function(int index) onUserTap;
+  final Function(Seat seat) onUserTap;
   final Function() onStartGame;
   AppTextScreen _appScreenText;
 

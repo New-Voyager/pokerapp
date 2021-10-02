@@ -200,7 +200,9 @@ class GameUpdateService {
     @required var playerUpdate,
   }) async {
     int seatNo = playerUpdate['seatNo'];
-    final player = _gameState.fromSeat(seatNo);
+    final seat = _gameState.getSeat(seatNo);
+    final player = seat.player;
+
     final status = playerUpdate['status'];
     final newUpdate = playerUpdate['newUpdate'];
 
@@ -235,7 +237,6 @@ class GameUpdateService {
     // wait for "AppConstants.userPopUpMessageHoldDuration" showing the BUY-IN amount
     // after that remove the buyIn amount information
     await Future.delayed(AppConstants.userPopUpMessageHoldDuration);
-    final seat = _gameState.getSeat(seatNo);
 
     bool update = true;
     if (_gameState.handInProgress && seat != null) {
@@ -452,8 +453,8 @@ class GameUpdateService {
     int stack = playerUpdate['stack'] as int;
 
     final gameInfo = _gameState.gameInfo;
-    final player1 = _gameState.fromSeat(oldSeatNo);
     final player1Seat = _gameState.getSeat(oldSeatNo);
+    final player1 = player1Seat.player;
 
     if (player1 == null) return;
     if (player1Seat == null) return;
@@ -511,7 +512,10 @@ class GameUpdateService {
           .replaceAll('PlayerStatus.', '');
       // get break exp time
       for (final player in _gameInfoModel.playersInSeats) {
-        if (player.seatNo == seat.serverSeatPos) {
+        if (seat.player == null) {
+          continue;
+        }
+        if (player.seatNo == seat.player.seatNo) {
           seat.player.buyInTimeExpAt = player.buyInTimeExpAt.toLocal();
           DateTime now = DateTime.now();
           if (seat.player.buyInTimeExpAt != null) {
@@ -1019,7 +1023,7 @@ class GameUpdateService {
         tableUpdate['seatChangeSeatNo'].map<int>((s) => int.parse(s)).toList();
 
     if (closed || _gameState.uiClosing) return;
-    final player = _gameState.fromSeat(seatChangeSeatNo[0]);
+    final player = _gameState.getSeat(seatChangeSeatNo[0]).player;
     assert(player != null);
 
     /* If I am in this list, show me a confirmation popup */
@@ -1182,9 +1186,9 @@ class GameUpdateService {
       );
 
       // show firework
-      final player = gameState.fromSeat(seatNo);
-      player.showFirework = true;
       final seat = gameState.getSeat(seatNo);
+      final player = seat.player;
+      player.showFirework = true;
       AudioService.playFireworks(mute: _gameState.playerLocalConfig.mute);
       seat.notify();
       await Future.delayed(AppConstants.notificationDuration);
@@ -1238,6 +1242,7 @@ class GameUpdateService {
         resetBoard();
         _gameState.refresh();
         tableState.updateTableStatusSilent(AppConstants.GAME_ENDED);
+        _gameState.seatsOnTableState.notify();
       } else if (gameStatus == AppConstants.GAME_PAUSED) {
         log('Game has paused. Update the state');
         resetBoard();
@@ -1479,5 +1484,6 @@ class GameUpdateService {
   void resetBoard() async {
     _gameState.clear();
     _gameState.refresh();
+    _gameState.seatsOnTableState.notify();
   }
 }

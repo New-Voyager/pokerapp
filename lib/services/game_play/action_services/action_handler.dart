@@ -250,7 +250,8 @@ class PlayerActionHandler {
       final TableState tableState = _gameState.tableState;
 
       if (_gameState.uiClosing) return;
-      final player = _gameState.fromSeat(seatNo);
+      final seat = _gameState.getSeat(seatNo);
+      final player = seat.player;
       assert(player != null);
 
       if (!player.isMe) {
@@ -271,7 +272,7 @@ class PlayerActionHandler {
       player.highlight = true;
 
       if (_gameState.uiClosing) return;
-      final seat = _gameState.getSeat(seatNo);
+      log('SeatView: Next action ${seat.serverSeatPos}:L${seat.localSeatPos} pos: ${seat.seatPos.toString()} player: ${seat.player?.name} highlight: ${seat.player.highlight}');
       seat.setActionTimer(_gameState.gameInfo.actionTime);
       seat.notify();
 

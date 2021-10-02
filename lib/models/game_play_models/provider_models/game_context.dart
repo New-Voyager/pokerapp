@@ -7,8 +7,6 @@ import 'package:pokerapp/services/game_play/action_services/hand_player_text_ser
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/ion/ion.dart';
 import 'package:pokerapp/services/nats/message.dart';
-import 'package:pokerapp/services/test/test_service.dart';
-import 'package:pokerapp/widgets/dialogs.dart';
 
 import 'game_state.dart';
 

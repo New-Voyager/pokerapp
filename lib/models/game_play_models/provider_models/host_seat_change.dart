@@ -1,6 +1,8 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 
+import 'seat.dart';
+
 class SeatChangeStatus {
   bool isDropAble;
   bool isDragging;
@@ -92,20 +94,20 @@ class SeatChangeNotifier extends ChangeNotifier {
     return this._seatChangeInProgress;
   }
 
-  onSeatDragStart(int seatNo) {
+  onSeatDragStart(Seat seat) {
     // print("seatNo $seatNo");
     log('SeatChange: Drag started');
-    allSeatChangeStatus[seatNo].isDragging = true;
+    allSeatChangeStatus[seat.localSeatPos].isDragging = true;
     for (int i = 0; i < allSeatChangeStatus.length; i++) {
-      if (i != seatNo) {
+      if (i != seat.localSeatPos) {
         allSeatChangeStatus[i].isDropAble = true;
       }
     }
     notifyAll();
   }
 
-  onSeatDragEnd() {
-    log('SeatChange: Drag ended');
+  onSeatDragEnd(DraggableDetails details) {
+    log('SeatChange: Drag ended details: ${details.toString()}');
     for (int i = 0; i < allSeatChangeStatus.length; i++) {
       allSeatChangeStatus[i].isDropAble = false;
       allSeatChangeStatus[i].isDragging = false;

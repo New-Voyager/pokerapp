@@ -69,7 +69,7 @@ class _TimeBankWidgetState extends State<TimeBankWidget> {
               log('TimeBank: extend time $extendTime');
               gameContextObj.handActionProtoService.extendTime(
                   mySeat.player.playerId,
-                  mySeat.serverSeatPos,
+                  mySeat.player.seatNo,
                   gameState.handInfo.handNum,
                   extendTime);
             }

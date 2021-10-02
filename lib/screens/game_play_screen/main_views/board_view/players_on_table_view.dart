@@ -17,7 +17,6 @@ import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:provider/provider.dart';
-import 'package:audioplayers/audioplayers.dart';
 
 const double _lottieAnimationContainerSize = 120.0;
 const double _animatingAssetContainerSize = 40.0;
@@ -29,7 +28,7 @@ const Duration _animatingWidgetDuration = const Duration(milliseconds: 1000);
 // PlayersOnTableView encapsulates the players sitting on the table.
 // This view uses Stack layout to place the UserView on top of the table.
 class PlayersOnTableView extends StatefulWidget {
-  final Function(int index) onUserTap;
+  final Function(Seat seat) onUserTap;
   final isBoardHorizontal;
   final double heightOfBoard;
   final double widthOfBoard;
@@ -120,7 +119,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
       if (fromSeatNo == null || toSeatNo == null) return;
       if (fromSeatNo == 0 || toSeatNo == 0) return;
 
-      log('Seat Change data: $fromSeatNo (${fromSeat.player.name}, ${fromSeat.uiSeatPos.toString()}) and $toSeatNo (${toSeat.player.name} ${toSeat.uiSeatPos.toString()})');
+      log('Seat Change data: $fromSeatNo (${fromSeat.player.name}, ${fromSeat.seatPos.toString()}) and $toSeatNo (${toSeat.player.name} ${toSeat.seatPos.toString()})');
 
       final positions = findPositionOfFromAndToUser(
         fromSeat: fromSeatNo,
@@ -390,38 +389,92 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
       me = widget.gameState.me;
     }
 
+    log('PlayersOnTable: getPlayers');
     final maxPlayers = gameState.gameInfo?.maxPlayers ?? 9;
     index = -1;
     // update seat states in game state
-    final seatsState = this.getSeats(context, widget.gameState.playersInGame);
+    //final seatsState = this.getSeats(context, widget.gameState.playersInGame);
     final boardAttribs =
         Provider.of<BoardAttributesObject>(context, listen: false);
 
-    final seats = seatsState.asMap().entries.map(
-      (var u) {
-        index++;
-        return Consumer<SeatChangeNotifier>(
-          builder: (_, scn, __) {
-            return _positionedForUsers(
-              boardAttribs: boardAttribs,
-              isBoardHorizontal: widget.isBoardHorizontal,
-              seat: u.value,
-              heightOfBoard: widget.heightOfBoard,
-              widthOfBoard: widget.widthOfBoard,
-              seatPos: getAdjustedSeatPosition(
-                u.key,
-                maxPlayers,
-                me != null,
-                me?.seatNo,
-                seatChangeInProgress: scn.seatChangeInProgress,
-              ),
-              isPresent: me != null,
-              onUserTap: widget.onUserTap,
-            );
-          }
-        );
-      },
-    ).toList();
+    // start seating
+    // if i am in the table, i will be sitting in bottom center (local seat 1)
+    // if i am not in the table, the server seat 1 will be sitting in the bottom center
+    int serverSeatNo = 1;
+    if (!gameState.hostSeatChangeInProgress) {
+      for (final player in gameState.playersInGame) {
+        if (player.isMe) {
+          serverSeatNo = player.seatNo;
+          break;
+        }
+      }
+    }
+    log('PlayersOnTable: getPlayers serverSeatNo: $serverSeatNo');
+
+    List<Widget> seats = [];
+    for (int localSeat = 1;
+        localSeat <= gameState.gameInfo.maxPlayers;
+        localSeat++) {
+      PlayerModel playerInSeat;
+      // find the player who is in the seat
+      for (PlayerModel model in gameState.playersInGame) {
+        if (model.seatNo == serverSeatNo) {
+          playerInSeat = model;
+          break;
+        }
+      }
+      Seat seat;
+      if (playerInSeat != null) {
+        seat = widget.gameState.seatPlayer(localSeat, playerInSeat);
+      } else {
+        // open seat
+        seat = widget.gameState.seatPlayer(localSeat, null);
+      }
+      seat.serverSeatPos = serverSeatNo;
+      Widget seatWidget = positionUser(
+        boardAttribs: boardAttribs,
+        isBoardHorizontal: true,
+        maxPlayers: gameState.gameInfo.maxPlayers,
+        seat: seat,
+        heightOfBoard: widget.heightOfBoard,
+        widthOfBoard: widget.widthOfBoard,
+        seatPosIndex: localSeat - 1,
+        isPresent: playerInSeat != null,
+        onUserTap: widget.onUserTap,
+      );
+      seats.add(seatWidget);
+      // get local seat
+      serverSeatNo++;
+      if (serverSeatNo > gameState.gameInfo.maxPlayers) {
+        serverSeatNo = 1;
+      }
+    }
+
+    // final seats = seatsState.asMap().entries.map(
+    //   (var u) {
+    //     index++;
+    //     return Consumer<SeatChangeNotifier>(
+    //       builder: (_, scn, __) {
+    //         return _positionedForUsers(
+    //           boardAttribs: boardAttribs,
+    //           isBoardHorizontal: widget.isBoardHorizontal,
+    //           seat: u.value,
+    //           heightOfBoard: widget.heightOfBoard,
+    //           widthOfBoard: widget.widthOfBoard,
+    //           seatPos: getAdjustedSeatPosition(
+    //             u.key,
+    //             maxPlayers,
+    //             me != null,
+    //             me?.seatNo,
+    //             seatChangeInProgress: scn.seatChangeInProgress,
+    //           ),
+    //           isPresent: me != null,
+    //           onUserTap: widget.onUserTap,
+    //         );
+    //       }
+    //     );
+    //   },
+    // ).toList();
 
     return seats;
   }
@@ -492,14 +545,10 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
   Widget createUserView({
     @required bool isBoardHorizontal,
     Seat seat,
-    SeatPos seatPos,
-    int seatPosIndex,
     Function onUserTap,
     Alignment cardsAlignment,
   }) {
     Widget userView;
-    seat.uiSeatPos = seatPos;
-    //debugPrint('Creating user view for seat: ${seat.serverSeatPos}');
     userView = ListenableProvider<Seat>(
       create: (_) => seat,
       builder: (context, _) {
@@ -530,8 +579,6 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
                   cardsAlignment: cardsAlignment,
                   onUserTap: onUserTap,
                   boardAttributes: boardAttributes,
-                  seatPos: seatPos,
-                  seatPosIndex: seatPosIndex,
                 ),
               ),
             );
@@ -540,65 +587,6 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
       },
     );
     return userView;
-  }
-
-  Map<int, SeatPos> getSeatLocations(int maxSeats) {
-    assert(maxSeats != 1);
-    assert(maxSeats != 3);
-    assert(maxSeats != 5);
-    assert(maxSeats != 7);
-
-    switch (maxSeats) {
-      case 9:
-        return {
-          1: SeatPos.bottomCenter,
-          2: SeatPos.bottomLeft,
-          3: SeatPos.middleLeft,
-          4: SeatPos.topLeft,
-          5: SeatPos.topCenter1,
-          6: SeatPos.topCenter2,
-          7: SeatPos.topRight,
-          8: SeatPos.middleRight,
-          9: SeatPos.bottomRight
-        };
-      case 8:
-        return {
-          1: SeatPos.bottomCenter,
-          2: SeatPos.bottomLeft,
-          3: SeatPos.middleLeft,
-          4: SeatPos.topLeft,
-          5: SeatPos.topCenter,
-          6: SeatPos.topRight,
-          7: SeatPos.middleRight,
-          8: SeatPos.bottomRight
-        };
-      case 6:
-        return {
-          1: SeatPos.bottomCenter,
-          2: SeatPos.middleLeft,
-          3: SeatPos.topLeft,
-          4: SeatPos.topCenter,
-          5: SeatPos.topRight,
-          6: SeatPos.middleRight,
-        };
-
-      case 4:
-        return {
-          1: SeatPos.bottomCenter,
-          2: SeatPos.middleLeft,
-          3: SeatPos.topCenter,
-          4: SeatPos.middleRight,
-        };
-
-      case 2:
-        return {
-          1: SeatPos.bottomCenter,
-          2: SeatPos.topCenter,
-        };
-
-      default:
-        return {};
-    }
   }
 
   Widget positionUser({
@@ -631,8 +619,6 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
 
     Widget userView = createUserView(
       isBoardHorizontal: isBoardHorizontal,
-      seatPos: seatPos,
-      seatPosIndex: seatPosIndex,
       seat: seat,
       cardsAlignment: cardsAlignment,
       onUserTap: onUserTap,

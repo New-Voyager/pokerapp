@@ -39,11 +39,9 @@ const Duration _lottieAnimationDuration = const Duration(milliseconds: 3000);
 class PlayerView extends StatefulWidget {
   final Seat seat;
   final Alignment cardsAlignment;
-  final Function(int) onUserTap;
+  final Function(Seat seat) onUserTap;
   final GameComService gameComService;
   final BoardAttributesObject boardAttributes;
-  final int seatPosIndex;
-  final SeatPos seatPos;
   final GameState gameState;
 
   PlayerView(
@@ -52,8 +50,6 @@ class PlayerView extends StatefulWidget {
       @required this.onUserTap,
       @required this.gameComService,
       @required this.boardAttributes,
-      @required this.seatPosIndex,
-      @required this.seatPos,
       this.cardsAlignment = Alignment.centerRight,
       this.gameState})
       : super(key: key);
@@ -129,7 +125,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
     if (seatChangeContext != null && seatChangeContext.seatChangeInProgress) {
       return;
     }
-    log('seat ${widget.seat.serverSeatPos} is tapped');
+    log('seat ${widget.seat.seatPos.toString()} is tapped');
     if (widget.seat.isOpen) {
       final tableState = widget.gameState.tableState;
       if (widget.gameState.myStatus == AppConstants.PLAYING &&
@@ -138,7 +134,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
         return;
       }
       // the player tapped to sit-in
-      widget.onUserTap(widget.seat.serverSeatPos);
+      widget.onUserTap(widget.seat);
     } else {
       // the player tapped to see the player profile
       final gameState = Provider.of<GameState>(
@@ -157,7 +153,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
           return;
         }
       }
-      if (me != null && widget.seat.serverSeatPos == mySeat.serverSeatPos) {
+      if (me != null && widget.seat.seatPos == mySeat.seatPos) {
         return;
       }
 
@@ -174,7 +170,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
       if (data != null && data['type'] != null && data['type'] == "animation") {
         gameState.gameComService.gameMessaging.sendAnimation(
           gameState.me?.seatNo,
-          widget.seat.serverSeatPos,
+          widget.seat.player.seatNo,
           data['animationID'],
         );
         await gameState.gameHiveStore.deductDiamonds();
@@ -217,9 +213,10 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final theme = AppTheme.getTheme(context);
-    widget.seat.key = GlobalKey(
-      debugLabel: 'Seat:${widget.seat.serverSeatPos}',
-    ); //this.globalKey;
+    log('SeatView: PlayerView build ${widget.seat.serverSeatPos}:L${widget.seat.localSeatPos} pos: ${widget.seat.seatPos.toString()} player: ${widget.seat.player?.name}');
+    // widget.seat.key = GlobalKey(
+    //   debugLabel: 'Seat:${widget.seat.serverSeatPos}',
+    // ); //this.globalKey;
 
     // log('potViewPos: Rebuilding Seat: ${widget.seat.serverSeatPos}');
 
@@ -234,11 +231,12 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
     if (openSeat) {
       bool seatChangeSeat = false;
       if (gameState.playerSeatChangeInProgress) {
-        seatChangeSeat = widget.seat.serverSeatPos == gameState.seatChangeSeat;
+        seatChangeSeat =
+            widget.seat.seatPos == gameState.seatChangeSeat.seatPos;
       }
 
       final openSeatWidget = OpenSeat(
-        seatPos: widget.seat.serverSeatPos,
+        seat: widget.seat,
         onUserTap: this.widget.onUserTap,
         seatChangeInProgress: gameState.playerSeatChangeInProgress,
         seatChangeSeat: seatChangeSeat,
@@ -250,7 +248,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
           children: [
             // dealer button
             DealerButtonWidget(
-              widget.seat.uiSeatPos,
+              widget.seat.seatPos,
               isMe,
               GameType.HOLDEM,
             ),
@@ -294,18 +292,24 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
 
     bool animate = widget.seat.player.action.animateAction;
 
-    Widget chipAmountWidget = ChipAmountWidget(
-      recalculatingNeeded: _seatPosNeedsReCalculating,
-      animate: animate,
-      potKey: boardAttributes.potKey,
-      key: widget.seat.betWidgetUIKey,
-      seat: widget.seat,
-      boardAttributesObject: boardAttributes,
-      gameInfo: gameInfo,
-    );
+    Widget chipAmountWidget;
+
+    if (gameState.hostSeatChangeInProgress) {
+      chipAmountWidget = SizedBox(width: 5, height: 5);
+    } else {
+      chipAmountWidget = ChipAmountWidget(
+        recalculatingNeeded: _seatPosNeedsReCalculating,
+        animate: animate,
+        potKey: boardAttributes.potKey,
+        key: widget.seat.betWidgetUIKey,
+        seat: widget.seat,
+        boardAttributesObject: boardAttributes,
+        gameInfo: gameInfo,
+      );
+    }
     return DragTarget(
       onWillAccept: (data) {
-        print("object data $data");
+        print("SeatChange: object data $data");
         return true;
       },
       onAccept: (data) {
@@ -318,7 +322,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
       },
       builder: (context, List<int> candidateData, rejectedData) {
         Offset notesOffset = Offset(0, 0);
-        SeatPos pos = widget.seatPos ?? SeatPos.bottomLeft;
+        SeatPos pos = widget.seat.seatPos ?? SeatPos.bottomLeft;
         double actionLeft;
         double actionRight;
         if (pos == SeatPos.bottomLeft ||
@@ -397,7 +401,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
               // show dealer button, if user is a dealer
               isDealer
                   ? DealerButtonWidget(
-                      widget.seat.uiSeatPos,
+                      widget.seat.seatPos,
                       isMe,
                       GameType.HOLDEM,
                     )
@@ -411,7 +415,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
               Consumer<SeatChangeNotifier>(
                 builder: (_, scn, __) => scn.seatChangeInProgress
                     ? SeatNoWidget(widget.seat)
-                    : const SizedBox.shrink(),
+                    : SeatNoWidget(widget.seat), //const SizedBox.shrink(),
               ),
 
               playerStatusIcons(),
@@ -490,9 +494,9 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
   Widget playerStatusIcons() {
     double left;
     double right = -20;
-    if (widget.seat.uiSeatPos == SeatPos.topRight ||
-        widget.seat.uiSeatPos == SeatPos.middleRight ||
-        widget.seat.uiSeatPos == SeatPos.bottomRight) {
+    if (widget.seat.seatPos == SeatPos.topRight ||
+        widget.seat.seatPos == SeatPos.middleRight ||
+        widget.seat.seatPos == SeatPos.bottomRight) {
       left = -15;
       right = null;
     }
@@ -510,9 +514,9 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
 
   Widget talkingAnimation() {
     double talkingAngle = 0;
-    if (widget.seat.uiSeatPos == SeatPos.topRight ||
-        widget.seat.uiSeatPos == SeatPos.middleRight ||
-        widget.seat.uiSeatPos == SeatPos.bottomRight) {
+    if (widget.seat.seatPos == SeatPos.topRight ||
+        widget.seat.seatPos == SeatPos.middleRight ||
+        widget.seat.seatPos == SeatPos.bottomRight) {
       talkingAngle = -math.pi;
     }
 
@@ -598,7 +602,7 @@ class SeatNoWidget extends StatelessWidget {
             ),
           ),
           child: Text(
-            seat.serverSeatPos.toString(),
+            '${seat.serverSeatPos}:L${seat.localSeatPos}',
             style: AppStylesNew.itemInfoTextStyle.copyWith(
               color: Colors.white,
             ),
