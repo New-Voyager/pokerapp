@@ -268,6 +268,18 @@ class ResultHandlerV2 {
     tableState.clear();
     tableState.notifyAll();
     gameState.myState.notify();
+
+    // update the players stack
+    for (final player in result.playerInfo.values) {
+      final playerInSeat = gameState.getPlayerById(player.id.toInt());
+      if (playerInSeat != null) {
+        playerInSeat.stack = player.balance.after.toInt();
+        final seat = gameState.getSeat(playerInSeat.seatNo);
+        if (seat != null) {
+          seat.notify();
+        }
+      }
+    }
   }
 
   Future<void> _showWinners(

@@ -326,10 +326,13 @@ class _CenterViewState extends State<CenterView> {
                 vnCardOthers,
                 vnTwoBoardsNeeded,
                 builder: (_, cards, cardsOther, twoBoardsNeeded, __) {
+                  final gameState = GameState.getState(context);
+                  final tableState = gameState.tableState;
+                  log('CommunityCards: cards: ${tableState.cards} cardsOther: ${tableState.cardsOther} twoboards: ${tableState.twoBoardsNeeded}');
                   return CommunityCardsView(
-                    cards: cards,
-                    cardsOther: cardsOther,
-                    twoBoardsNeeded: twoBoardsNeeded,
+                    cards: tableState.cards,
+                    cardsOther: tableState.cardsOther,
+                    twoBoardsNeeded: tableState.twoBoardsNeeded,
                     horizontal: true,
                   );
                 },

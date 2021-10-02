@@ -192,6 +192,7 @@
         "SHOWPLAYERBUYING": "Show player buyin",
         "ALLOWRABBITHUNT": "Allow Rabbit Hunt",
         "SHOWHANDRANK": "Show Hand Rank",
+        "SHOWRESULT": "Show Table Result",
         "START": "Start",
         "GAMECREATIONFAILED": "Game creation failed!",
         "CHECKBIGBLIND": "Please check Bigblind values",
@@ -632,7 +633,7 @@
     },
     "handAnalyseView": {
         "pendingApprovals": "Pending Approvals",
-        "requestBuyin": "request buyin",
+        "requestBuyin": "requests buyin",
         "outstandingBalance": "Outstanding balance",
         "game": "Game",
         "code": "Code",

@@ -208,6 +208,7 @@ class StatusOptionsWidget extends StatelessWidget {
       me.player.status = resp.status;
       me.player.missedBlind = resp.missedBlind ?? false;
       me.player.inBreak = false;
+      me.player.resetSeatAction();
       log('Sitback: missed blind: ${me.player.missedBlind} status: ${me.player.status}');
       final myState = gameState.myState;
       if (myState != null) {

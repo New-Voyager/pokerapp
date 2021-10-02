@@ -793,6 +793,16 @@ class NewGameSettings2 extends StatelessWidget {
                           },
                           theme: theme,
                         ),
+
+                        /* show table result */
+                        _buildRadio(
+                          label: _appScreenText['SHOWRESULT'],
+                          value: gmp.showResult,
+                          onChange: (bool b) {
+                            gmp.showResult = b;
+                          },
+                          theme: theme,
+                        ),
                       ],
                     ),
                   ],

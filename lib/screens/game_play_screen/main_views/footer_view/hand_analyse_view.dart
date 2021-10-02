@@ -426,14 +426,17 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                       onGameInfoBottomSheet(context);
                     }),
 
-                // result table
-                _buildMenuButton(
-                    title: 'Result',
-                    imagePath: AppAssetsNew.tableResultPath,
-                    onClick: () {
-                      vnShowMenuItems.value = false;
-                      onTableBottomSheet(context);
-                    }),
+                widget.gameState.gameSettings.showResult ?? false
+                    ?
+                    // result table
+                    _buildMenuButton(
+                        title: 'Result',
+                        imagePath: AppAssetsNew.tableResultPath,
+                        onClick: () {
+                          vnShowMenuItems.value = false;
+                          onTableBottomSheet(context);
+                        })
+                    : Container(),
 
                 // player stack
                 _buildMenuButton(
@@ -479,7 +482,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                 children: [
                   TextSpan(
                     text: " ${_appScreenText['requestBuyin']}",
-                    style: AppDecorators.getSubtitle3Style(theme: theme),
+                    style: AppDecorators.getSubtitleStyle(theme: theme),
                   ),
                   TextSpan(
                     text: " ${item.amount}",
@@ -488,13 +491,13 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                 ],
               ),
             ),
-            Text(
-              "${_appScreenText['outstandingBalance']}: ${item.balance}",
-              style: AppDecorators.getHeadLine4Style(theme: theme),
-            ),
-            SizedBox(
-              height: 16,
-            ),
+            // Text(
+            //   "${_appScreenText['outstandingBalance']}: ${item.balance}",
+            //   style: AppDecorators.getHeadLine4Style(theme: theme),
+            // ),
+            // SizedBox(
+            //   height: 16,
+            // ),
           ],
         ),
         subtitle: Column(
@@ -519,13 +522,14 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
           ],
         ),
         trailing: Container(
-          width: 100,
+          width: 120.pw,
           child: Row(
             children: [
               IconButton(
                   icon: Icon(
                     Icons.check_circle,
                     color: Colors.green,
+                    size: 24.pw,
                   ),
                   onPressed: () async {
                     final bool val = await PlayerService.approveBuyInRequest(
@@ -540,9 +544,11 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                       log("Failed to approve request");
                     }
                   }),
+              SizedBox(width: 5.pw),
               IconButton(
                 icon: Icon(
                   Icons.cancel_rounded,
+                  size: 24.pw,
                   color: theme.negativeOrErrorColor,
                 ),
                 onPressed: () async {
