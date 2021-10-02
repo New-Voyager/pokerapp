@@ -43,8 +43,16 @@ class ResultOptionsWidget extends StatelessWidget {
         // If we are in result and this player is a winner, then we show his cards
         // So there is no need to show the eye icon
         _showEye = gameState.handState == HandState.RESULT;
-        if (gameState.mySeat.player.winner) {
-          _showEye = false;
+        if (gameState.mySeat != null) {
+          if (gameState.mySeat.player.winner) {
+            _showEye = false;
+          } else {
+            // player is not a winner
+            // if the player does not muck his cards, then the cards are already shown
+            if (!gameState.mySeat.player.muckLosingHand) {
+              _showEye = false;
+            }
+          }
         }
 
         bool _showRabbit = false;

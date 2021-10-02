@@ -52,23 +52,26 @@ class ResultHandlerV2 {
   });
 
   Future<void> show() async {
-    log('HandMessage: result show');
+    log('Result: result show');
     log('Result: pauseTimeSecs: ${result.pauseTimeSecs}');
     tableState = gameState.tableState;
     for (final seat in gameState.seats) {
       if (seat.player != null) {
         final playerInfo = result.playerInfo[seat.player.seatNo];
+        if (playerInfo == null) {
+          continue;
+        }
         seat.player.winner = false;
         seat.player.highlight = false;
         seat.player.highlightCards = [];
         seat.player.cards = playerInfo.cards;
-        log('UpdateSeat: updating cards for seat: ${seat.player.seatNo} player: ${seat.player.name} cards: ${seat.player.cards}');
+        log('Result: updating cards for seat: ${seat.player.seatNo} player: ${seat.player.name} cards: ${seat.player.cards}');
       }
     }
     gameState.wonat = result.wonAt;
-    log('UpdateSeat: updating all seats');
+    log('Result: updating all seats');
     gameState.seatsOnTableState.notify();
-    log('UpdateSeat: updating all seats notified');
+    log('Result: updating all seats notified');
 
     // update pots
     tableState.updatePotChipsSilent(
@@ -122,6 +125,7 @@ class ResultHandlerV2 {
     } else {
       tableState.updateTwoBoardsNeeded(false);
     }
+    log('Result: result board: ${result.boards.length}');
 
     /* then, change the status of the footer to show the result */
     // context.read<ValueNotifier<FooterStatus>>().value = FooterStatus.Result;
@@ -268,6 +272,18 @@ class ResultHandlerV2 {
     tableState.clear();
     tableState.notifyAll();
     gameState.myState.notify();
+
+    // update the players stack
+    for (final player in result.playerInfo.values) {
+      final playerInSeat = gameState.getPlayerById(player.id.toInt());
+      if (playerInSeat != null) {
+        playerInSeat.stack = player.balance.after.toInt();
+        final seat = gameState.getSeat(playerInSeat.seatNo);
+        if (seat != null) {
+          seat.notify();
+        }
+      }
+    }
   }
 
   Future<void> _showWinners(

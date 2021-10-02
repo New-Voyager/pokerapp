@@ -44,7 +44,8 @@ class CenterView extends StatefulWidget {
   _CenterViewState createState() => _CenterViewState();
 }
 
-class _CenterViewState extends State<CenterView> {
+class _CenterViewState extends State<CenterView> 
+  with WidgetsBindingObserver {
   TableState get tableState => widget.tableState;
   AppTextScreen _appScreenText;
 
@@ -165,6 +166,16 @@ class _CenterViewState extends State<CenterView> {
     super.initState();
     _appScreenText = getAppTextScreen("centerView");
     tableState.addListener(tableStateListener);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final gameState = GameState.getState(context);
+      final boardAttributes = gameState.getBoardAttributes(context);
+      // get pot view position and store in board attributes
+      if (boardAttributes.potKey != null) {
+        final RenderBox potViewBox = boardAttributes.potKey.currentContext.findRenderObject();
+        boardAttributes.potGlobalPos = potViewBox.localToGlobal(Offset(0, 0));
+        log('BoardView global potViewPos: ${boardAttributes.potGlobalPos}');
+      }
+    });    
   }
 
   @override
@@ -172,6 +183,7 @@ class _CenterViewState extends State<CenterView> {
     tableState.removeListener(tableStateListener);
     super.dispose();
   }
+
 
   Widget _mainBuild(
     BuildContext context, {
@@ -236,7 +248,7 @@ class _CenterViewState extends State<CenterView> {
 
   @override
   Widget build(BuildContext context) {
-    final gameState = Provider.of<GameState>(context, listen: false);
+    final gameState = GameState.getState(context);
     final boardAttributes = gameState.getBoardAttributes(context);
     log('Center: CenterView build');
 
@@ -326,10 +338,13 @@ class _CenterViewState extends State<CenterView> {
                 vnCardOthers,
                 vnTwoBoardsNeeded,
                 builder: (_, cards, cardsOther, twoBoardsNeeded, __) {
+                  final gameState = GameState.getState(context);
+                  final tableState = gameState.tableState;
+                  log('CommunityCards: cards: ${tableState.cards} cardsOther: ${tableState.cardsOther} twoboards: ${tableState.twoBoardsNeeded}');
                   return CommunityCardsView(
-                    cards: cards,
-                    cardsOther: cardsOther,
-                    twoBoardsNeeded: twoBoardsNeeded,
+                    cards: tableState.cards,
+                    cardsOther: tableState.cardsOther,
+                    twoBoardsNeeded: tableState.twoBoardsNeeded,
                     horizontal: true,
                   );
                 },

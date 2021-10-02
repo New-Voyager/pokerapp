@@ -401,22 +401,24 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
       (var u) {
         index++;
         return Consumer<SeatChangeNotifier>(
-          builder: (_, scn, __) => _positionedForUsers(
-            boardAttribs: boardAttribs,
-            isBoardHorizontal: widget.isBoardHorizontal,
-            seat: u.value,
-            heightOfBoard: widget.heightOfBoard,
-            widthOfBoard: widget.widthOfBoard,
-            seatPos: getAdjustedSeatPosition(
-              u.key,
-              maxPlayers,
-              me != null,
-              me?.seatNo,
-              seatChangeInProgress: scn.seatChangeInProgress,
-            ),
-            isPresent: me != null,
-            onUserTap: widget.onUserTap,
-          ),
+          builder: (_, scn, __) {
+            return _positionedForUsers(
+              boardAttribs: boardAttribs,
+              isBoardHorizontal: widget.isBoardHorizontal,
+              seat: u.value,
+              heightOfBoard: widget.heightOfBoard,
+              widthOfBoard: widget.widthOfBoard,
+              seatPos: getAdjustedSeatPosition(
+                u.key,
+                maxPlayers,
+                me != null,
+                me?.seatNo,
+                seatChangeInProgress: scn.seatChangeInProgress,
+              ),
+              isPresent: me != null,
+              onUserTap: widget.onUserTap,
+            );
+          }
         );
       },
     ).toList();

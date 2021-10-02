@@ -989,18 +989,25 @@ class GameState {
     }
   }
 
-  void resetSeatActions({bool newHand}) {
+  void resetSeatActions({bool newHand = false}) {
     for (final seat in this._seats.values) {
       if (seat.player == null) {
         continue;
       }
       seat.player.action.animateAction = false;
+      bool stickAction = true;
+      if (newHand) {
+        stickAction = false;
+      } else {
+        stickAction = false;
+        if (seat.player.action != null &&
+            seat.player.action.action == HandActions.ALLIN) {
+          stickAction = true;
+        }
+      }
       // if newHand is true, we pass 'false' flag to say don't stick any action to player.
       // otherwise stick last player action to nameplate
-      seat.player.resetSeatAction(
-          stickAction: (newHand ?? false)
-              ? false
-              : (seat.player.action.action == HandActions.ALLIN));
+      seat.player.resetSeatAction(stickAction: stickAction);
       seat.notify();
     }
   }

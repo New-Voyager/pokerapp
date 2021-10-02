@@ -68,7 +68,7 @@ class NewGameModel {
   int maxPlayers = 9;
   int gameLength = 60;
   int gameLengthInHrs = 1;
-  bool buyInApproval = true;
+  bool buyInApproval = false;
   double rakePercentage = 0;
   double rakeCap = 0;
   int buyInMin = 30;
@@ -76,17 +76,18 @@ class NewGameModel {
   int actionTime = 30;
   bool locationCheck = false;
   bool ipCheck = true;
-  bool runItTwice = false;
+  bool runItTwice = true;
   bool seatChangeAllowed = false;
   bool waitList = false;
-  bool botGame = true;
+  bool botGame = false;
   Rewards rewards;
   bool muckLosingHand = false;
-  bool audioConference = true;
+  bool audioConference = false;
   bool allowRabbitHunt = true;
   bool showHandRank = false;
   bool useAgora = false;
   bool breakAllowed = true;
+  bool showResult = true;
   int breakTime = 5;
   /*
     bombPotEnabled: Boolean
@@ -141,6 +142,7 @@ class NewGameModel {
     this.bombPotInterval,
     this.breakAllowed,
     this.breakTime,
+    this.showResult,
   });
 
   NewGameModel.withDefault(String clubCode) {
@@ -185,6 +187,7 @@ class NewGameModel {
     locationCheck = json['gpsCheck'] ?? false;
     buttonStraddle = json['buttonStraddleAllowed'] ?? false;
     buttonStraddleBet = json['buttonStraddleBet'] ?? 2;
+    showResult = json['showResult'] ?? true;
   }
 
   Map<String, dynamic> toJson() {
@@ -220,6 +223,8 @@ class NewGameModel {
     data['bombPotInterval'] = this.bombPotInterval;
     data['seatChangeAllowed'] = this.seatChangeAllowed ?? false;
     data['breakAllowed'] = this.breakAllowed ?? true;
+    data['showResult'] = this.showResult ?? true;
+
     if (this.breakTime == null) {
       data['breakLength'] = 5;
     } else {

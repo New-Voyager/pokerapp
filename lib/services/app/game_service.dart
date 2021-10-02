@@ -127,6 +127,7 @@ mutation updateInputs(\$gameCode :String!,\$inputSettings: GameSettingsUpdateInp
         resultPauseTime
         funAnimations
         chat
+        showResult
       }
     }
 """;

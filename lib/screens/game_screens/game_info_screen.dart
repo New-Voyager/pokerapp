@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game/game_settings.dart';
+import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
@@ -23,6 +24,7 @@ class _GameInfoScreenState extends State<GameInfoScreen> {
   AppTheme theme;
   bool loading = true;
   GameSettings gameSettings;
+  GameInfoModel gameInfo;
   AppTextScreen appScreenText;
 
   @override
@@ -38,8 +40,15 @@ class _GameInfoScreenState extends State<GameInfoScreen> {
   void _fetchGameSettings() async {
     final GameSettings res =
         await GameService.getGameSettings(widget.gameState.gameInfo.gameCode);
+    final GameInfoModel gameInfo =
+        await GameService.getGameInfo(widget.gameState.gameInfo.gameCode);
     if (res != null) {
       gameSettings = res;
+      if (gameInfo != null) {
+        this.gameInfo = gameInfo;
+      } else {
+        this.gameInfo = widget.gameState.gameInfo;
+      }
       setState(() {
         loading = false;
       });
@@ -49,172 +58,182 @@ class _GameInfoScreenState extends State<GameInfoScreen> {
   @override
   Widget build(BuildContext context) {
     theme = AppTheme.getTheme(context);
-    final gameInfo = widget.gameState.gameInfo;
+    final gameInfo = this.gameInfo;
     return Container(
       padding: EdgeInsets.all(16),
       decoration: AppDecorators.bgRadialGradient(theme),
       width: MediaQuery.of(context).size.width,
-      child: Column(
-        children: [
-          Text(
-            "${gameTypeStr(gameTypeFromStr(gameInfo.gameType))} ${gameInfo.smallBlind}/${gameInfo.bigBlind}",
-            style: AppDecorators.getHeadLine3Style(theme: theme),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                appScreenText["code"] + ': ',
-                style: AppDecorators.getSubtitle1Style(theme: theme),
-              ),
-              Text(
-                "${gameInfo.gameCode}",
-                style: AppDecorators.getAccentTextStyle(theme: theme)
-                    .copyWith(fontWeight: FontWeight.normal),
-              ),
-            ],
-          ),
-          AppDimensionsNew.getVerticalSizedBox(8),
-          Container(
-            decoration: AppDecorators.tileDecorationWithoutBorder(theme),
-            padding: EdgeInsets.symmetric(horizontal: 4, vertical: 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: (gameInfo == null || loading)
+          ? Center(child: CircularProgressWidget())
+          : Column(
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                Text(
+                  "${gameTypeStr(gameTypeFromStr(gameInfo.gameType))} ${gameInfo.smallBlind}/${gameInfo.bigBlind}",
+                  style: AppDecorators.getHeadLine3Style(theme: theme),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      appScreenText["runningTime"],
+                      appScreenText["code"] + ': ',
                       style: AppDecorators.getSubtitle1Style(theme: theme),
                     ),
                     Text(
-                      "${DataFormatter.getTimeInHHMMFormat(gameInfo.runningTime)}",
+                      "${gameInfo.gameCode}",
                       style: AppDecorators.getAccentTextStyle(theme: theme)
                           .copyWith(fontWeight: FontWeight.normal),
                     ),
                   ],
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text(
-                      appScreenText["handsDealt"],
-                      style: AppDecorators.getSubtitle1Style(theme: theme),
-                    ),
-                    Text(
-                      "${gameInfo.handNum}",
-                      style: AppDecorators.getAccentTextStyle(theme: theme)
-                          .copyWith(fontWeight: FontWeight.normal),
-                    ),
-                  ],
+                AppDimensionsNew.getVerticalSizedBox(8),
+                Container(
+                  decoration: AppDecorators.tileDecorationWithoutBorder(theme),
+                  padding: EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            appScreenText["runningTime"],
+                            style:
+                                AppDecorators.getSubtitle1Style(theme: theme),
+                          ),
+                          Text(
+                            "${DataFormatter.getTimeInHHMMFormat(gameInfo.runningTime)}",
+                            style:
+                                AppDecorators.getAccentTextStyle(theme: theme)
+                                    .copyWith(fontWeight: FontWeight.normal),
+                          ),
+                        ],
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            appScreenText["handsDealt"],
+                            style:
+                                AppDecorators.getSubtitle1Style(theme: theme),
+                          ),
+                          Text(
+                            "${gameInfo.handNum}",
+                            style:
+                                AppDecorators.getAccentTextStyle(theme: theme)
+                                    .copyWith(fontWeight: FontWeight.normal),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                AppDimensionsNew.getVerticalSizedBox(8),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: (gameSettings == null || loading)
+                        ? Center(child: CircularProgressWidget())
+                        : Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Table(
+                                border: TableBorder.all(
+                                  color: theme.fillInColor.withOpacity(0.5),
+                                ),
+                                columnWidths: {
+                                  0: FixedColumnWidth(
+                                      MediaQuery.of(context).size.width * 0.6),
+                                  1: FixedColumnWidth(
+                                      MediaQuery.of(context).size.width * 0.3),
+                                },
+                                children: [
+                                  _buildOneRow(
+                                      col1: appScreenText["buyIn"],
+                                      col2:
+                                          "${gameInfo.buyInMin}/${gameInfo.buyInMax}"),
+                                  _buildOneRow(
+                                      col1: appScreenText["runitTwiceAllowed"],
+                                      col2: _getYesNo(
+                                          gameSettings?.runItTwiceAllowed)),
+                                  _buildOneRow(
+                                      col1: appScreenText["bombPotEnabled"],
+                                      col2: _getYesNo(
+                                          gameSettings?.bombPotEnabled)),
+                                  _buildOneRow(
+                                      col1: appScreenText["bombPotInterval"],
+                                      col2: gameSettings?.bombPotInterval
+                                          ?.toString()),
+                                  _buildOneRow(
+                                      col1: appScreenText["doubleBoardBombPot"],
+                                      col2: _getYesNo(
+                                          gameSettings?.doubleBoardBombPot)),
+                                  _buildOneRow(
+                                      col1: appScreenText["utgStraddleAllowed"],
+                                      col2: _getYesNo(
+                                          gameInfo.utgStraddleAllowed)),
+                                  _buildOneRow(
+                                      col1: appScreenText["animations"],
+                                      col2: _getYesNo(
+                                          gameSettings?.funAnimations)),
+                                  _buildOneRow(
+                                      col1: appScreenText["chatEnabled"],
+                                      col2: _getYesNo(gameSettings?.chat)),
+                                  _buildOneRow(
+                                      col1: appScreenText["showResult"],
+                                      col2:
+                                          _getYesNo(gameSettings?.showResult)),
+                                ],
+                              ),
+                              AppDimensionsNew.getVerticalSizedBox(8),
+                              Visibility(
+                                visible: gameTypeFromStr(gameInfo.gameType) ==
+                                    GameType.ROE,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "ROE Games",
+                                      style: AppDecorators.getHeadLine4Style(
+                                          theme: theme),
+                                    ),
+                                    Text(
+                                      "${HelperUtils.buildGameTypeStrFromListDynamic(gameSettings.roeGames)}",
+                                      style: AppDecorators.getHeadLine4Style(
+                                              theme: theme)
+                                          .copyWith(
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Visibility(
+                                visible: gameTypeFromStr(gameInfo.gameType) ==
+                                    GameType.DEALER_CHOICE,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Dealer Choice Games",
+                                      style: AppDecorators.getHeadLine4Style(
+                                          theme: theme),
+                                    ),
+                                    Text(
+                                      "${HelperUtils.buildGameTypeStrFromListDynamic(gameSettings.dealerChoiceGames)}",
+                                      style: AppDecorators.getHeadLine4Style(
+                                              theme: theme)
+                                          .copyWith(
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                  ),
                 ),
               ],
             ),
-          ),
-          AppDimensionsNew.getVerticalSizedBox(8),
-          Expanded(
-            child: SingleChildScrollView(
-              child: (gameSettings == null || loading)
-                  ? Center(child: CircularProgressWidget())
-                  : Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Table(
-                          border: TableBorder.all(
-                            color: theme.fillInColor.withOpacity(0.5),
-                          ),
-                          columnWidths: {
-                            0: FixedColumnWidth(
-                                MediaQuery.of(context).size.width * 0.6),
-                            1: FixedColumnWidth(
-                                MediaQuery.of(context).size.width * 0.3),
-                          },
-                          children: [
-                            _buildOneRow(
-                                col1: appScreenText["buyIn"],
-                                col2:
-                                    "${gameInfo.buyInMin}/${gameInfo.buyInMax}"),
-                            _buildOneRow(
-                                col1: appScreenText["runitTwiceAllowed"],
-                                col2:
-                                    _getYesNo(gameSettings?.runItTwiceAllowed)),
-                            _buildOneRow(
-                                col1: appScreenText["bombPotEnabled"],
-                                col2: _getYesNo(gameSettings?.bombPotEnabled)),
-                            _buildOneRow(
-                                col1: appScreenText["bombPotInterval"],
-                                col2:
-                                    gameSettings?.bombPotInterval?.toString()),
-                            _buildOneRow(
-                                col1: appScreenText["doubleBoardBombPot"],
-                                col2: _getYesNo(
-                                    gameSettings?.doubleBoardBombPot)),
-                            _buildOneRow(
-                                col1: appScreenText["utgStraddleAllowed"],
-                                col2: _getYesNo(gameInfo.utgStraddleAllowed)),
-                            _buildOneRow(
-                                col1: appScreenText["animations"],
-                                col2: _getYesNo(gameSettings?.funAnimations)),
-                            _buildOneRow(
-                                col1: appScreenText["chatEnabled"],
-                                col2: _getYesNo(gameSettings?.chat)),
-                            _buildOneRow(
-                                col1: appScreenText["showResult"],
-                                col2: _getYesNo(gameSettings?.showResult)),
-                          ],
-                        ),
-                        AppDimensionsNew.getVerticalSizedBox(8),
-                        Visibility(
-                          visible: gameTypeFromStr(gameInfo.gameType) ==
-                              GameType.ROE,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "ROE Games",
-                                style: AppDecorators.getHeadLine4Style(
-                                    theme: theme),
-                              ),
-                              Text(
-                                "${HelperUtils.buildGameTypeStrFromListDynamic(gameSettings.roeGames)}",
-                                style: AppDecorators.getHeadLine4Style(
-                                        theme: theme)
-                                    .copyWith(
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Visibility(
-                          visible: gameTypeFromStr(gameInfo.gameType) ==
-                              GameType.DEALER_CHOICE,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Dealer Choice Games",
-                                style: AppDecorators.getHeadLine4Style(
-                                    theme: theme),
-                              ),
-                              Text(
-                                "${HelperUtils.buildGameTypeStrFromListDynamic(gameSettings.dealerChoiceGames)}",
-                                style: AppDecorators.getHeadLine4Style(
-                                        theme: theme)
-                                    .copyWith(
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-            ),
-          ),
-        ],
-      ),
     );
   }
 

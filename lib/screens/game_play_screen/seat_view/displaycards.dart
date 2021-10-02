@@ -78,8 +78,14 @@ class DisplayCardsWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     log('UpdateSeat: DisplayCardsWidget Seat: ${seat.serverSeatPos} player: ${seat.player.name} cards: ${seat.player.cards} reveal cards: ${seat.player.revealCards}');
     // log('UpdateSeat: seat no: ${seat.player.seatNo} updating cards widget: ${seat.player.cards}');
-    final seatPlayerCards = seat.player.cards;
-
+    List<int> seatPlayerCards = seat.player.cards;
+    if (seat.player.revealCards.isEmpty) {
+      // player didn't reveal the cards
+      // if this is not showdown, don't show the cards
+      if (!showdown) {
+        seatPlayerCards = [];
+      }
+    }
     return AnimatedSwitcher(
       duration: AppConstants.fastAnimationDuration,
       child: (seatPlayerCards != null && seatPlayerCards.isNotEmpty)

@@ -237,8 +237,14 @@ class NewHandHandler {
       }
     }
 
+    gameState.resetSeatActions(newHand: true);
     // set player actions
     for (final seatNo in newHand.playersActed.keys) {
+      final seat = gameState.getSeat(seatNo);
+      if (seat != null && seat.player != null) {
+        seat.player.resetSeatAction();
+      }
+
       final action = newHand.playersActed[seatNo];
       if (action.action != proto.ACTION.NOT_ACTED) {
         final seat = gameState.getSeat(seatNo);
