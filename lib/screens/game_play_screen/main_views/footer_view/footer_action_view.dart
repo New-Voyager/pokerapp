@@ -520,17 +520,20 @@ class _FooterActionViewState extends State<FooterActionView> {
                   ),
                 ]);
               } else if (actionState.showCheckFold) {
-                children.add(
-                  /* bottom row */
-                  Transform.scale(
-                    scale: boardAttributes.footerActionViewScale,
-                    alignment: Alignment.bottomCenter,
-                    child: Container(
-                      padding: EdgeInsets.symmetric(vertical: 4.0),
-                      child: _buildCheckFoldWidget(actionState, theme),
+                final mySeat = gameState.mySeat;
+                if (mySeat.player != null && mySeat.player.isActive) {
+                  children.add(
+                    /* bottom row */
+                    Transform.scale(
+                      scale: boardAttributes.footerActionViewScale,
+                      alignment: Alignment.bottomCenter,
+                      child: Container(
+                        padding: EdgeInsets.symmetric(vertical: 4.0),
+                        child: _buildCheckFoldWidget(actionState, theme),
+                      ),
                     ),
-                  ),
-                );
+                  );
+                }
               }
 
               return Column(

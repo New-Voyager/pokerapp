@@ -465,6 +465,7 @@ class BoardAttributesObject extends ChangeNotifier {
 
   // center pot view key
   GlobalKey _potKey;
+  Offset potGlobalPos;
 
   BoardAttributesObject({
     /*
