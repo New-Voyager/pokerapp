@@ -54,7 +54,7 @@ class DisplayCardsWidget extends StatelessWidget {
       }
       cardObjects.add(card);
     }
-    log('Reveal Cards Seat: ${seat.serverSeatPos} card objects: $cardObjects');
+    log('Reveal Cards Seat: ${seat.player.seatNo} card objects: $cardObjects');
 
     return cardObjects;
   }
@@ -76,7 +76,7 @@ class DisplayCardsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    log('UpdateSeat: DisplayCardsWidget Seat: ${seat.serverSeatPos} player: ${seat.player.name} cards: ${seat.player.cards} reveal cards: ${seat.player.revealCards}');
+    log('UpdateSeat: DisplayCardsWidget Seat: ${seat.player.seatNo} player: ${seat.player.name} cards: ${seat.player.cards} reveal cards: ${seat.player.revealCards}');
     // log('UpdateSeat: seat no: ${seat.player.seatNo} updating cards widget: ${seat.player.cards}');
     List<int> seatPlayerCards = seat.player.cards;
     if (seat.player.revealCards.isEmpty) {

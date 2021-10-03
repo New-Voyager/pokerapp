@@ -12,6 +12,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/game_context.da
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/marked_cards.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/player_info.dart';
@@ -32,7 +33,6 @@ import 'package:pokerapp/screens/game_play_screen/notifications/notifications.da
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/app/player_service.dart';
 import 'package:pokerapp/services/audio/audio_service.dart';
-import 'package:pokerapp/services/data/game_log_store.dart';
 import 'package:pokerapp/services/encryption/encryption_service.dart';
 import 'package:pokerapp/services/game_play/action_services/game_action_service/util_action_services.dart';
 import 'package:pokerapp/services/game_play/customization_service.dart';
@@ -501,7 +501,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     chatVisibilityNotifier.value = !chatVisibilityNotifier.value;
   }
 
-  Future _onJoinGame(int seatPos) async {
+  Future _onJoinGame(Seat seat) async {
     final gameState = GameState.getState(_providerContext);
     final tableState = gameState.tableState;
     final me = gameState.me;
@@ -514,8 +514,8 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     }
 
     if (me != null && me.seatNo != null && me.seatNo != 0) {
-      log('Player ${me.name} switches seat to $seatPos');
-      await GameService.switchSeat(widget.gameCode, seatPos);
+      log('Player ${me.name} switches seat to ${seat.serverSeatPos}');
+      await GameService.switchSeat(widget.gameCode, seat.serverSeatPos);
     } else {
       try {
         LocationUpdates locationUpdates;
@@ -548,7 +548,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
         await GamePlayScreenUtilMethods.joinGame(
           context: _providerContext,
-          seatPos: seatPos,
+          seat: seat,
           gameCode: widget.gameCode,
           gameState: gameState,
         );
@@ -591,7 +591,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     if (mounted) {
       setState(() => _gameInfoModel = gameInfoModel);
     }
-    _queryCurrentHandIfNeeded();
   }
 
   @override
@@ -605,7 +604,11 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     WidgetsBinding.instance.addObserver(this);
     _binding.addObserver(this);
 
-    init();
+    init().then((v) {
+      Future.delayed(Duration(seconds: 1), () {
+        _queryCurrentHandIfNeeded();
+      });
+    });
   }
 
   // void initPlayingTimer() {
@@ -626,9 +629,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     init();
   }
 
-  void init() {
+  Future<void> init() async {
     log('game screen initState');
-    _initGameInfoModel();
+    await _initGameInfoModel();
   }
 
   void close() {

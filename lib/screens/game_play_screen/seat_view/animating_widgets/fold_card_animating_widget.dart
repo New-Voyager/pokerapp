@@ -27,7 +27,7 @@ class FoldCardAnimatingWidget extends StatelessWidget {
       curve: Curves.linearToEaseOut,
       tween: Tween<Offset>(
         begin: Offset.zero,
-        end: offsetMapping[this.seat.uiSeatPos],
+        end: offsetMapping[this.seat.seatPos],
       ),
       child: HiddenCardView(
         noOfCards: seat.player.noOfCardsVisible,
@@ -41,7 +41,7 @@ class FoldCardAnimatingWidget extends StatelessWidget {
       builder: (_, offset, child) {
         //log('fold animation: seat pos: ${seat.uiSeatPos.toString()} seat no: ${seat.serverSeatPos} offset: $offset duration: ${AppConstants.animationDuration}');
         /* percentage of animation done */
-        double pertDone = offset.dx / offsetMapping[this.seat.uiSeatPos].dx;
+        double pertDone = offset.dx / offsetMapping[this.seat.seatPos].dx;
 
         /* we start fading away the card after the cards have moved animatingFold90% */
         double opacityValue = pertDone > 0.90 ? (10 - 10 * pertDone) : 1.0;

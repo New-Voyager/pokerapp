@@ -90,6 +90,7 @@ class GameState {
   ListenableProvider<RabbitState> _rabbitStateProvider;
   ListenableProvider<SeatsOnTableState> _seatsOnTableProvider;
   ListenableProvider<GameSettingsState> _gameSettingsProvider;
+  ListenableProvider<ActionTimerState> _actionTimerStateProvider;
 
   StraddlePromptState _straddlePromptState;
   HoleCardsState _holeCardsState;
@@ -106,6 +107,7 @@ class GameState {
   RabbitState _rabbitState;
   SeatsOnTableState _seatsOnTableState;
   GameSettingsState _gameSettingsState;
+  ActionTimerState _actionTimerState;
 
   // For posting blind
   // bool postedBlind;
@@ -128,7 +130,8 @@ class GameState {
   GameSettings _gameSettings;
   GamePlayerSettings _playerSettings;
 
-  Map<int, Seat> _seats = Map<int, Seat>();
+  //Map<int, Seat> _seats = Map<int, Seat>();
+  List<Seat> _seats = [];
   List<PlayerModel> _playersInGame;
 
   PlayerInfo _currentPlayer;
@@ -136,7 +139,7 @@ class GameState {
   Agora agoraEngine;
   int _currentHandNum;
   bool _playerSeatChangeInProgress = false;
-  int _seatChangeSeat = 0;
+  Seat _seatChangeSeat = null;
   HandlogCacheService handlogCacheService;
   List<int> currentCards;
   List<int> lastCards;
@@ -202,7 +205,7 @@ class GameState {
   }) async {
     // this.postedBlind = true;
     this.wonat = HandStatus.HandStatus_UNKNOWN;
-    this._seats = Map<int, Seat>();
+    this._seats = [];
     this._gameInfo = gameInfo;
     this._gameCode = gameCode;
     this._currentPlayer = currentPlayer;
@@ -216,9 +219,20 @@ class GameState {
     this._hostSeatChangeSeats = hostSeatChangeSeats;
     this.hostSeatChangeInProgress = hostSeatChangeInProgress ?? false;
 
-    for (int seatNo = 1; seatNo <= gameInfo.maxPlayers; seatNo++) {
-      this._seats[seatNo] = Seat(seatNo, null);
+    Map<int, SeatPos> seatPosLoc = getSeatLocations(gameInfo.maxPlayers);
+    final seatPosAttribs = getSeatMap(Screen.screenSize);
+
+    // 0: index reserved
+    this._seats.add(Seat(0, null, null));
+    for (int localSeatNo = 1;
+        localSeatNo <= gameInfo.maxPlayers;
+        localSeatNo++) {
+      SeatPos pos = seatPosLoc[localSeatNo];
+      SeatPosAttribs attribs = seatPosAttribs[pos];
+      //this._seats[localSeatNo] = Seat(localSeatNo, pos, attribs);
+      this._seats.add(Seat(localSeatNo, pos, attribs));
     }
+
     this._playersInGame = [];
 
     _tableState = TableState();
@@ -228,6 +242,7 @@ class GameState {
     }
 
     _actionState = ActionState();
+    _actionTimerState = ActionTimerState();
     _markedCardsState = MarkedCards();
     _cardDistribState = CardDistributionState();
     _gameMessageService = gameMessagingService;
@@ -306,6 +321,8 @@ class GameState {
         create: (_) => _seatsOnTableState);
     this._gameSettingsProvider = ListenableProvider<GameSettingsState>(
         create: (_) => _gameSettingsState);
+    this._actionTimerStateProvider =
+        ListenableProvider<ActionTimerState>(create: (_) => _actionTimerState);
 
     this.janusEngine = JanusEngine(
         gameState: this,
@@ -528,7 +545,7 @@ class GameState {
   }
 
   bool get isPlaying {
-    for (final seat in this.seats) {
+    for (final seat in this._seats) {
       if (seat.player != null &&
           seat.player.playerId == this.currentPlayer.id) {
         return true;
@@ -639,15 +656,13 @@ class GameState {
 
     this._gameInfo = gameInfo;
 
-    if (rebuildSeats) {
-      this._seats.clear();
-    }
+    // if (rebuildSeats) {
+    //   this._seats.clear();
+    // }
 
     // reset seats
-    for (var seat in this._seats.values) {
+    for (var seat in this._seats) {
       seat.player = null;
-      // seat.potViewPos = null;
-      // seat.betWidgetPos = null;
     }
 
     List<PlayerModel> playersInSeats = [];
@@ -662,12 +677,14 @@ class GameState {
     // for (Seat seat in this._seats.values) {
     //   seat.notify();
     // }
-    if (rebuildSeats) {
-      log('GameState: Rebuilding all the seats again');
-      for (int seatNo = 1; seatNo <= gameInfo.maxPlayers; seatNo++) {
-        this._seats[seatNo] = Seat(seatNo, null);
-      }
-    }
+    // if (rebuildSeats) {
+    //   log('GameState: Rebuilding all the seats again');
+    //   Map<int, SeatPos> seatPosLoc = getSeatLocations(gameInfo.maxPlayers);
+    //   for (int localSeatNo = 1; localSeatNo <= gameInfo.maxPlayers; localSeatNo++) {
+    //     SeatPos pos = seatPosLoc[localSeatNo];
+    //     this._seats[localSeatNo] = Seat(localSeatNo, pos, null);
+    //   }
+    // }
 
     // show buyin button/timer if the player is in middle of buyin
     for (var player in playersInSeats) {
@@ -682,8 +699,12 @@ class GameState {
         player.breakTimeExpAt = player.breakTimeExpAt.toLocal();
       }
       if (player.seatNo != 0) {
-        final seat = this._seats[player.seatNo];
-        seat.player = player;
+        for (final seat in this._seats) {
+          if (seat.serverSeatPos == player.seatNo) {
+            seat.player = player;
+            break;
+          }
+        }
       }
 
       if (player.playerUuid == this._currentPlayer.uuid) {
@@ -696,7 +717,7 @@ class GameState {
     tableState.updateGameStatusSilent(gameInfo.status);
     tableState.updateTableStatusSilent(gameInfo.tableStatus);
     tableState.notifyAll();
-    for (Seat seat in this._seats.values) {
+    for (Seat seat in this._seats) {
       seat.notify();
     }
 
@@ -749,26 +770,26 @@ class GameState {
     }
   }
 
-  void seatPlayer(int seatNo, PlayerModel player) {
+  Seat seatPlayer(int localSeatNo, PlayerModel player) {
     //debugPrint('SeatNo $seatNo player: ${player.name}');
-    if (this._seats.containsKey(seatNo)) {
-      this._seats[seatNo].player = player;
+    this._seats[localSeatNo].player = player;
+    if (player != null) {
+      this._seats[localSeatNo].serverSeatPos = player.seatNo;
     }
+    return this._seats[localSeatNo];
   }
 
-  List<Seat> get seats {
-    return this._seats.values.toList();
-  }
+  List<Seat> get seats => this._seats;
 
   void rebuildSeats() {
     // log('potViewPos: rebuilding seats.');
-    for (final seat in this._seats.values) {
+    for (final seat in this._seats) {
       seat.notify();
     }
   }
 
   Seat getSeatByPlayer(int playerId) {
-    for (final seat in this._seats.values.toList()) {
+    for (final seat in this._seats) {
       if (seat.player?.playerId == playerId) {
         return seat;
       }
@@ -804,8 +825,8 @@ class GameState {
   RedrawTopSectionState get redrawTopSectionState => this._redrawTopState;
 
   Seat get mySeat {
-    for (final seat in _seats.values) {
-      if (seat.isMe) {
+    for (final seat in _seats) {
+      if (seat.player != null && seat.player.isMe) {
         return seat;
       }
     }
@@ -820,7 +841,13 @@ class GameState {
   }
 
   Seat getSeat(int seatNo) {
-    return this._seats[seatNo];
+    // return this._seats[seatNo];
+    for (final seat in _seats) {
+      if (seat.serverSeatPos == seatNo) {
+        return seat;
+      }
+    }
+    return null;
   }
 
   void markOpenSeat(int seatNo) {
@@ -830,7 +857,7 @@ class GameState {
   }
 
   void resetActionHighlight(int nextActionSeatNo) {
-    for (final seat in this._seats.values) {
+    for (final seat in this._seats) {
       if (seat.player != null && seat.player.highlight) {
         // debugPrint('*** seatNo: ${seat.serverSeatPos} highlight: ${seat.player.highlight} nextActionSeatNo: $nextActionSeatNo');
         seat.player.highlight = false;
@@ -892,6 +919,7 @@ class GameState {
       this._rabbitStateProvider,
       this._seatsOnTableProvider,
       this._gameSettingsProvider,
+      this._actionTimerStateProvider,
     ];
   }
 
@@ -909,11 +937,6 @@ class GameState {
       return me.status;
     }
     return '';
-  }
-
-  PlayerModel fromSeat(int seatNo) {
-    if (this.uiClosing) return null;
-    return this._seats[seatNo].player;
   }
 
   void notifyAllSeats() {
@@ -953,18 +976,19 @@ class GameState {
     for (final player in _playersInGame) {
       player.reset(stickAction: false);
     }
-    for (final seat in _seats.values) {
+    for (final seat in _seats) {
       seat.dealer = false;
     }
 
     if (notify) {
-      for (final seat in _seats.values) {
+      for (final seat in _seats) {
         seat.notify();
       }
     }
   }
 
   ActionState get actionState => this._actionState;
+  ActionTimerState get actionTimerState => this._actionTimerState;
 
   void showAction(bool show) {
     _actionState.show = show;
@@ -984,13 +1008,13 @@ class GameState {
   }
 
   void resetDealerButton() {
-    for (final seat in this._seats.values) {
+    for (final seat in this._seats) {
       seat.dealer = false;
     }
   }
 
   void resetSeatActions({bool newHand = false}) {
-    for (final seat in this._seats.values) {
+    for (final seat in this._seats) {
       if (seat.player == null) {
         continue;
       }
@@ -1013,7 +1037,7 @@ class GameState {
   }
 
   Future<void> animateSeatActions() async {
-    for (final seat in this._seats.values) {
+    for (final seat in this._seats) {
       if (seat.player == null) {
         continue;
       }
@@ -1027,9 +1051,9 @@ class GameState {
   set playerSeatChangeInProgress(bool v) =>
       this._playerSeatChangeInProgress = v;
 
-  int get seatChangeSeat => this._seatChangeSeat;
+  Seat get seatChangeSeat => this._seatChangeSeat;
 
-  set seatChangeSeat(int seat) => this._seatChangeSeat = seat;
+  set seatChangeSeat(Seat seat) => this._seatChangeSeat = seat;
 
   Future<Uint8List> getAudioBytes(String assetFile) async {
     if (_audioCache[assetFile] == null) {
@@ -1368,6 +1392,13 @@ class ActionState extends ChangeNotifier {
 
   void notify() {
     this.notifyListeners();
+  }
+}
+
+// Used for extending the time
+class ActionTimerState extends ChangeNotifier {
+  void notify() {
+    notifyListeners();
   }
 }
 

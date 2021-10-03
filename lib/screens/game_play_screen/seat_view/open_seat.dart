@@ -2,17 +2,19 @@ import 'dart:developer';
 
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/services/audio/audio_service.dart';
 
 class OpenSeat extends StatelessWidget {
-  final int seatPos;
-  final Function(int) onUserTap;
+  //final int seatPos;
+  final Seat seat;
+  final Function(Seat) onUserTap;
   final bool seatChangeInProgress;
   final bool seatChangeSeat;
   const OpenSeat({
-    this.seatPos,
+    this.seat,
     this.onUserTap,
     this.seatChangeInProgress,
     this.seatChangeSeat,
@@ -64,9 +66,9 @@ class OpenSeat extends StatelessWidget {
         splashColor: theme.secondaryColor,
         borderRadius: BorderRadius.circular(16),
         onTap: () {
-          log('Pressed $seatPos');
+          log('Pressed ${seat.seatPos.toString()}');
           AudioService.playClickSound();
-          this.onUserTap(seatPos);
+          this.onUserTap(seat);
         },
         child: Container(
           width: 45.0,

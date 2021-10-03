@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/services/encryption/encryption_service.dart';
@@ -7,8 +9,6 @@ import 'package:pokerapp/services/game_play/action_services/hand_player_text_ser
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/ion/ion.dart';
 import 'package:pokerapp/services/nats/message.dart';
-import 'package:pokerapp/services/test/test_service.dart';
-import 'package:pokerapp/widgets/dialogs.dart';
 
 import 'game_state.dart';
 
@@ -196,6 +196,7 @@ class GameContextObject extends ChangeNotifier {
 
       gameComService.handToPlayerChannelStream.listen(
         (Message message) {
+          log('messageType: Message in hand to player channel');
           if (!gameComService.active) return;
 
           if (handActionProtoService == null) return;
