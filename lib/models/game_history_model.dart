@@ -77,25 +77,25 @@ class GameHistoryModel {
     }
   }
 
-  String get GameType {
-    if (gameTypeStr == 'HOLDEM') {
-      return 'No Limit Holdem';
-    }
-    return gameTypeStr;
-  }
+  // String get GameType {
+  //   if (gameTypeStr == 'HOLDEM') {
+  //     return 'No Limit Holdem';
+  //   }
+  //   return gameTypeStr;
+  // }
 
   String get StartedAt => DataFormatter.dateFormat(this.startedAt);
 
   String get Blinds => '$smallBlind/$bigBlind';
 
-  String get ShortGameType {
-    if (gameTypeStr == 'HOLDEM') {
-      return 'NLH';
-    } else if (gameTypeStr.contains('5 Card PLO')) {
-      return '5PLO';
-    }
-    return gameTypeStr;
-  }
+  // String get ShortGameType {
+  //   if (gameTypeStr == 'HOLDEM') {
+  //     return 'NLH';
+  //   } else if (gameTypeStr.contains('5 Card PLO')) {
+  //     return '5PLO';
+  //   }
+  //   return gameTypeStr;
+  // }
 }
 
 class PlayerStack {
