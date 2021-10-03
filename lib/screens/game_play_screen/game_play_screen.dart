@@ -508,7 +508,13 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     /* ignore the open seat tap as the player is seated and game is running */
     if (me != null &&
         me.status == AppConstants.PLAYING &&
-        tableState.gameStatus == AppConstants.GAME_RUNNING) {
+        (tableState.gameStatus == AppConstants.GAME_RUNNING ||
+            tableState.tableStatus == AppConstants.TABLE_STATUS_GAME_RUNNING)) {
+      bool ret = await showPrompt(
+          context, 'Switch Seat', 'Do you want to switch seat next hand?');
+      if (ret) {
+        await GameService.switchSeat(widget.gameCode, seat.serverSeatPos);
+      }
       log('Ignoring the open seat tap as the player is seated and game is running');
       return;
     }
@@ -526,8 +532,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
             if (_gameState.gameInfo.gpsCheck &&
                 !await locationUpdates.requestPermission()) {
-              // TODO: Show error dialog
-              log('Player ${me.name} did not allow to get location');
+              await showErrorDialog(context, 'Permission',
+                  'Game uses gps locations. You cannot participate without providing GPS access',
+                  info: false);
               return;
             }
           }
