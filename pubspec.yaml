@@ -74,6 +74,7 @@ dependencies:
   wakelock: ^0.5.6
   web_socket_channel: ^2.1.0
   plugin_platform_interface: ^2.0.1
+  upgrader: ^3.5.1
 
 dev_dependencies:
   flutter_native_splash: ^1.2.3

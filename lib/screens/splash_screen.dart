@@ -15,6 +15,7 @@ import 'package:pokerapp/services/data/asset_hive_store.dart';
 import 'package:pokerapp/services/data/box_type.dart';
 import 'package:pokerapp/services/data/hive_datasource_impl.dart';
 import 'package:pokerapp/services/data/user_settings_store.dart';
+import 'package:upgrader/upgrader.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -96,6 +97,9 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // TODO REMOVE THIS FOR PRODUCTION
+    Upgrader().clearSavedSettings(); // REMOVE this for release builds
+
     final theme = AppTheme.getTheme(context);
     final themeData = HiveDatasource.getInstance
         .getBox(BoxType.USER_SETTINGS_BOX)
@@ -117,10 +121,12 @@ class _SplashScreenState extends State<SplashScreen> {
         ),
       );
     }
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: Center(
-        child: Image.asset('assets/images/splash.png'),
+    return UpgradeAlert(
+      child: Scaffold(
+        backgroundColor: Colors.black,
+        body: Center(
+          child: Image.asset('assets/images/splash.png'),
+        ),
       ),
     );
   }
