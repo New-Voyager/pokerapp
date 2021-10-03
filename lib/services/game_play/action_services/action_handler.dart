@@ -200,11 +200,6 @@ class PlayerActionHandler {
     );
 
     if (nextSeatToAct == -1) return;
-    final seatToAct = _gameState.getSeat(nextSeatToAct);
-    if (seatToAct != null) {
-      seatToAct.setActionTimer(_gameState.gameInfo.actionTime,
-          remainingTime: remainingActionTime);
-    }
 
     // setup player bet amount
     for (final seatNo in currentHandState.playersActed.keys) {
@@ -226,6 +221,15 @@ class PlayerActionHandler {
     actionChange.actionChange = proto.ActionChange(seatNo: nextSeatToAct);
     handleNextAction(actionChange);
 
+    // don't move action time update from here.
+    final seatToAct = _gameState.getSeat(nextSeatToAct);
+    if (seatToAct != null) {
+      log('QueryCurrentHand: seat no: ${seatToAct.serverSeatPos} action timer: ${_gameState.gameInfo.actionTime} remainingTime: $remainingActionTime');
+      seatToAct.actionTimer
+          .setTime(_gameState.gameInfo.actionTime, remainingActionTime);
+    }
+    log('QueryCurrentHand: 1 seat no: ${seatToAct.serverSeatPos} action timer: ${seatToAct.actionTimer.getTotalTime()} remainingTime: ${seatToAct.actionTimer.getRemainingTime()}');
+
     if (mySeat != null && nextSeatToAct == mySeat.serverSeatPos) {
       // i am next to act
       proto.HandMessageItem yourAction = proto.HandMessageItem();
@@ -234,6 +238,7 @@ class PlayerActionHandler {
     }
     _gameState.notifyAllSeats();
     _gameState.myState.notify();
+    log('QueryCurrentHand: 3 seat no: ${seatToAct.serverSeatPos} action timer: ${seatToAct.actionTimer.getTotalTime()} remainingTime: ${seatToAct.actionTimer.getRemainingTime()}');
   }
 
   Future<void> handleNextAction(proto.HandMessageItem message) async {
@@ -291,6 +296,10 @@ class PlayerActionHandler {
           tableState.notifyAll();
         } catch (e) {}
       }
+
+      seat.setActionTimer(_gameState.gameInfo.actionTime);
+      seat.notify();
+      //_gameState.actionTimerState.notify();
     } finally {
       //log('Hand Message: ::handleNextAction:: END');
     }

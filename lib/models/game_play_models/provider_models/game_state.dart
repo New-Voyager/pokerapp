@@ -90,6 +90,7 @@ class GameState {
   ListenableProvider<RabbitState> _rabbitStateProvider;
   ListenableProvider<SeatsOnTableState> _seatsOnTableProvider;
   ListenableProvider<GameSettingsState> _gameSettingsProvider;
+  ListenableProvider<ActionTimerState> _actionTimerStateProvider;
 
   StraddlePromptState _straddlePromptState;
   HoleCardsState _holeCardsState;
@@ -106,6 +107,7 @@ class GameState {
   RabbitState _rabbitState;
   SeatsOnTableState _seatsOnTableState;
   GameSettingsState _gameSettingsState;
+  ActionTimerState _actionTimerState;
 
   // For posting blind
   // bool postedBlind;
@@ -240,6 +242,7 @@ class GameState {
     }
 
     _actionState = ActionState();
+    _actionTimerState = ActionTimerState();
     _markedCardsState = MarkedCards();
     _cardDistribState = CardDistributionState();
     _gameMessageService = gameMessagingService;
@@ -318,6 +321,8 @@ class GameState {
         create: (_) => _seatsOnTableState);
     this._gameSettingsProvider = ListenableProvider<GameSettingsState>(
         create: (_) => _gameSettingsState);
+    this._actionTimerStateProvider =
+        ListenableProvider<ActionTimerState>(create: (_) => _actionTimerState);
 
     this.janusEngine = JanusEngine(
         gameState: this,
@@ -914,6 +919,7 @@ class GameState {
       this._rabbitStateProvider,
       this._seatsOnTableProvider,
       this._gameSettingsProvider,
+      this._actionTimerStateProvider,
     ];
   }
 
@@ -982,6 +988,7 @@ class GameState {
   }
 
   ActionState get actionState => this._actionState;
+  ActionTimerState get actionTimerState => this._actionTimerState;
 
   void showAction(bool show) {
     _actionState.show = show;
@@ -1385,6 +1392,13 @@ class ActionState extends ChangeNotifier {
 
   void notify() {
     this.notifyListeners();
+  }
+}
+
+// Used for extending the time
+class ActionTimerState extends ChangeNotifier {
+  void notify() {
+    notifyListeners();
   }
 }
 

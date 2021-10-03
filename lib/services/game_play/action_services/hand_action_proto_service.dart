@@ -330,7 +330,6 @@ class HandActionProtoService {
     //debugLog(_gameState.gameCode, jsonData);
 
     String messageType = messageObject.item.messageType;
-
     if (_retryMsg != null) {
       bool handled = _retryMsg.handleMsg(messageObject.item);
       // cancel retry now
@@ -867,7 +866,8 @@ class HandActionProtoService {
     final seat = _gameState.getSeat(extendTimer.seatNo);
     if (seat != null) {
       int total = seat.actionTimer.getTotalTime() + extendTimer.extendBySec;
-      seat.setActionTimer(total, remainingTime: extendTimer.remainingSec);
+      //log('ActionTimer: total: ${total} extended time: ${extendTimer.extendBySec} remaining time: ${extendTimer.remainingSec}');
+      seat.actionTimer.setTime(total, extendTimer.remainingSec);
       seat.notify();
     }
   }

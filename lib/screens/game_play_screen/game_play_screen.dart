@@ -591,7 +591,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     if (mounted) {
       setState(() => _gameInfoModel = gameInfoModel);
     }
-    _queryCurrentHandIfNeeded();
   }
 
   @override
@@ -605,7 +604,11 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     WidgetsBinding.instance.addObserver(this);
     _binding.addObserver(this);
 
-    init();
+    init().then((v) {
+      Future.delayed(Duration(seconds: 1), () {
+        _queryCurrentHandIfNeeded();
+      });
+    });
   }
 
   // void initPlayingTimer() {
@@ -626,9 +629,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     init();
   }
 
-  void init() {
+  Future<void> init() async {
     log('game screen initState');
-    _initGameInfoModel();
+    await _initGameInfoModel();
   }
 
   void close() {
