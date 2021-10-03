@@ -1243,27 +1243,28 @@ class HandInfoState extends ChangeNotifier {
   GameType get gameTypeVal => this._gameType;
 
   String get gameType {
-    String gameTypeStr = '';
-    switch (this._gameType) {
-      case GameType.HOLDEM:
-        gameTypeStr = 'No Limit Holdem';
-        break;
-      case GameType.PLO:
-        gameTypeStr = 'Omaha (PLO)';
-        break;
-      case GameType.PLO_HILO:
-        gameTypeStr = 'Omaha (Hi Lo)';
-        break;
-      case GameType.FIVE_CARD_PLO:
-        gameTypeStr = '5 cards Omaha';
-        break;
-      case GameType.FIVE_CARD_PLO_HILO:
-        gameTypeStr = '5 cards Omaha (Hi Lo)';
-        break;
-      default:
-        gameTypeStr = 'Unknown game';
-    }
-    return gameTypeStr;
+    return gameTypeStr(this._gameType);
+    // String gameTypeStr = '';
+    // switch (this._gameType) {
+    //   case GameType.HOLDEM:
+    //     gameTypeStr = 'No Limit Holdem';
+    //     break;
+    //   case GameType.PLO:
+    //     gameTypeStr = 'Omaha (PLO)';
+    //     break;
+    //   case GameType.PLO_HILO:
+    //     gameTypeStr = 'Omaha (Hi Lo)';
+    //     break;
+    //   case GameType.FIVE_CARD_PLO:
+    //     gameTypeStr = '5 cards Omaha';
+    //     break;
+    //   case GameType.FIVE_CARD_PLO_HILO:
+    //     gameTypeStr = '5 cards Omaha (Hi Lo)';
+    //     break;
+    //   default:
+    //     gameTypeStr = 'Unknown game';
+    // }
+    // return gameTypeStr;
   }
 
   int get handNum => _handNum;

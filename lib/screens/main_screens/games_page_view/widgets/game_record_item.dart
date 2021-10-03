@@ -77,7 +77,7 @@ class GameRecordItem extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "${GameModelNew.getGameTypeStr(game.gameTypeStr)} ${game.smallBlind}/${game.bigBlind}",
+                        "${(game.gameTypeStr)} ${game.smallBlind}/${game.bigBlind}",
                         style: AppStylesNew.gameTypeTextStyle,
                       ),
                       AppDimensionsNew.getVerticalSizedBox(4.ph),

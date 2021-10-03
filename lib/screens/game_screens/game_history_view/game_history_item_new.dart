@@ -58,7 +58,7 @@ class GameHistoryItemNew extends StatelessWidget {
                 child: Container(
                   alignment: Alignment.centerRight,
                   child: Image.asset(
-                    "${GameModelNew.getGameTypeImageAsset(game.ShortGameType)}",
+                    "${GameModelNew.getGameTypeImageAsset(game.gameTypeStr)}",
                     width: 48.pw,
                     height: 48.ph,
                   ),
@@ -77,7 +77,7 @@ class GameHistoryItemNew extends StatelessWidget {
                         children: [
                           RichText(
                             text: TextSpan(
-                              text: "${game.GameType} ",
+                              text: "${game.gameTypeStr}",
                               style:
                                   AppDecorators.getHeadLine2Style(theme: theme),
                               children: [

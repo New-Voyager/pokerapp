@@ -91,7 +91,7 @@ class LiveGameItem extends StatelessWidget {
                             ],
                           ),
                           Text(
-                            "${GameModelNew.getGameTypeStr(game.gameType)} ${game.smallBlind}/${game.bigBlind}",
+                            "${(game.gameType)} ${game.smallBlind}/${game.bigBlind}",
                             style:
                                 AppDecorators.getHeadLine4Style(theme: theme),
                           ),

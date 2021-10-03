@@ -53,43 +53,43 @@ class GameModel {
     this.seatsAvailable = this.maxPlayers - this.tableCount;
 
     GameType gameType;
-    String gameTypeStr;
-    if (jsonData['gameType'] != null) {
-      for (GameType t in GameType.values) {
-        if (t.toString() == 'GameType.${jsonData['gameType']}') {
-          gameType = t;
-          break;
-        }
-      }
-    }
-    switch (gameType) {
-      case GameType.HOLDEM:
-        gameTypeStr = 'No Limit Holdem';
-        break;
-      case GameType.PLO:
-        gameTypeStr = 'PLO';
-        break;
-      case GameType.PLO_HILO:
-        gameTypeStr = 'PLO HiLo';
-        break;
-      case GameType.FIVE_CARD_PLO:
-        gameTypeStr = '5 Card PLO';
-        break;
-      case GameType.FIVE_CARD_PLO_HILO:
-        gameTypeStr = '5 Card PLO HiLo';
-        break;
-      case GameType.DEALER_CHOICE:
-        gameTypeStr = 'Dealer Choice';
-        break;
-      case GameType.ROE:
-        gameTypeStr = 'Round of Each';
-        break;
-      case GameType.UNKNOWN:
-        break;
-    }
+    // String gameTypeStr;
+    // if (jsonData['gameType'] != null) {
+    //   for (GameType t in GameType.values) {
+    //     if (t.toString() == 'GameType.${jsonData['gameType']}') {
+    //       gameType = t;
+    //       break;
+    //     }
+    //   }
+    // }
+    // switch (gameType) {
+    //   case GameType.HOLDEM:
+    //     gameTypeStr = 'No Limit Holdem';
+    //     break;
+    //   case GameType.PLO:
+    //     gameTypeStr = 'PLO';
+    //     break;
+    //   case GameType.PLO_HILO:
+    //     gameTypeStr = 'PLO HiLo';
+    //     break;
+    //   case GameType.FIVE_CARD_PLO:
+    //     gameTypeStr = '5 Card PLO';
+    //     break;
+    //   case GameType.FIVE_CARD_PLO_HILO:
+    //     gameTypeStr = '5 Card PLO HiLo';
+    //     break;
+    //   case GameType.DEALER_CHOICE:
+    //     gameTypeStr = 'Dealer Choice';
+    //     break;
+    //   case GameType.ROE:
+    //     gameTypeStr = 'Round of Each';
+    //     break;
+    //   case GameType.UNKNOWN:
+    //     break;
+    // }
 
     if (this.title == null) {
-      this.title = gameTypeStr;
+      this.title = gameTypeStr(gameType);
     }
 
     this.buyInMin = jsonData['buyInMin'] == null
