@@ -1,6 +1,7 @@
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
+import 'package:pokerapp/models/seat_change_model.dart';
 
 class SeatChangeService {
   SeatChangeService._();
@@ -110,5 +111,165 @@ class SeatChangeService {
     }
 
     return playersInSeats;
+  }
+
+  static String listOfSeatChangeQuery = """
+  query (\$gameCode:String!) {
+    seatChangeRequests(gameCode: \$gameCode) {
+      name
+      status
+      seatNo
+      seatChangeRequestedAt
+      sessionTime
+      playerUuid
+    }
+  }
+  """;
+  static String requestForSeatChangeQuery = """
+    mutation (\$gameCode: String!, \$cancel: Boolean) {
+    confirmed: requestSeatChange(gameCode: \$gameCode, cancel: \$cancel)
+    }
+  """;
+
+  static String beginHostSeatChangeQuery = """
+  mutation beginHostSeatChange(\$gameCode: String!) {
+	seatChange: beginHostSeatChange(
+		gameCode: \$gameCode)
+  }  
+  """;
+
+  static Future<List<SeatChangeModel>> listOfSeatChange(String gameCode) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    List<SeatChangeModel> seatChangePlayers = [];
+    Map<String, dynamic> variables = {
+      "gameCode": gameCode,
+    };
+    QueryResult result = await _client.query(QueryOptions(
+        document: gql(listOfSeatChangeQuery), variables: variables));
+
+    if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
+    List games = result.data['seatChangeRequests'];
+    seatChangePlayers = games.map((e) {
+      SeatChangeModel player = SeatChangeModel.fromJson(e);
+      return player;
+    }).toList();
+    return seatChangePlayers;
+  }
+
+  /* this method confirms the seat change */
+  static Future<bool> confirmSeatChange(String gameCode, int seatNo) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    String _mutation = """mutation (\$gameCode: String! \$seatNo: Int!){
+        confirmSeatChange(gameCode: \$gameCode, seatNo: \$seatNo)
+      }""";
+    Map<String, dynamic> variables = {"gameCode": gameCode, "seatNo": seatNo};
+    QueryResult result = await _client.mutate(
+      MutationOptions(
+        document: gql(_mutation),
+        variables: variables,
+      ),
+    );
+
+    if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
+
+    return result.data['confirmSeatChange'];
+  }
+
+  /* this method declines the seat change */
+  static Future<bool> declineSeatChange(String gameCode) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    String _mutation = """mutation (\$gameCode: String!){
+        declineSeatChange(gameCode: \$gameCode)
+      }""";
+    Map<String, dynamic> variables = {
+      "gameCode": gameCode,
+    };
+    QueryResult result = await _client.mutate(
+      MutationOptions(
+        document: gql(_mutation),
+        variables: variables,
+      ),
+    );
+
+    if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
+
+    return result.data['declineSeatChange'];
+  }
+
+  static Future<bool> beginHostSeatChange(
+    String gameCode,
+  ) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    Map<String, dynamic> variables = {
+      "gameCode": gameCode,
+    };
+    QueryResult result = await _client.mutate(
+      MutationOptions(
+        document: gql(beginHostSeatChangeQuery),
+        variables: variables,
+      ),
+    );
+    if (result.hasException) return false;
+    print("result $result");
+    return result.data['addClubChatText'] ?? false;
+  }
+
+  static Future<String> requestForSeatChange(String gameCode,
+      {bool cancel = false}) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    Map<String, dynamic> variables = {
+      "gameCode": gameCode,
+      "cancel": false,
+    };
+
+    if (cancel ?? false) {
+      variables['cancel'] = cancel;
+    }
+    QueryResult result = await _client.mutate(
+      MutationOptions(
+        document: gql(requestForSeatChangeQuery),
+        variables: variables,
+      ),
+    );
+
+    if (result.hasException) return "";
+
+    return result.data['confirmed'] ?? "";
+  }
+
+  /* player switches to a open seat */
+  static Future<String> switchSeat(String gameCode, int seatNo) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    String _mutation = """mutation{
+      switchSeat(gameCode: "$gameCode", seatNo: $seatNo)
+    }
+    """;
+
+    QueryResult result = await _client.mutate(
+      MutationOptions(document: gql(_mutation)),
+    );
+
+    if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
+
+    return result.data['switchSeat'];
   }
 }

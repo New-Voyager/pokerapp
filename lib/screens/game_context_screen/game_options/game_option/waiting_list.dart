@@ -9,8 +9,7 @@ import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/models/waiting_list_model.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
-import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
-import 'package:pokerapp/services/app/game_service.dart';
+import 'package:pokerapp/services/game_play/graphql/waitlist_service.dart';
 import 'package:pokerapp/widgets/round_color_button.dart';
 import 'package:pokerapp/widgets/switch_widget.dart';
 import 'package:provider/provider.dart';
@@ -60,7 +59,7 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
   }
 
   getAllWaitingPlayers() async {
-    final result = await GameService.listOfWaitingPlayer(widget.gameCode);
+    final result = await WaitlistService.listOfWaitingPlayer(widget.gameCode);
     print("gameCode ${widget.gameCode}");
     print("gameCode ${widget.playerUuid}");
 
@@ -232,11 +231,12 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
                 isInWaitingList = value;
               });
               if (isInWaitingList) {
-                bool result = await GameService.addToWaitList(widget.gameCode);
+                bool result =
+                    await WaitlistService.addToWaitList(widget.gameCode);
                 print("result = $result");
               } else {
                 bool result =
-                    await GameService.removeFromWaitlist(widget.gameCode);
+                    await WaitlistService.removeFromWaitlist(widget.gameCode);
                 print("result check $result");
               }
               getAllWaitingPlayers();
@@ -272,7 +272,7 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
                             setState(() {
                               ischanged = false;
                             });
-                            GameService.changeWaitListOrderList(
+                            WaitlistService.changeWaitListOrderList(
                                 widget.gameCode, uuids);
                           },
                         ),

@@ -112,7 +112,7 @@ class SeatChangeNotifier extends ChangeNotifier {
   }
 
   onSeatDragEnd(DraggableDetails details) {
-    log('SeatChange: Drag ended details: ${details.toString()}');
+    log('SeatChange: Player Drag ended details: ${details.toString()}');
     for (int i = 0; i < allSeatChangeStatus.length; i++) {
       allSeatChangeStatus[i].isDropAble = false;
       allSeatChangeStatus[i].isDragging = false;

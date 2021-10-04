@@ -119,7 +119,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
       if (fromSeatNo == null || toSeatNo == null) return;
       if (fromSeatNo == 0 || toSeatNo == 0) return;
 
-      log('Seat Change data: $fromSeatNo (${fromSeat.player.name}, ${fromSeat.seatPos.toString()}) and $toSeatNo (${toSeat.player.name} ${toSeat.seatPos.toString()})');
+      log('Seat Change data: $fromSeatNo (${fromSeat.player.name}/${fromSeat.player.stack}, ${fromSeat.seatPos.toString()}) and $toSeatNo (${toSeat.player.name}/${toSeat.player.stack} ${toSeat.seatPos.toString()})');
 
       final positions = findPositionOfFromAndToUser(
         fromSeat: fromSeatNo,
@@ -362,13 +362,17 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
                     left: seatChangeAnimation.value.dx,
                     top: seatChangeAnimation.value.dy,
                     child: Consumer<BoardAttributesObject>(
-                      builder: (_, boardAttributes, __) => NamePlateWidget(
-                        getSeats(context, widget.gameState.playersInGame)[
-                            seatChangerPlayer - 1],
+                        builder: (_, boardAttributes, __) {
+                      final seat = widget.gameState.getSeat(seatChangerPlayer);
+                      String playerName = seat.player?.name;
+                      int playerSeat = seat.player?.seatNo;
+                      log('SeatChange: data: Animation seat: ${seat.serverSeatPos}, ${playerName}/$playerSeat');
+                      return NamePlateWidget(
+                        seat,
                         globalKey: null,
                         boardAttributes: boardAttributes,
-                      ),
-                    ),
+                      );
+                    }),
                   )
                 : SizedBox.shrink(),
           ],

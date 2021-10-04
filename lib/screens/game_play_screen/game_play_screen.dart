@@ -514,7 +514,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       bool ret = await showPrompt(
           context, 'Switch Seat', 'Do you want to switch seat next hand?');
       if (ret) {
-        await GameService.switchSeat(widget.gameCode, seat.serverSeatPos);
+        await SeatChangeService.switchSeat(widget.gameCode, seat.serverSeatPos);
       }
       log('Ignoring the open seat tap as the player is seated and game is running');
       return;
@@ -522,7 +522,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
     if (me != null && me.seatNo != null && me.seatNo != 0) {
       log('Player ${me.name} switches seat to ${seat.serverSeatPos}');
-      await GameService.switchSeat(widget.gameCode, seat.serverSeatPos);
+      await SeatChangeService.switchSeat(widget.gameCode, seat.serverSeatPos);
     } else {
       try {
         LocationUpdates locationUpdates;

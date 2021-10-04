@@ -1107,18 +1107,28 @@ class GameUpdateService {
     final hostSeatChange =
         Provider.of<SeatChangeNotifier>(_context, listen: false);
     var seatMoves = data['seatMoves'];
+    log('SeatChange: seatmoves: ${jsonEncode(data)}');
+    bool movedToOpenSeat = false;
+    for (var move in seatMoves) {
+      if (move['openSeat'] ?? false) {
+        movedToOpenSeat = true;
+      }
+    }
     for (var move in seatMoves) {
       int from = int.parse(move['oldSeatNo'].toString());
       int to = int.parse(move['newSeatNo'].toString());
       String name = move['name'].toString();
       // double stack = double.parse(move['stack'].toString());
-      debugPrint('Seatchange: Player $name from seat $from to $to');
+      debugPrint('Seatchange: Move $name from seat $from to $to');
 
       /* start animation */
       hostSeatChange.onSeatDrop(from, to);
+      if (!movedToOpenSeat) {
+        /* wait for the animation to finish */
+        await Future.delayed(AppConstants.seatChangeAnimationDuration);
+      }
+      //await Future.delayed(Duration(seconds: 5));
 
-      /* wait for the animation to finish */
-      await Future.delayed(AppConstants.seatChangeAnimationDuration);
     }
     final gameCode = _gameState.gameCode;
     // get current seat positions

@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/services/app/game_service.dart';
+import 'package:pokerapp/services/game_play/graphql/seat_change_service.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
 import 'package:pokerapp/widgets/radio_list_widget.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
@@ -67,13 +68,13 @@ class _SeatChangeConfirmationPopUpWidget extends StatelessWidget {
   void _confirm(BuildContext context, int selectedSeat) async {
     /* call confirmSeatChange mutation */
     log('Player confirmed to make seat change');
-    await GameService.confirmSeatChange(gameCode, selectedSeat);
+    await SeatChangeService.confirmSeatChange(gameCode, selectedSeat);
     Navigator.pop(context);
   }
 
   void _decline(BuildContext context) async {
     log('Player declined to make seat change');
-    await GameService.declineSeatChange(gameCode);
+    await SeatChangeService.declineSeatChange(gameCode);
     Navigator.pop(context);
   }
 

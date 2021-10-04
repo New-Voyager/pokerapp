@@ -8,27 +8,34 @@ import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/services/audio/audio_service.dart';
+import 'package:pokerapp/services/game_play/graphql/seat_change_service.dart';
+import 'package:provider/provider.dart';
 
-class OpenSeat extends StatelessWidget {
-  //final int seatPos;
+class OpenSeat extends StatefulWidget {
   final Seat seat;
   final Function(Seat) onUserTap;
   final bool seatChangeInProgress;
   final bool seatChangeSeat;
-  final SeatChangeNotifier seatChangeNotifier;
 
   const OpenSeat({
     this.seat,
     this.onUserTap,
     this.seatChangeInProgress,
     this.seatChangeSeat,
-    this.seatChangeNotifier,
+//    this.seatChangeNotifier,
     Key key,
   }) : super(key: key);
 
+  @override
+  State<OpenSeat> createState() => _OpenSeatState();
+}
+
+class _OpenSeatState extends State<OpenSeat> {
+  bool dragEnter = false;
+
   Widget _openSeat(AppTheme theme) {
-    if (seatChangeInProgress && seatChangeSeat) {
-      log('RedrawFooter: open seat $seatChangeInProgress');
+    if (widget.seatChangeInProgress && widget.seatChangeSeat) {
+      log('RedrawFooter: open seat ${widget.seatChangeInProgress}');
       return Padding(
         padding: const EdgeInsets.all(5),
         child: DefaultTextStyle(
@@ -64,34 +71,17 @@ class OpenSeat extends StatelessWidget {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final gameState = GameState.getState(context);
-    log('RedrawFooter: open seat ${seat.serverSeatPos} $seatChangeInProgress hostSeatChange: ${gameState.hostSeatChangeInProgress}');
-
-    final theme = AppTheme.getTheme(context);
-    List<BoxShadow> shadow = [
-      BoxShadow(
-        color: theme.accentColor,
-        blurRadius: 1,
-        spreadRadius: 1,
-        offset: Offset(1, 0),
-      )
-    ];
-    List<BoxShadow> seatChangeShadow =
-        getShadow(seatChangeNotifier, true, theme);
-    if (seatChangeShadow.length > 0) {
-      shadow = seatChangeShadow;
-    }
+  Widget openSeatWidget(AppTheme theme, List<BoxShadow> shadow) {
     return InkWell(
         splashColor: theme.secondaryColor,
         borderRadius: BorderRadius.circular(16),
         onTap: () {
-          log('Pressed ${seat.seatPos.toString()}');
+          log('Pressed ${widget.seat.seatPos.toString()}');
           AudioService.playClickSound();
-          this.onUserTap(seat);
+          this.widget.onUserTap(widget.seat);
         },
         child: Container(
+          key: UniqueKey(),
           width: 45.0,
           height: 45.0,
           child: Stack(
@@ -109,54 +99,68 @@ class OpenSeat extends StatelessWidget {
         ));
   }
 
+  @override
+  Widget build(BuildContext context) {
+    final gameState = GameState.getState(context);
+    log('SeatChange: OpenSeat build  ${widget.seat.serverSeatPos} ${widget.seatChangeInProgress} hostSeatChange: ${gameState.hostSeatChangeInProgress}');
+
+    final theme = AppTheme.getTheme(context);
+
+    return Consumer<SeatChangeNotifier>(builder: (_, scn, __) {
+      List<BoxShadow> shadow = [
+        BoxShadow(
+          color: theme.accentColor,
+          blurRadius: 1,
+          spreadRadius: 1,
+          offset: Offset(1, 0),
+        )
+      ];
+      List<BoxShadow> seatChangeShadow = getShadow(scn, dragEnter, theme);
+      if (seatChangeShadow.length > 0) {
+        shadow = seatChangeShadow;
+      }
+
+      return DragTarget(onLeave: (data) {
+        log('SeatChange: OpenSeat onLeave ${data}');
+        dragEnter = false;
+        setState(() {});
+        return true;
+      }, onWillAccept: (data) {
+        log('SeatChange: OpenSeat onWillAccept ${data}');
+        dragEnter = true;
+        setState(() {});
+        return true;
+      }, onAccept: (data) {
+        log('SeatChange: OpenSeat onDropped ${data}');
+        // call the API to make the seat change
+        SeatChangeService.hostSeatChangeMove(
+          gameState.gameCode,
+          data,
+          widget.seat.serverSeatPos,
+        );
+      }, builder: (context, List<int> candidateData, rejectedData) {
+        log('RedrawFooter: Open seat');
+        return openSeatWidget(theme, shadow);
+      });
+    });
+  }
+
   List<BoxShadow> getShadow(
     SeatChangeNotifier hostSeatChange,
-    bool isFeedback,
+    //bool isFeedback,
+    bool dragEnter,
     AppTheme theme,
   ) {
-    BoxShadow shadow;
-    if (seatChangeInProgress) {
+    if (widget.seatChangeInProgress && dragEnter) {
       return [
         BoxShadow(
           color: Colors.blue,
-          blurRadius: 20.0,
-          spreadRadius: 8.0,
+          blurRadius: 10.0,
+          spreadRadius: 30,
         )
       ];
     } else {
       return [];
-    }
-
-    if (hostSeatChange?.seatChangeInProgress ?? false) {
-      //log('SeatChange: [${seat.serverSeatPos}] Seat change in progress');
-      SeatChangeStatus seatChangeStatus;
-      // are we dragging?
-      if (seat != null) {
-        seatChangeStatus =
-            hostSeatChange.allSeatChangeStatus[seat.localSeatPos];
-      }
-      if (seatChangeStatus != null) {
-        if (seatChangeStatus.isDragging || isFeedback) {
-          log('SeatChange: [${seat.localSeatPos}] seatChangeStatus.isDragging: ${seatChangeStatus.isDragging} isFeedback: $isFeedback');
-          shadow = BoxShadow(
-            color: Colors.green,
-            blurRadius: 20.0,
-            spreadRadius: 8.0,
-          );
-        } else if (seatChangeStatus.isDropAble) {
-          log('SeatChange: [${seat.localSeatPos}] seatChangeStatus.isDropAble: ${seatChangeStatus.isDropAble} isFeedback: $isFeedback');
-          shadow = BoxShadow(
-            color: Colors.blue,
-            blurRadius: 20.0,
-            spreadRadius: 8.0,
-          );
-        }
-      }
-    }
-    if (shadow == null) {
-      return [];
-    } else {
-      return [shadow];
     }
   }
 }

@@ -30,6 +30,7 @@ class Seat extends ChangeNotifier {
   PlayerModel _player;
   SeatPos _uiPos;
   SeatPosAttribs _attribs;
+  bool dragEntered;
 
   // UI attributes
   // Offset _screenPos;

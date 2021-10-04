@@ -9,6 +9,7 @@ import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/services/app/game_service.dart';
+import 'package:pokerapp/services/game_play/graphql/gamesettings_service.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/utils.dart';
 
@@ -38,8 +39,8 @@ class _GameInfoScreenState extends State<GameInfoScreen> {
   }
 
   void _fetchGameSettings() async {
-    final GameSettings res =
-        await GameService.getGameSettings(widget.gameState.gameInfo.gameCode);
+    final GameSettings res = await GameSettingsService.getGameSettings(
+        widget.gameState.gameInfo.gameCode);
     final GameInfoModel gameInfo =
         await GameService.getGameInfo(widget.gameState.gameInfo.gameCode);
     if (res != null) {

@@ -20,6 +20,7 @@ import 'package:pokerapp/proto/hand.pbenum.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/services/agora/agora.dart';
 import 'package:pokerapp/services/app/game_service.dart';
+import 'package:pokerapp/services/game_play/graphql/gamesettings_service.dart';
 import 'package:pokerapp/services/app/handlog_cache_service.dart';
 import 'package:pokerapp/services/data/game_hive_store.dart';
 import 'package:pokerapp/services/data/hive_models/game_settings.dart';
@@ -29,7 +30,6 @@ import 'package:pokerapp/services/janus/janus.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
-import 'package:pokerapp/proto/enums.pb.dart' as proto;
 import 'package:pokerapp/proto/hand.pb.dart' as proto;
 
 import 'game_assets.dart';
@@ -616,7 +616,7 @@ class GameState {
   Future<void> refreshSettings() async {
     log('************ Refreshing game state');
     // fetch new player using GameInfo API and add to the game
-    GameSettings settings = await GameService.getGameSettings(gameCode);
+    GameSettings settings = await GameSettingsService.getGameSettings(gameCode);
 
     // copy values here (we need to keep the reference)
     this._gameSettings.buyInApproval = settings.buyInApproval;
@@ -649,7 +649,7 @@ class GameState {
   Future<void> refreshPlayerSettings() async {
     log('************ Refreshing game state');
     GamePlayerSettings settings =
-        await GameService.getGamePlayerSettings(gameCode);
+        await GameSettingsService.getGamePlayerSettings(gameCode);
 
     // copy values here (we need to keep the reference)
     this._playerSettings.autoStraddle = settings.autoStraddle;
