@@ -33,6 +33,8 @@ class NamePlateWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final gameState = GameState.getState(context);
+
     return Consumer3<SeatChangeNotifier, GameContextObject, AppTheme>(
       key: globalKey,
       builder: (
@@ -44,7 +46,7 @@ class NamePlateWidget extends StatelessWidget {
       ) {
         Widget displayWidget;
 
-        if (gameContextObject.isHost() && hostSeatChange.seatChangeInProgress) {
+        if (gameContextObject.isHost() && gameState.hostSeatChangeInProgress) {
           log('SeatChange: Seat change in progress: building seat [${seat.seatPos.toString()}]');
           displayWidget = Draggable(
             data: seat.serverSeatPos,

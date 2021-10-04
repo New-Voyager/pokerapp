@@ -92,6 +92,7 @@ class GameState {
   ListenableProvider<SeatsOnTableState> _seatsOnTableProvider;
   ListenableProvider<GameSettingsState> _gameSettingsProvider;
   ListenableProvider<ActionTimerState> _actionTimerStateProvider;
+  ListenableProvider<SeatChangeNotifier> _seatChangeProvider;
 
   StraddlePromptState _straddlePromptState;
   HoleCardsState _holeCardsState;
@@ -109,6 +110,7 @@ class GameState {
   SeatsOnTableState _seatsOnTableState;
   GameSettingsState _gameSettingsState;
   ActionTimerState _actionTimerState;
+  SeatChangeNotifier _seatChangeState;
 
   // For posting blind
   // bool postedBlind;
@@ -324,6 +326,13 @@ class GameState {
         create: (_) => _gameSettingsState);
     this._actionTimerStateProvider =
         ListenableProvider<ActionTimerState>(create: (_) => _actionTimerState);
+
+    /* Provider to deal with host seat change functionality */
+    _seatChangeState = SeatChangeNotifier();
+    _seatChangeState.initialize(gameInfo.maxPlayers);
+    this._seatChangeProvider = ListenableProvider<SeatChangeNotifier>(
+      create: (_) => _seatChangeState,
+    );
 
     this.janusEngine = JanusEngine(
         gameState: this,
@@ -651,16 +660,24 @@ class GameState {
     this._playerSettings.runItTwiceEnabled = settings.runItTwiceEnabled;
   }
 
+  void redrawTop() {
+    for (var seat in this._seats) {
+      seat.potViewPos = null;
+      seat.betWidgetPos = null;
+      seat.attribs?.resetKey();
+    }
+    this.redrawTopSectionState.notify();
+  }
+
+  void redrawFooter() {
+    this.redrawFooterState.notify();
+  }
+
   Future<void> refresh({bool rebuildSeats = false}) async {
     log('************ Refreshing game state');
     GameInfoModel gameInfo = await GameService.getGameInfo(this._gameCode);
 
     this._gameInfo = gameInfo;
-
-    // if (rebuildSeats) {
-    //   this._seats.clear();
-    // }
-
     // reset seats
     for (var seat in this._seats) {
       seat.player = null;
@@ -924,6 +941,7 @@ class GameState {
       this._seatsOnTableProvider,
       this._gameSettingsProvider,
       this._actionTimerStateProvider,
+      this._seatChangeProvider,
     ];
   }
 
@@ -1054,6 +1072,8 @@ class GameState {
 
   set playerSeatChangeInProgress(bool v) =>
       this._playerSeatChangeInProgress = v;
+
+  SeatChangeNotifier get seatChangeState => this._seatChangeState;
 
   Seat get seatChangeSeat => this._seatChangeSeat;
 

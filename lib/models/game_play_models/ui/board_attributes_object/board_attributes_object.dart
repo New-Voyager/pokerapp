@@ -88,6 +88,10 @@ class SeatPosAttribs {
     return _key;
   }
 
+  void resetKey() {
+    _key = null;
+  }
+
   Offset get parentRelativePos => _parentRelativePos;
   set parentRelativePos(Offset pos) => _parentRelativePos = pos;
 

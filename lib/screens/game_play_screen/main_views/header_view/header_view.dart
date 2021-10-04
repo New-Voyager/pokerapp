@@ -34,14 +34,6 @@ class HeaderView extends StatelessWidget {
     return '';
   }
 
-  Widget _buildCustomizeHeader(AppTheme theme) {
-    return Expanded(
-      child: HeadingWidget(
-        heading: 'CUSTOMIZE',
-      ),
-    );
-  }
-
   Widget _buildMainContent(AppTheme theme) {
     return Consumer<HandInfoState>(
       builder: (_, his, __) {
@@ -82,21 +74,6 @@ class HeaderView extends StatelessWidget {
       },
     );
   }
-
-  Widget _buildBackButton(BuildContext context) => Align(
-        alignment: Alignment.centerLeft,
-        child: InkWell(
-          child: SvgPicture.asset(
-            'assets/images/backarrow.svg',
-            color: AppColorsNew.newGreenButtonColor,
-            width: 24.pw,
-            height: 24.ph,
-            fit: BoxFit.cover,
-          ),
-          borderRadius: BorderRadius.circular(24.pw),
-          onTap: () => Navigator.of(context).pop(),
-        ),
-      );
 
   void _onGameMenuNavButtonPress(BuildContext context) {
     final gameState = GameState.getState(context);
@@ -175,6 +152,7 @@ class HeaderView extends StatelessWidget {
                 BackArrowWidget(),
 
                 /* game menu */
+
                 Consumer<HandInfoState>(builder: (_, his, __) {
                   return Visibility(
                       child: _buildGameMenuNavButton(context, theme),

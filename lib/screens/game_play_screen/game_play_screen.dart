@@ -46,6 +46,7 @@ import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/utils/utils.dart';
+import 'package:pokerapp/widgets/custom_text_button.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:provider/provider.dart';
 import 'package:wakelock/wakelock.dart';
@@ -718,7 +719,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       : SizedBox.shrink();
 
   Widget _buildBoardView(Size boardDimensions, double tableScale) {
+    log('RedrawTop: Rebuilding board view');
     return Container(
+      key: UniqueKey(),
       width: boardDimensions.width,
       height: boardDimensions.height,
       child: Transform.scale(
@@ -728,26 +731,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
           gameInfo: _gameInfoModel,
           onUserTap: _onJoinGame,
           onStartGame: startGame,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildFooterView(BuildContext context) {
-    return Expanded(
-      child: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage("assets/images/bottom_pattern.png"),
-            fit: BoxFit.fill,
-          ),
-        ),
-        child: FooterView(
-          gameContext: _gameContextObj,
-          gameCode: widget.gameCode,
-          playerUuid: _currentPlayer.uuid,
-          chatVisibilityChange: () => _toggleChatVisibility(context),
-          clubCode: _gameInfoModel.clubCode,
         ),
       ),
     );
@@ -815,6 +798,12 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         // header view
         headerView,
 
+        RoundRectButton(
+            text: 'Refresh',
+            onTap: () {
+              log('RedrawTop: on refresh');
+              _gameState.redrawTop();
+            }),
         // seperator
         // SizedBox(width: width, height: divider1 / 2),
 
@@ -827,6 +816,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
         // main board view
         Consumer<RedrawTopSectionState>(builder: (_, ___, __) {
+          log('RedrawTop: Rebuilding top section');
           return _buildBoardView(boardDimensions, tableScale);
         }),
 
@@ -839,6 +829,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       children.addAll([
         // footer section
         Consumer<RedrawFooterSectionState>(builder: (_, ___, __) {
+          log('RedrawFooter: building footer view');
           return FooterViewWidget(
             gameCode: widget.gameCode,
             gameContextObject: _gameContextObj,

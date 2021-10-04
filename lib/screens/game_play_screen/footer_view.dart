@@ -23,6 +23,7 @@ class FooterViewWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       child: Container(
+        key: UniqueKey(),
         decoration: BoxDecoration(
           image: DecorationImage(
             image: AssetImage("assets/images/bottom_pattern.png"),
