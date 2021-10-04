@@ -418,7 +418,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
       PlayerModel playerInSeat;
       // find the player who is in the seat
       for (PlayerModel model in gameState.playersInGame) {
-        if (model.seatNo == serverSeatNo) {
+        if (model.seatNo == serverSeatNo && model.playerUuid != 'open') {
           playerInSeat = model;
           break;
         }

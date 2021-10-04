@@ -29,6 +29,7 @@ import 'package:pokerapp/services/janus/janus.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
+import 'package:pokerapp/proto/enums.pb.dart' as proto;
 import 'package:pokerapp/proto/hand.pb.dart' as proto;
 
 import 'game_assets.dart';
@@ -91,6 +92,7 @@ class GameState {
   ListenableProvider<SeatsOnTableState> _seatsOnTableProvider;
   ListenableProvider<GameSettingsState> _gameSettingsProvider;
   ListenableProvider<ActionTimerState> _actionTimerStateProvider;
+  ListenableProvider<SeatChangeNotifier> _seatChangeProvider;
 
   StraddlePromptState _straddlePromptState;
   HoleCardsState _holeCardsState;
@@ -108,6 +110,7 @@ class GameState {
   SeatsOnTableState _seatsOnTableState;
   GameSettingsState _gameSettingsState;
   ActionTimerState _actionTimerState;
+  SeatChangeNotifier _seatChangeState;
 
   // For posting blind
   // bool postedBlind;
@@ -323,6 +326,13 @@ class GameState {
         create: (_) => _gameSettingsState);
     this._actionTimerStateProvider =
         ListenableProvider<ActionTimerState>(create: (_) => _actionTimerState);
+
+    /* Provider to deal with host seat change functionality */
+    _seatChangeState = SeatChangeNotifier();
+    _seatChangeState.initialize(gameInfo.maxPlayers);
+    this._seatChangeProvider = ListenableProvider<SeatChangeNotifier>(
+      create: (_) => _seatChangeState,
+    );
 
     this.janusEngine = JanusEngine(
         gameState: this,
@@ -650,16 +660,24 @@ class GameState {
     this._playerSettings.runItTwiceEnabled = settings.runItTwiceEnabled;
   }
 
+  void redrawTop() {
+    for (var seat in this._seats) {
+      seat.potViewPos = null;
+      seat.betWidgetPos = null;
+      seat.attribs?.resetKey();
+    }
+    this.redrawTopSectionState.notify();
+  }
+
+  void redrawFooter() {
+    this.redrawFooterState.notify();
+  }
+
   Future<void> refresh({bool rebuildSeats = false}) async {
     log('************ Refreshing game state');
     GameInfoModel gameInfo = await GameService.getGameInfo(this._gameCode);
 
     this._gameInfo = gameInfo;
-
-    // if (rebuildSeats) {
-    //   this._seats.clear();
-    // }
-
     // reset seats
     for (var seat in this._seats) {
       seat.player = null;
@@ -804,6 +822,7 @@ class GameState {
     this.holecardOrder = HoleCardOrder.DEALT;
     this.showdown = false;
     handState = HandState.UNKNOWN;
+    this.wonat = HandStatus.HandStatus_UNKNOWN;
     _cardDistribState._distributeToSeatNo = null;
     _markedCardsState.clear();
     for (final player in _playersInGame) {
@@ -823,6 +842,8 @@ class GameState {
   MyState get myState => this._myState;
   RedrawFooterSectionState get redrawFooterState => this._redrawFooterState;
   RedrawTopSectionState get redrawTopSectionState => this._redrawTopState;
+
+  bool get wonAtShowdown => this.wonat == proto.HandStatus.SHOW_DOWN;
 
   Seat get mySeat {
     for (final seat in _seats) {
@@ -920,6 +941,7 @@ class GameState {
       this._seatsOnTableProvider,
       this._gameSettingsProvider,
       this._actionTimerStateProvider,
+      this._seatChangeProvider,
     ];
   }
 
@@ -1050,6 +1072,8 @@ class GameState {
 
   set playerSeatChangeInProgress(bool v) =>
       this._playerSeatChangeInProgress = v;
+
+  SeatChangeNotifier get seatChangeState => this._seatChangeState;
 
   Seat get seatChangeSeat => this._seatChangeSeat;
 
@@ -1268,27 +1292,6 @@ class HandInfoState extends ChangeNotifier {
 
   String get gameType {
     return gameTypeStr(this._gameType);
-    // String gameTypeStr = '';
-    // switch (this._gameType) {
-    //   case GameType.HOLDEM:
-    //     gameTypeStr = 'No Limit Holdem';
-    //     break;
-    //   case GameType.PLO:
-    //     gameTypeStr = 'Omaha (PLO)';
-    //     break;
-    //   case GameType.PLO_HILO:
-    //     gameTypeStr = 'Omaha (Hi Lo)';
-    //     break;
-    //   case GameType.FIVE_CARD_PLO:
-    //     gameTypeStr = '5 cards Omaha';
-    //     break;
-    //   case GameType.FIVE_CARD_PLO_HILO:
-    //     gameTypeStr = '5 cards Omaha (Hi Lo)';
-    //     break;
-    //   default:
-    //     gameTypeStr = 'Unknown game';
-    // }
-    // return gameTypeStr;
   }
 
   int get handNum => _handNum;

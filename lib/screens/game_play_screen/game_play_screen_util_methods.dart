@@ -375,11 +375,6 @@ class GamePlayScreenUtilMethods {
         create: (_) => RemainingTime(),
       ),
 
-      /* Provider to deal with host seat change functionality */
-      ListenableProvider<SeatChangeNotifier>(
-        create: (_) => seatChangeProvider,
-      ),
-
       /* for game chat notifications - unread messages, counts */
       ListenableProvider<GameChatNotifState>(
         create: (_) => GameChatNotifState(),

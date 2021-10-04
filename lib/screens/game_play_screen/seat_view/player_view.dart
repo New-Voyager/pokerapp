@@ -213,7 +213,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final theme = AppTheme.getTheme(context);
-    log('SeatView: PlayerView build ${widget.seat.serverSeatPos}:L${widget.seat.localSeatPos} pos: ${widget.seat.seatPos.toString()} player: ${widget.seat.player?.name}');
+    log('RedrawTop: PlayerView build ${widget.seat.serverSeatPos}:L${widget.seat.localSeatPos} pos: ${widget.seat.seatPos.toString()} player: ${widget.seat.player?.name}');
     // widget.seat.key = GlobalKey(
     //   debugLabel: 'Seat:${widget.seat.serverSeatPos}',
     // ); //this.globalKey;
@@ -224,7 +224,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
     final gameState = GameState.getState(context);
     bool openSeat = widget.seat.isOpen;
     bool isMe = widget.seat.isMe;
-
+    log('SeatView1: seat: ${widget.seat.serverSeatPos} isOpen: ${openSeat} player: ${widget.seat.player}');
     bool showdown = widget.gameState.showdown;
 
     // if open seat, just show open seat widget
@@ -235,12 +235,29 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
             widget.seat.seatPos == gameState.seatChangeSeat.seatPos;
       }
 
-      final openSeatWidget = OpenSeat(
-        seat: widget.seat,
-        onUserTap: this.widget.onUserTap,
-        seatChangeInProgress: gameState.playerSeatChangeInProgress,
-        seatChangeSeat: seatChangeSeat,
-      );
+      final openSeatWidget =
+          Consumer<SeatChangeNotifier>(builder: (_, scn, __) {
+        return DragTarget(onWillAccept: (data) {
+          print("SeatChange: object data $data");
+          return true;
+        }, onAccept: (data) {
+          // call the API to make the seat change
+          SeatChangeService.hostSeatChangeMove(
+            gameState.gameCode,
+            data,
+            widget.seat.serverSeatPos,
+          );
+        }, builder: (context, List<int> candidateData, rejectedData) {
+          log('RedrawFooter: Open seat');
+          return OpenSeat(
+            seat: widget.seat,
+            onUserTap: this.widget.onUserTap,
+            seatChangeInProgress: gameState.hostSeatChangeInProgress,
+            seatChangeSeat: seatChangeSeat,
+            seatChangeNotifier: scn,
+          );
+        });
+      });
 
       if (widget.seat.dealer)
         return Stack(

@@ -96,7 +96,8 @@ class GameModelNew {
     return gameTypeStr;
   }
 
-   */static String getGameTypeImageAsset(String str) {
+   */
+  static String getGameTypeImageAsset(String str) {
     switch (str) {
       case 'HOLDEM':
       case 'NLH':

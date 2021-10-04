@@ -151,10 +151,18 @@ class Seat extends ChangeNotifier {
   set betWidgetUIKey(GlobalKey key) => this._attribs.betWidgetUiKey = key;
 
   Offset get potViewPos => this._attribs.potPos;
-  set potViewPos(Offset pos) => this._attribs.potPos = pos;
+  set potViewPos(Offset pos) {
+    if (_attribs != null) {
+      this._attribs.potPos = pos;
+    }
+  }
 
   Offset get betWidgetPos => this._attribs.betWidgetPos;
-  set betWidgetPos(Offset offset) => this._attribs.betWidgetPos = offset;
+  set betWidgetPos(Offset offset) {
+    if (_attribs != null) {
+      this._attribs.betWidgetPos = offset;
+    }
+  }
 }
 
 class ActionTimer extends ChangeNotifier {
