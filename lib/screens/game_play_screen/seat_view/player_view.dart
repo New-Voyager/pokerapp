@@ -71,6 +71,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
 
   AnimationController _lottieController;
   AssetImage _gifAssetImage;
+  bool _dragEnter = false;
 
   void handInfoStateListener() {
     if (_handInfoState.handNum != _lastHandNum) {
@@ -235,29 +236,12 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
             widget.seat.seatPos == gameState.seatChangeSeat.seatPos;
       }
 
-      final openSeatWidget =
-          Consumer<SeatChangeNotifier>(builder: (_, scn, __) {
-        return DragTarget(onWillAccept: (data) {
-          print("SeatChange: object data $data");
-          return true;
-        }, onAccept: (data) {
-          // call the API to make the seat change
-          SeatChangeService.hostSeatChangeMove(
-            gameState.gameCode,
-            data,
-            widget.seat.serverSeatPos,
-          );
-        }, builder: (context, List<int> candidateData, rejectedData) {
-          log('RedrawFooter: Open seat');
-          return OpenSeat(
-            seat: widget.seat,
-            onUserTap: this.widget.onUserTap,
-            seatChangeInProgress: gameState.hostSeatChangeInProgress,
-            seatChangeSeat: seatChangeSeat,
-            seatChangeNotifier: scn,
-          );
-        });
-      });
+      final openSeatWidget = OpenSeat(
+        seat: widget.seat,
+        onUserTap: this.widget.onUserTap,
+        seatChangeInProgress: gameState.hostSeatChangeInProgress,
+        seatChangeSeat: seatChangeSeat,
+      );
 
       if (widget.seat.dealer)
         return Stack(
@@ -326,10 +310,20 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
     }
     return DragTarget(
       onWillAccept: (data) {
-        print("SeatChange: object data $data");
+        log("SeatChange: Player onWillAccept $data");
+        widget.seat.dragEntered = true;
+        setState(() {});
         return true;
       },
+      onLeave: (data) {
+        log("SeatChange: Player onLeave $data");
+        widget.seat.dragEntered = false;
+        setState(() {});
+      },
       onAccept: (data) {
+        log('SeatChange: onDropped ${data}');
+        widget.seat.dragEntered = false;
+        setState(() {});
         // call the API to make the seat change
         SeatChangeService.hostSeatChangeMove(
           gameCode,
@@ -355,6 +349,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
           notesOffset =
               Offset(((widget.boardAttributes.namePlateSize.width / 2)), 0);
         }
+        Key key = widget.seat.key;
         return InkWell(
           onTap: () => this.onTap(context),
           child: Stack(
@@ -366,7 +361,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
               // // main user body
               NamePlateWidget(
                 widget.seat,
-                globalKey: widget.seat.key,
+                globalKey: key,
                 boardAttributes: boardAttributes,
               ),
 

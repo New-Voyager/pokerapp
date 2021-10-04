@@ -1107,6 +1107,7 @@ class GameUpdateService {
     final hostSeatChange =
         Provider.of<SeatChangeNotifier>(_context, listen: false);
     var seatMoves = data['seatMoves'];
+    log('SeatChange: seatmoves: ${jsonEncode(data)}');
     for (var move in seatMoves) {
       int from = int.parse(move['oldSeatNo'].toString());
       int to = int.parse(move['newSeatNo'].toString());
@@ -1119,6 +1120,8 @@ class GameUpdateService {
 
       /* wait for the animation to finish */
       await Future.delayed(AppConstants.seatChangeAnimationDuration);
+      //await Future.delayed(Duration(seconds: 5));
+
     }
     final gameCode = _gameState.gameCode;
     // get current seat positions

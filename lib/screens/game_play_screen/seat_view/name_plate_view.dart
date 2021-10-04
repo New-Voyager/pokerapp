@@ -18,7 +18,7 @@ import 'package:pokerapp/widgets/nameplate.dart';
 import 'package:provider/provider.dart';
 
 class NamePlateWidget extends StatelessWidget {
-  final GlobalKey globalKey;
+  final Key globalKey;
   final Seat seat;
   final BoardAttributesObject boardAttributes;
 
@@ -34,7 +34,7 @@ class NamePlateWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final gameState = GameState.getState(context);
-
+    log('SeatChange: Player build drag: ${seat.dragEntered}');
     return Consumer3<SeatChangeNotifier, GameContextObject, AppTheme>(
       key: globalKey,
       builder: (
@@ -52,6 +52,7 @@ class NamePlateWidget extends StatelessWidget {
             data: seat.serverSeatPos,
             onDragEnd: (DraggableDetails details) {
               log('SeatChange: Drag ended [${seat.seatPos.toString()} player: ${seat.player?.name}}]');
+              seat.dragEntered = false;
               hostSeatChange.onSeatDragEnd(details);
             },
             onDragStarted: () {
@@ -122,18 +123,18 @@ class NamePlateWidget extends StatelessWidget {
         }
         if (seatChangeStatus != null) {
           if (seatChangeStatus.isDragging || isFeedback) {
-            log('SeatChange: [${seat.localSeatPos}] seatChangeStatus.isDragging: ${seatChangeStatus.isDragging} isFeedback: $isFeedback');
+            log('SeatChange: Dragging [${seat.localSeatPos}] seatChangeStatus.isDragging: ${seatChangeStatus.isDragging} isFeedback: $isFeedback');
             shadow = BoxShadow(
               color: Colors.green,
               blurRadius: 20.0,
               spreadRadius: 8.0,
             );
-          } else if (seatChangeStatus.isDropAble) {
+          } else if (seat.dragEntered ?? false) {
             log('SeatChange: [${seat.localSeatPos}] seatChangeStatus.isDropAble: ${seatChangeStatus.isDropAble} isFeedback: $isFeedback');
             shadow = BoxShadow(
               color: Colors.blue,
               blurRadius: 20.0,
-              spreadRadius: 8.0,
+              spreadRadius: 30.0,
             );
           }
         }
@@ -153,8 +154,17 @@ class NamePlateWidget extends StatelessWidget {
     bool isFeedBack = false,
     bool childWhenDragging = false,
   }) {
-    // log('rebuild seat ${seat.serverSeatPos}');
-    final shadow = getShadow(hostSeatChange, isFeedBack, theme);
+    log('SeatChange: Player ${seat.serverSeatPos} dragEnter: ${seat.dragEntered}');
+    List<BoxShadow> shadow = getShadow(hostSeatChange, isFeedBack, theme);
+    if (seat.dragEntered ?? false) {
+      shadow = [
+        BoxShadow(
+          color: Colors.blue,
+          blurRadius: 20.0,
+          spreadRadius: 30.0,
+        )
+      ];
+    }
 
     Widget plateWidget;
 

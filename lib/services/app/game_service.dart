@@ -7,8 +7,6 @@ import 'package:location/location.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/announcement_model.dart';
-import 'package:pokerapp/models/game/game_player_settings.dart';
-import 'package:pokerapp/models/game/game_settings.dart';
 import 'package:pokerapp/models/game/new_game_model.dart';
 import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/models/game_model.dart';
@@ -16,14 +14,11 @@ import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/newmodels/game_model_new.dart';
 import 'package:pokerapp/models/player_info.dart';
-import 'package:pokerapp/models/seat_change_model.dart';
 import 'package:pokerapp/models/table_record.dart';
-import 'package:pokerapp/models/waiting_list_model.dart';
 import 'package:pokerapp/services/data/box_type.dart';
 import 'package:pokerapp/services/data/hive_datasource_impl.dart';
 import 'package:pokerapp/services/gql_errors.dart';
 import 'package:pokerapp/services/tenor/src/model/tenor_result.dart';
-import 'package:pokerapp/widgets/dialogs.dart';
 
 class JoinGameResponse {
   String status;
@@ -90,65 +85,6 @@ class GameService {
             winner
         }
       }  
-  """;
-
-  static String updateGameSettingsQuery = """
-mutation updateInputs(\$gameCode :String!,\$inputSettings: GameSettingsUpdateInput!){
-  ret:updateGameSettings(gameCode :\$gameCode settings:\$inputSettings)
-}
-  """;
-
-  static String getGameSettingsQuery = """
-    query gameSettings(\$gameCode: String!) {
-      ret:gameSettings(gameCode :\$gameCode){
-        audioConfEnabled
-        buyInApproval
-        runItTwiceAllowed
-        allowRabbitHunt
-        showHandRank
-        doubleBoardEveryHand
-        bombPotEnabled
-        bombPotBet
-        doubleBoardBombPot
-        bombPotInterval
-        bombPotIntervalInSecs
-        bombPotEveryHand
-        seatChangeAllowed
-        seatChangeTimeout
-        waitlistAllowed
-        seatChangeTimeout
-        waitlistAllowed
-        breakAllowed
-        breakLength
-        ipCheck
-        gpsCheck
-        roeGames
-        dealerChoiceGames
-        resultPauseTime
-        funAnimations
-        chat
-        showResult
-      }
-    }
-""";
-
-  static String getGamePlayerSettingsQuery = """
-query mySettings(\$gameCode:String!){
-  ret:myGameSettings(gameCode:\$gameCode){
-    autoStraddle
-    straddle
-    buttonStraddle
-    bombPotEnabled
-    muckLosingHand
-    runItTwiceEnabled
-  }
-}
-  """;
-
-  static String updateGamePlayerSettingsQuery = """
-  mutation updatePlayerInputs(\$gameCode :String!,\$settings: GamePlayerSettingsUpdateInput!){
-    ret:updateGamePlayerSettings(gameCode :\$gameCode settings:\$settings)
-  }
   """;
 
   static String stackStat = """
@@ -287,92 +223,6 @@ query mySettings(\$gameCode:String!){
     return result.data['ret'];
   }
 
-  static Future<GameSettings> getGameSettings(String gameCode) async {
-    GraphQLClient _client = graphQLConfiguration.clientToQuery();
-    Map<String, dynamic> variables = {"gameCode": gameCode};
-    QueryResult result = await _client.query(QueryOptions(
-        document: gql(getGameSettingsQuery), variables: variables));
-
-    if (result.hasException) {
-      log("Exception : ${result.exception.toString()}");
-      return null;
-    }
-
-    try {
-      final GameSettings gameSettings =
-          gameSettingsInputFromJson(jsonEncode(result.data['ret']));
-      return gameSettings;
-    } catch (e) {
-      log("Exception : ${e.toString()}");
-      return null;
-    }
-  }
-
-  static Future<bool> updateGameSettings(
-      String gameCode, GameSettings input) async {
-    GraphQLClient _client = graphQLConfiguration.clientToQuery();
-    Map<String, dynamic> variables = {
-      "gameCode": gameCode,
-      "inputSettings": input.toJson()
-    };
-    QueryResult result = await _client.query(QueryOptions(
-        document: gql(updateGameSettingsQuery), variables: variables));
-
-    if (result.hasException) {
-      log("Exception : ${result.exception.toString()}");
-      return false;
-    }
-
-    if (result.data['ret'] ?? true) {
-      return true;
-    }
-    return false;
-  }
-
-  static Future<GamePlayerSettings> getGamePlayerSettings(
-      String gameCode) async {
-    GraphQLClient _client = graphQLConfiguration.clientToQuery();
-    Map<String, dynamic> variables = {"gameCode": gameCode};
-    QueryResult result = await _client.query(QueryOptions(
-        document: gql(getGamePlayerSettingsQuery), variables: variables));
-
-    if (result.hasException) {
-      log("Exception : ${result.exception.toString()}");
-      return null;
-    }
-
-    try {
-      final GamePlayerSettings playerSettings =
-          gamePlayerSettingsInputFromJson(jsonEncode(result.data['ret']));
-      return playerSettings;
-    } catch (e) {
-      log("Exception : ${e.toString()}");
-      return null;
-    }
-  }
-
-  /// Update game player settings for a game
-  static Future<bool> updateGamePlayerSettings(
-      String gameCode, GamePlayerSettings input) async {
-    GraphQLClient _client = graphQLConfiguration.clientToQuery();
-    Map<String, dynamic> variables = {
-      "gameCode": gameCode,
-      "settings": input.toJson()
-    };
-    QueryResult result = await _client.query(QueryOptions(
-        document: gql(updateGamePlayerSettingsQuery), variables: variables));
-
-    if (result.hasException) {
-      log("Exception : ${result.exception.toString()}");
-      return false;
-    }
-
-    if (result.data['ret'] ?? true) {
-      return true;
-    }
-    return false;
-  }
-
   static Future<GameHistoryDetailModel> getGameHistoryDetail(
       GameHistoryDetailModel model) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
@@ -488,51 +338,6 @@ query mySettings(\$gameCode:String!){
     }
   """;
 
-  static String listOfSeatChangeQuery = """
-  query (\$gameCode:String!) {
-    seatChangeRequests(gameCode: \$gameCode) {
-      name
-      status
-      seatNo
-      seatChangeRequestedAt
-      sessionTime
-      playerUuid
-    }
-  }
-  """;
-  static String requestForSeatChangeQuery = """
-    mutation (\$gameCode: String!, \$cancel: Boolean) {
-    confirmed: requestSeatChange(gameCode: \$gameCode, cancel: \$cancel)
-    }
-  """;
-
-  static String addToWaitListQuery = """
-    mutation addToWaitList(\$gameCode: String!) {
-    confirmed: addToWaitingList(gameCode: \$gameCode)
-  }
-  """;
-
-  static String removeFromWaitlistQuery = """
-    mutation removeFromWaitlist(\$gameCode: String!) {
-    confirmed: removeFromWaitingList(gameCode: \$gameCode)
-  }
-  """;
-
-  static String waitlistQuery = """
-   query waitlist(\$gameCode: String!) {
-      waitingList(gameCode: \$gameCode) {
-        playerUuid
-        name
-        waitingFrom
-      }
-    }
-  """;
-  static String changeWaitlistOrderQuery = """
-   mutation(\$gameCode: String!, \$players: [String!]) {
-    applyWaitlistOrder(gameCode: \$gameCode, playerUuid: \$players)
-  }
-  """;
-
   static String favouriteGiphiesWithClubCodeQuery = """
   query (\$clubCode: String) {
     chatTexts(clubCode: \$clubCode)
@@ -549,12 +354,6 @@ query mySettings(\$gameCode:String!){
   mutation (\$text: String!) {
    addChatText(text: \$text)
   }
-  """;
-  static String beginHostSeatChangeQuery = """
-  mutation beginHostSeatChange(\$gameCode: String!) {
-	seatChange: beginHostSeatChange(
-		gameCode: \$gameCode)
-  }  
   """;
 
   static String updatePlayerGameConfig = """
@@ -703,24 +502,6 @@ query mySettings(\$gameCode:String!){
     return openSeats;
   }
 
-  static Future<bool> beginHostSeatChange(
-    String gameCode,
-  ) async {
-    GraphQLClient _client = graphQLConfiguration.clientToQuery();
-    Map<String, dynamic> variables = {
-      "gameCode": gameCode,
-    };
-    QueryResult result = await _client.mutate(
-      MutationOptions(
-        document: gql(beginHostSeatChangeQuery),
-        variables: variables,
-      ),
-    );
-    if (result.hasException) return false;
-    print("result $result");
-    return result.data['addClubChatText'] ?? false;
-  }
-
   static Future<List<String>> _getPresetTextsFromServer() async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     List<String> favouriteGiphies = [];
@@ -816,125 +597,6 @@ query mySettings(\$gameCode:String!){
 
   static Future<void> removePresetText(String text) =>
       _removePresetTextLocal(text);
-
-  static Future<bool> changeWaitListOrderList(
-      String gameCode, List<String> uuids) async {
-    GraphQLClient _client = graphQLConfiguration.clientToQuery();
-    Map<String, dynamic> variables = {
-      "gameCode": gameCode,
-      "players": uuids,
-    };
-    QueryResult result = await _client.mutate(
-      MutationOptions(
-        document: gql(changeWaitlistOrderQuery),
-        variables: variables,
-      ),
-    );
-    if (result.hasException) return false;
-
-    return result.data['applyWaitlistOrder'] ?? false;
-  }
-
-  static Future<bool> addToWaitList(String gameCode) async {
-    GraphQLClient _client = graphQLConfiguration.clientToQuery();
-    Map<String, dynamic> variables = {
-      "gameCode": gameCode,
-    };
-    QueryResult result = await _client.mutate(
-      MutationOptions(
-        document: gql(addToWaitListQuery),
-        variables: variables,
-      ),
-    );
-
-    if (result.hasException) return false;
-
-    return result.data['confirmed'] ?? false;
-  }
-
-  static Future<bool> removeFromWaitlist(String gameCode) async {
-    GraphQLClient _client = graphQLConfiguration.clientToQuery();
-    Map<String, dynamic> variables = {
-      "gameCode": gameCode,
-    };
-    QueryResult result = await _client.mutate(
-      MutationOptions(
-        document: gql(removeFromWaitlistQuery),
-        variables: variables,
-      ),
-    );
-
-    if (result.hasException) return false;
-
-    return result.data['confirmed'] ?? false;
-  }
-
-  static Future<List<WaitingListModel>> listOfWaitingPlayer(
-      String gameCode) async {
-    GraphQLClient _client = graphQLConfiguration.clientToQuery();
-    List<WaitingListModel> waitingListPlayers = [];
-    Map<String, dynamic> variables = {
-      "gameCode": gameCode,
-    };
-    QueryResult result = await _client.query(
-        QueryOptions(document: gql(waitlistQuery), variables: variables));
-    if (result.hasException) {
-      if (result.exception.graphqlErrors.length > 0) {
-        return null;
-      }
-    }
-    List players = result.data['waitingList'];
-    waitingListPlayers = players.map((e) {
-      WaitingListModel player = WaitingListModel.fromJson(e);
-      return player;
-    }).toList();
-    return waitingListPlayers;
-  }
-
-  static Future<String> requestForSeatChange(String gameCode,
-      {bool cancel = false}) async {
-    GraphQLClient _client = graphQLConfiguration.clientToQuery();
-    Map<String, dynamic> variables = {
-      "gameCode": gameCode,
-      "cancel": false,
-    };
-
-    if (cancel ?? false) {
-      variables['cancel'] = cancel;
-    }
-    QueryResult result = await _client.mutate(
-      MutationOptions(
-        document: gql(requestForSeatChangeQuery),
-        variables: variables,
-      ),
-    );
-
-    if (result.hasException) return "";
-
-    return result.data['confirmed'] ?? "";
-  }
-
-  static Future<List<SeatChangeModel>> listOfSeatChange(String gameCode) async {
-    GraphQLClient _client = graphQLConfiguration.clientToQuery();
-    List<SeatChangeModel> seatChangePlayers = [];
-    Map<String, dynamic> variables = {
-      "gameCode": gameCode,
-    };
-    QueryResult result = await _client.query(QueryOptions(
-        document: gql(listOfSeatChangeQuery), variables: variables));
-
-    if (result.hasException) {
-      if (result.exception.graphqlErrors.length > 0) {
-        return null;
-      }
-    }
-    List games = result.data['seatChangeRequests'];
-    seatChangePlayers = games.map((e) {
-      SeatChangeModel player = SeatChangeModel.fromJson(e);
-      return player;
-    }).toList();
-    return seatChangePlayers;
-  }
 
   static Future<List<GameModel>> getLiveGames() async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
@@ -1046,56 +708,6 @@ query mySettings(\$gameCode:String!){
     return result.data['ret'] ?? false;
   }
 
-  /* this method confirms the seat change */
-  static Future<bool> confirmSeatChange(String gameCode, int seatNo) async {
-    GraphQLClient _client = graphQLConfiguration.clientToQuery();
-
-    String _mutation = """mutation (\$gameCode: String! \$seatNo: Int!){
-        confirmSeatChange(gameCode: \$gameCode, seatNo: \$seatNo)
-      }""";
-    Map<String, dynamic> variables = {"gameCode": gameCode, "seatNo": seatNo};
-    QueryResult result = await _client.mutate(
-      MutationOptions(
-        document: gql(_mutation),
-        variables: variables,
-      ),
-    );
-
-    if (result.hasException) {
-      if (result.exception.graphqlErrors.length > 0) {
-        return null;
-      }
-    }
-
-    return result.data['confirmSeatChange'];
-  }
-
-  /* this method declines the seat change */
-  static Future<bool> declineSeatChange(String gameCode) async {
-    GraphQLClient _client = graphQLConfiguration.clientToQuery();
-
-    String _mutation = """mutation (\$gameCode: String!){
-        declineSeatChange(gameCode: \$gameCode)
-      }""";
-    Map<String, dynamic> variables = {
-      "gameCode": gameCode,
-    };
-    QueryResult result = await _client.mutate(
-      MutationOptions(
-        document: gql(_mutation),
-        variables: variables,
-      ),
-    );
-
-    if (result.hasException) {
-      if (result.exception.graphqlErrors.length > 0) {
-        return null;
-      }
-    }
-
-    return result.data['declineSeatChange'];
-  }
-
   /* The following method returns back the Game Info Model */
   static Future<GameInfoModel> getGameInfo(String gameCode) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
@@ -1189,28 +801,6 @@ query mySettings(\$gameCode:String!){
     final seatPlayer = result.data['takeSeat'];
     PlayerModel player = PlayerModel.fromJson(seatPlayer);
     return player;
-  }
-
-  /* player switches to a open seat */
-  static Future<String> switchSeat(String gameCode, int seatNo) async {
-    GraphQLClient _client = graphQLConfiguration.clientToQuery();
-
-    String _mutation = """mutation{
-      switchSeat(gameCode: "$gameCode", seatNo: $seatNo)
-    }
-    """;
-
-    QueryResult result = await _client.mutate(
-      MutationOptions(document: gql(_mutation)),
-    );
-
-    if (result.hasException) {
-      if (result.exception.graphqlErrors.length > 0) {
-        return null;
-      }
-    }
-
-    return result.data['switchSeat'];
   }
 
   /* the following method facilitates buying chips */
