@@ -798,12 +798,12 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         // header view
         headerView,
 
-        RoundRectButton(
-            text: 'Refresh',
-            onTap: () {
-              log('RedrawTop: on refresh');
-              _gameState.redrawTop();
-            }),
+        // RoundRectButton(
+        //     text: 'Refresh',
+        //     onTap: () {
+        //       log('RedrawTop: on refresh');
+        //       _gameState.redrawTop();
+        //     }),
         // seperator
         // SizedBox(width: width, height: divider1 / 2),
 
