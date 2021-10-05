@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:after_layout/after_layout.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -33,6 +34,7 @@ import 'package:pokerapp/screens/game_play_screen/notifications/notifications.da
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/app/player_service.dart';
 import 'package:pokerapp/services/audio/audio_service.dart';
+import 'package:pokerapp/services/connectivity_check/network_change_listener.dart';
 import 'package:pokerapp/services/encryption/encryption_service.dart';
 import 'package:pokerapp/services/game_play/action_services/game_action_service/util_action_services.dart';
 import 'package:pokerapp/services/game_play/customization_service.dart';
@@ -380,6 +382,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   /* dispose method for closing connections and un subscribing to channels */
   @override
   void dispose() {
+    // cancel listening to game play screen network changes
+    _streamSub?.cancel();
+
     Wakelock.disable();
     if (_locationUpdates != null) {
       _locationUpdates.stop();
@@ -602,9 +607,16 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     }
   }
 
+  StreamSubscription<ConnectivityResult> _streamSub;
+
   @override
   void initState() {
     super.initState();
+
+    _streamSub =
+        context.read<NetworkChangeListener>().onConnectivityChange.listen(
+              (_) => _reconnectGameComService(),
+            );
 
     Wakelock.enable();
     _voiceTextPlayer = AudioPlayer();
@@ -747,6 +759,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     if (_gameInfoModel?.tableStatus == AppConstants.GAME_RUNNING) {
       // query current hand to get game update
       WidgetsBinding.instance.addPostFrameCallback((_) {
+        log('network_reconnect: queryCurrentHand invoked');
         _gameContextObj.handActionProtoService.queryCurrentHand();
       });
     }
@@ -928,8 +941,8 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     );
   }
 
-  void _testReconnection() async {
-    log('network_reconnect: _testReconnection invoked');
+  void _reconnectGameComService() async {
+    log('network_reconnect: _reconnectGameComService invoked');
     final nats = context.read<Nats>();
 
     // drop connections -> re establish connections
@@ -958,15 +971,15 @@ class _GamePlayScreenState extends State<GamePlayScreen>
           child: SafeArea(
             child: Scaffold(
               /* FIXME: THIS FLOATING ACTION BUTTON IS FOR SHOWING THE TESTS */
-              // floatingActionButton:
-              //     GamePlayScreenUtilMethods.floatingActionButton(
-              //   onReload: () {},
-              // ),
-              // floating button to refresh TEST
-              floatingActionButton: FloatingActionButton(
-                child: Icon(Icons.android_rounded),
-                onPressed: _testReconnection,
+              floatingActionButton:
+                  GamePlayScreenUtilMethods.floatingActionButton(
+                onReload: () {},
               ),
+              // floating button to refresh network TEST
+              // floatingActionButton: FloatingActionButton(
+              //   child: Icon(Icons.android_rounded),
+              //   onPressed: _reconnectGameComService,
+              // ),
               resizeToAvoidBottomInset: true,
               backgroundColor: Colors.transparent,
               body: _buildBody(theme),

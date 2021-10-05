@@ -34,8 +34,10 @@ class Nats {
 
   Future<void> init(String playerChannel) async {
     String natsUrl = await UtilService.getNatsURL();
-    _client = Client();
-    _clientPub = Client();
+
+    if (_client == null) _client = Client();
+    if (_clientPub == null) _clientPub = Client();
+
     _playerChannel = playerChannel;
     _clubSubs = Map<String, Subscription>();
     log('Player channel: $playerChannel');
@@ -82,7 +84,7 @@ class Nats {
     }
 
     if (_clientPub != null) {
-      _client.close();
+      _clientPub.close();
     }
   }
 
