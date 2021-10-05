@@ -132,6 +132,14 @@ class ResultHandlerV2 {
         hhCards: hhCards,
         playerCards: playerCards,
       );
+      AudioService.playFireworks(mute: gameState.playerLocalConfig.mute);
+      for(final winner in result.highHandWinners) {
+        // show firework
+        final seat = gameState.getSeat(winner.seatNo);
+        final player = seat.player;
+        player.showFirework = true;
+        seat.notify();
+      }
     }
     /* set board 2 cards */
     if (result.boards.length == 2) {
@@ -296,18 +304,8 @@ class ResultHandlerV2 {
 
     // see whether this high hand
     if (result.highHandWinners.length > 0) {
-      AudioService.playFireworks(mute: gameState.playerLocalConfig.mute);
-      for(final winner in result.highHandWinners) {
-        // show firework
-        final seat = gameState.getSeat(winner.seatNo);
-        final player = seat.player;
-        player.showFirework = true;
-        seat.notify();
-      }
-
       /* wait for 5 seconds, then remove the notification */
-      await Future.delayed(AppConstants.notificationDuration);
-
+      // await Future.delayed(AppConstants.notificationDuration);
       var notificationValueNotifier =
           Provider.of<ValueNotifier<HHNotificationModel>>(
           context,
