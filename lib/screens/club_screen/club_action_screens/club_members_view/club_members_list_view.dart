@@ -10,8 +10,8 @@ import 'package:pokerapp/resources/app_icons.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/services/app/club_interior_service.dart';
-import 'package:pokerapp/widgets/custom_icon_button.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
+import 'package:pokerapp/widgets/round_color_button.dart';
 import 'package:provider/provider.dart';
 
 class ClubMembersListView extends StatefulWidget {
@@ -236,10 +236,12 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: <Widget>[
-                          IconTextButton(
-                            text: widget.appScreenText['APPROVE'],
-                            buttonColor: theme.secondaryColor,
+                          RoundIconButton(
                             icon: Icons.done,
+                            bgColor: Colors.black,
+                            iconColor: theme.secondaryColor,
+                            borderColor: theme.accentColor,
+                            size: 32.pw,
                             onTap: () async {
                               log('approve is clicked');
                               var data =
@@ -251,22 +253,36 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
                               }
                             },
                           ),
-                          AppDimensionsNew.getHorizontalSpace(16),
-                          IconTextButton(
-                            text: widget.appScreenText['DENY'],
-                            buttonColor: theme.negativeOrErrorColor,
+                          SizedBox(
+                            width: 10.pw,
+                          ),
+                          RoundIconButton(
                             icon: Icons.close,
+                            bgColor: Colors.black,
+                            iconColor: Colors.red,
+                            borderColor: theme.accentColor,
+                            size: 32.pw,
                             onTap: () async {
                               log('deny is clicked');
                               var data =
                                   await ClubInteriorService.denyClubMember(
                                       widget.clubCode, member.playerId);
+                              String removedPlayerId = member.playerId;
                               if (data == "DENIED") {
-                                widget._fetchData();
+                                for (int i = 0;
+                                    i < widget._membersList.length;
+                                    i++) {
+                                  final member = widget._membersList[i];
+                                  if (member.playerId == removedPlayerId) {
+                                    widget._membersList.removeAt(i);
+                                    break;
+                                  }
+                                }
+                                setState(() {});
+                                //await widget._fetchData();
                               }
                             },
                           ),
-                          AppDimensionsNew.getHorizontalSpace(8),
                         ],
                       ),
                     ),

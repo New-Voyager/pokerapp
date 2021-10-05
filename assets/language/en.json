@@ -235,11 +235,13 @@
     "createClubBottomSheet": {
         "CREATECLUB": "Create Club",
         "CREATE": "Create",
-        "NAME": "Name",
+        "name": "Name",
+        "nameHint": "Name of the club",
         "YOUMUSSTPROVIDEANAME": "You must provide a name",
         "DESCRIPTION": "Description",
         "YOUMUSTPROVIDEDESCRIPTION": "'You must provide a description'",
-        "description": "Description"
+        "description": "Description",
+        "descriptionHint": "Club description"
     },
     "clubMainScreenNew": {
         "CREATEGAME": "+ Create Game",

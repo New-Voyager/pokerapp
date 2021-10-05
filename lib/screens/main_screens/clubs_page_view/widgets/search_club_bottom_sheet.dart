@@ -9,6 +9,7 @@ import 'package:pokerapp/widgets/card_form_text_field.dart';
 import 'package:pokerapp/widgets/round_color_button.dart';
 import 'package:provider/provider.dart';
 import '../../../../services/app/club_interior_service.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class SearchClubBottomSheet extends StatefulWidget {
   SearchClubBottomSheet();
@@ -56,12 +57,16 @@ class _SearchClubBottomSheetState extends State<SearchClubBottomSheet> {
         decoration: AppDecorators.bgRadialGradient(theme),
         height: MediaQuery.of(context).size.height * 0.8,
         child: Stack(
+          clipBehavior: Clip.none,
           children: [
             Positioned(
-              top: 8,
-              left: 8,
+              top: -10.pw,
+              right: 4.pw,
               child: RoundIconButton(
                 icon: Icons.close_rounded,
+                iconColor: Colors.red,
+                bgColor: Colors.black,
+                borderColor: Colors.red,
                 onTap: () => Navigator.of(context).pop(),
               ),
             ),
@@ -74,41 +79,6 @@ class _SearchClubBottomSheetState extends State<SearchClubBottomSheet> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // IconButton(
-                    //   color: AppColorsNew.newGreenButtonColor,
-                    //   icon: Icon(
-                    //     Icons.close_rounded,
-                    //   ),
-                    //   onPressed: () => Navigator.of(context).pop(),
-                    // ),
-                    //   RoundedAccentButton(
-                    //     text: "Done",
-                    //     onTapFunction: () => Navigator.of(context).pop(),
-                    //   ),
-                    // ],
-                    // Padding(
-                    //   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-                    //   child: Column(
-                    //     crossAxisAlignment: CrossAxisAlignment.start,
-                    //     mainAxisSize: MainAxisSize.min,
-                    //     children: [
-                    //       GestureDetector(
-                    //         onTap: () {
-                    //           Navigator.pop(context);
-                    //         },
-                    //         child: Text(
-                    //           "Done",
-                    //           style: AppStylesNew.subTitleTextStyle,
-                    //         ),
-                    //       ),
-                    //       separator15,
-                    //       Text(
-                    //         "Search Club",
-                    //         style: AppStylesNew.titleTextStyle,
-                    //       )
-                    //     ],
-                    //   ),
-                    // ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Form(
@@ -129,9 +99,11 @@ class _SearchClubBottomSheetState extends State<SearchClubBottomSheet> {
                               ),
                             ),
                             SizedBox(
-                              width: 10,
+                              width: 10.pw,
                             ),
-                            GestureDetector(
+                            RoundIconButton(
+                              icon: Icons.search,
+                              borderColor: theme.accentColor,
                               onTap: () async {
                                 if (!_formKey.currentState.validate()) return;
                                 _formKey.currentState.save();
@@ -143,16 +115,29 @@ class _SearchClubBottomSheetState extends State<SearchClubBottomSheet> {
                                 );
                                 _toggleLoading();
                               },
-                              child: Container(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 5, vertical: 5),
-                                child: Icon(
-                                  Icons.search,
-                                  size: 35,
-                                  color: theme.secondaryColor,
-                                ),
-                              ),
                             )
+                            // GestureDetector(
+                            //   onTap: () async {
+                            //     if (!_formKey.currentState.validate()) return;
+                            //     _formKey.currentState.save();
+                            //     _toggleLoading();
+
+                            //     searchClub =
+                            //         await ClubInteriorService.searchClubHelper(
+                            //       searchClubCode,
+                            //     );
+                            //     _toggleLoading();
+                            //   },
+                            //   child: Container(
+                            //     padding: EdgeInsets.symmetric(
+                            //         horizontal: 5, vertical: 5),
+                            //     child: Icon(
+                            //       Icons.search,
+                            //       size: 35,
+                            //       color: theme.secondaryColor,
+                            //     ),
+                            //   ),
+                            // )
                           ],
                         ),
                       ),
@@ -214,27 +199,6 @@ class _SearchClubBottomSheetState extends State<SearchClubBottomSheet> {
                                                   theme.primaryColorWithDark(),
                                             ),
                                           ),
-                                          /* GestureDetector(
-                                            onTap: () => onJoin(context),
-                                            child: Center(
-                                              child: Container(
-                                                padding: EdgeInsets.symmetric(
-                                                    horizontal: 30, vertical: 10),
-                                                decoration: BoxDecoration(
-                                                  color: AppColors
-                                                      .buttonBackGroundColor,
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                ),
-                                                child: Text(
-                                                  "Join",
-                                                  style:
-                                                      AppStylesNew.subTitleTextStyle,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                         */
                                         ],
                                       ),
                               )

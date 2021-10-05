@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class CardFormTextField extends StatelessWidget {
   const CardFormTextField({
@@ -42,13 +43,13 @@ class CardFormTextField extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(radius ?? 5.0),
         side: BorderSide(
-          color: theme.primaryColorWithDark(),
+          color: theme.accentColorWithDark(0.30),
           width: 1.0,
         ),
       ),
       elevation: elevation,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+        padding: EdgeInsets.symmetric(horizontal: 10.pw, vertical: 5.ph),
         child: TextFormField(
           autovalidateMode: AutovalidateMode.onUserInteraction,
           inputFormatters: inputFormatters,
@@ -61,7 +62,7 @@ class CardFormTextField extends StatelessWidget {
           keyboardType: keyboardType,
           style: TextStyle(
             color: theme.supportingColor,
-            fontSize: 20.0,
+            fontSize: 12.dp,
           ),
           decoration: InputDecoration(
             hintText: hintText,

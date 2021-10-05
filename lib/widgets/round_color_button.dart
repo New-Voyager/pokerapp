@@ -101,26 +101,35 @@ class RoundIconButton extends StatelessWidget {
     this.size,
     this.bgColor,
     this.iconColor,
+    this.borderColor,
   });
   final Function onTap;
   final IconData icon;
   final Color bgColor;
   final Color iconColor;
+  final Color borderColor;
   final double size;
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: onTap,
+      onTap: () {
+        AudioService.playClickSound();
+        onTap();
+      },
       borderRadius: BorderRadius.circular(8),
       child: Container(
         decoration: BoxDecoration(
+          border: Border.all(
+            color: borderColor,
+            width: 2,
+          ),
           shape: BoxShape.circle,
           color: bgColor ?? AppColorsNew.newSelectedGreenColor,
         ),
         padding: EdgeInsets.all(6),
         child: Icon(
           icon,
-          size: size ?? 20,
+          size: size ?? 24.dp,
           color: iconColor ?? AppColorsNew.newTextColor,
         ),
       ),
