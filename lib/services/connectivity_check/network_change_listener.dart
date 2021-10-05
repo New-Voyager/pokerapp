@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:data_connection_checker/data_connection_checker.dart';
@@ -25,8 +26,22 @@ class NetworkChangeListener {
   }
 
   Future<bool> _checkForInternetConnection() async {
-    final bool hasInternet = await DataConnectionChecker().hasConnection;
+    final connectionChecker = DataConnectionChecker();
+    await Future.delayed(Duration(seconds: 5));
+    connectionChecker.addresses = [
+      AddressCheckOptions(
+        InternetAddress('8.8.8.8'),
+      ),
+      AddressCheckOptions(
+        InternetAddress('8.8.4.4'),
+      ),
+      AddressCheckOptions(
+        InternetAddress('1.1.1.1'),
+      ),
 
+    ];
+    final bool hasInternet = await connectionChecker.hasConnection;
+    log('network_reconnect: hasInternet: $hasInternet');
     // use navigator's context
     final BuildContext context = navigatorKey.currentState.overlay.context;
 
