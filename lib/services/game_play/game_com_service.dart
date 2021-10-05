@@ -117,23 +117,27 @@ class GameComService {
     _pingChannelSubs = nats.subClient.sub(this.pingChannel);
     _pingChannelSubs.stream.listen((event) => _pingChannelInternal.add(event));
 
-    this._chat = GameMessagingService(
-      this.currentPlayer,
-      this.gameChatChannel,
-      nats.pubClient,
-      _gameChatChannelInternal.stream, // use the internal stream here
-      true,
-    );
-    this._chat.start();
+    if (this._chat == null) {
+      this._chat = GameMessagingService(
+        this.currentPlayer,
+        this.gameChatChannel,
+        nats.pubClient,
+        _gameChatChannelInternal.stream, // use the internal stream here
+        true,
+      );
+      this._chat.start();
+    }
 
-    this._pingPong = PingResponder(
-      this.currentPlayer.id,
-      this.pongChannel,
-      nats.pubClient,
-      _pingChannelInternal.stream, // use the internal stream here
-      true,
-    );
-    this._pingPong.start();
+    if (this._pingPong == null) {
+      this._pingPong = PingResponder(
+        this.currentPlayer.id,
+        this.pongChannel,
+        nats.pubClient,
+        _pingChannelInternal.stream, // use the internal stream here
+        true,
+      );
+      this._pingPong.start();
+    }
 
     this._nats = nats;
     this.active = true;
