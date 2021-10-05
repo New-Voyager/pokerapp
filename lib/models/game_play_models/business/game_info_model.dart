@@ -43,6 +43,7 @@ class GameInfoModel {
   bool waitlistAllowed = false;
   bool ipCheck = false;
   bool gpsCheck = false;
+  bool highHandTracked = false;
   int handNum = 0;
   String sfuUrl = 'http://67.205.136.63:7000';
 
@@ -111,6 +112,7 @@ class GameInfoModel {
     this.playerRunItTwice = data['playerRunItTwiceConfig'] ?? false;
     this.playerMuckLosingHand = data['playerMuckLosingHandConfig'] ?? false;
     this.botGame = data['botGame'];
+    this.highHandTracked = data['highHandTracked'] ?? false;
 
     this.sessionTime = data['sessionTime'] ?? 0;
     this.runningTime = data['runningTime'] ?? 0;
@@ -184,6 +186,7 @@ class GameInfoModel {
       showHandRank
       waitlistAllowed
       botGame
+      highHandTracked
       ipCheck
       gpsCheck
       handNum

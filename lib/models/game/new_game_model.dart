@@ -80,6 +80,7 @@ class NewGameModel {
   bool seatChangeAllowed = false;
   bool waitList = false;
   bool botGame = false;
+  bool highHandTracked = false;
   Rewards rewards;
   bool muckLosingHand = false;
   bool audioConference = false;
@@ -143,6 +144,7 @@ class NewGameModel {
     this.breakAllowed,
     this.breakTime,
     this.showResult,
+    this.highHandTracked,
   });
 
   NewGameModel.withDefault(String clubCode) {
@@ -188,6 +190,7 @@ class NewGameModel {
     buttonStraddle = json['buttonStraddleAllowed'] ?? false;
     buttonStraddleBet = json['buttonStraddleBet'] ?? 2;
     showResult = json['showResult'] ?? true;
+    highHandTracked = json['highHandTracked'] ?? false;
   }
 
   Map<String, dynamic> toJson() {
@@ -207,8 +210,11 @@ class NewGameModel {
     data['buyInApproval'] = this.buyInApproval;
     data['rakePercentage'] = this.rakePercentage;
     data['rakeCap'] = this.rakeCap;
-    data['buyInMin'] = this.buyInMin;
-    data['buyInMax'] = this.buyInMax;
+
+    // multiple min/max with bigblind
+    data['buyInMin'] = this.buyInMin * this.bigBlind;
+    data['buyInMax'] = this.buyInMax * this.bigBlind;
+
     data['actionTime'] = this.actionTime;
     data['botGame'] = this.botGame;
     data['runItTwiceAllowed'] = this.runItTwice;
@@ -224,6 +230,7 @@ class NewGameModel {
     data['seatChangeAllowed'] = this.seatChangeAllowed ?? false;
     data['breakAllowed'] = this.breakAllowed ?? true;
     data['showResult'] = this.showResult ?? true;
+    data['highHandTracked'] = this.highHandTracked ?? false;
 
     if (this.breakTime == null) {
       data['breakLength'] = 5;

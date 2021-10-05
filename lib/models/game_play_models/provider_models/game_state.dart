@@ -640,6 +640,7 @@ class GameState {
     this._gameSettings.gpsCheck = settings.gpsCheck;
     this._gameSettings.funAnimations = settings.funAnimations;
     this._gameSettings.chat = settings.chat;
+    this._gameSettings.showResult = settings.showResult;
     this._gameSettings.roeGames = [];
     this._gameSettings.roeGames.addAll(settings.roeGames);
     this._gameSettings.dealerChoiceGames = [];

@@ -201,7 +201,8 @@
         "doubleBoardBombPot": "Double board Bomb Pot",
         "bombPotInterval": "Bomb Pot interval (in mins)",
         "bombPotBet": "Bomb Pot bet amount (x BBs)",
-        "seatChangeAllowed": "Player Seat Change allowed"
+        "seatChangeAllowed": "Player Seat Change allowed",
+        "hhTracked": "Track highhand"
     },
     "clubsPageView": {
         "UPADATESUCCESSFUL": "Update successful",
@@ -768,6 +769,7 @@
         "utgStraddleAllowed": "UTG Straddle Allowed",
         "animations": "Animations",
         "chatEnabled": "Chat Enabled",
-        "showResult": "Show result"
+        "showResult": "Show result",
+        "highHandTracked": "Highhand Tracked"
     }
 }
