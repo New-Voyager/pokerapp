@@ -14,6 +14,7 @@ import 'package:pokerapp/models/ui/app_theme_data.dart';
 import 'package:pokerapp/resources/app_config.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/routes.dart';
+import 'package:pokerapp/services/connectivity_check/network_change_listener.dart';
 import 'package:pokerapp/services/data/hive_datasource_impl.dart';
 import 'package:pokerapp/services/nats/nats.dart';
 import 'package:provider/provider.dart';
@@ -126,6 +127,10 @@ class _MyAppState extends State<MyApp> {
         providers: [
           Provider<Nats>(
             create: (_) => Nats(context),
+          ),
+          Provider(
+            create: (_) => NetworkChangeListener(),
+            lazy: false,
           ),
         ],
         child: OverlaySupport.global(
