@@ -115,6 +115,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   AudioPlayer _voiceTextPlayer;
 
   //Agora agora;
+  GameComService _gameComService;
   GameInfoModel _gameInfoModel;
   GameContextObject _gameContextObj;
   GameState _gameState;
@@ -243,7 +244,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
     if (_initiated == true) return _gameInfoModel;
 
-    final gameComService = GameComService(
+    _gameComService = GameComService(
       currentPlayer: this._currentPlayer,
       gameToPlayerChannel: _gameInfoModel.gameToPlayerChannel,
       handToAllChannel: _gameInfoModel.handToAllChannel,
@@ -262,7 +263,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       final natsClient = Provider.of<Nats>(context, listen: false);
 
       log('natsClient: $natsClient');
-      await gameComService.init(natsClient);
+      await _gameComService.init(natsClient);
       await encryptionService.init();
     }
 
@@ -271,7 +272,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     if (widget.customizationService != null) {
       _gameState.customizationMode = true;
     }
-    _gameState.gameComService = gameComService;
+    _gameState.gameComService = _gameComService;
 
     if (widget.customizationService != null) {
       _gameState = widget.customizationService.gameState;
@@ -280,7 +281,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         gameCode: _gameInfoModel.gameCode,
         gameInfo: _gameInfoModel,
         currentPlayer: _currentPlayer,
-        gameMessagingService: gameComService.gameMessaging,
+        gameMessagingService: _gameComService.gameMessaging,
         hostSeatChangeInProgress: _hostSeatChangeInProgress,
         hostSeatChangeSeats: _hostSeatChangeSeats,
       );
@@ -298,7 +299,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       _gameContextObj = GameContextObject(
         gameCode: widget.gameCode,
         player: this._currentPlayer,
-        gameComService: gameComService,
+        gameComService: _gameComService,
         encryptionService: encryptionService,
         gameState: _gameState,
       );
@@ -307,12 +308,12 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       final natsClient = Provider.of<Nats>(context, listen: false);
 
       log('natsClient: $natsClient');
-      await gameComService.init(natsClient);
+      await _gameComService.init(natsClient);
 
       _gameContextObj = GameContextObject(
         gameCode: widget.gameCode,
         player: this._currentPlayer,
-        gameComService: gameComService,
+        gameComService: _gameComService,
         encryptionService: encryptionService,
         gameState: _gameState,
       );
@@ -346,13 +347,13 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     print('gameInfo players: ${_gameInfoModel.playersInSeats}');
 
     // setting voiceChatEnable to true if gameComService is active
-    log('gameComService.active = ${gameComService.active}');
-    if (gameComService.active) {
+    log('gameComService.active = ${_gameComService.active}');
+    if (_gameComService.active) {
       _gameState.communicationState.voiceChatEnable = true;
       _gameState.communicationState.notify();
     }
     if (!TestService.isTesting && widget.customizationService == null) {
-      _initChatListeners(gameComService.gameMessaging);
+      _initChatListeners(_gameComService.gameMessaging);
     }
 
     if (_gameInfoModel?.audioConfEnabled ?? false) {
@@ -927,6 +928,17 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     );
   }
 
+  void _testReconnection() async {
+    log('network_reconnect: _testReconnection invoked');
+    final nats = context.read<Nats>();
+
+    // drop connections -> re establish connections
+    await _gameComService.reconnect(nats);
+
+    // query current hand
+    _queryCurrentHandIfNeeded();
+  }
+
   @override
   Widget build(BuildContext context) {
     if (TestService.isTesting) {
@@ -946,9 +958,14 @@ class _GamePlayScreenState extends State<GamePlayScreen>
           child: SafeArea(
             child: Scaffold(
               /* FIXME: THIS FLOATING ACTION BUTTON IS FOR SHOWING THE TESTS */
-              floatingActionButton:
-                  GamePlayScreenUtilMethods.floatingActionButton(
-                onReload: () {},
+              // floatingActionButton:
+              //     GamePlayScreenUtilMethods.floatingActionButton(
+              //   onReload: () {},
+              // ),
+              // floating button to refresh TEST
+              floatingActionButton: FloatingActionButton(
+                child: Icon(Icons.android_rounded),
+                onPressed: _testReconnection,
               ),
               resizeToAvoidBottomInset: true,
               backgroundColor: Colors.transparent,

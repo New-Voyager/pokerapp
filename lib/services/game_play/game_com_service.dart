@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 import 'dart:typed_data';
 
@@ -31,6 +32,18 @@ class GameComService {
   Subscription _gameChatChannelSubs;
   Subscription _pingChannelSubs;
 
+  StreamController<Message> _gameToPlayerChannelInternal =
+      StreamController.broadcast();
+  StreamController<Message> _handToAllChannelInternal =
+      StreamController.broadcast();
+  StreamController<Message> _handToPlayerChannelInternal =
+      StreamController.broadcast();
+  StreamController<Message> _handToPlayerTextChannelInternal =
+      StreamController.broadcast();
+  StreamController<Message> _gameChatChannelInternal =
+      StreamController.broadcast();
+  StreamController<Message> _pingChannelInternal = StreamController.broadcast();
+
   // current player info
   PlayerInfo currentPlayer;
 
@@ -60,35 +73,55 @@ class GameComService {
     this.active = false;
   }
 
-  Future<void> init(Nats nats) async {
+  Future<void> reconnect(Nats nats) async {
+    // close connection directly
+    _close();
+    active = false;
+
+    // init
+    return init(nats, isReconnect: true);
+  }
+
+  Future<void> init(Nats nats, {final bool isReconnect = false}) async {
     // if already active, do not resubscribe again
     if (active) return;
 
     // subscribe
     log('subscribing to ${this.gameToPlayerChannel}');
     _gameToPlayerChannelSubs = nats.subClient.sub(this.gameToPlayerChannel);
+    _gameToPlayerChannelSubs.stream
+        .listen((event) => _gameToPlayerChannelInternal.add(event));
 
     log('subscribing to ${this.handToAllChannel}');
     _handToAllChannelSubs = nats.subClient.sub(this.handToAllChannel);
+    _handToAllChannelSubs.stream
+        .listen((event) => _handToAllChannelInternal.add(event));
 
     log('subscribing to ${this.handToPlayerChannel}');
     _handToPlayerChannelSubs = nats.subClient.sub(this.handToPlayerChannel);
+    _handToPlayerChannelSubs.stream
+        .listen((event) => _handToPlayerChannelInternal.add(event));
 
     log('subscribing to ${this.handToPlayerTextChannel}');
     _handToPlayerTextChannelSubs =
         nats.subClient.sub(this.handToPlayerTextChannel);
+    _handToPlayerTextChannelSubs.stream
+        .listen((event) => _handToPlayerTextChannelInternal.add(event));
 
     log('subscribing to ${this.gameChatChannel}');
     _gameChatChannelSubs = nats.subClient.sub(this.gameChatChannel);
+    _gameChatChannelSubs.stream
+        .listen((event) => _gameChatChannelInternal.add(event));
 
     log('subscribing to ${this.pingChannel}');
     _pingChannelSubs = nats.subClient.sub(this.pingChannel);
+    _pingChannelSubs.stream.listen((event) => _pingChannelInternal.add(event));
 
     this._chat = GameMessagingService(
       this.currentPlayer,
       this.gameChatChannel,
       nats.pubClient,
-      _gameChatChannelSubs.stream,
+      _gameChatChannelInternal.stream, // use the internal stream here
       true,
     );
     this._chat.start();
@@ -97,7 +130,7 @@ class GameComService {
       this.currentPlayer.id,
       this.pongChannel,
       nats.pubClient,
-      _pingChannelSubs.stream,
+      _pingChannelInternal.stream, // use the internal stream here
       true,
     );
     this._pingPong.start();
@@ -116,8 +149,7 @@ class GameComService {
     this._nats.pubClient.pub(this.playerToHandChannel, data);
   }
 
-  void dispose() {
-    log('game com service -- disposing');
+  void _close() {
     _gameToPlayerChannelSubs?.unSub();
     _gameToPlayerChannelSubs?.close();
 
@@ -132,11 +164,32 @@ class GameComService {
 
     _gameChatChannelSubs?.unSub();
     _gameChatChannelSubs?.close();
-    gameMessaging.close();
 
     _pingChannelSubs?.unSub();
     _pingChannelSubs?.close();
-    _pingPong.close();
+  }
+
+  void dispose() {
+    log('game com service -- disposing');
+
+    // unsub
+    _gameToPlayerChannelSubs?.unSub();
+    _handToAllChannelSubs?.unSub();
+    _handToPlayerChannelSubs?.unSub();
+    _handToPlayerTextChannelSubs?.unSub();
+    _gameChatChannelSubs?.unSub();
+    _pingChannelSubs?.unSub();
+
+    // close
+    _close();
+
+    // close the internal streams
+    _gameToPlayerChannelInternal.close();
+    _handToAllChannelInternal.close();
+    _handToPlayerChannelInternal.close();
+    _handToPlayerTextChannelInternal.close();
+    _gameChatChannelInternal.close();
+    _pingChannelInternal.close();
 
     active = false;
     // _client?.close();
@@ -145,27 +198,27 @@ class GameComService {
 
   Stream<Message> get gameToPlayerChannelStream {
     // assert(active);
-    return _gameToPlayerChannelSubs?.stream;
+    return _gameToPlayerChannelInternal.stream;
   }
 
   Stream<Message> get handToAllChannelStream {
     assert(active);
-    return _handToAllChannelSubs.stream;
+    return _handToAllChannelInternal.stream;
   }
 
   Stream<Message> get handToPlayerTextChannelStream {
     assert(active);
-    return _handToPlayerTextChannelSubs.stream;
+    return _handToPlayerTextChannelInternal.stream;
   }
 
   Stream<Message> get handToPlayerChannelStream {
     assert(active);
-    return _handToPlayerChannelSubs.stream;
+    return _handToPlayerChannelInternal.stream;
   }
 
   Stream<Message> get gameChatChannelStream {
     assert(active);
-    return _gameChatChannelSubs.stream;
+    return _gameChatChannelInternal.stream;
   }
 
   GameMessagingService get gameMessaging {
