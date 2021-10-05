@@ -152,6 +152,10 @@ class _GameInfoScreenState extends State<GameInfoScreen> {
                                       col2:
                                           "${gameInfo.buyInMin}/${gameInfo.buyInMax}"),
                                   _buildOneRow(
+                                      col1: appScreenText["highHandTracked"],
+                                      col2:
+                                          _getYesNo(gameInfo?.highHandTracked)),
+                                  _buildOneRow(
                                       col1: appScreenText["runitTwiceAllowed"],
                                       col2: _getYesNo(
                                           gameSettings?.runItTwiceAllowed)),

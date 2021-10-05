@@ -263,7 +263,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
   }
 
   Widget actionTile(AppTheme theme) {
-    if (!_gameDetail.dataAggregated) {
+    if (!_gameDetail.dataAggregated || !_gameDetail.playedGame) {
       return Container(
           height: 150.ph,
           decoration: AppDecorators.tileDecoration(theme),
@@ -302,11 +302,15 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: RoundedIconButton2(
+                    child: RoundIconButton(
+                      icon: Icons.query_stats_sharp,
+                      bgColor: Colors.black,
+                      size: 24.pw,
+                      iconColor: theme.secondaryColor,
+                      borderColor: theme.secondaryColor,
                       onTap: () {
                         openHandStatistics();
                       },
-                      icon: Icons.query_stats_sharp,
                     ),
                   ),
                 ],
@@ -348,6 +352,17 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
       // loading done
       print(_gameDetail.stack);
     }
+    if (!_gameDetail.dataAggregated || !_gameDetail.playedGame) {
+      return Container(
+          height: 150.ph,
+          decoration: AppDecorators.tileDecoration(theme),
+          child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Center(
+                  child: Text('Not Available',
+                      style: AppDecorators.getSubtitle3Style(theme: theme)))));
+    }
+
     return GestureDetector(
       onTap: () {
         openStackDetails();
@@ -368,11 +383,17 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: RoundedIconButton2(
+                child: RoundIconButton(
+                  icon: Icons.query_stats_sharp,
+                  bgColor: Colors.black,
+                  size: 24.pw,
+                  iconColor: theme.secondaryColor,
+                  borderColor: theme.secondaryColor,
+
                   onTap: () {
                     openStackDetails();
                   },
-                  icon: Icons.query_stats_sharp,
+                  //icon: Icons.query_stats_sharp,
                 ),
               )
             ]),

@@ -436,6 +436,95 @@ class ExtendTimer extends $pb.GeneratedMessage {
   void clearRemainingSec() => clearField(3);
 }
 
+class ResetTimer extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      const $core.bool.fromEnvironment('protobuf.omit_message_names')
+          ? ''
+          : 'ResetTimer',
+      package: const $pb.PackageName(
+          const $core.bool.fromEnvironment('protobuf.omit_message_names')
+              ? ''
+              : 'game'),
+      createEmptyInstance: create)
+    ..a<$core.int>(
+        1,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'seatNo',
+        $pb.PbFieldType.OU3)
+    ..a<$core.int>(
+        2,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'remainingSec',
+        $pb.PbFieldType.OU3)
+    ..hasRequiredFields = false;
+
+  ResetTimer._() : super();
+  factory ResetTimer({
+    $core.int? seatNo,
+    $core.int? remainingSec,
+  }) {
+    final _result = create();
+    if (seatNo != null) {
+      _result.seatNo = seatNo;
+    }
+    if (remainingSec != null) {
+      _result.remainingSec = remainingSec;
+    }
+    return _result;
+  }
+  factory ResetTimer.fromBuffer($core.List<$core.int> i,
+          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(i, r);
+  factory ResetTimer.fromJson($core.String i,
+          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(i, r);
+  @$core.Deprecated('Using this can add significant overhead to your binary. '
+      'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+      'Will be removed in next major version')
+  ResetTimer clone() => ResetTimer()..mergeFromMessage(this);
+  @$core.Deprecated('Using this can add significant overhead to your binary. '
+      'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+      'Will be removed in next major version')
+  ResetTimer copyWith(void Function(ResetTimer) updates) =>
+      super.copyWith((message) => updates(message as ResetTimer))
+          as ResetTimer; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static ResetTimer create() => ResetTimer._();
+  ResetTimer createEmptyInstance() => create();
+  static $pb.PbList<ResetTimer> createRepeated() => $pb.PbList<ResetTimer>();
+  @$core.pragma('dart2js:noInline')
+  static ResetTimer getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<ResetTimer>(create);
+  static ResetTimer? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.int get seatNo => $_getIZ(0);
+  @$pb.TagNumber(1)
+  set seatNo($core.int v) {
+    $_setUnsignedInt32(0, v);
+  }
+
+  @$pb.TagNumber(1)
+  $core.bool hasSeatNo() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearSeatNo() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.int get remainingSec => $_getIZ(1);
+  @$pb.TagNumber(2)
+  set remainingSec($core.int v) {
+    $_setUnsignedInt32(1, v);
+  }
+
+  @$pb.TagNumber(2)
+  $core.bool hasRemainingSec() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearRemainingSec() => clearField(2);
+}
+
 class BetRaiseOption extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(
       const $core.bool.fromEnvironment('protobuf.omit_message_names')
@@ -1473,6 +1562,12 @@ class HighHandWinner extends $pb.GeneratedMessage {
             ? ''
             : 'seatNo',
         $pb.PbFieldType.OU3)
+    ..a<$core.int>(
+        7,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'boardNo',
+        $pb.PbFieldType.OU3)
     ..hasRequiredFields = false;
 
   HighHandWinner._() : super();
@@ -1483,6 +1578,7 @@ class HighHandWinner extends $pb.GeneratedMessage {
     $core.Iterable<$core.int>? hhCards,
     $core.Iterable<$core.int>? playerCards,
     $core.int? seatNo,
+    $core.int? boardNo,
   }) {
     final _result = create();
     if (playerId != null) {
@@ -1502,6 +1598,9 @@ class HighHandWinner extends $pb.GeneratedMessage {
     }
     if (seatNo != null) {
       _result.seatNo = seatNo;
+    }
+    if (boardNo != null) {
+      _result.boardNo = boardNo;
     }
     return _result;
   }
@@ -1585,6 +1684,18 @@ class HighHandWinner extends $pb.GeneratedMessage {
   $core.bool hasSeatNo() => $_has(5);
   @$pb.TagNumber(6)
   void clearSeatNo() => clearField(6);
+
+  @$pb.TagNumber(7)
+  $core.int get boardNo => $_getIZ(6);
+  @$pb.TagNumber(7)
+  set boardNo($core.int v) {
+    $_setUnsignedInt32(6, v);
+  }
+
+  @$pb.TagNumber(7)
+  $core.bool hasBoardNo() => $_has(6);
+  @$pb.TagNumber(7)
+  void clearBoardNo() => clearField(7);
 }
 
 class HighHand extends $pb.GeneratedMessage {

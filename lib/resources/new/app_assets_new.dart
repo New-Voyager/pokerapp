@@ -32,6 +32,9 @@ class AppAssetsNew {
 
   static String tableResultPath = "assets/images/gamesettings/casino.svg";
 
+  static String trophyPath = "assets/images/trophy.svg";
+  static String hhPath = "assets/images/highhand.svg";
+
   static String playerStatsPath = "assets/images/player-stats.svg";
 
   static String standing1 = 'assets/images/standing1.svg';

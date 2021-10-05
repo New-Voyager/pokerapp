@@ -2,17 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/screens/game_screens/game_info_screen.dart';
+import 'package:pokerapp/screens/game_screens/highhand_log/highhand_log.dart';
 
-class GameInfoBottomSheet extends StatefulWidget {
+class HighHandBottomSheet extends StatefulWidget {
   final GameState gameState;
 
-  const GameInfoBottomSheet({Key key, this.gameState}) : super(key: key);
+  const HighHandBottomSheet({Key key, this.gameState}) : super(key: key);
 
   @override
-  _GameInfoBottomSheetState createState() => _GameInfoBottomSheetState();
+  _HighHandBottomSheetState createState() => _HighHandBottomSheetState();
 }
 
-class _GameInfoBottomSheetState extends State<GameInfoBottomSheet> {
+class _HighHandBottomSheetState extends State<HighHandBottomSheet> {
   double height;
 
   double ratio = 2;
@@ -33,8 +34,10 @@ class _GameInfoBottomSheetState extends State<GameInfoBottomSheet> {
                 height: 13,
               ),
               Expanded(
-                child: GameInfoScreen(
-                  gameState: widget.gameState,
+                child: HighHandLogView(
+                  widget.gameState.gameCode,
+                  clubCode: widget.gameState.gameInfo.clubCode,
+                  bottomsheet: true,
                 ),
               ),
             ],

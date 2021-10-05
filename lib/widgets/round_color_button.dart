@@ -111,6 +111,22 @@ class RoundIconButton extends StatelessWidget {
   final double size;
   @override
   Widget build(BuildContext context) {
+    AppTheme theme = AppTheme.getTheme(context);
+    Color borderColor = this.borderColor;
+    if (borderColor == null) {
+      borderColor = theme.accentColor;
+    }
+
+    Color bgColor = this.bgColor;
+    if (bgColor == null) {
+      bgColor = Colors.black;
+    }
+
+    Color iconColor = this.iconColor;
+    if (iconColor == null) {
+      iconColor = theme.secondaryColor;
+    }
+
     return InkWell(
       onTap: () {
         AudioService.playClickSound();
@@ -129,7 +145,7 @@ class RoundIconButton extends StatelessWidget {
         padding: EdgeInsets.all(6),
         child: Icon(
           icon,
-          size: size ?? 24.dp,
+          size: size ?? 24.pw,
           color: iconColor ?? AppColorsNew.newTextColor,
         ),
       ),
@@ -141,13 +157,12 @@ class RoundedIconButton2 extends RoundIconButton {
   RoundedIconButton2({
     Function onTap,
     IconData icon,
-    double size,
     Color bgColor,
     Color iconColor,
   }) : super(
             onTap: onTap,
             icon: icon,
-            size: size,
+            size: 24.pw,
             bgColor: AppColorsNew.yellowAccentColor,
             iconColor: AppColorsNew.roundBtn2IconColor);
 }
