@@ -302,11 +302,15 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: RoundedIconButton2(
+                    child: RoundIconButton(
+                      icon: Icons.query_stats_sharp,
+                      bgColor: Colors.black,
+                      size: 24.pw,
+                      iconColor: theme.secondaryColor,
+                      borderColor: theme.secondaryColor,
                       onTap: () {
                         openHandStatistics();
                       },
-                      icon: Icons.query_stats_sharp,
                     ),
                   ),
                 ],
@@ -368,11 +372,17 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: RoundedIconButton2(
+                child: RoundIconButton(
+                  icon: Icons.query_stats_sharp,
+                  bgColor: Colors.black,
+                  size: 24.pw,
+                  iconColor: theme.secondaryColor,
+                  borderColor: theme.secondaryColor,
+
                   onTap: () {
                     openStackDetails();
                   },
-                  icon: Icons.query_stats_sharp,
+                  //icon: Icons.query_stats_sharp,
                 ),
               )
             ]),

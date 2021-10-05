@@ -129,7 +129,7 @@ class RoundIconButton extends StatelessWidget {
         padding: EdgeInsets.all(6),
         child: Icon(
           icon,
-          size: size ?? 24.dp,
+          size: size ?? 24.pw,
           color: iconColor ?? AppColorsNew.newTextColor,
         ),
       ),
@@ -141,13 +141,12 @@ class RoundedIconButton2 extends RoundIconButton {
   RoundedIconButton2({
     Function onTap,
     IconData icon,
-    double size,
     Color bgColor,
     Color iconColor,
   }) : super(
             onTap: onTap,
             icon: icon,
-            size: size,
+            size: 24.pw,
             bgColor: AppColorsNew.yellowAccentColor,
             iconColor: AppColorsNew.roundBtn2IconColor);
 }
