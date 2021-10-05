@@ -15,7 +15,12 @@ import '../../../routes.dart';
 class HighHandLogView extends StatefulWidget {
   final String gameCode;
   final String clubCode;
-  HighHandLogView(this.gameCode, {this.clubCode});
+  final bool bottomsheet;
+  HighHandLogView(
+    this.gameCode, {
+    this.clubCode,
+    this.bottomsheet = false,
+  });
 
   @override
   State<StatefulWidget> createState() {
@@ -61,6 +66,7 @@ class _HighHandLogViewState extends State<HighHandLogView>
             titleText: _appScreenText['highHandLog'],
             subTitleText: "${_appScreenText['gameCode']}: ${widget.gameCode}",
             context: context,
+            showBackButton: !(widget.bottomsheet ?? false),
           ),
           body: Material(
             type: MaterialType.transparency,
@@ -69,19 +75,24 @@ class _HighHandLogViewState extends State<HighHandLogView>
                 : Column(
                     children: [
                       Expanded(
-                        child: ListView.separated(
-                          itemBuilder: (context, index) {
-                            this.hhWinners[index].gameCode = widget.gameCode;
-                            return HighhandWidget(
-                              this.hhWinners[index],
-                              clubCode: widget.clubCode,
-                            );
-                          },
-                          itemCount: hhWinners.length,
-                          separatorBuilder: (context, index) {
-                            return Divider();
-                          },
-                        ),
+                        child: (hhWinners?.length ?? 0) == 0
+                            ? Center(
+                                child: Text("No Data available"),
+                              )
+                            : ListView.separated(
+                                itemBuilder: (context, index) {
+                                  this.hhWinners[index].gameCode =
+                                      widget.gameCode;
+                                  return HighhandWidget(
+                                    this.hhWinners[index],
+                                    clubCode: widget.clubCode,
+                                  );
+                                },
+                                itemCount: hhWinners?.length ?? 0,
+                                separatorBuilder: (context, index) {
+                                  return Divider();
+                                },
+                              ),
                       ),
                     ],
                   ),
