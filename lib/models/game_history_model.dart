@@ -201,6 +201,7 @@ class GameHistoryDetailModel extends ChangeNotifier {
         this.playedGame = true;
       }
     }
+    dataAggregated = gameData['dataAggregated'] ?? false;
 
     if (this.playedGame) {
       final List playerStack = jsonData['completedGame']['stackStat'];
@@ -210,7 +211,6 @@ class GameHistoryDetailModel extends ChangeNotifier {
           .toList();
       stack.sort((a, b) => a.handNum.compareTo(b.handNum));
 
-      dataAggregated = gameData['dataAggregated'] ?? false;
       handsPlayed = int.parse(gameData['handsPlayed'].toString());
       if (dataAggregated) {
         preflopHands = int.parse(gameData['preflopHands'].toString());

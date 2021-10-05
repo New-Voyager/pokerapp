@@ -263,7 +263,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
   }
 
   Widget actionTile(AppTheme theme) {
-    if (!_gameDetail.dataAggregated) {
+    if (!_gameDetail.dataAggregated || !_gameDetail.playedGame) {
       return Container(
           height: 150.ph,
           decoration: AppDecorators.tileDecoration(theme),
@@ -352,6 +352,17 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
       // loading done
       print(_gameDetail.stack);
     }
+    if (!_gameDetail.dataAggregated || !_gameDetail.playedGame) {
+      return Container(
+          height: 150.ph,
+          decoration: AppDecorators.tileDecoration(theme),
+          child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Center(
+                  child: Text('Not Available',
+                      style: AppDecorators.getSubtitle3Style(theme: theme)))));
+    }
+
     return GestureDetector(
       onTap: () {
         openStackDetails();
