@@ -3456,6 +3456,13 @@ class HandResultClient extends $pb.GeneratedMessage {
             ? ''
             : 'tipsCollected',
         $pb.PbFieldType.OF)
+    ..pc<$0.HighHandWinner>(
+        13,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'highHandWinners',
+        $pb.PbFieldType.PM,
+        subBuilder: $0.HighHandWinner.create)
     ..hasRequiredFields = false;
 
   HandResultClient._() : super();
@@ -3472,6 +3479,7 @@ class HandResultClient extends $pb.GeneratedMessage {
     $core.Map<$fixnum.Int64, TimeoutStats>? timeoutStats,
     $core.int? handNum,
     $core.double? tipsCollected,
+    $core.Iterable<$0.HighHandWinner>? highHandWinners,
   }) {
     final _result = create();
     if (runItTwice != null) {
@@ -3509,6 +3517,9 @@ class HandResultClient extends $pb.GeneratedMessage {
     }
     if (tipsCollected != null) {
       _result.tipsCollected = tipsCollected;
+    }
+    if (highHandWinners != null) {
+      _result.highHandWinners.addAll(highHandWinners);
     }
     return _result;
   }
@@ -3628,6 +3639,9 @@ class HandResultClient extends $pb.GeneratedMessage {
   $core.bool hasTipsCollected() => $_has(11);
   @$pb.TagNumber(12)
   void clearTipsCollected() => clearField(12);
+
+  @$pb.TagNumber(13)
+  $core.List<$0.HighHandWinner> get highHandWinners => $_getList(12);
 }
 
 class HandLogV2 extends $pb.GeneratedMessage {
@@ -4845,6 +4859,7 @@ enum HandMessageItem_Content {
   dealerChoice,
   handResultClient,
   extendTimer,
+  resetTimer,
   notSet
 }
 
@@ -4870,6 +4885,7 @@ class HandMessageItem extends $pb.GeneratedMessage {
     28: HandMessageItem_Content.dealerChoice,
     29: HandMessageItem_Content.handResultClient,
     30: HandMessageItem_Content.extendTimer,
+    31: HandMessageItem_Content.resetTimer,
     0: HandMessageItem_Content.notSet
   };
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(
@@ -4900,7 +4916,8 @@ class HandMessageItem extends $pb.GeneratedMessage {
       27,
       28,
       29,
-      30
+      30,
+      31
     ])
     ..aOS(
         7,
@@ -5021,6 +5038,12 @@ class HandMessageItem extends $pb.GeneratedMessage {
             ? ''
             : 'extendTimer',
         subBuilder: $0.ExtendTimer.create)
+    ..aOM<$0.ResetTimer>(
+        31,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'resetTimer',
+        subBuilder: $0.ResetTimer.create)
     ..hasRequiredFields = false;
 
   HandMessageItem._() : super();
@@ -5045,6 +5068,7 @@ class HandMessageItem extends $pb.GeneratedMessage {
     DealerChoice? dealerChoice,
     HandResultClient? handResultClient,
     $0.ExtendTimer? extendTimer,
+    $0.ResetTimer? resetTimer,
   }) {
     final _result = create();
     if (messageType != null) {
@@ -5106,6 +5130,9 @@ class HandMessageItem extends $pb.GeneratedMessage {
     }
     if (extendTimer != null) {
       _result.extendTimer = extendTimer;
+    }
+    if (resetTimer != null) {
+      _result.resetTimer = resetTimer;
     }
     return _result;
   }
@@ -5417,4 +5444,18 @@ class HandMessageItem extends $pb.GeneratedMessage {
   void clearExtendTimer() => clearField(30);
   @$pb.TagNumber(30)
   $0.ExtendTimer ensureExtendTimer() => $_ensure(19);
+
+  @$pb.TagNumber(31)
+  $0.ResetTimer get resetTimer => $_getN(20);
+  @$pb.TagNumber(31)
+  set resetTimer($0.ResetTimer v) {
+    setField(31, v);
+  }
+
+  @$pb.TagNumber(31)
+  $core.bool hasResetTimer() => $_has(20);
+  @$pb.TagNumber(31)
+  void clearResetTimer() => clearField(31);
+  @$pb.TagNumber(31)
+  $0.ResetTimer ensureResetTimer() => $_ensure(20);
 }

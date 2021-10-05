@@ -424,17 +424,6 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                       onClickViewHand(context);
                     }),
 
-                // High hand track
-                widget.gameState.gameInfo.highHandTracked ?? false
-                    ? _buildMenuButton(
-                        title: 'High',
-                        imagePath: AppAssetsNew.tableResultPath,
-                        onClick: () {
-                          vnShowMenuItems.value = false;
-                          onClickHighHand(context);
-                        })
-                    : SizedBox.shrink(),
-
                 // game history
                 _buildMenuButton(
                     title: 'History',
@@ -443,6 +432,17 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                       vnShowMenuItems.value = false;
                       onClickViewHandAnalysis(context);
                     }),
+
+                // High hand track
+                widget.gameState.gameInfo.highHandTracked ?? false
+                    ? _buildMenuButton(
+                        title: 'HH',
+                        imagePath: AppAssetsNew.hhPath,
+                        onClick: () {
+                          vnShowMenuItems.value = false;
+                          onClickHighHand(context);
+                        })
+                    : SizedBox.shrink(),
 
                 // game info
                 _buildMenuButton(

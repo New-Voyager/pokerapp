@@ -425,9 +425,9 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
                   : chipAmountWidget,
 
               Consumer<SeatChangeNotifier>(
-                builder: (_, scn, __) => scn.seatChangeInProgress
+                builder: (_, scn, __) => gameState.hostSeatChangeInProgress
                     ? SeatNoWidget(widget.seat)
-                    : SeatNoWidget(widget.seat), //const SizedBox.shrink(),
+                    : const SizedBox.shrink(),
               ),
 
               playerStatusIcons(),
