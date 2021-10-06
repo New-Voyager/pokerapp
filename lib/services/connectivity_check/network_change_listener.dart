@@ -12,13 +12,19 @@ import 'package:provider/provider.dart';
 
 class NetworkChangeListener {
   StreamSubscription<ConnectivityResult> _sub;
+  StreamSubscription<DataConnectionStatus> _internetSub;
+
+  bool _checkForInternetInProgress = false;
+
   NetworkConnectionDialog _dialog;
+
   final DataConnectionChecker _dataConnectionChecker = DataConnectionChecker();
+  final Connectivity _connectivity = Connectivity();
+
+  final StreamController<ConnectivityResult> _streamController =
+      StreamController.broadcast();
 
   Future<void> checkInternet() => _checkForInternetConnection();
-
-  StreamController<ConnectivityResult> _streamController =
-      StreamController.broadcast();
 
   Stream<ConnectivityResult> get onConnectivityChange =>
       _streamController.stream;
@@ -52,11 +58,17 @@ class NetworkChangeListener {
     _dialog?.dismiss(context: context);
   }
 
-  void _onConnectivityChanged(ConnectivityResult result) async {
+  void _connectivityCheck(ConnectivityResult result) async {
     log('network_change onConnectivityChanged: $result');
+
+    // if we are already checking for internet, return
+    if (_checkForInternetInProgress) return;
+    _checkForInternetInProgress = true;
 
     // this call waits for indefinite amount of time - until we get internet access
     await _checkForInternetConnection();
+
+    log('network_reconnect: We got back Internet Access');
 
     // if here - means we have internet
     // re establish connection to NATS
@@ -65,6 +77,19 @@ class NetworkChangeListener {
     // after nats connection reestablishes
     // as state changed (some states in a screen may need to refresh), add event to stream so that listeners can respond
     _streamController.add(result);
+
+    // internet check is completed
+    _checkForInternetInProgress = false;
+  }
+
+  // we need this method in EDGE cases, for example,
+  // if my phone is connected to wifi, and for some reason
+  // the router looses internet access - my app should be able
+  // to detect the internet failure (without wifi - lte changes)
+  void _dataConnectionCheckListener(DataConnectionStatus status) async {
+    if (status == DataConnectionStatus.disconnected) {
+      _connectivityCheck(await _connectivity.checkConnectivity());
+    }
   }
 
   void _initDataConnectionChecker() {
@@ -80,6 +105,9 @@ class NetworkChangeListener {
         InternetAddress('1.1.1.1'),
       ),
     ];
+
+    // this checks for internet access every 5 seconds
+    _dataConnectionChecker.checkInterval = const Duration(seconds: 5);
   }
 
   NetworkChangeListener() {
@@ -88,20 +116,23 @@ class NetworkChangeListener {
     // setup data connection checker
     _initDataConnectionChecker();
 
-    final connectivity = Connectivity();
-
     // listen for connectivity changes - and then check for internet connection
-    _sub = connectivity.onConnectivityChanged.listen(_onConnectivityChanged);
+    _sub = _connectivity.onConnectivityChanged.listen(_connectivityCheck);
+    _internetSub = _dataConnectionChecker.onStatusChange
+        .listen(_dataConnectionCheckListener);
 
     // instantiate the dialog object
     _dialog = NetworkConnectionDialog();
 
     // check for internet connection for the first time
-    _checkForInternetConnection();
+    _connectivity
+        .checkConnectivity()
+        .then((result) => _connectivityCheck(result));
   }
 
   void dispose() {
     _streamController.close();
     _sub?.cancel();
+    _internetSub?.cancel();
   }
 }
