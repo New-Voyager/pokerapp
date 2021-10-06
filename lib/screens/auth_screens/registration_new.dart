@@ -235,6 +235,7 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
                 AppDimensionsNew.getVerticalSizedBox(16.pw),
                 // Logo section
                 AppNameAndLogoWidget(_appTheme, _appScreenText),
+                AppDimensionsNew.getVerticalSizedBox(16.pw),
 
                 // Form
                 Container(

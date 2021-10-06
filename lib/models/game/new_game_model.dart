@@ -75,11 +75,11 @@ class NewGameModel {
   int buyInMax = 100;
   int actionTime = 30;
   bool locationCheck = false;
-  bool ipCheck = true;
+  bool ipCheck = false;
   bool runItTwice = true;
   bool seatChangeAllowed = false;
-  bool waitList = false;
-  bool botGame = false;
+  bool waitList = true;
+  bool botGame = true;
   bool highHandTracked = false;
   Rewards rewards;
   bool muckLosingHand = false;

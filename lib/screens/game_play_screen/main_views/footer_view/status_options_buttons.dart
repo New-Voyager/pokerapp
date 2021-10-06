@@ -34,13 +34,15 @@ class StatusOptionsWidget extends StatelessWidget {
     // if i am not in the waitlist
     if (mySeat == null &&
         gameState.gameInfo.playerGameStatus != AppConstants.IN_QUEUE) {
-      if (gameState.gameInfo.waitlistAllowed) {
-        children.add(getWaitListButton(_appScreenText, theme, context));
+      if (gameState.gameInfo.status != AppConstants.GAME_CONFIGURED) {
+        if (gameState.gameInfo.waitlistAllowed) {
+          children.add(getWaitListButton(_appScreenText, theme, context));
+        }
       }
     } else {
       final buttonCountdownSpace = 10.ph;
       final countDownFontSize = 14;
-      log('Status: myState ${mySeat.player.status} missedBlind: ${mySeat.player.missedBlind} postedBlind: ${mySeat.player.postedBlind}');
+      log('StatusOptions: myState ${mySeat.player.status} missedBlind: ${mySeat.player.missedBlind} postedBlind: ${mySeat.player.postedBlind}');
       if (mySeat.player != null) {
         if (mySeat.player.status == AppConstants.WAIT_FOR_BUYIN ||
             mySeat.player.status == AppConstants.WAIT_FOR_BUYIN_APPROVAL) {

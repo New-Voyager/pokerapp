@@ -352,5 +352,7 @@ class NewHandHandler {
     } finally {
       //log('Hand Message: ::handleDealStarted:: END');
     }
+
+    AudioService.stopSound();
   }
 }

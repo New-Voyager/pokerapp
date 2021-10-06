@@ -33,9 +33,9 @@ class AppNameAndLogoWidget extends StatelessWidget {
         Container(
           margin: EdgeInsets.symmetric(vertical: 16),
           child: Image.asset(
-            AppAssetsNew.pathGameTypeChipImage,
-            height: 100.ph,
-            width: 100.pw,
+            AppAssetsNew.logoImage,
+            height: 128.ph,
+            width: 128.pw,
           ),
         ),
       ],

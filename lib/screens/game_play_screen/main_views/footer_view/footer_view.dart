@@ -149,7 +149,7 @@ class _FooterViewState extends State<FooterView>
       log('Customize: _buildMainView');
 
       bool showOptionsButtons = false;
-      log('Status: My state is changed.');
+      log('StatusOptions: My state is changed. ');
       if (me != null && me.player != null) {
         if (me.player.inBreak) {
           //log('footerview: building status option widget: IN BREAK');
@@ -160,14 +160,15 @@ class _FooterViewState extends State<FooterView>
         } else if (me.player.missedBlind) {
           showOptionsButtons = true;
         }
-      } else if (!gameState.isPlaying) {
+      } else {
+        log('StatusOptions:gameState.gameInfo.waitlistAllowed: ${gameState.gameInfo.waitlistAllowed}');
         if (gameState.gameInfo.waitlistAllowed) {
           // observer
           showOptionsButtons = true;
         }
       }
       if (showOptionsButtons) {
-        log('Status: building status option widget');
+        log('StatusOptions: building status option widget');
         return StatusOptionsWidget(gameState: gameState);
       }
 
