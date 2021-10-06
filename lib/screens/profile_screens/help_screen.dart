@@ -40,10 +40,10 @@ class HelpScreen extends StatelessWidget {
                       alignment: Alignment.center,
                       margin:
                           EdgeInsets.symmetric(horizontal: 16, vertical: 32),
-                      child: SvgPicture.asset(
-                        AppAssetsNew.resumeImagePath,
-                        height: size.height / 4,
-                        width: size.width,
+                      child: Image.asset(
+                        AppAssetsNew.logoImage,
+                        height: size.height / 5,
+                        width: size.height / 5,
                       ),
                     ),
                     Container(
