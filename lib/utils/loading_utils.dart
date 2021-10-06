@@ -69,55 +69,59 @@ class NetworkConnectionDialog {
       barrierDismissible: false,
       useRootNavigator: true,
       builder: (context) {
-        return AlertDialog(
-          backgroundColor: Colors.grey.shade800,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-            side: BorderSide(
-              color: AppColorsNew.plateBorderColor,
-              width: 2,
+        return WillPopScope(
+          onWillPop: () async => false,
+          child: AlertDialog(
+            backgroundColor: Colors.grey.shade800,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+              side: BorderSide(
+                color: AppColorsNew.plateBorderColor,
+                width: 2,
+              ),
             ),
-          ),
-          elevation: 5,
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // reconnecting part
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    height: 24,
-                    width: 24,
-                    child: CircularProgressIndicator(
-                      valueColor: new AlwaysStoppedAnimation<Color>(
-                        Colors.grey,
+            elevation: 5,
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // reconnecting part
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      height: 24,
+                      width: 24,
+                      child: CircularProgressIndicator(
+                        valueColor: new AlwaysStoppedAnimation<Color>(
+                          Colors.grey,
+                        ),
                       ),
                     ),
-                  ),
-                  SizedBox(width: 16),
-                  Text(
-                    loadingText ?? "Reconnecting..",
-                    style: TextStyle(color: Colors.white, fontSize: 16),
-                  ),
-                ],
-              ),
-
-              // sep
-              const SizedBox(height: 20),
-
-              // show button - to close the app
-              Transform.scale(
-                scale: 0.80,
-                child: ButtonWidget(
-                  text: 'Close App',
-                  onTap: () {
-                    SystemChannels.platform.invokeMethod('SystemNavigator.pop');
-                  },
+                    SizedBox(width: 16),
+                    Text(
+                      loadingText ?? "Reconnecting..",
+                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    ),
+                  ],
                 ),
-              ),
-            ],
+
+                // sep
+                const SizedBox(height: 20),
+
+                // show button - to close the app
+                Transform.scale(
+                  scale: 0.80,
+                  child: ButtonWidget(
+                    text: 'Close App',
+                    onTap: () {
+                      SystemChannels.platform
+                          .invokeMethod('SystemNavigator.pop');
+                    },
+                  ),
+                ),
+              ],
+            ),
           ),
         );
       },
