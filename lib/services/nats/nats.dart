@@ -25,10 +25,19 @@ class Nats {
 
   Nats(this._providerContext);
 
+  Future<void> reconnect() async {
+    log('network_reconnect: Nats reconnect method invoked');
+
+    close();
+    await init(_playerChannel);
+  }
+
   Future<void> init(String playerChannel) async {
     String natsUrl = await UtilService.getNatsURL();
-    _client = Client();
-    _clientPub = Client();
+
+    if (_client == null) _client = Client();
+    if (_clientPub == null) _clientPub = Client();
+
     _playerChannel = playerChannel;
     _clubSubs = Map<String, Subscription>();
     log('Player channel: $playerChannel');
@@ -38,9 +47,8 @@ class Nats {
         .replaceFirst('nats://', '')
         .replaceFirst('tls://', '')
         .replaceFirst(':4222', '');
-    await _client.connect(natsUrl);
 
-    // todo: do we need two clients?
+    await _client.connect(natsUrl);
     await _clientPub.connect(natsUrl);
 
     // subscribe for player messages
@@ -62,22 +70,16 @@ class Nats {
   }
 
   void close() {
-    if (_playerSub != null) {
-      _playerSub.unSub();
-    }
+    _playerSub?.close();
+
     if (_clubSubs != null) {
       for (final clubSub in _clubSubs.values) {
-        clubSub.unSub();
+        clubSub.close();
       }
     }
 
-    if (_client != null) {
-      _client.close();
-    }
-
-    if (_clientPub != null) {
-      _client.close();
-    }
+    _client?.close();
+    _clientPub?.close();
   }
 
   String get playerChannel {

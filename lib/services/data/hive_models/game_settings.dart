@@ -23,7 +23,7 @@ class GameLocalConfig {
     _save();
   }
 
-// Show rearrange button
+  // Show rearrange button
   bool _showRearrange = true;
   get showRearrange => _showRearrange;
   set showRearrange(bool value) {

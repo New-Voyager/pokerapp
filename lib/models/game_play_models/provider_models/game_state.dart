@@ -139,7 +139,7 @@ class GameState {
 
   PlayerInfo _currentPlayer;
   JanusEngine janusEngine;
-  Agora agoraEngine;
+  // Agora agoraEngine;
   int _currentHandNum;
   bool _playerSeatChangeInProgress = false;
   Seat _seatChangeSeat = null;
@@ -344,16 +344,16 @@ class GameState {
         uuid: this._currentPlayer.uuid,
         playerId: this._currentPlayer.id);
 
-    if (this.gameInfo.useAgora ?? false) {
-      this.agoraEngine = Agora(
-        appId: this.gameInfo.agoraAppId,
-        gameCode: this.gameInfo.gameCode,
-        uuid: this._currentPlayer.uuid,
-        state: _communicationState,
-        gameState: this,
-        playerId: this._currentPlayer.id,
-      );
-    }
+    // if (this.gameInfo.useAgora ?? false) {
+    //   this.agoraEngine = Agora(
+    //     appId: this.gameInfo.agoraAppId,
+    //     gameCode: this.gameInfo.gameCode,
+    //     uuid: this._currentPlayer.uuid,
+    //     state: _communicationState,
+    //     gameState: this,
+    //     playerId: this._currentPlayer.id,
+    //   );
+    // }
 
     this._janusEngine =
         ListenableProvider<JanusEngine>(create: (_) => this.janusEngine);
@@ -447,9 +447,9 @@ class GameState {
     if (!this.replayMode) {
       gameHiveStore.close();
     }
-    if (this.agoraEngine != null) {
-      this.agoraEngine.disposeObject();
-    }
+    // if (this.agoraEngine != null) {
+    //   this.agoraEngine.disposeObject();
+    // }
     if (this.janusEngine != null) {
       this.janusEngine.disposeObject();
     }

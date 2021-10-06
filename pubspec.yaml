@@ -10,7 +10,7 @@ environment:
 
 dependencies:
   after_layout: ^1.1.0
-  agora_rtc_engine: ^4.0.6
+  # agora_rtc_engine: ^4.0.6
   animated_text_kit: ^4.2.1
   audioplayers: ^0.20.1  
   archive: ^3.1.2
@@ -28,6 +28,7 @@ dependencies:
   connectivity_for_web: ^0.4.0+1
   cryptography: ^2.0.2
   cupertino_icons: ^1.0.3
+  data_connection_checker: ^0.3.4
   device_info: ^2.0.2
   equatable: ^2.0.3
   firebase_analytics: ^8.3.2
