@@ -14,6 +14,15 @@ class GameLocalConfig {
 
   bool get gameSound => _gameSound;
   bool _gameSound = true;
+
+  // Show check and fold
+  bool _showCheckFold = true;
+  get showCheckFold => _showCheckFold;
+  set showCheckFold(bool value) {
+    _showCheckFold = value;
+    _save();
+  }
+
   set gameSound(bool value) {
     _gameSound = value;
     _save();
@@ -79,6 +88,7 @@ class GameLocalConfig {
         'straddle': this._straddle,
         'inAudioConference': this._inAudioConference,
         'tapOrSwipeBetAction': this._tapOrSwipeBetAction,
+        'showCheckFold': this.showCheckFold
       };
 
   GameLocalConfig.fromJson(Map<String, dynamic> json, this._gameHiveStore) {
@@ -89,5 +99,6 @@ class GameLocalConfig {
     this._straddle = json['straddle'];
     this._inAudioConference = json['inAudioConference'];
     this._tapOrSwipeBetAction = json['tapOrSwipeBetAction'];
+    this.showCheckFold = json['showCheckFold'];
   }
 }

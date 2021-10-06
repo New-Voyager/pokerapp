@@ -521,7 +521,7 @@ class _FooterActionViewState extends State<FooterActionView> {
                 ]);
               } else if (actionState.showCheckFold) {
                 final mySeat = gameState.mySeat;
-                if (mySeat.player != null && mySeat.player.isActive) {
+                if (mySeat.player != null && mySeat.player.isActive && gameState.playerLocalConfig.showCheckFold){
                   children.add(
                     /* bottom row */
                     Transform.scale(

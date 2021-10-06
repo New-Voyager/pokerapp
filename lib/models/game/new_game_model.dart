@@ -89,6 +89,7 @@ class NewGameModel {
   bool useAgora = false;
   bool breakAllowed = true;
   bool showResult = true;
+  bool showCheckFold = true;
   int breakTime = 5;
   /*
     bombPotEnabled: Boolean

@@ -344,6 +344,12 @@ class NewGameModelProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+   get showCheckFold => settings.showCheckFold;
+  set showCheckFold(bool value) {
+    settings.showCheckFold = value;
+    notifyListeners();
+  }
+
   get highHandTracked => settings.highHandTracked;
   set highHandTracked(bool value) {
     settings.highHandTracked = value;

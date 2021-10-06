@@ -853,6 +853,19 @@ class _GameOptionState extends State<GameOption> {
       },
     ));
 
+     // show Check/fold
+    children.add(_buildCheckBox(
+      text: _appScreenText['gameCheckFold'],
+      value: widget.gameState.playerLocalConfig.showCheckFold,
+      onChange: (bool v) async {
+        // setting the value saves it to local storage too
+        widget.gameState.playerLocalConfig.showCheckFold = v;
+        log('In toggle button widget, Show Check Fold = ${widget.gameState.playerLocalConfig.showCheckFold}');
+        if (closed) return;
+        setState(() {});
+      },
+    ));
+
     // Animations
     children.add(_buildCheckBox(
       text: 'Animations',

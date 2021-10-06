@@ -202,7 +202,8 @@
         "bombPotInterval": "Bomb Pot interval (in mins)",
         "bombPotBet": "Bomb Pot bet amount (x BBs)",
         "seatChangeAllowed": "Player Seat Change allowed",
-        "hhTracked": "Track highhand"
+        "hhTracked": "Track highhand",
+        "SHOWCHECKFOLD": "Show Check/Fold"
     },
     "clubsPageView": {
         "UPADATESUCCESSFUL": "Update successful",
@@ -722,7 +723,8 @@
         "betAction": "Bet Action",
         "appliedInNextAction": "applied in next action",
         "swipe": "Swipe",
-        "tap": "Tap"
+        "tap": "Tap",
+        "gameCheckFold": "Show Check/Fold"
     },
     "gameOptionsBottomSheet": {
         "game": "Game",
