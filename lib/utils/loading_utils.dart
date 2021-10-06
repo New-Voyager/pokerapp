@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/widgets/button_widget.dart';
 
 class ConnectionDialog {
   static show({@required BuildContext context, String loadingText}) {
@@ -77,25 +79,43 @@ class NetworkConnectionDialog {
             ),
           ),
           elevation: 5,
-          content: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+          content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Container(
-                height: 24,
-                width: 24,
-                child: CircularProgressIndicator(
-                  valueColor: new AlwaysStoppedAnimation<Color>(
-                    Colors.grey,
+              // reconnecting part
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    height: 24,
+                    width: 24,
+                    child: CircularProgressIndicator(
+                      valueColor: new AlwaysStoppedAnimation<Color>(
+                        Colors.grey,
+                      ),
+                    ),
                   ),
+                  SizedBox(width: 16),
+                  Text(
+                    loadingText ?? "Reconnecting..",
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                  ),
+                ],
+              ),
+
+              // sep
+              const SizedBox(height: 20),
+
+              // show button - to close the app
+              Transform.scale(
+                scale: 0.80,
+                child: ButtonWidget(
+                  text: 'Close App',
+                  onTap: () {
+                    SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+                  },
                 ),
-              ),
-              SizedBox(
-                width: 16,
-              ),
-              Text(
-                loadingText ?? "Reconnecting..",
-                style: TextStyle(color: Colors.white, fontSize: 16),
               ),
             ],
           ),
