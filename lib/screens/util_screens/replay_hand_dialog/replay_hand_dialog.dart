@@ -5,6 +5,7 @@ import 'package:flutter/painting.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_replay_models/game_replay_controller.dart';
 import 'package:pokerapp/models/handlog_model.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/screens/util_screens/replay_hand_controls/replay_hand_controls.dart';
 import 'package:pokerapp/screens/util_screens/replay_hand_game_view/replay_hand_game_view.dart';
 import 'package:pokerapp/screens/util_screens/replay_hand_dialog/replay_hand_dialog_utils.dart';
@@ -102,8 +103,10 @@ class ReplayHandDialog extends StatelessWidget {
               );
             }
 
-            return ReplayHandUtilScreen(
-              gameReplayController: snapshot.data,
+            return Center(
+              child: ReplayHandUtilScreen(
+                gameReplayController: snapshot.data,
+              ),
             );
           },
         ),
@@ -123,33 +126,42 @@ class ReplayHandUtilScreen extends StatelessWidget {
       screenSize: Screen.diagonalInches,
     );
 
-    return MultiProvider(
-      providers: ReplayHandScreenUtils.getProviders(
-        boardAttributesObject,
-        gameReplayController.gameState,
-      ),
-      builder: (BuildContext context, _) {
-        /* initialize the game controller, after we have the context
-           that can give access to the provider models */
-        gameReplayController.initController(context);
-
-        return SafeArea(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              /* game view */
-              ReplayHandGameView(
-                gameInfoModel: gameReplayController.gameInfoModel,
-              ),
-
-              /* controls */
-              ReplayHandControls(
-                gameReplayController: gameReplayController,
-              ),
-            ],
+    return IntrinsicHeight(
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: context.read<AppTheme>().accentColor,
+            width: 1.5,
           ),
-        );
-      },
+        ),
+        child: MultiProvider(
+          providers: ReplayHandScreenUtils.getProviders(
+            boardAttributesObject,
+            gameReplayController.gameState,
+          ),
+          builder: (BuildContext context, _) {
+            /* initialize the game controller, after we have the context
+               that can give access to the provider models */
+            gameReplayController.initController(context);
+
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                /* game view */
+                ReplayHandGameView(
+                  gameInfoModel: gameReplayController.gameInfoModel,
+                ),
+
+                /* controls */
+                ReplayHandControls(
+                  gameReplayController: gameReplayController,
+                ),
+              ],
+            );
+          },
+        ),
+      ),
     );
   }
 }
