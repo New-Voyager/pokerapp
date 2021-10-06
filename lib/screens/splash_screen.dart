@@ -11,10 +11,12 @@ import 'package:pokerapp/services/app/appcoin_service.dart';
 import 'package:pokerapp/services/app/asset_service.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/services/audio/audio_service.dart';
+import 'package:pokerapp/services/connectivity_check/network_change_listener.dart';
 import 'package:pokerapp/services/data/asset_hive_store.dart';
 import 'package:pokerapp/services/data/box_type.dart';
 import 'package:pokerapp/services/data/hive_datasource_impl.dart';
 import 'package:pokerapp/services/data/user_settings_store.dart';
+import 'package:provider/provider.dart';
 import 'package:upgrader/upgrader.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -45,6 +47,9 @@ class _SplashScreenState extends State<SplashScreen> {
     await AssetService.updateBundledAssets();
     await UserSettingsStore.openSettingsStore();
     await AudioService.init();
+
+    // this function call will NOT end until we have internet access
+    await context.read<NetworkChangeListener>().checkInternet();
   }
 
   void _decideNavigation() async {

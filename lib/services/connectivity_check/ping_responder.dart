@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer' as dev;
 import 'dart:math';
 import 'dart:typed_data';
 import 'package:pokerapp/proto/handmessage.pb.dart' as proto;
@@ -33,6 +34,11 @@ class PingResponder {
     this.stream.listen((Message natsMsg) {
       if (!active) return;
       handleMessage(natsMsg);
+      // try {
+      //   handleMessage(natsMsg);
+      // } catch (e) {
+      //   dev.log('error ping_responder: $e');
+      // }
     });
   }
 
