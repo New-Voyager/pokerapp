@@ -187,7 +187,7 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
     if (gameState.straddlePrompt) return cardsWidget;
     Widget shuffleButton = Container();
     if (playerModel != null && playerModel.cards != null) {
-      if (playerModel.cards.length > 2) {
+      if (playerModel.cards.length > 2 && gameState.playerLocalConfig.showRearrange) {
         Color buttonColor = theme.accentColor;
         shuffleButton = InkWell(
           child: Container(
@@ -196,7 +196,7 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
               shape: BoxShape.circle,
               color: buttonColor,
             ),
-            child: Icon(Icons.autorenew, color: theme.primaryColorWithDark()),
+            child: Icon(Icons.autorenew, color: theme.primaryColorWithDark(),size: 20.pw,),
           ),
           onTap: () {
             gameState.changeHoleCardOrder();
@@ -218,24 +218,34 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
         );
       },
       child: Transform.translate(
-          offset: Offset(0, boardAttributes.holeCardOffset),
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+        offset: Offset(0, boardAttributes.holeCardOffset),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
             rankText,
             SizedBox(
               height: 10.ph,
             ),
-            Column(children: [
-              Stack(
-                alignment: Alignment.center,
-                children: [
-                  cardsWidget,
-                ],
-              ),
-              shuffleButton,
-            ]),
+            Column(
+              children: [
+                Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    cardsWidget,
+                    Positioned(
+                      bottom: 40,
+                      left: 0,
+                      right: 0,
+                      child: shuffleButton,
+                    ),
+                  ],
+                ),
+              ],
+            ),
             //shuffleButton,
-          ])),
+          ],
+        ),
+      ),
     );
   }
 

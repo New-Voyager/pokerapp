@@ -853,7 +853,7 @@ class _GameOptionState extends State<GameOption> {
       },
     ));
 
-     // show Check/fold
+    // show Check/fold
     children.add(_buildCheckBox(
       text: _appScreenText['gameCheckFold'],
       value: widget.gameState.playerLocalConfig.showCheckFold,
@@ -861,6 +861,19 @@ class _GameOptionState extends State<GameOption> {
         // setting the value saves it to local storage too
         widget.gameState.playerLocalConfig.showCheckFold = v;
         log('In toggle button widget, Show Check Fold = ${widget.gameState.playerLocalConfig.showCheckFold}');
+        if (closed) return;
+        setState(() {});
+      },
+    ));
+
+    // show ReArrage
+    children.add(_buildCheckBox(
+      text: _appScreenText['SHOWREARRANGE'],
+      value: widget.gameState.playerLocalConfig.showRearrange,
+      onChange: (bool v) async {
+        // setting the value saves it to local storage too
+        widget.gameState.playerLocalConfig.showRearrange = v;
+        log('In toggle button widget, Show showRearrange = ${widget.gameState.playerLocalConfig.showRearrange}');
         if (closed) return;
         setState(() {});
       },
