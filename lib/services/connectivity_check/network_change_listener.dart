@@ -59,7 +59,7 @@ class NetworkChangeListener {
   }
 
   void _connectivityCheck(ConnectivityResult result) async {
-    log('network_change onConnectivityChanged: $result');
+    log('network_reconnect onConnectivityChanged: $result');
 
     // if we are already checking for internet, return
     if (_checkForInternetInProgress) return;

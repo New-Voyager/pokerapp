@@ -26,7 +26,7 @@ class Nats {
   Nats(this._providerContext);
 
   Future<void> reconnect() async {
-    log('network_change: Nats reconnect method invoked');
+    log('network_reconnect: Nats reconnect method invoked');
 
     close();
     await init(_playerChannel);
@@ -70,22 +70,16 @@ class Nats {
   }
 
   void close() {
-    if (_playerSub != null) {
-      _playerSub.close();
-    }
+    _playerSub?.close();
+
     if (_clubSubs != null) {
       for (final clubSub in _clubSubs.values) {
         clubSub.close();
       }
     }
 
-    if (_client != null) {
-      _client.close();
-    }
-
-    if (_clientPub != null) {
-      _clientPub.close();
-    }
+    _client?.close();
+    _clientPub?.close();
   }
 
   String get playerChannel {

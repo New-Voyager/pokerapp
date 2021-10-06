@@ -75,6 +75,11 @@ class GameComService {
 
   Future<void> reconnect(Nats nats) async {
     // close connection directly
+    // try {
+    //   _close();
+    // } catch (e) {
+    //   log('network_reconnect:  game_com_service.reconnect: error: $e');
+    // }
     _close();
     active = false;
 
