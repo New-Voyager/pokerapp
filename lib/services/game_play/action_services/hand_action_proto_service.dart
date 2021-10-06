@@ -561,7 +561,7 @@ class HandActionProtoService {
     _gameState.cardDistributionState.seatNo = null;
     _gameState.handState = HandState.DEAL;
     _gameState.myState.notify();
-    AudioService.stop();
+    AudioService.stopSound();
     //log('Hand Message: ::handleDeal:: END');
   }
 

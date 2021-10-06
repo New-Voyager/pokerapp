@@ -159,6 +159,10 @@ class PlayerService {
       }
     }
 
+    if (result.data['approvals'] == null) {
+      return null;
+    }
+
     var resp = result.data['approvals'] as List;
     List<PendingApproval> ret = [];
     for (var item in resp) {

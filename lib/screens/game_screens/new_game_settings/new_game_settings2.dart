@@ -813,16 +813,6 @@ class NewGameSettings2 extends StatelessWidget {
                           },
                           theme: theme,
                         ),
-
-                         /* show Check/Fold */
-                        _buildRadio(
-                          label: _appScreenText['SHOWCHECKFOLD'],
-                          value: gmp.showCheckFold,
-                          onChange: (bool b) {
-                            gmp.showCheckFold = b;
-                          },
-                          theme: theme,
-                        ),
                       ],
                     ),
                   ],

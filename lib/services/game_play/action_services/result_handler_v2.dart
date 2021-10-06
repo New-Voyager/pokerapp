@@ -121,7 +121,7 @@ class ResultHandlerV2 {
 
       var notificationValueNotifier =
           Provider.of<ValueNotifier<HHNotificationModel>>(
-          context,
+        context,
         listen: false,
       );
 
@@ -133,7 +133,7 @@ class ResultHandlerV2 {
         playerCards: playerCards,
       );
       AudioService.playFireworks(mute: gameState.playerLocalConfig.mute);
-      for(final winner in result.highHandWinners) {
+      for (final winner in result.highHandWinners) {
         // show firework
         final seat = gameState.getSeat(winner.seatNo);
         final player = seat.player;
@@ -308,12 +308,12 @@ class ResultHandlerV2 {
       // await Future.delayed(AppConstants.notificationDuration);
       var notificationValueNotifier =
           Provider.of<ValueNotifier<HHNotificationModel>>(
-          context,
+        context,
         listen: false,
-      );     
+      );
       notificationValueNotifier.value = null;
       // turn off firework
-      for(final winner in result.highHandWinners) {
+      for (final winner in result.highHandWinners) {
         final seat = gameState.getSeat(winner.seatNo);
         final player = seat.player;
         player.showFirework = false;

@@ -187,7 +187,8 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
     if (gameState.straddlePrompt) return cardsWidget;
     Widget shuffleButton = Container();
     if (playerModel != null && playerModel.cards != null) {
-      if (playerModel.cards.length > 2 && gameState.playerLocalConfig.showRearrange) {
+      if (playerModel.cards.length > 2 &&
+          gameState.playerLocalConfig.showRearrange) {
         Color buttonColor = theme.accentColor;
         shuffleButton = InkWell(
           child: Container(
@@ -196,7 +197,11 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
               shape: BoxShape.circle,
               color: buttonColor,
             ),
-            child: Icon(Icons.autorenew, color: theme.primaryColorWithDark(),size: 20.pw,),
+            child: Icon(
+              Icons.autorenew,
+              color: theme.primaryColorWithDark(),
+              size: 20.pw,
+            ),
           ),
           onTap: () {
             gameState.changeHoleCardOrder();

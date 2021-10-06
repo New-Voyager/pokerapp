@@ -168,32 +168,6 @@ void registerPushNotifications() {
     print('Message data: ${message.data}');
 
     _showNotification(message, background: false);
-
-    // if (message.notification != null) {
-    //   print('Message also contained a notification: ${message.notification}');
-    // }
-    // if (message.data['type'].toString() == 'BUYIN_REQUEST') {
-    //   final approvals = await PlayerService.getPendingApprovals();
-    //   //  final approvalCount = await PlayerService.getPendingApprovalsCount();
-    //   final state = Provider.of<PendingApprovalsState>(
-    //       navigatorKey.currentContext,
-    //       listen: false);
-    //   state.setPendingList(approvals);
-    //   //(approvalCount);
-    //   // state.incrementTotalPending();
-    //   print('approval count: ${approvals.length} length: ${approvals.length}');
-    //   // toast("Message arrived", duration: Duration(seconds: 2));
-
-    //   // Display overlay notification irrespective of user in any screen.
-    //   showOverlayNotification(
-    //     (context) => OverlayNotificationWidget(
-    //       amount: message.data['amount'],
-    //       playerName: message.data['playerName'],
-    //       pendingCount: approvals.length,
-    //     ),
-    //     duration: Duration(seconds: 5),
-    //   );
-    // }
   });
   log('Registered for push notifications');
 }

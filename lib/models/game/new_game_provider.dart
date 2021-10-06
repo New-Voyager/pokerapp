@@ -344,7 +344,6 @@ class NewGameModelProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-
   get highHandTracked => settings.highHandTracked;
   set highHandTracked(bool value) {
     settings.highHandTracked = value;

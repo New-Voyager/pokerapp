@@ -853,7 +853,7 @@ class _GameOptionState extends State<GameOption> {
       },
     ));
 
-     // show Check/fold
+    // show Check/fold
     children.add(_buildCheckBox(
       text: _appScreenText['gameCheckFold'],
       value: widget.gameState.playerLocalConfig.showCheckFold,
