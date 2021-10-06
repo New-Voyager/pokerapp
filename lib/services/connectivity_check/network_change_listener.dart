@@ -13,6 +13,9 @@ import 'package:provider/provider.dart';
 class NetworkChangeListener {
   StreamSubscription<ConnectivityResult> _sub;
   NetworkConnectionDialog _dialog;
+  final DataConnectionChecker _dataConnectionChecker = DataConnectionChecker();
+
+  Future<void> checkInternet() => _checkForInternetConnection();
 
   StreamController<ConnectivityResult> _streamController =
       StreamController.broadcast();
@@ -25,45 +28,35 @@ class NetworkChangeListener {
     await context.read<Nats>().reconnect();
   }
 
-  Future<bool> _checkForInternetConnection() async {
-    final connectionChecker = DataConnectionChecker();
-    await Future.delayed(Duration(seconds: 5));
-    connectionChecker.addresses = [
-      AddressCheckOptions(
-        InternetAddress('8.8.8.8'),
-      ),
-      AddressCheckOptions(
-        InternetAddress('8.8.4.4'),
-      ),
-      AddressCheckOptions(
-        InternetAddress('1.1.1.1'),
-      ),
-
-    ];
-    final bool hasInternet = await connectionChecker.hasConnection;
-    log('network_reconnect: hasInternet: $hasInternet');
+  // if there is no internet connection, this function keeps waiting
+  // and on internet availability, this function completes
+  Future<void> _checkForInternetConnection() async {
     // use navigator's context
     final BuildContext context = navigatorKey.currentState.overlay.context;
 
-    if (hasInternet) {
-      // we have internet
-      // dismiss any dialog if open
-      _dialog?.dismiss(context: context);
-      return true;
+    // else keep on checking for internet access
+    while (!(await _dataConnectionChecker.hasConnection)) {
+      // we dont have internet
+      // show the dialog box
+      _dialog?.show(
+        context: context,
+        loadingText: 'No Internet',
+      );
+
+      // wait for a bit
+      await Future.delayed(const Duration(milliseconds: 100));
     }
 
-    // if there is no internet show a dialog
-    _dialog?.show(
-      context: context,
-      loadingText: 'No Internet',
-    );
-    return false;
+    // if we are outside the while loop, means we have internet connection
+    // dismiss the dialog box
+    _dialog?.dismiss(context: context);
   }
 
   void _onConnectivityChanged(ConnectivityResult result) async {
     log('network_change onConnectivityChanged: $result');
-    final bool hasInternet = await _checkForInternetConnection();
-    if (!hasInternet) return;
+
+    // this call waits for indefinite amount of time - until we get internet access
+    await _checkForInternetConnection();
 
     // if here - means we have internet
     // re establish connection to NATS
@@ -74,14 +67,36 @@ class NetworkChangeListener {
     _streamController.add(result);
   }
 
+  void _initDataConnectionChecker() {
+    // set up addresses to check for
+    _dataConnectionChecker.addresses = [
+      AddressCheckOptions(
+        InternetAddress('8.8.8.8'),
+      ),
+      AddressCheckOptions(
+        InternetAddress('8.8.4.4'),
+      ),
+      AddressCheckOptions(
+        InternetAddress('1.1.1.1'),
+      ),
+    ];
+  }
+
   NetworkChangeListener() {
     log('NetworkChangeListener :: constructor');
-    // listen for connectivity changes - and then check for internet connection
-    _sub = Connectivity().onConnectivityChanged.listen(_onConnectivityChanged);
 
+    // setup data connection checker
+    _initDataConnectionChecker();
+
+    final connectivity = Connectivity();
+
+    // listen for connectivity changes - and then check for internet connection
+    _sub = connectivity.onConnectivityChanged.listen(_onConnectivityChanged);
+
+    // instantiate the dialog object
     _dialog = NetworkConnectionDialog();
 
-    // check for internet connection for the first time too
+    // check for internet connection for the first time
     _checkForInternetConnection();
   }
 
