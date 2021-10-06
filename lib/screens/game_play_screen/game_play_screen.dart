@@ -1042,9 +1042,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     if (_gameState != null) {
       _voiceTextPlayer?.pause();
       _gameState.janusEngine?.leaveChannel();
-      if (_gameState.useAgora) {
-        _gameState.agoraEngine?.leaveChannel();
-      }
+      // if (_gameState.useAgora) {
+      //   _gameState.agoraEngine?.leaveChannel();
+      // }
       _gameContextObj.leaveAudio();
     }
   }
