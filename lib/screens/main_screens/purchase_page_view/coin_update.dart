@@ -1,5 +1,5 @@
 import 'dart:developer';
-
+import 'package:shimmer/shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
@@ -41,8 +41,15 @@ class _CoinWidgetState extends State<CoinWidget> {
       return Container();
     }
     Widget appCoin = Container(
+      key: UniqueKey(),
       margin: EdgeInsets.only(right: 16),
-      child: Column(
+      child: 
+      Shimmer.fromColors(
+    baseColor: Colors.grey,
+    highlightColor: Colors.yellow,
+    
+    child:
+      Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
@@ -56,13 +63,13 @@ class _CoinWidgetState extends State<CoinWidget> {
           Text(widget.coins.toString()),
         ],
       ),
-    );
+    ));
     children.add(appCoin);
     if (widget.animate) {
       TweenAnimationBuilder animation = TweenAnimationBuilder<double>(
         tween: tween,
         onEnd: () {
-          tween.end = 0;
+          //tween.end = 0;
           //widget.animate = false;
           setState(() {});
         },
