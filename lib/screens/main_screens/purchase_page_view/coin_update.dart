@@ -41,29 +41,26 @@ class _CoinWidgetState extends State<CoinWidget> {
       return Container();
     }
     Widget appCoin = Container(
-      key: UniqueKey(),
-      margin: EdgeInsets.only(right: 16),
-      child: 
-      Shimmer.fromColors(
-    baseColor: Colors.grey,
-    highlightColor: Colors.yellow,
-    
-    child:
-      Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            margin: EdgeInsets.symmetric(horizontal: 16),
-            child: Image.asset(
-              'assets/images/appcoin.png',
-              height: 24.pw,
-              width: 24.pw,
-            ),
+        key: UniqueKey(),
+        margin: EdgeInsets.only(right: 16),
+        child: Shimmer.fromColors(
+          baseColor: Colors.grey,
+          highlightColor: Colors.yellow,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 16),
+                child: Image.asset(
+                  'assets/images/appcoin.png',
+                  height: 24.pw,
+                  width: 24.pw,
+                ),
+              ),
+              Text(widget.coins.toString()),
+            ],
           ),
-          Text(widget.coins.toString()),
-        ],
-      ),
-    ));
+        ));
     children.add(appCoin);
     if (widget.animate) {
       TweenAnimationBuilder animation = TweenAnimationBuilder<double>(

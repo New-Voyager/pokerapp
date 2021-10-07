@@ -8,6 +8,7 @@ import 'package:pokerapp/models/ui/app_theme_data.dart';
 import 'package:pokerapp/resources/app_config.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/services/app/appcoin_service.dart';
+import 'package:pokerapp/services/app/appinfo_service.dart';
 import 'package:pokerapp/services/app/asset_service.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/services/audio/audio_service.dart';
@@ -58,6 +59,10 @@ class _SplashScreenState extends State<SplashScreen> {
       if config has device id and device secret then navigates to main screen.
       */
     bool goToLoginScreen = true;
+    try {
+      // first get app information
+      await AppInfoService.getAppInfo();
+    } catch (err) {}
     if (AppConfig.deviceId != null || AppConfig.deviceSecret != null) {
       try {
         // generate jwt
