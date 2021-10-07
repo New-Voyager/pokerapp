@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:pokerapp/models/rabbit_state.dart';
+import 'package:pokerapp/services/nats/client.dart';
 import 'package:pokerapp/services/nats/message.dart';
-import 'package:pokerapp/services/nats/nats.dart';
 import 'package:uuid/uuid.dart';
 
 import 'dart:developer';
@@ -14,7 +14,7 @@ const MAX_CHAT_BUFSIZE = 20;
 // GameChat class wraps communication between NATS and games chat widget.
 class GameMessagingService {
   Stream<Message> stream;
-  Nats nats;
+  Client client;
   String chatChannel;
   bool active;
   PlayerInfo currentPlayer;
@@ -24,7 +24,7 @@ class GameMessagingService {
   GameMessagingService(
     this.currentPlayer,
     this.chatChannel,
-    this.nats,
+    this.client,
     this.stream,
     this.active,
   );
@@ -170,7 +170,7 @@ class GameMessagingService {
       'type': 'TEXT',
       'sent': DateTime.now().toUtc().toIso8601String(),
     });
-    this.nats.clientPub.pubString(this.chatChannel, body);
+    this.client.pubString(this.chatChannel, body);
     log('message sent: $text');
   }
 
@@ -186,7 +186,7 @@ class GameMessagingService {
       'type': 'RABBIT',
       'sent': DateTime.now().toUtc().toIso8601String(),
     });
-    this.nats.clientPub.pubString(this.chatChannel, body);
+    this.client.pubString(this.chatChannel, body);
   }
 
   void sendAudio(Uint8List audio, int duration) {
@@ -199,7 +199,7 @@ class GameMessagingService {
       'type': 'AUDIO',
       'sent': DateTime.now().toUtc().toIso8601String(),
     });
-    this.nats.clientPub.pubString(this.chatChannel, body);
+    this.client.pubString(this.chatChannel, body);
   }
 
   void sendGiphy(String giphyLink) {
@@ -211,7 +211,7 @@ class GameMessagingService {
       'type': 'GIPHY',
       'sent': DateTime.now().toUtc().toIso8601String(),
     });
-    this.nats.clientPub.pubString(this.chatChannel, body);
+    this.client.pubString(this.chatChannel, body);
   }
 
   void sendAnimation(int fromSeat, int toSeat, String animation) {
@@ -224,7 +224,7 @@ class GameMessagingService {
       'type': 'ANIMATION',
       'sent': DateTime.now().toUtc().toIso8601String(),
     });
-    this.nats.clientPub.pubString(this.chatChannel, body);
+    this.client.pubString(this.chatChannel, body);
   }
 
   void sendCards(
@@ -243,7 +243,7 @@ class GameMessagingService {
       'text': currentHandNum,
     });
     log('GameScreen: $body');
-    this.nats.clientPub.pubString(this.chatChannel, body);
+    this.client.pubString(this.chatChannel, body);
   }
 
   void sendAudioConfResponse(String streamId) {
@@ -257,7 +257,7 @@ class GameMessagingService {
       'type': 'AUDIOCONF',
       'sent': DateTime.now().toUtc().toIso8601String(),
     });
-    this.nats.clientPub.pubString(this.chatChannel, body);
+    this.client.pubString(this.chatChannel, body);
   }
 
   void sendAudioConfRequest() {
@@ -267,7 +267,7 @@ class GameMessagingService {
       'type': 'AUDIOCONF',
       'sent': DateTime.now().toUtc().toIso8601String(),
     });
-    this.nats.clientPub.pubString(this.chatChannel, body);
+    this.client.pubString(this.chatChannel, body);
   }
 }
 

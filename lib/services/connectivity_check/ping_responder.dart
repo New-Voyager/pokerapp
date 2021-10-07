@@ -1,15 +1,16 @@
 import 'dart:convert';
+import 'dart:developer' as dev;
 import 'dart:math';
 import 'dart:typed_data';
 import 'package:pokerapp/proto/handmessage.pb.dart' as proto;
 import 'package:fixnum/fixnum.dart' as $fixnum;
+import 'package:pokerapp/services/nats/client.dart';
 import 'package:pokerapp/services/nats/message.dart';
-import 'package:pokerapp/services/nats/nats.dart';
 
 class PingResponder {
   int playerId;
   Stream<Message> stream;
-  Nats nats;
+  Client client;
   String pongChannel;
   bool active;
   List<PingPongMessage> messages = [];
@@ -21,7 +22,7 @@ class PingResponder {
   PingResponder(
     this.playerId,
     this.pongChannel,
-    this.nats,
+    this.client,
     this.stream,
     this.active,
   );
@@ -64,7 +65,7 @@ class PingResponder {
     // String msgStr = msg.toJson();
     // this.client.pubString(this.pongChannel, msgStr);
     Uint8List data = msg.toProto(this.playerId);
-    this.nats.clientPub.pub(this.pongChannel, data);
+    this.client.pub(this.pongChannel, data);
   }
 }
 
