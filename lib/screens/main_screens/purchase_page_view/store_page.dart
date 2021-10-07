@@ -409,8 +409,18 @@ class _StorePageState extends State<StorePage> {
         AppConfig.setAvailableCoins(availableCoins);
         _coinsTo = AppConfig.availableCoins;
         debugPrint('Available coins $availableCoins');
-        _updateCoins = true;
-        setState(() {});
+
+          _updateCoins = true;
+          _updateCoinState.value = _updateCoins;
+          setState(() {});
+          await Future.delayed(Duration(seconds: 1), () {
+            _updateCoins = false;
+            _updateCoinState.value = _updateCoins;
+            setState(() {});
+          });
+
+        // _updateCoins = true;
+        // setState(() {});
       }
     } catch (err) {
       debugPrint(err.toString());
