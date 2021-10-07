@@ -18,6 +18,7 @@ import 'package:pokerapp/screens/profile_screens/help_screen.dart';
 import 'package:pokerapp/screens/profile_screens/performance_view.dart';
 import 'package:pokerapp/screens/profile_screens/privacy_policy.dart';
 import 'package:pokerapp/screens/profile_screens/table_selector.dart';
+import 'package:pokerapp/services/app/appinfo_service.dart';
 import 'package:pokerapp/services/game_play/customization_service.dart';
 import 'package:provider/provider.dart';
 
@@ -451,6 +452,7 @@ class Routes {
           routeName: settings.name,
           viewToShow: PrivacyPolicyScreen(
             title: "Privacy Policy",
+            text: appInfo.privacyPolicy,
           ),
         );
       case terms_conditions:
@@ -458,6 +460,7 @@ class Routes {
           routeName: settings.name,
           viewToShow: PrivacyPolicyScreen(
             title: "Terms and Conditions",
+            text: appInfo.toc,
           ),
         );
       case attributions:
@@ -465,6 +468,7 @@ class Routes {
           routeName: settings.name,
           viewToShow: PrivacyPolicyScreen(
             title: "Attributions",
+            text: appInfo.attributions,
           ),
         );
 

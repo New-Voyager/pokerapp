@@ -7,7 +7,7 @@ import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/screens/profile_screens/report_bug.dart';
-import 'package:pokerapp/screens/profile_screens/request_feture.dart';
+import 'package:pokerapp/screens/profile_screens/request_feature.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:provider/provider.dart';
 
