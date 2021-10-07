@@ -47,7 +47,7 @@ class _StorePageState extends State<StorePage> {
   bool _purchasePending = false;
   bool _loading = true;
   String _queryProductError;
-  // bool _updateCoins = false;
+  bool _updateCoins = false;
   int _coinsFrom = 0;
   int _coinsTo = 0;
   AppTextScreen _appScreenText;
@@ -205,62 +205,45 @@ class _StorePageState extends State<StorePage> {
               ? CircularProgressWidget(text: _appScreenText['loadingProducts'])
               : Column(
                   children: [
-                    // header
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Stack(
-                        // mainAxisAlignment: MainAxisAlignment.center,
-                        alignment: Alignment.center,
-                        children: [
-                          // Row(
-                          //   children: [
-                          //     //BackArrowWidget(),
-                          //     AppDimensionsNew.getHorizontalSpace(16),
-                          //     Text(
-                          //       "App Coins",
-                          //       style: AppStylesNew.appBarTitleTextStyle,
-                          //     ),
-                          //   ],
-                          // ),
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: RoundedColorButton(
-                              text: "Redeem",
-                              backgroundColor: theme.accentColor,
-                              textColor: theme.primaryColorWithDark(),
-                              onTapFunction: () {
-                                _handleRedeem(theme, context);
-                              },
-                            ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        // Row(
+                        //   children: [
+                        //     //BackArrowWidget(),
+                        //     AppDimensionsNew.getHorizontalSpace(16),
+                        //     Text(
+                        //       "App Coins",
+                        //       style: AppStylesNew.appBarTitleTextStyle,
+                        //     ),
+                        //   ],
+                        // ),
+                        Container(
+                          padding: EdgeInsets.only(left: 16),
+                          child: RoundedColorButton(
+                            text: "Redeem",
+                            backgroundColor: theme.accentColor,
+                            textColor: theme.primaryColorWithDark(),
+                            onTapFunction: () {
+                              _handleRedeem(theme, context);
+                            },
                           ),
+                        ),
+                        // AppDimensionsNew.getHorizontalSpace(24.pw),
+                        HeadingWidget(heading: _appScreenText['store']),
 
-                          // AppDimensionsNew.getHorizontalSpace(24.pw),
-                          HeadingWidget(heading: _appScreenText['store']),
-
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: ValueListenableBuilder<bool>(
-                              builder: (
-                                BuildContext context,
-                                bool updateCoins,
-                                Widget child,
-                              ) {
-                                // This builder will only get called when the _counter
-                                // is updated.
-                                return CoinWidget(
-                                  AppConfig.availableCoins,
-                                  // _coinsTo - _coinsFrom,
-                                  10,
-                                  updateCoins,
-                                );
-                              },
-                              valueListenable: _updateCoinState,
-                            ),
-                          )
-                        ],
-                      ),
+                        ValueListenableBuilder<bool>(
+                          builder:
+                              (BuildContext context, bool value, Widget child) {
+                            // This builder will only get called when the _counter
+                            // is updated.
+                            return CoinWidget(AppConfig.availableCoins,
+                                _coinsTo - _coinsFrom, _updateCoins);
+                          },
+                          valueListenable: _updateCoinState,
+                        )
+                      ],
                     ),
-
                     Expanded(
                       child: Column(children: body),
                     ),
@@ -344,11 +327,13 @@ class _StorePageState extends State<StorePage> {
           AppConfig.setAvailableCoins(availableCoins);
           _coinsTo = AppConfig.availableCoins;
           debugPrint('Available coins ${AppConfig.availableCoins}');
-          _updateCoinState.value = true;
-          // setState(() {}); // we dont need to call setstate, as ValueListenableBuilder is triggered
+          _updateCoins = true;
+          _updateCoinState.value = _updateCoins;
+          setState(() {});
           await Future.delayed(Duration(seconds: 1), () {
-            _updateCoinState.value = false;
-            // setState(() {}); we dont need to call setstate, as ValueListenableBuilder is triggered
+            _updateCoins = false;
+            _updateCoinState.value = _updateCoins;
+            setState(() {});
           });
           // Alerts.showNotification(titleText: "Available coins ${result.availableCoins}");
         }
@@ -384,10 +369,10 @@ class _StorePageState extends State<StorePage> {
     }
   }
 
-  // void onUpdateComplete() {
-  //   _updateCoins = false;
-  //   setState(() {});
-  // }
+  void onUpdateComplete() {
+    _updateCoins = false;
+    setState(() {});
+  }
 
   Future<bool> _verifyPurchase(PurchaseDetails purchaseDetails) async {
     // IMPORTANT!! Always verify a purchase before delivering the product.
@@ -425,14 +410,14 @@ class _StorePageState extends State<StorePage> {
         _coinsTo = AppConfig.availableCoins;
         debugPrint('Available coins $availableCoins');
 
-        // _updateCoins = true;
-        _updateCoinState.value = true;
-        // setState(() {});
-        await Future.delayed(Duration(seconds: 1), () {
-          // _updateCoins = false;
-          _updateCoinState.value = false;
-          // setState(() {});
-        });
+          _updateCoins = true;
+          _updateCoinState.value = _updateCoins;
+          setState(() {});
+          await Future.delayed(Duration(seconds: 1), () {
+            _updateCoins = false;
+            _updateCoinState.value = _updateCoins;
+            setState(() {});
+          });
 
         // _updateCoins = true;
         // setState(() {});

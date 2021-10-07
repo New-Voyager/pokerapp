@@ -37,37 +37,34 @@ class _CoinWidgetState extends State<CoinWidget> {
     List<Widget> children = [];
     AppTheme theme = AppTheme.getTheme(context);
     // if no time left in the bank return empty container
-
     if (widget.coins <= 0) {
       return Container();
     }
-
-    final Widget coin = Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          child: Image.asset(
-            'assets/images/appcoin.png',
-            height: 24.pw,
-            width: 24.pw,
-          ),
-        ),
-        Text(widget.coins.toString()),
-      ],
-    );
-
-    children.add(coin);
-
     Widget appCoin = Container(
       key: UniqueKey(),
-      child: Shimmer.fromColors(
-        baseColor: Colors.transparent,
-        highlightColor: Colors.white.withOpacity(0.50),
-        child: coin,
+      margin: EdgeInsets.only(right: 16),
+      child: 
+      Shimmer.fromColors(
+    baseColor: Colors.grey,
+    highlightColor: Colors.yellow,
+    
+    child:
+      Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 16),
+            child: Image.asset(
+              'assets/images/appcoin.png',
+              height: 24.pw,
+              width: 24.pw,
+            ),
+          ),
+          Text(widget.coins.toString()),
+        ],
       ),
-    );
+    ));
     children.add(appCoin);
-
     if (widget.animate) {
       TweenAnimationBuilder animation = TweenAnimationBuilder<double>(
         tween: tween,
@@ -80,26 +77,21 @@ class _CoinWidgetState extends State<CoinWidget> {
         builder: (BuildContext context, double v, Widget child) {
           //log('Coins: animating time: value: $v');
           return Opacity(
-            opacity: 1 - v,
-            child: Transform.translate(
-              offset: Offset(-35.pw, -v * 10.ph),
-              child: Text(
-                '+' + widget.addedCoins.toString(),
-                style: TextStyle(
-                  fontSize: 10.dp,
-                  color: theme.accentColor,
-                  fontWeight: FontWeight.w900,
-                ),
-              ),
-            ),
-          );
+              opacity: 1 - v,
+              child: Transform.translate(
+                  offset: Offset(-35.pw, -v * 10.ph),
+                  child: Text(
+                    '+' + widget.addedCoins.toString(),
+                    style: TextStyle(
+                      fontSize: 10.dp,
+                      color: theme.accentColor,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  )));
         },
       );
       children.add(animation);
     }
-    return Stack(
-      alignment: Alignment.center,
-      children: children,
-    );
+    return Stack(alignment: Alignment.center, children: children);
   }
 }
