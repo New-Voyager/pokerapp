@@ -18,7 +18,6 @@ import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/models/rabbit_state.dart';
 import 'package:pokerapp/proto/hand.pbenum.dart';
 import 'package:pokerapp/resources/app_constants.dart';
-import 'package:pokerapp/services/agora/agora.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/game_play/graphql/gamesettings_service.dart';
 import 'package:pokerapp/services/app/handlog_cache_service.dart';
@@ -26,7 +25,6 @@ import 'package:pokerapp/services/data/game_hive_store.dart';
 import 'package:pokerapp/services/data/hive_models/game_settings.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
-import 'package:pokerapp/services/janus/janus.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
@@ -76,7 +74,6 @@ class GameState {
   ListenableProvider<ActionState> _playerActionProvider;
   ListenableProvider<MyState> _myStateProvider;
   ListenableProvider<ServerConnectionState> _connectionStateProvider;
-  ListenableProvider<JanusEngine> _janusEngine;
   ListenableProvider<TappedSeatState> _tappedSeatStateProvider;
   ListenableProvider<CommunicationState> _communicationStateProvider;
   ListenableProvider<StraddlePromptState> _straddlePromptProvider;
@@ -138,7 +135,6 @@ class GameState {
   List<PlayerModel> _playersInGame;
 
   PlayerInfo _currentPlayer;
-  JanusEngine janusEngine;
   // Agora agoraEngine;
   int _currentHandNum;
   bool _playerSeatChangeInProgress = false;
@@ -334,30 +330,6 @@ class GameState {
       create: (_) => _seatChangeState,
     );
 
-    this.janusEngine = JanusEngine(
-        gameState: this,
-        janusUrl: this.gameInfo.janusUrl,
-        roomId: this.gameInfo.janusRoomId,
-        janusToken: this.gameInfo.janusToken,
-        roomPin: this.gameInfo.janusRoomPin,
-        janusSecret: this.gameInfo.janusSecret,
-        uuid: this._currentPlayer.uuid,
-        playerId: this._currentPlayer.id);
-
-    // if (this.gameInfo.useAgora ?? false) {
-    //   this.agoraEngine = Agora(
-    //     appId: this.gameInfo.agoraAppId,
-    //     gameCode: this.gameInfo.gameCode,
-    //     uuid: this._currentPlayer.uuid,
-    //     state: _communicationState,
-    //     gameState: this,
-    //     playerId: this._currentPlayer.id,
-    //   );
-    // }
-
-    this._janusEngine =
-        ListenableProvider<JanusEngine>(create: (_) => this.janusEngine);
-
     this._tappedSeatStateProvider =
         ListenableProvider<TappedSeatState>(create: (_) => _tappedSeatState);
 
@@ -446,12 +418,6 @@ class GameState {
   void close() {
     if (!this.replayMode) {
       gameHiveStore.close();
-    }
-    // if (this.agoraEngine != null) {
-    //   this.agoraEngine.disposeObject();
-    // }
-    if (this.janusEngine != null) {
-      this.janusEngine.disposeObject();
     }
   }
 
@@ -928,7 +894,6 @@ class GameState {
       this._gameMessagingService,
       // this._waitlistProvider,
       this._connectionStateProvider,
-      this._janusEngine,
       this._tappedSeatStateProvider,
       this._communicationStateProvider,
       this._straddlePromptProvider,
@@ -980,9 +945,7 @@ class GameState {
 
   void removePlayer(int seatNo) {
     final seat = getSeat(seatNo);
-    if (seat != null && seat.player != null) {
-      this.janusEngine.leaveChannel();
-    }
+
     if (seat.player != null) {
       // remove this player
       for (int i = 0; i < _playersInGame.length; i++) {
