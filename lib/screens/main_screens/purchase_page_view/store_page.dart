@@ -12,11 +12,9 @@ import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_config.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
-import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/services/app/appcoin_service.dart';
-import 'package:pokerapp/utils/alerts.dart';
-import 'package:pokerapp/widgets/card_form_text_field.dart';
+import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/widgets/cross_fade.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:pokerapp/widgets/heading_widget.dart';
@@ -378,6 +376,8 @@ class _StorePageState extends State<StorePage> {
     // IMPORTANT!! Always verify a purchase before delivering the product.
     // For the purpose of an example, we directly return true.
     try {
+      ConnectionDialog.show(
+          context: context, loadingText: 'Completing purchase...');
       /*
         UNKNOWN
         IOS_APP_STORE
@@ -404,6 +404,8 @@ class _StorePageState extends State<StorePage> {
       bool ret = await AppCoinService.purchaseProduct(
           sourceType, coinsPurchased, receipt);
       debugPrint('purchase product returned $ret');
+      ConnectionDialog.dismiss(context: context);
+
       if (ret) {
         final availableCoins = await AppCoinService.availableCoins();
         AppConfig.setAvailableCoins(availableCoins);
@@ -413,7 +415,7 @@ class _StorePageState extends State<StorePage> {
         _updateCoins = true;
         _updateCoinState.value = _updateCoins;
         setState(() {});
-        await Future.delayed(Duration(seconds: 1), () {
+        await Future.delayed(Duration(milliseconds: 1500), () {
           _updateCoins = false;
           _updateCoinState.value = _updateCoins;
           setState(() {});
@@ -423,6 +425,7 @@ class _StorePageState extends State<StorePage> {
         // setState(() {});
       }
     } catch (err) {
+      ConnectionDialog.dismiss(context: context);
       debugPrint(err.toString());
     }
     return Future<bool>.value(true);

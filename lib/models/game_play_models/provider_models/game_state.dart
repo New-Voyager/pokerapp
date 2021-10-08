@@ -855,6 +855,19 @@ class GameState {
     return null;
   }
 
+  bool get isTableFull {
+    int playersInSeat = 0;
+    for (final seat in _seats) {
+      if (seat.player != null) {
+        playersInSeat++;
+      }
+    }
+    if (playersInSeat == this.gameInfo.maxPlayers) {
+      return true;
+    }
+    return false;
+  }
+
   BoardAttributesObject getBoardAttributes(
     BuildContext context, {
     bool listen: false,

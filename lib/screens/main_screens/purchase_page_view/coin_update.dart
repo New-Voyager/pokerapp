@@ -41,25 +41,25 @@ class _CoinWidgetState extends State<CoinWidget> {
       return Container();
     }
     Widget appCoin = Container(
-        key: UniqueKey(),
-        margin: EdgeInsets.only(right: 16),
-        // child: Shimmer.fromColors(
-        //   baseColor: Colors.yellow,
-        //   highlightColor: Colors.grey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: 16),
-                child: Image.asset(
-                  'assets/images/appcoin.png',
-                  height: 24.pw,
-                  width: 24.pw,
-                ),
-              ),
-              Text(widget.coins.toString()),
-            ],
+      key: UniqueKey(),
+      margin: EdgeInsets.only(right: 16),
+      // child: Shimmer.fromColors(
+      //   baseColor: Colors.yellow,
+      //   highlightColor: Colors.grey,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 16),
+            child: Image.asset(
+              'assets/images/appcoin.png',
+              height: 24.pw,
+              width: 24.pw,
+            ),
           ),
+          Text(widget.coins.toString()),
+        ],
+      ),
 //        )
     );
     children.add(appCoin);

@@ -14,6 +14,7 @@ class NetworkChangeListener {
   StreamSubscription<ConnectivityResult> _sub;
   StreamSubscription<DataConnectionStatus> _internetSub;
 
+  bool _startListening = false;
   bool _checkForInternetInProgress = false;
 
   NetworkConnectionDialog _dialog;
@@ -58,11 +59,12 @@ class NetworkChangeListener {
     _dialog?.dismiss(context: context);
   }
 
+  set startListening(bool v) => _startListening = v;
   void _connectivityCheck(ConnectivityResult result) async {
     log('network_reconnect onConnectivityChanged: $result');
 
     // if we are already checking for internet, return
-    if (_checkForInternetInProgress) return;
+    if (_checkForInternetInProgress || !_startListening) return;
     _checkForInternetInProgress = true;
 
     // this call waits for indefinite amount of time - until we get internet access

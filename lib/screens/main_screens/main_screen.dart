@@ -20,6 +20,7 @@ import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/app/gif_cache_service.dart';
 import 'package:pokerapp/services/app/loadassets_service.dart';
 import 'package:pokerapp/services/app/player_service.dart';
+import 'package:pokerapp/services/connectivity_check/network_change_listener.dart';
 import 'package:pokerapp/services/data/hive_models/player_state.dart';
 import 'package:pokerapp/services/firebase/push_notification_service.dart';
 import 'package:pokerapp/services/nats/nats.dart';
@@ -77,6 +78,9 @@ class _MainScreenState extends State<MainScreen>
       final natsClient = Provider.of<Nats>(context, listen: false);
       _nats = natsClient;
       await natsClient.init(_currentPlayer.channel);
+      final networkListener =
+          Provider.of<NetworkChangeListener>(context, listen: false);
+      networkListener.startListening = true;
       log('\n\n*********** Player UUID: ${_currentPlayer.uuid} ***********\n\n');
 
       // Get the token each time the application loads

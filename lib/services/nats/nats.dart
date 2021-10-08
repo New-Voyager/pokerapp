@@ -80,6 +80,8 @@ class Nats {
 
     _client?.close();
     _clientPub?.close();
+    _client = null;
+    _clientPub = null;
   }
 
   String get playerChannel {
