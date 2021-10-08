@@ -36,9 +36,9 @@ class _ReportBugWidgetState extends State<ReportBugWidget> {
             ),
           ),
           CardFormTextField(
-            hintText: "Describe bug.",
+            hintText: "Enter text",
             controller: _controller,
-            maxLines: 5,
+            maxLines: 10,
             theme: theme,
           ),
           AppDimensionsNew.getVerticalSizedBox(16),

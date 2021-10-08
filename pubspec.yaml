@@ -77,6 +77,7 @@ dependencies:
   plugin_platform_interface: ^2.0.1
   upgrader: ^3.5.1
   shimmer: ^2.0.0
+  flutter_html: ^2.1.5
 
 dev_dependencies:
   flutter_native_splash: ^1.2.3
