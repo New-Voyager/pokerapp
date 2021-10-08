@@ -17,7 +17,10 @@ class ClubHomePageModel extends ChangeNotifier {
         pendingMemberCount
         hostUnreadMessageCount
         unreadMessageCount
-        memberUnreadMessageCount        
+        memberUnreadMessageCount
+        description
+        picUrl
+        showHighRankStats        
       }
       liveGames(clubCode: \$clubCode) {
         status
@@ -47,6 +50,9 @@ class ClubHomePageModel extends ChangeNotifier {
   int hostUnreadMessageCount;
   int unreadMessageCount;
   int memberUnreadMessageCount;
+  String description;
+  String picUrl;
+  bool showHighRankStats;
 
   ClubHomePageModel(String clubCode, String clubName) {
     this.clubCode = clubCode;
@@ -71,5 +77,8 @@ class ClubHomePageModel extends ChangeNotifier {
     this.hostUnreadMessageCount = member['hostUnreadMessageCount'] ?? 0;
     this.unreadMessageCount = member['unreadMessageCount'] ?? 0;
     this.memberUnreadMessageCount = member['memberUnreadMessageCount'] ?? 0;
+    this.description = member['description'] ?? "";
+    this.picUrl = member['picUrl'] ?? "";
+    this.showHighRankStats = member['showHighRankStats'] ?? true;
   }
 }

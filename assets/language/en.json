@@ -257,9 +257,10 @@
         "MESSAGEHOST": "Message Host",
         "GAMEHISTORY": "Game History",
         "BOOKMRKEDHANDS": "Bookmarked Hands",
-        "ANALYSIS": "Analysis",
+        "ANALYSIS": "High Rank\nStats",
         "ANNOUNCEMENTS": "Announcements",
-        "BOTSCRIPTS": "BOT Scripts"
+        "BOTSCRIPTS": "BOT Scripts",
+        "SETTINGS": "Settings"
     },
     "gameHistoryView": {
         "NOGAMESPLAYED": "No games played",
@@ -297,6 +298,18 @@
         "clubChat": "Club chat",
         "loadingMessages": "Loading messages",
         "searchTenorGifs": "Search Tenor Gifs"
+    },
+    "clubSettings": {
+        "title": "Club Settings",
+        "ENTERMESSAGE": "Enter message",
+        "clubChat": "Club chat",
+        "loadingMessages": "Loading messages",
+        "searchTenorGifs": "Search Tenor Gifs",
+        "changeClubName": "Change club name",
+        "changeClubDescription": "Change club description",
+        "changeClubPicture": "Change Club Picture",
+        "CHANGECLUBNAME": "Change Club Name",
+        "CHANGEDESCRIPTION": "Change Descripton"
     },
     "bookmarkedHands": {
         "SUCCESS": "SUCCESS",

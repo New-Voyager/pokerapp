@@ -119,6 +119,13 @@ class ClubActionButtonNew extends StatelessWidget {
                 );
               }
               break;
+               case ClubActions.SETTINGS:
+              Navigator.pushNamed(
+                context,
+                Routes.club_settings,
+                arguments: this._clubModel,
+              );
+              break;
             case ClubActions.REWARDS:
               this.onTap();
               break;
