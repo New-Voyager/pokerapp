@@ -20,6 +20,7 @@ import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/app/gif_cache_service.dart';
 import 'package:pokerapp/services/app/loadassets_service.dart';
 import 'package:pokerapp/services/app/player_service.dart';
+import 'package:pokerapp/services/connectivity_check/network_change_listener.dart';
 import 'package:pokerapp/services/data/hive_models/player_state.dart';
 import 'package:pokerapp/services/firebase/push_notification_service.dart';
 import 'package:pokerapp/services/nats/nats.dart';
@@ -51,6 +52,7 @@ class _MainScreenState extends State<MainScreen>
   PlayerInfo _currentPlayer;
   int _navPos = 0;
   Nats _nats;
+  NetworkChangeListener _networkChangeListener;
 
   Future<void> _init() async {
     log('Initialize main screen');
@@ -78,6 +80,9 @@ class _MainScreenState extends State<MainScreen>
       _nats = natsClient;
       await natsClient.init(_currentPlayer.channel);
       log('\n\n*********** Player UUID: ${_currentPlayer.uuid} ***********\n\n');
+
+      _networkChangeListener = Provider.of<NetworkChangeListener>(context, listen: false);
+      _networkChangeListener.startListening();
 
       // Get the token each time the application loads
       String token = await FirebaseMessaging.instance.getToken();
@@ -141,6 +146,10 @@ class _MainScreenState extends State<MainScreen>
 
     if (playerState != null) {
       playerState.close();
+    }
+
+    if (_networkChangeListener != null) {
+      _networkChangeListener.dispose();
     }
 
     if (_nats != null) {
