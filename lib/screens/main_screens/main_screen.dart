@@ -24,6 +24,7 @@ import 'package:pokerapp/services/connectivity_check/network_change_listener.dar
 import 'package:pokerapp/services/data/hive_models/player_state.dart';
 import 'package:pokerapp/services/firebase/push_notification_service.dart';
 import 'package:pokerapp/services/nats/nats.dart';
+import 'package:pokerapp/services/notifications/notifications.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/utils.dart';
@@ -84,12 +85,10 @@ class _MainScreenState extends State<MainScreen>
       _networkChangeListener = Provider.of<NetworkChangeListener>(context, listen: false);
       _networkChangeListener.startListening();
 
-      // Get the token each time the application loads
-      String token = await FirebaseMessaging.instance.getToken();
-      await saveFirebaseToken(token);
-      // Any time the token refreshes, store this in the database too.
-      FirebaseMessaging.instance.onTokenRefresh.listen(saveFirebaseToken);
-      registerPushNotifications();
+      // register for notification service
+      await notificationHandler.register();
+      _nats.playerNotifications = notificationHandler.playerNotifications;
+      _nats.clubNotifications = notificationHandler.clubNotifications;
 
       final clubs = await ClubsService.getMyClubs();
       for (final club in clubs) {

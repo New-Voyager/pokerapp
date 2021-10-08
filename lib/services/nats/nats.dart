@@ -22,7 +22,9 @@ class Nats {
   Subscription _playerSub;
   BuildContext _providerContext;
   Map<String, Subscription> _clubSubs = Map<String, Subscription>();
-
+  Function (String) playerNotifications;
+  Function (String) clubNotifications;
+  
   Nats(this._providerContext);
 
   Future<void> reconnect() async {
@@ -30,6 +32,7 @@ class Nats {
 
     close();
     await init(_playerChannel);
+    reconnectClubMessages();
   }
 
   Future<void> init(String playerChannel) async {
@@ -86,6 +89,19 @@ class Nats {
     return this._playerChannel;
   }
 
+  void reconnectClubMessages() {
+    for(final clubCode in _clubSubs.keys) {
+      String clubChannel = 'club.$clubCode';
+      Subscription clubSub = this.subClient.sub(clubChannel);
+      _clubSubs[clubChannel] = clubSub;
+      clubSub.stream.listen((Message message) {
+        if (clubNotifications != null) {
+          clubNotifications(message.string);
+        }
+      });
+    }
+  }
+
   subscribeClubMessages(String clubCode) {
     String clubChannel = 'club.$clubCode';
     if (_clubSubs.containsKey(clubChannel)) {
@@ -95,6 +111,11 @@ class Nats {
     Subscription clubSub = this.subClient.sub(clubChannel);
     _clubSubs[clubChannel] = clubSub;
     clubSub.stream.listen((Message message) {
+      if (clubNotifications != null) {
+        clubNotifications(message.string);
+      }
+
+      /*
       log('message in club channel: ${message.string}');
       dynamic json = jsonDecode(message.string);
       String changed = json['changed'];
@@ -105,6 +126,7 @@ class Nats {
       if (changed == 'CLUB_CHAT') {
         // club chat message
       }
+      */
     });
   }
 
@@ -127,6 +149,11 @@ class Nats {
         }      
       */
       log('message in player channel: ${message.string}');
+      if (playerNotifications != null) {
+        playerNotifications(message.string);
+      }
+
+      /*
       dynamic json = jsonDecode(message.string);
       String type = json['type'].toString();
       String gameCode = json['gameCode'].toString();
@@ -157,6 +184,7 @@ class Nats {
           );
         }
       }
+      */
     });
   }
 }
