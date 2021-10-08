@@ -53,5 +53,6 @@ pubspec.lock
 out/linecounter.json
 out/linecounter.txt
 .VSCodeCounter/*
+ios/build
 ios/build/Pods.build/
 ios/build/Runner.build/
