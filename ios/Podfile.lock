@@ -279,7 +279,7 @@ SPEC CHECKSUMS:
   FirebaseCoreDiagnostics: fe77f42da6329d6d83d21fd9d621a6b704413bfc
   FirebaseInstallations: 2563cb18a723ef9c6ef18318a49519b75dce613c
   FirebaseMessaging: 93227dd71d7888e200baef65043f81acb2b6596e
-  Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
+  Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
   flutter_local_notifications: 0c0b1ae97e741e1521e4c1629a459d04b9aec743
   flutter_udid: 0848809dbed4c055175747ae6a45a8b4f6771e1c
   flutter_webrtc: 39898454258b54ba51996850d5da8d5d53bf1524
@@ -310,4 +310,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 73d3bf56ef89d3f794919be69946148ce5c4c452
 
-COCOAPODS: 1.11.2
+COCOAPODS: 1.10.1
