@@ -15,8 +15,12 @@ import 'client.dart';
 import 'subscription.dart';
 
 class Nats {
-  Client _client;
+  Client get clientSub => _clientSub;
+  Client _clientSub;
+
+  Client get clientPub => _clientPub;
   Client _clientPub;
+
   String _playerChannel;
   bool _initialized = false;
   Subscription _playerSub;
@@ -35,8 +39,9 @@ class Nats {
   Future<void> init(String playerChannel) async {
     String natsUrl = await UtilService.getNatsURL();
 
-    if (_client == null) _client = Client();
-    if (_clientPub == null) _clientPub = Client();
+    // instantiate new clients
+    _clientSub = Client();
+    _clientPub = Client();
 
     _playerChannel = playerChannel;
     _clubSubs = Map<String, Subscription>();
@@ -48,7 +53,7 @@ class Nats {
         .replaceFirst('tls://', '')
         .replaceFirst(':4222', '');
 
-    await _client.connect(natsUrl);
+    await _clientSub.connect(natsUrl);
     await _clientPub.connect(natsUrl);
 
     // subscribe for player messages
@@ -57,13 +62,13 @@ class Nats {
     _initialized = true;
   }
 
-  Client get subClient {
-    return this._client;
-  }
+  // Client get subClient {
+  //   return this._client;
+  // }
 
-  Client get pubClient {
-    return this._clientPub;
-  }
+  // Client get pubClient {
+  //   return this._clientPub;
+  // }
 
   bool get initialized {
     return this._initialized;
@@ -78,8 +83,9 @@ class Nats {
       }
     }
 
-    _client?.close();
+    _clientSub?.close();
     _clientPub?.close();
+    _initialized = false;
   }
 
   String get playerChannel {
@@ -92,7 +98,7 @@ class Nats {
       return;
     }
     log('subscribing to club $clubChannel');
-    Subscription clubSub = this.subClient.sub(clubChannel);
+    Subscription clubSub = this._clientSub.sub(clubChannel);
     _clubSubs[clubChannel] = clubSub;
     clubSub.stream.listen((Message message) {
       log('message in club channel: ${message.string}');
@@ -110,7 +116,7 @@ class Nats {
 
   subscribePlayerMessages() {
     log('subscribing to ${this._playerChannel}');
-    this._playerSub = this.subClient.sub(this._playerChannel);
+    this._playerSub = this._clientSub.sub(this._playerChannel);
 
     _playerSub.stream.listen((Message message) async {
       /*

@@ -10,6 +10,7 @@ import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/routes.dart';
+import 'package:pokerapp/screens/chat_screen/utils.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/chat_time.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/chat_user_avatar.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_winners_view2.dart';
@@ -25,8 +26,10 @@ class MessageItem extends StatelessWidget {
   final ClubChatModel messageModel;
   final AuthModel currentUser;
   final Map<String, String> players;
+
   bool clubMessage = false;
   String text = '';
+
   MessageItem({
     @required this.messageModel,
     @required this.currentUser,
@@ -38,9 +41,13 @@ class MessageItem extends StatelessWidget {
   Widget build(BuildContext context) {
     /* ui */
 
+    bool isMinified = false;
     bool isMe = currentUser.uuid == messageModel.sender;
+
     final theme = AppTheme.getTheme(context);
+
     text = messageModel.text;
+
     if (messageModel.messageType == MessageType.JOIN_CLUB ||
         messageModel.messageType == MessageType.KICKED_OUT ||
         messageModel.messageType == MessageType.LEAVE_CLUB) {
@@ -49,12 +56,15 @@ class MessageItem extends StatelessWidget {
       // return _buildClubMessage(context, theme, messageModel);
       if (messageModel.messageType == MessageType.JOIN_CLUB) {
         text = '${messageModel.playerName} joined the club';
+        isMinified = true;
       }
       if (messageModel.messageType == MessageType.KICKED_OUT) {
         text = '${messageModel.playerName} is kicked out';
+        isMinified = true;
       }
       if (messageModel.messageType == MessageType.LEAVE_CLUB) {
         text = '${messageModel.playerName} left the club';
+        isMinified = true;
       }
     }
     if (isMe) {
@@ -74,7 +84,13 @@ class MessageItem extends StatelessWidget {
       children: [
         clubMessage ? Container() : _buildAvatar(theme),
         SizedBox(width: 5),
-        _buildTile(context, isMe, messageModel.isGroupLatest, theme),
+        _buildTile(
+          context,
+          isMe,
+          messageModel.isGroupLatest,
+          theme,
+          isMinified: isMinified,
+        ),
       ],
     );
   }
@@ -89,11 +105,18 @@ class MessageItem extends StatelessWidget {
   }
 
   Widget _buildTile(
-      BuildContext context, bool isMe, bool isGroupLatest, AppTheme theme) {
+    BuildContext context,
+    bool isMe,
+    bool isGroupLatest,
+    AppTheme theme, {
+    final bool isMinified = false,
+  }) {
     Widget triangle;
     CustomPaint trianglePainer = CustomPaint(
-        painter: Triangle(
-            isMe ? theme.fillInColor : theme.primaryColorWithLight(0.2)));
+      painter: Triangle(
+        isMe ? theme.fillInColor : theme.primaryColorWithLight(0.2),
+      ),
+    );
     if (isMe) {
       triangle = Positioned(right: 0, bottom: 0, child: trianglePainer);
     } else {
@@ -102,15 +125,44 @@ class MessageItem extends StatelessWidget {
 
     return Expanded(
       child: Stack(
+        alignment: Alignment.center,
         children: [
           if (isGroupLatest && !clubMessage) triangle,
-          Padding(
-            padding: EdgeInsets.only(
-              left: !isGroupLatest ? 20 : 0,
-              right: !isGroupLatest ? 20 : 0,
-            ),
-            child: _buildMessage(context, isMe, theme),
-          ),
+          isMinified
+              ? IntrinsicWidth(
+                  child: Container(
+                    margin: EdgeInsets.only(bottom: 5.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        // main event
+                        Text(
+                          '$text',
+                          style: AppDecorators.getSubtitle3Style(theme: theme),
+                          textAlign: TextAlign.center,
+                        ),
+
+                        // timestamp
+                        Text(
+                          '${dateString(messageModel.messageTime)}\n',
+                          style: AppDecorators.getSubtitle3Style(theme: theme)
+                              .copyWith(
+                            fontSize: 6.dp,
+                            color: Colors.grey,
+                          ),
+                          textAlign: TextAlign.right,
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              : Padding(
+                  padding: EdgeInsets.only(
+                    left: !isGroupLatest ? 20 : 0,
+                    right: !isGroupLatest ? 20 : 0,
+                  ),
+                  child: _buildMessage(context, isMe, theme),
+                ),
         ],
       ),
     );

@@ -7,7 +7,7 @@ import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/screens/profile_screens/report_bug.dart';
-import 'package:pokerapp/screens/profile_screens/request_feture.dart';
+import 'package:pokerapp/screens/profile_screens/request_feature.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:provider/provider.dart';
 
@@ -40,10 +40,10 @@ class HelpScreen extends StatelessWidget {
                       alignment: Alignment.center,
                       margin:
                           EdgeInsets.symmetric(horizontal: 16, vertical: 32),
-                      child: SvgPicture.asset(
-                        AppAssetsNew.resumeImagePath,
-                        height: size.height / 4,
-                        width: size.width,
+                      child: Image.asset(
+                        AppAssetsNew.logoImage,
+                        height: size.height / 5,
+                        width: size.height / 5,
                       ),
                     ),
                     Container(

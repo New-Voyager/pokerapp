@@ -36,9 +36,9 @@ class _RequestFeatureWidgetState extends State<RequestFeatureWidget> {
             ),
           ),
           CardFormTextField(
-            hintText: "Describe feature.",
+            hintText: "Enter text",
             controller: _controller,
-            maxLines: 5,
+            maxLines: 10,
             theme: theme,
           ),
           AppDimensionsNew.getVerticalSizedBox(16),
