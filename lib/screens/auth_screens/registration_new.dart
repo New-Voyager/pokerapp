@@ -215,7 +215,7 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
   Widget build(BuildContext context) {
     final appTheme = AppTheme.getTheme(context);
     return Container(
-      decoration: AppDecorators.bgRadialGradient(_appTheme),
+      decoration: AppDecorators.bgImage(_appTheme),
       child: SafeArea(
         child: Scaffold(
           backgroundColor: Colors.transparent,
