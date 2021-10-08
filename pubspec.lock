@@ -560,7 +560,7 @@ packages:
       name: flutter_speed_dial
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.4.0"
+    version: "4.3.0"
   flutter_staggered_grid_view:
     dependency: "direct main"
     description:
@@ -605,7 +605,7 @@ packages:
       name: flutter_webrtc
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.6.10+hotfix.1"
+    version: "0.6.7"
   font_awesome_flutter:
     dependency: "direct main"
     description:
