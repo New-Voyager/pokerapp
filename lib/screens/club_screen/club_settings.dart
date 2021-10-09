@@ -1,5 +1,8 @@
+import 'dart:developer';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
@@ -7,6 +10,7 @@ import 'package:pokerapp/models/club_update_input_model.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/models/user_update_input.dart';
+import 'package:pokerapp/resources/app_config.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
@@ -23,6 +27,7 @@ import 'package:pokerapp/widgets/card_form_text_field.dart';
 import 'package:pokerapp/widgets/round_color_button.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/widgets/switch_widget.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ClubSettingsScreen extends StatefulWidget {
   final ClubHomePageModel clubModel;
@@ -196,9 +201,8 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
                                     text: _appScreenText['changeClubPicture'],
                                     imagePath: AppAssetsNew.customizeImagePath,
                                     index: 3,
-                                    onTapFunction: () async {
-                                      await _updateClubDetails(
-                                          SettingType.CLUB_DESCRIPTION, theme);
+                                    onTapFunction: () {
+                                      _handleUploadPicture();
                                       // Fetch user details from server
                                     },
                                   ),
@@ -344,6 +348,30 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
     }
     await _fetchClubInfo();
     ConnectionDialog.dismiss(context: context);
+  }
+
+  _handleUploadPicture() async {
+    final ImagePicker _picker = ImagePicker();
+    // Pick an image
+    final XFile image = await _picker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      log("Path : ${image.path}");
+      ConnectionDialog.show(context: context, loadingText: "Uploading..");
+      var request = MultipartRequest(
+          'POST',
+          Uri.parse(
+            "${AppConfig.apiUrl}/upload",
+          ));
+      log("REQUEST : ${request.url}");
+      request.files.add(await MultipartFile.fromPath('image', image.path));
+
+      var res = await request.send();
+      if (mounted) {
+        ConnectionDialog.dismiss(context: context);
+      }
+    } else {
+      log("Somethinfg Went worng!");
+    }
   }
 }
 
