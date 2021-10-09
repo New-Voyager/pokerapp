@@ -7,6 +7,9 @@ class AppAssetsNew {
   static const String pathGameTypeChipImage =
       "assets/images/cards/livegame_chip.png";
 
+  static const String logoImage =
+      "assets/images/logo.png";
+
   static String pathLiveGameItemBackground =
       "assets/images/cards/livegames_background.png";
   static String pathHoldemTypeImage = 'assets/images/cards/holdem.png';
@@ -31,6 +34,9 @@ class AppAssetsNew {
   static String cardBackImagePath = "assets/images/card_back/set2/Asset 8.png";
 
   static String tableResultPath = "assets/images/gamesettings/casino.svg";
+
+  static String trophyPath = "assets/images/trophy.svg";
+  static String hhPath = "assets/images/highhand.svg";
 
   static String playerStatsPath = "assets/images/player-stats.svg";
 

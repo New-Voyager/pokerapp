@@ -338,6 +338,18 @@ class NewGameModelProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  get showResult => settings.showResult;
+  set showResult(bool value) {
+    settings.showResult = value;
+    notifyListeners();
+  }
+
+  get highHandTracked => settings.highHandTracked;
+  set highHandTracked(bool value) {
+    settings.highHandTracked = value;
+    notifyListeners();
+  }
+
   get allowRabbitHunt => settings.allowRabbitHunt;
   set allowRabbitHunt(bool value) {
     settings.allowRabbitHunt = value;

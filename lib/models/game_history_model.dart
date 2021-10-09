@@ -77,25 +77,25 @@ class GameHistoryModel {
     }
   }
 
-  String get GameType {
-    if (gameTypeStr == 'HOLDEM') {
-      return 'No Limit Holdem';
-    }
-    return gameTypeStr;
-  }
+  // String get GameType {
+  //   if (gameTypeStr == 'HOLDEM') {
+  //     return 'No Limit Holdem';
+  //   }
+  //   return gameTypeStr;
+  // }
 
   String get StartedAt => DataFormatter.dateFormat(this.startedAt);
 
   String get Blinds => '$smallBlind/$bigBlind';
 
-  String get ShortGameType {
-    if (gameTypeStr == 'HOLDEM') {
-      return 'NLH';
-    } else if (gameTypeStr.contains('5 Card PLO')) {
-      return '5PLO';
-    }
-    return gameTypeStr;
-  }
+  // String get ShortGameType {
+  //   if (gameTypeStr == 'HOLDEM') {
+  //     return 'NLH';
+  //   } else if (gameTypeStr.contains('5 Card PLO')) {
+  //     return '5PLO';
+  //   }
+  //   return gameTypeStr;
+  // }
 }
 
 class PlayerStack {
@@ -201,6 +201,7 @@ class GameHistoryDetailModel extends ChangeNotifier {
         this.playedGame = true;
       }
     }
+    dataAggregated = gameData['dataAggregated'] ?? false;
 
     if (this.playedGame) {
       final List playerStack = jsonData['completedGame']['stackStat'];
@@ -210,7 +211,6 @@ class GameHistoryDetailModel extends ChangeNotifier {
           .toList();
       stack.sort((a, b) => a.handNum.compareTo(b.handNum));
 
-      dataAggregated = gameData['dataAggregated'] ?? false;
       handsPlayed = int.parse(gameData['handsPlayed'].toString());
       if (dataAggregated) {
         preflopHands = int.parse(gameData['preflopHands'].toString());

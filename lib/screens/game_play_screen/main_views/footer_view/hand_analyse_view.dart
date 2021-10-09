@@ -17,6 +17,7 @@ import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/bottom_sheets/debuglog_bottomsheet.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/bottom_sheets/game_info_bottom_sheet.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/bottom_sheets/hand_history_bottomsheet.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/bottom_sheets/highhand_bottomsheet.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/bottom_sheets/last_hand_analyse_bottomsheet.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/bottom_sheets/player_stats_bottomsheet.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/bottom_sheets/table_result_bottomsheet.dart';
@@ -93,6 +94,21 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
         child: LastHandAnalyseBottomSheet(
           gameCode: widget.gameState.gameCode,
           clubCode: widget.clubCode,
+        ),
+      ),
+    );
+  }
+
+  Future<void> onClickHighHand(BuildContext context) async {
+    showBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (_) => Provider.value(
+        // THIS MAKES SURE, THE LAST HAND ANAYLYSE BOTTOM SHEET
+        // GETS THE GameState
+        value: widget.gameState,
+        child: HighHandBottomSheet(
+          gameState: widget.gameState,
         ),
       ),
     );
@@ -331,7 +347,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
     }
 
     return Container(
-      margin: EdgeInsets.only(right: 10.0),
+      margin: EdgeInsets.only(right: 8.0),
       child: GestureDetector(
         onTap: onClick,
         child: Column(
@@ -417,6 +433,17 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                       onClickViewHandAnalysis(context);
                     }),
 
+                // High hand track
+                widget.gameState.gameInfo.highHandTracked ?? false
+                    ? _buildMenuButton(
+                        title: 'HH',
+                        imagePath: AppAssetsNew.hhPath,
+                        onClick: () {
+                          vnShowMenuItems.value = false;
+                          onClickHighHand(context);
+                        })
+                    : SizedBox.shrink(),
+
                 // game info
                 _buildMenuButton(
                     title: 'Info',
@@ -426,14 +453,17 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                       onGameInfoBottomSheet(context);
                     }),
 
-                // result table
-                _buildMenuButton(
-                    title: 'Result',
-                    imagePath: AppAssetsNew.tableResultPath,
-                    onClick: () {
-                      vnShowMenuItems.value = false;
-                      onTableBottomSheet(context);
-                    }),
+                widget.gameState.gameSettings.showResult ?? false
+                    ?
+                    // result table
+                    _buildMenuButton(
+                        title: 'Result',
+                        imagePath: AppAssetsNew.tableResultPath,
+                        onClick: () {
+                          vnShowMenuItems.value = false;
+                          onTableBottomSheet(context);
+                        })
+                    : SizedBox.shrink(),
 
                 // player stack
                 _buildMenuButton(
@@ -479,7 +509,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                 children: [
                   TextSpan(
                     text: " ${_appScreenText['requestBuyin']}",
-                    style: AppDecorators.getSubtitle3Style(theme: theme),
+                    style: AppDecorators.getSubtitleStyle(theme: theme),
                   ),
                   TextSpan(
                     text: " ${item.amount}",
@@ -488,13 +518,13 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                 ],
               ),
             ),
-            Text(
-              "${_appScreenText['outstandingBalance']}: ${item.balance}",
-              style: AppDecorators.getHeadLine4Style(theme: theme),
-            ),
-            SizedBox(
-              height: 16,
-            ),
+            // Text(
+            //   "${_appScreenText['outstandingBalance']}: ${item.balance}",
+            //   style: AppDecorators.getHeadLine4Style(theme: theme),
+            // ),
+            // SizedBox(
+            //   height: 16,
+            // ),
           ],
         ),
         subtitle: Column(
@@ -519,13 +549,14 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
           ],
         ),
         trailing: Container(
-          width: 100,
+          width: 120.pw,
           child: Row(
             children: [
               IconButton(
                   icon: Icon(
                     Icons.check_circle,
                     color: Colors.green,
+                    size: 24.pw,
                   ),
                   onPressed: () async {
                     final bool val = await PlayerService.approveBuyInRequest(
@@ -540,9 +571,11 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                       log("Failed to approve request");
                     }
                   }),
+              SizedBox(width: 5.pw),
               IconButton(
                 icon: Icon(
                   Icons.cancel_rounded,
+                  size: 24.pw,
                   color: theme.negativeOrErrorColor,
                 ),
                 onPressed: () async {

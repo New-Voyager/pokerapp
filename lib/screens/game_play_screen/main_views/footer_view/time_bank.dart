@@ -9,7 +9,7 @@ import 'package:pokerapp/screens/game_play_screen/widgets/game_circle_button.dar
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
-int minExtendTime = 5;
+int minExtendTime = 10;
 
 class TimeBankWidget extends StatefulWidget {
   final GameState gameState;
@@ -69,15 +69,15 @@ class _TimeBankWidgetState extends State<TimeBankWidget> {
               log('TimeBank: extend time $extendTime');
               gameContextObj.handActionProtoService.extendTime(
                   mySeat.player.playerId,
-                  mySeat.serverSeatPos,
+                  mySeat.player.seatNo,
                   gameState.handInfo.handNum,
                   extendTime);
             }
-            int total = mySeat.actionTimer.getTotalTime() + extendTime;
-            int remainingTime =
-                mySeat.actionTimer.getProgressTime() + extendTime;
-            mySeat.actionTimer.setTime(total, remainingTime);
-            mySeat.notify();
+            // int total = mySeat.actionTimer.getTotalTime() + extendTime;
+            // int remainingTime =
+            //     mySeat.actionTimer.getRemainingTime() + extendTime;
+            // mySeat.actionTimer.setTime(total, remainingTime);
+            // mySeat.notify();
           }
 
           log('Remaining timebank: ${widget.gameState.gameHiveStore.getTimeBankTime()}');

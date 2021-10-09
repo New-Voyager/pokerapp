@@ -4,7 +4,11 @@ import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
+import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
+import 'package:pokerapp/screens/profile_screens/report_bug.dart';
+import 'package:pokerapp/screens/profile_screens/request_feature.dart';
+import 'package:pokerapp/utils/alerts.dart';
 import 'package:provider/provider.dart';
 
 class HelpScreen extends StatelessWidget {
@@ -26,79 +30,115 @@ class HelpScreen extends StatelessWidget {
               appBar: CustomAppBar(
                 theme: theme,
                 context: context,
-                titleText: _appScreenText['appName'],
+                titleText: _appScreenText['APPNAME'],
                 subTitleText: version,
               ),
-              body: Column(
-                children: [
-                  Container(
-                    alignment: Alignment.center,
-                    margin: EdgeInsets.symmetric(horizontal: 16, vertical: 32),
-                    child: SvgPicture.asset(
-                      AppAssetsNew.resumeImagePath,
-                      height: size.height / 3,
-                      width: size.width,
+              body: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Container(
+                      alignment: Alignment.center,
+                      margin:
+                          EdgeInsets.symmetric(horizontal: 16, vertical: 32),
+                      child: Image.asset(
+                        AppAssetsNew.logoImage,
+                        height: size.height / 5,
+                        width: size.height / 5,
+                      ),
                     ),
-                  ),
-                  Container(
-                    decoration: AppDecorators.tileDecoration(theme),
-                    margin: EdgeInsets.symmetric(horizontal: 16),
-                    padding: EdgeInsets.symmetric(vertical: 8),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ListTile(
-                          title: Text(
-                            _appScreenText['helpCenter'],
-                            style:
-                                AppDecorators.getHeadLine4Style(theme: theme),
+                    Container(
+                      decoration: AppDecorators.tileDecoration(theme),
+                      margin: EdgeInsets.symmetric(horizontal: 16),
+                      padding: EdgeInsets.symmetric(vertical: 8),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ListTile(
+                            title: Text(
+                              _appScreenText['requestFeature'],
+                              style:
+                                  AppDecorators.getHeadLine4Style(theme: theme),
+                            ),
+                            leading: Icon(
+                              Icons.request_page,
+                              color: theme.secondaryColor,
+                            ),
+                            onTap: () {
+                              Alerts.showDailog(
+                                context: context,
+                                child: RequestFeatureWidget(),
+                              );
+                            },
                           ),
-                          leading: Icon(
-                            Icons.help_center,
-                            color: theme.secondaryColor,
+                          ListTile(
+                            title: Text(
+                              _appScreenText['reportBug'],
+                              style:
+                                  AppDecorators.getHeadLine4Style(theme: theme),
+                            ),
+                            leading: Icon(
+                              Icons.request_page,
+                              color: theme.secondaryColor,
+                            ),
+                            onTap: () {
+                              Alerts.showDailog(
+                                context: context,
+                                child: ReportBugWidget(),
+                              );
+                            },
                           ),
-                          onTap: () {},
-                        ),
-                        ListTile(
-                          title: Text(
-                            _appScreenText['requestFeature'],
-                            style:
-                                AppDecorators.getHeadLine4Style(theme: theme),
+                          ListTile(
+                            title: Text(
+                              _appScreenText['PRIVACYPOLICY'],
+                              style:
+                                  AppDecorators.getHeadLine4Style(theme: theme),
+                            ),
+                            leading: Icon(
+                              Icons.help_center,
+                              color: theme.secondaryColor,
+                            ),
+                            onTap: () {
+                              Navigator.of(context)
+                                  .pushNamed(Routes.privacy_policy);
+                            },
                           ),
-                          leading: Icon(
-                            Icons.request_page,
-                            color: theme.secondaryColor,
+                          ListTile(
+                            leading: Icon(
+                              Icons.privacy_tip,
+                              color: theme.secondaryColor,
+                            ),
+                            title: Text(
+                              _appScreenText['TOC'],
+                              style:
+                                  AppDecorators.getHeadLine4Style(theme: theme),
+                            ),
+                            onTap: () {
+                              Navigator.of(context).pushNamed(
+                                Routes.terms_conditions,
+                              );
+                            },
                           ),
-                          onTap: () {},
-                        ),
-                        ListTile(
-                          leading: Icon(
-                            Icons.privacy_tip,
-                            color: theme.secondaryColor,
+                          ListTile(
+                            leading: Icon(
+                              Icons.copyright,
+                              color: theme.secondaryColor,
+                            ),
+                            title: Text(
+                              _appScreenText['ATTRIBUTIONS'],
+                              style:
+                                  AppDecorators.getHeadLine4Style(theme: theme),
+                            ),
+                            onTap: () {
+                              Navigator.of(context).pushNamed(
+                                Routes.attributions,
+                              );
+                            },
                           ),
-                          title: Text(
-                            _appScreenText['termsAndPrivacyPolicy'],
-                            style:
-                                AppDecorators.getHeadLine4Style(theme: theme),
-                          ),
-                          onTap: () {},
-                        ),
-                        ListTile(
-                          leading: Icon(
-                            Icons.copyright,
-                            color: theme.secondaryColor,
-                          ),
-                          title: Text(
-                            _appScreenText['licenses'],
-                            style:
-                                AppDecorators.getHeadLine4Style(theme: theme),
-                          ),
-                          onTap: () {},
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),

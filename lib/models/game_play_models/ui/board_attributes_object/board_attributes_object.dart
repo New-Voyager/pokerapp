@@ -65,12 +65,47 @@ class SeatPosAttribs {
   final Alignment alignment;
   final Offset topLeft;
   final Alignment holeCardPos;
+  GlobalKey _key;
+  Offset _potViewPos;
+  Offset _betWidgetPos;
+  GlobalKey _betWidgetUiKey;
+  Size _size;
 
-  const SeatPosAttribs(
+  // this offset is used for fun animation and seat change animation
+  // this offset is postion of the seat on the PlayerOnTableView widget
+  Offset _parentRelativePos;
+
+  SeatPosAttribs(
     this.alignment,
     this.topLeft,
     this.holeCardPos,
   );
+
+  GlobalKey get key {
+    if (_key == null) {
+      _key = GlobalKey();
+    }
+    return _key;
+  }
+
+  void resetKey() {
+    _key = null;
+  }
+
+  Offset get parentRelativePos => _parentRelativePos;
+  set parentRelativePos(Offset pos) => _parentRelativePos = pos;
+
+  Offset get potPos => _potViewPos;
+  set potPos(Offset pos) => _potViewPos = pos;
+
+  Offset get betWidgetPos => _betWidgetPos;
+  set betWidgetPos(Offset pos) => _betWidgetPos = pos;
+
+  GlobalKey get betWidgetUiKey => _betWidgetUiKey;
+  set betWidgetUiKey(GlobalKey key) => _betWidgetUiKey = key;
+
+  Size get size => _size;
+  set size(Size size) => _size = size;
 }
 
 /* we just need to care about 3 settings
@@ -465,6 +500,7 @@ class BoardAttributesObject extends ChangeNotifier {
 
   // center pot view key
   GlobalKey _potKey;
+  Offset potGlobalPos;
 
   BoardAttributesObject({
     /*
@@ -715,7 +751,7 @@ class BoardAttributesObject extends ChangeNotifier {
         lessThan6Inches: Offset(0.0, 15.0),
         equalTo6Inches: Offset(0.0, 10.0),
         equalTo7Inches: Offset.zero,
-        greaterThan7Inches: Offset(0.0, 70.0),
+        greaterThan7Inches: Offset(0.0, 60.ph),
       ) as Offset;
 
   double get centerPotScale => _decide(
@@ -729,7 +765,7 @@ class BoardAttributesObject extends ChangeNotifier {
         lessThan6Inches: 0.85,
         equalTo6Inches: 1.0,
         equalTo7Inches: 1.0,
-        greaterThan7Inches: 1.5,
+        greaterThan7Inches: 1.0,
       ) as double;
 
   double get centerRankStrScale => _decide(
@@ -788,7 +824,14 @@ class BoardAttributesObject extends ChangeNotifier {
         lessThan6Inches: 0.0,
         equalTo6Inches: 0.0,
         equalTo7Inches: 10.0,
-        greaterThan7Inches: 15.0,
+        greaterThan7Inches: 2.ph,
+      ) as double;
+
+  double get potsViewGap => _decide(
+        lessThan6Inches: 0.0,
+        equalTo6Inches: 0.0,
+        equalTo7Inches: 10.0,
+        greaterThan7Inches: 2.ph,
       ) as double;
 
   /* table center view offsets, scaling and sizes */
@@ -877,5 +920,64 @@ class BoardAttributesObject extends ChangeNotifier {
       holeCardOffset = 25.ph;
     }
     return holeCardOffset;
+  }
+}
+
+Map<int, SeatPos> getSeatLocations(int maxSeats) {
+  assert(maxSeats != 1);
+  assert(maxSeats != 3);
+  assert(maxSeats != 5);
+  assert(maxSeats != 7);
+
+  switch (maxSeats) {
+    case 9:
+      return {
+        1: SeatPos.bottomCenter,
+        2: SeatPos.bottomLeft,
+        3: SeatPos.middleLeft,
+        4: SeatPos.topLeft,
+        5: SeatPos.topCenter1,
+        6: SeatPos.topCenter2,
+        7: SeatPos.topRight,
+        8: SeatPos.middleRight,
+        9: SeatPos.bottomRight
+      };
+    case 8:
+      return {
+        1: SeatPos.bottomCenter,
+        2: SeatPos.bottomLeft,
+        3: SeatPos.middleLeft,
+        4: SeatPos.topLeft,
+        5: SeatPos.topCenter,
+        6: SeatPos.topRight,
+        7: SeatPos.middleRight,
+        8: SeatPos.bottomRight
+      };
+    case 6:
+      return {
+        1: SeatPos.bottomCenter,
+        2: SeatPos.middleLeft,
+        3: SeatPos.topLeft,
+        4: SeatPos.topCenter,
+        5: SeatPos.topRight,
+        6: SeatPos.middleRight,
+      };
+
+    case 4:
+      return {
+        1: SeatPos.bottomCenter,
+        2: SeatPos.middleLeft,
+        3: SeatPos.topCenter,
+        4: SeatPos.middleRight,
+      };
+
+    case 2:
+      return {
+        1: SeatPos.bottomCenter,
+        2: SeatPos.topCenter,
+      };
+
+    default:
+      return {};
   }
 }

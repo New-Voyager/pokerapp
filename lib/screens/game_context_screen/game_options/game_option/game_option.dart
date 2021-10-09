@@ -18,6 +18,7 @@ import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/game_service.dart';
+import 'package:pokerapp/services/game_play/graphql/gamesettings_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/numeric_keyboard2.dart';
@@ -302,14 +303,15 @@ class _GameOptionState extends State<GameOption> {
   }
 
   Future<void> updateGameSettings() async {
-    final res = await GameService.updateGameSettings(gameCode, _gameSettings);
+    final res =
+        await GameSettingsService.updateGameSettings(gameCode, _gameSettings);
     if (res) {
       Alerts.showNotification(titleText: "Settings updated!");
     }
   }
 
   Future<void> updateGamePlayerSettings() async {
-    final res = await GameService.updateGamePlayerSettings(
+    final res = await GameSettingsService.updateGamePlayerSettings(
         gameCode, _gamePlayerSettings);
     if (res) {
       Alerts.showNotification(titleText: "Settings updated!");
@@ -846,6 +848,32 @@ class _GameOptionState extends State<GameOption> {
         // setting the value saves it to local storage too
         widget.gameState.playerLocalConfig.gameSound = v;
         log('In toggle button widget, gameSounds = ${widget.gameState.playerLocalConfig.gameSound}');
+        if (closed) return;
+        setState(() {});
+      },
+    ));
+
+    // show Check/fold
+    children.add(_buildCheckBox(
+      text: _appScreenText['gameCheckFold'],
+      value: widget.gameState.playerLocalConfig.showCheckFold,
+      onChange: (bool v) async {
+        // setting the value saves it to local storage too
+        widget.gameState.playerLocalConfig.showCheckFold = v;
+        log('In toggle button widget, Show Check Fold = ${widget.gameState.playerLocalConfig.showCheckFold}');
+        if (closed) return;
+        setState(() {});
+      },
+    ));
+
+    // show ReArrage
+    children.add(_buildCheckBox(
+      text: _appScreenText['SHOWREARRANGE'],
+      value: widget.gameState.playerLocalConfig.showRearrange,
+      onChange: (bool v) async {
+        // setting the value saves it to local storage too
+        widget.gameState.playerLocalConfig.showRearrange = v;
+        log('In toggle button widget, Show showRearrange = ${widget.gameState.playerLocalConfig.showRearrange}');
         if (closed) return;
         setState(() {});
       },

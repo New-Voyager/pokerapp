@@ -215,7 +215,7 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
   Widget build(BuildContext context) {
     final appTheme = AppTheme.getTheme(context);
     return Container(
-      decoration: AppDecorators.bgRadialGradient(_appTheme),
+      decoration: AppDecorators.bgImage(_appTheme),
       child: SafeArea(
         child: Scaffold(
           backgroundColor: Colors.transparent,
@@ -235,6 +235,7 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
                 AppDimensionsNew.getVerticalSizedBox(16.pw),
                 // Logo section
                 AppNameAndLogoWidget(_appTheme, _appScreenText),
+                AppDimensionsNew.getVerticalSizedBox(16.pw),
 
                 // Form
                 Container(
@@ -380,11 +381,13 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
   }
 
   _openPrivacyPolicy() {
-    toast(_appScreenText['OPENINGPRIVACYPOLICYURL']);
+    Navigator.of(context).pushNamed(Routes.privacy_policy);
+    //toast(_appScreenText['OPENINGPRIVACYPOLICYURL']);
   }
 
   _openTermsOfService() {
-    toast(_appScreenText['OPENINGTERMSANDCONDITIONURL']);
+    //toast(_appScreenText['OPENINGTERMSANDCONDITIONURL']);
+    Navigator.of(context).pushNamed(Routes.terms_conditions);
   }
 
   _handleSignUpClick() async {

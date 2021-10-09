@@ -24,8 +24,12 @@ class CenterButtonView extends StatelessWidget {
 
   CenterButtonView({this.isHost, this.onStartGame});
 
-  void _onResumePress(gameCode) {
+  void _onResumePress(BuildContext context, gameCode) {
     GameService.resumeGame(gameCode);
+
+    // redraw the top section
+    final gameState = GameState.getState(context);
+    gameState.redrawTop();
   }
 
   Future<void> _onTerminatePress(BuildContext context) async {
@@ -56,9 +60,11 @@ class CenterButtonView extends StatelessWidget {
     )
       ..updateSeatChangeHost(gameContextObject.playerId)
       ..updateSeatChangeInProgress(true);
-
     await SeatChangeService.hostSeatChangeBegin(gameState.gameCode);
+    gameState.hostSeatChangeInProgress = true;
+
     await gameState.refresh();
+    gameState.redrawFooter();
     log('status: ${gameState.gameInfo.status} table status: ${gameState.gameInfo.tableStatus}');
   }
 
@@ -170,11 +176,6 @@ class CenterButtonView extends StatelessWidget {
                       crossAxisAlignment: WrapCrossAlignment.center,
                       alignment: WrapAlignment.center,
                       children: [
-                        // CustomTextButton(
-                        //   adaptive: false,
-                        //   text: 'Resume',
-                        //   onTap: _onResumePress,
-                        // ),
                         IconAndTitleWidget(
                           child: SvgPicture.asset(
                             AppAssetsNew.resumeImagePath,
@@ -182,7 +183,7 @@ class CenterButtonView extends StatelessWidget {
                             width: 48.pw,
                           ),
                           onTap: () {
-                            return _onResumePress(gameState.gameCode);
+                            return _onResumePress(context, gameState.gameCode);
                           },
                           text: _appScreenText['resume'],
                         ),
@@ -194,7 +195,9 @@ class CenterButtonView extends StatelessWidget {
                             height: 48.ph,
                             width: 48.pw,
                           ),
-                          onTap: () => _onRearrangeSeatsPress(providerContext),
+                          onTap: () {
+                            _onRearrangeSeatsPress(providerContext);
+                          },
                           text: _appScreenText['rearrange'],
                         ),
                         SizedBox(width: 15.pw),

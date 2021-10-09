@@ -666,9 +666,19 @@ class NewGameSettings2 extends StatelessWidget {
                   },
                   theme: theme,
                 ),
+                /* sep */
                 sepV20,
-                /* buy in approval */
 
+                /* Highhand Tracked */
+                _buildRadio(
+                  label: _appScreenText['hhTracked'],
+                  value: gmp.highHandTracked,
+                  onChange: (bool b) {
+                    gmp.highHandTracked = b;
+                  },
+                  theme: theme,
+                ),
+                sepV20,
                 ExpansionTile(
                   subtitle: Text(_appScreenText['CHOOSEADVANCECONFIGURATIONS'],
                       style: AppStylesNew.labelTextStyle),
@@ -796,6 +806,16 @@ class NewGameSettings2 extends StatelessWidget {
                           value: gmp.showHandRank,
                           onChange: (bool b) {
                             gmp.showHandRank = b;
+                          },
+                          theme: theme,
+                        ),
+
+                        /* show table result */
+                        _buildRadio(
+                          label: _appScreenText['SHOWRESULT'],
+                          value: gmp.showResult,
+                          onChange: (bool b) {
+                            gmp.showResult = b;
                           },
                           theme: theme,
                         ),

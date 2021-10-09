@@ -325,6 +325,7 @@ class _FooterActionViewState extends State<FooterActionView> {
     for (final action in playerAction?.actions) {
       Widget actionWidget = SizedBox();
       bool closeButton = false;
+
       switch (action.actionName) {
         case FOLD:
           actionWidget = _buildRoundButton(
@@ -375,14 +376,16 @@ class _FooterActionViewState extends State<FooterActionView> {
           }
           break;
         case CALL:
-          actionWidget = _buildRoundButton(
-            text: action.actionName + ' ' + action.actionValue.toString(),
-            onTap: () => _call(
-              playerAction.callAmount,
-              context: context,
-            ),
-            theme: theme,
-          );
+          if (playerAction.callAmount > 0) {
+            actionWidget = _buildRoundButton(
+              text: action.actionName + ' ' + action.actionValue.toString(),
+              onTap: () => _call(
+                playerAction.callAmount,
+                context: context,
+              ),
+              theme: theme,
+            );
+          }
           break;
 
         /* on tapping on RAISE this button should highlight and show further options */
@@ -517,17 +520,22 @@ class _FooterActionViewState extends State<FooterActionView> {
                   ),
                 ]);
               } else if (actionState.showCheckFold) {
-                children.add(
-                  /* bottom row */
-                  Transform.scale(
-                    scale: boardAttributes.footerActionViewScale,
-                    alignment: Alignment.bottomCenter,
-                    child: Container(
-                      padding: EdgeInsets.symmetric(vertical: 4.0),
-                      child: _buildCheckFoldWidget(actionState, theme),
+                final mySeat = gameState.mySeat;
+                if (mySeat.player != null &&
+                    mySeat.player.isActive &&
+                    gameState.playerLocalConfig.showCheckFold) {
+                  children.add(
+                    /* bottom row */
+                    Transform.scale(
+                      scale: boardAttributes.footerActionViewScale,
+                      alignment: Alignment.bottomCenter,
+                      child: Container(
+                        padding: EdgeInsets.symmetric(vertical: 4.0),
+                        child: _buildCheckFoldWidget(actionState, theme),
+                      ),
                     ),
-                  ),
-                );
+                  );
+                }
               }
 
               return Column(

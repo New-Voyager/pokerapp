@@ -136,6 +136,18 @@ const ExtendTimer$json = const {
 /// Descriptor for `ExtendTimer`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List extendTimerDescriptor = $convert.base64Decode(
     'CgtFeHRlbmRUaW1lchIXCgdzZWF0X25vGAEgASgNUgZzZWF0Tm8SIgoNZXh0ZW5kX2J5X3NlYxgCIAEoDVILZXh0ZW5kQnlTZWMSIwoNcmVtYWluaW5nX3NlYxgDIAEoDVIMcmVtYWluaW5nU2Vj');
+@$core.Deprecated('Use resetTimerDescriptor instead')
+const ResetTimer$json = const {
+  '1': 'ResetTimer',
+  '2': const [
+    const {'1': 'seat_no', '3': 1, '4': 1, '5': 13, '10': 'seatNo'},
+    const {'1': 'remaining_sec', '3': 2, '4': 1, '5': 13, '10': 'remainingSec'},
+  ],
+};
+
+/// Descriptor for `ResetTimer`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List resetTimerDescriptor = $convert.base64Decode(
+    'CgpSZXNldFRpbWVyEhcKB3NlYXRfbm8YASABKA1SBnNlYXRObxIjCg1yZW1haW5pbmdfc2VjGAIgASgNUgxyZW1haW5pbmdTZWM=');
 @$core.Deprecated('Use betRaiseOptionDescriptor instead')
 const BetRaiseOption$json = const {
   '1': 'BetRaiseOption',
@@ -311,12 +323,13 @@ const HighHandWinner$json = const {
     const {'1': 'hh_cards', '3': 4, '4': 3, '5': 13, '10': 'hhCards'},
     const {'1': 'player_cards', '3': 5, '4': 3, '5': 13, '10': 'playerCards'},
     const {'1': 'seat_no', '3': 6, '4': 1, '5': 13, '10': 'seatNo'},
+    const {'1': 'board_no', '3': 7, '4': 1, '5': 13, '10': 'boardNo'},
   ],
 };
 
 /// Descriptor for `HighHandWinner`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List highHandWinnerDescriptor = $convert.base64Decode(
-    'Cg5IaWdoSGFuZFdpbm5lchIbCglwbGF5ZXJfaWQYASABKARSCHBsYXllcklkEh8KC3BsYXllcl9uYW1lGAIgASgJUgpwbGF5ZXJOYW1lEhcKB2hoX3JhbmsYAyABKA1SBmhoUmFuaxIZCghoaF9jYXJkcxgEIAMoDVIHaGhDYXJkcxIhCgxwbGF5ZXJfY2FyZHMYBSADKA1SC3BsYXllckNhcmRzEhcKB3NlYXRfbm8YBiABKA1SBnNlYXRObw==');
+    'Cg5IaWdoSGFuZFdpbm5lchIbCglwbGF5ZXJfaWQYASABKARSCHBsYXllcklkEh8KC3BsYXllcl9uYW1lGAIgASgJUgpwbGF5ZXJOYW1lEhcKB2hoX3JhbmsYAyABKA1SBmhoUmFuaxIZCghoaF9jYXJkcxgEIAMoDVIHaGhDYXJkcxIhCgxwbGF5ZXJfY2FyZHMYBSADKA1SC3BsYXllckNhcmRzEhcKB3NlYXRfbm8YBiABKA1SBnNlYXRObxIZCghib2FyZF9ubxgHIAEoDVIHYm9hcmRObw==');
 @$core.Deprecated('Use highHandDescriptor instead')
 const HighHand$json = const {
   '1': 'HighHand',

@@ -3,13 +3,13 @@ import 'dart:math';
 import 'dart:typed_data';
 import 'package:pokerapp/proto/handmessage.pb.dart' as proto;
 import 'package:fixnum/fixnum.dart' as $fixnum;
-import 'package:pokerapp/services/nats/client.dart';
 import 'package:pokerapp/services/nats/message.dart';
+import 'package:pokerapp/services/nats/nats.dart';
 
 class PingResponder {
   int playerId;
   Stream<Message> stream;
-  Client client;
+  Nats nats;
   String pongChannel;
   bool active;
   List<PingPongMessage> messages = [];
@@ -21,7 +21,7 @@ class PingResponder {
   PingResponder(
     this.playerId,
     this.pongChannel,
-    this.client,
+    this.nats,
     this.stream,
     this.active,
   );
@@ -33,6 +33,11 @@ class PingResponder {
     this.stream.listen((Message natsMsg) {
       if (!active) return;
       handleMessage(natsMsg);
+      // try {
+      //   handleMessage(natsMsg);
+      // } catch (e) {
+      //   dev.log('error ping_responder: $e');
+      // }
     });
   }
 
@@ -59,7 +64,7 @@ class PingResponder {
     // String msgStr = msg.toJson();
     // this.client.pubString(this.pongChannel, msgStr);
     Uint8List data = msg.toProto(this.playerId);
-    this.client.pub(this.pongChannel, data);
+    this.nats.clientPub.pub(this.pongChannel, data);
   }
 }
 

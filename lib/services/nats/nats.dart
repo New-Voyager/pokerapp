@@ -15,8 +15,12 @@ import 'client.dart';
 import 'subscription.dart';
 
 class Nats {
-  Client _client;
+  Client get clientSub => _clientSub;
+  Client _clientSub;
+
+  Client get clientPub => _clientPub;
   Client _clientPub;
+
   String _playerChannel;
   bool _initialized = false;
   Subscription _playerSub;
@@ -25,10 +29,20 @@ class Nats {
 
   Nats(this._providerContext);
 
+  Future<void> reconnect() async {
+    log('network_reconnect: Nats reconnect method invoked');
+
+    close();
+    await init(_playerChannel);
+  }
+
   Future<void> init(String playerChannel) async {
     String natsUrl = await UtilService.getNatsURL();
-    _client = Client();
+
+    // instantiate new clients
+    _clientSub = Client();
     _clientPub = Client();
+
     _playerChannel = playerChannel;
     _clubSubs = Map<String, Subscription>();
     log('Player channel: $playerChannel');
@@ -38,9 +52,8 @@ class Nats {
         .replaceFirst('nats://', '')
         .replaceFirst('tls://', '')
         .replaceFirst(':4222', '');
-    await _client.connect(natsUrl);
 
-    // todo: do we need two clients?
+    await _clientSub.connect(natsUrl);
     await _clientPub.connect(natsUrl);
 
     // subscribe for player messages
@@ -49,35 +62,30 @@ class Nats {
     _initialized = true;
   }
 
-  Client get subClient {
-    return this._client;
-  }
+  // Client get subClient {
+  //   return this._client;
+  // }
 
-  Client get pubClient {
-    return this._clientPub;
-  }
+  // Client get pubClient {
+  //   return this._clientPub;
+  // }
 
   bool get initialized {
     return this._initialized;
   }
 
   void close() {
-    if (_playerSub != null) {
-      _playerSub.unSub();
-    }
+    _playerSub?.close();
+
     if (_clubSubs != null) {
       for (final clubSub in _clubSubs.values) {
-        clubSub.unSub();
+        clubSub.close();
       }
     }
 
-    if (_client != null) {
-      _client.close();
-    }
-
-    if (_clientPub != null) {
-      _client.close();
-    }
+    _clientSub?.close();
+    _clientPub?.close();
+    _initialized = false;
   }
 
   String get playerChannel {
@@ -90,7 +98,7 @@ class Nats {
       return;
     }
     log('subscribing to club $clubChannel');
-    Subscription clubSub = this.subClient.sub(clubChannel);
+    Subscription clubSub = this._clientSub.sub(clubChannel);
     _clubSubs[clubChannel] = clubSub;
     clubSub.stream.listen((Message message) {
       log('message in club channel: ${message.string}');
@@ -108,7 +116,7 @@ class Nats {
 
   subscribePlayerMessages() {
     log('subscribing to ${this._playerChannel}');
-    this._playerSub = this.subClient.sub(this._playerChannel);
+    this._playerSub = this._clientSub.sub(this._playerChannel);
 
     _playerSub.stream.listen((Message message) async {
       /*

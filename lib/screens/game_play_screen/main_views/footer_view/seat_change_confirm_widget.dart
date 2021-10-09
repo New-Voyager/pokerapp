@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
@@ -21,6 +22,8 @@ class SeatChangeConfirmWidget extends StatelessWidget {
     )
       ..updateSeatChangeHost(0)
       ..updateSeatChangeInProgress(false);
+    final gameState = GameState.getState(context);
+    gameState.hostSeatChangeInProgress = false;
     await SeatChangeService.hostSeatChangeEnd(this.gameCode, cancel: true);
   }
 
@@ -31,6 +34,8 @@ class SeatChangeConfirmWidget extends StatelessWidget {
     )
       ..updateSeatChangeHost(0)
       ..updateSeatChangeInProgress(false);
+    final gameState = GameState.getState(context);
+    gameState.hostSeatChangeInProgress = false;
     await SeatChangeService.hostSeatChangeEnd(this.gameCode, cancel: false);
   }
 

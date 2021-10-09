@@ -218,7 +218,7 @@ class PlayerModel {
   }
 
   @override
-  String toString() => this.name;
+  String toString() => 'name: $name id: $playerId uuid: $playerUuid';
 
   set action(PlayerActedState action) => this._action = action;
   PlayerActedState get action => this._action;

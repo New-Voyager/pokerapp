@@ -1,12 +1,14 @@
 import 'dart:developer';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/overlay_notification.dart';
 import 'package:pokerapp/services/app/player_service.dart';
+import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:provider/provider.dart';
 
 // class PushNotificationService {
@@ -24,7 +26,9 @@ enum NotificationType {
   FREE_CHIPS,
   BUYIN_REQUEST,
   MEMBER_APPROVED,
-  PLAYER_RENAMED
+  PLAYER_RENAMED,
+  MEMBER_JOIN,
+  MEMBER_DENIED,
 }
 FlutterLocalNotificationsPlugin _plugin;
 
@@ -47,7 +51,7 @@ Future<void> _backgroundMessageHandler(RemoteMessage message) async {
   print('message type = ${message.data['type']}');
   print('message text = ${message.data['text']}');
   print('message title = ${message.data['title']}');
-  _showNotification(message);
+  _showNotification(message, background: true);
 }
 
 FlutterLocalNotificationsPlugin _initLocalNotifications() {
@@ -71,7 +75,8 @@ Future _onTapNotification(String payload) async {
   print('_onTapNotification = $payload');
 }
 
-Future _showNotification(RemoteMessage message) async {
+Future _showNotification(RemoteMessage message,
+    {bool background = false}) async {
   if (message.data['type'].toString() == null) {
     return;
   }
@@ -89,11 +94,13 @@ Future _showNotification(RemoteMessage message) async {
     notificationType = NotificationType.MEMBER_APPROVED;
   } else if (notificationTypeStr == 'PLAYER_RENAMED') {
     notificationType = NotificationType.PLAYER_RENAMED;
+  } else if (notificationTypeStr == 'MEMBER_JOIN') {
+    notificationType = NotificationType.MEMBER_JOIN;
+  } else if (notificationTypeStr == 'MEMBER_DENIED') {
+    notificationType = NotificationType.MEMBER_DENIED;
   }
 
-  print('notificationType = $notificationType');
-  print(
-      'NotificationType.NEW_GAME.value() = ${NotificationType.NEW_GAME.value()}');
+  debugPrint('notificationType = $notificationType');
 
   androidDetails = AndroidNotificationDetails(
       "com.voyagerent.pokerapp.channel", "pokerapp", "Poker App Channel",
@@ -125,6 +132,26 @@ Future _showNotification(RemoteMessage message) async {
     body =
         '${data["playerName"]} is requesting to buyin ${data["amount"]}. Gamecode: ${data["gameCode"]}';
     showNotification = true;
+  } else if (notificationType == NotificationType.MEMBER_JOIN) {
+    final data = message.data;
+    body = '${data["playerName"]} is requesting to join ${data["clubName"]}.';
+    showNotification = true;
+  } else if (notificationType == NotificationType.MEMBER_DENIED) {
+    final data = message.data;
+    body = 'Club host of ${data["clubName"]} denied your membership.';
+
+    if (!background) {
+      // app is running in foreground
+      showOverlayNotification(
+        (context) => OverlayNotificationWidget(
+          title: data['clubName'],
+          subTitle: body,
+        ),
+        duration: Duration(seconds: 10),
+      );
+    } else {
+      showNotification = true;
+    }
   }
 
   if (showNotification) {
@@ -140,33 +167,7 @@ void registerPushNotifications() {
     print('Got a message whilst in the foreground!');
     print('Message data: ${message.data}');
 
-    _showNotification(message);
-
-    if (message.notification != null) {
-      print('Message also contained a notification: ${message.notification}');
-    }
-    if (message.data['type'].toString() == 'BUYIN_REQUEST') {
-      final approvals = await PlayerService.getPendingApprovals();
-      //  final approvalCount = await PlayerService.getPendingApprovalsCount();
-      final state = Provider.of<PendingApprovalsState>(
-          navigatorKey.currentContext,
-          listen: false);
-      state.setPendingList(approvals);
-      //(approvalCount);
-      // state.incrementTotalPending();
-      print('approval count: ${approvals.length} length: ${approvals.length}');
-      // toast("Message arrived", duration: Duration(seconds: 2));
-
-      // Display overlay notification irrespective of user in any screen.
-      showOverlayNotification(
-        (context) => OverlayNotificationWidget(
-          amount: message.data['amount'],
-          playerName: message.data['playerName'],
-          pendingCount: approvals.length,
-        ),
-        duration: Duration(seconds: 5),
-      );
-    }
+    _showNotification(message, background: false);
   });
   log('Registered for push notifications');
 }

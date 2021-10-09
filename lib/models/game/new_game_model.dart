@@ -68,25 +68,28 @@ class NewGameModel {
   int maxPlayers = 9;
   int gameLength = 60;
   int gameLengthInHrs = 1;
-  bool buyInApproval = true;
+  bool buyInApproval = false;
   double rakePercentage = 0;
   double rakeCap = 0;
   int buyInMin = 30;
   int buyInMax = 100;
   int actionTime = 30;
   bool locationCheck = false;
-  bool ipCheck = true;
-  bool runItTwice = false;
+  bool ipCheck = false;
+  bool runItTwice = true;
   bool seatChangeAllowed = false;
-  bool waitList = false;
+  bool waitList = true;
   bool botGame = true;
+  bool highHandTracked = false;
   Rewards rewards;
   bool muckLosingHand = false;
-  bool audioConference = true;
+  bool audioConference = false;
   bool allowRabbitHunt = true;
   bool showHandRank = false;
   bool useAgora = false;
   bool breakAllowed = true;
+  bool showResult = true;
+  bool showCheckFold = true;
   int breakTime = 5;
   /*
     bombPotEnabled: Boolean
@@ -141,6 +144,8 @@ class NewGameModel {
     this.bombPotInterval,
     this.breakAllowed,
     this.breakTime,
+    this.showResult,
+    this.highHandTracked,
   });
 
   NewGameModel.withDefault(String clubCode) {
@@ -185,10 +190,12 @@ class NewGameModel {
     locationCheck = json['gpsCheck'] ?? false;
     buttonStraddle = json['buttonStraddleAllowed'] ?? false;
     buttonStraddleBet = json['buttonStraddleBet'] ?? 2;
+    showResult = json['showResult'] ?? true;
+    highHandTracked = json['highHandTracked'] ?? false;
   }
 
   Map<String, dynamic> toJson() {
-    this.smallBlind = (this.bigBlind / 2).toInt().toDouble();
+    this.smallBlind = (this.bigBlind ~/ 2).toDouble();
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['title'] = this.title;
     data['gameType'] = this.gameType.toString().replaceFirst('GameType.', '');
@@ -204,8 +211,11 @@ class NewGameModel {
     data['buyInApproval'] = this.buyInApproval;
     data['rakePercentage'] = this.rakePercentage;
     data['rakeCap'] = this.rakeCap;
-    data['buyInMin'] = this.buyInMin;
-    data['buyInMax'] = this.buyInMax;
+
+    // multiple min/max with bigblind
+    data['buyInMin'] = this.buyInMin * this.bigBlind;
+    data['buyInMax'] = this.buyInMax * this.bigBlind;
+
     data['actionTime'] = this.actionTime;
     data['botGame'] = this.botGame;
     data['runItTwiceAllowed'] = this.runItTwice;
@@ -220,6 +230,9 @@ class NewGameModel {
     data['bombPotInterval'] = this.bombPotInterval;
     data['seatChangeAllowed'] = this.seatChangeAllowed ?? false;
     data['breakAllowed'] = this.breakAllowed ?? true;
+    data['showResult'] = this.showResult ?? true;
+    data['highHandTracked'] = this.highHandTracked ?? false;
+
     if (this.breakTime == null) {
       data['breakLength'] = 5;
     } else {

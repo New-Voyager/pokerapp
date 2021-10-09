@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:after_layout/after_layout.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -12,6 +13,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/game_context.da
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/marked_cards.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/player_info.dart';
@@ -32,7 +34,7 @@ import 'package:pokerapp/screens/game_play_screen/notifications/notifications.da
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/app/player_service.dart';
 import 'package:pokerapp/services/audio/audio_service.dart';
-import 'package:pokerapp/services/data/game_log_store.dart';
+import 'package:pokerapp/services/connectivity_check/network_change_listener.dart';
 import 'package:pokerapp/services/encryption/encryption_service.dart';
 import 'package:pokerapp/services/game_play/action_services/game_action_service/util_action_services.dart';
 import 'package:pokerapp/services/game_play/customization_service.dart';
@@ -46,6 +48,7 @@ import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/utils/utils.dart';
+import 'package:pokerapp/widgets/custom_text_button.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:provider/provider.dart';
 import 'package:wakelock/wakelock.dart';
@@ -114,6 +117,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   AudioPlayer _voiceTextPlayer;
 
   //Agora agora;
+  GameComService _gameComService;
   GameInfoModel _gameInfoModel;
   GameContextObject _gameContextObj;
   GameState _gameState;
@@ -242,7 +246,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
     if (_initiated == true) return _gameInfoModel;
 
-    final gameComService = GameComService(
+    _gameComService = GameComService(
       currentPlayer: this._currentPlayer,
       gameToPlayerChannel: _gameInfoModel.gameToPlayerChannel,
       handToAllChannel: _gameInfoModel.handToAllChannel,
@@ -261,7 +265,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       final natsClient = Provider.of<Nats>(context, listen: false);
 
       log('natsClient: $natsClient');
-      await gameComService.init(natsClient);
+      await _gameComService.init(natsClient);
       await encryptionService.init();
     }
 
@@ -270,7 +274,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     if (widget.customizationService != null) {
       _gameState.customizationMode = true;
     }
-    _gameState.gameComService = gameComService;
+    _gameState.gameComService = _gameComService;
 
     if (widget.customizationService != null) {
       _gameState = widget.customizationService.gameState;
@@ -279,7 +283,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         gameCode: _gameInfoModel.gameCode,
         gameInfo: _gameInfoModel,
         currentPlayer: _currentPlayer,
-        gameMessagingService: gameComService.gameMessaging,
+        gameMessagingService: _gameComService.gameMessaging,
         hostSeatChangeInProgress: _hostSeatChangeInProgress,
         hostSeatChangeSeats: _hostSeatChangeSeats,
       );
@@ -297,7 +301,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       _gameContextObj = GameContextObject(
         gameCode: widget.gameCode,
         player: this._currentPlayer,
-        gameComService: gameComService,
+        gameComService: _gameComService,
         encryptionService: encryptionService,
         gameState: _gameState,
       );
@@ -306,12 +310,12 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       final natsClient = Provider.of<Nats>(context, listen: false);
 
       log('natsClient: $natsClient');
-      await gameComService.init(natsClient);
+      await _gameComService.init(natsClient);
 
       _gameContextObj = GameContextObject(
         gameCode: widget.gameCode,
         player: this._currentPlayer,
-        gameComService: gameComService,
+        gameComService: _gameComService,
         encryptionService: encryptionService,
         gameState: _gameState,
       );
@@ -345,13 +349,13 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     print('gameInfo players: ${_gameInfoModel.playersInSeats}');
 
     // setting voiceChatEnable to true if gameComService is active
-    log('gameComService.active = ${gameComService.active}');
-    if (gameComService.active) {
+    log('gameComService.active = ${_gameComService.active}');
+    if (_gameComService.active) {
       _gameState.communicationState.voiceChatEnable = true;
       _gameState.communicationState.notify();
     }
     if (!TestService.isTesting && widget.customizationService == null) {
-      _initChatListeners(gameComService.gameMessaging);
+      _initChatListeners(_gameComService.gameMessaging);
     }
 
     if (_gameInfoModel?.audioConfEnabled ?? false) {
@@ -378,6 +382,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   /* dispose method for closing connections and un subscribing to channels */
   @override
   void dispose() {
+    // cancel listening to game play screen network changes
+    _streamSub?.cancel();
+
     Wakelock.disable();
     if (_locationUpdates != null) {
       _locationUpdates.stop();
@@ -501,21 +508,27 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     chatVisibilityNotifier.value = !chatVisibilityNotifier.value;
   }
 
-  Future _onJoinGame(int seatPos) async {
+  Future _onJoinGame(Seat seat) async {
     final gameState = GameState.getState(_providerContext);
     final tableState = gameState.tableState;
     final me = gameState.me;
     /* ignore the open seat tap as the player is seated and game is running */
     if (me != null &&
         me.status == AppConstants.PLAYING &&
-        tableState.gameStatus == AppConstants.GAME_RUNNING) {
+        (tableState.gameStatus == AppConstants.GAME_RUNNING ||
+            tableState.tableStatus == AppConstants.TABLE_STATUS_GAME_RUNNING)) {
+      bool ret = await showPrompt(
+          context, 'Switch Seat', 'Do you want to switch seat next hand?');
+      if (ret) {
+        await SeatChangeService.switchSeat(widget.gameCode, seat.serverSeatPos);
+      }
       log('Ignoring the open seat tap as the player is seated and game is running');
       return;
     }
 
     if (me != null && me.seatNo != null && me.seatNo != 0) {
-      log('Player ${me.name} switches seat to $seatPos');
-      await GameService.switchSeat(widget.gameCode, seatPos);
+      log('Player ${me.name} switches seat to ${seat.serverSeatPos}');
+      await SeatChangeService.switchSeat(widget.gameCode, seat.serverSeatPos);
     } else {
       try {
         LocationUpdates locationUpdates;
@@ -526,8 +539,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
             if (_gameState.gameInfo.gpsCheck &&
                 !await locationUpdates.requestPermission()) {
-              // TODO: Show error dialog
-              log('Player ${me.name} did not allow to get location');
+              await showErrorDialog(context, 'Permission',
+                  'Game uses gps locations. You cannot participate without providing GPS access',
+                  info: false);
               return;
             }
           }
@@ -548,7 +562,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
         await GamePlayScreenUtilMethods.joinGame(
           context: _providerContext,
-          seatPos: seatPos,
+          seat: seat,
           gameCode: widget.gameCode,
           gameState: gameState,
         );
@@ -591,12 +605,18 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     if (mounted) {
       setState(() => _gameInfoModel = gameInfoModel);
     }
-    _queryCurrentHandIfNeeded();
   }
+
+  StreamSubscription<ConnectivityResult> _streamSub;
 
   @override
   void initState() {
     super.initState();
+
+    _streamSub =
+        context.read<NetworkChangeListener>().onConnectivityChange.listen(
+              (_) => _reconnectGameComService(),
+            );
 
     Wakelock.enable();
     _voiceTextPlayer = AudioPlayer();
@@ -605,7 +625,11 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     WidgetsBinding.instance.addObserver(this);
     _binding.addObserver(this);
 
-    init();
+    init().then((v) {
+      Future.delayed(Duration(seconds: 1), () {
+        _queryCurrentHandIfNeeded();
+      });
+    });
   }
 
   // void initPlayingTimer() {
@@ -626,9 +650,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     init();
   }
 
-  void init() {
+  Future<void> init() async {
     log('game screen initState');
-    _initGameInfoModel();
+    await _initGameInfoModel();
   }
 
   void close() {
@@ -708,7 +732,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       : SizedBox.shrink();
 
   Widget _buildBoardView(Size boardDimensions, double tableScale) {
+    log('RedrawTop: Rebuilding board view');
     return Container(
+      key: UniqueKey(),
       width: boardDimensions.width,
       height: boardDimensions.height,
       child: Transform.scale(
@@ -718,26 +744,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
           gameInfo: _gameInfoModel,
           onUserTap: _onJoinGame,
           onStartGame: startGame,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildFooterView(BuildContext context) {
-    return Expanded(
-      child: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage("assets/images/bottom_pattern.png"),
-            fit: BoxFit.fill,
-          ),
-        ),
-        child: FooterView(
-          gameContext: _gameContextObj,
-          gameCode: widget.gameCode,
-          playerUuid: _currentPlayer.uuid,
-          chatVisibilityChange: () => _toggleChatVisibility(context),
-          clubCode: _gameInfoModel.clubCode,
         ),
       ),
     );
@@ -753,6 +759,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     if (_gameInfoModel?.tableStatus == AppConstants.GAME_RUNNING) {
       // query current hand to get game update
       WidgetsBinding.instance.addPostFrameCallback((_) {
+        log('network_reconnect: queryCurrentHand invoked');
         _gameContextObj.handActionProtoService.queryCurrentHand();
       });
     }
@@ -805,6 +812,12 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         // header view
         headerView,
 
+        // RoundRectButton(
+        //     text: 'Refresh',
+        //     onTap: () {
+        //       log('RedrawTop: on refresh');
+        //       _gameState.redrawTop();
+        //     }),
         // seperator
         // SizedBox(width: width, height: divider1 / 2),
 
@@ -817,6 +830,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
         // main board view
         Consumer<RedrawTopSectionState>(builder: (_, ___, __) {
+          log('RedrawTop: Rebuilding top section');
           return _buildBoardView(boardDimensions, tableScale);
         }),
 
@@ -829,6 +843,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       children.addAll([
         // footer section
         Consumer<RedrawFooterSectionState>(builder: (_, ___, __) {
+          log('RedrawFooter: building footer view');
           return FooterViewWidget(
             gameCode: widget.gameCode,
             gameContextObject: _gameContextObj,
@@ -926,6 +941,17 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     );
   }
 
+  void _reconnectGameComService() async {
+    log('network_reconnect: _reconnectGameComService invoked');
+    final nats = context.read<Nats>();
+
+    // drop connections -> re establish connections
+    await _gameComService.reconnect(nats);
+
+    // query current hand
+    _queryCurrentHandIfNeeded();
+  }
+
   @override
   Widget build(BuildContext context) {
     if (TestService.isTesting) {
@@ -949,6 +975,11 @@ class _GamePlayScreenState extends State<GamePlayScreen>
                   GamePlayScreenUtilMethods.floatingActionButton(
                 onReload: () {},
               ),
+              // floating button to refresh network TEST
+              // floatingActionButton: FloatingActionButton(
+              //   child: Icon(Icons.android_rounded),
+              //   onPressed: _reconnectGameComService,
+              // ),
               resizeToAvoidBottomInset: true,
               backgroundColor: Colors.transparent,
               body: _buildBody(theme),
@@ -1011,9 +1042,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     if (_gameState != null) {
       _voiceTextPlayer?.pause();
       _gameState.janusEngine?.leaveChannel();
-      if (_gameState.useAgora) {
-        _gameState.agoraEngine?.leaveChannel();
-      }
+      // if (_gameState.useAgora) {
+      //   _gameState.agoraEngine?.leaveChannel();
+      // }
       _gameContextObj.leaveAudio();
     }
   }

@@ -220,20 +220,20 @@ class GamePlayScreenUtilMethods {
 
   static Future<PlayerStatus> joinGame({
     @required BuildContext context,
-    @required int seatPos,
+    @required Seat seat,
     @required String gameCode,
     @required GameState gameState,
   }) async {
-    assert(seatPos != null);
+    assert(seat != null);
 
-    developer.log('joining game with seat no $seatPos');
+    developer.log('joining game with seat no ${seat.serverSeatPos}');
 
     try {
       ConnectionDialog.show(context: context, loadingText: "Joining...");
       // if setPos is -1 that means block this function call
-      if (seatPos == -1) return PlayerStatus.NOT_PLAYING;
+      if (seat.serverSeatPos == -1) return PlayerStatus.NOT_PLAYING;
 
-      int seatNumber = seatPos;
+      int seatNumber = seat.serverSeatPos;
       debugLog(gameCode,
           'Player ${gameState.currentPlayer.name} joining at seat $seatNumber');
       final newPlayerModel = await GameService.takeSeat(gameCode, seatNumber,
@@ -373,11 +373,6 @@ class GamePlayScreenUtilMethods {
           * is used only when QUERY_CURRENT_HAND message is processed */
       ListenableProvider<RemainingTime>(
         create: (_) => RemainingTime(),
-      ),
-
-      /* Provider to deal with host seat change functionality */
-      ListenableProvider<SeatChangeNotifier>(
-        create: (_) => seatChangeProvider,
       ),
 
       /* for game chat notifications - unread messages, counts */

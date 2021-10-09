@@ -2,26 +2,40 @@ import 'dart:developer';
 
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/services/audio/audio_service.dart';
+import 'package:pokerapp/services/game_play/graphql/seat_change_service.dart';
+import 'package:provider/provider.dart';
 
-class OpenSeat extends StatelessWidget {
-  final int seatPos;
-  final Function(int) onUserTap;
+class OpenSeat extends StatefulWidget {
+  final Seat seat;
+  final Function(Seat) onUserTap;
   final bool seatChangeInProgress;
   final bool seatChangeSeat;
+
   const OpenSeat({
-    this.seatPos,
+    this.seat,
     this.onUserTap,
     this.seatChangeInProgress,
     this.seatChangeSeat,
+//    this.seatChangeNotifier,
     Key key,
   }) : super(key: key);
 
+  @override
+  State<OpenSeat> createState() => _OpenSeatState();
+}
+
+class _OpenSeatState extends State<OpenSeat> {
+  bool dragEnter = false;
+
   Widget _openSeat(AppTheme theme) {
-    if (seatChangeInProgress && seatChangeSeat) {
-      log('open seat $seatChangeInProgress');
+    if (widget.seatChangeInProgress && widget.seatChangeSeat) {
+      log('RedrawFooter: open seat ${widget.seatChangeInProgress}');
       return Padding(
         padding: const EdgeInsets.all(5),
         child: DefaultTextStyle(
@@ -57,18 +71,17 @@ class OpenSeat extends StatelessWidget {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final theme = AppTheme.getTheme(context);
+  Widget openSeatWidget(AppTheme theme, List<BoxShadow> shadow) {
     return InkWell(
         splashColor: theme.secondaryColor,
         borderRadius: BorderRadius.circular(16),
         onTap: () {
-          log('Pressed $seatPos');
+          log('Pressed ${widget.seat.seatPos.toString()}');
           AudioService.playClickSound();
-          this.onUserTap(seatPos);
+          this.widget.onUserTap(widget.seat);
         },
         child: Container(
+          key: UniqueKey(),
           width: 45.0,
           height: 45.0,
           child: Stack(
@@ -78,18 +91,76 @@ class OpenSeat extends StatelessWidget {
             ],
           ),
           decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: theme.primaryColorWithDark(),
-              boxShadow: [
-                BoxShadow(
-                  color: theme.accentColor,
-                  blurRadius: 1,
-                  spreadRadius: 1,
-                  offset: Offset(1, 0),
-                ),
-              ]
-              //color: Colors.blue[900],
-              ),
+            shape: BoxShape.circle,
+            color: theme.primaryColorWithDark(),
+            boxShadow: shadow,
+            //color: Colors.blue[900],
+          ),
         ));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final gameState = GameState.getState(context);
+    log('SeatChange: OpenSeat build  ${widget.seat.serverSeatPos} ${widget.seatChangeInProgress} hostSeatChange: ${gameState.hostSeatChangeInProgress}');
+
+    final theme = AppTheme.getTheme(context);
+
+    return Consumer<SeatChangeNotifier>(builder: (_, scn, __) {
+      List<BoxShadow> shadow = [
+        BoxShadow(
+          color: theme.accentColor,
+          blurRadius: 1,
+          spreadRadius: 1,
+          offset: Offset(1, 0),
+        )
+      ];
+      List<BoxShadow> seatChangeShadow = getShadow(scn, dragEnter, theme);
+      if (seatChangeShadow.length > 0) {
+        shadow = seatChangeShadow;
+      }
+
+      return DragTarget(onLeave: (data) {
+        log('SeatChange: OpenSeat onLeave ${data}');
+        dragEnter = false;
+        setState(() {});
+        return true;
+      }, onWillAccept: (data) {
+        log('SeatChange: OpenSeat onWillAccept ${data}');
+        dragEnter = true;
+        setState(() {});
+        return true;
+      }, onAccept: (data) {
+        log('SeatChange: OpenSeat onDropped ${data}');
+        // call the API to make the seat change
+        SeatChangeService.hostSeatChangeMove(
+          gameState.gameCode,
+          data,
+          widget.seat.serverSeatPos,
+        );
+      }, builder: (context, List<int> candidateData, rejectedData) {
+        log('RedrawFooter: Open seat');
+        return openSeatWidget(theme, shadow);
+      });
+    });
+  }
+
+  List<BoxShadow> getShadow(
+    SeatChangeNotifier hostSeatChange,
+    //bool isFeedback,
+    bool dragEnter,
+    AppTheme theme,
+  ) {
+    if (widget.seatChangeInProgress && dragEnter) {
+      return [
+        BoxShadow(
+          color: Colors.blue,
+          blurRadius: 10.0,
+          spreadRadius: 30,
+        )
+      ];
+    } else {
+      return [];
+    }
   }
 }

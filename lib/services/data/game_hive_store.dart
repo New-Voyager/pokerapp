@@ -47,7 +47,7 @@ if (now - lastHandTime) > 10*60 {
 */
 
 int kDefaultDiamonds = 5;
-int kDefaultTimebankSecs = 5;
+int kDefaultTimebankSecs = 10;
 
 class GameHiveStore {
   Box _gameBox;
@@ -108,10 +108,14 @@ class GameHiveStore {
 
   Future<void> clearTimebank() => _gameBox.put(_TIMEBANK, 0);
 
-  Future<bool> deductTimebank({int num = 5}) async {
-    if (getTimeBankTime() < num) return false;
+  Future<bool> deductTimebank({int num = 10}) async {
+    int availableTime = getTimeBankTime();
+    if (availableTime < num) return false;
 
     await _addTimeToTimeBank(-num);
+    if (getTimeBankTime() > AppConstants.maxTimeBankSecs) {
+      _gameBox.put(_TIMEBANK, AppConstants.maxTimeBankSecs - num);
+    }
     return true;
   }
 

@@ -31,6 +31,16 @@ class AudioService {
     play = true;
   }
 
+  static stopSound() {
+    if (audioPlayer != null) {
+      try {
+        audioPlayer.stop();
+      } catch (err) {
+        // ignore the error
+      }
+    }
+  }
+
   static Future<void> init() async {
     if (audioPlayer == null) {
       audioPlayer = new AudioPlayer();

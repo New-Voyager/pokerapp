@@ -112,7 +112,7 @@ class GameHistoryItem extends StatelessWidget {
                                 /* Game type */
                                 Flexible(
                                   child: Text(
-                                    item.GameType,
+                                    item.gameTypeStr,
                                     style: const TextStyle(
                                       color: Colors.white,
                                       fontSize: 19.0,

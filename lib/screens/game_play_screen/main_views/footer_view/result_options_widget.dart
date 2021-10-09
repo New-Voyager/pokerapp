@@ -32,19 +32,46 @@ class ResultOptionsWidget extends StatelessWidget {
     return Consumer2<HandResultState, RabbitState>(
       builder: (context, vnfs, rb, __) {
         bool _showEye = false;
+        log('ResultOption: Notified');
         if (gameState.mySeat != null && !gameState.mySeat.player.inhand) {
+          log('ResultOption: gameState.mySeat != null && !gameState.mySeat.player.inhand');
           return Container();
         }
 
         if (gameState.handState != HandState.RESULT) {
+          log('ResultOption: gameState.handState != HandState.RESULT');
           return Container();
         }
         // Eye: To mark all cards to be revealed
         // If we are in result and this player is a winner, then we show his cards
         // So there is no need to show the eye icon
-        _showEye = gameState.handState == HandState.RESULT;
-        if (gameState.mySeat.player.winner) {
-          _showEye = false;
+
+        // show eye
+        if (!gameState.wonAtShowdown) {
+          log('ResultOption: gameState.wonAtShowdown');
+          // not in show down, show eye
+          _showEye = true;
+        } else {
+          log('ResultOption: 2 gameState.wonAtShowdown');
+          // in showdown
+          // if the player is a winner, then the cards are shown, no need for eye
+          if (gameState.mySeat != null) {
+            log('ResultOption: gameState.mySeat != null');
+            if (gameState.mySeat.player.winner) {
+              log('ResultOption: gameState.mySeat.player.winner');
+              _showEye = false;
+            } else {
+              log('ResultOption: !gameState.mySeat.player.winner');
+              // player is not a winner
+              // if the player does not muck his cards, then the cards are already shown
+              if (!gameState.mySeat.player.muckLosingHand) {
+                log('ResultOption: !gameState.mySeat.player.muckLosingHand');
+                _showEye = false;
+              } else {
+                _showEye = true;
+              }
+            }
+          }
         }
 
         bool _showRabbit = false;

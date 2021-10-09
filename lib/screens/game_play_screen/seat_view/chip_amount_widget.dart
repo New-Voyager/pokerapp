@@ -42,7 +42,7 @@ class _ChipAmountWidgetState extends State<ChipAmountWidget>
     with AfterLayoutMixin<ChipAmountWidget> {
   @override
   Widget build(BuildContext context) {
-    log('ChipAmountWidget: Rebuilding ChipAmountWidget seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos}');
+    log('ChipAmountWidget: Rebuilding ChipAmountWidget seat ${widget.seat.seatPos.toString()} position: ${widget.seat.potViewPos}');
 
     bool showBet = false;
     Offset offset = Offset.zero;
@@ -52,8 +52,8 @@ class _ChipAmountWidgetState extends State<ChipAmountWidget>
 
     Map<SeatPos, Offset> betAmountPos = boardAttributesObject.betAmountPosition;
 
-    if (betAmountPos[widget.seat.uiSeatPos] != null) {
-      offset = betAmountPos[widget.seat.uiSeatPos];
+    if (betAmountPos[widget.seat.seatPos] != null) {
+      offset = betAmountPos[widget.seat.seatPos];
     }
 
     if (widget.seat.betWidgetPos == null) {
@@ -117,7 +117,7 @@ class _ChipAmountWidgetState extends State<ChipAmountWidget>
 
     final widthSep = SizedBox(width: 2.0);
 
-    final SeatPos seatPos = widget.seat.uiSeatPos;
+    final SeatPos seatPos = widget.seat.seatPos;
     children.add(coin);
     children.add(widthSep);
     children.add(amount);
@@ -171,33 +171,36 @@ class _ChipAmountWidgetState extends State<ChipAmountWidget>
     //   return;
     // }
 
-    final potKey = widget.boardAttributesObject.potKey; //.getPotsKey(0);
-    log('333 ChipAmountWidget: 3 afterFirstLayout potKey: $potKey ChipAmountWidget seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos}');
+    // final potKey = widget.boardAttributesObject.potKey; //.getPotsKey(0);
+    // log('333 ChipAmountWidget: 3 afterFirstLayout potKey: $potKey ChipAmountWidget seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos}');
 
-    if (potKey == null || potKey.currentContext == null) {
-      log('444 ChipAmountWidget: Rebuilding ChipAmountWidget seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos} potKey: $potKey');
+    // if (potKey == null || potKey.currentContext == null) {
+    //   log('444 ChipAmountWidget: Rebuilding ChipAmountWidget seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos} potKey: $potKey');
 
-      // log('potViewPos: 3 return afterFirstLayout ChipAmountWidget seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos} potKey: ${potKey} potKey.currentContext: ${potKey.currentContext}');
-      return;
-    }
+    //   // log('potViewPos: 3 return afterFirstLayout ChipAmountWidget seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos} potKey: ${potKey} potKey.currentContext: ${potKey.currentContext}');
+    //   return;
+    // }
 
-    // log('pauldebug: CALCULATING SEAT POS');
+    // // log('pauldebug: CALCULATING SEAT POS');
 
-    //  log('potViewPos: 4 afterFirstLayout ChipAmountWidget seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos}');
-    final RenderBox potViewBox = potKey.currentContext.findRenderObject();
-    final potViewPos = potViewBox.localToGlobal(Offset(0, 0));
+    // //  log('potViewPos: 4 afterFirstLayout ChipAmountWidget seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos}');
+    // final RenderBox potViewBox = potKey.currentContext.findRenderObject();
+    // final potViewPos = potViewBox.localToGlobal(Offset(0, 0));
+    final potViewPos = widget.boardAttributesObject.potGlobalPos;
     final RenderBox box = context.findRenderObject();
-    widget.seat.potViewPos = box.globalToLocal(potViewPos);
+    if (box != null && potViewPos != null) {
+      widget.seat.potViewPos = box.globalToLocal(potViewPos);
+    }
     // log('potViewPos: Setting potViewPos for seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos}');
   }
 
   @override
   void afterFirstLayout(BuildContext context) {
-    log('111 ChipAmountWidget: Rebuilding ChipAmountWidget seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos}');
+    log('111 ChipAmountWidget: Rebuilding ChipAmountWidget seat ${widget.seat.seatPos.toString()} position: ${widget.seat.potViewPos}');
 
+    calculatePotViewPos(context);
     if (widget.recalculatingNeeded.value || widget.seat.potViewPos == null) {
-      log('222 ChipAmountWidget: Rebuilding ChipAmountWidget seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos}');
-      calculatePotViewPos(context);
+      log('222 ChipAmountWidget: Rebuilding ChipAmountWidget seat ${widget.seat.seatPos.toString()} position: ${widget.seat.potViewPos}');
       // widget.recalculatingNeeded.value = false;
 
       Future.delayed(const Duration(seconds: 2)).then((_) {

@@ -16,23 +16,21 @@ class ReplayHandGameView extends StatelessWidget {
     var boardDimensions = BoardView.dimensions(context, isBoardHorizontal);
 
     return Stack(
+      clipBehavior: Clip.none,
       alignment: Alignment.topCenter,
       children: [
         /* background view */
         BackgroundView(),
 
         /* main board with players */
-        Positioned(
-          bottom: 10,
-          child: Container(
-            width: boardDimensions.width,
-            height: boardDimensions.height,
-            child: BoardView(
-              gameComService: null,
-              gameInfo: gameInfoModel,
-              onUserTap: (_) {},
-              onStartGame: () {},
-            ),
+        Container(
+          width: boardDimensions.width,
+          height: boardDimensions.height,
+          child: BoardView(
+            gameComService: null,
+            gameInfo: gameInfoModel,
+            onUserTap: (_) {},
+            onStartGame: () {},
           ),
         ),
       ],

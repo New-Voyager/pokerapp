@@ -19,7 +19,7 @@ import 'package:pokerapp/widgets/nameplate.dart';
 import 'package:provider/provider.dart';
 
 class NamePlateWidget extends StatelessWidget {
-  final GlobalKey globalKey;
+  final Key globalKey;
   final Seat seat;
   final BoardAttributesObject boardAttributes;
 
@@ -34,6 +34,8 @@ class NamePlateWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final gameState = GameState.getState(context);
+    log('SeatChange: Player build drag: ${seat.dragEntered}');
     return Consumer3<SeatChangeNotifier, GameContextObject, AppTheme>(
       key: globalKey,
       builder: (
@@ -45,18 +47,21 @@ class NamePlateWidget extends StatelessWidget {
       ) {
         Widget displayWidget;
 
-        if (gameContextObject.isHost() && hostSeatChange.seatChangeInProgress) {
-          log('SeatChange: Seat change in progress: building seat [${seat.serverSeatPos}]');
+        if (gameContextObject.isHost() && gameState.hostSeatChangeInProgress) {
+          log('SeatChange: Seat change in progress: building seat [${seat.seatPos.toString()}]');
           displayWidget = Draggable(
             data: seat.serverSeatPos,
-            onDragEnd: (_) {
-              hostSeatChange.onSeatDragEnd();
+            onDragEnd: (DraggableDetails details) {
+              log('SeatChange: Drag ended [${seat.seatPos.toString()} player: ${seat.player?.name}}]');
+              seat.dragEntered = false;
+              hostSeatChange.onSeatDragEnd(details);
             },
             onDragStarted: () {
-              hostSeatChange.onSeatDragStart(seat.serverSeatPos);
+              log('SeatChange: Dragging [${seat.seatPos.toString()} player: ${seat.player?.name}}]');
+              hostSeatChange.onSeatDragStart(seat);
             },
             onDraggableCanceled: (_, __) {
-              hostSeatChange.onSeatDragEnd();
+              hostSeatChange.onSeatDragEnd(null);
             },
             feedback: buildSeat(
               context,
@@ -113,24 +118,24 @@ class NamePlateWidget extends StatelessWidget {
         //log('SeatChange: [${seat.serverSeatPos}] Seat change in progress');
         SeatChangeStatus seatChangeStatus;
         // are we dragging?
-        if (seat.serverSeatPos != null) {
+        if (seat != null) {
           seatChangeStatus =
-              hostSeatChange.allSeatChangeStatus[seat.serverSeatPos];
+              hostSeatChange.allSeatChangeStatus[seat.localSeatPos];
         }
         if (seatChangeStatus != null) {
           if (seatChangeStatus.isDragging || isFeedback) {
-            log('SeatChange: [${seat.serverSeatPos}] seatChangeStatus.isDragging: ${seatChangeStatus.isDragging} isFeedback: $isFeedback');
+            log('SeatChange: Dragging [${seat.localSeatPos}] seatChangeStatus.isDragging: ${seatChangeStatus.isDragging} isFeedback: $isFeedback');
             shadow = BoxShadow(
               color: Colors.green,
               blurRadius: 20.0,
               spreadRadius: 8.0,
             );
-          } else if (seatChangeStatus.isDropAble) {
-            log('SeatChange: [${seat.serverSeatPos}] seatChangeStatus.isDropAble: ${seatChangeStatus.isDropAble} isFeedback: $isFeedback');
+          } else if (seat.dragEntered ?? false) {
+            log('SeatChange: [${seat.localSeatPos}] seatChangeStatus.isDropAble: ${seatChangeStatus.isDropAble} isFeedback: $isFeedback');
             shadow = BoxShadow(
               color: Colors.blue,
               blurRadius: 20.0,
-              spreadRadius: 8.0,
+              spreadRadius: 30.0,
             );
           }
         }
@@ -150,8 +155,17 @@ class NamePlateWidget extends StatelessWidget {
     bool isFeedBack = false,
     bool childWhenDragging = false,
   }) {
-    // log('rebuild seat ${seat.serverSeatPos}');
-    final shadow = getShadow(hostSeatChange, isFeedBack, theme);
+    log('SeatChange: Player ${seat.serverSeatPos} dragEnter: ${seat.dragEntered}');
+    List<BoxShadow> shadow = getShadow(hostSeatChange, isFeedBack, theme);
+    if (seat.dragEntered ?? false) {
+      shadow = [
+        BoxShadow(
+          color: Colors.blue,
+          blurRadius: 20.0,
+          spreadRadius: 30.0,
+        )
+      ];
+    }
 
     Widget plateWidget;
 
@@ -180,27 +194,49 @@ class NamePlateWidget extends StatelessWidget {
     // Size svgSize = Size(400, 240);
     Size progressRatio = Size(1.0, 1.0);
     if (seat.player?.highlight ?? false) {
-      int total = seat.actionTimer.getTotalTime();
-      // log('Nameplate: total: $total progress: ${seat.actionTimer.getProgressTime()}');
-      int progressTime = 0;
-      plateWidget = CountdownMs(
-          totalSeconds: seat.actionTimer.getTotalTime(),
-          currentSeconds: seat.actionTimer.getProgressTime(),
-          build: (_, time) {
-            seat.actionTimer.setProgressTime(time ~/ 1000);
-            int currentProgress = time ~/ 1000;
-            if (progressTime != currentProgress) {
-              // log('Nameplate: total: $total progress: ${currentProgress}');
-              progressTime = currentProgress;
-            }
-            return Nameplate.fromSvgString(
-                remainingTime: time.toInt(),
-                totalTime: total * 1000, // in milliseconds
-                svg: namePlateStr,
-                size: containerSize,
-                progressPath: progressPathStr,
-                progressRatio: progressRatio);
-          });
+      plateWidget = Consumer<ActionTimerState>(builder: (_, __, ___) {
+        int total = seat.actionTimer.getTotalTime();
+        // log('Nameplate: total: $total progress: ${seat.actionTimer.getProgressTime()}');
+        int lastRemainingTime = seat.actionTimer.getRemainingTime();
+        int progressTime = seat.actionTimer.getTotalTime() -
+            seat.actionTimer.getRemainingTime();
+        log('ActionTimer: progress seat no: ${seat.serverSeatPos} action timer: ${seat.actionTimer.getTotalTime()} remainingTime: ${seat.actionTimer.getRemainingTime()} progress time: ${progressTime}');
+        // if (seat.serverSeatPos == 1) {
+        // }
+        bool first = true;
+
+        return CountdownMs(
+            key: UniqueKey(),
+            totalSeconds: seat.actionTimer.getTotalTime(),
+            currentSeconds: progressTime,
+            build: (_, time) {
+              int remainingTime = time.toInt();
+              if (first) {
+                if (seat.serverSeatPos == 1) {
+                  log('ActionTimer: (first) progress seat no: ${seat.serverSeatPos} action timer: ${total} remainingTime: ${lastRemainingTime} progress time: ${progressTime}');
+                }
+              }
+              first = false;
+              int currentProgressInSecs = (total * 1000 - time) ~/ 1000;
+              int remainingTimeInSecs = remainingTime ~/ 1000;
+              //seat.actionTimer.setRemainingTime(time ~/ 1000);
+              if (seat.serverSeatPos == 1) {
+                if (lastRemainingTime != remainingTimeInSecs) {
+                  log('ActionTimer: progress seat no: ${seat.serverSeatPos} action timer: ${total} remainingTime: ${remainingTimeInSecs} progress: ${currentProgressInSecs}');
+                  lastRemainingTime = remainingTimeInSecs;
+                }
+              }
+
+              return Nameplate.fromSvgString(
+                  remainingTime: time
+                      .toInt(), // seat.actionTimer.getRemainingTime()*1000, //time.toInt(),
+                  totalTime: total * 1000, // in milliseconds
+                  svg: namePlateStr,
+                  size: containerSize,
+                  progressPath: progressPathStr,
+                  progressRatio: progressRatio);
+            });
+      });
     } else {
       plateWidget = Nameplate.fromSvgString(
           remainingTime: 0,
@@ -256,17 +292,19 @@ class NamePlateWidget extends StatelessWidget {
       ],
     );
 
+    log('SeatView: Nameplate build ${seat.serverSeatPos}:L${seat.localSeatPos} pos: ${seat.seatPos.toString()} player: ${seat.player?.name} highlight: ${seat.player?.highlight}');
+
     //Widget plateWidget;
     if (seat.player?.highlight ?? false) {
-      int current = seat.actionTimer.getProgressTime();
+      int current = seat.actionTimer.getRemainingTime();
       int total = seat.actionTimer.getTotalTime();
       plateWidget = CountdownMs(
           totalSeconds: total,
-          currentSeconds: current,
+          currentSeconds: total - seat.actionTimer.getRemainingTime(),
           build: (_, time) {
             double value = (time / (total * 1000));
             double percent = 1 - value;
-            seat.actionTimer.setProgressTime(time ~/ 1000);
+            seat.actionTimer.setRemainingTime(time ~/ 1000);
             Animation<Color> color =
                 AlwaysStoppedAnimation<Color>(Colors.green);
             if (percent >= 0.75) {
@@ -313,6 +351,10 @@ class NamePlateWidget extends StatelessWidget {
   }
 
   Widget bottomWidget(BuildContext context, AppTheme theme) {
+    if (seat.player == null) {
+      return Container();
+    }
+
     if (seat.player.inBreak &&
         seat.player.breakTimeExpAt != null &&
         !seat.player.isMe) {

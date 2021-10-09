@@ -33,10 +33,10 @@ class GameReplayActionService {
     final gameState = GameState.getState(_context);
 
     if (_close) return;
-    final player = gameState.fromSeat(action.action.seatNo);
+    final seat = gameState.getSeat(action.action.seatNo);
+    final player = seat.player;
 
     if (_close) return;
-    final seat = gameState.getSeat(action.action.seatNo);
 
     assert(player != null && seat != null);
 

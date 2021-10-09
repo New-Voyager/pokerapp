@@ -149,7 +149,7 @@ class _FooterViewState extends State<FooterView>
       log('Customize: _buildMainView');
 
       bool showOptionsButtons = false;
-      log('Status: My state is changed.');
+      log('StatusOptions: My state is changed. ');
       if (me != null && me.player != null) {
         if (me.player.inBreak) {
           //log('footerview: building status option widget: IN BREAK');
@@ -160,14 +160,15 @@ class _FooterViewState extends State<FooterView>
         } else if (me.player.missedBlind) {
           showOptionsButtons = true;
         }
-      } else if (!gameState.isPlaying) {
+      } else {
+        log('StatusOptions:gameState.gameInfo.waitlistAllowed: ${gameState.gameInfo.waitlistAllowed}');
         if (gameState.gameInfo.waitlistAllowed) {
           // observer
           showOptionsButtons = true;
         }
       }
       if (showOptionsButtons) {
-        log('Status: building status option widget');
+        log('StatusOptions: building status option widget');
         return StatusOptionsWidget(gameState: gameState);
       }
 
@@ -229,12 +230,10 @@ class _FooterViewState extends State<FooterView>
     // FIXME: REBUILD-FIX: need to check if seat change prompts are rebuilding as expected
     return Consumer<SeatChangeNotifier>(
       builder: (_, hostSeatChange, __) {
-        final bool seatChangeInProgress = hostSeatChange.seatChangeInProgress ||
-            gameState.hostSeatChangeInProgress;
-
-        final bool showSeatChangeConfirmWidget = seatChangeInProgress &&
-            isHost &&
-            !gameState.playerSeatChangeInProgress;
+        final bool showSeatChangeConfirmWidget =
+            gameState.hostSeatChangeInProgress &&
+                isHost &&
+                !gameState.playerSeatChangeInProgress;
 
         return showSeatChangeConfirmWidget
             ? Align(
@@ -281,6 +280,10 @@ class _FooterViewState extends State<FooterView>
       // the player can join the waitlist
       log('Player is not playing, but can join waitlist');
       children.add(_buildMainView(gameState));
+
+      /* seat confirm widget */
+      children.add(_buildSeatConfirmWidget(context));
+
       /* hand analyse view */
       children.add(_buildHandAnalyseView(context));
       /* communication widgets */

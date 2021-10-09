@@ -136,64 +136,67 @@ class _MessagesPageViewState extends State<MessagesPageView>
             titleText: _appScreenText['clubChat'],
             subTitleText: "${widget.clubCode}",
           ),
-          body: Column(
-            children: [
-              /* main view to show messages */
-              Expanded(
-                child: StreamBuilder<List<ClubMessageModel>>(
-                  stream: ClubMessageService.pollMessages(widget.clubCode),
-                  builder: (_, snapshot) {
-                    if (snapshot.hasError || _players == null)
-                      return CircularProgressWidget(
-                        text: _appScreenText['loadingMessages'],
-                      );
-
-                    if (snapshot.data?.isEmpty ?? true)
-                      return NoMessageWidget();
-
-                    messages = snapshot.data;
-                    var mess = _convert();
-
-                    return ListView.separated(
-                      reverse: true,
-                      padding: const EdgeInsets.all(5),
-                      itemBuilder: (_, int index) {
-                        return MessageItem(
-                          messageModel: mess[index],
-                          currentUser: _authModel,
-                          players: _players,
+          body: SafeArea(
+            child: Column(
+              children: [
+                /* main view to show messages */
+                Expanded(
+                  child: StreamBuilder<List<ClubMessageModel>>(
+                    stream: ClubMessageService.pollMessages(widget.clubCode),
+                    builder: (_, snapshot) {
+                      if (snapshot.hasError || _players == null)
+                        return CircularProgressWidget(
+                          text: _appScreenText['loadingMessages'],
                         );
-                      },
-                      separatorBuilder: (_, __) => const SizedBox(height: 5.0),
-                      itemCount: snapshot.data.length,
-                    );
-                  },
-                ),
-              ),
 
-              // chat text field
-              ChatTextField(
-                icon: FontAwesomeIcons.icons,
-                appScreenText: _appScreenText,
-                onGifSelectTap: () => _openGifDrawer(theme),
-                textEditingController: _textController,
-                onSend: _sendMessage,
-                onEmojiSelectTap: _onEmojiSelectTap,
-                onTap: _onTap,
-              ),
+                      if (snapshot.data?.isEmpty ?? true)
+                        return NoMessageWidget();
 
-              // emoji picker
-              ValueListenableBuilder<bool>(
-                valueListenable: _vnShowEmojiPicker,
-                builder: (_, showEmojiPicker, __) => showEmojiPicker
-                    ? EmojiPicker(
-                        onEmojiSelected: (String emoji) {
-                          _textController.text += emoji;
+                      messages = snapshot.data;
+                      var mess = _convert();
+
+                      return ListView.separated(
+                        reverse: true,
+                        padding: const EdgeInsets.all(5),
+                        itemBuilder: (_, int index) {
+                          return MessageItem(
+                            messageModel: mess[index],
+                            currentUser: _authModel,
+                            players: _players,
+                          );
                         },
-                      )
-                    : const SizedBox.shrink(),
-              ),
-            ],
+                        separatorBuilder: (_, __) =>
+                            const SizedBox(height: 5.0),
+                        itemCount: snapshot.data.length,
+                      );
+                    },
+                  ),
+                ),
+
+                // chat text field
+                ChatTextField(
+                  icon: FontAwesomeIcons.icons,
+                  appScreenText: _appScreenText,
+                  onGifSelectTap: () => _openGifDrawer(theme),
+                  textEditingController: _textController,
+                  onSend: _sendMessage,
+                  onEmojiSelectTap: _onEmojiSelectTap,
+                  onTap: _onTap,
+                ),
+
+                // emoji picker
+                ValueListenableBuilder<bool>(
+                  valueListenable: _vnShowEmojiPicker,
+                  builder: (_, showEmojiPicker, __) => showEmojiPicker
+                      ? EmojiPicker(
+                          onEmojiSelected: (String emoji) {
+                            _textController.text += emoji;
+                          },
+                        )
+                      : const SizedBox.shrink(),
+                ),
+              ],
+            ),
           ),
         ),
       ),

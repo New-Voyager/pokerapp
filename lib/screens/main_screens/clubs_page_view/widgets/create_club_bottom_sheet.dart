@@ -92,15 +92,14 @@ class _CreateClubBottomSheetState extends State<CreateClubBottomSheet> {
                           separator20,
                           /* club name */
                           Text(
-                            _appScreenText['NAME'],
-                            style:
-                                AppDecorators.getSubtitle3Style(theme: theme),
+                            _appScreenText['name'],
+                            style: AppDecorators.getSubtitleStyle(theme: theme),
                           ),
                           separator5,
                           CardFormTextField(
                             theme: theme,
                             elevation: 0.0,
-                            hintText: _appScreenText['NAME'],
+                            hintText: _appScreenText['nameHint'],
                             validator: (String val) => val.trim().isEmpty
                                 ? _appScreenText['YOUMUSSTPROVIDEANAME']
                                 : null,
@@ -112,14 +111,13 @@ class _CreateClubBottomSheetState extends State<CreateClubBottomSheet> {
                           /* club description */
                           Text(
                             _appScreenText['description'],
-                            style:
-                                AppDecorators.getSubtitle3Style(theme: theme),
+                            style: AppDecorators.getSubtitleStyle(theme: theme),
                           ),
                           separator5,
                           CardFormTextField(
                             theme: theme,
                             elevation: 0.0,
-                            hintText: _appScreenText['DESCRIPTION'],
+                            hintText: _appScreenText['descriptionHint'],
                             validator: (String val) => val.trim().isEmpty
                                 ? _appScreenText['YOUMUSTPROVIDEDESCRIPTION']
                                 : null,

@@ -65,7 +65,7 @@ class GameModelNew {
   }
 
   // Util methods
-  static String getGameTypeStr(String str) {
+  /* static String getGameTypeStr(String str) {
     AppTextScreen _appTextScreen = getAppTextScreen("gameType");
     String gameTypeStr = "";
     switch (str) {
@@ -96,6 +96,7 @@ class GameModelNew {
     return gameTypeStr;
   }
 
+   */
   static String getGameTypeImageAsset(String str) {
     switch (str) {
       case 'HOLDEM':
