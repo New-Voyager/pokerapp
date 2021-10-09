@@ -7,8 +7,7 @@ class AppAssetsNew {
   static const String pathGameTypeChipImage =
       "assets/images/cards/livegame_chip.png";
 
-  static const String logoImage =
-      "assets/images/logo.png";
+  static const String logoImage = "assets/images/logo.png";
 
   static String pathLiveGameItemBackground =
       "assets/images/cards/livegames_background.png";

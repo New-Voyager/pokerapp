@@ -63,7 +63,7 @@ class NetworkChangeListener {
     log('network_reconnect onConnectivityChanged: $result');
 
     // if we are already checking for internet, return
-    if (_checkForInternetInProgress || !_startedListening) { 
+    if (_checkForInternetInProgress || !_startedListening) {
       return;
     }
     _checkForInternetInProgress = true;

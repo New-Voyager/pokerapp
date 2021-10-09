@@ -627,6 +627,16 @@ class GameState {
     this._playerSettings.runItTwiceEnabled = settings.runItTwiceEnabled;
   }
 
+  bool get isTableFull {
+    for (int i = 1; i <= _gameInfo.maxPlayers; i++) {
+      final seat = getSeat(i);
+      if (seat.player == null) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   void redrawTop() {
     for (var seat in this._seats) {
       seat.potViewPos = null;

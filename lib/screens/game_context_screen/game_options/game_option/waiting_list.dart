@@ -7,6 +7,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/models/waiting_list_model.dart';
+import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/services/game_play/graphql/waitlist_service.dart';
@@ -233,12 +234,21 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
               if (isInWaitingList) {
                 bool result =
                     await WaitlistService.addToWaitList(widget.gameCode);
+                if (result) {
+                  widget.gameState.gameInfo.playerGameStatus =
+                      AppConstants.IN_QUEUE;
+                }
                 print("result = $result");
               } else {
                 bool result =
                     await WaitlistService.removeFromWaitlist(widget.gameCode);
+                if (result) {
+                  widget.gameState.gameInfo.playerGameStatus =
+                      AppConstants.NOT_PLAYING;
+                }
                 print("result check $result");
               }
+              widget.gameState.redrawFooter();
               getAllWaitingPlayers();
             },
           ));

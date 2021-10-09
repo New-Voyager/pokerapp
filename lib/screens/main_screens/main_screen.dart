@@ -82,7 +82,8 @@ class _MainScreenState extends State<MainScreen>
       await natsClient.init(_currentPlayer.channel);
       log('\n\n*********** Player UUID: ${_currentPlayer.uuid} ***********\n\n');
 
-      _networkChangeListener = Provider.of<NetworkChangeListener>(context, listen: false);
+      _networkChangeListener =
+          Provider.of<NetworkChangeListener>(context, listen: false);
       _networkChangeListener.startListening();
 
       // register for notification service

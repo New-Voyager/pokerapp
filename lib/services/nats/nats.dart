@@ -1,15 +1,8 @@
-import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:pokerapp/models/pending_approvals.dart';
-import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/util_service.dart';
 import 'package:pokerapp/services/nats/message.dart';
-import 'package:pokerapp/utils/formatter.dart';
-import 'package:pokerapp/routes.dart';
-import 'package:pokerapp/main.dart';
-import 'package:provider/provider.dart';
 
 import 'client.dart';
 import 'subscription.dart';
@@ -22,9 +15,9 @@ class Nats {
   Subscription _playerSub;
   BuildContext _providerContext;
   Map<String, Subscription> _clubSubs = Map<String, Subscription>();
-  Function (String) playerNotifications;
-  Function (String) clubNotifications;
-  
+  Function(String) playerNotifications;
+  Function(String) clubNotifications;
+
   Nats(this._providerContext);
 
   Future<void> reconnect() async {
@@ -90,7 +83,7 @@ class Nats {
   }
 
   void reconnectClubMessages() {
-    for(final clubCode in _clubSubs.keys) {
+    for (final clubCode in _clubSubs.keys) {
       String clubChannel = 'club.$clubCode';
       Subscription clubSub = this.subClient.sub(clubChannel);
       _clubSubs[clubChannel] = clubSub;
