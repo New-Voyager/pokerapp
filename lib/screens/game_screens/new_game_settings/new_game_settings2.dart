@@ -358,21 +358,21 @@ class NewGameSettings2 extends StatelessWidget {
       builder: (BuildContext context, _) {
         final NewGameModelProvider gmp = context.read<NewGameModelProvider>();
 
-        // Load default values if it is not from Saved Settings.
-        if (savedModel == null) {
-          // Initializing values
-          // Initial value for BigBlind
-          gmp.blinds.bigBlind = 2.0;
-          // Initial value for Buyin Min and max
-          gmp.buyInMin = 30;
-          gmp.buyInMax = 100;
-          gmp.rakePercentage = 0;
-          gmp.rakeCap = 0;
-          gmp.buyInWaitTime = 120;
-        } else {
-          gmp.blinds = Blinds(bigBlind: savedModel.bigBlind);
-          gmp.settings = savedModel;
-        }
+        // // Load default values if it is not from Saved Settings.
+        // if (savedModel == null) {
+        //   // Initializing values
+        //   // Initial value for BigBlind
+        //   gmp.blinds.bigBlind = 2.0;
+        //   // Initial value for Buyin Min and max
+        //   gmp.buyInMin = 30;
+        //   gmp.buyInMax = 100;
+        //   gmp.rakePercentage = 0;
+        //   gmp.rakeCap = 0;
+        //   gmp.buyInWaitTime = 120;
+        // } else {
+        //   gmp.blinds = Blinds(bigBlind: savedModel.bigBlind);
+        //   gmp.settings = savedModel;
+        // }
 
         return Container(
           decoration: AppDecorators.bgRadialGradient(theme),
