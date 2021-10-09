@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_fgbg/flutter_fgbg.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/main.dart';
@@ -49,6 +50,14 @@ class NotificationHandler {
   AndroidNotificationDetails _androidDetails;
   IOSNotificationDetails _iosDetails;
   NotificationDetails _notificationDetails;
+  FGBGType _currentAppState;
+
+  NotificationHandler() {
+    FGBGEvents.stream.listen((event) {
+      _currentAppState = event;
+      log('notifications:: app state: $event');
+    });
+  }
 
   void register() async {
     // Get the token each time the application loads
@@ -67,6 +76,9 @@ class NotificationHandler {
   }
 
   void playerNotifications(String message) {
+    // if app is in background, return
+    if (_currentAppState == FGBGType.background) return;
+
     dynamic json = jsonDecode(message);
     handlePlayerMessage(json, background: false, firebase: false);
   }
@@ -103,8 +115,10 @@ class NotificationHandler {
     print('_onTapNotification = $payload');
   }
 
-  Future _showNotification(RemoteMessage message,
-      {bool background = false}) async {
+  Future _showNotification(
+    RemoteMessage message, {
+    bool background = false,
+  }) async {
     if (message.data['type'].toString() == null) {
       return;
     }
@@ -202,8 +216,11 @@ class NotificationHandler {
     log('Registered for push notifications');
   }
 
-  void handlePlayerMessage(Map<String, dynamic> json,
-      {bool background = false, bool firebase = false}) {
+  void handlePlayerMessage(
+    Map<String, dynamic> json, {
+    bool background = false,
+    bool firebase = false,
+  }) {
     String messageId = json['requestId'];
     if (messageId == null) {
       return;
