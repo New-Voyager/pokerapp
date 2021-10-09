@@ -49,6 +49,7 @@ class NotificationHandler {
   AndroidNotificationDetails _androidDetails;
   IOSNotificationDetails _iosDetails;
   NotificationDetails _notificationDetails;
+  bool initialized = false;
 
   void register() async {
     // Get the token each time the application loads
@@ -208,14 +209,18 @@ class NotificationHandler {
     if (messageId == null) {
       return;
     }
+    String now = DateTime.now().toIso8601String();
+    log('[$now] Notification: backGround: $background firebase: $firebase Message: $messageId. _handledIds: ${_handledIds}');
     if (_handledIds.indexOf(messageId) != -1) {
       // we handled the message
       return;
+    } else {
+      _handledIds.add(messageId);
     }
-    if (_handledIds.length > 50) {
-      _handledIds.removeRange(0, 10);
+    if (_handledIds.length > 5) {
+      _handledIds.removeRange(0, 2);
     }
-    _handledIds.add(messageId);
+    log('[$now]***** Notification: backGround: $background firebase: $firebase Message: $messageId. _handledIds: ${_handledIds}');
 
     String type = json['type'];
     if (background) {
@@ -227,14 +232,14 @@ class NotificationHandler {
       if (type == 'WAITLIST_SEATING') {
         handleWaitlistNotifications(json);
       } else if (type == 'TEST_PUSH') {
-        handleTestMessage(json);
+        // handleTestMessage(json);
       }
     }
   }
 
   void showMessageInBin(Map<String, dynamic> json) {
     String body = 'This is test message';
-    _plugin.show(0, 'PokerClubApp', body, this._notificationDetails);
+    _plugin.show(0, 'PokerClubApp', body, this._notificationDetails); //, payload: jsonEncode(json));
   }
 
   Future<void> handleTestMessage(Map<String, dynamic> json) async {
@@ -298,6 +303,7 @@ Future<void> firebaseBackgroundMessageHandler(RemoteMessage message) async {
   print('message type = ${message.data['type']}');
   print('message text = ${message.data['text']}');
   print('message title = ${message.data['title']}');
+  notificationHandler._initLocalNotifications();
   notificationHandler.handlePlayerMessage(message.data,
       background: true, firebase: true);
 
