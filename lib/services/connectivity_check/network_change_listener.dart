@@ -15,7 +15,6 @@ class NetworkChangeListener {
   StreamSubscription<DataConnectionStatus> _internetSub;
 
   bool _checkForInternetInProgress = false;
-  bool _startedListening = false;
 
   NetworkConnectionDialog _dialog;
 
@@ -63,9 +62,8 @@ class NetworkChangeListener {
     log('network_reconnect onConnectivityChanged: $result');
 
     // if we are already checking for internet, return
-    if (_checkForInternetInProgress || !_startedListening) {
-      return;
-    }
+    if (_checkForInternetInProgress) return;
+
     _checkForInternetInProgress = true;
 
     // this call waits for indefinite amount of time - until we get internet access
@@ -115,9 +113,10 @@ class NetworkChangeListener {
 
   NetworkChangeListener() {
     log('NetworkChangeListener :: constructor');
+    _startListening();
   }
 
-  void startListening() {
+  void _startListening() {
     // setup data connection checker
     _initDataConnectionChecker();
 
@@ -133,7 +132,6 @@ class NetworkChangeListener {
     _connectivity
         .checkConnectivity()
         .then((result) => _connectivityCheck(result));
-    _startedListening = true;
   }
 
   void dispose() {

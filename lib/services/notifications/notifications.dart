@@ -77,6 +77,7 @@ class NotificationHandler {
   }
 
   void playerNotifications(String message) {
+    log('playerNotifications: $message');
     // if app is in background, return
     if (_currentAppState == FGBGType.background) return;
 

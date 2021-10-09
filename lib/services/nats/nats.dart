@@ -21,6 +21,9 @@ class Nats {
   Nats(this._providerContext);
 
   Future<void> reconnect() async {
+    // if we dont have the player channel yet, dont call reconnect wait for init
+    if (_playerChannel == null) return;
+
     log('network_reconnect: Nats reconnect method invoked');
 
     close();

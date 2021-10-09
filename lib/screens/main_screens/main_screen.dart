@@ -53,7 +53,7 @@ class _MainScreenState extends State<MainScreen>
   PlayerInfo _currentPlayer;
   int _navPos = 0;
   Nats _nats;
-  NetworkChangeListener _networkChangeListener;
+  // NetworkChangeListener _networkChangeListener;
 
   Future<void> _init() async {
     log('Initialize main screen');
@@ -79,12 +79,13 @@ class _MainScreenState extends State<MainScreen>
       );
       final natsClient = Provider.of<Nats>(context, listen: false);
       _nats = natsClient;
+      log('main_screen :: _currentPlayer.channel : ${_currentPlayer.channel}');
       await natsClient.init(_currentPlayer.channel);
       log('\n\n*********** Player UUID: ${_currentPlayer.uuid} ***********\n\n');
 
-      _networkChangeListener =
-          Provider.of<NetworkChangeListener>(context, listen: false);
-      _networkChangeListener.startListening();
+      // _networkChangeListener =
+      //     Provider.of<NetworkChangeListener>(context, listen: false);
+      // _networkChangeListener.startListening();
 
       // register for notification service
       await notificationHandler.register();
@@ -148,9 +149,9 @@ class _MainScreenState extends State<MainScreen>
       playerState.close();
     }
 
-    if (_networkChangeListener != null) {
-      _networkChangeListener.dispose();
-    }
+    // if (_networkChangeListener != null) {
+    //   _networkChangeListener.dispose();
+    // }
 
     if (_nats != null) {
       _nats.close();
