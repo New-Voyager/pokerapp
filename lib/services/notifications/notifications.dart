@@ -96,19 +96,24 @@ class NotificationHandler {
     //_showNotification(message, background: true);
   }
 
-  FlutterLocalNotificationsPlugin _initLocalNotifications() {
+  Future<FlutterLocalNotificationsPlugin> _initLocalNotifications() async {
     if (_plugin != null) {
       return _plugin;
     }
 
-    var androidSettings = AndroidInitializationSettings('logo');
+    var androidSettings = AndroidInitializationSettings('ic_notification_bell');
     var iosSettings = IOSInitializationSettings();
-    var initializationSettings =
-        InitializationSettings(android: androidSettings, iOS: iosSettings);
+    var initializationSettings = InitializationSettings(
+      android: androidSettings,
+      iOS: iosSettings,
+    );
 
     var flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-    flutterLocalNotificationsPlugin.initialize(initializationSettings,
-        onSelectNotification: _onTapNotification);
+    await flutterLocalNotificationsPlugin.initialize(
+      initializationSettings,
+      onSelectNotification: _onTapNotification,
+    );
+
     _plugin = flutterLocalNotificationsPlugin;
     return _plugin;
   }
@@ -156,7 +161,7 @@ class NotificationHandler {
     }
     final notificationDetails =
         NotificationDetails(android: androidDetails, iOS: iosDetails);
-    final flutterLocalNotificationsPlugin = _initLocalNotifications();
+    final flutterLocalNotificationsPlugin = await _initLocalNotifications();
 
     String title;
     String body;
@@ -203,8 +208,8 @@ class NotificationHandler {
     }
   }
 
-  void _registerPushNotifications() {
-    _initLocalNotifications();
+  void _registerPushNotifications() async {
+    await _initLocalNotifications();
 
     // registering for background messages
     FirebaseMessaging.onBackgroundMessage(firebaseBackgroundMessageHandler);
@@ -250,15 +255,38 @@ class NotificationHandler {
       if (type == 'WAITLIST_SEATING') {
         handleWaitlistNotifications(json);
       } else if (type == 'TEST_PUSH') {
-        // handleTestMessage(json);
+        handleTestMessage(json);
       }
     }
   }
 
-  void showMessageInBin(Map<String, dynamic> json) {
+  void showMessageInBin(Map<String, dynamic> json) async {
     String body = 'This is test message';
-    _plugin.show(0, 'PokerClubApp', body,
-        this._notificationDetails); //, payload: jsonEncode(json));
+
+    final androidSettings =
+        AndroidInitializationSettings('ic_notification_bell');
+    final iosSettings = IOSInitializationSettings();
+    final initializationSettings = InitializationSettings(
+      android: androidSettings,
+      iOS: iosSettings,
+    );
+
+    final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+
+    final _androidDetails = AndroidNotificationDetails(
+        "com.voyagerent.pokerapp.channel", "pokerapp", "Poker App Channel",
+        sound: RawResourceAndroidNotificationSound('check'), playSound: true);
+    final _iosDetails = IOSNotificationDetails();
+    final _notificationDetails =
+        NotificationDetails(android: _androidDetails, iOS: _iosDetails);
+
+    flutterLocalNotificationsPlugin.show(
+      1232,
+      'PokerClubApp',
+      body,
+      _notificationDetails,
+    ); //, payload: jsonEncode(json));
   }
 
   Future<void> handleTestMessage(Map<String, dynamic> json) async {
@@ -322,7 +350,7 @@ Future<void> firebaseBackgroundMessageHandler(RemoteMessage message) async {
   print('message type = ${message.data['type']}');
   print('message text = ${message.data['text']}');
   print('message title = ${message.data['title']}');
-  notificationHandler._initLocalNotifications();
+  await notificationHandler._initLocalNotifications();
   notificationHandler.handlePlayerMessage(message.data,
       background: true, firebase: true);
 
