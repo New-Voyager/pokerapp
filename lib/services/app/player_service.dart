@@ -158,6 +158,9 @@ class PlayerService {
         return null;
       }
     }
+    if (result.data == null) {
+      return null;
+    }
 
     if (result.data['approvals'] == null) {
       return null;
