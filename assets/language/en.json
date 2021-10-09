@@ -309,7 +309,13 @@
         "changeClubDescription": "Change club description",
         "changeClubPicture": "Change Club Picture",
         "CHANGECLUBNAME": "Change Club Name",
-        "CHANGEDESCRIPTION": "Change Descripton"
+        "CHANGEDESCRIPTION": "Change Descripton",
+        "SAVE" : "Save",
+        "ENTERTEXT" : "Enter text",
+        "UPDATINGDETAILS" : "Updating details...",
+        "CLUBDETAILSUPDATED": "Club details updated",
+        "FAILEDTOUPDATECLUBDETAILS" : "Updation failed!",
+        "SHOWHIGHRANKSTATS": "Show high rank card stats"
     },
     "bookmarkedHands": {
         "SUCCESS": "SUCCESS",

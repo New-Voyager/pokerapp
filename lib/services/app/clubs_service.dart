@@ -6,6 +6,7 @@ import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/announcement_model.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/models/club_model.dart';
+import 'package:pokerapp/models/club_update_input_model.dart';
 import 'package:pokerapp/models/club_weekly_activity_model.dart';
 import 'package:pokerapp/models/host_message_summary_model.dart';
 import 'package:pokerapp/models/messages_from_member.dart';
@@ -115,12 +116,18 @@ class ClubsService {
     }
   """;
 
+  // static String updateClubQuery = """
+  //   mutation (\$clubCode: String! \$description: String, \$name: String!) {
+  //     updateClub(clubCode: \$clubCode, club: {
+  //       name: \$name,
+  //       description: \$description,
+  //     })
+  // }
+  // """;
+
   static String updateClubQuery = """
-    mutation (\$clubCode: String! \$description: String, \$name: String!) {
-      updateClub(clubCode: \$clubCode, club: {
-        name: \$name,
-        description: \$description,
-      })
+    mutation (\$clubCode: String!, \$club: ClubUpdateInput!) {
+      updateClub(clubCode: \$clubCode, club: \$club)
   }
   """;
 
@@ -284,21 +291,42 @@ class ClubsService {
     return result.data['deleteClub'] ?? false;
   }
 
-  static Future<bool> updateClub(
-    String clubCode,
-    String name,
-    String description,
-  ) async {
+  // static Future<bool> updateClub(
+  //   String clubCode,
+  //   String name,
+  //   String description,
+  // ) async {
+  //   GraphQLClient _client = graphQLConfiguration.clientToQuery();
+  //   String _query = updateClubQuery;
+  //   Map<String, dynamic> variables = {
+  //     "name": name,
+  //     "description": description,
+  //     "clubCode": clubCode,
+  //   };
+
+  //   QueryResult result = await _client.mutate(
+  //     MutationOptions(document: gql(_query), variables: variables),
+  //   );
+
+  //   if (result.hasException) return false;
+
+  //   return result.data['updateClub'] ?? false;
+  // }
+
+  static Future<bool> updateClubInput(
+      String clubCode, ClubUpdateInput input) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
-    String _query = updateClubQuery;
     Map<String, dynamic> variables = {
-      "name": name,
-      "description": description,
       "clubCode": clubCode,
+      "club": {
+        "name": input.name,
+        "description": input.description,
+        "showHighRankStats": input.showHighRankStats
+      }
     };
 
     QueryResult result = await _client.mutate(
-      MutationOptions(document: gql(_query), variables: variables),
+      MutationOptions(document: gql(updateClubQuery), variables: variables),
     );
 
     if (result.hasException) return false;

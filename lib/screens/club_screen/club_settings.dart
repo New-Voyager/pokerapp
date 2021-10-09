@@ -1,7 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
+import 'package:pokerapp/models/club_update_input_model.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/models/user_update_input.dart';
@@ -16,6 +18,7 @@ import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
+import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
 import 'package:pokerapp/widgets/round_color_button.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
@@ -106,12 +109,17 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
                                   margin: EdgeInsets.symmetric(vertical: 16),
                                   child: CircleAvatar(
                                     backgroundColor: theme.fillInColor,
-                                    radius: 24,
-                                    child: Icon(
-                                      Icons.class__outlined,
-                                      size: 24,
-                                      color: theme.supportingColor,
-                                    ),
+                                    radius: 36,
+                                    child: _clubModel.picUrl.isEmpty
+                                        ? Text(
+                                            HelperUtils.getClubShortName(
+                                                _clubModel.clubName),
+                                            style:
+                                                AppDecorators.getHeadLine2Style(
+                                                    theme: theme),
+                                          )
+                                        : CachedNetworkImage(
+                                            imageUrl: _clubModel.picUrl),
                                   ),
                                 ),
                                 AppDimensionsNew.getHorizontalSpace(16),
@@ -214,9 +222,18 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   _buildRadio(
-                                      value: true,
-                                      label: "Show high rank card stats ",
-                                      onChange: (v) {},
+                                      value: _clubModel.showHighRankStats,
+                                      label:
+                                          _appScreenText['SHOWHIGHRANKSTATS'],
+                                      onChange: (v) async {
+                                        ClubUpdateInput input = ClubUpdateInput(
+                                          name: _clubModel.clubName,
+                                          description: _clubModel.description,
+                                          showHighRankStats: v,
+                                        );
+                                        await updateClubAPICall(input);
+                                        // Fetch user details from server
+                                      },
                                       theme: theme),
                                 ],
                               ),
@@ -257,7 +274,7 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
     String defaultText = type == SettingType.CLUB_NAME
         ? _clubModel.clubName
         : type == SettingType.CLUB_DESCRIPTION
-            ? _clubModel.clubName
+            ? _clubModel.description
             : "";
     _controller = TextEditingController(text: defaultText);
     final result = await showDialog(
@@ -265,9 +282,9 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
       builder: (context) => AlertDialog(
         backgroundColor: theme.fillInColor,
         title: Text(
-          type == UpdateType.SCREEN_NAME
+          type == SettingType.CLUB_NAME
               ? _appScreenText['CHANGECLUBNAME']
-              : type == UpdateType.DISPLAY_NAME
+              : type == SettingType.CLUB_DESCRIPTION
                   ? _appScreenText['CHANGEDESCRIPTION']
                   : "",
           style: AppDecorators.getSubtitle3Style(theme: theme),
@@ -277,7 +294,7 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
           children: [
             CardFormTextField(
               controller: _controller,
-              maxLines: 1,
+              maxLines: type == SettingType.CLUB_DESCRIPTION ? 4 : 1,
               hintText: _appScreenText['ENTERTEXT'],
               theme: theme,
             ),
@@ -297,37 +314,37 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
       ),
     );
     if (result != null && result.isNotEmpty) {
-      if (type == UpdateType.EMAIL) {
-        if (!RegExp(
-                r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
-            .hasMatch(result)) {
-          toast("$result ${_appScreenText['ISINVALIDEMAIL']}");
-          return;
-        }
-      }
-
-      PlayerUpdateInput input = PlayerUpdateInput(
-        name: type == UpdateType.SCREEN_NAME ? result : null,
-        displayName: type == UpdateType.DISPLAY_NAME ? result : null,
-        email: type == UpdateType.EMAIL ? result : null,
+      ClubUpdateInput input = ClubUpdateInput(
+        name: type == SettingType.CLUB_NAME ? result : _clubModel.clubName,
+        description: type == SettingType.CLUB_DESCRIPTION
+            ? result
+            : _clubModel.description,
+        showHighRankStats: type == SettingType.CLUB_SHOWHIGHRANK
+            ? result
+            : _clubModel.showHighRankStats,
       );
-      ConnectionDialog.show(
-          context: context,
-          loadingText: "${_appScreenText['UPDATINGDETAILS']}");
-      final res = await AuthService.updateUserDetails(input);
 
-      if (res != null && res == true) {
-        Alerts.showNotification(
-            titleText: "${_appScreenText['USERDETAILSUPDATED']}");
-      } else {
-        Alerts.showNotification(
-            titleText: "${_appScreenText['FAILEDTOUPDATEUSERDETAILS']}");
-      }
-      await _fetchClubInfo();
-      ConnectionDialog.dismiss(context: context);
+      await updateClubAPICall(input);
+
       //setState(() {});
     }
   }
+
+  updateClubAPICall(ClubUpdateInput input) async {
+    ConnectionDialog.show(
+        context: context, loadingText: "${_appScreenText['UPDATINGDETAILS']}");
+    final res = await ClubsService.updateClubInput(_clubModel.clubCode, input);
+
+    if (res != null && res == true) {
+      Alerts.showNotification(
+          titleText: "${_appScreenText['CLUBDETAILSUPDATED']}");
+    } else {
+      Alerts.showNotification(
+          titleText: "${_appScreenText['FAILEDTOUPDATECLUBDETAILS']}");
+    }
+    await _fetchClubInfo();
+    ConnectionDialog.dismiss(context: context);
+  }
 }
 
-enum SettingType { CLUB_NAME, CLUB_DESCRIPTION }
+enum SettingType { CLUB_NAME, CLUB_DESCRIPTION, CLUB_SHOWHIGHRANK }

@@ -6,26 +6,13 @@ import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
+import 'package:pokerapp/utils/utils.dart';
 
 class ClubBannerViewNew extends StatelessWidget {
   final ClubHomePageModel clubModel;
   final AppTextScreen appScreenText;
 
   ClubBannerViewNew({@required this.clubModel, @required this.appScreenText});
-
-  String _getClubShortName() {
-    String clubName = clubModel.clubName;
-    var clubNameSplit = clubName.split(' ');
-    if (clubNameSplit.length >= 2)
-      return '${clubNameSplit[0].substring(0, 1)}${clubNameSplit[1].substring(0, 1)}'
-          .toUpperCase();
-
-    try {
-      return '${clubName.substring(0, 2)}'.toUpperCase();
-    } catch (e) {
-      return clubName.toUpperCase();
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +40,7 @@ class ClubBannerViewNew extends StatelessWidget {
           ),
           alignment: Alignment.center,
           child: Text(
-            _getClubShortName(),
+            HelperUtils.getClubShortName(clubModel.clubName),
             style: AppDecorators.getHeadLine2Style(theme: theme),
           ),
         ),
