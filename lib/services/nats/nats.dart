@@ -94,7 +94,7 @@ class Nats {
   void reconnectClubMessages() {
     for (final clubCode in _clubSubs.keys) {
       String clubChannel = 'club.$clubCode';
-      Subscription clubSub = this.subClient.sub(clubChannel);
+      Subscription clubSub = this.clientSub.sub(clubChannel);
       _clubSubs[clubChannel] = clubSub;
       clubSub.stream.listen((Message message) {
         if (clubNotifications != null) {
