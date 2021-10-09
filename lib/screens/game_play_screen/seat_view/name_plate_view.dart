@@ -4,9 +4,11 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
+import 'package:pokerapp/models/game_play_models/ui/nameplate_object.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
@@ -160,8 +162,14 @@ class NamePlateWidget extends StatelessWidget {
 </svg>
     """;
 
-    String progressPathStr =
-        "M199.6 10H387.7V231.9H9.9V10H199.6Z";
+    String progressPathStr = "M199.6 10H387.7V231.9H9.9V10H199.6Z";
+
+    if (seat.player.isMe) {
+      final gameState = GameState.getState(context);
+      NamePlateDesign nameplate = gameState.assets.getNameplate();
+      namePlateStr = nameplate.svg;
+      progressPathStr = nameplate.path;
+    }
 
 /*
 [log] Timer remaining: 6698 total: 30 current: 23

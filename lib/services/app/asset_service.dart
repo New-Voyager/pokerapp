@@ -5,21 +5,25 @@ import 'dart:developer';
 import 'package:path/path.dart' as path;
 
 import 'package:path_provider/path_provider.dart';
+import 'package:pokerapp/models/game_play_models/ui/nameplate_object.dart';
 import 'package:pokerapp/resources/app_config.dart';
 import 'package:http/http.dart' as http;
 import 'package:pokerapp/services/data/asset_hive_store.dart';
 import 'package:archive/archive_io.dart';
 import 'package:pokerapp/services/data/user_settings_store.dart';
+import 'package:flutter/services.dart' as rootBundle;
 
 class AssetService {
   AssetService._();
   static AssetHiveStore hiveStore;
   static List<Asset> assets = [];
+  static List<NamePlateDesign> nameplates = [];
 
   static Future<void> refresh() async {
     try {
       // Fetch assets from server
       List<Asset> assets = await getAssets();
+      nameplates = await importNameplates();
 
       hiveStore = await getStore();
       // Sync assets with server
@@ -195,10 +199,21 @@ class AssetService {
     return ret;
   }
 
+  static Future<List<NamePlateDesign>> importNameplates() async {
+    final jsondata =
+        await rootBundle.rootBundle.loadString("assets/json/nameplates.json");
+    final List list = json.decode(jsondata)["nameplates"] as List;
+    return list.map((e) => NamePlateDesign.fromMap(e)).toList();
+  }
+
   static Future<void> putAssetIntoHive(Asset asset, {String id}) async {
     if (asset != null) {
       await hiveStore.put(asset, id: id ?? asset.id);
     }
+  }
+
+  static List<NamePlateDesign> getNameplates() {
+    return nameplates;
   }
 
   static Future<void> putAsset(Asset asset, {String id}) async {
@@ -209,6 +224,10 @@ class AssetService {
 
   static Asset getAssetForId(String id) {
     return hiveStore.get(id);
+  }
+
+  static NamePlateDesign getNameplateForId(String id) {
+    return nameplates.firstWhere((element) => element.id == id, orElse: null);
   }
 
   static Future<void> updateBundledAssets() async {

@@ -65,11 +65,11 @@ class Nameplate extends StatelessWidget {
           clipBehavior: Clip.hardEdge,
           child: SizedBox.fromSize(
             size: Size(size.width, size.height),
-            child:  SvgPicture.string(
-                    svg,
-                  width: size.width,
-                height: size.height,
-              ),
+            child: SvgPicture.string(
+              svg,
+              width: size.width,
+              height: size.height,
+            ),
           ),
         ));
 
@@ -140,7 +140,8 @@ class FilledPathPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final Rect pathBounds = path.getBounds();
+    // final Rect pathBounds = path.getBounds();
+    final Rect pathBounds = Rect.fromLTRB(0, 0, 400, 240);
     final transformedPath = path;
     Size viewBoxSize = Size(
         size.width * progressRatio.width, size.height * progressRatio.height);
@@ -191,7 +192,7 @@ class FilledPathPainter extends CustomPainter {
           Paint()
             ..color = progressColor
             ..style = PaintingStyle.stroke
-            ..strokeWidth = 20);
+            ..strokeWidth = 15);
     }
   }
 
