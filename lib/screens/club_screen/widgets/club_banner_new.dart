@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
@@ -21,28 +22,39 @@ class ClubBannerViewNew extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Container(
-          height: 80.pw,
-          width: 80.pw,
+          width: 80.dp,
+          height: 80.dp,
+          clipBehavior: Clip.hardEdge,
+          padding: EdgeInsets.all(4),
           decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(
-              width: 3.pw,
-              color: theme.secondaryColor,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: theme.primaryColor,
-                blurRadius: 1.pw,
-                spreadRadius: 1.pw,
-                offset: Offset(1.pw, 4.pw),
+              shape: BoxShape.circle,
+              border: Border.all(
+                width: 3.pw,
+                color: theme.secondaryColor,
               ),
-            ],
-          ),
+              boxShadow: [
+                BoxShadow(
+                  color: theme.primaryColor,
+                  blurRadius: 1.pw,
+                  spreadRadius: 1.pw,
+                  offset: Offset(1.pw, 4.pw),
+                ),
+              ],
+              image: clubModel.picUrl.isEmpty
+                  ? null
+                  : DecorationImage(
+                      image: CachedNetworkImageProvider(
+                        clubModel.picUrl,
+                      ),
+                      fit: BoxFit.cover,
+                    )),
           alignment: Alignment.center,
-          child: Text(
-            HelperUtils.getClubShortName(clubModel.clubName),
-            style: AppDecorators.getHeadLine2Style(theme: theme),
-          ),
+          child: clubModel.picUrl.isEmpty
+              ? Text(
+                  HelperUtils.getClubShortName(clubModel.clubName),
+                  style: AppDecorators.getHeadLine2Style(theme: theme),
+                )
+              : SizedBox.shrink(),
         ),
         Padding(
           padding: EdgeInsets.only(top: 8.0.pw),

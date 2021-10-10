@@ -93,39 +93,49 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
                         margin:
                             EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                         padding:
-                            EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                            EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                        width: MediaQuery.of(context).size.width,
                         child: Column(
                           children: [
                             Column(
                               children: [
                                 Container(
-                                  alignment: Alignment.center,
+                                  width: 80.dp,
+                                  height: 80.dp,
+                                  clipBehavior: Clip.hardEdge,
+                                  padding: EdgeInsets.all(4),
                                   decoration: BoxDecoration(
-                                    boxShadow: [
-                                      BoxShadow(
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                        width: 3.pw,
                                         color: theme.secondaryColor,
-                                        spreadRadius: 2,
-                                        blurRadius: 3,
-                                        offset: Offset(0, 1),
                                       ),
-                                    ],
-                                    shape: BoxShape.circle,
-                                  ),
-                                  margin: EdgeInsets.symmetric(vertical: 16),
-                                  child: CircleAvatar(
-                                    backgroundColor: theme.fillInColor,
-                                    radius: 36,
-                                    child: _clubModel.picUrl.isEmpty
-                                        ? Text(
-                                            HelperUtils.getClubShortName(
-                                                _clubModel.clubName),
-                                            style:
-                                                AppDecorators.getHeadLine2Style(
-                                                    theme: theme),
-                                          )
-                                        : CachedNetworkImage(
-                                            imageUrl: _clubModel.picUrl),
-                                  ),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: theme.primaryColor,
+                                          blurRadius: 1.pw,
+                                          spreadRadius: 1.pw,
+                                          offset: Offset(1.pw, 4.pw),
+                                        ),
+                                      ],
+                                      image: _clubModel.picUrl.isEmpty
+                                          ? null
+                                          : DecorationImage(
+                                              image: CachedNetworkImageProvider(
+                                                _clubModel.picUrl,
+                                              ),
+                                              fit: BoxFit.cover,
+                                            )),
+                                  alignment: Alignment.center,
+                                  child: _clubModel.picUrl.isEmpty
+                                      ? Text(
+                                          HelperUtils.getClubShortName(
+                                              _clubModel.clubName),
+                                          style:
+                                              AppDecorators.getHeadLine2Style(
+                                                  theme: theme),
+                                        )
+                                      : SizedBox.shrink(),
                                 ),
                                 AppDimensionsNew.getHorizontalSpace(16),
                                 Container(
@@ -369,6 +379,7 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
       var res = await request.send();
       if (mounted) {
         ConnectionDialog.dismiss(context: context);
+        await _fetchClubInfo();
       }
     } else {
       log("Somethinfg Went worng!");
