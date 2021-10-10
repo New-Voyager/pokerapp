@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
+import 'package:flutter_html/flutter_html.dart';
 
 class PrivacyPolicyScreen extends StatefulWidget {
   final String title;
-  const PrivacyPolicyScreen({Key key, this.title}) : super(key: key);
+  final String text;
+  const PrivacyPolicyScreen({Key key, this.title, this.text}) : super(key: key);
 
   @override
   _PrivacyPolicyScreenState createState() => _PrivacyPolicyScreenState();
@@ -36,6 +38,9 @@ Vivamus non pretium arcu. Integer sed eleifend purus, eget convallis felis. Duis
 
   @override
   Widget build(BuildContext context) {
+    if (widget.text != null) {
+      text = widget.text;
+    }
     final theme = AppTheme.getTheme(context);
     return Container(
       decoration: AppDecorators.bgRadialGradient(theme),
@@ -50,10 +55,13 @@ Vivamus non pretium arcu. Integer sed eleifend purus, eget convallis felis. Duis
           body: SingleChildScrollView(
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: Text(
-                text,
-                style: AppDecorators.getHeadLine4Style(theme: theme),
+              child: Html(
+                data: text,
               ),
+              // child: Text(
+              //   text,
+              //   style: AppDecorators.getHeadLine4Style(theme: theme),
+              // ),
             ),
           ),
         ),
