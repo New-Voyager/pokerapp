@@ -119,7 +119,7 @@ class ClubActionButtonNew extends StatelessWidget {
                 );
               }
               break;
-               case ClubActions.SETTINGS:
+            case ClubActions.SETTINGS:
               Navigator.pushNamed(
                 context,
                 Routes.club_settings,

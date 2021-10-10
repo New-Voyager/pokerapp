@@ -89,7 +89,6 @@ class ClubActionsNew extends StatelessWidget {
   }
 
   ClubActionButtonNew getSettingsWidget(AppTheme theme) {
-   
     return ClubActionButtonNew(
       this._clubHomePageModel,
       ClubActions.SETTINGS,
@@ -98,11 +97,8 @@ class ClubActionsNew extends StatelessWidget {
         "assets/images/club/message_host.svg",
         color: theme.accentColor,
       ),
-     
     );
   }
-
- 
 
   @override
   Widget build(BuildContext context) {

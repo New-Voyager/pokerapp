@@ -473,7 +473,7 @@ class ClubsService {
     // log('query result: ${result.exception}');
 
     if (result.hasException) {
-        return false;
+      return false;
     }
 
     return result.data['ret'] ?? false;

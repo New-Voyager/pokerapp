@@ -110,7 +110,9 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
                                   decoration: BoxDecoration(
                                       shape: BoxShape.circle,
                                       border: Border.all(
-                                        width: 3.pw,
+                                        width: _clubModel.picUrl.isEmpty
+                                            ? 3.pw
+                                            : 0,
                                         color: theme.secondaryColor,
                                       ),
                                       boxShadow: [
@@ -405,7 +407,7 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
           children: [
             CardFormTextField(
               controller: _controller,
-              maxLines: type == SettingType.CLUB_DESCRIPTION ? 4 : 1,
+              maxLines: type == SettingType.CLUB_DESCRIPTION ? 8 : 1,
               hintText: _appScreenText['ENTERTEXT'],
               theme: theme,
             ),

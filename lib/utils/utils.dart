@@ -296,7 +296,6 @@ class HelperUtils {
   }
 
   static String getClubShortName(String clubName) {
-    
     var clubNameSplit = clubName.split(' ');
     if (clubNameSplit.length >= 2)
       return '${clubNameSplit[0].substring(0, 1)}${clubNameSplit[1].substring(0, 1)}'

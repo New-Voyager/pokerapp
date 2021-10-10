@@ -73,8 +73,9 @@ showErrorDialog(BuildContext context, String title, String error,
   );
 }
 
-Future<bool> showPrompt(
-    BuildContext context, String title, String message,{String positiveButtonText = "Ok", String negativeButtonText="Cancel"}) async {
+Future<bool> showPrompt(BuildContext context, String title, String message,
+    {String positiveButtonText = "Ok",
+    String negativeButtonText = "Cancel"}) async {
   Color titleColor = Colors.white;
   // show a popup
   final AppTheme theme = AppTheme.getTheme(context);

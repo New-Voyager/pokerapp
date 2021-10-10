@@ -247,7 +247,7 @@
         "descriptionHint": "Club description"
     },
     "clubMainScreenNew": {
-        "CREATEGAME": "+ Create Game",
+        "hostGame": "Host Game",
         "CLUBCODE": "Club code",
         "CLUBCODECOPIEDTOCLIPBOARD": "Club code copied to clipboard",
         "LIVEGAMES": "Live Games",
@@ -305,10 +305,10 @@
         "clubChat": "Club chat",
         "loadingMessages": "Loading messages",
         "searchTenorGifs": "Search Tenor Gifs",
-        "changeClubName": "Change club name",
-        "changeClubDescription": "Change club description",
-        "changeClubPicture": "Change Club Picture",
-        "CHANGECLUBNAME": "Change Club Name",
+        "changeClubName": "Change Name",
+        "changeClubDescription": "Change Description",
+        "changeClubPicture": "Change Picture",
+        "CHANGECLUBNAME": "Change Name",
         "CHANGEDESCRIPTION": "Change Descripton",
         "SAVE": "Save",
         "ENTERTEXT": "Enter text",

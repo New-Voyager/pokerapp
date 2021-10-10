@@ -18,6 +18,28 @@ class ClubBannerViewNew extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = AppTheme.getTheme(context);
+    final decoration = BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(
+          width: clubModel.picUrl.isEmpty ? 3.pw : 0,
+          color: theme.secondaryColor,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: theme.primaryColor,
+            blurRadius: 1.pw,
+            spreadRadius: 1.pw,
+            offset: Offset(1.pw, 4.pw),
+          ),
+        ],
+        image: clubModel.picUrl.isEmpty
+            ? null
+            : DecorationImage(
+                image: CachedNetworkImageProvider(
+                  clubModel.picUrl,
+                ),
+                fit: BoxFit.cover,
+              ));
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -26,28 +48,7 @@ class ClubBannerViewNew extends StatelessWidget {
           height: 80.dp,
           clipBehavior: Clip.hardEdge,
           padding: EdgeInsets.all(4),
-          decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                width: 3.pw,
-                color: theme.secondaryColor,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: theme.primaryColor,
-                  blurRadius: 1.pw,
-                  spreadRadius: 1.pw,
-                  offset: Offset(1.pw, 4.pw),
-                ),
-              ],
-              image: clubModel.picUrl.isEmpty
-                  ? null
-                  : DecorationImage(
-                      image: CachedNetworkImageProvider(
-                        clubModel.picUrl,
-                      ),
-                      fit: BoxFit.cover,
-                    )),
+          decoration: decoration,
           alignment: Alignment.center,
           child: clubModel.picUrl.isEmpty
               ? Text(

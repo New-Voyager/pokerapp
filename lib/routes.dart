@@ -223,7 +223,7 @@ class Routes {
           ),
         );
 
-         case club_settings:
+      case club_settings:
         var clubHomePageModel = settings.arguments as ClubHomePageModel;
         return _getPageRoute(
           routeName: settings.name,

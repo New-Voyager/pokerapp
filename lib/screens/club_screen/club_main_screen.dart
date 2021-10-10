@@ -110,7 +110,7 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew>
                                 );
                               }
                             },
-                            text: _appScreenText['CREATEGAME'],
+                            text: _appScreenText['hostGame'],
                             backgroundColor: theme.accentColor,
                             textColor: theme.primaryColorWithDark(),
                           ),
