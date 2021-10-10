@@ -363,7 +363,8 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
             "${AppConfig.apiUrl}/upload",
           ));
       log("REQUEST : ${request.url}");
-      request.files.add(await MultipartFile.fromPath('image', image.path));
+      request.files.add(await MultipartFile.fromPath('file', image.path));
+      request.fields['clubCode'] = widget.clubModel.clubCode;
 
       var res = await request.send();
       if (mounted) {
