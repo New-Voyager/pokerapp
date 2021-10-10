@@ -1,15 +1,8 @@
-import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:pokerapp/models/pending_approvals.dart';
-import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/util_service.dart';
 import 'package:pokerapp/services/nats/message.dart';
-import 'package:pokerapp/utils/formatter.dart';
-import 'package:pokerapp/routes.dart';
-import 'package:pokerapp/main.dart';
-import 'package:provider/provider.dart';
 
 import 'client.dart';
 import 'subscription.dart';
@@ -26,14 +19,20 @@ class Nats {
   Subscription _playerSub;
   BuildContext _providerContext;
   Map<String, Subscription> _clubSubs = Map<String, Subscription>();
+  Function(String) playerNotifications;
+  Function(String) clubNotifications;
 
   Nats(this._providerContext);
 
   Future<void> reconnect() async {
+    // if we dont have the player channel yet, dont call reconnect wait for init
+    if (_playerChannel == null) return;
+
     log('network_reconnect: Nats reconnect method invoked');
 
     close();
     await init(_playerChannel);
+    reconnectClubMessages();
   }
 
   Future<void> init(String playerChannel) async {
@@ -92,6 +91,19 @@ class Nats {
     return this._playerChannel;
   }
 
+  void reconnectClubMessages() {
+    for (final clubCode in _clubSubs.keys) {
+      String clubChannel = 'club.$clubCode';
+      Subscription clubSub = this.clientSub.sub(clubChannel);
+      _clubSubs[clubChannel] = clubSub;
+      clubSub.stream.listen((Message message) {
+        if (clubNotifications != null) {
+          clubNotifications(message.string);
+        }
+      });
+    }
+  }
+
   subscribeClubMessages(String clubCode) {
     String clubChannel = 'club.$clubCode';
     if (_clubSubs.containsKey(clubChannel)) {
@@ -101,6 +113,11 @@ class Nats {
     Subscription clubSub = this._clientSub.sub(clubChannel);
     _clubSubs[clubChannel] = clubSub;
     clubSub.stream.listen((Message message) {
+      if (clubNotifications != null) {
+        clubNotifications(message.string);
+      }
+
+      /*
       log('message in club channel: ${message.string}');
       dynamic json = jsonDecode(message.string);
       String changed = json['changed'];
@@ -111,6 +128,7 @@ class Nats {
       if (changed == 'CLUB_CHAT') {
         // club chat message
       }
+      */
     });
   }
 
@@ -133,6 +151,11 @@ class Nats {
         }      
       */
       log('message in player channel: ${message.string}');
+      if (playerNotifications != null) {
+        playerNotifications(message.string);
+      }
+
+      /*
       dynamic json = jsonDecode(message.string);
       String type = json['type'].toString();
       String gameCode = json['gameCode'].toString();
@@ -163,6 +186,7 @@ class Nats {
           );
         }
       }
+      */
     });
   }
 }
