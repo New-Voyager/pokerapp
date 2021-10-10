@@ -115,32 +115,6 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
 
     return Consumer<AppTheme>(
       builder: (_, theme, __) {
-        // Widget backDrop;
-        // if (initialized) {
-        //   if (_selectedTable == null) {
-        //     backDrop = CircularProgressWidget(text: "Downloading...");
-        //   } else {
-        //     if (_selectedDrop.bundled ?? false) {
-        //       backDrop = Image.asset(
-        //         _selectedDrop?.downloadedPath,
-        //         fit: BoxFit.scaleDown,
-        //         width: size.width,
-        //       );
-        //     } else {
-        //       if (!_selectedDrop.downloaded) {
-        //         backDrop = CircularProgressWidget(text: "Downloading...");
-        //       } else {
-        //         backDrop = Image.file(
-        //           File(_selectedDrop?.downloadedPath ?? ""),
-        //           fit: BoxFit.scaleDown,
-        //           width: size.width,
-        //         );
-        //       }
-        //     }
-        //   }
-        // } else {
-        //   backDrop = CircularProgressWidget(text: "Downloading...");
-        // }
         final boardView = _buildTopView(theme);
         return Container(
           decoration: AppDecorators.bgRadialGradient(theme),
@@ -291,6 +265,8 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
                         await UserSettingsService.setSelectedTableId(
                             _tableAssets[index]);
                         setState(() {});
+                        await customizeService.gameState.assets.initialize();
+                        customizeService.gameState.redrawTop();
                       },
                       child: Container(
                         padding: EdgeInsets.symmetric(horizontal: 8),
@@ -371,6 +347,8 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
                         // Update user settings
                         await UserSettingsService.setSelectedBackdropId(
                             _backDropAssets[index]);
+                        await customizeService.gameState.assets.initialize();
+                        customizeService.gameState.redrawTop();
                       },
                       child: Container(
                         padding: EdgeInsets.symmetric(horizontal: 8),
@@ -431,6 +409,8 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
                           await UserSettingsService.setSelectedNameplateId(
                               _nameplateAssets[index]);
                           setState(() {});
+                          await customizeService.gameState.assets.initialize();
+                          customizeService.gameState.redrawTop();
                         },
                         child: Container(
                           alignment: Alignment.center,

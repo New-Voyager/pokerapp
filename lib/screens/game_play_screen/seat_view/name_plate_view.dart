@@ -168,22 +168,14 @@ class NamePlateWidget extends StatelessWidget {
     }
 
     Widget plateWidget;
-
-    String namePlateStr = """
-<svg width="400" height="240" viewBox="0 0 400 240" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M381.2 17.4H17.2V225.4H381.2V17.4Z" fill="#ED2024"/>
-<path d="M199.6 10H387.7V231.9H9.9V10H199.6Z" stroke="#4C74B9" stroke-width="5"/>
-</svg>
-    """;
-
-    String progressPathStr = "M199.6 10H387.7V231.9H9.9V10H199.6Z";
-
+    String playerNamePlate = namePlateStr;
+    String playerProgress = progressPathStr;
     if (seat.player.isMe) {
       final gameState = GameState.getState(context);
       NamePlateDesign nameplate = gameState.assets.getNameplate();
       if (nameplate != null) {
-        namePlateStr = nameplate.svg;
-        progressPathStr = nameplate.path;
+        playerNamePlate = nameplate.svg;
+        playerProgress = nameplate.path;
       }
     }
 
@@ -233,9 +225,9 @@ class NamePlateWidget extends StatelessWidget {
                   remainingTime: time
                       .toInt(), // seat.actionTimer.getRemainingTime()*1000, //time.toInt(),
                   totalTime: total * 1000, // in milliseconds
-                  svg: namePlateStr,
+                  svg: playerNamePlate,
                   size: containerSize,
-                  progressPath: progressPathStr,
+                  progressPath: playerProgress,
                   progressRatio: progressRatio);
             });
       });
@@ -243,9 +235,9 @@ class NamePlateWidget extends StatelessWidget {
       plateWidget = Nameplate.fromSvgString(
           remainingTime: 0,
           totalTime: 0,
-          svg: namePlateStr,
+          svg: playerNamePlate,
           size: containerSize,
-          progressPath: progressPathStr,
+          progressPath: playerProgress,
           progressRatio: progressRatio);
     }
 
