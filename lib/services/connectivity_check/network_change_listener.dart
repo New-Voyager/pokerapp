@@ -21,7 +21,7 @@ class NetworkChangeListener {
   final DataConnectionChecker _dataConnectionChecker = DataConnectionChecker();
   final Connectivity _connectivity = Connectivity();
 
-  final StreamController<ConnectivityResult> _streamController =
+  StreamController<ConnectivityResult> _streamController =
       StreamController.broadcast();
 
   Future<void> checkInternet() => _checkForInternetConnection();
@@ -63,6 +63,7 @@ class NetworkChangeListener {
 
     // if we are already checking for internet, return
     if (_checkForInternetInProgress) return;
+
     _checkForInternetInProgress = true;
 
     // this call waits for indefinite amount of time - until we get internet access
@@ -112,7 +113,10 @@ class NetworkChangeListener {
 
   NetworkChangeListener() {
     log('NetworkChangeListener :: constructor');
+    _startListening();
+  }
 
+  void _startListening() {
     // setup data connection checker
     _initDataConnectionChecker();
 
@@ -131,8 +135,13 @@ class NetworkChangeListener {
   }
 
   void dispose() {
-    _streamController.close();
+    if (_streamController != null) {
+      _streamController.close();
+      _streamController = null;
+    }
     _sub?.cancel();
+    _sub = null;
     _internetSub?.cancel();
+    _internetSub = null;
   }
 }

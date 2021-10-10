@@ -41,7 +41,6 @@ import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/services/game_play/graphql/seat_change_service.dart';
 import 'package:pokerapp/services/gql_errors.dart';
-import 'package:pokerapp/services/janus/janus.dart';
 import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
@@ -721,14 +720,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         },
       );
 
-  Widget _buildAudioWidget() => _gameState?.audioConfEnabled ?? false
-      ? Consumer<JanusEngine>(
-          builder: (_, __, ___) {
-            return _gameState.janusEngine.audioWidget();
-          },
-        )
-      : SizedBox.shrink();
-
   Widget _buildBoardView(Size boardDimensions, double tableScale) {
     log('RedrawTop: Rebuilding board view');
     return Container(
@@ -1040,10 +1031,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   leaveAudioConference() {
     if (_gameState != null) {
       _voiceTextPlayer?.pause();
-      _gameState.janusEngine?.leaveChannel();
-      // if (_gameState.useAgora) {
-      //   _gameState.agoraEngine?.leaveChannel();
-      // }
       _gameContextObj.leaveAudio();
     }
   }

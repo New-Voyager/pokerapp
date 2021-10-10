@@ -74,6 +74,8 @@ PODS:
     - GoogleUtilities/UserDefaults (~> 7.4)
     - nanopb (~> 2.30908.0)
   - Flutter (1.0.0)
+  - flutter_fgbg (0.0.1):
+    - Flutter
   - flutter_local_notifications (0.0.1):
     - Flutter
   - flutter_udid (0.0.1):
@@ -173,6 +175,7 @@ DEPENDENCIES:
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - firebase_messaging (from `.symlinks/plugins/firebase_messaging/ios`)
   - Flutter (from `Flutter`)
+  - flutter_fgbg (from `.symlinks/plugins/flutter_fgbg/ios`)
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
   - flutter_udid (from `.symlinks/plugins/flutter_udid/ios`)
   - flutter_webrtc (from `.symlinks/plugins/flutter_webrtc/ios`)
@@ -229,6 +232,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/firebase_messaging/ios"
   Flutter:
     :path: Flutter
+  flutter_fgbg:
+    :path: ".symlinks/plugins/flutter_fgbg/ios"
   flutter_local_notifications:
     :path: ".symlinks/plugins/flutter_local_notifications/ios"
   flutter_udid:
@@ -280,6 +285,7 @@ SPEC CHECKSUMS:
   FirebaseInstallations: 2563cb18a723ef9c6ef18318a49519b75dce613c
   FirebaseMessaging: 93227dd71d7888e200baef65043f81acb2b6596e
   Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
+  flutter_fgbg: 31c0d1140a131daea2d342121808f6aa0dcd879d
   flutter_local_notifications: 0c0b1ae97e741e1521e4c1629a459d04b9aec743
   flutter_udid: 0848809dbed4c055175747ae6a45a8b4f6771e1c
   flutter_webrtc: 39898454258b54ba51996850d5da8d5d53bf1524
