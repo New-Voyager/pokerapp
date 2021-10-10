@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/club_model.dart';
+import 'package:pokerapp/models/club_update_input_model.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
@@ -57,81 +58,86 @@ class _ClubsPageViewState extends State<ClubsPageView>
     Alerts.showSnackBar(ctx, 'Could not delete');
   }
 
-  void _editClub(ClubModel club, BuildContext ctx) async {
-    /* the bottom sheet returns
-    * 'name'
-    * 'description'
-    * keys, which are used by the API to create a new club */
+  // void _editClub(ClubModel club, BuildContext ctx) async {
+  //   /* the bottom sheet returns
+  //   * 'name'
+  //   * 'description'
+  //   * keys, which are used by the API to create a new club */
 
-    Map<String, String> clubDetails = await showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      builder: (ctx) => CreateClubBottomSheet(
-        name: club.clubName,
-        description: '',
-      ),
-    );
+  //   Map<String, String> clubDetails = await showModalBottomSheet(
+  //     context: context,
+  //     isScrollControlled: true,
+  //     builder: (ctx) => CreateClubBottomSheet(
+  //       name: club.clubName,
+  //       description: club.,
+  //     ),
+  //   );
 
-    if (clubDetails == null) return;
+  //   if (clubDetails == null) return;
 
-    // these are the new club name and description
-    String clubName = clubDetails['name'];
-    String clubDescription = clubDetails['description'];
+  //   // these are the new club name and description
+  //   String clubName = clubDetails['name'];
+  //   String clubDescription = clubDetails['description'];
 
-    // update the club with new details
-    bool status = await ClubsService.updateClub(
-      club.clubCode,
-      clubName,
-      clubDescription,
-    );
+  //   // update the club with new details
+  //   bool status = await ClubsService.updateClubInput(
+  //     club.clubCode,
+  //     ClubUpdateInput(
+  //       name: clubName,
+  //       description:clubDescription,
 
-    if (status) {
-      Alerts.showSnackBar(ctx, _appScreenText['UPADATESUCCESSFUL']);
-      return _fetchClubs();
-    }
+  //     ),
+  //     clubName,
+  //     clubDescription,
+  //   );
 
-    return Alerts.showSnackBar(ctx, _appScreenText['COULDNOTUPDATE']);
-  }
+  //   if (status) {
+  //     Alerts.showSnackBar(ctx, _appScreenText['UPADATESUCCESSFUL']);
+  //     return _fetchClubs();
+  //   }
 
-  void _showClubOptions(
-      ClubModel club, BuildContext ctx, AppTheme theme) async {
-    showDialog(
-      context: context,
-      builder: (context) => Dialog(
-        child: Container(
-          padding: EdgeInsets.all(15.0),
-          color: theme.fillInColor,
-          width: MediaQuery.of(context).size.width * 0.60,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              /* delete club  */
-              RoundRaisedButton(
-                radius: 5.0,
-                color: theme.accentColor,
-                buttonText: _appScreenText['DELETECLUB'],
-                onButtonTap: () {
-                  Navigator.pop(context);
-                  _deleteClub(club, ctx);
-                },
-              ),
-              SizedBox(height: 10.0),
-              RoundRaisedButton(
-                radius: 5.0,
-                color: theme.accentColor,
-                buttonText: _appScreenText['EDITCLUB'],
-                onButtonTap: () {
-                  Navigator.pop(context);
-                  _editClub(club, ctx);
-                },
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+  //   return Alerts.showSnackBar(ctx, _appScreenText['COULDNOTUPDATE']);
+  // }
+
+  // void _showClubOptions(
+  //     ClubModel club, BuildContext ctx, AppTheme theme) async {
+  //   showDialog(
+  //     context: context,
+  //     builder: (context) => Dialog(
+  //       child: Container(
+  //         padding: EdgeInsets.all(15.0),
+  //         color: theme.fillInColor,
+  //         width: MediaQuery.of(context).size.width * 0.60,
+  //         child: Column(
+  //           crossAxisAlignment: CrossAxisAlignment.stretch,
+  //           mainAxisSize: MainAxisSize.min,
+  //           children: [
+  //             /* delete club  */
+  //             RoundRaisedButton(
+  //               radius: 5.0,
+  //               color: theme.accentColor,
+  //               buttonText: _appScreenText['DELETECLUB'],
+  //               onButtonTap: () {
+  //                 Navigator.pop(context);
+  //                 _deleteClub(club, ctx);
+  //               },
+  //             ),
+  //             SizedBox(height: 10.0),
+  //             RoundRaisedButton(
+  //               radius: 5.0,
+  //               color: theme.accentColor,
+  //               buttonText: _appScreenText['EDITCLUB'],
+  //               onButtonTap: () {
+  //                 Navigator.pop(context);
+  //                 _editClub(club, ctx);
+  //               },
+  //             ),
+  //           ],
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   void _createClub(BuildContext ctx) async {
     /* show a bottom sheet asking for club information */
@@ -342,11 +348,11 @@ class _ClubsPageViewState extends State<ClubsPageView>
                                         log('Opening club ${club.clubCode}');
                                         this.openClub(context, club);
                                       },
-                                      onLongPress: () => _showClubOptions(
-                                        club,
-                                        ctx,
-                                        theme,
-                                      ),
+                                      // onLongPress: () => _showClubOptions(
+                                      //   club,
+                                      //   ctx,
+                                      //   theme,
+                                      // ),
                                       child: Container(
                                         decoration:
                                             AppDecorators.getGameItemDecoration(

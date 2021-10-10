@@ -73,8 +73,9 @@ showErrorDialog(BuildContext context, String title, String error,
   );
 }
 
-Future<bool> showPrompt(
-    BuildContext context, String title, String message) async {
+Future<bool> showPrompt(BuildContext context, String title, String message,
+    {String positiveButtonText = "Ok",
+    String negativeButtonText = "Cancel"}) async {
   Color titleColor = Colors.white;
   // show a popup
   final AppTheme theme = AppTheme.getTheme(context);
@@ -128,7 +129,7 @@ Future<bool> showPrompt(
                         },
                         backgroundColor: theme.accentColor,
                         textColor: theme.primaryColorWithDark(),
-                        text: "OK",
+                        text: positiveButtonText,
                       ),
                       SizedBox(width: 15.dp),
                       RoundedColorButton(
@@ -137,7 +138,7 @@ Future<bool> showPrompt(
                         },
                         backgroundColor: theme.accentColor,
                         textColor: theme.primaryColorWithDark(),
-                        text: "Close",
+                        text: negativeButtonText,
                       ),
                     ]),
                   ),

@@ -73,6 +73,7 @@ dependencies:
   wakelock: ^0.5.6
   web_socket_channel: ^2.1.0
   shimmer: ^2.0.0
+  image_picker: ^0.8.4+1
   flutter_html: ^2.1.5
 
 dev_dependencies:

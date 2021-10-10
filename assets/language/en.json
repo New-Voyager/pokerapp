@@ -247,7 +247,7 @@
         "descriptionHint": "Club description"
     },
     "clubMainScreenNew": {
-        "CREATEGAME": "+ Create Game",
+        "hostGame": "Host Game",
         "CLUBCODE": "Club code",
         "CLUBCODECOPIEDTOCLIPBOARD": "Club code copied to clipboard",
         "LIVEGAMES": "Live Games",
@@ -257,9 +257,10 @@
         "MESSAGEHOST": "Message Host",
         "GAMEHISTORY": "Game History",
         "BOOKMRKEDHANDS": "Bookmarked Hands",
-        "ANALYSIS": "Analysis",
+        "ANALYSIS": "High Rank\nStats",
         "ANNOUNCEMENTS": "Announcements",
-        "BOTSCRIPTS": "BOT Scripts"
+        "BOTSCRIPTS": "BOT Scripts",
+        "SETTINGS": "Settings"
     },
     "gameHistoryView": {
         "NOGAMESPLAYED": "No games played",
@@ -297,6 +298,31 @@
         "clubChat": "Club chat",
         "loadingMessages": "Loading messages",
         "searchTenorGifs": "Search Tenor Gifs"
+    },
+    "clubSettings": {
+        "title": "Club Settings",
+        "ENTERMESSAGE": "Enter message",
+        "clubChat": "Club chat",
+        "loadingMessages": "Loading messages",
+        "searchTenorGifs": "Search Tenor Gifs",
+        "changeClubName": "Change Name",
+        "changeClubDescription": "Change Description",
+        "changeClubPicture": "Change Picture",
+        "CHANGECLUBNAME": "Change Name",
+        "CHANGEDESCRIPTION": "Change Descripton",
+        "SAVE": "Save",
+        "ENTERTEXT": "Enter text",
+        "UPDATINGDETAILS": "Updating details...",
+        "CLUBDETAILSUPDATED": "Club details updated",
+        "FAILEDTOUPDATECLUBDETAILS": "Updation failed!",
+        "SHOWHIGHRANKSTATS": "Show high rank card stats",
+        "leaveClub": "Leave Club",
+        "confirm": "Confirm",
+        "confirmMessage": "Are you sure you want to leave this club?",
+        "success": "Success",
+        "successSubText": "You have successfully left Club",
+        "fail": "Failed",
+        "failSubText": "Failed to leave club. Try again!"
     },
     "bookmarkedHands": {
         "SUCCESS": "SUCCESS",

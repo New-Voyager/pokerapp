@@ -88,6 +88,18 @@ class ClubActionsNew extends StatelessWidget {
     );
   }
 
+  ClubActionButtonNew getSettingsWidget(AppTheme theme) {
+    return ClubActionButtonNew(
+      this._clubHomePageModel,
+      ClubActions.SETTINGS,
+      appScreenText['SETTINGS'],
+      SvgPicture.asset(
+        "assets/images/club/message_host.svg",
+        color: theme.accentColor,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<AppTheme>(
@@ -161,6 +173,10 @@ class ClubActionsNew extends StatelessWidget {
               Expanded(
                 flex: 3,
                 child: getHostMemberChatWidget(theme),
+              ),
+              Expanded(
+                flex: 3,
+                child: getSettingsWidget(theme),
               ),
               // Expanded(
               //   flex: 3,
