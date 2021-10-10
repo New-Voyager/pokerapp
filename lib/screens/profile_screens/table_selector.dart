@@ -4,18 +4,22 @@ import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
+import 'package:pokerapp/models/game_play_models/ui/nameplate_object.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
+import 'package:pokerapp/screens/game_play_screen/game_play_screen.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/board_view.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/asset_service.dart';
 import 'package:pokerapp/services/app/user_settings_service.dart';
 import 'package:pokerapp/services/data/asset_hive_store.dart';
 import 'package:pokerapp/services/data/user_settings_store.dart';
+import 'package:pokerapp/services/game_play/customization_service.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:provider/provider.dart';
 
@@ -32,22 +36,30 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
   int selectedTable = 0, selectedDrop = 0;
   List<Asset> _tableAssets = [];
   List<Asset> _backDropAssets = [];
+  List<NamePlateDesign> _nameplateAssets = [];
   Asset _selectedTable, _selectedDrop;
+  NamePlateDesign _selectedNamePlate;
+  var customizeService = CustomizationService();
+
   bool initialized = false;
   @override
   void initState() {
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _fetchSavedItems();
     });
+
     initialized = true;
     super.initState();
   }
 
   void _fetchSavedItems() async {
     await AssetService.refresh();
+    await customizeService.load();
+
     _backDropAssets = AssetService.getBackdrops();
     _tableAssets = AssetService.getTables();
+    _nameplateAssets = AssetService.getNameplates();
 
     // Get Asset for selectedTableId
     _selectedTable =
@@ -68,7 +80,27 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
           AssetService.getAssetForId(UserSettingsStore.VALUE_DEFAULT_BACKDROP);
       // _backDropAssets.add(_selectedDrop);
     }
+
+    // Get Asset for selected nameplate
+    _selectedNamePlate = AssetService.getNameplateForId(
+        UserSettingsService.getSelectedNameplateId());
+    // if the asset is not found in hive request for default asset.
+    if (_selectedNamePlate == null) {
+      _selectedNamePlate = AssetService.getNameplateForId(
+          UserSettingsStore.VALUE_DEFAULT_NAMEPLATE);
+    }
+
     setState(() {});
+  }
+
+  Widget _buildTopView(AppTheme theme) {
+    var gameCode = 'CUSTOMIZE';
+    return GamePlayScreen(
+      gameCode: gameCode,
+      customizationService: customizeService,
+      showTop: true,
+      showBottom: false,
+    );
   }
 
   @override
@@ -83,59 +115,27 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
 
     return Consumer<AppTheme>(
       builder: (_, theme, __) {
-        Widget backDrop;
-        if (initialized) {
-          if (_selectedTable == null) {
-            backDrop = CircularProgressWidget(text: "Downloading...");
-          } else {
-            if (_selectedDrop.bundled ?? false) {
-              backDrop = Image.asset(
-                _selectedDrop?.downloadedPath,
-                fit: BoxFit.scaleDown,
-                width: size.width,
-              );
-            } else {
-              if (!_selectedDrop.downloaded) {
-                backDrop = CircularProgressWidget(text: "Downloading...");
-              } else {
-                backDrop = Image.file(
-                  File(_selectedDrop?.downloadedPath ?? ""),
-                  fit: BoxFit.scaleDown,
-                  width: size.width,
-                );
-              }
-            }
-          }
-        } else {
-          backDrop = CircularProgressWidget(text: "Downloading...");
-        }
-
+        final boardView = _buildTopView(theme);
         return Container(
           decoration: AppDecorators.bgRadialGradient(theme),
           child: Scaffold(
             backgroundColor: Colors.transparent,
-            appBar: AppBar(
-              leading: BackArrowWidget(),
-              backgroundColor: theme.primaryColorWithDark().withAlpha(150),
-            ),
-            body: Stack(
-              alignment: Alignment.topCenter,
+            body: Column(
               children: [
-                /* main view */
-                backDrop,
-                Column(
-                  children: [
-                    // main board view
-                    _buildBoardView(boardDimensions, tableScale, size),
+                // main board view
+                //_buildBoardView(boardDimensions, tableScale, size),
+                Container(
+                  width: Screen.width,
+                  height: 2 * Screen.height / 3,
+                  child: boardView,
+                ),
 
-                    /* divider that divides the board view and the footer */
-                    Divider(color: AppColorsNew.dividerColor, thickness: 3),
+                /* divider that divides the board view and the footer */
+                // Divider(color: AppColorsNew.dividerColor, thickness: 3),
 
-                    // footer section
-                    Expanded(
-                      child: _buildFooterView(theme, size),
-                    ),
-                  ],
+                // footer section
+                Expanded(
+                  child: _buildFooterView(theme, size),
                 ),
               ],
             ),
@@ -197,6 +197,9 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
               ),
               Text(
                 "Backdrop",
+              ),
+              Text(
+                "Nameplate",
               ),
             ],
             controller: _tabController,
@@ -262,6 +265,8 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
                         await UserSettingsService.setSelectedTableId(
                             _tableAssets[index]);
                         setState(() {});
+                        await customizeService.gameState.assets.initialize();
+                        customizeService.gameState.redrawTop();
                       },
                       child: Container(
                         padding: EdgeInsets.symmetric(horizontal: 8),
@@ -342,6 +347,8 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
                         // Update user settings
                         await UserSettingsService.setSelectedBackdropId(
                             _backDropAssets[index]);
+                        await customizeService.gameState.assets.initialize();
+                        customizeService.gameState.redrawTop();
                       },
                       child: Container(
                         padding: EdgeInsets.symmetric(horizontal: 8),
@@ -382,6 +389,44 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
                   itemCount: _backDropAssets.length,
                   scrollDirection: Axis.horizontal,
                 ),
+              ),
+              Container(
+                child: GridView.builder(
+                    scrollDirection: Axis.horizontal,
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                        maxCrossAxisExtent: 190,
+                        childAspectRatio: 1,
+                        crossAxisSpacing: 20,
+                        mainAxisSpacing: 20),
+                    itemCount: _nameplateAssets.length,
+                    itemBuilder: (BuildContext ctx, index) {
+                      final bool isSelected =
+                          (_selectedNamePlate == _nameplateAssets[index]);
+                      return InkWell(
+                        onTap: () async {
+                          _selectedNamePlate = _nameplateAssets[index];
+                          await UserSettingsService.setSelectedNameplateId(
+                              _nameplateAssets[index]);
+                          setState(() {});
+                          await customizeService.gameState.assets.initialize();
+                          customizeService.gameState.redrawTop();
+                        },
+                        child: Container(
+                          alignment: Alignment.center,
+                          child: SvgPicture.string(
+                            _nameplateAssets[index].svg,
+                            width: size.width,
+                            height: size.height,
+                          ),
+                          decoration: BoxDecoration(
+                              color: (isSelected)
+                                  ? Colors.white.withOpacity(0.6)
+                                  : Colors.transparent,
+                              borderRadius: BorderRadius.circular(15)),
+                        ),
+                      );
+                    }),
               ),
             ],
           )),

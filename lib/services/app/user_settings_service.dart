@@ -1,3 +1,4 @@
+import 'package:pokerapp/models/game_play_models/ui/nameplate_object.dart';
 import 'package:pokerapp/services/data/asset_hive_store.dart';
 import 'package:pokerapp/services/data/user_settings_store.dart';
 
@@ -26,6 +27,10 @@ class UserSettingsService {
     return UserSettingsStore.getSelectedBackdropId();
   }
 
+  static String getSelectedNameplateId() {
+    return UserSettingsStore.getSelectedNameplateId();
+  }
+
   static String getSelectedBetdialId() {
     return UserSettingsStore.getSelectedBetDial();
   }
@@ -40,6 +45,10 @@ class UserSettingsService {
 
   static setSelectedTableId(Asset tableAsset) {
     UserSettingsStore.setSelectedTableId(tableAsset.id);
+  }
+
+  static setSelectedNameplateId(NamePlateDesign nameplate) {
+    UserSettingsStore.setSelectedNameplateId(nameplate.id);
   }
 
   static setSelectedBackdropId(Asset backDropAsset) {

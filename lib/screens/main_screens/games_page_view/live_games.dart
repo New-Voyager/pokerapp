@@ -108,6 +108,10 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
   }
 
   _initTimer() async {
+    if (TestService.isTesting) {
+      // don't fetch live games in test mode
+      return;
+    }
     if (_refreshTimer == null || !_refreshTimer.isActive) {
       _refreshTimer =
           Timer.periodic(const Duration(seconds: 30), (timer) async {
@@ -127,6 +131,9 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
   }
 
   _disposeTimer() {
+    if (TestService.isTesting) {
+      return;
+    }
     if (_refreshTimer != null || _refreshTimer.isActive) {
       _refreshTimer.cancel();
     }

@@ -134,6 +134,10 @@ class AssetHiveStore {
     final assetIds = assetsInStore.map((e) => e.id);
     final assetsIdsInServer = assets.map((e) => e.id).toSet();
     for (final assetId in assetIds) {
+      // don't remove default assets
+      if (assetId.contains("default")) {
+        continue;
+      }
       if (!assetsIdsInServer.contains(assetId)) {
         log('$assetId is not found in the server. Deleting the assets');
         // asset is not in the server

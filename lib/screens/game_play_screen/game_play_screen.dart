@@ -963,6 +963,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
               floatingActionButton:
                   GamePlayScreenUtilMethods.floatingActionButton(
                 onReload: () {},
+                isCustomizationMode: widget.customizationService != null,
               ),
               // floating button to refresh network TEST
               // floatingActionButton: FloatingActionButton(

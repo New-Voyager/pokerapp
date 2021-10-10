@@ -8,6 +8,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
+import 'package:pokerapp/models/game_play_models/ui/nameplate_object.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
@@ -167,6 +168,16 @@ class NamePlateWidget extends StatelessWidget {
     }
 
     Widget plateWidget;
+    String playerNamePlate = namePlateStr;
+    String playerProgress = progressPathStr;
+    if (seat.player.isMe) {
+      final gameState = GameState.getState(context);
+      NamePlateDesign nameplate = gameState.assets.getNameplate();
+      if (nameplate != null) {
+        playerNamePlate = nameplate.svg;
+        playerProgress = nameplate.path;
+      }
+    }
 
 /*
 [log] Timer remaining: 6698 total: 30 current: 23
@@ -214,9 +225,9 @@ class NamePlateWidget extends StatelessWidget {
                   remainingTime: time
                       .toInt(), // seat.actionTimer.getRemainingTime()*1000, //time.toInt(),
                   totalTime: total * 1000, // in milliseconds
-                  svg: namePlateStr,
+                  svg: playerNamePlate,
                   size: containerSize,
-                  progressPath: progressPathStr,
+                  progressPath: playerProgress,
                   progressRatio: progressRatio);
             });
       });
@@ -224,9 +235,9 @@ class NamePlateWidget extends StatelessWidget {
       plateWidget = Nameplate.fromSvgString(
           remainingTime: 0,
           totalTime: 0,
-          svg: namePlateStr,
+          svg: playerNamePlate,
           size: containerSize,
-          progressPath: progressPathStr,
+          progressPath: playerProgress,
           progressRatio: progressRatio);
     }
 
