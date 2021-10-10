@@ -76,7 +76,7 @@ class NewGameSettings2 extends StatelessWidget {
         gameCode = await GameService.configurePlayerGame(gm);
       }
       ConnectionDialog.dismiss(context: context);
-    } catch(err) {
+    } catch (err) {
       ConnectionDialog.dismiss(context: context);
     }
 

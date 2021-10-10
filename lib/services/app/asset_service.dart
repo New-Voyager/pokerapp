@@ -227,7 +227,13 @@ class AssetService {
   }
 
   static NamePlateDesign getNameplateForId(String id) {
-    return nameplates.firstWhere((element) => element.id == id, orElse: null);
+    for (final element in nameplates) {
+      if (element.id == id) {
+        return element;
+      }
+    }
+    // default element
+    return nameplates[0];
   }
 
   static Future<void> updateBundledAssets() async {

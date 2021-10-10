@@ -181,8 +181,10 @@ class NamePlateWidget extends StatelessWidget {
     if (seat.player.isMe) {
       final gameState = GameState.getState(context);
       NamePlateDesign nameplate = gameState.assets.getNameplate();
-      namePlateStr = nameplate.svg;
-      progressPathStr = nameplate.path;
+      if (nameplate != null) {
+        namePlateStr = nameplate.svg;
+        progressPathStr = nameplate.path;
+      }
     }
 
 /*

@@ -12,12 +12,14 @@ import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
+import 'package:pokerapp/screens/game_play_screen/game_play_screen.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/board_view.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/asset_service.dart';
 import 'package:pokerapp/services/app/user_settings_service.dart';
 import 'package:pokerapp/services/data/asset_hive_store.dart';
 import 'package:pokerapp/services/data/user_settings_store.dart';
+import 'package:pokerapp/services/game_play/customization_service.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:provider/provider.dart';
 
@@ -37,6 +39,8 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
   List<NamePlateDesign> _nameplateAssets = [];
   Asset _selectedTable, _selectedDrop;
   NamePlateDesign _selectedNamePlate;
+  var customizeService = CustomizationService();
+
   bool initialized = false;
   @override
   void initState() {
@@ -44,12 +48,15 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _fetchSavedItems();
     });
+
     initialized = true;
     super.initState();
   }
 
   void _fetchSavedItems() async {
     await AssetService.refresh();
+    await customizeService.load();
+
     _backDropAssets = AssetService.getBackdrops();
     _tableAssets = AssetService.getTables();
     _nameplateAssets = AssetService.getNameplates();
@@ -86,6 +93,16 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
     setState(() {});
   }
 
+  Widget _buildTopView(AppTheme theme) {
+    var gameCode = 'CUSTOMIZE';
+    return GamePlayScreen(
+      gameCode: gameCode,
+      customizationService: customizeService,
+      showTop: true,
+      showBottom: false,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -98,59 +115,53 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
 
     return Consumer<AppTheme>(
       builder: (_, theme, __) {
-        Widget backDrop;
-        if (initialized) {
-          if (_selectedTable == null) {
-            backDrop = CircularProgressWidget(text: "Downloading...");
-          } else {
-            if (_selectedDrop.bundled ?? false) {
-              backDrop = Image.asset(
-                _selectedDrop?.downloadedPath,
-                fit: BoxFit.scaleDown,
-                width: size.width,
-              );
-            } else {
-              if (!_selectedDrop.downloaded) {
-                backDrop = CircularProgressWidget(text: "Downloading...");
-              } else {
-                backDrop = Image.file(
-                  File(_selectedDrop?.downloadedPath ?? ""),
-                  fit: BoxFit.scaleDown,
-                  width: size.width,
-                );
-              }
-            }
-          }
-        } else {
-          backDrop = CircularProgressWidget(text: "Downloading...");
-        }
-
+        // Widget backDrop;
+        // if (initialized) {
+        //   if (_selectedTable == null) {
+        //     backDrop = CircularProgressWidget(text: "Downloading...");
+        //   } else {
+        //     if (_selectedDrop.bundled ?? false) {
+        //       backDrop = Image.asset(
+        //         _selectedDrop?.downloadedPath,
+        //         fit: BoxFit.scaleDown,
+        //         width: size.width,
+        //       );
+        //     } else {
+        //       if (!_selectedDrop.downloaded) {
+        //         backDrop = CircularProgressWidget(text: "Downloading...");
+        //       } else {
+        //         backDrop = Image.file(
+        //           File(_selectedDrop?.downloadedPath ?? ""),
+        //           fit: BoxFit.scaleDown,
+        //           width: size.width,
+        //         );
+        //       }
+        //     }
+        //   }
+        // } else {
+        //   backDrop = CircularProgressWidget(text: "Downloading...");
+        // }
+        final boardView = _buildTopView(theme);
         return Container(
           decoration: AppDecorators.bgRadialGradient(theme),
           child: Scaffold(
             backgroundColor: Colors.transparent,
-            appBar: AppBar(
-              leading: BackArrowWidget(),
-              backgroundColor: theme.primaryColorWithDark().withAlpha(150),
-            ),
-            body: Stack(
-              alignment: Alignment.topCenter,
+            body: Column(
               children: [
-                /* main view */
-                backDrop,
-                Column(
-                  children: [
-                    // main board view
-                    _buildBoardView(boardDimensions, tableScale, size),
+                // main board view
+                //_buildBoardView(boardDimensions, tableScale, size),
+                Container(
+                  width: Screen.width,
+                  height: 2 * Screen.height / 3,
+                  child: boardView,
+                ),
 
-                    /* divider that divides the board view and the footer */
-                    Divider(color: AppColorsNew.dividerColor, thickness: 3),
+                /* divider that divides the board view and the footer */
+                // Divider(color: AppColorsNew.dividerColor, thickness: 3),
 
-                    // footer section
-                    Expanded(
-                      child: _buildFooterView(theme, size),
-                    ),
-                  ],
+                // footer section
+                Expanded(
+                  child: _buildFooterView(theme, size),
                 ),
               ],
             ),
