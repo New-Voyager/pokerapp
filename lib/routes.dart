@@ -14,7 +14,6 @@ import 'package:pokerapp/screens/game_screens/game_history_details_view/stack_de
 import 'package:pokerapp/screens/game_screens/new_game_settings/choose_game_new.dart';
 import 'package:pokerapp/screens/main_screens/profile_page_view/system_announcements.dart';
 import 'package:pokerapp/screens/profile_screens/card_selector_screen.dart';
-import 'package:pokerapp/screens/profile_screens/customize_view.dart';
 import 'package:pokerapp/screens/profile_screens/help_screen.dart';
 import 'package:pokerapp/screens/profile_screens/performance_view.dart';
 import 'package:pokerapp/screens/profile_screens/privacy_policy.dart';

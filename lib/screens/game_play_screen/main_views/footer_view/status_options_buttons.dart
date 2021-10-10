@@ -32,11 +32,15 @@ class StatusOptionsWidget extends StatelessWidget {
 
     List<Widget> children = [];
     // if i am not in the waitlist
-    if (mySeat == null &&
-        gameState.gameInfo.playerGameStatus != AppConstants.IN_QUEUE) {
-      if (gameState.gameInfo.status != AppConstants.GAME_CONFIGURED) {
-        if (gameState.gameInfo.waitlistAllowed) {
-          children.add(getWaitListButton(_appScreenText, theme, context));
+    if (mySeat == null) {
+      if (gameState.gameInfo.playerGameStatus != AppConstants.IN_QUEUE) {
+        if (gameState.gameInfo.status != AppConstants.GAME_CONFIGURED &&
+            gameState.gameInfo.status != AppConstants.GAME_ENDED) {
+          if (gameState.gameInfo.waitlistAllowed) {
+            if (gameState.isTableFull) {
+              children.add(getWaitListButton(_appScreenText, theme, context));
+            }
+          }
         }
       }
     } else {

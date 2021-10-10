@@ -76,11 +76,13 @@ class _HandStatsViewState extends State<HandStatsView>
   }
 
   fetchStats() async {
-    stats = await StatsService.getStatsForAGame(model.gameCode);
-    if (stats != null) {
-      stats.loadData();
+    if (model != null) {
+      stats = await StatsService.getStatsForAGame(model.gameCode);
+      if (stats != null) {
+        stats.loadData();
 
-      setState(() {});
+        setState(() {});
+      }
     }
   }
 

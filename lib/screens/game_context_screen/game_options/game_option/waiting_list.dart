@@ -236,6 +236,10 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
                     AppConstants.IN_QUEUE;
                 bool result =
                     await WaitlistService.addToWaitList(widget.gameCode);
+                if (result) {
+                  widget.gameState.gameInfo.playerGameStatus =
+                      AppConstants.IN_QUEUE;
+                }
                 widget.gameState.redrawFooter();
                 print("result = $result");
               } else {
@@ -243,9 +247,14 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
                     AppConstants.NOT_PLAYING;
                 bool result =
                     await WaitlistService.removeFromWaitlist(widget.gameCode);
+                if (result) {
+                  widget.gameState.gameInfo.playerGameStatus =
+                      AppConstants.NOT_PLAYING;
+                }
                 widget.gameState.redrawFooter();
                 print("result check $result");
               }
+              widget.gameState.redrawFooter();
               getAllWaitingPlayers();
             },
           ));

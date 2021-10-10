@@ -44,11 +44,12 @@ class GamePlayScreenUtilMethods {
   /* THIS SPEED DIAL IS JUST FOR SHOWING THE TEST BUTTONS */
   static SpeedDial floatingActionButton({
     Function onReload,
+    bool isCustomizationMode,
   }) {
     return SpeedDial(
       onOpen: onReload,
       overlayColor: Colors.black,
-      visible: TestService.isTesting,
+      visible: TestService.isTesting && !isCustomizationMode,
       overlayOpacity: 0.1,
       icon: Icons.all_inclusive_rounded,
       children: [
