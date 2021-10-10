@@ -170,9 +170,10 @@ class NamePlateWidget extends StatelessWidget {
     Widget plateWidget;
     String playerNamePlate = namePlateStr;
     String playerProgress = progressPathStr;
+    NamePlateDesign nameplate;
     if (seat.player.isMe) {
       final gameState = GameState.getState(context);
-      NamePlateDesign nameplate = gameState.assets.getNameplate();
+      nameplate = gameState.assets.getNameplate();
       if (nameplate != null) {
         playerNamePlate = nameplate.svg;
         playerProgress = nameplate.path;
@@ -240,7 +241,9 @@ class NamePlateWidget extends StatelessWidget {
           progressPath: playerProgress,
           progressRatio: progressRatio);
     }
-
+    if (seat.player.isMe) {
+      print(double.parse(nameplate.meta.padding.split(",")[1].trim()));
+    }
     Stack namePlate = Stack(
       alignment: Alignment.center,
       clipBehavior: Clip.hardEdge,
@@ -253,34 +256,49 @@ class NamePlateWidget extends StatelessWidget {
                 child: AnimatedOpacity(
                   duration: AppConstants.animationDuration,
                   opacity: seat.isOpen ? 0.0 : 1.0,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SizedBox(height: 2),
-                      // player name
-                      FittedBox(
-                        child: Text(
-                          seat.player?.name ?? '',
-                          style: AppDecorators.getSubtitle1Style(theme: theme),
-                        ),
-                      ),
-                      SizedBox(height: 2),
-                      // divider
-                      PlayerViewDivider(),
-                      SizedBox(height: 2),
-
-                      // bottom widget - to show stack, sit back time, etc.
-                      Align(
-                        alignment: Alignment.topRight,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 5),
-                          child: FittedBox(
-                            child: bottomWidget(context, theme),
+                  child: Padding(
+                    padding: nameplate != null
+                        ? EdgeInsets.fromLTRB(
+                            double.parse(
+                                nameplate.meta.padding.split(",")[0].trim()),
+                            double.parse(
+                                nameplate.meta.padding.split(",")[1].trim()),
+                            double.parse(
+                                nameplate.meta.padding.split(",")[2].trim()),
+                            double.parse(
+                                nameplate.meta.padding.split(",")[3].trim()),
+                          )
+                        : EdgeInsets.all(3),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(height: 2),
+                        // player name
+                        FittedBox(
+                          child: Text(
+                            seat.player?.name ?? '',
+                            style:
+                                AppDecorators.getSubtitle4Style(theme: theme),
                           ),
                         ),
-                      ),
-                    ],
+                        SizedBox(height: 2),
+                        // divider
+                        PlayerViewDivider(),
+                        SizedBox(height: 2),
+
+                        // bottom widget - to show stack, sit back time, etc.
+                        Align(
+                          alignment: Alignment.topRight,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 5),
+                            child: FittedBox(
+                              child: bottomWidget(context, theme),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ))),
       ],
@@ -375,7 +393,7 @@ class NamePlateWidget extends StatelessWidget {
   Widget stack(BuildContext context, AppTheme theme) {
     Widget _buildStackTextWidget(int stack) => Text(
           stack?.toString() ?? 'XX',
-          style: AppDecorators.getSubtitle1Style(theme: theme),
+          style: AppDecorators.getSubtitle4Style(theme: theme),
         );
 
     if (seat.player.reloadAnimation == true)
