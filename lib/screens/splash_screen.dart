@@ -90,8 +90,6 @@ class _SplashScreenState extends State<SplashScreen> {
           // download assets (show status bar)
           try {
             await AssetService.refresh();
-            // final store = await AssetService.getStore();
-            // await store.putAll(AssetService.assets);
           } catch (err) {
             log(err.toString());
           }

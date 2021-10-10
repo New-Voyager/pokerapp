@@ -15,6 +15,7 @@ import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/services/app/appcoin_service.dart';
+import 'package:pokerapp/services/app/asset_service.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/alerts.dart';
@@ -411,7 +412,6 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
         displayName: _nameCtrl.text.trim(),
         recoveryEmail: _emailCtrl.text.trim(),
       );
-      ConnectionDialog.dismiss(context: context);
       if (resp['status']) {
         // successful
         Alerts.showNotification(
@@ -430,6 +430,13 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
 
         final availableCoins = await AppCoinService.availableCoins();
         AppConfig.setAvailableCoins(availableCoins);
+        // download assets (show status bar)
+        try {
+          await AssetService.refresh();
+        } catch (err) {
+          log(err.toString());
+        }
+        ConnectionDialog.dismiss(context: context);
 
         // Navigate to main screen
         Navigator.pushNamedAndRemoveUntil(
@@ -438,6 +445,7 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
           (_) => false,
         );
       } else {
+        ConnectionDialog.dismiss(context: context);
         // failed
         log("ERROR : ${resp['error']}");
         Alerts.showNotification(
