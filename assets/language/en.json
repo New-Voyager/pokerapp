@@ -485,7 +485,8 @@
         "ATTRIBUTIONS": "Attributions",
         "ABOUT": "About",
         "requestFeature": "Request Feature",
-        "reportBug": "Report Bug"
+        "reportBug": "Report Bug",
+        "pickTheme": "Pickup Theme"
     },
     "performanceView": {
         "STATISTICS": "Statistics",
@@ -550,7 +551,7 @@
     },
     "customizeScreen": {
         "customize": "Customize",
-        "chooseColor": "Choose color",
+        "chooseColor": "Choose color scheme",
         "appPrimaryColorWillBeAffected": "App primary color will be affected",
         "theme": "THEME",
         "chooseBackground": "Choose background",
