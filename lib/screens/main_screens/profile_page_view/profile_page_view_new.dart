@@ -256,7 +256,7 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                             : "",
                                         imagePath:
                                             AppAssetsNew.customizeImagePath,
-                                        index: 2,
+                                        index: 1,
                                         onTapFunction: () async {
                                           await _updateUserDetails(
                                               UpdateType.EMAIL, theme);
@@ -277,6 +277,22 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                           // Navigator.of(context).pushNamed(
                                           //   Routes.customize,
                                           // );
+                                        },
+                                      ),
+                                       ListTileItem(
+                                        text: _appScreenText[
+                                            'pickTheme'],
+                                        imagePath:
+                                            AppAssetsNew.customizeImagePath,
+                                        index: 3,
+                                        onTapFunction: () {
+                                          // Navigator.of(context).pushNamed(
+                                          //   Routes.game_screen_customize,
+                                          // );
+
+                                          Navigator.of(context).pushNamed(
+                                            Routes.customize,
+                                          );
                                         },
                                       ),
                                     ],
