@@ -451,4 +451,31 @@ class ClubsService {
     return ClubHomePageModel.fromGQLResponse(
         clubCode, result.data, weeklyActivity);
   }
+
+  static leaveClub(String clubCode) async {
+    final String query = """
+      mutation leaveClub(\$clubCode : String!){
+      ret : leaveClub(clubCode:\$clubCode)
+    }
+    """;
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    Map<String, dynamic> variables = {
+      'clubCode': clubCode,
+    };
+
+    QueryResult result = await _client.query(
+      QueryOptions(
+        document: gql(query),
+        variables: variables,
+      ),
+    );
+
+    // log('query result: ${result.exception}');
+
+    if (result.hasException) {
+        return false;
+    }
+
+    return result.data['ret'] ?? false;
+  }
 }

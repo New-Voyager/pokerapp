@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/main.dart';
+import 'package:pokerapp/models/auth_model.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/models/club_update_input_model.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
@@ -24,6 +25,7 @@ import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
+import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:pokerapp/widgets/round_color_button.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/widgets/switch_widget.dart';
@@ -88,6 +90,7 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
               : SingleChildScrollView(
                   child: Column(
                     children: [
+                      // Head section
                       Container(
                         decoration: AppDecorators.tileDecoration(theme),
                         margin:
@@ -174,47 +177,103 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
                           ],
                         ),
                       ),
-                      Container(
-                        margin:
-                            EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+
+                      // Change items
+                      Visibility(
+                        visible: (_clubModel.isOwner),
                         child: Column(
                           children: [
-                            //
                             Container(
-                              decoration: AppDecorators.tileDecoration(theme),
-                              padding: EdgeInsets.symmetric(vertical: 8),
+                              margin: EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 8),
                               child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  ListTileItem(
-                                    text: _appScreenText['changeClubName'],
-                                    imagePath: AppAssetsNew.customizeImagePath,
-                                    index: 1,
-                                    onTapFunction: () async {
-                                      await _updateClubDetails(
-                                          SettingType.CLUB_NAME, theme);
-                                      // Fetch user details from server
-                                    },
+                                  //
+                                  Container(
+                                    decoration:
+                                        AppDecorators.tileDecoration(theme),
+                                    padding: EdgeInsets.symmetric(vertical: 8),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        ListTileItem(
+                                          text:
+                                              _appScreenText['changeClubName'],
+                                          imagePath:
+                                              AppAssetsNew.customizeImagePath,
+                                          index: 1,
+                                          onTapFunction: () async {
+                                            await _updateClubDetails(
+                                                SettingType.CLUB_NAME, theme);
+                                            // Fetch user details from server
+                                          },
+                                        ),
+                                        ListTileItem(
+                                          text: _appScreenText[
+                                              'changeClubDescription'],
+                                          imagePath:
+                                              AppAssetsNew.customizeImagePath,
+                                          index: 2,
+                                          onTapFunction: () async {
+                                            await _updateClubDetails(
+                                                SettingType.CLUB_DESCRIPTION,
+                                                theme);
+                                            // Fetch user details from server
+                                          },
+                                        ),
+                                        ListTileItem(
+                                          text: _appScreenText[
+                                              'changeClubPicture'],
+                                          imagePath:
+                                              AppAssetsNew.customizeImagePath,
+                                          index: 3,
+                                          onTapFunction: () {
+                                            _handleUploadPicture();
+                                            // Fetch user details from server
+                                          },
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                  ListTileItem(
-                                    text:
-                                        _appScreenText['changeClubDescription'],
-                                    imagePath: AppAssetsNew.customizeImagePath,
-                                    index: 2,
-                                    onTapFunction: () async {
-                                      await _updateClubDetails(
-                                          SettingType.CLUB_DESCRIPTION, theme);
-                                      // Fetch user details from server
-                                    },
-                                  ),
-                                  ListTileItem(
-                                    text: _appScreenText['changeClubPicture'],
-                                    imagePath: AppAssetsNew.customizeImagePath,
-                                    index: 3,
-                                    onTapFunction: () {
-                                      _handleUploadPicture();
-                                      // Fetch user details from server
-                                    },
+                                ],
+                              ),
+                            ),
+
+                            // Show high rank stats
+                            Container(
+                              margin: EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 8),
+                              child: Column(
+                                children: [
+                                  //
+                                  Container(
+                                    decoration:
+                                        AppDecorators.tileDecoration(theme),
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 8, horizontal: 16),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        _buildRadio(
+                                            value: _clubModel.showHighRankStats,
+                                            label: _appScreenText[
+                                                'SHOWHIGHRANKSTATS'],
+                                            onChange: (v) async {
+                                              ClubUpdateInput input =
+                                                  ClubUpdateInput(
+                                                name: _clubModel.clubName,
+                                                description:
+                                                    _clubModel.description,
+                                                showHighRankStats: v,
+                                              );
+                                              await updateClubAPICall(input);
+                                              // Fetch user details from server
+                                            },
+                                            theme: theme),
+                                      ],
+                                    ),
                                   ),
                                 ],
                               ),
@@ -222,38 +281,76 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
                           ],
                         ),
                       ),
-                      Container(
-                        margin:
-                            EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                        child: Column(
-                          children: [
-                            //
-                            Container(
-                              decoration: AppDecorators.tileDecoration(theme),
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 8, horizontal: 16),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  _buildRadio(
-                                      value: _clubModel.showHighRankStats,
-                                      label:
-                                          _appScreenText['SHOWHIGHRANKSTATS'],
-                                      onChange: (v) async {
-                                        ClubUpdateInput input = ClubUpdateInput(
-                                          name: _clubModel.clubName,
-                                          description: _clubModel.description,
-                                          showHighRankStats: v,
-                                        );
-                                        await updateClubAPICall(input);
-                                        // Fetch user details from server
+
+                      // Leave club
+                      Visibility(
+                        visible: !(_clubModel.isOwner),
+                        child: Container(
+                          margin:
+                              EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          child: Column(
+                            children: [
+                              //
+                              Container(
+                                decoration: AppDecorators.tileDecoration(theme),
+                                padding: EdgeInsets.symmetric(
+                                  vertical: 8,
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    ListTileItem(
+                                      text: _appScreenText['leaveClub'],
+                                      imagePath:
+                                          AppAssetsNew.customizeImagePath,
+                                      index: 1,
+                                      onTapFunction: () async {
+                                        final response = await showPrompt(
+                                            context,
+                                            _appScreenText['confirm'],
+                                            _appScreenText['confirmMessage'],
+                                            positiveButtonText: "Yes",
+                                            negativeButtonText: "No");
+                                        log("$response");
+                                        if (response != null &&
+                                            response == true) {
+                                          ConnectionDialog.show(
+                                              context: context,
+                                              loadingText: "Leaving club..");
+                                          final result =
+                                              await ClubsService.leaveClub(
+                                                  _clubModel.clubCode);
+                                          ConnectionDialog.dismiss(
+                                            context: context,
+                                          );
+
+                                          if (result != null) {
+                                            if (result) {
+                                              Alerts.showNotification(
+                                                  titleText:
+                                                      _appScreenText['success'],
+                                                  subTitleText: _appScreenText[
+                                                      'successSubText']);
+                                              Navigator.of(context).pop();
+                                              Navigator.of(context).pop();
+                                            } else {
+                                              Alerts.showNotification(
+                                                  titleText:
+                                                      _appScreenText['fail'],
+                                                  subTitleText: _appScreenText[
+                                                      'failSubText']);
+                                            }
+                                          }
+                                          // Fetch user details from server
+                                        }
                                       },
-                                      theme: theme),
-                                ],
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                            AppDimensionsNew.getVerticalSizedBox(16),
-                          ],
+                              AppDimensionsNew.getVerticalSizedBox(16),
+                            ],
+                          ),
                         ),
                       ),
                       AppDimensionsNew.getVerticalSizedBox(100),
