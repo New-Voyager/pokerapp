@@ -1236,4 +1236,57 @@ mutation reportBug(\$bug :String!){
 
     return true;
   }
+
+  static Future<bool> setBuyinLimit(
+      {String gameCode, String playerId, double limit}) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    String buyinLimitQuery = """
+        mutation setLimit(\$gameCode: String!,\$playerUuid:String!,\$limit:Float!){
+			setBuyInLimit(gameCode:\$gameCode,playerUuid:\$playerUuid, limit:\$limit)      
+    }
+    
+    """;
+
+    Map<String, dynamic> variables = {
+      "gameCode": gameCode,
+      "playerUuid": playerId,
+      "limit": limit,
+    };
+    QueryResult result = await _client.query(
+      QueryOptions(document: gql(buyinLimitQuery), variables: variables),
+    );
+
+    if (result.hasException) {
+        return false;
+    }
+
+    return result.data['data'] ?? false;
+  }
+  
+  static Future<bool> assignHost(
+      {String gameCode, String playerId,}) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    String changeHostQuery = """
+        mutation changeHost(\$gameCode: String!,\$playerUuid:String!){
+			assignHost(gameCode:\$gameCode,playerUuid:\$playerUuid)      
+    }
+    
+    """;
+
+    Map<String, dynamic> variables = {
+      "gameCode": gameCode,
+      "playerUuid": playerId
+    };
+    QueryResult result = await _client.query(
+      QueryOptions(document: gql(changeHostQuery), variables: variables),
+    );
+
+    if (result.hasException) {
+        return false;
+    }
+
+    return result.data['data'] ?? false;
+  }
 }
