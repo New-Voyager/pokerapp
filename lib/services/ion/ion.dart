@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:flutter_ion/flutter_ion.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 
@@ -209,49 +210,43 @@ class IonAudioConferenceService {
       method = data["method"];
     }
     if (method == 'audioLevels' && data.containsKey("params")) {
-      List<Participant> speakers = [];
+      List<Seat> speakers = [];
       for (final streamId in data["params"]) {
-        for (final participant in participants) {
-          if (participant.streamId == streamId) {
-            speakers.add(participant);
+        for (final seat in gameState.seats) {
+          if (seat.player != null) {
+            if (seat.player.streamId == streamId) {
+              speakers.add(seat);
+            }
           }
         }
       }
 
-      List<int> talking = [];
-      List<int> stoppedTalking = [];
+      List<Seat> talking = [];
+      List<Seat> stoppedTalking = [];
 
-      for (final participant in participants) {
-        Participant speaker;
-        for (final participantSpeaker in speakers) {
-          if (participantSpeaker.playerId == participant.playerId) {
-            // one of the speaker
-            speaker = participantSpeaker;
+      for (final seat in gameState.seats) {
+        if (seat.player == null) {
+          continue;
+        }
+        bool speaking = false;
+        for (final speakerFromConf in speakers) {
+          if (seat.serverSeatPos == speakerFromConf.serverSeatPos) {
+            speaking = true;
             break;
           }
         }
 
-        if (speaker == null) {
+        if (!speaking) {
           // not a speaker
-          if (participant.isTalking) {
-            log('ION: ${participant.name} stopped talking');
-            stoppedTalking.add(participant.playerId);
-          }
-          participant.isTalking = false;
-          if (participant.me) {
-            gameState.communicationState.talking = false;
-            gameState.communicationState.notify();
+          if (seat.player.talking) {
+            log('RTC: ${seat.player.name} stopped talking');
+            stoppedTalking.add(seat);
           }
         } else {
           // speaking
-          log('ION: ${participant.name} is talking');
-          if (!participant.isTalking) {
-            talking.add(participant.playerId);
-          }
-          participant.isTalking = true;
-          if (participant.me) {
-            gameState.communicationState.talking = true;
-            gameState.communicationState.notify();
+          log('RTC: ${seat.player.name} is talking');
+          if (!seat.player.talking) {
+            talking.add(seat);
           }
         }
 

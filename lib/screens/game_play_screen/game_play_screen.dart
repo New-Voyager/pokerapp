@@ -210,12 +210,13 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       _gameState.customizationMode = true;
     }
     _gameState.gameComService = _gameComService;
-    _gameComService.gameMessaging.onPlayerInfo = this.onPlayerInfo;
-    _gameComService.gameMessaging.getMyInfo = this.getPlayerInfo;
 
     if (widget.customizationService != null) {
       _gameState = widget.customizationService.gameState;
     } else {
+      _gameComService.gameMessaging.onPlayerInfo = this.onPlayerInfo;
+      _gameComService.gameMessaging.getMyInfo = this.getPlayerInfo;
+
       await _gameState.initialize(
         gameCode: _gameInfoModel.gameCode,
         gameInfo: _gameInfoModel,
@@ -261,6 +262,10 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       for (int i = 0; i < _gameInfoModel.playersInSeats.length; i++) {
         if (_gameInfoModel.playersInSeats[i].playerUuid ==
             _currentPlayer.uuid) {
+          // send my information
+          _gameState.gameMessageService.sendMyInfo();
+          _gameState.gameMessageService.requestPlayerInfo();
+
           // this.initPlayingTimer();
           // player is in the table
           joinAudioConference();
@@ -306,6 +311,10 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       for (int i = 0; i < _gameInfoModel.playersInSeats.length; i++) {
         if (_gameInfoModel.playersInSeats[i].playerUuid ==
             _currentPlayer.uuid) {
+          // send my information
+          _gameState.gameMessageService.sendMyInfo();
+          _gameState.gameMessageService.requestPlayerInfo();
+          // request other player info
           // player is in the table
           joinAudioConference();
           break;
@@ -992,8 +1001,18 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   void onPlayerInfo(GamePlayerInfo info) {
     final player = _gameState.getPlayerById(info.playerId);
     if (player != null) {
-      player.streamId = info.streamId;
-      player.namePlateId = info.namePlateId;
+      // update seat to change the name plate
+      final seat = _gameState.getSeatByPlayer(info.playerId);
+      if (seat != null && seat.player != null) {
+        final player = seat.player;
+        log('PlayerInfo: name: ${player.name} streamId: ${player.streamId} namePlateId: ${player.namePlateId}');
+        if (player.streamId != info.streamId ||
+            player.namePlateId != info.namePlateId) {
+          player.streamId = info.streamId;
+          player.namePlateId = info.namePlateId;
+          seat.notify();
+        }
+      }
     }
   }
 
@@ -1004,6 +1023,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     }
     playerInfo.streamId = _gameState.me.streamId;
     playerInfo.playerId = _gameState.me.playerId;
+    playerInfo.namePlateId = _gameState.me.namePlateId;
     return playerInfo;
   }
 }

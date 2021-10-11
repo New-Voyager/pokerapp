@@ -187,6 +187,9 @@ class GameMessagingService {
   void sendMyInfo() {
     if (this.getMyInfo != null) {
       GamePlayerInfo playerInfo = this.getMyInfo();
+      if (playerInfo == null) {
+        return;
+      }
       dynamic body = jsonEncode({
         'id': uuid.v1(),
         'playerID': this.currentPlayer.id,

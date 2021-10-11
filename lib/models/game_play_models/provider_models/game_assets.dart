@@ -39,6 +39,14 @@ class GameScreenAssets {
     return nameplate;
   }
 
+  NamePlateDesign getNameplateById(String id) {
+    final namePlate = AssetService.getNameplateForId(id);
+    if (namePlate == null) {
+      return AssetService.getNameplateForId('0');
+    }
+    return namePlate;
+  }
+
   Uint8List getHoleCardBack() {
     return holeCardBackBytes;
   }
