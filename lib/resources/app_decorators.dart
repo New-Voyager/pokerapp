@@ -135,6 +135,14 @@ class AppDecorators {
     );
   }
 
+  static TextStyle getSubtitle4Style({@required AppTheme theme}) {
+    return TextStyle(
+      color: theme.supportingColorWithLight(),
+      fontSize: 8.dp,
+      fontWeight: FontWeight.w300,
+    );
+  }
+
   static TextStyle getCenterTextTextstyle({@required AppTheme appTheme}) {
     return TextStyle(
         fontSize: 18.dp,
