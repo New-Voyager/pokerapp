@@ -269,6 +269,7 @@ class GamePlayScreenUtilMethods {
       if (newPlayerModel.isMe) {
         await Future.delayed(Duration(milliseconds: 100));
         final mySeat = gameState.mySeat;
+        mySeat.player.namePlateId = gameState.getNameplateId();
         mySeat.notify();
         gameState.redrawFooterState.notify();
       }

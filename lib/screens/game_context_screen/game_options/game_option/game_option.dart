@@ -799,7 +799,9 @@ class _GameOptionState extends State<GameOption> {
             widget.gameState.playerLocalConfig.inAudioConference = v;
             if (v) {
               // join
-              widget.gameContextObject.joinAudio(context);
+              widget.gameContextObject.joinAudio(context).then((v) {
+                widget.gameState.gameMessageService.sendMyInfo();
+              });
             } else {
               widget.gameContextObject.leaveAudio();
             }

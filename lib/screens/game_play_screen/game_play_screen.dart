@@ -164,68 +164,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     return gameInfo;
   }
 
-  // Future _joinAudio() async {
-  //   if (_gameState.gameInfo.audioConfEnabled ?? false) {
-  //     _gameContextObj.joinAudio(context);
-  //   }
-  //   return;
-
-  //   if (!_gameState.audioConfEnabled) {
-  //     try {
-  //       if (_voiceTextPlayer != null) {
-  //         _voiceTextPlayer.resume();
-  //       }
-  //     } catch (err) {
-  //       log('Error when resuming audio');
-  //     }
-  //     return;
-  //   }
-
-  //   final player = _gameState.currentPlayer;
-  //   if (_gameState.useAgora) {
-  //     try {
-  //       debugLog(widget.gameCode,
-  //           'agora: Player ${player.name} is joining audio conference');
-  //       log('agora: Player ${player.name} is joining audio conference');
-
-  //       _gameState.agoraEngine.joinChannel(_gameState.agoraToken);
-  //       log('agora: Player ${player.name} has joined audio conference');
-  //       debugLog(widget.gameCode,
-  //           'Player ${player.name} has joined audio conference');
-  //       this._gameState.communicationState.notify();
-  //     } catch (err) {
-  //       debugLog(widget.gameCode,
-  //           'Player ${player.name} failed to join audio conference. Error: ${err.toString()}');
-  //       log('Error when resuming audio');
-  //     }
-  //   } else {
-  //     try {
-  //       debugLog(widget.gameCode,
-  //           'Player ${player.name} is joining audio conference');
-  //       _gameState.janusEngine.joinChannel('test');
-  //       debugLog(widget.gameCode,
-  //           'Player ${player.name} has joined audio conference');
-  //     } catch (err) {
-  //       debugLog(widget.gameCode,
-  //           'Player ${player.name} failed to join audio conference. Error: ${err.toString()}');
-  //       log('Error when resuming audio');
-  //     }
-  //   }
-  //   return;
-
-  //   // agora code
-  //   // this._audioToken = await GameService.getLiveAudioToken(widget.gameCode);
-  //   // print('Audio token: ${this._audioToken}');
-  //   // print('audio token: ${this._audioToken}');
-  //   // if (this._audioToken != null && this._audioToken != '') {
-  //   //   agora.initEngine().then((_) async {
-  //   //     print('Joining audio channel ${widget.gameCode}');
-  //   //     await agora.joinChannel(this._audioToken);
-  //   //     print('Joined audio channel ${widget.gameCode}');
-  //   //   });
-  //   // }
-  // }
-
   /* The init method returns a Future of all the initial game constants
   * This method is also responsible for subscribing to the NATS channels */
   Future<GameInfoModel> _init() async {
@@ -276,6 +214,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     if (widget.customizationService != null) {
       _gameState = widget.customizationService.gameState;
     } else {
+      _gameComService.gameMessaging.onPlayerInfo = this.onPlayerInfo;
+      _gameComService.gameMessaging.getMyInfo = this.getPlayerInfo;
+
       await _gameState.initialize(
         gameCode: _gameInfoModel.gameCode,
         gameInfo: _gameInfoModel,
@@ -321,9 +262,13 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       for (int i = 0; i < _gameInfoModel.playersInSeats.length; i++) {
         if (_gameInfoModel.playersInSeats[i].playerUuid ==
             _currentPlayer.uuid) {
+          // send my information
+          _gameState.gameMessageService.sendMyInfo();
+          _gameState.gameMessageService.requestPlayerInfo();
+
           // this.initPlayingTimer();
           // player is in the table
-          _gameContextObj.joinAudio(context);
+          joinAudioConference();
 
           // if gps check is enabled
           if (_gameInfoModel.gpsCheck) {
@@ -366,8 +311,12 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       for (int i = 0; i < _gameInfoModel.playersInSeats.length; i++) {
         if (_gameInfoModel.playersInSeats[i].playerUuid ==
             _currentPlayer.uuid) {
+          // send my information
+          _gameState.gameMessageService.sendMyInfo();
+          _gameState.gameMessageService.requestPlayerInfo();
+          // request other player info
           // player is in the table
-          _gameContextObj.joinAudio(context);
+          joinAudioConference();
           break;
         }
       }
@@ -556,7 +505,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
             }
           }
         }
-
         await GamePlayScreenUtilMethods.joinGame(
           context: _providerContext,
           seat: seat,
@@ -564,13 +512,17 @@ class _GamePlayScreenState extends State<GamePlayScreen>
           gameState: gameState,
         );
 
+        // player joined the game (send player info)
+        _gameState.gameMessageService.sendMyInfo();
+        _gameState.gameMessageService.requestPlayerInfo();
+
         if (_gameState.gameInfo.gpsCheck || _gameState.gameInfo.ipCheck) {
           _locationUpdates = locationUpdates;
           _locationUpdates.start();
         }
 
         // join audio conference
-        _gameContextObj.joinAudio(context);
+        joinAudioConference();
       } catch (e) {
         // close connection dialog
         //ConnectionDialog.dismiss(context: context);
@@ -593,7 +545,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         return;
       }
       // join audio
-      _gameContextObj.joinAudio(context);
+      joinAudioConference();
     }
   }
 
@@ -1018,7 +970,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         if (_gameState != null && !_gameState.uiClosing) {
           AudioService.resume();
           log("Joining AudioConference from Lifecycle");
-          _gameContextObj.joinAudio(context);
+          joinAudioConference();
           if (_locationUpdates != null) {
             _locationUpdates.start();
           }
@@ -1033,5 +985,45 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       _voiceTextPlayer?.pause();
       _gameContextObj.leaveAudio();
     }
+  }
+
+  void joinAudioConference() async {
+    if (context != null) {
+      await _gameContextObj.joinAudio(context);
+      if (!_gameState.uiClosing) {
+        // ui is still running
+        // send stream id
+        _gameState.gameMessageService.sendMyInfo();
+      }
+    }
+  }
+
+  void onPlayerInfo(GamePlayerInfo info) {
+    final player = _gameState.getPlayerById(info.playerId);
+    if (player != null) {
+      // update seat to change the name plate
+      final seat = _gameState.getSeatByPlayer(info.playerId);
+      if (seat != null && seat.player != null) {
+        final player = seat.player;
+        log('PlayerInfo: name: ${player.name} streamId: ${player.streamId} namePlateId: ${player.namePlateId}');
+        if (player.streamId != info.streamId ||
+            player.namePlateId != info.namePlateId) {
+          player.streamId = info.streamId;
+          player.namePlateId = info.namePlateId;
+          seat.notify();
+        }
+      }
+    }
+  }
+
+  GamePlayerInfo getPlayerInfo() {
+    GamePlayerInfo playerInfo = GamePlayerInfo();
+    if (_gameState.me == null) {
+      return null;
+    }
+    playerInfo.streamId = _gameState.me.streamId;
+    playerInfo.playerId = _gameState.me.playerId;
+    playerInfo.namePlateId = _gameState.me.namePlateId;
+    return playerInfo;
   }
 }

@@ -469,7 +469,7 @@
         "HELP": "Help",
         "TELLAFRIEND": "Tell a Friend",
         "LOGOUT": "Logout",
-        "CHANGESCREENNAME": "Change screen name",
+        "changeScreenName": "Change Screen Name",
         "CHANGEEMAIL": "Change email",
         "UPDATEDETAILS": "Update details",
         "ENTERTEXT": "Enter text",

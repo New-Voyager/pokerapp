@@ -7,12 +7,13 @@ class NamePlateDesignMeta {
   int svgHeight;
   int progressWidth;
   int progressHeight;
-  NamePlateDesignMeta({
-    @required this.svgWidth,
-    @required this.svgHeight,
-    @required this.progressWidth,
-    @required this.progressHeight,
-  });
+  String padding;
+  NamePlateDesignMeta(
+      {@required this.svgWidth,
+      @required this.svgHeight,
+      @required this.progressWidth,
+      @required this.progressHeight,
+      @required this.padding});
 
   Map<String, dynamic> toMap() {
     return {
@@ -20,6 +21,7 @@ class NamePlateDesignMeta {
       'svgHeight': svgHeight,
       'progressWidth': progressWidth,
       'progressHeight': progressHeight,
+      'padding': padding,
     };
   }
 
@@ -29,6 +31,7 @@ class NamePlateDesignMeta {
       svgHeight: map['svgHeight'],
       progressWidth: map['progressWidth'],
       progressHeight: map['progressHeight'],
+      padding: map['padding'],
     );
   }
 
