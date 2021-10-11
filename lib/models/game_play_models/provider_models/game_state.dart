@@ -333,6 +333,10 @@ class GameState {
     this._tappedSeatStateProvider =
         ListenableProvider<TappedSeatState>(create: (_) => _tappedSeatState);
 
+    // load assets
+    this.assets = new GameScreenAssets();
+    await this.assets.initialize();
+
     List<PlayerModel> players = [];
     if (gameInfo.playersInSeats != null) {
       players = gameInfo.playersInSeats;
@@ -345,6 +349,7 @@ class GameState {
         _playerIdsToNames[player.playerId] = player.name;
       }
       if (player.playerUuid == this._currentPlayer.uuid) {
+        player.namePlateId = getNameplateId();
         player.isMe = true;
         if (player.status == null) {
           player.status = AppConstants.NOT_PLAYING;
@@ -370,9 +375,6 @@ class GameState {
       player.inhand = true;
       this._playersInGame.add(player);
     }
-    // load assets
-    this.assets = new GameScreenAssets();
-    await this.assets.initialize();
 
     // final playersState = Players(
     //   players: players,
@@ -926,6 +928,11 @@ class GameState {
     if (mySeat != null) {
       return mySeat.player;
     }
+    for (final player in _playersInGame) {
+      if (player.isMe) {
+        return player;
+      }
+    }
     return null;
   }
 
@@ -942,6 +949,10 @@ class GameState {
     // for(final seat in _seats.values) {
     //   seat.notify();
     // }
+  }
+
+  String getNameplateId() {
+    return this.assets.getNameplate().id;
   }
 
   bool newPlayer(PlayerModel newPlayer) {
@@ -1200,7 +1211,31 @@ class GameState {
     }
   }
 
-  void talking(List<int> players) {
+  void stoppedTalking(List<Seat> seats) {
+    // stopped talking seats
+    for (final seat in seats) {
+      seat.player.talking = false;
+      seat.notify();
+      if (seat.isMe) {
+        this.communicationState.talking = false;
+        this.communicationState.notify();
+      }
+    }
+  }
+
+  void talking(List<Seat> seats) {
+    // talking seats
+    for (final seat in seats) {
+      seat.player.talking = true;
+      seat.notify();
+      if (seat.isMe) {
+        this.communicationState.talking = true;
+        this.communicationState.notify();
+      }
+    }
+  }
+
+  void talkingOld(List<int> players) {
     for (final playerId in players) {
       PlayerModel player;
       for (final playerInSeat in _playersInGame) {
@@ -1224,7 +1259,7 @@ class GameState {
     }
   }
 
-  void stoppedTalking(List<int> players) {
+  void stoppedTalkingOld(List<int> players) {
     for (final playerId in players) {
       final player = this
           ._playersInGame

@@ -230,9 +230,9 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                       // ),
                                       ListTileItem(
                                         text: _currentUser.name == null
-                                            ? _appScreenText['SETDISPLAYNAME']
+                                            ? _appScreenText['changeScreenName']
                                             : _appScreenText[
-                                                'CHANGEDISPLAYNAME'],
+                                                'changeScreenName'],
                                         subTitleText: _currentUser.name != null
                                             ? "(${_currentUser.name})"
                                             : "",
@@ -241,7 +241,7 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                         index: 1,
                                         onTapFunction: () async {
                                           await _updateUserDetails(
-                                              UpdateType.DISPLAY_NAME, theme);
+                                              UpdateType.SCREEN_NAME, theme);
                                           // Fetch user details from server
                                         },
                                       ),
@@ -279,9 +279,8 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                           // );
                                         },
                                       ),
-                                       ListTileItem(
-                                        text: _appScreenText[
-                                            'pickTheme'],
+                                      ListTileItem(
+                                        text: _appScreenText['pickTheme'],
                                         imagePath:
                                             AppAssetsNew.customizeImagePath,
                                         index: 3,
