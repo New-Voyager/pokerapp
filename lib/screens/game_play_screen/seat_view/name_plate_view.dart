@@ -171,13 +171,19 @@ class NamePlateWidget extends StatelessWidget {
     String playerNamePlate = namePlateStr;
     String playerProgress = progressPathStr;
     NamePlateDesign nameplate;
-    if (seat.player.isMe) {
+
+    if (seat.player != null) {
       final gameState = GameState.getState(context);
-      nameplate = gameState.assets.getNameplate();
-      if (nameplate != null) {
-        playerNamePlate = nameplate.svg;
-        playerProgress = nameplate.path;
+      if (seat.player.isMe) {
+        nameplate = gameState.assets.getNameplate();
+      } else {
+        nameplate = gameState.assets.getNameplateById(seat.player.namePlateId);
       }
+    }
+
+    if (nameplate != null) {
+      playerNamePlate = nameplate.svg;
+      playerProgress = nameplate.path;
     }
 
 /*
