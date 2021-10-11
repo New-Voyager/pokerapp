@@ -181,7 +181,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
       }
 
       if (data != null && data['type'] != null && data['type'] == "buyin") {
-        await _handleLimitButtonClick(context);
+        await _handleLimitButtonClick(context, widget.seat);
       }
 
       if (data != null && data['type'] != null && data['type'] == "host") {
@@ -196,7 +196,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
     }
   }
 
-  _handleLimitButtonClick(BuildContext context) async {
+  _handleLimitButtonClick(BuildContext context, Seat seat) async {
     final TextEditingController _controller = TextEditingController();
     final result = await showPrompt(
       context,
@@ -217,7 +217,8 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
           limit = double.parse(_controller.text.toString());
           await GameService.setBuyinLimit(
               gameCode: widget.gameState.gameCode,
-              playerId: widget.gameState.currentPlayer.uuid,
+              playerUuid: seat.player.playerUuid,
+              playerId: seat.player.playerId,
               limit: limit);
           Alerts.showNotification(titleText: "Buyin limit applied.");
         } catch (e) {}

@@ -1238,19 +1238,19 @@ mutation reportBug(\$bug :String!){
   }
 
   static Future<bool> setBuyinLimit(
-      {String gameCode, String playerId, double limit}) async {
+      {String gameCode, int playerId, String playerUuid, double limit}) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
 
     String buyinLimitQuery = """
-        mutation setLimit(\$gameCode: String!,\$playerUuid:String!,\$limit:Float!){
-			setBuyInLimit(gameCode:\$gameCode,playerUuid:\$playerUuid, limit:\$limit)      
+    mutation setLimit(\$gameCode: String!,\$playerUuid:String, \$playerId:Int, \$limit:Float!){
+			setBuyInLimit(gameCode:\$gameCode, playerUuid:\$playerUuid, playerId:\$playerId, limit:\$limit)      
     }
-    
     """;
 
     Map<String, dynamic> variables = {
       "gameCode": gameCode,
-      "playerUuid": playerId,
+      "playerUuid": playerUuid,
+      "playerId": playerId,
       "limit": limit,
     };
     QueryResult result = await _client.query(
@@ -1258,14 +1258,16 @@ mutation reportBug(\$bug :String!){
     );
 
     if (result.hasException) {
-        return false;
+      return false;
     }
 
     return result.data['data'] ?? false;
   }
-  
-  static Future<bool> assignHost(
-      {String gameCode, String playerId,}) async {
+
+  static Future<bool> assignHost({
+    String gameCode,
+    String playerId,
+  }) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
 
     String changeHostQuery = """
@@ -1284,7 +1286,7 @@ mutation reportBug(\$bug :String!){
     );
 
     if (result.hasException) {
-        return false;
+      return false;
     }
 
     return result.data['data'] ?? false;
