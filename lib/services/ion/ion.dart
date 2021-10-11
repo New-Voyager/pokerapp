@@ -132,9 +132,12 @@ class IonAudioConferenceService {
       participant.name = this.player.name;
       participant.playerUuid = this.player.uuid;
       participants.add(participant);
-      chatService.onAudioConfMessage = onAudioConfMessage;
-      chatService.sendAudioConfResponse(localStream.stream.id);
-      chatService.sendAudioConfRequest();
+      if (gameState.me != null) {
+        gameState.me.streamId = localStream.stream.id;
+      }
+      //chatService.onAudioConfMessage = onAudioConfMessage;
+      //chatService.sendAudioConfResponse(localStream.stream.id);
+      //chatService.sendAudioConfRequest();
       _inConference = true;
     } catch (err) {
       close();

@@ -33,6 +33,9 @@ class GameScreenAssets {
   }
 
   NamePlateDesign getNameplate() {
+    if (nameplate == null) {
+      return AssetService.getNameplateForId('0');
+    }
     return nameplate;
   }
 

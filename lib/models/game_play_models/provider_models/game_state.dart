@@ -370,6 +370,7 @@ class GameState {
       player.inhand = true;
       this._playersInGame.add(player);
     }
+
     // load assets
     this.assets = new GameScreenAssets();
     await this.assets.initialize();
@@ -942,6 +943,10 @@ class GameState {
     // for(final seat in _seats.values) {
     //   seat.notify();
     // }
+  }
+
+  String getNameplateId() {
+    return this.assets.getNameplate().id;
   }
 
   bool newPlayer(PlayerModel newPlayer) {

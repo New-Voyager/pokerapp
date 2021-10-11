@@ -279,9 +279,8 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                           // );
                                         },
                                       ),
-                                       ListTileItem(
-                                        text: _appScreenText[
-                                            'pickTheme'],
+                                      ListTileItem(
+                                        text: _appScreenText['pickTheme'],
                                         imagePath:
                                             AppAssetsNew.customizeImagePath,
                                         index: 3,
