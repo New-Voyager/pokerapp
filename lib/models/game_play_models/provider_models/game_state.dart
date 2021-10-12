@@ -18,7 +18,6 @@ import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/models/rabbit_state.dart';
 import 'package:pokerapp/proto/hand.pbenum.dart';
 import 'package:pokerapp/resources/app_constants.dart';
-import 'package:pokerapp/services/agora/agora.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/game_play/graphql/gamesettings_service.dart';
 import 'package:pokerapp/services/app/handlog_cache_service.dart';
@@ -26,7 +25,6 @@ import 'package:pokerapp/services/data/game_hive_store.dart';
 import 'package:pokerapp/services/data/hive_models/game_settings.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
-import 'package:pokerapp/services/janus/janus.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
@@ -76,7 +74,6 @@ class GameState {
   ListenableProvider<ActionState> _playerActionProvider;
   ListenableProvider<MyState> _myStateProvider;
   ListenableProvider<ServerConnectionState> _connectionStateProvider;
-  ListenableProvider<JanusEngine> _janusEngine;
   ListenableProvider<TappedSeatState> _tappedSeatStateProvider;
   ListenableProvider<CommunicationState> _communicationStateProvider;
   ListenableProvider<StraddlePromptState> _straddlePromptProvider;
@@ -138,7 +135,6 @@ class GameState {
   List<PlayerModel> _playersInGame;
 
   PlayerInfo _currentPlayer;
-  JanusEngine janusEngine;
   // Agora agoraEngine;
   int _currentHandNum;
   bool _playerSeatChangeInProgress = false;
@@ -334,32 +330,12 @@ class GameState {
       create: (_) => _seatChangeState,
     );
 
-    this.janusEngine = JanusEngine(
-        gameState: this,
-        janusUrl: this.gameInfo.janusUrl,
-        roomId: this.gameInfo.janusRoomId,
-        janusToken: this.gameInfo.janusToken,
-        roomPin: this.gameInfo.janusRoomPin,
-        janusSecret: this.gameInfo.janusSecret,
-        uuid: this._currentPlayer.uuid,
-        playerId: this._currentPlayer.id);
-
-    // if (this.gameInfo.useAgora ?? false) {
-    //   this.agoraEngine = Agora(
-    //     appId: this.gameInfo.agoraAppId,
-    //     gameCode: this.gameInfo.gameCode,
-    //     uuid: this._currentPlayer.uuid,
-    //     state: _communicationState,
-    //     gameState: this,
-    //     playerId: this._currentPlayer.id,
-    //   );
-    // }
-
-    this._janusEngine =
-        ListenableProvider<JanusEngine>(create: (_) => this.janusEngine);
-
     this._tappedSeatStateProvider =
         ListenableProvider<TappedSeatState>(create: (_) => _tappedSeatState);
+
+    // load assets
+    this.assets = new GameScreenAssets();
+    await this.assets.initialize();
 
     List<PlayerModel> players = [];
     if (gameInfo.playersInSeats != null) {
@@ -373,6 +349,7 @@ class GameState {
         _playerIdsToNames[player.playerId] = player.name;
       }
       if (player.playerUuid == this._currentPlayer.uuid) {
+        player.namePlateId = getNameplateId();
         player.isMe = true;
         if (player.status == null) {
           player.status = AppConstants.NOT_PLAYING;
@@ -398,9 +375,6 @@ class GameState {
       player.inhand = true;
       this._playersInGame.add(player);
     }
-    // load assets
-    this.assets = new GameScreenAssets();
-    await this.assets.initialize();
 
     // final playersState = Players(
     //   players: players,
@@ -446,12 +420,6 @@ class GameState {
   void close() {
     if (!this.replayMode) {
       gameHiveStore.close();
-    }
-    // if (this.agoraEngine != null) {
-    //   this.agoraEngine.disposeObject();
-    // }
-    if (this.janusEngine != null) {
-      this.janusEngine.disposeObject();
     }
   }
 
@@ -659,6 +627,16 @@ class GameState {
     this._playerSettings.buttonStraddleBet = settings.buttonStraddleBet;
     this._playerSettings.muckLosingHand = settings.muckLosingHand;
     this._playerSettings.runItTwiceEnabled = settings.runItTwiceEnabled;
+  }
+
+  bool get isTableFull {
+    for (int i = 1; i <= _gameInfo.maxPlayers; i++) {
+      final seat = getSeat(i);
+      if (seat.player == null) {
+        return false;
+      }
+    }
+    return true;
   }
 
   void redrawTop() {
@@ -928,7 +906,6 @@ class GameState {
       this._gameMessagingService,
       // this._waitlistProvider,
       this._connectionStateProvider,
-      this._janusEngine,
       this._tappedSeatStateProvider,
       this._communicationStateProvider,
       this._straddlePromptProvider,
@@ -951,6 +928,11 @@ class GameState {
     if (mySeat != null) {
       return mySeat.player;
     }
+    for (final player in _playersInGame) {
+      if (player.isMe) {
+        return player;
+      }
+    }
     return null;
   }
 
@@ -969,6 +951,10 @@ class GameState {
     // }
   }
 
+  String getNameplateId() {
+    return this.assets.getNameplate().id;
+  }
+
   bool newPlayer(PlayerModel newPlayer) {
     if (newPlayer.playerId != null) {
       _playerIdsToNames[newPlayer.playerId] = newPlayer.name;
@@ -980,9 +966,7 @@ class GameState {
 
   void removePlayer(int seatNo) {
     final seat = getSeat(seatNo);
-    if (seat != null && seat.player != null) {
-      this.janusEngine.leaveChannel();
-    }
+
     if (seat.player != null) {
       // remove this player
       for (int i = 0; i < _playersInGame.length; i++) {
@@ -1227,7 +1211,31 @@ class GameState {
     }
   }
 
-  void talking(List<int> players) {
+  void stoppedTalking(List<Seat> seats) {
+    // stopped talking seats
+    for (final seat in seats) {
+      seat.player.talking = false;
+      seat.notify();
+      if (seat.isMe) {
+        this.communicationState.talking = false;
+        this.communicationState.notify();
+      }
+    }
+  }
+
+  void talking(List<Seat> seats) {
+    // talking seats
+    for (final seat in seats) {
+      seat.player.talking = true;
+      seat.notify();
+      if (seat.isMe) {
+        this.communicationState.talking = true;
+        this.communicationState.notify();
+      }
+    }
+  }
+
+  void talkingOld(List<int> players) {
     for (final playerId in players) {
       PlayerModel player;
       for (final playerInSeat in _playersInGame) {
@@ -1251,7 +1259,7 @@ class GameState {
     }
   }
 
-  void stoppedTalking(List<int> players) {
+  void stoppedTalkingOld(List<int> players) {
     for (final playerId in players) {
       final player = this
           ._playersInGame

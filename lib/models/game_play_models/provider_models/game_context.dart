@@ -101,7 +101,7 @@ class GameContextObject extends ChangeNotifier {
     super.dispose();
   }
 
-  void joinAudio(BuildContext context) async {
+  Future<void> joinAudio(BuildContext context) async {
     if (gameState.gameInfo.audioConfEnabled ?? false) {
       try {
         if (_joiningAudio || _joinedAudio) {

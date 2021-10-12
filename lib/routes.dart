@@ -7,6 +7,7 @@ import 'package:pokerapp/screens/club_screen/announcements_view.dart';
 import 'package:pokerapp/screens/club_screen/bookmarked_hands.dart';
 import 'package:pokerapp/screens/club_screen/botscripts.dart';
 import 'package:pokerapp/screens/club_screen/club_main_screen.dart';
+import 'package:pokerapp/screens/club_screen/club_settings.dart';
 import 'package:pokerapp/screens/club_screen/club_stats_screen.dart';
 import 'package:pokerapp/screens/game_screens/game_history_details_view/hand_stats_view.dart';
 import 'package:pokerapp/screens/game_screens/game_history_details_view/stack_details_view.dart';
@@ -64,6 +65,8 @@ class Routes {
   static const String message_page = '/message_page';
   // ClubMembers
   static const String club_members = '/club_members';
+  // ClubMembers
+  static const String club_settings = '/club_settings';
   //ClubHostMessaging
   static const String club_host_messagng = '/club_host_messagng';
   // RewardsListScreen  -- provider, arguments
@@ -221,6 +224,15 @@ class Routes {
           ),
         );
 
+      case club_settings:
+        var clubHomePageModel = settings.arguments as ClubHomePageModel;
+        return _getPageRoute(
+          routeName: settings.name,
+          viewToShow: ClubSettingsScreen(
+            clubModel: clubHomePageModel,
+          ),
+        );
+
       case club_host_messagng:
         var args = settings.arguments as dynamic;
         return _getPageRoute(
@@ -318,11 +330,11 @@ class Routes {
             clubCode: args['clubCode'],
           ),
         );
-      // case customize:
-      //   return _getPageRoute(
-      //     routeName: settings.name,
-      //     viewToShow: CustomizeScreen(),
-      //   );
+      case customize:
+        return _getPageRoute(
+          routeName: settings.name,
+          viewToShow: CustomizeScreen(),
+        );
       case game_screen_customize:
         var gameCode = 'CUSTOMIZE';
         var customizeService = CustomizationService();

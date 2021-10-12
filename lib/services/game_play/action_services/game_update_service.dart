@@ -107,32 +107,6 @@ class GameUpdateService {
     if (messageType != null) {
       // delegate further actions to sub services as per messageType
       switch (messageType) {
-        case AppConstants.PLAYER_UPDATE:
-          return handlePlayerUpdate(
-            data: data,
-          );
-
-        case AppConstants.STACK_RELOADED:
-          return handleStackReloaded(
-            data: data,
-          );
-
-        case AppConstants.TABLE_UPDATE:
-          return handleTableUpdate(
-            data: data,
-          );
-
-        case AppConstants.HIGH_HAND:
-          return handleHighHand(
-            data: data['highHand'],
-            showNotification: true,
-          );
-
-        case AppConstants.GAME_STATUS:
-          return handleUpdateStatus(
-            status: data['status'],
-          );
-
         case AppConstants.PLAYER_CONNECTIVITY_LOST:
           List<int> playerIds =
               List<String>.from(data['networkConnectivity']['playerIds'])
@@ -258,14 +232,6 @@ class GameUpdateService {
       if (closed || _gameState.uiClosing) return;
       seat.notify();
 
-      // player.update(
-      //   stack: playerUpdate['stack'],
-      //   showBuyIn: false,
-      //   status: null,
-      // );
-      // seat.notify();
-      // if (closed || _gameState.uiClosing) return;
-
       // update my state to remove buyin button
       if (player.isMe) {
         final myState = _gameState.myState;
@@ -317,13 +283,15 @@ class GameUpdateService {
     }
 
     if (closed || _gameState.uiClosing) return;
-    final tableState = _gameState.tableState;
-    tableState.notifyAll();
-    _gameState.notifyAllSeats();
-    _gameState.refreshNotes().then((value) {
-      if (closed || _gameState.uiClosing) return;
+    if (!_gameState.handInProgress) {
+      final tableState = _gameState.tableState;
+      tableState.notifyAll();
       _gameState.notifyAllSeats();
-    });
+      _gameState.refreshNotes().then((value) {
+        if (closed || _gameState.uiClosing) return;
+        _gameState.notifyAllSeats();
+      });
+    }
   }
 
   void handleNewPlayerInSeat(
@@ -370,9 +338,11 @@ class GameUpdateService {
     }
 
     if (closed || _gameState.uiClosing) return;
-    final tableState = _gameState.tableState;
-    tableState.notifyAll();
-    _gameState.notifyAllSeats();
+    if (!_gameState.handInProgress) {
+      final tableState = _gameState.tableState;
+      tableState.notifyAll();
+      _gameState.notifyAllSeats();
+    }
   }
 
   void handlePlayerLeftGame({
@@ -430,16 +400,17 @@ class GameUpdateService {
       //_gameState.myState.status = PlayerStatus.NOT_PLAYING;
       _gameState.myState.notify();
     }
-
     if (closed || _gameState.uiClosing) return;
     _gameState.removePlayer(seatNo);
-    if (closed || _gameState.uiClosing) return;
-    _gameState.notifyAllSeats();
-    if (closed || _gameState.uiClosing) return;
-    _gameState.markOpenSeat(seatNo);
-    if (closed || _gameState.uiClosing) return;
-    final tableState = _gameState.tableState;
-    tableState.notifyAll();
+    if (!_gameState.handInProgress) {
+      if (closed || _gameState.uiClosing) return;
+      _gameState.notifyAllSeats();
+      if (closed || _gameState.uiClosing) return;
+      _gameState.markOpenSeat(seatNo);
+      if (closed || _gameState.uiClosing) return;
+      final tableState = _gameState.tableState;
+      tableState.notifyAll();
+    }
   }
 
   void handlePlayerSwitchSeat({
@@ -731,86 +702,6 @@ class GameUpdateService {
         }
     */
     _gameState.highHand = data;
-  }
-
-  void handlePlayerUpdate({
-    var data,
-  }) {
-    var playerUpdate = data['playerUpdate'];
-    String newUpdate = playerUpdate['newUpdate'];
-    String playerStatus = playerUpdate['status'];
-    String playerId = playerUpdate['playerId'];
-
-    if (playerId == _gameState.currentPlayerId.toString()) {
-      final me = _gameState.me;
-      if (playerStatus == AppConstants.PLAYING &&
-          me != null &&
-          me.status != AppConstants.PLAYING) {
-        me.status = AppConstants.PLAYING;
-        if (closed || _gameState.uiClosing) return;
-        _gameState.myState.notify();
-      }
-    }
-
-    // log(jsonData);
-    switch (newUpdate) {
-      case AppConstants.NEW_PLAYER:
-        return handleNewPlayer(
-          playerUpdate: playerUpdate,
-        );
-
-      case AppConstants.LEFT:
-      case AppConstants.LEFT_THE_GAME:
-        return handlePlayerLeftGame(
-          playerUpdate: playerUpdate,
-        );
-
-      case AppConstants.SWITCH_SEAT:
-        return handlePlayerSwitchSeat(
-          playerUpdate: playerUpdate,
-        );
-
-      case AppConstants.NEWUPDATE_NOT_PLAYING:
-      case AppConstants.NOT_PLAYING:
-        return handlePlayerNotPlaying(
-          playerUpdate: playerUpdate,
-        );
-
-      case AppConstants.BUYIN_TIMEDOUT:
-        return handlePlayerBuyinTimedout(
-          playerUpdate: playerUpdate,
-        );
-
-      case AppConstants.TAKE_BREAK:
-        return handlePlayerTakeBreak(
-          playerUpdate: playerUpdate,
-        );
-
-      case AppConstants.NEWUPDATE_WAIT_FOR_BUYIN_APPROVAL:
-      case AppConstants.WAIT_FOR_BUYIN_APPROVAL:
-        return handlePlayerWaitForBuyinApproval(
-          playerUpdate: playerUpdate,
-        );
-      case AppConstants.WAIT_FOR_BUYIN:
-        return handlePlayerWaitForBuyin(
-          playerUpdate: playerUpdate,
-        );
-
-      case AppConstants.BUYIN_DENIED:
-        return handlePlayerBuyinDenied(
-          playerUpdate: playerUpdate,
-        );
-
-      case AppConstants.SIT_BACK:
-        return handlePlayerSitBack(
-          playerUpdate: playerUpdate,
-        );
-
-      default:
-        return updatePlayer(
-          playerUpdate: playerUpdate,
-        );
-    }
   }
 
   void handleNewPlayerUpdate({

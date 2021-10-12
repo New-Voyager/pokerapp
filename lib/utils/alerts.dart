@@ -237,7 +237,7 @@ class Alerts {
       barrierDismissible: true,
       pageBuilder: (_, __, ___) {
         final theme = AppTheme.getTheme(context);
-        return _SystemPadding(
+        return SystemPadding(
           child: Align(
             alignment: Alignment.center,
             child: Material(
@@ -279,7 +279,7 @@ class Alerts {
       barrierDismissible: true,
       pageBuilder: (_, __, ___) {
         final theme = AppTheme.getTheme(context);
-        return _SystemPadding(
+        return SystemPadding(
           child: Align(
             alignment: Alignment.bottomCenter,
             child: Material(
@@ -314,10 +314,10 @@ class Alerts {
   }
 }
 
-class _SystemPadding extends StatelessWidget {
+class SystemPadding extends StatelessWidget {
   final Widget child;
 
-  _SystemPadding({Key key, this.child}) : super(key: key);
+  SystemPadding({Key key, this.child}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -158,7 +158,6 @@ class PlayerService {
         return null;
       }
     }
-
     if (result.data == null) {
       return null;
     }

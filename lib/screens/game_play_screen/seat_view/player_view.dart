@@ -14,12 +14,15 @@ import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/nameplate_dialog.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
+import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/widgets/blinking_widget.dart';
+import 'package:pokerapp/widgets/card_form_text_field.dart';
 import 'package:pokerapp/widgets/cards/hidden_card_view.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/displaycards.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/game_play/graphql/seat_change_service.dart';
+import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:provider/provider.dart';
 
 import 'action_status.dart';
@@ -176,12 +179,74 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
         );
         await gameState.gameHiveStore.deductDiamonds();
       }
+
+      if (data != null && data['type'] != null && data['type'] == "buyin") {
+        await _handleLimitButtonClick(context, widget.seat);
+      }
+
+      if (data != null && data['type'] != null && data['type'] == "host") {
+        await _handleHostButtonClick(context);
+      }
       // show popup menu
       // showPlayerPopup(context, widget.seat.key, widget.gameState, widget.seat);
 
       // Enable this for popup buttons
       // gameState.setTappedSeatPos(
       //     context, widget.seatPos, widget.seat, widget.gameComService);
+    }
+  }
+
+  _handleLimitButtonClick(BuildContext context, Seat seat) async {
+    final TextEditingController _controller = TextEditingController();
+    final result = await showPrompt(
+      context,
+      "Set Buyin Limit",
+      "",
+      child: CardFormTextField(
+        hintText: "Enter value",
+        controller: _controller,
+        theme: AppTheme.getTheme(context),
+        keyboardType: TextInputType.number,
+      ),
+    );
+    if (result != null) {
+      if (result == true) {
+        // setbuyin limit
+        double limit;
+        try {
+          limit = double.parse(_controller.text.toString());
+          await GameService.setBuyinLimit(
+              gameCode: widget.gameState.gameCode,
+              playerUuid: seat.player.playerUuid,
+              playerId: seat.player.playerId,
+              limit: limit);
+          Alerts.showNotification(titleText: "Buyin limit applied.");
+        } catch (e) {}
+      } else {
+        return;
+      }
+    }
+  }
+
+  _handleHostButtonClick(BuildContext context) async {
+    final result = await showPrompt(context, "Assign Host",
+        "Do you want to assign '${widget.gameState.currentPlayer.name}' as host?",
+        positiveButtonText: "Yes", negativeButtonText: "No");
+    if (result != null) {
+      if (result == true) {
+        // setbuyin limit
+        try {
+          final result = await GameService.assignHost(
+            gameCode: widget.gameState.gameCode,
+            playerId: widget.gameState.currentPlayer.uuid,
+          );
+          if (result != null && result == true) {
+            Alerts.showNotification(titleText: "Assigned a new host.");
+          }
+        } catch (e) {}
+      } else {
+        return;
+      }
     }
   }
 

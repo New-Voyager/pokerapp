@@ -37,6 +37,10 @@ class GameMessagingService {
   Function onRabbitHunt;
   Function onAudioConfMessage;
 
+  // to get my information
+  Function getMyInfo;
+  Function(GamePlayerInfo) onPlayerInfo;
+
   Uuid uuid;
 
   void listen({
@@ -154,11 +158,50 @@ class GameMessagingService {
       if (message.type == 'AUDIOCONF' && this.onAudioConfMessage != null) {
         this.onAudioConfMessage(message.data);
       }
+
+      // audio conf message
+      if (message.type == 'PLAYER_INFO') {
+        this._onPlayerInfo(message.data);
+      }
     }
   }
 
   void close() {
     this.active = false;
+  }
+
+  void _onPlayerInfo(String message) {
+    Map<String, dynamic> json = jsonDecode(message);
+    if (json['method'] == 'REQUEST') {
+      // another player is requesting my information
+      this.sendMyInfo();
+    } else if (json['method'] == 'PUBLISH') {
+      // another player is publishing his/her information
+      final playerInfo = GamePlayerInfo.fromJson(json);
+      if (this.onPlayerInfo != null) {
+        this.onPlayerInfo(playerInfo);
+      }
+    }
+  }
+
+  void sendMyInfo() {
+    if (this.getMyInfo != null) {
+      GamePlayerInfo playerInfo = this.getMyInfo();
+      if (playerInfo == null) {
+        return;
+      }
+      dynamic body = jsonEncode({
+        'id': uuid.v1(),
+        'playerID': this.currentPlayer.id,
+        'name': this.currentPlayer.name,
+        'type': 'PLAYER_INFO',
+        'method': 'PUBLISH',
+        'streamId': playerInfo.streamId,
+        'namePlateId': playerInfo.namePlateId,
+        'sent': DateTime.now().toUtc().toIso8601String(),
+      });
+      this.nats.clientPub.pubString(this.chatChannel, body);
+    }
   }
 
   void sendText(String text) {
@@ -255,6 +298,16 @@ class GameMessagingService {
       'streamId': streamId,
       'method': 'PUBLISH',
       'type': 'AUDIOCONF',
+      'sent': DateTime.now().toUtc().toIso8601String(),
+    });
+    this.nats.clientPub.pubString(this.chatChannel, body);
+  }
+
+  void requestPlayerInfo() {
+    dynamic body = jsonEncode({
+      'id': uuid.v1(),
+      'method': 'REQUEST',
+      'type': 'PLAYER_INFO',
       'sent': DateTime.now().toUtc().toIso8601String(),
     });
     this.nats.clientPub.pubString(this.chatChannel, body);
@@ -360,5 +413,19 @@ class ChatMessage {
       log('Error: ${err.toString()}');
       return null;
     }
+  }
+}
+
+class GamePlayerInfo {
+  String namePlateId;
+  String streamId;
+  int playerId;
+  GamePlayerInfo();
+  factory GamePlayerInfo.fromJson(dynamic json) {
+    GamePlayerInfo info = GamePlayerInfo();
+    info.namePlateId = json['namePlateId'];
+    info.streamId = json['streamId'];
+    info.playerId = int.parse(json['playerID'].toString());
+    return info;
   }
 }

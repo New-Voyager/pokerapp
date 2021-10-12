@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
+import 'package:pokerapp/models/game_play_models/ui/nameplate_object.dart';
 import 'package:pokerapp/services/app/asset_service.dart';
 import 'package:pokerapp/services/data/asset_hive_store.dart';
 import 'package:pokerapp/services/data/user_settings_store.dart';
@@ -21,12 +22,29 @@ class GameScreenAssets {
   Map<String, Uint8List> cardStrImage;
   Map<int, Uint8List> cardNumberImage;
 
+  NamePlateDesign nameplate;
+
   Uint8List getBackDrop() {
     return backdropBytes;
   }
 
   Uint8List getBoard() {
     return boardBytes;
+  }
+
+  NamePlateDesign getNameplate() {
+    if (nameplate == null) {
+      return AssetService.getNameplateForId('0');
+    }
+    return nameplate;
+  }
+
+  NamePlateDesign getNameplateById(String id) {
+    final namePlate = AssetService.getNameplateForId(id);
+    if (namePlate == null) {
+      return AssetService.getNameplateForId('0');
+    }
+    return namePlate;
   }
 
   Uint8List getHoleCardBack() {
@@ -64,6 +82,9 @@ class GameScreenAssets {
       table = AssetService.getAssetForId(UserSettingsStore.VALUE_DEFAULT_TABLE);
     }
     boardBytes = await table.getBytes();
+
+    nameplate = AssetService.getNameplateForId(
+        UserSettingsStore.getSelectedNameplateId());
 
     Asset betImage =
         AssetService.getAssetForId(UserSettingsStore.getSelectedBetDial());

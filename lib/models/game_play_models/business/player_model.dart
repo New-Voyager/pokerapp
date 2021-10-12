@@ -81,6 +81,10 @@ class PlayerModel {
   bool hasNotes = false;
   String notes = '';
 
+  // game player info
+  String streamId = '';
+  String namePlateId = '';
+
   PlayerModel({
     String name,
     int seatNo,

@@ -234,7 +234,9 @@ class Client {
     }
 
     if (_subs[sid] != null) {
-      _subs[sid].add(Message(subject, sid, payload, this, replyTo: replyTo));
+      if (!_subs[sid].closed) {
+        _subs[sid].add(Message(subject, sid, payload, this, replyTo: replyTo));
+      }
     }
     _receiveLine1 = '';
     _receiveState = _ReceiveState.idle;

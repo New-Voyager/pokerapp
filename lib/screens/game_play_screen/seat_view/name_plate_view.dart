@@ -8,6 +8,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
+import 'package:pokerapp/models/game_play_models/ui/nameplate_object.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
@@ -167,6 +168,23 @@ class NamePlateWidget extends StatelessWidget {
     }
 
     Widget plateWidget;
+    String playerNamePlate = namePlateStr;
+    String playerProgress = progressPathStr;
+    NamePlateDesign nameplate;
+
+    if (seat.player != null) {
+      final gameState = GameState.getState(context);
+      if (seat.player.isMe) {
+        nameplate = gameState.assets.getNameplate();
+      } else {
+        nameplate = gameState.assets.getNameplateById(seat.player.namePlateId);
+      }
+    }
+
+    if (nameplate != null) {
+      playerNamePlate = nameplate.svg;
+      playerProgress = nameplate.path;
+    }
 
 /*
 [log] Timer remaining: 6698 total: 30 current: 23
@@ -214,9 +232,9 @@ class NamePlateWidget extends StatelessWidget {
                   remainingTime: time
                       .toInt(), // seat.actionTimer.getRemainingTime()*1000, //time.toInt(),
                   totalTime: total * 1000, // in milliseconds
-                  svg: namePlateStr,
+                  svg: playerNamePlate,
                   size: containerSize,
-                  progressPath: progressPathStr,
+                  progressPath: playerProgress,
                   progressRatio: progressRatio);
             });
       });
@@ -224,9 +242,9 @@ class NamePlateWidget extends StatelessWidget {
       plateWidget = Nameplate.fromSvgString(
           remainingTime: 0,
           totalTime: 0,
-          svg: namePlateStr,
+          svg: playerNamePlate,
           size: containerSize,
-          progressPath: progressPathStr,
+          progressPath: playerProgress,
           progressRatio: progressRatio);
     }
 
@@ -242,34 +260,49 @@ class NamePlateWidget extends StatelessWidget {
                 child: AnimatedOpacity(
                   duration: AppConstants.animationDuration,
                   opacity: seat.isOpen ? 0.0 : 1.0,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SizedBox(height: 2),
-                      // player name
-                      FittedBox(
-                        child: Text(
-                          seat.player?.name ?? '',
-                          style: AppDecorators.getSubtitle1Style(theme: theme),
-                        ),
-                      ),
-                      SizedBox(height: 2),
-                      // divider
-                      PlayerViewDivider(),
-                      SizedBox(height: 2),
-
-                      // bottom widget - to show stack, sit back time, etc.
-                      Align(
-                        alignment: Alignment.topRight,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 5),
-                          child: FittedBox(
-                            child: bottomWidget(context, theme),
+                  child: Padding(
+                    padding: nameplate != null
+                        ? EdgeInsets.fromLTRB(
+                            double.parse(
+                                nameplate.meta.padding.split(",")[0].trim()),
+                            double.parse(
+                                nameplate.meta.padding.split(",")[1].trim()),
+                            double.parse(
+                                nameplate.meta.padding.split(",")[2].trim()),
+                            double.parse(
+                                nameplate.meta.padding.split(",")[3].trim()),
+                          )
+                        : EdgeInsets.all(3),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(height: 2),
+                        // player name
+                        FittedBox(
+                          child: Text(
+                            seat.player?.name ?? '',
+                            style:
+                                AppDecorators.getSubtitle4Style(theme: theme),
                           ),
                         ),
-                      ),
-                    ],
+                        Spacer(),
+                        // divider
+                        PlayerViewDivider(),
+
+                        Spacer(),
+                        // bottom widget - to show stack, sit back time, etc.
+                        Align(
+                          alignment: Alignment.topRight,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 5),
+                            child: FittedBox(
+                              child: bottomWidget(context, theme),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ))),
       ],
@@ -364,7 +397,7 @@ class NamePlateWidget extends StatelessWidget {
   Widget stack(BuildContext context, AppTheme theme) {
     Widget _buildStackTextWidget(int stack) => Text(
           stack?.toString() ?? 'XX',
-          style: AppDecorators.getSubtitle1Style(theme: theme),
+          style: AppDecorators.getSubtitle4Style(theme: theme),
         );
 
     if (seat.player.reloadAnimation == true)

@@ -17,10 +17,12 @@ class Subscription {
   final _controller = StreamController<Message>();
 
   Stream<Message> _stream;
+  bool _closed = true;
 
   ///constructure
   Subscription(this.sid, this.subject, this._client, {this.queueGroup}) {
     _stream = _controller.stream.asBroadcastStream();
+    _closed = false;
   }
 
   ///
@@ -39,5 +41,8 @@ class Subscription {
   ///close the stream
   void close() {
     _controller.close();
+    _closed = true;
   }
+
+  bool get closed => _closed;
 }
