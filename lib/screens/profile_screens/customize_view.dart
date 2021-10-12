@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
@@ -8,6 +7,7 @@ import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/data/box_type.dart';
 import 'package:pokerapp/services/data/hive_datasource_impl.dart';
+import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/round_color_button.dart';
 import 'package:provider/provider.dart';
 
@@ -20,7 +20,11 @@ class CustomizeScreen extends StatefulWidget {
 
 class _CustomizeScreenState extends State<CustomizeScreen> {
   List<AppThemeData> themeList = [
-    AppThemeData(),
+    AppThemeData(
+      roundedButtonBackgroundColor: Colors.blueGrey,
+      roundedButton2BackgroundColor: Colors.purple,
+      confirmYesButtonBackgroundColor: Colors.purple,
+    ),
     AppThemeData(
       primaryColor: Colors.blueGrey.shade900,
       accentColor: Colors.amber[900],
@@ -41,13 +45,9 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
       secondaryColor: Colors.blueGrey,
       fillInColor: Colors.grey,
       supportingColor: Colors.black,
-    ),
-    AppThemeData(
-      primaryColor: Colors.blue,
-      accentColor: Colors.amber[900],
-      secondaryColor: Colors.blueGrey,
-      fillInColor: Colors.grey,
-      supportingColor: Colors.black,
+      roundedButtonBackgroundColor: Colors.blueGrey,
+      roundedButton2BackgroundColor: Colors.purple,
+      confirmYesButtonBackgroundColor: Colors.purple,
     ),
     AppThemeData(
       primaryColor: Colors.blue,
@@ -55,6 +55,14 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
       secondaryColor: Colors.blueGrey,
       fillInColor: Colors.grey,
       supportingColor: Colors.white70,
+    ),
+    AppThemeData(
+      primaryColor: Color(0xFFA2D2FF),
+      accentColor: Color(0xFFD2EB38),
+      secondaryColor: Color(0xFFFFFFFF),
+      fillInColor: Color(0xFFDFF4FE),
+      supportingColor: Color(0xFFF9FDFE),
+      navFabColor: Colors.purple,
     ),
   ];
 
@@ -267,6 +275,49 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
                               backgroundColor: Colors.transparent,
                               textColor: theme.secondaryColor,
                               borderColor: theme.primaryColor,
+                            ),
+                          ],
+                          runSpacing: 32,
+                        ),
+
+                        Wrap(
+                          alignment: WrapAlignment.center,
+                          spacing: 32,
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          verticalDirection: VerticalDirection.down,
+                          children: [
+                            RoundRectButton(
+                              text: "Button",
+                              onTap: () {},
+                              theme: theme,
+                            ),
+                            RoundRectButton2(
+                              text: "Button",
+                              onTap: () {},
+                              theme: theme,
+                            ),
+                            CircleImageButton(
+                              onTap: () {},
+                              theme: theme,
+                              asset: "assets/images/record.png",
+                            ),
+                            CircleImageButton(
+                              onTap: () {},
+                              theme: theme,
+                              svgAsset: "assets/images/lasthand.svg",
+                            ),
+                            CircleImageButton(
+                              onTap: () {},
+                              theme: theme,
+                              icon: Icons.info_outline_rounded,
+                            ),
+                            ConfirmYesButton(
+                              onTap: () {},
+                              theme: theme,
+                            ),
+                            ConfirmNoButton(
+                              onTap: () {},
+                              theme: theme,
                             ),
                           ],
                           runSpacing: 32,

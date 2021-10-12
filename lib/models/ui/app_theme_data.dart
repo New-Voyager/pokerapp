@@ -24,6 +24,28 @@ class AppThemeData {
   // font family
   String fontFamily;
 
+  //Circle Image Button
+  TextStyle circleImageButtonTextStyle;
+  Color circleImageButtonBorderColor;
+  Color circleImageButtonBackgroundColor;
+  Color circleImageButtonImageColor;
+
+  //Rounded Button
+  Color roundedButtonBackgroundColor;
+  TextStyle roundedButtonTextStyle;
+
+  //Rounded2 Button
+  Color roundedButton2BackgroundColor;
+  TextStyle roundedButton2TextStyle;
+
+  //Confirm Yes Button
+  Color confirmYesButtonBackgroundColor;
+  Color confirmYesButtonIconColor;
+
+  //Confirm No Button
+  Color confirmNoButtonBackgroundColor;
+  Color confirmNoButtonIconColor;
+
   // Handlog stage colors
   Color handlogPreflopColor;
   Color handlogFlopColor;
@@ -56,6 +78,18 @@ class AppThemeData {
     this.handlogShowdownColor = const Color(0xFF44110A),
     this.navBgColor = const Color(0xFF3D5242),
     this.navFabColor = const Color(0xFF40D876),
+    this.circleImageButtonTextStyle = const TextStyle(),
+    this.circleImageButtonBorderColor = Colors.black,
+    this.circleImageButtonBackgroundColor = const Color(0xFFD89E40),
+    this.circleImageButtonImageColor = Colors.black,
+    this.roundedButtonBackgroundColor = Colors.white,
+    this.roundedButtonTextStyle = const TextStyle(),
+    this.roundedButton2BackgroundColor = Colors.white,
+    this.roundedButton2TextStyle = const TextStyle(),
+    this.confirmNoButtonBackgroundColor = Colors.red,
+    this.confirmNoButtonIconColor = Colors.white,
+    this.confirmYesButtonBackgroundColor = Colors.green,
+    this.confirmYesButtonIconColor = Colors.white,
     this.tableAssetId = "default-table",
     this.backDropAssetId = "default-backdrop",
     this.cardBackAssetId = "default-cardback",
@@ -72,6 +106,19 @@ class AppThemeData {
       "supportingColor": this.supportingColor.value,
       "negativeOrErrorColor": this.negativeOrErrorColor.value,
       "fontFamily": this.fontFamily,
+      "circleImageButtonBorderColor": this.circleImageButtonBorderColor,
+      "circleImageButtonBackgroundColor": this.circleImageButtonBackgroundColor,
+      "circleImageButtonImageColor": this.circleImageButtonImageColor,
+      "circleImageButtonTextStyle": this.circleImageButtonTextStyle,
+      "roundedButtonTextStyle": this.roundedButtonTextStyle,
+      "roundedButtonTextroundedButtonBackgroundColorStyle":
+          this.roundedButtonBackgroundColor,
+      "roundedButton2TextStyle": this.roundedButton2TextStyle,
+      "roundedButton2BackgroundColor": this.roundedButton2BackgroundColor,
+      "confirmYesButtonBackgroundColor": this.confirmYesButtonBackgroundColor,
+      "confirmYesButtonIconColor": this.confirmYesButtonIconColor,
+      "confirmNoButtonBackgroundColor": this.confirmNoButtonBackgroundColor,
+      "confirmNoButtonIconColor": this.confirmNoButtonIconColor,
       "navBgColor": this.navBgColor.value,
       "navFabColor": this.navFabColor.value,
       "tableAssetId": this.tableAssetId,
