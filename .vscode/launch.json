@@ -20,6 +20,16 @@
       ]
     },
     {
+      "name": "pokerapp-ios",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main_dev.dart",
+      "args": [
+        "--flavor",
+        "dev"
+      ]
+    },    
+    {
       "name": "pokerapp-10inch-dev",
       "request": "launch",
       "type": "dart",
