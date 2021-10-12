@@ -72,4 +72,4 @@ post_install do |installer|
 end
 
 # add the Firebase pod for Google Analytics
-pod 'Firebase/Analytics'
+# pod 'Firebase/Analytics'
