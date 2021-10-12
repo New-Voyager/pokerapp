@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_fgbg/flutter_fgbg.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:overlay_support/overlay_support.dart';
+import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/overlay_notification.dart';
@@ -261,7 +262,15 @@ class NotificationHandler {
   }
 
   void showMessageInBin(Map<String, dynamic> json) async {
-    String body = 'This is test message';
+    String body = '';
+    String type = json['type'];
+    if (type == 'WAITLIST_SEATING') {
+      body = waitlistMessageBody(json);
+    }
+
+    if (body.isEmpty) {
+      return;
+    }
 
     final androidSettings =
         AndroidInitializationSettings('ic_notification_bell');
@@ -294,19 +303,21 @@ class NotificationHandler {
         navigatorKey.currentContext, 'Test', 'This is test message');
   }
 
-  Future<void> handleWaitlistSeatingPush(Map<String, dynamic> json) async {
+  String waitlistMessageBody(Map<String, dynamic> json) {
     String game = '';
     if (json["gameType"] != null) {
-      String gameType = json["gameType"].toString();
+      String gameTypeInString = json["gameType"].toString();
+      GameType gameType = gameTypeFromStr(gameTypeInString);
+      gameTypeInString = gameTypeStr(gameType);
       String sb = DataFormatter.chipsFormat(
           double.parse(json['smallBlind'].toString()));
       String bb =
           DataFormatter.chipsFormat(double.parse(json['bigBlind'].toString()));
-      game = ' at $gameType $sb/$bb';
+      game = ' at $gameTypeInString $sb/$bb';
     }
-    final title = 'Waitlist Seating';
-    final message = 'A seat is open in game $game.';
-    _plugin.show(0, title, message, _notificationDetails);
+    String gameCode = json['gameCode'];
+    final message = 'A seat is open. $game [$gameCode}]';
+    return message;
   }
 
   // handle messages when app is running foreground

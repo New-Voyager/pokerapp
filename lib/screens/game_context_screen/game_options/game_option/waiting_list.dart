@@ -72,6 +72,7 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
         }
       });
     }
+    setState( () {});
   }
 
   @override
@@ -182,7 +183,7 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
                   : Container(),
               index != 0
                   ? SizedBox(
-                      width: 5,
+                      width: 10,
                     )
                   : Container(),
               index != allWaitingListPlayers.length - 1

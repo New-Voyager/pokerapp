@@ -185,7 +185,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
       }
 
       if (data != null && data['type'] != null && data['type'] == "host") {
-        await _handleHostButtonClick(context);
+        await _handleHostButtonClick(context, widget.seat);
       }
       // show popup menu
       // showPlayerPopup(context, widget.seat.key, widget.gameState, widget.seat);
@@ -228,7 +228,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
     }
   }
 
-  _handleHostButtonClick(BuildContext context) async {
+  _handleHostButtonClick(BuildContext context, Seat seat) async {
     final result = await showPrompt(context, "Assign Host",
         "Do you want to assign '${widget.gameState.currentPlayer.name}' as host?",
         positiveButtonText: "Yes", negativeButtonText: "No");
@@ -238,12 +238,14 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
         try {
           final result = await GameService.assignHost(
             gameCode: widget.gameState.gameCode,
-            playerId: widget.gameState.currentPlayer.uuid,
+            playerId: seat.player.playerId,
           );
           if (result != null && result == true) {
             Alerts.showNotification(titleText: "Assigned a new host.");
           }
-        } catch (e) {}
+        } catch (e) {
+          log('error ${e.toString()}');
+        }
       } else {
         return;
       }

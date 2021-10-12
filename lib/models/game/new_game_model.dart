@@ -80,6 +80,7 @@ class NewGameModel {
   bool seatChangeAllowed = false;
   bool waitList = true;
   bool botGame = true;
+  bool botsToWaitlist = true;
   bool highHandTracked = false;
   Rewards rewards;
   bool muckLosingHand = false;
@@ -131,6 +132,7 @@ class NewGameModel {
     this.locationCheck,
     this.waitList,
     this.botGame,
+    this.botsToWaitlist,
     this.muckLosingHand,
     this.roeGames,
     this.dealerChoiceGames,
@@ -192,6 +194,7 @@ class NewGameModel {
     buttonStraddleBet = json['buttonStraddleBet'] ?? 2;
     showResult = json['showResult'] ?? true;
     highHandTracked = json['highHandTracked'] ?? false;
+    botsToWaitlist = json['botsToWaitlist'] ?? false;
   }
 
   Map<String, dynamic> toJson() {
@@ -218,6 +221,7 @@ class NewGameModel {
 
     data['actionTime'] = this.actionTime;
     data['botGame'] = this.botGame;
+    data['botsToWaitlist'] = this.botsToWaitlist;
     data['runItTwiceAllowed'] = this.runItTwice;
     data['muckLosingHand'] = this.muckLosingHand;
     data['audioConfEnabled'] = this.audioConference;

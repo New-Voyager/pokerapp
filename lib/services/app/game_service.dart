@@ -1266,20 +1266,21 @@ mutation reportBug(\$bug :String!){
 
   static Future<bool> assignHost({
     String gameCode,
-    String playerId,
+    String playerUuid,
+    int playerId,
   }) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
 
     String changeHostQuery = """
-        mutation changeHost(\$gameCode: String!,\$playerUuid:String!){
-			assignHost(gameCode:\$gameCode,playerUuid:\$playerUuid)      
-    }
-    
+      mutation changeHost(\$gameCode: String!,\$playerUuid:String, \$playerId: Int){
+        assignHost(gameCode:\$gameCode,playerUuid:\$playerUuid, playerId: \$playerId)
+      }
     """;
 
     Map<String, dynamic> variables = {
       "gameCode": gameCode,
-      "playerUuid": playerId
+      "playerId": playerId,
+      "playerUuid": playerUuid,
     };
     QueryResult result = await _client.query(
       QueryOptions(document: gql(changeHostQuery), variables: variables),
