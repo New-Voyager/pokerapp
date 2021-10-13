@@ -14,6 +14,7 @@ import 'package:pokerapp/models/ui/app_theme_data.dart';
 import 'package:pokerapp/resources/app_config.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/routes.dart';
+import 'package:pokerapp/services/app/insta_refresh_service.dart';
 import 'package:pokerapp/services/connectivity_check/network_change_listener.dart';
 import 'package:pokerapp/services/data/hive_datasource_impl.dart';
 import 'package:pokerapp/services/nats/nats.dart';
@@ -120,6 +121,9 @@ class _MyAppState extends State<MyApp> {
         ),
         ChangeNotifierProvider<AppState>(
           create: (_) => AppState(),
+        ),
+        ListenableProvider<InstaRefreshService>(
+          create: (_) => InstaRefreshService(),
         ),
       ],
       builder: (context, _) => MultiProvider(
