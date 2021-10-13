@@ -1,8 +1,11 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:pokerapp/services/app/insta_refresh_service.dart';
 import 'package:pokerapp/services/app/util_service.dart';
 import 'package:pokerapp/services/nats/message.dart';
+import 'package:provider/provider.dart';
 
 import 'client.dart';
 import 'subscription.dart';
@@ -21,8 +24,11 @@ class Nats {
   Map<String, Subscription> _clubSubs = Map<String, Subscription>();
   Function(String) playerNotifications;
   Function(String) clubNotifications;
+  InstaRefreshService _instaRefreshService;
 
-  Nats(this._providerContext);
+  Nats(this._providerContext) {
+    _instaRefreshService = _providerContext.read<InstaRefreshService>();
+  }
 
   Future<void> reconnect() async {
     // if we dont have the player channel yet, dont call reconnect wait for init
@@ -104,6 +110,28 @@ class Nats {
     }
   }
 
+  void _instaRefreshServiceHelper(String message) {
+    final data = jsonDecode(message);
+
+    final String type = data['type'];
+    final String changed = data['changed'];
+
+    log('pauldebug: $type and $changed');
+
+    if (type == 'CLUB_UPDATED' &&
+        (changed == 'NEW_GAME' || changed == 'MEW_GAME')) {
+      // a new game has started in any of the club, set to refresh the live games screen
+      log('pauldebug: _instaRefreshService NEW_GAME');
+      _instaRefreshService.setNeedToRefreshLiveGames();
+    }
+
+    if (type == 'CLUB_UPDATED' && changed == 'GAME_ENDED') {
+      // a game in the club is ended, refresh the live games, as well as the game record
+      _instaRefreshService.setNeedToRefreshGameRecord();
+      _instaRefreshService.setNeedToRefreshLiveGames();
+    }
+  }
+
   subscribeClubMessages(String clubCode) {
     String clubChannel = 'club.$clubCode';
     if (_clubSubs.containsKey(clubChannel)) {
@@ -115,6 +143,7 @@ class Nats {
     clubSub.stream.listen((Message message) {
       if (clubNotifications != null) {
         clubNotifications(message.string);
+        _instaRefreshServiceHelper(message.string);
       }
 
       /*
