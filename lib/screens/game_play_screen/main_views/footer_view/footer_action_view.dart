@@ -82,9 +82,9 @@ class _FooterActionViewState extends State<FooterActionView> {
       btnTextStyle = AppDecorators.getSubtitle3Style(theme: theme);
     }
 
-    final button = AnimatedContainer(
-      duration: AppConstants.fastAnimationDuration,
-      curve: Curves.bounceInOut,
+    final button = Container(
+      // duration: AppConstants.fastAnimationDuration,
+      // curve: Curves.bounceInOut,
       height: 32.ph,
       width: 80.pw,
       margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
