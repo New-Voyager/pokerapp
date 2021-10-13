@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class RoundRectButton extends StatelessWidget {
   RoundRectButton({
@@ -22,9 +23,9 @@ class RoundRectButton extends StatelessWidget {
       onTap: this.onTap,
       borderRadius: BorderRadius.circular(20.0),
       child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 20.0,
-          vertical: 10.0,
+        padding: EdgeInsets.symmetric(
+          horizontal: 20.pw,
+          vertical: 10.pw,
         ),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20.0),
@@ -63,14 +64,14 @@ class RoundRectButton2 extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: this.onTap,
-      borderRadius: BorderRadius.circular(20.0),
+      borderRadius: BorderRadius.circular(20.pw),
       child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 20.0,
-          vertical: 10.0,
+        padding: EdgeInsets.symmetric(
+          horizontal: 20.pw,
+          vertical: 10.pw,
         ),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20.0),
+          borderRadius: BorderRadius.circular(20.pw),
           color: theme.roundedButton2BackgroundColor,
         ),
         child: Wrap(
