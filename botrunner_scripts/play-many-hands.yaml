@@ -57,3 +57,4 @@ starting-seats:
 
 auto-play:
   enabled: true
+  num-games: 1
