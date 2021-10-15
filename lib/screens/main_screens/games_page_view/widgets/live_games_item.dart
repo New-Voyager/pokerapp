@@ -7,7 +7,7 @@ import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/formatter.dart';
-import 'package:pokerapp/widgets/round_color_button.dart';
+import 'package:pokerapp/widgets/buttons.dart';
 import 'package:provider/provider.dart';
 
 class LiveGameItem extends StatelessWidget {
@@ -126,13 +126,12 @@ class LiveGameItem extends StatelessWidget {
           Positioned(
             bottom: 20.ph,
             right: 5.pw,
-            child: RoundedColorButton(
+            child: RoundRectButton(
               text: GameModelNew.getSeatsAvailble(game) > 0
                   ? "${_appScreenText['JOIN']}"
                   : "${_appScreenText['VIEW']}",
-              onTapFunction: onTapFunction,
-              backgroundColor: theme.accentColor,
-              textColor: theme.primaryColorWithDark(),
+              onTap: onTapFunction,
+              theme: theme,
             ),
           ),
         ],

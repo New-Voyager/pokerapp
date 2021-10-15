@@ -3,10 +3,13 @@ import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/models/ui/app_theme_data.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/data/box_type.dart';
 import 'package:pokerapp/services/data/hive_datasource_impl.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:provider/provider.dart';
 
@@ -23,6 +26,11 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
       roundedButtonBackgroundColor: Color(0xFFD89E40),
       roundedButton2BackgroundColor: Color(0xFF033614),
       confirmYesButtonBackgroundColor: Colors.purple,
+      roundedButtonTextStyle: AppStylesNew.joinTextStyle.copyWith(
+        color: Colors.black,
+        fontWeight: FontWeight.normal,
+        fontSize: 10.dp,
+      ),
     ),
     AppThemeData(
       primaryColor: Colors.blueGrey.shade900,

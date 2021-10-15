@@ -15,6 +15,7 @@ import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/widgets/button_widget.dart';
+import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:pokerapp/widgets/heading_widget.dart';
@@ -393,7 +394,7 @@ class NewGameSettings2 extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    InkWell(
+                    CircleImageButton(
                       onTap: () async {
                         // Setting default name for settings with timestamp
                         String defaultText =
@@ -419,11 +420,10 @@ class NewGameSettings2 extends StatelessWidget {
                                   hintText: _appScreenText['ENTERTEXT'],
                                 ),
                                 AppDimensionsNew.getVerticalSizedBox(12),
-                                RoundedColorButton(
+                                RoundRectButton(
                                   text: _appScreenText['SAVE'],
-                                  backgroundColor: theme.accentColor,
-                                  textColor: theme.primaryColorWithDark(),
-                                  onTapFunction: () {
+                                  theme: theme,
+                                  onTap: () {
                                     if (_controller.text.isNotEmpty) {
                                       Navigator.of(context)
                                           .pop(_controller.text);
@@ -440,13 +440,8 @@ class NewGameSettings2 extends StatelessWidget {
                           await instance.put(result, gmp.settings.toJson());
                         }
                       },
-                      child: CircleAvatar(
-                        child: Icon(
-                          Icons.save,
-                          color: theme.primaryColorWithDark(),
-                        ),
-                        backgroundColor: theme.accentColor,
-                      ),
+                      icon: Icons.save,
+                      theme: theme,
                     ),
                     /* HEADING */
                     Expanded(
@@ -454,15 +449,10 @@ class NewGameSettings2 extends StatelessWidget {
                         heading: _appScreenText['GAMESETTINGS'],
                       ),
                     ),
-                    InkWell(
+                    CircleImageButton(
                       onTap: () => Navigator.of(context).pop(),
-                      child: CircleAvatar(
-                        child: Icon(
-                          Icons.close,
-                          color: theme.primaryColorWithDark(),
-                        ),
-                        backgroundColor: theme.accentColor,
-                      ),
+                      theme: theme,
+                      icon: Icons.close,
                     ),
                   ],
                 ),

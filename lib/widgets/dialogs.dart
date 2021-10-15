@@ -3,6 +3,7 @@ import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
+import 'buttons.dart';
 import 'round_color_button.dart';
 
 showErrorDialog(BuildContext context, String title, String error,
@@ -56,12 +57,11 @@ showErrorDialog(BuildContext context, String title, String error,
                   SizedBox(height: 15.dp),
 
                   Center(
-                    child: RoundedColorButton(
-                      onTapFunction: () {
+                    child: RoundRectButton(
+                      onTap: () {
                         Navigator.pop(context);
                       },
-                      backgroundColor: theme.accentColor,
-                      textColor: theme.primaryColorWithDark(),
+                      theme: theme,
                       text: "Close",
                     ),
                   ),
@@ -132,12 +132,11 @@ Future<bool> showPrompt(BuildContext context, String title, String message,
                         text: positiveButtonText,
                       ),
                       SizedBox(width: 15.dp),
-                      RoundedColorButton(
-                        onTapFunction: () {
+                      RoundRectButton(
+                        onTap: () {
                           Navigator.pop(context, false);
                         },
-                        backgroundColor: theme.accentColor,
-                        textColor: theme.primaryColorWithDark(),
+                        theme: theme,
                         text: negativeButtonText,
                       ),
                     ]),

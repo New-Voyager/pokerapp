@@ -5,6 +5,7 @@ import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
+import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
 import 'package:pokerapp/widgets/round_color_button.dart';
 
@@ -42,21 +43,21 @@ class _ReportBugWidgetState extends State<ReportBugWidget> {
             theme: theme,
           ),
           AppDimensionsNew.getVerticalSizedBox(16),
-          RoundedColorButton(
-              text: "Submit",
-              backgroundColor: theme.accentColor,
-              textColor: theme.primaryColorWithDark(),
-              onTapFunction: () async {
-                if (_controller.text.isNotEmpty) {
-                  ConnectionDialog.show(
-                      context: context, loadingText: "Submitting bug..");
-                  await GameService.requestFeature(
-                      feature: _controller.text.trim());
-                  ConnectionDialog.dismiss(context: context);
-                  Alerts.showNotification(titleText: "Bug reported");
-                }
-                Navigator.of(context).pop();
-              }),
+          RoundRectButton(
+            text: "Submit",
+            onTap: () async {
+              if (_controller.text.isNotEmpty) {
+                ConnectionDialog.show(
+                    context: context, loadingText: "Submitting bug..");
+                await GameService.requestFeature(
+                    feature: _controller.text.trim());
+                ConnectionDialog.dismiss(context: context);
+                Alerts.showNotification(titleText: "Bug reported");
+              }
+              Navigator.of(context).pop();
+            },
+            theme: theme,
+          ),
         ],
       ),
     );

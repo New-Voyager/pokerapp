@@ -33,6 +33,7 @@ class AppThemeData {
   //Rounded Button
   Color roundedButtonBackgroundColor;
   TextStyle roundedButtonTextStyle;
+  Color roundedButtonBorderColor;
 
   //Rounded2 Button
   Color roundedButton2BackgroundColor;
@@ -83,6 +84,7 @@ class AppThemeData {
     this.circleImageButtonBackgroundColor = const Color(0xFFD89E40),
     this.circleImageButtonImageColor = Colors.black,
     this.roundedButtonBackgroundColor = Colors.white,
+    this.roundedButtonBorderColor = Colors.black,
     this.roundedButtonTextStyle = const TextStyle(),
     this.roundedButton2BackgroundColor = Colors.white,
     this.roundedButton2TextStyle = const TextStyle(),

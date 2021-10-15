@@ -21,6 +21,7 @@ import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/services/app/hand_service.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
+import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/round_color_button.dart';
 
 import '../../../routes.dart';
@@ -348,13 +349,12 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
               Navigator.of(context).pop();
             },
           ),
-          RoundedColorButton(
+          RoundRectButton(
             text: _appScreenText['SEND'],
-            backgroundColor: theme.accentColor,
-            textColor: theme.primaryColorWithDark(),
-            onTapFunction: () {
+            onTap: () {
               Navigator.of(context).pop(true);
             },
+            theme: theme,
           ),
         ],
       ),

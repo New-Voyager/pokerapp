@@ -21,6 +21,7 @@ import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
+import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
 import 'package:pokerapp/widgets/heading_widget.dart';
 import 'package:pokerapp/widgets/round_color_button.dart';
@@ -263,11 +264,9 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
           ],
         ),
         actions: [
-          RoundedColorButton(
+          RoundRectButton(
             text: _appScreenText['JOIN'],
-            backgroundColor: appTheme.accentColor,
-            textColor: appTheme.primaryColorWithDark(),
-            onTapFunction: () async {
+            onTap: () async {
               if (gameCode.isEmpty) {
                 toast(_appScreenText['GAMECODECANTBEEMPTY']);
                 return;
@@ -275,6 +274,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
 
               Navigator.of(context).pop(gameCode);
             },
+            theme: appTheme,
           ),
         ],
       ),
@@ -309,27 +309,25 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      RoundedColorButton(
-                        onTapFunction: () async {
+                      RoundRectButton(
+                        onTap: () async {
                           _disposeTimer();
                           await hostGame();
                           _initTimer();
                         },
                         text: _appScreenText["HOST"],
-                        backgroundColor: appTheme.accentColor,
-                        textColor: appTheme.primaryColorWithDark(),
+                        theme: appTheme,
                       ),
                       Expanded(
                           child: HeadingWidget(
                               heading: _appScreenText['POKERCLUBAPP'])),
-                      RoundedColorButton(
-                        onTapFunction: () async {
+                      RoundRectButton(
+                        onTap: () async {
                           _disposeTimer();
                           await joinGame(appTheme);
                           _initTimer();
                         },
-                        backgroundColor: appTheme.accentColor,
-                        textColor: appTheme.primaryColorWithDark(),
+                        theme: appTheme,
                         text: _appScreenText['JOIN'],
                       ),
                     ],

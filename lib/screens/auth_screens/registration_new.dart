@@ -21,6 +21,7 @@ import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/widgets/appname_logo.dart';
+import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
 import 'package:pokerapp/widgets/round_color_button.dart';
 import 'package:uuid/uuid.dart';
@@ -143,11 +144,9 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
             ],
           ),
           actions: [
-            RoundedColorButton(
+            RoundRectButton(
                 text: _appScreenText["SAVE"],
-                backgroundColor: appTheme.accentColor,
-                textColor: appTheme.primaryColorWithDark(0.50),
-                onTapFunction: () async {
+                onTap: () async {
                   if (apiUrl.isEmpty) {
                     toast(_appScreenText['APIURLCANTBEEMPTY']);
                     return;
@@ -164,7 +163,8 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
                       titleText: _appScreenText['APIURLISSET']);
 
                   Navigator.of(context).pop();
-                }),
+                },
+                theme: appTheme),
           ],
         );
       },

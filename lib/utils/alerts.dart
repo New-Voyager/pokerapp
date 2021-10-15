@@ -9,6 +9,7 @@ import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/overlay_notification.dart';
 import 'package:pokerapp/screens/game_screens/new_game_settings/choose_game_new.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
+import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/round_color_button.dart';
 
 class Alerts {
@@ -211,11 +212,10 @@ class Alerts {
                         backgroundColor: Colors.transparent,
                         borderColor: theme.secondaryColor,
                       ),
-                      RoundedColorButton(
+                      RoundRectButton(
                         text: "Save",
-                        onTapFunction: () => Navigator.of(context).pop(list),
-                        backgroundColor: theme.accentColor,
-                        textColor: theme.primaryColorWithDark(),
+                        onTap: () => Navigator.of(context).pop(list),
+                        theme: theme,
                       ),
                     ],
                   ),

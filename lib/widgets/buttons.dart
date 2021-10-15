@@ -8,6 +8,8 @@ class RoundRectButton extends StatelessWidget {
     @required this.text,
     @required this.onTap,
     @required this.theme,
+    this.fontSize,
+    this.border,
     this.split = false,
     this.adaptive = true,
   });
@@ -17,6 +19,8 @@ class RoundRectButton extends StatelessWidget {
   final AppTheme theme;
   final Function onTap;
   final bool split;
+  final double fontSize;
+  final bool border;
 
   Widget build(BuildContext context) {
     return InkWell(
@@ -24,11 +28,13 @@ class RoundRectButton extends StatelessWidget {
       borderRadius: BorderRadius.circular(20.0),
       child: Container(
         padding: EdgeInsets.symmetric(
-          horizontal: 20.pw,
-          vertical: 10.pw,
+          horizontal: 14.pw,
+          vertical: 3.ph,
         ),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20.0),
+          borderRadius: BorderRadius.circular(16.pw),
+          border: Border.all(
+              color: theme.roundedButtonBorderColor, width: border ? 1.pw : 0),
           color: theme.roundedButtonBackgroundColor,
         ),
         child: Wrap(
@@ -37,7 +43,9 @@ class RoundRectButton extends StatelessWidget {
             Text(
               split ? text?.replaceFirst(" ", "\n") ?? 'Text' : text ?? 'Text',
               textAlign: TextAlign.center,
-              style: theme.roundedButtonTextStyle,
+              style: (fontSize == null)
+                  ? theme.roundedButtonTextStyle
+                  : theme.roundedButtonTextStyle.copyWith(fontSize: fontSize),
             )
           ],
         ),
