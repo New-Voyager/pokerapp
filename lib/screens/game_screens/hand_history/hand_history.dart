@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/main.dart';
+import 'package:pokerapp/models/auth_model.dart';
 import 'package:pokerapp/models/hand_history_model.dart';
 import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
@@ -11,6 +12,7 @@ import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/game_screens/hand_history/played_hands.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
+import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/services/app/hand_service.dart';
 import 'package:pokerapp/services/app/player_service.dart';
 import 'package:provider/provider.dart';
@@ -37,7 +39,7 @@ class _HandHistoryState extends State<HandHistoryListView>
   String get routeName => Routes.hand_history_list;
   bool loadingDone = false;
   HandHistoryListModel _data;
-  PlayerInfo currentPlayer;
+  AuthModel currentPlayer;
   AppTextScreen _appScreenText;
 
   TabController _tabController;
@@ -57,7 +59,7 @@ class _HandHistoryState extends State<HandHistoryListView>
   _fetchData() async {
     log("DATA LOG IN HANDHISTORY: $_data");
     await HandService.getAllHands(_data);
-    currentPlayer = await PlayerService.getMyInfo(null);
+    currentPlayer = await AuthService.get();
     loadingDone = true;
     setState(() {
       // update ui

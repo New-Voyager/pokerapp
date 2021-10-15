@@ -1,7 +1,10 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/enums/game_type.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
@@ -94,10 +97,13 @@ class Alerts {
     List<GameType> existingChoices,
     BuildContext context,
     AppTheme theme,
-  ) async {
+    bool dealerChoiceOrbit, {
+    GameState gameState,
+    Future<void> Function() valueChangeFunction,
+  }) async {
     return await showDialog(
       context: context,
-      builder: (context) {
+      builder: (_) {
         List<GameType> list = [];
         list.addAll(existingChoices);
         return AlertDialog(
@@ -106,10 +112,43 @@ class Alerts {
             borderRadius: BorderRadius.circular(16),
           ),
           content: StatefulBuilder(
-            builder: (context, localSetState) {
+            builder: (_, localSetState) {
               return Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  Text(
+                    "Dealer Choice",
+                    style: AppDecorators.getHeadLine4Style(theme: theme),
+                  ),
+                  Container(
+                    padding: EdgeInsets.symmetric(vertical: 8),
+                    child: CupertinoSegmentedControl<bool>(
+                      borderColor: theme.accentColor, //const Color(0xff40D876),
+                      selectedColor:
+                          theme.secondaryColor, //const Color(0xff40D876),
+                      groupValue: dealerChoiceOrbit ?? true,
+                      children: {
+                        false: Padding(
+                          child: Text(
+                            'Every Hand',
+                          ),
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                        ),
+                        true: Text(
+                          'Orbit',
+                        ),
+                      },
+                      onValueChanged: (bool v) async {
+                        dealerChoiceOrbit = v;
+                        if (gameState != null) {
+                          gameState.gameSettings?.dealerChoiceOrbit = v;
+                          await valueChangeFunction;
+                        }
+                        localSetState(() {});
+                      },
+                    ),
+                  ),
                   Text(
                     "Choose Games",
                     style: AppDecorators.getHeadLine4Style(theme: theme),
