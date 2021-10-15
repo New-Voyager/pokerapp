@@ -17,6 +17,7 @@ import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/main_screens/purchase_page_view/diamonds_widget.dart';
 import 'package:pokerapp/services/app/appcoin_service.dart';
 import 'package:pokerapp/services/data/hive_models/player_state.dart';
+import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:pokerapp/widgets/heading_widget.dart';
@@ -280,7 +281,7 @@ class _StorePageState extends State<StorePage> {
                                   // is updated.
                                   return CoinWidget(
                                     AppConfig.availableCoins,
-                                    _addedDiamonds,
+                                    _addedCoins,
                                     update,
                                   );
                                 },
@@ -439,6 +440,7 @@ class _StorePageState extends State<StorePage> {
     // IMPORTANT!! Always verify a purchase before delivering the product.
     // For the purpose of an example, we directly return true.
     try {
+      ConnectionDialog.show(context: context, loadingText: 'Updating coins...');
       /*
         UNKNOWN
         IOS_APP_STORE
@@ -463,6 +465,7 @@ class _StorePageState extends State<StorePage> {
       }
       bool ret = await AppCoinService.purchaseProduct(
           sourceType, coinsPurchased, receipt);
+      ConnectionDialog.dismiss(context: context);
       debugPrint('purchase product returned $ret');
       if (ret) {
         final availableCoins = await AppCoinService.availableCoins();
@@ -476,6 +479,7 @@ class _StorePageState extends State<StorePage> {
         });
       }
     } catch (err) {
+      ConnectionDialog.dismiss(context: context);
       debugPrint(err.toString());
     }
     return Future<bool>.value(true);
