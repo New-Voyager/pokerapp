@@ -1,31 +1,32 @@
 import 'dart:developer';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
-class CoinWidget extends StatefulWidget {
-  final int coins;
-  final int addedCoins;
+class DiamondWidget extends StatefulWidget {
+  final int diamonds;
+  final int addeddiamonds;
   final bool animate;
-  CoinWidget(this.coins, this.addedCoins, this.animate) {
-    //log('Coins: constructor animate: $animate');
+  DiamondWidget(this.diamonds, this.addeddiamonds, this.animate) {
+    //log('diamonds: constructor animate: $animate');
   }
 
   @override
-  _CoinWidgetState createState() {
-    //log('Coins: createState animate: $animate');
-    final state = _CoinWidgetState(animate);
+  _DiamondWidgetState createState() {
+    //log('diamonds: createState animate: $animate');
+    final state = _DiamondWidgetState(animate);
     return state;
   }
 }
 
-class _CoinWidgetState extends State<CoinWidget> {
+class _DiamondWidgetState extends State<DiamondWidget> {
   // bool animate = false;
-  // int coins = 0;
-  // int addedCoins = 0;
+  // int diamonds = 0;
+  // int addeddiamonds = 0;
   Tween<double> tween = Tween<double>(begin: 0, end: 1);
-  _CoinWidgetState(bool animate);
+  _DiamondWidgetState(bool animate);
   @override
   void initState() {
     super.initState();
@@ -33,12 +34,12 @@ class _CoinWidgetState extends State<CoinWidget> {
 
   @override
   Widget build(BuildContext context) {
-    //log('Coins: animate: ${widget.animate}');
+    //log('diamonds: animate: ${widget.animate}');
     List<Widget> children = [];
     AppTheme theme = AppTheme.getTheme(context);
     // if no time left in the bank return empty container
 
-    // if (widget.coins <= 0) {
+    // if (widget.diamonds <= 0) {
     //   return Container();
     // }
 
@@ -46,13 +47,14 @@ class _CoinWidgetState extends State<CoinWidget> {
       mainAxisSize: MainAxisSize.min,
       children: [
         Container(
-          child: Image.asset(
-            'assets/images/appcoin.png',
+          child: SvgPicture.asset(
+            'assets/images/diamond.svg',
             height: 24.pw,
             width: 24.pw,
+            color: Colors.cyan,
           ),
         ),
-        Text(widget.coins.toString()),
+        Text(widget.diamonds.toString()),
       ],
     );
 
@@ -79,16 +81,16 @@ class _CoinWidgetState extends State<CoinWidget> {
         duration: const Duration(milliseconds: 1000),
         builder: (BuildContext context, double v, Widget child) {
           String symbol = '+';
-          if (widget.addedCoins < 0) {
+          if (widget.addeddiamonds < 0) {
             symbol = '-';
           }
-          //log('Coins: animating time: value: $v');
+          //log('diamonds: animating time: value: $v');
           return Opacity(
             opacity: 1 - v,
             child: Transform.translate(
               offset: Offset(-35.pw, -v * 10.ph),
               child: Text(
-                symbol + widget.addedCoins.toString(),
+                symbol + widget.addeddiamonds.toString(),
                 style: TextStyle(
                   fontSize: 10.dp,
                   color: theme.accentColor,

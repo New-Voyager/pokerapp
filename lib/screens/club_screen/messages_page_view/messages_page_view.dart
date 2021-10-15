@@ -120,7 +120,7 @@ class _MessagesPageViewState extends State<MessagesPageView>
     _appScreenText = getAppTextScreen("chatScreen");
 
     /* this fetches the information regarding the current user */
-    AuthService.get().then((value) => _authModel = value);
+    _authModel = AuthService.get();
 
     /* this function fetches the members of the clubs - to show name corresponding to messages */
     _fetchMembers();

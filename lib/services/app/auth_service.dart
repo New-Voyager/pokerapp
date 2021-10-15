@@ -72,7 +72,7 @@ class AuthService {
     await _remove();
   }
 
-  static Future<AuthModel> get() async {
+  static AuthModel get() {
     return _user;
   }
 
