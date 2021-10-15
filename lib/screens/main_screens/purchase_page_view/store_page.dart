@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 
@@ -12,12 +13,11 @@ import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_config.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
-import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
+import 'package:pokerapp/screens/main_screens/purchase_page_view/diamonds_widget.dart';
 import 'package:pokerapp/services/app/appcoin_service.dart';
-import 'package:pokerapp/utils/alerts.dart';
+import 'package:pokerapp/services/data/hive_models/player_state.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
-import 'package:pokerapp/widgets/cross_fade.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:pokerapp/widgets/heading_widget.dart';
 import 'package:pokerapp/widgets/round_color_button.dart';
@@ -47,11 +47,12 @@ class _StorePageState extends State<StorePage> {
   bool _purchasePending = false;
   bool _loading = true;
   String _queryProductError;
-  // bool _updateCoins = false;
-  int _coinsFrom = 0;
-  int _coinsTo = 0;
+  int _addedCoins = 0;
+  int _addedDiamonds = 0;
+
   AppTextScreen _appScreenText;
   final ValueNotifier<bool> _updateCoinState = ValueNotifier<bool>(false);
+  final ValueNotifier<bool> _updateDiamondState = ValueNotifier<bool>(false);
   @override
   void initState() {
     _appScreenText = getAppTextScreen("storePage");
@@ -196,6 +197,44 @@ class _StorePageState extends State<StorePage> {
       }
     }
 
+    body.add(DiamondItem(
+      noOfDiamonds: 100,
+      noOfCoins: 10,
+      appScreenText: _appScreenText,
+      onBuy: () async {
+        try {
+          int diamonds = 100;
+          final ret = await AppCoinService.buyDiamonds(diamonds, 10);
+          if (!ret) {
+            await showErrorDialog(
+                context, 'Error', 'Buying diamonds failed. Retry again later');
+          } else {
+            final coins = await AppCoinService.availableCoins();
+            playerState.addDiamonds(diamonds);
+            AppConfig.setAvailableCoins(coins);
+            _addedDiamonds = diamonds;
+            _addedCoins = -10;
+            await showErrorDialog(context, 'Diamonds',
+                'Buying diamonds successful. Available diamonds: ${playerState.diamonds}',
+                info: true);
+            _updateCoinState.value = true;
+            _updateDiamondState.value = true;
+            await Future.delayed(Duration(seconds: 1), () {
+              _addedCoins = 0;
+              _addedDiamonds = 0;
+              _updateCoinState.value = false;
+              _updateDiamondState.value = false;
+            });
+
+            //setState(() {});
+          }
+        } catch (err) {
+          showErrorDialog(
+              context, 'Error', 'Buying diamonds failed. Retry again later');
+        }
+      },
+    ));
+
     return Container(
       decoration: AppDecorators.bgRadialGradient(theme),
       child: SafeArea(
@@ -212,16 +251,6 @@ class _StorePageState extends State<StorePage> {
                         // mainAxisAlignment: MainAxisAlignment.center,
                         alignment: Alignment.center,
                         children: [
-                          // Row(
-                          //   children: [
-                          //     //BackArrowWidget(),
-                          //     AppDimensionsNew.getHorizontalSpace(16),
-                          //     Text(
-                          //       "App Coins",
-                          //       style: AppStylesNew.appBarTitleTextStyle,
-                          //     ),
-                          //   ],
-                          // ),
                           Align(
                             alignment: Alignment.centerLeft,
                             child: RoundedColorButton(
@@ -239,23 +268,42 @@ class _StorePageState extends State<StorePage> {
 
                           Align(
                             alignment: Alignment.centerRight,
-                            child: ValueListenableBuilder<bool>(
-                              builder: (
-                                BuildContext context,
-                                bool updateCoins,
-                                Widget child,
-                              ) {
-                                // This builder will only get called when the _counter
-                                // is updated.
-                                return CoinWidget(
-                                  AppConfig.availableCoins,
-                                  // _coinsTo - _coinsFrom,
-                                  10,
-                                  updateCoins,
-                                );
-                              },
-                              valueListenable: _updateCoinState,
-                            ),
+                            child:
+                                Row(mainAxisSize: MainAxisSize.min, children: [
+                              ValueListenableBuilder<bool>(
+                                builder: (
+                                  BuildContext context,
+                                  bool update,
+                                  Widget child,
+                                ) {
+                                  // This builder will only get called when the _counter
+                                  // is updated.
+                                  return CoinWidget(
+                                    AppConfig.availableCoins,
+                                    _addedDiamonds,
+                                    update,
+                                  );
+                                },
+                                valueListenable: _updateCoinState,
+                              ),
+                              SizedBox(width: 15.dp),
+                              ValueListenableBuilder<bool>(
+                                builder: (
+                                  BuildContext context,
+                                  bool update,
+                                  Widget child,
+                                ) {
+                                  // This builder will only get called when the _counter
+                                  // is updated.
+                                  return DiamondWidget(
+                                    playerState.diamonds,
+                                    _addedDiamonds,
+                                    update,
+                                  );
+                                },
+                                valueListenable: _updateDiamondState,
+                              ),
+                            ]),
                           )
                         ],
                       ),
@@ -314,7 +362,7 @@ class _StorePageState extends State<StorePage> {
       try {
         String code = controller.text.toString().trim();
         code = code.toUpperCase();
-        _coinsFrom = AppConfig.availableCoins;
+        int coinsFrom = AppConfig.availableCoins;
 
         final result = await AppCoinService.redeemCode(code);
         if (result.error != null) {
@@ -340,17 +388,15 @@ class _StorePageState extends State<StorePage> {
           showErrorDialog(context, 'Error', error);
         } else {
           final availableCoins = await AppCoinService.availableCoins();
-          // int availableAppCoins = AppConfig.availableCoins;
           AppConfig.setAvailableCoins(availableCoins);
-          _coinsTo = AppConfig.availableCoins;
+          int coinsTo = AppConfig.availableCoins;
+          _addedCoins = coinsTo - coinsFrom;
           debugPrint('Available coins ${AppConfig.availableCoins}');
           _updateCoinState.value = true;
-          // setState(() {}); // we dont need to call setstate, as ValueListenableBuilder is triggered
           await Future.delayed(Duration(seconds: 1), () {
+            _addedCoins = 0;
             _updateCoinState.value = false;
-            // setState(() {}); we dont need to call setstate, as ValueListenableBuilder is triggered
           });
-          // Alerts.showNotification(titleText: "Available coins ${result.availableCoins}");
         }
       } catch (err) {
         await showErrorDialog(context, 'Error', 'Failed to redeem code');
@@ -408,7 +454,6 @@ class _StorePageState extends State<StorePage> {
         sourceType = 'IOS_APP_STORE';
         receipt = purchaseDetails.verificationData.serverVerificationData;
       }
-      _coinsFrom = AppConfig.availableCoins;
 
       final product = _enabledProducts
           .firstWhere((e) => e.productId == purchaseDetails.productID);
@@ -422,20 +467,13 @@ class _StorePageState extends State<StorePage> {
       if (ret) {
         final availableCoins = await AppCoinService.availableCoins();
         AppConfig.setAvailableCoins(availableCoins);
-        _coinsTo = AppConfig.availableCoins;
         debugPrint('Available coins $availableCoins');
 
-        // _updateCoins = true;
+        _addedCoins = coinsPurchased;
         _updateCoinState.value = true;
-        // setState(() {});
         await Future.delayed(Duration(seconds: 1), () {
-          // _updateCoins = false;
           _updateCoinState.value = false;
-          // setState(() {});
         });
-
-        // _updateCoins = true;
-        // setState(() {});
       }
     } catch (err) {
       debugPrint(err.toString());
@@ -459,8 +497,6 @@ class _StorePageState extends State<StorePage> {
         } else if (purchaseDetails.status == PurchaseStatus.purchased) {
           bool valid = await _verifyPurchase(purchaseDetails);
           if (valid) {
-            final data = jsonEncode(purchaseDetails);
-            debugPrint(data);
             deliverProduct(purchaseDetails);
           } else {
             _handleInvalidPurchase(purchaseDetails);
@@ -530,24 +566,76 @@ class PurchaseItem extends StatelessWidget {
           text: TextSpan(
             children: [
               TextSpan(
-                  text: "\$${mrpPrice.toStringAsFixed(2)}",
+                  text: "${mrpPrice.toStringAsFixed(2)}",
                   style: showDiscount
                       ? AppDecorators.getAccentTextStyle(theme: theme).copyWith(
                           decoration: TextDecoration.lineThrough,
                         )
                       : AppDecorators.getAccentTextStyle(theme: theme)),
               TextSpan(
-                text: showDiscount ? "\t\$$offerPrice" : "",
+                text: showDiscount ? "\t$offerPrice" : "",
                 style: AppDecorators.getSubtitle3Style(theme: theme),
               ),
-              // TextSpan(
-              //   text: showDiscount
-              //       ? "\t\tSave upto ${discountPer.toStringAsFixed(0)}%"
-              //       : "",
-              //   style: AppStylesNew.labelTextStyle,
-              // ),
             ],
           ),
+        ),
+        trailing: RoundedColorButton(
+            text: appScreenText['buy'],
+            backgroundColor: theme.accentColor,
+            textColor: theme.primaryColorWithDark(),
+            onTapFunction: onBuy),
+      ),
+    );
+  }
+}
+
+class DiamondItem extends StatelessWidget {
+  final int noOfCoins;
+  final int noOfDiamonds;
+  final Function onBuy;
+  final AppTextScreen appScreenText;
+
+  const DiamondItem({
+    Key key,
+    this.noOfCoins,
+    this.noOfDiamonds,
+    this.onBuy,
+    @required this.appScreenText,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = AppTheme.getTheme(context);
+
+    return Container(
+      margin: EdgeInsets.symmetric(
+        horizontal: 16,
+        vertical: 4,
+      ),
+      decoration: AppDecorators.tileDecoration(theme),
+      child: ListTile(
+        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        title: Text(
+          "$noOfDiamonds Diamonds",
+          style: AppDecorators.getHeadLine4Style(theme: theme),
+        ),
+        leading: SvgPicture.asset(
+          'assets/images/diamond.svg',
+          height: 24.pw,
+          width: 24.pw,
+          color: Colors.cyan,
+        ),
+        subtitle: Row(
+          children: [
+            Text("${noOfCoins} coins",
+                style: AppDecorators.getAccentTextStyle(theme: theme)),
+            SizedBox(width: 5.dp),
+            Image.asset(
+              'assets/images/appcoins.png',
+              height: 24.pw,
+              width: 24.pw,
+            ),
+          ],
         ),
         trailing: RoundedColorButton(
             text: appScreenText['buy'],

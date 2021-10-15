@@ -112,4 +112,25 @@ class AppCoinService {
     resp.success = redeem['success'];
     return resp;
   }
+
+  static Future<bool> buyDiamonds(int diamonds, int coinsUsed) async {
+    String query = '''
+      mutation (\$diamonds: Int!, \$coinsUsed: Int!)  {
+        status: buyDiamonds(diamonds: \$diamonds, coinsUsed: \$coinsUsed)
+      }   
+    ''';
+
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    Map<String, dynamic> variables = {
+      "diamonds": diamonds,
+      "coinsUsed": coinsUsed,
+    };
+    final result = await _client.mutate(MutationOptions(
+      document: gql(query),
+      variables: variables,
+    ));
+    if (result.hasException) return null;
+    final ret = result.data['status'];
+    return ret;
+  }
 }

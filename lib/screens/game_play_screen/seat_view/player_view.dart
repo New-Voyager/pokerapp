@@ -262,6 +262,8 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
       return SizedBox(width: 0, height: 0);
     }
 
+    return SizedBox(width: 0, height: 0);
+
     return Transform.translate(
       // TODO: NEED TO VERIFY THIS FOR DIFF SCREEN SIZES
       offset: Offset(0.0, 10.ph),
