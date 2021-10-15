@@ -690,13 +690,16 @@ class _GameOptionState extends State<GameOption> {
                   icon: Icon(Icons.mode_edit_rounded),
                   onPressed: () async {
                     final res = await Alerts.showChooseGamesDailog(
-                      [GameType.HOLDEM, GameType.PLO],
-                      context,
-                      theme,
-                    );
+                        [GameType.HOLDEM, GameType.PLO],
+                        context,
+                        theme,
+                        widget.gameState.gameSettings.dealerChoiceOrbit,
+                        gameState: widget.gameState,
+                        valueChangeFunction: () => updateGameSettings());
 
                     if (res != null && res.isNotEmpty) {
-                      //TODO set the games list
+                      widget.gameState.gameSettings.roeGames = res;
+                      await updateGameSettings();
                       setState(() {});
                     }
                   },
@@ -720,13 +723,16 @@ class _GameOptionState extends State<GameOption> {
                   icon: Icon(Icons.mode_edit_rounded),
                   onPressed: () async {
                     final res = await Alerts.showChooseGamesDailog(
-                      [GameType.HOLDEM, GameType.PLO],
-                      context,
-                      theme,
-                    );
+                        [GameType.HOLDEM, GameType.PLO],
+                        context,
+                        theme,
+                        widget.gameState.gameSettings.dealerChoiceOrbit,
+                        gameState: widget.gameState,
+                        valueChangeFunction: () => updateGameSettings());
 
                     if (res != null && res.isNotEmpty) {
-                      //TODO set the games list
+                      widget.gameState.gameSettings.dealerChoiceGames = res;
+                      await updateGameSettings();
                       setState(() {});
                     }
                   },

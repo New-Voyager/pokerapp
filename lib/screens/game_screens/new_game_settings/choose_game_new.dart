@@ -381,10 +381,7 @@ class _ChooseGameNewState extends State<ChooseGameNew>
     setState(() => _selectedGameType = null);
 
     final List<GameType> games = await Alerts.showChooseGamesDailog(
-      existingChoices,
-      context,
-      theme,
-    );
+        existingChoices, context, theme, true);
 
     if (games != null && games.isNotEmpty) {
       if (gameType == GameType.ROE) {
