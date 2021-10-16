@@ -42,7 +42,7 @@ class BoardView extends StatelessWidget {
 
     if (isHorizontal) {
       widthOfBoard = MediaQuery.of(context).size.width;
-      heightOfBoard = MediaQuery.of(context).size.height / 2.5;
+      heightOfBoard = MediaQuery.of(context).size.height / 2.8;
     }
 
     return Size(widthOfBoard, heightOfBoard);

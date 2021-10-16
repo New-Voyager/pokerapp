@@ -861,10 +861,10 @@ class BoardAttributesObject extends ChangeNotifier {
 
   /* hold card view scales */
   double get holeCardViewScale => _decide(
-        lessThan6Inches: 1.4,
-        equalTo6Inches: 1.4,
-        equalTo7Inches: 1.5,
-        greaterThan7Inches: 1.8,
+        lessThan6Inches: 1.25,
+        equalTo6Inches: 1.35,
+        equalTo7Inches: 1.45,
+        greaterThan7Inches: 1.75,
       ) as double;
 
   double get footerActionViewScale => _decide(
