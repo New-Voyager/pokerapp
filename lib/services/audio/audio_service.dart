@@ -20,7 +20,7 @@ const String fireworksSound = 'assets/animations/fireworks.mp3';
 class AudioService {
   static AudioPlayer audioPlayer;
   static Map<String, Uint8List> _audioCache = Map<String, Uint8List>();
-  static bool play = true;
+  static bool play = false;
   AudioService._();
 
   static stop() {

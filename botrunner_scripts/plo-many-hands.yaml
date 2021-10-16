@@ -28,7 +28,7 @@ game:
 
 starting-seats:
   - seat: 1
-    player: yong
+    player: young
     buy-in: 100
   - seat: 2
     player: brian
@@ -37,4 +37,6 @@ starting-seats:
     player: tom
     buy-in: 100
 
-auto-play: true
+auto-play:
+  enabled: true
+  num-games: 1

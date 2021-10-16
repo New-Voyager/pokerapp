@@ -82,9 +82,9 @@ class _FooterActionViewState extends State<FooterActionView> {
       btnTextStyle = AppDecorators.getSubtitle3Style(theme: theme);
     }
 
-    final button = AnimatedContainer(
-      duration: AppConstants.fastAnimationDuration,
-      curve: Curves.bounceInOut,
+    final button = Container(
+      // duration: AppConstants.fastAnimationDuration,
+      // curve: Curves.bounceInOut,
       height: 32.ph,
       width: 80.pw,
       margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
@@ -146,10 +146,10 @@ class _FooterActionViewState extends State<FooterActionView> {
     btnColor = isSelected ? Colors.blueGrey : Colors.black;
     Color borderColor = Colors.white;
 
-    final button = AnimatedContainer(
-      duration: AppConstants.fastAnimationDuration,
-      curve: Curves.bounceInOut,
-      height: 32.ph,
+    final button = Container(
+      // duration: AppConstants.fastAnimationDuration,
+      // curve: Curves.bounceInOut,
+      height: 34.ph,
       width: 150.pw,
       margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
       padding: EdgeInsets.all(5.ph),
@@ -168,27 +168,36 @@ class _FooterActionViewState extends State<FooterActionView> {
               blurRadius: 5,
             ),
           ]),
-      child: Center(
-        child: Row(
-          children: [
-            isSelected
-                ? Icon(Icons.check_circle_outline_rounded)
-                : Icon(Icons.circle_outlined),
-            SizedBox(width: 5.ph),
-            FittedBox(
-              fit: BoxFit.fitHeight,
-              child: Text(
-                text,
-                textAlign: TextAlign.center,
-                style: btnTextStyle.copyWith(
-                  fontSize: 10.dp,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white,
-                ),
+      child: Row(
+        children: [
+          // seperator
+          const SizedBox(width: 5.0),
+
+          // selection button indicator
+          isSelected
+              ? Icon(Icons.check_circle_outline_rounded, size: 20.0)
+              : Icon(Icons.circle_outlined, size: 20.0),
+
+          // spacer
+          Spacer(),
+
+          // text
+          FittedBox(
+            fit: BoxFit.fitHeight,
+            child: Text(
+              text,
+              textAlign: TextAlign.center,
+              style: btnTextStyle.copyWith(
+                fontSize: 10.dp,
+                fontWeight: FontWeight.w600,
+                color: Colors.white,
               ),
-            )
-          ],
-        ),
+            ),
+          ),
+
+          // spacer
+          Spacer(),
+        ],
       ),
     );
 
@@ -442,7 +451,7 @@ class _FooterActionViewState extends State<FooterActionView> {
     Widget actionWidget = _buildCheckFoldButton(
         isSelected: actionState.checkFoldSelected,
         theme: theme,
-        text: '  Check/Fold  ',
+        text: 'Check/Fold',
         onTap: () {
           actionState.checkFoldSelected = !actionState.checkFoldSelected;
           actionState.notify();
