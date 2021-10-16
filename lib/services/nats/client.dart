@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -51,6 +52,7 @@ class Client {
   Info _info;
   Completer _pingCompleter;
   Completer _connectCompleter;
+  Function onDisconnect;
 
   ///status of the client
   var status = Status.disconnected;
@@ -82,6 +84,7 @@ class Client {
     if (connectOption != null) _connectOption = connectOption;
 
     void loop() async {
+      log('dartnats: In loop');
       for (var i = 0; i == 0 || retry; i++) {
         if (i == 0) {
           status = Status.connecting;
@@ -108,9 +111,16 @@ class Client {
               _processOp();
             }
           }, onDone: () {
+            log('dartnats: onDone loop disconnected');
             status = Status.disconnected;
             _socket.close();
+            if (onDisconnect != null) {
+              Future.delayed(Duration(milliseconds: 100), () {
+                onDisconnect();
+              });
+            }
           }, onError: (err) {
+            log('dartnats: onError loop disconnected');
             status = Status.disconnected;
             _socket.close();
           });

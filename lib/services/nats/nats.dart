@@ -26,8 +26,21 @@ class Nats {
   Function(String) clubNotifications;
   InstaRefreshService _instaRefreshService;
 
+  // functions listens for disconnection
+  List<Function> disconnectListeners = [];
+
   Nats(this._providerContext) {
     _instaRefreshService = _providerContext.read<InstaRefreshService>();
+  }
+
+  bool get connectionBroken {
+    if (_clientPub.status == Status.disconnected ||
+        _clientSub.status == Status.disconnected) {
+      _clientPub.close();
+      _clientSub.close();
+      return true;
+    }
+    return false;
   }
 
   Future<void> reconnect() async {
@@ -39,6 +52,12 @@ class Nats {
     close();
     await init(_playerChannel);
     reconnectClubMessages();
+  }
+
+  void onDisconnect() {
+    for(final listener in disconnectListeners) {
+      listener();
+    }
   }
 
   Future<void> init(String playerChannel) async {
@@ -60,6 +79,7 @@ class Nats {
 
     await _clientSub.connect(natsUrl);
     await _clientPub.connect(natsUrl);
+    _clientSub.onDisconnect = onDisconnect;
 
     // subscribe for player messages
     this.subscribePlayerMessages();
@@ -183,39 +203,6 @@ class Nats {
       if (playerNotifications != null) {
         playerNotifications(message.string);
       }
-
-      /*
-      dynamic json = jsonDecode(message.string);
-      String type = json['type'].toString();
-      String gameCode = json['gameCode'].toString();
-      if (type == 'WAITLIST_SEATING') {
-        String game = '';
-        if (json["gameType"] != null) {
-          String gameType = json["gameType"].toString();
-          String sb = DataFormatter.chipsFormat(
-              double.parse(json['smallBlind'].toString()));
-          String bb = DataFormatter.chipsFormat(
-              double.parse(json['bigBlind'].toString()));
-          game = ' at $gameType $sb/$bb';
-        }
-        String title = 'Do you want to take a open seat $game?';
-        String subTitle = 'Code: ${json["gameCode"]}';
-        if (json['clubName'] != null) {
-          subTitle = subTitle + '\n' + 'Club: ${json["clubName"]}';
-        }
-        final message =
-            'A seat open in game $game.\n\nDo you want to take the open seat?';
-
-        final res = await showWaitlistInvitation(
-            navigatorKey.currentContext, message, 10);
-        if (res) {
-          navigatorKey.currentState.pushNamed(
-            Routes.game_play,
-            arguments: gameCode,
-          );
-        }
-      }
-      */
     });
   }
 }

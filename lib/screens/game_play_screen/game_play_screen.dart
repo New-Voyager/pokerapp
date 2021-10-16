@@ -198,6 +198,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     if (!TestService.isTesting && widget.customizationService == null) {
       // subscribe the NATs channels
       final natsClient = Provider.of<Nats>(context, listen: false);
+      if (natsClient.connectionBroken) {
+        await natsClient.reconnect();
+      }
 
       log('natsClient: $natsClient');
       await _gameComService.init(natsClient);
@@ -325,9 +328,26 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     return _gameInfoModel;
   }
 
+  void onNatsDisconnect() async {
+    final nats = context.read<Nats>();
+    if (nats.connectionBroken) {
+      try {
+        ConnectionDialog.show(context: context, loadingText: 'Connecting...');
+        await nats.reconnect();
+        await _queryCurrentHandIfNeeded();
+        ConnectionDialog.dismiss(context: context);
+      } catch(err) {
+        ConnectionDialog.dismiss(context: context);
+      }
+    }
+  }
+
   /* dispose method for closing connections and un subscribing to channels */
   @override
   void dispose() {
+    final nats = context.read<Nats>();
+    nats.disconnectListeners.remove(this.onNatsDisconnect);
+
     // cancel listening to game play screen network changes
     _streamSub?.cancel();
 
@@ -575,8 +595,10 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     _binding.addObserver(this);
 
     init().then((v) {
-      Future.delayed(Duration(seconds: 1), () {
+      Future.delayed(Duration(seconds: 1), () async {
         _queryCurrentHandIfNeeded();
+        final nats = context.read<Nats>();
+        nats.disconnectListeners.add(this.onNatsDisconnect);
       });
     });
   }
@@ -701,6 +723,8 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       // query current hand to get game update
       WidgetsBinding.instance.addPostFrameCallback((_) {
         log('network_reconnect: queryCurrentHand invoked');
+
+        // if nats connection is broken, reconnect
         _gameContextObj.handActionProtoService.queryCurrentHand();
       });
     }
@@ -885,6 +909,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   void _reconnectGameComService() async {
     log('network_reconnect: _reconnectGameComService invoked');
     final nats = context.read<Nats>();
+    if (nats.connectionBroken) {
+      await nats.reconnect();
+    }
 
     // drop connections -> re establish connections
     await _gameComService.reconnect(nats);
