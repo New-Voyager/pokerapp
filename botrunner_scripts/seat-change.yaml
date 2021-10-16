@@ -28,7 +28,7 @@ game:
 
 starting-seats:
   - seat: 1
-    player: yong
+    player: young
     buy-in: 1000
   - seat: 2
     player: brian
@@ -92,7 +92,7 @@ hands:
   #     verify:
   #       table-pos:
   #         - seat: 1
-  #           player-name: yong
+  #           player-name: young
   #         - seat: 2
   #           empty: true
   #         - seat: 3

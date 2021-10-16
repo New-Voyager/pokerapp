@@ -16,7 +16,7 @@ game:
   action-time: 30
 starting-seats:
   - seat: 1
-    player: yong
+    player: young
     buy-in: 158
   - seat: 2
     player: brian

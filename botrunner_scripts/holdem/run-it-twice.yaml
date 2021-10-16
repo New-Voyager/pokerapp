@@ -27,7 +27,7 @@ game:
 
 starting-seats:
   - seat: 1
-    player: yong
+    player: young
     buy-in: 100
     run-it-twice: true
     run-it-twice-prompt: true
@@ -48,7 +48,7 @@ starting-seats:
     run-it-twice-prompt: true
 
 # Human plays this user.
-#tester: yong
+#tester: young
 
 # deal the following hands in the table
 hands:
