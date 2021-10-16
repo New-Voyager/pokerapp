@@ -10,6 +10,7 @@ import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/models/newmodels/game_model_new.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/app_config.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
@@ -24,6 +25,7 @@ import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
+import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:pokerapp/widgets/heading_widget.dart';
 import 'package:pokerapp/widgets/round_color_button.dart';
 import 'package:provider/provider.dart';
@@ -223,6 +225,13 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
   }
 
   Future<void> hostGame() async {
+    // if the player does not have enough coins
+    // don't host the game
+    if (AppConfig.availableCoins < 10) {
+      showErrorDialog(context, 'Error', 'Not enough coins to host a game');
+      return;
+    }
+
     final dynamic result =
         await Navigator.of(context).pushNamed(Routes.new_game_settings);
     if (result != null) {
