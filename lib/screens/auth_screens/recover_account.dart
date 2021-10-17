@@ -14,7 +14,7 @@ import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/widgets/appname_logo.dart';
-import 'package:pokerapp/widgets/round_color_button.dart';
+import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:uuid/uuid.dart';
 
@@ -147,12 +147,11 @@ class _RestoreAccountScreenState extends State<RestoreAccountScreen> {
                         AppDimensionsNew.getVerticalSizedBox(16),
 
                         // get code button
-                        RoundedColorButton(
-                          backgroundColor: appTheme.accentColor,
-                          textColor: appTheme.primaryColorWithDark(0.50),
+                        RoundRectButton(
                           text: _appScreenText['GETCODE'],
                           fontSize: 14.dp,
-                          onTapFunction: () => _handleGetCode(context),
+                          onTap: () => _handleGetCode(context),
+                          theme: appTheme,
                         ),
 
                         // sep
@@ -241,14 +240,13 @@ class _RestoreAccountScreenState extends State<RestoreAccountScreen> {
                               AppDimensionsNew.getVerticalSizedBox(16),
 
                               // button
-                              RoundedColorButton(
-                                backgroundColor: appTheme.accentColor,
-                                textColor: appTheme.primaryColorWithDark(0.50),
+                              RoundRectButton(
                                 text: _appScreenText['RESTORE'],
                                 fontSize: 14.dp,
-                                onTapFunction: () => _handleRestoreClick(
+                                onTap: () => _handleRestoreClick(
                                   context,
                                 ),
+                                theme: appTheme,
                               ),
                             ],
                           ),

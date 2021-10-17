@@ -22,7 +22,6 @@ import 'package:pokerapp/services/app/hand_service.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/widgets/buttons.dart';
-import 'package:pokerapp/widgets/round_color_button.dart';
 
 import '../../../routes.dart';
 import 'hand_winners_view2.dart';
@@ -219,21 +218,19 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             // replay, share, bookmark buttons
-            RoundIconButton(
+            CircleImageButton(
               onTap: () => _sendHand(theme),
               icon: Icons.developer_board,
-              bgColor: theme.accentColor,
-              iconColor: theme.primaryColorWithDark(),
+              theme: theme,
             ),
             AppDimensionsNew.getHorizontalSpace(8),
-            RoundIconButton(
+            CircleImageButton(
               onTap: () => _replayHand(),
               icon: Icons.replay,
-              bgColor: theme.accentColor,
-              iconColor: theme.primaryColorWithDark(),
+              theme: theme,
             ),
             AppDimensionsNew.getHorizontalSpace(8),
-            RoundIconButton(
+            CircleImageButton(
               onTap: () async {
                 if (_isTheHandBookmarked(_handResult.handNum)) {
                   _removeBookmark(_handResult.handNum);
@@ -256,14 +253,12 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
               icon: _isTheHandBookmarked(_handResult.handNum)
                   ? Icons.star
                   : Icons.star_outline,
-              bgColor: theme.accentColor,
-              iconColor: theme.primaryColorWithDark(),
             ),
             AppDimensionsNew.getHorizontalSpace(8),
             Visibility(
               visible:
                   ((widget.clubCode != null) && (widget.clubCode.isNotEmpty)),
-              child: RoundIconButton(
+              child: CircleImageButton(
                 onTap: () async {
                   log("SHARE12: ${_handResult.gameCode} : ${_handResult.handNum} : ${widget.clubCode}");
                   var result = await HandService.shareHand(
@@ -282,8 +277,7 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
                   );
                 },
                 icon: Icons.share,
-                bgColor: theme.accentColor,
-                iconColor: theme.primaryColorWithDark(),
+                theme: theme,
               ),
             ),
           ],
@@ -340,12 +334,11 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
           ],
         ),
         actions: [
-          RoundedColorButton(
+          RoundRectButton(
             text: _appScreenText['CANCEL'],
-            backgroundColor: Colors.transparent,
-            textColor: theme.supportingColor,
-            borderColor: theme.accentColor,
-            onTapFunction: () {
+            theme: theme,
+            // borderColor: theme.accentColor,
+            onTap: () {
               Navigator.of(context).pop();
             },
           ),

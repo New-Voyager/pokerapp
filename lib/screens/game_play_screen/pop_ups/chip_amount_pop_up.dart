@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:pokerapp/widgets/round_raised_button.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/widgets/buttons.dart';
 
 class ChipAmountPopUp extends StatelessWidget {
   final titleText;
@@ -23,6 +24,7 @@ class ChipAmountPopUp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = AppTheme.getTheme(context);
     return Dialog(
       child: Container(
         padding: const EdgeInsets.all(10.0),
@@ -39,10 +41,10 @@ class ChipAmountPopUp extends StatelessWidget {
                 hintText: 'Amount',
               ),
             ),
-            RoundRaisedButton(
-              color: Colors.black,
-              onButtonTap: () => _pop(context),
-              buttonText: 'Proceed',
+            RoundRectButton(
+              onTap: () => _pop(context),
+              text: 'Proceed',
+              theme: theme,
             ),
           ],
         ),

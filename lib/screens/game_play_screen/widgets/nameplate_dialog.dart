@@ -14,7 +14,6 @@ import 'package:pokerapp/services/app/player_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/num_diamond_widget.dart';
-import 'package:pokerapp/widgets/round_color_button.dart';
 
 class NamePlateDailog extends StatefulWidget {
   final GameState gameState;

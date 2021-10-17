@@ -11,7 +11,7 @@ import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/services/game_play/graphql/waitlist_service.dart';
-import 'package:pokerapp/widgets/round_color_button.dart';
+import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/switch_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -276,11 +276,10 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        RoundedColorButton(
+                        RoundRectButton(
                           text: _appScreenText['apply'],
-                          textColor: theme.primaryColorWithDark(),
-                          backgroundColor: theme.accentColor,
-                          onTapFunction: () {
+                          theme: theme,
+                          onTap: () {
                             List<String> uuids = [];
                             allWaitingListPlayers.forEach((element) {
                               uuids.add(element.playerUuid);
@@ -302,11 +301,10 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
                           width: 15,
                         ),
 
-                        RoundedColorButton(
+                        RoundRectButton(
                           text: _appScreenText['cancel'],
-                          textColor: theme.accentColor,
-                          borderColor: theme.accentColor,
-                          onTapFunction: () {
+                          theme: theme,
+                          onTap: () {
                             setState(() {
                               ischanged = false;
                             });

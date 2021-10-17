@@ -11,13 +11,13 @@ import 'package:pokerapp/models/game_play_models/provider_models/game_context.da
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_constants.dart';
-import 'package:pokerapp/screens/game_play_screen/widgets/game_circle_button.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/voice_text_widget.dart';
 //import 'package:pokerapp/services/agora/agora.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/widgets/blinking_widget.dart';
+import 'package:pokerapp/widgets/buttons.dart';
 import 'package:provider/provider.dart';
 import 'package:record/record.dart';
 
@@ -58,8 +58,9 @@ class _CommunicationViewState extends State<CommunicationView> {
     final theme = AppTheme.getTheme(context);
     final gameState = GameState.getState(context);
     final communicationState = gameState.communicationState;
-    final chat = SvgPicture.asset('assets/images/game/chat.svg',
-        width: 16, height: 16, color: theme.primaryColorWithDark());
+    // final chat = SvgPicture.asset('assets/images/game/chat.svg',
+    //     width: 16, height: 16, color: theme.primaryColorWithDark());
+    final chat = "assets/images/game/chat.svg";
 
     return ListenableProvider<CommunicationState>(
         create: (_) => communicationState,
@@ -82,12 +83,13 @@ class _CommunicationViewState extends State<CommunicationView> {
                         showBadge: gcns.hasUnreadMessages,
                         position: BadgePosition.topEnd(top: 0, end: 0),
                         badgeContent: Text(gcns.count.toString()),
-                        child: GameCircleButton(
-                          onClickHandler: () {
+                        child: CircleImageButton(
+                          onTap: () {
                             log('on chat clicked');
                             widget.chatVisibilityChange();
                           },
-                          child: chat,
+                          theme: theme,
+                          svgAsset: chat,
                         ),
                       ),
                     ),
@@ -124,19 +126,18 @@ class _CommunicationViewState extends State<CommunicationView> {
   }
 
   Widget talkingAnimation(Function onTap, AppTheme theme) {
-    Widget child = BlinkWidget(
-      children: [
-        SvgPicture.asset('assets/images/game/mic-step2.svg',
-            width: 16, height: 16, color: theme.primaryColorWithDark()),
-        SvgPicture.asset('assets/images/game/mic-step3.svg',
-            width: 16, height: 16, color: theme.primaryColorWithDark()),
-        SvgPicture.asset('assets/images/game/mic-step2.svg',
-            width: 16, height: 16, color: theme.primaryColorWithDark()),
-        SvgPicture.asset('assets/images/game/mic-step1.svg',
-            width: 16, height: 16, color: theme.primaryColorWithDark()),
-      ],
+    List<String> svgAssets = [
+      'assets/images/game/mic-step2.svg',
+      'assets/images/game/mic-step3.svg',
+      'assets/images/game/mic-step2.svg',
+      'assets/images/game/mic-step1.svg'
+    ];
+
+    return RotateImagesButton(
+      onTap: onTap,
+      svgImages: svgAssets,
+      theme: theme,
     );
-    return GameCircleButton(onClickHandler: onTap, child: child);
   }
 
   voiceTextWidgets(GameMessagingService chatService) {
@@ -216,11 +217,11 @@ class _CommunicationViewState extends State<CommunicationView> {
 
   Widget _buildMenuButton({
     @required String title,
-    Widget child,
-    IconData iconData,
-    String imagePath,
+    IconData icon,
     VoidCallback onClick,
   }) {
+    final theme = AppTheme.getTheme(context);
+
     final tmp = title.split(' ');
     if (tmp.length > 1) {
       title = tmp[0] + '\n' + tmp[1];
@@ -234,10 +235,9 @@ class _CommunicationViewState extends State<CommunicationView> {
           mainAxisSize: MainAxisSize.min,
           children: [
             // button
-            GameCircleButton(
-              child: child,
-              iconData: iconData,
-              imagePath: imagePath,
+            CircleImageButton(
+              theme: theme,
+              icon: icon,
             ),
 
             // text
@@ -294,11 +294,7 @@ class _CommunicationViewState extends State<CommunicationView> {
                                 title: gameState.communicationState.muted
                                     ? 'Unmute'
                                     : 'Mute',
-                                child: Icon(
-                                  myMic,
-                                  size: 24,
-                                  color: theme.primaryColorWithDark(),
-                                ),
+                                icon: myMic,
                                 onClick: () {
                                   // handle on mute tap
                                   if (!gameState.communicationState.muted) {
@@ -320,11 +316,7 @@ class _CommunicationViewState extends State<CommunicationView> {
                             // hangup button
                             _buildMenuButton(
                                 title: 'Hangup',
-                                child: Icon(
-                                  Icons.call_end,
-                                  size: 24,
-                                  color: theme.primaryColorWithDark(),
-                                ),
+                                icon: Icons.call_end,
                                 onClick: () {
                                   _vnShowAudioConfOptions.value = false;
                                   // handle on hangup
@@ -342,11 +334,7 @@ class _CommunicationViewState extends State<CommunicationView> {
                                 title: gameState.communicationState.mutedAll
                                     ? 'On'
                                     : 'Off',
-                                child: Icon(
-                                  soundOn,
-                                  size: 24,
-                                  color: theme.primaryColorWithDark(),
-                                ),
+                                icon: soundOn,
                                 onClick: () {
                                   // handle on mute all
                                   if (!gameState.communicationState.mutedAll) {
@@ -370,11 +358,7 @@ class _CommunicationViewState extends State<CommunicationView> {
                             // close button
                             _buildMenuButton(
                                 title: 'Close',
-                                child: Icon(
-                                  Icons.close,
-                                  size: 24,
-                                  color: theme.primaryColorWithDark(),
-                                ),
+                                icon: Icons.close,
                                 onClick: () {
                                   _vnShowAudioConfOptions.value = false;
                                 }),
@@ -413,29 +397,29 @@ class _CommunicationViewState extends State<CommunicationView> {
     }
 
     if (mic == null) {
-      Widget child;
+      String child;
+
       if (state.muted) {
-        child = SvgPicture.asset('assets/images/game/mic-mute.svg',
-            width: 16, height: 16, color: Colors.black);
+        child = 'assets/images/game/mic-mute.svg';
       } else {
-        child = SvgPicture.asset('assets/images/game/mic.svg',
-            width: 16, height: 16, color: Colors.black);
+        child = 'assets/images/game/mic.svg';
       }
-      mic = GameCircleButton(
-          onClickHandler: () async {
+      mic = CircleImageButton(
+          onTap: () async {
             log('mic is tapped');
             _vnShowAudioConfOptions.value = true;
           },
-          child: child);
+          theme: theme,
+          svgAsset: child);
       log('audio is ${state.muted ? "muted" : "on"}: $mic');
     }
 
     if (state.audioConferenceStatus == AudioConferenceStatus.LEFT) {
-      Widget child = SvgPicture.asset('assets/images/game/mic-mute.svg',
-          width: 16, height: 16, color: Colors.black);
-
-      mic = GameCircleButton(
-          disabled: true, onClickHandler: () async {}, child: child);
+      mic = CircleImageButton(
+          onTap: () async {},
+          disabled: true,
+          svgAsset: "assets/images/game/mic-mute.svg",
+          theme: theme);
     }
     return mic;
   }

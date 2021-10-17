@@ -21,8 +21,8 @@ import 'package:pokerapp/services/app/player_service.dart';
 import 'package:pokerapp/services/gql_errors.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/alerts.dart';
+import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/num_diamond_widget.dart';
-import 'package:pokerapp/widgets/round_color_button.dart';
 import 'package:provider/provider.dart';
 
 showAlertDialog(BuildContext context, String title, String message) {
@@ -108,21 +108,17 @@ showWaitlistInvitation(
         ],
       ),
       actions: [
-        RoundedColorButton(
+        RoundRectButton(
           text: 'No',
-          backgroundColor: Colors.transparent,
-          textColor: theme.supportingColor,
-          borderColor: theme.accentColor,
-          onTapFunction: () {
+          theme: theme,
+          onTap: () {
             Navigator.of(context).pop();
           },
         ),
-        RoundedColorButton(
+        RoundRectButton(
           text: 'Yes',
-          backgroundColor: Colors.transparent,
-          textColor: theme.supportingColor,
-          borderColor: theme.accentColor,
-          onTapFunction: () {
+          theme: theme,
+          onTap: () {
             Navigator.of(context).pop(true);
           },
         ),
@@ -667,20 +663,14 @@ handleNotesPopup(BuildContext context, Seat seat) async {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                RoundedColorButton(
+                RoundRectButton(
                   text: _appScreenText['cancel'],
-                  textColor: AppColorsNew.newRedButtonColor,
-                  backgroundColor: Colors.transparent,
-                  borderColor: AppColorsNew.newRedButtonColor,
-                  onTapFunction: () => Navigator.of(context).pop(),
+                  // theme:theme,
+                  onTap: () => Navigator.of(context).pop(),
                 ),
-                RoundedColorButton(
+                RoundRectButton(
                   text: _appScreenText['save'],
-                  textColor: AppColorsNew.darkGreenShadeColor,
-                  backgroundColor: AppColorsNew.newGreenButtonColor,
-                  borderColor: AppColorsNew.darkGreenShadeColor,
-                  onTapFunction: () =>
-                      Navigator.of(context).pop(_controller.text),
+                  onTap: () => Navigator.of(context).pop(_controller.text),
                 ),
               ],
             ),

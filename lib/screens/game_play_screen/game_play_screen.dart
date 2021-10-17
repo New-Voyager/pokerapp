@@ -46,11 +46,11 @@ import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/utils/utils.dart';
+import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:provider/provider.dart';
 import 'package:wakelock/wakelock.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
-import 'package:pokerapp/screens/game_play_screen/widgets/game_circle_button.dart';
 
 import '../../main.dart';
 import '../../routes.dart';
@@ -803,17 +803,18 @@ class _GamePlayScreenState extends State<GamePlayScreen>
             ? Positioned(
                 top: 50.pw,
                 left: width - 50.pw,
-                child: GameCircleButton(
-                  onClickHandler: () async {
+                child: CircleImageButton(
+                  onTap: () async {
                     await Navigator.of(context).pushNamed(Routes.select_table);
                     await _gameState.assets.initialize();
                     final redrawTop = _gameState.redrawTopSectionState;
                     redrawTop.notify();
                     setState(() {});
                   },
-                  child: Icon(Icons.edit,
-                      size: 24.pw, color: theme.primaryColorWithDark()),
-                ))
+                  theme: theme,
+                  icon: Icons.edit,
+                ),
+              )
             : Container(),
 
         /* main view */

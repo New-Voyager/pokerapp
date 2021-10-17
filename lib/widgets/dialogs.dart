@@ -4,7 +4,6 @@ import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 import 'buttons.dart';
-import 'round_color_button.dart';
 
 showErrorDialog(BuildContext context, String title, String error,
     {bool info = false}) async {
@@ -123,12 +122,11 @@ Future<bool> showPrompt(BuildContext context, String title, String message,
 
                   Center(
                     child: Row(mainAxisSize: MainAxisSize.min, children: [
-                      RoundedColorButton(
-                        onTapFunction: () {
+                      RoundRectButton(
+                        onTap: () {
                           Navigator.pop(context, true);
                         },
-                        backgroundColor: theme.accentColor,
-                        textColor: theme.primaryColorWithDark(),
+                        theme: theme,
                         text: positiveButtonText,
                       ),
                       SizedBox(width: 15.dp),

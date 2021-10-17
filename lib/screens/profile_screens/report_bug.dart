@@ -7,7 +7,6 @@ import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
-import 'package:pokerapp/widgets/round_color_button.dart';
 
 class ReportBugWidget extends StatefulWidget {
   const ReportBugWidget({Key key}) : super(key: key);

@@ -12,7 +12,6 @@ import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
-import 'package:pokerapp/widgets/round_color_button.dart';
 import 'package:provider/provider.dart';
 
 class AnnouncementsView extends StatefulWidget {
@@ -220,12 +219,11 @@ class _AnnouncementsViewState extends State<AnnouncementsView> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  RoundedColorButton(
+                  RoundRectButton(
                     text: _appScreenText['CANCEL'],
-                    textColor: theme.secondaryColor,
-                    backgroundColor: Colors.transparent,
-                    borderColor: theme.secondaryColor,
-                    onTapFunction: () => Navigator.of(context).pop(),
+                    theme: theme,
+                    // borderColor: theme.secondaryColor,
+                    onTap: () => Navigator.of(context).pop(),
                   ),
                   RoundRectButton(
                     text: _appScreenText['ANNOUNCE'],
