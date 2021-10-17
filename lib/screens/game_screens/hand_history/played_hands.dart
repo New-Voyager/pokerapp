@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/auth_model.dart';
 import 'package:pokerapp/models/bookmarkedHands_model.dart';
 import 'package:pokerapp/models/hand_history_model.dart';
 import 'package:pokerapp/models/player_info.dart';
@@ -26,7 +27,7 @@ class PlayedHandsScreen extends StatefulWidget {
   final String gameCode;
   final String clubCode;
   final bool isInBottomSheet;
-  final PlayerInfo currentPlayer;
+  final AuthModel currentPlayer;
   PlayedHandsScreen(
       this.gameCode, this.history, this.clubCode, this.currentPlayer,
       {this.isInBottomSheet = false});
@@ -246,7 +247,7 @@ class _PlayedHandsScreenState extends State<PlayedHandsScreen> {
     // show replay dialog
     ReplayHandDialog.show(
       context: context,
-      playerID: widget.currentPlayer.id,
+      playerID: widget.currentPlayer.playerId,
       handNumber: handNum,
       gameCode: gameCode,
     );

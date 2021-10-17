@@ -30,6 +30,7 @@ class GameSettings {
     this.showResult,
     this.roeGames,
     this.dealerChoiceGames,
+    this.dealerChoiceOrbit,
   });
 
   bool buyInApproval;
@@ -56,6 +57,7 @@ class GameSettings {
   bool showResult;
   List roeGames;
   List dealerChoiceGames;
+  bool dealerChoiceOrbit;
 
   factory GameSettings.fromJson(Map<String, dynamic> json) {
     final gameSettings = GameSettings(
@@ -83,6 +85,7 @@ class GameSettings {
       showResult: json["showResult"] ?? false,
       roeGames: json["roeGames"] ?? [],
       dealerChoiceGames: json["dealerChoiceGames"] ?? [],
+      dealerChoiceOrbit: json["dealerChoiceOrbit"] ?? true,
     );
     return gameSettings;
   }
@@ -112,5 +115,6 @@ class GameSettings {
         "showResult": showResult,
         "roeGames": roeGames,
         "dealerChoiceGames": dealerChoiceGames,
+        "dealerChoiceOrbit": dealerChoiceOrbit,
       };
 }

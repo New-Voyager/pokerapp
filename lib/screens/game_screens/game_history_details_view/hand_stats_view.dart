@@ -747,14 +747,16 @@ class _HandStatsViewState extends State<HandStatsView>
       int playerId = int.parse(key);
       final playerName = stats.playerIdToName[playerId];
       final verses = stats.headsupThisGame[int.parse(key)];
-      list.add(_buildOnePlayerHeadsupRow(
-        player: playerName,
-        thisHands: verses == null ? 0 : verses.count,
-        thisWon: verses == null ? 0 : verses.won,
-        allHands: value.total,
-        allWon: value.won,
-        theme: theme,
-      ));
+      if (playerName != null) {
+        list.add(_buildOnePlayerHeadsupRow(
+          player: playerName,
+          thisHands: verses == null ? 0 : verses.count,
+          thisWon: verses == null ? 0 : verses.won,
+          allHands: value.total,
+          allWon: value.won,
+          theme: theme,
+        ));
+      }
     });
     if (list.isEmpty) {
       list.add(Container(

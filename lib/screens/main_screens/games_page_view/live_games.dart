@@ -3,12 +3,14 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_html/shims/dart_ui_real.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/models/app_state.dart';
 import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/models/newmodels/game_model_new.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/app_config.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
@@ -17,12 +19,14 @@ import 'package:pokerapp/screens/game_screens/game_history_view/game_history_ite
 import 'package:pokerapp/screens/game_screens/new_game_settings/new_game_settings2.dart';
 import 'package:pokerapp/screens/main_screens/games_page_view/widgets/live_games_item.dart';
 import 'package:pokerapp/services/app/game_service.dart';
+import 'package:pokerapp/services/app/insta_refresh_service.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
+import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:pokerapp/widgets/heading_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -159,21 +163,21 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
   _fetchLiveGames() async {
     log('fetching live games');
     final updatedLiveGames = await GameService.getLiveGamesNew();
-    bool refresh = false;
-    if (updatedLiveGames.length == liveGames.length) {
-      final prevList = liveGames.map((e) => e.gameCode).toSet();
-      for (final liveGame in updatedLiveGames) {
-        if (!prevList.contains(liveGame.gameCode)) {
-          refresh = true;
-          break;
-        }
-      }
-    } else {
-      refresh = true;
-    }
+    bool refresh = true;
+    // if (updatedLiveGames.length == liveGames.length) {
+    //   final prevList = liveGames.map((e) => e.gameCode).toSet();
+    //   for (final liveGame in updatedLiveGames) {
+    //     if (!prevList.contains(liveGame.gameCode)) {
+    //       refresh = true;
+    //       break;
+    //     }
+    //   }
+    // } else {
+    //   refresh = true;
+    // }
     if (refresh) {
-      liveGames.clear();
-      liveGames.addAll(updatedLiveGames);
+      liveGames = updatedLiveGames;
+      // liveGames.addAll(updatedLiveGames);
       setState(() => _isLoading = false);
     }
   }
@@ -181,21 +185,21 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
   _fetchPlayedGames() async {
     log('fetching played games');
     final updatedPlayedGames = await GameService.getPastGames();
-    bool refresh = false;
-    if (updatedPlayedGames.length == playedGames.length) {
-      final prevList = playedGames.map((e) => e.gameCode).toSet();
-      for (final pastGame in updatedPlayedGames) {
-        if (!prevList.contains(pastGame.gameCode)) {
-          refresh = true;
-          break;
-        }
-      }
-    } else {
-      refresh = true;
-    }
+    bool refresh = true;
+    // if (updatedPlayedGames.length == playedGames.length) {
+    //   final prevList = playedGames.map((e) => e.gameCode).toSet();
+    //   for (final pastGame in updatedPlayedGames) {
+    //     if (!prevList.contains(pastGame.gameCode)) {
+    //       refresh = true;
+    //       break;
+    //     }
+    //   }
+    // } else {
+    //   refresh = true;
+    // }
     if (refresh) {
-      playedGames.clear();
-      playedGames.addAll(updatedPlayedGames);
+      // playedGames.clear();
+      playedGames = updatedPlayedGames;
       setState(() => _isPlayedGamesLoading = false);
     }
   }
@@ -221,6 +225,13 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
   }
 
   Future<void> hostGame() async {
+    // if the player does not have enough coins
+    // don't host the game
+    if (AppConfig.availableCoins < 10) {
+      showErrorDialog(context, 'Error', 'Not enough coins to host a game');
+      return;
+    }
+
     final dynamic result =
         await Navigator.of(context).pushNamed(Routes.new_game_settings);
     if (result != null) {
@@ -290,8 +301,33 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
     }
   }
 
+  void _handleGameRefresh(InstaRefreshService irs) {
+    if (!mounted) return;
+    // final InstaRefreshService irs = context.read<InstaRefreshService>();
+    log('pauldebug: _handleGameRefresh is being called: ${irs.needToRefreshLiveGames}');
+
+    // for live games
+    if (irs.needToRefreshLiveGames) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _fetchLiveGames();
+        irs.refreshLiveGamesDone();
+      });
+    }
+
+    // for played games
+    if (irs.needToRefreshGameRecord) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _fetchPlayedGames();
+        irs.refreshGameRecordDone();
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final irs = Provider.of<InstaRefreshService>(context);
+    _handleGameRefresh(irs);
+
     return Consumer<AppTheme>(
       builder: (_, appTheme, __) {
         return Container(

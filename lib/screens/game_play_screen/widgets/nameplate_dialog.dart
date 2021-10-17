@@ -13,6 +13,8 @@ import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/app/player_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/widgets/buttons.dart';
+import 'package:pokerapp/widgets/card_form_text_field.dart';
+import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:pokerapp/widgets/num_diamond_widget.dart';
 
 class NamePlateDailog extends StatefulWidget {
@@ -103,7 +105,10 @@ class _NamePlateDailogState extends State<NamePlateDailog> {
                     IconAndTitleWidget(
                       icon: Icons.ac_unit,
                       text: "Host",
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.of(context).pop({"type": "host"});
+                        //  _handleLimitButtonClick(context);
+                      },
                       child: CircleAvatar(
                         child: Icon(
                           Icons.horizontal_split_outlined,
@@ -122,6 +127,25 @@ class _NamePlateDailogState extends State<NamePlateDailog> {
                         child: CircleAvatar(
                           child: Icon(
                             Icons.volume_mute,
+                            color: theme.primaryColorWithDark(),
+                          ),
+                          backgroundColor: theme.accentColor,
+                        ),
+                      ),
+                    ),
+                    AppDimensionsNew.getHorizontalSpace(16),
+                    Visibility(
+                      visible: widget.gameState.currentPlayer.isAdmin(),
+                      child: IconAndTitleWidget(
+                        icon: Icons.home_repair_service_outlined,
+                        text: "Limit",
+                        onTap: () {
+                          Navigator.of(context).pop({"type": "buyin"});
+                          //  _handleLimitButtonClick(context);
+                        },
+                        child: CircleAvatar(
+                          child: Icon(
+                            Icons.account_balance_rounded,
                             color: theme.primaryColorWithDark(),
                           ),
                           backgroundColor: theme.accentColor,

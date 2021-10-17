@@ -25,7 +25,7 @@ game:
 
 starting-seats:
   - seat: 1
-    player: yong
+    player: young
     buy-in: 100
   - seat: 2
     player: brian
@@ -35,7 +35,8 @@ starting-seats:
     buy-in: 100
 
 tester:
-auto-play: false
+auto-play:
+  enabled: false
 
 bot-config:
   min-action-delay: 500

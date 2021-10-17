@@ -38,9 +38,9 @@ class _CoinWidgetState extends State<CoinWidget> {
     AppTheme theme = AppTheme.getTheme(context);
     // if no time left in the bank return empty container
 
-    if (widget.coins <= 0) {
-      return Container();
-    }
+    // if (widget.coins <= 0) {
+    //   return Container();
+    // }
 
     final Widget coin = Column(
       mainAxisSize: MainAxisSize.min,
@@ -78,13 +78,17 @@ class _CoinWidgetState extends State<CoinWidget> {
         },
         duration: const Duration(milliseconds: 1000),
         builder: (BuildContext context, double v, Widget child) {
+          String symbol = '+';
+          if (widget.addedCoins < 0) {
+            symbol = '-';
+          }
           //log('Coins: animating time: value: $v');
           return Opacity(
             opacity: 1 - v,
             child: Transform.translate(
               offset: Offset(-35.pw, -v * 10.ph),
               child: Text(
-                '+' + widget.addedCoins.toString(),
+                symbol + widget.addedCoins.toString(),
                 style: TextStyle(
                   fontSize: 10.dp,
                   color: theme.accentColor,

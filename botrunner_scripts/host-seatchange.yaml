@@ -28,7 +28,7 @@ game:
 
 starting-seats:
   - seat: 1
-    player: yong
+    player: young
     buy-in: 100
   - seat: 2
     player: brian
@@ -80,7 +80,7 @@ hands:
           - seat: 2
             player: brian
           - seat: 3
-            player: yong
+            player: young
           - seat: 4
             player: rob
           - seat: 5

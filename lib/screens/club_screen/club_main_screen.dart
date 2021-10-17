@@ -5,6 +5,7 @@ import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/app_config.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/routes.dart';
@@ -16,6 +17,7 @@ import 'package:pokerapp/screens/game_screens/new_game_settings/new_game_setting
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
 import 'package:pokerapp/widgets/buttons.dart';
+import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
 
@@ -91,6 +93,14 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew>
                           padding: const EdgeInsets.only(right: 8.0),
                           child: RoundRectButton(
                             onTap: () async {
+                              // if the player does not have enough coins
+                              // don't host the game
+                              if (AppConfig.availableCoins < 10) {
+                                showErrorDialog(context, 'Error',
+                                    'Not enough coins to host a game');
+                                return;
+                              }
+
                               final dynamic result = await Navigator.pushNamed(
                                 context,
                                 Routes.new_game_settings,

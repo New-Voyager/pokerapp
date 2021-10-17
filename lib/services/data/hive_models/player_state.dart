@@ -24,12 +24,14 @@ class PlayerState {
   String _playerUuid;
   String _playerName;
   int unreadAnnouncements;
+  int _diamonds;
 
   static const TOC_ACCEPT_DATE = 'toc_accept_date';
   static const PLAYER_ID = 'player_id';
   static const PLAYER_UUID = 'player_uuid';
   static const PLAYER_NAME = 'player_name';
   static const SYS_ANNOUNCEMENT_READ_DATE = 'sys_announcement_read_date';
+  static const DIAMONDS = 'diamonds';
 
   PlayerState();
 
@@ -63,6 +65,10 @@ class PlayerState {
         _lastReadSysAnnounceDate = DateTime.now();
       }
     }
+    _diamonds = _box.get(DIAMONDS) as int;
+    if (_diamonds == null) {
+      _diamonds = 0;
+    }
 
     if (newData) {
       _save();
@@ -77,6 +83,7 @@ class PlayerState {
     _box.put(TOC_ACCEPT_DATE, _tocAcceptDate.toIso8601String());
     _box.put(
         SYS_ANNOUNCEMENT_READ_DATE, _lastReadSysAnnounceDate.toIso8601String());
+    _box.put(DIAMONDS, _diamonds);
   }
 
   bool isInitialized() {
@@ -121,6 +128,20 @@ class PlayerState {
     _lastReadSysAnnounceDate = DateTime.now();
     _box.put(
         SYS_ANNOUNCEMENT_READ_DATE, _lastReadSysAnnounceDate.toIso8601String());
+  }
+
+  int get diamonds => this._diamonds;
+  void addDiamonds(int diamonds) {
+    _diamonds += diamonds;
+    _box.put(DIAMONDS, _diamonds);
+  }
+
+  void deductDiamonds(int diamonds) {
+    _diamonds -= diamonds;
+    if (_diamonds < 0) {
+      _diamonds = 0;
+    }
+    _box.put(DIAMONDS, _diamonds);
   }
 
   DateTime get lastReadSysAnnounceDate => this._lastReadSysAnnounceDate;

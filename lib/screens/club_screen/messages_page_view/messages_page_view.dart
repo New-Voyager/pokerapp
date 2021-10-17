@@ -9,12 +9,13 @@ import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
-import 'package:pokerapp/screens/club_screen/messages_page_view/bottom_sheet/gif_drawer_sheet.dart';
+// import 'package:pokerapp/screens/club_screen/messages_page_view/bottom_sheet/gif_drawer_sheet.dart';
 import 'package:pokerapp/screens/club_screen/messages_page_view/widgets/message_item.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/services/app/club_interior_service.dart';
 import 'package:pokerapp/services/app/club_message_service.dart';
+import 'package:pokerapp/utils/gif_widget.dart';
 import 'package:pokerapp/widgets/emoji_picker_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -82,13 +83,22 @@ class _MessagesPageViewState extends State<MessagesPageView>
   }
 
   void _openGifDrawer(AppTheme theme) async {
-    String gifUrl = await showModalBottomSheet<String>(
-      context: navigatorKey.currentContext,
-      backgroundColor: theme.fillInColor,
-      builder: (_) => GifDrawerSheet(),
-    );
+    // String gifUrl = await showModalBottomSheet<String>(
+    //   context: navigatorKey.currentContext,
+    //   backgroundColor: theme.fillInColor,
+    //   builder: (_) => GifDrawerSheet(),
+    // );
 
-    if (gifUrl != null) _sendGif(gifUrl);
+    await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (_) => GifWidget(
+        showPresets: false,
+        onPresetTextSelect: (String pText) => {},
+        onGifSelect: (String gifUrl) => _sendGif(gifUrl),
+        gifSuggestions: ["Sad", "Cry", "Angry", "Savage"],
+      ),
+    );
   }
 
   _fetchMembers() async {
@@ -110,7 +120,7 @@ class _MessagesPageViewState extends State<MessagesPageView>
     _appScreenText = getAppTextScreen("chatScreen");
 
     /* this fetches the information regarding the current user */
-    AuthService.get().then((value) => _authModel = value);
+    _authModel = AuthService.get();
 
     /* this function fetches the members of the clubs - to show name corresponding to messages */
     _fetchMembers();
