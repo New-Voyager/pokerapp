@@ -161,6 +161,18 @@ class _StorePageState extends State<StorePage> {
     super.dispose();
   }
 
+  refreshCoinCount() async {
+    AppConfig.setAvailableCoins(await AppCoinService.availableCoins());
+    log("Appcoins refreshed : ${AppConfig.availableCoins}");
+    setState(() {});
+  }
+
+  @override
+  void didUpdateWidget(covariant StorePage oldWidget) {
+    refreshCoinCount();
+    super.didUpdateWidget(oldWidget);
+  }
+
   @override
   Widget build(BuildContext context) {
     Locale locale = Localizations.localeOf(context);
@@ -272,43 +284,45 @@ class _StorePageState extends State<StorePage> {
 
                           Align(
                             alignment: Alignment.centerRight,
-                            child:
-                                Row(mainAxisSize: MainAxisSize.min, children: [
-                              ValueListenableBuilder<bool>(
-                                builder: (
-                                  BuildContext context,
-                                  bool update,
-                                  Widget child,
-                                ) {
-                                  // This builder will only get called when the _counter
-                                  // is updated.
-                                  return CoinWidget(
-                                    AppConfig.availableCoins,
-                                    _addedCoins,
-                                    update,
-                                  );
-                                },
-                                valueListenable: _updateCoinState,
-                              ),
-                              SizedBox(width: 15.dp),
-                              ValueListenableBuilder<bool>(
-                                builder: (
-                                  BuildContext context,
-                                  bool update,
-                                  Widget child,
-                                ) {
-                                  // This builder will only get called when the _counter
-                                  // is updated.
-                                  return DiamondWidget(
-                                    playerState.diamonds,
-                                    _addedDiamonds,
-                                    update,
-                                  );
-                                },
-                                valueListenable: _updateDiamondState,
-                              ),
-                            ]),
-                          )
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                ValueListenableBuilder<bool>(
+                                  builder: (
+                                    BuildContext context,
+                                    bool update,
+                                    Widget child,
+                                  ) {
+                                    // This builder will only get called when the _counter
+                                    // is updated.
+                                    return CoinWidget(
+                                      AppConfig.availableCoins,
+                                      _addedCoins,
+                                      update,
+                                    );
+                                  },
+                                  valueListenable: _updateCoinState,
+                                ),
+                                SizedBox(width: 15.dp),
+                                ValueListenableBuilder<bool>(
+                                  builder: (
+                                    BuildContext context,
+                                    bool update,
+                                    Widget child,
+                                  ) {
+                                    // This builder will only get called when the _counter
+                                    // is updated.
+                                    return DiamondWidget(
+                                      playerState.diamonds,
+                                      _addedDiamonds,
+                                      update,
+                                    );
+                                  },
+                                  valueListenable: _updateDiamondState,
+                                ),
+                              ],
+                            ),
+                          ),
                         ],
                       ),
                     ),

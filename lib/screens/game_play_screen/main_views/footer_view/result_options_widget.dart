@@ -8,9 +8,11 @@ import 'package:pokerapp/models/rabbit_state.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/proto/hand.pb.dart';
 import 'package:pokerapp/resources/app_assets.dart';
+import 'package:pokerapp/resources/app_config.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/widgets/buttons.dart';
+import 'package:pokerapp/services/data/hive_models/player_state.dart';
 import 'package:pokerapp/widgets/cards/multiple_stack_card_views.dart';
 import 'package:pokerapp/widgets/num_diamond_widget.dart';
 import 'package:provider/provider.dart';
@@ -255,19 +257,24 @@ class ResultOptionsWidget extends StatelessWidget {
   // reveal button tap
   void _onRevealButtonTap(ValueNotifier<bool> vnIsRevealed) async {
     // deduct two diamonds
-    final bool deducted = await gameState.gameHiveStore.deductDiamonds();
+    final bool deducted =
+        await playerState.deductDiamonds(AppConfig.noOfDiamondsForReveal);
 
     // show community cards - only if deduction was possible
     if (deducted) vnIsRevealed.value = true;
   }
 
   // share button tap
-  void _onShareButtonTap(BuildContext context, RabbitState rs) {
-    // collect all the necessary data and send in the game chat channel
-    gameState.gameComService.chat.sendRabbitHunt(rs);
+  void _onShareButtonTap(BuildContext context, RabbitState rs) async {
+    final bool deducted =
+        await playerState.deductDiamonds(AppConfig.noOfDiamondsForReveal);
+    if (deducted) {
+      // collect all the necessary data and send in the game chat channel
+      gameState.gameComService.chat.sendRabbitHunt(rs);
 
-    // pop out the dialog
-    Navigator.pop(context);
+      // pop out the dialog
+      Navigator.pop(context);
+    }
   }
 
   Widget _buildDiamond() => SvgPicture.asset(
@@ -281,7 +288,10 @@ class ResultOptionsWidget extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         // diamond icons
-        _buildDiamond(),
+        Text(
+          "${AppConfig.noOfDiamondsForReveal}",
+          style: AppDecorators.getAccentTextStyle(theme: theme),
+        ),
         _buildDiamond(),
 
         // sep
@@ -304,30 +314,33 @@ class ResultOptionsWidget extends StatelessWidget {
 
   Widget _buildShareButton(
       BuildContext context, AppTheme theme, RabbitState rs) {
-    return Align(
-      alignment: Alignment.center,
-      child: RoundRectButton(
-        onTap: () {
-          _onShareButtonTap(context, rs);
-        },
-        text: "Share",
-        theme: theme,
-        icon: Icon(
-          Icons.share_rounded,
-          color: theme.primaryColorWithDark(),
-        ),
-      ),
-      // icon: Icons.share_rounded,
-      // iconColor: theme.accentColor,
 
-      // GestureDetector(
-      //   onTap: ,
-      //   child: Icon(
-      //     Icons.share_rounded,
-      //     color: theme.accentColor,
-      //     size: 30.0,
-      //   ),
-      // ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        // diamond icons
+        Text(
+          "${AppConfig.noOfDiamondsForShare}",
+          style: AppDecorators.getAccentTextStyle(theme: theme),
+        ),
+        _buildDiamond(),
+
+        // sep
+        const SizedBox(width: 10.0),
+
+        RoundRectButton(
+          onTap: () {
+            _onShareButtonTap(context, rs);
+          },
+          text: "Share",
+          backgroundColor: theme.accentColor,
+          textColor: theme.primaryColorWithDark(),
+          icon: Icon(
+            Icons.share_rounded,
+            color: theme.primaryColorWithDark(),
+          ),
+        ),
+      ],
     );
   }
 
