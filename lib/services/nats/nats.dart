@@ -17,6 +17,7 @@ class Nats {
   Client get clientPub => _clientPub;
   Client _clientPub;
 
+  String _natsUrl;
   String _playerChannel;
   bool _initialized = false;
   Subscription _playerSub;
@@ -36,6 +37,12 @@ class Nats {
   bool get connectionBroken {
     if (_clientPub.status == Status.disconnected ||
         _clientSub.status == Status.disconnected) {
+      _clientPub.close();
+      _clientSub.close();
+      return true;
+    }
+    if (_clientPub.status == Status.closed ||
+        _clientSub.status == Status.closed) {
       _clientPub.close();
       _clientSub.close();
       return true;
@@ -60,6 +67,20 @@ class Nats {
     }
   }
 
+  Future<bool> tryReconnect() async {
+    try {
+      Client client = Client();
+      await client.connect(_natsUrl);
+      if (client.status == Status.connected) {
+        client.close();
+        return true;
+      }
+    } catch(err) {
+      log('Trying to connect to Nats $_natsUrl failed');
+    }
+    return false;
+  }
+
   Future<void> init(String playerChannel) async {
     String natsUrl = await UtilService.getNatsURL();
 
@@ -77,6 +98,7 @@ class Nats {
         .replaceFirst('tls://', '')
         .replaceFirst(':4222', '');
 
+    _natsUrl = natsUrl;
     await _clientSub.connect(natsUrl);
     await _clientPub.connect(natsUrl);
     _clientSub.onDisconnect = onDisconnect;

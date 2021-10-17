@@ -122,6 +122,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   bool _hostSeatChangeInProgress;
   WidgetsBinding _binding = WidgetsBinding.instance;
   LocationUpdates _locationUpdates;
+  Nats _nats;
+  NetworkConnectionDialog _dialog;
+
   // Timer _timer;
 
   /* _init function is run only for the very first time,
@@ -194,10 +197,13 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     );
 
     final encryptionService = EncryptionService();
+    // instantiate the dialog object
+    _dialog = NetworkConnectionDialog();
 
     if (!TestService.isTesting && widget.customizationService == null) {
       // subscribe the NATs channels
       final natsClient = Provider.of<Nats>(context, listen: false);
+      _nats = natsClient;
       if (natsClient.connectionBroken) {
         await natsClient.reconnect();
       }
@@ -329,24 +335,58 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   }
 
   void onNatsDisconnect() async {
-    final nats = context.read<Nats>();
-    if (nats.connectionBroken) {
-      try {
-        ConnectionDialog.show(context: context, loadingText: 'Connecting...');
-        await nats.reconnect();
-        await _queryCurrentHandIfNeeded();
-        ConnectionDialog.dismiss(context: context);
-      } catch(err) {
-        ConnectionDialog.dismiss(context: context);
-      }
+    log('dartnats: onNatsDiconnect');
+    if (_gameState != null && _gameState.uiClosing) {
+      return;
     }
+
+    if (_nats != null && _nats.connectionBroken) {
+
+        final BuildContext context = navigatorKey.currentState.overlay.context;
+        // we don't have connection to Nats server
+        _dialog?.show(
+          context: context,
+          loadingText: 'Connecting ...',
+        );
+        try {
+          log('1 dartnats: Reconnecting');
+          while (!_gameState.uiClosing && _nats != null) {
+            if (!await _nats.connectionBroken) {
+              log('1 dartnats: Connection is not broken');
+              break;
+            }
+            log('2 dartnats: Reconnecting');
+            bool ret = await _nats.tryReconnect();
+            if (ret) {
+              log('dartnats: Connection is available. Reconnecting');
+              await _nats.reconnect();
+              log('dartnats: _nats.connectionBroken ${_nats.connectionBroken}');
+              break;
+            }
+            //await _nats.reconnect();
+            log('3 dartnats: Reconnecting connection broken: ${_nats.connectionBroken}');
+            // wait for a bit
+            await Future.delayed(const Duration(milliseconds: 1000));
+          }
+        } catch(err) {
+
+        }
+        // if we are outside the while loop, means we have internet connection
+        // dismiss the dialog box
+        _dialog?.dismiss(context: context);
+      }
   }
 
   /* dispose method for closing connections and un subscribing to channels */
   @override
   void dispose() {
-    final nats = context.read<Nats>();
-    nats.disconnectListeners.remove(this.onNatsDisconnect);
+    if (_gameState != null) {
+      _gameState.uiClosing = true;
+    }
+
+    if (_nats != null) {
+    _nats.disconnectListeners.remove(this.onNatsDisconnect);
+    }
 
     // cancel listening to game play screen network changes
     _streamSub?.cancel();
@@ -356,12 +396,8 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       _locationUpdates.stop();
       _locationUpdates = null;
     }
-    if (_gameContextObj.ionAudioConferenceService != null) {
+    if (_gameContextObj != null && _gameContextObj.ionAudioConferenceService != null) {
       _gameContextObj.ionAudioConferenceService.leave();
-    }
-
-    if (_gameState != null) {
-      _gameState.uiClosing = true;
     }
 
     if (_binding != null) {
@@ -598,6 +634,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       Future.delayed(Duration(seconds: 1), () async {
         _queryCurrentHandIfNeeded();
         final nats = context.read<Nats>();
+        log('dartnats: adding to disconnectListeners');
         nats.disconnectListeners.add(this.onNatsDisconnect);
       });
     });

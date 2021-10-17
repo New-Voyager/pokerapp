@@ -72,7 +72,7 @@ class Client {
       {int port = 4222,
       ConnectOption connectOption,
       int timeout = 5,
-      bool retry = true,
+      bool retry = false,
       int retryInterval = 10}) async {
     _connectCompleter = Completer();
     if (status != Status.disconnected && status != Status.closed) {
@@ -87,8 +87,10 @@ class Client {
       log('dartnats: In loop');
       for (var i = 0; i == 0 || retry; i++) {
         if (i == 0) {
+          log('dartnats: Connecting');
           status = Status.connecting;
         } else {
+          log('dartnats: Reconnecting');
           status = Status.reconnecting;
           await Future.delayed(Duration(seconds: retryInterval));
         }
@@ -97,6 +99,7 @@ class Client {
           _socket = await Socket.connect(_host, _port,
               timeout: Duration(seconds: timeout));
           status = Status.connected;
+          log('dartnats: Connected');
           _connectCompleter.complete();
 
           _addConnectOption(_connectOption);
