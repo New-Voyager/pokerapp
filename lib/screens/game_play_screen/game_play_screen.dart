@@ -122,6 +122,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   bool _hostSeatChangeInProgress;
   WidgetsBinding _binding = WidgetsBinding.instance;
   LocationUpdates _locationUpdates;
+  Nats _nats;
+  NetworkConnectionDialog _dialog;
+
   // Timer _timer;
 
   /* _init function is run only for the very first time,
@@ -194,10 +197,16 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     );
 
     final encryptionService = EncryptionService();
+    // instantiate the dialog object
+    _dialog = NetworkConnectionDialog();
 
     if (!TestService.isTesting && widget.customizationService == null) {
       // subscribe the NATs channels
       final natsClient = Provider.of<Nats>(context, listen: false);
+      _nats = natsClient;
+      if (natsClient.connectionBroken) {
+        await natsClient.reconnect();
+      }
 
       log('natsClient: $natsClient');
       await _gameComService.init(natsClient);
@@ -325,9 +334,60 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     return _gameInfoModel;
   }
 
+  void onNatsDisconnect() async {
+    log('dartnats: onNatsDiconnect');
+    if (_gameState != null && _gameState.uiClosing) {
+      return;
+    }
+
+    if (_nats != null && _nats.connectionBroken) {
+      final BuildContext context = navigatorKey.currentState.overlay.context;
+      // we don't have connection to Nats server
+      _dialog?.show(
+        context: context,
+        loadingText: 'Connecting ...',
+      );
+      try {
+        log('1 dartnats: Reconnecting');
+        while (!_gameState.uiClosing && _nats != null) {
+          if (!await _nats.connectionBroken) {
+            log('1 dartnats: Connection is not broken');
+            break;
+          }
+          log('2 dartnats: Reconnecting');
+          bool ret = await _nats.tryReconnect();
+          if (ret) {
+            log('dartnats: Connection is available. Reconnecting');
+            await _nats.reconnect();
+            // resubscribe to messages
+            await _reconnectGameComService();
+            log('dartnats: reconnected. _nats.connectionBroken ${_nats.connectionBroken}');
+            break;
+          }
+          //await _nats.reconnect();
+          log('3 dartnats: Reconnecting connection broken: ${_nats.connectionBroken}');
+          // wait for a bit
+          await Future.delayed(const Duration(milliseconds: 1000));
+          log('4 dartnats: Trying to reconnect');
+        }
+      } catch (err) {}
+      // if we are outside the while loop, means we have internet connection
+      // dismiss the dialog box
+      _dialog?.dismiss(context: context);
+    }
+  }
+
   /* dispose method for closing connections and un subscribing to channels */
   @override
   void dispose() {
+    if (_gameState != null) {
+      _gameState.uiClosing = true;
+    }
+
+    if (_nats != null) {
+      _nats.disconnectListeners.remove(this.onNatsDisconnect);
+    }
+
     // cancel listening to game play screen network changes
     _streamSub?.cancel();
 
@@ -336,12 +396,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       _locationUpdates.stop();
       _locationUpdates = null;
     }
-    if (_gameContextObj.ionAudioConferenceService != null) {
+    if (_gameContextObj != null &&
+        _gameContextObj.ionAudioConferenceService != null) {
       _gameContextObj.ionAudioConferenceService.leave();
-    }
-
-    if (_gameState != null) {
-      _gameState.uiClosing = true;
     }
 
     if (_binding != null) {
@@ -575,8 +632,11 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     _binding.addObserver(this);
 
     init().then((v) {
-      Future.delayed(Duration(seconds: 1), () {
+      Future.delayed(Duration(seconds: 1), () async {
         _queryCurrentHandIfNeeded();
+        final nats = context.read<Nats>();
+        log('dartnats: adding to disconnectListeners');
+        nats.disconnectListeners.add(this.onNatsDisconnect);
       });
     });
   }
@@ -701,6 +761,8 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       // query current hand to get game update
       WidgetsBinding.instance.addPostFrameCallback((_) {
         log('network_reconnect: queryCurrentHand invoked');
+
+        // if nats connection is broken, reconnect
         _gameContextObj.handActionProtoService.queryCurrentHand();
       });
     }
@@ -885,6 +947,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   void _reconnectGameComService() async {
     log('network_reconnect: _reconnectGameComService invoked');
     final nats = context.read<Nats>();
+    if (nats.connectionBroken) {
+      await nats.reconnect();
+    }
 
     // drop connections -> re establish connections
     await _gameComService.reconnect(nats);
