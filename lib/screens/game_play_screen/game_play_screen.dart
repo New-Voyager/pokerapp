@@ -341,40 +341,40 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     }
 
     if (_nats != null && _nats.connectionBroken) {
-
-        final BuildContext context = navigatorKey.currentState.overlay.context;
-        // we don't have connection to Nats server
-        _dialog?.show(
-          context: context,
-          loadingText: 'Connecting ...',
-        );
-        try {
-          log('1 dartnats: Reconnecting');
-          while (!_gameState.uiClosing && _nats != null) {
-            if (!await _nats.connectionBroken) {
-              log('1 dartnats: Connection is not broken');
-              break;
-            }
-            log('2 dartnats: Reconnecting');
-            bool ret = await _nats.tryReconnect();
-            if (ret) {
-              log('dartnats: Connection is available. Reconnecting');
-              await _nats.reconnect();
-              log('dartnats: _nats.connectionBroken ${_nats.connectionBroken}');
-              break;
-            }
-            //await _nats.reconnect();
-            log('3 dartnats: Reconnecting connection broken: ${_nats.connectionBroken}');
-            // wait for a bit
-            await Future.delayed(const Duration(milliseconds: 1000));
+      final BuildContext context = navigatorKey.currentState.overlay.context;
+      // we don't have connection to Nats server
+      _dialog?.show(
+        context: context,
+        loadingText: 'Connecting ...',
+      );
+      try {
+        log('1 dartnats: Reconnecting');
+        while (!_gameState.uiClosing && _nats != null) {
+          if (!await _nats.connectionBroken) {
+            log('1 dartnats: Connection is not broken');
+            break;
           }
-        } catch(err) {
-
+          log('2 dartnats: Reconnecting');
+          bool ret = await _nats.tryReconnect();
+          if (ret) {
+            log('dartnats: Connection is available. Reconnecting');
+            await _nats.reconnect();
+            // resubscribe to messages
+            await _reconnectGameComService();
+            log('dartnats: reconnected. _nats.connectionBroken ${_nats.connectionBroken}');
+            break;
+          }
+          //await _nats.reconnect();
+          log('3 dartnats: Reconnecting connection broken: ${_nats.connectionBroken}');
+          // wait for a bit
+          await Future.delayed(const Duration(milliseconds: 1000));
+          log('4 dartnats: Trying to reconnect');
         }
-        // if we are outside the while loop, means we have internet connection
-        // dismiss the dialog box
-        _dialog?.dismiss(context: context);
-      }
+      } catch (err) {}
+      // if we are outside the while loop, means we have internet connection
+      // dismiss the dialog box
+      _dialog?.dismiss(context: context);
+    }
   }
 
   /* dispose method for closing connections and un subscribing to channels */
@@ -385,7 +385,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     }
 
     if (_nats != null) {
-    _nats.disconnectListeners.remove(this.onNatsDisconnect);
+      _nats.disconnectListeners.remove(this.onNatsDisconnect);
     }
 
     // cancel listening to game play screen network changes
@@ -396,7 +396,8 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       _locationUpdates.stop();
       _locationUpdates = null;
     }
-    if (_gameContextObj != null && _gameContextObj.ionAudioConferenceService != null) {
+    if (_gameContextObj != null &&
+        _gameContextObj.ionAudioConferenceService != null) {
       _gameContextObj.ionAudioConferenceService.leave();
     }
 

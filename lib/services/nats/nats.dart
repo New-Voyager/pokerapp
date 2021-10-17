@@ -62,7 +62,7 @@ class Nats {
   }
 
   void onDisconnect() {
-    for(final listener in disconnectListeners) {
+    for (final listener in disconnectListeners) {
       listener();
     }
   }
@@ -75,7 +75,7 @@ class Nats {
         client.close();
         return true;
       }
-    } catch(err) {
+    } catch (err) {
       log('Trying to connect to Nats $_natsUrl failed');
     }
     return false;

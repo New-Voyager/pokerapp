@@ -93,11 +93,11 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew>
                           padding: const EdgeInsets.only(right: 8.0),
                           child: RoundedColorButton(
                             onTapFunction: () async {
-
                               // if the player does not have enough coins
                               // don't host the game
                               if (AppConfig.availableCoins < 10) {
-                                showErrorDialog(context, 'Error', 'Not enough coins to host a game');
+                                showErrorDialog(context, 'Error',
+                                    'Not enough coins to host a game');
                                 return;
                               }
 
