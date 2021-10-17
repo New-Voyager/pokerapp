@@ -9,6 +9,9 @@
         "inBB": "(x BBs)",
         "buyInEntry": "Buy In"
     },
+    "errors": {
+        "MAXCLUB_REACHED": "Maximum club limit reached. Club creation failed"
+    },
     "liveGames": {
         "EMPTY_GAMECODE_ERROR": "GameCode can't be empty",
         "LOADING_GAMES": "Getting games..",

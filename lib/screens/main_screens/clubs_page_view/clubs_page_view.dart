@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pokerapp/exceptions/excpetions.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/club_model.dart';
 import 'package:pokerapp/models/club_update_input_model.dart';
@@ -18,6 +19,7 @@ import 'package:pokerapp/screens/main_screens/clubs_page_view/widgets/create_clu
 import 'package:pokerapp/services/app/clubs_service.dart';
 import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/utils/alerts.dart';
+import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:pokerapp/widgets/heading_widget.dart';
 import 'package:pokerapp/widgets/round_color_button.dart';
 import 'package:pokerapp/widgets/round_raised_button.dart';
@@ -158,16 +160,22 @@ class _ClubsPageViewState extends State<ClubsPageView>
     String clubName = clubDetails['name'];
     String clubDescription = clubDetails['description'];
 
-    _toggleLoading();
-
     /* create a club using the clubDetails */
-    String clubCode = await ClubsService.createClub(
-      clubName,
-      clubDescription,
-    );
-
+    String clubCode;
+    try {
+      clubCode = await ClubsService.createClub(
+        clubName,
+        clubDescription,
+      );
+    } on GQLException catch(e) {
+      await showErrorDialog(context, 'Error', gqlErrorText(e));
+      return;
+    } catch(e) {
+      await showErrorDialog(context, 'Error', errorText('GENERIC'));
+      return;
+    } finally {
+    }
     _toggleLoading();
-
     /* finally, show a status message and fetch all the clubs (if required) */
     if (clubCode != null) {
       Alerts.showNotification(
@@ -177,8 +185,11 @@ class _ClubsPageViewState extends State<ClubsPageView>
       final natsClient = Provider.of<Nats>(context, listen: false);
       natsClient.subscribeClubMessages(clubCode);
       _fetchClubs();
-    } else
+    } else {
       Alerts.showSnackBar(ctx, _appScreenText['SOMETHINGWENTWRONG']);
+    }
+    _toggleLoading();
+
   }
 
   Future<void> _fillClubs() async {

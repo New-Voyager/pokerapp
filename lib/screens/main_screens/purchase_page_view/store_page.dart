@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
-
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
@@ -162,6 +162,9 @@ class _StorePageState extends State<StorePage> {
 
   @override
   Widget build(BuildContext context) {
+    Locale locale = Localizations.localeOf(context);
+    var format = NumberFormat.simpleCurrency(locale: locale.toString());
+
     final theme = AppTheme.getTheme(context);
     List<Widget> body = [];
     if (!_loading) {
@@ -185,9 +188,10 @@ class _StorePageState extends State<StorePage> {
 
         body.add(
           PurchaseItem(
+            currencySymbol:format.currencySymbol,
             mrpPrice: iapProductFound.rawPrice,
             offerPrice: iapProductFound.rawPrice,
-            noOfCoins: enabledProduct.coins,
+            noOfCoins:  enabledProduct.coins.toString(),
             onBuy: () async {
               log('Purchasing $productId no of coins: ${enabledProduct.coins}');
               await handlePurchase(iapProductFound);
@@ -524,14 +528,16 @@ class _StorePageState extends State<StorePage> {
 }
 
 class PurchaseItem extends StatelessWidget {
-  final int noOfCoins;
+  final String noOfCoins;
   final double mrpPrice;
   final double offerPrice;
   final Function onBuy;
   final AppTextScreen appScreenText;
+  final String currencySymbol;
 
   const PurchaseItem({
     Key key,
+    this.currencySymbol,
     this.noOfCoins,
     this.mrpPrice,
     this.offerPrice,
@@ -570,7 +576,7 @@ class PurchaseItem extends StatelessWidget {
           text: TextSpan(
             children: [
               TextSpan(
-                  text: "${mrpPrice.toStringAsFixed(2)}",
+                  text: "${this.currencySymbol}${mrpPrice.toStringAsFixed(2)}",
                   style: showDiscount
                       ? AppDecorators.getAccentTextStyle(theme: theme).copyWith(
                           decoration: TextDecoration.lineThrough,
