@@ -16,8 +16,8 @@ import 'package:pokerapp/screens/club_screen/widgets/club_live_games_view.dart';
 import 'package:pokerapp/screens/game_screens/new_game_settings/new_game_settings2.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
+import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
-import 'package:pokerapp/widgets/round_color_button.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
 
@@ -91,8 +91,8 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew>
                         visible: (clubModel.isManager || clubModel.isOwner),
                         child: Padding(
                           padding: const EdgeInsets.only(right: 8.0),
-                          child: RoundedColorButton(
-                            onTapFunction: () async {
+                          child: RoundRectButton(
+                            onTap: () async {
                               // if the player does not have enough coins
                               // don't host the game
                               if (AppConfig.availableCoins < 10) {
@@ -121,8 +121,7 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew>
                               }
                             },
                             text: _appScreenText['hostGame'],
-                            backgroundColor: theme.accentColor,
-                            textColor: theme.primaryColorWithDark(),
+                            theme: theme,
                           ),
                         ),
                       ),

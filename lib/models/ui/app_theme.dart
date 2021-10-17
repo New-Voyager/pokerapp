@@ -100,4 +100,35 @@ class AppTheme extends ChangeNotifier {
   // negative or error colors
   // TODO: MAY BE WE CAN HAVE DIFFERENT SHADES OF THIS
   Color get negativeOrErrorColor => _themeData.negativeOrErrorColor;
+
+  //Rounded Button
+  Color get roundedButtonBackgroundColor =>
+      _themeData.roundedButtonBackgroundColor;
+  TextStyle get roundedButtonTextStyle => _themeData.roundedButtonTextStyle;
+  Color get roundedButtonBorderColor => _themeData.roundedButtonBackgroundColor;
+
+  //Rounded Button 2
+  Color get roundedButton2BackgroundColor =>
+      _themeData.roundedButton2BackgroundColor;
+  TextStyle get roundedButton2TextStyle => _themeData.roundedButton2TextStyle;
+
+  //Circle Image Button
+  Color get circleImageButtonBorderColor =>
+      _themeData.circleImageButtonBorderColor;
+  Color get circleImageButtonImageColor =>
+      _themeData.circleImageButtonImageColor;
+  Color get circleImageButtonBackgroundColor =>
+      _themeData.circleImageButtonBackgroundColor;
+  TextStyle get circleImageButtonTextStyle =>
+      _themeData.circleImageButtonTextStyle;
+
+  //Confirm Yes Button
+  Color get confirmYesButtonBackgroundColor =>
+      _themeData.confirmYesButtonBackgroundColor;
+  Color get confirmYesButtonIconColor => _themeData.confirmYesButtonIconColor;
+
+  //Confirm No Button
+  Color get confirmNoButtonBackgroundColor =>
+      _themeData.confirmNoButtonBackgroundColor;
+  Color get confirmNoButtonIconColor => _themeData.confirmNoButtonIconColor;
 }

@@ -20,10 +20,9 @@ import 'package:pokerapp/screens/main_screens/clubs_page_view/widgets/create_clu
 import 'package:pokerapp/services/app/clubs_service.dart';
 import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/utils/alerts.dart';
+import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:pokerapp/widgets/heading_widget.dart';
-import 'package:pokerapp/widgets/round_color_button.dart';
-import 'package:pokerapp/widgets/round_raised_button.dart';
 import 'package:provider/provider.dart';
 
 import 'widgets/search_club_bottom_sheet.dart';
@@ -220,11 +219,9 @@ class _ClubsPageViewState extends State<ClubsPageView>
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        RoundedColorButton(
-                          backgroundColor: theme.accentColor,
-                          textColor: theme.primaryColorWithDark(),
+                        RoundRectButton(
                           text: _appScreenText['searchClub'],
-                          onTapFunction: () async {
+                          onTap: () async {
                             await showModalBottomSheet(
                               context: context,
                               backgroundColor: Colors.transparent,
@@ -233,13 +230,13 @@ class _ClubsPageViewState extends State<ClubsPageView>
                             );
                             _fetchClubs();
                           },
+                          theme: theme,
                         ),
                         HeadingWidget(heading: _appScreenText['clubs']),
-                        RoundedColorButton(
-                          backgroundColor: theme.accentColor,
-                          textColor: theme.primaryColorWithDark(),
+                        RoundRectButton(
                           text: '+ ${_appScreenText['createClub']}',
-                          onTapFunction: () => _createClub(ctx),
+                          onTap: () => _createClub(ctx),
+                          theme: theme,
                         ),
                       ],
                     ),

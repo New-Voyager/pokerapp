@@ -16,6 +16,8 @@ import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/main_screens/purchase_page_view/diamonds_widget.dart';
 import 'package:pokerapp/services/app/appcoin_service.dart';
+import 'package:pokerapp/utils/alerts.dart';
+import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/services/data/hive_models/player_state.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
@@ -270,14 +272,12 @@ class _StorePageState extends State<StorePage> {
                         children: [
                           Align(
                             alignment: Alignment.centerLeft,
-                            child: RoundedColorButton(
-                              text: "Redeem",
-                              backgroundColor: theme.accentColor,
-                              textColor: theme.primaryColorWithDark(),
-                              onTapFunction: () {
-                                _handleRedeem(theme, context);
-                              },
-                            ),
+                            child: RoundRectButton(
+                                text: "Redeem",
+                                onTap: () {
+                                  _handleRedeem(theme, context);
+                                },
+                                theme: theme),
                           ),
 
                           // AppDimensionsNew.getHorizontalSpace(24.pw),
@@ -362,12 +362,11 @@ class _StorePageState extends State<StorePage> {
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16.0),
-                child: RoundedColorButton(
+                child: RoundRectButton(
                   text: "Ok",
-                  backgroundColor: theme.accentColor,
-                  textColor: theme.primaryColorWithDark(),
-                  onTapFunction: () =>
+                  onTap: () =>
                       Navigator.of(context).pop(controller.text.toString()),
+                  theme: theme,
                 ),
               ),
             ],
@@ -603,11 +602,11 @@ class PurchaseItem extends StatelessWidget {
             ],
           ),
         ),
-        trailing: RoundedColorButton(
-            text: appScreenText['buy'],
-            backgroundColor: theme.accentColor,
-            textColor: theme.primaryColorWithDark(),
-            onTapFunction: onBuy),
+        trailing: RoundRectButton(
+          text: appScreenText['buy'],
+          onTap: onBuy,
+          theme: theme,
+        ),
       ),
     );
   }

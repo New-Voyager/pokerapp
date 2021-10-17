@@ -16,6 +16,7 @@ import 'package:pokerapp/screens/game_screens/widgets/game_type_item.dart';
 import 'package:pokerapp/services/data/box_type.dart';
 import 'package:pokerapp/services/data/hive_datasource_impl.dart';
 import 'package:pokerapp/utils/alerts.dart';
+import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/heading_widget.dart';
 import 'package:pokerapp/widgets/round_color_button.dart';
 import 'package:provider/provider.dart';
@@ -84,15 +85,12 @@ class _ChooseGameNewState extends State<ChooseGameNew>
                 Row(
                   children: [
                     AppDimensionsNew.getHorizontalSpace(8),
-                    InkWell(
+                    CircleImageButton(
                       onTap: () {
                         _handleLoadGameClick(context, theme);
                       },
-                      child: CircleAvatar(
-                        child: Icon(Icons.open_in_browser_rounded,
-                            color: theme.primaryColorWithDark()),
-                        backgroundColor: theme.accentColor,
-                      ),
+                      icon: Icons.open_in_browser_rounded,
+                      theme: theme,
                     ),
                     // Container(
                     //   decoration: BoxDecoration(
@@ -113,15 +111,10 @@ class _ChooseGameNewState extends State<ChooseGameNew>
                         heading: _appScreenText['gameSettings'],
                       ),
                     ),
-                    InkWell(
+                    CircleImageButton(
                       onTap: () => Navigator.of(context).pop(),
-                      child: CircleAvatar(
-                        child: Icon(
-                          Icons.close,
-                          color: theme.primaryColorWithDark(),
-                        ),
-                        backgroundColor: theme.accentColor,
-                      ),
+                      icon: Icons.close,
+                      theme: theme,
                     ),
                     AppDimensionsNew.getHorizontalSpace(8),
                   ],
@@ -304,20 +297,18 @@ class _ChooseGameNewState extends State<ChooseGameNew>
                               physics: ClampingScrollPhysics(),
                             ),
                           ),
-                    RoundedColorButton(
-                      onTapFunction: () {
-                        if (instance.keys.toList().length == 0) {
-                          Navigator.of(context).pop();
-                        } else {
-                          Navigator.of(context).pop(selectedIndex);
-                        }
-                      },
-                      text: instance.keys.toList().length == 0
-                          ? _appScreenText['ok']
-                          : _appScreenText['start'],
-                      backgroundColor: AppColorsNew.yellowAccentColor,
-                      textColor: AppColorsNew.darkGreenShadeColor,
-                    ),
+                    RoundRectButton(
+                        onTap: () {
+                          if (instance.keys.toList().length == 0) {
+                            Navigator.of(context).pop();
+                          } else {
+                            Navigator.of(context).pop(selectedIndex);
+                          }
+                        },
+                        text: instance.keys.toList().length == 0
+                            ? _appScreenText['ok']
+                            : _appScreenText['start'],
+                        theme: theme),
                   ],
                 ),
               );

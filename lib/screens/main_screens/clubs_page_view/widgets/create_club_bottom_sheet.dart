@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
+import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
 import 'package:pokerapp/widgets/round_color_button.dart';
 import 'package:provider/provider.dart';
@@ -59,15 +60,14 @@ class _CreateClubBottomSheetState extends State<CreateClubBottomSheet> {
                       _appScreenText['createClub'],
                       style: AppDecorators.getHeadLine3Style(theme: theme),
                     ),
-                    RoundedColorButton(
+                    RoundRectButton(
                       text: _appScreenText['create'],
-                      textColor: theme.primaryColor,
-                      backgroundColor: theme.accentColor,
-                      onTapFunction: () {
+                      onTap: () {
                         if (!_formKey.currentState.validate()) return;
                         _formKey.currentState.save();
                         Navigator.pop(context, clubDetails);
                       },
+                      theme: theme,
                     ),
                   ],
                 ),

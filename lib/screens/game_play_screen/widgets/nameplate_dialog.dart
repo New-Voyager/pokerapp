@@ -12,6 +12,7 @@ import 'package:pokerapp/screens/game_play_screen/seat_view/profile_popup.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/app/player_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
+import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:pokerapp/widgets/num_diamond_widget.dart';
@@ -199,11 +200,10 @@ class _NamePlateDailogState extends State<NamePlateDailog> {
                         ),
                       ],
                     ),
-                    RoundedColorButton(
+                    RoundRectButton(
                       text: _appText['save'],
-                      textColor: theme.primaryColorWithDark(),
-                      backgroundColor: theme.accentColor,
-                      onTapFunction: () async {
+                      theme: theme,
+                      onTap: () async {
                         final res = await GameService.setNotesForUser(
                             widget.seat.player.playerUuid,
                             _controller.text.trim());
