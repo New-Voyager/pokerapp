@@ -67,7 +67,7 @@ class PlayerState {
     }
     _diamonds = _box.get(DIAMONDS) as int;
     if (_diamonds == null) {
-      _diamonds = 0;
+      _diamonds = 50;
     }
 
     if (newData) {
@@ -136,12 +136,16 @@ class PlayerState {
     _box.put(DIAMONDS, _diamonds);
   }
 
-  void deductDiamonds(int diamonds) {
+  bool deductDiamonds(int diamonds) {
+    if (_diamonds < diamonds) {
+      return false;
+    }
     _diamonds -= diamonds;
     if (_diamonds < 0) {
       _diamonds = 0;
     }
     _box.put(DIAMONDS, _diamonds);
+    return true;
   }
 
   DateTime get lastReadSysAnnounceDate => this._lastReadSysAnnounceDate;
