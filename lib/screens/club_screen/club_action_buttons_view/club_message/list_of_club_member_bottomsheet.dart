@@ -26,7 +26,7 @@ class ListOfClubMemberBottomSheet extends StatelessWidget {
           Container(
             padding: EdgeInsets.symmetric(vertical: 10),
             child: Text(
-              appScreenText['CHOOSEAMEMBER'],
+              appScreenText['chooseMember'],
             ),
           ),
           Expanded(

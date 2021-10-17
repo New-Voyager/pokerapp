@@ -40,7 +40,7 @@ class HandLogHeaderView extends StatelessWidget {
                   style: AppDecorators.getHeadLine4Style(theme: theme),
                 ),
                 Text(
-                  "${_appScreenText['HAND']}: #" +
+                  "${_appScreenText['hand']}: #" +
                       _handResult.handNum.toString(),
                   style: AppDecorators.getSubtitle2Style(theme: theme),
                 ),
@@ -61,7 +61,7 @@ class HandLogHeaderView extends StatelessWidget {
                         Container(
                           margin: EdgeInsets.only(bottom: 5),
                           child: Text(
-                            "${_appScreenText['COMMUNITYCARDS']}",
+                            "${_appScreenText['communityCards']}",
                             style:
                                 AppDecorators.getSubtitle3Style(theme: theme),
                           ),
@@ -98,7 +98,7 @@ class HandLogHeaderView extends StatelessWidget {
                           Container(
                             margin: EdgeInsets.only(bottom: 5),
                             child: Text(
-                              "${_appScreenText['YOURCARDS']}",
+                              "${_appScreenText['yourCards']}",
                               style:
                                   AppDecorators.getSubtitle3Style(theme: theme),
                             ),

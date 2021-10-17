@@ -55,12 +55,6 @@ class AppConfig {
     _deviceSecret = deviceSecret;
   }
 
-  static Future<void> saveScreenName(String screenName) async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    await sharedPreferences.setString(AppConstants.SCREEN_NAME, screenName);
-    _screenName = screenName;
-  }
-
   static String get apiUrl {
     if (_apiUrl == null) {
       String apiServer =

@@ -188,10 +188,10 @@ class _StorePageState extends State<StorePage> {
 
         body.add(
           PurchaseItem(
-            currencySymbol:format.currencySymbol,
+            currencySymbol: format.currencySymbol,
             mrpPrice: iapProductFound.rawPrice,
             offerPrice: iapProductFound.rawPrice,
-            noOfCoins:  enabledProduct.coins.toString(),
+            noOfCoins: enabledProduct.coins.toString(),
             onBuy: () async {
               log('Purchasing $productId no of coins: ${enabledProduct.coins}');
               await handlePurchase(iapProductFound);

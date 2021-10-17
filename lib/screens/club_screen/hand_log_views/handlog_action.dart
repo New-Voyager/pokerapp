@@ -40,7 +40,7 @@ class HandLogActionView extends StatelessWidget {
                 Expanded(
                   flex: 2,
                   child: Text(
-                    appTextScreen['RECIEVED'],
+                    appTextScreen['received'],
                     style: AppDecorators.getSubtitle1Style(theme: theme),
                     textAlign: TextAlign.center,
                   ),

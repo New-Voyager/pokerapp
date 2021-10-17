@@ -351,7 +351,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                           await hostGame();
                           _initTimer();
                         },
-                        text: _appScreenText["HOST"],
+                        text: _appScreenText["host"],
                         backgroundColor: appTheme.accentColor,
                         textColor: appTheme.primaryColorWithDark(),
                       ),
