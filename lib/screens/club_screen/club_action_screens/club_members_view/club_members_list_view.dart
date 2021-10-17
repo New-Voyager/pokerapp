@@ -158,9 +158,9 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
                                               .copyWith(),
                                       child: Text(
                                         (data.isManager
-                                            ? widget.appScreenText['MANAGER']
+                                            ? widget.appScreenText['manager']
                                             : data.isOwner
-                                                ? widget.appScreenText['OWNER']
+                                                ? widget.appScreenText['owner']
                                                 : ""),
                                         style: AppDecorators.getSubtitle2Style(
                                             theme: theme),
@@ -193,7 +193,7 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
                                 child: Row(
                                   children: [
                                     Text(
-                                      widget.appScreenText['PENDINGAPPROVAL'],
+                                      widget.appScreenText['pendingApproval'],
                                       textAlign: TextAlign.left,
                                       style: AppDecorators.getSubtitle3Style(
                                           theme: theme),

@@ -68,7 +68,7 @@ class ClubItemView extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    appScreenText['CLUBCODE'],
+                    appScreenText['clubCode'],
                     style: AppDecorators.getSubtitle3Style(theme: theme),
                   ),
                   Text(
@@ -114,7 +114,7 @@ class ClubItemView extends StatelessWidget {
                   //   style: AppStylesNew.labelTextStyle,
                   // ),
                   Text(
-                    '${club.memberCount} ${club.memberCount == 0 || club.memberCount == 1 ? appScreenText['MEMBER'] : appScreenText['MEMBERS']}',
+                    '${club.memberCount} ${club.memberCount == 0 || club.memberCount == 1 ? appScreenText['member'] : appScreenText['members']}',
                     style: AppDecorators.getSubtitle2Style(theme: theme),
                   ),
                 ],
@@ -134,7 +134,7 @@ class ClubItemView extends StatelessWidget {
         club.outgoingRequest || club.incomingRequest
             ? SizedBox.shrink()
             : Text(
-                "${appScreenText['JOINEDAT']} ${club.joinDate}",
+                "${appScreenText['joinedAt']} ${club.joinDate}",
                 style: AppDecorators.getSubtitle1Style(theme: theme),
               ),
       ],
@@ -200,7 +200,7 @@ class ClubItem extends StatelessWidget {
         ),
         AppDimensionsNew.getHorizontalSpace(8),
         Text(
-          appScreenText['WAITINGFORAPPROVAL'],
+          appScreenText['waitingForApproval'],
           textAlign: TextAlign.center,
           style: AppDecorators.getSubtitle3Style(theme: theme),
         ),

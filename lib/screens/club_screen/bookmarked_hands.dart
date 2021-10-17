@@ -72,12 +72,12 @@ class _BookmarkedHandsState extends State<BookmarkedHands>
   _removeBookMark(BookmarkedHand model) async {
     var result = await HandService.removeBookmark(model.id);
     Alerts.showNotification(
-      titleText: result ? _appScreenText["SUCCESS"] : _appScreenText["FAILED"],
+      titleText: result ? _appScreenText["success"] : _appScreenText["FAILED"],
       subTitleText: result
-          ? "${_appScreenText['HAND']} " +
+          ? "${_appScreenText['hand']} " +
               model.handlogData.handNum.toString() +
-              " ${_appScreenText['REMOVEDFROMBOOKMARKS']}"
-          : "${_appScreenText['COULDNOTREMOVEBOOKMARK']}",
+              " ${_appScreenText['bookmarkRemoved']}"
+          : "${_appScreenText['couldNotRemoveBookmark']}",
     );
 
     if (result) {
@@ -95,10 +95,10 @@ class _BookmarkedHandsState extends State<BookmarkedHands>
     Alerts.showNotification(
       titleText: result ? _appScreenText["SUCCESS"] : _appScreenText["FAILED"],
       subTitleText: result
-          ? "${_appScreenText['HAND']} " +
+          ? "${_appScreenText['hand']} " +
               model.handNum.toString() +
-              " ${_appScreenText['HASBEENSHAREDWITHTHECLUB']}"
-          : "${_appScreenText['COULDNOTSHARETHEHAND']}",
+              " ${_appScreenText['handShared']}"
+          : "${_appScreenText['shareFailed']}",
       leadingIcon: Icons.share_rounded,
     );
   }
@@ -125,12 +125,12 @@ class _BookmarkedHandsState extends State<BookmarkedHands>
             appBar: CustomAppBar(
               theme: theme,
               context: context,
-              titleText: _appScreenText['BOOKMARKEDHANDS'],
+              titleText: _appScreenText['bookmarkedHands'],
             ),
             body: loading
                 ? Center(
                     child: CircularProgressWidget(
-                        text: _appScreenText['FETCHINGBOOKMARKS']),
+                        text: _appScreenText['fetchingBookmarks']),
                   )
                 : Container(
                     child: Column(
@@ -139,7 +139,7 @@ class _BookmarkedHandsState extends State<BookmarkedHands>
                           child: list.length == 0
                               ? Center(
                                   child: Text(
-                                    _appScreenText['NOBOOKMARKEDHANDS'],
+                                    _appScreenText['noBookmarks'],
                                     style: AppDecorators.getSubtitle3Style(
                                         theme: theme),
                                   ),
@@ -188,7 +188,7 @@ class _BookmarkedHandsState extends State<BookmarkedHands>
                                                         .spaceBetween,
                                                 children: [
                                                   Text(
-                                                    "${_appScreenText['HAND']} #${list[index].handNum}",
+                                                    "${_appScreenText['hand']} #${list[index].handNum}",
                                                     style: AppDecorators
                                                         .getSubtitle3Style(
                                                             theme: theme),

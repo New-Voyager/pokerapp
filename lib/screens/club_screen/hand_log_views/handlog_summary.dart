@@ -31,7 +31,7 @@ class HandlogSummary extends StatelessWidget {
               width: double.infinity,
               alignment: Alignment.center,
               child: Text(
-                appTextScreen['STACK'],
+                appTextScreen['stack'],
                 style: AppDecorators.getHeadLine4Style(theme: theme)
                     .copyWith(fontWeight: FontWeight.w700),
               ),

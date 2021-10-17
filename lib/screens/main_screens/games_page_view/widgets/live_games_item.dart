@@ -83,7 +83,7 @@ class LiveGameItem extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               Text(
-                                '${_appScreenText['BUYIN']}: ${game.buyInMin}-${game.buyInMax}',
+                                '${_appScreenText['buyin']}: ${game.buyInMin}-${game.buyInMax}',
                                 style: AppDecorators.getSubtitle1Style(
                                     theme: theme),
                               ),
@@ -97,23 +97,23 @@ class LiveGameItem extends StatelessWidget {
                           ),
                           AppDimensionsNew.getVerticalSizedBox(4.ph),
                           Text(
-                            "${_appScreenText['GAMEID']} - ${game.gameCode}",
+                            "${_appScreenText['gameId']} - ${game.gameCode}",
                             style:
                                 AppDecorators.getSubtitle2Style(theme: theme),
                           ),
                           AppDimensionsNew.getVerticalSizedBox(2.ph),
                           Text(
                             GameModelNew.getSeatsAvailble(game) > 0
-                                ? "${game.maxPlayers} ${_appScreenText['OPENSEATS']}"
+                                ? "${game.maxPlayers} ${_appScreenText['openSeats']}"
                                 : game.waitlistCount > 0
-                                    ? "${_appScreenText['TABLEISFULL']} (${game.waitlistCount} ${_appScreenText['WAITING']})"
-                                    : "${_appScreenText['TABLEISFULL']}",
+                                    ? "${_appScreenText['tableIsFull']} (${game.waitlistCount} ${_appScreenText['waiting']})"
+                                    : "${_appScreenText['tableIsFull']}",
                             style:
                                 AppDecorators.getSubtitle1Style(theme: theme),
                           ),
                           AppDimensionsNew.getVerticalSizedBox(8.ph),
                           Text(
-                            "${_appScreenText['STARTED']} ${DataFormatter.getTimeInHHMMFormat(game.elapsedTime)} ${_appScreenText['AGO']}.",
+                            "${_appScreenText['started']} ${DataFormatter.getTimeInHHMMFormat(game.elapsedTime)} ${_appScreenText['ago']}.",
                             style:
                                 AppDecorators.getSubtitle3Style(theme: theme),
                           ),
@@ -128,8 +128,8 @@ class LiveGameItem extends StatelessWidget {
             right: 5.pw,
             child: RoundedColorButton(
               text: GameModelNew.getSeatsAvailble(game) > 0
-                  ? "${_appScreenText['JOIN']}"
-                  : "${_appScreenText['VIEW']}",
+                  ? "${_appScreenText['join']}"
+                  : "${_appScreenText['view']}",
               onTapFunction: onTapFunction,
               backgroundColor: theme.accentColor,
               textColor: theme.primaryColorWithDark(),

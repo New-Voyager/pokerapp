@@ -55,7 +55,7 @@ class ChatTextField extends StatelessWidget {
                 textInputAction: TextInputAction.newline,
                 decoration: InputDecoration(
                   border: InputBorder.none,
-                  hintText: appScreenText['ENTERMESSAGE'],
+                  hintText: appScreenText['enterMessage'],
                   hintStyle: AppDecorators.getSubtitle3Style(theme: theme),
                 ),
               ),

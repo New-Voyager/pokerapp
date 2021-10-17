@@ -68,7 +68,7 @@ class _GameHistoryViewState extends State<GameHistoryView>
     if (_loadingData) {
       return Center(
         child: Text(
-          _appScreenText['NOGAMESPLAYED'],
+          _appScreenText['noGamesPlayed'],
           style: AppDecorators.getCenterTextTextstyle(appTheme: theme),
         ),
       );
@@ -93,7 +93,7 @@ class _GameHistoryViewState extends State<GameHistoryView>
           appBar: CustomAppBar(
             theme: theme,
             titleText: _appScreenText['gameHistory'],
-            subTitleText: "${_appScreenText['CLUBCODE']}: ${widget.clubCode}",
+            subTitleText: "${_appScreenText['clubCode']}: ${widget.clubCode}",
             context: context,
           ),
           body: _prevGames == null

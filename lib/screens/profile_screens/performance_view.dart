@@ -76,7 +76,7 @@ class _PerformanceViewState extends State<PerformanceView>
               appBar: CustomAppBar(
                 theme: theme,
                 context: context,
-                titleText: _appScreenText['STATISTICS'],
+                titleText: _appScreenText['stats'],
               ),
               body: loading
                   ? Center(child: CircularProgressWidget())
@@ -85,7 +85,7 @@ class _PerformanceViewState extends State<PerformanceView>
                           performance.performanceList.length == 0
                       ? Center(
                           child: Text(
-                            _appScreenText['NODATAAVAILABLE'],
+                            _appScreenText['dataNotAvailable'],
                             style: AppStylesNew.disabledButtonTextStyle,
                           ),
                         )
@@ -94,8 +94,8 @@ class _PerformanceViewState extends State<PerformanceView>
                             TabBar(
                               controller: _tabController,
                               tabs: [
-                                Tab(text: _appScreenText['HANDSTATS']),
-                                Tab(text: _appScreenText['PERFORMANCE']),
+                                Tab(text: _appScreenText['handStats']),
+                                Tab(text: _appScreenText['performance']),
                               ],
                               labelColor: theme.secondaryColorWithLight(),
                               unselectedLabelColor:
@@ -126,7 +126,7 @@ class _PerformanceViewState extends State<PerformanceView>
                                         child: Column(
                                           children: [
                                             Text(
-                                              _appScreenText['RECENTGAMES'],
+                                              _appScreenText['recentGames'],
                                               style: AppDecorators
                                                   .getSubtitle3Style(
                                                       theme: theme),
@@ -158,21 +158,21 @@ class _PerformanceViewState extends State<PerformanceView>
     );
   }
 
-  String getBalanceFormatted(double bal) {
-    if (bal.abs() > 999999999) {
-      double val = bal / 1000000000;
-      return "${val.toStringAsFixed(1)}${_appScreenText['B']}";
-    }
-    if (bal.abs() > 999999) {
-      double val = bal / 1000000;
-      return "${val.toStringAsFixed(1)}${_appScreenText['M']}";
-    }
-    if (bal.abs() > 999) {
-      double val = bal / 1000;
-      return "${val.toStringAsFixed(1)}${_appScreenText['K']}";
-    }
-    return "${bal.toStringAsFixed(1)}";
-  }
+  // String getBalanceFormatted(double bal) {
+  //   if (bal.abs() > 999999999) {
+  //     double val = bal / 1000000000;
+  //     return "${val.toStringAsFixed(1)}${_appScreenText['B']}";
+  //   }
+  //   if (bal.abs() > 999999) {
+  //     double val = bal / 1000000;
+  //     return "${val.toStringAsFixed(1)}${_appScreenText['M']}";
+  //   }
+  //   if (bal.abs() > 999) {
+  //     double val = bal / 1000;
+  //     return "${val.toStringAsFixed(1)}${_appScreenText['K']}";
+  //   }
+  //   return "${bal.toStringAsFixed(1)}";
+  // }
 }
 
 class PerformanceBarChart extends StatelessWidget {

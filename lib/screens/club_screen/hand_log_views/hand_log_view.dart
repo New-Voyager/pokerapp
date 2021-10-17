@@ -118,10 +118,10 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
         titleText:
             result ? _appScreenText["SUCCESS"] : _appScreenText["FAILED"],
         subTitleText: result
-            ? "${_appScreenText['HAND']} " +
+            ? "${_appScreenText['hand']} " +
                 handnum.toString() +
-                " ${_appScreenText['REMOVEDFROMBOOKMARKS']}"
-            : "${_appScreenText['COULDNOTREMOVEBOOKMARK']}",
+                " ${_appScreenText['bookmarkRemoved']}"
+            : "${_appScreenText['couldNotRemoveBookmark']}",
       );
 
       if (result) {
@@ -130,7 +130,7 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
     } else {
       Alerts.showNotification(
         titleText: _appScreenText["FAILED"],
-        subTitleText: "${_appScreenText['COULDNOTREMOVEBOOKMARK']}",
+        subTitleText: "${_appScreenText['couldNotRemoveBookmark']}",
       );
     }
   }
@@ -164,7 +164,7 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
         children = [
           Center(
               child: Text(
-            '${_appScreenText["HANDDATAISNOTAVAILABLE"]}',
+            '${_appScreenText["dataNotAvailable"]}',
             style: TextStyle(color: Colors.white),
           ))
         ];
@@ -176,7 +176,7 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
           children = [
             Center(
                 child: Text(
-              '${_appScreenText["YOUARENOTALLOWEDTOVIEWTHISHAND"]}',
+              '${_appScreenText["notAllowed"]}',
               style: TextStyle(color: Colors.white),
             ))
           ];
@@ -191,7 +191,7 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
         appBar: CustomAppBar(
           theme: theme,
           context: context,
-          titleText: _appScreenText['HANDLOG'],
+          titleText: _appScreenText['handLog'],
           showBackButton: !(widget.isBottomSheet ?? false),
         ),
         body: this._isLoading == true
@@ -246,8 +246,8 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
                         ? _appScreenText["SUCCESS"]
                         : _appScreenText["FAILED"],
                     subTitleText: result
-                        ? "${_appScreenText['HAND']} ${_appScreenText['HASBEENBOOKMARKED']}"
-                        : "${_appScreenText['COULDNOTBOOKMARK']}",
+                        ? "${_appScreenText['hand']} ${_appScreenText['bookmarked']}"
+                        : "${_appScreenText['bookmarkFailed']}",
                   );
                   await _fetchBookmarksForGame(widget.gameCode);
                 }
@@ -275,9 +275,9 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
                         ? _appScreenText["SUCCESS"]
                         : _appScreenText["FAILED"],
                     subTitleText: result
-                        ? "${_appScreenText['HAND']} " +
-                            " ${_appScreenText["HASBENSHAREDWITHTHECLUB"]}"
-                        : "${_appScreenText["COULDBOTSHAREHAND"]}",
+                        ? "${_appScreenText['hand']} " +
+                            " ${_appScreenText["sharedWithClub"]}"
+                        : "${_appScreenText["couldNotShare"]}",
                   );
                 },
                 icon: Icons.share,
@@ -331,16 +331,16 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
           ),
         ),
         buttonPadding: EdgeInsets.all(16),
-        title: Text(_appScreenText['SENDREPORT']),
+        title: Text(_appScreenText['sendReport']),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(_appScreenText['WOULDYOULIKETOSENDHANDTODEVELOPMENTTEAM']),
+            Text(_appScreenText['debugHand']),
           ],
         ),
         actions: [
           RoundedColorButton(
-            text: _appScreenText['CANCEL'],
+            text: _appScreenText['cancel'],
             backgroundColor: Colors.transparent,
             textColor: theme.supportingColor,
             borderColor: theme.accentColor,
@@ -349,7 +349,7 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
             },
           ),
           RoundedColorButton(
-            text: _appScreenText['SEND'],
+            text: _appScreenText['send'],
             backgroundColor: theme.accentColor,
             textColor: theme.primaryColorWithDark(),
             onTapFunction: () {
@@ -362,8 +362,7 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
     if (res != null) {
       await HandService.debugHandLog(widget.gameCode, widget.handNum);
       // Make API Call
-      Alerts.showNotification(
-          titleText: _appScreenText['HANDLOGDATASENTTOAPPTEAM']);
+      Alerts.showNotification(titleText: _appScreenText['sharedToDev']);
     }
   }
 }

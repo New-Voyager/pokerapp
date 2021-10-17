@@ -198,8 +198,6 @@ class AppStringsNew {
 
   static String restoreAccountText = "Restore Account";
 
-  static String restoreButtonText = "RESTORE";
-
   static String getCodeButtonText = "Get Code";
 
   static String recoveryCodeLabelText = "Recovery code";

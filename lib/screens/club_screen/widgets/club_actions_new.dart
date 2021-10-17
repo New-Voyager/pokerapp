@@ -27,7 +27,7 @@ class ClubActionsNew extends StatelessWidget {
     Widget chat = ClubActionButtonNew(
       this._clubHomePageModel,
       ClubActions.CHAT,
-      appScreenText['CHAT'],
+      appScreenText['chat'],
       SvgPicture.asset("assets/images/club/chat.svg", color: theme.accentColor),
       badgeContent: chatBadgeContent,
     );
@@ -49,7 +49,7 @@ class ClubActionsNew extends StatelessWidget {
     return ClubActionButtonNew(
       this._clubHomePageModel,
       ClubActions.MEMBERS,
-      appScreenText['MEMBERS'],
+      appScreenText['members'],
       SvgPicture.asset(
         "assets/images/club/member.svg",
         color: theme.accentColor,
@@ -79,7 +79,7 @@ class ClubActionsNew extends StatelessWidget {
     return ClubActionButtonNew(
       this._clubHomePageModel,
       ClubActions.MESSAGE_HOST,
-      appScreenText['MESSAGEHOST'],
+      appScreenText['messageHost'],
       SvgPicture.asset(
         "assets/images/club/message_host.svg",
         color: theme.accentColor,
@@ -92,7 +92,7 @@ class ClubActionsNew extends StatelessWidget {
     return ClubActionButtonNew(
       this._clubHomePageModel,
       ClubActions.SETTINGS,
-      appScreenText['SETTINGS'],
+      appScreenText['settings'],
       SvgPicture.asset(
         "assets/images/club/message_host.svg",
         color: theme.accentColor,
@@ -111,7 +111,7 @@ class ClubActionsNew extends StatelessWidget {
                 child: ClubActionButtonNew(
                   this._clubHomePageModel,
                   ClubActions.GAME_HISTORY,
-                  appScreenText['GAMEHISTORY'],
+                  appScreenText['gameHistory'],
                   SvgPicture.asset(
                     "assets/images/club/game_history.svg",
                     color: theme.accentColor,
@@ -134,7 +134,7 @@ class ClubActionsNew extends StatelessWidget {
                 child: ClubActionButtonNew(
                   this._clubHomePageModel,
                   ClubActions.BOOKMARKED_HANDS,
-                  appScreenText['BOOKMRKEDHANDS'],
+                  appScreenText['bookmarkedHands'],
                   SvgPicture.asset(
                     "assets/images/club/bookmarks.svg",
                     color: theme.accentColor,
@@ -146,7 +146,7 @@ class ClubActionsNew extends StatelessWidget {
                 child: ClubActionButtonNew(
                   this._clubHomePageModel,
                   ClubActions.ANALYSIS,
-                  appScreenText['ANALYSIS'],
+                  appScreenText['analysis'],
                   SvgPicture.asset(
                     "assets/images/club/analysis.svg",
                     color: theme.accentColor,
@@ -158,7 +158,7 @@ class ClubActionsNew extends StatelessWidget {
                 child: ClubActionButtonNew(
                   this._clubHomePageModel,
                   ClubActions.ANNOUNCEMETS,
-                  appScreenText['ANNOUNCEMENTS'],
+                  appScreenText['announcements'],
                   SvgPicture.asset(
                     "assets/images/club/announcements.svg",
                     color: theme.accentColor,
@@ -178,35 +178,6 @@ class ClubActionsNew extends StatelessWidget {
                 flex: 3,
                 child: getSettingsWidget(theme),
               ),
-              // Expanded(
-              //   flex: 3,
-              //   child: ClubActionButtonNew(
-              //     this._clubHomePageModel,
-              //     ClubActions.MANAGE_CHIPS,
-              //     "Manage Chips",
-              //     SvgPicture.asset("assets/images/club/manage_chips.svg"),
-              //   ),
-              // ),
-              // Expanded(
-              //   flex: 3,
-              //   child: ClubActionButtonNew(
-              //     this._clubHomePageModel,
-              //     ClubActions.REWARDS,
-              //     "Rewards",
-              //     SvgPicture.asset("assets/images/club/rewards.svg"),
-              //     onTap: () {
-              //       Navigator.pushNamed(
-              //         context,
-              //         Routes.rewards_list_screen,
-              //         arguments: this.clubCode,
-              //       );
-              //     },
-              //   ),
-              // ),
-              // Expanded(
-              //   flex: 3,
-              //   child: Container(),
-              // ),
             ],
           ),
           AppDimensionsNew.getVerticalSizedBox(16),
@@ -218,7 +189,7 @@ class ClubActionsNew extends StatelessWidget {
                   child: ClubActionButtonNew(
                     this._clubHomePageModel,
                     ClubActions.BOTSCRIPTS,
-                    appScreenText['BOTSCRIPTS'],
+                    appScreenText['botScripts'],
                     SvgPicture.asset(
                       "assets/images/club/rewards.svg",
                       color: theme.accentColor,

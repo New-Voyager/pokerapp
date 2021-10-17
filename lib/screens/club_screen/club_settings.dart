@@ -261,7 +261,7 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
                                         _buildRadio(
                                             value: _clubModel.showHighRankStats,
                                             label: _appScreenText[
-                                                'SHOWHIGHRANKSTATS'],
+                                                'showHighRankStats'],
                                             onChange: (v) async {
                                               ClubUpdateInput input =
                                                   ClubUpdateInput(
@@ -396,9 +396,9 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
         backgroundColor: theme.fillInColor,
         title: Text(
           type == SettingType.CLUB_NAME
-              ? _appScreenText['CHANGECLUBNAME']
+              ? _appScreenText['changeClubName']
               : type == SettingType.CLUB_DESCRIPTION
-                  ? _appScreenText['CHANGEDESCRIPTION']
+                  ? _appScreenText['changeDescription']
                   : "",
           style: AppDecorators.getSubtitle3Style(theme: theme),
         ),
@@ -408,7 +408,7 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
             CardFormTextField(
               controller: _controller,
               maxLines: type == SettingType.CLUB_DESCRIPTION ? 8 : 1,
-              hintText: _appScreenText['ENTERTEXT'],
+              hintText: _appScreenText['enterText'],
               theme: theme,
             ),
             AppDimensionsNew.getVerticalSizedBox(12),
@@ -445,15 +445,15 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
 
   updateClubAPICall(ClubUpdateInput input) async {
     ConnectionDialog.show(
-        context: context, loadingText: "${_appScreenText['UPDATINGDETAILS']}");
+        context: context, loadingText: "${_appScreenText['updatingDetails']}");
     final res = await ClubsService.updateClubInput(_clubModel.clubCode, input);
 
     if (res != null && res == true) {
       Alerts.showNotification(
-          titleText: "${_appScreenText['CLUBDETAILSUPDATED']}");
+          titleText: "${_appScreenText['clubDetailsUpdated']}");
     } else {
       Alerts.showNotification(
-          titleText: "${_appScreenText['FAILEDTOUPDATECLUBDETAILS']}");
+          titleText: "${_appScreenText['failedToUpdateClubDetails']}");
     }
     await _fetchClubInfo();
     ConnectionDialog.dismiss(context: context);

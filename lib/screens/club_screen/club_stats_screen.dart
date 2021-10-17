@@ -63,12 +63,12 @@ class _ClubStatsScreenState extends State<ClubStatsScreen>
             appBar: CustomAppBar(
               theme: theme,
               context: context,
-              titleText: _appScreenText['CLUBSTATISTICS'],
+              titleText: _appScreenText['clubStats'],
               subTitleText: widget.clubCode,
             ),
             body: _clubStats == null
                 ? CircularProgressWidget(
-                    text: _appScreenText['LOADINGSTATISTICS'],
+                    text: _appScreenText['loadStats'],
                   )
                 : Column(
                     children: [
@@ -353,7 +353,7 @@ class StatsDetailForGame extends StatelessWidget {
                         children: [
                           Expanded(
                             child: Text(
-                              appScreenText['HAND'],
+                              appScreenText['hand'],
                               style:
                                   AppDecorators.getSubtitle3Style(theme: theme),
                             ),

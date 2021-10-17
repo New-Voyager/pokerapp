@@ -876,7 +876,7 @@ class _GameOptionState extends State<GameOption> {
 
     // show ReArrage
     children.add(_buildCheckBox(
-      text: _appScreenText['SHOWREARRANGE'],
+      text: _appScreenText['showRearrange'],
       value: widget.gameState.playerLocalConfig.showRearrange,
       onChange: (bool v) async {
         // setting the value saves it to local storage too

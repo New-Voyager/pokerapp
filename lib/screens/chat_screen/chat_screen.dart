@@ -63,35 +63,6 @@ class _ChatScreenState extends State<ChatScreen> with RouteAwareAnalytics {
     );
   }
 
-  // Widget _buildAppBar() {
-  //   return AppBar(
-  //     backgroundColor: chatHeaderColor,
-  //     leading: IconButton(
-  //       icon: Icon(Icons.arrow_back_ios),
-  //       onPressed: () {
-  //         Navigator.of(context).pop();
-  //       },
-  //     ),
-  //     title: Row(
-  //       children: [
-  //         CircleAvatar(
-  //           backgroundColor:
-  //               generateColorFor(widget.name != null ? widget.name : 'HOST'),
-  //           child: Text(
-  //             widget.name != null ? widget.name[0].toLowerCase() : 'H',
-  //             style: TextStyle(fontWeight: FontWeight.bold),
-  //           ),
-  //         ),
-  //         SizedBox(width: 5),
-  //         Text(
-  //           widget.name ?? 'Host',
-  //           style: TextStyle(color: Colors.white),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
-
   Widget _buildBody() {
     return Column(
       children: [

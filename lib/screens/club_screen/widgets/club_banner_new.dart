@@ -70,7 +70,7 @@ class ClubBannerViewNew extends StatelessWidget {
           textBaseline: TextBaseline.alphabetic,
           children: [
             Text(
-              appScreenText['CLUBCODE'] + ": ",
+              appScreenText['clubCode'] + ": ",
               style: AppDecorators.getSubtitle3Style(theme: theme),
             ),
             Text(
@@ -91,7 +91,7 @@ class ClubBannerViewNew extends StatelessWidget {
                   new ClipboardData(text: clubModel.clubCode),
                 );
                 Alerts.showNotification(
-                  titleText: appScreenText['CLUBCODECOPIEDTOCLIPBOARD'],
+                  titleText: appScreenText['codeCopiedToClipboard'],
                 );
               },
             ),
