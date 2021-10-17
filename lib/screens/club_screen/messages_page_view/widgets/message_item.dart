@@ -16,8 +16,8 @@ import 'package:pokerapp/screens/chat_screen/widgets/chat_user_avatar.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_winners_view2.dart';
 import 'package:pokerapp/screens/util_screens/replay_hand_dialog/replay_hand_dialog.dart';
 import 'package:pokerapp/widgets/attributed_gif_widget.dart';
-import 'package:pokerapp/widgets/round_color_button.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
+import 'package:pokerapp/widgets/buttons.dart';
 
 import '../../../chat_screen/widgets/triangle_painter.dart';
 import '../club_chat_model.dart';
@@ -240,7 +240,7 @@ class MessageItem extends StatelessWidget {
                 ),
                 Row(
                   children: [
-                    RoundIconButton(
+                    CircleImageButton(
                       onTap: () {
                         Navigator.of(context)
                             .pushNamed(Routes.hand_log_view, arguments: {
@@ -250,13 +250,11 @@ class MessageItem extends StatelessWidget {
                         });
                       },
                       icon: Icons.format_align_justify_rounded,
-                      bgColor: theme.accentColor,
-                      iconColor: theme.primaryColorWithDark(),
+                      theme: theme,
                     ),
                     SizedBox(width: 5),
-                    RoundIconButton(
-                      bgColor: theme.accentColor,
-                      iconColor: theme.primaryColorWithDark(),
+                    CircleImageButton(
+                      theme: theme,
                       icon: Icons.replay,
                       onTap: () {
                         ReplayHandDialog.show(

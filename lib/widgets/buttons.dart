@@ -3,15 +3,18 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
+import 'blinking_widget.dart';
+
 class RoundRectButton extends StatelessWidget {
   RoundRectButton({
     @required this.text,
     @required this.onTap,
     @required this.theme,
     this.fontSize,
-    this.border,
+    this.border = false,
     this.split = false,
     this.adaptive = true,
+    this.icon,
   });
 
   final bool adaptive;
@@ -21,6 +24,7 @@ class RoundRectButton extends StatelessWidget {
   final bool split;
   final double fontSize;
   final bool border;
+  final Icon icon;
 
   Widget build(BuildContext context) {
     return InkWell(
@@ -37,9 +41,16 @@ class RoundRectButton extends StatelessWidget {
               color: theme.roundedButtonBorderColor, width: border ? 1.pw : 0),
           color: theme.roundedButtonBackgroundColor,
         ),
-        child: Wrap(
-          crossAxisAlignment: WrapCrossAlignment.center,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
+            Visibility(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: icon,
+              ),
+              visible: icon != null,
+            ),
             Text(
               split ? text?.replaceFirst(" ", "\n") ?? 'Text' : text ?? 'Text',
               textAlign: TextAlign.center,
@@ -99,11 +110,13 @@ class RoundRectButton2 extends StatelessWidget {
 
 class CircleImageButton extends StatelessWidget {
   CircleImageButton({
-    @required this.onTap,
+    this.onTap,
     @required this.theme,
     this.asset,
     this.svgAsset,
     this.icon,
+    this.caption,
+    this.disabled = false,
     this.split = false,
     this.adaptive = true,
   });
@@ -112,8 +125,10 @@ class CircleImageButton extends StatelessWidget {
   final String svgAsset;
   final String asset;
   final IconData icon;
+  final String caption;
   final AppTheme theme;
   final Function onTap;
+  final bool disabled;
   final bool split;
 
   Widget build(BuildContext context) {
@@ -136,17 +151,89 @@ class CircleImageButton extends StatelessWidget {
     return InkWell(
       onTap: this.onTap,
       borderRadius: BorderRadius.circular(20),
-      child: Container(
-        width: 40.0,
-        height: 40.0,
-        padding: const EdgeInsets.all(6),
-        decoration: BoxDecoration(
-          color: theme.circleImageButtonBackgroundColor,
-          border:
-              Border.all(color: theme.circleImageButtonBorderColor, width: 2.0),
-          borderRadius: BorderRadius.circular(20.0),
-        ),
-        child: Center(child: image),
+      child: Column(
+        children: [
+          Container(
+            width: 40.0,
+            height: 40.0,
+            padding: const EdgeInsets.all(6),
+            decoration: BoxDecoration(
+              color: theme.circleImageButtonBackgroundColor,
+              border: Border.all(
+                  color: theme.circleImageButtonBorderColor, width: 2.0),
+              borderRadius: BorderRadius.circular(20.0),
+            ),
+            child: Center(child: image),
+          ),
+          (caption != null)
+              ? Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: Text(
+                    caption,
+                    style: theme.circleImageButtonTextStyle,
+                  ),
+                )
+              : Container(),
+        ],
+      ),
+    );
+  }
+}
+
+class RotateImagesButton extends StatelessWidget {
+  RotateImagesButton({
+    @required this.onTap,
+    @required this.theme,
+    @required this.svgImages,
+    this.split = false,
+    this.adaptive = true,
+  });
+
+  final bool adaptive;
+  final List<String> svgImages;
+  final AppTheme theme;
+  final Function onTap;
+  final bool split;
+
+  Widget build(BuildContext context) {
+    List<Widget> svgWidget;
+
+    svgImages.forEach((element) {
+      svgWidget.add(SvgPicture.asset(element,
+          width: 16, height: 16, color: theme.primaryColorWithDark()));
+    });
+
+    Widget blinkWidget = BlinkWidget(
+      children: [
+        SvgPicture.asset('assets/images/game/mic-step2.svg',
+            width: 16, height: 16, color: theme.primaryColorWithDark()),
+        SvgPicture.asset('assets/images/game/mic-step3.svg',
+            width: 16, height: 16, color: theme.primaryColorWithDark()),
+        SvgPicture.asset('assets/images/game/mic-step2.svg',
+            width: 16, height: 16, color: theme.primaryColorWithDark()),
+        SvgPicture.asset('assets/images/game/mic-step1.svg',
+            width: 16, height: 16, color: theme.primaryColorWithDark()),
+      ],
+    );
+
+    return InkWell(
+      onTap: this.onTap,
+      borderRadius: BorderRadius.circular(20),
+      child: Column(
+        children: [
+          Container(
+            width: 40.0,
+            height: 40.0,
+            padding: const EdgeInsets.all(6),
+            decoration: BoxDecoration(
+              color: theme.circleImageButtonBackgroundColor,
+              border: Border.all(
+                  color: theme.circleImageButtonBorderColor, width: 2.0),
+              borderRadius: BorderRadius.circular(20.0),
+            ),
+            child: Center(child: blinkWidget),
+          ),
+        ],
       ),
     );
   }

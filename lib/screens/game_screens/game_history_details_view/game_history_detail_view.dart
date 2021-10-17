@@ -18,7 +18,7 @@ import 'package:pokerapp/screens/game_screens/widgets/highhand_widget.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/formatter.dart';
-import 'package:pokerapp/widgets/round_color_button.dart';
+import 'package:pokerapp/widgets/buttons.dart';
 import 'package:provider/provider.dart';
 
 import '../../../main.dart';
@@ -302,12 +302,9 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: RoundIconButton(
+                    child: CircleImageButton(
                       icon: Icons.query_stats_sharp,
-                      bgColor: Colors.black,
-                      size: 24.pw,
-                      iconColor: theme.secondaryColor,
-                      borderColor: theme.secondaryColor,
+                      theme: theme,
                       onTap: () {
                         openHandStatistics();
                       },
@@ -383,13 +380,9 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: RoundIconButton(
+                child: CircleImageButton(
                   icon: Icons.query_stats_sharp,
-                  bgColor: Colors.black,
-                  size: 24.pw,
-                  iconColor: theme.secondaryColor,
-                  borderColor: theme.secondaryColor,
-
+                  theme: theme,
                   onTap: () {
                     openStackDetails();
                   },

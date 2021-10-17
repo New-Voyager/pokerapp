@@ -11,7 +11,7 @@ import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/services/app/club_interior_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
-import 'package:pokerapp/widgets/round_color_button.dart';
+import 'package:pokerapp/widgets/buttons.dart';
 import 'package:provider/provider.dart';
 
 class ClubMembersListView extends StatefulWidget {
@@ -236,12 +236,9 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: <Widget>[
-                          RoundIconButton(
+                          CircleImageButton(
                             icon: Icons.done,
-                            bgColor: Colors.black,
-                            iconColor: theme.secondaryColor,
-                            borderColor: theme.accentColor,
-                            size: 32.pw,
+                            theme: theme,
                             onTap: () async {
                               log('approve is clicked');
                               var data =
@@ -256,12 +253,9 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
                           SizedBox(
                             width: 10.pw,
                           ),
-                          RoundIconButton(
+                          CircleImageButton(
                             icon: Icons.close,
-                            bgColor: Colors.black,
-                            iconColor: Colors.red,
-                            borderColor: theme.accentColor,
-                            size: 32.pw,
+                            theme: theme,
                             onTap: () async {
                               log('deny is clicked');
                               var data =

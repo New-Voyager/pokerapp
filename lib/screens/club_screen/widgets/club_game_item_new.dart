@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game_model.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/routes.dart';
-import 'package:pokerapp/widgets/round_color_button.dart';
+import 'package:pokerapp/widgets/buttons.dart';
 
 class ClubGameItemNew extends StatelessWidget {
   final GameModel _clubGameModel;
@@ -15,6 +16,7 @@ class ClubGameItemNew extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = AppTheme.getTheme(context);
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       decoration: AppStylesNew.actionRowDecoration,
@@ -124,12 +126,11 @@ class ClubGameItemNew extends StatelessWidget {
           ),
           Expanded(
             flex: 2,
-            child: RoundedColorButton(
-              backgroundColor: AppColorsNew.yellowAccentColor,
-              textColor: AppColorsNew.darkGreenShadeColor,
+            child: CircleImageButton(
               // fontSize: _clubGameModel.waitList != 0 ? 8 : 6,
-              text: _clubGameModel.waitList == 0 ? "Join" : "Join Waitlist",
-              onTapFunction: () => navigatorKey.currentState.pushNamed(
+              theme: theme,
+              caption: _clubGameModel.waitList == 0 ? "Join" : "Join Waitlist",
+              onTap: () => navigatorKey.currentState.pushNamed(
                 Routes.game_play,
                 arguments: clubGameModel.gameCode,
               ),

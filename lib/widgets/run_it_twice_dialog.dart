@@ -8,10 +8,11 @@ import 'package:pokerapp/services/game_play/action_services/hand_action_proto_se
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/widgets/general_dialog_widget.dart';
-import 'package:pokerapp/widgets/round_color_button.dart';
 import 'package:provider/provider.dart';
 import 'package:timer_count_down/timer_count_down.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
+
+import 'buttons.dart';
 
 /* this dialog handles the timer, as well as the messages sent to the server, when on tapped / on dismissed */
 class RunItTwiceDialog {
@@ -78,17 +79,15 @@ class RunItTwiceDialog {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           /* no button */
-                          RoundedColorButton(
-                            onTapFunction: () {
+                          RoundRectButton(
+                            onTap: () {
                               Navigator.pop(
                                 context,
                                 false,
                               );
                             },
                             text: "No",
-                            backgroundColor: Colors.transparent,
-                            borderColor: theme.secondaryColor,
-                            textColor: theme.accentColor,
+                            theme: theme,
                             icon: Icon(
                               Icons.cancel,
                               color: theme.accentColor,
@@ -99,17 +98,15 @@ class RunItTwiceDialog {
                           const SizedBox(width: 10.0),
 
                           /* true button */
-                          RoundedColorButton(
-                            onTapFunction: () {
+                          RoundRectButton(
+                            onTap: () {
                               Navigator.pop(
                                 context,
                                 true,
                               );
                             },
                             text: "Yes",
-                            backgroundColor: Colors.transparent,
-                            borderColor: theme.secondaryColor,
-                            textColor: theme.accentColor,
+                            theme: theme,
                             icon: Icon(
                               Icons.check,
                               color: theme.accentColor,
