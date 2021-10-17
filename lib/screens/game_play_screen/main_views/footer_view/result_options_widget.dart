@@ -333,8 +333,7 @@ class ResultOptionsWidget extends StatelessWidget {
             _onShareButtonTap(context, rs);
           },
           text: "Share",
-          backgroundColor: theme.accentColor,
-          textColor: theme.primaryColorWithDark(),
+          theme: theme,
           icon: Icon(
             Icons.share_rounded,
             color: theme.primaryColorWithDark(),
