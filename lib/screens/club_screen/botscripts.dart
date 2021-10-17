@@ -55,7 +55,7 @@ class _BotScriptsScreenState extends State<BotScriptsScreen>
         await http.get(Uri.parse("http://$botRunnerHost:8081/app-games"));
     log("URL : ${result.request.url}");
     if (result.statusCode != 200) {
-      toast("${_appScreenText['FAILEDTOGETRESULT']} : ${result.reasonPhrase}");
+      toast("${_appScreenText['failedToGetResult']} : ${result.reasonPhrase}");
     } else {
       log("RESULTS : ${jsonDecode(result.body)}");
       scripts = ScriptsModel.fromJson(jsonDecode(result.body));
@@ -97,7 +97,7 @@ class _BotScriptsScreenState extends State<BotScriptsScreen>
 
   _handlePlay(Script script, BuildContext context) async {
     ConnectionDialog.show(
-        context: context, loadingText: "${_appScreenText['LAUNCHINGGAME']}");
+        context: context, loadingText: "${_appScreenText['launchingGame']}");
     await launchScript(script);
   }
 
@@ -119,7 +119,7 @@ class _BotScriptsScreenState extends State<BotScriptsScreen>
       headers: {HttpHeaders.contentTypeHeader: "application/json"},
     );
     if (result.statusCode != 200) {
-      toast("${_appScreenText['FAILEDTOSTART']}");
+      toast("${_appScreenText['failedToStart']}");
     } else if (jsonDecode(result.body)['status'] == "Accepted") {
       await handleLoop(context);
     }
@@ -163,8 +163,8 @@ class _BotScriptsScreenState extends State<BotScriptsScreen>
         arguments: args,
       );
     } else {
-      showAlertDialog(context, "${_appScreenText['TIMEOUT']}",
-          "${_appScreenText['FAILEDTOSTARTGAME']}");
+      showAlertDialog(context, "${_appScreenText['timeout']}",
+          "${_appScreenText['failedToStartGame']}");
     }
   }
 
@@ -174,7 +174,7 @@ class _BotScriptsScreenState extends State<BotScriptsScreen>
         child: Scaffold(
       backgroundColor: AppColorsNew.screenBackgroundColor,
       appBar: AppBar(
-        title: Text("${_appScreenText['BOTSCRIPTS']}",
+        title: Text("${_appScreenText['botScripts']}",
             style: AppStylesNew.titleBarTextStyle),
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios),

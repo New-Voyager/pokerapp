@@ -104,16 +104,16 @@ class _ClubMembersViewState extends State<ClubMembersView>
                             isScrollable: true,
                             tabs: [
                               Tab(
-                                text: _appScreenText['ALL'],
+                                text: _appScreenText['all'],
                               ),
                               // Tab(
                               //   text: 'Unsettled',
                               // ),
                               Tab(
-                                text: _appScreenText['MANAGERS'],
+                                text: _appScreenText['managers'],
                               ),
                               Tab(
-                                text: _appScreenText['INACTIVE'],
+                                text: _appScreenText['inactive'],
                               ),
                             ],
                           ),

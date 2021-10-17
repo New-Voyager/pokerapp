@@ -57,11 +57,11 @@ class _CreateClubBottomSheetState extends State<CreateClubBottomSheet> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      _appScreenText['CREATECLUB'],
+                      _appScreenText['createClub'],
                       style: AppDecorators.getHeadLine3Style(theme: theme),
                     ),
                     RoundRectButton(
-                      text: _appScreenText['CREATE'],
+                      text: _appScreenText['create'],
                       onTap: () {
                         if (!_formKey.currentState.validate()) return;
                         _formKey.currentState.save();
@@ -101,7 +101,7 @@ class _CreateClubBottomSheetState extends State<CreateClubBottomSheet> {
                             elevation: 0.0,
                             hintText: _appScreenText['nameHint'],
                             validator: (String val) => val.trim().isEmpty
-                                ? _appScreenText['YOUMUSSTPROVIDEANAME']
+                                ? _appScreenText['provideClubName']
                                 : null,
                             onSaved: (String val) =>
                                 clubDetails['name'] = val.trim(),
@@ -119,7 +119,7 @@ class _CreateClubBottomSheetState extends State<CreateClubBottomSheet> {
                             elevation: 0.0,
                             hintText: _appScreenText['descriptionHint'],
                             validator: (String val) => val.trim().isEmpty
-                                ? _appScreenText['YOUMUSTPROVIDEDESCRIPTION']
+                                ? _appScreenText['provideDescription']
                                 : null,
                             maxLines: 5,
                             onSaved: (String val) =>

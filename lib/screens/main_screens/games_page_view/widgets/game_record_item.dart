@@ -86,14 +86,6 @@ class GameRecordItem extends StatelessWidget {
                         style: AppStylesNew.gameIdTextStyle,
                       ),
                       AppDimensionsNew.getVerticalSizedBox(2.ph),
-                      // Text(
-                      //   GameModelNew.getSeatsAvailble(game) > 0
-                      //       ? "${game.maxPlayers} ${AppStringsNew.OpenSeats}"
-                      //       : game.waitlistCount > 0
-                      //           ? "${AppStringsNew.TableFull} (${game.waitlistCount} ${AppStringsNew.Waiting})"
-                      //           : "${AppStringsNew.TableFull}",
-                      //   style: AppStylesNew.openSeatsTextStyle,
-                      // ),
                       AppDimensionsNew.getVerticalSizedBox(8.ph),
                       Text(
                         "${DataFormatter.getTimeInHHMMFormat(game.runTime)}",

@@ -71,7 +71,7 @@ class _AnnouncementsViewState extends State<AnnouncementsView> {
                             child: Column(
                               children: [
                                 Text(
-                                  _appScreenText['ANNOUNCEMENTS'],
+                                  _appScreenText['announcements'],
                                   style: AppDecorators.getAccentTextStyle(
                                       theme: theme),
                                 ),
@@ -102,7 +102,7 @@ class _AnnouncementsViewState extends State<AnnouncementsView> {
                           : _listOfAnnounce.isEmpty
                               ? Center(
                                   child: Text(
-                                    _appScreenText['NOANNOUCEMENTS'],
+                                    _appScreenText['noAnnouncements'],
                                     style: AppDecorators.getCenterTextTextstyle(
                                         appTheme: theme),
                                   ),
@@ -203,7 +203,7 @@ class _AnnouncementsViewState extends State<AnnouncementsView> {
               ),
               AppDimensionsNew.getHorizontalSpace(8),
               Text(
-                _appScreenText['NEWANNOUCEMENTS'],
+                _appScreenText['newAnnouncements'],
                 style: AppDecorators.getSubtitle3Style(theme: theme),
               )
             ],
@@ -212,7 +212,7 @@ class _AnnouncementsViewState extends State<AnnouncementsView> {
               child: Column(
             children: [
               CardFormTextField(
-                  hintText: _appScreenText['ENTERTEXTHERE'],
+                  hintText: _appScreenText['enterTextHere'],
                   controller: _controller,
                   maxLines: 8,
                   theme: theme),
@@ -221,15 +221,17 @@ class _AnnouncementsViewState extends State<AnnouncementsView> {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   RoundedColorButton(
-                    text: _appScreenText['CANCEL'],
+                    text: _appScreenText['cancel'],
                     textColor: theme.secondaryColor,
                     backgroundColor: Colors.transparent,
                     borderColor: theme.secondaryColor,
                     onTapFunction: () => Navigator.of(context).pop(),
                   ),
                   RoundRectButton(
-                    text: _appScreenText['ANNOUNCE'],
-                    onTap: () => Navigator.of(context).pop(_controller.text),
+                    text: _appScreenText['announce'],
+                    onTap: () {
+                       Navigator.of(context).pop(_controller.text);
+                    },
                     theme: theme,
                   ),
                 ],
@@ -252,7 +254,7 @@ class _AnnouncementsViewState extends State<AnnouncementsView> {
       );
       if (result.toString().isNotEmpty) {
         Alerts.showNotification(
-            titleText: _appScreenText['NEWANNOUCEMENTISPOSTED'],
+            titleText: _appScreenText['announcementPosted'],
             duration: Duration(seconds: 5));
         setState(() {
           loading = true;
@@ -260,7 +262,7 @@ class _AnnouncementsViewState extends State<AnnouncementsView> {
         await _fetchAnnouncements();
       } else {
         Alerts.showNotification(
-            titleText: _appScreenText['FAILEDTOPOSTANNOUNCEMENT'],
+            titleText: _appScreenText['failedToAnnounce'],
             duration: Duration(seconds: 5));
       }
     }

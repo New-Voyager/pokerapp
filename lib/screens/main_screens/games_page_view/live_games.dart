@@ -28,7 +28,6 @@ import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:pokerapp/widgets/heading_widget.dart';
-import 'package:pokerapp/widgets/round_color_button.dart';
 import 'package:provider/provider.dart';
 
 class LiveGamesScreen extends StatefulWidget {
@@ -207,7 +206,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
 
   _loadTestLiveGames() async {
     ConnectionDialog.show(
-        context: context, loadingText: _appScreenText['GETTINGGAMES']);
+        context: context, loadingText: _appScreenText['gettingGames']);
     var data = await DefaultAssetBundle.of(context)
         .loadString("assets/sample-data/livegames.json");
     // log(data);
@@ -257,7 +256,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
         actionsPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         backgroundColor: appTheme.fillInColor,
         title: Text(
-          _appScreenText['GAMECODE'],
+          _appScreenText['gameCode'],
           style: AppDecorators.getSubtitle2Style(theme: appTheme),
         ),
         content: Column(
@@ -265,7 +264,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
           children: [
             CardFormTextField(
               theme: appTheme,
-              hintText: _appScreenText['ENTERGAMECODE'],
+              hintText: _appScreenText['enterGameCode'],
               onChanged: (val) {
                 //log("VALUE : $val");
                 gameCode = val;
@@ -276,10 +275,10 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
         ),
         actions: [
           RoundRectButton(
-            text: _appScreenText['JOIN'],
+            text: _appScreenText['join'],
             onTap: () async {
               if (gameCode.isEmpty) {
-                toast(_appScreenText['GAMECODECANTBEEMPTY']);
+                toast(_appScreenText['emptyGameCode']);
                 return;
               }
 
@@ -295,7 +294,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
       // Check game exists or not
       final gameInfo = await GameService.getGameInfo(gameCode);
       if (gameInfo == null) {
-        Alerts.showNotification(titleText: _appScreenText['GAMENOTFOUND']);
+        Alerts.showNotification(titleText: _appScreenText['gameNotFound']);
       } else {
         Navigator.of(context).pushNamed(Routes.game_play, arguments: result);
       }
@@ -351,12 +350,12 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                           await hostGame();
                           _initTimer();
                         },
-                        text: _appScreenText["HOST"],
+                        text: _appScreenText["host"],
                         theme: appTheme,
                       ),
                       Expanded(
                           child: HeadingWidget(
-                              heading: _appScreenText['POKERCLUBAPP'])),
+                              heading: _appScreenText['appName'])),
                       RoundRectButton(
                         onTap: () async {
                           _disposeTimer();
@@ -364,7 +363,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                           _initTimer();
                         },
                         theme: appTheme,
-                        text: _appScreenText['JOIN'],
+                        text: _appScreenText['join'],
                       ),
                     ],
                   ),
@@ -387,7 +386,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                           ),
                           AppDimensionsNew.getHorizontalSpace(8),
                           Text(
-                            _appScreenText['LIVEGAMES'],
+                            _appScreenText['liveGames'],
                           ),
                         ],
                       ),
@@ -407,7 +406,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                           ),
                           AppDimensionsNew.getHorizontalSpace(8),
                           Text(
-                            _appScreenText['GAMERECORD'],
+                            _appScreenText['gameRecord'],
                           )
                         ],
                       ),
@@ -435,7 +434,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                               : liveGames.isEmpty
                                   ? Center(
                                       child: Text(
-                                        _appScreenText['NOLIVEGAMES'],
+                                        _appScreenText['noLiveGames'],
                                         style: AppDecorators.getAccentTextStyle(
                                             theme: appTheme),
                                       ),
@@ -492,7 +491,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
     return playedGames.isEmpty
         ? Center(
             child: Text(
-              _appScreenText['NOGAMES'],
+              _appScreenText['noGames'],
               style: AppDecorators.getAccentTextStyle(theme: appTheme),
             ),
           )

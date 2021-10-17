@@ -18,7 +18,6 @@ import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
-import 'package:pokerapp/widgets/round_color_button.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
 
@@ -97,7 +96,8 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew>
                               // if the player does not have enough coins
                               // don't host the game
                               if (AppConfig.availableCoins < 10) {
-                                showErrorDialog(context, 'Error', 'Not enough coins to host a game');
+                                showErrorDialog(context, 'Error',
+                                    'Not enough coins to host a game');
                                 return;
                               }
 

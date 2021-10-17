@@ -42,7 +42,7 @@ class _ClubMembersState extends State<ClubMembers> with RouteAwareAnalytics {
           appBar: CustomAppBar(
             theme: theme,
             context: context,
-            titleText: _appScreenText['MESSAGES'],
+            titleText: _appScreenText['messages'],
           ),
           floatingActionButton: FloatingActionButton(
             backgroundColor: theme.accentColor,

@@ -29,7 +29,7 @@ class GameHistoryItemNew extends StatelessWidget {
           Expanded(
             flex: 2,
             child: Text(
-              _appScreenText['CLUB'],
+              _appScreenText['club'],
               style: AppDecorators.getSubtitle1Style(theme: theme),
             ),
           ),
@@ -97,7 +97,7 @@ class GameHistoryItemNew extends StatelessWidget {
                               Expanded(
                                 flex: 2,
                                 child: Text(
-                                  _appScreenText['HOSTEDBY'],
+                                  _appScreenText['hostedBy'],
                                   style: AppDecorators.getSubtitle1Style(
                                       theme: theme),
                                 ),
@@ -117,7 +117,7 @@ class GameHistoryItemNew extends StatelessWidget {
                               Expanded(
                                   flex: 2,
                                   child: Text(
-                                    "${_appScreenText['STARTEDAT']}",
+                                    "${_appScreenText['startedAt']}",
                                     style: AppDecorators.getSubtitle1Style(
                                         theme: theme),
                                   )),
@@ -135,7 +135,7 @@ class GameHistoryItemNew extends StatelessWidget {
                               Expanded(
                                 flex: 2,
                                 child: Text(
-                                  "${_appScreenText['RUNNINGTIME']}",
+                                  "${_appScreenText['runningTime']}",
                                   style: AppDecorators.getSubtitle1Style(
                                       theme: theme),
                                 ),
@@ -155,7 +155,7 @@ class GameHistoryItemNew extends StatelessWidget {
                               Expanded(
                                   flex: 2,
                                   child: Text(
-                                    "${_appScreenText['SESSIONTIME']}",
+                                    "${_appScreenText['sessionTime']}",
                                     style: AppDecorators.getSubtitle1Style(
                                         theme: theme),
                                   )),

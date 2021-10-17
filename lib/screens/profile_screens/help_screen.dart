@@ -30,7 +30,7 @@ class HelpScreen extends StatelessWidget {
               appBar: CustomAppBar(
                 theme: theme,
                 context: context,
-                titleText: _appScreenText['APPNAME'],
+                titleText: _appScreenText['appName'],
                 subTitleText: version,
               ),
               body: SingleChildScrollView(
@@ -89,7 +89,7 @@ class HelpScreen extends StatelessWidget {
                           ),
                           ListTile(
                             title: Text(
-                              _appScreenText['PRIVACYPOLICY'],
+                              _appScreenText['policy'],
                               style:
                                   AppDecorators.getHeadLine4Style(theme: theme),
                             ),
@@ -108,7 +108,7 @@ class HelpScreen extends StatelessWidget {
                               color: theme.secondaryColor,
                             ),
                             title: Text(
-                              _appScreenText['TOC'],
+                              _appScreenText['toc'],
                               style:
                                   AppDecorators.getHeadLine4Style(theme: theme),
                             ),
@@ -124,7 +124,7 @@ class HelpScreen extends StatelessWidget {
                               color: theme.secondaryColor,
                             ),
                             title: Text(
-                              _appScreenText['ATTRIBUTIONS'],
+                              _appScreenText['attributions'],
                               style:
                                   AppDecorators.getHeadLine4Style(theme: theme),
                             ),

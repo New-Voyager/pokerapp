@@ -91,9 +91,9 @@ class _SearchClubBottomSheetState extends State<SearchClubBottomSheet> {
                                 theme: theme,
                                 elevation: 0.0,
                                 radius: 7,
-                                hintText: _appScreenText['ENTERCLUBCODE'],
+                                hintText: _appScreenText['enterClubCode'],
                                 validator: (String val) => val.trim().isEmpty
-                                    ? _appScreenText['YOUMUSTPROVIDEACLUBCODE']
+                                    ? _appScreenText['provideClubCode']
                                     : null,
                                 onSaved: (String val) =>
                                     searchClubCode = val.trim(),
@@ -160,7 +160,7 @@ class _SearchClubBottomSheetState extends State<SearchClubBottomSheet> {
                                 ),
                                 child: searchClub == null
                                     ? Text(
-                                        "${_appScreenText['NOCLUBSFOUNDFORTHECODE']} '$searchClubCode' ",
+                                        "${_appScreenText['noClubsFound']} '$searchClubCode' ",
                                         style: AppDecorators.getHeadLine4Style(
                                             theme: theme),
                                       )
@@ -169,21 +169,21 @@ class _SearchClubBottomSheetState extends State<SearchClubBottomSheet> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            "${_appScreenText['ACLUBISFOUND']}",
+                                            "${_appScreenText['clubFound']}",
                                             style:
                                                 AppDecorators.getSubtitle3Style(
                                                     theme: theme),
                                           ),
                                           separator10,
                                           Text(
-                                            "${_appScreenText['NAME']}: ${searchClub.name}",
+                                            "${_appScreenText['name']}: ${searchClub.name}",
                                             style:
                                                 AppDecorators.getHeadLine4Style(
                                                     theme: theme),
                                           ),
                                           separator10,
                                           Text(
-                                            "${_appScreenText['HOST']}: ${searchClub.ownerName}",
+                                            "${_appScreenText['host']}: ${searchClub.ownerName}",
                                             style:
                                                 AppDecorators.getHeadLine4Style(
                                                     theme: theme),
@@ -192,7 +192,7 @@ class _SearchClubBottomSheetState extends State<SearchClubBottomSheet> {
                                           Center(
                                             child: RoundRectButton(
                                               onTap: () => onJoin(context),
-                                              text: "${_appScreenText['JOIN']}",
+                                              text: "${_appScreenText['join']}",
                                               theme: theme,
                                             ),
                                           ),

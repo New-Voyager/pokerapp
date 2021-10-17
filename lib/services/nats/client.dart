@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -50,7 +51,7 @@ class Client {
   Socket _socket;
   Info _info;
   Completer _pingCompleter;
-  Completer _connectCompleter;
+  Function onDisconnect;
 
   ///status of the client
   var status = Status.disconnected;
@@ -66,13 +67,12 @@ class Client {
   int _ssid = 0;
 
   /// Connect to NATS server
-  Future connect(String host,
+  Future<bool> connect(String host,
       {int port = 4222,
       ConnectOption connectOption,
       int timeout = 5,
-      bool retry = true,
+      bool retry = false,
       int retryInterval = 10}) async {
-    _connectCompleter = Completer();
     if (status != Status.disconnected && status != Status.closed) {
       return Future.error('Error: status not disconnected and not closed');
     }
@@ -81,48 +81,41 @@ class Client {
 
     if (connectOption != null) _connectOption = connectOption;
 
-    void loop() async {
-      for (var i = 0; i == 0 || retry; i++) {
-        if (i == 0) {
-          status = Status.connecting;
-        } else {
-          status = Status.reconnecting;
-          await Future.delayed(Duration(seconds: retryInterval));
+    try {
+      status = Status.disconnected;
+      _socket = await Socket.connect(_host, _port,
+          timeout: Duration(seconds: timeout));
+      status = Status.connected;
+      log('dartnats: Connected');
+      _addConnectOption(_connectOption);
+      _backendSubscriptAll();
+      _flushPubBuffer();
+
+      _buffer = [];
+      _socket.listen((d) {
+        _buffer.addAll(d);
+        while (_receiveState == _ReceiveState.idle && _buffer.contains(13)) {
+          _processOp();
         }
-
-        try {
-          _socket = await Socket.connect(_host, _port,
-              timeout: Duration(seconds: timeout));
-          status = Status.connected;
-          _connectCompleter.complete();
-
-          _addConnectOption(_connectOption);
-          _backendSubscriptAll();
-          _flushPubBuffer();
-
-          _buffer = [];
-          _socket.listen((d) {
-            _buffer.addAll(d);
-            while (
-                _receiveState == _ReceiveState.idle && _buffer.contains(13)) {
-              _processOp();
-            }
-          }, onDone: () {
-            status = Status.disconnected;
-            _socket.close();
-          }, onError: (err) {
-            status = Status.disconnected;
-            _socket.close();
+      }, onDone: () {
+        log('dartnats: onDone loop disconnected');
+        status = Status.disconnected;
+        _socket.close();
+        if (onDisconnect != null) {
+          Future.delayed(Duration(milliseconds: 100), () {
+            onDisconnect();
           });
-          return;
-        } catch (err) {
-          close();
         }
-      }
+      }, onError: (err) {
+        log('dartnats: onError loop disconnected');
+        status = Status.disconnected;
+        _socket.close();
+      });
+      return true;
+    } catch (err) {
+      close();
     }
-
-    loop();
-    return _connectCompleter.future;
+    return false;
   }
 
   void _backendSubscriptAll() {

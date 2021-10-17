@@ -3,6 +3,8 @@ import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:pokerapp/exceptions/exceptions.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/club_model.dart';
 import 'package:pokerapp/models/club_update_input_model.dart';
@@ -19,6 +21,7 @@ import 'package:pokerapp/services/app/clubs_service.dart';
 import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/widgets/buttons.dart';
+import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:pokerapp/widgets/heading_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -57,87 +60,6 @@ class _ClubsPageViewState extends State<ClubsPageView>
     Alerts.showSnackBar(ctx, 'Could not delete');
   }
 
-  // void _editClub(ClubModel club, BuildContext ctx) async {
-  //   /* the bottom sheet returns
-  //   * 'name'
-  //   * 'description'
-  //   * keys, which are used by the API to create a new club */
-
-  //   Map<String, String> clubDetails = await showModalBottomSheet(
-  //     context: context,
-  //     isScrollControlled: true,
-  //     builder: (ctx) => CreateClubBottomSheet(
-  //       name: club.clubName,
-  //       description: club.,
-  //     ),
-  //   );
-
-  //   if (clubDetails == null) return;
-
-  //   // these are the new club name and description
-  //   String clubName = clubDetails['name'];
-  //   String clubDescription = clubDetails['description'];
-
-  //   // update the club with new details
-  //   bool status = await ClubsService.updateClubInput(
-  //     club.clubCode,
-  //     ClubUpdateInput(
-  //       name: clubName,
-  //       description:clubDescription,
-
-  //     ),
-  //     clubName,
-  //     clubDescription,
-  //   );
-
-  //   if (status) {
-  //     Alerts.showSnackBar(ctx, _appScreenText['UPADATESUCCESSFUL']);
-  //     return _fetchClubs();
-  //   }
-
-  //   return Alerts.showSnackBar(ctx, _appScreenText['COULDNOTUPDATE']);
-  // }
-
-  // void _showClubOptions(
-  //     ClubModel club, BuildContext ctx, AppTheme theme) async {
-  //   showDialog(
-  //     context: context,
-  //     builder: (context) => Dialog(
-  //       child: Container(
-  //         padding: EdgeInsets.all(15.0),
-  //         color: theme.fillInColor,
-  //         width: MediaQuery.of(context).size.width * 0.60,
-  //         child: Column(
-  //           crossAxisAlignment: CrossAxisAlignment.stretch,
-  //           mainAxisSize: MainAxisSize.min,
-  //           children: [
-  //             /* delete club  */
-  //             RoundRaisedButton(
-  //               radius: 5.0,
-  //               color: theme.accentColor,
-  //               buttonText: _appScreenText['DELETECLUB'],
-  //               onButtonTap: () {
-  //                 Navigator.pop(context);
-  //                 _deleteClub(club, ctx);
-  //               },
-  //             ),
-  //             SizedBox(height: 10.0),
-  //             RoundRaisedButton(
-  //               radius: 5.0,
-  //               color: theme.accentColor,
-  //               buttonText: _appScreenText['EDITCLUB'],
-  //               onButtonTap: () {
-  //                 Navigator.pop(context);
-  //                 _editClub(club, ctx);
-  //               },
-  //             ),
-  //           ],
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
-
   void _createClub(BuildContext ctx) async {
     /* show a bottom sheet asking for club information */
 
@@ -157,27 +79,34 @@ class _ClubsPageViewState extends State<ClubsPageView>
     String clubName = clubDetails['name'];
     String clubDescription = clubDetails['description'];
 
-    _toggleLoading();
-
     /* create a club using the clubDetails */
-    String clubCode = await ClubsService.createClub(
-      clubName,
-      clubDescription,
-    );
-
+    String clubCode;
+    try {
+      clubCode = await ClubsService.createClub(
+        clubName,
+        clubDescription,
+      );
+    } on GQLException catch (e) {
+      await showErrorDialog(context, 'Error', gqlErrorText(e));
+      return;
+    } catch (e) {
+      await showErrorDialog(context, 'Error', errorText('GENERIC'));
+      return;
+    } finally {}
     _toggleLoading();
-
     /* finally, show a status message and fetch all the clubs (if required) */
     if (clubCode != null) {
       Alerts.showNotification(
-          titleText: _appScreenText['CLUB'],
-          subTitleText: '${_appScreenText['CREATEDCLUB']}: $clubName',
+          titleText: _appScreenText['club'],
+          subTitleText: '${_appScreenText['createdClub']}: $clubName',
           duration: Duration(seconds: 2));
       final natsClient = Provider.of<Nats>(context, listen: false);
       natsClient.subscribeClubMessages(clubCode);
       _fetchClubs();
-    } else
-      Alerts.showSnackBar(ctx, _appScreenText['SOMETHINGWENTWRONG']);
+    } else {
+      Alerts.showSnackBar(ctx, _appScreenText['unknownError']);
+    }
+    _toggleLoading();
   }
 
   Future<void> _fillClubs() async {
@@ -260,6 +189,9 @@ class _ClubsPageViewState extends State<ClubsPageView>
 
   @override
   Widget build(BuildContext context) {
+    Locale locale = Localizations.localeOf(context);
+    log('Language code: ${locale.languageCode}');
+
     return Consumer<AppTheme>(
       builder: (_, theme, __) => WillPopScope(
         onWillPop: () async {
@@ -288,7 +220,7 @@ class _ClubsPageViewState extends State<ClubsPageView>
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         RoundRectButton(
-                          text: _appScreenText['SEARCH'],
+                          text: _appScreenText['searchClub'],
                           onTap: () async {
                             await showModalBottomSheet(
                               context: context,
@@ -302,7 +234,7 @@ class _ClubsPageViewState extends State<ClubsPageView>
                         ),
                         HeadingWidget(heading: _appScreenText['clubs']),
                         RoundRectButton(
-                          text: '+ ${_appScreenText['CREATE']}',
+                          text: '+ ${_appScreenText['createClub']}',
                           onTap: () => _createClub(ctx),
                           theme: theme,
                         ),
@@ -326,7 +258,7 @@ class _ClubsPageViewState extends State<ClubsPageView>
                             ? Expanded(
                                 child: Center(
                                   child: Text(
-                                    _appScreenText['NOCLUBS'],
+                                    _appScreenText['noClubs'],
                                     style: AppDecorators.getAccentTextStyle(
                                         theme: theme),
                                   ),
