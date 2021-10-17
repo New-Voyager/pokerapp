@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:pokerapp/exceptions/excpetions.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/club_model.dart';
@@ -179,7 +180,7 @@ class _ClubsPageViewState extends State<ClubsPageView>
     /* finally, show a status message and fetch all the clubs (if required) */
     if (clubCode != null) {
       Alerts.showNotification(
-          titleText: _appScreenText['CLUB'],
+          titleText: _appScreenText['club'],
           subTitleText: '${_appScreenText['CREATEDCLUB']}: $clubName',
           duration: Duration(seconds: 2));
       final natsClient = Provider.of<Nats>(context, listen: false);
@@ -272,6 +273,9 @@ class _ClubsPageViewState extends State<ClubsPageView>
 
   @override
   Widget build(BuildContext context) {
+    Locale locale = Localizations.localeOf(context);
+    log('Language code: ${locale.languageCode}');
+
     return Consumer<AppTheme>(
       builder: (_, theme, __) => WillPopScope(
         onWillPop: () async {

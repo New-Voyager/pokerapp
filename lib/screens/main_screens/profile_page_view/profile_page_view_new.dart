@@ -455,7 +455,7 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
             CardFormTextField(
               controller: _controller,
               maxLines: 1,
-              hintText: _appScreenText['ENTERTEXT'],
+              hintText: _appScreenText['enterText'],
               theme: theme,
             ),
             AppDimensionsNew.getVerticalSizedBox(12),

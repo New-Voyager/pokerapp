@@ -83,8 +83,8 @@ class NewGameSettings2 extends StatelessWidget {
     if (gameCode != null)
       _joinGame(context, gameCode);
     else
-      showErrorDialog(context, _appScreenText['ERROR'],
-          _appScreenText['CREATINGGAMEFAILED']);
+      showErrorDialog(context, _appScreenText['error'],
+          _appScreenText['createGameFailed']);
   }
 
   final String clubCode;
@@ -397,7 +397,7 @@ class NewGameSettings2 extends StatelessWidget {
                       onTap: () async {
                         // Setting default name for settings with timestamp
                         String defaultText =
-                            '${_appScreenText['SETTINGS']}_${DataFormatter.yymmddhhmmssFormat()}';
+                            '${_appScreenText['settings']}_${DataFormatter.yymmddhhmmssFormat()}';
                         TextEditingController _controller =
                             TextEditingController(text: defaultText);
                         final result = await showDialog(
@@ -405,7 +405,7 @@ class NewGameSettings2 extends StatelessWidget {
                           builder: (context) => AlertDialog(
                             backgroundColor: theme.fillInColor,
                             title: Text(
-                              _appScreenText['SAVESETTINGS'],
+                              _appScreenText['saveSettings'],
                               style:
                                   AppDecorators.getHeadLine4Style(theme: theme),
                             ),
@@ -416,7 +416,7 @@ class NewGameSettings2 extends StatelessWidget {
                                   theme: theme,
                                   controller: _controller,
                                   maxLines: 1,
-                                  hintText: _appScreenText['ENTERTEXT'],
+                                  hintText: _appScreenText['enterText'],
                                 ),
                                 AppDimensionsNew.getVerticalSizedBox(12),
                                 RoundedColorButton(
@@ -451,7 +451,7 @@ class NewGameSettings2 extends StatelessWidget {
                     /* HEADING */
                     Expanded(
                       child: HeadingWidget(
-                        heading: _appScreenText['GAMESETTINGS'],
+                        heading: _appScreenText['gameSettings'],
                       ),
                     ),
                     InkWell(
@@ -516,7 +516,7 @@ class NewGameSettings2 extends StatelessWidget {
 
                 /* buyin */
                 sepV20,
-                _buildLabel(_appScreenText['BUYIN'], theme),
+                _buildLabel(_appScreenText['buyin'], theme),
                 sepV8,
                 _buildDecoratedContainer(
                   child: Row(

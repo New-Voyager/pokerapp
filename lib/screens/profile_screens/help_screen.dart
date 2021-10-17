@@ -89,7 +89,7 @@ class HelpScreen extends StatelessWidget {
                           ),
                           ListTile(
                             title: Text(
-                              _appScreenText['PRIVACYPOLICY'],
+                              _appScreenText['policy'],
                               style:
                                   AppDecorators.getHeadLine4Style(theme: theme),
                             ),

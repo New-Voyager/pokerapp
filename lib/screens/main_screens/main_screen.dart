@@ -192,28 +192,28 @@ class _MainScreenState extends State<MainScreen>
               items: [
                 CurvedNavItem(
                   iconData: AppIcons.playing_card,
-                  title: _appScreenText['GAMES'],
+                  title: _appScreenText['games'],
                   selected: _navPos == 0,
                 ),
                 CurvedNavItem(
                   iconData: AppIcons.users,
-                  title: _appScreenText['CLUBS'],
+                  title: _appScreenText['clubs'],
                   selected: _navPos == 1,
                 ),
                 CurvedNavItem(
                   iconData: AppIcons.user,
-                  title: _appScreenText['PROFILE'],
+                  title: _appScreenText['profile'],
                   selected: _navPos == 2,
                 ),
                 CurvedNavItem(
                   iconData: Icons.shopping_cart,
-                  title: _appScreenText['STORE'],
+                  title: _appScreenText['store'],
                   selected: _navPos == 3,
                 ),
                 if (TestService.isTesting)
                   CurvedNavItem(
                     iconData: Icons.money,
-                    title: _appScreenText['TEST'],
+                    title: _appScreenText['test'],
                     selected: _navPos == 4,
                   ),
               ],

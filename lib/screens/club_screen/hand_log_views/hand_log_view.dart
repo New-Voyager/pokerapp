@@ -340,7 +340,7 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
         ),
         actions: [
           RoundedColorButton(
-            text: _appScreenText['CANCEL'],
+            text: _appScreenText['cancel'],
             backgroundColor: Colors.transparent,
             textColor: theme.supportingColor,
             borderColor: theme.accentColor,

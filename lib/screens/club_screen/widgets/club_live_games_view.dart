@@ -30,7 +30,7 @@ class ClubLiveGamesView extends StatelessWidget {
             Container(
               margin: EdgeInsets.only(left: 16, bottom: 8),
               child: Text(
-                appScreenText['LIVEGAMES'],
+                appScreenText['liveGames'],
                 style: AppDecorators.getSubtitle2Style(theme: theme),
               ),
             ),
@@ -38,7 +38,7 @@ class ClubLiveGamesView extends StatelessWidget {
                 ? Container(
                     height: 150,
                     child: Center(
-                      child: Text(appScreenText['NOLIVEGAMES'],
+                      child: Text(appScreenText['noLiveGames'],
                           style: AppStylesNew.labelTextStyle),
                     ),
                   )

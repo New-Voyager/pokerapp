@@ -92,7 +92,7 @@ class ClubActionsNew extends StatelessWidget {
     return ClubActionButtonNew(
       this._clubHomePageModel,
       ClubActions.SETTINGS,
-      appScreenText['SETTINGS'],
+      appScreenText['settings'],
       SvgPicture.asset(
         "assets/images/club/message_host.svg",
         color: theme.accentColor,

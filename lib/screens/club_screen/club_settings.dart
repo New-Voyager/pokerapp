@@ -408,7 +408,7 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
             CardFormTextField(
               controller: _controller,
               maxLines: type == SettingType.CLUB_DESCRIPTION ? 8 : 1,
-              hintText: _appScreenText['ENTERTEXT'],
+              hintText: _appScreenText['enterText'],
               theme: theme,
             ),
             AppDimensionsNew.getVerticalSizedBox(12),

@@ -110,7 +110,7 @@ class _ChooseGameNewState extends State<ChooseGameNew>
                     /* HEADING */
                     Expanded(
                       child: HeadingWidget(
-                        heading: _appScreenText['GAMESETTINGS'],
+                        heading: _appScreenText['gameSettings'],
                       ),
                     ),
                     InkWell(
@@ -278,7 +278,7 @@ class _ChooseGameNewState extends State<ChooseGameNew>
                     instance.keys.toList().length == 0
                         ? Expanded(
                             child: Center(
-                                child: Text(_appScreenText['NOSAVEDSETTINGS'])))
+                                child: Text(_appScreenText['noSavedSettings'])))
                         : Expanded(
                             child: ListView.separated(
                               shrinkWrap: true,
@@ -313,8 +313,8 @@ class _ChooseGameNewState extends State<ChooseGameNew>
                         }
                       },
                       text: instance.keys.toList().length == 0
-                          ? _appScreenText['OK']
-                          : _appScreenText['START'],
+                          ? _appScreenText['ok']
+                          : _appScreenText['start'],
                       backgroundColor: AppColorsNew.yellowAccentColor,
                       textColor: AppColorsNew.darkGreenShadeColor,
                     ),

@@ -16,7 +16,7 @@ class AppNameAndLogoWidget extends StatelessWidget {
       children: [
         Container(
           child: Text(
-            _appScreenText['POCKERCLUBAPP'],
+            _appScreenText['appName'],
             textAlign: TextAlign.center,
             style: AppTextStyles.H1.copyWith(
               color: _appTheme.accentColor,
@@ -24,7 +24,7 @@ class AppNameAndLogoWidget extends StatelessWidget {
           ),
         ),
         Text(
-          this._appScreenText['SUBTITLE'],
+          this._appScreenText['subTitle'],
           textAlign: TextAlign.center,
           style: AppTextStyles.T3.copyWith(
             color: _appTheme.supportingColorWithDark(0.50),

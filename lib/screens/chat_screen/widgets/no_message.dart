@@ -19,7 +19,7 @@ class NoMessageWidget extends StatelessWidget {
           color: theme.fillInColor,
         ),
         Text(
-          appScreenText['NOMESSAGES'],
+          appScreenText['noMessages'],
           textAlign: TextAlign.center,
           style: AppDecorators.getSubtitle3Style(theme: theme),
         )
@@ -48,7 +48,7 @@ class CircularProgressWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                text ?? appScreenText['LOADING'],
+                text ?? appScreenText['loading'],
                 textAlign: TextAlign.center,
                 style: AppDecorators.getHeadLine4Style(theme: theme),
               ),

@@ -91,7 +91,7 @@ class GameModelNew {
         gameTypeStr = _appTextScreen['DEALERCHOICE'];
         break;
       default:
-        gameTypeStr = _appTextScreen['DEFAULTTYPE'];
+        gameTypeStr = _appTextScreen['defaultType'];
     }
     return gameTypeStr;
   }

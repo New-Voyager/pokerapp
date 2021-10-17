@@ -182,7 +182,7 @@ class _SearchClubBottomSheetState extends State<SearchClubBottomSheet> {
                                           ),
                                           separator10,
                                           Text(
-                                            "${_appScreenText['HOST']}: ${searchClub.ownerName}",
+                                            "${_appScreenText['host']}: ${searchClub.ownerName}",
                                             style:
                                                 AppDecorators.getHeadLine4Style(
                                                     theme: theme),
@@ -192,7 +192,7 @@ class _SearchClubBottomSheetState extends State<SearchClubBottomSheet> {
                                             child: RoundedColorButton(
                                               onTapFunction: () =>
                                                   onJoin(context),
-                                              text: "${_appScreenText['JOIN']}",
+                                              text: "${_appScreenText['join']}",
                                               backgroundColor:
                                                   theme.accentColor,
                                               textColor:

@@ -223,7 +223,7 @@ class _AnnouncementsViewState extends State<AnnouncementsView> {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   RoundedColorButton(
-                    text: _appScreenText['CANCEL'],
+                    text: _appScreenText['cancel'],
                     textColor: theme.secondaryColor,
                     backgroundColor: Colors.transparent,
                     borderColor: theme.secondaryColor,
