@@ -230,7 +230,7 @@ class _AnnouncementsViewState extends State<AnnouncementsView> {
                   RoundRectButton(
                     text: _appScreenText['announce'],
                     onTap: () {
-                       Navigator.of(context).pop(_controller.text);
+                      Navigator.of(context).pop(_controller.text);
                     },
                     theme: theme,
                   ),
