@@ -9,6 +9,10 @@ class AppConfig {
   static String _deviceId;
   static String _deviceSecret;
   static String _screenName;
+  static int noOfDiamondsForAnimation = 5;
+  static int noOfDiamondsForReveal = 5;
+  static int noOfDiamondsForShare = 5;
+
 
   static SharedPreferences sharedPreferences;
 

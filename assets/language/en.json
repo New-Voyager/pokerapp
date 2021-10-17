@@ -665,7 +665,7 @@
     "profilePopup": {
         "tapToSendAnimation": "Tap to send Animation",
         "confirm": "Confirm",
-        "note": "2 diamonds per animation!"
+        "note": "5 diamonds per animation!"
     },
     "seatChangeConfirmWidget": {
         "applySeatChanges": "Apply Seat Changes?"

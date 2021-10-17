@@ -5,6 +5,7 @@ import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/services/data/game_hive_store.dart';
+import 'package:pokerapp/services/data/hive_models/player_state.dart';
 import 'package:provider/provider.dart';
 
 class NumDiamondWidget extends StatelessWidget {
@@ -22,7 +23,7 @@ class NumDiamondWidget extends StatelessWidget {
               children: [
                 //Text('You have '),
                 Text(
-                  '${gameHiveStore.getDiamonds()}',
+                  '${playerState.diamonds}',
                   style: AppDecorators.getHeadLine3Style(theme: theme)
                       .copyWith(color: theme.accentColor),
                 ),

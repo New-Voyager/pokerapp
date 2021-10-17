@@ -10,11 +10,13 @@ import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/app_config.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/nameplate_dialog.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/game_service.dart';
+import 'package:pokerapp/services/data/hive_models/player_state.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/widgets/blinking_widget.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
@@ -172,12 +174,15 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
       );
 
       if (data != null && data['type'] != null && data['type'] == "animation") {
-        gameState.gameComService.gameMessaging.sendAnimation(
-          gameState.me?.seatNo,
-          widget.seat.player.seatNo,
-          data['animationID'],
-        );
-        await gameState.gameHiveStore.deductDiamonds();
+        final bool result = await playerState
+            .deductDiamonds(AppConfig.noOfDiamondsForAnimation);
+        if (result) {
+          gameState.gameComService.gameMessaging.sendAnimation(
+            gameState.me?.seatNo,
+            widget.seat.player.seatNo,
+            data['animationID'],
+          );
+        }
       }
 
       if (data != null && data['type'] != null && data['type'] == "buyin") {
