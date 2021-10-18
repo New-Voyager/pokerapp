@@ -219,7 +219,6 @@ class _AnnouncementsViewState extends State<AnnouncementsView> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-
                   RoundRectButton(
                     text: _appScreenText['cancel'],
                     theme: theme,

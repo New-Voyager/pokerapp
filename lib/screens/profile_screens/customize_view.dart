@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/models/ui/app_theme_data.dart';
+import 'package:pokerapp/models/ui/app_theme_styles.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
@@ -21,59 +22,59 @@ class CustomizeScreen extends StatefulWidget {
 }
 
 class _CustomizeScreenState extends State<CustomizeScreen> {
-  List<AppThemeData> themeList = [
-    AppThemeData(
-      roundedButtonBackgroundColor: Color(0xFFD89E40),
-      roundedButton2BackgroundColor: Color(0xFF033614),
-      confirmYesButtonBackgroundColor: Colors.purple,
-      roundedButtonTextStyle: AppStylesNew.joinTextStyle.copyWith(
-        color: Colors.black,
-        fontWeight: FontWeight.normal,
-        fontSize: 10.dp,
-      ),
-    ),
-    AppThemeData(
-      primaryColor: Colors.blueGrey.shade900,
-      accentColor: Colors.amber[900],
-      secondaryColor: Colors.blueGrey.shade400,
-      fillInColor: Colors.grey.shade800,
-      supportingColor: Colors.white,
-    ),
-    AppThemeData(
-      primaryColor: Color(0xFF082032),
-      accentColor: Color(0xFFFF4C29),
-      secondaryColor: Colors.blueGrey,
-      fillInColor: Color(0xFF2C394B),
-      supportingColor: Color(0xFFEEEEEE),
-    ),
-    AppThemeData(
-      primaryColor: Colors.blue,
-      accentColor: Colors.amber[900],
-      secondaryColor: Colors.blueGrey,
-      fillInColor: Colors.grey,
-      supportingColor: Colors.black,
-      roundedButtonBackgroundColor: Colors.blueGrey,
-      roundedButton2BackgroundColor: Colors.purple,
-      confirmYesButtonBackgroundColor: Colors.purple,
-    ),
-    AppThemeData(
-      primaryColor: Colors.blue,
-      accentColor: Colors.amber[900],
-      secondaryColor: Colors.blueGrey,
-      fillInColor: Colors.grey,
-      supportingColor: Colors.white70,
-    ),
-    AppThemeData(
-      primaryColor: Color(0xFFA2D2FF),
-      accentColor: Color(0xFFD2EB38),
-      secondaryColor: Color(0xFFFFFFFF),
-      fillInColor: Color(0xFFDFF4FE),
-      supportingColor: Color(0xFFF9FDFE),
-      navFabColor: Colors.purple,
-    ),
+  List<AppThemeStyle> themeList = [
+    // AppThemeData(
+    //   roundedButtonBackgroundColor: Color(0xFFD89E40),
+    //   roundedButton2BackgroundColor: Color(0xFF033614),
+    //   confirmYesButtonBackgroundColor: Colors.purple,
+    //   roundedButtonTextStyle: AppStylesNew.joinTextStyle.copyWith(
+    //     color: Colors.black,
+    //     fontWeight: FontWeight.normal,
+    //     fontSize: 10.dp,
+    //   ),
+    // ),
+    // AppThemeData(
+    //   primaryColor: Colors.blueGrey.shade900,
+    //   accentColor: Colors.amber[900],
+    //   secondaryColor: Colors.blueGrey.shade400,
+    //   fillInColor: Colors.grey.shade800,
+    //   supportingColor: Colors.white,
+    // ),
+    // AppThemeData(
+    //   primaryColor: Color(0xFF082032),
+    //   accentColor: Color(0xFFFF4C29),
+    //   secondaryColor: Colors.blueGrey,
+    //   fillInColor: Color(0xFF2C394B),
+    //   supportingColor: Color(0xFFEEEEEE),
+    // ),
+    // AppThemeData(
+    //   primaryColor: Colors.blue,
+    //   accentColor: Colors.amber[900],
+    //   secondaryColor: Colors.blueGrey,
+    //   fillInColor: Colors.grey,
+    //   supportingColor: Colors.black,
+    //   roundedButtonBackgroundColor: Colors.blueGrey,
+    //   roundedButton2BackgroundColor: Colors.purple,
+    //   confirmYesButtonBackgroundColor: Colors.purple,
+    // ),
+    // AppThemeData(
+    //   primaryColor: Colors.blue,
+    //   accentColor: Colors.amber[900],
+    //   secondaryColor: Colors.blueGrey,
+    //   fillInColor: Colors.grey,
+    //   supportingColor: Colors.white70,
+    // ),
+    // AppThemeData(
+    //   primaryColor: Color(0xFFA2D2FF),
+    //   accentColor: Color(0xFFD2EB38),
+    //   secondaryColor: Color(0xFFFFFFFF),
+    //   fillInColor: Color(0xFFDFF4FE),
+    //   supportingColor: Color(0xFFF9FDFE),
+    //   navFabColor: Colors.purple,
+    // ),
   ];
 
-  AppThemeData selectedThemeData;
+  AppThemeStyle selectedThemeData;
   String selectedBgUrl;
   String selectedTableUrl;
   AppTextScreen _appScreenText;
@@ -140,7 +141,7 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
                                       'theme', themeList[index].toMap());
                                   settings.put('themeIndex', index);
 
-                                  theme.updateThemeData(selectedThemeData);
+                                  // theme.updateThemeData(selectedThemeData);
                                 },
                                 child: Row(
                                   children: [

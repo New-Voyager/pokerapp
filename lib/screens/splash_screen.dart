@@ -5,6 +5,7 @@ import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/auth_model.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/models/ui/app_theme_data.dart';
+import 'package:pokerapp/models/ui/app_theme_styles.dart';
 import 'package:pokerapp/resources/app_config.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/services/app/appcoin_service.dart';
@@ -112,15 +113,12 @@ class _SplashScreenState extends State<SplashScreen> {
     final themeData = HiveDatasource.getInstance
         .getBox(BoxType.USER_SETTINGS_BOX)
         .get("theme");
+    String selectedStyle = 'default';
     if (themeData != null) {
+      final style = getAppStyle(selectedStyle);
       theme.updateThemeData(
         AppThemeData(
-          primaryColor: Color(themeData['primaryColor']),
-          secondaryColor: Color(themeData['secondaryColor']),
-          accentColor: Color(themeData['accentColor']),
-          fillInColor: Color(themeData['fillInColor']),
-          fontFamily: themeData['fontFamily'],
-          supportingColor: Color(themeData['supportingColor']),
+          style: style,
           tableAssetId: themeData['tableAssetId'],
           backDropAssetId: themeData['backDropAssetId'],
           cardBackAssetId: themeData['cardBackAssetId'],

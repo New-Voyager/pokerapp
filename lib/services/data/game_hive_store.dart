@@ -88,7 +88,7 @@ class GameHiveStore {
   //   return _gameBox.put(_DIAMONDS, getDiamonds() + num);
   // }
 
- // int getDiamonds() => _gameBox.get(_DIAMONDS, defaultValue: 0) as int;
+  // int getDiamonds() => _gameBox.get(_DIAMONDS, defaultValue: 0) as int;
 
   // Future<void> clearDiamonds() => _gameBox.put(_DIAMONDS, 0);
 
@@ -175,7 +175,7 @@ class GameHiveStore {
       //   if (getDiamonds() < AppConstants.maxDiamondNumber) {
       //     _addDiamonds(kDefaultDiamonds);
       //   }
-        // _gameBox.put(_DIAMONDS_UPDATE, now.toIso8601String());
+      // _gameBox.put(_DIAMONDS_UPDATE, now.toIso8601String());
       // }
 
       final diffSinceLastTimebank = now.difference(lastTimebankTime).inSeconds;

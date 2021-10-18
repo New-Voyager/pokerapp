@@ -314,7 +314,6 @@ class ResultOptionsWidget extends StatelessWidget {
 
   Widget _buildShareButton(
       BuildContext context, AppTheme theme, RabbitState rs) {
-
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [

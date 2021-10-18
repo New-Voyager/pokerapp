@@ -55,8 +55,14 @@ class RoundRectButton extends StatelessWidget {
               split ? text?.replaceFirst(" ", "\n") ?? 'Text' : text ?? 'Text',
               textAlign: TextAlign.center,
               style: (fontSize == null)
-                  ? theme.roundedButtonTextStyle
-                  : theme.roundedButtonTextStyle.copyWith(fontSize: fontSize),
+                  ? theme.roundedButtonTextStyle.copyWith(
+                      color: theme.roundButtonTextColor,
+                      fontWeight: FontWeight.bold,
+                    )
+                  : theme.roundedButtonTextStyle.copyWith(
+                      fontSize: fontSize,
+                      fontWeight: FontWeight.bold,
+                      color: theme.roundButtonTextColor),
             )
           ],
         ),
@@ -99,7 +105,9 @@ class RoundRectButton2 extends StatelessWidget {
             Text(
               split ? text?.replaceFirst(" ", "\n") ?? 'Text' : text ?? 'Text',
               textAlign: TextAlign.center,
-              style: theme.roundedButton2TextStyle,
+              style: theme.roundedButton2TextStyle.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: theme.primaryColorWithDark()),
             )
           ],
         ),

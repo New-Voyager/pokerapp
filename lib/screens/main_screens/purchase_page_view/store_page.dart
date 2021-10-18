@@ -660,9 +660,7 @@ class DiamondItem extends StatelessWidget {
           ],
         ),
         trailing: RoundRectButton(
-            text: appScreenText['buy'],
-            theme: theme,
-            onTap: onBuy),
+            text: appScreenText['buy'], theme: theme, onTap: onBuy),
       ),
     );
   }
