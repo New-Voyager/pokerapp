@@ -205,7 +205,7 @@ class RotateImagesButton extends StatelessWidget {
   final bool split;
 
   Widget build(BuildContext context) {
-    List<Widget> svgWidget;
+    List<Widget> svgWidget = [];
 
     svgImages.forEach((element) {
       svgWidget.add(SvgPicture.asset(element,
