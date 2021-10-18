@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_fgbg/flutter_fgbg.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:overlay_support/overlay_support.dart';
+import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/overlay_notification.dart';
@@ -85,7 +86,9 @@ class NotificationHandler {
     handlePlayerMessage(json, background: false, firebase: false);
   }
 
-  void clubNotifications(String message) {}
+  void clubNotifications(String message) {
+    log('clubNotifications: $message');
+  }
 
   Future<void> backgroundMessageHandler(RemoteMessage message) async {
     print('background message = ${message.data}');
@@ -101,7 +104,7 @@ class NotificationHandler {
       return _plugin;
     }
 
-    var androidSettings = AndroidInitializationSettings('ic_notification_bell');
+    var androidSettings = AndroidInitializationSettings('bell');
     var iosSettings = IOSInitializationSettings();
     var initializationSettings = InitializationSettings(
       android: androidSettings,
@@ -216,7 +219,7 @@ class NotificationHandler {
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       print('Got a message whilst in the foreground!');
-      print('Message data: ${message.data}');
+      log('Message data: ${jsonEncode(message.data)}');
       handlePlayerMessage(message.data, background: false, firebase: true);
       //_showNotification(message, background: false);
     });
@@ -261,10 +264,41 @@ class NotificationHandler {
   }
 
   void showMessageInBin(Map<String, dynamic> json) async {
-    String body = 'This is test message';
+    // we handle only few messages here
+    // NEW_GAME
+    // HOST_MESSAGE
+    // WAITLIST_SEATING
+    String type = json['type'];
+    if (!(type == 'NEW_GAME' ||
+        type == 'WAITLIST_SEATING' ||
+        type == 'HOST_MESSAGE')) {
+      return;
+    }
+    String body = '';
+    if (type == 'NEW_GAME') {
+      try {
+        GameType gameType = gameTypeFromStr(json['gameType']);
+        String game = gameTypeStr2(gameType);
+        int sb = int.parse(json['sb'].toString());
+        int bb = int.parse(json['bb'].toString());
+        body = 'Club: ${json['clubName']} hosts a new game. $game $sb/$bb';
+      } catch (err) {}
+    } else if (type == 'WAITLIST_SEATING') {
+      try {
+        GameType gameType = gameTypeFromStr(json['gameType']);
+        String game = gameTypeStr2(gameType);
+        int sb = int.parse(json['smallBlind'].toString());
+        int bb = int.parse(json['bigBlind'].toString());
+        body =
+            'A open seat is available at game: ${json['gameCode']}. $game $sb/$bb';
+      } catch (err) {}
+    }
 
-    final androidSettings =
-        AndroidInitializationSettings('ic_notification_bell');
+    if (body.length == 0) {
+      return;
+    }
+
+    final androidSettings = AndroidInitializationSettings('launcher_icon_gray');
     final iosSettings = IOSInitializationSettings();
     final initializationSettings = InitializationSettings(
       android: androidSettings,
@@ -280,13 +314,20 @@ class NotificationHandler {
     final _iosDetails = IOSNotificationDetails();
     final _notificationDetails =
         NotificationDetails(android: _androidDetails, iOS: _iosDetails);
+    log('5 in showMessageInBin');
 
-    flutterLocalNotificationsPlugin.show(
-      1232,
+    await flutterLocalNotificationsPlugin
+        .show(
+      45678,
       'PokerClubApp',
       body,
       _notificationDetails,
-    ); //, payload: jsonEncode(json));
+      payload: jsonEncode(json),
+    )
+        .onError((error, stackTrace) {
+      log('Error when showing message. Error: ${error.toString()}');
+    }); //, payload: jsonEncode(json));
+    log('6 in showMessageInBin');
   }
 
   Future<void> handleTestMessage(Map<String, dynamic> json) async {
@@ -353,82 +394,4 @@ Future<void> firebaseBackgroundMessageHandler(RemoteMessage message) async {
   await notificationHandler._initLocalNotifications();
   notificationHandler.handlePlayerMessage(message.data,
       background: true, firebase: true);
-
-  // AndroidNotificationDetails androidDetails;
-  // IOSNotificationDetails iosDetails;
-  // var notificationTypeStr = message.data['type'];
-  // NotificationType notificationType = NotificationType.UNKNOWN;
-
-  // if (notificationTypeStr == 'TEST_PUSH') {
-  //   notificationType = NotificationType.BUYIN_REQUEST;
-  // } else if (notificationTypeStr == 'NEW_GAME') {
-  //   notificationType = NotificationType.NEW_GAME;
-  // } else if (notificationTypeStr == 'MEMBER_APPROVED') {
-  //   notificationType = NotificationType.MEMBER_APPROVED;
-  // } else if (notificationTypeStr == 'PLAYER_RENAMED') {
-  //   notificationType = NotificationType.PLAYER_RENAMED;
-  // } else if (notificationTypeStr == 'MEMBER_JOIN') {
-  //   notificationType = NotificationType.MEMBER_JOIN;
-  // } else if (notificationTypeStr == 'MEMBER_DENIED') {
-  //   notificationType = NotificationType.MEMBER_DENIED;
-  // }
-
-  // debugPrint('notificationType = $notificationType');
-
-  // androidDetails = AndroidNotificationDetails(
-  //     "com.voyagerent.pokerapp.channel", "pokerapp", "Poker App Channel",
-  //     sound: RawResourceAndroidNotificationSound('check'), playSound: true);
-  // iosDetails = IOSNotificationDetails();
-
-  // if (notificationType == NotificationType.NEW_GAME) {
-  //   // change sound and other attributes
-  // }
-  // final notificationDetails =
-  //     NotificationDetails(android: androidDetails, iOS: iosDetails);
-  // final flutterLocalNotificationsPlugin = _initLocalNotifications();
-
-  // String title;
-  // String body;
-  // bool showNotification = false;
-  // if (notificationType == NotificationType.BUYIN_REQUEST) {
-  //   title = 'Buyin Request';
-  //   /*
-  //   data: {
-  //         amount: amount.toString(),
-  //         gameCode: game.gameCode,
-  //         playerName: requestingPlayer.name,
-  //         playerUuid: requestingPlayer.uuid,
-  //         type: 'BUYIN_REQUEST',
-  //       }
-  //   */
-  //   final data = message.data;
-  //   body =
-  //       '${data["playerName"]} is requesting to buyin ${data["amount"]}. Gamecode: ${data["gameCode"]}';
-  //   showNotification = true;
-  // } else if (notificationType == NotificationType.MEMBER_JOIN) {
-  //   final data = message.data;
-  //   body = '${data["playerName"]} is requesting to join ${data["clubName"]}.';
-  //   showNotification = true;
-  // } else if (notificationType == NotificationType.MEMBER_DENIED) {
-  //   final data = message.data;
-  //   body = 'Club host of ${data["clubName"]} denied your membership.';
-
-  //   if (!background) {
-  //     // app is running in foreground
-  //     showOverlayNotification(
-  //       (context) => OverlayNotificationWidget(
-  //         title: data['clubName'],
-  //         subTitle: body,
-  //       ),
-  //       duration: Duration(seconds: 10),
-  //     );
-  //   } else {
-  //     showNotification = true;
-  //   }
-  // }
-
-  // if (showNotification) {
-  //   flutterLocalNotificationsPlugin.show(0, title, body, notificationDetails);
-  // }
-  // //_showNotification(message, background: true);
 }

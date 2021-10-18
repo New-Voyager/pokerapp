@@ -22,7 +22,8 @@ class CustomizeScreen extends StatefulWidget {
 }
 
 class _CustomizeScreenState extends State<CustomizeScreen> {
-  List<AppThemeStyle> themeList = [
+  List<AppThemeStyle> themeList = getAppStyles().values.toList();
+  List<AppThemeStyle> themeList2 = [
     // AppThemeData(
     //   roundedButtonBackgroundColor: Color(0xFFD89E40),
     //   roundedButton2BackgroundColor: Color(0xFF033614),
@@ -150,7 +151,8 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
                                         child: Row(
                                           children: [
                                             Text(
-                                              "${_appScreenText['theme']} ${index + 1}",
+                                              //"${_appScreenText['theme']} ${index + 1}",
+                                              themeData.name,
                                               style: AppDecorators
                                                   .getSubtitle1Style(
                                                       theme: theme),

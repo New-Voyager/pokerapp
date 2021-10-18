@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 Map<String, AppThemeStyle> appStyles;
 
 class AppThemeStyle {
+  String name;
   // main color that the app is based on
   Color primaryColor;
 
@@ -63,8 +64,9 @@ class AppThemeStyle {
   Color navBgColor;
   AppThemeStyle();
 
-  factory AppThemeStyle.fromJson(dynamic json) {
+  factory AppThemeStyle.fromJson(String name, dynamic json) {
     AppThemeStyle style = AppThemeStyle();
+    style.name = name;
     String color = json['primaryColor'] as String;
     style.primaryColor = HexColor.fromHex(color);
     style.secondaryColor = HexColor.fromHex(json['secondaryColor']);
@@ -145,8 +147,11 @@ Map<String, AppThemeStyle> getAppStyles() {
   }
   appStyles = Map<String, AppThemeStyle>();
   final defaultStyleJson = jsonDecode(defaultAppStyle);
-  final defaultStyle = AppThemeStyle.fromJson(defaultStyleJson);
+  
+  final defaultStyle = AppThemeStyle.fromJson('default', defaultStyleJson);
   appStyles['default'] = defaultStyle;
+
+  // add new themes here
   return appStyles;
 }
 
