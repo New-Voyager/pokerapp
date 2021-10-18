@@ -33,6 +33,27 @@ String gameTypeStr(GameType type) {
   }
 }
 
+String gameTypeStr2(GameType type) {
+  switch (type) {
+    case GameType.HOLDEM:
+      return 'No Limit Holdem';
+    case GameType.PLO:
+      return 'Pot Limit Omaha';
+    case GameType.PLO_HILO:
+      return 'Pot Limit Omaha Hi/Lo';
+    case GameType.FIVE_CARD_PLO:
+      return '5 Card Pot Limit Omaha';
+    case GameType.FIVE_CARD_PLO_HILO:
+      return '5 Card Pot Limit Omaha Hi/Lo';
+    case GameType.ROE:
+      return 'Round of Each';
+    case GameType.DEALER_CHOICE:
+      return 'Dealer Choice';
+    default:
+      return 'Unknown';
+  }
+}
+
 String gameTypeShortStr(GameType type) {
   AppTextScreen appTextScreen = getAppTextScreen("gameTypeShort");
 
