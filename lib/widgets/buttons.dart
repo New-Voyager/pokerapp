@@ -160,6 +160,7 @@ class CircleImageButton extends StatelessWidget {
       onTap: this.onTap,
       borderRadius: BorderRadius.circular(20),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Container(
             width: 40.0,

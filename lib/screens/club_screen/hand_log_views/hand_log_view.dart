@@ -231,6 +231,7 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
             ),
             AppDimensionsNew.getHorizontalSpace(8),
             CircleImageButton(
+              theme: theme,
               onTap: () async {
                 if (_isTheHandBookmarked(_handResult.handNum)) {
                   _removeBookmark(_handResult.handNum);
