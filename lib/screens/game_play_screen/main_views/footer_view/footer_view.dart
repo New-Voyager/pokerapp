@@ -14,7 +14,6 @@ import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/animating_widgets/my_last_action_animating_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/status_options_buttons.dart';
-import 'package:pokerapp/screens/game_play_screen/widgets/game_circle_button.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:provider/provider.dart';
 import 'communication_view.dart';

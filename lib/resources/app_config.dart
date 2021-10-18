@@ -13,7 +13,6 @@ class AppConfig {
   static int noOfDiamondsForReveal = 5;
   static int noOfDiamondsForShare = 5;
 
-
   static SharedPreferences sharedPreferences;
 
   static Future<void> init(String defaultUrl) async {

@@ -5,8 +5,8 @@ import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/services/nats/nats.dart';
+import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
-import 'package:pokerapp/widgets/round_color_button.dart';
 import 'package:provider/provider.dart';
 import '../../../../services/app/club_interior_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
@@ -62,11 +62,9 @@ class _SearchClubBottomSheetState extends State<SearchClubBottomSheet> {
             Positioned(
               top: -10.pw,
               right: 4.pw,
-              child: RoundIconButton(
+              child: CircleImageButton(
                 icon: Icons.close_rounded,
-                iconColor: Colors.red,
-                bgColor: Colors.black,
-                borderColor: Colors.red,
+                theme: theme,
                 onTap: () => Navigator.of(context).pop(),
               ),
             ),
@@ -101,9 +99,9 @@ class _SearchClubBottomSheetState extends State<SearchClubBottomSheet> {
                             SizedBox(
                               width: 10.pw,
                             ),
-                            RoundIconButton(
+                            CircleImageButton(
                               icon: Icons.search,
-                              borderColor: theme.accentColor,
+                              theme: theme,
                               onTap: () async {
                                 if (!_formKey.currentState.validate()) return;
                                 _formKey.currentState.save();
@@ -189,14 +187,10 @@ class _SearchClubBottomSheetState extends State<SearchClubBottomSheet> {
                                           ),
                                           separator15,
                                           Center(
-                                            child: RoundedColorButton(
-                                              onTapFunction: () =>
-                                                  onJoin(context),
+                                            child: RoundRectButton(
+                                              onTap: () => onJoin(context),
                                               text: "${_appScreenText['join']}",
-                                              backgroundColor:
-                                                  theme.accentColor,
-                                              textColor:
-                                                  theme.primaryColorWithDark(),
+                                              theme: theme,
                                             ),
                                           ),
                                         ],

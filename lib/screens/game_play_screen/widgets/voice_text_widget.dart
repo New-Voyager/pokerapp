@@ -2,8 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/pulsating_button.dart';
+import 'package:pokerapp/widgets/buttons.dart';
 
 import 'game_circle_button.dart';
 
@@ -38,6 +40,8 @@ class _VoiceTextWidgetState extends State<VoiceTextWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = AppTheme.getTheme(context);
+
     return Container(
       color: Colors.transparent,
       alignment: Alignment.centerRight,
@@ -113,8 +117,9 @@ class _VoiceTextWidgetState extends State<VoiceTextWidget> {
                     ),
                   ],
                 )
-              : GameCircleButton(
-                  iconData: Icons.keyboard_voice,
+              : CircleImageButton(
+                  icon: Icons.keyboard_voice,
+                  theme: theme,
                 )),
     );
   }

@@ -14,7 +14,7 @@ import 'package:pokerapp/services/data/hive_datasource_impl.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/numeric_keyboard2.dart';
-import 'package:pokerapp/widgets/round_color_button.dart';
+import 'package:pokerapp/widgets/buttons.dart';
 import 'package:provider/provider.dart';
 import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 
@@ -251,9 +251,9 @@ class BetWidget extends StatelessWidget {
               ),
               /* progress drag to bet */
               Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                RoundSecondaryColorButton(
+                CircleImageButton(
                   theme: appTheme,
-                  iconData: Icons.remove,
+                  icon: Icons.remove,
                   onTap: (BuildContext context) {
                     double value = valueNotifierVal.value;
                     value--;
@@ -264,9 +264,9 @@ class BetWidget extends StatelessWidget {
                   },
                 ),
                 _buildBetSeekBar(betSliderWidth, appTheme),
-                RoundSecondaryColorButton(
+                CircleImageButton(
                   theme: appTheme,
-                  iconData: Icons.add,
+                  icon: Icons.add,
                   onTap: (BuildContext context) {
                     double value = valueNotifierVal.value;
                     value++;

@@ -20,9 +20,9 @@ import 'package:pokerapp/services/app/stats_service.dart';
 import 'package:pokerapp/services/data/hive_models/player_state.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
+import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
 import 'package:pokerapp/widgets/heading_widget.dart';
-import 'package:pokerapp/widgets/round_color_button.dart';
 import 'package:provider/provider.dart';
 import 'package:package_info/package_info.dart';
 
@@ -458,15 +458,14 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
               theme: theme,
             ),
             AppDimensionsNew.getVerticalSizedBox(12),
-            RoundedColorButton(
+            RoundRectButton(
               text: _appScreenText['SAVE'],
-              backgroundColor: theme.accentColor,
-              textColor: theme.primaryColorWithDark(),
-              onTapFunction: () {
+              onTap: () {
                 if (_controller.text.isNotEmpty) {
                   Navigator.of(context).pop(_controller.text);
                 }
               },
+              theme: theme,
             ),
           ],
         ),

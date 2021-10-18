@@ -2,10 +2,10 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
+import 'package:pokerapp/widgets/buttons.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
-import 'package:pokerapp/screens/game_play_screen/widgets/game_circle_button.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
@@ -47,9 +47,10 @@ class _TimeBankWidgetState extends State<TimeBankWidget> {
     }
 
     children.add(
-      GameCircleButton(
-        iconData: Icons.access_alarms,
-        onClickHandler: () async {
+      CircleImageButton(
+        icon: Icons.access_alarms,
+        theme: theme,
+        onTap: () async {
           log('timebank: on timebank clicked');
           animate = false;
           int extendTime = minExtendTime;

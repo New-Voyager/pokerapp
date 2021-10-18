@@ -13,8 +13,8 @@ import 'package:pokerapp/screens/game_context_screen/game_options/game_option_bo
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/utils/numeric_keyboard2.dart';
+import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
-import 'package:pokerapp/widgets/round_color_button.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:timer_count_down/timer_count_down.dart';
@@ -89,8 +89,8 @@ class StatusOptionsWidget extends StatelessWidget {
 
   Widget getWaitListButton(
       AppTextScreen appScreenText, AppTheme theme, BuildContext context) {
-    return RoundedColorButton(
-      onTapFunction: () {
+    return RoundRectButton(
+      onTap: () {
         showModalBottomSheet(
           context: context,
           isScrollControlled: true,
@@ -109,9 +109,8 @@ class StatusOptionsWidget extends StatelessWidget {
         );
       },
       text: "Join Waitlist",
+      theme: theme,
       fontSize: 16.dp,
-      backgroundColor: theme.accentColor,
-      textColor: theme.primaryColorWithDark(),
     );
   }
 
@@ -141,14 +140,13 @@ class StatusOptionsWidget extends StatelessWidget {
 
   Widget getBuyinButton(
       AppTextScreen appScreenText, AppTheme theme, BuildContext context) {
-    return RoundedColorButton(
+    return RoundRectButton(
       fontSize: 16.dp,
-      onTapFunction: () async {
+      onTap: () async {
         await onBuyin(appScreenText, context);
       },
       text: "Buyin",
-      backgroundColor: theme.accentColor,
-      textColor: theme.primaryColorWithDark(),
+      theme: theme,
     );
   }
 
@@ -226,14 +224,13 @@ class StatusOptionsWidget extends StatelessWidget {
 
   Widget getSitbackButton(
       AppTextScreen appScreenText, AppTheme theme, BuildContext context) {
-    return RoundedColorButton(
+    return RoundRectButton(
       fontSize: 16.dp,
-      onTapFunction: () async {
+      onTap: () async {
         await onSitBack(context);
       },
       text: "Sit Back",
-      backgroundColor: theme.accentColor,
-      textColor: theme.primaryColorWithDark(),
+      theme: theme,
     );
   }
 
@@ -256,14 +253,13 @@ class StatusOptionsWidget extends StatelessWidget {
 
   Widget getPostBlindButton(
       AppTextScreen appScreenText, AppTheme theme, BuildContext context) {
-    return RoundedColorButton(
+    return RoundRectButton(
       fontSize: 16.dp,
-      onTapFunction: () async {
+      onTap: () async {
         await onPostBlind(context);
       },
       text: "Post Blind",
-      backgroundColor: theme.accentColor,
-      textColor: theme.primaryColorWithDark(),
+      theme: theme,
     );
   }
 }

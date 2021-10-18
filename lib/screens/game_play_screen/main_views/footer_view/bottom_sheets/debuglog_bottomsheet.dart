@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/services/data/game_log_store.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
-import 'package:pokerapp/widgets/rounded_accent_button.dart';
+import 'package:pokerapp/widgets/buttons.dart';
 
 import '../debug_view.dart';
 
@@ -27,6 +28,8 @@ class _DebugLogBottomSheetState extends State<DebugLogBottomSheet> {
   @override
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
+    final theme = AppTheme.getTheme(context);
+
     return Container(
       height: height / ratio,
       color: Colors.transparent,
@@ -47,12 +50,13 @@ class _DebugLogBottomSheetState extends State<DebugLogBottomSheet> {
                         style: TextStyle(fontSize: 16.dp),
                       ),
                       SizedBox(width: 20.pw),
-                      RoundedAccentButton(
+                      RoundRectButton(
                         text: 'Clear',
-                        onTapFunction: () {
+                        onTap: () {
                           clearDebugLog(widget.gameCode);
                           setState(() {});
                         },
+                        theme: theme,
                       )
                     ],
                   ))),

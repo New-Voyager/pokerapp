@@ -21,8 +21,8 @@ import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/widgets/appname_logo.dart';
+import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
-import 'package:pokerapp/widgets/round_color_button.dart';
 import 'package:uuid/uuid.dart';
 
 class RegistrationScreenNew extends StatefulWidget {
@@ -143,11 +143,9 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
             ],
           ),
           actions: [
-            RoundedColorButton(
+            RoundRectButton(
                 text: _appScreenText["save"],
-                backgroundColor: appTheme.accentColor,
-                textColor: appTheme.primaryColorWithDark(0.50),
-                onTapFunction: () async {
+                onTap: () async {
                   if (apiUrl.isEmpty) {
                     toast(_appScreenText['apiUrlCantBeEmpty']);
                     return;
@@ -164,7 +162,8 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
                       titleText: _appScreenText['apiUrlIsSet']);
 
                   Navigator.of(context).pop();
-                }),
+                },
+                theme: appTheme),
           ],
         );
       },
@@ -330,12 +329,11 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
                         // Terms and privacy text
                         _buildTermsAndPrivacyText(_appTheme),
 
-                        RoundedColorButton(
-                          backgroundColor: _appTheme.accentColor,
-                          textColor: _appTheme.primaryColorWithDark(0.50),
+                        RoundRectButton(
                           text: _appScreenText['signup'],
                           fontSize: 14.dp,
-                          onTapFunction: () => _handleSignUpClick(),
+                          onTap: () => _handleSignUpClick(),
+                          theme: appTheme,
                         ),
                       ],
                     ),

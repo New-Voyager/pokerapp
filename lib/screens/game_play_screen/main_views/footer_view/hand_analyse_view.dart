@@ -21,9 +21,9 @@ import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/bottom_
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/bottom_sheets/last_hand_analyse_bottomsheet.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/bottom_sheets/player_stats_bottomsheet.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/bottom_sheets/table_result_bottomsheet.dart';
-import 'package:pokerapp/screens/game_play_screen/widgets/game_circle_button.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/icon_with_badge.dart';
 import 'package:pokerapp/services/app/player_service.dart';
+import 'package:pokerapp/widgets/buttons.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
@@ -308,7 +308,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                 return const SizedBox.shrink();
 
               final approval = SvgPicture.asset(
-                'assets/images/game/clipboard.svg',
+                '',
                 width: 16,
                 height: 16,
                 color: theme.primaryColorWithDark(),
@@ -317,7 +317,8 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
               return IconWithBadge(
                 count: value.approvalList.length,
                 onClickFunction: () => onClickPendingBuyInApprovals(context),
-                child: GameCircleButton(child: approval),
+                child: CircleImageButton(
+                    svgAsset: 'assets/images/game/clipboard.svg', theme: theme),
               );
             },
           ),
@@ -334,67 +335,55 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
   //   vnShowMenuItems.value = true;
   // }
 
-  Widget _buildMenuButton({
-    @required String title,
-    Widget child,
-    IconData iconData,
-    String imagePath,
-    VoidCallback onClick,
-  }) {
-    final tmp = title.split(' ');
-    if (tmp.length > 1) {
-      title = tmp[0] + '\n' + tmp[1];
-    }
+  // Widget _buildMenuButton({
+  //   @required String title,
+  //   Widget child,
+  //   IconData iconData,
+  //   String imagePath,
+  //   VoidCallback onClick,
+  // }) {
+  //   final tmp = title.split(' ');
+  //   if (tmp.length > 1) {
+  //     title = tmp[0] + '\n' + tmp[1];
+  //   }
 
-    return Container(
-      margin: EdgeInsets.only(right: 8.0),
-      child: GestureDetector(
-        onTap: onClick,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // button
-            GameCircleButton(
-              child: child,
-              iconData: iconData,
-              imagePath: imagePath,
-            ),
+  //   return Container(
+  //     margin: EdgeInsets.only(right: 8.0),
+  //     child: GestureDetector(
+  //       onTap: onClick,
+  //       child: Column(
+  //         mainAxisSize: MainAxisSize.min,
+  //         children: [
+  //           // button
+  //           GameCircleButton(
+  //             child: child,
+  //             iconData: iconData,
+  //             imagePath: imagePath,
+  //           ),
 
-            // text
-            Text(
-              title,
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.white),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  //           // text
+  //           Text(
+  //             title,
+  //             textAlign: TextAlign.center,
+  //             style: TextStyle(color: Colors.white),
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget _buildMenuWidget(BuildContext context) {
     AppTheme theme = AppTheme.getTheme(context);
-    Widget optionButton = Transform.rotate(
-        angle: math.pi / 2,
-        child: Icon(
-          Icons.expand_less,
-          color:
-              theme.primaryColorWithDark(), //AppColorsNew.newGreenButtonColor,
-        ));
-    Widget closeButton = Transform.rotate(
-        angle: -math.pi / 2,
-        child: Icon(
-          Icons.expand_less,
-          color:
-              theme.primaryColorWithDark(), //AppColorsNew.newGreenButtonColor,
-        ));
+
     return Stack(
       alignment: Alignment.centerLeft,
       children: [
         // MAIN MENU
-        GameCircleButton(
-          child: optionButton,
-          onClickHandler: () => vnShowMenuItems.value = true,
+        CircleImageButton(
+          icon: Icons.navigate_next,
+          onTap: () => vnShowMenuItems.value = true,
+          theme: theme,
         ),
 
         // Other options
@@ -408,47 +397,52 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                 // other menu buttons
 
                 // menu close button
-                _buildMenuButton(
-                    title: 'Close',
-                    child: closeButton,
-                    onClick: () {
+                CircleImageButton(
+                    theme: theme,
+                    caption: 'Close',
+                    icon: Icons.navigate_before,
+                    onTap: () {
                       vnShowMenuItems.value = false;
                     }),
 
                 // last hand
-                _buildMenuButton(
-                    title: 'Prev',
-                    imagePath: AppAssetsNew.lastHandPath,
-                    onClick: () {
+                CircleImageButton(
+                    theme: theme,
+                    caption: 'Prev',
+                    svgAsset: AppAssetsNew.lastHandPath,
+                    onTap: () {
                       vnShowMenuItems.value = false;
                       onClickViewHand(context);
                     }),
 
                 // game history
-                _buildMenuButton(
-                    title: 'History',
-                    imagePath: AppAssetsNew.handHistoryPath,
-                    onClick: () {
+                CircleImageButton(
+                    theme: theme,
+                    caption: 'History',
+                    svgAsset: AppAssetsNew.handHistoryPath,
+                    onTap: () {
                       vnShowMenuItems.value = false;
                       onClickViewHandAnalysis(context);
                     }),
 
                 // High hand track
                 widget.gameState.gameInfo.highHandTracked ?? false
-                    ? _buildMenuButton(
-                        title: 'HH',
-                        imagePath: AppAssetsNew.hhPath,
-                        onClick: () {
+                    ? CircleImageButton(
+                        theme: theme,
+                        caption: 'HH',
+                        svgAsset: AppAssetsNew.hhPath,
+                        onTap: () {
                           vnShowMenuItems.value = false;
                           onClickHighHand(context);
                         })
                     : SizedBox.shrink(),
 
                 // game info
-                _buildMenuButton(
-                    title: 'Info',
-                    iconData: Icons.info_outline_rounded,
-                    onClick: () {
+                CircleImageButton(
+                    theme: theme,
+                    caption: 'Info',
+                    icon: Icons.info_outline_rounded,
+                    onTap: () {
                       vnShowMenuItems.value = false;
                       onGameInfoBottomSheet(context);
                     }),
@@ -456,20 +450,22 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                 widget.gameState.gameSettings.showResult ?? false
                     ?
                     // result table
-                    _buildMenuButton(
-                        title: 'Result',
-                        imagePath: AppAssetsNew.tableResultPath,
-                        onClick: () {
+                    CircleImageButton(
+                        theme: theme,
+                        caption: 'Result',
+                        svgAsset: AppAssetsNew.tableResultPath,
+                        onTap: () {
                           vnShowMenuItems.value = false;
                           onTableBottomSheet(context);
                         })
                     : SizedBox.shrink(),
 
                 // player stack
-                _buildMenuButton(
-                    title: 'Stats',
-                    imagePath: AppAssetsNew.playerStatsPath,
-                    onClick: () {
+                CircleImageButton(
+                    theme: theme,
+                    caption: 'Stats',
+                    svgAsset: AppAssetsNew.playerStatsPath,
+                    onTap: () {
                       vnShowMenuItems.value = false;
                       onPlayerStatsBottomSheet(context);
                     }),
@@ -639,9 +635,10 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
         },
         child: Row(
           children: [
-            GameCircleButton(
-              onClickHandler: null,
-              imagePath: AppAssetsNew.handHistoryPath,
+            CircleImageButton(
+              onTap: null,
+              theme: theme,
+              svgAsset: AppAssetsNew.handHistoryPath,
             ),
             SizedBox(width: 5),
             Text(

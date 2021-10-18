@@ -10,8 +10,8 @@ import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/formatter.dart';
+import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
-import 'package:pokerapp/widgets/round_color_button.dart';
 import 'package:provider/provider.dart';
 
 class AnnouncementsView extends StatefulWidget {
@@ -85,13 +85,10 @@ class _AnnouncementsViewState extends State<AnnouncementsView> {
                           Visibility(
                             visible: (widget.clubModel.isOwner ||
                                 widget.clubModel.isManager),
-                            child: RoundedColorButton(
-                              text: "+ ${_appScreenText['NEW']}",
-                              backgroundColor: theme.accentColor,
-                              textColor: theme.primaryColorWithDark(),
-                              onTapFunction: () =>
-                                  _handleNewAnnouncement(theme),
-                            ),
+                            child: RoundRectButton(
+                                text: "+ ${_appScreenText['NEW']}",
+                                onTap: () => _handleNewAnnouncement(theme),
+                                theme: theme),
                           ),
                         ],
                       ),
@@ -222,19 +219,18 @@ class _AnnouncementsViewState extends State<AnnouncementsView> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  RoundedColorButton(
+                  RoundRectButton(
                     text: _appScreenText['cancel'],
-                    textColor: theme.secondaryColor,
-                    backgroundColor: Colors.transparent,
-                    borderColor: theme.secondaryColor,
-                    onTapFunction: () => Navigator.of(context).pop(),
+                    theme: theme,
+                    // borderColor: theme.secondaryColor,
+                    onTap: () => Navigator.of(context).pop(),
                   ),
-                  RoundedColorButton(
+                  RoundRectButton(
                     text: _appScreenText['announce'],
-                    textColor: theme.primaryColorWithDark(),
-                    backgroundColor: theme.accentColor,
-                    onTapFunction: () =>
-                        Navigator.of(context).pop(_controller.text),
+                    onTap: () {
+                      Navigator.of(context).pop(_controller.text);
+                    },
+                    theme: theme,
                   ),
                 ],
               ),

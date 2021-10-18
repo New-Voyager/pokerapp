@@ -11,11 +11,10 @@ import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_config.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
-import 'package:pokerapp/screens/game_play_screen/widgets/game_circle_button.dart';
+import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/services/data/hive_models/player_state.dart';
 import 'package:pokerapp/widgets/cards/multiple_stack_card_views.dart';
 import 'package:pokerapp/widgets/num_diamond_widget.dart';
-import 'package:pokerapp/widgets/round_color_button.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
@@ -30,6 +29,7 @@ class ResultOptionsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final gameState = GameState.getState(context);
+    final theme = AppTheme.getTheme(context);
     final bool isRabbitHuntAllowed = gameState.gameInfo.allowRabbitHunt;
     return Consumer2<HandResultState, RabbitState>(
       builder: (context, vnfs, rb, __) {
@@ -102,19 +102,21 @@ class ResultOptionsWidget extends StatelessWidget {
               children: [
                 // hole card selection button
                 _showEye
-                    ? GameCircleButton(
-                        iconData: Icons.visibility_rounded,
-                        onClickHandler: () => _markAllCardsAsSelected(context),
+                    ? CircleImageButton(
+                        icon: Icons.visibility_rounded,
+                        onTap: () => _markAllCardsAsSelected(context),
+                        theme: theme,
                       )
                     : const SizedBox.shrink(),
                 SizedBox(width: 10.pw),
                 // rabbit hunt button
                 _showRabbit
-                    ? GameCircleButton(
-                        onClickHandler: () {
+                    ? CircleImageButton(
+                        onTap: () {
                           onRabbitTap(rb.copy(), context);
                         },
-                        imagePath: AppAssets.rabbit,
+                        theme: theme,
+                        svgAsset: AppAssets.rabbit,
                       )
                     : const SizedBox.shrink(),
               ],
@@ -297,11 +299,10 @@ class ResultOptionsWidget extends StatelessWidget {
 
         // visible button
 
-        RoundedColorButton(
-          onTapFunction: () => _onRevealButtonTap(vnIsRevealed),
-          backgroundColor: theme.accentColor,
-          textColor: theme.primaryColorWithDark(),
+        RoundRectButton(
+          onTap: () => _onRevealButtonTap(vnIsRevealed),
           text: "Reveal",
+          theme: theme,
           icon: Icon(
             Icons.visibility,
             color: theme.primaryColorWithDark(),
@@ -326,13 +327,12 @@ class ResultOptionsWidget extends StatelessWidget {
         // sep
         const SizedBox(width: 10.0),
 
-        RoundedColorButton(
-          onTapFunction: () {
+        RoundRectButton(
+          onTap: () {
             _onShareButtonTap(context, rs);
           },
           text: "Share",
-          backgroundColor: theme.accentColor,
-          textColor: theme.primaryColorWithDark(),
+          theme: theme,
           icon: Icon(
             Icons.share_rounded,
             color: theme.primaryColorWithDark(),

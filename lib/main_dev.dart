@@ -23,6 +23,8 @@ import 'main.dart';
 import 'models/ui/app_text.dart';
 import 'package:sizer/sizer.dart';
 
+import 'models/ui/app_theme_styles.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // Register all the models and services before the app starts
@@ -105,12 +107,13 @@ class _MyAppState extends State<MyApp> {
 
     //this.nats = Nats(context);
     print('Firebase initialized successfully');
+    final style = getAppStyle('default');
     return MultiProvider(
       /* PUT INDEPENDENT PROVIDERS HERE */
       providers: [
         // theme related provider
         ListenableProvider<AppTheme>(
-          create: (_) => AppTheme(AppThemeData()),
+          create: (_) => AppTheme(AppThemeData(style: style)),
         ),
 
         ListenableProvider<PendingApprovalsState>(
