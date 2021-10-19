@@ -21,6 +21,7 @@ import 'package:pokerapp/services/encryption/encryption_service.dart';
 import 'package:pokerapp/services/game_play/action_services/action_handler.dart';
 import 'package:pokerapp/services/game_play/action_services/newhand_handler.dart';
 import 'package:pokerapp/services/game_play/action_services/result_handler_v2.dart';
+import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:provider/provider.dart';
@@ -177,6 +178,9 @@ class HandActionProtoService {
     int amount,
   }) async {
     assert(action != null);
+    if (TestService.isTesting) {
+      return;
+    }
 
     final actionState = gameState.actionState;
 

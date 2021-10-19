@@ -363,11 +363,13 @@ class _FooterActionViewState extends State<FooterActionView> {
             actionWidget = _buildRoundButton(
               isSelected: _showOptions,
               text: action.actionName,
-              onTap: () => setState(() {
-                _showOptions = !_showOptions;
-                betWidgetShown = true;
-                widget.isBetWidgetVisible?.call(_showOptions);
-              }),
+              onTap: () {
+                setState(() {
+                  _showOptions = !_showOptions;
+                  betWidgetShown = true;
+                  widget.isBetWidgetVisible?.call(_showOptions);
+                });
+              },
               theme: theme,
             );
           } else {
@@ -375,7 +377,7 @@ class _FooterActionViewState extends State<FooterActionView> {
             actionWidget = CircleImageButton(
               theme: theme,
               icon: Icons.close,
-              onTap: (BuildContext context) {
+              onTap: () {
                 setState(() {
                   _showOptions = !_showOptions;
                   betWidgetShown = false;

@@ -17,6 +17,7 @@ import 'package:pokerapp/utils/numeric_keyboard2.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:provider/provider.dart';
 import 'package:sleek_circular_slider/sleek_circular_slider.dart';
+import 'package:shimmer/shimmer.dart';
 
 class BetWidget extends StatelessWidget {
   final Function onSubmitCallBack;
@@ -82,52 +83,40 @@ class BetWidget extends StatelessWidget {
     final boardAttributes = gameState.getBoardAttributes(context);
     final imageBytes = gameState.assets.getBetImage();
     Widget betImage;
-    final double s = 30.0.dp;
+    final double s = 32.pw;
 
     betImage = Image.memory(
       imageBytes,
       height: s,
       width: s,
     );
-    // SvgPicture.string(
-    //   _getBetChipSvg(theme),
-    //   height: s,
-    //   width: s,
-    // ),
+    Widget betChipImage = Stack(
+      alignment: Alignment.center,
+      children: [
+        // bet coin
+        Transform.scale(
+          scale: boardAttributes.betImageScale,
+          child: betImage,
+        ),
+        // bet text
+        Text('BET', style: TextStyle(fontSize: 12.dp)),
+      ],
+    );
     final Widget betChipWidget = Container(
       height: s,
       width: s,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          // bet coin
-          Transform.scale(
-            scale: boardAttributes.betImageScale,
-            child: betImage,
-          ),
-
-          // bet text
-          IgnorePointer(
-            child: AnimatedTextKit(
-              // isRepeatingAnimation: true,
-              repeatForever: true,
-              animatedTexts: [
-                ColorizeAnimatedText(
-                  'BET',
-                  textStyle: colorizeTextStyle,
-                  colors: colorizeColors,
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
+      child: betChipImage,
+      // Shimmer.fromColors(
+      //     baseColor: Colors.transparent,
+      //     highlightColor: Colors.white.withOpacity(0.50),
+      //     child: betChipImage,),
     );
+    //return betChipWidget;
 
     final bool isBetByTapActive =
         gameState.playerLocalConfig.tapOrSwipeBetAction;
 
-    final Widget mainWidget = _buildToolTipWith(
+    final Widget betWidget = _buildToolTipWith(
       child: IntrinsicWidth(
         child: Container(
           height: 2 * s,
@@ -144,7 +133,7 @@ class BetWidget extends StatelessWidget {
       ),
       theme: theme,
     );
-
+    final Widget mainWidget = betWidget;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -254,7 +243,7 @@ class BetWidget extends StatelessWidget {
                 CircleImageButton(
                   theme: appTheme,
                   icon: Icons.remove,
-                  onTap: (BuildContext context) {
+                  onTap: () {
                     double value = valueNotifierVal.value;
                     value--;
                     if (value < action.minRaiseAmount) {
@@ -267,7 +256,7 @@ class BetWidget extends StatelessWidget {
                 CircleImageButton(
                   theme: appTheme,
                   icon: Icons.add,
-                  onTap: (BuildContext context) {
+                  onTap: () {
                     double value = valueNotifierVal.value;
                     value++;
                     if (value > action.maxRaiseAmount) {
@@ -328,18 +317,10 @@ class BetWidget extends StatelessWidget {
               theme.primaryColorWithLight().withAlpha(50),
               theme.primaryColorWithLight().withAlpha(100),
               theme.primaryColorWithLight().withAlpha(150),
-
               theme.primaryColorWithLight().withAlpha(200),
               theme.primaryColorWithLight(),
-
               theme.primaryColor,
               theme.primaryColorWithDark(),
-              // AppColorsNew.newBorderColor,
-              // AppColorsNew.newBorderColor,
-              // AppColorsNew.newBorderColor,
-              // Colors.red,
-              // Colors.yellow,
-              // Colors.green,
             ],
           ),
           customWidths: CustomSliderWidths(
@@ -358,74 +339,75 @@ class BetWidget extends StatelessWidget {
     Option option,
     void onTap(),
     AppTheme theme,
-  }) =>
-      FittedBox(
-        fit: BoxFit.fitHeight,
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 4),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              InkWell(
-                onTap: onTap,
-                child: Container(
-                  padding: isKeyboard
-                      ? const EdgeInsets.all(4)
-                      : const EdgeInsets.all(8),
-                  margin: isKeyboard
-                      ? const EdgeInsets.fromLTRB(0, 4, 0, 0)
-                      : const EdgeInsets.symmetric(vertical: 4),
-                  decoration: BoxDecoration(
-                    //color: Colors.red,
-                    //  border: Border.all(color: Colors.white, width: 1.0),
-                    shape: BoxShape.circle,
-                    gradient: RadialGradient(
-                      // begin: Alignment.topRight,
-                      // end: Alignment.bottomLeft,
-                      colors: [
-                        theme.fillInColor,
-                        theme.primaryColorWithDark(),
-                      ],
-                      stops: [
-                        0.2,
-                        0.8,
-                      ],
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: theme.secondaryColor,
-                        offset: Offset(0, 1),
-                        blurRadius: 0.5,
-                        spreadRadius: 0.5,
-                      )
+  }) {
+    return FittedBox(
+      fit: BoxFit.fitHeight,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 4),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            InkWell(
+              onTap: onTap,
+              child: Container(
+                padding: isKeyboard
+                    ? const EdgeInsets.all(4)
+                    : const EdgeInsets.all(8),
+                margin: isKeyboard
+                    ? const EdgeInsets.fromLTRB(0, 4, 0, 0)
+                    : const EdgeInsets.symmetric(vertical: 4),
+                decoration: BoxDecoration(
+                  //color: Colors.red,
+                  //  border: Border.all(color: Colors.white, width: 1.0),
+                  shape: BoxShape.circle,
+                  gradient: RadialGradient(
+                    // begin: Alignment.topRight,
+                    // end: Alignment.bottomLeft,
+                    colors: [
+                      theme.fillInColor,
+                      theme.primaryColorWithDark(),
+                    ],
+                    stops: [
+                      0.2,
+                      0.8,
                     ],
                   ),
-                  child: isKeyboard
-                      ? Icon(
-                          Icons.keyboard,
+                  boxShadow: [
+                    BoxShadow(
+                      color: theme.secondaryColor,
+                      offset: Offset(0, 1),
+                      blurRadius: 0.5,
+                      spreadRadius: 0.5,
+                    )
+                  ],
+                ),
+                child: isKeyboard
+                    ? Icon(
+                        Icons.keyboard,
+                        color: Colors.white,
+                      )
+                    : Text(
+                        "${option.text}",
+                        style: TextStyle(
+                          fontSize: 10,
                           color: Colors.white,
-                        )
-                      : Text(
-                          "${option.text}",
-                          style: TextStyle(
-                            fontSize: 10,
-                            color: Colors.white,
-                          ),
                         ),
-                ),
+                      ),
               ),
-              Text(
-                isKeyboard ? '' : '${option.amount.toInt().toString()}',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.white,
-                ),
+            ),
+            Text(
+              isKeyboard ? '' : '${option.amount.toInt().toString()}',
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.white,
               ),
-            ],
-          ),
+            ),
+          ],
         ),
-      );
+      ),
+    );
+  }
 
   Widget betAmountList(ValueNotifier<double> vnValue, AppTheme theme) {
     return Container(
@@ -512,39 +494,26 @@ class BetIconButton extends StatelessWidget {
 
           // bet text
           this.displayBetText
-              ? IgnorePointer(
-                  child: AnimatedTextKit(
-                    // isRepeatingAnimation: true,
-                    repeatForever: true,
-                    animatedTexts: [
-                      ColorizeAnimatedText(
-                        'BET',
-                        textStyle: colorizeTextStyle,
-                        colors: colorizeColors,
-                      ),
-                    ],
-                  ),
+              ? Text(
+                  'BET',
+                  style: TextStyle(fontSize: 14.dp),
                 )
+              // IgnorePointer(
+              //     child: AnimatedTextKit(
+              //       // isRepeatingAnimation: true,
+              //       repeatForever: true,
+              //       animatedTexts: [
+              //         ColorizeAnimatedText(
+              //           'BET',
+              //           textStyle: colorizeTextStyle,
+              //           colors: colorizeColors,
+              //         ),
+              //       ],
+              //     ),
+              //   )
               : Container(),
         ],
       ),
     );
   }
 }
-
-// class CustomTrackShape extends RoundedRectSliderTrackShape {
-//   Rect getPreferredRect({
-//     @required RenderBox parentBox,
-//     Offset offset = Offset.zero,
-//     @required SliderThemeData sliderTheme,
-//     bool isEnabled = false,
-//     bool isDiscrete = false,
-//   }) {
-//     final double trackHeight = sliderTheme.trackHeight;
-//     final double trackLeft = offset.dx;
-//     final double trackTop =
-//         offset.dy + (parentBox.size.height - trackHeight) / 2;
-//     final double trackWidth = parentBox.size.width;
-//     return Rect.fromLTWH(trackLeft, trackTop, trackWidth, trackHeight);
-//   }
-// }

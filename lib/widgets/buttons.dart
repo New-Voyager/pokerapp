@@ -28,7 +28,10 @@ class RoundRectButton extends StatelessWidget {
 
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: this.onTap,
+      onTap: () {
+        // playsound
+        this.onTap();
+      },
       borderRadius: BorderRadius.circular(20.0),
       child: Container(
         padding: EdgeInsets.symmetric(
@@ -88,7 +91,10 @@ class RoundRectButton2 extends StatelessWidget {
 
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: this.onTap,
+      onTap: () {
+        // playsound
+        this.onTap();
+      },
       borderRadius: BorderRadius.circular(20.pw),
       child: Container(
         padding: EdgeInsets.symmetric(
@@ -118,7 +124,7 @@ class RoundRectButton2 extends StatelessWidget {
 
 class CircleImageButton extends StatelessWidget {
   CircleImageButton({
-    this.onTap,
+    @required this.onTap,
     @required this.theme,
     this.asset,
     this.svgAsset,
@@ -161,7 +167,10 @@ class CircleImageButton extends StatelessWidget {
     }
 
     return InkWell(
-      onTap: this.onTap,
+      onTap: () {
+        // play sound
+        this.onTap();
+      },
       borderRadius: BorderRadius.circular(20),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -221,7 +230,10 @@ class RotateImagesButton extends StatelessWidget {
     );
 
     return InkWell(
-      onTap: this.onTap,
+      onTap: () {
+        // play sound
+        this.onTap();
+      },
       borderRadius: BorderRadius.circular(20),
       child: Column(
         children: [
@@ -258,7 +270,10 @@ class ConfirmYesButton extends StatelessWidget {
 
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: this.onTap,
+      onTap: () {
+        // playsound
+        this.onTap();
+      },
       borderRadius: BorderRadius.circular(12.0),
       child: Container(
         width: 24.0,
@@ -294,7 +309,10 @@ class ConfirmNoButton extends StatelessWidget {
 
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: this.onTap,
+      onTap: () {
+        // playsound
+        this.onTap();
+      },
       borderRadius: BorderRadius.circular(12.0),
       child: Container(
         width: 24.0,

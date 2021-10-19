@@ -24,6 +24,7 @@ import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/bottom_
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/bottom_sheets/table_result_bottomsheet.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/icon_with_badge.dart';
 import 'package:pokerapp/services/app/player_service.dart';
+import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
@@ -76,6 +77,9 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
   }
 
   _pollPendingApprovals() async {
+    if (TestService.isTesting || widget.gameState.customizationMode) {
+      return;
+    }
     log('refinements: _pollPendingApprovals is invoked');
     //log('0-0-0-0- Polling for pending approvals');
     final approvals = await PlayerService.getPendingApprovals();
