@@ -142,7 +142,11 @@ class CircleImageButton extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget image = Container();
     if (asset != null) {
-      image = Image.asset(asset);
+      image = ColorFiltered(
+        child: Image.asset(asset),
+        colorFilter: ColorFilter.mode(
+            theme.circleImageButtonImageColor, BlendMode.srcATop),
+      );
     } else if (svgAsset != null) {
       image = SvgPicture.asset(
         svgAsset,

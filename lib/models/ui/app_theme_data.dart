@@ -111,4 +111,22 @@ class AppThemeData {
       "betAssetId": this.betAssetId,
     };
   }
+
+  AppThemeData copyWith({
+    AppThemeStyle style,
+    String tableAssetId,
+    String backDropAssetId,
+    String cardFaceAssetId,
+    String cardBackAssetId,
+    String betAssetId,
+  }) {
+    return AppThemeData(
+      style: style ?? this.style,
+      tableAssetId: tableAssetId ?? this.tableAssetId,
+      backDropAssetId: backDropAssetId ?? this.backDropAssetId,
+      cardFaceAssetId: cardFaceAssetId ?? this.cardFaceAssetId,
+      cardBackAssetId: cardBackAssetId ?? this.cardBackAssetId,
+      betAssetId: betAssetId ?? this.betAssetId,
+    );
+  }
 }

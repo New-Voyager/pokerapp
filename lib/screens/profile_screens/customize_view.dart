@@ -22,60 +22,51 @@ class CustomizeScreen extends StatefulWidget {
 }
 
 class _CustomizeScreenState extends State<CustomizeScreen> {
-  List<AppThemeStyle> themeList = getAppStyles().values.toList();
-  List<AppThemeStyle> themeList2 = [
-    // AppThemeData(
-    //   roundedButtonBackgroundColor: Color(0xFFD89E40),
-    //   roundedButton2BackgroundColor: Color(0xFF033614),
-    //   confirmYesButtonBackgroundColor: Colors.purple,
-    //   roundedButtonTextStyle: AppStylesNew.joinTextStyle.copyWith(
-    //     color: Colors.black,
-    //     fontWeight: FontWeight.normal,
-    //     fontSize: 10.dp,
-    //   ),
-    // ),
-    // AppThemeData(
-    //   primaryColor: Colors.blueGrey.shade900,
-    //   accentColor: Colors.amber[900],
-    //   secondaryColor: Colors.blueGrey.shade400,
-    //   fillInColor: Colors.grey.shade800,
-    //   supportingColor: Colors.white,
-    // ),
-    // AppThemeData(
-    //   primaryColor: Color(0xFF082032),
-    //   accentColor: Color(0xFFFF4C29),
-    //   secondaryColor: Colors.blueGrey,
-    //   fillInColor: Color(0xFF2C394B),
-    //   supportingColor: Color(0xFFEEEEEE),
-    // ),
-    // AppThemeData(
-    //   primaryColor: Colors.blue,
-    //   accentColor: Colors.amber[900],
-    //   secondaryColor: Colors.blueGrey,
-    //   fillInColor: Colors.grey,
-    //   supportingColor: Colors.black,
-    //   roundedButtonBackgroundColor: Colors.blueGrey,
-    //   roundedButton2BackgroundColor: Colors.purple,
-    //   confirmYesButtonBackgroundColor: Colors.purple,
-    // ),
-    // AppThemeData(
-    //   primaryColor: Colors.blue,
-    //   accentColor: Colors.amber[900],
-    //   secondaryColor: Colors.blueGrey,
-    //   fillInColor: Colors.grey,
-    //   supportingColor: Colors.white70,
-    // ),
-    // AppThemeData(
-    //   primaryColor: Color(0xFFA2D2FF),
-    //   accentColor: Color(0xFFD2EB38),
-    //   secondaryColor: Color(0xFFFFFFFF),
-    //   fillInColor: Color(0xFFDFF4FE),
-    //   supportingColor: Color(0xFFF9FDFE),
-    //   navFabColor: Colors.purple,
-    // ),
-  ];
+  List<AppThemeStyle> themeStyles = getAppStyles().values.toList();
+  // List<AppThemeData> themeData = [
+  //   AppThemeData(),
+  //   // AppThemeData(
+  //   //   primaryColor: Colors.blueGrey.shade900,
+  //   //   accentColor: Colors.amber[900],
+  //   //   secondaryColor: Colors.blueGrey.shade400,
+  //   //   fillInColor: Colors.grey.shade800,
+  //   //   supportingColor: Colors.white,
+  //   // ),
+  //   // AppThemeData(
+  //   //   primaryColor: Color(0xFF082032),
+  //   //   accentColor: Color(0xFFFF4C29),
+  //   //   secondaryColor: Colors.blueGrey,
+  //   //   fillInColor: Color(0xFF2C394B),
+  //   //   supportingColor: Color(0xFFEEEEEE),
+  //   // ),
+  //   // AppThemeData(
+  //   //   primaryColor: Colors.blue,
+  //   //   accentColor: Colors.amber[900],
+  //   //   secondaryColor: Colors.blueGrey,
+  //   //   fillInColor: Colors.grey,
+  //   //   supportingColor: Colors.black,
+  //   //   roundedButtonBackgroundColor: Colors.blueGrey,
+  //   //   roundedButton2BackgroundColor: Colors.purple,
+  //   //   confirmYesButtonBackgroundColor: Colors.purple,
+  //   // ),
+  //   // AppThemeData(
+  //   //   primaryColor: Colors.blue,
+  //   //   accentColor: Colors.amber[900],
+  //   //   secondaryColor: Colors.blueGrey,
+  //   //   fillInColor: Colors.grey,
+  //   //   supportingColor: Colors.white70,
+  //   // ),
+  //   // AppThemeData(
+  //   //   primaryColor: Color(0xFFA2D2FF),
+  //   //   accentColor: Color(0xFFD2EB38),
+  //   //   secondaryColor: Color(0xFFFFFFFF),
+  //   //   fillInColor: Color(0xFFDFF4FE),
+  //   //   supportingColor: Color(0xFFF9FDFE),
+  //   //   navFabColor: Colors.purple,
+  //   // ),
+  // ];
 
-  AppThemeStyle selectedThemeData;
+  AppThemeData selectedThemeData;
   String selectedBgUrl;
   String selectedTableUrl;
   AppTextScreen _appScreenText;
@@ -84,8 +75,7 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
   void initState() {
     super.initState();
     _appScreenText = getAppTextScreen("customizeScreen");
-
-    selectedThemeData = themeList[0];
+    selectedThemeData = AppTheme.getTheme(context).themeData;
   }
 
   @override
@@ -122,10 +112,10 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
                           child: ListView.separated(
                             separatorBuilder: (context, index) =>
                                 AppDimensionsNew.getVerticalSizedBox(8),
-                            itemCount: themeList.length,
+                            itemCount: themeStyles.length,
                             shrinkWrap: true,
                             itemBuilder: (context, index) {
-                              final themeData = themeList[index];
+                              final themeStyle = themeStyles[index];
 
                               final int savedIndex = HiveDatasource.getInstance
                                       .getBox(BoxType.USER_SETTINGS_BOX)
@@ -134,15 +124,16 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
                               return InkResponse(
                                 onTap: () async {
                                   setState(() {
-                                    selectedThemeData = themeList[index];
+                                    selectedThemeData = selectedThemeData
+                                        .copyWith(style: themeStyle);
                                   });
                                   final settings = HiveDatasource.getInstance
                                       .getBox(BoxType.USER_SETTINGS_BOX);
                                   settings.put(
-                                      'theme', themeList[index].toMap());
+                                      'theme', selectedThemeData.toMap());
                                   settings.put('themeIndex', index);
 
-                                  // theme.updateThemeData(selectedThemeData);
+                                  theme.updateThemeData(selectedThemeData);
                                 },
                                 child: Row(
                                   children: [
@@ -152,7 +143,7 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
                                           children: [
                                             Text(
                                               //"${_appScreenText['theme']} ${index + 1}",
-                                              themeData.name,
+                                              themeStyle.name,
                                               style: AppDecorators
                                                   .getSubtitle1Style(
                                                       theme: theme),
@@ -181,32 +172,39 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
                                             Container(
                                               height: 32,
                                               width: 32,
-                                              color: themeData.primaryColor,
+                                              decoration: BoxDecoration(
+                                                color: themeStyle.primaryColor,
+                                                borderRadius: BorderRadius.only(
+                                                  bottomLeft:
+                                                      Radius.circular(8.0),
+                                                  topLeft: Radius.circular(8.0),
+                                                ),
+                                              ),
                                             ),
                                             Container(
                                               height: 32,
                                               width: 32,
-                                              color: themeData.secondaryColor,
+                                              color: themeStyle.secondaryColor,
                                             ),
                                             Container(
                                               height: 32,
                                               width: 32,
-                                              color: themeData.accentColor,
+                                              color: themeStyle.accentColor,
                                             ),
                                             Container(
                                               height: 32,
                                               width: 32,
-                                              color: themeData.fillInColor,
+                                              color: themeStyle.fillInColor,
                                             ),
                                             Container(
                                               height: 32,
                                               width: 32,
-                                              color: themeData.supportingColor,
+                                              color: themeStyle.supportingColor,
                                             ),
                                             Container(
                                               height: 32,
                                               width: 32,
-                                              color: themeData
+                                              color: themeStyle
                                                   .negativeOrErrorColor,
                                             ),
                                           ],
