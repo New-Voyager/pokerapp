@@ -237,6 +237,7 @@ class HandActionProtoService {
 
     final handMessage = proto.HandMessage(
         gameCode: _gameState.gameCode,
+        playerId: $fixnum.Int64(_gameState.currentPlayerId),
         handNum: handNum,
         seatNo: seatNo,
         messageId: messageId,
