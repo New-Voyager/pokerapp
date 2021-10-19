@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 import 'dart:math' as math;
 
@@ -45,19 +46,22 @@ class HandAnalyseView extends StatefulWidget {
 class _HandAnalyseViewState extends State<HandAnalyseView> {
   final ValueNotifier<bool> vnShowMenuItems = ValueNotifier<bool>(false);
 
+  Timer _timer;
   BuildContext _context;
   AppTextScreen _appScreenText;
-  bool disposed = false;
 
   @override
   void initState() {
-    disposed = false;
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      while (mounted) {
-        //log('0-0-0-0- inside while Polling for pending approvals');
-        await Future.delayed(Duration(seconds: 10));
-        _pollPendingApprovals();
-      }
+      // start the poll for pending approvals, every 10 seconds
+      // while (mounted) {
+      //   //log('0-0-0-0- inside while Polling for pending approvals');
+      //   await Future.delayed(Duration(seconds: 10));
+      //   _pollPendingApprovals();
+      // }
+      _timer = Timer.periodic(const Duration(seconds: 10), (_) {
+        if (mounted) _pollPendingApprovals();
+      });
     });
     _appScreenText = getAppTextScreen("handAnalyseView");
 
@@ -66,19 +70,18 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
 
   @override
   void dispose() {
-    disposed = true;
+    // cancel the poll timer
+    _timer?.cancel();
     super.dispose();
   }
 
   _pollPendingApprovals() async {
-    if (disposed) {
-      return;
-    }
+    log('refinements: _pollPendingApprovals is invoked');
     //log('0-0-0-0- Polling for pending approvals');
     final approvals = await PlayerService.getPendingApprovals();
-    if (disposed) {
-      return;
-    }
+
+    // if not mounted, return from here
+    if (!mounted) return;
     final state = Provider.of<PendingApprovalsState>(_context, listen: false);
     state.setPendingList(approvals);
   }
