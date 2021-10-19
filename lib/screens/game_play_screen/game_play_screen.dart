@@ -223,8 +223,10 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     if (widget.customizationService != null) {
       _gameState = widget.customizationService.gameState;
     } else {
-      _gameComService.gameMessaging.onPlayerInfo = this.onPlayerInfo;
-      _gameComService.gameMessaging.getMyInfo = this.getPlayerInfo;
+      if (!TestService.isTesting) {
+        _gameComService.gameMessaging.onPlayerInfo = this.onPlayerInfo;
+        _gameComService.gameMessaging.getMyInfo = this.getPlayerInfo;
+      }
 
       await _gameState.initialize(
         gameCode: _gameInfoModel.gameCode,
@@ -1054,12 +1056,16 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   }
 
   void joinAudioConference() async {
+    if (TestService.isTesting || _gameState.customizationMode) {
+      return;
+    }
     if (context != null) {
       await _gameContextObj.joinAudio(context);
       if (!_gameState.uiClosing) {
         // ui is still running
         // send stream id
         _gameState.gameMessageService.sendMyInfo();
+        _gameState.gameMessageService.requestPlayerInfo();
       }
     }
   }

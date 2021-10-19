@@ -638,7 +638,7 @@ class BoardAttributesObject extends ChangeNotifier {
 
   double get betImageScale {
     if (this._screenSize == ScreenSize.lessThan7Inches) {
-      return 1.5;
+      return 3.0;
     } else if (this._screenSize == ScreenSize.equalTo7Inches) {
       return 2.0;
     } else {
@@ -668,7 +668,7 @@ class BoardAttributesObject extends ChangeNotifier {
 
   double get betWidgetBetChipBottomGap {
     if (this._screenSize == ScreenSize.lessThan7Inches) {
-      return 10.ph;
+      return 35.ph;
     } else if (this._screenSize == ScreenSize.equalTo7Inches) {
       return 10.ph;
     } else {

@@ -79,7 +79,9 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
     //   _serverPolling();
     // });
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      _initTimer();
+      if (!TestService.isTesting) {
+        _initTimer();
+      }
     });
   }
 
@@ -161,20 +163,12 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
   // }
 
   _fetchLiveGames() async {
+    if (TestService.isTesting) {
+      return;
+    }
     log('fetching live games');
     final updatedLiveGames = await GameService.getLiveGamesNew();
     bool refresh = true;
-    // if (updatedLiveGames.length == liveGames.length) {
-    //   final prevList = liveGames.map((e) => e.gameCode).toSet();
-    //   for (final liveGame in updatedLiveGames) {
-    //     if (!prevList.contains(liveGame.gameCode)) {
-    //       refresh = true;
-    //       break;
-    //     }
-    //   }
-    // } else {
-    //   refresh = true;
-    // }
     if (refresh) {
       liveGames = updatedLiveGames;
       // liveGames.addAll(updatedLiveGames);

@@ -97,8 +97,9 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
           ActionState actionState) =>
       FooterActionView(
         gameContext: gco,
-        isBetWidgetVisible: (bool isBetWidgetVisible) =>
-            _showDarkBackgroundVn.value = isBetWidgetVisible,
+        isBetWidgetVisible: (bool isBetWidgetVisible) {
+          _showDarkBackgroundVn.value = isBetWidgetVisible;
+        },
         actionState: actionState,
       );
 
