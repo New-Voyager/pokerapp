@@ -147,9 +147,18 @@ Map<String, AppThemeStyle> getAppStyles() {
   }
   appStyles = Map<String, AppThemeStyle>();
   final defaultStyleJson = jsonDecode(defaultAppStyle);
-  
+  final style1Json = jsonDecode(style1);
+  final style2Json = jsonDecode(style2);
+  final style3Json = jsonDecode(style3);
+
   final defaultStyle = AppThemeStyle.fromJson('default', defaultStyleJson);
+  final style1_style = AppThemeStyle.fromJson('style1', style1Json);
+  final style2_style = AppThemeStyle.fromJson('style2', style2Json);
+  final style3_style = AppThemeStyle.fromJson('style3', style3Json);
   appStyles['default'] = defaultStyle;
+  appStyles['style1'] = style1_style;
+  appStyles['style2'] = style2_style;
+  appStyles['style3'] = style3_style;
 
   // add new themes here
   return appStyles;
@@ -181,6 +190,117 @@ String defaultAppStyle = '''{
   "roundedButtonBorderColor": "FF000000",
   "roundedButton2BackgroundColor": "FFFFFFFF",
   "roundButtonTextColor": "FF000000",
+  "roundButton2TextColor": "FF000000",
+  "roundedButtonTextStyle": {
+    "color": "FF000000"
+  },
+  "roundedButton2TextStyle": {
+    "color": "FF000000"
+  },
+  "confirmNoButtonBackgroundColor": "FFFF0000",
+  "confirmNoButtonIconColor": "FFFFFFFF",
+  "confirmYesButtonBackgroundColor": "FF00FF00",
+  "confirmYesButtonIconColor": "FFFFFFFF",
+
+  "handlogPreflopColor": "FF1A0E2D",
+  "handlogFlopColor": "FF101E33",
+  "handlogTurnColor": "FF072818",
+  "handlogRiverColor": "FF453A02",
+  "handlogShowdownColor": "FF44110A"
+}''';
+
+String style1 = '''{
+  "fontFamily": "Poppins",
+  "primaryColor": "FF046865",
+  "secondaryColor": "FFE4FDE1",
+  "accentColor": "FFF3E331",
+  "fillInColor": "FF269C9C",
+  "supportingColor": "FFFFFFFF",
+  "negativeOrErrorColor": "FFFA0000",
+
+  "navBgColor": "FF131615",
+  "navFabColor": "FFFFFFFF",
+  "circleImageButtonBorderColor": "FF000000",
+  "circleImageButtonBackgroundColor": "FFF3E331",
+  "circleImageButtonImageColor": "FF000000",
+  "roundedButtonBackgroundColor": "FFF3E331",
+  "roundedButtonBorderColor": "FF000000",
+  "roundedButton2BackgroundColor": "FFFFFFFF",
+  "roundButtonTextColor": "FF212121",
+  "roundButton2TextColor": "FF000000",
+  "roundedButtonTextStyle": {
+    "color": "FF000000"
+  },
+  "roundedButton2TextStyle": {
+    "color": "FF000000"
+  },
+  "confirmNoButtonBackgroundColor": "FFFF0000",
+  "confirmNoButtonIconColor": "FFFFFFFF",
+  "confirmYesButtonBackgroundColor": "FF00FF00",
+  "confirmYesButtonIconColor": "FFFFFFFF",
+
+  "handlogPreflopColor": "FF1A0E2D",
+  "handlogFlopColor": "FF101E33",
+  "handlogTurnColor": "FF072818",
+  "handlogRiverColor": "FF453A02",
+  "handlogShowdownColor": "FF44110A"
+}''';
+
+String style2 = '''{
+  "fontFamily": "Poppins",
+  "primaryColor": "FF361C34",
+  "secondaryColor": "FFFDE1F5",
+  "accentColor": "FFDE68E9",
+  "fillInColor": "FF230D21",
+  "supportingColor": "FFFFFFFF",
+  "negativeOrErrorColor": "FFFA0000",
+
+  "navBgColor": "FF131615",
+  "navFabColor": "FFFFFFFF",
+  "circleImageButtonBorderColor": "FF000000",
+  "circleImageButtonBackgroundColor": "FFFFFFFF",
+  "circleImageButtonImageColor": "FF361C34",
+  "roundedButtonBackgroundColor": "FFFFFFFF",
+  "roundedButtonBorderColor": "FF000000",
+  "roundedButton2BackgroundColor": "FFFFFFFF",
+  "roundButtonTextColor": "FF361C34",
+  "roundButton2TextColor": "FF000000",
+  "roundedButtonTextStyle": {
+    "color": "FF000000"
+  },
+  "roundedButton2TextStyle": {
+    "color": "FF000000"
+  },
+  "confirmNoButtonBackgroundColor": "FFFF0000",
+  "confirmNoButtonIconColor": "FFFFFFFF",
+  "confirmYesButtonBackgroundColor": "FF00FF00",
+  "confirmYesButtonIconColor": "FFFFFFFF",
+
+  "handlogPreflopColor": "FF1A0E2D",
+  "handlogFlopColor": "FF101E33",
+  "handlogTurnColor": "FF072818",
+  "handlogRiverColor": "FF453A02",
+  "handlogShowdownColor": "FF44110A"
+}''';
+
+String style3 = '''{
+  "fontFamily": "Poppins",
+  "primaryColor": "FF212121",
+  "secondaryColor": "FFDCAC01",
+  "accentColor": "FFDCAC01",
+  "fillInColor": "FF212121",
+  "supportingColor": "FFFFFFFF",
+  "negativeOrErrorColor": "FFFA0000",
+
+  "navBgColor": "FF131615",
+  "navFabColor": "FFFFFFFF",
+  "circleImageButtonBorderColor": "FFDCAC01",
+  "circleImageButtonBackgroundColor": "FF212121",
+  "circleImageButtonImageColor": "FFDCAC01",
+  "roundedButtonBackgroundColor": "FF212121",
+  "roundedButtonBorderColor": "FFDCAC01",
+  "roundedButton2BackgroundColor": "FFFFFFFF",
+  "roundButtonTextColor": "FFDCAC01",
   "roundButton2TextColor": "FF000000",
   "roundedButtonTextStyle": {
     "color": "FF000000"
