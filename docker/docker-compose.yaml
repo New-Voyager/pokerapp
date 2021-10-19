@@ -46,6 +46,8 @@ services:
 
   redis:
     image: ${REDIS_IMAGE}
+    # https://github.com/docker-library/redis/issues/182
+    working_dir: /var/lib/redis
     restart: always
     ports:
       - 6379:6379
