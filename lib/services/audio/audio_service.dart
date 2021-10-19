@@ -4,7 +4,7 @@ import 'dart:typed_data';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/services.dart';
 
-const String clickSound = 'assets/sound_effects/button_press.wav';
+const String clickSound = 'assets/sound_effects/button_press.mp3';
 const String betRaiseSound = 'assets/sound_effects/bet_call1.mp3';
 const String allInSound = 'assets/sound_effects/allin.mp3';
 const String foldSound = 'assets/sound_effects/fold.mp3';
@@ -12,9 +12,9 @@ const String checkSound = 'assets/sound_effects/check.mp3';
 const String dealSound = 'assets/sound_effects/deal.mp3';
 const String newHandSound = 'assets/sound_effects/new_hand.mp3';
 const String playerTurnSound = 'assets/sound_effects/player_turn.mp3';
-const String flopSound = 'assets/sound_effects/flop.wav';
-const String turnRiverSound = 'assets/sound_effects/river.wav';
-const String applauseSound = 'assets/sound_effects/applause.wav';
+const String flopSound = 'assets/sound_effects/flop.mp3';
+const String turnRiverSound = 'assets/sound_effects/river.mp3';
+const String applauseSound = 'assets/sound_effects/applause.mp3';
 const String fireworksSound = 'assets/animations/fireworks.mp3';
 
 class AudioService {
