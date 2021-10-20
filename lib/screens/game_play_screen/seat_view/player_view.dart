@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
@@ -47,6 +48,7 @@ class PlayerView extends StatefulWidget {
   final Function(Seat seat) onUserTap;
   final GameComService gameComService;
   final BoardAttributesObject boardAttributes;
+  final GameContextObject gameContextObject;
   final GameState gameState;
 
   PlayerView(
@@ -55,6 +57,7 @@ class PlayerView extends StatefulWidget {
       @required this.onUserTap,
       @required this.gameComService,
       @required this.boardAttributes,
+      @required this.gameContextObject,
       this.cardsAlignment = Alignment.centerRight,
       this.gameState})
       : super(key: key);
@@ -166,6 +169,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
       final data = await Alerts.showBottomSheetDailog(
         child: NamePlateDailog(
           gameContext: context,
+          gameContextObject: widget.gameContextObject,
           gameState: gameState,
           seatKey: widget.seat.key,
           seat: widget.seat,

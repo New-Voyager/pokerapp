@@ -54,7 +54,7 @@ class NotificationHandler {
   NotificationDetails _notificationDetails;
   FGBGType _currentAppState;
   bool initialized = false;
-  ClubsUpdateState  clubUpdateState;
+  ClubsUpdateState clubUpdateState;
 
   NotificationHandler() {
     FGBGEvents.stream.listen((event) {
@@ -101,7 +101,7 @@ class NotificationHandler {
           this.clubUpdateState.whatChanged = changed;
           this.clubUpdateState.notify();
         }
-      } catch(err) {
+      } catch (err) {
         // ignore the exception
       }
     }

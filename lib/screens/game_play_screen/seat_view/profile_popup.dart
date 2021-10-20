@@ -162,53 +162,55 @@ class _ProfilePopupState extends State<ProfilePopup> {
         ],
       );
 
-  Widget communication() => Column(
-        children: [
-          GestureDetector(
-            onTap: () {
-              setState(() {
-                _isChatOn = !_isChatOn;
-              });
-            },
-            child: Container(
-              padding: EdgeInsets.all(6),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: AppColorsNew.stickerDialogBorderColor,
-                  width: 2,
-                ),
+  Widget communication() {
+    return Column(
+      children: [
+        GestureDetector(
+          onTap: () {
+            setState(() {
+              _isChatOn = !_isChatOn;
+            });
+          },
+          child: Container(
+            padding: EdgeInsets.all(6),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: AppColorsNew.stickerDialogBorderColor,
+                width: 2,
               ),
-              child: Icon(
-                _isChatOn ? Icons.comment : Icons.change_history_outlined,
-                color: Colors.white,
-              ),
+            ),
+            child: Icon(
+              _isChatOn ? Icons.comment : Icons.change_history_outlined,
+              color: Colors.white,
             ),
           ),
-          SizedBox(height: 10),
-          GestureDetector(
-            onTap: () {
-              setState(() {
-                _isMicOn = !_isMicOn;
-              });
-            },
-            child: Container(
-              padding: EdgeInsets.all(6),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: AppColorsNew.stickerDialogBorderColor,
-                  width: 2,
-                ),
-              ),
-              child: Icon(
-                _isMicOn ? Icons.mic : Icons.mic_off,
-                color: Colors.white,
+        ),
+        SizedBox(height: 10),
+        GestureDetector(
+          onTap: () {
+            setState(() {
+              _isMicOn = !_isMicOn;
+            });
+          },
+          child: Container(
+            padding: EdgeInsets.all(6),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: AppColorsNew.stickerDialogBorderColor,
+                width: 2,
               ),
             ),
-          )
-        ],
-      );
+            child: Icon(
+              _isMicOn ? Icons.mic : Icons.mic_off,
+              color: Colors.white,
+            ),
+          ),
+        )
+      ],
+    );
+  }
 
   Widget getCloseButton() => Align(
         alignment: Alignment.centerRight,

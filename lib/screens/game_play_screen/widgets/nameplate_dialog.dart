@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
@@ -13,17 +14,22 @@ import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/app/player_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/widgets/buttons.dart';
-import 'package:pokerapp/widgets/card_form_text_field.dart';
-import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:pokerapp/widgets/num_diamond_widget.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class NamePlateDailog extends StatefulWidget {
   final GameState gameState;
+  final GameContextObject gameContextObject;
   final BuildContext gameContext;
   final Seat seat;
   final seatKey;
   const NamePlateDailog(
-      {Key key, this.gameState, this.gameContext, this.seatKey, this.seat})
+      {Key key,
+      this.gameState,
+      this.gameContextObject,
+      this.gameContext,
+      this.seatKey,
+      this.seat})
       : super(key: key);
 
   @override
@@ -55,18 +61,36 @@ class _NamePlateDailogState extends State<NamePlateDailog> {
   @override
   Widget build(BuildContext context) {
     final theme = AppTheme.getTheme(context);
+    bool playerMuted = false;
+    if (widget.gameContextObject.ionAudioConferenceService != null) {
+      playerMuted = widget.gameContextObject.ionAudioConferenceService
+          .isPlayerMuted(widget.seat.player.streamId);
+    }
     return SingleChildScrollView(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              "${widget.seat.player.name}",
-              style: AppDecorators.getHeadLine3Style(theme: theme),
-            ),
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Stack(
+                alignment: Alignment.center,
+                children: [
+                  Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                        "${widget.seat.player.name}",
+                        style: AppDecorators.getHeadLine1Style(theme: theme),
+                      )),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: NumDiamondWidget(widget.gameState.gameHiveStore),
+                  )
+                ],
+              ),
+            ],
           ),
-
           // Buttons Section
           Container(
             padding: EdgeInsets.only(top: 16, bottom: 8),
@@ -78,87 +102,63 @@ class _NamePlateDailogState extends State<NamePlateDailog> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Visibility(
-                      visible: widget.gameState.currentPlayer.isAdmin(),
-                      child: IconAndTitleWidget(
-                        icon: Icons.ac_unit,
-                        text: "Kick",
-                        onTap: () async {
-                          await PlayerService.kickPlayer(
-                              widget.gameState.gameCode,
-                              widget.seat.player.playerUuid);
-                          Alerts.showNotification(
-                              titleText:
-                                  _appText['playerWillBeRemovedAfterThisHand'],
-                              duration: Duration(seconds: 5));
-                          Navigator.of(context).pop();
-                        },
-                        child: CircleAvatar(
-                          child: Icon(
-                            Icons.exit_to_app,
-                            color: theme.primaryColorWithDark(),
-                          ),
-                          backgroundColor: theme.accentColor,
-                        ),
-                      ),
-                    ),
-                    AppDimensionsNew.getHorizontalSpace(16),
-                    IconAndTitleWidget(
-                      icon: Icons.ac_unit,
-                      text: "Host",
-                      onTap: () {
-                        Navigator.of(context).pop({"type": "host"});
-                        //  _handleLimitButtonClick(context);
-                      },
-                      child: CircleAvatar(
-                        child: Icon(
-                          Icons.horizontal_split_outlined,
-                          color: theme.primaryColorWithDark(),
-                        ),
-                        backgroundColor: theme.accentColor,
-                      ),
-                    ),
-                    AppDimensionsNew.getHorizontalSpace(16),
+                        visible: widget.gameState.currentPlayer.isAdmin(),
+                        child: CircleImageButton(
+                            theme: theme,
+                            icon: Icons.ac_unit,
+                            caption: "Kick\n",
+                            split: true,
+                            onTap: () async {
+                              await PlayerService.kickPlayer(
+                                  widget.gameState.gameCode,
+                                  widget.seat.player.playerUuid);
+                              Alerts.showNotification(
+                                  titleText: _appText[
+                                      'playerWillBeRemovedAfterThisHand'],
+                                  duration: Duration(seconds: 5));
+                              Navigator.of(context).pop();
+                            })),
+                    SizedBox(width: 16.pw),
+                    Visibility(
+                        visible: widget.gameState.currentPlayer.isHost(),
+                        child: CircleImageButton(
+                            theme: theme,
+                            icon: Icons.ac_unit,
+                            caption: 'Assign\nHost',
+                            split: true,
+                            onTap: () {
+                              Navigator.of(context).pop({"type": "host"});
+                            })),
+                    SizedBox(width: 16.pw),
+                    Visibility(
+                        visible:
+                            true, // widget.gameState.currentPlayer.isAdmin(),
+                        child: CircleImageButton(
+                          onTap: () {
+                            widget.gameContextObject.ionAudioConferenceService
+                                .muteUnmutePlayer(widget.seat.player.streamId);
+                            setState(() {});
+                          },
+                          icon: playerMuted
+                              ? Icons.volume_off
+                              : Icons.volume_mute,
+                          theme: theme,
+                          caption: playerMuted ? 'Unmute\n' : 'Mute\n',
+                          split: true,
+                        )),
+                    SizedBox(width: 16.pw),
                     Visibility(
                       visible: widget.gameState.currentPlayer.isAdmin(),
-                      child: IconAndTitleWidget(
-                        icon: Icons.ac_unit,
-                        text: "Mute",
-                        onTap: () {},
-                        child: CircleAvatar(
-                          child: Icon(
-                            Icons.volume_mute,
-                            color: theme.primaryColorWithDark(),
-                          ),
-                          backgroundColor: theme.accentColor,
-                        ),
-                      ),
+                      child: CircleImageButton(
+                          theme: theme,
+                          icon: Icons.home_repair_service_outlined,
+                          caption: "Buyin\nLimit",
+                          split: true,
+                          onTap: () {
+                            Navigator.of(context).pop({"type": "buyin"});
+                            //  _handleLimitButtonClick(context);
+                          }),
                     ),
-                    AppDimensionsNew.getHorizontalSpace(16),
-                    Visibility(
-                      visible: widget.gameState.currentPlayer.isAdmin(),
-                      child: IconAndTitleWidget(
-                        icon: Icons.home_repair_service_outlined,
-                        text: "Limit",
-                        onTap: () {
-                          Navigator.of(context).pop({"type": "buyin"});
-                          //  _handleLimitButtonClick(context);
-                        },
-                        child: CircleAvatar(
-                          child: Icon(
-                            Icons.account_balance_rounded,
-                            color: theme.primaryColorWithDark(),
-                          ),
-                          backgroundColor: theme.accentColor,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text("Avaialable: "),
-                    NumDiamondWidget(widget.gameState.gameHiveStore)
                   ],
                 ),
               ],

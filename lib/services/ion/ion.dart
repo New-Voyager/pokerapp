@@ -105,6 +105,14 @@ class IonAudioConferenceService {
   IonAudioConferenceService(this.gameState, this.chatService, this.sfuUrl,
       this.confRoom, this.player);
 
+  void updatePlayerId(String streamId, int playerId) {
+    for (final participant in participants) {
+      if (participant.streamId == streamId) {
+        participant.playerId = playerId;
+      }
+    }
+  }
+
   join() async {
     try {
       if (_connector != null) {
@@ -195,8 +203,7 @@ class IonAudioConferenceService {
   onTrack(MediaStreamTrack track, RemoteStream remoteStream) {
     // on new track
     if (track.kind == 'audio') {
-      print(
-          'RTC: ontrack: remote stream => ${remoteStream.id} stream id: ${remoteStream.stream.id} ownerTag: ${remoteStream.stream.ownerTag}');
+      log('RTC: ontrack: remote stream => ${remoteStream.id} stream id: ${remoteStream.stream.id} ownerTag: ${remoteStream.stream.ownerTag}');
       final newParticipant = Participant(stream: remoteStream, remote: true)
         ..initialize();
       participants.add(newParticipant);
@@ -315,6 +322,39 @@ class IonAudioConferenceService {
       }
     }
     return meObject;
+  }
+
+  void muteUnmutePlayer(String streamId) {
+    Participant participant = getParticipantByStreamId(streamId);
+    if (participant != null) {
+      if (participant.isMuted) {
+        participant.unmute();
+      } else {
+        participant.mute();
+      }
+    }
+  }
+
+  bool isPlayerMuted(String streamId) {
+    Participant participant = getParticipantByStreamId(streamId);
+    if (participant != null) {
+      return participant.isMuted;
+    }
+    return false;
+  }
+
+  void mutePlayer(String streamId) {
+    Participant participant = getParticipantByStreamId(streamId);
+    if (participant != null) {
+      participant.mute();
+    }
+  }
+
+  void unmutePlayer(String streamId) {
+    Participant participant = getParticipantByStreamId(streamId);
+    if (participant != null) {
+      participant.unmute();
+    }
   }
 
   void muteAll() {

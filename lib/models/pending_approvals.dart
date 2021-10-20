@@ -33,7 +33,7 @@ class PendingApprovalsState extends ChangeNotifier {
 class ClubsUpdateState extends ChangeNotifier {
   String updatedClubCode;
   String whatChanged;
-  
+
   notify() {
     notifyListeners();
   }

@@ -47,6 +47,13 @@ class PlayerInfo {
     }
     return role.isHost || role.isOwner || role.isManager;
   }
+
+  bool isHost() {
+    if (role == null) {
+      return true;
+    }
+    return role.isHost;
+  }
 }
 
 class PlayerNotes {

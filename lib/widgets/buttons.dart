@@ -161,9 +161,16 @@ class CircleImageButton extends StatelessWidget {
     } else if (icon != null) {
       image = Icon(
         icon,
-        size: 24,
+        size: 24.pw,
         color: theme.circleImageButtonImageColor,
       );
+    }
+    TextStyle textStyle = TextStyle(
+      fontSize: 12.dp,
+      color: Colors.white, //theme.circleImageButtonBorderColor,
+    );
+    if (theme.circleImageButtonTextStyle != null) {
+      textStyle = textStyle.merge(theme.circleImageButtonTextStyle);
     }
 
     return InkWell(
@@ -176,23 +183,24 @@ class CircleImageButton extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            width: 40.0,
-            height: 40.0,
-            padding: const EdgeInsets.all(6),
+            width: 32.pw,
+            height: 32.pw,
+            padding: EdgeInsets.all(3.pw),
             decoration: BoxDecoration(
               color: theme.circleImageButtonBackgroundColor,
               border: Border.all(
                   color: theme.circleImageButtonBorderColor, width: 2.0),
-              borderRadius: BorderRadius.circular(20.0),
+              borderRadius: BorderRadius.circular(20.pw),
             ),
             child: Center(child: image),
           ),
           (caption != null)
               ? Padding(
-                  padding: const EdgeInsets.only(top: 8),
+                  padding: EdgeInsets.only(top: 8.pw),
                   child: Text(
                     caption,
-                    style: theme.circleImageButtonTextStyle,
+                    style: textStyle,
+                    textAlign: TextAlign.center,
                   ),
                 )
               : Container(),

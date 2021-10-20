@@ -1077,7 +1077,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       final seat = _gameState.getSeatByPlayer(info.playerId);
       if (seat != null && seat.player != null) {
         final player = seat.player;
-        log('PlayerInfo: name: ${player.name} streamId: ${player.streamId} namePlateId: ${player.namePlateId}');
+        log('RTC: PlayerInfo: name: ${player.name} streamId: ${player.streamId} namePlateId: ${player.namePlateId}');
+        _gameContextObj.ionAudioConferenceService
+            .updatePlayerId(player.streamId, player.playerId);
         if (player.streamId != info.streamId ||
             player.namePlateId != info.namePlateId) {
           player.streamId = info.streamId;

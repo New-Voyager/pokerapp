@@ -178,6 +178,7 @@ class GameMessagingService {
     } else if (json['method'] == 'PUBLISH') {
       // another player is publishing his/her information
       final playerInfo = GamePlayerInfo.fromJson(json);
+      log('RTC: Player: ${playerInfo.playerId} streamId: ${playerInfo.streamId}');
       if (this.onPlayerInfo != null) {
         this.onPlayerInfo(playerInfo);
       }

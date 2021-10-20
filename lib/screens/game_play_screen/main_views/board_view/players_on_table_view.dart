@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
@@ -557,6 +558,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
       create: (_) => seat,
       builder: (context, _) {
         final gameState = GameState.getState(context);
+        final gameContextObject = context.read<GameContextObject>();
 
         return Consumer2<Seat, BoardAttributesObject>(
           builder: (_, seat, boardAttributes, __) {
@@ -577,6 +579,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
               child: Opacity(
                 opacity: seatActive ? 1.0 : 0.50,
                 child: PlayerView(
+                  gameContextObject: gameContextObject,
                   gameState: widget.gameState,
                   gameComService: widget.gameComService,
                   seat: seat,

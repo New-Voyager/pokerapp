@@ -238,6 +238,7 @@ class _CommunicationViewState extends State<CommunicationView> {
             CircleImageButton(
               theme: theme,
               icon: icon,
+              onTap: onClick,
             ),
 
             // text
