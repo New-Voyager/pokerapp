@@ -39,7 +39,6 @@ class AppCoinService {
           duplicate: Boolean
         }      
       */
-    print("result $result");
     return result.data['verify']['valid'] ?? false;
   }
 

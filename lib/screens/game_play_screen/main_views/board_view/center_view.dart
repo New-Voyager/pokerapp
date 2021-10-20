@@ -224,7 +224,6 @@ class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
     // don't show start/pause buttons for bot script games
     if (!gameState.isBotGame) {
       if (isGamePausedOrWaiting || !gameState.isGameRunning) {
-        print('_buildGamePauseOptions');
         children.add(Align(
             alignment: Alignment.center,
             child: _buildGamePauseOptions(

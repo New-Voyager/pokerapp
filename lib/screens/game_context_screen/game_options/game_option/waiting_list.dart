@@ -61,8 +61,6 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
 
   getAllWaitingPlayers() async {
     final result = await WaitlistService.listOfWaitingPlayer(widget.gameCode);
-    print("gameCode ${widget.gameCode}");
-    print("gameCode ${widget.playerUuid}");
 
     if (result != null) {
       allWaitingListPlayers = result;
@@ -241,7 +239,6 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
                       AppConstants.IN_QUEUE;
                 }
                 widget.gameState.redrawFooter();
-                print("result = $result");
               } else {
                 widget.gameState.gameInfo.playerGameStatus =
                     AppConstants.NOT_PLAYING;
@@ -252,7 +249,6 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
                       AppConstants.NOT_PLAYING;
                 }
                 widget.gameState.redrawFooter();
-                print("result check $result");
               }
               widget.gameState.redrawFooter();
               getAllWaitingPlayers();

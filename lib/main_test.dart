@@ -55,14 +55,11 @@ class MyApp extends StatelessWidget {
       builder: (context, snapshot) {
         // Check for errors
         if (snapshot.hasError) {
-          print('Firebase initialization failed! ${snapshot.error.toString()}');
           return Text('Something went wrong!');
         }
 
         // Once complete, show your application
         if (snapshot.connectionState == ConnectionState.done) {
-          //this.nats = Nats(context);
-          print('Firebase initialized successfully');
           return MultiProvider(
             /* PUT INDEPENDENT PROVIDERS HERE */
             providers: [

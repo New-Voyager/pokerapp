@@ -95,14 +95,12 @@ class LocationUpdates {
       if (result != ConnectivityResult.none) {
         // get the ip address
         for (var interface in await NetworkInterface.list()) {
-          print('== Interface: ${interface.name} ==');
           if (interface.name == 'wlan0') {
             for (var addr in interface.addresses) {
               if (addr.type == InternetAddressType.IPv4) {
                 ipAddress = addr.address;
               }
-              print(
-                  '${addr.address} ${addr.host} ${addr.isLoopback} ${addr.rawAddress} ${addr.type.name}');
+              log('${addr.address} ${addr.host} ${addr.isLoopback} ${addr.rawAddress} ${addr.type.name}');
             }
           }
         }

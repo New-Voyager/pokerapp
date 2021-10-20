@@ -198,9 +198,6 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
   void onAnimation(ChatMessage message) async {
     Offset from;
     Offset to;
-    print(
-      'Here ${message.messageId} from player ${message.fromSeat} to ${message.toSeat}. Animation: ${message.animationID} Enabled: ${widget.gameState.playerLocalConfig.animations}',
-    );
 
     if (message.fromSeat == null || message.toSeat == null) {
       return;
@@ -609,12 +606,8 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
   }) {
     seatPosIndex++;
 
-    //print('1123maxPlayers: $maxPlayers');
-
     //log('board width: $widthOfBoard height: $heightOfBoard');
     Map<int, SeatPos> seatPosLoc = getSeatLocations(maxPlayers);
-
-    //print('1123seatPosLoc: $seatPosLoc');
 
     SeatPos seatPos = seatPosLoc[seatPosIndex];
     SeatPosAttribs seatAttribs = boardAttribs.getSeatPosAttrib(seatPos);

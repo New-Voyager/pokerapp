@@ -47,10 +47,6 @@ Future<void> saveFirebaseToken(String token) async {
 }
 
 Future<void> _backgroundMessageHandler(RemoteMessage message) async {
-  print('background message = ${message.data}');
-  print('message type = ${message.data['type']}');
-  print('message text = ${message.data['text']}');
-  print('message title = ${message.data['title']}');
   _showNotification(message, background: true);
 }
 
@@ -72,7 +68,7 @@ FlutterLocalNotificationsPlugin _initLocalNotifications() {
 }
 
 Future _onTapNotification(String payload) async {
-  print('_onTapNotification = $payload');
+  log('_onTapNotification = $payload');
 }
 
 Future _showNotification(RemoteMessage message,
@@ -164,10 +160,6 @@ void registerPushNotifications() {
   FirebaseMessaging.onBackgroundMessage(_backgroundMessageHandler);
 
   FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-    print('Got a message whilst in the foreground!');
-    print('Message data: ${message.data}');
-
     _showNotification(message, background: false);
   });
-  log('Registered for push notifications');
 }

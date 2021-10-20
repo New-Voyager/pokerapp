@@ -139,7 +139,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         gameInfo = widget.customizationService.gameInfo;
         this._currentPlayer = widget.customizationService.currentPlayer;
       } catch (e, s) {
-        print('test data loading error: $s');
         return null;
       }
     } else if (TestService.isTesting) {
@@ -150,7 +149,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         gameInfo = TestService.gameInfo;
         this._currentPlayer = TestService.currentPlayer;
       } catch (e, s) {
-        print('test data loading error: $s');
         return null;
       }
     } else {
@@ -298,8 +296,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     }
 
     _initiated = true;
-
-    print('gameInfo players: ${_gameInfoModel.playersInSeats}');
 
     // setting voiceChatEnable to true if gameComService is active
     log('gameComService.active = ${_gameComService.active}');
@@ -966,9 +962,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     if (TestService.isTesting) {
       try {
         this._currentPlayer = TestService.currentPlayer;
-      } catch (e) {
-        print('test data loading error: $e');
-      }
+      } catch (e) {}
     }
     if (widget.customizationService != null) {
       this._currentPlayer = widget.customizationService.currentPlayer;

@@ -224,7 +224,6 @@ class SeatChangeService {
       ),
     );
     if (result.hasException) return false;
-    print("result $result");
     return result.data['addClubChatText'] ?? false;
   }
 

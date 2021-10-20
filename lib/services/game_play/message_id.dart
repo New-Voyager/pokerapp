@@ -17,12 +17,10 @@ class MessageId {
       }
       ret = lastMessageIds[gameCode];
     });
-    // print('MessageId.get gameCode: $gameCode, ret: $ret');
     return ret;
   }
 
   static void set(String gameCode, int messageId) {
-    // print('MessageId.set gameCode: $gameCode, messageId: $messageId');
     lock.synchronized(() {
       lastMessageIds[gameCode] = messageId;
     });
@@ -38,7 +36,6 @@ class MessageId {
       }
       ret = lastMessageIds[gameCode];
     });
-    // print('MessageId.incrementAndGet gameCode: $gameCode, ret: $ret');
     return ret;
   }
 }

@@ -190,7 +190,6 @@ class PlayerService {
       "playerId": playerUuid
     };
 
-    print(_query);
     QueryResult result = await _client.query(
       QueryOptions(document: gql(_query), variables: variables),
     );
@@ -221,7 +220,6 @@ class PlayerService {
       "playerId": playerUuid
     };
 
-    print(_query);
     QueryResult result = await _client.query(
       QueryOptions(document: gql(_query), variables: variables),
     );
@@ -251,7 +249,6 @@ class PlayerService {
       "playerId": playerUuid
     };
 
-    print(_query);
     QueryResult result = await _client.query(
       QueryOptions(document: gql(_query), variables: variables),
     );

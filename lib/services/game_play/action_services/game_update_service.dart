@@ -419,8 +419,6 @@ class GameUpdateService {
     int newSeatNo = playerUpdate['seatNo'] as int;
     int oldSeatNo = playerUpdate['oldSeat'] as int;
 
-    print('\n\n newSeat: $newSeatNo : oldSeat: $oldSeatNo \n\n');
-
     int stack = playerUpdate['stack'] as int;
 
     final gameInfo = _gameState.gameInfo;

@@ -127,13 +127,6 @@ class FilledPathPainter extends CustomPainter {
     Size viewBoxSize = Size(
         size.width * progressRatio.width, size.height * progressRatio.height);
 
-    // print(
-    //     'Path bounds: $pathBounds, viewBoxSize: $viewBoxSize Canvas Size: $size');
-
-    double aspectRat = pathBounds.width / pathBounds.height;
-
-    print(aspectRat);
-
     scaleCanvasToViewBox(
       canvas,
       viewBoxSize,
@@ -265,9 +258,6 @@ class _PlateWidgetState extends State<PlateWidget>
       progressPath =
           trimPath(path, progressLength, origin: PathTrimOrigin.begin);
     }
-
-    // log('Nameplate: percent: $percent total: ${widget.total} progress: ${widget.currentProgress}');
-    // print('Nameplate: i am here: $percent, $progressLength, ${progressPath.getBounds()}');
 
     return Container(
       child: CustomPaint(

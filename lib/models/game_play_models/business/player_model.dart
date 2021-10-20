@@ -138,9 +138,6 @@ class PlayerModel {
     if (data['buyInExpTime'] != null) {
       // buyin time is kept in UTC
       this.buyInTimeExpAt = DateTime.tryParse(data['buyInExpTime']);
-
-      print(
-          'buyin expires at ${this.buyInTimeExpAt} now: ${now.toIso8601String()} utcNow: ${now.toUtc().toIso8601String()}');
     }
 
     if (this.status == 'IN_BREAK' && data['breakExpTime'] != null) {
@@ -150,8 +147,6 @@ class PlayerModel {
       if (data['breakStartedTime'] != null) {
         this.breakTimeStartedAt = DateTime.tryParse(data['breakStartedTime']);
       }
-      print(
-          'break time expires at ${this.breakTimeExpAt} started at: ${this.breakTimeExpAt.toIso8601String()} now: ${now.toIso8601String()}');
     }
 
     // default values
@@ -375,7 +370,6 @@ class PlayerActedState {
     if (data is ActionElement) {
       _playerAction = data.action;
       _amount = data.amount?.toDouble();
-      print('paul debug: $_playerAction $_amount');
       return;
     }
 

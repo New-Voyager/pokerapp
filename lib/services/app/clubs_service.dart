@@ -199,10 +199,8 @@ class ClubsService {
     result = await _client.query(QueryOptions(
         document: gql(hostMessageSummaryQuery), variables: variables));
 
-    print("result.data ${result.data} ${result.hasException}");
     if (result.hasException) return [];
     result.data['hostMessageSummary'].forEach((e) {
-      print("playerId ${e['playerId']}");
       allMemberMessages.add(HostMessageSummaryModel.fromJson(e));
     });
 
@@ -213,14 +211,12 @@ class ClubsService {
       {String clubCode, String player}) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     List<MessagesFromMember> messages = [];
-    print("clubCode $clubCode player $player");
     if (player != null) {
       Map<String, dynamic> variables = {"clubCode": clubCode, "player": player};
       QueryResult result;
       result = await _client.query(QueryOptions(
           document: gql(memberMessagesQuery), variables: variables));
 
-      print("result.data ${result.data} ${result.hasException}");
       if (result.hasException) return [];
       result.data['messagesFromMember'].forEach((e) {
         messages.add(MessagesFromMember.fromJson(e));
@@ -230,7 +226,6 @@ class ClubsService {
       QueryResult result;
       result = await _client.query(
           QueryOptions(document: gql(hostmessagesQuery), variables: variables));
-      print("result.data ${result.data} ${result.hasException}");
       if (result.hasException) return [];
       result.data['messagesFromHost'].forEach((e) {
         messages.add(MessagesFromMember.fromJson(e));
@@ -348,8 +343,6 @@ class ClubsService {
       MutationOptions(document: gql(_query), variables: variables),
     );
 
-    print(result.exception);
-
     if (result.hasException) {
       if (result.exception.graphqlErrors.length > 0) {
         //throw result.exception.graphqlErrors[0];
@@ -376,8 +369,6 @@ class ClubsService {
       MutationOptions(
           document: gql(createAnnouncmentQuery), variables: variables),
     );
-
-    print(result.exception);
 
     if (result.hasException) return false;
 

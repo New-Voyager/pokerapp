@@ -72,7 +72,6 @@ class DeviceInfo {
         _deviceData = _readAndroidBuildData(await deviceInfoPlugin.androidInfo);
       } else if (Platform.isIOS) {
         _deviceData = _readIosDeviceInfo(await deviceInfoPlugin.iosInfo);
-        print(_deviceData);
       }
     } on PlatformException {
       _deviceData = <String, dynamic>{

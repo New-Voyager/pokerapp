@@ -97,9 +97,7 @@ class AssetService {
         asset.downloadDir = destinationDir.path;
         asset.downloadedPath = downloadToFile;
         asset.downloaded = true;
-      } catch (e) {
-        print(e);
-      }
+      } catch (e) {}
     } else {
       asset.downloadedPath = downloadToFile;
       asset.downloaded = true;

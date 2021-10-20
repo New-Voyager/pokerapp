@@ -165,7 +165,6 @@ class StackCardView02 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<Widget> cardViews = [];
-    print('cards: ${cards.length}');
 
     if (cards != null) {
       for (int c in this.cards) {

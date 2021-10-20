@@ -68,8 +68,6 @@ class _SeatChangeBottomSheetState extends State<SeatChangeBottomSheet> {
 
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
-    // print("playerUuid ${widget.playerUuid}");
-    // print("gameCode ${widget.gameCode}");
     return Consumer<AppTheme>(
       builder: (_, theme, __) => Container(
         decoration: AppDecorators.bgRadialGradient(theme),
@@ -163,12 +161,10 @@ class _SeatChangeBottomSheetState extends State<SeatChangeBottomSheet> {
           if (isSeatChange) {
             // want to seat change
             await SeatChangeService.requestForSeatChange(widget.gameCode);
-            // print("result $result");
           } else {
             // do not want to seat change
             await SeatChangeService.requestForSeatChange(widget.gameCode,
                 cancel: true);
-            // print("result $result");
           }
           getAllSeatChangePlayers();
         },

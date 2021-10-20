@@ -100,7 +100,6 @@ class SeatChangeNotifier extends ChangeNotifier {
   }
 
   onSeatDragStart(Seat seat) {
-    // print("seatNo $seatNo");
     log('SeatChange: Drag started');
     allSeatChangeStatus[seat.localSeatPos].isDragging = true;
     for (int i = 0; i < allSeatChangeStatus.length; i++) {

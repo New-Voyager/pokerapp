@@ -227,6 +227,7 @@ class NamePlateWidget extends StatelessWidget {
                   lastRemainingTime = remainingTimeInSecs;
                 }
               }
+              seat.actionTimer.setRemainingTime(remainingTimeInSecs);
 
               return Nameplate.fromSvgString(
                   remainingTime: time

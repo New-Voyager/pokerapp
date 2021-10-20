@@ -154,7 +154,6 @@ class HandService {
     Map<String, dynamic> variables = {
       "gameCode": model.gameCode,
     };
-    // print(allHands);
     QueryResult result = await _client
         .query(QueryOptions(document: gql(allHands), variables: variables));
 
@@ -213,7 +212,6 @@ class HandService {
     QueryResult result = await _client.mutate(MutationOptions(
         document: gql(shareHandMutation), variables: variables));
     if (result.hasException) {
-      print(result.exception);
       return false;
     }
     return true;
@@ -230,10 +228,7 @@ class HandService {
     log("Variables : $variables");
     QueryResult result = await _client.mutate(
         MutationOptions(document: gql(bookmarkHand), variables: variables));
-    //print("Bookmarking API : ${result.data.values}");
-
     if (result.hasException) {
-      print("Exception in BookmarkHand: ${result.exception}");
       return false;
     }
     return true;
@@ -247,10 +242,8 @@ class HandService {
     log("Variables : $variables");
     QueryResult result = await _client.mutate(MutationOptions(
         document: gql(removeBookmarkedHand), variables: variables));
-    //print("Bookmarking API : ${result.data.values}");
 
     if (result.hasException) {
-      print("Exception in removing BookmarkHand: ${result.exception}");
       return false;
     }
     return true;
@@ -263,7 +256,6 @@ class HandService {
     ));
 
     if (result.hasException) {
-      print("Exception in BookmarkHand: ${result.exception}");
       return null;
     }
     return result.data;
@@ -280,7 +272,6 @@ class HandService {
         document: gql(bookmarkedHandsForGame), variables: variables));
 
     if (result.hasException) {
-      print("Exception in BookmarkHand for game: ${result.exception}");
       return null;
     }
     return result.data;
@@ -295,8 +286,6 @@ class HandService {
         document: gql(debugHandLogQuery), variables: variables));
 
     if (result.hasException) {
-      print(
-          "Exception in when marking a hand for debugging: ${result.exception}");
       return false;
     }
     return true;

@@ -349,7 +349,6 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
     bool showFirework = false;
     if (!openSeat ? widget.seat.player?.showFirework ?? false : false) {
       showFirework = true;
-      print('showing firework');
     }
 
     // we constrain the size to NOT shift the players widgets

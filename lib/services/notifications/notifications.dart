@@ -108,12 +108,7 @@ class NotificationHandler {
   }
 
   Future<void> backgroundMessageHandler(RemoteMessage message) async {
-    print('background message = ${message.data}');
-    print('message type = ${message.data['type']}');
-    print('message text = ${message.data['text']}');
-    print('message title = ${message.data['title']}');
     handlePlayerMessage(message.data, background: true, firebase: true);
-    //_showNotification(message, background: true);
   }
 
   Future<FlutterLocalNotificationsPlugin> _initLocalNotifications() async {
@@ -138,9 +133,7 @@ class NotificationHandler {
     return _plugin;
   }
 
-  Future _onTapNotification(String payload) async {
-    print('_onTapNotification = $payload');
-  }
+  Future _onTapNotification(String payload) async {}
 
   Future _showNotification(
     RemoteMessage message, {
@@ -235,7 +228,6 @@ class NotificationHandler {
     FirebaseMessaging.onBackgroundMessage(firebaseBackgroundMessageHandler);
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print('Got a message whilst in the foreground!');
       log('Message data: ${jsonEncode(message.data)}');
       handlePlayerMessage(message.data, background: false, firebase: true);
       //_showNotification(message, background: false);
@@ -404,10 +396,6 @@ class NotificationHandler {
 NotificationHandler notificationHandler = NotificationHandler();
 
 Future<void> firebaseBackgroundMessageHandler(RemoteMessage message) async {
-  print('background message = ${message.data}');
-  print('message type = ${message.data['type']}');
-  print('message text = ${message.data['text']}');
-  print('message title = ${message.data['title']}');
   await notificationHandler._initLocalNotifications();
   notificationHandler.handlePlayerMessage(message.data,
       background: true, firebase: true);

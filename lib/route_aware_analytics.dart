@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 
@@ -40,7 +42,7 @@ mixin RouteAwareAnalytics<T extends StatefulWidget> on State<T>
 
   Future<void> _setCurrentScreen(String routeName) async {
     routeName = routeName.substring(1);
-    print('Setting current screen to $routeName');
+    log('Setting current screen to $routeName');
     await FirebaseAnalytics()
         .logEvent(name: routeName, parameters: {"screen_name": routeName});
   }

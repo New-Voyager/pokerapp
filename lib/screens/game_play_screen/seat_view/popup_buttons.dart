@@ -65,7 +65,6 @@ class _PopupWidget extends State<PopupWidget> with TickerProviderStateMixin {
     _controller = AnimationController(vsync: this);
 
     _animationController.addListener(() {
-      // print("11234 value : ${_animationController.value}");
       setState(() {});
     });
     //Future.delayed(Duration(milliseconds: 100), () {

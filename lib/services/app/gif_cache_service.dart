@@ -75,8 +75,6 @@ class GifCacheService {
       Response response = await get(Uri.parse(previewUrl));
       await File(downloadToFile).writeAsBytes(response.bodyBytes);
 
-      print('downloaded :$query GIF to: $downloadToFile');
-
       // we dont care about the GOOD quality GIFs, thus we just save the preview ones
       gif.media.gif.url = previewUrl;
 
