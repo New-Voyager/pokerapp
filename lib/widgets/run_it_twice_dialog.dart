@@ -128,8 +128,9 @@ class RunItTwiceDialog {
     }
 
     /* if we are in testing mode just return from this function */
-    if (TestService.isTesting)
-      return print('run it twice prompt response: $playerAction');
+    if (TestService.isTesting) {
+      return;
+    }
 
     final gameContextObj = context.read<GameContextObject>();
     final gameState = context.read<GameState>();

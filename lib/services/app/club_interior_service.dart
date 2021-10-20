@@ -250,8 +250,6 @@ class ClubInteriorService {
         return null;
       }
     }
-    print("result.hasException ${result.hasException}");
-    print("result.data['status'] ${result.data['status']}");
     final jsonResponse = result.data['status'].toString();
     return jsonResponse;
   }

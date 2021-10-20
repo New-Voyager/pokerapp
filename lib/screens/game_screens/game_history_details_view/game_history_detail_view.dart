@@ -347,7 +347,6 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
   Widget stackTile(AppTheme theme) {
     if (loadingDone) {
       // loading done
-      print(_gameDetail.stack);
     }
     if (!_gameDetail.dataAggregated || !_gameDetail.playedGame) {
       return Container(

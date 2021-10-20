@@ -15,9 +15,6 @@ class TenorService {
 
     res?.results?.forEach((TenorResult tenorResult) {
       list.add(tenorResult);
-      /*  var title = tenorResult.title;
-      var media = tenorResult.media;
-      print('$title: gif : ${media?.gif?.previewUrl?.toString()}'); */
     });
     return list;
   }

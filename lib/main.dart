@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/services/graphQL/configurations/graph_ql_configuration.dart';
@@ -6,102 +8,6 @@ GraphQLConfiguration graphQLConfiguration = GraphQLConfiguration();
 final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
 
 RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
-
-// void main() async {
-//   WidgetsFlutterBinding.ensureInitialized();
-//   // Register all the models and services before the app starts
-//   InAppPurchaseConnection.enablePendingPurchases();
-
-//   await HiveDatasource.getInstance.init();
-
-//   runApp(
-//     GraphQLProvider(
-//       client: graphQLConfiguration.client,
-//       child: CacheProvider(
-//         child: MyApp(),
-//       ),
-//     ),
-//   );
-// }
-
-// class MyApp extends StatelessWidget {
-//   // Create the initialization Future outside of `build`:
-//   final Future<FirebaseApp> _initialization = Firebase.initializeApp();
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return FutureBuilder(
-//       // Initialize FlutterFire:
-//       future: _initialization,
-//       builder: (context, snapshot) {
-//         // Check for errors
-//         if (snapshot.hasError) {
-//           print('Firebase initialization failed! ${snapshot.error.toString()}');
-//           return Text('Something went wrong!');
-//         }
-
-//         // Once complete, show your application
-//         if (snapshot.connectionState == ConnectionState.done) {
-//           //this.nats = Nats(context);
-//           print('Firebase initialized successfully');
-//           return MultiProvider(
-//             /* PUT INDEPENDENT PROVIDERS HERE */
-//             providers: [
-//               ListenableProvider<PendingApprovalsState>(
-//                 create: (_) => PendingApprovalsState(),
-//               ),
-//               ListenableProvider<ClubsUpdateState>(
-//                 create: (_) => ClubsUpdateState(),
-//               ),
-//             ],
-//             builder: (context, _) => MultiProvider(
-//               /* PUT DEPENDENT PROVIDERS HERE */
-//               providers: [
-//                 Provider<Nats>(
-//                   create: (_) => Nats(context),
-//                 ),
-//               ],
-//               child: OverlaySupport.global(
-//                 child: LayoutBuilder(
-//                   builder: (context, constraints) => OrientationBuilder(
-//                     builder: (context, orientation) {
-//                       SizerUtil().init(constraints, orientation);
-//                       return MaterialApp(
-//                         title: 'Poker App',
-//                         debugShowCheckedModeBanner: false,
-//                         navigatorKey: navigatorKey,
-//                         // navigatorObservers: [
-//                         //   locator<AnalyticsService>().getAnalyticsObserver()
-//                         // ],
-//                         theme: ThemeData(
-//                           colorScheme: ColorScheme.dark(),
-//                           visualDensity: VisualDensity.adaptivePlatformDensity,
-//                           fontFamily: AppAssetsNew.fontFamilyPoppins,
-//                         ),
-//                         onGenerateRoute: Routes.generateRoute,
-//                         initialRoute: Routes.initial,
-//                         navigatorObservers: [
-//                           routeObserver,
-//                           /*  FirebaseAnalyticsObserver(
-//                               analytics: FirebaseAnalytics()),*/
-//                         ],
-//                       );
-//                     },
-//                   ),
-//                 ),
-//               ),
-//             ),
-//           );
-//         }
-//         // Otherwise, show something whilst waiting for initialization to complete
-//         return Center(
-//           child: CircularProgressIndicator(),
-//         );
-//       },
-//     );
-//   }
-// }
-
 mixin RouteAwareAnalytics<T extends StatefulWidget> on State<T>
     implements RouteAware {
   String get routeName => null;
@@ -139,7 +45,7 @@ mixin RouteAwareAnalytics<T extends StatefulWidget> on State<T>
 
   Future<void> _setCurrentScreen(String routeName) async {
     routeName = routeName.substring(1);
-    print('Setting current screen to $routeName');
+    log('Setting current screen to $routeName');
     await FirebaseAnalytics()
         .logEvent(name: routeName, parameters: {"screen_name": routeName});
   }

@@ -25,7 +25,6 @@ class UtilActionServices {
     // if I am the sender and the receiver, discard it
     // if (fromPlayerID == myPlayerID) return;
 
-    // print('this is here');
     final seat = gameState.getSeat(chatMessage.seatNo);
     if (seat != null) {
       seat.player.revealCards.addAll(chatMessage.cards);

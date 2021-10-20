@@ -76,7 +76,6 @@ class GameHiveStore {
   }
 
   bool getHoleCardsVisibilityState() {
-    print('initialized HIVE, then calling this get ${_gameBox == null}');
     // return false;
     return _gameBox.get(_HOLE_CARDS_VISIBILITY_STATE, defaultValue: false);
   }

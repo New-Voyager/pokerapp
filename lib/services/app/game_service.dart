@@ -436,7 +436,6 @@ class GameService {
     QueryResult result =
         await _client.query(QueryOptions(document: gql(liveGamesNewQuery)));
 
-    // print("result.data ${result.data} ${result.hasException}");
     if (result.hasException) {
       log("Exception In GraphQl Response: ${result.exception}");
     } else {
@@ -459,7 +458,6 @@ class GameService {
 
     QueryResult result =
         await _client.query(QueryOptions(document: gql(pastGamesQuery)));
-    // print("result.data ${result.data} ${result.hasException}");
     if (result.hasException) {
       log("Exception In GraphQl Response: ${result.exception}");
       return pastGames;
@@ -487,7 +485,6 @@ class GameService {
     QueryResult result = await _client.query(
         QueryOptions(document: gql(openSeatsQuery), variables: variables));
 
-    // print("result.data ${result.data} ${result.hasException}");
     if (result.hasException) {
       log("Exception In GraphQl Response: ${result.exception}");
     } else {
@@ -704,7 +701,6 @@ class GameService {
       ),
     );
     if (result.hasException) return false;
-    print("result $result");
     return result.data['ret'] ?? false;
   }
 
@@ -878,7 +874,6 @@ class GameService {
         MutationOptions(document: gql(_query), variables: variables),
       );
 
-      print(result.exception);
       if (result.hasException) {
         if (result.exception.graphqlErrors.length > 0) {
           return null;
@@ -914,7 +909,6 @@ class GameService {
       MutationOptions(document: gql(_query), variables: variables),
     );
 
-    print(result.exception);
     if (result.hasException) {
       if (result.exception.graphqlErrors.length > 0) {
         return null;
@@ -1090,7 +1084,6 @@ class GameService {
       ),
     );
     if (result.hasException) return false;
-    print("result $result");
     return result.data['ret'] ?? false;
   }
 

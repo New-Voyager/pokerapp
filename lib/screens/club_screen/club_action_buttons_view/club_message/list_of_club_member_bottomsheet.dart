@@ -38,7 +38,6 @@ class ListOfClubMemberBottomSheet extends StatelessWidget {
                       child: CircularProgressIndicator(),
                     );
                   }
-                  print(snapshot.data);
                   return ListView.builder(
                     itemCount: snapshot.data.length,
                     itemBuilder: (context, index) {

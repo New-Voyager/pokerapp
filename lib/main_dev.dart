@@ -94,7 +94,6 @@ class _MyAppState extends State<MyApp> {
 
     // Check for errors
     if (_error) {
-      print('Firebase initialization failed!');
       return Container(color: Colors.red);
     }
 
@@ -106,7 +105,7 @@ class _MyAppState extends State<MyApp> {
     // Once complete, show your application
 
     //this.nats = Nats(context);
-    print('Firebase initialized successfully');
+    log('Firebase initialized successfully');
     final style = getAppStyle('default');
     return MultiProvider(
       /* PUT INDEPENDENT PROVIDERS HERE */
