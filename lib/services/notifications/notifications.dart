@@ -8,6 +8,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/main.dart';
+import 'package:pokerapp/models/pending_approvals.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/overlay_notification.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
@@ -53,6 +54,7 @@ class NotificationHandler {
   NotificationDetails _notificationDetails;
   FGBGType _currentAppState;
   bool initialized = false;
+  ClubsUpdateState  clubUpdateState;
 
   NotificationHandler() {
     FGBGEvents.stream.listen((event) {
@@ -61,7 +63,8 @@ class NotificationHandler {
     });
   }
 
-  void register() async {
+  void register(ClubsUpdateState clubUpdateState) async {
+    this.clubUpdateState = clubUpdateState;
     // Get the token each time the application loads
     String token = await FirebaseMessaging.instance.getToken();
     await saveFirebaseToken(token);
@@ -88,6 +91,20 @@ class NotificationHandler {
 
   void clubNotifications(String message) {
     log('clubNotifications: $message');
+    if (this.clubUpdateState != null) {
+      try {
+        Map<String, dynamic> json = jsonDecode(message);
+        if (json['type'] == 'CLUB_UPDATED') {
+          String clubCode = json['clubCode'];
+          String changed = json['changed'];
+          this.clubUpdateState.updatedClubCode = clubCode;
+          this.clubUpdateState.whatChanged = changed;
+          this.clubUpdateState.notify();
+        }
+      } catch(err) {
+        // ignore the exception
+      }
+    }
   }
 
   Future<void> backgroundMessageHandler(RemoteMessage message) async {

@@ -4,6 +4,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/announcement_model.dart';
 import 'package:pokerapp/models/app_state.dart';
+import 'package:pokerapp/models/pending_approvals.dart';
 import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
@@ -86,9 +87,9 @@ class _MainScreenState extends State<MainScreen>
       // _networkChangeListener =
       //     Provider.of<NetworkChangeListener>(context, listen: false);
       // _networkChangeListener.startListening();
-
+      final clubUpdateState = context.read<ClubsUpdateState>();
       // register for notification service
-      await notificationHandler.register();
+      await notificationHandler.register(clubUpdateState);
       _nats.playerNotifications = notificationHandler.playerNotifications;
       _nats.clubNotifications = notificationHandler.clubNotifications;
 
