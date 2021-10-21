@@ -3,21 +3,10 @@ import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/video_conf/player_tile.dart';
 import 'package:provider/provider.dart';
 
 class VideoConfWidget extends StatelessWidget {
-  Widget _buildPlayerTile({
-    PlayerModel p,
-    AppTheme theme,
-    int totalPlayers,
-  }) {
-    return Container(
-      padding: EdgeInsets.all(10.0),
-      decoration: AppDecorators.tileDecoration(theme),
-      child: Text(p.name),
-    );
-  }
-
   Widget _closeButton(BuildContext context, AppTheme theme) {
     return Positioned(
       top: -10,
@@ -44,12 +33,51 @@ class VideoConfWidget extends StatelessWidget {
     );
   }
 
+  Widget _buildMyVideoFeedWidget(PlayerModel me, AppTheme theme) {
+    if (me == null) return const SizedBox.shrink();
+
+    final Size meTileSize = Size(90, 80);
+    return Positioned(
+      top: -meTileSize.height / 2,
+      left: 20,
+      child: Container(
+        height: meTileSize.height,
+        width: meTileSize.width,
+        padding: EdgeInsets.all(10.0),
+        decoration: AppDecorators.tileDecoration(theme),
+        alignment: Alignment.bottomCenter,
+        child: Text(me.name),
+      ),
+    );
+  }
+
+  Widget _buildPlayers(final GameState gameState) {
+    if (gameState.playersInGame.isEmpty) return Text('No one is around');
+
+    final List<PlayerModel> playersExceptMe =
+        gameState.playersInGame.where((p) => p.isMe == false).toList();
+
+    if (playersExceptMe.isEmpty) return Text('No one is around');
+
+    return Wrap(
+      alignment: WrapAlignment.center,
+      verticalDirection: VerticalDirection.up,
+      spacing: 10.0,
+      runSpacing: 10.0,
+      children: playersExceptMe
+          .map<Widget>((p) => PlayerTile(
+                player: p,
+                totalPlayers: playersExceptMe.length,
+              ))
+          .toList(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final Size parentSize = MediaQuery.of(context).size;
     final AppTheme theme = context.read<AppTheme>();
     final GameState gameState = context.read<GameState>();
-    List<PlayerModel> players = gameState.playersInGame;
 
     return Container(
       color: theme.primaryColor,
@@ -59,15 +87,8 @@ class VideoConfWidget extends StatelessWidget {
         clipBehavior: Clip.none,
         alignment: Alignment.center,
         children: [
-          Wrap(
-            children: players
-                .map<Widget>((p) => _buildPlayerTile(
-                      totalPlayers: players.length,
-                      theme: theme,
-                      p: p,
-                    ))
-                .toList(),
-          ),
+          _buildMyVideoFeedWidget(gameState.me, theme),
+          _buildPlayers(gameState),
           _closeButton(context, theme),
         ],
       ),
