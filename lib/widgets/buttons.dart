@@ -11,7 +11,6 @@ class RoundRectButton extends StatelessWidget {
     @required this.onTap,
     @required this.theme,
     this.fontSize,
-    this.border = false,
     this.split = false,
     this.adaptive = true,
     this.icon,
@@ -23,7 +22,6 @@ class RoundRectButton extends StatelessWidget {
   final Function onTap;
   final bool split;
   final double fontSize;
-  final bool border;
   final Icon icon;
 
   Widget build(BuildContext context) {
@@ -41,7 +39,9 @@ class RoundRectButton extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16.pw),
           border: Border.all(
-              color: theme.roundedButtonBorderColor, width: border ? 1.pw : 0),
+              color: theme.roundedButtonBorderColor ??
+                  theme.roundedButtonBackgroundColor,
+              width: 1.pw),
           color: theme.roundedButtonBackgroundColor,
         ),
         child: Row(
@@ -189,7 +189,9 @@ class CircleImageButton extends StatelessWidget {
             decoration: BoxDecoration(
               color: theme.circleImageButtonBackgroundColor,
               border: Border.all(
-                  color: theme.circleImageButtonBorderColor, width: 2.0),
+                  color: theme.circleImageButtonBorderColor ??
+                      theme.circleImageButtonBackgroundColor,
+                  width: 2.0),
               borderRadius: BorderRadius.circular(20.pw),
             ),
             child: Center(child: image),
