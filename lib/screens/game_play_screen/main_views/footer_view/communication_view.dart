@@ -11,7 +11,9 @@ import 'package:pokerapp/models/game_play_models/provider_models/game_context.da
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_constants.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/video_conf_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/voice_text_widget.dart';
+
 //import 'package:pokerapp/services/agora/agora.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
@@ -40,6 +42,7 @@ class _CommunicationViewState extends State<CommunicationView> {
   String _audioFile;
   final _audioRecorder = Record();
   bool _isRecording = false;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -51,6 +54,29 @@ class _CommunicationViewState extends State<CommunicationView> {
   void dispose() {
     _audioRecorder.dispose();
     super.dispose();
+  }
+
+  Widget _videoButton(AppTheme theme) {
+    final String videoSvg = "assets/images/game/mic.svg";
+
+    return Container(
+      margin: EdgeInsets.only(top: 10.dp),
+      child: CircleImageButton(
+        onTap: () {
+          log('video button clicked');
+
+          showBottomSheet(
+            context: context,
+            builder: (_) => Provider.value(
+              value: context.read<GameState>(),
+              child: VideoConfWidget(),
+            ),
+          );
+        },
+        theme: theme,
+        svgAsset: videoSvg,
+      ),
+    );
   }
 
   @override
@@ -117,6 +143,14 @@ class _CommunicationViewState extends State<CommunicationView> {
                 if (showVoiceText) {
                   children.addAll(voiceTextWidgets(widget.chatService));
                 }
+
+                // video button
+                bool showVideoButton = true;
+
+                if (showVideoButton) {
+                  children.add(_videoButton(theme));
+                }
+
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: children,
