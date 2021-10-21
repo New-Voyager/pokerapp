@@ -107,7 +107,7 @@ class AppTheme extends ChangeNotifier {
   TextStyle get roundedButtonTextStyle =>
       _themeData.style.roundedButtonTextStyle;
   Color get roundedButtonBorderColor =>
-      _themeData.style.roundedButtonBackgroundColor;
+      _themeData.style.roundedButtonBorderColor;
   Color get roundButtonTextColor => _themeData.style.roundButtonTextColor;
 
   //Rounded Button 2
