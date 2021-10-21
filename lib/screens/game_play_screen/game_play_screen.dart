@@ -1120,7 +1120,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
               // accepted
               _gameComService.chat
                   .sendAcceptVideo(_gameState.me.playerId, fromPlayer);
-              _gameComService.chat.sendJoinVideo(_gameState.me.playerId);
+
+              // stream id or video stream id here??
+              _gameComService.chat.sendJoinVideo(_gameState.me.playerId, _gameState.me.streamId);
             } else {
               // declined
               _gameComService.chat
@@ -1134,6 +1136,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         if (seat == null) {
           return;
         }
+        String streamId = json['streamId'];
         // player is joining video conference
         log('VIDEO: player ${seat.player.name} is joining video conference');
         // request his stream id here (don't know we need it or not)

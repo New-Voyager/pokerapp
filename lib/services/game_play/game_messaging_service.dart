@@ -355,11 +355,12 @@ class GameMessagingService {
     this.nats.clientPub.pubString(this.chatChannel, body);
   }
 
-  void sendJoinVideo(int playerId) {
+  void sendJoinVideo(int playerId, String streamId) {
     dynamic body = jsonEncode({
       'id': uuid.v1(),
       'method': 'JOIN_VIDEO',
       'player': playerId,
+      'streamId': streamId,
       'sent': DateTime.now().toUtc().toIso8601String(),
     });
     this.nats.clientPub.pubString(this.chatChannel, body);
