@@ -144,9 +144,6 @@ class IonAudioConferenceService {
       if (gameState.me != null) {
         gameState.me.streamId = localStream.stream.id;
       }
-      //chatService.onAudioConfMessage = onAudioConfMessage;
-      //chatService.sendAudioConfResponse(localStream.stream.id);
-      //chatService.sendAudioConfRequest();
       _inConference = true;
     } catch (err) {
       close();
@@ -260,46 +257,6 @@ class IonAudioConferenceService {
         // update the UI
         gameState.talking(talking);
         gameState.stoppedTalking(stoppedTalking);
-      }
-    }
-  }
-
-  // onAudioConfMessage called when a chat broadcast message is received for audio conference
-  // type: AUDIO_CONF
-  // method: PUBLISH
-  // stream: {
-  //   playerId: <>
-  //   playerUuid: <>
-  //   streamId: <>
-  // }
-
-  // type: AUDIO_CONF
-  // method: REQUEST_STREAM_ID
-  onAudioConfMessage(String data) {
-    Map<String, dynamic> message = jsonDecode(data);
-    if (message.containsKey('method')) {
-      String method = message['method'];
-      if (method == 'REQUEST_STREAM_ID') {
-        // someone is requesting stream id
-        chatService.sendAudioConfResponse(this._streamId);
-      } else if (method == 'PUBLISH') {
-        // someone is publishing their stream id
-        log('AUDIOCONF: New stream found. $data');
-        final String streamId = message['streamId'];
-        if (streamId == _streamId) {
-          // my stream id, ignore
-        } else {
-          final participant = getParticipantByStreamId(streamId);
-          if (participant != null) {
-            // set player id information
-            // 'playerID': this.currentPlayer.id,
-            // 'name': this.currentPlayer.name,
-            // 'playerUuid': this.currentPlayer.uuid,
-            participant.playerId = message['playerId'];
-            participant.name = message['name'];
-            participant.playerUuid = message['uuid'];
-          }
-        }
       }
     }
   }
