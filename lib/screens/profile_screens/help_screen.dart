@@ -9,6 +9,7 @@ import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/screens/profile_screens/report_bug.dart';
 import 'package:pokerapp/screens/profile_screens/request_feature.dart';
 import 'package:pokerapp/utils/alerts.dart';
+import 'package:pokerapp/widgets/custom_divider.dart';
 import 'package:provider/provider.dart';
 
 class HelpScreen extends StatelessWidget {
@@ -70,6 +71,7 @@ class HelpScreen extends StatelessWidget {
                               );
                             },
                           ),
+                          CustomDivider(),
                           ListTile(
                             title: Text(
                               _appScreenText['reportBug'],
@@ -87,6 +89,7 @@ class HelpScreen extends StatelessWidget {
                               );
                             },
                           ),
+                          CustomDivider(),
                           ListTile(
                             title: Text(
                               _appScreenText['policy'],
@@ -102,6 +105,7 @@ class HelpScreen extends StatelessWidget {
                                   .pushNamed(Routes.privacy_policy);
                             },
                           ),
+                          CustomDivider(),
                           ListTile(
                             leading: Icon(
                               Icons.privacy_tip,
@@ -118,6 +122,7 @@ class HelpScreen extends StatelessWidget {
                               );
                             },
                           ),
+                          CustomDivider(),
                           ListTile(
                             leading: Icon(
                               Icons.copyright,

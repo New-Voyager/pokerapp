@@ -22,6 +22,7 @@ import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
+import 'package:pokerapp/widgets/custom_divider.dart';
 import 'package:pokerapp/widgets/heading_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:package_info/package_info.dart';
@@ -96,6 +97,7 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                           // ),
                           HeadingWidget(heading: _appScreenText['myProfile']),
 
+                          // Name tile
                           Container(
                             decoration: AppDecorators.tileDecoration(theme),
                             margin: EdgeInsets.symmetric(
@@ -206,12 +208,14 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                               ],
                             ),
                           ),
+
+                          // List of items
                           Container(
                             margin: EdgeInsets.symmetric(
                                 horizontal: 16, vertical: 8),
                             child: Column(
                               children: [
-                                //
+                                // Section 1
                                 Container(
                                   decoration:
                                       AppDecorators.tileDecoration(theme),
@@ -245,6 +249,7 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                           // Fetch user details from server
                                         },
                                       ),
+                                      CustomDivider(),
                                       ListTileItem(
                                         text: _currentUser.email == null
                                             ? _appScreenText['setRecoveryEmail']
@@ -262,6 +267,7 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                           // Fetch user details from server
                                         },
                                       ),
+                                      CustomDivider(),
                                       ListTileItem(
                                         text: _appScreenText[
                                             'customizeGameScreen'],
@@ -278,6 +284,7 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                           // );
                                         },
                                       ),
+                                      CustomDivider(),
                                       ListTileItem(
                                         text: _appScreenText['pickTheme'],
                                         imagePath:
@@ -297,6 +304,8 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                   ),
                                 ),
                                 AppDimensionsNew.getVerticalSizedBox(16),
+
+                                // Section 2
                                 Container(
                                   decoration:
                                       AppDecorators.tileDecoration(theme),
@@ -324,6 +333,8 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                           arguments: "",
                                         ),
                                       ),
+                                      CustomDivider(),
+
                                       ListTileItem(
                                           text: _appScreenText['stats'],
                                           imagePath:
@@ -339,6 +350,8 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                   ),
                                 ),
                                 AppDimensionsNew.getVerticalSizedBox(16),
+
+                                // Section 3
                                 Container(
                                   decoration:
                                       AppDecorators.tileDecoration(theme),
@@ -370,6 +383,7 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                           // );
                                         },
                                       ),
+                                      CustomDivider(),
                                       ListTileItem(
                                         text: _appScreenText['help'],
                                         imagePath: AppAssetsNew
@@ -386,6 +400,7 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                           );
                                         },
                                       ),
+                                      CustomDivider(),
                                       ListTileItem(
                                         text: _appScreenText['tellFriend'],
                                         imagePath:
@@ -541,11 +556,12 @@ class ListTileItem extends StatelessWidget {
     );
     if (badgeCount != null) {
       tileText = Badge(
-          animationType: BadgeAnimationType.scale,
-          showBadge: badgeCount > 0,
-          position: BadgePosition.topEnd(top: 0, end: -80),
-          badgeContent: Text(badgeCount.toString()),
-          child: tileText);
+        animationType: BadgeAnimationType.scale,
+        showBadge: badgeCount > 0,
+        position: BadgePosition.topEnd(top: 0, end: -80),
+        badgeContent: Text(badgeCount.toString()),
+        child: tileText,
+      );
     }
     return InkWell(
       onTap: onTapFunction,
@@ -554,7 +570,7 @@ class ListTileItem extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         //decoration: AppStylesNew.actionRowDecoration,
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SvgPicture.asset(
               imagePath,
@@ -567,6 +583,7 @@ class ListTileItem extends StatelessWidget {
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   tileText,
                   Visibility(
