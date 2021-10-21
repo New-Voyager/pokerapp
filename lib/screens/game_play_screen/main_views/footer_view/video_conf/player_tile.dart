@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:provider/provider.dart';
 
 class PlayerTile extends StatelessWidget {
@@ -32,7 +33,7 @@ class PlayerTile extends StatelessWidget {
       case 9:
         return Size(parentSize.width * 0.28, parentSize.width * 0.28);
       default:
-        return Size(120, 100);
+        return Size(parentSize.width * 0.28, parentSize.width * 0.28);
     }
   }
 
@@ -46,10 +47,13 @@ class PlayerTile extends StatelessWidget {
     return Container(
       height: size.height,
       width: size.width,
-      padding: EdgeInsets.all(10.0),
+      padding: EdgeInsets.all(5.0),
       decoration: AppDecorators.tileDecoration(theme),
       alignment: Alignment.bottomCenter,
-      child: Text(player.name),
+      child: Text(
+        player.name,
+        style: AppStylesNew.labelTextStyle,
+      ),
     );
   }
 }

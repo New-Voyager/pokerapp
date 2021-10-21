@@ -3,6 +3,7 @@ import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/video_conf/player_tile.dart';
 import 'package:provider/provider.dart';
 
@@ -43,10 +44,13 @@ class VideoConfWidget extends StatelessWidget {
       child: Container(
         height: meTileSize.height,
         width: meTileSize.width,
-        padding: EdgeInsets.all(10.0),
+        padding: EdgeInsets.all(5.0),
         decoration: AppDecorators.tileDecoration(theme),
         alignment: Alignment.bottomCenter,
-        child: Text(me.name),
+        child: Text(
+          me.name,
+          style: AppStylesNew.labelTextStyle,
+        ),
       ),
     );
   }

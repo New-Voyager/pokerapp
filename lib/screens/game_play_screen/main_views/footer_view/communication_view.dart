@@ -68,7 +68,7 @@ class _CommunicationViewState extends State<CommunicationView> {
           showBottomSheet(
             context: context,
             builder: (_) => Provider.value(
-              value: context.read<GameState>(),
+              value: widget.gameContextObject.gameState,
               child: VideoConfWidget(),
             ),
           );
