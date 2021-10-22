@@ -35,8 +35,10 @@ class VideoConfWidget extends StatelessWidget {
   }
 
   Widget _buildMyVideoFeedWidget(PlayerModel me, AppTheme theme) {
+    // if i am not in the game, return an empty widget
     if (me == null) return const SizedBox.shrink();
 
+    // otherwise, build my video feed widget
     final Size meTileSize = Size(90, 80);
     return Positioned(
       top: -meTileSize.height / 2,
