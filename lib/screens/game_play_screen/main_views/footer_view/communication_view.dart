@@ -16,6 +16,7 @@ import 'package:pokerapp/screens/game_play_screen/widgets/voice_text_widget.dart
 
 //import 'package:pokerapp/services/agora/agora.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
+import 'package:pokerapp/services/ion/ion.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/widgets/blinking_widget.dart';
@@ -62,13 +63,22 @@ class _CommunicationViewState extends State<CommunicationView> {
     return Container(
       margin: EdgeInsets.only(top: 10.dp),
       child: CircleImageButton(
-        onTap: () {
+        onTap: () async {
           log('video button clicked');
+
+          final IonAudioConferenceService ion =
+              widget.gameContextObject.ionAudioConferenceService;
+
+          // first leave the current ion session
+          await ion.leave();
+
+          // then join back an ion session with isVideo as true
+          await ion.join(isVideo: true);
 
           showBottomSheet(
             context: context,
-            builder: (_) => Provider.value(
-              value: widget.gameContextObject.gameState,
+            builder: (_) => ListenableProvider.value(
+              value: widget.gameContextObject,
               child: VideoConfWidget(),
             ),
           );

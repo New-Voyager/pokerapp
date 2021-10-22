@@ -56,11 +56,12 @@ class GameContextObject extends ChangeNotifier {
       return;
     }
     this.ionAudioConferenceService = IonAudioConferenceService(
-        gameState,
-        gameComService.chat,
-        gameState.gameInfo.sfuUrl,
-        gameState.gameInfo.gameCode,
-        this._currentPlayer);
+      gameState,
+      gameComService.chat,
+      gameState.gameInfo.sfuUrl,
+      gameState.gameInfo.gameCode,
+      this._currentPlayer,
+    );
   }
 
   set gameEnded(bool ended) {
