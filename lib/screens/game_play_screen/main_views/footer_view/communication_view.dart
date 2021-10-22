@@ -10,6 +10,7 @@ import 'package:pokerapp/models/game_play_models/business/game_chat_notfi_state.
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/models/video_req_state.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/video_conf/video_conf_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/voice_text_widget.dart';
@@ -37,6 +38,8 @@ class CommunicationView extends StatefulWidget {
 }
 
 class _CommunicationViewState extends State<CommunicationView> {
+  VideoReqState videoReqState;
+
   final ValueNotifier<bool> _vnShowAudioConfOptions =
       ValueNotifier<bool>(false);
   bool _recordingCancelled;
@@ -48,6 +51,7 @@ class _CommunicationViewState extends State<CommunicationView> {
   void initState() {
     // TODO: implement initState
     _isRecording = false;
+    videoReqState = context.read<VideoReqState>();
     super.initState();
   }
 
@@ -79,7 +83,10 @@ class _CommunicationViewState extends State<CommunicationView> {
             context: context,
             builder: (_) => ListenableProvider.value(
               value: widget.gameContextObject,
-              child: VideoConfWidget(),
+              child: ListenableProvider.value(
+                value: videoReqState,
+                child: VideoConfWidget(),
+              ),
             ),
           );
         },

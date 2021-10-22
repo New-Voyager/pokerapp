@@ -41,6 +41,8 @@ class PlayerModel {
   PlayerActedState _action;
   PlayerConnectivityState _connectivity;
 
+  bool offersVideo = false;
+
   TablePosition playerType;
   bool winner = false;
   bool showFirework = false;

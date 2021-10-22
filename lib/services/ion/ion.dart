@@ -115,6 +115,16 @@ class IonAudioConferenceService {
     this.player,
   );
 
+  RTCVideoRenderer getVideoRenderer(int playerId) {
+    // this returns the video renderer of a participant
+    for (final p in participants) {
+      if (p.playerId == playerId) {
+        return p.renderer;
+      }
+    }
+    return null;
+  }
+
   void updatePlayerId(String streamId, int playerId) {
     for (final participant in participants) {
       if (participant.streamId == streamId) {
@@ -210,7 +220,8 @@ class IonAudioConferenceService {
 
   Future<void> close() async {
     for (final p in participants) {
-      await p.renderer.dispose();
+      // FIXME: we cannot dispose here - it causes error, need to find a way to dispose off
+      // await p.renderer.dispose()
     }
 
     _closed = true;
@@ -242,6 +253,7 @@ class IonAudioConferenceService {
       newParticipant.renderer.srcObject = remoteStream.stream;
 
       participants.add(newParticipant);
+      chatService.sendMyInfo();
     }
   }
 

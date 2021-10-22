@@ -19,6 +19,7 @@ import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/boar
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/models/video_req_state.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/app_constants.dart';
@@ -1120,7 +1121,8 @@ class _GamePlayScreenState extends State<GamePlayScreen>
                   .sendAcceptVideo(_gameState.me.playerId, fromPlayer);
 
               // stream id or video stream id here??
-              _gameComService.chat.sendJoinVideo(_gameState.me.playerId, _gameState.me.streamId);
+              _gameComService.chat.sendJoinVideo(
+                  _gameState.me.playerId, _gameState.me.streamId);
             } else {
               // declined
               _gameComService.chat
@@ -1138,6 +1140,13 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         // player is joining video conference
         log('VIDEO: player ${seat.player.name} is joining video conference');
         // request his stream id here (don't know we need it or not)
+
+        _gameContextObj.ionAudioConferenceService
+            .updatePlayerId(streamId, player);
+
+        // offers video
+        seat.player.offersVideo = true;
+        context.read<VideoReqState>().notify();
       } else if (method == 'ACCEPT_REQUEST') {
         int player = int.parse(json['fromPlayer'].toString());
         final seat = _gameState.getSeatByPlayer(player);
@@ -1146,6 +1155,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         }
         // player is joining video conference
         log('VIDEO: player ${seat.player.name} has accepted to join video');
+
         // request his stream id here (don't know we need it or not)
       } else if (method == 'DECLINE_REQUEST') {
         int player = int.parse(json['fromPlayer'].toString());
@@ -1153,9 +1163,11 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         if (seat == null) {
           return;
         }
-        // player is joining video conference
         log('VIDEO: player ${seat.player.name} has decline to join video conference');
-        // request his stream id here (don't know we need it or not)
+
+        // does not offers video
+        seat.player.offersVideo = false;
+        context.read<VideoReqState>().notify();
       }
     }
   }

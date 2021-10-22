@@ -320,6 +320,8 @@ class GameMessagingService {
   }
 
   void requestVideo(int playerId, int toPlayerId) {
+    log('requestVideo method invoked with playerId: $playerId & toPlayerId: $toPlayerId');
+
     dynamic body = jsonEncode({
       'id': uuid.v1(),
       'method': 'REQUEST_VIDEO',

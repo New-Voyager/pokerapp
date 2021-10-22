@@ -62,6 +62,7 @@ class VideoConfWidget extends StatelessWidget {
                 height: meTileSize.height,
                 child: RTCVideoView(
                   ion.me().renderer,
+                  mirror: true,
                   objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
                 ),
               ),
@@ -84,7 +85,9 @@ class VideoConfWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildPlayers(final GameState gameState) {
+  Widget _buildPlayers(final GameContextObject gameContextObject) {
+    final gameState = gameContextObject.gameState;
+
     if (gameState.playersInGame.isEmpty) return Text('No one is around');
 
     final List<PlayerModel> playersExceptMe =
@@ -101,6 +104,7 @@ class VideoConfWidget extends StatelessWidget {
           .map<Widget>((p) => PlayerTile(
                 player: p,
                 totalPlayers: playersExceptMe.length,
+                ion: gameContextObject.ionAudioConferenceService,
               ))
           .toList(),
     );
@@ -130,7 +134,7 @@ class VideoConfWidget extends StatelessWidget {
           alignment: Alignment.center,
           children: [
             _buildMyVideoFeedWidget(gameState.me, theme, ion),
-            _buildPlayers(gameState),
+            _buildPlayers(gameContextObject),
             _closeButton(context, theme),
           ],
         ),
