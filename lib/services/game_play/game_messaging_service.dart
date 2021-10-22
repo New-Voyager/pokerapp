@@ -35,7 +35,7 @@ class GameMessagingService {
   Function onAnimation;
   Function onCards;
   Function onRabbitHunt;
-  Function onAudioConfMessage;
+  Function onVideoConfMessage;
 
   // to get my information
   Function getMyInfo;
@@ -50,7 +50,6 @@ class GameMessagingService {
     void onAnimation(ChatMessage _),
     void onCards(ChatMessage _),
     void onRabbitHunt(ChatMessage _),
-    void onAudioConfMessage(dynamic _),
   }) {
     if (onAudio != null) {
       this.onAudio = onAudio;
@@ -74,10 +73,6 @@ class GameMessagingService {
 
     if (onRabbitHunt != null) {
       this.onRabbitHunt = onRabbitHunt;
-    }
-
-    if (onAudioConfMessage != null) {
-      this.onAudioConfMessage = onAudioConfMessage;
     }
   }
 
@@ -155,8 +150,8 @@ class GameMessagingService {
       }
 
       // audio conf message
-      if (message.type == 'AUDIOCONF' && this.onAudioConfMessage != null) {
-        this.onAudioConfMessage(message.data);
+      if (message.type == 'VIDEO_CONF' && this.onVideoConfMessage != null) {
+        this.onVideoConfMessage(message.data);
       }
 
       // audio conf message
@@ -309,6 +304,63 @@ class GameMessagingService {
       'id': uuid.v1(),
       'method': 'REQUEST',
       'type': 'PLAYER_INFO',
+      'sent': DateTime.now().toUtc().toIso8601String(),
+    });
+    this.nats.clientPub.pubString(this.chatChannel, body);
+  }
+
+  void requestPlayerVideo() {
+    dynamic body = jsonEncode({
+      'id': uuid.v1(),
+      'method': 'REQUEST',
+      'type': 'PLAYER_INFO',
+      'sent': DateTime.now().toUtc().toIso8601String(),
+    });
+    this.nats.clientPub.pubString(this.chatChannel, body);
+  }
+
+  void requestVideo(int playerId, int toPlayerId) {
+    dynamic body = jsonEncode({
+      'id': uuid.v1(),
+      'method': 'REQUEST_VIDEO',
+      'type': 'VIDEO_CONF',
+      'fromPlayer': playerId,
+      'toPlayer': toPlayerId,
+      'sent': DateTime.now().toUtc().toIso8601String(),
+    });
+    this.nats.clientPub.pubString(this.chatChannel, body);
+  }
+
+  void sendAcceptVideo(int playerId, int toPlayerId) {
+    dynamic body = jsonEncode({
+      'id': uuid.v1(),
+      'method': 'ACCEPT_REQUEST',
+      'type': 'VIDEO_CONF',
+      'fromPlayer': playerId,
+      'toPlayer': toPlayerId,
+      'sent': DateTime.now().toUtc().toIso8601String(),
+    });
+    this.nats.clientPub.pubString(this.chatChannel, body);
+  }
+
+  void sendDeclineVideo(int playerId, int toPlayerId) {
+    dynamic body = jsonEncode({
+      'id': uuid.v1(),
+      'method': 'DECLINE_REQUEST',
+      'type': 'VIDEO_CONF',
+      'fromPlayer': playerId,
+      'toPlayer': toPlayerId,
+      'sent': DateTime.now().toUtc().toIso8601String(),
+    });
+    this.nats.clientPub.pubString(this.chatChannel, body);
+  }
+
+  void sendJoinVideo(int playerId, String streamId) {
+    dynamic body = jsonEncode({
+      'id': uuid.v1(),
+      'method': 'JOIN_VIDEO',
+      'player': playerId,
+      'streamId': streamId,
       'sent': DateTime.now().toUtc().toIso8601String(),
     });
     this.nats.clientPub.pubString(this.chatChannel, body);
