@@ -971,23 +971,21 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       builder: (_, theme, __) {
         return Container(
           decoration: AppDecorators.bgRadialGradient(theme),
-          child: SafeArea(
-            child: Scaffold(
-              /* FIXME: THIS FLOATING ACTION BUTTON IS FOR SHOWING THE TESTS */
-              floatingActionButton:
-                  GamePlayScreenUtilMethods.floatingActionButton(
-                onReload: () {},
-                isCustomizationMode: widget.customizationService != null,
-              ),
-              // floating button to refresh network TEST
-              // floatingActionButton: FloatingActionButton(
-              //   child: Icon(Icons.android_rounded),
-              //   onPressed: _reconnectGameComService,
-              // ),
-              resizeToAvoidBottomInset: true,
-              backgroundColor: Colors.transparent,
-              body: _buildBody(theme),
+          child: Scaffold(
+            /* FIXME: THIS FLOATING ACTION BUTTON IS FOR SHOWING THE TESTS */
+            floatingActionButton:
+                GamePlayScreenUtilMethods.floatingActionButton(
+              onReload: () {},
+              isCustomizationMode: widget.customizationService != null,
             ),
+            // floating button to refresh network TEST
+            // floatingActionButton: FloatingActionButton(
+            //   child: Icon(Icons.android_rounded),
+            //   onPressed: _reconnectGameComService,
+            // ),
+            resizeToAvoidBottomInset: true,
+            backgroundColor: Colors.transparent,
+            body: _buildBody(theme),
           ),
         );
       },
