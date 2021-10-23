@@ -28,6 +28,9 @@ class AppThemeStyle {
   // font family
   String fontFamily;
 
+  //Game List Shade Color
+  Color gameListShadeColor;
+
   //Circle Image Button
   TextStyle circleImageButtonTextStyle;
   Color circleImageButtonBorderColor;
@@ -76,6 +79,11 @@ class AppThemeStyle {
     style.negativeOrErrorColor = HexColor.fromHex(json['negativeOrErrorColor']);
     style.navBgColor = HexColor.fromHex(json['navBgColor']);
     style.navFabColor = HexColor.fromHex(json['navFabColor']);
+    if (json['gameListShadeColor'] != null) {
+      style.gameListShadeColor = HexColor.fromHex(json['gameListShadeColor']);
+    } else {
+      style.gameListShadeColor = style.accentColor;
+    }
     style.circleImageButtonBorderColor =
         HexColor.fromHex(json['circleImageButtonBorderColor']);
     style.circleImageButtonBackgroundColor =
@@ -121,6 +129,7 @@ class AppThemeStyle {
       "supportingColor": this.supportingColor.value,
       "negativeOrErrorColor": this.negativeOrErrorColor.value,
       "fontFamily": this.fontFamily,
+      "gameListShadeColor": this.gameListShadeColor,
       "circleImageButtonBorderColor": this.circleImageButtonBorderColor,
       "circleImageButtonBackgroundColor": this.circleImageButtonBackgroundColor,
       "circleImageButtonImageColor": this.circleImageButtonImageColor,

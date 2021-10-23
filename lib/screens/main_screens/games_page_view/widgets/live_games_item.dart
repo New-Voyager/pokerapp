@@ -26,11 +26,6 @@ class LiveGameItem extends StatelessWidget {
             margin: EdgeInsets.symmetric(
               horizontal: 12.pw,
             ),
-            padding: EdgeInsets.only(
-              left: 16.pw,
-              top: 8.ph,
-              bottom: 8.ph,
-            ),
             constraints: BoxConstraints(
               minHeight: 100.ph,
             ),
@@ -43,83 +38,98 @@ class LiveGameItem extends StatelessWidget {
                 8.pw,
               ),
               color: theme.primaryColorWithDark(),
-              image: DecorationImage(
-                image: AssetImage(
-                  AppAssetsNew.pathLiveGameItemBackground,
-                ),
-                fit: BoxFit.fitWidth,
-              ),
             ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
+            child: Stack(
               children: [
-                Expanded(
-                  flex: 3,
-                  child: Stack(
-                    alignment: Alignment.center,
+                ColorFiltered(
+                  colorFilter: ColorFilter.mode(
+                      theme.gameListShadeColor, BlendMode.srcATop),
+                  child: Image(
+                    image: AssetImage(
+                      AppAssetsNew.pathLiveGameItemBackground,
+                    ),
+                    fit: BoxFit.fitWidth,
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                    left: 16.pw,
+                    top: 8.ph,
+                    bottom: 8.ph,
+                  ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Image.asset(
-                        AppAssetsNew.pathGameTypeChipImage,
-                        height: 100.ph,
-                        width: 100.ph,
+                      Expanded(
+                        flex: 3,
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Image.asset(
+                              AppAssetsNew.pathGameTypeChipImage,
+                              height: 100.ph,
+                              width: 100.ph,
+                            ),
+                            Image.asset(
+                              GameModelNew.getGameTypeImageAsset(game.gameType),
+                              height: 60.ph,
+                              width: 60.ph,
+                              alignment: Alignment.center,
+                            ),
+                          ],
+                        ),
                       ),
-                      Image.asset(
-                        GameModelNew.getGameTypeImageAsset(game.gameType),
-                        height: 60.ph,
-                        width: 60.ph,
-                        alignment: Alignment.center,
-                      ),
+                      Expanded(
+                          flex: 9,
+                          child: Container(
+                            margin: EdgeInsets.only(left: 16.pw),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Text(
+                                      '${_appScreenText['buyin']}: ${game.buyInMin}-${game.buyInMax}',
+                                      style: AppDecorators.getSubtitle1Style(
+                                          theme: theme),
+                                    ),
+                                    AppDimensionsNew.getHorizontalSpace(16.pw),
+                                  ],
+                                ),
+                                Text(
+                                  "${(game.gameType)} ${game.smallBlind}/${game.bigBlind}",
+                                  style: AppDecorators.getHeadLine4Style(
+                                      theme: theme),
+                                ),
+                                AppDimensionsNew.getVerticalSizedBox(4.ph),
+                                Text(
+                                  "${_appScreenText['gameId']} - ${game.gameCode}",
+                                  style: AppDecorators.getSubtitle2Style(
+                                      theme: theme),
+                                ),
+                                AppDimensionsNew.getVerticalSizedBox(2.ph),
+                                Text(
+                                  GameModelNew.getSeatsAvailble(game) > 0
+                                      ? "${game.maxPlayers} ${_appScreenText['openSeats']}"
+                                      : game.waitlistCount > 0
+                                          ? "${_appScreenText['tableIsFull']} (${game.waitlistCount} ${_appScreenText['waiting']})"
+                                          : "${_appScreenText['tableIsFull']}",
+                                  style: AppDecorators.getSubtitle1Style(
+                                      theme: theme),
+                                ),
+                                AppDimensionsNew.getVerticalSizedBox(8.ph),
+                                Text(
+                                  "${_appScreenText['started']} ${DataFormatter.getTimeInHHMMFormat(game.elapsedTime)} ${_appScreenText['ago']}.",
+                                  style: AppDecorators.getSubtitle3Style(
+                                      theme: theme),
+                                ),
+                              ],
+                            ),
+                          )),
                     ],
                   ),
                 ),
-                Expanded(
-                    flex: 9,
-                    child: Container(
-                      margin: EdgeInsets.only(left: 16.pw),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Text(
-                                '${_appScreenText['buyin']}: ${game.buyInMin}-${game.buyInMax}',
-                                style: AppDecorators.getSubtitle1Style(
-                                    theme: theme),
-                              ),
-                              AppDimensionsNew.getHorizontalSpace(16.pw),
-                            ],
-                          ),
-                          Text(
-                            "${(game.gameType)} ${game.smallBlind}/${game.bigBlind}",
-                            style:
-                                AppDecorators.getHeadLine4Style(theme: theme),
-                          ),
-                          AppDimensionsNew.getVerticalSizedBox(4.ph),
-                          Text(
-                            "${_appScreenText['gameId']} - ${game.gameCode}",
-                            style:
-                                AppDecorators.getSubtitle2Style(theme: theme),
-                          ),
-                          AppDimensionsNew.getVerticalSizedBox(2.ph),
-                          Text(
-                            GameModelNew.getSeatsAvailble(game) > 0
-                                ? "${game.maxPlayers} ${_appScreenText['openSeats']}"
-                                : game.waitlistCount > 0
-                                    ? "${_appScreenText['tableIsFull']} (${game.waitlistCount} ${_appScreenText['waiting']})"
-                                    : "${_appScreenText['tableIsFull']}",
-                            style:
-                                AppDecorators.getSubtitle1Style(theme: theme),
-                          ),
-                          AppDimensionsNew.getVerticalSizedBox(8.ph),
-                          Text(
-                            "${_appScreenText['started']} ${DataFormatter.getTimeInHHMMFormat(game.elapsedTime)} ${_appScreenText['ago']}.",
-                            style:
-                                AppDecorators.getSubtitle3Style(theme: theme),
-                          ),
-                        ],
-                      ),
-                    )),
               ],
             ),
           ),
