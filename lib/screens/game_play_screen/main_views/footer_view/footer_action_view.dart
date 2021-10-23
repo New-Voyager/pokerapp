@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/player_action.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_constants.dart';
@@ -468,7 +469,8 @@ class _FooterActionViewState extends State<FooterActionView> {
     );
   }
 
-  Widget _buildBetWidget(PlayerAction playerAction, int remainingTime) {
+  Widget _buildBetWidget(
+      List<int> playerCards, PlayerAction playerAction, int remainingTime) {
     return AnimatedSwitcher(
       duration: AppConstants.fastestAnimationDuration,
       reverseDuration: AppConstants.fastestAnimationDuration,
@@ -482,6 +484,7 @@ class _FooterActionViewState extends State<FooterActionView> {
           : _showOptions
               ? BetWidget(
                   action: playerAction,
+                  playerCards: playerCards,
                   onSubmitCallBack: _betOrRaise,
                   remainingTime: remainingTime,
                 )
@@ -494,7 +497,7 @@ class _FooterActionViewState extends State<FooterActionView> {
     final boardAttributes = context.read<BoardAttributesObject>();
     final theme = AppTheme.getTheme(context);
     final gameState = GameState.getState(context);
-
+    final me = gameState.me;
     return IntrinsicHeight(
       child: Container(
         color: Colors.black.withOpacity(0.5),
@@ -517,7 +520,7 @@ class _FooterActionViewState extends State<FooterActionView> {
                   Expanded(
                     child: Transform.scale(
                       scale: boardAttributes.footerActionViewScale,
-                      child: _buildBetWidget(actionState.action, 30),
+                      child: _buildBetWidget(me.cards, actionState.action, 30),
                     ),
                   ),
 

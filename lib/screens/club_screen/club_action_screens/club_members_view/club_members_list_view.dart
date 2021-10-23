@@ -209,12 +209,15 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
                         visible: ((data.status != ClubMemberStatus.PENDING) &&
                             (widget.viewAsOwner ?? false)),
                         child: InkWell(
-                          onTap: () {
+                          onTap: () async {
                             Navigator.pushNamed(
                               context,
                               Routes.club_member_detail_view,
                               arguments: data,
                             );
+                            setState(() {
+                              
+                            });
                           },
                           child: Container(
                             padding: EdgeInsets.only(right: 8),

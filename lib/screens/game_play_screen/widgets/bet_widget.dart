@@ -7,14 +7,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/player_action.dart';
+import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/jumping_text_widget.dart';
 import 'package:pokerapp/services/data/box_type.dart';
 import 'package:pokerapp/services/data/hive_datasource_impl.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
+import 'package:pokerapp/utils/card_helper.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/numeric_keyboard2.dart';
 import 'package:pokerapp/widgets/buttons.dart';
+import 'package:pokerapp/widgets/cards/multiple_stack_card_views.dart';
 import 'package:provider/provider.dart';
 import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 import 'package:shimmer/shimmer.dart';
@@ -23,12 +26,28 @@ class BetWidget extends StatelessWidget {
   final Function onSubmitCallBack;
   final PlayerAction action;
   final int remainingTime;
+  final List<int> playerCards;
 
   BetWidget({
     @required this.action,
+    @required this.playerCards,
     this.onSubmitCallBack,
     this.remainingTime,
   });
+
+  List<CardObject> _getCards(List<int> cards) {
+    if (cards == null || cards.isEmpty) return [];
+    List<CardObject> cardObjects = [];
+    for (int cardNum in cards) {
+      CardObject card = CardHelper.getCard(cardNum);
+      card.cardType = CardType.PlayerCard;
+      card.dim = true;
+
+      // if we are in showdown and this player is a winner, show his cards
+      cardObjects.add(card);
+    }
+    return cardObjects.reversed.toList();
+  }
 
   // TODO: MAKE THIS CLASS A GENERAL ONE SOMEWHERE OUTSIDE IN UTILS
   // WE CAN REUSE THIS CLASS FOR OTHER PLACES AS WELL
@@ -43,20 +62,35 @@ class BetWidget extends StatelessWidget {
         userSettingsBox.get(betTooltipCountKey, defaultValue: 0) as int;
 
     // NUMBER OF TIMES WE WANT TO SHOW THE HINT WIDGET
-    if (betTooltipCount >= 3) {
-      // we dont need to show BET tooltip anymore
-      return child;
-    }
+
+    // if (betTooltipCount >= 3) {
+    //   // we dont need to show BET tooltip anymore
+    //   return child;
+    // }
 
     // else
     // increment the tool tip count
     userSettingsBox.put(betTooltipCountKey, betTooltipCount + 1);
+    // return Column(
+    //   mainAxisSize: MainAxisSize.min,
+    //   mainAxisAlignment: MainAxisAlignment.center,
+    //   //alignment: Alignment.topCenter,
+    //   children: [
+    //     // swipe up arrow
+    //     JumpingTextWidget(text: 'Swipe up to bet'),
+
+    //     // main child
+    //     child,
+    //   ],
+    // );
 
     return Stack(
       alignment: Alignment.topCenter,
       children: [
         // swipe up arrow
-        JumpingTextWidget(text: 'Swipe up to bet'),
+        Transform.translate(
+            offset: Offset(0, -35.ph),
+            child: JumpingTextWidget(text: 'Swipe up to bet')),
 
         // main child
         child,
@@ -207,6 +241,7 @@ class BetWidget extends StatelessWidget {
     final int screenSize = boardAttributes.screenDiagnolSize;
     final bool isLargerDisplay = screenSize >= 9;
     log('bet_widget : screenSize : $screenSize');
+    //List<int> cards = [161, 200, 168, 177, 194];
 
     return Stack(children: [
       ListenableProvider<ValueNotifier<double>>(
@@ -277,7 +312,14 @@ class BetWidget extends StatelessWidget {
                   child: betAmountList(valueNotifierVal, appTheme),
                 ),
               ),
-              bottomGap,
+              SizedBox(height: 10.ph),
+              FittedBox(
+                fit: BoxFit.fitWidth,
+                child: Transform.scale(
+                    scale: 1.5,
+                    child: StackCardView(cards: _getCards(playerCards))),
+              ),
+              SizedBox(height: 15.ph),
             ],
           );
         },
