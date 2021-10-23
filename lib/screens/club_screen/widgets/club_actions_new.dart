@@ -93,10 +93,12 @@ class ClubActionsNew extends StatelessWidget {
       this._clubHomePageModel,
       ClubActions.SETTINGS,
       appScreenText['settings'],
-      SvgPicture.asset(
-        "assets/images/club/message_host.svg",
-        color: theme.accentColor,
-      ),
+      Transform.scale(
+          scale: 2.0,
+          child: Icon(
+            Icons.settings_outlined,
+            color: theme.accentColor,
+          )),
     );
   }
 
@@ -155,6 +157,15 @@ class ClubActionsNew extends StatelessWidget {
               ),
               Expanded(
                 flex: 3,
+                child: getHostMemberChatWidget(theme),
+              ),
+            ],
+          ),
+          AppDimensionsNew.getVerticalSizedBox(16),
+          Row(
+            children: [
+              Expanded(
+                flex: 3,
                 child: ClubActionButtonNew(
                   this._clubHomePageModel,
                   ClubActions.ANNOUNCEMETS,
@@ -164,15 +175,6 @@ class ClubActionsNew extends StatelessWidget {
                     color: theme.accentColor,
                   ),
                 ),
-              ),
-            ],
-          ),
-          AppDimensionsNew.getVerticalSizedBox(16),
-          Row(
-            children: [
-              Expanded(
-                flex: 3,
-                child: getHostMemberChatWidget(theme),
               ),
               Expanded(
                 flex: 3,

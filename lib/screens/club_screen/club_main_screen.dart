@@ -13,11 +13,9 @@ import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/club_screen/widgets/club_actions_new.dart';
 import 'package:pokerapp/screens/club_screen/widgets/club_banner_new.dart';
 import 'package:pokerapp/screens/club_screen/widgets/club_live_games_view.dart';
-import 'package:pokerapp/screens/game_screens/new_game_settings/new_game_settings2.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
+import 'package:pokerapp/screens/main_screens/purchase_page_view/coin_update.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
-import 'package:pokerapp/widgets/buttons.dart';
-import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
 
@@ -25,7 +23,6 @@ import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class ClubMainScreenNew extends StatefulWidget {
   final String clubCode;
-  // ClubWeeklyActivityModel weeklyActivity;
 
   ClubMainScreenNew({
     @required this.clubCode,
@@ -81,68 +78,27 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Container(
-                  margin: EdgeInsets.symmetric(vertical: 24),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      BackArrowWidget(),
-                      Visibility(
-                        visible: (clubModel.isManager || clubModel.isOwner),
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 8.0),
-                          child: RoundRectButton(
-                            onTap: () async {
-                              // if the player does not have enough coins
-                              // don't host the game
-                              if (AppConfig.availableCoins < 10) {
-                                showErrorDialog(context, 'Error',
-                                    'Not enough coins to host a game');
-                                return;
-                              }
+                Stack(children: [
+                  Positioned(top: 5.ph, left: 5.pw, child: BackArrowWidget()),
+                  Positioned(
+                      top: 5.ph,
+                      right: 10.pw,
+                      child: Transform.scale(
+                          scale: 1.5,
+                          child: CoinWidget(clubModel.clubCoins, 0, false))),
 
-                              final dynamic result = await Navigator.pushNamed(
-                                context,
-                                Routes.new_game_settings,
-                                arguments: widget.clubCode,
-                              );
-
-                              if (result != null) {
-                                /* show game settings dialog */
-                                NewGameSettings2.show(
-                                  context,
-                                  clubCode: widget.clubCode,
-                                  mainGameType: result['gameType'],
-                                  subGameTypes: List.from(
-                                        result['gameTypes'],
-                                      ) ??
-                                      [],
-                                );
-                              }
-                            },
-                            text: _appScreenText['hostGame'],
-                            theme: theme,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                // banner
-                ClubBannerViewNew(
-                  clubModel: clubModel,
-                  appScreenText: _appScreenText,
-                ),
-
-                // stats view
-                /*  ClubGraphicsViewNew(
-                  clubModel.playerBalance ?? 0.0,
-                  clubModel.weeklyActivity,
-                ), */
+                  // banner
+                  Transform.translate(
+                      offset: Offset(0, 5.ph),
+                      child: ClubBannerViewNew(
+                        clubModel: clubModel,
+                        appScreenText: _appScreenText,
+                      )),
+                ]),
 
                 // live game
-                ClubLiveGamesView(clubModel.liveGames, _appScreenText),
+                ClubLiveGamesView(
+                    clubModel, clubModel.liveGames, _appScreenText),
 
                 // seperator
                 AppDimensionsNew.getVerticalSizedBox(16.ph),
@@ -158,6 +114,17 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew>
         ],
       );
 
+  Future<ClubHomePageModel> fetchData() async {
+    // if the current user is manager or club owner, get club coins
+    final clubData = await ClubsService.getClubHomePageData(widget.clubCode);
+    if (clubData.isManager || clubData.isOwner) {
+      clubData.clubCoins = await ClubsService.getClubCoins(widget.clubCode);
+      ;
+    }
+
+    return clubData;
+  }
+
   @override
   Widget build(BuildContext context) => Consumer<AppTheme>(
         builder: (_, theme, __) => WillPopScope(
@@ -168,7 +135,7 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew>
           },
           child: FutureBuilder<ClubHomePageModel>(
             initialData: null,
-            future: ClubsService.getClubHomePageData(widget.clubCode),
+            future: fetchData(),
             builder: (BuildContext context, snapshot) {
               ClubHomePageModel clubModel = snapshot.data;
               // log("0-0-0- ${snapshot.connectionState}");

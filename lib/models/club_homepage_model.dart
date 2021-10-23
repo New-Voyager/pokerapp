@@ -53,7 +53,7 @@ class ClubHomePageModel extends ChangeNotifier {
   String description;
   String picUrl;
   bool showHighRankStats;
-
+  int clubCoins; // filled for club owner and manager
   ClubHomePageModel(String clubCode, String clubName) {
     this.clubCode = clubCode;
     this.clubName = clubName;

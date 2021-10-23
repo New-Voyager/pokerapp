@@ -10,7 +10,9 @@ import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/club_interior_service.dart';
+import 'package:pokerapp/services/app/clubs_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
+import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
 import 'package:provider/provider.dart';
 
@@ -134,9 +136,10 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     //message
-                                    IconAndTitleWidget(
+                                    CircleImageButton(
+                                      theme: theme,
                                       icon: Icons.message,
-                                      text: _appScreenText['message'],
+                                      caption: _appScreenText['message'],
                                       onTap: () {
                                         Navigator.pushNamed(
                                           context,
@@ -151,18 +154,15 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                                     ),
 
                                     //boot
-                                    IconAndTitleWidget(
+                                    CircleImageButton(
                                       icon: Icons.eject_rounded,
-                                      text: _appScreenText['boot'],
-                                      onTap: () {},
+                                      theme: theme,
+                                      caption: _appScreenText['boot'],
+                                      onTap: () async {
+                                        await ClubsService.kickMember(clubCode, playerId);
+                                        Navigator.pop(context, true);
+                                      },
                                     ),
-
-                                    //settle
-                                    // IconAndTitleWidget(
-                                    //   icon: Icons.message,
-                                    //   text: "Settle",
-                                    //   onTap: () {},
-                                    // ),
                                   ],
                                 ),
                               ),
@@ -264,103 +264,6 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
     return Container(
       child: Column(
         children: [
-          // Container(
-          //   padding: EdgeInsets.only(
-          //     left: 5,
-          //     bottom: 10,
-          //   ),
-          //   child: Row(
-          //     children: [
-          //       Expanded(
-          //         flex: 1,
-          //         child: Icon(
-          //           AppIcons.poker_chip,
-          //           color: Colors.orange,
-          //         ),
-          //       ),
-          //       Expanded(
-          //         flex: 6,
-          //         child: Padding(
-          //           padding: EdgeInsets.only(left: 5),
-          //           child: Text(
-          //             "Balance",
-          //             textAlign: TextAlign.left,
-          //           ),
-          //         ),
-          //       ),
-          //       Expanded(
-          //         flex: 3,
-          //         child: Padding(
-          //           padding: EdgeInsets.only(left: 5),
-          //           child: Text(
-          //             _data.balanceStr,
-          //             textAlign: TextAlign.left,
-          //             style: TextStyle(
-          //               color: getBalanceColor(_data.balance),
-          //               fontSize: 12.dp,
-          //             ),
-          //           ),
-          //         ),
-          //       ),
-          //     ],
-          //   ),
-          // ),
-          Container(
-            padding: EdgeInsets.only(
-              left: 5,
-              bottom: 10,
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: Icon(
-                    AppIcons.poker_chip,
-                    color: Colors.cyan,
-                  ),
-                ),
-                Expanded(
-                  flex: 6,
-                  child: Padding(
-                    padding: EdgeInsets.only(left: 5),
-                    child: Text(
-                      _appScreenText['creditLimit'],
-                      textAlign: TextAlign.left,
-                      style: AppDecorators.getHeadLine4Style(theme: theme),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  flex: 3,
-                  child: GestureDetector(
-                    onTap: () => onCreditLimitEdit(context),
-                    child: Padding(
-                      padding: EdgeInsets.only(left: 5),
-                      child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                              _data.creditLimit.toString(),
-                              textAlign: TextAlign.left,
-                              style:
-                                  AppDecorators.getHeadLine4Style(theme: theme),
-                            ),
-                            SizedBox(
-                              width: 10,
-                            ),
-                            Icon(
-                              Icons.edit,
-                              size: 16,
-                              color: theme.accentColor,
-                            )
-                          ]),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
           Container(
             padding: EdgeInsets.only(
               left: 5,
@@ -392,7 +295,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                     padding: EdgeInsets.only(left: 5),
                     child: Text(
                       _data.totalGames.toString(),
-                      textAlign: TextAlign.left,
+                      textAlign: TextAlign.center,
                       style: AppDecorators.getHeadLine4Style(theme: theme),
                     ),
                   ),
@@ -431,7 +334,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                     padding: EdgeInsets.only(left: 5),
                     child: Text(
                       _data.totalBuyinStr,
-                      textAlign: TextAlign.left,
+                      textAlign: TextAlign.center,
                       style: AppDecorators.getHeadLine4Style(theme: theme),
                     ),
                   ),
@@ -470,7 +373,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                     padding: EdgeInsets.only(left: 5),
                     child: Text(
                       _data.totalWinningsStr,
-                      textAlign: TextAlign.left,
+                      textAlign: TextAlign.center,
                       style: AppDecorators.getHeadLine4Style(theme: theme),
                     ),
                   ),
@@ -509,7 +412,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                     padding: EdgeInsets.only(left: 5),
                     child: Text(
                       _data.rakeStr,
-                      textAlign: TextAlign.left,
+                      textAlign: TextAlign.center,
                       style: AppDecorators.getHeadLine4Style(theme: theme),
                     ),
                   ),
