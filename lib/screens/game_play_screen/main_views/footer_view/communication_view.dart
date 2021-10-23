@@ -10,10 +10,14 @@ import 'package:pokerapp/models/game_play_models/business/game_chat_notfi_state.
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/models/video_req_state.dart';
 import 'package:pokerapp/resources/app_constants.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/video_conf/video_conf_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/voice_text_widget.dart';
+
 //import 'package:pokerapp/services/agora/agora.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
+import 'package:pokerapp/services/ion/ion.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/widgets/blinking_widget.dart';
@@ -34,16 +38,20 @@ class CommunicationView extends StatefulWidget {
 }
 
 class _CommunicationViewState extends State<CommunicationView> {
+  VideoReqState videoReqState;
+
   final ValueNotifier<bool> _vnShowAudioConfOptions =
       ValueNotifier<bool>(false);
   bool _recordingCancelled;
   String _audioFile;
   final _audioRecorder = Record();
   bool _isRecording = false;
+
   @override
   void initState() {
     // TODO: implement initState
     _isRecording = false;
+    videoReqState = context.read<VideoReqState>();
     super.initState();
   }
 
@@ -51,6 +59,41 @@ class _CommunicationViewState extends State<CommunicationView> {
   void dispose() {
     _audioRecorder.dispose();
     super.dispose();
+  }
+
+  Widget _videoButton(AppTheme theme) {
+    final String videoSvg = "assets/images/game/mic.svg";
+
+    return Container(
+      margin: EdgeInsets.only(top: 10.dp),
+      child: CircleImageButton(
+        onTap: () async {
+          log('video button clicked');
+
+          final IonAudioConferenceService ion =
+              widget.gameContextObject.ionAudioConferenceService;
+
+          // first leave the current ion session
+          await ion.leave();
+
+          // then join back an ion session with isVideo as true
+          await ion.join(isVideo: true);
+
+          showBottomSheet(
+            context: context,
+            builder: (_) => ListenableProvider.value(
+              value: widget.gameContextObject,
+              child: ListenableProvider.value(
+                value: videoReqState,
+                child: VideoConfWidget(),
+              ),
+            ),
+          );
+        },
+        theme: theme,
+        svgAsset: videoSvg,
+      ),
+    );
   }
 
   @override
@@ -117,6 +160,14 @@ class _CommunicationViewState extends State<CommunicationView> {
                 if (showVoiceText) {
                   children.addAll(voiceTextWidgets(widget.chatService));
                 }
+
+                // video button
+                bool showVideoButton = true;
+
+                if (showVideoButton) {
+                  children.add(_videoButton(theme));
+                }
+
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: children,

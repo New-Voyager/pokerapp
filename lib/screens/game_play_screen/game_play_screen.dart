@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:after_layout/after_layout.dart';
@@ -18,6 +19,7 @@ import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/boar
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/models/video_req_state.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/app_constants.dart';
@@ -30,6 +32,7 @@ import 'package:pokerapp/screens/game_play_screen/main_views/board_view/decorati
 import 'package:pokerapp/screens/game_play_screen/main_views/header_view/header_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/which_winner_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/notifications/notifications.dart';
+import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/app/player_service.dart';
 import 'package:pokerapp/services/audio/audio_service.dart';
@@ -224,6 +227,8 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       if (!TestService.isTesting) {
         _gameComService.gameMessaging.onPlayerInfo = this.onPlayerInfo;
         _gameComService.gameMessaging.getMyInfo = this.getPlayerInfo;
+        _gameComService.gameMessaging.onVideoConfMessage =
+            this.onVideoConfMessage;
       }
 
       await _gameState.initialize(
@@ -971,23 +976,21 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       builder: (_, theme, __) {
         return Container(
           decoration: AppDecorators.bgRadialGradient(theme),
-          child: SafeArea(
-            child: Scaffold(
-              /* FIXME: THIS FLOATING ACTION BUTTON IS FOR SHOWING THE TESTS */
-              floatingActionButton:
-                  GamePlayScreenUtilMethods.floatingActionButton(
-                onReload: () {},
-                isCustomizationMode: widget.customizationService != null,
-              ),
-              // floating button to refresh network TEST
-              // floatingActionButton: FloatingActionButton(
-              //   child: Icon(Icons.android_rounded),
-              //   onPressed: _reconnectGameComService,
-              // ),
-              resizeToAvoidBottomInset: true,
-              backgroundColor: Colors.transparent,
-              body: _buildBody(theme),
+          child: Scaffold(
+            /* FIXME: THIS FLOATING ACTION BUTTON IS FOR SHOWING THE TESTS */
+            floatingActionButton:
+                GamePlayScreenUtilMethods.floatingActionButton(
+              onReload: () {},
+              isCustomizationMode: widget.customizationService != null,
             ),
+            // floating button to refresh network TEST
+            // floatingActionButton: FloatingActionButton(
+            //   child: Icon(Icons.android_rounded),
+            //   onPressed: _reconnectGameComService,
+            // ),
+            resizeToAvoidBottomInset: true,
+            backgroundColor: Colors.transparent,
+            body: _buildBody(theme),
           ),
         );
       },
@@ -1093,5 +1096,79 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     playerInfo.playerId = _gameState.me.playerId;
     playerInfo.namePlateId = _gameState.me.namePlateId;
     return playerInfo;
+  }
+
+  void onVideoConfMessage(String data) async {
+    Map<String, dynamic> json = jsonDecode(data);
+    String method = json['method'];
+    if (method != null) {
+      if (method == 'REQUEST_VIDEO') {
+        // a player is requesting video
+        int toPlayer = int.parse(json['toPlayer'].toString());
+        int fromPlayer = int.parse(json['fromPlayer'].toString());
+        if (toPlayer == _gameState.me.playerId) {
+          // a player is requesting video from me
+          // from player should be playing
+          final player = _gameState.getPlayerById(fromPlayer);
+          if (player != null) {
+            // show a dialog
+            bool ret = await showPrompt(context, 'Video Conference',
+                '${player.name} is requesting you to join video conference',
+                positiveButtonText: 'Accept', negativeButtonText: 'Decline');
+            if (ret) {
+              // accepted
+              _gameComService.chat
+                  .sendAcceptVideo(_gameState.me.playerId, fromPlayer);
+
+              // stream id or video stream id here??
+              _gameComService.chat.sendJoinVideo(
+                  _gameState.me.playerId, _gameState.me.streamId);
+            } else {
+              // declined
+              _gameComService.chat
+                  .sendDeclineVideo(_gameState.me.playerId, fromPlayer);
+            }
+          }
+        }
+      } else if (method == 'JOIN_VIDEO') {
+        int player = int.parse(json['player'].toString());
+        final seat = _gameState.getSeatByPlayer(player);
+        if (seat == null) {
+          return;
+        }
+        String streamId = json['streamId'];
+        // player is joining video conference
+        log('VIDEO: player ${seat.player.name} is joining video conference');
+        // request his stream id here (don't know we need it or not)
+
+        _gameContextObj.ionAudioConferenceService
+            .updatePlayerId(streamId, player);
+
+        // offers video
+        seat.player.offersVideo = true;
+        context.read<VideoReqState>().notify();
+      } else if (method == 'ACCEPT_REQUEST') {
+        int player = int.parse(json['fromPlayer'].toString());
+        final seat = _gameState.getSeatByPlayer(player);
+        if (seat == null) {
+          return;
+        }
+        // player is joining video conference
+        log('VIDEO: player ${seat.player.name} has accepted to join video');
+
+        // request his stream id here (don't know we need it or not)
+      } else if (method == 'DECLINE_REQUEST') {
+        int player = int.parse(json['fromPlayer'].toString());
+        final seat = _gameState.getSeatByPlayer(player);
+        if (seat == null) {
+          return;
+        }
+        log('VIDEO: player ${seat.player.name} has decline to join video conference');
+
+        // does not offers video
+        seat.player.offersVideo = false;
+        context.read<VideoReqState>().notify();
+      }
+    }
   }
 }

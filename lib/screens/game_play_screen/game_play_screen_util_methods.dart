@@ -18,9 +18,11 @@ import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat_change_model.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
+import 'package:pokerapp/models/video_req_state.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/video_conf/video_conf_widget.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/data/game_hive_store.dart';
@@ -380,6 +382,9 @@ class GamePlayScreenUtilMethods {
       /* for game chat notifications - unread messages, counts */
       ListenableProvider<GameChatNotifState>(
         create: (_) => GameChatNotifState(),
+      ),
+      ListenableProvider<VideoReqState>(
+        create: (_) => VideoReqState(),
       ),
     ]);
     //}

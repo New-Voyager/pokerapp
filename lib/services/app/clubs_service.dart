@@ -500,9 +500,7 @@ class ClubsService {
     return result.data['ret'];
   }
 
-
-  static Future<String> kickMember(
-      String clubCode, String playerId) async {
+  static Future<String> kickMember(String clubCode, String playerId) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
 
     Map<String, dynamic> variables = {
@@ -515,8 +513,7 @@ class ClubsService {
       }
     """;
     QueryResult result = await _client.mutate(
-      MutationOptions(
-          document: gql(query), variables: variables),
+      MutationOptions(document: gql(query), variables: variables),
     );
 
     if (result.hasException) return '';
@@ -525,5 +522,4 @@ class ClubsService {
 
     return res ?? false;
   }
-
 }
