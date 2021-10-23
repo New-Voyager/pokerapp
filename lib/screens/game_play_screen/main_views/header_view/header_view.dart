@@ -1,18 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
-import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/screens/game_context_screen/game_options/game_option_bottom_sheet.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
-import 'package:pokerapp/utils/adaptive_sizer.dart';
-import 'package:pokerapp/widgets/heading_widget.dart';
+import 'package:pokerapp/screens/main_screens/purchase_page_view/coin_update.dart';
 import 'package:provider/provider.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class HeaderView extends StatelessWidget {
   final GameState gameState;
@@ -107,26 +105,57 @@ class HeaderView extends StatelessWidget {
     if (gameState.customizationMode) {
       iconData = Icons.edit_rounded;
     }
-    return Align(
-      alignment: Alignment.centerRight,
-      child: InkWell(
-        onTap: () => _onGameMenuNavButtonPress(context),
-        child: Container(
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(
+
+    return Transform.scale(
+      scale: 1.2,
+      child: Container(
+        alignment: Alignment.centerLeft,
+        padding: EdgeInsets.only(left: 16.pw),
+        child: InkWell(
+          child: Container(
+            width: 32.pw,
+            height: 32.pw,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: theme.secondaryColor,
+                width: 2,
+              ),
+            ),
+            // padding: EdgeInsets.all(5),
+            child: Icon(
+              iconData,
               color: theme.secondaryColor,
-              width: 2,
             ),
           ),
-          // padding: EdgeInsets.all(5),
-          child: Icon(
-            iconData,
-            color: theme.secondaryColor,
-          ),
+          borderRadius: BorderRadius.circular(32.pw),
+          onTap: () {
+            _onGameMenuNavButtonPress(context);
+          }
         ),
       ),
     );
+
+    // return Align(
+    //   alignment: Alignment.centerRight,
+    //   child: InkWell(
+    //     onTap: () => _onGameMenuNavButtonPress(context),
+    //     child: Container(
+    //       decoration: BoxDecoration(
+    //         shape: BoxShape.circle,
+    //         border: Border.all(
+    //           color: theme.secondaryColor,
+    //           width: 2,
+    //         ),
+    //       ),
+    //       // padding: EdgeInsets.all(5),
+    //       child: Icon(
+    //         iconData,
+    //         color: theme.secondaryColor,
+    //       ),
+    //     ),
+    //   ),
+    // );
   }
 
   @override
@@ -149,15 +178,20 @@ class HeaderView extends StatelessWidget {
                 _buildMainContent(theme),
 
                 /* back button */
-                BackArrowWidget(),
+                Positioned(
+                  top: 5.ph, left: 5.ph,
+                  child: 
+                  BackArrowWidget()),
 
                 /* game menu */
-
+                Positioned(
+                  right: 10.pw, top: 5.ph,
+                child:
                 Consumer<HandInfoState>(builder: (_, his, __) {
                   return Visibility(
                       child: _buildGameMenuNavButton(context, theme),
                       visible: !gameState.ended);
-                }),
+                })),
               ],
             ),
           ),
