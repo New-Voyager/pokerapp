@@ -153,12 +153,12 @@ class IonAudioConferenceService {
       log('ION: $playerId joined the conference');
 
       var localStream = await LocalStream.getUserMedia(
-        constraints: Constraints(audio: true, video: _isVideo),
+        constraints: Constraints(audio: false, video: _isVideo),
       );
 
       await _rtc.publish(localStream);
       if (_closed) return;
-      log('RTC: name: $playerId  stream id ${localStream.stream.id}');
+      log('RTCVideo: video: $_isVideo name: $playerId  stream id ${localStream.stream.id}');
       _streamId = localStream.stream.id;
       Participant participant = Participant(stream: localStream, remote: false);
       participant.playerId = this.player.id;
@@ -236,6 +236,8 @@ class IonAudioConferenceService {
   }
 
   void onTrack(MediaStreamTrack track, RemoteStream remoteStream) async {
+    log('RTCVideo: ontrack: track.kind: ${track.kind} remote stream => ${remoteStream.id} stream id: ${remoteStream.stream.id} ownerTag: ${remoteStream.stream.ownerTag}');
+
     // on new track
     if (track.kind == 'audio') {
       log('RTC: ontrack: remote stream => ${remoteStream.id} stream id: ${remoteStream.stream.id} ownerTag: ${remoteStream.stream.ownerTag}');
@@ -245,7 +247,7 @@ class IonAudioConferenceService {
     }
 
     if (track.kind == 'video') {
-      log('RTC: ontrack: remote stream => ${remoteStream.id} stream id: ${remoteStream.stream.id} ownerTag: ${remoteStream.stream.ownerTag}');
+      log('RTCVideo: ontrack: remote stream => ${remoteStream.id} stream id: ${remoteStream.stream.id} ownerTag: ${remoteStream.stream.ownerTag}');
       final newParticipant = Participant(stream: remoteStream, remote: true);
       await newParticipant.initialize();
 
