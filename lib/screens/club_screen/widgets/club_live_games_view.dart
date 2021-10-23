@@ -1,19 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/models/newmodels/game_model_new.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/app_config.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
-import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/routes.dart';
+import 'package:pokerapp/screens/game_screens/new_game_settings/new_game_settings2.dart';
 import 'package:pokerapp/screens/main_screens/games_page_view/widgets/live_games_item.dart';
+import 'package:pokerapp/widgets/buttons.dart';
+import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:provider/provider.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class ClubLiveGamesView extends StatelessWidget {
   final List<GameModelNew> liveGames;
   final AppTextScreen appScreenText;
+  final ClubHomePageModel clubModel;
 
-  ClubLiveGamesView(this.liveGames, this.appScreenText);
+  ClubLiveGamesView(this.clubModel, this.liveGames, this.appScreenText);
 
   @override
   Widget build(BuildContext context) {
@@ -26,22 +32,62 @@ class ClubLiveGamesView extends StatelessWidget {
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Container(
-              margin: EdgeInsets.only(left: 16, bottom: 8),
-              child: Text(
-                appScreenText['liveGames'],
-                style: AppDecorators.getSubtitle2Style(theme: theme),
+            Align(
+              alignment: Alignment.topRight,
+              child: Visibility(
+                visible: (clubModel.isManager || clubModel.isOwner),
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: RoundRectButton(
+                    onTap: () async {
+                      // if the player does not have enough coins
+                      // don't host the game
+                      if (clubModel.clubCoins < 10) {
+                        showErrorDialog(context, 'Error',
+                            'Not enough coins in the club to host a game');
+                        return;
+                      }
+
+                      final dynamic result = await Navigator.pushNamed(
+                        context,
+                        Routes.new_game_settings,
+                        arguments: this.clubModel.clubCode,
+                      );
+
+                      if (result != null) {
+                        /* show game settings dialog */
+                        NewGameSettings2.show(
+                          context,
+                          clubCode: this.clubModel.clubCode,
+                          mainGameType: result['gameType'],
+                          subGameTypes: List.from(
+                                result['gameTypes'],
+                              ) ??
+                              [],
+                        );
+                      }
+                    },
+                    text: 'Host Game', //_appScreenText['hostGame'],
+                    theme: theme,
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: 12.ph),
+            Visibility(
+              visible: liveGames.length > 0,
+              child: Container(
+                margin: EdgeInsets.only(left: 16, bottom: 8),
+                child: Text(
+                  appScreenText['liveGames'],
+                  style: AppDecorators.getSubtitle2Style(theme: theme),
+                ),
               ),
             ),
             liveGames.length == 0
-                ? Container(
-                    height: 150,
-                    child: Center(
-                      child: Text(appScreenText['noLiveGames'],
-                          style: AppStylesNew.labelTextStyle),
-                    ),
-                  )
+                ? SizedBox(width: 0, height: 0)
                 : ListView.separated(
                     physics: NeverScrollableScrollPhysics(),
                     itemCount: liveGames.length,

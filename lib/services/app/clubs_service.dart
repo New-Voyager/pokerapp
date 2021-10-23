@@ -471,4 +471,59 @@ class ClubsService {
 
     return result.data['ret'] ?? false;
   }
+
+  static Future<int> getClubCoins(String clubCode) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    log('Getting club home page data');
+    Map<String, dynamic> variables = {
+      'clubCode': clubCode,
+    };
+    final String query = """
+      query clubCoins(\$clubCode : String!){
+        ret : clubCoins(clubCode:\$clubCode)
+      }
+    """;
+    QueryResult result = await _client.query(
+      QueryOptions(
+        document: gql(query),
+        variables: variables,
+      ),
+    );
+
+    // log('query result: ${result.exception}');
+
+    if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
+    return result.data['ret'];
+  }
+
+
+  static Future<String> kickMember(
+      String clubCode, String playerId) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    Map<String, dynamic> variables = {
+      "clubCode": clubCode,
+      "playerUuid": playerId,
+    };
+    final String query = """
+      mutation kickMember(\$clubCode : String!, \$playerUuid: String!){
+        ret: kickMember(clubCode:\$clubCode, playerUuid: \$playerUuid)
+      }
+    """;
+    QueryResult result = await _client.mutate(
+      MutationOptions(
+          document: gql(query), variables: variables),
+    );
+
+    if (result.hasException) return '';
+
+    String res = result.data['ret'];
+
+    return res ?? false;
+  }
+
 }

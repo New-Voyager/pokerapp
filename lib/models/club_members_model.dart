@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/club_member_status.dart';
 import 'package:pokerapp/utils/formatter.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 class ClubMemberModel extends ChangeNotifier {
   String clubCode;
@@ -113,7 +114,15 @@ class ClubMemberModel extends ChangeNotifier {
     this.autoBuyInApproval = false;
 
     if (jsonData['lastPlayedDate'] != null) {
-      convertDate(jsonData["lastPlayedDate"]);
+      // last played date is GMT
+      DateTime lastPlayedDate = DateTime.tryParse(jsonData['lastPlayedDate']);
+      if (lastPlayedDate != null) {
+        lastPlayedDate = lastPlayedDate.toLocal();
+        final diff = DateTime.now().difference(lastPlayedDate);
+        final ago = new DateTime.now().subtract(diff);
+        this.lastPlayedDate = timeago.format(ago);
+      }
+      //convertDate(jsonData["lastPlayedDate"]);
     }
 
     this.imageId = jsonData['imageId'];
