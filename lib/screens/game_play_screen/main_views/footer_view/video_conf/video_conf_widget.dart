@@ -44,6 +44,10 @@ class VideoConfWidget extends StatelessWidget {
 
     // otherwise, build my video feed widget
     final Size meTileSize = Size(90, 80);
+    RTCVideoRenderer renderer;
+    if (ion.me() != null) {
+      renderer = ion.me().renderer;
+    }
     return Positioned(
       top: -meTileSize.height / 2,
       left: 20,
@@ -61,7 +65,7 @@ class VideoConfWidget extends StatelessWidget {
                 width: meTileSize.width,
                 height: meTileSize.height,
                 child: RTCVideoView(
-                  ion.me().renderer,
+                  renderer,
                   mirror: true,
                   objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
                 ),
@@ -85,7 +89,8 @@ class VideoConfWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildPlayers(final GameContextObject gameContextObject) {
+  Widget _buildPlayers(
+      final GameContextObject gameContextObject, final AppTheme theme) {
     final gameState = gameContextObject.gameState;
 
     if (gameState.playersInGame.isEmpty) return Text('No one is around');
@@ -95,18 +100,21 @@ class VideoConfWidget extends StatelessWidget {
 
     if (playersExceptMe.isEmpty) return Text('No one is around');
 
+    List<PlayerTile> playerTiles = [];
+    for (final player in playersExceptMe) {
+      playerTiles.add(PlayerTile(
+        theme: theme,
+        player: player,
+        totalPlayers: playersExceptMe.length,
+        ion: gameContextObject.ionAudioConferenceService,
+      ));
+    }
     return Wrap(
       alignment: WrapAlignment.center,
       verticalDirection: VerticalDirection.up,
       spacing: 10.0,
       runSpacing: 10.0,
-      children: playersExceptMe
-          .map<Widget>((p) => PlayerTile(
-                player: p,
-                totalPlayers: playersExceptMe.length,
-                ion: gameContextObject.ionAudioConferenceService,
-              ))
-          .toList(),
+      children: playerTiles,
     );
   }
 
@@ -134,7 +142,7 @@ class VideoConfWidget extends StatelessWidget {
           alignment: Alignment.center,
           children: [
             _buildMyVideoFeedWidget(gameState.me, theme, ion),
-            _buildPlayers(gameContextObject),
+            _buildPlayers(gameContextObject, theme),
             _closeButton(context, theme),
           ],
         ),

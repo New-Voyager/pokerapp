@@ -159,7 +159,8 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                                       theme: theme,
                                       caption: _appScreenText['boot'],
                                       onTap: () async {
-                                        await ClubsService.kickMember(clubCode, playerId);
+                                        await ClubsService.kickMember(
+                                            clubCode, playerId);
                                         Navigator.pop(context, true);
                                       },
                                     ),

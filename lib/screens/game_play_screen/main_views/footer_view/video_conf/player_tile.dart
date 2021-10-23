@@ -8,15 +8,17 @@ import 'package:pokerapp/models/video_req_state.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/services/ion/ion.dart';
-import 'package:pokerapp/widgets/button_widget.dart';
+import 'package:pokerapp/widgets/buttons.dart';
 import 'package:provider/provider.dart';
 
 class PlayerTile extends StatelessWidget {
   final PlayerModel player;
+  final AppTheme theme;
   final int totalPlayers;
   final IonAudioConferenceService ion;
 
   PlayerTile({
+    @required this.theme,
     @required this.player,
     @required this.totalPlayers,
     @required this.ion,
@@ -42,12 +44,13 @@ class PlayerTile extends StatelessWidget {
     if (player.offersVideo) return const SizedBox.shrink();
 
     return Align(
-      alignment: Alignment.topCenter,
+      alignment: Alignment.center,
       child: IntrinsicHeight(
         child: Container(
           margin: EdgeInsets.all(5.0),
-          child: ButtonWidget(
-            text: 'Request Video',
+          child: CircleImageButton(
+            icon: Icons.video_call,
+            theme: theme,
             onTap: _sendVideoRequest,
           ),
         ),
