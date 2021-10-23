@@ -45,8 +45,18 @@ class VideoConfWidget extends StatelessWidget {
     // otherwise, build my video feed widget
     final Size meTileSize = Size(90, 80);
     RTCVideoRenderer renderer;
+    Widget videoView = SizedBox.shrink();
     if (ion.me() != null) {
       renderer = ion.me().renderer;
+      videoView = SizedBox(
+                width: meTileSize.width,
+                height: meTileSize.height,
+                child: RTCVideoView(
+                  renderer,
+                  mirror: true,
+                  objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
+                )
+      );
     }
     return Positioned(
       top: -meTileSize.height / 2,
@@ -61,15 +71,7 @@ class VideoConfWidget extends StatelessWidget {
             // rtc renderer
             ClipRRect(
               borderRadius: AppDecorators.tileDecoration(theme).borderRadius,
-              child: SizedBox(
-                width: meTileSize.width,
-                height: meTileSize.height,
-                child: RTCVideoView(
-                  renderer,
-                  mirror: true,
-                  objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
-                ),
-              ),
+              child: videoView,
             ),
 
             // player name

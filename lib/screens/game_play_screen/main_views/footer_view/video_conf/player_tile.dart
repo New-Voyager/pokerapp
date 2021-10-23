@@ -88,6 +88,18 @@ class PlayerTile extends StatelessWidget {
     final size = _getPlayerTileSize(totalPlayers, context);
 
     final renderer = ion.getVideoRenderer(player.playerId);
+    Widget videoView = SizedBox.shrink();
+    if (renderer != null) {
+      videoView = SizedBox(
+                    width: size.width,
+                    height: size.height,
+                    child: RTCVideoView(
+                      renderer,
+                      objectFit:
+                          RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
+                    ),
+                  );
+    }
 
     // Player Tile are of three types
     // 1. video on - shows buttons to turn off video, mute / unmute
@@ -105,15 +117,7 @@ class PlayerTile extends StatelessWidget {
               ? ClipRRect(
                   borderRadius:
                       AppDecorators.tileDecoration(theme).borderRadius,
-                  child: SizedBox(
-                    width: size.width,
-                    height: size.height,
-                    child: RTCVideoView(
-                      renderer,
-                      objectFit:
-                          RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
-                    ),
-                  ),
+                  child: videoView,
                 )
               : const SizedBox.shrink(),
 
