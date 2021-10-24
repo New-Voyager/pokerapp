@@ -170,6 +170,96 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
     );
   }
 
+  void onLoginAsBot(AppTheme appTheme) {
+    String botName = "";
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          actionsPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          backgroundColor: appTheme.fillInColor,
+          title: Text('Login As Bot'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CardFormTextField(
+                theme: _appTheme,
+                hintText: 'Bot Name',
+                onChanged: (val) {
+                  //log("VALUE : $val");
+                  botName = val;
+                  setState(() {});
+                },
+              ),
+            ],
+          ),
+          actions: [
+            RoundRectButton(
+                text: 'Login',
+                onTap: () async {
+                  if (botName.isEmpty) {
+                    toast('Please specify bot name');
+                    return;
+                  }
+
+                  ConnectionDialog.show(
+                      context: context,
+                      loadingText: 'Logging in as bot $botName');
+                  // login with bot name
+                  Map<String, dynamic> resp =
+                      await AuthService.loginBot(botName);
+
+                  if (resp['status']) {
+                    // successful
+                    Alerts.showNotification(titleText: 'Logging in successful');
+                    // save device id, device secret and jwt
+                    AuthModel currentUser = AuthModel(
+                        deviceID: resp['deviceId'],
+                        deviceSecret: resp['deviceSecret'],
+                        name: _screenNameCtrl.text,
+                        uuid: resp['uuid'],
+                        playerId: resp['id'],
+                        jwt: resp['jwt']);
+                    await AuthService.save(currentUser);
+                    AppConfig.jwt = resp['jwt'];
+
+                    final availableCoins =
+                        await AppCoinService.availableCoins();
+                    AppConfig.setAvailableCoins(availableCoins);
+                    try {
+                      await AssetService.refresh();
+                    } catch (err) {
+                      log(err.toString());
+                    }
+                    ConnectionDialog.dismiss(context: context);
+                    Navigator.of(context).pop();
+
+                    // Navigate to main screen
+                    Navigator.pushNamedAndRemoveUntil(
+                      context,
+                      Routes.main,
+                      (_) => false,
+                    );
+                  } else {
+                    ConnectionDialog.dismiss(context: context);
+                    Navigator.of(context).pop();
+                    // failed
+                    log("ERROR : ${resp['error']}");
+                    Alerts.showNotification(
+                      titleText: 'login failed',
+                      subTitleText: resp['error'],
+                      duration: Duration(seconds: 5),
+                    );
+                  }
+                },
+                theme: appTheme),
+          ],
+        );
+      },
+    );
+  }
+
   Widget _buildTermsAndPrivacyText(AppTheme appTheme) => Container(
         margin: EdgeInsets.symmetric(
           horizontal: 16,
@@ -220,14 +310,27 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
         child: Scaffold(
           backgroundColor: Colors.transparent,
           resizeToAvoidBottomInset: true,
-          floatingActionButton: IconButton(
-            icon: Icon(
-              Icons.bug_report,
-              size: 32,
-              color: _appTheme.supportingColorWithDark(0.50),
+          floatingActionButton:
+              Column(mainAxisAlignment: MainAxisAlignment.end, children: [
+            IconButton(
+              icon: Icon(
+                Icons.bug_report,
+                size: 48.pw,
+                color: _appTheme.supportingColorWithDark(0.50),
+              ),
+              onPressed: () => onBugIconPress(_appTheme),
             ),
-            onPressed: () => onBugIconPress(_appTheme),
-          ),
+            SizedBox(height: 10.dp),
+            IconButton(
+              icon: Icon(
+                Icons.person,
+                size: 48.pw,
+                color: _appTheme.supportingColorWithDark(0.50),
+              ),
+              onPressed: () => onLoginAsBot(_appTheme),
+            ),
+            SizedBox(height: 100.dp),
+          ]),
           body: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,

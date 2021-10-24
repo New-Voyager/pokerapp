@@ -31,14 +31,14 @@ class CustomAppBar extends AppBar {
             children: [
               Text(
                 titleText ?? "",
-                style: AppDecorators.getAccentTextStyle(theme: theme),
+                style: AppDecorators.getAppBarStyle(theme: theme),
                 textAlign: TextAlign.center,
               ),
               Visibility(
                 visible: subTitleText != null,
                 child: Text(
                   subTitleText ?? "",
-                  style: AppDecorators.getSubtitle3Style(theme: theme),
+                  style: AppDecorators.getHeadLine3Style(theme: theme),
                   textAlign: TextAlign.center,
                 ),
               ),

@@ -5,6 +5,7 @@ import 'package:pokerapp/screens/club_screen/members_page_view/admin_view/admin_
 import 'package:pokerapp/screens/club_screen/members_page_view/general_view/general_view.dart';
 import 'package:pokerapp/services/app/club_interior_service.dart';
 import 'package:provider/provider.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class MembersPageView extends StatefulWidget {
   @override

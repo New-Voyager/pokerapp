@@ -5,7 +5,6 @@ import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
-import 'package:pokerapp/resources/app_config.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/routes.dart';
@@ -18,7 +17,6 @@ import 'package:pokerapp/screens/main_screens/purchase_page_view/coin_update.dar
 import 'package:pokerapp/services/app/clubs_service.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
-
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class ClubMainScreenNew extends StatefulWidget {
@@ -80,12 +78,15 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew>
               children: [
                 Stack(children: [
                   Positioned(top: 5.ph, left: 5.pw, child: BackArrowWidget()),
-                  Positioned(
-                      top: 5.ph,
-                      right: 10.pw,
-                      child: Transform.scale(
-                          scale: 1.5,
-                          child: CoinWidget(clubModel.clubCoins, 0, false))),
+                  clubModel.clubCoins == null
+                      ? SizedBox.shrink()
+                      : Positioned(
+                          top: 5.ph,
+                          right: 10.pw,
+                          child: Transform.scale(
+                              scale: 1.5,
+                              child:
+                                  CoinWidget(clubModel.clubCoins, 0, false))),
 
                   // banner
                   Transform.translate(
