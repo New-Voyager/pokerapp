@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/main.dart';
@@ -12,8 +14,11 @@ import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/club_interior_service.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
+import 'package:pokerapp/utils/alerts.dart';
+import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
+import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:provider/provider.dart';
 
 class ClubMembersDetailsView extends StatefulWidget {
@@ -159,8 +164,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                                       theme: theme,
                                       caption: _appScreenText['boot'],
                                       onTap: () async {
-                                        await ClubsService.kickMember(clubCode, playerId);
-                                        Navigator.pop(context, true);
+                                        await kickPlayerOut();
                                       },
                                     ),
                                   ],
@@ -241,6 +245,32 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
         ),
       ),
     );
+  }
+
+  Future<void> kickPlayerOut() async {
+    final response = await showPrompt(context, 'Kick Player',
+        'Do you want the kick the player out of the club?',
+        positiveButtonText: "Yes", negativeButtonText: "No");
+    log("$response");
+    if (response != null && response == true) {
+      ConnectionDialog.show(context: context, loadingText: "Removing player from club..");
+      final result = await ClubsService.kickMember(clubCode, playerId);
+      ConnectionDialog.dismiss(
+        context: context,
+      );
+
+      if (result != null) {
+        Alerts.showNotification(
+            titleText: 'Kick Player',
+            subTitleText: 'Player is removed from the club');
+        Navigator.of(context).pop();
+      } else {
+        Alerts.showNotification(
+            titleText: 'Kick Player',
+            subTitleText:
+                'Failed to remove the player from the club. Try again later.');
+      }
+    }
   }
 
   void onCreditLimitEdit(BuildContext context) async {

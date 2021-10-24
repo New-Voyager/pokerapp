@@ -327,7 +327,7 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
                                           );
 
                                           if (result != null) {
-                                            if (result) {
+                                            if (result == 'LEFT') {
                                               Alerts.showNotification(
                                                   titleText:
                                                       _appScreenText['success'],

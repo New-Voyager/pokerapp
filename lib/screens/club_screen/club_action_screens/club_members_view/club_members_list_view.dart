@@ -215,9 +215,7 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
                               Routes.club_member_detail_view,
                               arguments: data,
                             );
-                            setState(() {
-                              
-                            });
+                            setState(() {});
                           },
                           child: Container(
                             padding: EdgeInsets.only(right: 8),
