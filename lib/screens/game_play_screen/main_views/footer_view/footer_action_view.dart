@@ -517,11 +517,9 @@ class _FooterActionViewState extends State<FooterActionView> {
               if (actionState.show) {
                 children.addAll([
                   /* bet widget */
-                  Expanded(
-                    child: Transform.scale(
-                      scale: boardAttributes.footerActionViewScale,
-                      child: _buildBetWidget(me.cards, actionState.action, 30),
-                    ),
+                  Transform.scale(
+                    scale: boardAttributes.footerActionViewScale,
+                    child: _buildBetWidget(me.cards, actionState.action, 30),
                   ),
 
                   /* bottom row */
