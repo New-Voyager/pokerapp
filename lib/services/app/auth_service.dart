@@ -173,6 +173,40 @@ class AuthService {
     return {'status': true, 'jwt': jwt, "deviceSecret": deviceSecret};
   }
 
+  /// This function signs up bot player without device id
+  static Future<Map<String, dynamic>> loginBot(String name) async {
+    Map<String, String> header = {
+      'Content-type': 'application/json',
+    };
+
+    String apiServerUrl = AppConfig.apiUrl;
+    final response = await http.post(
+      Uri.parse('$apiServerUrl/auth/login-bot/${name}'),
+      headers: header,
+    );
+
+    String resBody = response.body;
+    final respBody = jsonDecode(resBody);
+    if (response.statusCode != 200) {
+      return {
+        'status': false,
+        'error': respBody['errors'][0],
+      };
+    }
+
+    String jwt = respBody['jwt'];
+    String deviceSecret = respBody['device-secret'];
+    return {
+      'status': true,
+      'jwt': jwt,
+      'deviceSecret': deviceSecret,
+      'uuid': respBody['uuid'],
+      'id': respBody['id'],
+      'name': respBody['name'],
+      'deviceId': respBody['uuid'],
+    };
+  }
+
   /// This function signs up a new player to the system
   /// Returns a device secret (used for login) and jwt
   static Future<Map<String, dynamic>> sendRecoveryCode(

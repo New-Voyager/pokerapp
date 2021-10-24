@@ -884,6 +884,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
         /* main view */
         Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: children,
         ),
 
@@ -974,24 +975,36 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     }
     return Consumer<AppTheme>(
       builder: (_, theme, __) {
-        return Container(
-          decoration: AppDecorators.bgRadialGradient(theme),
-          child: Scaffold(
-            /* FIXME: THIS FLOATING ACTION BUTTON IS FOR SHOWING THE TESTS */
-            floatingActionButton:
-                GamePlayScreenUtilMethods.floatingActionButton(
-              onReload: () {},
-              isCustomizationMode: widget.customizationService != null,
+        return WillPopScope(
+          child: Container(
+            decoration: AppDecorators.bgRadialGradient(theme),
+            child: SafeArea(
+              child: Scaffold(
+                /* FIXME: THIS FLOATING ACTION BUTTON IS FOR SHOWING THE TESTS */
+                floatingActionButton:
+                    GamePlayScreenUtilMethods.floatingActionButton(
+                  onReload: () {},
+                  isCustomizationMode: widget.customizationService != null,
+                ),
+                // floating button to refresh network TEST
+                // floatingActionButton: FloatingActionButton(
+                //   child: Icon(Icons.android_rounded),
+                //   onPressed: _reconnectGameComService,
+                // ),
+                resizeToAvoidBottomInset: true,
+                backgroundColor: Colors.transparent,
+                body: _buildBody(theme),
+              ),
             ),
-            // floating button to refresh network TEST
-            // floatingActionButton: FloatingActionButton(
-            //   child: Icon(Icons.android_rounded),
-            //   onPressed: _reconnectGameComService,
-            // ),
-            resizeToAvoidBottomInset: true,
-            backgroundColor: Colors.transparent,
-            body: _buildBody(theme),
           ),
+          onWillPop: () async {
+            // don't go back if the user swipes
+            return false;
+            if (Navigator.of(context).userGestureInProgress)
+              return false;
+            else
+              return true;
+          },
         );
       },
     );

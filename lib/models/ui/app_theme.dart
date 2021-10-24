@@ -101,13 +101,16 @@ class AppTheme extends ChangeNotifier {
   // TODO: MAY BE WE CAN HAVE DIFFERENT SHADES OF THIS
   Color get negativeOrErrorColor => _themeData.style.negativeOrErrorColor;
 
+  //Game List Shade Color
+  Color get gameListShadeColor => _themeData.style.gameListShadeColor;
+
   //Rounded Button
   Color get roundedButtonBackgroundColor =>
       _themeData.style.roundedButtonBackgroundColor;
   TextStyle get roundedButtonTextStyle =>
       _themeData.style.roundedButtonTextStyle;
   Color get roundedButtonBorderColor =>
-      _themeData.style.roundedButtonBackgroundColor;
+      _themeData.style.roundedButtonBorderColor;
   Color get roundButtonTextColor => _themeData.style.roundButtonTextColor;
 
   //Rounded Button 2

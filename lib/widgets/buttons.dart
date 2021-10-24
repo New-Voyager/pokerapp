@@ -185,7 +185,7 @@ class CircleImageButton extends StatelessWidget {
           Container(
             width: 32.pw,
             height: 32.pw,
-            padding: EdgeInsets.all(3.pw),
+            padding: EdgeInsets.all(2.pw),
             decoration: BoxDecoration(
               color: theme.circleImageButtonBackgroundColor,
               border: Border.all(

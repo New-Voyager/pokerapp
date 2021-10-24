@@ -66,6 +66,15 @@ class AppDecorators {
     );
   }
 
+  static TextStyle getAppBarStyle({@required AppTheme theme}) {
+    return TextStyle(
+      color: theme.accentColor,
+      fontSize: 18.dp,
+      fontWeight: FontWeight.w700,
+      fontFamily: theme.fontFamily,
+    );
+  }
+
   static TextStyle getHeadLine3Style({@required AppTheme theme}) {
     return TextStyle(
       color: theme.supportingColor,
