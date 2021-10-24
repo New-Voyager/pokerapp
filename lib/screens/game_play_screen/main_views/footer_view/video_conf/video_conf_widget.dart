@@ -4,6 +4,7 @@ import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/models/video_req_state.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/video_conf/player_tile.dart';
@@ -11,6 +12,27 @@ import 'package:pokerapp/services/ion/ion.dart';
 import 'package:provider/provider.dart';
 
 class VideoConfWidget extends StatelessWidget {
+  static void show({
+    @required BuildContext context,
+    @required GameContextObject gameContextObject,
+    @required VideoReqState videoReqState,
+  }) {
+    assert(context != null);
+    assert(gameContextObject != null);
+    assert(videoReqState != null);
+
+    showBottomSheet(
+      context: context,
+      builder: (_) => ListenableProvider.value(
+        value: gameContextObject,
+        child: ListenableProvider.value(
+          value: videoReqState,
+          child: VideoConfWidget(),
+        ),
+      ),
+    );
+  }
+
   Widget _closeButton(BuildContext context, AppTheme theme) {
     return Positioned(
       top: -10,
@@ -49,13 +71,13 @@ class VideoConfWidget extends StatelessWidget {
     if (ion.me() != null) {
       renderer = ion.me().renderer;
       videoView = SizedBox(
-                width: meTileSize.width,
-                height: meTileSize.height,
-                child: RTCVideoView(
-                  renderer,
-                  mirror: true,
-                  objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
-                )
+        width: meTileSize.width,
+        height: meTileSize.height,
+        child: RTCVideoView(
+          renderer,
+          mirror: true,
+          objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
+        ),
       );
     }
     return Positioned(

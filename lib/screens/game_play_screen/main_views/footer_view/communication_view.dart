@@ -70,6 +70,8 @@ class _CommunicationViewState extends State<CommunicationView> {
         onTap: () async {
           log('video button clicked');
 
+          // TODO: SHOW CONNECTING/WAITING DIALOG HERE
+
           final IonAudioConferenceService ion =
               widget.gameContextObject.ionAudioConferenceService;
 
@@ -79,15 +81,10 @@ class _CommunicationViewState extends State<CommunicationView> {
           // then join back an ion session with isVideo as true
           await ion.join(isVideo: true);
 
-          showBottomSheet(
+          VideoConfWidget.show(
             context: context,
-            builder: (_) => ListenableProvider.value(
-              value: widget.gameContextObject,
-              child: ListenableProvider.value(
-                value: videoReqState,
-                child: VideoConfWidget(),
-              ),
-            ),
+            gameContextObject: widget.gameContextObject,
+            videoReqState: videoReqState,
           );
         },
         theme: theme,
