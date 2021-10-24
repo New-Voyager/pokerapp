@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 //import 'package:get_version/get_version.dart';
 import 'package:overlay_support/overlay_support.dart';
+import 'package:pokerapp/build_info.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/auth_model.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
@@ -26,6 +27,7 @@ import 'package:pokerapp/widgets/custom_divider.dart';
 import 'package:pokerapp/widgets/heading_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:package_info/package_info.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class ProfilePageNew extends StatefulWidget {
   const ProfilePageNew({Key key}) : super(key: key);
@@ -76,6 +78,7 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
 
   @override
   Widget build(BuildContext context) {
+    
     return Consumer<AppTheme>(
       builder: (_, theme, __) {
         return Container(
@@ -125,10 +128,10 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                           EdgeInsets.symmetric(vertical: 16),
                                       child: CircleAvatar(
                                         backgroundColor: theme.fillInColor,
-                                        radius: 24,
+                                        radius: 24.pw,
                                         child: Icon(
                                           Icons.person,
-                                          size: 24,
+                                          size: 24.pw,
                                           color: theme.supportingColor,
                                         ),
                                       ),
@@ -143,20 +146,6 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                               style: AppDecorators
                                                   .getHeadLine4Style(
                                                       theme: theme)),
-                                          // AppDimensionsNew.getHorizontalSpace(
-                                          //     8),
-                                          // RoundIconButton(
-                                          //   icon: Icons.edit,
-                                          //   bgColor: theme.fillInColor,
-                                          //   iconColor: theme.accentColor,
-                                          //   size: 16,
-                                          //   onTap: () async {
-                                          //     await _updateUserDetails(
-                                          //         UpdateType.SCREEN_NAME,
-                                          //         theme);
-                                          //     // Fetch user details from server
-                                          //   },
-                                          // ),
                                         ],
                                       ),
                                     ),
@@ -205,6 +194,14 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                     ],
                                   ),
                                 ),
+                                  Container(
+                                  margin: EdgeInsets.symmetric(vertical: 8),
+                                  child: Text('id: ${AuthService.getUuid()}')),
+                                  SizedBox(height: 5.ph,),
+                                  Container(
+                                  margin: EdgeInsets.symmetric(vertical: 8),
+                                  child: Text('${versionNumber} ${releaseDate}')),
+
                               ],
                             ),
                           ),
