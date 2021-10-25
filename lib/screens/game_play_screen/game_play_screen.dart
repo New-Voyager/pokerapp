@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:after_layout/after_layout.dart';
 import 'package:audioplayers/audioplayers.dart';
@@ -1003,37 +1004,37 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     if (widget.customizationService != null) {
       this._currentPlayer = widget.customizationService.currentPlayer;
     }
+
     return Consumer<AppTheme>(
       builder: (_, theme, __) {
+
+        Widget mainBody = Scaffold(
+                    /* FIXME: THIS FLOATING ACTION BUTTON IS FOR SHOWING THE TESTS */
+                    floatingActionButton:
+                        GamePlayScreenUtilMethods.floatingActionButton(
+                      onReload: () {},
+                      isCustomizationMode: widget.customizationService != null,
+                    ),
+                    // floating button to refresh network TEST
+                    // floatingActionButton: FloatingActionButton(
+                    //   child: Icon(Icons.android_rounded),
+                    //   onPressed: _reconnectGameComService,
+                    // ),
+                    resizeToAvoidBottomInset: true,
+                    backgroundColor: Colors.transparent,
+                    body: _buildBody(theme),
+                  );
+        if (!Platform.isIOS) {
+          mainBody = SafeArea(child: mainBody);
+        }
         return WillPopScope(
           child: Container(
             decoration: AppDecorators.bgRadialGradient(theme),
-            child: SafeArea(
-              child: Scaffold(
-                /* FIXME: THIS FLOATING ACTION BUTTON IS FOR SHOWING THE TESTS */
-                floatingActionButton:
-                    GamePlayScreenUtilMethods.floatingActionButton(
-                  onReload: () {},
-                  isCustomizationMode: widget.customizationService != null,
-                ),
-                // floating button to refresh network TEST
-                // floatingActionButton: FloatingActionButton(
-                //   child: Icon(Icons.android_rounded),
-                //   onPressed: _reconnectGameComService,
-                // ),
-                resizeToAvoidBottomInset: true,
-                backgroundColor: Colors.transparent,
-                body: _buildBody(theme),
-              ),
-            ),
+            child: mainBody,
           ),
           onWillPop: () async {
             // don't go back if the user swipes
             return false;
-            if (Navigator.of(context).userGestureInProgress)
-              return false;
-            else
-              return true;
           },
         );
       },

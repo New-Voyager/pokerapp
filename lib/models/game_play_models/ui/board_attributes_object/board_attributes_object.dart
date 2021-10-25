@@ -723,8 +723,27 @@ class BoardAttributesObject extends ChangeNotifier {
     }
   }
 
-  double get holeCardDisplacement {
-    return 20.pw;
+  // n -> no of cards
+  double getHoleCardDisplacement({
+    @required int noOfCards,
+    @required bool isCardVisible,
+  }) {
+    switch (noOfCards) {
+      case 2:
+        if (isCardVisible) return 30.pw;
+        return 35.pw;
+
+      case 4:
+        if (isCardVisible) return 20.pw;
+        return 35.pw;
+
+      case 5:
+        if (isCardVisible) return 25.pw;
+        return 35.pw;
+
+      default:
+        return 20.pw;
+    }
   }
 
   /* center view scales for different widgets */
@@ -782,13 +801,13 @@ class BoardAttributesObject extends ChangeNotifier {
   double get _getScaleBasedOnNoOfCards {
     switch (_noOfCards) {
       case 2:
-        return 1.4;
+        return 1.45;
 
       case 4:
-        return 1.2;
+        return 1.35;
 
       case 5:
-        return 1;
+        return 1.15;
 
       default:
         return 1;
