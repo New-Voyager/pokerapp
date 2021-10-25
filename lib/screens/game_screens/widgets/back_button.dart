@@ -26,23 +26,27 @@ class CustomAppBar extends AppBar {
           // leadingWidth: 50.pw,
           leading:
               (showBackButton ?? true) ? BackArrowWidget() : SizedBox.shrink(),
-          title: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                titleText ?? "",
-                style: AppDecorators.getAppBarStyle(theme: theme),
-                textAlign: TextAlign.center,
-              ),
-              Visibility(
-                visible: subTitleText != null,
-                child: Text(
-                  subTitleText ?? "",
-                  style: AppDecorators.getHeadLine3Style(theme: theme),
+          title: 
+          Container(
+            height: 90.ph,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  titleText ?? "",
+                  style: AppDecorators.getAppBarStyle(theme: theme),
                   textAlign: TextAlign.center,
                 ),
-              ),
-            ],
+                Visibility(
+                  visible: subTitleText != null,
+                  child: Text(
+                    subTitleText ?? "",
+                    style: AppDecorators.getHeadLine3Style(theme: theme),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ],
+            ),
           ),
           centerTitle: true,
           actions: actionsList ?? [],
