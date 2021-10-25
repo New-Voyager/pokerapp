@@ -171,130 +171,6 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
     );
   }
 
-  Widget _buildStatefulBuilder(double height, BuildContext context) {
-    final theme = AppTheme.getTheme(context);
-    return StatefulBuilder(builder: (context, localSetState) {
-      return Container(
-        height: height / 2.5,
-        color: Colors.transparent,
-        child: Stack(
-          children: [
-            Container(
-              decoration: AppDecorators.bgRadialGradient(theme),
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: 13,
-                  ),
-                  Container(
-                      child: Text(
-                        _appScreenText['pendingApprovals'],
-                        style: AppDecorators.getAccentTextStyle(theme: theme),
-                      ),
-                      padding: EdgeInsets.all(8)),
-                  Expanded(
-                    child: Consumer<PendingApprovalsState>(
-                      builder: (_, pending, __) => // main body
-                          FutureBuilder(
-                        future: PlayerService.getPendingApprovals(),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.done) {
-                            if (snapshot.hasData) {
-                              List<PendingApproval> list = snapshot.data;
-
-                              if (list.length > 0) {
-                                return Container(
-                                  constraints: BoxConstraints(
-                                      minHeight: height / 3,
-                                      maxHeight: height / 2),
-                                  child: ListView.separated(
-                                    itemCount: list.length,
-                                    shrinkWrap: true,
-                                    separatorBuilder: (context, index) =>
-                                        Divider(
-                                      height: 8,
-                                      color: theme.fillInColor,
-                                    ),
-                                    itemBuilder: (context, index) {
-                                      final item = list[index];
-                                      return pendingApprovalsItem(theme, item);
-                                    },
-                                  ),
-                                );
-                              } else {
-                                return Container(
-                                  height: height / 4,
-                                  child: Center(
-                                    child: Text(
-                                      _appScreenText['noPendingApprovals'],
-                                      style: AppDecorators.getSubtitle1Style(
-                                          theme: theme),
-                                    ),
-                                  ),
-                                );
-                              }
-                            } else {
-                              return Container(
-                                height: height / 4,
-                                child: Center(
-                                  child: Text(_appScreenText[
-                                      'SomethingWentWrongTryAgain']),
-                                ),
-                              );
-                            }
-                          } else {
-                            return Container(
-                              height: height / 4,
-                              child: Center(
-                                child: CircularProgressWidget(),
-                              ),
-                            );
-                          }
-                        },
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Positioned(
-              right: 20,
-              child: Container(
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: theme.accentColor,
-                    ),
-                    padding: EdgeInsets.all(6),
-                    child: Icon(
-                      Icons.close,
-                      size: 20,
-                      color: theme.primaryColorWithDark(),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
-    });
-  }
-
-  Future<void> onClickPendingBuyInApprovals(BuildContext context) async {
-    final height = MediaQuery.of(context).size.height;
-    showBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      builder: (ctx) => _buildStatefulBuilder(height, context),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     _context = context;
@@ -309,26 +185,26 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
           _buildMenuWidget(context),
           SizedBox(height: 10.ph),
           // Pending approval button
-          Consumer2<PendingApprovalsState, GameContextObject>(
-            builder: (context, value, gameContextObj, child) {
-              if (!widget.gameContextObject.isAdmin())
-                return const SizedBox.shrink();
+          // Consumer2<PendingApprovalsState, GameContextObject>(
+          //   builder: (context, value, gameContextObj, child) {
+          //     if (!widget.gameContextObject.isAdmin())
+          //       return const SizedBox.shrink();
 
-              final approval = SvgPicture.asset(
-                '',
-                width: 16,
-                height: 16,
-                color: theme.primaryColorWithDark(),
-              );
+          //     final approval = SvgPicture.asset(
+          //       '',
+          //       width: 16,
+          //       height: 16,
+          //       color: theme.primaryColorWithDark(),
+          //     );
 
-              return IconWithBadge(
-                count: value.approvalList.length,
-                onClickFunction: () => onClickPendingBuyInApprovals(context),
-                child: CircleImageButton(
-                    svgAsset: 'assets/images/game/clipboard.svg', theme: theme),
-              );
-            },
-          ),
+          //     return IconWithBadge(
+          //       count: value.approvalList.length,
+          //       onClickFunction: () => onClickPendingBuyInApprovals(context),
+          //       child: CircleImageButton(
+          //           svgAsset: 'assets/images/game/clipboard.svg', theme: theme),
+          //     );
+          //   },
+          // ),
         ],
       ),
     );

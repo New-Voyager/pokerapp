@@ -207,15 +207,6 @@ class _FooterViewState extends State<FooterView>
             widget.gameContext,
           );
         }),
-        SizedBox(height: 20),
-        Consumer<ActionState>(builder: (_, __, ___) {
-          // show time widget if the player is acting
-          if (_gameState.actionState.show || TestService.isTesting) {
-            return TimeBankWidget(_gameState);
-          } else {
-            return Container();
-          }
-        }),
       ]),
     );
   }

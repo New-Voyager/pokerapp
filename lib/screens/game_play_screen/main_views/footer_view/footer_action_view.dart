@@ -11,8 +11,10 @@ import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/boar
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/time_bank.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/bet_widget.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_proto_service.dart';
+import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:provider/provider.dart';
@@ -443,10 +445,26 @@ class _FooterActionViewState extends State<FooterActionView> {
         ),
       ));
     } */
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      mainAxisSize: MainAxisSize.max,
-      children: actionButtons,
+    return Stack(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.max,
+          children: actionButtons,
+        ),
+        Positioned(
+          left: 8,
+          child: Consumer<ActionState>(builder: (_, __, ___) {
+            // show time widget if the player is acting
+            final gameState = GameState.getState(context);
+            if (gameState.actionState.show || TestService.isTesting) {
+              return TimeBankWidget(gameState);
+            } else {
+              return Container();
+            }
+          }),
+        ),
+      ],
     );
   }
 
