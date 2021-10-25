@@ -268,6 +268,8 @@ class NotificationHandler {
         handleWaitlistNotifications(json);
       } else if (type == 'TEST_PUSH') {
         handleTestMessage(json);
+      } else if (type == 'APPCOIN_NEEDED') {
+        handleAppCoinNeeded(json);
       }
     }
   }
@@ -390,6 +392,18 @@ class NotificationHandler {
         );
       }
     }
+  }
+
+  // handle messages when app is running foreground
+  Future<void> handleAppCoinNeeded(Map<String, dynamic> json) async {
+    String gameCode = json['gameCode'].toString();
+    int endMins = 15;
+    if (json['endMins'] != null) {
+      endMins = int.parse(json['endMins'].toString());
+    }
+    final message =
+        'Not enough coins to continue game: $gameCode. Game will end in $endMins mins. Please buy more coins to keep the game running.';
+    showErrorDialog(navigatorKey.currentContext, 'Coins', message, info: true);
   }
 }
 

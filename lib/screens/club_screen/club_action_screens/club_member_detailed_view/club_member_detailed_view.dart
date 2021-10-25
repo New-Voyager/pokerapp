@@ -253,7 +253,8 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
         positiveButtonText: "Yes", negativeButtonText: "No");
     log("$response");
     if (response != null && response == true) {
-      ConnectionDialog.show(context: context, loadingText: "Removing player from club..");
+      ConnectionDialog.show(
+          context: context, loadingText: "Removing player from club..");
       final result = await ClubsService.kickMember(clubCode, playerId);
       ConnectionDialog.dismiss(
         context: context,
