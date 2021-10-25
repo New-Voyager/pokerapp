@@ -42,11 +42,13 @@ class ClubLiveGamesView extends StatelessWidget {
                   padding: const EdgeInsets.only(right: 8.0),
                   child: RoundRectButton(
                     onTap: () async {
+                      // get this value from API
+                      int minCoinsNeeded = 10;
                       // if the player does not have enough coins
                       // don't host the game
                       if (clubModel.clubCoins < 10) {
                         showErrorDialog(context, 'Error',
-                            'Not enough coins in the club to host a game');
+                            'Not enough coins to host a game. $minCoinsNeeded required to host a game');
                         return;
                       }
 

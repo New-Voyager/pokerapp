@@ -78,7 +78,6 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
 
   @override
   Widget build(BuildContext context) {
-    
     return Consumer<AppTheme>(
       builder: (_, theme, __) {
         return Container(
@@ -194,14 +193,17 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                     ],
                                   ),
                                 ),
-                                  Container(
-                                  margin: EdgeInsets.symmetric(vertical: 8),
-                                  child: Text('id: ${AuthService.getUuid()}')),
-                                  SizedBox(height: 5.ph,),
-                                  Container(
-                                  margin: EdgeInsets.symmetric(vertical: 8),
-                                  child: Text('${versionNumber} ${releaseDate}')),
-
+                                Container(
+                                    margin: EdgeInsets.symmetric(vertical: 8),
+                                    child:
+                                        Text('id: ${AuthService.getUuid()}')),
+                                SizedBox(
+                                  height: 5.ph,
+                                ),
+                                Container(
+                                    margin: EdgeInsets.symmetric(vertical: 8),
+                                    child: Text(
+                                        '${versionNumber} ${releaseDate}')),
                               ],
                             ),
                           ),
