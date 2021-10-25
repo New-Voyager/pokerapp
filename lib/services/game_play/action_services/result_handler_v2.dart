@@ -345,7 +345,7 @@ class ResultHandlerV2 {
       final proto.Board board, String rank, List<proto.Winner> winners,
       {bool low = false}) async {
     for (int i = 0; i < winners.length; i++) {
-      final winner = winners[0];
+      final winner = winners[i];
       final playerRank = board.playerRank[winner.seatNo];
       List<int> winningCards = [];
       final playerInfo = result.playerInfo[winner.seatNo];
