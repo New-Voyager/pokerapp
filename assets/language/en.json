@@ -507,6 +507,7 @@
         "atSeatNo": "at seat no",
         "theGameIsPaused": "The game is paused",
         "theGameWillEndAfterThisHand": "The game will end after this hand",
+        "theGameIsTerminatedDueToError": "The game ended due to internal error",
         "game": "Game",
         "player": "Player",
         "isPromptedToSwitchToAnOpenSeat": "is prompted to switch to an open seat"
