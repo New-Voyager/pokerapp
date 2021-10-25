@@ -1,2 +1,2 @@
-String releaseDate = 'Oct 23, 2021';
-String versionNumber = '0.5.2';
+String releaseDate = 'Oct 25, 2021';
+String versionNumber = '0.5.9';
