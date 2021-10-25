@@ -170,7 +170,11 @@ class HoleStackCardView extends StatelessWidget {
     }
     int mid = (cards.length ~/ 2);
 
-    double displacementValue = boardAttributes.holeCardDisplacement;
+    double displacementValue = boardAttributes.getHoleCardDisplacement(
+      noOfCards: cards.length,
+      isCardVisible: isCardVisible,
+    );
+
     if (cards.length == 2) {
       displacementValue = 2 * displacementValue;
     }
