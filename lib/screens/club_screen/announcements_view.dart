@@ -188,16 +188,20 @@ class _AnnouncementsViewState extends State<AnnouncementsView> {
   }
 
   _handleNewAnnouncement(AppTheme theme) async {
+    final _textCounter = ValueNotifier<int>(0);
+    final int _maxAnnouncementChars = 250;
+
     final res = await showDialog(
       context: context,
       builder: (context) {
         TextEditingController _controller = TextEditingController();
         return AlertDialog(
           shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-              side: BorderSide(
-                color: theme.secondaryColor,
-              )),
+            borderRadius: BorderRadius.circular(16),
+            side: BorderSide(
+              color: theme.secondaryColor,
+            ),
+          ),
           backgroundColor: theme.fillInColor,
           title: Row(
             children: [
@@ -213,36 +217,61 @@ class _AnnouncementsViewState extends State<AnnouncementsView> {
             ],
           ),
           content: SingleChildScrollView(
-              child: Column(
-            children: [
-              CardFormTextField(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                CardFormTextField(
+                  onChanged: (String t) {
+                    _textCounter.value = t.length;
+                  },
                   hintText: _appScreenText['enterTextHere'],
                   controller: _controller,
                   maxLines: 8,
-                  theme: theme),
-              AppDimensionsNew.getVerticalSizedBox(16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  RoundRectButton(
-                    text: _appScreenText['cancel'],
-                    theme: theme,
-                    // borderColor: theme.secondaryColor,
-                    onTap: () => Navigator.of(context).pop(),
+                  theme: theme,
+                ),
+                AppDimensionsNew.getVerticalSizedBox(16),
+                ValueListenableBuilder(
+                  valueListenable: _textCounter,
+                  builder: (_, int c, __) => Text(
+                    '${c} / $_maxAnnouncementChars',
+                    style: TextStyle(
+                      color:
+                          c > _maxAnnouncementChars ? Colors.red : Colors.white,
+                    ),
+                    textAlign: TextAlign.end,
                   ),
-                  RoundRectButton(
-                    text: _appScreenText['announce'],
-                    onTap: () {
-                      Navigator.of(context).pop(_controller.text);
-                    },
-                    theme: theme,
-                  ),
-                ],
-              ),
-              AppDimensionsNew.getVerticalSizedBox(16),
-            ],
-            mainAxisSize: MainAxisSize.min,
-          )),
+                ),
+                AppDimensionsNew.getVerticalSizedBox(16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    RoundRectButton(
+                      text: _appScreenText['cancel'],
+                      theme: theme,
+                      // borderColor: theme.secondaryColor,
+                      onTap: () => Navigator.of(context).pop(),
+                    ),
+                    ValueListenableBuilder(
+                      valueListenable: _textCounter,
+                      builder: (_, int c, __) => Opacity(
+                        opacity: c > _maxAnnouncementChars ? 0.70 : 1.0,
+                        child: RoundRectButton(
+                          text: _appScreenText['announce'],
+                          onTap: () {
+                            if (c > _maxAnnouncementChars) return;
+                            Navigator.of(context).pop(_controller.text);
+                          },
+                          theme: theme,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                AppDimensionsNew.getVerticalSizedBox(16),
+              ],
+              mainAxisSize: MainAxisSize.min,
+            ),
+          ),
         );
       },
     );
