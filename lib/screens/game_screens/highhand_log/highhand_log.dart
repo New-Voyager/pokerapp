@@ -5,6 +5,7 @@ import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
+import 'package:pokerapp/screens/game_screens/highhand_log/grouped_list_view.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/screens/game_screens/widgets/highhand_widget.dart';
 import 'package:pokerapp/services/app/game_service.dart';
@@ -79,20 +80,27 @@ class _HighHandLogViewState extends State<HighHandLogView>
                             ? Center(
                                 child: Text("No Data available"),
                               )
-                            : ListView.separated(
-                                itemBuilder: (context, index) {
-                                  this.hhWinners[index].gameCode =
-                                      widget.gameCode;
-                                  return HighhandWidget(
-                                    this.hhWinners[index],
-                                    clubCode: widget.clubCode,
-                                  );
-                                },
-                                itemCount: hhWinners?.length ?? 0,
-                                separatorBuilder: (context, index) {
-                                  return Divider();
-                                },
+                            : GroupedHandLogListView(
+                                winners: this.hhWinners,
+                                clubCode: widget.clubCode,
+                                theme: theme,
                               ),
+
+                        // : ListView.separated(
+                        //     physics: BouncingScrollPhysics(),
+                        //     itemBuilder: (context, index) {
+                        //       this.hhWinners[index].gameCode =
+                        //           widget.gameCode;
+                        //       return HighhandWidget(
+                        //         this.hhWinners[index],
+                        //         clubCode: widget.clubCode,
+                        //       );
+                        //     },
+                        //     itemCount: hhWinners?.length ?? 0,
+                        //     separatorBuilder: (context, index) {
+                        //       return Divider();
+                        //     },
+                        //   ),
                       ),
                     ],
                   ),

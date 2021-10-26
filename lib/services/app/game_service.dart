@@ -651,7 +651,7 @@ class GameService {
   }
 
   static Future<List<HighHandWinner>> getHighHandLog(String gameCode) async {
-    List<HighHandWinner> log = [];
+    List<HighHandWinner> handlog = [];
 
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     Map<String, dynamic> variables = {
@@ -665,14 +665,18 @@ class GameService {
         return null;
       }
     }
-
-    List hhWinnersData = result.data['hhWinners'];
-    log = hhWinnersData.map((e) {
+    log('high hand ==========');
+    log(jsonEncode(result.data));
+    log('high hand ==========');
+    Map<String, dynamic> resultData = result.data;
+    resultData = jsonDecode(highhandTest);
+    List hhWinnersData = resultData['hhWinners'];
+    handlog = hhWinnersData.map((e) {
       HighHandWinner winner = new HighHandWinner.fromJson(e);
       //winner.gameCode = gameCode;
       return winner;
     }).toList();
-    return log;
+    return handlog;
   }
 
   static Future<bool> updateGameConfig(
@@ -1285,3 +1289,124 @@ mutation reportBug(\$bug :String!){
     return result.data['data'] ?? false;
   }
 }
+
+
+String highhandTest = '''
+{
+	"__typename": "Query",
+	"hhWinners": [{
+			"__typename": "HighHand",
+			"playerUuid": "4b93e2be-7992-45c3-a2dd-593c2f708cb7",
+			"playerName": "brian",
+			"playerCards": "[56,72]",
+			"boardCards": "[52,49,50,17,4]",
+			"highHand": "[52,49,50,56,72]",
+			"handTime": "2021-10-26T15:17:58.000Z",
+			"handNum": 1,
+			"winner": true
+		},
+
+		{
+			"__typename": "HighHand",
+			"playerUuid": "4b93e2be-7992-45c3-a2dd-593c2f708cb7",
+			"playerName": "brian",
+			"playerCards": "[56,72]",
+			"boardCards": "[52,49,50,17,4]",
+			"highHand": "[52,49,50,56,72]",
+			"handTime": "2021-10-26T14:17:58.000Z",
+			"handNum": 1,
+			"winner": true
+		},
+
+
+		{
+			"__typename": "HighHand",
+			"playerUuid": "4b93e2be-7992-45c3-a2dd-593c2f708cb7",
+			"playerName": "brian",
+			"playerCards": "[56,72]",
+			"boardCards": "[52,49,50,17,4]",
+			"highHand": "[52,49,50,56,72]",
+			"handTime": "2021-10-26T14:10:58.000Z",
+			"handNum": 1,
+			"winner": true
+		},
+		{
+			"__typename": "HighHand",
+			"playerUuid": "4b93e2be-7992-45c3-a2dd-593c2f708cb7",
+			"playerName": "brian",
+			"playerCards": "[56,72]",
+			"boardCards": "[52,49,50,17,4]",
+			"highHand": "[52,49,50,56,72]",
+			"handTime": "2021-10-26T14:07:58.000Z",
+			"handNum": 1,
+			"winner": true
+		},
+		{
+			"__typename": "HighHand",
+			"playerUuid": "4b93e2be-7992-45c3-a2dd-593c2f708cb7",
+			"playerName": "brian",
+			"playerCards": "[56,72]",
+			"boardCards": "[52,49,50,17,4]",
+			"highHand": "[52,49,50,56,72]",
+			"handTime": "2021-10-26T12:58:58.000Z",
+			"handNum": 1,
+			"winner": true
+		},
+		{
+			"__typename": "HighHand",
+			"playerUuid": "4b93e2be-7992-45c3-a2dd-593c2f708cb7",
+			"playerName": "brian",
+			"playerCards": "[56,72]",
+			"boardCards": "[52,49,50,17,4]",
+			"highHand": "[52,49,50,56,72]",
+			"handTime": "2021-10-26T12:00:58.000Z",
+			"handNum": 1,
+			"winner": true
+		},
+		{
+			"__typename": "HighHand",
+			"playerUuid": "4b93e2be-7992-45c3-a2dd-593c2f708cb7",
+			"playerName": "brian",
+			"playerCards": "[56,72]",
+			"boardCards": "[52,49,50,17,4]",
+			"highHand": "[52,49,50,56,72]",
+			"handTime": "2021-10-26T11:10:58.000Z",
+			"handNum": 1,
+			"winner": true
+		},
+		{
+			"__typename": "HighHand",
+			"playerUuid": "4b93e2be-7992-45c3-a2dd-593c2f708cb7",
+			"playerName": "brian",
+			"playerCards": "[56,72]",
+			"boardCards": "[52,49,50,17,4]",
+			"highHand": "[52,49,50,56,72]",
+			"handTime": "2021-10-26T11:07:58.000Z",
+			"handNum": 1,
+			"winner": true
+		},
+		{
+			"__typename": "HighHand",
+			"playerUuid": "4b93e2be-7992-45c3-a2dd-593c2f708cb7",
+			"playerName": "brian",
+			"playerCards": "[56,72]",
+			"boardCards": "[52,49,50,17,4]",
+			"highHand": "[52,49,50,56,72]",
+			"handTime": "2021-10-26T09:17:58.000Z",
+			"handNum": 1,
+			"winner": true
+		},
+		{
+			"__typename": "HighHand",
+			"playerUuid": "4b93e2be-7992-45c3-a2dd-593c2f708cb7",
+			"playerName": "brian",
+			"playerCards": "[56,72]",
+			"boardCards": "[52,49,50,17,4]",
+			"highHand": "[52,49,50,56,72]",
+			"handTime": "2021-10-26T08:17:58.000Z",
+			"handNum": 1,
+			"winner": true
+		}
+	]
+}
+''';
