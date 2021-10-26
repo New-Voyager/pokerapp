@@ -576,7 +576,7 @@ class NewGameSettings2 extends StatelessWidget {
                           trailing: '%',
                           title: _appScreenText["tipsPercent"],
                           minValue: 0,
-                          maxValue: 1000,
+                          maxValue: 50,
                           onChange: (value) {
                             gmp.rakePercentage = value;
                           },
