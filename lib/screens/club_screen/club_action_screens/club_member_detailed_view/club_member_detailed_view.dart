@@ -128,6 +128,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                                 padding: EdgeInsets.only(bottom: 5),
                                 child: Text(
                                   _appScreenText['lastActive'] +
+                                      ' ' +
                                       _data.lastPlayedDate,
                                   style: AppDecorators.getSubtitle3Style(
                                       theme: theme),
