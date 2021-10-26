@@ -47,12 +47,13 @@ class ChatTextField extends StatelessWidget {
 
             Expanded(
               child: TextFormField(
+                keyboardType: TextInputType.visiblePassword,
                 controller: textEditingController,
                 onTap: onTap,
                 style: TextStyle(color: Colors.white),
-                minLines: 1,
-                maxLines: 3,
-                textInputAction: TextInputAction.newline,
+                // minLines: 1,
+                // maxLines: 3,
+                // textInputAction: TextInputAction.newline,
                 decoration: InputDecoration(
                   border: InputBorder.none,
                   hintText: appScreenText['enterMessage'],
