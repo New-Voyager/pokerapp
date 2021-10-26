@@ -177,7 +177,7 @@ class _MessagesPageViewState extends State<MessagesPageView>
                         },
                         separatorBuilder: (_, __) =>
                             const SizedBox(height: 5.0),
-                        itemCount: snapshot.data.length,
+                        itemCount: mess.length,
                       );
                     },
                   ),

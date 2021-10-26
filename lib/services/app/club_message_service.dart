@@ -71,7 +71,13 @@ class ClubMessageService {
       if (newMessages.length > 0) {
         newMessagesAdded = true;
       }
-      _messages.addAll(newMessages);
+      // _messages.addAll(newMessages);
+      // add all new Messages that are non existing
+      for (final message in newMessages) {
+        if (_messages.any((m) => m.id != message.id)) {
+          _messages.add(message);
+        }
+      }
       for (final message in _messages) {
         if (message.id > next) {
           next = message.id;

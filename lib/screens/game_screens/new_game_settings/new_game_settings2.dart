@@ -420,7 +420,7 @@ class NewGameSettings2 extends StatelessWidget {
                                 ),
                                 AppDimensionsNew.getVerticalSizedBox(12),
                                 RoundRectButton(
-                                  text: _appScreenText['SAVE'],
+                                  text: _appScreenText['save'],
                                   theme: theme,
                                   onTap: () {
                                     if (_controller.text.isNotEmpty) {
@@ -576,7 +576,7 @@ class NewGameSettings2 extends StatelessWidget {
                           trailing: '%',
                           title: _appScreenText["tipsPercent"],
                           minValue: 0,
-                          maxValue: 1000,
+                          maxValue: 50,
                           onChange: (value) {
                             gmp.rakePercentage = value;
                           },
