@@ -139,21 +139,21 @@ class _AnnouncementsViewState extends State<AnnouncementsView> {
                                             mainAxisAlignment:
                                                 MainAxisAlignment.end,
                                             children: [
-                                              Icon(
-                                                Icons.person,
-                                                color: theme
-                                                    .secondaryColorWithDark(),
-                                                size: 16,
-                                              ),
-                                              AppDimensionsNew
-                                                  .getHorizontalSpace(4),
-                                              Text(
-                                                "model.name",
-                                                style: AppDecorators
-                                                    .getSubtitle3Style(
-                                                  theme: theme,
-                                                ),
-                                              ),
+                                              // Icon(
+                                              //   Icons.person,
+                                              //   color: theme
+                                              //       .secondaryColorWithDark(),
+                                              //   size: 16,
+                                              // ),
+                                              // AppDimensionsNew
+                                              //     .getHorizontalSpace(4),
+                                              // Text(
+                                              //   "Soma",
+                                              //   style: AppDecorators
+                                              //       .getSubtitle3Style(
+                                              //     theme: theme,
+                                              //   ),
+                                              // ),
                                               AppDimensionsNew
                                                   .getHorizontalSpace(16),
                                               Icon(
