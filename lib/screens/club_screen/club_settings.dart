@@ -235,6 +235,16 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
                                             // Fetch user details from server
                                           },
                                         ),
+                                        ListTileItem(
+                                          text: _appScreenText[
+                                              'deleteClubPicture'],
+                                          imagePath:
+                                              AppAssetsNew.customizeImagePath,
+                                          index: 1,
+                                          onTapFunction: () {
+                                            _handleDeletePicture();
+                                          },
+                                        ),
                                       ],
                                     ),
                                   ),
@@ -413,7 +423,7 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
             ),
             AppDimensionsNew.getVerticalSizedBox(12),
             RoundRectButton(
-              text: _appScreenText['SAVE'],
+              text: _appScreenText['save'],
               theme: theme,
               onTap: () {
                 if (_controller.text.isNotEmpty) {
@@ -463,6 +473,15 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
     // Pick an image
     final XFile image = await _picker.pickImage(source: ImageSource.gallery);
     if (image != null) {
+      int length = await image.length();
+      if (length > 500000) {
+        Alerts.showNotification(
+          titleText: _appScreenText['errorUpload'],
+          subTitleText: _appScreenText['errorUploadSubtext'],
+          duration: Duration(seconds: 5),
+        );
+        return;
+      }
       log("Path : ${image.path}");
       ConnectionDialog.show(context: context, loadingText: "Uploading..");
       var request = MultipartRequest(
@@ -482,6 +501,23 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
     } else {
       log("Somethinfg Went worng!");
     }
+  }
+
+  _handleDeletePicture() async {
+    ConnectionDialog.show(
+        context: context, loadingText: "${_appScreenText['updatingDetails']}");
+    // final res; = await ClubsService.updateClubInput(_clubModel.clubCode, input);
+    var res;
+    // TODO delete club picture
+    if (res != null && res == true) {
+      Alerts.showNotification(
+          titleText: "${_appScreenText['clubDetailsUpdated']}");
+    } else {
+      Alerts.showNotification(
+          titleText: "${_appScreenText['failedToUpdateClubDetails']}");
+    }
+    await _fetchClubInfo();
+    ConnectionDialog.dismiss(context: context);
   }
 }
 

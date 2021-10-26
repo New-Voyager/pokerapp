@@ -34,6 +34,7 @@ class ClubLiveGamesView extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
+            AppDimensionsNew.getVerticalSizedBox(8),
             Align(
               alignment: Alignment.topRight,
               child: Visibility(

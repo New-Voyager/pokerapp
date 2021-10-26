@@ -76,7 +76,7 @@ class _PerformanceViewState extends State<PerformanceView>
               appBar: CustomAppBar(
                 theme: theme,
                 context: context,
-                titleText: _appScreenText['stats'],
+                titleText: _appScreenText['STATISTICS'],
               ),
               body: loading
                   ? Center(child: CircularProgressWidget())

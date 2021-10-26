@@ -76,26 +76,34 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Stack(children: [
-                  Positioned(top: 5.ph, left: 5.pw, child: BackArrowWidget()),
-                  clubModel.clubCoins == null
-                      ? SizedBox.shrink()
-                      : Positioned(
-                          top: 5.ph,
-                          right: 10.pw,
-                          child: Transform.scale(
-                              scale: 1.5,
-                              child:
-                                  CoinWidget(clubModel.clubCoins, 0, false))),
+                SizedBox(height: 8),
+                Stack(
+                  children: [
+                    Positioned(
+                      top: 5.ph,
+                      left: 5.pw,
+                      child: BackArrowWidget(),
+                    ),
+                    clubModel.clubCoins == null
+                        ? SizedBox.shrink()
+                        : Positioned(
+                            top: 5.ph,
+                            right: 10.pw,
+                            child: Transform.scale(
+                                scale: 1.2,
+                                child:
+                                    CoinWidget(clubModel.clubCoins, 0, false))),
 
-                  // banner
-                  Transform.translate(
-                      offset: Offset(0, 5.ph),
+                    // banner
+                    Transform.translate(
+                      offset: Offset(0, 16.ph),
                       child: ClubBannerViewNew(
                         clubModel: clubModel,
                         appScreenText: _appScreenText,
-                      )),
-                ]),
+                      ),
+                    ),
+                  ],
+                ),
 
                 // live game
                 ClubLiveGamesView(

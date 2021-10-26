@@ -26,8 +26,7 @@ class CustomAppBar extends AppBar {
           // leadingWidth: 50.pw,
           leading:
               (showBackButton ?? true) ? BackArrowWidget() : SizedBox.shrink(),
-          title: 
-          Container(
+          title: Container(
             height: 90.ph,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -41,7 +40,7 @@ class CustomAppBar extends AppBar {
                   visible: subTitleText != null,
                   child: Text(
                     subTitleText ?? "",
-                    style: AppDecorators.getHeadLine3Style(theme: theme),
+                    style: AppDecorators.getSubtitle4Style(theme: theme),
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -62,7 +61,7 @@ class BackArrowWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = AppTheme.getTheme(context);
     return Transform.scale(
-      scale: 1.2,
+      scale: 1,
       child: Container(
         alignment: Alignment.centerLeft,
         padding: EdgeInsets.only(left: 16.pw),

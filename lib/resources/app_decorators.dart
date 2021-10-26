@@ -69,7 +69,7 @@ class AppDecorators {
   static TextStyle getAppBarStyle({@required AppTheme theme}) {
     return TextStyle(
       color: theme.accentColor,
-      fontSize: 18.dp,
+      fontSize: 14.dp,
       fontWeight: FontWeight.w700,
       fontFamily: theme.fontFamily,
     );
