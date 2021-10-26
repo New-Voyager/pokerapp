@@ -1108,8 +1108,7 @@ class GameService {
       }
     }
 
-    Map game = (result.data as dynamic).data;
-    bool status = game["status"];
+    bool status = result.data["status"];
     log('Take break Game code: $gameCode status: $status');
 
     return status;
@@ -1146,8 +1145,7 @@ class GameService {
       }
     }
 
-    Map game = (result.data as dynamic).data;
-    dynamic status = game["status"];
+    dynamic status = result.data["status"];
     log('Sit back Game code: $gameCode status: $status');
     SitBackResponse resp = SitBackResponse();
     resp.status = status['status'];
