@@ -261,7 +261,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
         context: context,
       );
 
-      if (result != null) {
+      if (result != null && result != '') {
         Alerts.showNotification(
             titleText: 'Kick Player',
             subTitleText: 'Player is removed from the club.');
