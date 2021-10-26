@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:pokerapp/models/announcement_model.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
@@ -72,7 +73,8 @@ class _AnnouncementsViewState extends State<AnnouncementsView> {
                                 Text(
                                   _appScreenText['announcements'],
                                   style: AppDecorators.getAccentTextStyle(
-                                      theme: theme),
+                                    theme: theme,
+                                  ),
                                 ),
                                 Text(
                                   widget.clubModel.clubName,
@@ -145,11 +147,13 @@ class _AnnouncementsViewState extends State<AnnouncementsView> {
                                               ),
                                               AppDimensionsNew
                                                   .getHorizontalSpace(4),
-                                              Text("Soma",
-                                                  style: AppDecorators
-                                                      .getSubtitle3Style(
-                                                    theme: theme,
-                                                  )),
+                                              Text(
+                                                "model.name",
+                                                style: AppDecorators
+                                                    .getSubtitle3Style(
+                                                  theme: theme,
+                                                ),
+                                              ),
                                               AppDimensionsNew
                                                   .getHorizontalSpace(16),
                                               Icon(
@@ -164,7 +168,8 @@ class _AnnouncementsViewState extends State<AnnouncementsView> {
                                                 "${DataFormatter.dateFormat(model.createdAt)}",
                                                 style: AppDecorators
                                                     .getSubtitle3Style(
-                                                        theme: theme),
+                                                  theme: theme,
+                                                ),
                                               ),
                                             ],
                                           ),

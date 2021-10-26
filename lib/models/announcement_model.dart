@@ -4,6 +4,10 @@
 
 import 'dart:convert';
 
+import 'dart:developer';
+
+import 'package:intl/intl.dart';
+
 AnnouncementModel announcementModelFromJson(String str) =>
     AnnouncementModel.fromJson(json.decode(str));
 
@@ -23,13 +27,15 @@ class AnnouncementModel {
   DateTime expiresAt;
   String level;
 
-  factory AnnouncementModel.fromJson(Map<String, dynamic> json) =>
-      AnnouncementModel(
-        text: json["text"],
-        createdAt: DateTime.parse(json["createdAt"]),
-        expiresAt: DateTime.parse(json["expiresAt"]),
-        level: json["level"],
-      );
+  factory AnnouncementModel.fromJson(Map<String, dynamic> json) {
+    log("$json");
+    return AnnouncementModel(
+      text: json["text"],
+      createdAt: DateTime.parse(json["createdAt"]).toLocal(),
+      expiresAt: DateTime.parse(json["expiresAt"]).toLocal(),
+      level: json["level"],
+    );
+  }
 
   Map<String, dynamic> toJson() => {
         "text": text,
