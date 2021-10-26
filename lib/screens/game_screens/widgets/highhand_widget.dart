@@ -43,7 +43,7 @@ class HighhandWidget extends StatelessWidget {
     AppTextScreen _appScreenText = getAppTextScreen("highhandWidget");
 
     var newFormat = new DateFormat.yMd().add_jm();
-    final date = newFormat.format(winner.handTime);
+    final date = newFormat.format(winner.handTime.toLocal());
     return InkWell(
       onTap: () {
         Navigator.of(context).pushNamed(Routes.hand_log_view, arguments: {
