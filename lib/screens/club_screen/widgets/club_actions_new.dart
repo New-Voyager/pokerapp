@@ -143,15 +143,18 @@ class ClubActionsNew extends StatelessWidget {
                   ),
                 ),
               ),
-              Expanded(
-                flex: 3,
-                child: ClubActionButtonNew(
-                  this._clubHomePageModel,
-                  ClubActions.ANALYSIS,
-                  appScreenText['analysis'],
-                  SvgPicture.asset(
-                    "assets/images/club/analysis.svg",
-                    color: theme.accentColor,
+              Visibility(
+                visible: _clubHomePageModel.showHighRankStats,
+                child: Expanded(
+                  flex: 3,
+                  child: ClubActionButtonNew(
+                    this._clubHomePageModel,
+                    ClubActions.ANALYSIS,
+                    appScreenText['analysis'],
+                    SvgPicture.asset(
+                      "assets/images/club/analysis.svg",
+                      color: theme.accentColor,
+                    ),
                   ),
                 ),
               ),

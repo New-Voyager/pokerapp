@@ -307,7 +307,11 @@
         "success": "Success",
         "successSubText": "You have successfully left Club",
         "fail": "Failed",
-        "failSubText": "Failed to leave club. Try again!"
+        "failSubText": "Failed to leave club. Try again!",
+        "save": "Save",
+        "deleteClubPicture": "Remove Picture",
+        "errorUpload": "Failed to Upload",
+        "errorUploadSubtext": "Maximum file size should be 500k"
     },
     "bookmarkedHands": {
         "SUCCESS": "SUCCESS",
@@ -448,7 +452,8 @@
         "ABOUT": "About",
         "requestFeature": "Request Feature",
         "reportBug": "Report Bug",
-        "pickTheme": "Pickup Theme"
+        "pickTheme": "Pickup Theme",
+        "SAVE": "Save"
     },
     "performanceView": {
         "STATISTICS": "Statistics",

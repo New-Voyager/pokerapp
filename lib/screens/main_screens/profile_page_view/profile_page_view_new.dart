@@ -454,7 +454,7 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
         backgroundColor: theme.fillInColor,
         title: Text(
           type == UpdateType.SCREEN_NAME
-              ? _appScreenText['CHANGESCREENNAME']
+              ? _appScreenText['changeScreenName']
               : type == UpdateType.DISPLAY_NAME
                   ? _appScreenText['changeDisplayName']
                   : type == UpdateType.EMAIL
@@ -569,7 +569,7 @@ class ListTileItem extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         //decoration: AppStylesNew.actionRowDecoration,
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             SvgPicture.asset(
               imagePath,
