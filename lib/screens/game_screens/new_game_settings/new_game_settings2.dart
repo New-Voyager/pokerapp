@@ -420,7 +420,7 @@ class NewGameSettings2 extends StatelessWidget {
                                 ),
                                 AppDimensionsNew.getVerticalSizedBox(12),
                                 RoundRectButton(
-                                  text: _appScreenText['SAVE'],
+                                  text: _appScreenText['save'],
                                   theme: theme,
                                   onTap: () {
                                     if (_controller.text.isNotEmpty) {
