@@ -128,6 +128,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                                 padding: EdgeInsets.only(bottom: 5),
                                 child: Text(
                                   _appScreenText['lastActive'] +
+                                      ' ' +
                                       _data.lastPlayedDate,
                                   style: AppDecorators.getSubtitle3Style(
                                       theme: theme),
@@ -249,7 +250,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
 
   Future<void> kickPlayerOut() async {
     final response = await showPrompt(context, 'Kick Player',
-        'Do you want the kick the player out of the club?',
+        'Do you want to kick the player out of the club?',
         positiveButtonText: "Yes", negativeButtonText: "No");
     log("$response");
     if (response != null && response == true) {
@@ -260,16 +261,16 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
         context: context,
       );
 
-      if (result != null) {
+      if (result != null && result != '') {
         Alerts.showNotification(
             titleText: 'Kick Player',
-            subTitleText: 'Player is removed from the club');
+            subTitleText: 'Player is removed from the club.');
         Navigator.of(context).pop();
       } else {
         Alerts.showNotification(
             titleText: 'Kick Player',
             subTitleText:
-                'Failed to remove the player from the club. Try again later.');
+                'Unable to remove the player from the club. Try again later.');
       }
     }
   }
