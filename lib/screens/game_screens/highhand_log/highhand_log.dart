@@ -83,6 +83,7 @@ class _HighHandLogViewState extends State<HighHandLogView>
                             : GroupedHandLogListView(
                                 winners: this.hhWinners,
                                 clubCode: widget.clubCode,
+                                theme: theme,
                               ),
 
                         // : ListView.separated(

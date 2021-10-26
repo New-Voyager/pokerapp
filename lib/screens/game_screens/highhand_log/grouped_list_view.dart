@@ -1,21 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:pokerapp/models/game_history_model.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/screens/game_screens/widgets/highhand_widget.dart';
 
 class GroupedHandLogListView extends StatelessWidget {
   GroupedHandLogListView({
     @required this.winners,
     @required this.clubCode,
+    @required this.theme,
   });
 
   final List<HighHandWinner> winners;
   final String clubCode;
+  final AppTheme theme;
 
   String _belongsToGroup(HighHandWinner winner) {
-    final playedAtHour = winner.handTime.hour;
-    final nextHour = playedAtHour == 23 ? 0 : playedAtHour + 1;
+    final localDateTime = winner.handTime.toLocal();
 
-    return "${playedAtHour.toString().padLeft(2, "0")} - ${nextHour.toString().padLeft(2, "0")}";
+    final String startTime = DateFormat("hh:00 a").format(localDateTime);
+    final String endTime = DateFormat("hh:00 a").format(
+      localDateTime.add(const Duration(hours: 1)),
+    );
+
+    return "$startTime - ${endTime}";
   }
 
   Map<String, List<HighHandWinner>> _process() {
@@ -52,11 +61,26 @@ class GroupedHandLogListView extends StatelessWidget {
             vertical: 10.0,
           ),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+            // crossAxisAlignment: CrossAxisAlignment.stretch,
             mainAxisSize: MainAxisSize.min,
             children: [
               // group header
-              Text(groupName),
+              Container(
+                decoration: AppDecorators.tileDecoration(theme),
+                // color: theme.primaryColor,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20.0,
+                  vertical: 5.0,
+                ),
+                child: Text(
+                  groupName,
+                  style: TextStyle(
+                    color: theme.accentColor,
+                    fontSize: 20.0,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
 
               // group body
               Column(
