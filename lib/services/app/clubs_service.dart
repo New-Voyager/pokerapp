@@ -317,7 +317,8 @@ class ClubsService {
       "club": {
         "name": input.name,
         "description": input.description,
-        "showHighRankStats": input.showHighRankStats
+        "showHighRankStats": input.showHighRankStats,
+        "picUrl": input.picUrl
       }
     };
 
