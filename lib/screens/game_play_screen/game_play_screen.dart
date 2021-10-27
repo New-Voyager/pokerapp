@@ -408,6 +408,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       _binding.removeObserver(this);
     }
 
+    close();
     super.dispose();
   }
 
