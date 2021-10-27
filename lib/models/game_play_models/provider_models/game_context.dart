@@ -92,7 +92,7 @@ class GameContextObject extends ChangeNotifier {
 
   @override
   void dispose() {
-    this.ionAudioConferenceService.close();
+    this.ionAudioConferenceService?.close();
     handToPlayerTextService?.close();
     gameUpdateService?.close();
     gameComService?.dispose();
