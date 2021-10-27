@@ -134,6 +134,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                                       theme: theme),
                                 ),
                               ),
+                              _data.isOwner ? Text('Owner', style: AppDecorators.getHeadLine4Style(theme: theme)) :
                               Container(
                                 padding: EdgeInsets.only(bottom: 5, top: 20),
                                 child: Row(
