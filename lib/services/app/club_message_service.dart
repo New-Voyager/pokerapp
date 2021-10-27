@@ -74,7 +74,7 @@ class ClubMessageService {
       // _messages.addAll(newMessages);
       // add all new Messages that are non existing
       for (final message in newMessages) {
-        if (_messages.any((m) => m.id != message.id)) {
+        if (_messages.every((m) => m.id != message.id)) {
           _messages.add(message);
         }
       }
