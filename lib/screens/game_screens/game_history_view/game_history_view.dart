@@ -193,30 +193,13 @@ class _GameHistoryViewState extends State<GameHistoryView>
                               _filterAppliedVn.value = false;
                             },
                           )
-                        // IconButton(
-                        //             icon: Icon(
-                        //               Icons.format_clear_rounded,
-                        //               color: theme.accentColor,
-                        //             ),
-                        //             onPressed: () {
-                        //             },
-                        //           )
                         : CircleImageButton(
                             theme: theme,
                             svgAsset: AppAssets.filter,
                             onTap: () {
                               _showMonthPickerDialog(theme: theme);
                             },
-                          )
-                    // IconButton(
-                    //         icon: Icon(
-                    //           Icons.filter_alt_rounded,
-                    //           color: theme.accentColor,
-                    //         ),
-                    //         onPressed: () {
-                    //         },
-                    //       ),
-                    ),
+                          )),
               ),
             ],
           ),
@@ -227,13 +210,6 @@ class _GameHistoryViewState extends State<GameHistoryView>
               : SafeArea(
                   child: body(theme),
                 ),
-          // child: _prevGames == null
-          //     ? Center(
-          //         child: CircularProgressIndicator(),
-          //       )
-          //     : Expanded(
-          //         child: body(),
-          //       ),
         ),
       ),
     );
