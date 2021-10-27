@@ -105,22 +105,28 @@ class _GameHistoryViewState extends State<GameHistoryView>
     final fdp.DatePickerLayoutSettings layoutSettings =
         fdp.DatePickerLayoutSettings(
       scrollPhysics: BouncingScrollPhysics(),
+      maxDayPickerRowCount: 4,
+      contentPadding: EdgeInsets.all(2.0),
+      monthPickerPortraitWidth: 250.0,
     );
 
     final selectedDateNotifier = ValueNotifier<DateTime>(selectedDate);
 
-    return ValueListenableBuilder(
-      valueListenable: selectedDateNotifier,
-      builder: (_, selectedDate, __) => fdp.MonthPicker.single(
-        selectedDate: selectedDate,
-        onChanged: (newDate) {
-          selectedDateNotifier.value = newDate;
-          onNewSelected(newDate);
-        },
-        firstDate: firstAllowedDate,
-        lastDate: lastAllowedDate,
-        datePickerLayoutSettings: layoutSettings,
-        datePickerStyles: styles,
+    return Align(
+      alignment: Alignment.center,
+      child: ValueListenableBuilder(
+        valueListenable: selectedDateNotifier,
+        builder: (_, selectedDate, __) => fdp.MonthPicker.single(
+          selectedDate: selectedDate,
+          onChanged: (newDate) {
+            selectedDateNotifier.value = newDate;
+            onNewSelected(newDate);
+          },
+          firstDate: firstAllowedDate,
+          lastDate: lastAllowedDate,
+          datePickerLayoutSettings: layoutSettings,
+          datePickerStyles: styles,
+        ),
       ),
     );
   }
@@ -130,17 +136,18 @@ class _GameHistoryViewState extends State<GameHistoryView>
   }) async {
     DateTime pickedDate;
 
+    final currentDate = DateTime.now();
+
     final needToFilter = await showPrompt(
       context,
       "Filter",
       "Month Picker",
+      positiveButtonText: "Apply",
       child: _buildMonthDatePicker(
         theme: theme,
-        selectedDate: DateTime.now(),
-        firstAllowedDate: DateTime.now().subtract(
-          Duration(days: 365),
-        ),
-        lastAllowedDate: DateTime.now(),
+        selectedDate: currentDate,
+        firstAllowedDate: currentDate.subtract(Duration(days: 365)),
+        lastAllowedDate: currentDate,
         onNewSelected: (DateTime dateTime) {
           pickedDate = dateTime;
           // Navigator.pop(context, dateTime);
