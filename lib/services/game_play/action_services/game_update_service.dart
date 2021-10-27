@@ -1315,10 +1315,12 @@ class GameUpdateService {
         _gameState.myState.notify();
         _gameState.actionState.show = false;
         _gameState.actionState.notify();
-        Alerts.showNotification(
-            titleText: _appScreenText['game'],
-            svgPath: 'assets/images/casino.svg',
-            subTitleText: _appScreenText['theGameIsTerminatedDueToError']);
+        if (forced) {
+          Alerts.showNotification(
+              titleText: _appScreenText['game'],
+              svgPath: 'assets/images/casino.svg',
+              subTitleText: _appScreenText['theGameIsTerminatedDueToError']);
+        }
       }
 
       tableState.notifyAll();
