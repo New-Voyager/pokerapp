@@ -7,12 +7,14 @@ import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/game_screens/game_history_view/game_history_item_new.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/club_interior_service.dart';
+import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:provider/provider.dart';
 
@@ -21,16 +23,16 @@ class GameHistoryView extends StatefulWidget {
   GameHistoryView(this.clubCode);
 
   @override
-  _GameHistoryViewState createState() => _GameHistoryViewState(clubCode);
+  _GameHistoryViewState createState() => _GameHistoryViewState();
 }
 
 class _GameHistoryViewState extends State<GameHistoryView>
     with RouteAwareAnalytics {
-  @override
   String get routeName => Routes.game_history;
 
-  final String clubCode;
-  _GameHistoryViewState(this.clubCode);
+  final ValueNotifier<bool> _filterAppliedVn = ValueNotifier<bool>(false);
+  int _selectedMonthAsFilter = -1;
+
   AppTextScreen _appScreenText;
 
   bool _loadingData = true;
@@ -38,7 +40,7 @@ class _GameHistoryViewState extends State<GameHistoryView>
   List<GameHistoryModel> _prevGames;
 
   _fetchData() async {
-    _prevGames = await ClubInteriorService.getGameHistory(clubCode);
+    _prevGames = await ClubInteriorService.getGameHistory(widget.clubCode);
     _loadingData = false;
     if (mounted) setState(() {});
   }
@@ -62,7 +64,7 @@ class _GameHistoryViewState extends State<GameHistoryView>
           Navigator.pushNamed(
             context,
             Routes.game_history_detail_view,
-            arguments: {'model': model, 'clubCode': clubCode},
+            arguments: {'model': model, 'clubCode': widget.clubCode},
           );
         },
         child: GameHistoryItemNew(game: _prevGames[index]));
@@ -150,7 +152,6 @@ class _GameHistoryViewState extends State<GameHistoryView>
         lastAllowedDate: currentDate,
         onNewSelected: (DateTime dateTime) {
           pickedDate = dateTime;
-          // Navigator.pop(context, dateTime);
         },
       ),
     );
@@ -158,8 +159,13 @@ class _GameHistoryViewState extends State<GameHistoryView>
     if (pickedDate == null || !needToFilter) return;
 
     // else, call api and refresh
-    int month = pickedDate.month;
-    log('selected month is $month');
+    _selectedMonthAsFilter = pickedDate.month;
+
+    // TODO: may be show loading indicator
+    // TODO: call api and populate _prevGames array
+    _filterAppliedVn.value = true;
+
+    log('selected month is $_selectedMonthAsFilter');
   }
 
   @override
@@ -176,14 +182,41 @@ class _GameHistoryViewState extends State<GameHistoryView>
             context: context,
             actionsList: [
               // button to show filter
-              IconButton(
-                icon: Icon(
-                  Icons.filter_alt_rounded,
-                  color: theme.accentColor,
-                ),
-                onPressed: () {
-                  _showMonthPickerDialog(theme: theme);
-                },
+              Center(
+                child: ValueListenableBuilder(
+                    valueListenable: _filterAppliedVn,
+                    builder: (_, isFilterApplied, __) => isFilterApplied
+                        ? CircleImageButton(
+                            theme: theme,
+                            svgAsset: AppAssets.filterRemove,
+                            onTap: () {
+                              _filterAppliedVn.value = false;
+                            },
+                          )
+                        // IconButton(
+                        //             icon: Icon(
+                        //               Icons.format_clear_rounded,
+                        //               color: theme.accentColor,
+                        //             ),
+                        //             onPressed: () {
+                        //             },
+                        //           )
+                        : CircleImageButton(
+                            theme: theme,
+                            svgAsset: AppAssets.filter,
+                            onTap: () {
+                              _showMonthPickerDialog(theme: theme);
+                            },
+                          )
+                    // IconButton(
+                    //         icon: Icon(
+                    //           Icons.filter_alt_rounded,
+                    //           color: theme.accentColor,
+                    //         ),
+                    //         onPressed: () {
+                    //         },
+                    //       ),
+                    ),
               ),
             ],
           ),
@@ -191,7 +224,9 @@ class _GameHistoryViewState extends State<GameHistoryView>
               ? Center(
                   child: CircularProgressWidget(),
                 )
-              : SafeArea(child: body(theme)),
+              : SafeArea(
+                  child: body(theme),
+                ),
           // child: _prevGames == null
           //     ? Center(
           //         child: CircularProgressIndicator(),

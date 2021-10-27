@@ -189,9 +189,10 @@ class CircleImageButton extends StatelessWidget {
             decoration: BoxDecoration(
               color: theme.circleImageButtonBackgroundColor,
               border: Border.all(
-                  color: theme.circleImageButtonBorderColor ??
-                      theme.circleImageButtonBackgroundColor,
-                  width: 2.0),
+                color: theme.circleImageButtonBorderColor ??
+                    theme.circleImageButtonBackgroundColor,
+                width: 2.0,
+              ),
               borderRadius: BorderRadius.circular(20.pw),
             ),
             child: Center(child: image),
