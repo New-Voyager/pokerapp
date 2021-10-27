@@ -892,7 +892,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
           children: children,
         ),
 
-        this.widget.showTop && !_gameState.customizationMode ? 
+        this.widget.showTop && 
+        !_gameState.customizationMode && 
+        _gameState.currentPlayer.isAdmin() ? 
         Positioned(
           right: 16,
           top: 80,
