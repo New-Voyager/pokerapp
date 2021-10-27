@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/models/announcement_model.dart';
 import 'package:pokerapp/models/app_state.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
@@ -197,7 +198,8 @@ class _MainScreenState extends State<MainScreen>
                   selected: _navPos == 0,
                 ),
                 CurvedNavItem(
-                  iconData: AppIcons.users,
+                  iconData: null, // AppIcons.users,
+                  svgAsset: 'assets/icons/clubs.svg',
                   title: _appScreenText['clubs'],
                   selected: _navPos == 1,
                 ),
@@ -235,26 +237,37 @@ class CurvedNavItem extends StatelessWidget {
     @required this.title,
     @required this.iconData,
     @required this.selected,
+    this.svgAsset = '',
   });
 
   final String title;
   final IconData iconData;
+  final String svgAsset;
   final bool selected;
 
   @override
   Widget build(BuildContext context) {
     final theme = AppTheme.getTheme(context);
+    Widget icon;
+    if (iconData != null) {
+      icon = Icon(
+            iconData,
+            size: 15.0.pw,
+            color: selected
+                ? theme.supportingColor
+                : theme.supportingColor.withAlpha(150),
+          );
+    } else {
+      icon = SvgPicture.asset(svgAsset,
+                        width: 15.pw, height: 15.pw, color:  selected
+                ? theme.supportingColor
+                : theme.supportingColor.withAlpha(150));
+    }
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       // crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
-        Icon(
-          iconData,
-          size: 15.0.pw,
-          color: selected
-              ? theme.supportingColor
-              : theme.supportingColor.withAlpha(150),
-        ),
+        icon,
         selected
             ? Container()
             : Container(

@@ -28,7 +28,7 @@ class ClubActionsNew extends StatelessWidget {
       this._clubHomePageModel,
       ClubActions.CHAT,
       appScreenText['chat'],
-      SvgPicture.asset("assets/images/club/chat.svg", color: theme.accentColor),
+      SvgPicture.asset("assets/icons/chat.svg", color: theme.accentColor),
       badgeContent: chatBadgeContent,
     );
     return chat;
@@ -79,9 +79,11 @@ class ClubActionsNew extends StatelessWidget {
     return ClubActionButtonNew(
       this._clubHomePageModel,
       ClubActions.MESSAGE_HOST,
-      appScreenText['messageHost'],
+      this._clubHomePageModel.isOwner ?
+      appScreenText['messageMembers']
+      : appScreenText['messageHost'],
       SvgPicture.asset(
-        "assets/images/club/message_host.svg",
+        "assets/icons/contacthost.svg",
         color: theme.accentColor,
       ),
       badgeContent: badgeContent,
@@ -152,7 +154,7 @@ class ClubActionsNew extends StatelessWidget {
                     ClubActions.ANALYSIS,
                     appScreenText['analysis'],
                     SvgPicture.asset(
-                      "assets/images/club/analysis.svg",
+                      "assets/icons/analysis.svg",
                       color: theme.accentColor,
                     ),
                   ),

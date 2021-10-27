@@ -443,7 +443,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
 
               // player action text
               Positioned(
-                top: -15,
+                top: -5.ph,
                 left: actionLeft,
                 right: actionRight,
                 child: ActionStatusWidget(widget.seat, widget.cardsAlignment),
