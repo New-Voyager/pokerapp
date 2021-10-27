@@ -53,7 +53,6 @@ class _FooterViewState extends State<FooterView>
 
   /* holds changes for MY last action */
   final ValueNotifier<HandActions> myLastActionVn = ValueNotifier(null);
-  PlayerActedState _myAction;
 
   final Function eq = const ListEquality().equals;
   GameState _gameState;
@@ -78,12 +77,11 @@ class _FooterViewState extends State<FooterView>
       return;
     }
 
-    // we dont update action if HandActions.NONE
+    // we don't update action if HandActions.NONE
     final tmpAction = me?.action?.action;
     if (tmpAction != HandActions.NONE) {
       myLastActionVn.value = null;
       myLastActionVn.value = tmpAction;
-      _myAction = me?.action;
     }
 
     if (mePlayerModelVn.value == null) {
@@ -240,8 +238,12 @@ class _FooterViewState extends State<FooterView>
   Widget _buildMyLastActionWidget(context) {
     return ValueListenableBuilder<HandActions>(
       valueListenable: myLastActionVn,
-      builder: (_, handAction, __) =>
-          MyLastActionAnimatingWidget(myAction: _myAction),
+      builder: (_, handAction, __) {
+        log('footer_view : _buildMyLastActionWidget : $handAction');
+        return MyLastActionAnimatingWidget(
+          myAction: handAction,
+        );
+      },
     );
   }
 
