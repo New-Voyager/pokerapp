@@ -14,6 +14,7 @@
       "request": "launch",
       "type": "dart",
       "program": "lib/main_dev.dart",
+      "deviceId": "ZY22CSMKCQ",
       "args": [
         "--flavor",
         "dev"
