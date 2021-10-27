@@ -1,10 +1,12 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class MyLastActionAnimatingWidget extends StatelessWidget {
-  final PlayerActedState myAction;
+  final HandActions myAction;
 
   MyLastActionAnimatingWidget({
     @required this.myAction,
@@ -20,12 +22,12 @@ class MyLastActionAnimatingWidget extends StatelessWidget {
   */
 
   /* returns <text, color, shadow> */
-  Map _getTextAndStyles(PlayerActedState action) {
-    String text = action.action.toString().split('.').last;
+  Map _getTextAndStyles(HandActions action) {
+    String text = action.toString().split('.').last;
     Color textColor;
     Color shadowColor;
 
-    switch (action.action) {
+    switch (action) {
       case HandActions.CALL:
         textColor = const Color(0xff55DF00);
         shadowColor = const Color(0xffDFE7E4);
@@ -68,7 +70,7 @@ class MyLastActionAnimatingWidget extends StatelessWidget {
     };
   }
 
-  Widget _buildText(PlayerActedState action) {
+  Widget _buildText(HandActions action) {
     final textColorShadow = _getTextAndStyles(action);
     if (textColorShadow == null) return const SizedBox.shrink();
 
@@ -101,10 +103,12 @@ class MyLastActionAnimatingWidget extends StatelessWidget {
         tween: Tween<double>(begin: 0, end: 1),
         duration: const Duration(milliseconds: 800),
         child: _buildText(myAction),
-        builder: (_, anim, child) => Transform.translate(
-          offset: Offset(0, -100.pw * anim),
-          child: Opacity(opacity: 1 - anim, child: child),
-        ),
+        builder: (_, anim, child) {
+          return Transform.translate(
+            offset: Offset(0, -100.pw * anim),
+            child: Opacity(opacity: 1 - anim, child: child),
+          );
+        },
       ),
     );
   }

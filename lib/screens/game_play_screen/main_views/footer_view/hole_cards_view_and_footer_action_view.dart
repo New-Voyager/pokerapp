@@ -38,7 +38,7 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
   //   return isInResult && (playerModel?.isActive ?? false);
   // }
 
-  Widget _buildholeCardViewAndStraddleDialog(
+  Widget _buildHoleCardViewAndStraddleDialog(
     GameState gameState,
     BoardAttributesObject boardAttributes,
   ) {
@@ -114,7 +114,7 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
       children: [
         Align(
           alignment: Alignment.topCenter,
-          child: _buildholeCardViewAndStraddleDialog(
+          child: _buildHoleCardViewAndStraddleDialog(
             gameState,
             boardAttributes,
           ),

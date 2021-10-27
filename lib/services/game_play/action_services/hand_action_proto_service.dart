@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:fixnum/fixnum.dart' as $fixnum;
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_type.dart';
+import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
@@ -181,6 +182,8 @@ class HandActionProtoService {
     if (TestService.isTesting) {
       return;
     }
+
+    gameState.me.action.setAction(action);
 
     final actionState = gameState.actionState;
 
