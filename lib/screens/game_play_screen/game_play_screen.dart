@@ -869,28 +869,30 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       children: [
         this.widget.showTop ? BackgroundView() : Container(),
         this.widget.showTop && _gameState.customizationMode
-            ? Positioned(
-                top: 50.pw,
-                left: width - 50.pw,
-                child: CircleImageButton(
-                  onTap: () async {
-                    await Navigator.of(context).pushNamed(Routes.select_table);
-                    await _gameState.assets.initialize();
-                    final redrawTop = _gameState.redrawTopSectionState;
-                    redrawTop.notify();
-                    setState(() {});
-                  },
-                  theme: theme,
-                  icon: Icons.edit,
-                ),
-              )
-            : Container(),
+             ? Positioned(
+                 top: 50.pw,
+                 left: width - 50.pw,
+                 child: CircleImageButton(
+                   onTap: () async {
+                     await Navigator.of(context).pushNamed(Routes.select_table);
+                     await _gameState.assets.initialize();
+                     final redrawTop = _gameState.redrawTopSectionState;
+                     redrawTop.notify();
+                     setState(() {});
+                   },
+                   theme: theme,
+                   icon: Icons.edit,
+                 ),
+               )
+             : Container(),
 
         /* main view */
         Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: children,
         ),
+
+        this.widget.showTop && !_gameState.customizationMode ? 
         Positioned(
           right: 16,
           top: 80,
@@ -917,7 +919,8 @@ class _GamePlayScreenState extends State<GamePlayScreen>
               );
             },
           ),
-        ),
+        )
+        : Container(),
 
         /* chat window widget */
         this.widget.showBottom ? _buildChatWindow() : Container(),
