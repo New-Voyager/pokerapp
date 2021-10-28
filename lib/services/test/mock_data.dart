@@ -1,7 +1,5 @@
 class MockData {
   MockData._();
 
-  getLiveGames() {
-    
-  }
+  getLiveGames() {}
 }

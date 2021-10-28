@@ -251,17 +251,19 @@ class CurvedNavItem extends StatelessWidget {
     Widget icon;
     if (iconData != null) {
       icon = Icon(
-            iconData,
-            size: 15.0.pw,
-            color: selected
-                ? theme.supportingColor
-                : theme.supportingColor.withAlpha(150),
-          );
+        iconData,
+        size: 15.0.pw,
+        color: selected
+            ? theme.supportingColor
+            : theme.supportingColor.withAlpha(150),
+      );
     } else {
       icon = SvgPicture.asset(svgAsset,
-                        width: 15.pw, height: 15.pw, color:  selected
-                ? theme.supportingColor
-                : theme.supportingColor.withAlpha(150));
+          width: 15.pw,
+          height: 15.pw,
+          color: selected
+              ? theme.supportingColor
+              : theme.supportingColor.withAlpha(150));
     }
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
