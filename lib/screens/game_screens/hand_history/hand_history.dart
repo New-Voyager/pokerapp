@@ -12,9 +12,11 @@ import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/game_screens/hand_history/played_hands.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
+import 'package:pokerapp/screens/game_screens/widgets/hand_history_filter_widget.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/services/app/hand_service.dart';
 import 'package:pokerapp/services/app/player_service.dart';
+import 'package:pokerapp/utils/alerts.dart';
 import 'package:provider/provider.dart';
 
 import '../../../routes.dart';
@@ -78,6 +80,21 @@ class _HandHistoryState extends State<HandHistoryListView>
             showBackButton: !widget.isInBottomSheet,
             context: context,
             titleText: _appScreenText['handHistory'],
+            actionsList: [
+              IconButton(
+                onPressed: () {
+                  Alerts.showDailog(
+                    context: context,
+                    child:
+                        HandHistoryFilterWidget(winners: _getListOfWinners()),
+                  );
+                },
+                icon: Icon(
+                  Icons.filter_alt,
+                  color: theme.accentColor,
+                ),
+              )
+            ],
           ),
           body: !loadingDone
               ? Center(child: CircularProgressWidget())
@@ -129,5 +146,35 @@ class _HandHistoryState extends State<HandHistoryListView>
         ),
       ),
     );
+  }
+
+  List<Winner> _getListOfWinners() {
+    final List<Winner> winners = [];
+    if (_data != null) {
+      for (HandHistoryItem item in _data.allHands) {
+        for (Winner winner in item?.winners ?? []) {
+          final res = winners.indexWhere(
+            (element) {
+              return element.id == winner.id;
+            },
+          );
+          if (res == -1) {
+            winners.add(winner);
+          }
+        }
+
+        for (Winner winner in item?.lowWinners ?? []) {
+          final res = winners.indexWhere(
+            (element) {
+              return element.id == winner.id;
+            },
+          );
+          if (res == -1) {
+            winners.add(winner);
+          }
+        }
+      }
+    }
+    return winners;
   }
 }

@@ -19,6 +19,7 @@ class CardFormTextField extends StatelessWidget {
     this.inputFormatters,
     this.hintColor,
     this.maxLines,
+    this.onTap
   });
   final Color hintColor;
   final AppTheme theme;
@@ -33,6 +34,7 @@ class CardFormTextField extends StatelessWidget {
   final TextInputType keyboardType;
   final double radius;
   final Function onChanged;
+  final Function onTap;
   final int maxLines;
 
   @override
@@ -51,6 +53,7 @@ class CardFormTextField extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 10.pw, vertical: 5.ph),
         child: TextFormField(
+          onTap: onTap,
           autovalidateMode: AutovalidateMode.onUserInteraction,
           inputFormatters: inputFormatters,
           validator: validator,
