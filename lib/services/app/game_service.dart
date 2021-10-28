@@ -1288,7 +1288,6 @@ mutation reportBug(\$bug :String!){
   }
 }
 
-
 String highhandTest = '''
 {
 	"__typename": "Query",
