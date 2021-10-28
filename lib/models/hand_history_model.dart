@@ -58,7 +58,12 @@ class HandHistoryListModel extends ChangeNotifier {
     for (final hand in handsData) {
       HandHistoryItem item = new HandHistoryItem();
       item.handNum = int.parse(hand['handNum'].toString());
-      Map<String, dynamic> summary = json.decode(hand['summary']);
+      Map<String, dynamic> summary;
+      if (hand['summary'] is String) {
+        summary = json.decode(hand['summary']);
+      } else if (hand['summary'] != null) {
+        summary = hand['summary'];
+      }
       item.noCards = int.parse(summary['noCards'].toString());
       item.handTime = DataFormatter.getTimeInHHMMFormat(
           int.parse(hand['handTime'].toString()));

@@ -206,7 +206,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
     // log(data);
 
     final jsonResult = json.decode(data);
-
+    log('${jsonResult}');
     for (var item in jsonResult['liveGames']) {
       liveGames.add(GameModelNew.fromJson(item));
     }
