@@ -69,6 +69,8 @@ class GameHistoryService {
     if (response.statusCode == HttpStatus.ok) {
       final dir = await getApplicationDocumentsDirectory();
 
+      // download at .../history/game-code/compressed.zip
+      // TODO COMPRESSED FILE NAME
       final file = File("${dir.path}/history/$gameCode/compressed.zip");
       file.create(recursive: true);
 
@@ -101,11 +103,13 @@ class GameHistoryService {
   Future<void> _cleanupDirs(final GameHistory gameHistory) async {
     // delete the parent directory
 
-    // /history/gamecode/handlog.json -> extracted (un-compressed)
-    //                  /handlog.dat -> compressed
+    // /history/game-code/handlog.json -> extracted (un-compressed)
+    //                  /compressed.zip -> compressed
 
     // thus, delete /history/gamecode -> gamecode directory
     final file = File(gameHistory.path);
+
+    // delete the containing directory
     await file.parent.delete(recursive: true);
   }
 }
