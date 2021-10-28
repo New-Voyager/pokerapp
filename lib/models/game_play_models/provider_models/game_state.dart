@@ -655,7 +655,11 @@ class GameState {
   Future<void> refresh({bool rebuildSeats = false}) async {
     log('************ Refreshing game state');
     GameInfoModel gameInfo = await GameService.getGameInfo(this._gameCode);
-
+    if (gameInfo == null) {
+      // check whether the game has ended
+      this._gameInfo.status = 'ENDED';
+      return;
+    }
     this._gameInfo = gameInfo;
     // reset seats
     for (var seat in this._seats) {
