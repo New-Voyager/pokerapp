@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/hand_history_model.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
-import 'package:pokerapp/widgets/radio_list_widget.dart';
 
 class HandHistoryFilterWidget extends StatefulWidget {
   final List<Winner> winners;
@@ -17,8 +17,16 @@ class HandHistoryFilterWidget extends StatefulWidget {
 }
 
 class _HandHistoryFilterWidgetState extends State<HandHistoryFilterWidget> {
+  AppTextScreen _appTextScreen;
   int groupValue = 0;
   String winnerName = "";
+
+  @override
+  void initState() {
+    super.initState();
+    _appTextScreen = getAppTextScreen("handHistoryFilter");
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = AppTheme.getTheme(context);
@@ -30,7 +38,7 @@ class _HandHistoryFilterWidgetState extends State<HandHistoryFilterWidget> {
           alignment: Alignment.center,
           padding: const EdgeInsets.symmetric(vertical: 16.0),
           child: Text(
-            "Hand history filters",
+            _appTextScreen['title'],
             style: AppDecorators.getSubtitle2Style(theme: theme),
           ),
         ),
@@ -42,7 +50,10 @@ class _HandHistoryFilterWidgetState extends State<HandHistoryFilterWidget> {
           groupValue: groupValue,
           title: Row(
             children: [
-              Expanded(flex: 6, child: Text("Pot Size greater than ")),
+              Expanded(
+                flex: 6,
+                child: Text(_appTextScreen['potSizeLabel']),
+              ),
               Expanded(
                 flex: 4,
                 child: CardFormTextField(
@@ -70,7 +81,7 @@ class _HandHistoryFilterWidgetState extends State<HandHistoryFilterWidget> {
           groupValue: groupValue,
           title: Row(
             children: [
-              Text("My Headsup hands"),
+              Text(_appTextScreen['myHeadsLabel']),
             ],
           ),
           onChanged: (value) {
@@ -85,7 +96,7 @@ class _HandHistoryFilterWidgetState extends State<HandHistoryFilterWidget> {
           groupValue: groupValue,
           title: Row(
             children: [
-              Expanded(flex: 6, child: Text("Lost chips greater than ")),
+              Expanded(flex: 6, child: Text(_appTextScreen['lostChipsLabel'])),
               Expanded(
                 flex: 4,
                 child: CardFormTextField(
@@ -113,7 +124,7 @@ class _HandHistoryFilterWidgetState extends State<HandHistoryFilterWidget> {
           groupValue: groupValue,
           title: Row(
             children: [
-              Expanded(flex: 5, child: Text("Pot winner ")),
+              Expanded(flex: 5, child: Text(_appTextScreen['potWinnerLabel'])),
               Expanded(
                 flex: 6,
                 child: DropdownButton(
@@ -127,7 +138,7 @@ class _HandHistoryFilterWidgetState extends State<HandHistoryFilterWidget> {
                   isExpanded: true,
                   items: [
                     DropdownMenuItem(
-                      child: Text("-Select-"),
+                      child: Text(_appTextScreen['select']),
                       value: "",
                     ),
                     ...buildDropDownItems(),
@@ -156,13 +167,17 @@ class _HandHistoryFilterWidgetState extends State<HandHistoryFilterWidget> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             RoundRectButton(
-              text: "Cancel",
+              text: _appTextScreen['cancel'],
               onTap: () {
                 Navigator.of(context).pop();
               },
               theme: theme,
             ),
-            RoundRectButton(text: "Apply", onTap: () {}, theme: theme),
+            RoundRectButton(
+              text: _appTextScreen['apply'],
+              onTap: () {},
+              theme: theme,
+            ),
           ],
         ),
       ],
