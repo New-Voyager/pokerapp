@@ -1,6 +1,11 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:hive/hive.dart';
+import 'package:pokerapp/models/game_history_model.dart';
+import 'package:pokerapp/services/data/box_type.dart';
+import 'package:pokerapp/services/data/hive_datasource_impl.dart';
 
 class GameHistory {
   final String gameCode;
@@ -45,5 +50,46 @@ class GameHistory {
       'expireAt': this.expireAt.toIso8601String(),
       'path': this.path,
     });
+  }
+}
+
+class GameHistoryStore {
+  Box _box;
+  String _dataDir;
+
+  String get dataDir => _dataDir;
+
+  void init(String dataDir) {
+    _box = HiveDatasource.getInstance.getBox(BoxType.GAME_HISTORY_BOX);
+    _dataDir = dataDir;
+  }
+
+  GameHistory get(String gameCode) {
+    if (_box.containsKey(gameCode)) {
+      return GameHistory.fromJson(_box.get(gameCode));
+    }
+    return null;
+  }
+
+  void put(GameHistoryDetailModel model, GameHistory history) {
+    _box.put(history.gameCode, history.toJson());
+  }
+
+  List<GameHistory> all() {
+    List<GameHistory> list = [];
+    for (final String gameCode in _box.keys) {
+      final gameHistory = GameHistory.fromJson(_box.get(gameCode));
+      list.add(gameHistory);
+    }
+    return list;
+  }
+
+  void remove(GameHistory history) {
+    try {
+      _box.delete(history.gameCode);
+      Directory(history.path).deleteSync(recursive: true);
+    } catch (e) {
+      // ignore this exception
+    }
   }
 }

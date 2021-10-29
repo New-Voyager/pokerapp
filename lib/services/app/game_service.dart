@@ -64,6 +64,7 @@ class GameService {
           isHost
           isManager
           isOwner
+          handDataLink
 
           preflopHands
           flopHands

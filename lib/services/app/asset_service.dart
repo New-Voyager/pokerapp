@@ -53,7 +53,9 @@ class AssetService {
   }
 
   static Future<Asset> saveFile(Asset asset) async {
-    Directory dir = await getApplicationDocumentsDirectory();
+    Directory docsDir = await getApplicationDocumentsDirectory();
+    Directory assetsDir = Directory('${docsDir.path}/assets/');
+    assetsDir.createSync(recursive: true);
 
     final link = asset.link;
     final String _filename = path.basename(link);
@@ -61,7 +63,7 @@ class AssetService {
         path.basenameWithoutExtension(link);
     final String extension = path.extension(link);
 
-    final String downloadToFile = '${dir.path}/${asset.type}_$_filename';
+    final String downloadToFile = '${assetsDir.path}/${asset.type}_$_filename';
 
     log("Downloading to file : $downloadToFile");
     http.Response response = await http.get(Uri.parse(asset.link));
@@ -77,7 +79,7 @@ class AssetService {
       final zipFile = File(downloadToFile);
 
       final destinationDir =
-          Directory("${dir.path}/$_filenameWithoutExtension");
+          Directory("${assetsDir.path}/$_filenameWithoutExtension");
       try {
         // Decode the Zip file
         final archive = ZipDecoder().decodeBytes(zipFile.readAsBytesSync());

@@ -34,7 +34,9 @@ class AudioService {
   static stopSound() {
     if (audioPlayer != null) {
       try {
-        audioPlayer.stop();
+        if (audioPlayer.state == PlayerState.PLAYING) {
+          audioPlayer.stop();
+        }
       } catch (err) {
         // ignore the error
       }
