@@ -68,45 +68,55 @@ class GameScreenAssets {
   Future<void> initialize() async {
     cardStrImage = Map<String, Uint8List>();
     cardNumberImage = Map<int, Uint8List>();
-    Asset backdrop =
-        AssetService.getAssetForId(UserSettingsStore.getSelectedBackdropId());
+    Asset backdrop = AssetService.getAssetForId(
+      UserSettingsStore.getSelectedBackdropId(),
+    );
     if (backdrop == null) {
-      backdrop =
-          AssetService.getAssetForId(UserSettingsStore.VALUE_DEFAULT_BACKDROP);
+      backdrop = AssetService.getAssetForId(
+        UserSettingsStore.VALUE_DEFAULT_BACKDROP,
+      );
     }
     backdropBytes = await backdrop.getBytes();
 
-    Asset table =
-        AssetService.getAssetForId(UserSettingsStore.getSelectedTableId());
+    Asset table = AssetService.getAssetForId(
+      UserSettingsStore.getSelectedTableId(),
+    );
     if (table == null) {
       table = AssetService.getAssetForId(UserSettingsStore.VALUE_DEFAULT_TABLE);
     }
     boardBytes = await table.getBytes();
 
     nameplate = AssetService.getNameplateForId(
-        UserSettingsStore.getSelectedNameplateId());
+      UserSettingsStore.getSelectedNameplateId(),
+    );
 
-    Asset betImage =
-        AssetService.getAssetForId(UserSettingsStore.getSelectedBetDial());
+    Asset betImage = AssetService.getAssetForId(
+      UserSettingsStore.getSelectedBetDial(),
+    );
     if (betImage == null) {
-      betImage =
-          AssetService.getAssetForId(UserSettingsStore.VALUE_DEFAULT_BETDIAL);
+      betImage = AssetService.getAssetForId(
+        UserSettingsStore.VALUE_DEFAULT_BETDIAL,
+      );
     }
     betImageBytes = await betImage.getBytes();
 
-    Asset cardBack =
-        AssetService.getAssetForId(UserSettingsStore.getSelectedCardBackId());
+    Asset cardBack = AssetService.getAssetForId(
+      UserSettingsStore.getSelectedCardBackId(),
+    );
     if (cardBack == null) {
-      cardBack =
-          AssetService.getAssetForId(UserSettingsStore.VALUE_DEFAULT_CARDBACK);
+      cardBack = AssetService.getAssetForId(
+        UserSettingsStore.VALUE_DEFAULT_CARDBACK,
+      );
     }
     holeCardBackBytes = await cardBack.getBytes();
 
-    Asset cardFace =
-        AssetService.getAssetForId(UserSettingsStore.getSelectedCardFaceId());
+    Asset cardFace = AssetService.getAssetForId(
+      UserSettingsStore.getSelectedCardFaceId(),
+    );
     if (cardFace == null) {
-      cardFace =
-          AssetService.getAssetForId(UserSettingsStore.VALUE_DEFAULT_CARDFACE);
+      cardFace = AssetService.getAssetForId(
+        UserSettingsStore.VALUE_DEFAULT_CARDFACE,
+      );
     }
     try {
       log('Customize: Loading cards');
@@ -115,8 +125,9 @@ class GameScreenAssets {
     } catch (err) {
       log('Customize: Loading default cards');
       // fall back to default card
-      cardFace =
-          AssetService.getAssetForId(UserSettingsStore.VALUE_DEFAULT_CARDFACE);
+      cardFace = AssetService.getAssetForId(
+        UserSettingsStore.VALUE_DEFAULT_CARDFACE,
+      );
       await loadCards(cardFace);
       log('Customize: Loading default cards successful');
     }
