@@ -27,16 +27,16 @@ starting-seats:
     player: young
     buy-in: 100
   - seat: 2
-    player: brian
+    player: carol
     buy-in: 100
   - seat: 3
     player: chris
     buy-in: 100
   - seat: 4
-    player: tom
+    player: matt
     buy-in: 100
 
-tester: brian
+tester: carol
 
 # deal the following hands in the table
 hands:

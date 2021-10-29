@@ -32,7 +32,7 @@ starting-seats:
     run-it-twice: true
     run-it-twice-prompt: true
   - seat: 2
-    player: brian
+    player: carol
     buy-in: 100
     run-it-twice: true
     run-it-twice-prompt: true
@@ -42,7 +42,7 @@ starting-seats:
     run-it-twice: true
     run-it-twice-prompt: true
   - seat: 4
-    player: tom
+    player: matt
     buy-in: 100
     run-it-twice: true
     run-it-twice-prompt: true
