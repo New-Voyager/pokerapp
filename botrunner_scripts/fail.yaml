@@ -19,10 +19,10 @@ starting-seats:
     player: young
     buy-in: 158
   - seat: 2
-    player: brian
+    player: carol
     buy-in: 121
   - seat: 3
-    player: tom
+    player: matt
     buy-in: 485
   - seat: 4
     player: jim

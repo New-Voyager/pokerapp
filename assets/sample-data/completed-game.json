@@ -4,7 +4,7 @@
         "gameType": "HOLDEM",
         "gameCode": "CG-7A8SB7",
         "gameNum": 1,
-        "startedBy": "yong",
+        "startedBy": "young",
         "startedAt": "2021-01-02T07:18:37.382Z",
         "endedBy": "",
         "endedAt": "2021-01-02T13:33:23.179Z",
@@ -30,7 +30,7 @@
           {
             "gameCode": "CG-7A8SB7",
             "playerUuid": "c2dc2c3d-13da-46cc-8c66-caa0c77459de",
-            "playerName": "yong",
+            "playerName": "young",
             "playerCards": "[4,1]",
             "boardCards": "[200,196,8,84,88]",
             "highHand": "[4,1,200,196,8]",

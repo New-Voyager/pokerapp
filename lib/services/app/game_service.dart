@@ -1295,7 +1295,7 @@ String highhandTest = '''
 	"hhWinners": [{
 			"__typename": "HighHand",
 			"playerUuid": "4b93e2be-7992-45c3-a2dd-593c2f708cb7",
-			"playerName": "brian",
+			"playerName": "carol",
 			"playerCards": "[56,72]",
 			"boardCards": "[52,49,50,17,4]",
 			"highHand": "[52,49,50,56,72]",
@@ -1307,7 +1307,7 @@ String highhandTest = '''
 		{
 			"__typename": "HighHand",
 			"playerUuid": "4b93e2be-7992-45c3-a2dd-593c2f708cb7",
-			"playerName": "brian",
+			"playerName": "carol",
 			"playerCards": "[56,72]",
 			"boardCards": "[52,49,50,17,4]",
 			"highHand": "[52,49,50,56,72]",
@@ -1320,7 +1320,7 @@ String highhandTest = '''
 		{
 			"__typename": "HighHand",
 			"playerUuid": "4b93e2be-7992-45c3-a2dd-593c2f708cb7",
-			"playerName": "brian",
+			"playerName": "carol",
 			"playerCards": "[56,72]",
 			"boardCards": "[52,49,50,17,4]",
 			"highHand": "[52,49,50,56,72]",
@@ -1331,7 +1331,7 @@ String highhandTest = '''
 		{
 			"__typename": "HighHand",
 			"playerUuid": "4b93e2be-7992-45c3-a2dd-593c2f708cb7",
-			"playerName": "brian",
+			"playerName": "carol",
 			"playerCards": "[56,72]",
 			"boardCards": "[52,49,50,17,4]",
 			"highHand": "[52,49,50,56,72]",
@@ -1342,7 +1342,7 @@ String highhandTest = '''
 		{
 			"__typename": "HighHand",
 			"playerUuid": "4b93e2be-7992-45c3-a2dd-593c2f708cb7",
-			"playerName": "brian",
+			"playerName": "carol",
 			"playerCards": "[56,72]",
 			"boardCards": "[52,49,50,17,4]",
 			"highHand": "[52,49,50,56,72]",
@@ -1353,7 +1353,7 @@ String highhandTest = '''
 		{
 			"__typename": "HighHand",
 			"playerUuid": "4b93e2be-7992-45c3-a2dd-593c2f708cb7",
-			"playerName": "brian",
+			"playerName": "carol",
 			"playerCards": "[56,72]",
 			"boardCards": "[52,49,50,17,4]",
 			"highHand": "[52,49,50,56,72]",
@@ -1364,7 +1364,7 @@ String highhandTest = '''
 		{
 			"__typename": "HighHand",
 			"playerUuid": "4b93e2be-7992-45c3-a2dd-593c2f708cb7",
-			"playerName": "brian",
+			"playerName": "carol",
 			"playerCards": "[56,72]",
 			"boardCards": "[52,49,50,17,4]",
 			"highHand": "[52,49,50,56,72]",
@@ -1375,7 +1375,7 @@ String highhandTest = '''
 		{
 			"__typename": "HighHand",
 			"playerUuid": "4b93e2be-7992-45c3-a2dd-593c2f708cb7",
-			"playerName": "brian",
+			"playerName": "carol",
 			"playerCards": "[56,72]",
 			"boardCards": "[52,49,50,17,4]",
 			"highHand": "[52,49,50,56,72]",
@@ -1386,7 +1386,7 @@ String highhandTest = '''
 		{
 			"__typename": "HighHand",
 			"playerUuid": "4b93e2be-7992-45c3-a2dd-593c2f708cb7",
-			"playerName": "brian",
+			"playerName": "carol",
 			"playerCards": "[56,72]",
 			"boardCards": "[52,49,50,17,4]",
 			"highHand": "[52,49,50,56,72]",
@@ -1397,7 +1397,7 @@ String highhandTest = '''
 		{
 			"__typename": "HighHand",
 			"playerUuid": "4b93e2be-7992-45c3-a2dd-593c2f708cb7",
-			"playerName": "brian",
+			"playerName": "carol",
 			"playerCards": "[56,72]",
 			"boardCards": "[52,49,50,17,4]",
 			"highHand": "[52,49,50,56,72]",

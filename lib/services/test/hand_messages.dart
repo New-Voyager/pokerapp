@@ -29,7 +29,7 @@ String newHandMessage() => '''
         "playersInSeats": {
           "1": {
             "playerId": "1",
-            "name": "yong",
+            "name": "young",
             "status": "PLAYING",
             "stack": 100,
             "round": "DEAL",
@@ -39,7 +39,7 @@ String newHandMessage() => '''
           },
           "2": {
             "playerId": "2",
-            "name": "brian",
+            "name": "carol",
             "status": "PLAYING",
             "stack": 100,
             "round": "DEAL",
@@ -49,7 +49,7 @@ String newHandMessage() => '''
           },
           "3": {
             "playerId": "3",
-            "name": "tom",
+            "name": "matt",
             "status": "PLAYING",
             "stack": 100,
             "round": "DEAL",
@@ -2909,7 +2909,7 @@ String multiPotResult = '''
 				"hhRank": 0,
 				"received": -26,
 				"rakePaid": 1,
-				"name": "yong"
+				"name": "young"
 			},
 			"2": {
 				"id": "7501",
@@ -2923,7 +2923,7 @@ String multiPotResult = '''
 				"hhRank": 0,
 				"received": 73,
 				"rakePaid": 2,
-				"name": "brian"
+				"name": "carol"
 			},
 			"3": {
 				"id": "7502",
@@ -2937,7 +2937,7 @@ String multiPotResult = '''
 				"hhRank": 0,
 				"received": -200,
 				"rakePaid": 0,
-				"name": "tom"
+				"name": "matt"
 			},
 			"4": {
 				"id": "7511",

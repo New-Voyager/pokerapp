@@ -691,7 +691,7 @@ class GameUpdateService {
             "gameCode": "cgorysdcm",
             "playerId": "223",
             "playerUuid": "4b93e2be-7992-45c3-a2dd-593c2f708cb7",
-            "playerName": "brian",
+            "playerName": "carol",
             "boardCards": [52, 49, 50, 17, 4],
             "playerCards": [56, 72],
             "hhCards": [56, 72, 52, 49, 50]
@@ -990,7 +990,7 @@ class GameUpdateService {
   void handleHostSeatChangeMove({
     var data,
   }) async {
-    // {"gameId":"18", "gameCode":"CG-LBH8IW24N7XGE5", "messageType":"TABLE_UPDATE", "tableUpdate":{"type":"HostSeatChangeMove", "seatMoves":[{"playerId":"131", "playerUuid":"290bf492-9dde-448e-922d-40270e163649", "name":"rich", "oldSeatNo":6, "newSeatNo":1}, {"playerId":"122", "playerUuid":"c2dc2c3d-13da-46cc-8c66-caa0c77459de", "name":"yong", "oldSeatNo":1, "newSeatNo":6}]}}
+    // {"gameId":"18", "gameCode":"CG-LBH8IW24N7XGE5", "messageType":"TABLE_UPDATE", "tableUpdate":{"type":"HostSeatChangeMove", "seatMoves":[{"playerId":"131", "playerUuid":"290bf492-9dde-448e-922d-40270e163649", "name":"rich", "oldSeatNo":6, "newSeatNo":1}, {"playerId":"122", "playerUuid":"c2dc2c3d-13da-46cc-8c66-caa0c77459de", "name":"young", "oldSeatNo":1, "newSeatNo":6}]}}
     // player is moved, show animation of the move
 
     final hostSeatChange =
@@ -1168,7 +1168,7 @@ class GameUpdateService {
       {
         "type": "PLAYER_SEAT_CHANGE_PROMPT",
         "gameCode": "test",
-        "playerName": "yong",
+        "playerName": "young",
         "playerId": 630,
         "openedSeat": 4,
         "playerUuid": " ",
@@ -1339,7 +1339,7 @@ class GameUpdateService {
       {
         "type": "PLAYER_SEAT_MOVE",
         "gameCode": "test",
-        "playerName": "yong",
+        "playerName": "young",
         "playerId": 630,
         "playerUuid": "c2dc2c3d-13da-46cc-8c66-caa0c77459de",
         "oldSeatNo": 1,
