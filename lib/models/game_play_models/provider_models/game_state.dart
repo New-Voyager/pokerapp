@@ -80,6 +80,8 @@ class GameState {
   ListenableProvider<RedrawBoardSectionState> _redrawBoardSectionStateProvider;
   ListenableProvider<RedrawBackdropSectionState>
       _redrawBackdropSectionStateProvider;
+  ListenableProvider<RedrawNamePlateSectionState>
+      _redrawNameplateSectionStateProvider;
 
   ListenableProvider<RedrawFooterSectionState>
       _redrawFooterSectionStateProvider;
@@ -99,6 +101,7 @@ class GameState {
   TappedSeatState _tappedSeatState;
   RedrawFooterSectionState _redrawFooterState;
   RedrawBoardSectionState _redrawBoardState;
+  RedrawNamePlateSectionState _redrawNameplateState;
   RedrawBackdropSectionState _redrawBackdropState;
 
   ActionState _actionState;
@@ -283,6 +286,7 @@ class GameState {
     this._tappedSeatState = TappedSeatState();
     this._connectionState = ServerConnectionState();
     this._redrawBoardState = RedrawBoardSectionState();
+    this._redrawNameplateState = RedrawNamePlateSectionState();
     this._redrawBackdropState = RedrawBackdropSectionState();
     this._handChangeState = HandChangeState();
     this._handResultState = HandResultState();
@@ -309,6 +313,11 @@ class GameState {
     this._redrawBackdropSectionStateProvider =
         ListenableProvider<RedrawBackdropSectionState>(
       create: (_) => _redrawBackdropState,
+    );
+
+    this._redrawNameplateSectionStateProvider =
+        ListenableProvider<RedrawNamePlateSectionState>(
+      create: (_) => _redrawNameplateState,
     );
 
     this._redrawFooterState = RedrawFooterSectionState();
@@ -651,6 +660,9 @@ class GameState {
     return true;
   }
 
+  RedrawNamePlateSectionState getNameplateSectionState() =>
+      this.redrawNameplateSectionState;
+
   RedrawBoardSectionState getBoardSectionState() =>
       this.redrawBoardSectionState;
 
@@ -843,6 +855,8 @@ class GameState {
   MyState get myState => this._myState;
   RedrawFooterSectionState get redrawFooterState => this._redrawFooterState;
   RedrawBoardSectionState get redrawBoardSectionState => this._redrawBoardState;
+  RedrawNamePlateSectionState get redrawNameplateSectionState =>
+      this._redrawNameplateState;
   RedrawBackdropSectionState get redrawBackdropSectionState =>
       this._redrawBackdropState;
 
@@ -936,6 +950,7 @@ class GameState {
       this._holeCardsProvider,
       this._redrawBoardSectionStateProvider,
       this._redrawBackdropSectionStateProvider,
+      this._redrawNameplateSectionStateProvider,
       this._redrawFooterSectionStateProvider,
       this._cardDistribProvider,
       this._handChangeStateProvider,

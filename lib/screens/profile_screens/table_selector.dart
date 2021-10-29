@@ -214,259 +214,273 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
               value: customizeService.gameState.getBoardSectionState(),
               child: ListenableProvider.value(
                 value: customizeService.gameState.getBackdropSectionState(),
-                child: TabBarView(
-                  controller: _tabController,
-                  children: [
-                    // TABLE
-                    Consumer<RedrawBoardSectionState>(
-                      builder: (_, redrawBoardSectionState, ___) => Container(
-                        //height: size.height * 0.3,
-                        child: ListView.separated(
-                          padding: EdgeInsets.symmetric(horizontal: 64),
-                          itemBuilder: (context, index) {
-                            final bool isSelected =
-                                (_selectedTable?.id == _tableAssets[index].id);
+                child: ListenableProvider.value(
+                  value: customizeService.gameState.getNameplateSectionState(),
+                  child: TabBarView(
+                    controller: _tabController,
+                    children: [
+                      // TABLE
+                      Consumer<RedrawBoardSectionState>(
+                        builder: (_, redrawBoardSectionState, ___) => Container(
+                          //height: size.height * 0.3,
+                          child: ListView.separated(
+                            padding: EdgeInsets.symmetric(horizontal: 64),
+                            itemBuilder: (context, index) {
+                              final bool isSelected = (_selectedTable?.id ==
+                                  _tableAssets[index].id);
 
-                            String previewLink =
-                                _tableAssets[index].previewLink;
-                            if (previewLink == null) {
-                              previewLink = _tableAssets[index].link;
-                            }
-                            Widget tablePreviewWidget;
-                            if (_tableAssets[index].bundled ?? false) {
-                              tablePreviewWidget = Image.asset(
-                                _tableAssets[index].downloadedPath,
-                              );
-                            } else {
-                              tablePreviewWidget = CachedNetworkImage(
-                                imageUrl: previewLink,
-                              );
-                            }
-                            return InkResponse(
-                              onTap: () async {
-                                // _selectedTable = _tableAssets[index];
-
-                                // setState(() {
-                                _selectedTable = _tableAssets[index];
-                                // });
-
-                                redrawBoardSectionState.notify();
-
-                                if (!_selectedTable.downloaded) {
-                                  log("Downloading ${_selectedTable.id} : ${_selectedTable.name}");
-                                  _tableAssets[index] =
-                                      await AssetService.saveFile(
-                                    _tableAssets[index],
-                                  );
-                                  // Save the modified asset
-                                  await AssetService.hiveStore.put(
-                                    _tableAssets[index],
-                                  );
-                                }
-
-                                // Update user settings
-                                await UserSettingsService.setSelectedTableId(
-                                  _tableAssets[index],
+                              String previewLink =
+                                  _tableAssets[index].previewLink;
+                              if (previewLink == null) {
+                                previewLink = _tableAssets[index].link;
+                              }
+                              Widget tablePreviewWidget;
+                              if (_tableAssets[index].bundled ?? false) {
+                                tablePreviewWidget = Image.asset(
+                                  _tableAssets[index].downloadedPath,
                                 );
+                              } else {
+                                tablePreviewWidget = CachedNetworkImage(
+                                  imageUrl: previewLink,
+                                );
+                              }
+                              return InkResponse(
+                                onTap: () async {
+                                  // _selectedTable = _tableAssets[index];
 
-                                redrawBoardSectionState.notify();
-                                // setState(() {});
+                                  // setState(() {
+                                  _selectedTable = _tableAssets[index];
+                                  // });
 
-                                await customizeService.gameState.assets
-                                    .initialize();
+                                  redrawBoardSectionState.notify();
 
-                                customizeService.gameState.redrawBoard();
-                              },
-                              child: Container(
-                                padding: EdgeInsets.symmetric(horizontal: 8),
-                                height: size.height * 0.1,
-                                width: size.height * 0.2,
-                                margin: EdgeInsets.symmetric(vertical: 16),
-                                decoration: BoxDecoration(
-                                  color: isSelected
-                                      ? Colors.white.withOpacity(0.6)
-                                      : Colors.transparent,
-                                  borderRadius: BorderRadius.circular(32),
-                                ),
-                                child: Stack(
-                                  alignment: Alignment.center,
-                                  children: [
-                                    tablePreviewWidget,
-                                    Visibility(
-                                      visible: isSelected,
-                                      child: Icon(Icons.done),
-                                    ),
-                                    Visibility(
-                                      visible:
-                                          !(_tableAssets[index].downloaded ??
-                                              true),
-                                      child: Container(
-                                        height: size.height * 0.1,
-                                        width: size.height * 0.2,
-                                        color: Colors.black.withOpacity(0.5),
-                                        child: Icon(Icons.download_for_offline),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
-                          separatorBuilder: (context, index) =>
-                              AppDimensionsNew.getHorizontalSpace(16),
-                          itemCount: _tableAssets.length,
-                          scrollDirection: Axis.horizontal,
-                        ),
-                      ),
-                    ),
+                                  if (!_selectedTable.downloaded) {
+                                    log("Downloading ${_selectedTable.id} : ${_selectedTable.name}");
+                                    _tableAssets[index] =
+                                        await AssetService.saveFile(
+                                      _tableAssets[index],
+                                    );
+                                    // Save the modified asset
+                                    await AssetService.hiveStore.put(
+                                      _tableAssets[index],
+                                    );
+                                  }
 
-                    // BACKDROP
-                    Consumer<RedrawBackdropSectionState>(
-                      builder: (_, redrawBackdropSectionState, __) => Container(
-                        //height: size.height * 0.3,
-                        child: ListView.separated(
-                          padding: EdgeInsets.symmetric(horizontal: 64),
-                          itemBuilder: (context, index) {
-                            final bool isSelected = (_selectedDrop?.id ==
-                                _backDropAssets[index].id);
-
-                            Widget backPreviewWidget;
-                            if (_backDropAssets[index].bundled ?? false) {
-                              backPreviewWidget = Image.asset(
-                                _backDropAssets[index].downloadedPath,
-                              );
-                            } else {
-                              backPreviewWidget = CachedNetworkImage(
-                                imageUrl: _backDropAssets[index].previewLink,
-                              );
-                            }
-                            return InkResponse(
-                              onTap: () async {
-                                // _selectedTable = _tableAssets[index];
-
-                                // setState(() {
-                                _selectedDrop = _backDropAssets[index];
-                                // });
-
-                                redrawBackdropSectionState.notify();
-
-                                if (!_selectedDrop.downloaded) {
-                                  log("Downloading ${_selectedDrop.id} : ${_selectedDrop.name}");
-
-                                  _backDropAssets[index] =
-                                      await AssetService.saveFile(
-                                    _backDropAssets[index],
+                                  // Update user settings
+                                  await UserSettingsService.setSelectedTableId(
+                                    _tableAssets[index],
                                   );
 
-                                  await AssetService.hiveStore.put(
-                                    _backDropAssets[index],
-                                  );
-
+                                  redrawBoardSectionState.notify();
                                   // setState(() {});
-                                  redrawBackdropSectionState.notify();
-                                }
 
-                                // Update user settings
-                                await UserSettingsService.setSelectedBackdropId(
-                                  _backDropAssets[index],
-                                );
-                                await customizeService.gameState.assets
-                                    .initialize();
+                                  await customizeService.gameState.assets
+                                      .initialize();
 
-                                // customizeService.gameState.redrawBoard();
-                                redrawBackdropSectionState.notify();
-                              },
-                              child: Container(
-                                padding: EdgeInsets.symmetric(horizontal: 8),
-                                height: size.height * 0.1,
-                                width: size.height * 0.2,
-                                margin: EdgeInsets.symmetric(vertical: 16),
-                                decoration: BoxDecoration(
-                                  color: isSelected
-                                      ? Colors.white.withOpacity(0.6)
-                                      : Colors.transparent,
-                                  borderRadius: BorderRadius.circular(32),
-                                ),
-                                child: Stack(
-                                  alignment: Alignment.center,
-                                  children: [
-                                    backPreviewWidget,
-                                    Visibility(
-                                      visible: isSelected,
-                                      child: Icon(Icons.done),
-                                    ),
-                                    Visibility(
-                                      visible:
-                                          !(_backDropAssets[index].downloaded ??
-                                              true),
-                                      child: Container(
-                                        height: size.height * 0.1,
-                                        width: size.height * 0.2,
-                                        color: Colors.black.withOpacity(0.5),
-                                        child: Icon(Icons.download_for_offline),
+                                  customizeService.gameState.redrawBoard();
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(horizontal: 8),
+                                  height: size.height * 0.1,
+                                  width: size.height * 0.2,
+                                  margin: EdgeInsets.symmetric(vertical: 16),
+                                  decoration: BoxDecoration(
+                                    color: isSelected
+                                        ? Colors.white.withOpacity(0.6)
+                                        : Colors.transparent,
+                                    borderRadius: BorderRadius.circular(32),
+                                  ),
+                                  child: Stack(
+                                    alignment: Alignment.center,
+                                    children: [
+                                      tablePreviewWidget,
+                                      Visibility(
+                                        visible: isSelected,
+                                        child: Icon(Icons.done),
                                       ),
-                                    ),
-                                  ],
+                                      Visibility(
+                                        visible:
+                                            !(_tableAssets[index].downloaded ??
+                                                true),
+                                        child: Container(
+                                          height: size.height * 0.1,
+                                          width: size.height * 0.2,
+                                          color: Colors.black.withOpacity(0.5),
+                                          child:
+                                              Icon(Icons.download_for_offline),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            );
-                          },
-                          separatorBuilder: (context, index) =>
-                              AppDimensionsNew.getHorizontalSpace(16),
-                          itemCount: _backDropAssets.length,
-                          scrollDirection: Axis.horizontal,
-                        ),
-                      ),
-                    ),
-
-                    // NAMEPLATE
-                    Container(
-                      child: GridView.builder(
-                        scrollDirection: Axis.horizontal,
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                          maxCrossAxisExtent: 190,
-                          childAspectRatio: 1,
-                          crossAxisSpacing: 20,
-                          mainAxisSpacing: 20,
-                        ),
-                        itemCount: _nameplateAssets.length,
-                        itemBuilder: (BuildContext ctx, index) {
-                          final bool isSelected =
-                              (_selectedNamePlate == _nameplateAssets[index]);
-
-                          return InkWell(
-                            onTap: () async {
-                              _selectedNamePlate = _nameplateAssets[index];
-
-                              await UserSettingsService.setSelectedNameplateId(
-                                _nameplateAssets[index],
                               );
-
-                              await customizeService.gameState.assets
-                                  .initialize();
-                              customizeService.gameState.redrawBoard();
                             },
-                            child: Container(
-                              alignment: Alignment.center,
-                              child: SvgPicture.string(
-                                _nameplateAssets[index].svg,
-                                width: size.width,
-                                height: size.height,
-                              ),
-                              decoration: BoxDecoration(
-                                color: (isSelected)
-                                    ? Colors.white.withOpacity(0.6)
-                                    : Colors.transparent,
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                            ),
-                          );
-                        },
+                            separatorBuilder: (context, index) =>
+                                AppDimensionsNew.getHorizontalSpace(16),
+                            itemCount: _tableAssets.length,
+                            scrollDirection: Axis.horizontal,
+                          ),
+                        ),
                       ),
-                    ),
-                  ],
+
+                      // BACKDROP
+                      Consumer<RedrawBackdropSectionState>(
+                        builder: (_, redrawBackdropSectionState, __) =>
+                            Container(
+                          //height: size.height * 0.3,
+                          child: ListView.separated(
+                            padding: EdgeInsets.symmetric(horizontal: 64),
+                            itemBuilder: (context, index) {
+                              final bool isSelected = (_selectedDrop?.id ==
+                                  _backDropAssets[index].id);
+
+                              Widget backPreviewWidget;
+                              if (_backDropAssets[index].bundled ?? false) {
+                                backPreviewWidget = Image.asset(
+                                  _backDropAssets[index].downloadedPath,
+                                );
+                              } else {
+                                backPreviewWidget = CachedNetworkImage(
+                                  imageUrl: _backDropAssets[index].previewLink,
+                                );
+                              }
+                              return InkResponse(
+                                onTap: () async {
+                                  // _selectedTable = _tableAssets[index];
+
+                                  // setState(() {
+                                  _selectedDrop = _backDropAssets[index];
+                                  // });
+
+                                  redrawBackdropSectionState.notify();
+
+                                  if (!_selectedDrop.downloaded) {
+                                    log("Downloading ${_selectedDrop.id} : ${_selectedDrop.name}");
+
+                                    _backDropAssets[index] =
+                                        await AssetService.saveFile(
+                                      _backDropAssets[index],
+                                    );
+
+                                    await AssetService.hiveStore.put(
+                                      _backDropAssets[index],
+                                    );
+
+                                    // setState(() {});
+                                    redrawBackdropSectionState.notify();
+                                  }
+
+                                  // Update user settings
+                                  await UserSettingsService
+                                      .setSelectedBackdropId(
+                                    _backDropAssets[index],
+                                  );
+                                  await customizeService.gameState.assets
+                                      .initialize();
+
+                                  // customizeService.gameState.redrawBoard();
+                                  redrawBackdropSectionState.notify();
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(horizontal: 8),
+                                  height: size.height * 0.1,
+                                  width: size.height * 0.2,
+                                  margin: EdgeInsets.symmetric(vertical: 16),
+                                  decoration: BoxDecoration(
+                                    color: isSelected
+                                        ? Colors.white.withOpacity(0.6)
+                                        : Colors.transparent,
+                                    borderRadius: BorderRadius.circular(32),
+                                  ),
+                                  child: Stack(
+                                    alignment: Alignment.center,
+                                    children: [
+                                      backPreviewWidget,
+                                      Visibility(
+                                        visible: isSelected,
+                                        child: Icon(Icons.done),
+                                      ),
+                                      Visibility(
+                                        visible: !(_backDropAssets[index]
+                                                .downloaded ??
+                                            true),
+                                        child: Container(
+                                          height: size.height * 0.1,
+                                          width: size.height * 0.2,
+                                          color: Colors.black.withOpacity(0.5),
+                                          child:
+                                              Icon(Icons.download_for_offline),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                            separatorBuilder: (context, index) =>
+                                AppDimensionsNew.getHorizontalSpace(16),
+                            itemCount: _backDropAssets.length,
+                            scrollDirection: Axis.horizontal,
+                          ),
+                        ),
+                      ),
+
+                      // NAMEPLATE
+                      Consumer<RedrawNamePlateSectionState>(
+                        builder: (_, redrawNamePlateSectionState, __) =>
+                            Container(
+                          child: GridView.builder(
+                            scrollDirection: Axis.horizontal,
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 8),
+                            gridDelegate:
+                                SliverGridDelegateWithMaxCrossAxisExtent(
+                              maxCrossAxisExtent: 190,
+                              childAspectRatio: 1,
+                              crossAxisSpacing: 20,
+                              mainAxisSpacing: 20,
+                            ),
+                            itemCount: _nameplateAssets.length,
+                            itemBuilder: (BuildContext ctx, index) {
+                              final bool isSelected = (_selectedNamePlate ==
+                                  _nameplateAssets[index]);
+
+                              return InkWell(
+                                onTap: () async {
+                                  _selectedNamePlate = _nameplateAssets[index];
+
+                                  await UserSettingsService
+                                      .setSelectedNameplateId(
+                                    _nameplateAssets[index],
+                                  );
+
+                                  await customizeService.gameState.assets
+                                      .initialize();
+
+                                  redrawNamePlateSectionState.notify();
+                                  // customizeService.gameState.redrawBoard();
+                                },
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  child: SvgPicture.string(
+                                    _nameplateAssets[index].svg,
+                                    width: size.width,
+                                    height: size.height,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: (isSelected)
+                                        ? Colors.white.withOpacity(0.6)
+                                        : Colors.transparent,
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

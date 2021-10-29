@@ -35,6 +35,9 @@ class NamePlateWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final gameState = GameState.getState(context);
+
+    Provider.of<RedrawNamePlateSectionState>(context);
+
     log('SeatChange: Player build drag: ${seat.dragEntered}');
     return Consumer3<SeatChangeNotifier, GameContextObject, AppTheme>(
       key: globalKey,
