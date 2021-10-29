@@ -9,7 +9,7 @@ class BackgroundView extends StatelessWidget {
     final gameState = GameState.getState(context);
     return Consumer<RedrawBackdropSectionState>(
       builder: (_, __, ___) => AnimatedSwitcher(
-        duration: const Duration(milliseconds: 800),
+        duration: const Duration(milliseconds: 500),
         child: Image.memory(
           gameState.assets.getBackDrop(),
           key: UniqueKey(),
