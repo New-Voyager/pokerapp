@@ -22,8 +22,9 @@ class CustomizationService {
 
   Future<void> load() async {
     _gameState = GameState();
-    final gameData =
-        await rootBundle.loadString('assets/sample-data/gameinfo.json');
+    final gameData = await rootBundle.loadString(
+      'assets/sample-data/gameinfo.json',
+    );
     final jsonData = jsonDecode(gameData);
     if (jsonData["currentPlayer"] != null) {
       final data = jsonDecode('''  {
@@ -67,9 +68,10 @@ class CustomizationService {
     }
 
     await _gameState.initialize(
-        gameInfo: _gameInfo,
-        currentPlayer: _currentPlayer,
-        customizationMode: true);
+      gameInfo: _gameInfo,
+      currentPlayer: _currentPlayer,
+      customizationMode: true,
+    );
     _gameState.showCustomizationEditFooter = this.showFooterEditButton;
   }
 

@@ -144,6 +144,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         gameInfo = widget.customizationService.gameInfo;
         this._currentPlayer = widget.customizationService.currentPlayer;
       } catch (e, s) {
+        log('customization load failed: $e');
         return null;
       }
     } else if (TestService.isTesting) {
@@ -180,7 +181,8 @@ class _GamePlayScreenState extends State<GamePlayScreen>
             AppConstants.TABLE_STATUS_HOST_SEATCHANGE_IN_PROGRESS) {
       _hostSeatChangeSeats =
           await SeatChangeService.hostSeatChangeSeatPositions(
-              _gameInfoModel.gameCode);
+        _gameInfoModel.gameCode,
+      );
       log('host seat change: $_hostSeatChangeSeats');
       _hostSeatChangeInProgress = true;
     }
@@ -743,7 +745,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   Widget _buildBoardView(Size boardDimensions, double tableScale) {
     log('RedrawTop: Rebuilding board view');
     return Container(
-      key: UniqueKey(),
+      // key: UniqueKey(),
       width: boardDimensions.width,
       height: boardDimensions.height,
       child: Transform.scale(
@@ -840,10 +842,11 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         // SizedBox(width: width, height: divider1 / 2),
 
         // main board view
-        Consumer<RedrawTopSectionState>(builder: (_, ___, __) {
-          log('RedrawTop: Rebuilding top section');
-          return _buildBoardView(boardDimensions, tableScale);
-        }),
+        _buildBoardView(boardDimensions, tableScale),
+        // Consumer<RedrawTopSectionState>(builder: (_, ___, __) {
+        //   log('RedrawTop: Rebuilding top section');
+        //   return _buildBoardView(boardDimensions, tableScale);
+        // }),
 
         /* divider that divides the board view and the footer */
         Divider(color: AppColorsNew.dividerColor, thickness: 3),
@@ -877,7 +880,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
                   onTap: () async {
                     await Navigator.of(context).pushNamed(Routes.select_table);
                     await _gameState.assets.initialize();
-                    final redrawTop = _gameState.redrawTopSectionState;
+                    final redrawTop = _gameState.redrawBoardSectionState;
                     redrawTop.notify();
                     setState(() {});
                   },
@@ -1012,37 +1015,41 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       this._currentPlayer = widget.customizationService.currentPlayer;
     }
 
-    return Consumer<AppTheme>(
-      builder: (_, theme, __) {
-        Widget mainBody = Scaffold(
-          /* FIXME: THIS FLOATING ACTION BUTTON IS FOR SHOWING THE TESTS */
-          floatingActionButton: GamePlayScreenUtilMethods.floatingActionButton(
-            onReload: () {},
-            isCustomizationMode: widget.customizationService != null,
-          ),
-          // floating button to refresh network TEST
-          // floatingActionButton: FloatingActionButton(
-          //   child: Icon(Icons.android_rounded),
-          //   onPressed: _reconnectGameComService,
-          // ),
-          resizeToAvoidBottomInset: true,
-          backgroundColor: Colors.transparent,
-          body: _buildBody(theme),
-        );
-        if (!Platform.isIOS) {
-          mainBody = SafeArea(child: mainBody);
-        }
-        return WillPopScope(
-          child: Container(
-            decoration: AppDecorators.bgRadialGradient(theme),
-            child: mainBody,
-          ),
-          onWillPop: () async {
-            // don't go back if the user swipes
-            return false;
-          },
-        );
-      },
+    return SafeArea(
+      bottom: false,
+      child: Consumer<AppTheme>(
+        builder: (_, theme, __) {
+          Widget mainBody = Scaffold(
+            /* FIXME: THIS FLOATING ACTION BUTTON IS FOR SHOWING THE TESTS */
+            floatingActionButton:
+                GamePlayScreenUtilMethods.floatingActionButton(
+              onReload: () {},
+              isCustomizationMode: widget.customizationService != null,
+            ),
+            // floating button to refresh network TEST
+            // floatingActionButton: FloatingActionButton(
+            //   child: Icon(Icons.android_rounded),
+            //   onPressed: _reconnectGameComService,
+            // ),
+            resizeToAvoidBottomInset: true,
+            backgroundColor: Colors.transparent,
+            body: _buildBody(theme),
+          );
+          if (!Platform.isIOS) {
+            mainBody = SafeArea(child: mainBody);
+          }
+          return WillPopScope(
+            child: Container(
+              decoration: AppDecorators.bgRadialGradient(theme),
+              child: mainBody,
+            ),
+            onWillPop: () async {
+              // don't go back if the user swipes
+              return false;
+            },
+          );
+        },
+      ),
     );
   }
 

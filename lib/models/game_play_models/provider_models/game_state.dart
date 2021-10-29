@@ -77,7 +77,10 @@ class GameState {
   ListenableProvider<TappedSeatState> _tappedSeatStateProvider;
   ListenableProvider<CommunicationState> _communicationStateProvider;
   ListenableProvider<StraddlePromptState> _straddlePromptProvider;
-  ListenableProvider<RedrawTopSectionState> _redrawTopSectionStateProvider;
+  ListenableProvider<RedrawBoardSectionState> _redrawBoardSectionStateProvider;
+  ListenableProvider<RedrawBackdropSectionState>
+      _redrawBackdropSectionStateProvider;
+
   ListenableProvider<RedrawFooterSectionState>
       _redrawFooterSectionStateProvider;
   ListenableProvider<CardDistributionState> _cardDistribProvider;
@@ -95,7 +98,9 @@ class GameState {
   HoleCardsState _holeCardsState;
   TappedSeatState _tappedSeatState;
   RedrawFooterSectionState _redrawFooterState;
-  RedrawTopSectionState _redrawTopState;
+  RedrawBoardSectionState _redrawBoardState;
+  RedrawBackdropSectionState _redrawBackdropState;
+
   ActionState _actionState;
   MarkedCards _markedCardsState;
   CardDistributionState _cardDistribState;
@@ -277,7 +282,8 @@ class GameState {
 
     this._tappedSeatState = TappedSeatState();
     this._connectionState = ServerConnectionState();
-    this._redrawTopState = RedrawTopSectionState();
+    this._redrawBoardState = RedrawBoardSectionState();
+    this._redrawBackdropState = RedrawBackdropSectionState();
     this._handChangeState = HandChangeState();
     this._handResultState = HandResultState();
     this._rabbitState = RabbitState();
@@ -295,9 +301,15 @@ class GameState {
     this._connectionStateProvider = ListenableProvider<ServerConnectionState>(
         create: (_) => _connectionState);
 
-    this._redrawTopSectionStateProvider =
-        ListenableProvider<RedrawTopSectionState>(
-            create: (_) => _redrawTopState);
+    this._redrawBoardSectionStateProvider =
+        ListenableProvider<RedrawBoardSectionState>(
+      create: (_) => _redrawBoardState,
+    );
+
+    this._redrawBackdropSectionStateProvider =
+        ListenableProvider<RedrawBackdropSectionState>(
+      create: (_) => _redrawBackdropState,
+    );
 
     this._redrawFooterState = RedrawFooterSectionState();
     this._redrawFooterSectionStateProvider =
@@ -639,13 +651,19 @@ class GameState {
     return true;
   }
 
-  void redrawTop() {
+  RedrawBoardSectionState getBoardSectionState() =>
+      this.redrawBoardSectionState;
+
+  RedrawBackdropSectionState getBackdropSectionState() =>
+      this.redrawBackdropSectionState;
+
+  void redrawBoard() {
     for (var seat in this._seats) {
       seat.potViewPos = null;
       seat.betWidgetPos = null;
       seat.attribs?.resetKey();
     }
-    this.redrawTopSectionState.notify();
+    this.redrawBoardSectionState.notify();
   }
 
   void redrawFooter() {
@@ -824,7 +842,9 @@ class GameState {
 
   MyState get myState => this._myState;
   RedrawFooterSectionState get redrawFooterState => this._redrawFooterState;
-  RedrawTopSectionState get redrawTopSectionState => this._redrawTopState;
+  RedrawBoardSectionState get redrawBoardSectionState => this._redrawBoardState;
+  RedrawBackdropSectionState get redrawBackdropSectionState =>
+      this._redrawBackdropState;
 
   bool get wonAtShowdown => this.wonat == proto.HandStatus.SHOW_DOWN;
 
@@ -914,7 +934,8 @@ class GameState {
       this._communicationStateProvider,
       this._straddlePromptProvider,
       this._holeCardsProvider,
-      this._redrawTopSectionStateProvider,
+      this._redrawBoardSectionStateProvider,
+      this._redrawBackdropSectionStateProvider,
       this._redrawFooterSectionStateProvider,
       this._cardDistribProvider,
       this._handChangeStateProvider,
@@ -1534,7 +1555,19 @@ class HoleCardsState extends ChangeNotifier {
   }
 }
 
-class RedrawTopSectionState extends ChangeNotifier {
+class RedrawNamePlateSectionState extends ChangeNotifier {
+  void notify() {
+    notifyListeners();
+  }
+}
+
+class RedrawBoardSectionState extends ChangeNotifier {
+  void notify() {
+    notifyListeners();
+  }
+}
+
+class RedrawBackdropSectionState extends ChangeNotifier {
   void notify() {
     notifyListeners();
   }

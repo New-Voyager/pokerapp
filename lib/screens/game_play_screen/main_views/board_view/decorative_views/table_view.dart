@@ -20,9 +20,11 @@ class TableView extends StatelessWidget {
         width: boardAttrObj.tableSize.width,
         height: boardAttrObj.tableSize.height,
         clipBehavior: Clip.none,
-        child: Image.memory(
-          gameState.assets.getBoard(),
-          fit: BoxFit.fill,
+        child: Consumer<RedrawBoardSectionState>(
+          builder: (_, __, ___) => Image.memory(
+            gameState.assets.getBoard(),
+            fit: BoxFit.fill,
+          ),
         ),
       ),
     );
