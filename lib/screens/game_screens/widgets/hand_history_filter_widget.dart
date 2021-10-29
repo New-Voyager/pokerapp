@@ -42,7 +42,7 @@ class _HandHistoryFilterWidgetState extends State<HandHistoryFilterWidget> {
           padding: const EdgeInsets.symmetric(vertical: 16.0),
           child: Text(
             _appTextScreen['title'],
-            style: AppDecorators.getSubtitle2Style(theme: theme),
+            style: AppDecorators.getHeadLine3Style(theme: theme),
           ),
         ),
 

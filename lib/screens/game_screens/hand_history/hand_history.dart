@@ -153,6 +153,8 @@ class _HandHistoryState extends State<HandHistoryListView>
             appBar: CustomAppBar(
               theme: theme,
               showBackButton: !widget.isInBottomSheet,
+              subTitleText:
+                  showFilterView ? _appScreenText['filteredSubTitle'] : null,
               context: context,
               titleText: _appScreenText['handHistory'],
               actionsList: [
@@ -209,7 +211,6 @@ class _HandHistoryState extends State<HandHistoryListView>
     return PlayedHandsScreen(
       _data.gameCode,
       filteredHands,
-      //_data.getAllHands(),
       widget.clubCode,
       currentPlayer,
       isInBottomSheet: widget.isInBottomSheet,

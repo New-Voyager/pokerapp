@@ -569,7 +569,8 @@
     "handHistoryListView": {
         "handHistory": "Hand History",
         "allHands": "All Hands",
-        "winningHands": "Winning Hands"
+        "winningHands": "Winning Hands",
+        "filteredSubTitle" : "Filtered List"
     },
     "pointsLineChart": {
         "stackTimeline": "Stack Timeline",
@@ -772,10 +773,11 @@
         "highHandTracked": "Highhand Tracked"
     },
     "handHistoryFilter":{
-        "title" : "Hand history filters",
-        "potSizeLabel" : "Pot Size greater than ",
+        "title" : "Filters",
+        "filteredSubTitle" : "Filtered List",
+        "potSizeLabel" : "Pot Size more than ",
         "myHeadsLabel" : "My Headsup hands",
-        "lostChipsLabel" : "Lost chips greater than",
+        "lostChipsLabel" : "Lost chips more than",
         "potWinnerLabel" : "Pot winner",
         "cancel" : "Cancel",
         "apply" : "Apply",
