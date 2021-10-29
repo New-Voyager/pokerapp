@@ -21,9 +21,13 @@ class TableView extends StatelessWidget {
         height: boardAttrObj.tableSize.height,
         clipBehavior: Clip.none,
         child: Consumer<RedrawBoardSectionState>(
-          builder: (_, __, ___) => Image.memory(
-            gameState.assets.getBoard(),
-            fit: BoxFit.fill,
+          builder: (_, __, ___) => AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            child: Image.memory(
+              gameState.assets.getBoard(),
+              key: UniqueKey(),
+              fit: BoxFit.fill,
+            ),
           ),
         ),
       ),
