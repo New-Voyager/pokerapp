@@ -134,44 +134,49 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                                       theme: theme),
                                 ),
                               ),
-                              _data.isOwner ? Text('Owner', style: AppDecorators.getHeadLine4Style(theme: theme)) :
-                              Container(
-                                padding: EdgeInsets.only(bottom: 5, top: 20),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    //message
-                                    CircleImageButton(
-                                      theme: theme,
-                                      icon: Icons.message,
-                                      caption: _appScreenText['message'],
-                                      onTap: () {
-                                        Navigator.pushNamed(
-                                          context,
-                                          Routes.chatScreen,
-                                          arguments: {
-                                            'clubCode': widget.clubCode,
-                                            'player': widget.playerId,
-                                            'name': _data.name,
-                                          },
-                                        );
-                                      },
-                                    ),
+                              _data.isOwner
+                                  ? Text('Owner',
+                                      style: AppDecorators.getHeadLine4Style(
+                                          theme: theme))
+                                  : Container(
+                                      padding:
+                                          EdgeInsets.only(bottom: 5, top: 20),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          //message
+                                          CircleImageButton(
+                                            theme: theme,
+                                            icon: Icons.message,
+                                            caption: _appScreenText['message'],
+                                            onTap: () {
+                                              Navigator.pushNamed(
+                                                context,
+                                                Routes.chatScreen,
+                                                arguments: {
+                                                  'clubCode': widget.clubCode,
+                                                  'player': widget.playerId,
+                                                  'name': _data.name,
+                                                },
+                                              );
+                                            },
+                                          ),
 
-                                    //boot
-                                    CircleImageButton(
-                                      icon: Icons.eject_rounded,
-                                      theme: theme,
-                                      caption: _appScreenText['boot'],
-                                      onTap: () async {
-                                        await kickPlayerOut();
-                                      },
+                                          //boot
+                                          CircleImageButton(
+                                            icon: Icons.eject_rounded,
+                                            theme: theme,
+                                            caption: _appScreenText['boot'],
+                                            onTap: () async {
+                                              await kickPlayerOut();
+                                            },
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  ],
-                                ),
-                              ),
                             ],
                           ),
                         ),

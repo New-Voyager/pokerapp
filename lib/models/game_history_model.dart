@@ -176,6 +176,7 @@ class GameHistoryDetailModel extends ChangeNotifier {
   String endedBy;
   bool isHost;
   bool isManager;
+  String handDataLink = '';
   bool dataAggregated = false;
 
   List<HandData> handsData = [];
@@ -259,6 +260,7 @@ class GameHistoryDetailModel extends ChangeNotifier {
     isOwner = gameData['isOwner'];
     isHost = gameData['isHost'];
     isManager = gameData['isManager'];
+    handDataLink = gameData['handDataLink'];
   }
 
   String get gameHandsText {

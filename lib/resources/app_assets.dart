@@ -44,4 +44,7 @@ class AppAssets {
 
   static const String rabbit = 'assets/images/rabbit.svg';
   static const String diamond = 'assets/images/diamond.svg';
+
+  static const String filter = 'assets/images/filter.svg';
+  static const String filterRemove = 'assets/images/remove_filter.svg';
 }

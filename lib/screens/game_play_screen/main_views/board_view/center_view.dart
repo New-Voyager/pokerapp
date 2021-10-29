@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
@@ -428,30 +429,39 @@ class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
       scale: boa.centerPotUpdatesScale,
       alignment: Alignment.bottomCenter,
       child: ValueListenableBuilder<int>(
-        valueListenable: vnPotChipsUpdates,
-        builder: (_, potChipsUpdates, __) => Opacity(
-          opacity: _getOpacityForPotUpdatesView(
-            potChipsUpdates: potChipsUpdates,
-          ),
-          child: Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 10.0,
-              vertical: 5.0,
-            ),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(100.0),
-              color: Colors.black26,
-            ),
-            child: Text(
-              '${_appScreenText['pot']}: ${DataFormatter.chipsFormat(potChipsUpdates?.toDouble())}',
-              style: AppStylesNew.itemInfoTextStyleHeavy.copyWith(
-                fontSize: 13.dp,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-          ),
-        ),
-      ),
+          valueListenable: vnPotChipsUpdates,
+          builder: (_, potChipsUpdates, __) {
+            return Opacity(
+                opacity: _getOpacityForPotUpdatesView(
+                  potChipsUpdates: potChipsUpdates,
+                ),
+                child: Row(mainAxisSize: MainAxisSize.min, children: [
+                  SvgPicture.asset(
+                    'assets/icons/potpokerchips.svg',
+                    color: Colors.yellow,
+                    width: 24.pw,
+                    height: 24.pw,
+                    fit: BoxFit.cover,
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10.0,
+                      vertical: 5.0,
+                    ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(100.0),
+                      color: Colors.black26,
+                    ),
+                    child: Text(
+                      '${DataFormatter.chipsFormat(potChipsUpdates?.toDouble())}',
+                      style: AppStylesNew.itemInfoTextStyleHeavy.copyWith(
+                        fontSize: 13.dp,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ),
+                ]));
+          }),
     );
   }
 }

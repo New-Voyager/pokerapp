@@ -373,7 +373,7 @@ class PlayerActedState {
       return;
     }
 
-    dynamic action = data['action'];
+    dynamic action = data is String ? data : data['action'];
     if (action == AppConstants.BET) {
       _playerAction = HandActions.BET;
     } else if (action == AppConstants.RAISE) {
@@ -395,6 +395,8 @@ class PlayerActedState {
     } else if (action == AppConstants.BOMP_BOT_PET) {
       _playerAction = HandActions.BOMB_POT_BET;
     }
+
+    if (data is String) return;
 
     dynamic amountStr = data['amount'];
     if (amountStr != null) {

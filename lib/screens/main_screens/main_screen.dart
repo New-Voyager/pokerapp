@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/models/announcement_model.dart';
 import 'package:pokerapp/models/app_state.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
@@ -21,9 +22,8 @@ import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/app/gif_cache_service.dart';
 import 'package:pokerapp/services/app/loadassets_service.dart';
 import 'package:pokerapp/services/app/player_service.dart';
-import 'package:pokerapp/services/connectivity_check/network_change_listener.dart';
 import 'package:pokerapp/services/data/hive_models/player_state.dart';
-import 'package:pokerapp/services/firebase/push_notification_service.dart';
+import 'package:pokerapp/services/game_history/game_history_service.dart';
 import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/services/notifications/notifications.dart';
 import 'package:pokerapp/services/test/test_service.dart';
@@ -71,6 +71,8 @@ class _MainScreenState extends State<MainScreen>
     );
     log('device name: ${DeviceInfo.name}');
     await playerState.open();
+    await GameHistoryService.init();
+
     if (!TestService.isTesting) {
       _currentPlayer = await PlayerService.getMyInfo(null);
       playerState.updatePlayerInfo(
@@ -197,7 +199,8 @@ class _MainScreenState extends State<MainScreen>
                   selected: _navPos == 0,
                 ),
                 CurvedNavItem(
-                  iconData: AppIcons.users,
+                  iconData: null, // AppIcons.users,
+                  svgAsset: 'assets/icons/clubs.svg',
                   title: _appScreenText['clubs'],
                   selected: _navPos == 1,
                 ),
@@ -235,26 +238,39 @@ class CurvedNavItem extends StatelessWidget {
     @required this.title,
     @required this.iconData,
     @required this.selected,
+    this.svgAsset = '',
   });
 
   final String title;
   final IconData iconData;
+  final String svgAsset;
   final bool selected;
 
   @override
   Widget build(BuildContext context) {
     final theme = AppTheme.getTheme(context);
+    Widget icon;
+    if (iconData != null) {
+      icon = Icon(
+        iconData,
+        size: 15.0.pw,
+        color: selected
+            ? theme.supportingColor
+            : theme.supportingColor.withAlpha(150),
+      );
+    } else {
+      icon = SvgPicture.asset(svgAsset,
+          width: 15.pw,
+          height: 15.pw,
+          color: selected
+              ? theme.supportingColor
+              : theme.supportingColor.withAlpha(150));
+    }
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       // crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
-        Icon(
-          iconData,
-          size: 15.0.pw,
-          color: selected
-              ? theme.supportingColor
-              : theme.supportingColor.withAlpha(150),
-        ),
+        icon,
         selected
             ? Container()
             : Container(

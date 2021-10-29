@@ -870,60 +870,61 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       children: [
         this.widget.showTop ? BackgroundView() : Container(),
         this.widget.showTop && _gameState.customizationMode
-             ? Positioned(
-                 top: 50.pw,
-                 left: width - 50.pw,
-                 child: CircleImageButton(
-                   onTap: () async {
-                     await Navigator.of(context).pushNamed(Routes.select_table);
-                     await _gameState.assets.initialize();
-                     final redrawTop = _gameState.redrawTopSectionState;
-                     redrawTop.notify();
-                     setState(() {});
-                   },
-                   theme: theme,
-                   icon: Icons.edit,
-                 ),
-               )
-             : Container(),
+            ? Positioned(
+                top: 50.pw,
+                left: width - 50.pw,
+                child: CircleImageButton(
+                  onTap: () async {
+                    await Navigator.of(context).pushNamed(Routes.select_table);
+                    await _gameState.assets.initialize();
+                    final redrawTop = _gameState.redrawTopSectionState;
+                    redrawTop.notify();
+                    setState(() {});
+                  },
+                  theme: theme,
+                  icon: Icons.edit,
+                ),
+              )
+            : Container(),
 
         /* main view */
         Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: children,
         ),
+        this.widget.showTop &&
+                !_gameState.customizationMode &&
+                _gameState.currentPlayer.isAdmin()
+            ? Positioned(
+                right: 16,
+                top: 80,
+                child: Consumer2<PendingApprovalsState, GameContextObject>(
+                  builder: (context, value, gameContextObj, child) {
+                    if (!_gameContextObj.isAdmin())
+                      return const SizedBox.shrink();
 
-        this.widget.showTop && 
-        !_gameState.customizationMode && 
-        _gameState.currentPlayer.isAdmin() ? 
-        Positioned(
-          right: 16,
-          top: 80,
-          child: Consumer2<PendingApprovalsState, GameContextObject>(
-            builder: (context, value, gameContextObj, child) {
-              if (!_gameContextObj.isAdmin()) return const SizedBox.shrink();
+                    final approval = SvgPicture.asset(
+                      '',
+                      width: 16,
+                      height: 16,
+                      color: theme.primaryColorWithDark(),
+                    );
 
-              final approval = SvgPicture.asset(
-                '',
-                width: 16,
-                height: 16,
-                color: theme.primaryColorWithDark(),
-              );
-
-              return IconWithBadge(
-                count: value.approvalList.length,
-                onClickFunction: () => onClickPendingBuyInApprovals(context),
-                child: CircleImageButton(
-                    onTap: () {
-                      onClickPendingBuyInApprovals(context);
-                    },
-                    svgAsset: 'assets/images/game/clipboard.svg',
-                    theme: theme),
-              );
-            },
-          ),
-        )
-        : Container(),
+                    return IconWithBadge(
+                      count: value.approvalList.length,
+                      onClickFunction: () =>
+                          onClickPendingBuyInApprovals(context),
+                      child: CircleImageButton(
+                          onTap: () {
+                            onClickPendingBuyInApprovals(context);
+                          },
+                          svgAsset: 'assets/images/game/clipboard.svg',
+                          theme: theme),
+                    );
+                  },
+                ),
+              )
+            : Container(),
 
         /* chat window widget */
         this.widget.showBottom ? _buildChatWindow() : Container(),
@@ -1013,23 +1014,21 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
     return Consumer<AppTheme>(
       builder: (_, theme, __) {
-
         Widget mainBody = Scaffold(
-                    /* FIXME: THIS FLOATING ACTION BUTTON IS FOR SHOWING THE TESTS */
-                    floatingActionButton:
-                        GamePlayScreenUtilMethods.floatingActionButton(
-                      onReload: () {},
-                      isCustomizationMode: widget.customizationService != null,
-                    ),
-                    // floating button to refresh network TEST
-                    // floatingActionButton: FloatingActionButton(
-                    //   child: Icon(Icons.android_rounded),
-                    //   onPressed: _reconnectGameComService,
-                    // ),
-                    resizeToAvoidBottomInset: true,
-                    backgroundColor: Colors.transparent,
-                    body: _buildBody(theme),
-                  );
+          /* FIXME: THIS FLOATING ACTION BUTTON IS FOR SHOWING THE TESTS */
+          floatingActionButton: GamePlayScreenUtilMethods.floatingActionButton(
+            onReload: () {},
+            isCustomizationMode: widget.customizationService != null,
+          ),
+          // floating button to refresh network TEST
+          // floatingActionButton: FloatingActionButton(
+          //   child: Icon(Icons.android_rounded),
+          //   onPressed: _reconnectGameComService,
+          // ),
+          resizeToAvoidBottomInset: true,
+          backgroundColor: Colors.transparent,
+          body: _buildBody(theme),
+        );
         if (!Platform.isIOS) {
           mainBody = SafeArea(child: mainBody);
         }

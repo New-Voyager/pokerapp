@@ -64,6 +64,7 @@ class GameService {
           isHost
           isManager
           isOwner
+          handDataLink
 
           preflopHands
           flopHands
@@ -1287,7 +1288,6 @@ mutation reportBug(\$bug :String!){
     return result.data['data'] ?? false;
   }
 }
-
 
 String highhandTest = '''
 {

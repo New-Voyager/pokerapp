@@ -235,15 +235,18 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
                                             // Fetch user details from server
                                           },
                                         ),
-                                        ListTileItem(
-                                          text: _appScreenText[
-                                              'deleteClubPicture'],
-                                          imagePath:
-                                              AppAssetsNew.customizeImagePath,
-                                          index: 1,
-                                          onTapFunction: () {
-                                            _handleDeletePicture();
-                                          },
+                                        Visibility(
+                                          visible: _clubModel.picUrl.isNotEmpty,
+                                          child: ListTileItem(
+                                            text: _appScreenText[
+                                                'deleteClubPicture'],
+                                            imagePath:
+                                                AppAssetsNew.customizeImagePath,
+                                            index: 4,
+                                            onTapFunction: () {
+                                              _handleDeletePicture();
+                                            },
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -492,6 +495,7 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
       log("REQUEST : ${request.url}");
       request.files.add(await MultipartFile.fromPath('file', image.path));
       request.fields['clubCode'] = widget.clubModel.clubCode;
+      request.headers['Authorization'] = 'jwt ${AppConfig.jwt}';
 
       var res = await request.send();
       if (mounted) {
@@ -503,21 +507,10 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
     }
   }
 
-  _handleDeletePicture() async {
-    ConnectionDialog.show(
-        context: context, loadingText: "${_appScreenText['updatingDetails']}");
-    // final res; = await ClubsService.updateClubInput(_clubModel.clubCode, input);
-    var res;
-    // TODO delete club picture
-    if (res != null && res == true) {
-      Alerts.showNotification(
-          titleText: "${_appScreenText['clubDetailsUpdated']}");
-    } else {
-      Alerts.showNotification(
-          titleText: "${_appScreenText['failedToUpdateClubDetails']}");
-    }
-    await _fetchClubInfo();
-    ConnectionDialog.dismiss(context: context);
+  _handleDeletePicture() {
+    ClubUpdateInput input = ClubUpdateInput(picUrl: '');
+
+    updateClubAPICall(input);
   }
 }
 

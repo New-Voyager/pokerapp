@@ -67,7 +67,7 @@ class PotsView extends StatelessWidget {
                     key: uiKey,
                     alignment: Alignment.centerLeft,
                     child: SvgPicture.asset("assets/images/chip.svg",
-                        width: 8.pw, height: 8.pw, color: chipColor),
+                        width: 16.pw, height: 16.pw, color: chipColor),
 
                     // Image.asset(
                     //   'assets/images/chips.png',
