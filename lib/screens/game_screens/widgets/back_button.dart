@@ -40,7 +40,7 @@ class CustomAppBar extends AppBar {
                   visible: subTitleText != null,
                   child: Text(
                     subTitleText ?? "",
-                    style: AppDecorators.getSubtitle4Style(theme: theme),
+                    style: AppDecorators.getHeadLine4Style(theme: theme),
                     textAlign: TextAlign.center,
                   ),
                 ),

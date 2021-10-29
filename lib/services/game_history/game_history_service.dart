@@ -56,6 +56,7 @@ class GameHistoryServiceImpl {
         }
       */
       HandHistoryItem item = HandHistoryItem();
+      final data = handJson['data'];
       item.handNum = handJson['handNum'] as int;
       dynamic summary = handJson['summary'] as Map<String, dynamic>;
       item.noCards = summary['noCards'];
@@ -70,7 +71,7 @@ class GameHistoryServiceImpl {
       }
       item.handTime = DataFormatter.minuteFormat(handTime);
       item.authorized = true;
-
+      item.totalPot = double.parse(handJson['totalPot'].toString());
       dynamic boardCards = summary['boardCards'];
       if (boardCards != null) {
         if (boardCards.length > 1) {
@@ -114,7 +115,30 @@ class GameHistoryServiceImpl {
           playerWon = true;
         }
       }
+      if (data != null) {
+        // see whether this hand is headsup or not
+        dynamic handLog = data['handLog'];
+        if (handLog['headsupPlayers'] != null) {
+          item.headsupPlayers = [];
+          for (final id in handLog['headsupPlayers']) {
+            item.headsupPlayers.add(int.parse(id));
+          }
+        }
+
+        dynamic result = data['result'];
+        if (result != null) {
+          dynamic playerInSeats = result['playerInfo'];
+          item.playersReceived = Map<int, double>();
+          for (String seatNoStr in playerInSeats.keys) {
+            int playerId = int.parse(playerInSeats[seatNoStr]['id']);
+            item.playersReceived[playerId] =
+                double.parse(playerInSeats[seatNoStr]['received'].toString());
+          }
+        }
+      }
+
       allHands.add(item);
+
       if (playerWon) {
         winningHands.add(item);
       }
@@ -172,7 +196,9 @@ class GameHistoryServiceImpl {
     // decompress json file
     String handDataFile = '${gameHistory.path}/hand.dat';
     final bytes = File(handDataFile).readAsBytesSync();
-    final json = jsonDecode(String.fromCharCodes(zlib.decode(bytes)));
+    final jsonStr = String.fromCharCodes(zlib.decode(bytes));
+    //log(jsonStr);
+    final json = jsonDecode(jsonStr);
     // remove some data if the cache has more than 10 values
     if (_cachedHands.keys.length > 10) {
       List<String> keys = _cachedHands.keys.map((e) => e);

@@ -569,7 +569,8 @@
     "handHistoryListView": {
         "handHistory": "Hand History",
         "allHands": "All Hands",
-        "winningHands": "Winning Hands"
+        "winningHands": "Winning Hands",
+        "filteredSubTitle" : "Filtered List"
     },
     "pointsLineChart": {
         "stackTimeline": "Stack Timeline",
@@ -770,5 +771,16 @@
         "chatEnabled": "Chat Enabled",
         "showResult": "Show result",
         "highHandTracked": "Highhand Tracked"
+    },
+    "handHistoryFilter":{
+        "title" : "Filters",
+        "filteredSubTitle" : "Filtered List",
+        "potSizeLabel" : "Pot Size more than ",
+        "myHeadsLabel" : "My Headsup hands",
+        "lostChipsLabel" : "Lost chips more than",
+        "potWinnerLabel" : "Pot winner",
+        "cancel" : "Cancel",
+        "apply" : "Apply",
+        "select" : "-Select-"
     }
 }
