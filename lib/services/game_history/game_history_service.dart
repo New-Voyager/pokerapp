@@ -173,11 +173,6 @@ class GameHistoryServiceImpl {
     String handDataFile = '${gameHistory.path}/hand.dat';
     final bytes = File(handDataFile).readAsBytesSync();
     final json = jsonDecode(String.fromCharCodes(zlib.decode(bytes)));
-    // print(json);
-    // HandHistoryListModel model = HandHistoryListModel(gameCode, true);
-    // model.jsonData = jsonDecode(json);
-    // model.load();
-
     // remove some data if the cache has more than 10 values
     if (_cachedHands.keys.length > 10) {
       List<String> keys = _cachedHands.keys.map((e) => e);
@@ -190,10 +185,6 @@ class GameHistoryServiceImpl {
     final handList = handList1.map((e) => e as Map<String, dynamic>).toList();
     _cachedHands[gameCode] = handList;
     return handList;
-
-    // TODO: EXTRACTED IF NOT ALREADY
-    // TODO: THEN READ THE .json FILE (STORE INTO MEMORY as Map or Object)
-    // TODO: THEN RETURN that Map or Object
   }
 
   Future<File> _downloadGameHistory(String downloadUrl, String path) async {
