@@ -31,10 +31,10 @@ starting-seats:
     player: young
     buy-in: 100
   - seat: 2
-    player: brian
+    player: carol
     buy-in: 100
   - seat: 3
-    player: tom
+    player: matt
     buy-in: 100
   - seat: 4
     player: jim
@@ -76,9 +76,9 @@ hands:
       verify:
         seats:
           - seat: 1
-            player: tom
+            player: matt
           - seat: 2
-            player: brian
+            player: carol
           - seat: 3
             player: young
           - seat: 4

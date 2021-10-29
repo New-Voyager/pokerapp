@@ -3,14 +3,14 @@ players:
     deviceId: c2dc2c3d-13da-46cc-8c66-caa0c77459de
     email: young@gmail.com
     password: 340k7n0p
-  - name: brian
+  - name: carol
     deviceId: 4b93e2be-7992-45c3-a2dd-593c2f708cb7
-    email: brian@hotmail.com
+    email: carol@hotmail.com
     password: 0x44m89w
-  - name: tom
+  - name: matt
     deviceId: 371e8c15-39cb-4bd9-a932-ced7a9dd6aac
-    email: tom@yahoo.com
-    password: tom
+    email: matt@yahoo.com
+    password: matt
   - name: jim
     deviceId: 52f59bab-02eb-43d8-9dce-69e57aed7f7d
     email: jim@google.com

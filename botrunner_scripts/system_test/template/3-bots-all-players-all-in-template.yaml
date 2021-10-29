@@ -25,10 +25,10 @@ starting-seats:
     player: young
     buy-in: 50
   - seat: 5
-    player: brian
+    player: carol
     buy-in: 50
   - seat: 8
-    player: tom
+    player: matt
     buy-in: 50
 
 tester:
