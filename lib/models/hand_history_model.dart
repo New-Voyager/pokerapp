@@ -15,8 +15,15 @@ class Winner {
       HandHistoryListModel item, int noCards, dynamic jsonData,
       {bool low = false, bool showCards = false}) {
     Winner winner = new Winner();
+    winner.name = 'Unknown';
     winner.id = int.parse(jsonData['playerId'].toString());
-    winner.name = item.playerName(winner.id);
+    if (jsonData['playerName'] != null) {
+      winner.name = jsonData['playerName'] as String;
+    } else {
+      if (item != null) {
+        winner.name = item.playerName(winner.id);
+      }
+    }
     winner.showCards = showCards;
     winner.low = low;
     if (showCards) {

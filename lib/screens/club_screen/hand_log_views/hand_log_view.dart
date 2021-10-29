@@ -19,6 +19,7 @@ import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/screens/util_screens/replay_hand_dialog/replay_hand_dialog.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/services/app/hand_service.dart';
+import 'package:pokerapp/services/game_history/game_history_service.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/widgets/buttons.dart';
@@ -72,12 +73,17 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
       _handResult = widget.handResult;
     } else {
       try {
-        // dynamic json = jsonDecode(multiPotResult);
-        // _handResult = HandResultData.fromJson(json);
-        _handResult =
-            await HandService.getHandLog(widget.gameCode, widget.handNum);
+        _handResult = await GameHistoryService.getHandLog(
+            widget.gameCode, widget.handNum);
       } catch (err) {
-        log('Error: ${err.toString()}');
+        try {
+          // dynamic json = jsonDecode(multiPotResult);
+          // _handResult = HandResultData.fromJson(json);
+          _handResult =
+              await HandService.getHandLog(widget.gameCode, widget.handNum);
+        } catch (err) {
+          log('Error: ${err.toString()}');
+        }
       }
     }
     _isLoading = false;

@@ -14,7 +14,7 @@ import 'package:pokerapp/screens/game_screens/hand_history/played_hands.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/services/app/hand_service.dart';
-import 'package:pokerapp/services/app/player_service.dart';
+import 'package:pokerapp/services/game_history/game_history_service.dart';
 import 'package:provider/provider.dart';
 
 import '../../../routes.dart';
@@ -58,8 +58,13 @@ class _HandHistoryState extends State<HandHistoryListView>
 
   _fetchData() async {
     log("DATA LOG IN HANDHISTORY: $_data");
-    await HandService.getAllHands(_data);
     currentPlayer = await AuthService.get();
+    try {
+      _data = await GameHistoryService.getHandHistory(
+          _data.gameCode, currentPlayer.playerId);
+    } catch (err) {
+      await HandService.getAllHands(_data);
+    }
     loadingDone = true;
     setState(() {
       // update ui

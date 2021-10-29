@@ -22,9 +22,8 @@ import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/app/gif_cache_service.dart';
 import 'package:pokerapp/services/app/loadassets_service.dart';
 import 'package:pokerapp/services/app/player_service.dart';
-import 'package:pokerapp/services/connectivity_check/network_change_listener.dart';
 import 'package:pokerapp/services/data/hive_models/player_state.dart';
-import 'package:pokerapp/services/firebase/push_notification_service.dart';
+import 'package:pokerapp/services/game_history/game_history_service.dart';
 import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/services/notifications/notifications.dart';
 import 'package:pokerapp/services/test/test_service.dart';
@@ -72,6 +71,8 @@ class _MainScreenState extends State<MainScreen>
     );
     log('device name: ${DeviceInfo.name}');
     await playerState.open();
+    await GameHistoryService.init();
+
     if (!TestService.isTesting) {
       _currentPlayer = await PlayerService.getMyInfo(null);
       playerState.updatePlayerInfo(

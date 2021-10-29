@@ -3,7 +3,8 @@ enum BoxType {
   USER_SETTINGS_BOX,
   FAV_GIF_BOX,
   PROFILE_BOX,
-  GAME_SETTINGS_BOX
+  GAME_SETTINGS_BOX,
+  GAME_HISTORY_BOX,
 }
 
 extension BoxTypeParsing on BoxType {
