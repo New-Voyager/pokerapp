@@ -26,9 +26,10 @@ class HandHistoryListView extends StatefulWidget {
   final HandHistoryListModel data;
   final bool isInBottomSheet;
   final bool isLeadingBackIconShow;
+  final bool liveGame;
 
   HandHistoryListView(this.data, this.clubCode,
-      {this.isInBottomSheet = false, this.isLeadingBackIconShow = true});
+      {this.isInBottomSheet = false, this.isLeadingBackIconShow = true, this.liveGame = false});
 
   final String clubCode;
 
@@ -43,7 +44,7 @@ class _HandHistoryState extends State<HandHistoryListView>
   bool loadingDone = false;
   HandHistoryListModel _data;
   List<HandHistoryItem> filteredHands = [];
-
+  bool showFilter = true;
   bool showFilterView = false;
   String filterSelection;
   int filterValue;
@@ -57,6 +58,9 @@ class _HandHistoryState extends State<HandHistoryListView>
 
     _tabController = new TabController(length: 2, vsync: this);
     _data = widget.data;
+    if (widget.liveGame) {
+      showFilter = false;
+    }
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _fetchData();
@@ -66,11 +70,16 @@ class _HandHistoryState extends State<HandHistoryListView>
   _fetchData() async {
     log("DATA LOG IN HANDHISTORY: $_data");
     currentPlayer = await AuthService.get();
-    try {
-      _data = await GameHistoryService.getHandHistory(
-          _data.gameCode, currentPlayer.playerId);
-    } catch (err) {
+
+    if (widget.liveGame) {
       await HandService.getAllHands(_data);
+    } else {
+      try {
+        _data = await GameHistoryService.getHandHistory(
+            _data.gameCode, currentPlayer.playerId);
+      } catch (err) {
+        await HandService.getAllHands(_data);
+      }
     }
     loadingDone = true;
     setState(() {
@@ -157,7 +166,8 @@ class _HandHistoryState extends State<HandHistoryListView>
                   showFilterView ? _appScreenText['filteredSubTitle'] : null,
               context: context,
               titleText: _appScreenText['handHistory'],
-              actionsList: [
+              actionsList: 
+              showFilter ? [
                 IconButton(
                   onPressed: () async {
                     if (showFilterView) {
@@ -196,7 +206,7 @@ class _HandHistoryState extends State<HandHistoryListView>
                     color: theme.accentColor,
                   ),
                 )
-              ],
+              ] : null,
             ),
             body: !loadingDone
                 ? Center(child: CircularProgressWidget())

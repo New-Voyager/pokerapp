@@ -41,7 +41,7 @@ class HandService {
   """;
 
   static String handLogData = """
-        query (\$gameCode: String! \$handNum: String!) {
+        query (\$gameCode: String! \$handNum: Int!) {
           handResult: specificHandHistory(gameCode: \$gameCode, handNum: \$handNum) {
             data
             authorized
@@ -176,7 +176,7 @@ class HandService {
     };
     String query = handLogData;
     if (handNum != -1) {
-      variables["handNum"] = handNum.toString();
+      variables["handNum"] = handNum;
     } else {
       query = lastHandLogData;
     }
@@ -190,8 +190,9 @@ class HandService {
       }
     }
     final handResultData = result.data['handResult']['data'];
+    final handResultDataJson = jsonDecode(handResultData);
     final me = await AuthService.get();
-    final handLog = HandResultData.fromJson(handResultData);
+    final handLog = HandResultData.fromJson(handResultDataJson);
     handLog.myPlayerId = me.playerId;
     return handLog;
   }
