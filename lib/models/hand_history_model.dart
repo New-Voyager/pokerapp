@@ -49,6 +49,9 @@ class HandHistoryItem {
   List<int> community1;
   String handTime;
   bool authorized;
+  double totalPot;
+  List<int> headsupPlayers;
+  Map<int, double> playersReceived;
 }
 
 class HandHistoryListModel extends ChangeNotifier {

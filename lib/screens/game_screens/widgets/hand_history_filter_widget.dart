@@ -20,6 +20,9 @@ class _HandHistoryFilterWidgetState extends State<HandHistoryFilterWidget> {
   AppTextScreen _appTextScreen;
   int groupValue = 0;
   String winnerName = "";
+  int winnerId = 0;
+  TextEditingController _potSizeGreater = TextEditingController();
+  TextEditingController _lostChips = TextEditingController();
 
   @override
   void initState() {
@@ -62,6 +65,7 @@ class _HandHistoryFilterWidgetState extends State<HandHistoryFilterWidget> {
                       groupValue = 1;
                     });
                   },
+                  controller: _potSizeGreater,
                   hintText: "100",
                   theme: theme,
                   keyboardType: TextInputType.number,
@@ -101,6 +105,7 @@ class _HandHistoryFilterWidgetState extends State<HandHistoryFilterWidget> {
                 flex: 4,
                 child: CardFormTextField(
                   keyboardType: TextInputType.number,
+                  controller: _lostChips,
                   hintText: "100",
                   theme: theme,
                   onTap: () {
@@ -169,13 +174,45 @@ class _HandHistoryFilterWidgetState extends State<HandHistoryFilterWidget> {
             RoundRectButton(
               text: _appTextScreen['cancel'],
               onTap: () {
-                Navigator.of(context).pop();
+                Map<String, dynamic> ret = Map<String, dynamic>();
+                ret['status'] = false;
+                Navigator.of(context).pop(false);
               },
               theme: theme,
             ),
             RoundRectButton(
               text: _appTextScreen['apply'],
-              onTap: () {},
+              onTap: () {
+                if (groupValue != 0) {
+                  Map<String, dynamic> ret = Map<String, dynamic>();
+                  ret['status'] = true;
+                  bool valid = false;
+                  if (groupValue == 1) {
+                    ret['selection'] = 'pot-greater';
+                    ret['value'] = int.tryParse(_potSizeGreater.text);
+                    if (ret['value'] != null && ret['value'] > 0) {
+                      valid = true;
+                    }
+                  } else if (groupValue == 4) {
+                    ret['selection'] = 'winner';
+                    ret['value'] = winnerId;
+                    valid = true;
+                  } else if (groupValue == 2) {
+                    ret['selection'] = 'headsup';
+                    valid = true;
+                  } else if (groupValue == 3) {
+                    ret['selection'] = 'lost';
+                    ret['value'] = int.tryParse(_lostChips.text);
+                    if (ret['value'] != null && ret['value'] > 0) {
+                      valid = true;
+                    }
+                    valid = true;
+                  }
+                  if (valid) {
+                    Navigator.of(context).pop(ret);
+                  }
+                }
+              },
               theme: theme,
             ),
           ],
@@ -193,6 +230,7 @@ class _HandHistoryFilterWidgetState extends State<HandHistoryFilterWidget> {
         onTap: () {
           setState(() {
             winnerName = winner.id.toString();
+            winnerId = winner.id;
           });
         },
       );

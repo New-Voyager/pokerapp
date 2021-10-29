@@ -4,23 +4,22 @@ import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class CardFormTextField extends StatelessWidget {
-  const CardFormTextField({
-    this.theme,
-    this.color = Colors.transparent,
-    this.onChanged,
-    this.controller,
-    @required this.hintText,
-    this.obscureText,
-    this.keyboardType,
-    this.radius,
-    this.elevation = 10.0,
-    this.validator,
-    this.onSaved,
-    this.inputFormatters,
-    this.hintColor,
-    this.maxLines,
-    this.onTap
-  });
+  const CardFormTextField(
+      {this.theme,
+      this.color = Colors.transparent,
+      this.onChanged,
+      this.controller,
+      @required this.hintText,
+      this.obscureText,
+      this.keyboardType,
+      this.radius,
+      this.elevation = 10.0,
+      this.validator,
+      this.onSaved,
+      this.inputFormatters,
+      this.hintColor,
+      this.maxLines,
+      this.onTap});
   final Color hintColor;
   final AppTheme theme;
   final Function onSaved;
