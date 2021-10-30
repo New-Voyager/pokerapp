@@ -23,6 +23,7 @@ import 'package:pokerapp/widgets/radio_list_widget.dart';
 import 'package:pokerapp/widgets/switch_widget.dart';
 import 'package:pokerapp/widgets/text_input_widget.dart';
 import 'package:provider/provider.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 import '../../../main_helper.dart';
 import '../../../routes.dart';
@@ -508,56 +509,64 @@ class NewGameSettings2 extends StatelessWidget {
                 _buildLabel(_appScreenText['buyin'], theme),
                 sepV8,
                 _buildDecoratedContainer(
-                  child: Row(
-                    children: [
-                      /* min */
-                      Expanded(
-                        child: TextInputWidget(
-                          value: gmp.buyInMin.toDouble(),
-                          small: true,
-                          label: _appScreenText['min'],
-                          trailing: _appScreenText['bb'],
-                          title: _appScreenText['enterMinBuyin'],
-                          minValue: 0,
-                          maxValue: 1000,
-                          onChange: (value) {
-                            gmp.buyInMin = value.floor();
+                  child: Column(children: [
+                    Row(
+                      children: [
+                        /* min */
+                        Expanded(
+                          child: TextInputWidget(
+                            value: gmp.buyInMin.toDouble(),
+                            small: true,
+                            label: _appScreenText['min'],
+                            trailing: _appScreenText['bb'],
+                            title: _appScreenText['enterMinBuyin'],
+                            minValue: 0,
+                            maxValue: 1000,
+                            onChange: (value) {
+                              gmp.buyInMin = value.floor();
 
-                            if (gmp.buyInMax <= value.floor()) {
-                              Alerts.showNotification(
-                                  titleText: _appScreenText['buyInMoreThanMin'],
-                                  duration: Duration(seconds: 5));
-                            }
-                          },
+                              if (gmp.buyInMax <= value.floor()) {
+                                Alerts.showNotification(
+                                    titleText:
+                                        _appScreenText['buyInMoreThanMin'],
+                                    duration: Duration(seconds: 5));
+                              }
+                            },
+                          ),
                         ),
-                      ),
 
-                      // sep
-                      sepH10,
+                        // sep
+                        sepH10,
 
-                      /* max */
-                      Expanded(
-                        child: TextInputWidget(
-                          value: gmp.buyInMax.toDouble(),
-                          small: true,
-                          label: _appScreenText['max'],
-                          title: _appScreenText['enterMaxBuyin'],
-                          trailing: _appScreenText['bb'],
-                          minValue: 0,
-                          maxValue: 1000,
-                          onChange: (value) {
-                            gmp.buyInMax = value.floor();
-                            if (gmp.buyInMin >= value.floor()) {
-                              Alerts.showNotification(
-                                  titleText:
-                                      _appScreenText['buyinMaxBBGreater'],
-                                  duration: Duration(seconds: 5));
-                            }
-                          },
+                        /* max */
+                        Expanded(
+                          child: TextInputWidget(
+                            value: gmp.buyInMax.toDouble(),
+                            small: true,
+                            label: _appScreenText['max'],
+                            title: _appScreenText['enterMaxBuyin'],
+                            trailing: _appScreenText['bb'],
+                            minValue: 0,
+                            maxValue: 1000,
+                            onChange: (value) {
+                              gmp.buyInMax = value.floor();
+                              if (gmp.buyInMin >= value.floor()) {
+                                Alerts.showNotification(
+                                    titleText:
+                                        _appScreenText['buyinMaxBBGreater'],
+                                    duration: Duration(seconds: 5));
+                              }
+                            },
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
+                      ],
+                    ),
+                    SizedBox(height: 4.ph),
+                    Consumer<NewGameModelProvider>(builder: (_, vnGmp, __) {
+                      return Text(
+                          ' (${DataFormatter.chipsFormat(gmp.buyInMin * gmp.bigBlind)} - ${DataFormatter.chipsFormat(gmp.buyInMax * gmp.bigBlind)}) ');
+                    }),
+                  ]),
                   theme: theme,
                 ),
 

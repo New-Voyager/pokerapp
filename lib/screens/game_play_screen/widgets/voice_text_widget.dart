@@ -119,9 +119,7 @@ class _VoiceTextWidgetState extends State<VoiceTextWidget> {
                 )
               : CircleImageButton(
                   icon: Icons.keyboard_voice,
-                  onTap: () {
-
-                  },
+                  onTap: () {},
                   theme: theme,
                 )),
     );

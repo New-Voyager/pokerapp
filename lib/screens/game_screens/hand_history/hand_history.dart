@@ -83,6 +83,9 @@ class _HandHistoryState extends State<HandHistoryListView>
         await HandService.getAllHands(_data);
       }
     }
+
+    // sort all hands
+    _data.sort();
     loadingDone = true;
     setState(() {
       // update ui

@@ -46,10 +46,10 @@ class _JumpingTextWidgetState extends State<JumpingTextWidget> {
           offset: offset,
           child: child,
         ),
-        child: Column(
+        child: Row(
           children: [
             // arrow
-            Icon(Icons.keyboard_arrow_up, color: widget.color),
+            Icon(Icons.keyboard_arrow_left, color: widget.color),
 
             // text
             Text(

@@ -207,100 +207,98 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
           valueListenable: vnShowMenuItems,
           child: Container(
             color: theme.primaryColorWithDark(0.5),
-            child: 
-            Column(
-              children: [
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // other menu buttons
+            child: Column(children: [
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // other menu buttons
 
-                // menu close button
-                CircleImageButton(
-                    theme: theme,
-                    caption: 'Close',
-                    icon: Icons.navigate_before,
-                    onTap: () {
-                      vnShowMenuItems.value = false;
-                    }),
-                SizedBox(width: 10.pw),
+                  // menu close button
+                  CircleImageButton(
+                      theme: theme,
+                      caption: 'Close',
+                      icon: Icons.navigate_before,
+                      onTap: () {
+                        vnShowMenuItems.value = false;
+                      }),
+                  SizedBox(width: 10.pw),
 
-                // last hand
-                CircleImageButton(
-                    theme: theme,
-                    caption: 'Prev',
-                    svgAsset: AppAssetsNew.lastHandPath,
-                    onTap: () {
-                      vnShowMenuItems.value = false;
-                      onClickViewHand(context);
-                    }),
-                SizedBox(width: 10.pw),
+                  // last hand
+                  CircleImageButton(
+                      theme: theme,
+                      caption: 'Prev',
+                      svgAsset: AppAssetsNew.lastHandPath,
+                      onTap: () {
+                        vnShowMenuItems.value = false;
+                        onClickViewHand(context);
+                      }),
+                  SizedBox(width: 10.pw),
 
-                // game history
-                CircleImageButton(
-                    theme: theme,
-                    caption: 'History',
-                    svgAsset: AppAssetsNew.handHistoryPath,
-                    onTap: () {
-                      vnShowMenuItems.value = false;
-                      onClickViewHandAnalysis(context);
-                    }),
-                SizedBox(width: 10.pw),
+                  // game history
+                  CircleImageButton(
+                      theme: theme,
+                      caption: 'History',
+                      svgAsset: AppAssetsNew.handHistoryPath,
+                      onTap: () {
+                        vnShowMenuItems.value = false;
+                        onClickViewHandAnalysis(context);
+                      }),
+                  SizedBox(width: 10.pw),
 
-                // High hand track
-                widget.gameState.gameInfo.highHandTracked ?? false
-                    ? CircleImageButton(
-                        theme: theme,
-                        caption: 'HH',
-                        svgAsset: AppAssetsNew.hhPath,
-                        onTap: () {
-                          vnShowMenuItems.value = false;
-                          onClickHighHand(context);
-                        })
-                    : SizedBox.shrink(),
-                SizedBox(width: 10.pw),
+                  // High hand track
+                  widget.gameState.gameInfo.highHandTracked ?? false
+                      ? CircleImageButton(
+                          theme: theme,
+                          caption: 'HH',
+                          svgAsset: AppAssetsNew.hhPath,
+                          onTap: () {
+                            vnShowMenuItems.value = false;
+                            onClickHighHand(context);
+                          })
+                      : SizedBox.shrink(),
+                  SizedBox(width: 10.pw),
+                ],
+              ),
+              SizedBox(height: 10.ph),
+              Row(
+                children: [
+                  // game info
+                  CircleImageButton(
+                      theme: theme,
+                      caption: 'Info',
+                      icon: Icons.info_outline_rounded,
+                      onTap: () {
+                        vnShowMenuItems.value = false;
+                        onGameInfoBottomSheet(context);
+                      }),
+                  SizedBox(width: 10.pw),
 
-              ],
-            ),
-            SizedBox(height: 10.ph),
-            Row (children: [
+                  widget.gameState.gameSettings.showResult ?? false
+                      ?
+                      // result table
+                      CircleImageButton(
+                          theme: theme,
+                          caption: 'Result',
+                          svgAsset: AppAssetsNew.tableResultPath,
+                          onTap: () {
+                            vnShowMenuItems.value = false;
+                            onTableBottomSheet(context);
+                          })
+                      : SizedBox.shrink(),
+                  SizedBox(width: 10.pw),
 
-                // game info
-                CircleImageButton(
-                    theme: theme,
-                    caption: 'Info',
-                    icon: Icons.info_outline_rounded,
-                    onTap: () {
-                      vnShowMenuItems.value = false;
-                      onGameInfoBottomSheet(context);
-                    }),
-                SizedBox(width: 10.pw),
-
-                widget.gameState.gameSettings.showResult ?? false
-                    ?
-                    // result table
-                    CircleImageButton(
-                        theme: theme,
-                        caption: 'Result',
-                        svgAsset: AppAssetsNew.tableResultPath,
-                        onTap: () {
-                          vnShowMenuItems.value = false;
-                          onTableBottomSheet(context);
-                        })
-                    : SizedBox.shrink(),
-                SizedBox(width: 10.pw),
-
-                // player stack
-                CircleImageButton(
-                    theme: theme,
-                    caption: 'Stats',
-                    svgAsset: AppAssetsNew.playerStatsPath,
-                    onTap: () {
-                      vnShowMenuItems.value = false;
-                      onPlayerStatsBottomSheet(context);
-                    }),
-            ],)
-              ]),
+                  // player stack
+                  CircleImageButton(
+                      theme: theme,
+                      caption: 'Stats',
+                      svgAsset: AppAssetsNew.playerStatsPath,
+                      onTap: () {
+                        vnShowMenuItems.value = false;
+                        onPlayerStatsBottomSheet(context);
+                      }),
+                ],
+              )
+            ]),
           ),
           builder: (_, showMenu, child) => AnimatedSwitcher(
             duration: AppConstants.fastestAnimationDuration,

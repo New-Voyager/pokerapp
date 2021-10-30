@@ -900,61 +900,61 @@ class _GameOptionState extends State<GameOption> {
       },
     ));
 
-    // tap to bet VS swipe to bet
-    children.add(Container(
-      width: double.infinity,
-      padding: EdgeInsets.all(10),
-      decoration: AppStylesNew.actionRowDecoration,
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // main text
-                const Text(
-                  'Bet Action',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18.0,
-                  ),
-                ),
-                // hint text
-                const Text(
-                  '(applied in next action)',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 13.0,
-                  ),
-                ),
-              ],
-            ),
-          ),
+    // // tap to bet VS swipe to bet
+    // children.add(Container(
+    //   width: double.infinity,
+    //   padding: EdgeInsets.all(10),
+    //   decoration: AppStylesNew.actionRowDecoration,
+    //   child: Row(
+    //     children: [
+    //       Expanded(
+    //         child: Column(
+    //           crossAxisAlignment: CrossAxisAlignment.start,
+    //           children: [
+    //             // main text
+    //             const Text(
+    //               'Bet Action',
+    //               style: TextStyle(
+    //                 color: Colors.white,
+    //                 fontSize: 18.0,
+    //               ),
+    //             ),
+    //             // hint text
+    //             const Text(
+    //               '(applied in next action)',
+    //               style: TextStyle(
+    //                 color: Colors.white,
+    //                 fontSize: 13.0,
+    //               ),
+    //             ),
+    //           ],
+    //         ),
+    //       ),
 
-          // tap / swipe button
-          // false ==> swipe is active
-          Expanded(
-            child: CupertinoSegmentedControl<bool>(
-              borderColor: theme.accentColor, //const Color(0xff40D876),
-              selectedColor: theme.secondaryColor, //const Color(0xff40D876),
-              groupValue:
-                  widget.gameState.playerLocalConfig.tapOrSwipeBetAction,
-              children: {
-                false: Text('Swipe', style: TextStyle(fontSize: 18.0)),
-                true: Text('Tap', style: TextStyle(fontSize: 18.0)),
-              },
-              onValueChanged: (bool v) async {
-                widget.gameState.playerLocalConfig.tapOrSwipeBetAction = v;
-                await updateGamePlayerSettings();
-                log('In toggle button widget, tapOrSwipeBetAction = ${widget.gameState.playerLocalConfig.tapOrSwipeBetAction}');
-                if (closed) return;
-                setState(() {});
-              },
-            ),
-          ),
-        ],
-      ),
-    ));
+    //       // tap / swipe button
+    //       // false ==> swipe is active
+    //       Expanded(
+    //         child: CupertinoSegmentedControl<bool>(
+    //           borderColor: theme.accentColor, //const Color(0xff40D876),
+    //           selectedColor: theme.secondaryColor, //const Color(0xff40D876),
+    //           groupValue:
+    //               widget.gameState.playerLocalConfig.tapOrSwipeBetAction,
+    //           children: {
+    //             false: Text('Swipe', style: TextStyle(fontSize: 18.0)),
+    //             true: Text('Tap', style: TextStyle(fontSize: 18.0)),
+    //           },
+    //           onValueChanged: (bool v) async {
+    //             widget.gameState.playerLocalConfig.tapOrSwipeBetAction = v;
+    //             await updateGamePlayerSettings();
+    //             log('In toggle button widget, tapOrSwipeBetAction = ${widget.gameState.playerLocalConfig.tapOrSwipeBetAction}');
+    //             if (closed) return;
+    //             setState(() {});
+    //           },
+    //         ),
+    //       ),
+    //     ],
+    //   ),
+    // ));
 
     /* show straddle off and auto straddle options ONLY when the UTG STRADDLE is on */
 

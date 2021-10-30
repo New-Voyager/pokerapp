@@ -670,7 +670,7 @@ class GameService {
     log(jsonEncode(result.data));
     log('high hand ==========');
     Map<String, dynamic> resultData = result.data;
-    resultData = jsonDecode(highhandTest);
+    //resultData = jsonDecode(highhandTest);
     List hhWinnersData = resultData['hhWinners'];
     handlog = hhWinnersData.map((e) {
       HighHandWinner winner = new HighHandWinner.fromJson(e);
