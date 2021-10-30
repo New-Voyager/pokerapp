@@ -216,7 +216,8 @@
         "members": "Members",
         "joinedAt": "Joined at",
         "hostedBy": "Hosted by",
-        "clubs": "Clubs"
+        "clubs": "Clubs",
+        "club": "Club"
     },
     "searchClubBottomSheet": {
         "enterClubCode": "Enter club code",
