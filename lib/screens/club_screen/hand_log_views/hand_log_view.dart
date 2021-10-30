@@ -54,6 +54,12 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
   List<BookmarkedHand> list = [];
   AppTextScreen _appScreenText;
   HandResultData _handResult;
+  bool disposed = false;
+  @override
+  void dispose() {
+    disposed = true;
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -101,9 +107,12 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
       }
     }
     _isLoading = false;
-    setState(() {
-      // update ui
-    });
+
+    if (!disposed) {
+      setState(() {
+        // update ui
+      });
+    }
   }
 
   _fetchBookmarksForGame(String gameCode) async {
