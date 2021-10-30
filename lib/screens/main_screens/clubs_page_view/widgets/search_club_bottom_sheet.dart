@@ -189,7 +189,7 @@ class _SearchClubBottomSheetState extends State<SearchClubBottomSheet> {
                                           Center(
                                             child: RoundRectButton(
                                               onTap: () => onJoin(context),
-                                              text: "${_appScreenText['join']}",
+                                              text: "${_appScreenText['JOIN']}",
                                               theme: theme,
                                             ),
                                           ),
