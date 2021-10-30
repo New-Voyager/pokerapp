@@ -6,9 +6,10 @@ class HandlogBottomSheet extends StatefulWidget {
   final gameCode;
   final clubCode;
   final handNum;
+  final liveGame;
 
   const HandlogBottomSheet(
-      {Key key, this.gameCode, this.handNum, this.clubCode})
+      {Key key, this.gameCode, this.handNum, this.clubCode, this.liveGame=false})
       : super(key: key);
 
   @override
@@ -43,7 +44,7 @@ class _HandlogBottomSheetState extends State<HandlogBottomSheet> {
                   widget.handNum, // for last hand we pass -1
                   isAppbarWithHandNumber: true,
                   clubCode: widget.clubCode,
-                  // handLogModel: handLog,
+                  liveGame: widget.liveGame,
                   isBottomSheet: true,
                 ),
               ),

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/models/auth_model.dart';
 import 'package:pokerapp/models/bookmarkedHands_model.dart';
 import 'package:pokerapp/models/hand_history_model.dart';
-import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
@@ -28,9 +27,10 @@ class PlayedHandsScreen extends StatefulWidget {
   final String clubCode;
   final bool isInBottomSheet;
   final AuthModel currentPlayer;
+  final bool liveGame;
   PlayedHandsScreen(
       this.gameCode, this.history, this.clubCode, this.currentPlayer,
-      {this.isInBottomSheet = false});
+      {this.isInBottomSheet = false, this.liveGame = false});
 
   @override
   _PlayedHandsScreenState createState() => _PlayedHandsScreenState();
@@ -164,6 +164,7 @@ class _PlayedHandsScreenState extends State<PlayedHandsScreen> {
           gameCode: this.widget.gameCode,
           handNum: widget.history[index].handNum,
           clubCode: widget.clubCode,
+          liveGame: widget.liveGame,
         ),
       );
     } else {

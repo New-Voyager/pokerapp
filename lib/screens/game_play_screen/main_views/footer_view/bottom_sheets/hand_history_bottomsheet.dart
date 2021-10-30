@@ -36,6 +36,7 @@ class _HandHistoryAnalyseBottomSheetState
                   widget.clubCode,
                   isInBottomSheet: true,
                   isLeadingBackIconShow: false,
+                  liveGame: true,
                 ),
               ),
             ],

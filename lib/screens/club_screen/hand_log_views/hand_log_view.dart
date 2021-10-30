@@ -32,6 +32,7 @@ class HandLogView extends StatefulWidget {
   final bool isAppbarWithHandNumber;
   final String clubCode;
   final int handNum;
+  final bool liveGame;
   final HandResultData handResult;
   final bool isBottomSheet;
 
@@ -39,7 +40,8 @@ class HandLogView extends StatefulWidget {
       {this.isAppbarWithHandNumber = false,
       this.clubCode,
       this.handResult,
-      this.isBottomSheet = false});
+      this.isBottomSheet = false,
+      this.liveGame = false});
 
   @override
   State<StatefulWidget> createState() => _HandLogViewState();
@@ -52,6 +54,12 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
   List<BookmarkedHand> list = [];
   AppTextScreen _appScreenText;
   HandResultData _handResult;
+  bool disposed = false;
+  @override
+  void dispose() {
+    disposed = true;
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -72,10 +80,8 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
     if (widget.handResult != null) {
       _handResult = widget.handResult;
     } else {
-      try {
-        _handResult = await GameHistoryService.getHandLog(
-            widget.gameCode, widget.handNum);
-      } catch (err) {
+
+      if (widget.liveGame) {
         try {
           // dynamic json = jsonDecode(multiPotResult);
           // _handResult = HandResultData.fromJson(json);
@@ -84,12 +90,29 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
         } catch (err) {
           log('Error: ${err.toString()}');
         }
+      } else {
+        try {
+          _handResult = await GameHistoryService.getHandLog(
+              widget.gameCode, widget.handNum);
+        } catch (err) {
+          try {
+            // dynamic json = jsonDecode(multiPotResult);
+            // _handResult = HandResultData.fromJson(json);
+            _handResult =
+                await HandService.getHandLog(widget.gameCode, widget.handNum);
+          } catch (err) {
+            log('Error: ${err.toString()}');
+          }
+        }
       }
     }
     _isLoading = false;
-    setState(() {
-      // update ui
-    });
+
+    if (!disposed) {
+      setState(() {
+        // update ui
+      });
+    }
   }
 
   _fetchBookmarksForGame(String gameCode) async {

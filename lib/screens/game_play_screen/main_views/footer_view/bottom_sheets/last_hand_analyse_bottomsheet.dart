@@ -24,6 +24,25 @@ class _LastHandAnalyseBottomSheetState
     final gameState = GameState.getState(context);
     final theme = AppTheme.getTheme(context);
     height = MediaQuery.of(context).size.height;
+    int handNum = gameState.lastHandNum;
+    if (handNum == 0) {
+      handNum = gameState.handInfo.handNum - 1;
+    }
+    Widget child;
+    if (handNum == 0) {
+      child = Text('No hands played');
+    } else {
+      child = HandLogView(
+                  widget.gameCode,
+                  handNum,
+                  isAppbarWithHandNumber: true,
+                  clubCode: widget.clubCode,
+                  //handLogModel: handLog,
+                  liveGame: true,
+                  isBottomSheet: true,
+                );
+    }
+
     return Container(
       height: height / ratio,
       color: Colors.transparent,
@@ -35,14 +54,7 @@ class _LastHandAnalyseBottomSheetState
                 height: 13,
               ),
               Expanded(
-                child: HandLogView(
-                  widget.gameCode,
-                  gameState.lastHandNum,
-                  isAppbarWithHandNumber: true,
-                  clubCode: widget.clubCode,
-                  //handLogModel: handLog,
-                  isBottomSheet: true,
-                ),
+                child: child,
               ),
             ],
           ),
