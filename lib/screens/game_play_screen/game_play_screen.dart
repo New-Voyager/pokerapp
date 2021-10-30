@@ -1113,12 +1113,14 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       return;
     }
     if (context != null) {
-      await _gameContextObj.joinAudio(context);
       if (!_gameState.uiClosing) {
-        // ui is still running
-        // send stream id
-        _gameState.gameMessageService.sendMyInfo();
-        _gameState.gameMessageService.requestPlayerInfo();
+        if (_gameState.isPlaying) {
+          await _gameContextObj.joinAudio(context);
+          // ui is still running
+          // send stream id
+          _gameState.gameMessageService.sendMyInfo();
+          _gameState.gameMessageService.requestPlayerInfo();
+        }
       }
     }
   }
