@@ -120,58 +120,54 @@ class _GameChatState extends State<GameChat> {
   }
 
   Widget _buildCloseButton(AppTheme theme) {
-
-   return Align(
-        alignment: Alignment.topRight,
-        child: InkWell(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-            child: Transform.rotate(
-              angle: -pi / 2,
-              child: SvgPicture.asset(
-                'assets/images/backarrow.svg',
-                color: theme.accentColor,
-                width: 32.pw,
-                height: 32.ph,
-                fit: BoxFit.cover,
-              ),
+    return Align(
+      alignment: Alignment.topRight,
+      child: InkWell(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+          child: Transform.rotate(
+            angle: -pi / 2,
+            child: SvgPicture.asset(
+              'assets/images/backarrow.svg',
+              color: theme.accentColor,
+              width: 32.pw,
+              height: 32.ph,
+              fit: BoxFit.cover,
             ),
           ),
-          borderRadius: BorderRadius.circular(24.pw),
-          onTap: widget.onChatVisibilityChange,
         ),
-      );
+        borderRadius: BorderRadius.circular(24.pw),
+        onTap: widget.onChatVisibilityChange,
+      ),
+    );
   }
-
 
   Widget _buildExpandButton(AppTheme theme) {
-
-   return Align(
-        alignment: Alignment.topRight,
-        child: InkWell(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-            child: Transform.rotate(
-              angle: pi/2,
-              child: SvgPicture.asset(
-                'assets/images/backarrow.svg',
-                color: theme.accentColor,
-                width: 32.pw,
-                height: 32.ph,
-                fit: BoxFit.cover,
-              ),
+    return Align(
+      alignment: Alignment.topRight,
+      child: InkWell(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+          child: Transform.rotate(
+            angle: pi / 2,
+            child: SvgPicture.asset(
+              'assets/images/backarrow.svg',
+              color: theme.accentColor,
+              width: 32.pw,
+              height: 32.ph,
+              fit: BoxFit.cover,
             ),
           ),
-          borderRadius: BorderRadius.circular(24.pw),
-          onTap: () {
-            expanded = true;
-            setState(() {
-              
-            });
-          },
         ),
-      );
+        borderRadius: BorderRadius.circular(24.pw),
+        onTap: () {
+          expanded = true;
+          setState(() {});
+        },
+      ),
+    );
   }
+
   Widget _buildChatBubble(ChatMessage message, AppTheme theme) {
     bool isMe = myID == message.fromPlayer;
     String text = message.text;
@@ -387,15 +383,15 @@ class _GameChatState extends State<GameChat> {
 
               /* close button */
               Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  expanded ? Container() :
-                    _buildExpandButton(theme),
-                  SizedBox(width: 2.pw,),
-                  _buildCloseButton(theme)
-                ]
-              ),
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    expanded ? Container() : _buildExpandButton(theme),
+                    SizedBox(
+                      width: 2.pw,
+                    ),
+                    _buildCloseButton(theme)
+                  ]),
             ],
           ),
 

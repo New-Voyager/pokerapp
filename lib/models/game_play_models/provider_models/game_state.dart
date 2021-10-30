@@ -512,6 +512,10 @@ class GameState {
     return this._gameInfo.status == AppConstants.GAME_ENDED;
   }
 
+  set ended(bool v) {
+    this._gameInfo.status = AppConstants.GAME_ENDED;
+  }
+
   MarkedCards get markedCardsState => this._markedCardsState;
 
   CardDistributionState get cardDistributionState => this._cardDistribState;
@@ -758,7 +762,7 @@ class GameState {
       //this._myState.gameStatus = GameStatus.RUNNING;
       this._myState.notify();
     }
-
+    log('GAMESTATE: Ended? ${this.ended}');
     this._handInfo.notify();
   }
 

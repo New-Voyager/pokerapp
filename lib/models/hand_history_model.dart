@@ -153,4 +153,8 @@ class HandHistoryListModel extends ChangeNotifier {
         .where((element) => element.authorized ?? false)
         .toList();
   }
+
+  void sort() {
+    this.allHands.sort((a, b) => b.handNum.compareTo(a.handNum));
+  }
 }

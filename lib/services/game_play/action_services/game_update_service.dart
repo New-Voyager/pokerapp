@@ -668,11 +668,14 @@ class GameUpdateService {
     final seat = _gameState.getSeatByPlayer(playerId);
     if (seat != null) {
       seat.player.stackReloadState = reloadState;
-      // seat.notify();
-      // wait for the animation to end
-      await Future.delayed(const Duration(milliseconds: 2000));
-      seat.player.stackReloadState = null;
-      seat.notify();
+      if (!_gameState.handInProgress) {
+        seat.notify();
+        // wait for the animation to end
+        await Future.delayed(const Duration(milliseconds: 2000));
+        seat.player.stackReloadState = null;
+        seat.player.stack = newStack;
+        seat.notify();
+      }
     }
   }
 
@@ -1131,14 +1134,17 @@ class GameUpdateService {
         //gameContext.handActionService.queryCurrentHand();
       } else if (gameStatus == AppConstants.GAME_ENDED) {
         if (_gameState.handInProgress) {
+          int i = 0;
           // if we are in middle of the hand, don't close it yet
-          while (_gameState.handInProgress) {
+          while (_gameState.handInProgress && i < 3) {
             await Future.delayed(Duration(milliseconds: 1000));
+            i++;
           }
         }
         // end the game
         log('Game has ended. Update the state');
         resetBoard();
+        _gameState.ended = true;
         _gameState.refresh();
         tableState.updateTableStatusSilent(AppConstants.GAME_ENDED);
         _gameState.seatsOnTableState.notify();
@@ -1249,8 +1255,38 @@ class GameUpdateService {
 
     }
     */
-
     final tableState = _gameState.tableState;
+    if (gameStatus == AppConstants.GAME_ENDED) {
+      var forced = data['forced'] ?? false;
+      if (_gameState.handInProgress && !forced) {
+        int i = 0;
+        // if we are in middle of the hand, don't close it yet
+        while (_gameState.handInProgress && i < 3) {
+          await Future.delayed(Duration(milliseconds: 1000));
+          i++;
+        }
+      }
+      // end the game
+      log('Game has ended. Update the state');
+      _gameState.ended = true;
+      resetBoard();
+      _gameState.refresh();
+      _gameState.handInfo.notify();
+      tableState.updateTableStatusSilent(AppConstants.GAME_ENDED);
+      if (_gameState.mySeat != null && _gameState.mySeat.player != null) {
+        _gameState.mySeat.player.reset();
+      }
+      _gameState.myState.notify();
+      _gameState.actionState.show = false;
+      _gameState.actionState.notify();
+      if (forced) {
+        Alerts.showNotification(
+            titleText: _appScreenText['game'],
+            svgPath: 'assets/images/casino.svg',
+            subTitleText: _appScreenText['theGameIsTerminatedDueToError']);
+      }
+      return;
+    }
 
     // if the status hasn't changed, don't do anything
     if (gameStatus == tableState.gameStatus) {

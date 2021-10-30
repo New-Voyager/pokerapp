@@ -4,6 +4,7 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:bouncing_widget/bouncing_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/html_parser.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/player_action.dart';
@@ -71,6 +72,7 @@ class BetWidget extends StatelessWidget {
     // else
     // increment the tool tip count
     userSettingsBox.put(betTooltipCountKey, betTooltipCount + 1);
+
     // return Column(
     //   mainAxisSize: MainAxisSize.min,
     //   mainAxisAlignment: MainAxisAlignment.center,
@@ -86,16 +88,41 @@ class BetWidget extends StatelessWidget {
 
     return Stack(
       alignment: Alignment.topCenter,
+      clipBehavior: Clip.none,
       children: [
         // swipe up arrow
         Transform.translate(
-            offset: Offset(0, -35.ph),
-            child: JumpingTextWidget(text: 'Swipe up to bet')),
+            offset: Offset(0, 85.ph),
+            child: JumpingTextWidget(text: 'Tap to bet')),
 
         // main child
         child,
       ],
     );
+  }
+
+  bool _showTip() {
+    try {
+      final userSettingsBox = HiveDatasource.getInstance.getBox(
+        BoxType.USER_SETTINGS_BOX,
+      );
+      final betTooltipCountKey = 'bet_tooltip_count';
+      int betTooltipCount =
+          userSettingsBox.get(betTooltipCountKey, defaultValue: 0) as int;
+
+      // NUMBER OF TIMES WE WANT TO SHOW THE HINT WIDGET
+      bool showTip = true;
+      if (betTooltipCount >= 3) {
+        // we dont need to show BET tooltip anymore
+        showTip = false;
+      } else {
+        // else
+        // increment the tool tip count
+        userSettingsBox.put(betTooltipCountKey, betTooltipCount + 1);
+      }
+      return showTip;
+    } catch (err) {}
+    return false;
   }
 
   Widget _buildBetButton(BuildContext context, final bool isLargerDisplay,
@@ -124,8 +151,10 @@ class BetWidget extends StatelessWidget {
       height: s,
       width: s,
     );
+
     Widget betChipImage = Stack(
       alignment: Alignment.center,
+      clipBehavior: Clip.none,
       children: [
         // bet coin
         Transform.scale(
@@ -134,21 +163,26 @@ class BetWidget extends StatelessWidget {
         ),
         // bet text
         Text('BET', style: TextStyle(fontSize: 12.dp)),
+        _showTip()
+            ? Transform.translate(
+                offset: Offset(70.pw, 0.ph),
+                child: JumpingTextWidget(text: 'Tap', jumpHeight: 5))
+            : Container(),
       ],
     );
-    final Widget betChipWidget = Container(
-      height: s,
-      width: s,
-      child: betChipImage,
-      // Shimmer.fromColors(
-      //     baseColor: Colors.transparent,
-      //     highlightColor: Colors.white.withOpacity(0.50),
-      //     child: betChipImage,),
-    );
-    //return betChipWidget;
+    final Widget betChipWidget = GestureDetector(
+        onTap: () {
+          log('BET: tap detected');
+          onSubmitCallBack?.call(vnBetAmount.value);
+        },
+        child: Container(
+          height: s,
+          width: s,
+          child: betChipImage,
+        ));
 
-    final bool isBetByTapActive =
-        gameState.playerLocalConfig.tapOrSwipeBetAction;
+    final bool isBetByTapActive = true;
+    //gameState.playerLocalConfig.tapOrSwipeBetAction;
 
     final Widget betWidget = _buildToolTipWith(
       child: IntrinsicWidth(
@@ -167,20 +201,21 @@ class BetWidget extends StatelessWidget {
       ),
       theme: theme,
     );
-    final Widget mainWidget = betWidget;
+    final Widget mainWidget = betChipWidget;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         /* drag bet button */
         isBetByTapActive
             // if confirm by tap is active, show a bouncing widget
-            ? BouncingWidget(
-                scaleFactor: 1.5,
-                child: mainWidget,
-                onPressed: () {
-                  onSubmitCallBack?.call(vnBetAmount.value);
-                },
-              )
+            ? betChipWidget
+            // BouncingWidget(
+            //     scaleFactor: 1.5,
+            //     child: mainWidget,
+            //     onPressed: () {
+            //       onSubmitCallBack?.call(vnBetAmount.value);
+            //     },
+            //   )
             : GestureDetector(
                 // confirm bet ON SLIDE UP TILL THE TOP
                 onVerticalDragEnd: (_) {
