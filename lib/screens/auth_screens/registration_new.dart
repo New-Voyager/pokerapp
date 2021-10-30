@@ -310,27 +310,29 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
         child: Scaffold(
           backgroundColor: Colors.transparent,
           resizeToAvoidBottomInset: true,
-          floatingActionButton:
-              Column(mainAxisAlignment: MainAxisAlignment.end, children: [
-            IconButton(
-              icon: Icon(
-                Icons.bug_report,
-                size: 48.pw,
-                color: _appTheme.supportingColorWithDark(0.50),
+          floatingActionButton: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              IconButton(
+                icon: Icon(
+                  Icons.bug_report,
+                  size: 48.pw,
+                  color: _appTheme.supportingColorWithDark(0.50),
+                ),
+                onPressed: () => onBugIconPress(_appTheme),
               ),
-              onPressed: () => onBugIconPress(_appTheme),
-            ),
-            SizedBox(height: 10.dp),
-            IconButton(
-              icon: Icon(
-                Icons.person,
-                size: 48.pw,
-                color: _appTheme.supportingColorWithDark(0.50),
+              SizedBox(height: 10.dp),
+              IconButton(
+                icon: Icon(
+                  Icons.person,
+                  size: 48.pw,
+                  color: _appTheme.supportingColorWithDark(0.50),
+                ),
+                onPressed: () => onLoginAsBot(_appTheme),
               ),
-              onPressed: () => onLoginAsBot(_appTheme),
-            ),
-            SizedBox(height: 100.dp),
-          ]),
+              SizedBox(height: 100.dp),
+            ],
+          ),
           body: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
