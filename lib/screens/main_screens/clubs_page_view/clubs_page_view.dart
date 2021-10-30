@@ -5,7 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pokerapp/exceptions/exceptions.dart';
-import 'package:pokerapp/main.dart';
+import 'package:pokerapp/main_helper.dart';
 import 'package:pokerapp/models/club_model.dart';
 import 'package:pokerapp/models/club_update_input_model.dart';
 import 'package:pokerapp/models/pending_approvals.dart';

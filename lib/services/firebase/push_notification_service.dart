@@ -4,7 +4,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:overlay_support/overlay_support.dart';
-import 'package:pokerapp/main.dart';
+import 'package:pokerapp/main_helper.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/overlay_notification.dart';
 import 'package:pokerapp/services/app/player_service.dart';

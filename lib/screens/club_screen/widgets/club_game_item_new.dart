@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pokerapp/main.dart';
+import 'package:pokerapp/main_helper.dart';
 import 'package:pokerapp/models/game_model.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';

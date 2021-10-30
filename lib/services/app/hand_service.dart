@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:pokerapp/main.dart';
+import 'package:pokerapp/main_helper.dart';
 import 'package:pokerapp/models/hand_history_model.dart';
 import 'package:pokerapp/models/handlog_model.dart';
 

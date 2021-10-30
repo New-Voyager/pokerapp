@@ -33,14 +33,14 @@ class _LastHandAnalyseBottomSheetState
       child = Text('No hands played');
     } else {
       child = HandLogView(
-                  widget.gameCode,
-                  handNum,
-                  isAppbarWithHandNumber: true,
-                  clubCode: widget.clubCode,
-                  //handLogModel: handLog,
-                  liveGame: true,
-                  isBottomSheet: true,
-                );
+        widget.gameCode,
+        handNum,
+        isAppbarWithHandNumber: true,
+        clubCode: widget.clubCode,
+        //handLogModel: handLog,
+        liveGame: true,
+        isBottomSheet: true,
+      );
     }
 
     return Container(

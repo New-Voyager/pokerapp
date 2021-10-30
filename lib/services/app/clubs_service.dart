@@ -3,7 +3,7 @@ import 'dart:developer';
 
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:pokerapp/exceptions/exceptions.dart';
-import 'package:pokerapp/main.dart';
+import 'package:pokerapp/main_helper.dart';
 import 'package:pokerapp/models/announcement_model.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/models/club_model.dart';

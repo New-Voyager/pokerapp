@@ -2,7 +2,7 @@ import 'dart:developer';
 import 'dart:math' as math;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:pokerapp/main.dart';
+import 'package:pokerapp/main_helper.dart';
 import 'package:pokerapp/models/auth_model.dart';
 import 'package:pokerapp/models/hand_history_model.dart';
 import 'package:pokerapp/models/player_info.dart';
@@ -29,7 +29,9 @@ class HandHistoryListView extends StatefulWidget {
   final bool liveGame;
 
   HandHistoryListView(this.data, this.clubCode,
-      {this.isInBottomSheet = false, this.isLeadingBackIconShow = true, this.liveGame = false});
+      {this.isInBottomSheet = false,
+      this.isLeadingBackIconShow = true,
+      this.liveGame = false});
 
   final String clubCode;
 
@@ -166,47 +168,48 @@ class _HandHistoryState extends State<HandHistoryListView>
                   showFilterView ? _appScreenText['filteredSubTitle'] : null,
               context: context,
               titleText: _appScreenText['handHistory'],
-              actionsList: 
-              showFilter ? [
-                IconButton(
-                  onPressed: () async {
-                    if (showFilterView) {
-                      showFilterView = false;
-                    } else {
-                      dynamic ret = await Alerts.showDailog(
-                        context: context,
-                        child: HandHistoryFilterWidget(
-                            winners: _getListOfWinners()),
-                      );
-                      if (ret == null) {
-                        return;
-                      }
+              actionsList: showFilter
+                  ? [
+                      IconButton(
+                        onPressed: () async {
+                          if (showFilterView) {
+                            showFilterView = false;
+                          } else {
+                            dynamic ret = await Alerts.showDailog(
+                              context: context,
+                              child: HandHistoryFilterWidget(
+                                  winners: _getListOfWinners()),
+                            );
+                            if (ret == null) {
+                              return;
+                            }
 
-                      if (ret is bool && !ret) {
-                        showFilterView = false;
-                      } else {
-                        Map<String, dynamic> retState =
-                            ret as Map<String, dynamic>;
-                        bool status = retState['status'];
-                        if (status ?? false) {
-                          // show filtered view if not shown already
-                          showFilterView = true;
+                            if (ret is bool && !ret) {
+                              showFilterView = false;
+                            } else {
+                              Map<String, dynamic> retState =
+                                  ret as Map<String, dynamic>;
+                              bool status = retState['status'];
+                              if (status ?? false) {
+                                // show filtered view if not shown already
+                                showFilterView = true;
 
-                          filterSelection = retState['selection'];
-                          filterValue = retState['value'];
-                          loadingDone = false;
-                          _fetchFilteredData();
-                        }
-                      }
-                    }
-                    setState(() {});
-                  },
-                  icon: Icon(
-                    showFilterView ? Icons.clear : Icons.filter_alt,
-                    color: theme.accentColor,
-                  ),
-                )
-              ] : null,
+                                filterSelection = retState['selection'];
+                                filterValue = retState['value'];
+                                loadingDone = false;
+                                _fetchFilteredData();
+                              }
+                            }
+                          }
+                          setState(() {});
+                        },
+                        icon: Icon(
+                          showFilterView ? Icons.clear : Icons.filter_alt,
+                          color: theme.accentColor,
+                        ),
+                      )
+                    ]
+                  : null,
             ),
             body: !loadingDone
                 ? Center(child: CircularProgressWidget())

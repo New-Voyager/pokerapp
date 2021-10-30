@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:pokerapp/models/rewards_model.dart';
 
-import '../../main.dart';
+import '../../main_helper.dart';
 
 class RewardService {
   static String createRewardMutation = """

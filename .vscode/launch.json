@@ -13,7 +13,7 @@
       "name": "pokerapp",
       "request": "launch",
       "type": "dart",
-      "program": "lib/main_dev.dart",
+      "program": "lib/main.dart",
       "args": [
         "--flavor",
         "dev"
@@ -23,7 +23,7 @@
       "name": "pokerapp-ios",
       "request": "launch",
       "type": "dart",
-      "program": "lib/main_dev.dart",
+      "program": "lib/main.dart",
       "args": [
         "--flavor",
         "dev"
@@ -34,7 +34,7 @@
       "request": "launch",
       "type": "dart",
       "deviceId": "HA18R0HZ",
-      "program": "lib/main_dev.dart",
+      "program": "lib/main.dart",
       "args": [
         "--flavor",
         "dev"

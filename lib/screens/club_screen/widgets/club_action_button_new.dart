@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:badges/badges.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
-import '../../../main.dart';
+import '../../../main_helper.dart';
 
 class ClubActionButtonNew extends StatelessWidget {
   final ClubActions _action;

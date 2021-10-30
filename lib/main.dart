@@ -1,52 +1,179 @@
 import 'dart:developer';
+import 'dart:io';
 
-import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:pokerapp/services/graphQL/configurations/graph_ql_configuration.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:in_app_purchase_android/in_app_purchase_android.dart';
+import 'package:overlay_support/overlay_support.dart';
+import 'package:pokerapp/flavor_config.dart';
+import 'package:pokerapp/models/app_state.dart';
+import 'package:pokerapp/models/pending_approvals.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/models/ui/app_theme_data.dart';
+import 'package:pokerapp/resources/app_config.dart';
+import 'package:pokerapp/resources/new/app_assets_new.dart';
+import 'package:pokerapp/routes.dart';
+import 'package:pokerapp/services/app/insta_refresh_service.dart';
+import 'package:pokerapp/services/connectivity_check/network_change_listener.dart';
+import 'package:pokerapp/services/data/hive_datasource_impl.dart';
+import 'package:pokerapp/services/firebase/settings.dart';
+import 'package:pokerapp/services/nats/nats.dart';
+import 'package:provider/provider.dart';
+import 'main_helper.dart';
+import 'models/ui/app_text.dart';
+import 'package:sizer/sizer.dart';
 
-GraphQLConfiguration graphQLConfiguration = GraphQLConfiguration();
-final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
+import 'models/ui/app_theme_styles.dart';
 
-RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
-mixin RouteAwareAnalytics<T extends StatefulWidget> on State<T>
-    implements RouteAware {
-  String get routeName => null;
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  // Register all the models and services before the app starts
+  if (Platform.isAndroid) {
+    InAppPurchaseAndroidPlatformAddition.enablePendingPurchases();
+  }
+  await HiveDatasource.getInstance.init();
 
+  var flavorApp = FlavorConfig(
+    appName: 'PokerDev',
+    flavorName: Flavor.DEV.toString(),
+    apiBaseUrl: 'https://demo.pokerclub.app',
+    child: MyApp(),
+  );
+  // var flavorApp = FlavorConfig(
+  //   appName: 'PokerDev',
+  //   flavorName: Flavor.PROD.toString(),
+  //   apiBaseUrl: 'https://api.pokerclub.app',
+  //   child: MyApp(),
+  // );
+  await AppConfig.init(flavorApp.apiBaseUrl);
+  String apiUrl = AppConfig.apiUrl;
+  log('$apiUrl');
+  await graphQLConfiguration.init();
+  runApp(
+    GraphQLProvider(
+      client: graphQLConfiguration.client(),
+      child: CacheProvider(
+        child: flavorApp,
+      ),
+    ),
+  );
+}
+
+class MyApp extends StatefulWidget {
+  // Create the initialization Future outside of `build`:
   @override
-  void didChangeDependencies() {
-    routeObserver.subscribe(this, ModalRoute.of(context));
-    super.didChangeDependencies();
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  FirebaseApp _firebaseApp;
+  bool _error = false;
+
+  Future<FirebaseApp> _initialization(BuildContext context) async {
+    final apiUrl = FlavorConfig.of(context).apiBaseUrl;
+    await AppConfig.init(apiUrl);
+    log('Api server url: ${AppConfig.apiUrl}');
+    final opts = await getFirebaseSettings(AppConfig.apiUrl);
+    final app = Firebase.initializeApp(options: opts);
+    return app;
+  }
+
+  void _init(BuildContext context) async {
+    try {
+      await initAppText('en');
+      _firebaseApp = await _initialization(context);
+    } catch (e) {
+      log('$e');
+      _error = true;
+    }
+
+    setState(() {});
   }
 
   @override
-  void dispose() {
-    routeObserver.unsubscribe(this);
-    super.dispose();
+  void initState() {
+    super.initState();
   }
 
   @override
-  void didPop() {}
+  Widget build(BuildContext context) {
+    if (_firebaseApp == null && _error == false) _init(context);
 
-  @override
-  void didPopNext() {
-    // Called when the top route has been popped off,
-    // and the current route shows up.
-    _setCurrentScreen(routeName);
-  }
+    // Check for errors
+    if (_error) {
+      return Container(color: Colors.red);
+    }
 
-  @override
-  void didPush() {
-    // Called when the current route has been pushed.
-    _setCurrentScreen(routeName);
-  }
+    if (_firebaseApp == null)
+      return Center(
+        child: CircularProgressIndicator(),
+      );
 
-  @override
-  void didPushNext() {}
+    // Once complete, show your application
 
-  Future<void> _setCurrentScreen(String routeName) async {
-    routeName = routeName.substring(1);
-    log('Setting current screen to $routeName');
-    await FirebaseAnalytics()
-        .logEvent(name: routeName, parameters: {"screen_name": routeName});
+    //this.nats = Nats(context);
+    log('Firebase initialized successfully');
+    final style = getAppStyle('default');
+    return MultiProvider(
+      /* PUT INDEPENDENT PROVIDERS HERE */
+      providers: [
+        // theme related provider
+        ListenableProvider<AppTheme>(
+          create: (_) => AppTheme(AppThemeData(style: style)),
+        ),
+
+        ListenableProvider<PendingApprovalsState>(
+          create: (_) => PendingApprovalsState(),
+        ),
+        ListenableProvider<ClubsUpdateState>(
+          create: (_) => ClubsUpdateState(),
+        ),
+        ChangeNotifierProvider<AppState>(
+          create: (_) => AppState(),
+        ),
+        ListenableProvider<InstaRefreshService>(
+          create: (_) => InstaRefreshService(),
+        ),
+      ],
+      builder: (context, _) => MultiProvider(
+        /* PUT DEPENDENT PROVIDERS HERE */
+        providers: [
+          Provider<Nats>(
+            create: (_) => Nats(context),
+          ),
+          Provider(
+            create: (_) => NetworkChangeListener(),
+            lazy: false,
+          ),
+        ],
+        child: OverlaySupport.global(
+          child: LayoutBuilder(
+            builder: (context, constraints) =>
+                OrientationBuilder(builder: (context, orientation) {
+              return Sizer(
+                builder: (context, orientation, deviceType) {
+                  // SizerUtil().init(constraints, orientation);
+                  //SizerUtil().setScreenSize(constraints, orientation);
+                  return MaterialApp(
+                    title: FlavorConfig.of(context).appName,
+                    debugShowCheckedModeBanner: false,
+                    navigatorKey: navigatorKey,
+                    theme: ThemeData(
+                      colorScheme: ColorScheme.dark(),
+                      visualDensity: VisualDensity.adaptivePlatformDensity,
+                      fontFamily: AppAssetsNew.fontFamilyPoppins,
+                    ),
+                    onGenerateRoute: Routes.generateRoute,
+                    initialRoute: Routes.initial,
+                    navigatorObservers: [routeObserver],
+                  );
+                },
+              );
+            }),
+          ),
+        ),
+      ),
+    );
   }
 }

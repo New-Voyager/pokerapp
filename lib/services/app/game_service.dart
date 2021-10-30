@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:location/location.dart';
 import 'package:pokerapp/enums/game_type.dart';
-import 'package:pokerapp/main.dart';
+import 'package:pokerapp/main_helper.dart';
 import 'package:pokerapp/models/announcement_model.dart';
 import 'package:pokerapp/models/game/new_game_model.dart';
 import 'package:pokerapp/models/game_history_model.dart';

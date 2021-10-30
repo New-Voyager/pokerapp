@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-enum Flavor { DEV, TEST, PROD }
+enum Flavor { DEV, PROD }
 
 extension FlavorTypeParsing on Flavor {
   String value() => this.toString().split('.').last;

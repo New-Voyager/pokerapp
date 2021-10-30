@@ -24,7 +24,7 @@ import 'package:pokerapp/widgets/switch_widget.dart';
 import 'package:pokerapp/widgets/text_input_widget.dart';
 import 'package:provider/provider.dart';
 
-import '../../../main.dart';
+import '../../../main_helper.dart';
 import '../../../routes.dart';
 
 class NewGameSettings2 extends StatelessWidget {

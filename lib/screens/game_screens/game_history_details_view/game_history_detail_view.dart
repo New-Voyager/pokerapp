@@ -21,7 +21,7 @@ import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:provider/provider.dart';
 
-import '../../../main.dart';
+import '../../../main_helper.dart';
 import 'hands_chart_view.dart';
 
 class GameHistoryDetailView extends StatefulWidget {

@@ -7,7 +7,7 @@ import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
-import '../../main.dart';
+import '../../main_helper.dart';
 
 class ClubGameItem extends StatelessWidget {
   final GameModel _clubGameModel;

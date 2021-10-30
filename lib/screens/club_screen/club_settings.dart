@@ -4,7 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:overlay_support/overlay_support.dart';
-import 'package:pokerapp/main.dart';
+import 'package:pokerapp/main_helper.dart';
 import 'package:pokerapp/models/auth_model.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/models/club_update_input_model.dart';

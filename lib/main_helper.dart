@@ -2,9 +2,12 @@ import 'dart:developer';
 
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
+import 'package:pokerapp/services/graphQL/configurations/graph_ql_configuration.dart';
 
-import 'main.dart';
+GraphQLConfiguration graphQLConfiguration = GraphQLConfiguration();
+final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
 
+RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 mixin RouteAwareAnalytics<T extends StatefulWidget> on State<T>
     implements RouteAware {
   String get routeName => null;

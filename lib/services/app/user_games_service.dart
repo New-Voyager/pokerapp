@@ -1,5 +1,5 @@
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:pokerapp/main.dart';
+import 'package:pokerapp/main_helper.dart';
 import 'package:pokerapp/models/game_model.dart';
 import 'package:pokerapp/screens/main_screens/games_page_view/enums.dart';
 

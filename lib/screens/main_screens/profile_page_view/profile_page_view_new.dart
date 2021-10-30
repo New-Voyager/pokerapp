@@ -6,7 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 //import 'package:get_version/get_version.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/build_info.dart';
-import 'package:pokerapp/main.dart';
+import 'package:pokerapp/main_helper.dart';
 import 'package:pokerapp/models/auth_model.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';

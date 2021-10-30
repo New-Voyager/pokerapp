@@ -57,7 +57,7 @@ import 'package:provider/provider.dart';
 import 'package:wakelock/wakelock.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
-import '../../main.dart';
+import '../../main_helper.dart';
 import '../../routes.dart';
 import '../../services/test/test_service.dart';
 import 'game_play_screen_util_methods.dart';
