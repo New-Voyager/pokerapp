@@ -2,35 +2,22 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:firebase_core/firebase_core.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
+import 'dart:convert';
 
-Future<FirebaseOptions> getFirebaseSettings(GraphQLClient noAuthClient) async {
-  String _query = """
-    query firebaseSettings {
-      firebaseSettings {
-        androidApiKey
-        iosApiKey
-        androidAppId
-        iosAppId
-        projectId
-        authDomain
-        databaseURL
-        storageBucket
-        messagingSenderId
-        measurementId
-      }
-    }
-  """;
+import 'package:http/http.dart' as http;
 
+Future<FirebaseOptions> getFirebaseSettings(String apiUrl) async {
   try {
-    QueryResult result =
-        await noAuthClient.query(QueryOptions(document: gql(_query)));
+    http.Response response =
+        await http.get(Uri.parse('$apiUrl/firebase-settings'));
 
-    if (result.hasException) {
-      return null;
-    }
+    String resBody = response.body;
 
-    Map settings = result.data['firebaseSettings'];
+    if (response.statusCode != 200)
+      throw new Exception('Failed to get firebase settings');
+
+    Map settings = jsonDecode(resBody);
+
     if (Platform.isAndroid) {
       settings['apiKey'] = settings['androidApiKey'];
       settings['appId'] = settings['androidAppId'];

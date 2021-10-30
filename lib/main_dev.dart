@@ -68,8 +68,7 @@ class _MyAppState extends State<MyApp> {
     final apiUrl = FlavorConfig.of(context).apiBaseUrl;
     await AppConfig.init(apiUrl);
     log('Api server url: ${AppConfig.apiUrl}');
-    final client = graphQLConfiguration.clientToQuery(noAuthLink: true);
-    final opts = await getFirebaseSettings(client);
+    final opts = await getFirebaseSettings(AppConfig.apiUrl);
     final app = Firebase.initializeApp(options: opts);
     return app;
   }
