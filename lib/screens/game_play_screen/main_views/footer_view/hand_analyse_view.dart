@@ -184,77 +184,10 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
           // build the menu widget, and on tap expand the options from left
           _buildMenuWidget(context),
           SizedBox(height: 10.ph),
-          // Pending approval button
-          // Consumer2<PendingApprovalsState, GameContextObject>(
-          //   builder: (context, value, gameContextObj, child) {
-          //     if (!widget.gameContextObject.isAdmin())
-          //       return const SizedBox.shrink();
-
-          //     final approval = SvgPicture.asset(
-          //       '',
-          //       width: 16,
-          //       height: 16,
-          //       color: theme.primaryColorWithDark(),
-          //     );
-
-          //     return IconWithBadge(
-          //       count: value.approvalList.length,
-          //       onClickFunction: () => onClickPendingBuyInApprovals(context),
-          //       child: CircleImageButton(
-          //           svgAsset: 'assets/images/game/clipboard.svg', theme: theme),
-          //     );
-          //   },
-          // ),
         ],
       ),
     );
   }
-
-  // void onMoreOptionsPress(BuildContext context) {
-  //   log('onMoreOptionsPress');
-  //   // showMoreOptions(context);
-
-  //   // slide in from left
-  //   vnShowMenuItems.value = true;
-  // }
-
-  // Widget _buildMenuButton({
-  //   @required String title,
-  //   Widget child,
-  //   IconData iconData,
-  //   String imagePath,
-  //   VoidCallback onClick,
-  // }) {
-  //   final tmp = title.split(' ');
-  //   if (tmp.length > 1) {
-  //     title = tmp[0] + '\n' + tmp[1];
-  //   }
-
-  //   return Container(
-  //     margin: EdgeInsets.only(right: 8.0),
-  //     child: GestureDetector(
-  //       onTap: onClick,
-  //       child: Column(
-  //         mainAxisSize: MainAxisSize.min,
-  //         children: [
-  //           // button
-  //           GameCircleButton(
-  //             child: child,
-  //             iconData: iconData,
-  //             imagePath: imagePath,
-  //           ),
-
-  //           // text
-  //           Text(
-  //             title,
-  //             textAlign: TextAlign.center,
-  //             style: TextStyle(color: Colors.white),
-  //           ),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
 
   Widget _buildMenuWidget(BuildContext context) {
     AppTheme theme = AppTheme.getTheme(context);
@@ -274,7 +207,10 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
           valueListenable: vnShowMenuItems,
           child: Container(
             color: theme.primaryColorWithDark(0.5),
-            child: Row(
+            child: 
+            Column(
+              children: [
+            Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 // other menu buttons
@@ -287,6 +223,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                     onTap: () {
                       vnShowMenuItems.value = false;
                     }),
+                SizedBox(width: 10.pw),
 
                 // last hand
                 CircleImageButton(
@@ -297,6 +234,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                       vnShowMenuItems.value = false;
                       onClickViewHand(context);
                     }),
+                SizedBox(width: 10.pw),
 
                 // game history
                 CircleImageButton(
@@ -307,6 +245,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                       vnShowMenuItems.value = false;
                       onClickViewHandAnalysis(context);
                     }),
+                SizedBox(width: 10.pw),
 
                 // High hand track
                 widget.gameState.gameInfo.highHandTracked ?? false
@@ -319,6 +258,12 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                           onClickHighHand(context);
                         })
                     : SizedBox.shrink(),
+                SizedBox(width: 10.pw),
+
+              ],
+            ),
+            SizedBox(height: 10.ph),
+            Row (children: [
 
                 // game info
                 CircleImageButton(
@@ -329,6 +274,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                       vnShowMenuItems.value = false;
                       onGameInfoBottomSheet(context);
                     }),
+                SizedBox(width: 10.pw),
 
                 widget.gameState.gameSettings.showResult ?? false
                     ?
@@ -342,6 +288,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                           onTableBottomSheet(context);
                         })
                     : SizedBox.shrink(),
+                SizedBox(width: 10.pw),
 
                 // player stack
                 CircleImageButton(
@@ -352,8 +299,8 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                       vnShowMenuItems.value = false;
                       onPlayerStatsBottomSheet(context);
                     }),
-              ],
-            ),
+            ],)
+              ]),
           ),
           builder: (_, showMenu, child) => AnimatedSwitcher(
             duration: AppConstants.fastestAnimationDuration,

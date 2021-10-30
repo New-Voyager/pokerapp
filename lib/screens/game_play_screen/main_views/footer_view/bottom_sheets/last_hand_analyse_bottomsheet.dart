@@ -29,19 +29,15 @@ class _LastHandAnalyseBottomSheetState
       handNum = gameState.handInfo.handNum - 1;
     }
     Widget child;
-    if (handNum == 0) {
-      child = Text('No hands played');
-    } else {
-      child = HandLogView(
-        widget.gameCode,
-        handNum,
-        isAppbarWithHandNumber: true,
-        clubCode: widget.clubCode,
-        //handLogModel: handLog,
-        liveGame: true,
-        isBottomSheet: true,
-      );
-    }
+    child = HandLogView(
+      widget.gameCode,
+      handNum,
+      isAppbarWithHandNumber: true,
+      clubCode: widget.clubCode,
+      //handLogModel: handLog,
+      liveGame: true,
+      isBottomSheet: true,
+    );
 
     return Container(
       height: height / ratio,
