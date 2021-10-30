@@ -53,7 +53,7 @@ class AssetService {
   }
 
   static Future<Asset> saveFile(Asset asset) async {
-    Directory docsDir = await getApplicationDocumentsDirectory();
+    Directory docsDir = await getApplicationSupportDirectory();
     Directory assetsDir = Directory('${docsDir.path}/assets/');
     assetsDir.createSync(recursive: true);
 

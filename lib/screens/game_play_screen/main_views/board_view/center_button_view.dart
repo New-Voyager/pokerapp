@@ -29,7 +29,7 @@ class CenterButtonView extends StatelessWidget {
 
     // redraw the top section
     final gameState = GameState.getState(context);
-    gameState.redrawTop();
+    gameState.redrawBoard();
   }
 
   Future<void> _onTerminatePress(BuildContext context) async {
