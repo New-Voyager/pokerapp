@@ -9,7 +9,6 @@ import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
-import 'package:pokerapp/screens/game_context_screen/game_chat/game_chat_bottom_sheet.dart';
 
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/utils/gif_widget.dart';
@@ -41,6 +40,7 @@ class _GameChatState extends State<GameChat> {
   final ValueNotifier<bool> _vnShowEmojiPicker = ValueNotifier(false);
   final _textEditingController = TextEditingController();
   AppTextScreen _appScreenText;
+  bool expanded = false;
 
   int myID = -1;
 
@@ -119,7 +119,9 @@ class _GameChatState extends State<GameChat> {
     _textEditingController.clear();
   }
 
-  Widget _buildCloseButton(AppTheme theme) => Align(
+  Widget _buildCloseButton(AppTheme theme) {
+
+   return Align(
         alignment: Alignment.topRight,
         child: InkWell(
           child: Padding(
@@ -129,8 +131,8 @@ class _GameChatState extends State<GameChat> {
               child: SvgPicture.asset(
                 'assets/images/backarrow.svg',
                 color: theme.accentColor,
-                width: 20.pw,
-                height: 20.ph,
+                width: 32.pw,
+                height: 32.ph,
                 fit: BoxFit.cover,
               ),
             ),
@@ -139,7 +141,37 @@ class _GameChatState extends State<GameChat> {
           onTap: widget.onChatVisibilityChange,
         ),
       );
+  }
 
+
+  Widget _buildExpandButton(AppTheme theme) {
+
+   return Align(
+        alignment: Alignment.topRight,
+        child: InkWell(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+            child: Transform.rotate(
+              angle: pi/2,
+              child: SvgPicture.asset(
+                'assets/images/backarrow.svg',
+                color: theme.accentColor,
+                width: 32.pw,
+                height: 32.ph,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          borderRadius: BorderRadius.circular(24.pw),
+          onTap: () {
+            expanded = true;
+            setState(() {
+              
+            });
+          },
+        ),
+      );
+  }
   Widget _buildChatBubble(ChatMessage message, AppTheme theme) {
     bool isMe = myID == message.fromPlayer;
     String text = message.text;
@@ -335,12 +367,16 @@ class _GameChatState extends State<GameChat> {
       );
 
   Widget _buildMainBody(AppTheme theme) {
+    double height = MediaQuery.of(context).size.height / 2;
+    if (expanded) {
+      height = MediaQuery.of(context).size.height * 3 / 4;
+    }
     return Container(
       decoration: AppDecorators.bgRadialGradient(theme),
       // padding: EdgeInsets.only(
       //   bottom: MediaQuery.of(context).viewInsets.bottom,
       // ),
-      height: MediaQuery.of(context).size.height / 3,
+      height: height,
       child: Column(
         children: [
           /* top widgets, new message notifier & close button */
@@ -350,7 +386,16 @@ class _GameChatState extends State<GameChat> {
               _buildNewMessageNotifier(theme),
 
               /* close button */
-              _buildCloseButton(theme),
+              Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  expanded ? Container() :
+                    _buildExpandButton(theme),
+                  SizedBox(width: 2.pw,),
+                  _buildCloseButton(theme)
+                ]
+              ),
             ],
           ),
 
