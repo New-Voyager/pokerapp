@@ -22,6 +22,7 @@ import 'package:pokerapp/widgets/cards/multiple_stack_card_views.dart';
 import 'package:provider/provider.dart';
 import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:flutter/rendering.dart';
 
 class BetWidget extends StatelessWidget {
   final Function onSubmitCallBack;
@@ -127,6 +128,7 @@ class BetWidget extends StatelessWidget {
 
   Widget _buildBetButton(BuildContext context, final bool isLargerDisplay,
       vnBetAmount, AppTheme theme) {
+    log('_buildBetButton $vnBetAmount');
     final vnOffsetValue = ValueNotifier<double>(.0);
 
     final colorizeColors = [
@@ -176,8 +178,8 @@ class BetWidget extends StatelessWidget {
           onSubmitCallBack?.call(vnBetAmount.value);
         },
         child: Container(
-          height: s,
-          width: s,
+          height: s * boardAttributes.betImageScale,
+          width: s * boardAttributes.betImageScale,
           child: betChipImage,
         ));
 
@@ -268,6 +270,7 @@ class BetWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    debugPaintSizeEnabled = false;
     double width = MediaQuery.of(context).size.width;
     final appTheme = context.read<AppTheme>();
     final gameState = GameState.getState(context);
@@ -294,7 +297,8 @@ class BetWidget extends StatelessWidget {
               _buildBetButton(
                   context, isLargerDisplay, valueNotifierVal, appTheme),
               SizedBox(
-                height: boardAttributes.betWidgetBetChipBottomGap,
+                // height: boardAttributes.betWidgetBetChipBottomGap,
+                height: 5.ph,
               ),
               /* bet amount */
               ValueListenableBuilder<double>(
@@ -310,7 +314,7 @@ class BetWidget extends StatelessWidget {
               ),
               /* progress drag to bet */
               Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                CircleImageButton(
+                CircleImageButton2(
                   theme: appTheme,
                   icon: Icons.remove,
                   onTap: () {
@@ -323,7 +327,7 @@ class BetWidget extends StatelessWidget {
                   },
                 ),
                 _buildBetSeekBar(betSliderWidth, appTheme),
-                CircleImageButton(
+                CircleImageButton2(
                   theme: appTheme,
                   icon: Icons.add,
                   onTap: () {
@@ -343,18 +347,18 @@ class BetWidget extends StatelessWidget {
                 child: Container(
                   alignment: Alignment.center,
                   width: width / 1.5,
-                  height: 60.ph,
+                  height: 40.ph,
                   child: betAmountList(valueNotifierVal, appTheme),
                 ),
               ),
-              SizedBox(height: 10.ph),
+              SizedBox(height: 5.ph),
               FittedBox(
                 fit: BoxFit.fitWidth,
                 child: Transform.scale(
-                    scale: 1.5,
+                    scale: 1.2,
                     child: StackCardView(cards: _getCards(playerCards))),
               ),
-              SizedBox(height: 15.ph),
+              SizedBox(height: 10.ph),
             ],
           );
         },

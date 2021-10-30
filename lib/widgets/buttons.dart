@@ -213,6 +213,87 @@ class CircleImageButton extends StatelessWidget {
   }
 }
 
+class CircleImageButton2 extends StatelessWidget {
+  CircleImageButton2({
+    @required this.onTap,
+    @required this.theme,
+    this.asset,
+    this.svgAsset,
+    this.icon,
+    this.caption,
+    this.disabled = false,
+    this.split = false,
+    this.adaptive = true,
+  });
+
+  final bool adaptive;
+  final String svgAsset;
+  final String asset;
+  final IconData icon;
+  final String caption;
+  final AppTheme theme;
+  final Function onTap;
+  final bool disabled;
+  final bool split;
+
+  Widget build(BuildContext context) {
+    Widget image = Container();
+    if (asset != null) {
+      image = ColorFiltered(
+        child: Image.asset(asset),
+        colorFilter: ColorFilter.mode(
+            theme.circleImageButtonImageColor, BlendMode.srcATop),
+      );
+    } else if (svgAsset != null) {
+      image = SvgPicture.asset(
+        svgAsset,
+        color: theme.circleImageButtonImageColor,
+      );
+    } else if (icon != null) {
+      image = Icon(
+        icon,
+        size: 20.pw,
+        color: theme.circleImageButtonImageColor,
+      );
+    }
+    TextStyle textStyle = TextStyle(
+      fontSize: 12.dp,
+      color: Colors.white, //theme.circleImageButtonBorderColor,
+    );
+    if (theme.circleImageButtonTextStyle != null) {
+      textStyle = textStyle.merge(theme.circleImageButtonTextStyle);
+    }
+
+    return InkWell(
+      onTap: () {
+        // play sound
+        this.onTap();
+      },
+      borderRadius: BorderRadius.circular(20),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 24.pw,
+            height: 24.pw,
+            // padding: EdgeInsets.all(2.pw),
+            decoration: BoxDecoration(
+              color: theme.circleImageButtonBackgroundColor,
+              border: Border.all(
+                color: theme.circleImageButtonBorderColor ??
+                    theme.circleImageButtonBackgroundColor,
+                width: 2.0,
+              ),
+              borderRadius: BorderRadius.circular(20.pw),
+            ),
+            child: Center(child: image),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class RotateImagesButton extends StatelessWidget {
   RotateImagesButton({
     @required this.onTap,

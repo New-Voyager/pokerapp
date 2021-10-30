@@ -104,6 +104,9 @@ class MyLastActionAnimatingWidget extends StatelessWidget {
         duration: const Duration(milliseconds: 800),
         child: _buildText(myAction),
         builder: (_, anim, child) {
+          if (anim == 1) {
+            return SizedBox.shrink();
+          }
           return Transform.translate(
             offset: Offset(0, -100.pw * anim),
             child: Opacity(opacity: 1 - anim, child: child),
