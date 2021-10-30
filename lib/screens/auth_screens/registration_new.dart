@@ -4,7 +4,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_udid/flutter_udid.dart';
 import 'package:overlay_support/overlay_support.dart';
-import 'package:pokerapp/main.dart';
+import 'package:pokerapp/flavor_config.dart';
+import 'package:pokerapp/main_helper.dart';
 import 'package:pokerapp/models/auth_model.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
@@ -303,6 +304,34 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
 
   @override
   Widget build(BuildContext context) {
+    bool isDevMode =
+        FlavorConfig.of(context).flavorName == Flavor.DEV.toString();
+    Widget devButtons = null;
+    if (isDevMode) {
+      devButtons = Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          IconButton(
+            icon: Icon(
+              Icons.bug_report,
+              size: 48.pw,
+              color: _appTheme.supportingColorWithDark(0.50),
+            ),
+            onPressed: () => onBugIconPress(_appTheme),
+          ),
+          SizedBox(height: 10.dp),
+          IconButton(
+            icon: Icon(
+              Icons.person,
+              size: 48.pw,
+              color: _appTheme.supportingColorWithDark(0.50),
+            ),
+            onPressed: () => onLoginAsBot(_appTheme),
+          ),
+          SizedBox(height: 100.dp),
+        ],
+      );
+    }
     final appTheme = AppTheme.getTheme(context);
     return Container(
       decoration: AppDecorators.bgImage(_appTheme),
@@ -310,29 +339,7 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
         child: Scaffold(
           backgroundColor: Colors.transparent,
           resizeToAvoidBottomInset: true,
-          floatingActionButton: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              IconButton(
-                icon: Icon(
-                  Icons.bug_report,
-                  size: 48.pw,
-                  color: _appTheme.supportingColorWithDark(0.50),
-                ),
-                onPressed: () => onBugIconPress(_appTheme),
-              ),
-              SizedBox(height: 10.dp),
-              IconButton(
-                icon: Icon(
-                  Icons.person,
-                  size: 48.pw,
-                  color: _appTheme.supportingColorWithDark(0.50),
-                ),
-                onPressed: () => onLoginAsBot(_appTheme),
-              ),
-              SizedBox(height: 100.dp),
-            ],
-          ),
+          floatingActionButton: devButtons,
           body: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -467,12 +474,15 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
 
                 // seperator
                 SizedBox(height: 100),
-                Padding(
-                  padding: EdgeInsets.only(bottom: 10.0),
-                  child: Center(
-                    child: Text(
-                      AppConfig.apiUrl,
-                      style: TextStyle(fontSize: 20),
+                Visibility(
+                  visible: isDevMode,
+                  child: Padding(
+                    padding: EdgeInsets.only(bottom: 10.0),
+                    child: Center(
+                      child: Text(
+                        AppConfig.apiUrl,
+                        style: TextStyle(fontSize: 20),
+                      ),
                     ),
                   ),
                 ),

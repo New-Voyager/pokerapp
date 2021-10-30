@@ -4,7 +4,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:http/http.dart' as http;
-import 'package:pokerapp/main.dart';
+import 'package:pokerapp/main_helper.dart';
 
 import 'package:pokerapp/models/auth_model.dart';
 import 'package:pokerapp/models/user_update_input.dart';

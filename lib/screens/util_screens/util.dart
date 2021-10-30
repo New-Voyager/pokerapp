@@ -4,7 +4,7 @@ import 'dart:math' as math;
 //import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_type.dart';
-import 'package:pokerapp/main.dart';
+import 'package:pokerapp/main_helper.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/newmodels/game_model_new.dart';

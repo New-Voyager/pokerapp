@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:cryptography/cryptography.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:uuid/uuid.dart';
-import 'package:pokerapp/main.dart';
+import 'package:pokerapp/main_helper.dart';
 
 class EncryptionService {
   AesGcm gcm = AesGcm.with128bits();

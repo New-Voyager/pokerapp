@@ -26,7 +26,7 @@ import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/numeric_keyboard2.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/routes.dart';
-import 'package:pokerapp/main.dart';
+import 'package:pokerapp/main_helper.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 
 class TestService {

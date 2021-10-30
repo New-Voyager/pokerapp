@@ -1,5 +1,5 @@
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:pokerapp/main.dart';
+import 'package:pokerapp/main_helper.dart';
 import 'package:pokerapp/models/highrank_stats_model.dart';
 import 'package:pokerapp/models/hand_stats_model.dart';
 import 'package:pokerapp/models/player_performance_model.dart';

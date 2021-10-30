@@ -5,7 +5,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:pokerapp/models/club_message_model.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 
-import '../../main.dart';
+import '../../main_helper.dart';
 
 class ClubMessageService {
   static Future<void> sendMessage(ClubMessageModel messageModel) async {

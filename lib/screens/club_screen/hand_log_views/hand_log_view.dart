@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:pokerapp/main.dart';
+import 'package:pokerapp/main_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_stages.dart';
 import 'package:pokerapp/models/bookmarkedHands_model.dart';
@@ -80,7 +80,6 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
     if (widget.handResult != null) {
       _handResult = widget.handResult;
     } else {
-
       if (widget.liveGame) {
         try {
           // dynamic json = jsonDecode(multiPotResult);

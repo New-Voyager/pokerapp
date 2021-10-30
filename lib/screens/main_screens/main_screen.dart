@@ -35,7 +35,7 @@ import 'package:provider/provider.dart';
 
 import '../../flavor_banner.dart';
 import '../../flavor_config.dart';
-import '../../main.dart';
+import '../../main_helper.dart';
 import '../../routes.dart';
 
 class MainScreen extends StatefulWidget {

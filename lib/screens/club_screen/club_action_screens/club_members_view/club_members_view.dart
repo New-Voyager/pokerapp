@@ -12,7 +12,7 @@ import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/club_interior_service.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../main.dart';
+import '../../../../main_helper.dart';
 import '../../../../routes.dart';
 import 'club_members_list_view.dart';
 

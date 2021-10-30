@@ -11,7 +11,7 @@ import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../main.dart';
+import '../../../../main_helper.dart';
 import 'list_of_club_member_bottomsheet.dart';
 
 class ClubMembers extends StatefulWidget {

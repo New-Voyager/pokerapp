@@ -6,7 +6,7 @@ import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/services/app/club_interior_service.dart';
 import 'package:pokerapp/utils/color_generator.dart';
 
-import '../../../../main.dart';
+import '../../../../main_helper.dart';
 
 class ListOfClubMemberBottomSheet extends StatelessWidget {
   final String clubCode;
