@@ -22,7 +22,6 @@ import 'package:pokerapp/widgets/cards/multiple_stack_card_views.dart';
 import 'package:provider/provider.dart';
 import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:flutter/rendering.dart';
 
 class BetWidget extends StatelessWidget {
   final Function onSubmitCallBack;
@@ -270,7 +269,6 @@ class BetWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    debugPaintSizeEnabled = false;
     double width = MediaQuery.of(context).size.width;
     final appTheme = context.read<AppTheme>();
     final gameState = GameState.getState(context);
