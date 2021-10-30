@@ -36,9 +36,9 @@ class GraphQLConfiguration {
     );
   }
 
-  GraphQLClient clientToQuery({bool noAuthLink = false}) {
+  GraphQLClient clientToQuery() {
     return GraphQLClient(
-      link: noAuthLink ? httpLink() : authLink().concat(httpLink()),
+      link: authLink().concat(httpLink()),
       cache: GraphQLCache(),
     );
   }
