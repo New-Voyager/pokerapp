@@ -29,7 +29,7 @@ class GeneralNotification extends StatelessWidget {
           style: AppStylesNew.notificationTitleTextStyle,
         ),
         subtitle: Text(
-          model?.subTitleText ?? 'Seat change requested by Brian at seat no 4',
+          model?.subTitleText ?? '',
           style: AppStylesNew.notificationSubTitleTextStyle,
         ),
         trailing: model?.trailingWidget ??
