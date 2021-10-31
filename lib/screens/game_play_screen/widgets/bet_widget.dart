@@ -277,7 +277,7 @@ class BetWidget extends StatelessWidget {
         top += 40;
       }
     }
-    final Widget mainWidget = Container(
+    final Widget widgetWithBetAmounts = Container(
         width: Screen.width * 3 / 4,
         height: 80,
         child: Stack(
@@ -288,7 +288,7 @@ class BetWidget extends StatelessWidget {
               ...betButtons,
             ]));
 
-    // final Widget mainWidget = betChipWidget;
+    final Widget mainWidget = betChipWidget;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -380,10 +380,6 @@ class BetWidget extends StatelessWidget {
               /* bet button */
               _buildBetButton(
                   context, isLargerDisplay, valueNotifierVal, appTheme),
-              SizedBox(
-                // height: boardAttributes.betWidgetBetChipBottomGap,
-                height: 5.ph,
-              ),
               /* bet amount */
               ValueListenableBuilder<double>(
                 valueListenable: valueNotifierVal,
@@ -425,21 +421,21 @@ class BetWidget extends StatelessWidget {
                 ),
               ]),
               /* button row for other bet options */
-              // Transform.scale(
-              //   alignment: Alignment.topCenter,
-              //   scale: isLargerDisplay ? 1.2 : 1.0,
-              //   child: Container(
-              //     alignment: Alignment.center,
-              //     width: width / 1.5,
-              //     height: 40.ph,
-              //     child: betAmountList(valueNotifierVal, appTheme),
-              //   ),
-              // ),
-              SizedBox(height: 15.ph),
+              Transform.scale(
+                alignment: Alignment.topCenter,
+                scale: isLargerDisplay ? 1.2 : 1.0,
+                child: Container(
+                  alignment: Alignment.center,
+                  width: width / 1.5,
+                  height: 60.ph,
+                  child: betAmountList(valueNotifierVal, appTheme),
+                ),
+              ),
+              SizedBox(height: 5.ph),
               FittedBox(
                 fit: BoxFit.fitWidth,
                 child: Transform.scale(
-                    scale: 2.0,
+                    scale: 1.2,
                     child: StackCardView(cards: _getCards(playerCards))),
               ),
               //SizedBox(height: 10.ph),
@@ -509,7 +505,7 @@ class BetWidget extends StatelessWidget {
       fit: BoxFit.fitHeight,
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 4),
-        child: Row(
+        child: Column(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
