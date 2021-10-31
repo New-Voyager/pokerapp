@@ -16,6 +16,7 @@ import 'package:pokerapp/screens/game_play_screen/widgets/bet_widget.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_proto_service.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
+import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:provider/provider.dart';
 
@@ -518,6 +519,7 @@ class _FooterActionViewState extends State<FooterActionView> {
     final me = gameState.me;
     return IntrinsicHeight(
       child: Container(
+        height: betWidgetShown ? (Screen.height / 2) - 15.ph : null,
         color: Colors.black.withOpacity(0.5),
         child: Consumer<ActionState>(
             key: ValueKey('buildActionButtons'),

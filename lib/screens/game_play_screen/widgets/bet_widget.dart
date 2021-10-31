@@ -17,6 +17,7 @@ import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/numeric_keyboard2.dart';
+import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/cards/multiple_stack_card_views.dart';
 import 'package:provider/provider.dart';
@@ -125,6 +126,30 @@ class BetWidget extends StatelessWidget {
     return false;
   }
 
+  Widget _buildKeyboardButton(
+      BuildContext context, AppTheme theme, ValueNotifier<double> vnValue) {
+    return InkWell(
+      onTap: () async {
+        double min = action.minRaiseAmount.toDouble();
+        double max = action.maxRaiseAmount.toDouble();
+
+        final double res = await NumericKeyboard2.show(
+          context,
+          title:
+              'Enter your bet/raise amount (${action.minRaiseAmount.toString()} - ${action.maxRaiseAmount.toString()})',
+          min: min,
+          max: max,
+        );
+
+        if (res != null) vnValue.value = res;
+      },
+      child: _buildBetAmountChild(
+        theme: theme,
+        isKeyboard: true,
+      ),
+    );
+  }
+
   Widget _buildBetButton(BuildContext context, final bool isLargerDisplay,
       vnBetAmount, AppTheme theme) {
     log('_buildBetButton $vnBetAmount');
@@ -202,14 +227,75 @@ class BetWidget extends StatelessWidget {
       ),
       theme: theme,
     );
-    final Widget mainWidget = betChipWidget;
+    List<Widget> betButtons = [];
+    bool showKeyboard = true;
+    if (showKeyboard) {
+      betButtons.add(Positioned(
+          top: -20,
+          left: 30,
+          child: _buildKeyboardButton(context, theme, vnBetAmount)));
+    }
+
+    // show all-in or pot button on the left
+    for (final option in action.options) {
+      if (option.text == 'All-In' || option.text == 'Pot') {
+        betButtons.add(Positioned(
+            top: 40,
+            left: 30,
+            child: InkWell(
+              onTap: () {
+                vnBetAmount.value = option.amount.toDouble();
+              },
+              child: _buildBetAmountChild(
+                theme: theme,
+                option: option,
+              ),
+            )));
+        break;
+      }
+    }
+
+    // other buttons go on the right
+    double top = -20;
+    double right = 40;
+    for (final option in action.options) {
+      if (option.text == 'All-In' || option.text == 'Pot') {
+        // skip handled
+      } else {
+        betButtons.add(Positioned(
+            top: top,
+            right: right,
+            child: InkWell(
+              onTap: () {
+                vnBetAmount.value = option.amount.toDouble();
+              },
+              child: _buildBetAmountChild(
+                theme: theme,
+                option: option,
+              ),
+            )));
+        top += 40;
+      }
+    }
+    final Widget mainWidget = Container(
+        width: Screen.width * 3 / 4,
+        height: 80,
+        child: Stack(
+            clipBehavior: Clip.none,
+            alignment: Alignment.center,
+            children: [
+              betChipWidget,
+              ...betButtons,
+            ]));
+
+    // final Widget mainWidget = betChipWidget;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         /* drag bet button */
         isBetByTapActive
             // if confirm by tap is active, show a bouncing widget
-            ? betChipWidget
+            ? mainWidget
             // BouncingWidget(
             //     scaleFactor: 1.5,
             //     child: mainWidget,
@@ -339,24 +425,24 @@ class BetWidget extends StatelessWidget {
                 ),
               ]),
               /* button row for other bet options */
-              Transform.scale(
-                alignment: Alignment.topCenter,
-                scale: isLargerDisplay ? 1.2 : 1.0,
-                child: Container(
-                  alignment: Alignment.center,
-                  width: width / 1.5,
-                  height: 40.ph,
-                  child: betAmountList(valueNotifierVal, appTheme),
-                ),
-              ),
-              SizedBox(height: 5.ph),
+              // Transform.scale(
+              //   alignment: Alignment.topCenter,
+              //   scale: isLargerDisplay ? 1.2 : 1.0,
+              //   child: Container(
+              //     alignment: Alignment.center,
+              //     width: width / 1.5,
+              //     height: 40.ph,
+              //     child: betAmountList(valueNotifierVal, appTheme),
+              //   ),
+              // ),
+              SizedBox(height: 15.ph),
               FittedBox(
                 fit: BoxFit.fitWidth,
                 child: Transform.scale(
-                    scale: 1.2,
+                    scale: 2.0,
                     child: StackCardView(cards: _getCards(playerCards))),
               ),
-              SizedBox(height: 10.ph),
+              //SizedBox(height: 10.ph),
             ],
           );
         },
@@ -416,64 +502,61 @@ class BetWidget extends StatelessWidget {
     bool betButton = false,
     bool isKeyboard = false,
     Option option,
-    void onTap(),
+    //void onTap(),
     AppTheme theme,
   }) {
     return FittedBox(
       fit: BoxFit.fitHeight,
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 4),
-        child: Column(
+        child: Row(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            InkWell(
-              onTap: onTap,
-              child: Container(
-                padding: isKeyboard
-                    ? const EdgeInsets.all(4)
-                    : const EdgeInsets.all(8),
-                margin: isKeyboard
-                    ? const EdgeInsets.fromLTRB(0, 4, 0, 0)
-                    : const EdgeInsets.symmetric(vertical: 4),
-                decoration: BoxDecoration(
-                  //color: Colors.red,
-                  //  border: Border.all(color: Colors.white, width: 1.0),
-                  shape: BoxShape.circle,
-                  gradient: RadialGradient(
-                    // begin: Alignment.topRight,
-                    // end: Alignment.bottomLeft,
-                    colors: [
-                      theme.fillInColor,
-                      theme.primaryColorWithDark(),
-                    ],
-                    stops: [
-                      0.2,
-                      0.8,
-                    ],
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: theme.secondaryColor,
-                      offset: Offset(0, 1),
-                      blurRadius: 0.5,
-                      spreadRadius: 0.5,
-                    )
+            Container(
+              padding: isKeyboard
+                  ? const EdgeInsets.all(4)
+                  : const EdgeInsets.all(8),
+              margin: isKeyboard
+                  ? const EdgeInsets.fromLTRB(0, 4, 0, 0)
+                  : const EdgeInsets.symmetric(vertical: 4),
+              decoration: BoxDecoration(
+                //color: Colors.red,
+                //  border: Border.all(color: Colors.white, width: 1.0),
+                shape: BoxShape.circle,
+                gradient: RadialGradient(
+                  // begin: Alignment.topRight,
+                  // end: Alignment.bottomLeft,
+                  colors: [
+                    theme.fillInColor,
+                    theme.primaryColorWithDark(),
+                  ],
+                  stops: [
+                    0.2,
+                    0.8,
                   ],
                 ),
-                child: isKeyboard
-                    ? Icon(
-                        Icons.keyboard,
-                        color: Colors.white,
-                      )
-                    : Text(
-                        "${option.text}",
-                        style: TextStyle(
-                          fontSize: 10,
-                          color: Colors.white,
-                        ),
-                      ),
+                boxShadow: [
+                  BoxShadow(
+                    color: theme.secondaryColor,
+                    offset: Offset(0, 1),
+                    blurRadius: 0.5,
+                    spreadRadius: 0.5,
+                  )
+                ],
               ),
+              child: isKeyboard
+                  ? Icon(
+                      Icons.keyboard,
+                      color: Colors.white,
+                    )
+                  : Text(
+                      "${option.text}",
+                      style: TextStyle(
+                        fontSize: 10,
+                        color: Colors.white,
+                      ),
+                    ),
             ),
             Text(
               isKeyboard ? '' : '${option.amount.toInt().toString()}',
@@ -498,9 +581,7 @@ class BetWidget extends StatelessWidget {
         itemBuilder: (context, index) {
           if (index == 0) {
             // show keyboard
-            return _buildBetAmountChild(
-              theme: theme,
-              isKeyboard: true,
+            return InkWell(
               onTap: () async {
                 double min = action.minRaiseAmount.toDouble();
                 double max = action.maxRaiseAmount.toDouble();
@@ -515,17 +596,23 @@ class BetWidget extends StatelessWidget {
 
                 if (res != null) vnValue.value = res;
               },
+              child: _buildBetAmountChild(
+                theme: theme,
+                isKeyboard: true,
+              ),
             );
           }
 
           final option = action.options[index - 1];
 
-          return _buildBetAmountChild(
-            theme: theme,
-            option: action.options[index - 1],
+          return InkWell(
             onTap: () {
               vnValue.value = option.amount.toDouble();
             },
+            child: _buildBetAmountChild(
+              theme: theme,
+              option: action.options[index - 1],
+            ),
           );
         },
         itemCount: action.options.length + 1,
