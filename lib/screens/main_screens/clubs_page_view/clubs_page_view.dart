@@ -13,6 +13,7 @@ import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
+import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/main_screens/clubs_page_view/widgets/club_item.dart';
@@ -286,10 +287,26 @@ class _ClubsPageViewState extends State<ClubsPageView>
                                         decoration:
                                             AppDecorators.getGameItemDecoration(
                                                 theme: theme),
-                                        child: ClubItem(
-                                          club: club,
-                                          theme: theme,
-                                          appScreenText: _appScreenText,
+                                        child: Stack(
+                                          children: [
+                                            ColorFiltered(
+                                              colorFilter: ColorFilter.mode(
+                                                  theme.gameListShadeColor,
+                                                  BlendMode.srcATop),
+                                              child: Image(
+                                                image: AssetImage(
+                                                  AppAssetsNew
+                                                      .pathLiveGameItemBackground,
+                                                ),
+                                                fit: BoxFit.fitWidth,
+                                              ),
+                                            ),
+                                            ClubItem(
+                                              club: club,
+                                              theme: theme,
+                                              appScreenText: _appScreenText,
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     );

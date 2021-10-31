@@ -185,12 +185,12 @@ class AppDecorators {
         8.pw,
       ),
       color: theme.secondaryColorWithDark(0.4),
-      image: DecorationImage(
-        image: AssetImage(
-          AppAssetsNew.pathLiveGameItemBackground,
-        ),
-        fit: BoxFit.fitWidth,
-      ),
+      // image: DecorationImage(
+      //   image: AssetImage(
+      //     AppAssetsNew.pathLiveGameItemBackground,
+      //   ),
+      //   fit: BoxFit.fitWidth,
+      // ),
     );
   }
 

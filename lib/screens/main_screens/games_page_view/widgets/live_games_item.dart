@@ -1,4 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:pokerapp/models/newmodels/game_model_new.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
@@ -76,6 +78,30 @@ class LiveGameItem extends StatelessWidget {
                               width: 60.ph,
                               alignment: Alignment.center,
                             ),
+                            (game.clubCode != null)
+                                ? Positioned(
+                                    right: 0,
+                                    bottom: 0,
+                                    child: Container(
+                                      height: 26.pw,
+                                      width: 26.pw,
+                                      decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                            image: CachedNetworkImageProvider(
+                                              "https://www.history.com/.image/t_share/MTU3ODc4NjAyOTg2MzAwNzQ1/ask-history-where-did-poker-originate-2.jpg",
+                                            ),
+                                            fit: BoxFit.cover,
+                                          ),
+                                          borderRadius:
+                                              BorderRadius.circular(13.pw)),
+                                      padding: EdgeInsets.all(5.pw),
+                                      // child: SvgPicture.asset(
+                                      //     'assets/icons/clubs.svg',
+                                      //     height: 24.pw,
+                                      //     width: 24.pw,
+                                      //     color: Colors.white),
+                                    ))
+                                : Container(),
                           ],
                         ),
                       ),
