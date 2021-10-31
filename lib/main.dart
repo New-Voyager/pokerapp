@@ -17,7 +17,6 @@ import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/services/app/insta_refresh_service.dart';
 import 'package:pokerapp/services/connectivity_check/network_change_listener.dart';
 import 'package:pokerapp/services/data/hive_datasource_impl.dart';
-import 'package:pokerapp/services/firebase/settings.dart';
 import 'package:pokerapp/services/nats/nats.dart';
 import 'package:provider/provider.dart';
 import 'main_helper.dart';
@@ -74,8 +73,7 @@ class _MyAppState extends State<MyApp> {
     final apiUrl = FlavorConfig.of(context).apiBaseUrl;
     await AppConfig.init(apiUrl);
     log('Api server url: ${AppConfig.apiUrl}');
-    final opts = await getFirebaseSettings(AppConfig.apiUrl);
-    final app = Firebase.initializeApp(options: opts);
+    final app = Firebase.initializeApp();
     return app;
   }
 
