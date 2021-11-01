@@ -1118,7 +1118,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
           if (_gameContextObj.joiningAudio) {
             return;
           }
-
+          if (!_gameState.gameInfo.audioConfEnabled) {
+            return;
+          }
           OverlaySupportEntry notification;
           try {
             notification = Alerts.showNotification(

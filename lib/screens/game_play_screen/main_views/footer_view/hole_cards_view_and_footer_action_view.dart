@@ -45,6 +45,7 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
     return Builder(builder: (context) {
       List<Widget> children = [];
       final gameState = GameState.getState(context);
+      final theme = AppTheme.getTheme(context);
 
       children.addAll([
         // // main hole card view
@@ -54,6 +55,8 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
           return _buildHoleCardView(context);
         }),
       ]);
+      Widget rankText;
+      rankText = _getRankText(gameState, context);
 
       double scale = boardAttributes.holeCardViewScale;
       return Stack(
@@ -62,6 +65,10 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
           gameState.customizationMode
               ? BetIconButton(displayBetText: false)
               : Container(),
+          Align(
+            alignment: Alignment.topCenter,
+            child: rankText, //Text('ABCC', style: AppDecorators.getAccentTextStyle(theme: theme),),
+          ),
           // hole card view
           Transform.translate(
             offset: boardAttributes.holeCardViewOffset,
@@ -160,11 +167,10 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
         : Container(
             padding: EdgeInsets.symmetric(
               horizontal: 8.pw,
-              vertical: 2.ph,
             ),
             child: Text(
               me.rankText,
-              style: AppDecorators.getHeadLine6Style(theme: theme),
+              style: AppDecorators.getHeadLine3Style(theme: theme),
             ),
           );
     return rankText;
@@ -213,8 +219,8 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
       }
     }
 
-    Widget rankText;
-    rankText = _getRankText(gameState, context);
+    // Widget rankText;
+    // rankText = _getRankText(gameState, context);
 
     return GestureDetector(
       onTap: () {
@@ -230,9 +236,8 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            rankText,
             SizedBox(
-              height: 1.ph,
+              height: 12.dp,
             ),
             Column(
               children: [
