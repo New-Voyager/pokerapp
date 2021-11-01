@@ -191,8 +191,8 @@ class BetWidget extends StatelessWidget {
         Text('BET', style: TextStyle(fontSize: 12.dp)),
         _showTip()
             ? Transform.translate(
-                offset: Offset(70.pw, 0.ph),
-                child: JumpingTextWidget(text: 'Tap', jumpHeight: 5))
+                offset: Offset(100.pw, 0.ph),
+                child: JumpingTextWidget(text: 'Tap\nto\nbet', jumpHeight: 5))
             : Container(),
       ],
     );

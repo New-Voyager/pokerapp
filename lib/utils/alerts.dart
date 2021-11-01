@@ -69,7 +69,7 @@ class Alerts {
     );
   }
 
-  static void showNotification({
+  static OverlaySupportEntry showNotification({
     @required String titleText,
     String subTitleText,
     IconData leadingIcon,
@@ -80,7 +80,7 @@ class Alerts {
     if (duration == null) {
       duration = Duration(milliseconds: 1500);
     }
-    showOverlayNotification(
+    return showOverlayNotification(
       (context) => OverlayNotificationWidget(
         title: titleText,
         subTitle: subTitleText,
