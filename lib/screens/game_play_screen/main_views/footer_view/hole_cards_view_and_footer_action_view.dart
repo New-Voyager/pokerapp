@@ -54,6 +54,8 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
           return _buildHoleCardView(context);
         }),
       ]);
+
+      double scale = boardAttributes.holeCardViewScale;
       return Stack(
         alignment: Alignment.topCenter,
         children: [
@@ -64,7 +66,7 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
           Transform.translate(
             offset: boardAttributes.holeCardViewOffset,
             child: Transform.scale(
-              scale: boardAttributes.holeCardViewScale,
+              scale: scale,
               child: Stack(
                 alignment: Alignment.bottomCenter,
                 // mainAxisSize: MainAxisSize.min,
@@ -230,7 +232,7 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
           children: [
             rankText,
             SizedBox(
-              height: 10.ph,
+              height: 1.ph,
             ),
             Column(
               children: [
