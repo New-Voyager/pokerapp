@@ -648,7 +648,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       });
     });
 
-    _appScreenText = getAppTextScreen("handAnalyseView");
+    _appScreenText = getAppTextScreen("gameScreen");
   }
 
   // void initPlayingTimer() {
@@ -1115,11 +1115,33 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     if (context != null) {
       if (!_gameState.uiClosing) {
         if (_gameState.isPlaying) {
-          await _gameContextObj.joinAudio(context);
-          // ui is still running
-          // send stream id
-          _gameState.gameMessageService.sendMyInfo();
-          _gameState.gameMessageService.requestPlayerInfo();
+          if (_gameContextObj.joiningAudio) {
+            return;
+          }
+
+          OverlaySupportEntry notification;
+          try {
+            notification = Alerts.showNotification(
+                titleText: _appScreenText['audioTitle'],
+                subTitleText: _appScreenText['joiningAudio'],
+                leadingIcon: Icons.mic_sharp);
+
+            await _gameContextObj.joinAudio(context);
+            // ui is still running
+            // send stream id
+            _gameState.gameMessageService.sendMyInfo();
+            _gameState.gameMessageService.requestPlayerInfo();
+            notification.dismiss();
+            notification = Alerts.showNotification(
+                titleText: _appScreenText['audioTitle'],
+                subTitleText: _appScreenText['joinedAudio'],
+                leadingIcon: Icons.mic_sharp,
+                duration: Duration(seconds: 2));
+          } catch (err) {
+            if (notification != null) {
+              notification.dismiss();
+            }
+          }
         }
       }
     }

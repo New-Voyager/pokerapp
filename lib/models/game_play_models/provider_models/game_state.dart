@@ -548,11 +548,9 @@ class GameState {
   }
 
   bool get isPlaying {
-    for (final seat in this._seats) {
-      if (seat.player != null &&
-          seat.player.playerId == this.currentPlayer.id) {
-        return true;
-      }
+    final playerInGame = this.getPlayerById(this.currentPlayerId);
+    if (playerInGame != null) {
+      return true;
     }
     return false;
   }
