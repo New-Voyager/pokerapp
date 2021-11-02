@@ -21,6 +21,7 @@ import 'package:provider/provider.dart';
 class NamePlateWidget extends StatelessWidget {
   final Key globalKey;
   final Seat seat;
+  NamePlateDesign nameplate;
   final BoardAttributesObject boardAttributes;
 
   static const highlightColor = const Color(0xfffffff);
@@ -173,7 +174,6 @@ class NamePlateWidget extends StatelessWidget {
     Widget plateWidget;
     String playerNamePlate = namePlateStr;
     String playerProgress = progressPathStr;
-    NamePlateDesign nameplate;
 
     if (seat.player != null) {
       final gameState = GameState.getState(context);
@@ -286,8 +286,9 @@ class NamePlateWidget extends StatelessWidget {
                         FittedBox(
                           child: Text(
                             seat.player?.name ?? '',
-                            style:
-                                AppDecorators.getSubtitle4Style(theme: theme),
+                            style: AppDecorators.getSubtitle4Style(theme: theme)
+                                .copyWith(
+                                    fontSize: nameplate.meta.nameTextSize),
                           ),
                         ),
                         Spacer(),
@@ -401,7 +402,8 @@ class NamePlateWidget extends StatelessWidget {
   Widget stack(BuildContext context, AppTheme theme) {
     Widget _buildStackTextWidget(int stack) => Text(
           stack?.toString() ?? 'XX',
-          style: AppDecorators.getSubtitle4Style(theme: theme),
+          style: AppDecorators.getSubtitle4Style(theme: theme)
+              .copyWith(fontSize: nameplate.meta.nameTextSize),
         );
 
     if (seat.player.reloadAnimation == true)
