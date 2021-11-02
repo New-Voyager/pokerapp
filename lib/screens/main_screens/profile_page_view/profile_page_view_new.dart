@@ -66,10 +66,6 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
     if (_currentUser != null) {
       _displayName = _currentUser.name;
 
-      //  await HiveDatasource.getInstance
-      //         .getBox(BoxType.PROFILE_BOX)
-      //         .get(AppStringsNew.keyProfileName) ??
-      //     "";
       setState(() {});
     } else {
       log("Failed to fetch user data");
@@ -91,12 +87,6 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                   : SingleChildScrollView(
                       child: Column(
                         children: [
-                          // Container(
-                          //   padding: EdgeInsets.all(16),
-                          //   child: Text(AppStringsNew.myProfileTitleText,
-                          //       style: AppDecorators.getAccentTextStyle(
-                          //           theme: theme)),
-                          // ),
                           HeadingWidget(heading: _appScreenText['myProfile']),
 
                           // Name tile
@@ -193,17 +183,6 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                     ],
                                   ),
                                 ),
-                                Container(
-                                    margin: EdgeInsets.symmetric(vertical: 8),
-                                    child:
-                                        Text('id: ${AuthService.getUuid()}')),
-                                SizedBox(
-                                  height: 5.ph,
-                                ),
-                                Container(
-                                    margin: EdgeInsets.symmetric(vertical: 8),
-                                    child: Text(
-                                        '${versionNumber} ${releaseDate}')),
                               ],
                             ),
                           ),
@@ -223,14 +202,6 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      // Container(
-                                      //   margin:
-                                      //       EdgeInsets.symmetric(horizontal: 16),
-                                      //   child: Text(
-                                      //     "Personal Details",
-                                      //     style: AppStylesNew.labelTextStyle,
-                                      //   ),
-                                      // ),
                                       ListTileItem(
                                         text: _currentUser.name == null
                                             ? _appScreenText['changeScreenName']
@@ -277,10 +248,6 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                           Navigator.of(context).pushNamed(
                                             Routes.game_screen_customize,
                                           );
-
-                                          // Navigator.of(context).pushNamed(
-                                          //   Routes.customize,
-                                          // );
                                         },
                                       ),
                                       CustomDivider(),
@@ -290,10 +257,6 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                             AppAssetsNew.customizeImagePath,
                                         index: 4,
                                         onTapFunction: () {
-                                          // Navigator.of(context).pushNamed(
-                                          //   Routes.game_screen_customize,
-                                          // );
-
                                           Navigator.of(context).pushNamed(
                                             Routes.customize,
                                           );
@@ -313,14 +276,6 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      // Container(
-                                      //   margin:
-                                      //       EdgeInsets.symmetric(horizontal: 16),
-                                      //   child: Text(
-                                      //     "Game Details",
-                                      //     style: AppStylesNew.labelTextStyle,
-                                      //   ),
-                                      // ),
                                       ListTileItem(
                                         text: _appScreenText['bookmarkedHands'],
                                         imagePath: AppAssetsNew
@@ -333,7 +288,6 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                         ),
                                       ),
                                       CustomDivider(),
-
                                       ListTileItem(
                                           text: _appScreenText['stats'],
                                           imagePath:
@@ -428,7 +382,14 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                               ],
                             ),
                           ),
-                          AppDimensionsNew.getVerticalSizedBox(100),
+                          AppDimensionsNew.getVerticalSizedBox(20.ph),
+                          Container(
+                              margin: EdgeInsets.symmetric(vertical: 8),
+                              child: Text('id: ${AuthService.getUuid()}')),
+                          Container(
+                              margin: EdgeInsets.symmetric(vertical: 8),
+                              child: Text('${versionNumber} ${releaseDate}')),
+                          AppDimensionsNew.getVerticalSizedBox(80.ph),
                         ],
                       ),
                     ),

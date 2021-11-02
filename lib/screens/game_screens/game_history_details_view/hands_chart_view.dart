@@ -2,6 +2,7 @@
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_history_model.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
 
 class HandsPieChart extends StatelessWidget {
   bool animate;
@@ -10,7 +11,8 @@ class HandsPieChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return new charts.PieChart(data(),
+    final theme = AppTheme.getTheme(context);
+    return new charts.PieChart(data(theme),
         animate: animate,
         behaviors: [
           new charts.DatumLegend(
@@ -48,7 +50,24 @@ class HandsPieChart extends StatelessWidget {
         ));
   }
 
-  dynamic getColor(HandData hand) {
+  dynamic getColor(HandData hand, AppTheme theme) {
+    if (hand != null) {
+      if (hand.round == 'Pre-flop') {
+        return charts.ColorUtil.fromDartColor(theme.preFlopColor);
+      }
+      if (hand.round == 'Flop') {
+        return charts.ColorUtil.fromDartColor(theme.flopColor);
+      } else if (hand.round == 'Turn') {
+        return charts.ColorUtil.fromDartColor(theme.turnColor);
+      } else if (hand.round == 'River') {
+        return charts.ColorUtil.fromDartColor(theme.riverColor);
+      } else if (hand.round == 'Showdown') {
+        return charts.ColorUtil.fromDartColor(theme.showDownColor);
+      }
+    }
+  }
+
+  dynamic getColor2(HandData hand) {
     if (hand != null) {
       if (hand.round == 'Pre-flop') {
         return charts.MaterialPalette.gray.shadeDefault;
@@ -65,13 +84,13 @@ class HandsPieChart extends StatelessWidget {
     }
   }
 
-  List<charts.Series<HandData, String>> data() {
+  List<charts.Series<HandData, String>> data(AppTheme theme) {
     return [
       new charts.Series<HandData, String>(
         id: 'Hands',
         domainFn: (HandData hand, _) => hand.round,
         measureFn: (HandData hand, _) => hand.percent,
-        colorFn: (HandData hand, _) => getColor(hand),
+        colorFn: (HandData hand, _) => getColor(hand, theme),
         data: handsData,
       )
     ];
