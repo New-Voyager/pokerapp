@@ -168,17 +168,18 @@ class _ChatScreenState extends State<ChatScreen> with RouteAwareAnalytics {
   }
 
   void _onSendClicked() async {
-    if (_textController.text.trim().isNotEmpty) {
+    final text = _textController.text.trim();
+    _textController.clear();
+
+    if (text.isNotEmpty) {
       await ClubsService.sendMessage(
-        _textController.text.trim(),
+        text,
         widget.player,
         widget.clubCode,
       );
 
       // fetch and update after sent the message
       _fetchAndUpdate();
-
-      _textController.clear();
     }
   }
 

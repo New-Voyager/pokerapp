@@ -36,6 +36,9 @@ class MessageItem extends StatelessWidget {
     @required this.players,
   });
 
+  // final Color myColor = theme.fillInColor;
+  // final Color othersColor = theme.primaryColor;
+
   final double extraPadding = 80.0;
   @override
   Widget build(BuildContext context) {
@@ -45,7 +48,6 @@ class MessageItem extends StatelessWidget {
     bool isMe = currentUser.uuid == messageModel.sender;
 
     final theme = AppTheme.getTheme(context);
-
     text = messageModel.text;
 
     if (messageModel.messageType == MessageType.JOIN_CLUB ||
@@ -112,11 +114,13 @@ class MessageItem extends StatelessWidget {
     final bool isMinified = false,
   }) {
     Widget triangle;
+
     CustomPaint trianglePainer = CustomPaint(
       painter: Triangle(
-        isMe ? theme.fillInColor : theme.primaryColorWithLight(0.2),
+        isMe ? theme.fillInColor : theme.primaryColor,
       ),
     );
+
     if (isMe) {
       triangle = Positioned(right: 0, bottom: 0, child: trianglePainer);
     } else {
@@ -204,7 +208,7 @@ class MessageItem extends StatelessWidget {
         ),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(5.0),
-          color: isMe ? theme.fillInColor : theme.primaryColorWithLight(),
+          color: isMe ? theme.fillInColor : theme.primaryColor,
         ),
         child: Column(
           children: [
@@ -299,7 +303,8 @@ class MessageItem extends StatelessWidget {
 
     AppTextScreen _appScreenText = getAppTextScreen("global");
     Alignment alignment = isMe ? Alignment.centerRight : Alignment.centerLeft;
-    Color tileColor = isMe ? theme.fillInColor : theme.primaryColorWithDark();
+    Color tileColor = isMe ? theme.fillInColor : theme.primaryColor;
+
     if (clubMessage) {
       tileColor = theme.accentColorWithDark(0.3);
       alignment = Alignment.center;
