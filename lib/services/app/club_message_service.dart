@@ -95,7 +95,7 @@ class ClubMessageService {
     int next = 0;
     List<ClubMessageModel> _messages = [];
     if (_timer == null || !_timer.isActive) {
-      _timer = Timer.periodic(AppConstants.clubMessagePollDuration, (_) async {
+      _timer = Timer.periodic(AppConstants.messagePollDuration, (_) async {
         int len = _messages.length;
         next = await _fetchData(clubCode, next, _messages);
         if (_messages.length != len && !_stream.isClosed) {

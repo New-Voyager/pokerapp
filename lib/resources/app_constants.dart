@@ -93,7 +93,7 @@ class AppConstants {
     milliseconds: 1500,
   );
 
-  static const Duration clubMessagePollDuration = const Duration(
+  static const Duration messagePollDuration = const Duration(
     milliseconds: 1000,
   );
 
