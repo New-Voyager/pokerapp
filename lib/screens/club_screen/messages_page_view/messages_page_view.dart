@@ -15,6 +15,7 @@ import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/services/app/club_interior_service.dart';
 import 'package:pokerapp/services/app/club_message_service.dart';
+import 'package:pokerapp/services/text_filtering/text_filtering.dart';
 import 'package:pokerapp/utils/gif_widget.dart';
 import 'package:pokerapp/widgets/emoji_picker_widget.dart';
 import 'package:provider/provider.dart';
@@ -66,7 +67,7 @@ class _MessagesPageViewState extends State<MessagesPageView>
     ClubMessageModel _model = ClubMessageModel(
       clubCode: widget.clubCode,
       messageType: MessageType.TEXT,
-      text: text,
+      text: TextFiltering.mask(text),
     );
 
     ClubMessageService.sendMessage(_model);
@@ -166,6 +167,7 @@ class _MessagesPageViewState extends State<MessagesPageView>
                       var mess = _convert();
 
                       return ListView.separated(
+                        physics: BouncingScrollPhysics(),
                         reverse: true,
                         padding: const EdgeInsets.all(5),
                         itemBuilder: (_, int index) {

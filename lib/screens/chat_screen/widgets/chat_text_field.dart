@@ -32,18 +32,22 @@ class ChatTextField extends StatelessWidget {
         child: Row(
           children: [
             // gif button
-            _buildTextFieldIcon(
-              icon: icon,
-              onPressed: onGifSelectTap,
-              color: theme.secondaryColorWithDark(),
-            ),
+            onGifSelectTap == null
+                ? const SizedBox.shrink()
+                : _buildTextFieldIcon(
+                    icon: icon,
+                    onPressed: onGifSelectTap,
+                    color: theme.secondaryColorWithDark(),
+                  ),
             // emoji button
-            _buildTextFieldIcon(
-              padding: false,
-              icon: Icons.emoji_emotions,
-              onPressed: onEmojiSelectTap,
-              color: theme.secondaryColorWithDark(),
-            ),
+            onEmojiSelectTap == null
+                ? const SizedBox.shrink()
+                : _buildTextFieldIcon(
+                    padding: false,
+                    icon: Icons.emoji_emotions,
+                    onPressed: onEmojiSelectTap,
+                    color: theme.secondaryColorWithDark(),
+                  ),
 
             Expanded(
               child: TextFormField(
