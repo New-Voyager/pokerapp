@@ -11,6 +11,7 @@ import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
+import 'package:pokerapp/services/text_filtering/text_filtering.dart';
 import 'package:pokerapp/utils/gif_widget.dart';
 import 'package:pokerapp/widgets/attributed_gif_widget.dart';
 import 'package:pokerapp/widgets/emoji_picker_widget.dart';
@@ -114,7 +115,7 @@ class _GameChatState extends State<GameChat> {
     if (text.isEmpty) return;
 
     // send the message
-    chatService.sendText(text);
+    chatService.sendText(TextFiltering.mask(text));
 
     _textEditingController.clear();
   }

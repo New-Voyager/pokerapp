@@ -11,6 +11,7 @@ import 'package:pokerapp/screens/chat_screen/chat_model.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/chat_list_widget.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
+import 'package:pokerapp/services/text_filtering/text_filtering.dart';
 import 'package:pokerapp/utils/gif_widget.dart';
 import 'package:pokerapp/widgets/emoji_picker_widget.dart';
 import 'package:provider/provider.dart';
@@ -192,7 +193,7 @@ class _ChatScreenState extends State<ChatScreen> with RouteAwareAnalytics {
 
     if (text.isNotEmpty) {
       await ClubsService.sendMessage(
-        text,
+        TextFiltering.mask(text),
         widget.player,
         widget.clubCode,
       );
