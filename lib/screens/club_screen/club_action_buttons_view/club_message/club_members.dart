@@ -75,6 +75,7 @@ class _ClubMembersState extends State<ClubMembers> with RouteAwareAnalytics {
                   );
                 }
                 return ListView.builder(
+                  physics: BouncingScrollPhysics(),
                   itemCount: snapshot.data.length,
                   itemBuilder: (context, index) {
                     return GestureDetector(

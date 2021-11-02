@@ -120,6 +120,7 @@ class _ClubMembersViewState extends State<ClubMembersView>
                         ),
                         Expanded(
                           child: TabBarView(
+                            physics: BouncingScrollPhysics(),
                             controller: _controller,
                             children: <Widget>[
                               ClubMembersListView(

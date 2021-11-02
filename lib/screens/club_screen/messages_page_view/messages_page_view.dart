@@ -166,6 +166,7 @@ class _MessagesPageViewState extends State<MessagesPageView>
                       var mess = _convert();
 
                       return ListView.separated(
+                        physics: BouncingScrollPhysics(),
                         reverse: true,
                         padding: const EdgeInsets.all(5),
                         itemBuilder: (_, int index) {
