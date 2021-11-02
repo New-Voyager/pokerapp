@@ -176,8 +176,8 @@ class NamePlateWidget extends StatelessWidget {
     String playerNamePlate = namePlateStr;
     String playerProgress = progressPathStr;
 
+    final gameState = GameState.getState(context);
     if (seat.player != null) {
-      final gameState = GameState.getState(context);
       if (seat.player.isMe) {
         nameplate = gameState.assets.getNameplate();
       } else {
@@ -185,14 +185,16 @@ class NamePlateWidget extends StatelessWidget {
       }
     }
 
+    nameplate = gameState.assets.getNameplateById("2");
+
     if (nameplate != null) {
       playerNamePlate = nameplate.svg;
       playerProgress = nameplate.path;
     }
-    double scale = 1.0;
-    if (nameplate.id != "0") {
-      scale = 1.2;
-    }
+    double scale = 1.2;
+    // if (nameplate.id != "0") {
+    //   scale = 1.2;
+    // }
 /*
 [log] Timer remaining: 6698 total: 30 current: 23
 [log] Rebuilding highlight remaining: 7 total: 30 current: 23
@@ -412,11 +414,12 @@ class NamePlateWidget extends StatelessWidget {
   }
 
   Widget stack(BuildContext context, AppTheme theme) {
-    Widget _buildStackTextWidget(int stack) => Text(
+    Widget _buildStackTextWidget(int stack) => FittedBox(
+            child: Text(
           stack?.toString() ?? 'XX',
           style: AppDecorators.getSubtitle4Style(theme: theme)
               .copyWith(fontSize: 12.dp), //nameplate.meta.nameTextSize),
-        );
+        ));
 
     if (seat.player.reloadAnimation == true)
       return StackReloadAnimatingWidget(

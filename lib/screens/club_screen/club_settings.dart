@@ -257,45 +257,46 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
 
                             // Show high rank stats
                             Visibility(
-                              visible: false,
-                              child: 
-                            Container(
-                              margin: EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 8),
-                              child: Column(
-                                children: [
-                                  //
-                                  Container(
-                                    decoration:
-                                        AppDecorators.tileDecoration(theme),
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: 8, horizontal: 16),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        _buildRadio(
-                                            value: _clubModel.showHighRankStats,
-                                            label: _appScreenText[
-                                                'showHighRankStats'],
-                                            onChange: (v) async {
-                                              ClubUpdateInput input =
-                                                  ClubUpdateInput(
-                                                name: _clubModel.clubName,
-                                                description:
-                                                    _clubModel.description,
-                                                showHighRankStats: v,
-                                              );
-                                              await updateClubAPICall(input);
-                                              // Fetch user details from server
-                                            },
-                                            theme: theme),
-                                      ],
-                                    ),
+                                visible: false,
+                                child: Container(
+                                  margin: EdgeInsets.symmetric(
+                                      horizontal: 16, vertical: 8),
+                                  child: Column(
+                                    children: [
+                                      //
+                                      Container(
+                                        decoration:
+                                            AppDecorators.tileDecoration(theme),
+                                        padding: EdgeInsets.symmetric(
+                                            vertical: 8, horizontal: 16),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            _buildRadio(
+                                                value: _clubModel
+                                                    .showHighRankStats,
+                                                label: _appScreenText[
+                                                    'showHighRankStats'],
+                                                onChange: (v) async {
+                                                  ClubUpdateInput input =
+                                                      ClubUpdateInput(
+                                                    name: _clubModel.clubName,
+                                                    description:
+                                                        _clubModel.description,
+                                                    showHighRankStats: v,
+                                                  );
+                                                  await updateClubAPICall(
+                                                      input);
+                                                  // Fetch user details from server
+                                                },
+                                                theme: theme),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ],
-                              ),
-                            )),
+                                )),
                           ],
                         ),
                       ),
