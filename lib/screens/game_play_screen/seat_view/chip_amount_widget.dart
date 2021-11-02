@@ -14,6 +14,7 @@ import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/player_view.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/utils/formatter.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class ChipAmountWidget extends StatefulWidget {
   final bool animate;
@@ -109,7 +110,7 @@ class _ChipAmountWidgetState extends State<ChipAmountWidget>
       DataFormatter.chipsFormat(action.amount),
       style: TextStyle(
         color: Colors.white,
-        fontSize: 12.0,
+        fontSize: 10.dp,
         fontWeight: FontWeight.bold,
         fontFamily: AppAssets.fontFamilyLato,
       ),
@@ -141,7 +142,7 @@ class _ChipAmountWidgetState extends State<ChipAmountWidget>
     else
       crossAxisAlignment = CrossAxisAlignment.center;
 
-    betWidget = Column(
+    betWidget = Row(
       crossAxisAlignment: crossAxisAlignment,
       mainAxisSize: MainAxisSize.min,
       children: children,

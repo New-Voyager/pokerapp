@@ -10,6 +10,7 @@ class NamePlateDesignMeta {
   String padding;
   double nameTextSize;
   double amountTextSize;
+  double scale;
 
   NamePlateDesignMeta(
       {@required this.svgWidth,
@@ -18,7 +19,8 @@ class NamePlateDesignMeta {
       @required this.progressHeight,
       @required this.padding,
       @required this.nameTextSize,
-      @required this.amountTextSize});
+      @required this.amountTextSize,
+      this.scale = 1.0});
 
   Map<String, dynamic> toMap() {
     return {
@@ -29,6 +31,7 @@ class NamePlateDesignMeta {
       'padding': padding,
       'nameTextSize': nameTextSize,
       'amountTextSize': amountTextSize,
+      'scale': scale
     };
   }
 
@@ -41,6 +44,7 @@ class NamePlateDesignMeta {
       padding: map['padding'],
       nameTextSize: map['nameTextSize'],
       amountTextSize: map['amountTextSize'],
+      scale: map['scale'] ?? 1.0,
     );
   }
 

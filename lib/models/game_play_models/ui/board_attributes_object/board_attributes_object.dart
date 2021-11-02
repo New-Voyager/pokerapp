@@ -245,26 +245,26 @@ Map<SeatPos, SeatPosAttribs> getSeatMap(int deviceSize) {
     /* bottom center */
     SeatPos.bottomCenter: SeatPosAttribs(
       Alignment.bottomCenter,
-      Offset(0, 10),
+      Offset(0, 35),
       Alignment.centerRight,
     ),
 
     /* bottom left and bottom right  */
     SeatPos.bottomLeft: SeatPosAttribs(
       Alignment.bottomLeft,
-      Offset(10, 0),
+      Offset(35, 25),
       Alignment.centerRight,
     ),
     SeatPos.bottomRight: SeatPosAttribs(
       Alignment.bottomRight,
-      Offset(-10, 0),
+      Offset(-35, 25),
       Alignment.centerLeft,
     ),
 
     /* middle left and middle right */
     SeatPos.middleLeft: SeatPosAttribs(
       Alignment.centerLeft,
-      Offset(3, 25),
+      Offset(3, 40),
       Alignment.centerRight,
     ),
     SeatPos.middleRight: SeatPosAttribs(
@@ -314,26 +314,26 @@ Map<SeatPos, Offset> getBetAmountPositionMap({
     return {
       /* bottom, bottom left and bottom right */
       SeatPos.bottomCenter: Offset(
-        -20,
-        -namePlateSize.height * 0.90,
+        0,
+        -namePlateSize.height * 1.2,
       ),
       SeatPos.bottomLeft: Offset(
-        namePlateSize.width * 0.60,
+        namePlateSize.width * 0.80,
         -namePlateSize.height * 0.80,
       ),
       SeatPos.bottomRight: Offset(
-        -namePlateSize.width * 0.90,
+        -namePlateSize.width * 0.40,
         -namePlateSize.height * 0.80,
       ),
 
       /* middle left and middle right */
       SeatPos.middleLeft: Offset(
-        namePlateSize.width * 0.10,
+        namePlateSize.width * 0.20,
         namePlateSize.height * 0.70,
       ),
       SeatPos.middleRight: Offset(
-        -namePlateSize.width,
-        -namePlateSize.height * 0.20,
+        -namePlateSize.width * 0.30,
+        namePlateSize.height * 0.70,
       ),
 
       /* top left and top right */
@@ -343,7 +343,7 @@ Map<SeatPos, Offset> getBetAmountPositionMap({
       ),
       SeatPos.topRight: Offset(
         -namePlateSize.width * 0.20,
-        namePlateSize.height * 0.70,
+        namePlateSize.height * 0.65,
       ),
 
       /* center, center left and center right */

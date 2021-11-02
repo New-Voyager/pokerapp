@@ -11,6 +11,7 @@ class Nameplate extends StatelessWidget {
   final String progressPath;
   final Size size;
   final Size progressRatio;
+  final double scale;
 
   Nameplate.fromSvgString({
     Key key,
@@ -20,6 +21,7 @@ class Nameplate extends StatelessWidget {
     @required this.progressPath,
     @required this.size,
     @required this.progressRatio,
+    this.scale = 1.0,
   }) : super(key: key) {
     assert(svg != null &&
         size != null &&
@@ -55,22 +57,24 @@ class Nameplate extends StatelessWidget {
         ),
       );
     }
-    return Container(
-      width: size.width,
-      height: size.height,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          // svg
-          SvgPicture.string(
-            svg,
-            width: size.width,
-            height: size.height,
+    return Transform.scale(
+        scale: this.scale,
+        child: Container(
+          width: size.width,
+          height: size.height,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              // svg
+              SvgPicture.string(
+                svg,
+                width: size.width,
+                height: size.height,
+              ),
+              progressWidget,
+            ],
           ),
-          progressWidget,
-        ],
-      ),
-    );
+        ));
   }
 }
 

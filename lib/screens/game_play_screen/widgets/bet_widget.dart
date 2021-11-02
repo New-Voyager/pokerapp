@@ -1,10 +1,7 @@
 import 'dart:developer';
 
-import 'package:animated_text_kit/animated_text_kit.dart';
-import 'package:bouncing_widget/bouncing_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_html/html_parser.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/player_action.dart';
@@ -22,7 +19,6 @@ import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/cards/multiple_stack_card_views.dart';
 import 'package:provider/provider.dart';
 import 'package:sleek_circular_slider/sleek_circular_slider.dart';
-import 'package:shimmer/shimmer.dart';
 
 class BetWidget extends StatelessWidget {
   final Function onSubmitCallBack;

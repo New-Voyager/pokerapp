@@ -231,11 +231,11 @@ String defaultAppStyle = '''{
   "confirmYesButtonBackgroundColor": "FF00FF00",
   "confirmYesButtonIconColor": "FFFFFFFF",
 
-  "handlogPreflopColor": "FF1A0E2D",
-  "handlogFlopColor": "FF101E33",
-  "handlogTurnColor": "FF072818",
-  "handlogRiverColor": "FF453A02",
-  "handlogShowdownColor": "FF44110A"
+  "handlogPreflopColor": "FF808080",
+  "handlogFlopColor": "FFCCCC00",
+  "handlogTurnColor": "FF006400",
+  "handlogRiverColor": "FF191970",
+  "handlogShowdownColor": "FF8B0000"
 }''';
 
 String style1 = '''{
@@ -268,11 +268,11 @@ String style1 = '''{
   "confirmYesButtonBackgroundColor": "FF00FF00",
   "confirmYesButtonIconColor": "FFFFFFFF",
 
-  "handlogPreflopColor": "FF1A0E2D",
-  "handlogFlopColor": "FF101E33",
-  "handlogTurnColor": "FF072818",
-  "handlogRiverColor": "FF453A02",
-  "handlogShowdownColor": "FF44110A"
+  "handlogPreflopColor": "FF808080",
+  "handlogFlopColor": "FFCCCC00",
+  "handlogTurnColor": "FF006400",
+  "handlogRiverColor": "FF191970",
+  "handlogShowdownColor": "FF8B0000"
 }''';
 
 String style2 = '''{
@@ -305,11 +305,11 @@ String style2 = '''{
   "confirmYesButtonBackgroundColor": "FF00FF00",
   "confirmYesButtonIconColor": "FFFFFFFF",
 
-  "handlogPreflopColor": "FF1A0E2D",
-  "handlogFlopColor": "FF101E33",
-  "handlogTurnColor": "FF072818",
-  "handlogRiverColor": "FF453A02",
-  "handlogShowdownColor": "FF44110A"
+  "handlogPreflopColor": "FF808080",
+  "handlogFlopColor": "FFCCCC00",
+  "handlogTurnColor": "FF006400",
+  "handlogRiverColor": "FF191970",
+  "handlogShowdownColor": "FF8B0000"
 }''';
 
 String style3 = '''{
@@ -342,11 +342,11 @@ String style3 = '''{
   "confirmYesButtonBackgroundColor": "FF00FF00",
   "confirmYesButtonIconColor": "FFFFFFFF",
 
-  "handlogPreflopColor": "FF1A0E2D",
-  "handlogFlopColor": "FF101E33",
-  "handlogTurnColor": "FF072818",
-  "handlogRiverColor": "FF453A02",
-  "handlogShowdownColor": "FF44110A"
+  "handlogPreflopColor": "FF808080",
+  "handlogFlopColor": "FFCCCC00",
+  "handlogTurnColor": "FF006400",
+  "handlogRiverColor": "FF191970",
+  "handlogShowdownColor": "FF8B0000"
 }''';
 
 String style4 = '''{
@@ -379,11 +379,11 @@ String style4 = '''{
   "confirmYesButtonBackgroundColor": "FF00FF00",
   "confirmYesButtonIconColor": "FFFFFFFF",
 
-  "handlogPreflopColor": "FF1A0E2D",
-  "handlogFlopColor": "FF101E33",
-  "handlogTurnColor": "FF072818",
-  "handlogRiverColor": "FF453A02",
-  "handlogShowdownColor": "FF44110A"
+  "handlogPreflopColor": "FF808080",
+  "handlogFlopColor": "FFCCCC00",
+  "handlogTurnColor": "FF006400",
+  "handlogRiverColor": "FF191970",
+  "handlogShowdownColor": "FF8B0000"
 }''';
 
 String style5 = '''{
@@ -416,11 +416,11 @@ String style5 = '''{
   "confirmYesButtonBackgroundColor": "FF00FF00",
   "confirmYesButtonIconColor": "FFFFFFFF",
 
-  "handlogPreflopColor": "FF1A0E2D",
-  "handlogFlopColor": "FF101E33",
-  "handlogTurnColor": "FF072818",
-  "handlogRiverColor": "FF453A02",
-  "handlogShowdownColor": "FF44110A"
+  "handlogPreflopColor": "FF808080",
+  "handlogFlopColor": "FFCCCC00",
+  "handlogTurnColor": "FF006400",
+  "handlogRiverColor": "FF191970",
+  "handlogShowdownColor": "FF8B0000"
 }''';
 
 String style6 = '''{
@@ -453,11 +453,11 @@ String style6 = '''{
   "confirmYesButtonBackgroundColor": "FF00FF00",
   "confirmYesButtonIconColor": "FFFFFFFF",
 
-  "handlogPreflopColor": "FF1A0E2D",
-  "handlogFlopColor": "FF101E33",
-  "handlogTurnColor": "FF072818",
-  "handlogRiverColor": "FF453A02",
-  "handlogShowdownColor": "FF44110A"
+  "handlogPreflopColor": "FF808080",
+  "handlogFlopColor": "FFCCCC00",
+  "handlogTurnColor": "FF006400",
+  "handlogRiverColor": "FF191970",
+  "handlogShowdownColor": "FF8B0000"
 }''';
 
 String style7 = '''{
@@ -490,11 +490,11 @@ String style7 = '''{
   "confirmYesButtonBackgroundColor": "FF00FF00",
   "confirmYesButtonIconColor": "FFFFFFFF",
 
-  "handlogPreflopColor": "FF1A0E2D",
-  "handlogFlopColor": "FF101E33",
-  "handlogTurnColor": "FF072818",
-  "handlogRiverColor": "FF453A02",
-  "handlogShowdownColor": "FF44110A"
+  "handlogPreflopColor": "FF808080",
+  "handlogFlopColor": "FFCCCC00",
+  "handlogTurnColor": "FF006400",
+  "handlogRiverColor": "FF191970",
+  "handlogShowdownColor": "FF8B0000"
 }''';
 
 String style8 = '''{
@@ -527,11 +527,11 @@ String style8 = '''{
   "confirmYesButtonBackgroundColor": "FF00FF00",
   "confirmYesButtonIconColor": "FFFFFFFF",
 
-  "handlogPreflopColor": "FF1A0E2D",
-  "handlogFlopColor": "FF101E33",
-  "handlogTurnColor": "FF072818",
-  "handlogRiverColor": "FF453A02",
-  "handlogShowdownColor": "FF44110A"
+  "handlogPreflopColor": "FF808080",
+  "handlogFlopColor": "FFCCCC00",
+  "handlogTurnColor": "FF006400",
+  "handlogRiverColor": "FF191970",
+  "handlogShowdownColor": "FF8B0000"
 }''';
 
 extension HexColor on Color {
