@@ -175,8 +175,9 @@ class _MessagesPageViewState extends State<MessagesPageView>
                             players: _players,
                           );
                         },
-                        separatorBuilder: (_, __) =>
-                            const SizedBox(height: 5.0),
+                        separatorBuilder: (_, __) => const SizedBox(
+                          height: 5.0,
+                        ),
                         itemCount: mess.length,
                       );
                     },
