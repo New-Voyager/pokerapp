@@ -17,6 +17,8 @@ import 'package:pokerapp/screens/game_play_screen/seat_view/animating_widgets/st
 import 'package:pokerapp/screens/game_play_screen/widgets/milliseconds_counter.dart';
 import 'package:pokerapp/widgets/nameplate.dart';
 import 'package:provider/provider.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
+
 
 class NamePlateWidget extends StatelessWidget {
   final Key globalKey;
@@ -265,18 +267,19 @@ class NamePlateWidget extends StatelessWidget {
                   duration: AppConstants.animationDuration,
                   opacity: seat.isOpen ? 0.0 : 1.0,
                   child: Padding(
-                    padding: nameplate != null
-                        ? EdgeInsets.fromLTRB(
-                            double.parse(
-                                nameplate.meta.padding.split(",")[0].trim()),
-                            double.parse(
-                                nameplate.meta.padding.split(",")[1].trim()),
-                            double.parse(
-                                nameplate.meta.padding.split(",")[2].trim()),
-                            double.parse(
-                                nameplate.meta.padding.split(",")[3].trim()),
-                          )
-                        : EdgeInsets.all(3),
+                    // padding: nameplate != null
+                    //     ? EdgeInsets.fromLTRB(
+                    //         double.parse(
+                    //             nameplate.meta.padding.split(",")[0].trim()),
+                    //         double.parse(
+                    //             nameplate.meta.padding.split(",")[1].trim()),
+                    //         double.parse(
+                    //             nameplate.meta.padding.split(",")[2].trim()),
+                    //         double.parse(
+                    //             nameplate.meta.padding.split(",")[3].trim()),
+                    //       )
+                    //     : EdgeInsets.all(3),
+                    padding: EdgeInsets.all(2),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisSize: MainAxisSize.min,
@@ -287,15 +290,15 @@ class NamePlateWidget extends StatelessWidget {
                           child: Text(
                             seat.player?.name ?? '',
                             style: AppDecorators.getSubtitle4Style(theme: theme)
-                                .copyWith(
-                                    fontSize: nameplate.meta.nameTextSize),
+                                .copyWith(fontWeight: FontWeight.normal, fontSize: 12.dp)
+                                    //fontSize: nameplate.meta.nameTextSize),
                           ),
                         ),
-                        Spacer(),
+                        //Spacer(),
                         // divider
                         PlayerViewDivider(),
 
-                        Spacer(),
+                        //Spacer(),
                         // bottom widget - to show stack, sit back time, etc.
                         Align(
                           alignment: Alignment.topRight,
@@ -403,7 +406,7 @@ class NamePlateWidget extends StatelessWidget {
     Widget _buildStackTextWidget(int stack) => Text(
           stack?.toString() ?? 'XX',
           style: AppDecorators.getSubtitle4Style(theme: theme)
-              .copyWith(fontSize: nameplate.meta.nameTextSize),
+              .copyWith(fontSize: 12.dp), //nameplate.meta.nameTextSize),
         );
 
     if (seat.player.reloadAnimation == true)
@@ -427,7 +430,7 @@ class PlayerViewDivider extends StatelessWidget {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 8),
       decoration: BoxDecoration(
-        color: theme.fillInColor,
+        color: theme.accentColor,
         borderRadius: BorderRadius.circular(5),
       ),
       height: 1,

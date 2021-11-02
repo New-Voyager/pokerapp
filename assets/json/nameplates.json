@@ -23,8 +23,8 @@
                 "progressWidth": 240,
                 "progressHeight": 240,
                 "padding": "20, 10, 20, 10",
-                "nameTextSize": 10.0,
-                "amountTextSize": 10.0
+                "nameTextSize": 18.0,
+                "amountTextSize": 18.0
             }
         },
         {
@@ -37,8 +37,8 @@
                 "progressWidth": 240,
                 "progressHeight": 240,
                 "padding": "15, 10, 15, 10",
-                "nameTextSize": 10.0,
-                "amountTextSize": 10.0
+                "nameTextSize": 18.0,
+                "amountTextSize": 18.0
             }
         }, {
             "id": "3",
@@ -50,8 +50,8 @@
                 "progressWidth": 240,
                 "progressHeight": 240,
                 "padding": "15, 10, 15, 10",
-                "nameTextSize": 10.0,
-                "amountTextSize": 10.0
+                "nameTextSize": 18.0,
+                "amountTextSize": 18.0
             }
         }, {
             "id": "4",
@@ -63,8 +63,8 @@
                 "progressWidth": 240,
                 "progressHeight": 240,
                 "padding": "10, 10, 10, 10",
-                "nameTextSize": 10.0,
-                "amountTextSize": 10.0
+                "nameTextSize": 18.0,
+                "amountTextSize": 18.0
             }
         }, {
             "id": "5",
@@ -76,8 +76,8 @@
                 "progressWidth": 240,
                 "progressHeight": 240,
                 "padding": "15, 10, 15, 10",
-                "nameTextSize": 10.0,
-                "amountTextSize": 10.0
+                "nameTextSize": 18.0,
+                "amountTextSize": 18.0
             }
         }
     ]
