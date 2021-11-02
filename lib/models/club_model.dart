@@ -17,6 +17,7 @@ class ClubModel {
   String invitationDate;
   bool outgoingRequest;
   String memberStatus;
+  String picUrl;
 
   int pendingMemberCount;
   int hostUnreadMessageCount;
@@ -63,5 +64,6 @@ class ClubModel {
     this.unreadMessageCount = jsonData['unreadMessageCount'] ?? 0;
     this.memberUnreadMessageCount = jsonData['memberUnreadMessageCount'] ?? 0;
     this.liveGameCount = jsonData['liveGameCount'] ?? 0;
+    this.picUrl = jsonData['picUrl'] ?? '';
   }
 }

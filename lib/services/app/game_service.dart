@@ -326,6 +326,7 @@ class GameService {
           gameType
           clubCode
           clubName
+          clubPicUrl
           waitlistCount
           playerStatus
           maxPlayers
@@ -393,6 +394,7 @@ class GameService {
           waitlistCount
           tableCount
           clubCode
+          clubPicUrl
         }
       }
     """;
@@ -433,17 +435,15 @@ class GameService {
   static Future<List<GameModelNew>> getLiveGamesNew() async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     final List<GameModelNew> liveGames = [];
-
     QueryResult result =
         await _client.query(QueryOptions(document: gql(liveGamesNewQuery)));
-
     if (result.hasException) {
       log("Exception In GraphQl Response: ${result.exception}");
     } else {
       try {
-        result.data['liveGames'].forEach((item) {
+        for (final item in result.data['liveGames']) {
           liveGames.add(GameModelNew.fromJson(item));
-        });
+        }
       } catch (e) {
         log("Exception in converting to model: $e");
         return liveGames;

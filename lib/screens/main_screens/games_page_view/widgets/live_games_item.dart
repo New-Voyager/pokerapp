@@ -1,4 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:pokerapp/models/newmodels/game_model_new.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
@@ -18,7 +20,15 @@ class LiveGameItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     AppTextScreen _appScreenText = getAppTextScreen("liveGameItem");
-
+    DecorationImage clubImage;
+    if (game.clubPicUrl != null && !game.clubPicUrl.isEmpty) {
+      clubImage = DecorationImage(
+        image: CachedNetworkImageProvider(
+          game.clubPicUrl,
+        ),
+        fit: BoxFit.cover,
+      );
+    }
     return Consumer<AppTheme>(
       builder: (_, theme, __) => Stack(
         children: [
@@ -76,6 +86,25 @@ class LiveGameItem extends StatelessWidget {
                               width: 60.ph,
                               alignment: Alignment.center,
                             ),
+                            (game.clubCode != null)
+                                ? Positioned(
+                                    right: 0,
+                                    bottom: 0,
+                                    child: Container(
+                                      height: 26.pw,
+                                      width: 26.pw,
+                                      decoration: BoxDecoration(
+                                          image: clubImage,
+                                          borderRadius:
+                                              BorderRadius.circular(13.pw)),
+                                      padding: EdgeInsets.all(5.pw),
+                                      // child: SvgPicture.asset(
+                                      //     'assets/icons/clubs.svg',
+                                      //     height: 24.pw,
+                                      //     width: 24.pw,
+                                      //     color: Colors.white),
+                                    ))
+                                : Container(),
                           ],
                         ),
                       ),

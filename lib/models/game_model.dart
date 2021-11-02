@@ -5,6 +5,7 @@ import 'package:pokerapp/enums/player_status.dart';
 class GameModel {
   String clubCode;
   String clubName;
+  String clubPicUrl;
   String gameCode;
   String title;
   GameType gameType;
@@ -31,7 +32,9 @@ class GameModel {
   GameModel.fromJson(var jsonData) {
     this.clubCode = jsonData['clubCode'];
     this.clubName = jsonData['clubName'];
+    this.clubPicUrl = jsonData['clubPicUrl'] ?? '';
     this.gameCode = jsonData['gameCode'];
+
     this.title = jsonData['title'];
     this.smallBlind = jsonData["smallBlind"] == null
         ? null

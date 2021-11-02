@@ -67,7 +67,8 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
               : Container(),
           Align(
             alignment: Alignment.topCenter,
-            child: rankText, //Text('ABCC', style: AppDecorators.getAccentTextStyle(theme: theme),),
+            child:
+                rankText, //Text('ABCC', style: AppDecorators.getAccentTextStyle(theme: theme),),
           ),
           // hole card view
           Transform.translate(
