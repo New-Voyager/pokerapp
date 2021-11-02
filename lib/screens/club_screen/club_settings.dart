@@ -256,6 +256,9 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
                             ),
 
                             // Show high rank stats
+                            Visibility(
+                              visible: false,
+                              child: 
                             Container(
                               margin: EdgeInsets.symmetric(
                                   horizontal: 16, vertical: 8),
@@ -292,7 +295,7 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
                                   ),
                                 ],
                               ),
-                            ),
+                            )),
                           ],
                         ),
                       ),

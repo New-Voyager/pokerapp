@@ -125,16 +125,8 @@ class ClubActionsNew extends StatelessWidget {
               Expanded(
                 child: getMembers(theme),
               ),
+
               Expanded(
-                child: getChat(theme),
-              ),
-            ],
-          ),
-          AppDimensionsNew.getVerticalSizedBox(16.ph),
-          Row(
-            children: [
-              Expanded(
-                flex: 3,
                 child: ClubActionButtonNew(
                   this._clubHomePageModel,
                   ClubActions.BOOKMARKED_HANDS,
@@ -144,33 +136,35 @@ class ClubActionsNew extends StatelessWidget {
                     color: theme.accentColor,
                   ),
                 ),
-              ),
-              Visibility(
-                visible: _clubHomePageModel.showHighRankStats,
-                child: Expanded(
-                  flex: 3,
-                  child: ClubActionButtonNew(
-                    this._clubHomePageModel,
-                    ClubActions.ANALYSIS,
-                    appScreenText['analysis'],
-                    SvgPicture.asset(
-                      "assets/icons/analysis.svg",
-                      color: theme.accentColor,
-                    ),
-                  ),
-                ),
-              ),
-              Expanded(
-                flex: 3,
-                child: getHostMemberChatWidget(theme),
-              ),
+              ),              
             ],
           ),
-          AppDimensionsNew.getVerticalSizedBox(16),
+          AppDimensionsNew.getVerticalSizedBox(16.ph),
           Row(
             children: [
               Expanded(
-                flex: 3,
+                child: getChat(theme),
+              ),
+
+              // Visibility(
+              //   visible: _clubHomePageModel.showHighRankStats,
+              //   child: Expanded(
+              //     flex: 3,
+              //     child: ClubActionButtonNew(
+              //       this._clubHomePageModel,
+              //       ClubActions.ANALYSIS,
+              //       appScreenText['analysis'],
+              //       SvgPicture.asset(
+              //         "assets/icons/analysis.svg",
+              //         color: theme.accentColor,
+              //       ),
+              //     ),
+              //   ),
+              // ),
+              Expanded(
+                child: getHostMemberChatWidget(theme),
+              ),
+              Expanded(
                 child: ClubActionButtonNew(
                   this._clubHomePageModel,
                   ClubActions.ANNOUNCEMETS,
@@ -180,7 +174,13 @@ class ClubActionsNew extends StatelessWidget {
                     color: theme.accentColor,
                   ),
                 ),
-              ),
+              ),              
+            ],
+          ),
+          AppDimensionsNew.getVerticalSizedBox(16),
+          Row(
+            children: [
+
               Expanded(
                 flex: 3,
                 child: getSettingsWidget(theme),
