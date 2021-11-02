@@ -108,6 +108,7 @@ class _ChatListWidgetState extends State<ChatListWidget> {
       mainAxisAlignment: MainAxisAlignment.end,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
+        _buildChatMessage(message),
         const SizedBox(width: 5.0),
         _buildAvatar(message),
       ],

@@ -38,28 +38,29 @@ class _ChatScreenState extends State<ChatScreen> with RouteAwareAnalytics {
   @override
   String get routeName => Routes.chatScreen;
   final TextEditingController _textController = TextEditingController();
-  final List<MessagesFromMember> messages = [];
+  List<MessagesFromMember> messages = [];
   AppTextScreen _appScreenText;
 
   Timer _timer;
 
+  void _fetchAndUpdate() async {
+    final messagesFromMembers = await _fetchData();
+
+    // if no new message just return
+    if (messagesFromMembers.length == messages.length) return;
+
+    dev.log('chat screen for host-member message: fetching');
+
+    setState(() {
+      messages.clear();
+      messages.addAll(messagesFromMembers);
+    });
+  }
+
   void _startFetching() {
     _timer = Timer.periodic(
       AppConstants.messagePollDuration,
-      (_) async {
-        final messagesFromMembers = await _fetchData();
-
-        // if no new message just return
-        if (messagesFromMembers.length == messages.length) return;
-
-        dev.log(
-            'chat screen for host-member message: fetching: $messagesFromMembers');
-
-        setState(() {
-          messages.clear();
-          messages.addAll(messagesFromMembers);
-        });
-      },
+      (_) => _fetchAndUpdate(),
     );
   }
 
@@ -116,7 +117,7 @@ class _ChatScreenState extends State<ChatScreen> with RouteAwareAnalytics {
           appScreenText: _appScreenText,
           onGifSelectTap: _onEmoji,
           textEditingController: _textController,
-          onSend: _onSaveClicked,
+          onSend: _onSendClicked,
           onTap: _onTap,
         ),
       ],
@@ -166,23 +167,18 @@ class _ChatScreenState extends State<ChatScreen> with RouteAwareAnalytics {
     return chats;
   }
 
-  void _onSaveClicked() {
+  void _onSendClicked() async {
     if (_textController.text.trim().isNotEmpty) {
-      ClubsService.sendMessage(
+      await ClubsService.sendMessage(
         _textController.text.trim(),
         widget.player,
         widget.clubCode,
       );
-      setState(() {
-        messages.add(
-          MessagesFromMember(
-            messageType: widget.player != null ? FROM_HOST : TO_HOST,
-            text: _textController.text,
-            messageTime: DateTime.now().toString(),
-          ),
-        );
-        _textController.clear();
-      });
+
+      // fetch and update after sent the message
+      _fetchAndUpdate();
+
+      _textController.clear();
     }
   }
 
