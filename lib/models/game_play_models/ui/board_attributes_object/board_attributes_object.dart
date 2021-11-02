@@ -876,8 +876,8 @@ class BoardAttributesObject extends ChangeNotifier {
 
   /* hold card view scales */
   double get holeCardViewScale => _decide(
-        lessThan6Inches: 1.25,
-        equalTo6Inches: 1.35,
+        lessThan6Inches: 1.20,
+        equalTo6Inches: 1.28,
         equalTo7Inches: 1.45,
         greaterThan7Inches: 1.75,
       ) as double;
@@ -930,7 +930,7 @@ class BoardAttributesObject extends ChangeNotifier {
   set betImage(Uint8List betImage) => this._betImage = betImage;
 
   double get holeCardOffset {
-    double holeCardOffset = 5.ph;
+    double holeCardOffset = 0.ph;
     if (_screenSize == ScreenSize.greaterThan7Inches) {
       holeCardOffset = 25.ph;
     }

@@ -641,7 +641,7 @@
     "seatChangeConfirmWidget": {
         "applySeatChanges": "Apply Seat Changes?"
     },
-    "handAnalyseView": {
+    "gameScreen": {
         "pendingApprovals": "Pending Approvals",
         "requestBuyin": "requests buyin",
         "outstandingBalance": "Outstanding balance",
@@ -654,7 +654,10 @@
         "SomethingWentWrongTryAgain": "Something went wrong. Try again!",
         "handHistory": "Hand History",
         "table": "Table",
-        "stackStats": "Stack Stats"
+        "stackStats": "Stack Stats",
+        "joiningAudio": "Joining audio conference...",
+        "joinedAudio": "You are in the audio conference",
+        "audioTitle": "Conference"
     },
     "centerView": {
         "gameEnded": "Game Ended",
