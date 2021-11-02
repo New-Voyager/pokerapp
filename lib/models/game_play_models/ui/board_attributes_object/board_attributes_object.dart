@@ -245,43 +245,43 @@ Map<SeatPos, SeatPosAttribs> getSeatMap(int deviceSize) {
     /* bottom center */
     SeatPos.bottomCenter: SeatPosAttribs(
       Alignment.bottomCenter,
-      Offset(0, 35),
+      Offset(0, 30),
       Alignment.centerRight,
     ),
 
     /* bottom left and bottom right  */
     SeatPos.bottomLeft: SeatPosAttribs(
       Alignment.bottomLeft,
-      Offset(25, 25),
+      Offset(15, 25),
       Alignment.centerRight,
     ),
     SeatPos.bottomRight: SeatPosAttribs(
       Alignment.bottomRight,
-      Offset(-25, 25),
+      Offset(-15, 25),
       Alignment.centerLeft,
     ),
 
     /* middle left and middle right */
     SeatPos.middleLeft: SeatPosAttribs(
       Alignment.centerLeft,
-      Offset(3, 40),
+      Offset(15, 45),
       Alignment.centerRight,
     ),
     SeatPos.middleRight: SeatPosAttribs(
       Alignment.centerRight,
-      Offset(-3, 40),
+      Offset(-15, 45),
       Alignment.centerLeft,
     ),
 
     /* top left and top right  */
     SeatPos.topLeft: SeatPosAttribs(
       Alignment.topLeft,
-      Offset(3, 65),
+      Offset(20, 75),
       Alignment.centerRight,
     ),
     SeatPos.topRight: SeatPosAttribs(
       Alignment.topRight,
-      Offset(-3, 75),
+      Offset(-20, 75),
       Alignment.centerLeft,
     ),
 
@@ -293,12 +293,12 @@ Map<SeatPos, SeatPosAttribs> getSeatMap(int deviceSize) {
     ),
     SeatPos.topCenter1: SeatPosAttribs(
       Alignment.topCenter,
-      Offset(-50, 0),
+      Offset(-80, -10),
       Alignment.centerRight,
     ),
     SeatPos.topCenter2: SeatPosAttribs(
       Alignment.topCenter,
-      Offset(80, 0),
+      Offset(80, -10),
       Alignment.centerLeft,
     ),
   };
