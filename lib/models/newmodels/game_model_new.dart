@@ -15,6 +15,7 @@ class GameModelNew {
   int elapsedTime;
   int waitlistCount;
   String clubCode;
+  String clubPicUrl;
 
   GameModelNew({
     this.gameCode,
@@ -44,6 +45,7 @@ class GameModelNew {
     elapsedTime = json['elapsedTime'];
     waitlistCount = json['waitlistCount'];
     clubCode = json['clubCode'];
+    clubPicUrl = json['clubPicUrl'];
   }
 
   Map<String, dynamic> toJson() {

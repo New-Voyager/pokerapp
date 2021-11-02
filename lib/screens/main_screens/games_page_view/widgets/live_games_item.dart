@@ -20,7 +20,15 @@ class LiveGameItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     AppTextScreen _appScreenText = getAppTextScreen("liveGameItem");
-
+    DecorationImage clubImage;
+    if (game.clubPicUrl != null && !game.clubPicUrl.isEmpty) {
+      clubImage = DecorationImage(
+        image: CachedNetworkImageProvider(
+          game.clubPicUrl,
+        ),
+        fit: BoxFit.cover,
+      );
+    }
     return Consumer<AppTheme>(
       builder: (_, theme, __) => Stack(
         children: [
@@ -86,12 +94,7 @@ class LiveGameItem extends StatelessWidget {
                                       height: 26.pw,
                                       width: 26.pw,
                                       decoration: BoxDecoration(
-                                          image: DecorationImage(
-                                            image: CachedNetworkImageProvider(
-                                              "https://www.history.com/.image/t_share/MTU3ODc4NjAyOTg2MzAwNzQ1/ask-history-where-did-poker-originate-2.jpg",
-                                            ),
-                                            fit: BoxFit.cover,
-                                          ),
+                                          image: clubImage,
                                           borderRadius:
                                               BorderRadius.circular(13.pw)),
                                       padding: EdgeInsets.all(5.pw),

@@ -48,11 +48,7 @@ class ClubItemView extends StatelessWidget {
           decoration: BoxDecoration(
               shape: BoxShape.circle,
               border: Border.all(
-                width:
-                    "https://www.history.com/.image/t_share/MTU3ODc4NjAyOTg2MzAwNzQ1/ask-history-where-did-poker-originate-2.jpg"
-                            .isEmpty
-                        ? 3.pw
-                        : 0,
+                width: club.picUrl.isEmpty ? 3.pw : 0,
                 color: theme.secondaryColor,
               ),
               boxShadow: [
@@ -64,20 +60,16 @@ class ClubItemView extends StatelessWidget {
                 ),
               ],
               image: DecorationImage(
-                image: CachedNetworkImageProvider(
-                  "https://www.history.com/.image/t_share/MTU3ODc4NjAyOTg2MzAwNzQ1/ask-history-where-did-poker-originate-2.jpg",
-                ),
+                image: CachedNetworkImageProvider(club.picUrl),
                 fit: BoxFit.cover,
               )),
           alignment: Alignment.center,
-          child:
-              "https://www.history.com/.image/t_share/MTU3ODc4NjAyOTg2MzAwNzQ1/ask-history-where-did-poker-originate-2.jpg"
-                      .isEmpty
-                  ? Text(
-                      HelperUtils.getClubShortName(club.clubName),
-                      style: AppDecorators.getHeadLine2Style(theme: theme),
-                    )
-                  : SizedBox.shrink(),
+          child: club.picUrl.isEmpty
+              ? Text(
+                  HelperUtils.getClubShortName(club.clubName),
+                  style: AppDecorators.getHeadLine2Style(theme: theme),
+                )
+              : SizedBox.shrink(),
         ),
         separator,
         Expanded(

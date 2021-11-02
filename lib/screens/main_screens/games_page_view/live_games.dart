@@ -120,7 +120,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
     }
     if (_refreshTimer == null || !_refreshTimer.isActive) {
       _refreshTimer =
-          Timer.periodic(const Duration(seconds: 30), (timer) async {
+          Timer.periodic(const Duration(seconds: 10), (timer) async {
         if (mounted) {
           final int currentIndex =
               Provider.of<AppState>(context, listen: false).currentIndex;
