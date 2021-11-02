@@ -312,7 +312,8 @@ class MessageItem extends StatelessWidget {
             maxWidth: MediaQuery.of(context).size.width * 0.70,
           ),
           padding: EdgeInsets.all(
-              messageModel.messageType == MessageType.GIPHY ? 0 : 5.0),
+            messageModel.messageType == MessageType.GIPHY ? 0 : 5.0,
+          ),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(5.0),
             color: tileColor,
