@@ -10,7 +10,8 @@
                 "progressHeight": 240,
                 "padding": "5, 5, 5, 5",
                 "nameTextSize": 14.0,
-                "amountTextSize": 16.0
+                "amountTextSize": 16.0,
+                "scale": 1.0
             }
         },
         {
@@ -24,7 +25,8 @@
                 "progressHeight": 240,
                 "padding": "20, 10, 20, 10",
                 "nameTextSize": 18.0,
-                "amountTextSize": 18.0
+                "amountTextSize": 18.0,
+                "scale": 1.2
             }
         },
         {

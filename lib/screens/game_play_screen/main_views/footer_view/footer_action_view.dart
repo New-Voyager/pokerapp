@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/player_action.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_constants.dart';
@@ -447,6 +446,7 @@ class _FooterActionViewState extends State<FooterActionView> {
       ));
     } */
     return Stack(
+      clipBehavior: Clip.none,
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -454,7 +454,8 @@ class _FooterActionViewState extends State<FooterActionView> {
           children: actionButtons,
         ),
         Positioned(
-          left: 8,
+          left: 20.pw,
+          top: -10.ph,
           child: Consumer<ActionState>(builder: (_, __, ___) {
             // show time widget if the player is acting
             final gameState = GameState.getState(context);

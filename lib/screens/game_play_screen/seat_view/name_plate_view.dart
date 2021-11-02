@@ -19,7 +19,6 @@ import 'package:pokerapp/widgets/nameplate.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
-
 class NamePlateWidget extends StatelessWidget {
   final Key globalKey;
   final Seat seat;
@@ -190,7 +189,10 @@ class NamePlateWidget extends StatelessWidget {
       playerNamePlate = nameplate.svg;
       playerProgress = nameplate.path;
     }
-
+    double scale = 1.0;
+    if (nameplate.id != "0") {
+      scale = 1.2;
+    }
 /*
 [log] Timer remaining: 6698 total: 30 current: 23
 [log] Rebuilding highlight remaining: 7 total: 30 current: 23
@@ -235,23 +237,27 @@ class NamePlateWidget extends StatelessWidget {
               seat.actionTimer.setRemainingTime(remainingTimeInSecs);
 
               return Nameplate.fromSvgString(
-                  remainingTime: time
-                      .toInt(), // seat.actionTimer.getRemainingTime()*1000, //time.toInt(),
-                  totalTime: total * 1000, // in milliseconds
-                  svg: playerNamePlate,
-                  size: containerSize,
-                  progressPath: playerProgress,
-                  progressRatio: progressRatio);
+                remainingTime: time
+                    .toInt(), // seat.actionTimer.getRemainingTime()*1000, //time.toInt(),
+                totalTime: total * 1000, // in milliseconds
+                svg: playerNamePlate,
+                size: containerSize,
+                progressPath: playerProgress,
+                progressRatio: progressRatio,
+                scale: scale,
+              );
             });
       });
     } else {
       plateWidget = Nameplate.fromSvgString(
-          remainingTime: 0,
-          totalTime: 0,
-          svg: playerNamePlate,
-          size: containerSize,
-          progressPath: playerProgress,
-          progressRatio: progressRatio);
+        remainingTime: 0,
+        totalTime: 0,
+        svg: playerNamePlate,
+        size: containerSize,
+        progressPath: playerProgress,
+        progressRatio: progressRatio,
+        scale: scale,
+      );
     }
 
     Stack namePlate = Stack(
@@ -267,19 +273,19 @@ class NamePlateWidget extends StatelessWidget {
                   duration: AppConstants.animationDuration,
                   opacity: seat.isOpen ? 0.0 : 1.0,
                   child: Padding(
-                    // padding: nameplate != null
-                    //     ? EdgeInsets.fromLTRB(
-                    //         double.parse(
-                    //             nameplate.meta.padding.split(",")[0].trim()),
-                    //         double.parse(
-                    //             nameplate.meta.padding.split(",")[1].trim()),
-                    //         double.parse(
-                    //             nameplate.meta.padding.split(",")[2].trim()),
-                    //         double.parse(
-                    //             nameplate.meta.padding.split(",")[3].trim()),
-                    //       )
-                    //     : EdgeInsets.all(3),
-                    padding: EdgeInsets.all(2),
+                    padding: nameplate != null
+                        ? EdgeInsets.fromLTRB(
+                            double.parse(
+                                nameplate.meta.padding.split(",")[0].trim()),
+                            double.parse(
+                                nameplate.meta.padding.split(",")[1].trim()),
+                            double.parse(
+                                nameplate.meta.padding.split(",")[2].trim()),
+                            double.parse(
+                                nameplate.meta.padding.split(",")[3].trim()),
+                          )
+                        : null, //EdgeInsets.all(3),
+                    //padding: EdgeInsets.all(2),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisSize: MainAxisSize.min,
@@ -287,16 +293,19 @@ class NamePlateWidget extends StatelessWidget {
                         SizedBox(height: 2),
                         // player name
                         FittedBox(
-                          child: Text(
-                            seat.player?.name ?? '',
-                            style: AppDecorators.getSubtitle4Style(theme: theme)
-                                .copyWith(fontWeight: FontWeight.normal, fontSize: 12.dp)
-                                    //fontSize: nameplate.meta.nameTextSize),
-                          ),
+                          child: Text(seat.player?.name ?? '',
+                              style:
+                                  AppDecorators.getSubtitle4Style(theme: theme)
+                                      .copyWith(
+                                          fontWeight: FontWeight.normal,
+                                          fontSize: 12.dp)
+                              //fontSize: nameplate.meta.nameTextSize),
+                              ),
                         ),
                         //Spacer(),
                         // divider
-                        PlayerViewDivider(),
+                        Transform.scale(
+                            scale: scale, child: PlayerViewDivider()),
 
                         //Spacer(),
                         // bottom widget - to show stack, sit back time, etc.

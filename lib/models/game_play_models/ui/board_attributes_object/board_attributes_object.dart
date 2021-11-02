@@ -315,7 +315,7 @@ Map<SeatPos, Offset> getBetAmountPositionMap({
       /* bottom, bottom left and bottom right */
       SeatPos.bottomCenter: Offset(
         0,
-        -namePlateSize.height*1.2,
+        -namePlateSize.height * 1.2,
       ),
       SeatPos.bottomLeft: Offset(
         namePlateSize.width * 0.80,

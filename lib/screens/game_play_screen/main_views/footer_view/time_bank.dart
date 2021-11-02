@@ -28,7 +28,7 @@ class _TimeBankWidgetState extends State<TimeBankWidget> {
   void initState() {
     availableTime = widget.gameState.gameHiveStore.getTimeBankTime();
     if (TestService.isTesting) {
-      availableTime = 20;
+      availableTime = 200;
     }
     super.initState();
   }
@@ -74,11 +74,6 @@ class _TimeBankWidgetState extends State<TimeBankWidget> {
                   gameState.handInfo.handNum,
                   extendTime);
             }
-            // int total = mySeat.actionTimer.getTotalTime() + extendTime;
-            // int remainingTime =
-            //     mySeat.actionTimer.getRemainingTime() + extendTime;
-            // mySeat.actionTimer.setTime(total, remainingTime);
-            // mySeat.notify();
           }
 
           log('Remaining timebank: ${widget.gameState.gameHiveStore.getTimeBankTime()}');
@@ -96,19 +91,19 @@ class _TimeBankWidgetState extends State<TimeBankWidget> {
           animate = false;
           setState(() {});
         },
-        duration: const Duration(milliseconds: 2000),
+        duration: const Duration(milliseconds: 1000),
         builder: (BuildContext context, double v, Widget child) {
           // log('timebank: animating time: value: $v');
           return Opacity(
               opacity: 1 - v,
               child: Transform.translate(
-                  offset: Offset(-50.pw, -v * 60.ph),
+                  offset: Offset(30.pw, -v * 30.ph),
                   child: Text(
                     '+' + time.toString(),
                     style: TextStyle(
-                      fontSize: 16.dp,
+                      fontSize: 12.dp,
                       color: theme.accentColor,
-                      fontWeight: FontWeight.w900,
+                      fontWeight: FontWeight.normal,
                     ),
                   )));
         },
