@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/models/hand_history_model.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
@@ -476,9 +477,11 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
   Widget gameTypeTile(AppTheme theme) {
     String title = '';
     String blind = '';
+    final gameType = gameTypeFromStr(_gameDetail.gameTypeStr);
+    final gameStr = gameTypeStr(gameType);
 
     if (loadingDone) {
-      title = '${_gameDetail.gameTypeStr ?? ""}';
+      title = '${gameStr ?? ""}';
       blind =
           '${DataFormatter.chipsFormat(_gameDetail.smallBlind)} / ${DataFormatter.chipsFormat(_gameDetail.bigBlind)}';
     }
@@ -498,7 +501,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Visibility(
-                        visible: loadingDone && _gameDetail.gameTypeStr != null,
+                        visible: loadingDone && gameStr != null,
                         child: Row(children: [
                           Text(
                             title,

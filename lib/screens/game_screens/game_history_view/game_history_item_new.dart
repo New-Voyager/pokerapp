@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/models/newmodels/game_model_new.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
@@ -45,7 +46,11 @@ class GameHistoryItemNew extends StatelessWidget {
     }
 
     return Consumer<AppTheme>(
-      builder: (_, theme, __) => Container(
+      builder: (_, theme, __) {
+        final gameType = gameTypeFromStr(game.gameTypeStr);
+        final gameStr = gameTypeStr(gameType);
+
+        return Container(
         margin: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
         decoration: AppDecorators.getGameItemDecoration(theme: theme),
         child: Container(
@@ -77,9 +82,9 @@ class GameHistoryItemNew extends StatelessWidget {
                         children: [
                           RichText(
                             text: TextSpan(
-                              text: "${game.gameTypeStr}",
+                              text: "${gameStr}",
                               style:
-                                  AppDecorators.getHeadLine2Style(theme: theme),
+                                  AppDecorators.getHeadLine3Style(theme: theme),
                               children: [
                                 TextSpan(
                                   text:
@@ -193,7 +198,8 @@ class GameHistoryItemNew extends StatelessWidget {
             ],
           ),
         ),
-      ),
+      );
+      }
     );
   }
 
