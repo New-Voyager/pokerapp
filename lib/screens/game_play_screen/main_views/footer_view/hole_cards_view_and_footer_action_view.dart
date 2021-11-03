@@ -203,11 +203,12 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
             padding: EdgeInsets.all(2.pw),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: buttonColor,
+              color: theme
+                  .primaryColorWithDark(), //.primaryColorWithDark(), //buttonColor,
             ),
             child: Icon(
               Icons.autorenew,
-              color: theme.primaryColorWithDark(),
+              color: theme.accentColor, //theme.primaryColorWithDark(),
               size: 20.pw,
             ),
           ),
@@ -229,10 +230,13 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
         gameState.gameHiveStore.setHoleCardsVisibilityState(
           isHoleCardsVisibleVn.value,
         );
+
+        gameState.holeCardsState.notify();
       },
       child: Transform.translate(
         offset: Offset(0, boardAttributes.holeCardOffset),
         child: Column(
+          key: UniqueKey(),
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             SizedBox(
@@ -244,11 +248,14 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
                   alignment: Alignment.center,
                   children: [
                     cardsWidget,
-                    Positioned(
-                      bottom: 40,
-                      left: 0,
-                      right: 0,
-                      child: shuffleButton,
+                    Visibility(
+                      visible: isHoleCardsVisibleVn.value,
+                      child: Positioned(
+                        bottom: 40,
+                        left: 0,
+                        right: 0,
+                        child: shuffleButton,
+                      ),
                     ),
                   ],
                 ),
