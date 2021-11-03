@@ -47,28 +47,28 @@ class ClubBannerViewNew extends StatelessWidget {
           clipBehavior: Clip.none,
           children: [
             Container(
-            width: 80.dp,
-            height: 80.dp,
-            clipBehavior: Clip.hardEdge,
-            padding: EdgeInsets.all(4),
-            decoration: decoration,
-            alignment: Alignment.center,
-            child: clubModel.picUrl.isEmpty
-                ? Text(
-                    HelperUtils.getClubShortName(clubModel.clubName),
-                    style: AppDecorators.getHeadLine2Style(theme: theme),
-                  )
-                : SizedBox.shrink(),
-          ),
-          // Positioned(
-          //   right: -40,
-          //   bottom: 10,
-          // child: Transform.scale(
-          // scale: 1.2,
-          // child: Icon(
-          //   Icons.settings_outlined,
-          //   color: theme.accentColor,
-          // ))),
+              width: 80.dp,
+              height: 80.dp,
+              clipBehavior: Clip.hardEdge,
+              padding: EdgeInsets.all(4),
+              decoration: decoration,
+              alignment: Alignment.center,
+              child: clubModel.picUrl.isEmpty
+                  ? Text(
+                      HelperUtils.getClubShortName(clubModel.clubName),
+                      style: AppDecorators.getHeadLine2Style(theme: theme),
+                    )
+                  : SizedBox.shrink(),
+            ),
+            // Positioned(
+            //   right: -40,
+            //   bottom: 10,
+            // child: Transform.scale(
+            // scale: 1.2,
+            // child: Icon(
+            //   Icons.settings_outlined,
+            //   color: theme.accentColor,
+            // ))),
           ],
         ),
         Padding(

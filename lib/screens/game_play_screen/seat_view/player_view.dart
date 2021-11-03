@@ -266,7 +266,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
     if (handState != HandState.RESULT) {
       return SizedBox(width: 0, height: 0);
     }
-    // log('Status: seat: ${seat.player.name} inhand: ${seat.player.inhand}');x
+    log('HiLo: Status: seat: ${seat.player.name} inhand: ${seat.player.inhand}');
     if (seat.player != null && !seat.player.inhand) {
       return SizedBox(width: 0, height: 0);
     }

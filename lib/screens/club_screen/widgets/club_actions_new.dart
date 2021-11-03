@@ -125,7 +125,6 @@ class ClubActionsNew extends StatelessWidget {
               Expanded(
                 child: getMembers(theme),
               ),
-
               Expanded(
                 child: ClubActionButtonNew(
                   this._clubHomePageModel,
@@ -136,7 +135,7 @@ class ClubActionsNew extends StatelessWidget {
                     color: theme.accentColor,
                   ),
                 ),
-              ),              
+              ),
             ],
           ),
           AppDimensionsNew.getVerticalSizedBox(16.ph),
@@ -174,13 +173,12 @@ class ClubActionsNew extends StatelessWidget {
                     color: theme.accentColor,
                   ),
                 ),
-              ),              
+              ),
             ],
           ),
           AppDimensionsNew.getVerticalSizedBox(16),
           Row(
             children: [
-
               Expanded(
                 flex: 3,
                 child: getSettingsWidget(theme),

@@ -9,10 +9,12 @@ import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/main_helper.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/overlay_notification.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/player_service.dart';
+import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
 
@@ -55,6 +57,7 @@ class NotificationHandler {
   FGBGType _currentAppState;
   bool initialized = false;
   ClubsUpdateState clubUpdateState;
+  AppTextScreen notificationTexts;
 
   NotificationHandler() {
     FGBGEvents.stream.listen((event) {
@@ -64,6 +67,7 @@ class NotificationHandler {
   }
 
   void register(ClubsUpdateState clubUpdateState) async {
+    this.notificationTexts = getAppTextScreen("notifications");
     this.clubUpdateState = clubUpdateState;
     // Get the token each time the application loads
     String token = await FirebaseMessaging.instance.getToken();
@@ -100,6 +104,19 @@ class NotificationHandler {
           this.clubUpdateState.updatedClubCode = clubCode;
           this.clubUpdateState.whatChanged = changed;
           this.clubUpdateState.notify();
+
+          if (changed == 'NEW_MEMBER_REQUEST') {
+            String text = this.notificationTexts.getText('newClubMember',
+                values: {
+                  'playerName': json['playerName'],
+                  'clubCode': clubCode
+                });
+            Alerts.showNotification(
+              titleText: 'New Member',
+              subTitleText: text,
+              duration: Duration(seconds: 5),
+            );
+          }
         }
       } catch (err) {
         // ignore the exception

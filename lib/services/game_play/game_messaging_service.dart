@@ -381,6 +381,7 @@ class ChatMessage {
       } else if (msg.type == 'ANIMATION') {
         msg.animationID = message['animation'];
       } else if (msg.type == 'CARDS') {
+        log('RevealCards: ${data}');
         msg.text = message['text'].toString();
         msg.seatNo = message['seatNo'] == null
             ? -1

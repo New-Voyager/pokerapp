@@ -786,5 +786,9 @@
         "cancel" : "Cancel",
         "apply" : "Apply",
         "select" : "-Select-"
-    }
+    },
+    "notifications": {
+        "newClubMember": "{playerName} is requesting for club membership {clubCode}",
+        "newGame": "A new game is hosted by club {clubName}"
+    }    
 }

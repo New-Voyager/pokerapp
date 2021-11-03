@@ -18,11 +18,13 @@ class Winner {
   List<int> boardCards;
   double amount;
   String rankStr;
+  bool low;
   Winner(int seatNo, List<int> playerCards, List<int> boardCards,
-      List<int> winningCards, double amount, String rank) {
+      List<int> winningCards, double amount, String rank, bool low) {
     this.seatNo = seatNo;
     this.playerCards = [];
     this.boardCards = [];
+    this.low = low;
     for (final card in winningCards) {
       int i = playerCards.indexOf(card);
       if (i != -1) {
@@ -188,26 +190,25 @@ class ResultHandlerV2 {
       }
     }
 
-    // mark all winners
-    for (int i = totalPots - 1; i >= 0; i--) {
-      final potWinner = result.potWinners[i];
-      for (final boardWinners in potWinner.boardWinners) {
-        // hi winners
-        for (final seatNo in boardWinners.hiWinners.keys) {
-          final seat = gameState.getSeat(seatNo);
-          if (seat.player != null) {
-            seat.player.winner = true;
-          }
-        }
-
-        for (final seatNo in boardWinners.lowWinners.keys) {
-          final seat = gameState.getSeat(seatNo);
-          if (seat.player != null) {
-            seat.player.winner = true;
-          }
-        }
-      }
-    }
+    // // mark all winners
+    // for (int i = totalPots - 1; i >= 0; i--) {
+    //   final potWinner = result.potWinners[i];
+    //   for (final boardWinners in potWinner.boardWinners) {
+    //     // hi winners
+    //     for (final seatNo in boardWinners.hiWinners.keys) {
+    //       final seat = gameState.getSeat(seatNo);
+    //       if (seat.player != null) {
+    //         seat.player.winner = true;
+    //       }
+    //     }
+    //     for (final seatNo in boardWinners.lowWinners.keys) {
+    //       final seat = gameState.getSeat(seatNo);
+    //       if (seat.player != null) {
+    //         seat.player.loWinner = true;
+    //       }
+    //     }
+    //   }
+    // }
     gameState.handResultState.notify();
 
     // for (final seat in gameState.seats) {
@@ -281,6 +282,12 @@ class ResultHandlerV2 {
         );
 
         if (boardWinners.lowWinners.length > 0) {
+          // clear all the boards
+          for (final board in result.boards) {
+            resetResult(
+              boardIndex: board.boardNo,
+            );
+          }
           // display low banner
           if (hiLoGame) {
             // display high banner
@@ -351,12 +358,13 @@ class ResultHandlerV2 {
       final playerInfo = result.playerInfo[winner.seatNo];
       if (low) {
         winningCards = playerRank.loCards;
-        rank = '';
+        rank = 'Low';
+        log('HiLo: Low winners: players cards: ${winningCards}');
       } else {
         winningCards = playerRank.hiCards;
       }
       Winner winningPlayer = Winner(winner.seatNo, playerInfo.cards,
-          board.cards, winningCards, winner.amount, rank);
+          board.cards, winningCards, winner.amount, rank, low);
       bool setState = false;
       if (i == winners.length - 1) {
         setState = true;
@@ -378,10 +386,9 @@ class ResultHandlerV2 {
   }) {
     tableState.unHighlightCardsSilent(boardIndex);
     for (final player in gameState.playersInGame) {
-      // player.winner = false;
+      player.winner = false;
       player.highlight = false;
       player.highlightCards = [];
-      player.cards = [];
       player.animatingFold = false;
       player.rankText = '';
     }
@@ -413,6 +420,8 @@ class ResultHandlerV2 {
     if (result.wonAt == proto.HandStatus.SHOW_DOWN) {
       /* highlight the winning cards for players */
       seat.player.highlightCards = winner.playerCards;
+      log('HiLo22: low: ${winner.low} highlight cards: ${seat.player.highlightCards} player cards: ${seat.player.cards}');
+
       // log('WINNER player.cards: ${winner.playerCards} boardCards: ${winner.boardCards} setState: $setState ${winner.rankStr} ${AppConstants.chipMovingAnimationDuration}');
       /* highlight the winning cards for board 1 */
       tableState.highlightCardsSilent(
@@ -440,8 +449,16 @@ class ResultHandlerV2 {
 
       /* wait for the animation to finish */
       await Future.delayed(AppConstants.chipMovingAnimationDuration);
+      log('HiLo: low: ${winner.low} player: ${seat.player.name} highlight cards: ${seat.player.highlightCards}');
 
       gameState.notifyAllSeats();
+      for (final seat in gameState.seats) {
+        if (seat == null || seat.player == null) {
+          continue;
+        }
+        log('HiLo: Rebuild seat low: ${winner.low} player: ${seat.player.name} highlight cards: ${seat.player.highlightCards}');
+        seat.notify();
+      }
     }
   }
 }

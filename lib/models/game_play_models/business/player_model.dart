@@ -43,6 +43,8 @@ class PlayerModel {
 
   TablePosition playerType;
   bool winner = false;
+  bool loWinner = false;
+
   bool showFirework = false;
   String rankText = '';
   int noOfCardsVisible = 0;
@@ -226,6 +228,7 @@ class PlayerModel {
   void reset({bool stickAction}) {
     this.highlight = false;
     this.winner = false;
+    this.loWinner = false;
     this.rankText = '';
     this.showFirework = false;
     this.cards = [];

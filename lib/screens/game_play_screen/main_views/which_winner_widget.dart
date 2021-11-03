@@ -21,27 +21,28 @@ class WhichWinnerWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: seperator,
-      alignment: Alignment.center,
-      child: Consumer2<TableState, AppTheme>(
-        builder: (_, tableState, theme, __) => tableState.whichWinner == null
-            ? const SizedBox.shrink()
-            : Container(
-                padding:
-                    EdgeInsets.symmetric(vertical: 4.pw, horizontal: 10.pw),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10.pw),
-                  color: _getColor(tableState.whichWinner),
-                ),
-                child: FittedBox(
-                  fit: BoxFit.fitHeight,
-                  child: Text(
-                    tableState.whichWinner,
-                    style: AppDecorators.getSubtitle1Style(theme: theme),
+        height: seperator,
+        alignment: Alignment.center,
+        child: Consumer2<TableState, AppTheme>(
+            builder: (_, tableState, theme, __) {
+          return SizedBox.shrink();
+          return tableState.whichWinner == null
+              ? const SizedBox.shrink()
+              : Container(
+                  padding:
+                      EdgeInsets.symmetric(vertical: 4.pw, horizontal: 10.pw),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10.pw),
+                    color: _getColor(tableState.whichWinner),
                   ),
-                ),
-              ),
-      ),
-    );
+                  child: FittedBox(
+                    fit: BoxFit.fitHeight,
+                    child: Text(
+                      tableState.whichWinner,
+                      style: AppDecorators.getSubtitle1Style(theme: theme),
+                    ),
+                  ),
+                );
+        }));
   }
 }

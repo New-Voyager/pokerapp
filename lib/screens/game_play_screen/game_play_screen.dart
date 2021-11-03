@@ -416,11 +416,14 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
   void _sendMarkedCards(BuildContext context) {
     if (TestService.isTesting || widget.customizationService != null) return;
-    log('GameScreen: Trying to sending marked cards');
     final MarkedCards markedCards = _gameState.markedCardsState;
+    if (_gameState.handState != HandState.RESULT) {
+      return;
+    }
 
     /* collect the cards needs to be revealed */
     List<CardObject> _cardsToBeRevealed = markedCards.getCards();
+    log('RevealCards: Trying to sending marked cards ${_cardsToBeRevealed}');
     List<int> cardNumbers = [];
     for (final c in _cardsToBeRevealed) {
       cardNumbers.add(c.cardNum);
@@ -429,6 +432,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     if (cardNumbers.length == 0) {
       return;
     }
+    log('RevealCards: cards sent ${cardNumbers}');
     markedCards.cardsSent(cardNumbers);
     log('GameScreen: Sending cards');
 
@@ -448,7 +452,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
     void onMarkingCards() {
       // if new cards are marked, send them back
-      _sendMarkedCards(context);
+      if (_gameState.handState == HandState.RESULT) {
+        _sendMarkedCards(context);
+      }
     }
 
     _gameState.handChangeState.addListener(() {

@@ -66,7 +66,6 @@ class _TableResultScreenState extends State<TableResultScreen>
   void initState() {
     super.initState();
     _appScreenText = getAppTextScreen("tableResultScreen");
-
     _fetchData();
   }
 
@@ -344,7 +343,8 @@ class _TableResultScreenState extends State<TableResultScreen>
 
                             widget.showTips
                                 ? Text(
-                                    getTotalRake().toString(),
+                                    DataFormatter.chipsFormat(getTotalRake())
+                                        .toString(),
                                     style: AppDecorators.getHeadLine4Style(
                                         theme: theme),
                                   )

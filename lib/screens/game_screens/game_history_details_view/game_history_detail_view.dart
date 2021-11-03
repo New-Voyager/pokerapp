@@ -796,7 +796,10 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
                 Routes.table_result,
                 arguments: {
                   "gameCode": _gameDetail.gameCode,
-                  "clubCode": widget.clubCode
+                  "clubCode": widget.clubCode,
+                  "showTips": _gameDetail.isOwner ??
+                      false || _gameDetail.isHost ??
+                      false,
                 },
               );
             },

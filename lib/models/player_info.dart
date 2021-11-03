@@ -48,6 +48,13 @@ class PlayerInfo {
     return role.isHost || role.isOwner || role.isManager;
   }
 
+  bool isOwner() {
+    if (role == null) {
+      return false;
+    }
+    return role.isOwner;
+  }
+
   bool isHost() {
     if (role == null) {
       return true;
