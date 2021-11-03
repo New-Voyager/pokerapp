@@ -15,7 +15,6 @@ class DisplayCardsWidget extends StatelessWidget {
 
   List<CardObject> _getCards(List<int> cards) {
     if (cards == null || cards.isEmpty) return [];
-    log('DisplayCards: name: ${seat.player.name} muck: ${seat.player.muckLosingHand} folded: ${seat.folded} seat.player.isActive: ${seat.player.isActive} reveal: ${seat.player.revealCards}');
 
     if (seat.player != null && seat.player.playerFolded) {
       if (seat.player.revealCards.length == 0) {
@@ -23,6 +22,8 @@ class DisplayCardsWidget extends StatelessWidget {
       }
     }
     List<int> highlightedCards = seat.player.highlightCards;
+    log('RevealCards: name: ${seat.player.name} reveal: ${seat.player.revealCards}');
+    //log('HiLo: name: ${seat.player.name} highlightedCards: ${highlightedCards} muck: ${seat.player.muckLosingHand} folded: ${seat.folded} seat.player.isActive: ${seat.player.isActive} reveal: ${seat.player.revealCards}');
 
     List<CardObject> cardObjects = [];
     for (int cardNum in cards) {
@@ -76,7 +77,7 @@ class DisplayCardsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    log('UpdateSeat: DisplayCardsWidget Seat: ${seat.player.seatNo} player: ${seat.player.name} cards: ${seat.player.cards} reveal cards: ${seat.player.revealCards}');
+    log('HiLo: UpdateSeat: DisplayCardsWidget Seat: ${seat.player.seatNo} highlight: ${seat.player.highlightCards} player: ${seat.player.name} cards: ${seat.player.cards} reveal cards: ${seat.player.revealCards}');
     // log('UpdateSeat: seat no: ${seat.player.seatNo} updating cards widget: ${seat.player.cards}');
     List<int> seatPlayerCards = seat.player.cards;
     if (seat.player.revealCards.isEmpty) {

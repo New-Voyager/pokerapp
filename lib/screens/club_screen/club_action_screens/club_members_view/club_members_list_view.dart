@@ -79,6 +79,7 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
       builder: (_, theme, __) => Container(
         margin: EdgeInsets.all(15),
         child: ListView.separated(
+          physics: BouncingScrollPhysics(),
           itemCount: _filteredList.length,
           itemBuilder: (context, index) {
             final member = widget._membersList[index];

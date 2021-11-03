@@ -25,6 +25,10 @@ class RankWidget extends StatelessWidget {
       child: ValueListenableBuilder(
           valueListenable: rankTextNotifier,
           builder: (_, rankStr, __) {
+            Color color = theme.accentColorWithDark();
+            if (rankStr.toString().toLowerCase() == 'low') {
+              color = Colors.blueGrey;
+            }
             return AnimatedSwitcher(
               duration: AppConstants.animationDuration,
               reverseDuration: AppConstants.animationDuration,
@@ -38,7 +42,7 @@ class RankWidget extends StatelessWidget {
                       ),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(100.0),
-                        color: theme.accentColorWithDark(),
+                        color: color, //theme.accentColorWithDark(),
                       ),
                       child: Text(
                         rankStr,

@@ -53,18 +53,33 @@ class AppText {
 class AppTextScreen {
   Map<String, String> texts;
   AppTextScreen(this.texts);
-  String getText(String textId) {
+  String getText(String textId, {Map<String, dynamic> values}) {
+    String text;
     if (texts.containsKey(textId)) {
-      return texts[textId];
+      text = texts[textId];
     }
 
-    final global = appText.getScreen('global');
-    if (global != null) {
-      if (global.texts.containsKey(textId)) {
-        return global[textId];
+    if (text == null) {
+      final global = appText.getScreen('global');
+      if (global != null) {
+        if (global.texts.containsKey(textId)) {
+          text = global[textId];
+        }
       }
     }
-    return "No Text";
+    if (text != null) {
+      if (values != null) {
+        for (final key in values.keys) {
+          final value = values[key];
+          text = text.replaceAll('{$key}', value);
+        }
+        return text;
+      }
+    }
+    if (text == null) {
+      return "No Text";
+    }
+    return text;
   }
 
   String operator [](String textId) {

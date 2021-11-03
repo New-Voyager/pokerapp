@@ -11,6 +11,9 @@ import 'package:pokerapp/screens/chat_screen/chat_model.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/chat_list_widget.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
+import 'package:pokerapp/services/text_filtering/text_filtering.dart';
+import 'package:pokerapp/utils/gif_widget.dart';
+import 'package:pokerapp/widgets/emoji_picker_widget.dart';
 import 'package:provider/provider.dart';
 
 import '../../routes.dart';
@@ -37,6 +40,8 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> with RouteAwareAnalytics {
   @override
   String get routeName => Routes.chatScreen;
+
+  final ValueNotifier<bool> _vnShowEmojiPicker = ValueNotifier(false);
   final TextEditingController _textController = TextEditingController();
   List<MessagesFromMember> messages = [];
   AppTextScreen _appScreenText;
@@ -103,6 +108,7 @@ class _ChatScreenState extends State<ChatScreen> with RouteAwareAnalytics {
   Widget _buildBody(final bool isHostView) {
     return Column(
       children: [
+        // chat list
         Expanded(
           child: messages.isEmpty
               ? NoMessageWidget()
@@ -112,13 +118,26 @@ class _ChatScreenState extends State<ChatScreen> with RouteAwareAnalytics {
                   name: widget.name,
                 ),
         ),
+
+        // player typing field
         ChatTextField(
           icon: Icons.emoji_emotions_outlined,
           appScreenText: _appScreenText,
-          onGifSelectTap: _onEmoji,
+          onEmojiSelectTap: _onEmojiTap,
           textEditingController: _textController,
           onSend: _onSendClicked,
-          onTap: _onTap,
+        ),
+
+        // emoji picker
+        ValueListenableBuilder<bool>(
+          valueListenable: _vnShowEmojiPicker,
+          builder: (_, showEmojiPicker, __) => showEmojiPicker
+              ? EmojiPicker(
+                  onEmojiSelected: (String emoji) {
+                    _textController.text += emoji;
+                  },
+                )
+              : const SizedBox.shrink(),
         ),
       ],
     );
@@ -168,12 +187,13 @@ class _ChatScreenState extends State<ChatScreen> with RouteAwareAnalytics {
   }
 
   void _onSendClicked() async {
+    _vnShowEmojiPicker.value = false;
     final text = _textController.text.trim();
     _textController.clear();
 
     if (text.isNotEmpty) {
       await ClubsService.sendMessage(
-        text,
+        TextFiltering.mask(text),
         widget.player,
         widget.clubCode,
       );
@@ -183,7 +203,7 @@ class _ChatScreenState extends State<ChatScreen> with RouteAwareAnalytics {
     }
   }
 
-  void _onTap() {}
-
-  void _onEmoji() {}
+  void _onEmojiTap() async {
+    _vnShowEmojiPicker.value = !_vnShowEmojiPicker.value;
+  }
 }

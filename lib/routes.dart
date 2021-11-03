@@ -299,9 +299,10 @@ class Routes {
       case table_result:
         var args = settings.arguments as dynamic;
         var gameCode = args["gameCode"];
+        var showTips = args["showTips"] ?? false;
         return _getPageRoute(
           routeName: settings.name,
-          viewToShow: TableResultScreen(gameCode: gameCode),
+          viewToShow: TableResultScreen(gameCode: gameCode, showTips: showTips),
         );
 
       case game_history_detail_view:

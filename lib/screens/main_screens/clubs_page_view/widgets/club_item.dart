@@ -59,10 +59,12 @@ class ClubItemView extends StatelessWidget {
                   offset: Offset(1.pw, 4.pw),
                 ),
               ],
-              image: DecorationImage(
-                image: CachedNetworkImageProvider(club.picUrl),
-                fit: BoxFit.cover,
-              )),
+              image: club.picUrl == null || club.picUrl.isEmpty
+                  ? null
+                  : DecorationImage(
+                      image: CachedNetworkImageProvider(club.picUrl),
+                      fit: BoxFit.cover,
+                    )),
           alignment: Alignment.center,
           child: club.picUrl.isEmpty
               ? Text(

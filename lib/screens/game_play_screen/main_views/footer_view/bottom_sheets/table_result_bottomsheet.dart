@@ -18,6 +18,9 @@ class _TableResultBottomSheetState extends State<TableResultBottomSheet> {
   Widget build(BuildContext context) {
     final theme = AppTheme.getTheme(context);
     height = MediaQuery.of(context).size.height;
+
+    bool showTips = widget.gameState.currentPlayer.isHost() ||
+        widget.gameState.currentPlayer.isOwner();
     return Container(
       height: height / ratio,
       color: Colors.transparent,
@@ -32,7 +35,8 @@ class _TableResultBottomSheetState extends State<TableResultBottomSheet> {
                 child: TableResultScreen(
                     gameCode: widget.gameCode,
                     showDownload: false,
-                    showBackButton: false),
+                    showBackButton: false,
+                    showTips: showTips),
               ),
             ],
           ),

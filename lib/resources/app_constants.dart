@@ -3,6 +3,14 @@ import 'package:intl/intl.dart';
 class AppConstants {
   AppConstants._();
 
+  static const List<String> maskedList = [
+    "money",
+    "cashapp",
+    "venmo",
+    "dollar",
+    "bank"
+  ];
+
   static const List<String> GIF_CATEGORIES = const [
     'All-in',
     'Donkey',
