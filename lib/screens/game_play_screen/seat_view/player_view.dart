@@ -687,7 +687,7 @@ class SeatNoWidget extends StatelessWidget {
             ),
           ),
           child: Text(
-            '${seat.serverSeatPos}:L${seat.localSeatPos}',
+            '${seat.serverSeatPos}',
             style: AppStylesNew.itemInfoTextStyle.copyWith(
               color: Colors.white,
             ),
@@ -744,15 +744,25 @@ class PlayerCardsWidget extends StatelessWidget {
         child: FoldCardAnimatingWidget(seat: seat),
       );
     } else {
+      double xoffset = 0.90;
+      double scale = 1.0;
+      if (this.noCards == 5) {
+        scale = 0.75;
+        xoffset = 0.55;
+      }
+      if (this.noCards == 4) {
+        scale = 0.75;
+        xoffset = 0.75;
+      }
       //log('Hole cards');
       log('PlayerCardsWidget: [${seat.serverSeatPos}] Hidden cards');
       return Transform.translate(
         offset: Offset(
-          xOffset * 0.90,
+          xOffset * xoffset,
           25.0,
         ),
         child: Transform.scale(
-          scale: 1.0,
+          scale: scale,
           child: HiddenCardView(noOfCards: this.noCards),
         ),
       );
