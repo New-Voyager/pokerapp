@@ -185,16 +185,16 @@ class NamePlateWidget extends StatelessWidget {
       }
     }
 
-    nameplate = gameState.assets.getNameplateById("3");
+    nameplate = gameState.assets.getNameplateById("5");
 
     if (nameplate != null) {
       playerNamePlate = nameplate.svg;
       playerProgress = nameplate.path;
     }
-    double scale = 1.3;
-    // if (nameplate.id != "0") {
-    //   scale = 1.2;
-    // }
+    double scale = 1.1;
+    if (nameplate.id != "0") {
+      scale = 1.2;
+    }
 /*
 [log] Timer remaining: 6698 total: 30 current: 23
 [log] Rebuilding highlight remaining: 7 total: 30 current: 23
