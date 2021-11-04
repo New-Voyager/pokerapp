@@ -5,7 +5,7 @@ DO_REGISTRY := registry.digitalocean.com/voyager
 REGISTRY := $(GCP_REGISTRY)
 
 API_SERVER_IMAGE := $(REGISTRY)/api-server:0.7.117
-GAME_SERVER_IMAGE := $(REGISTRY)/game-server:0.7.47
+GAME_SERVER_IMAGE := $(REGISTRY)/game-server:0.7.48
 BOTRUNNER_IMAGE := $(REGISTRY)/botrunner:0.7.42
 TIMER_IMAGE := $(REGISTRY)/timer:0.5.11
 SCHEDULER_IMAGE := $(REGISTRY)/scheduler:0.1.10
