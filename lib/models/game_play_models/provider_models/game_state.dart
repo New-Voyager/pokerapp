@@ -1137,6 +1137,8 @@ class GameState {
     _holeCardsState.notify();
   }
 
+  HoleCardsState get holeCardsState => _holeCardsState;
+
   void setPlayerNoCards(int n) {
     for (int i = 0; i < _playersInGame.length; i++) {
       if (_playersInGame[i].status == AppConstants.PLAYING &&

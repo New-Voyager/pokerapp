@@ -61,9 +61,12 @@ class DisplayCardsWidget extends StatelessWidget {
   }
 
   Widget _buildStackCardView(List<int> cards, context) {
+    if (cards == null || cards.length == 0) {
+      return Container();
+    }
     if (cards.length == 4 || cards.length == 5) {
       return Transform.scale(
-        scale: 1.5,
+        scale: 1.2,
         child: FittedBox(
           fit: BoxFit.fitWidth,
           child: StackCardView(cards: _getCards(cards)),

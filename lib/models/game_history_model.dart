@@ -281,9 +281,9 @@ class GameHistoryDetailModel extends ChangeNotifier {
   String get profitText => DataFormatter.chipsFormat(profit);
 
   String get gameTypeStr {
-    if (gameType == 'HOLDEM') {
-      return 'No Limit Holdem';
-    }
+    // if (gameType == 'HOLDEM') {
+    //   return 'No Limit Holdem';
+    // }
     return gameType;
   }
 

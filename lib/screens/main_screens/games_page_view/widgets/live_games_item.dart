@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/newmodels/game_model_new.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
@@ -30,7 +31,10 @@ class LiveGameItem extends StatelessWidget {
       );
     }
     return Consumer<AppTheme>(
-      builder: (_, theme, __) => Stack(
+      builder: (_, theme, __) {
+        final gameType = gameTypeFromStr(game.gameType);
+        final gameTypeStr = gameTypeShortStr(gameType);
+        return Stack(
         children: [
           Container(
             margin: EdgeInsets.symmetric(
@@ -127,7 +131,7 @@ class LiveGameItem extends StatelessWidget {
                                   ],
                                 ),
                                 Text(
-                                  "${(game.gameType)} ${game.smallBlind}/${game.bigBlind}",
+                                  "${gameTypeStr} ${game.smallBlind}/${game.bigBlind}",
                                   style: AppDecorators.getHeadLine4Style(
                                       theme: theme),
                                 ),
@@ -174,7 +178,9 @@ class LiveGameItem extends StatelessWidget {
             ),
           ),
         ],
-      ),
+      );
+      }
     );
+      
   }
 }
