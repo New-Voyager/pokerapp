@@ -202,7 +202,7 @@
         "bombPotInterval": "Bomb Pot interval (in mins)",
         "bombPotBet": "Bomb Pot bet amount (x BBs)",
         "seatChangeAllowed": "Player Seat Change allowed",
-        "hhTracked": "Track highhand",
+        "hhTracked": "Track high-hand (entire game)",
         "showRearrange": "Show rearrange button"
     },
     "clubsPageView": {
