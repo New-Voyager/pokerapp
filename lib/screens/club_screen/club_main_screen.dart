@@ -15,6 +15,7 @@ import 'package:pokerapp/screens/club_screen/widgets/club_live_games_view.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/screens/main_screens/purchase_page_view/coin_update.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
+import 'package:pokerapp/services/test/mock_data.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
@@ -125,7 +126,8 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew>
 
   Future<ClubHomePageModel> fetchData() async {
     // if the current user is manager or club owner, get club coins
-    final clubData = await ClubsService.getClubHomePageData(widget.clubCode);
+    // final clubData = await ClubsService.getClubHomePageData(widget.clubCode);
+    final clubData = await MockData.getClubHomePageData(widget.clubCode);
     if (clubData.isManager || clubData.isOwner) {
       clubData.clubCoins = await ClubsService.getClubCoins(widget.clubCode);
       ;

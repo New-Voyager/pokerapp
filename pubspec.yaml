@@ -132,6 +132,7 @@ flutter:
     - assets/images/card_face/
     - assets/language/
     - assets/json/nameplates.json
+    - assets/json/mockdata.json
 
   fonts:
     - family: Lato

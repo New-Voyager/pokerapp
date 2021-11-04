@@ -20,6 +20,7 @@ import 'package:pokerapp/screens/game_screens/new_game_settings/new_game_setting
 import 'package:pokerapp/screens/main_screens/games_page_view/widgets/live_games_item.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/app/insta_refresh_service.dart';
+import 'package:pokerapp/services/test/mock_data.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/alerts.dart';
@@ -167,7 +168,10 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
       return;
     }
     log('fetching live games');
-    final updatedLiveGames = await GameService.getLiveGamesNew();
+    // final updatedLiveGames = await GameService.getLiveGamesNew();
+    final updatedLiveGames = await MockData.getLiveGames();
+
+    print("__________________");
     bool refresh = true;
     if (refresh) {
       liveGames = updatedLiveGames;
