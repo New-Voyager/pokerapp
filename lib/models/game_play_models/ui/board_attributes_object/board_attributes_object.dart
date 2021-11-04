@@ -262,12 +262,12 @@ Map<SeatPos, SeatPosAttribs> getSeatMap(int deviceSize) {
     /* middle left and middle right */
     SeatPos.middleLeft: SeatPosAttribs(
       Alignment.centerLeft,
-      Offset(10, 40),
+      Offset(5, 40),
       Alignment.centerRight,
     ),
     SeatPos.middleRight: SeatPosAttribs(
       Alignment.centerRight,
-      Offset(-10, 40),
+      Offset(-5, 40),
       Alignment.centerLeft,
     ),
 
