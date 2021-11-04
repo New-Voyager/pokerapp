@@ -196,12 +196,6 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
       if (data != null && data['type'] != null && data['type'] == "host") {
         await _handleHostButtonClick(context);
       }
-      // show popup menu
-      // showPlayerPopup(context, widget.seat.key, widget.gameState, widget.seat);
-
-      // Enable this for popup buttons
-      // gameState.setTappedSeatPos(
-      //     context, widget.seatPos, widget.seat, widget.gameComService);
     }
   }
 
@@ -356,11 +350,6 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
     Size fireworksContainer = Size(50, 50);
     double fireworksScale = 1.5;
 
-    // if (widget.seat.key != null && widget.seat.key.currentContext != null) {
-    //   RenderBox seatBox = widget.seat.key.currentContext.findRenderObject();
-    //   fireworksContainer = Size(seatBox.size.width, seatBox.size.height * 2);
-    // }
-
     final boardAttributes = gameState.getBoardAttributes(context);
     widget.seat.betWidgetUIKey = GlobalKey();
 
@@ -423,6 +412,14 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
               Offset(((widget.boardAttributes.namePlateSize.width / 2)), 0);
         }
         Key key = widget.seat.key;
+        double opacity = 1.0;
+
+        if (!widget.seat.isOpen) {
+          if (widget.seat.player.highlight &&
+              widget.seat.player.connectivity.connectivityLost) {
+            opacity = 0.70;
+          }
+        }
         return InkWell(
           onTap: () => this.onTap(context),
           child: Stack(
@@ -432,11 +429,13 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
               // Container(width: 100, height: 60, color: Colors.grey[900]),
               //SvgPicture.string(namePlateStr, width: 60, height: 50),
               // // main user body
-              NamePlateWidget(
-                widget.seat,
-                globalKey: key,
-                boardAttributes: boardAttributes,
-              ),
+              Opacity(
+                  opacity: opacity,
+                  child: NamePlateWidget(
+                    widget.seat,
+                    globalKey: key,
+                    boardAttributes: boardAttributes,
+                  )),
 
               // result cards shown in player view at the time of result
               _buildDisplayCardsWidget(widget.seat, gameState.handState),
@@ -655,11 +654,14 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
       maintainState: true,
       maintainAnimation: true,
       maintainSize: true,
-      child: Image.asset(
-        'assets/images/network_connectivity/network_disconnected.png',
-        width: 14,
-        color: Colors.cyan,
-      ),
+      child: Stack(children: [
+        Icon(
+          Icons.wifi_off_rounded,
+          size: 32.pw,
+          color: Colors.orange,
+        ),
+        Container(),
+      ]),
     );
   }
 }

@@ -266,6 +266,9 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     return renderBox.size;
   }
 
+  /**
+   * Returns screen position of a nameplate within the parent
+   */
   Offset findPositionOfUser({int seatNo}) {
     final gameState = GameState.getState(context);
     /* if available in cache, get from there */
@@ -292,11 +295,12 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
   List<Offset> findPositionOfFromAndToUser({
     int fromSeat,
     int toSeat,
-  }) =>
-      [
-        findPositionOfUser(seatNo: fromSeat),
-        findPositionOfUser(seatNo: toSeat),
-      ];
+  }) {
+    return [
+      findPositionOfUser(seatNo: fromSeat),
+      findPositionOfUser(seatNo: toSeat),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -451,33 +455,6 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
         serverSeatNo = 1;
       }
     }
-
-    // final seats = seatsState.asMap().entries.map(
-    //   (var u) {
-    //     index++;
-    //     return Consumer<SeatChangeNotifier>(
-    //       builder: (_, scn, __) {
-    //         return _positionedForUsers(
-    //           boardAttribs: boardAttribs,
-    //           isBoardHorizontal: widget.isBoardHorizontal,
-    //           seat: u.value,
-    //           heightOfBoard: widget.heightOfBoard,
-    //           widthOfBoard: widget.widthOfBoard,
-    //           seatPos: getAdjustedSeatPosition(
-    //             u.key,
-    //             maxPlayers,
-    //             me != null,
-    //             me?.seatNo,
-    //             seatChangeInProgress: scn.seatChangeInProgress,
-    //           ),
-    //           isPresent: me != null,
-    //           onUserTap: widget.onUserTap,
-    //         );
-    //       }
-    //     );
-    //   },
-    // ).toList();
-
     return seats;
   }
 
@@ -519,29 +496,6 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     }
 
     return widget.gameState.seats;
-  }
-
-  Widget _positionedForUsers({
-    @required BoardAttributesObject boardAttribs,
-    @required bool isBoardHorizontal,
-    Seat seat,
-    double heightOfBoard,
-    double widthOfBoard,
-    int seatPos,
-    bool isPresent,
-    Function onUserTap,
-  }) {
-    return positionUser(
-      boardAttribs: boardAttribs,
-      isBoardHorizontal: isBoardHorizontal,
-      maxPlayers: widget.maxPlayers,
-      seat: seat,
-      heightOfBoard: heightOfBoard,
-      widthOfBoard: widthOfBoard,
-      seatPosIndex: seatPos,
-      isPresent: isPresent,
-      onUserTap: onUserTap,
-    );
   }
 
   Widget createUserView({
@@ -624,8 +578,17 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
       onUserTap: onUserTap,
     );
 
+    Offset offset = seatAttribs.topLeft;
+    if (seat.seatPos == SeatPos.bottomCenter ||
+        seat.seatPos == SeatPos.bottomLeft ||
+        seat.seatPos == SeatPos.bottomRight) {
+      if (seat.isOpen) {
+        offset = Offset(offset.dx, offset.dy - 30);
+      }
+    }
+
     return Transform.translate(
-        offset: seatAttribs.topLeft,
+        offset: offset,
         child: Align(alignment: seatAttribs.alignment, child: userView));
   }
 }

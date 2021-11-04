@@ -87,234 +87,221 @@ class _HandAlltimeStatsViewState extends State<HandAlltimeStatsView>
               ? CircularProgressWidget(
                   text: "${_appScreenText['loadingStatistics']}",
                 )
-              : SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      // Pie Charts
-                      Container(
-                        decoration: AppDecorators.tileDecoration(theme),
-                        margin: EdgeInsets.symmetric(
-                          horizontal: 16,
-                        ),
-                        padding: EdgeInsets.symmetric(
-                          vertical: 16,
-                        ),
-                        child: Column(
-                          children: [
-                            Row(
-                              children: [
-                                Expanded(
-                                  flex: 1,
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        _appScreenText['allTime'],
-                                        style: AppDecorators.getSubtitle3Style(
-                                            theme: theme),
-                                      ),
-                                      Text(
-                                        "${_appScreenText['hands']} : ${stats.alltime.totalHands}",
-                                        style: AppDecorators.getHeadLine4Style(
-                                            theme: theme),
-                                      ),
-                                      Container(
-                                        height: 150,
-                                        child: HandStatPieChart(stats.alltime),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                            // Legend for PieChart
-                            Wrap(
-                              children: [
-                                buildOneItemInLegend(_appScreenText['preflop'],
-                                    theme.preFlopColor, theme),
-                                buildOneItemInLegend(_appScreenText['flop'],
-                                    theme.flopColor, theme),
-                                buildOneItemInLegend(_appScreenText['turn'],
-                                    theme.turnColor, theme),
-                                buildOneItemInLegend(_appScreenText['river'],
-                                    theme.riverColor, theme),
-                                buildOneItemInLegend(_appScreenText['showdown'],
-                                    theme.showDownColor, theme),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      // Action Statistics
-                      Container(
-                        decoration: AppDecorators.tileDecoration(theme),
-                        margin:
-                            EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                        padding: EdgeInsets.all(8),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Text(
-                                  _appScreenText['stageStatistics'],
-                                  textAlign: TextAlign.left,
-                                  style: AppDecorators.getHeadLine4Style(
-                                      theme: theme),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Expanded(
-                                  flex: 3,
-                                  child: SizedBox.shrink(),
-                                ),
-                                Expanded(
-                                  flex: 2,
-                                  child: Text(
-                                    _appScreenText['allTime'],
-                                    textAlign: TextAlign.center,
-                                    style: AppDecorators.getSubtitle3Style(
-                                        theme: theme),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            _buildOneStageRow(
-                              title: buildOneItemInLegend(
-                                  _appScreenText['preflop'],
-                                  theme.preFlopColor,
-                                  theme),
-                              allVal: stats.alltime.inPreflop,
-                              theme: theme,
-                            ),
-                            _buildOneStageRow(
-                              title: buildOneItemInLegend(
-                                  _appScreenText['flop'],
-                                  theme.flopColor,
-                                  theme),
-                              allVal: stats.alltime.inFlop,
-                              theme: theme,
-                            ),
-                            _buildOneStageRow(
-                              title: buildOneItemInLegend(
-                                  _appScreenText['turn'],
-                                  theme.turnColor,
-                                  theme),
-                              allVal: stats.alltime.inTurn,
-                              theme: theme,
-                            ),
-                            _buildOneStageRow(
-                              title: buildOneItemInLegend(
-                                  _appScreenText['river'],
-                                  theme.riverColor,
-                                  theme),
-                              allVal: stats.alltime.inRiver,
-                              theme: theme,
-                            ),
-                            _buildOneStageRow(
-                              title: buildOneItemInLegend(
-                                  _appScreenText['showdown'],
-                                  theme.showDownColor,
-                                  theme),
-                              allVal: stats.alltime.wentToShowDown,
-                              theme: theme,
-                            ),
-                            AppDimensionsNew.getVerticalSizedBox(16),
-                          ],
-                        ),
-                      ),
-
-                      // Action Statistics
-                      Container(
-                        decoration: AppDecorators.tileDecoration(theme),
-                        margin: EdgeInsets.symmetric(horizontal: 16),
-                        padding: EdgeInsets.all(8),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Text(
-                                  _appScreenText['actionStatistics'],
-                                  textAlign: TextAlign.left,
-                                  style: AppDecorators.getHeadLine4Style(
-                                      theme: theme),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Expanded(
-                                  flex: 3,
-                                  child: SizedBox.shrink(),
-                                ),
-                                Expanded(
-                                  flex: 2,
-                                  child: Text(
-                                    _appScreenText['allTime'],
-                                    textAlign: TextAlign.center,
-                                    style: AppDecorators.getSubtitle3Style(
-                                        theme: theme),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            _buildOneStatRow(
-                              title: _appScreenText['vpip'],
-                              allVal: stats.alltime.vpipCount,
-                              theme: theme,
-                            ),
-                            _buildOneStatRow(
-                              title: _appScreenText['contBet'],
-                              allVal: stats.alltime.contBet,
-                              theme: theme,
-                            ),
-                            _buildOneStatRow(
-                              title: _appScreenText['threeBet'],
-                              allVal: stats.alltime.threeBet,
-                              theme: theme,
-                            ),
-                            _buildOneStatRow(
-                              title: _appScreenText['wtsd'],
-                              allVal: stats.alltime.wentToShowDown,
-                              theme: theme,
-                            ),
-                            _buildOneStatRow(
-                              title: _appScreenText['wsd'],
-                              allVal: stats.alltime.wonAtShowDown,
-                              theme: theme,
-                            ),
-                            _buildOneStatRow(
-                              title: _appScreenText['headsup'],
-                              allVal: stats.alltime.headsupHands,
-                              theme: theme,
-                            ),
-                            _buildOneStatRow(
-                              title: _appScreenText['headsupWon'],
-                              allVal: stats.alltime.wonHeadsupHands,
-                              theme: theme,
-                            ),
-                            AppDimensionsNew.getVerticalSizedBox(16),
-                            Text(
-                              _appScreenText['WTSDWentToShowDown'],
-                              style:
-                                  AppDecorators.getSubtitle3Style(theme: theme),
-                            ),
-                            Text(
-                              _appScreenText['WSDWonatShowDown'],
-                              style:
-                                  AppDecorators.getSubtitle3Style(theme: theme),
-                            ),
-                          ],
-                        ),
-                      ),
-                      // Action Statistics
-                      AppDimensionsNew.getVerticalSizedBox(56),
-                    ],
-                  ),
-                ),
+              : statsView(theme),
         ),
+      ),
+    );
+  }
+
+  Widget statsView(AppTheme theme) {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          // Pie Charts
+          Container(
+            decoration: AppDecorators.tileDecoration(theme),
+            margin: EdgeInsets.symmetric(
+              horizontal: 16,
+            ),
+            padding: EdgeInsets.symmetric(
+              vertical: 16,
+            ),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: Column(
+                        children: [
+                          Text(
+                            _appScreenText['allTime'],
+                            style:
+                                AppDecorators.getSubtitle3Style(theme: theme),
+                          ),
+                          Text(
+                            "${_appScreenText['hands']} : ${stats.alltime.totalHands}",
+                            style:
+                                AppDecorators.getHeadLine4Style(theme: theme),
+                          ),
+                          Container(
+                            height: 150,
+                            child: HandStatPieChart(stats.alltime),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                // Legend for PieChart
+                Wrap(
+                  children: [
+                    buildOneItemInLegend(
+                        _appScreenText['preflop'], theme.preFlopColor, theme),
+                    buildOneItemInLegend(
+                        _appScreenText['flop'], theme.flopColor, theme),
+                    buildOneItemInLegend(
+                        _appScreenText['turn'], theme.turnColor, theme),
+                    buildOneItemInLegend(
+                        _appScreenText['river'], theme.riverColor, theme),
+                    buildOneItemInLegend(
+                        _appScreenText['showdown'], theme.showDownColor, theme),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          // Action Statistics
+          Container(
+            decoration: AppDecorators.tileDecoration(theme),
+            margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            padding: EdgeInsets.all(8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      _appScreenText['stageStatistics'],
+                      textAlign: TextAlign.left,
+                      style: AppDecorators.getHeadLine4Style(theme: theme),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      flex: 3,
+                      child: SizedBox.shrink(),
+                    ),
+                    Expanded(
+                      flex: 2,
+                      child: Text(
+                        _appScreenText['allTime'],
+                        textAlign: TextAlign.center,
+                        style: AppDecorators.getSubtitle3Style(theme: theme),
+                      ),
+                    ),
+                  ],
+                ),
+                _buildOneStageRow(
+                  title: buildOneItemInLegend(
+                      _appScreenText['preflop'], theme.preFlopColor, theme),
+                  allVal: stats.alltime.inPreflop,
+                  theme: theme,
+                ),
+                _buildOneStageRow(
+                  title: buildOneItemInLegend(
+                      _appScreenText['flop'], theme.flopColor, theme),
+                  allVal: stats.alltime.inFlop,
+                  theme: theme,
+                ),
+                _buildOneStageRow(
+                  title: buildOneItemInLegend(
+                      _appScreenText['turn'], theme.turnColor, theme),
+                  allVal: stats.alltime.inTurn,
+                  theme: theme,
+                ),
+                _buildOneStageRow(
+                  title: buildOneItemInLegend(
+                      _appScreenText['river'], theme.riverColor, theme),
+                  allVal: stats.alltime.inRiver,
+                  theme: theme,
+                ),
+                _buildOneStageRow(
+                  title: buildOneItemInLegend(
+                      _appScreenText['showdown'], theme.showDownColor, theme),
+                  allVal: stats.alltime.wentToShowDown,
+                  theme: theme,
+                ),
+                AppDimensionsNew.getVerticalSizedBox(16),
+              ],
+            ),
+          ),
+
+          // Action Statistics
+          Container(
+            decoration: AppDecorators.tileDecoration(theme),
+            margin: EdgeInsets.symmetric(horizontal: 16),
+            padding: EdgeInsets.all(8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      _appScreenText['actionStatistics'],
+                      textAlign: TextAlign.left,
+                      style: AppDecorators.getHeadLine4Style(theme: theme),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      flex: 3,
+                      child: SizedBox.shrink(),
+                    ),
+                    Expanded(
+                      flex: 2,
+                      child: Text(
+                        _appScreenText['allTime'],
+                        textAlign: TextAlign.center,
+                        style: AppDecorators.getSubtitle3Style(theme: theme),
+                      ),
+                    ),
+                  ],
+                ),
+                _buildOneStatRow(
+                  title: _appScreenText['vpip'],
+                  allVal: stats.alltime.vpipCount,
+                  theme: theme,
+                ),
+                _buildOneStatRow(
+                  title: _appScreenText['contBet'],
+                  allVal: stats.alltime.contBet,
+                  theme: theme,
+                ),
+                _buildOneStatRow(
+                  title: _appScreenText['threeBet'],
+                  allVal: stats.alltime.threeBet,
+                  theme: theme,
+                ),
+                _buildOneStatRow(
+                  title: _appScreenText['wtsd'],
+                  allVal: stats.alltime.wentToShowDown,
+                  theme: theme,
+                ),
+                _buildOneStatRow(
+                  title: _appScreenText['wsd'],
+                  allVal: stats.alltime.wonAtShowDown,
+                  theme: theme,
+                ),
+                _buildOneStatRow(
+                  title: _appScreenText['headsup'],
+                  allVal: stats.alltime.headsupHands,
+                  theme: theme,
+                ),
+                _buildOneStatRow(
+                  title: _appScreenText['headsupWon'],
+                  allVal: stats.alltime.wonHeadsupHands,
+                  theme: theme,
+                ),
+                AppDimensionsNew.getVerticalSizedBox(16),
+                Text(
+                  _appScreenText['WTSDWentToShowDown'],
+                  style: AppDecorators.getSubtitle3Style(theme: theme),
+                ),
+                Text(
+                  _appScreenText['WSDWonatShowDown'],
+                  style: AppDecorators.getSubtitle3Style(theme: theme),
+                ),
+              ],
+            ),
+          ),
+          // Action Statistics
+          AppDimensionsNew.getVerticalSizedBox(56),
+        ],
       ),
     );
   }
