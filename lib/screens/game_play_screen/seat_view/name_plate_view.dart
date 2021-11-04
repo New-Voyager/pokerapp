@@ -292,7 +292,7 @@ class NamePlateWidget extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        SizedBox(height: 2),
+                        //SizedBox(height: 2),
                         // player name
                         FittedBox(
                           child: Text(seat.player?.name ?? '',
