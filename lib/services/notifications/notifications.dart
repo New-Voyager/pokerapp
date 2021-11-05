@@ -125,11 +125,6 @@ class NotificationHandler {
           } else if (changed == 'PROMOTED') {
             String playerUuid = json['playerUuid'];
             if (playerUuid == playerState.playerUuid) {
-              // String text = this.notificationTexts.getText('newClubMember',
-              //     values: {
-              //       'playerName': json['playerName'],
-              //       'clubCode': clubCode
-              //     });
               Alerts.showNotification(
                 titleText: 'Promoted',
                 subTitleText: 'You are promoted as manager at club ${clubCode}',
