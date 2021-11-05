@@ -65,13 +65,18 @@ class DisplayCardsWidget extends StatelessWidget {
       return Container();
     }
     if (cards.length == 4 || cards.length == 5) {
-      return Transform.scale(
-        scale: 1.2,
-        child: FittedBox(
-          fit: BoxFit.fitWidth,
-          child: StackCardView(cards: _getCards(cards)),
+      double scale = 1.0;
+      Offset offset = Offset(-18, 10);
+      if (cards.length == 5) {
+        scale = 0.85;
+        offset = Offset(-30, 10);
+      }
+      return Transform.translate(offset: offset,
+      child: Transform.scale(
+        scale: scale,
+        child: StackCardView(cards: _getCards(cards),
         ),
-      );
+      ));
     }
 
     // default case
@@ -83,6 +88,8 @@ class DisplayCardsWidget extends StatelessWidget {
     log('HiLo: UpdateSeat: DisplayCardsWidget Seat: ${seat.player.seatNo} highlight: ${seat.player.highlightCards} player: ${seat.player.name} cards: ${seat.player.cards} reveal cards: ${seat.player.revealCards}');
     // log('UpdateSeat: seat no: ${seat.player.seatNo} updating cards widget: ${seat.player.cards}');
     List<int> seatPlayerCards = seat.player.cards;
+    //seatPlayerCards = [161, 200, 168, 177]; //, 177];
+
     if (seat.player.revealCards.isEmpty) {
       // player didn't reveal the cards
       // if this is not showdown, don't show the cards

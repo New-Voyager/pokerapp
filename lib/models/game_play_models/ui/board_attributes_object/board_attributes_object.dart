@@ -251,23 +251,23 @@ Map<SeatPos, SeatPosAttribs> getSeatMap(int deviceSize) {
     /* bottom left and bottom right  */
     SeatPos.bottomLeft: SeatPosAttribs(
       Alignment.bottomLeft,
-      Offset(30, 20),
+      Offset(15, 20),
       Alignment.centerRight,
     ),
     SeatPos.bottomRight: SeatPosAttribs(
       Alignment.bottomRight,
-      Offset(-30, 20),
+      Offset(-15, 20),
       Alignment.centerLeft,
     ),
     /* middle left and middle right */
     SeatPos.middleLeft: SeatPosAttribs(
       Alignment.centerLeft,
-      Offset(5, 40),
+      Offset(10, 40),
       Alignment.centerRight,
     ),
     SeatPos.middleRight: SeatPosAttribs(
       Alignment.centerRight,
-      Offset(-5, 40),
+      Offset(-10, 40),
       Alignment.centerLeft,
     ),
 
@@ -556,7 +556,7 @@ class BoardAttributesObject extends ChangeNotifier {
     if (_boardOrientation == BoardOrientation.horizontal) {
       return {
         SeatPos.topCenter: Offset(25, 40),
-        SeatPos.bottomCenter: Offset(30, -40),
+        SeatPos.bottomCenter: Offset(10, -40),
         SeatPos.middleLeft: Offset(50, 0),
         SeatPos.middleRight: Offset(-50, 0),
         SeatPos.topRight: Offset(-40, 30),
