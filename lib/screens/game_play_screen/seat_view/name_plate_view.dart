@@ -114,9 +114,10 @@ class NamePlateWidget extends StatelessWidget {
       );
     } else if (highlight) {
       shadow = BoxShadow(
-        color: highlightColor.withAlpha(80),
-        blurRadius: 10.0,
-        spreadRadius: 10.0,
+        color: Colors.grey.withOpacity(0.9),
+        //color: highlightColor.withAlpha(90),
+        blurRadius: 20.0,
+        spreadRadius: 20.0,
       );
     } else {
       if (hostSeatChange?.seatChangeInProgress ?? false) {

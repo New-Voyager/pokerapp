@@ -345,6 +345,15 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
       showFirework = true;
     }
 
+    bool highlight = false;
+    double scale = 1.0;
+    if (widget.seat.player != null) {
+      highlight = widget.seat.player.highlight;
+      if (highlight) {
+        scale = 1.3;
+      }
+    }
+
     // we constrain the size to NOT shift the players widgets
     // and for large size fireworks, we use a scaling factor
     Size fireworksContainer = Size(50, 50);
@@ -431,11 +440,16 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
               // // main user body
               Opacity(
                   opacity: opacity,
-                  child: NamePlateWidget(
-                    widget.seat,
-                    globalKey: key,
-                    boardAttributes: boardAttributes,
-                  )),
+                  child: 
+                  Transform.scale(
+                    scale: scale,
+                    child: 
+                    NamePlateWidget(
+                      widget.seat,
+                      globalKey: key,
+                      boardAttributes: boardAttributes,
+                    ))
+                  ),
 
               // result cards shown in player view at the time of result
               _buildDisplayCardsWidget(widget.seat, gameState.handState),
