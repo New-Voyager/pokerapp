@@ -440,16 +440,13 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
               // // main user body
               Opacity(
                   opacity: opacity,
-                  child: 
-                  Transform.scale(
-                    scale: scale,
-                    child: 
-                    NamePlateWidget(
-                      widget.seat,
-                      globalKey: key,
-                      boardAttributes: boardAttributes,
-                    ))
-                  ),
+                  child: Transform.scale(
+                      scale: scale,
+                      child: NamePlateWidget(
+                        widget.seat,
+                        globalKey: key,
+                        boardAttributes: boardAttributes,
+                      ))),
 
               // result cards shown in player view at the time of result
               _buildDisplayCardsWidget(widget.seat, gameState.handState),

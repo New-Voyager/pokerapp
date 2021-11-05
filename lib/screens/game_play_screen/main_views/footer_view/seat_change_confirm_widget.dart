@@ -6,7 +6,7 @@ import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
-import 'package:pokerapp/screens/club_screen/club_action_screens/club_member_detailed_view/club_member_detailed_view.dart';
+import 'package:pokerapp/screens/club_screen/club_member_detailed_view.dart';
 import 'package:pokerapp/services/game_play/graphql/seat_change_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:provider/provider.dart';

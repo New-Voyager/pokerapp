@@ -24,12 +24,13 @@ import 'package:provider/provider.dart';
 class ClubMembersDetailsView extends StatefulWidget {
   final String clubCode;
   final String playerId;
+  final bool isClubOwner; // current session is owner?
 
-  ClubMembersDetailsView(this.clubCode, this.playerId);
+  ClubMembersDetailsView(this.clubCode, this.playerId, this.isClubOwner);
 
   @override
   _ClubMembersDetailsView createState() =>
-      _ClubMembersDetailsView(this.clubCode, this.playerId);
+      _ClubMembersDetailsView(this.clubCode, this.playerId, this.isClubOwner);
 }
 
 class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
@@ -40,28 +41,37 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
   ClubMemberModel _data;
   final String clubCode;
   final String playerId;
+  final bool isClubOwner; // current session is owner?
+  String oldPhoneText;
+  String oldNotes;
   TextEditingController _contactEditingController;
   TextEditingController _notesEditingController;
+  bool updated = false;
 
-  _ClubMembersDetailsView(this.clubCode, this.playerId);
+  _ClubMembersDetailsView(this.clubCode, this.playerId, this.isClubOwner);
 
   AppTextScreen _appScreenText;
 
   _fetchData() async {
     _data = await ClubInteriorService.getClubMemberDetail(clubCode, playerId);
+    oldPhoneText = _data.contactInfo;
+    oldNotes = _data.notes;
     loadingDone = true;
-    setState(() {
-      if (loadingDone && _data != null) {
-        // update ui
-        _contactEditingController =
-            TextEditingController(text: _data.contactInfo);
-        _notesEditingController = TextEditingController(text: _data.notes);
-        _notesEditingController
-            .addListener(() => _data.notes = _notesEditingController.text);
-        _contactEditingController.addListener(
-            () => _data.contactInfo = _contactEditingController.text);
-      }
-    });
+    if (_data != null) {
+      // update ui
+      _contactEditingController =
+          TextEditingController(text: _data.contactInfo);
+      _notesEditingController = TextEditingController(text: _data.notes);
+      _notesEditingController.addListener(() {
+        _data.notes = _notesEditingController.text;
+        _data.edited = true;
+      });
+      _contactEditingController.addListener(() {
+        _data.edited = true;
+        _data.contactInfo = _contactEditingController.text;
+      });
+    }
+    setState(() {});
   }
 
   @override
@@ -74,14 +84,100 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
 
   void goBack(BuildContext context) async {
     if (this._data.edited) {
-      // save the data
-      await ClubInteriorService.updateClubMember(this._data);
+      if (oldPhoneText != _data.contactInfo || oldNotes != _data.notes) {
+        ConnectionDialog.show(
+            context: context, loadingText: "Updating player information...");
+        try {
+          // save the data
+          await ClubInteriorService.updateClubMember(this._data);
+          updated = true;
+        } catch (err) {}
+        ConnectionDialog.dismiss(
+          context: context,
+        );
+      }
     }
-    Navigator.of(context).pop();
+    Navigator.of(context).pop(updated);
+  }
+
+  List<Widget> getMemberButtons(AppTheme theme) {
+    List<Widget> children = [
+      //message
+      CircleImageButton(
+        theme: theme,
+        icon: Icons.message,
+        caption: _appScreenText['message'],
+        onTap: () {
+          Navigator.pushNamed(
+            context,
+            Routes.chatScreen,
+            arguments: {
+              'clubCode': widget.clubCode,
+              'player': widget.playerId,
+              'name': _data.name,
+            },
+          );
+        },
+      ),
+
+      // boot
+      CircleImageButton(
+        icon: Icons.eject_rounded,
+        theme: theme,
+        caption: _appScreenText['boot'],
+        onTap: () async {
+          await kickPlayerOut();
+        },
+      ),
+    ];
+
+    if (_data.isManager) {
+      children.add(
+          // demote
+          CircleImageButton(
+        icon: Icons.arrow_downward_rounded,
+        theme: theme,
+        caption: 'Demote',
+        onTap: () async {
+          await demoteManager();
+        },
+      ));
+    } else {
+      children.add(
+          // promote
+          CircleImageButton(
+        icon: Icons.arrow_upward_rounded,
+        theme: theme,
+        caption: 'Promote',
+        onTap: () async {
+          await promoteManager();
+        },
+      ));
+    }
+    return children;
+  }
+
+  void demoteManager() async {
+    await changeManagerStatus(false);
+  }
+
+  void promoteManager() async {
+    await changeManagerStatus(true);
   }
 
   @override
   Widget build(BuildContext context) {
+    String memberRole = '';
+    if (loadingDone) {
+      if (_data.isManager ?? false) {
+        memberRole = 'Manager';
+      } else if (_data.isOwner) {
+        memberRole = 'Owner';
+      } else {
+        memberRole = 'Member';
+      }
+    }
+
     return Consumer<AppTheme>(
       builder: (_, theme, __) => Container(
         decoration: AppDecorators.bgRadialGradient(theme),
@@ -91,6 +187,9 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
             theme: theme,
             context: context,
             titleText: "",
+            onBackHandle: () {
+              goBack(context);
+            },
           ),
           body: !loadingDone
               ? CircularProgressWidget()
@@ -120,7 +219,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                                 padding: EdgeInsets.all(5),
                                 child: Text(
                                   _data.name,
-                                  style: AppDecorators.getAccentTextStyle(
+                                  style: AppDecorators.getHeadLine2Style(
                                       theme: theme),
                                 ),
                               ),
@@ -134,10 +233,12 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                                       theme: theme),
                                 ),
                               ),
+                              Text(memberRole,
+                                  textAlign: TextAlign.end,
+                                  style: AppDecorators.getAccentTextStyle(
+                                      theme: theme)),
                               _data.isOwner
-                                  ? Text('Owner',
-                                      style: AppDecorators.getHeadLine4Style(
-                                          theme: theme))
+                                  ? SizedBox.shrink()
                                   : Container(
                                       padding:
                                           EdgeInsets.only(bottom: 5, top: 20),
@@ -146,35 +247,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                                             MainAxisAlignment.spaceEvenly,
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
-                                        children: [
-                                          //message
-                                          CircleImageButton(
-                                            theme: theme,
-                                            icon: Icons.message,
-                                            caption: _appScreenText['message'],
-                                            onTap: () {
-                                              Navigator.pushNamed(
-                                                context,
-                                                Routes.chatScreen,
-                                                arguments: {
-                                                  'clubCode': widget.clubCode,
-                                                  'player': widget.playerId,
-                                                  'name': _data.name,
-                                                },
-                                              );
-                                            },
-                                          ),
-
-                                          //boot
-                                          CircleImageButton(
-                                            icon: Icons.eject_rounded,
-                                            theme: theme,
-                                            caption: _appScreenText['boot'],
-                                            onTap: () async {
-                                              await kickPlayerOut();
-                                            },
-                                          ),
-                                        ],
+                                        children: getMemberButtons(theme),
                                       ),
                                     ),
                             ],
@@ -255,10 +328,10 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
   }
 
   Future<void> kickPlayerOut() async {
-    final response = await showPrompt(context, 'Kick Player',
-        'Do you want to kick the player out of the club?',
-        positiveButtonText: "Yes", negativeButtonText: "No");
-    log("$response");
+    final response = await showPrompt(
+        context, _appScreenText['kickTitle'], _appScreenText['kickPrompt'],
+        positiveButtonText: _appScreenText['kickConfirm'],
+        negativeButtonText: _appScreenText['kickNegative']);
     if (response != null && response == true) {
       ConnectionDialog.show(
           context: context, loadingText: "Removing player from club..");
@@ -268,15 +341,48 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
       );
 
       if (result != null && result != '') {
+        updated = true;
         Alerts.showNotification(
             titleText: 'Kick Player',
             subTitleText: 'Player is removed from the club.');
-        Navigator.of(context).pop();
+        Navigator.of(context).pop(updated);
       } else {
         Alerts.showNotification(
             titleText: 'Kick Player',
             subTitleText:
                 'Unable to remove the player from the club. Try again later.');
+      }
+    }
+  }
+
+  Future<void> changeManagerStatus(bool promote) async {
+    String prompt = 'Do you want to promote the player as Manager?';
+    if (!promote) {
+      prompt = 'Do you want to demote the player from Manager?';
+    }
+    final response = await showPrompt(context, 'Manager', prompt,
+        positiveButtonText: 'Yes', negativeButtonText: 'No');
+    if (response != null && response == true) {
+      ConnectionDialog.show(context: context, loadingText: "Updating...");
+      final result =
+          await ClubsService.promotePlayer(clubCode, playerId, promote);
+      ConnectionDialog.dismiss(
+        context: context,
+      );
+
+      if (result != null && result != '') {
+        updated = true;
+        String text = 'Player is promoted as manager';
+        if (!promote) {
+          text = 'Player is demoted from manager';
+        }
+        Alerts.showNotification(titleText: 'Manager', subTitleText: text);
+        _data.isManager = promote;
+        setState(() {});
+      } else {
+        Alerts.showNotification(
+            titleText: 'Manager',
+            subTitleText: 'Failed to update the status. Try again later.');
       }
     }
   }
