@@ -128,7 +128,8 @@ class _ClubMembersViewState extends State<ClubMembersView>
                                   _all,
                                   MemberListOptions.ALL,
                                   _clubHomePageModel.isOwner,
-                                  _appScreenText),
+                                  _appScreenText,
+                                  _fetchData),
                               // ClubMembersListView(
                               //   this._clubHomePageModel.clubCode,
                               //   _unsettled,
@@ -141,6 +142,7 @@ class _ClubMembersViewState extends State<ClubMembersView>
                                 MemberListOptions.MANAGERS,
                                 _clubHomePageModel.isOwner,
                                 _appScreenText,
+                                _fetchData,
                               ),
                               ClubMembersListView(
                                 this._clubHomePageModel.clubCode,
@@ -148,6 +150,7 @@ class _ClubMembersViewState extends State<ClubMembersView>
                                 MemberListOptions.INACTIVE,
                                 _clubHomePageModel.isOwner,
                                 _appScreenText,
+                                _fetchData,
                               ),
                             ],
                           ),
