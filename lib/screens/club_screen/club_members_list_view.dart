@@ -135,15 +135,17 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
                                             : AppDecorators.getSubtitle1Style(
                                                 theme: theme),
                                       ),
-                                      !widget.viewAsOwner || data.contactInfo == null || data.contactInfo.isEmpty
-                                      ? SizedBox.shrink()
-                                      :
-                                      Text(
-                                        '    ' + '(${data.contactInfo})',
-                                        textAlign: TextAlign.left,
-                                        style: AppDecorators.getHeadLine5Style(
-                                                theme: theme),
-                                      ),
+                                      !widget.viewAsOwner ||
+                                              data.contactInfo == null ||
+                                              data.contactInfo.isEmpty
+                                          ? SizedBox.shrink()
+                                          : Text(
+                                              '    ' + '(${data.contactInfo})',
+                                              textAlign: TextAlign.left,
+                                              style: AppDecorators
+                                                  .getHeadLine5Style(
+                                                      theme: theme),
+                                            ),
                                     ],
                                   ),
                                 ),

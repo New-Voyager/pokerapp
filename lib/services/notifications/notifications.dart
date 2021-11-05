@@ -7,13 +7,16 @@ import 'package:flutter_fgbg/flutter_fgbg.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/enums/game_type.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/main_helper.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/overlay_notification.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
+import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/services/app/player_service.dart';
+import 'package:pokerapp/services/data/hive_models/player_state.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
@@ -106,16 +109,33 @@ class NotificationHandler {
           this.clubUpdateState.notify();
 
           if (changed == 'NEW_MEMBER_REQUEST') {
-            String text = this.notificationTexts.getText('newClubMember',
-                values: {
-                  'playerName': json['playerName'],
-                  'clubCode': clubCode
-                });
-            Alerts.showNotification(
-              titleText: 'New Member',
-              subTitleText: text,
-              duration: Duration(seconds: 5),
-            );
+            // am I the owner of this club?
+            if (appState.isClubOwner(clubCode)) {
+              String text = this.notificationTexts.getText('newClubMember',
+                  values: {
+                    'playerName': json['playerName'],
+                    'clubCode': clubCode
+                  });
+              Alerts.showNotification(
+                titleText: 'New Member',
+                subTitleText: text,
+                duration: Duration(seconds: 5),
+              );
+            }
+          } else if (changed == 'PROMOTED') {
+            String playerUuid = json['playerUuid'];
+            if (playerUuid == playerState.playerUuid) {
+              // String text = this.notificationTexts.getText('newClubMember',
+              //     values: {
+              //       'playerName': json['playerName'],
+              //       'clubCode': clubCode
+              //     });
+              Alerts.showNotification(
+                titleText: 'Promoted',
+                subTitleText: 'You are promoted as manager at club ${clubCode}',
+                duration: Duration(seconds: 5),
+              );
+            }
           }
         }
       } catch (err) {

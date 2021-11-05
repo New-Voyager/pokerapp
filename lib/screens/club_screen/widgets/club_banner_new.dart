@@ -17,7 +17,29 @@ class ClubBannerViewNew extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Widget role = SizedBox.shrink();
     final theme = AppTheme.getTheme(context);
+    if (clubModel.isOwner) {
+      role = Container(
+          padding: EdgeInsets.all(8),
+          decoration: BoxDecoration(
+              border: Border.all(color: theme.secondaryColor),
+              borderRadius: BorderRadius.circular(
+                  20) // use instead of BorderRadius.all(Radius.circular(20))
+              ),
+          child: Text('Owner',
+              style: AppDecorators.getHeadLine5Style(theme: theme)));
+    } else if (clubModel.isManager) {
+      role = Container(
+          padding: EdgeInsets.all(8),
+          decoration: BoxDecoration(
+              border: Border.all(color: theme.secondaryColor),
+              borderRadius: BorderRadius.circular(
+                  20) // use instead of BorderRadius.all(Radius.circular(20))
+              ),
+          child: Text('Manager',
+              style: AppDecorators.getHeadLine5Style(theme: theme)));
+    }
     final decoration = BoxDecoration(
         shape: BoxShape.circle,
         border: Border.all(
@@ -69,6 +91,7 @@ class ClubBannerViewNew extends StatelessWidget {
             //   Icons.settings_outlined,
             //   color: theme.accentColor,
             // ))),
+            Positioned(right: -100.pw, bottom: 0.ph, child: role),
           ],
         ),
         Padding(
