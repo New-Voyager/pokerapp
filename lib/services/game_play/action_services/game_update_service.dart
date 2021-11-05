@@ -1280,10 +1280,7 @@ class GameUpdateService {
       _gameState.actionState.show = false;
       _gameState.actionState.notify();
       if (forced) {
-        Alerts.showNotification(
-            titleText: _appScreenText['game'],
-            svgPath: 'assets/images/casino.svg',
-            subTitleText: _appScreenText['theGameIsTerminatedDueToError']);
+        notifyGameCrashed();
       }
       return;
     }
@@ -1352,15 +1349,20 @@ class GameUpdateService {
         _gameState.actionState.show = false;
         _gameState.actionState.notify();
         if (forced) {
-          Alerts.showNotification(
-              titleText: _appScreenText['game'],
-              svgPath: 'assets/images/casino.svg',
-              subTitleText: _appScreenText['theGameIsTerminatedDueToError']);
+          notifyGameCrashed();
         }
       }
 
       tableState.notifyAll();
     }
+  }
+
+  void notifyGameCrashed() {
+    Alerts.showNotification(
+        duration: Duration(seconds: 3),
+        titleText: _appScreenText['game'],
+        svgPath: 'assets/images/casino.svg',
+        subTitleText: _appScreenText['theGameIsTerminatedDueToError']);
   }
 
   void handlePlayerSeatChangeMove({
