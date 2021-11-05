@@ -350,7 +350,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
     if (widget.seat.player != null) {
       highlight = widget.seat.player.highlight;
       if (highlight) {
-        scale = 1.3;
+        // scale = 1.3;
       }
     }
 
