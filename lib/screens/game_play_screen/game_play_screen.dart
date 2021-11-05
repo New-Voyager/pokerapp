@@ -831,28 +831,12 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         // header view
         headerView,
 
-        // RoundRectButton(
-        //     text: 'Refresh',
-        //     onTap: () {
-        //       log('RedrawTop: on refresh');
-        //       _gameState.redrawTop();
-        //     }),
-        // seperator
-        // SizedBox(width: width, height: divider1 / 2),
-
         // this widget, shows which winner is currently showing - high winner / low winner
         // this widget also acts as a natural seperator between header and board view
         WhichWinnerWidget(seperator: divider1),
 
-        // seperator
-        // SizedBox(width: width, height: divider1 / 2),
-
         // main board view
         _buildBoardView(boardDimensions, tableScale),
-        // Consumer<RedrawTopSectionState>(builder: (_, ___, __) {
-        //   log('RedrawTop: Rebuilding top section');
-        //   return _buildBoardView(boardDimensions, tableScale);
-        // }),
 
         /* divider that divides the board view and the footer */
         Divider(color: AppColorsNew.dividerColor, thickness: 3),
@@ -877,10 +861,12 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     return Stack(
       alignment: Alignment.topCenter,
       children: [
-        this.widget.showTop ? BackgroundView() : Container(),
+        this.widget.showTop ? 
+        BackgroundView() : Container(),
+        //Transform.translate(offset: Offset(0, 10.ph), child: BackgroundView()),
         this.widget.showTop && _gameState.customizationMode
             ? Positioned(
-                top: 50.pw,
+                top: 50.ph,
                 left: width - 50.pw,
                 child: CircleImageButton(
                   onTap: () async {
