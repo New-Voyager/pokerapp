@@ -7,6 +7,8 @@ import 'package:pokerapp/screens/club_screen/announcements_view.dart';
 import 'package:pokerapp/screens/club_screen/bookmarked_hands.dart';
 import 'package:pokerapp/screens/club_screen/botscripts.dart';
 import 'package:pokerapp/screens/club_screen/club_main_screen.dart';
+import 'package:pokerapp/screens/club_screen/club_member_detailed_view.dart';
+import 'package:pokerapp/screens/club_screen/club_members_view.dart';
 import 'package:pokerapp/screens/club_screen/club_settings.dart';
 import 'package:pokerapp/screens/club_screen/club_stats_screen.dart';
 import 'package:pokerapp/screens/game_screens/game_history_details_view/hand_stats_view.dart';
@@ -255,14 +257,18 @@ class Routes {
         );
 
       case club_member_detail_view:
-        var data = settings.arguments as ClubMemberModel;
+        Map<String, dynamic> args = settings.arguments as Map<String, dynamic>;
+        String clubCode = args["clubCode"];
+        String playerId = args["playerId"];
+        bool isCurrentOwner = args["currentOwner"] as bool;
+        final ClubMemberModel member = args["member"];
         return _getPageRoute(
           routeName: settings.name,
           viewToShow: ChangeNotifierProvider<ClubMemberModel>(
-            create: (_) => data,
+            create: (_) => member,
             builder: (BuildContext context, _) => Consumer<ClubMemberModel>(
               builder: (_, ClubMemberModel data, __) =>
-                  ClubMembersDetailsView(data.clubCode, data.playerId),
+                  ClubMembersDetailsView(clubCode, playerId, isCurrentOwner),
             ),
           ),
         );

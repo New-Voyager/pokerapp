@@ -524,4 +524,29 @@ class ClubsService {
 
     return res ?? false;
   }
+
+  static Future<String> promotePlayer(
+      String clubCode, String playerId, bool isManager) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    Map<String, dynamic> variables = {
+      "clubCode": clubCode,
+      "playerUuid": playerId,
+      "update": {"isManager": isManager}
+    };
+    final String query = """
+      mutation updateClubMember(\$clubCode : String!, \$playerUuid: String! \$update: ClubMemberUpdateInput!){
+        ret: updateClubMember(clubCode:\$clubCode, playerUuid: \$playerUuid, update: \$update)
+      }
+    """;
+    QueryResult result = await _client.mutate(
+      MutationOptions(document: gql(query), variables: variables),
+    );
+
+    if (result.hasException) return '';
+
+    String res = result.data['ret'];
+
+    return res ?? false;
+  }
 }

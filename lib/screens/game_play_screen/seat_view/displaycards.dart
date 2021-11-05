@@ -71,12 +71,14 @@ class DisplayCardsWidget extends StatelessWidget {
         scale = 0.85;
         offset = Offset(-30, 10);
       }
-      return Transform.translate(offset: offset,
-      child: Transform.scale(
-        scale: scale,
-        child: StackCardView(cards: _getCards(cards),
-        ),
-      ));
+      return Transform.translate(
+          offset: offset,
+          child: Transform.scale(
+            scale: scale,
+            child: StackCardView(
+              cards: _getCards(cards),
+            ),
+          ));
     }
 
     // default case

@@ -72,6 +72,9 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
     List<ClubMemberModel> _filteredList;
     _filteredList = widget._membersList;
     _filteredList.sort((a, b) {
+      return b.name.toLowerCase().compareTo(a.name.toLowerCase());
+    });
+    _filteredList.sort((a, b) {
       return a.status == ClubMemberStatus.PENDING ? 0 : 1;
     });
 
@@ -211,10 +214,15 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
                             (widget.viewAsOwner ?? false)),
                         child: InkWell(
                           onTap: () async {
-                            Navigator.pushNamed(
+                            await Navigator.pushNamed(
                               context,
                               Routes.club_member_detail_view,
-                              arguments: data,
+                              arguments: {
+                                "clubCode": data.clubCode,
+                                "playerId": data.playerId,
+                                "currentOwner": true,
+                                "member": data
+                              },
                             );
                             setState(() {});
                           },

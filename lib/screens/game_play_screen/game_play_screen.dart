@@ -861,8 +861,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     return Stack(
       alignment: Alignment.topCenter,
       children: [
-        this.widget.showTop ? 
-        BackgroundView() : Container(),
+        this.widget.showTop ? BackgroundView() : Container(),
         //Transform.translate(offset: Offset(0, 10.ph), child: BackgroundView()),
         this.widget.showTop && _gameState.customizationMode
             ? Positioned(
