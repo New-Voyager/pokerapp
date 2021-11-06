@@ -314,7 +314,8 @@ class NotificationHandler {
     String type = json['type'];
     if (!(type == 'NEW_GAME' ||
         type == 'WAITLIST_SEATING' ||
-        type == 'HOST_MESSAGE')) {
+        type == 'HOST_MESSAGE' ||
+        type == 'TEST_PUSH')) {
       return;
     }
     String body = '';
@@ -335,6 +336,8 @@ class NotificationHandler {
         body =
             'A open seat is available at game: ${json['gameCode']}. $game $sb/$bb';
       } catch (err) {}
+    } else if (type == 'TEST_PUSH') {
+      body = 'This is a test notification!';
     }
 
     if (body.length == 0) {
