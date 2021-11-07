@@ -403,16 +403,14 @@ class GameUpdateService {
       _gameState.myState.notify();
     }
     if (closed || _gameState.uiClosing) return;
-    
+
     if (!_gameState.handInProgress) {
       if (seat != null && seat.player != null) {
         if (_gameState.gameInfo.audioConfEnabled) {
-          if (seat.player.isMe && _gameContextObj != null)  {
+          if (seat.player.isMe && _gameContextObj != null) {
             try {
               _gameContextObj.leaveAudio();
-            } catch(err) {
-
-            }
+            } catch (err) {}
           }
         }
       }
