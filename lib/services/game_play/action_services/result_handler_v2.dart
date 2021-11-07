@@ -164,21 +164,12 @@ class ResultHandlerV2 {
     }
     log('Result: result board: ${result.boards.length}');
 
-    /* then, change the status of the footer to show the result */
-    // context.read<ValueNotifier<FooterStatus>>().value = FooterStatus.Result;
-
     /**
      * DO the following for each pot:
      *    1. show all the high pot winners
      *    2. delay
      *    3. show all the low pot winners
      */
-    // final boardCards = this.result.boards[0].cards;
-    // List<CardObject> boardCardsUpdate = [];
-    // for (final c in boardCards) {
-    //   boardCardsUpdate.add(CardHelper.getCard(c));
-    // }
-    // tableState.setBoardCards(1, boardCardsUpdate);
     final totalPots = result.potWinners.length;
     for (int i = totalPots - 1; i >= 0; i--) {
       final potWinner = result.potWinners[i];
@@ -190,34 +181,11 @@ class ResultHandlerV2 {
       }
     }
 
-    // // mark all winners
-    // for (int i = totalPots - 1; i >= 0; i--) {
-    //   final potWinner = result.potWinners[i];
-    //   for (final boardWinners in potWinner.boardWinners) {
-    //     // hi winners
-    //     for (final seatNo in boardWinners.hiWinners.keys) {
-    //       final seat = gameState.getSeat(seatNo);
-    //       if (seat.player != null) {
-    //         seat.player.winner = true;
-    //       }
-    //     }
-    //     for (final seatNo in boardWinners.lowWinners.keys) {
-    //       final seat = gameState.getSeat(seatNo);
-    //       if (seat.player != null) {
-    //         seat.player.loWinner = true;
-    //       }
-    //     }
-    //   }
-    // }
     gameState.handResultState.notify();
-
-    // for (final seat in gameState.seats) {
-    //   if (seat.player != null) {
-    //     log('ResultMessage: ${seat.serverSeatPos} name: ${seat.player.name} winner: ${seat.player.winner}');
-    //   }
-    // }
+    log('Result: 1 show');
 
     for (int i = totalPots - 1; i >= 0; i--) {
+      log('Result: 1 show pot: $i');
       final potWinner = result.potWinners[i];
       final potNo = potWinner.potNo;
 
@@ -226,6 +194,7 @@ class ResultHandlerV2 {
       tableState.notifyAll();
 
       for (final boardWinners in potWinner.boardWinners) {
+        log('Result: 1 show pot: $i boardWinners: ${boardWinners.boardNo} rank: ${boardWinners.hiRankText}');
         // reset board, hi lo banners
         tableState.setWhichWinner(null);
         // clear all the boards
@@ -265,15 +234,20 @@ class ResultHandlerV2 {
         if (result.wonAt != proto.HandStatus.SHOW_DOWN) {
           rankText = '';
         }
+        log('Result: 2 show pot: $i boardWinners: ${boardWinners.boardNo} rank: ${boardWinners.hiRankText}');
 
         for (final seat in gameState.seats) {
           if (seat != null && seat.player != null) {
             final playerInfo = result.playerInfo[seat.player.seatNo];
-            seat.player.cards = playerInfo.cards;
-            log('UpdateSeat: show winnners updating cards for seat: ${seat.player.seatNo} player: ${seat.player.name} cards: ${seat.player.cards}');
+            if (playerInfo != null) {
+              seat.player.cards = playerInfo.cards;
+            }
+            log('Result: UpdateSeat: show winnners updating cards for seat: ${seat.player.seatNo} player: ${seat.player.name} cards: ${seat.player.cards}');
           }
         }
         AudioService.playApplause(mute: gameState.playerLocalConfig.mute);
+        log('Result: 1 Show winners');
+
         await _showWinners(
           board,
           rankText,
@@ -351,6 +325,7 @@ class ResultHandlerV2 {
   Future<void> _showWinners(
       final proto.Board board, String rank, List<proto.Winner> winners,
       {bool low = false}) async {
+    log('Result: Show winners');
     for (int i = 0; i < winners.length; i++) {
       final winner = winners[i];
       final playerRank = board.playerRank[winner.seatNo];

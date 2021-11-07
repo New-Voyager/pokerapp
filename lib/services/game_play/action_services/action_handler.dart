@@ -256,6 +256,9 @@ class PlayerActionHandler {
 
       if (_gameState.uiClosing) return;
       final seat = _gameState.getSeat(seatNo);
+      if (seat == null) {
+        return;
+      }
       final player = seat.player;
       assert(player != null);
 

@@ -36,12 +36,15 @@ class DisplayCardsWidget extends StatelessWidget {
       if (seat.player.winner ?? false) {
         isWinner = true;
       }
-      if (isWinner && showdown) {
+      card.cardFace = CardFace.BACK;
+      if (showdown) {
+        card.cardFace = CardFace.FRONT;
+      }
+      if (isWinner) {
         if (highlightedCards != null && highlightedCards.contains(cardNum)) {
           card.highlight = true;
         }
       } else if (seat.player.muckLosingHand) {
-        // this player is not a winner
         card.cardFace = CardFace.BACK;
       }
 
@@ -64,6 +67,11 @@ class DisplayCardsWidget extends StatelessWidget {
     if (cards == null || cards.length == 0) {
       return Container();
     }
+
+    if (seat.player.playerFolded && seat.player.revealCards.length == 0) {
+      return Container();
+    }
+
     double scale = 1.0;
     Offset offset = Offset(0, 0);
     if (cards.length == 4 || cards.length == 5) {
@@ -85,17 +93,13 @@ class DisplayCardsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    log('HiLo: UpdateSeat: DisplayCardsWidget Seat: ${seat.player.seatNo} highlight: ${seat.player.highlightCards} player: ${seat.player.name} cards: ${seat.player.cards} reveal cards: ${seat.player.revealCards}');
-    // log('UpdateSeat: seat no: ${seat.player.seatNo} updating cards widget: ${seat.player.cards}');
     List<int> seatPlayerCards = seat.player.cards;
-    //seatPlayerCards = [161, 200, 168, 177]; //, 177];
-
     if (seat.player.revealCards.isEmpty) {
       // player didn't reveal the cards
       // if this is not showdown, don't show the cards
-      if (!showdown) {
-        seatPlayerCards = [];
-      }
+      // if (!showdown) {
+      //   seatPlayerCards = [];
+      // }
     }
     return AnimatedSwitcher(
       duration: AppConstants.fastAnimationDuration,
