@@ -992,7 +992,9 @@ class HandActionProtoService {
         replay: false,
       );
       await resultHandler.show();
-    } catch (err) {}
+    } catch (err) {
+      log('==== CRITICAL ====: Exception thrown at updatePotBeforeResultStatic. Error: ${err.toString()}');
+    }
     _gameState.handState = HandState.ENDED;
     _gameState.handInProgress = false;
 
