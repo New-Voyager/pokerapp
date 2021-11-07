@@ -8,12 +8,14 @@ import 'package:pokerapp/screens/game_screens/widgets/highhand_widget.dart';
 class GroupedHandLogListView extends StatelessWidget {
   GroupedHandLogListView({
     @required this.winners,
+    @required this.gameCode,
     @required this.clubCode,
     @required this.theme,
   });
 
   final List<HighHandWinner> winners;
   final String clubCode;
+  final String gameCode;
   final AppTheme theme;
 
   String _belongsToGroup(HighHandWinner winner) {
@@ -86,8 +88,8 @@ class GroupedHandLogListView extends StatelessWidget {
               Column(
                 mainAxisSize: MainAxisSize.min,
                 children: groupWinners
-                    .map((HighHandWinner w) =>
-                        HighhandWidget(w, clubCode: clubCode))
+                    .map((HighHandWinner w) => HighhandWidget(w,
+                        gameCode: gameCode, clubCode: clubCode))
                     .toList(),
               ),
             ],

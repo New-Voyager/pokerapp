@@ -151,7 +151,7 @@ class GameContextObject extends ChangeNotifier {
             * and actions will be taken in the UI
             * as there will be Listeners implemented down this hierarchy level */
 
-      gameUpdateService = GameUpdateService(context, gameState);
+      gameUpdateService = GameUpdateService(context, gameState, this);
       gameUpdateService.loop();
 
       gameComService.gameToPlayerChannelStream?.listen((Message message) {
@@ -173,6 +173,7 @@ class GameContextObject extends ChangeNotifier {
       handActionProtoService = HandActionProtoService(
         context,
         gameState,
+        this,
         gameComService,
         encryptionService,
         currentPlayer,
