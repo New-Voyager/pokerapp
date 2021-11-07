@@ -256,6 +256,38 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                         Divider(
                           color: theme.supportingColor,
                         ),
+                        ListTile(
+                          leading: Text(
+                            "Credits",
+                            style:
+                                AppDecorators.getHeadLine4Style(theme: theme),
+                          ),
+                          title: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "600",
+                                style: AppDecorators.getHeadLine4Style(
+                                    theme: theme),
+                              ),
+                              Icon(Icons.navigate_next),
+                            ],
+                          ),
+                          onTap: () {
+                            Navigator.pushNamed(
+                              context,
+                              Routes.club_member_credit_detail_view,
+                              arguments: {
+                                'clubCode': widget.clubCode,
+                                'playerId': widget.playerId,
+                                'member': _data,
+                              },
+                            );
+                          },
+                        ),
+                        Divider(
+                          color: theme.supportingColor,
+                        ),
                         detailTile(theme),
                         Divider(
                           color: theme.supportingColor,
