@@ -48,7 +48,6 @@ class PotsView extends StatelessWidget {
         child: Stack(
           children: [
             Container(
-              margin: EdgeInsets.only(bottom: 10.0),
               padding: EdgeInsets.symmetric(horizontal: 10.0),
               height: 30,
               decoration: BoxDecoration(
