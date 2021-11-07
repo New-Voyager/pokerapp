@@ -347,7 +347,7 @@ class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
                   );
 
                   // TODO: transform using Matrix to give perspective illusion
-                  // 
+                  //
                   return communityCards;
                 },
               );

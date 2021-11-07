@@ -49,7 +49,7 @@ class BetWidget extends StatelessWidget {
 
   // TODO: MAKE THIS CLASS A GENERAL ONE SOMEWHERE OUTSIDE IN UTILS
   // WE CAN REUSE THIS CLASS FOR OTHER PLACES AS WELL
-  Widget _buildToolTipWith({Widget child, AppTheme theme}) {
+  Widget _betWidget({Widget child, AppTheme theme}) {
     final userSettingsBox = HiveDatasource.getInstance.getBox(
       BoxType.USER_SETTINGS_BOX,
     );
@@ -69,19 +69,6 @@ class BetWidget extends StatelessWidget {
     // else
     // increment the tool tip count
     userSettingsBox.put(betTooltipCountKey, betTooltipCount + 1);
-
-    // return Column(
-    //   mainAxisSize: MainAxisSize.min,
-    //   mainAxisAlignment: MainAxisAlignment.center,
-    //   //alignment: Alignment.topCenter,
-    //   children: [
-    //     // swipe up arrow
-    //     JumpingTextWidget(text: 'Swipe up to bet'),
-
-    //     // main child
-    //     child,
-    //   ],
-    // );
 
     return Stack(
       alignment: Alignment.topCenter,
@@ -206,7 +193,7 @@ class BetWidget extends StatelessWidget {
     final bool isBetByTapActive = true;
     //gameState.playerLocalConfig.tapOrSwipeBetAction;
 
-    final Widget betWidget = _buildToolTipWith(
+    final Widget betWidget = _betWidget(
       child: IntrinsicWidth(
         child: Container(
           height: 2 * s,
@@ -292,13 +279,6 @@ class BetWidget extends StatelessWidget {
         isBetByTapActive
             // if confirm by tap is active, show a bouncing widget
             ? mainWidget
-            // BouncingWidget(
-            //     scaleFactor: 1.5,
-            //     child: mainWidget,
-            //     onPressed: () {
-            //       onSubmitCallBack?.call(vnBetAmount.value);
-            //     },
-            //   )
             : GestureDetector(
                 // confirm bet ON SLIDE UP TILL THE TOP
                 onVerticalDragEnd: (_) {
@@ -373,20 +353,11 @@ class BetWidget extends StatelessWidget {
           return Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              /* bet button */
-              _buildBetButton(
-                  context, isLargerDisplay, valueNotifierVal, appTheme),
-              /* bet amount */
-              ValueListenableBuilder<double>(
-                valueListenable: valueNotifierVal,
-                builder: (_, double betAmount, __) => Text(
-                  DataFormatter.chipsFormat(betAmount.roundToDouble()),
-                  style: TextStyle(
-                    fontSize: 12.dp,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.yellowAccent,
-                  ),
-                ),
+              FittedBox(
+                fit: BoxFit.fitWidth,
+                child: Transform.scale(
+                    scale: 1.2,
+                    child: StackCardView(cards: _getCards(playerCards))),
               ),
               /* progress drag to bet */
               Row(mainAxisAlignment: MainAxisAlignment.center, children: [
@@ -428,12 +399,23 @@ class BetWidget extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 5.ph),
-              FittedBox(
-                fit: BoxFit.fitWidth,
-                child: Transform.scale(
-                    scale: 1.2,
-                    child: StackCardView(cards: _getCards(playerCards))),
+
+              /* bet amount */
+              ValueListenableBuilder<double>(
+                valueListenable: valueNotifierVal,
+                builder: (_, double betAmount, __) => Text(
+                  DataFormatter.chipsFormat(betAmount.roundToDouble()),
+                  style: TextStyle(
+                    fontSize: 12.dp,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.yellowAccent,
+                  ),
+                ),
               ),
+              /* bet button */
+              _buildBetButton(
+                  context, isLargerDisplay, valueNotifierVal, appTheme),
+
               //SizedBox(height: 10.ph),
             ],
           );

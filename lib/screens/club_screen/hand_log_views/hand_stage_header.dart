@@ -68,8 +68,10 @@ class HandStageHeader extends StatelessWidget {
     List<int> stageCards = [];
     if (boardNo == 2 && handResult.result.boards.length >= 2) {
       stageCards = handResult.result.boards[1].cards;
-    } else {
+    } else if (boardNo == 1) {
       stageCards = handResult.result.boards[0].cards;
+    } else {
+      return [];
     }
     String stageName = this.stageName.toUpperCase();
     if (stageName == 'PREFLOP') {
@@ -119,7 +121,7 @@ class HandStageHeader extends StatelessWidget {
             SizedBox(
               height: 5.dp,
             ),
-            stageCards1.length > 0
+            stageCards2.length > 0
                 ? StackCardView00(
                     cards: stageCards2,
                     show: true,

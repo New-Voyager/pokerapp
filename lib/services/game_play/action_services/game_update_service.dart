@@ -6,6 +6,7 @@ import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/enums/player_status.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/notification_models/general_notification_model.dart';
@@ -29,12 +30,13 @@ import 'package:provider/provider.dart';
 
 class GameUpdateService {
   final GameState _gameState;
+  final GameContextObject _gameContextObj;
   final BuildContext _context;
   final List<dynamic> _messages = [];
   bool closed = false;
   AppTextScreen _appScreenText = getAppTextScreen("gameUpdateService");
 
-  GameUpdateService(this._context, this._gameState);
+  GameUpdateService(this._context, this._gameState, this._gameContextObj);
 
   void close() {
     closed = true;
@@ -401,8 +403,19 @@ class GameUpdateService {
       _gameState.myState.notify();
     }
     if (closed || _gameState.uiClosing) return;
-    _gameState.removePlayer(seatNo);
+
     if (!_gameState.handInProgress) {
+      if (seat != null && seat.player != null) {
+        if (_gameState.gameInfo.audioConfEnabled) {
+          if (seat.player.isMe && _gameContextObj != null) {
+            try {
+              _gameContextObj.leaveAudio();
+            } catch (err) {}
+          }
+        }
+      }
+      _gameState.removePlayer(seatNo);
+
       if (closed || _gameState.uiClosing) return;
       _gameState.notifyAllSeats();
       if (closed || _gameState.uiClosing) return;

@@ -115,6 +115,7 @@ class HandMessageObject {
 
 class HandActionProtoService {
   final GameState _gameState;
+  final GameContextObject _gameContextObject;
   final BuildContext _context;
   final List<HandMessageObject> _messages = [];
 
@@ -129,6 +130,7 @@ class HandActionProtoService {
   HandActionProtoService(
     this._context,
     this._gameState,
+    this._gameContextObject,
     this._gameComService,
     this._encryptionService,
     this._currentPlayer,
@@ -992,7 +994,9 @@ class HandActionProtoService {
         replay: false,
       );
       await resultHandler.show();
-    } catch (err) {}
+    } catch (err) {
+      log('==== CRITICAL ====: Exception thrown at updatePotBeforeResultStatic. Error: ${err.toString()}');
+    }
     _gameState.handState = HandState.ENDED;
     _gameState.handInProgress = false;
 

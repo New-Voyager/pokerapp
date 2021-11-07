@@ -57,6 +57,7 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
       rankText = _getRankText(gameState, context);
 
       double scale = boardAttributes.holeCardViewScale;
+      final offset = boardAttributes.holeCardViewOffset;
       return Stack(
         alignment: Alignment.topCenter,
         children: [
@@ -70,12 +71,11 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
           ),
           // hole card view
           Transform.translate(
-            offset: boardAttributes.holeCardViewOffset,
+            offset: offset,
             child: Transform.scale(
               scale: scale,
               child: Stack(
                 alignment: Alignment.bottomCenter,
-                // mainAxisSize: MainAxisSize.min,
                 children: children,
               ),
             ),
