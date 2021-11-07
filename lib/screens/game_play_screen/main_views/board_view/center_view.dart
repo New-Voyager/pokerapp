@@ -339,12 +339,16 @@ class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
                   final gameState = GameState.getState(context);
                   final tableState = gameState.tableState;
                   log('CommunityCards: cards: ${tableState.cards} cardsOther: ${tableState.cardsOther} twoboards: ${tableState.twoBoardsNeeded}');
-                  return CommunityCardsView(
+                  Widget communityCards = CommunityCardsView(
                     cards: tableState.cards,
                     cardsOther: tableState.cardsOther,
                     twoBoardsNeeded: tableState.twoBoardsNeeded,
                     horizontal: true,
                   );
+
+                  // TODO: transform using Matrix to give perspective illusion
+                  // 
+                  return communityCards;
                 },
               );
             },

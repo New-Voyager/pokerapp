@@ -64,25 +64,23 @@ class DisplayCardsWidget extends StatelessWidget {
     if (cards == null || cards.length == 0) {
       return Container();
     }
+    double scale = 1.0;
+    Offset offset = Offset(0, 0);
     if (cards.length == 4 || cards.length == 5) {
-      double scale = 1.0;
-      Offset offset = Offset(-18, 10);
+      offset = Offset(-18, 10);
       if (cards.length == 5) {
         scale = 0.85;
         offset = Offset(-30, 10);
       }
-      return Transform.translate(
-          offset: offset,
-          child: Transform.scale(
-            scale: scale,
-            child: StackCardView(
-              cards: _getCards(cards),
-            ),
-          ));
     }
-
-    // default case
-    return StackCardView(cards: _getCards(cards));
+    return Transform.translate(
+        offset: offset,
+        child: Transform.scale(
+          scale: scale,
+          child: StackCardView(
+            cards: _getCards(cards),
+          ),
+        ));
   }
 
   @override

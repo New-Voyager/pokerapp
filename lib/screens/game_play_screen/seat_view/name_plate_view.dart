@@ -192,7 +192,7 @@ class NamePlateWidget extends StatelessWidget {
       playerNamePlate = nameplate.svg;
       playerProgress = nameplate.path;
     }
-    double scale = 1.1;
+    double scale = 1.05;
     // if (nameplate.id != "0") {
     //   scale = 1.2;
     // }
@@ -267,7 +267,6 @@ class NamePlateWidget extends StatelessWidget {
       alignment: Alignment.center,
       clipBehavior: Clip.hardEdge,
       children: [
-        // SvgPicture.string(namePlateStr, width: 100, height: 60),
         plateWidget,
         Positioned.fill(
             child: Align(

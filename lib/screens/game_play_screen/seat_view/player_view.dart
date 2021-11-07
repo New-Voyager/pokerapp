@@ -34,6 +34,7 @@ import 'animating_widgets/stack_switch_seat_animating_widget.dart';
 import 'chip_amount_widget.dart';
 import 'dealer_button.dart';
 import 'name_plate_view.dart';
+import 'nameplate_cards.dart';
 import 'open_seat.dart';
 import 'dart:math' as math;
 import 'package:pokerapp/utils/adaptive_sizer.dart';
@@ -478,19 +479,13 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
               ),
 
               // player hole cards (tilted card on the bottom left)
-              Transform.translate(
-                offset: boardAttributes.playerHoleCardOffset,
-                child: Transform.scale(
-                  scale: boardAttributes.playerHoleCardScale,
-                  child: gameState.handState == HandState.RESULT
-                      ? SizedBox(width: 0, height: 0)
-                      : PlayerCardsWidget(
-                          widget.seat,
-                          this.widget.cardsAlignment,
-                          widget.seat.player?.noOfCardsVisible,
-                          showdown,
-                        ),
-                ),
+              PlayerCardsWidget(
+                boardAttributes,
+                gameState,
+                widget.seat,
+                this.widget.cardsAlignment,
+                widget.seat.player?.noOfCardsVisible,
+                showdown,
               ),
 
               // show dealer button, if user is a dealer
@@ -708,77 +703,5 @@ class SeatNoWidget extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-class PlayerCardsWidget extends StatelessWidget {
-  final Seat seat;
-  final Alignment alignment;
-  final bool showdown;
-  final int noCards;
-
-  const PlayerCardsWidget(
-    this.seat,
-    this.alignment,
-    this.noCards,
-    this.showdown,
-  );
-
-  @override
-  Widget build(BuildContext context) {
-    // if (seat.folded ?? false) {
-    //   return shrinkedSizedBox;
-    // }
-
-    double shiftMultiplier = 1.0;
-    if (this.noCards == 5) shiftMultiplier = 1.7;
-    if (this.noCards == 4) shiftMultiplier = 1.45;
-    if (this.noCards == 3) shiftMultiplier = 1.25;
-    log('PlayerCardsWidget: building ${seat.serverSeatPos}');
-    double xOffset;
-    if (showdown)
-      xOffset = (alignment == Alignment.centerLeft ? 1 : -1) *
-          25.0 *
-          (seat.cards?.length ?? 0.0);
-    else {
-      xOffset =
-          (alignment == Alignment.centerLeft ? 35.0 : -45.0 * shiftMultiplier);
-      xOffset = -45.0 * shiftMultiplier;
-    }
-    if (showdown) {
-      return const SizedBox.shrink();
-    } else if (seat.folded ?? false) {
-      log('PlayerCardsWidget: [${seat.serverSeatPos}] Folded cards');
-      return Transform.translate(
-        offset: Offset(
-          xOffset * 0.30,
-          45.0,
-        ),
-        child: FoldCardAnimatingWidget(seat: seat),
-      );
-    } else {
-      double xoffset = 0.90;
-      double scale = 1.0;
-      if (this.noCards == 5) {
-        scale = 0.75;
-        xoffset = 0.55;
-      }
-      if (this.noCards == 4) {
-        scale = 0.75;
-        xoffset = 0.75;
-      }
-      //log('Hole cards');
-      log('PlayerCardsWidget: [${seat.serverSeatPos}] Hidden cards');
-      return Transform.translate(
-        offset: Offset(
-          xOffset * xoffset,
-          25.0,
-        ),
-        child: Transform.scale(
-          scale: scale,
-          child: HiddenCardView(noOfCards: this.noCards),
-        ),
-      );
-    }
   }
 }

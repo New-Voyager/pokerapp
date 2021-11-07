@@ -833,13 +833,35 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
         // this widget, shows which winner is currently showing - high winner / low winner
         // this widget also acts as a natural seperator between header and board view
-        WhichWinnerWidget(seperator: divider1),
+        // WhichWinnerWidget(seperator: divider1),
 
         // main board view
-        _buildBoardView(boardDimensions, tableScale),
+        Stack(children: [
+          this.widget.showTop ? BackgroundView() : Container(),
+          this.widget.showTop && _gameState.customizationMode
+              ? Positioned(
+                  top: 10.ph,
+                  left: width - 50.pw,
+                  child: CircleImageButton(
+                    onTap: () async {
+                      await Navigator.of(context)
+                          .pushNamed(Routes.select_table);
+                      await _gameState.assets.initialize();
+                      final redrawTop = _gameState.redrawBoardSectionState;
+                      redrawTop.notify();
+                      setState(() {});
+                    },
+                    theme: theme,
+                    icon: Icons.edit,
+                  ),
+                )
+              : Container(),
+          Positioned(
+              top: 35.ph, child: _buildBoardView(boardDimensions, tableScale)),
+        ]),
 
         /* divider that divides the board view and the footer */
-        Divider(color: AppColorsNew.dividerColor, thickness: 3),
+        //Divider(color: AppColorsNew.dividerColor, thickness: 3),
       ]);
     }
 
@@ -861,25 +883,25 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     return Stack(
       alignment: Alignment.topCenter,
       children: [
-        this.widget.showTop ? BackgroundView() : Container(),
+        // this.widget.showTop ? BackgroundView() : Container(),
         //Transform.translate(offset: Offset(0, 10.ph), child: BackgroundView()),
-        this.widget.showTop && _gameState.customizationMode
-            ? Positioned(
-                top: 50.ph,
-                left: width - 50.pw,
-                child: CircleImageButton(
-                  onTap: () async {
-                    await Navigator.of(context).pushNamed(Routes.select_table);
-                    await _gameState.assets.initialize();
-                    final redrawTop = _gameState.redrawBoardSectionState;
-                    redrawTop.notify();
-                    setState(() {});
-                  },
-                  theme: theme,
-                  icon: Icons.edit,
-                ),
-              )
-            : Container(),
+        // this.widget.showTop && _gameState.customizationMode
+        //     ? Positioned(
+        //         top: 50.ph,
+        //         left: width - 50.pw,
+        //         child: CircleImageButton(
+        //           onTap: () async {
+        //             await Navigator.of(context).pushNamed(Routes.select_table);
+        //             await _gameState.assets.initialize();
+        //             final redrawTop = _gameState.redrawBoardSectionState;
+        //             redrawTop.notify();
+        //             setState(() {});
+        //           },
+        //           theme: theme,
+        //           icon: Icons.edit,
+        //         ),
+        //       )
+        //     : Container(),
 
         /* main view */
         Column(
