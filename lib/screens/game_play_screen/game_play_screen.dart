@@ -17,6 +17,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/host_seat_chang
 import 'package:pokerapp/models/game_play_models/provider_models/marked_cards.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
+import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/ios_board_attributes.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
 import 'package:pokerapp/models/player_info.dart';
@@ -958,9 +959,16 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     if (_gameInfoModel == null) return Center(child: CircularProgressWidget());
 
     /* get the screen sizes, and initialize the board attributes */
-    BoardAttributesObject boardAttributes = BoardAttributesObject(
-      screenSize: Screen.diagonalInches,
-    );
+    BoardAttributesObject boardAttributes;
+    if (Platform.isIOS) {
+      boardAttributes = IosBoardAttributesObject(
+        screenSize: Screen.diagonalInches,
+      );
+    } else {
+      boardAttributes = BoardAttributesObject(
+        screenSize: Screen.diagonalInches,
+      );
+    }
 
     final providers = GamePlayScreenUtilMethods.getProviders(
       context: context,
