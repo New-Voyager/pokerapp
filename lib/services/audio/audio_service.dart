@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:audioplayers/audioplayers.dart';
@@ -87,6 +88,9 @@ class AudioService {
   }
 
   static playSound(String soundFile, {bool mute}) {
+    // the library we use only supports Android
+    if (!Platform.isAndroid) return;
+
     if (!play) {
       return;
     }
