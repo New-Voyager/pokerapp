@@ -17,6 +17,7 @@ import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:pokerapp/widgets/run_it_twice_dialog.dart';
+import 'package:vibration/vibration.dart';
 
 import 'hand_action_proto_service.dart';
 
@@ -323,6 +324,12 @@ class PlayerActionHandler {
 
       /* play an sound effect alerting the user */
       AudioService.playYourAction(mute: _gameState.playerLocalConfig.mute);
+
+      if (_gameState.playerLocalConfig.vibration) {
+        if (await Vibration.hasVibrator()) {
+          Vibration.vibrate();
+        }
+      }
 
       if (_gameState.straddleBetThisHand == true) {
         // we have the straddleBet set to true, do a bet

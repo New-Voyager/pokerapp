@@ -575,7 +575,7 @@
         "handHistory": "Hand History",
         "allHands": "All Hands",
         "winningHands": "Winning Hands",
-        "filteredSubTitle" : "Filtered List"
+        "filteredSubTitle": "Filtered List"
     },
     "pointsLineChart": {
         "stackTimeline": "Stack Timeline",
@@ -720,6 +720,7 @@
         "audioConference": "Audio Conference",
         "animations": "Animations",
         "chat": "Chat",
+        "vibration": "Vibration",
         "straddle": "Straddle",
         "autoStraddle": "Auto Straddle",
         "elapsed": "Elapsed",
@@ -780,19 +781,19 @@
         "showResult": "Show result",
         "highHandTracked": "Highhand Tracked"
     },
-    "handHistoryFilter":{
-        "title" : "Filters",
-        "filteredSubTitle" : "Filtered List",
-        "potSizeLabel" : "Pot Size more than ",
-        "myHeadsLabel" : "My Headsup hands",
-        "lostChipsLabel" : "Lost chips more than",
-        "potWinnerLabel" : "Pot winner",
-        "cancel" : "Cancel",
-        "apply" : "Apply",
-        "select" : "-Select-"
+    "handHistoryFilter": {
+        "title": "Filters",
+        "filteredSubTitle": "Filtered List",
+        "potSizeLabel": "Pot Size more than ",
+        "myHeadsLabel": "My Headsup hands",
+        "lostChipsLabel": "Lost chips more than",
+        "potWinnerLabel": "Pot winner",
+        "cancel": "Cancel",
+        "apply": "Apply",
+        "select": "-Select-"
     },
     "notifications": {
         "newClubMember": "{playerName} is requesting for club membership {clubCode}",
         "newGame": "A new game is hosted by club {clubName}"
-    }    
+    }
 }

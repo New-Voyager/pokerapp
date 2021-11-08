@@ -664,7 +664,7 @@ class _GameOptionState extends State<GameOption> {
 
             // show animations
             _buildCheckBox(
-              text: 'Chat allowed',
+              text: 'Show Chat',
               value: _gameSettings.chat ?? false,
               onChange: (bool v) async {
                 _gameSettings.chat = v;
@@ -1160,6 +1160,22 @@ class _GameOptionState extends State<GameOption> {
       onChange: (bool v) {
         // setting the value saves it to local storage too
         widget.gameState.playerLocalConfig.showChat = v;
+        // widget.gameState.config.bombPot = v;
+        log('In toggle button widget, gameSounds = ${widget.gameState.playerLocalConfig.gameSound}');
+        if (closed) return;
+        setState(() {});
+        widget.gameState.communicationState.notify();
+      },
+    ));
+
+    // Vibration setting
+    children.add(_buildCheckBox(
+      text: _appScreenText['vibration'],
+      value: widget.gameState.playerLocalConfig.vibration ??
+          false, //widget.gameState.config.bombpot,
+      onChange: (bool v) {
+        // setting the value saves it to local storage too
+        widget.gameState.playerLocalConfig.vibration = v;
         // widget.gameState.config.bombPot = v;
         log('In toggle button widget, gameSounds = ${widget.gameState.playerLocalConfig.gameSound}');
         if (closed) return;

@@ -54,6 +54,13 @@ class GameLocalConfig {
     _save();
   }
 
+  bool get vibration => _vibration;
+  bool _vibration = true;
+  set vibration(bool value) {
+    _vibration = value;
+    _save();
+  }
+
   bool get straddle => _straddle;
   bool _straddle = true;
   set straddle(bool value) {
@@ -93,6 +100,7 @@ class GameLocalConfig {
         'gameSound': this._gameSound,
         'animations': this._animations,
         'showChat': this._showChat,
+        'vibration': this._vibration,
         'straddle': this._straddle,
         'inAudioConference': this._inAudioConference,
         'tapOrSwipeBetAction': this._tapOrSwipeBetAction,
@@ -105,6 +113,7 @@ class GameLocalConfig {
     this._gameSound = json['gameSound'];
     this._animations = json['animations'];
     this._showChat = json['showChat'];
+    this._vibration = json['vibration'];
     this._straddle = json['straddle'];
     this._inAudioConference = json['inAudioConference'];
     this._tapOrSwipeBetAction = json['tapOrSwipeBetAction'];
