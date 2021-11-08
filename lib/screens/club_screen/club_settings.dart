@@ -88,6 +88,7 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
           body: _loading
               ? Center(child: CircularProgressWidget())
               : SingleChildScrollView(
+                  physics: BouncingScrollPhysics(),
                   child: Column(
                     children: [
                       // Head section

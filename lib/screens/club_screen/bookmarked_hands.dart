@@ -145,6 +145,7 @@ class _BookmarkedHandsState extends State<BookmarkedHands>
                                   ),
                                 )
                               : ListView.builder(
+                                  physics: BouncingScrollPhysics(),
                                   shrinkWrap: true,
                                   itemCount: list.length,
                                   itemBuilder:

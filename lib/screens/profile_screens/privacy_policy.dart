@@ -53,6 +53,7 @@ Vivamus non pretium arcu. Integer sed eleifend purus, eget convallis felis. Duis
             titleText: widget.title ?? "Policy",
           ),
           body: SingleChildScrollView(
+            physics: BouncingScrollPhysics(),
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: Html(

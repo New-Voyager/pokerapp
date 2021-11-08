@@ -95,6 +95,7 @@ class _HandAlltimeStatsViewState extends State<HandAlltimeStatsView>
 
   Widget statsView(AppTheme theme) {
     return SingleChildScrollView(
+      physics: BouncingScrollPhysics(),
       child: Column(
         children: [
           // Pie Charts

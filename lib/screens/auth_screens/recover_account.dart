@@ -45,6 +45,7 @@ class _RestoreAccountScreenState extends State<RestoreAccountScreen> {
           backgroundColor: Colors.transparent,
           resizeToAvoidBottomInset: true,
           body: SingleChildScrollView(
+            physics: BouncingScrollPhysics(),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [

@@ -41,7 +41,8 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
 
   void fetchData() async {
     try {
-      member = await ClubInteriorService.getClubMemberDetail(widget.clubCode, widget.playerId);
+      member = await ClubInteriorService.getClubMemberDetail(
+          widget.clubCode, widget.playerId);
       history = await ClubInteriorService.getCreditHistory(
           widget.clubCode, widget.playerId);
     } catch (err) {}
@@ -54,6 +55,7 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
       child: Container(
         decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
         child: ListView.builder(
+            physics: BouncingScrollPhysics(),
             itemCount: history.length,
             shrinkWrap: true,
             itemBuilder: (context, index) {
@@ -254,8 +256,7 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
                         ),
                       ),
                       Text(
-                        DataFormatter.chipsFormat(
-                            member.availableCredit),
+                        DataFormatter.chipsFormat(member.availableCredit),
                         style: AppDecorators.getHeadLine3Style(theme: theme)
                             .copyWith(
                                 color: member.availableCredit < 0
@@ -335,9 +336,11 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
         Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            BackArrowWidget(onBackHandle: () {
-              Navigator.of(context).pop(changed);
-            },),
+            BackArrowWidget(
+              onBackHandle: () {
+                Navigator.of(context).pop(changed);
+              },
+            ),
             dividingSpace(),
           ],
         ),

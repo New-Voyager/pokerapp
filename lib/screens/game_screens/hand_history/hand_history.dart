@@ -181,7 +181,8 @@ class _HandHistoryState extends State<HandHistoryListView>
                             dynamic ret = await Alerts.showDailog(
                               context: context,
                               child: HandHistoryFilterWidget(
-                                  winners: _getListOfWinners()),
+                                winners: _getListOfWinners(),
+                              ),
                             );
                             if (ret == null) {
                               return;
@@ -237,25 +238,25 @@ class _HandHistoryState extends State<HandHistoryListView>
     return Container(
       child: Column(
         children: [
-          Container(
-            child: TabBar(
-              unselectedLabelColor: theme.secondaryColorWithDark(),
-              indicatorSize: TabBarIndicatorSize.label,
-              indicatorColor: theme.accentColor,
-              labelColor: theme.secondaryColorWithLight(),
-              tabs: [
-                new Tab(
-                  text: _appScreenText['allHands'],
-                ),
-                new Tab(
-                  text: _appScreenText['winningHands'],
-                ),
-              ],
-              controller: _tabController,
-            ),
+          TabBar(
+            physics: const BouncingScrollPhysics(),
+            unselectedLabelColor: theme.secondaryColorWithDark(),
+            indicatorSize: TabBarIndicatorSize.label,
+            indicatorColor: theme.accentColor,
+            labelColor: theme.secondaryColorWithLight(),
+            tabs: [
+              new Tab(
+                text: _appScreenText['allHands'],
+              ),
+              new Tab(
+                text: _appScreenText['winningHands'],
+              ),
+            ],
+            controller: _tabController,
           ),
           Expanded(
             child: TabBarView(
+              physics: const BouncingScrollPhysics(),
               children: [
                 PlayedHandsScreen(
                   _data.gameCode,
