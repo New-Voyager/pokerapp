@@ -7,6 +7,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/table_state.dar
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/services/audio/audio_service.dart';
+import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:pokerapp/proto/hand.pb.dart' as proto;
 import 'package:pokerapp/proto/handmessage.pb.dart' as proto;
@@ -113,28 +114,32 @@ class ResultHandlerV2 {
     if (result.highHandWinners.length > 0) {
       final winner = result.highHandWinners[0];
       String playerName = winner.playerName;
-      List<CardObject> hhCards = winner.hhCards
-          ?.map<CardObject>((c) => CardHelper.getCard(c as int))
-          ?.toList();
+      List<int> hhCards = winner.hhCards;
 
-      List<CardObject> playerCards = winner.playerCards
-          ?.map<CardObject>((c) => CardHelper.getCard(c as int))
-          ?.toList();
+      List<int> playerCards = winner.playerCards;
 
-      var notificationValueNotifier =
-          Provider.of<ValueNotifier<HHNotificationModel>>(
-        context,
-        listen: false,
-      );
-
-      notificationValueNotifier.value = HHNotificationModel(
-        gameCode: gameState.gameCode,
-        handNum: result.handNum,
-        playerName: playerName,
-        hhCards: hhCards,
+      Alerts.showHighHandWinner(
         playerCards: playerCards,
+        boardCards: result.boards.first.cards,
+        highHandCards: hhCards,
+        name: playerName,
+        handNo: result.handNum,
       );
+
+      // var notificationValueNotifier =
+      //     context.read<ValueNotifier<HHNotificationModel>>();
+      //
+      // notificationValueNotifier.value = HHNotificationModel(
+      //   gameCode: gameState.gameCode,
+      //   handNum: result.handNum,
+      //   playerName: playerName,
+      //   hhCards: hhCards,
+      //   playerCards: playerCards,
+      //   boardCards: result.boards.first.cards,
+      // );
+
       AudioService.playFireworks(mute: gameState.playerLocalConfig.mute);
+
       for (final winner in result.highHandWinners) {
         // show firework
         final seat = gameState.getSeat(winner.seatNo);
@@ -287,12 +292,10 @@ class ResultHandlerV2 {
     if (result.highHandWinners.length > 0) {
       /* wait for 5 seconds, then remove the notification */
       // await Future.delayed(AppConstants.notificationDuration);
-      var notificationValueNotifier =
-          Provider.of<ValueNotifier<HHNotificationModel>>(
-        context,
-        listen: false,
-      );
-      notificationValueNotifier.value = null;
+      // var notificationValueNotifier =
+      //     context.read<ValueNotifier<HHNotificationModel>>();
+      //
+      // notificationValueNotifier.value = null;
       // turn off firework
       for (final winner in result.highHandWinners) {
         final seat = gameState.getSeat(winner.seatNo);

@@ -1048,71 +1048,73 @@ class GameUpdateService {
         await SeatChangeService.hostSeatChangeSeatPositions(gameCode);
     gameState.seatChangePlayersUpdate(positions, notify: true);
   }
-
-  void handleHighHand({
-    var data,
-    bool showNotification = false,
-  }) async {
-    if (data == null) return;
-
-    String gameCode = data['gameCode'] as String;
-    int handNum = data['handNum'] as int;
-
-    // TODO: HANDLE MULTIPLE HIGHHAND WINNERS
-    var winner = data['winners'][0];
-
-    String playerName = winner['playerName'];
-    List<CardObject> hhCards = winner['hhCards']
-        ?.map<CardObject>((c) => CardHelper.getCard(c as int))
-        ?.toList();
-
-    List<CardObject> playerCards = winner['playerCards']
-        ?.map<CardObject>((c) => CardHelper.getCard(c as int))
-        ?.toList();
-
-    if (showNotification) {
-      // show a notification
-
-      var notificationValueNotifier =
-          Provider.of<ValueNotifier<HHNotificationModel>>(
-        _context,
-        listen: false,
-      );
-
-      notificationValueNotifier.value = HHNotificationModel(
-        gameCode: gameCode,
-        handNum: handNum,
-        playerName: playerName,
-        hhCards: hhCards,
-        playerCards: playerCards,
-      );
-
-      /* wait for 5 seconds, then remove the notification */
-      await Future.delayed(AppConstants.notificationDuration);
-
-      notificationValueNotifier.value = null;
-    } else {
-      /* the player is in the current game - firework this user */
-      int seatNo = winner['seatNo'] as int;
-
-      final GameState gameState = Provider.of<GameState>(
-        _context,
-        listen: false,
-      );
-
-      // show firework
-      final seat = gameState.getSeat(seatNo);
-      final player = seat.player;
-      player.showFirework = true;
-      AudioService.playFireworks(mute: _gameState.playerLocalConfig.mute);
-      seat.notify();
-      await Future.delayed(AppConstants.notificationDuration);
-
-      // turn off firework
-      player.showFirework = false;
-      seat.notify();
-    }
-  }
+  //
+  // void handleHighHand({
+  //   var data,
+  //   bool showNotification = false,
+  // }) async {
+  //   if (data == null) return;
+  //
+  //   String gameCode = data['gameCode'] as String;
+  //   int handNum = data['handNum'] as int;
+  //
+  //   // TODO: HANDLE MULTIPLE HIGHHAND WINNERS
+  //   var winner = data['winners'][0];
+  //
+  //   log('mrpauldebug : ${json.encode(data)}');
+  //
+  //   String playerName = winner['playerName'];
+  //   List<int> hhCards =
+  //       winner['hhCards']?.map<int>((c) => int.parse(c.toString()))?.toList();
+  //
+  //   List<int> playerCards = winner['playerCards']
+  //       ?.map<CardObject>((c) => int.parse(c.toString()))
+  //       ?.toList();
+  //
+  //   if (showNotification) {
+  //     // show a notification
+  //
+  //     var notificationValueNotifier =
+  //         Provider.of<ValueNotifier<HHNotificationModel>>(
+  //       _context,
+  //       listen: false,
+  //     );
+  //
+  //     notificationValueNotifier.value = HHNotificationModel(
+  //       gameCode: gameCode,
+  //       handNum: handNum,
+  //       playerName: playerName,
+  //       hhCards: hhCards,
+  //       playerCards: playerCards,
+  //       boardCards: [], // TODO: NEED TO FIND THE BOARD CARDS
+  //     );
+  //
+  //     /* wait for 5 seconds, then remove the notification */
+  //     await Future.delayed(const Duration(seconds: 10));
+  //
+  //     notificationValueNotifier.value = null;
+  //   } else {
+  //     /* the player is in the current game - firework this user */
+  //     int seatNo = winner['seatNo'] as int;
+  //
+  //     final GameState gameState = Provider.of<GameState>(
+  //       _context,
+  //       listen: false,
+  //     );
+  //
+  //     // show firework
+  //     final seat = gameState.getSeat(seatNo);
+  //     final player = seat.player;
+  //     player.showFirework = true;
+  //     AudioService.playFireworks(mute: _gameState.playerLocalConfig.mute);
+  //     seat.notify();
+  //     await Future.delayed(AppConstants.notificationDuration);
+  //
+  //     // turn off firework
+  //     player.showFirework = false;
+  //     seat.notify();
+  //   }
+  // }
 
   void handleUpdateStatus({
     var status,

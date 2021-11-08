@@ -261,7 +261,7 @@ class OverlayRabbitHuntNotificationWidget extends StatelessWidget {
 
 class OverlayHighHandNotificationWidget extends StatelessWidget {
   final List<int> playerCards;
-  final List<CardObject> boardCards;
+  final List<int> boardCards;
   final List<int> highHandCards;
   final String name;
   final int handNo;
@@ -278,9 +278,9 @@ class OverlayHighHandNotificationWidget extends StatelessWidget {
     List<CardObject> cards = [];
 
     for (final card in boardCards) {
-      final CardObject co = CardHelper.getCard(card.cardNum);
+      final CardObject co = CardHelper.getCard(card);
       co.cardType = CardType.HandLogOrHandHistoryCard;
-      if (highHandCards.contains(card.cardNum)) co.highlight = true;
+      if (highHandCards.contains(card)) co.highlight = true;
       cards.add(co);
     }
 
