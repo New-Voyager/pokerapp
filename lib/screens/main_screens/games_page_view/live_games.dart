@@ -364,6 +364,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                 ),
 
                 TabBar(
+                  physics: const BouncingScrollPhysics(),
                   tabs: [
                     Tab(
                       child: Row(
@@ -419,6 +420,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                 // ),
                 Expanded(
                   child: TabBarView(
+                    physics: const BouncingScrollPhysics(),
                     controller: _tabController,
                     children: [
                       Stack(

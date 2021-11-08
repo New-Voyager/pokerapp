@@ -18,9 +18,11 @@ const String turnRiverSound = 'assets/sound_effects/river.mp3';
 const String applauseSound = 'assets/sound_effects/applause.mp3';
 const String fireworksSound = 'assets/animations/fireworks.mp3';
 
+const String clockTickingSound = 'assets/sound_effects/clock_ticking.mp3';
+
 class AudioService {
   static AudioPlayer audioPlayer;
-  static Map<String, Uint8List> _audioCache = Map<String, Uint8List>();
+  static final Map<String, Uint8List> _audioCache = Map<String, Uint8List>();
   static bool play = true;
   AudioService._();
 
@@ -60,6 +62,7 @@ class AudioService {
     await getAudioBytes(betRaiseSound);
     await getAudioBytes(turnRiverSound);
     await getAudioBytes(flopSound);
+    await getAudioBytes(clockTickingSound);
   }
 
   static Future<Uint8List> getAudioBytes(String assetFile) async {
@@ -141,6 +144,10 @@ class AudioService {
 
   static playFireworks({bool mute}) {
     playSound(fireworksSound, mute: mute);
+  }
+
+  static playClockTicking({bool mute}) {
+    playSound(clockTickingSound, mute: mute);
   }
 
   static playAnimationSound(String animationId, {bool mute}) async {

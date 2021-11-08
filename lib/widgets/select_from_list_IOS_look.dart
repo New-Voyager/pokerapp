@@ -26,6 +26,7 @@ class _IOSLikeCheckListState extends State<IOSLikeCheckList> {
     return Scaffold(
       backgroundColor: AppColorsNew.screenBackgroundColor,
       body: ListView.separated(
+        physics: BouncingScrollPhysics(),
         itemCount: widget.list.length,
         itemBuilder: (context, index) {
           return ListTile(

@@ -95,6 +95,7 @@ class _ClubMembersViewState extends State<ClubMembersView>
                         Container(
                           alignment: Alignment.topCenter,
                           child: TabBar(
+                            physics: const BouncingScrollPhysics(),
                             controller: _controller,
                             labelColor: theme.secondaryColorWithLight(),
                             indicatorColor: theme.accentColor,

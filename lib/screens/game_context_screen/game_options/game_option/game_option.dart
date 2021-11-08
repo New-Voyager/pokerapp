@@ -1308,6 +1308,7 @@ class _GameOptionState extends State<GameOption> {
               SliverToBoxAdapter(
                 // show tabs for game and player settings
                 child: TabBar(
+                  physics: const BouncingScrollPhysics(),
                   tabs: tabs,
                   indicatorSize: TabBarIndicatorSize.label,
                   indicatorColor: theme.accentColor,
@@ -1320,7 +1321,7 @@ class _GameOptionState extends State<GameOption> {
 
           // show game and player settings body
           body: TabBarView(
-            physics: BouncingScrollPhysics(),
+            physics: const BouncingScrollPhysics(),
             children: children,
           ),
         ),

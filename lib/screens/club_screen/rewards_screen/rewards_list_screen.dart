@@ -44,6 +44,7 @@ class RewardsListScreen extends StatelessWidget {
         body: Consumer<RewardsModelProvider>(
           builder: (context, data, child) => data.rewards != null
               ? ListView.separated(
+                  physics: BouncingScrollPhysics(),
                   itemBuilder: (context, index) {
                     return Padding(
                       padding: const EdgeInsets.all(8.0),

@@ -70,6 +70,7 @@ class _PlayedHandsScreenState extends State<PlayedHandsScreen> {
           //   getHeader(),
           Expanded(
             child: ListView.separated(
+              physics: BouncingScrollPhysics(),
               itemBuilder: (context, index) {
                 return getListItem(
                   context,

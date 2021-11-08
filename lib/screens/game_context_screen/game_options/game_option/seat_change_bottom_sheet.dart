@@ -108,6 +108,7 @@ class _SeatChangeBottomSheetState extends State<SeatChangeBottomSheet> {
               decoration: AppDecorators.tileDecorationWithoutBorder(theme),
               child: allPlayersWantToChange.length > 0
                   ? ListView.builder(
+                      physics: BouncingScrollPhysics(),
                       itemCount: allPlayersWantToChange.length,
                       shrinkWrap: true,
                       itemBuilder: (_, index) =>

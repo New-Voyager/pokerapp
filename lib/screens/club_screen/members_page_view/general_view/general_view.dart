@@ -15,6 +15,7 @@ class GeneralView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.separated(
+      physics: BouncingScrollPhysics(),
       padding: const EdgeInsets.symmetric(
         horizontal: 20.0,
       ),
