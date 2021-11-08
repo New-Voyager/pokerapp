@@ -15,6 +15,7 @@ import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/screens/game_play_screen/game_play_screen_util_methods.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/animating_widgets/stack_reload_animating_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/milliseconds_counter.dart';
+import 'package:pokerapp/services/audio/audio_service.dart';
 import 'package:pokerapp/widgets/nameplate.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
@@ -24,6 +25,7 @@ class NamePlateWidget extends StatelessWidget {
   final Seat seat;
   NamePlateDesign nameplate;
   final BoardAttributesObject boardAttributes;
+  final vnIsPlayingTickingSound = ValueNotifier<bool>(false);
 
   static const highlightColor = const Color(0xfffffff);
   static const shrinkedSizedBox = const SizedBox.shrink();
@@ -233,11 +235,17 @@ class NamePlateWidget extends StatelessWidget {
               //seat.actionTimer.setRemainingTime(time ~/ 1000);
               if (seat.serverSeatPos == 1) {
                 if (lastRemainingTime != remainingTimeInSecs) {
-                  log('ActionTimer: progress seat no: ${seat.serverSeatPos} action timer: ${total} remainingTime: ${remainingTimeInSecs} progress: ${currentProgressInSecs}');
+                  log('ActionTimer: progress seat no: ${seat.serverSeatPos} action timer: ${total} remainingTime: ${remainingTimeInSecs} progress: ${currentProgressInSecs} clock ticking: ${vnIsPlayingTickingSound.value}');
                   lastRemainingTime = remainingTimeInSecs;
                 }
               }
               seat.actionTimer.setRemainingTime(remainingTimeInSecs);
+
+              if (vnIsPlayingTickingSound.value == false &&
+                  remainingTimeInSecs < 7.0) {
+                vnIsPlayingTickingSound.value = true;
+                AudioService.playClockTicking(mute: false);
+              }
 
               return Nameplate.fromSvgString(
                 remainingTime: time
