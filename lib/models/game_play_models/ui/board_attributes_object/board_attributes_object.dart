@@ -642,7 +642,7 @@ class BoardAttributesObject extends ChangeNotifier {
 
   double get betSliderScale {
     if (this._screenSize == ScreenSize.lessThan7Inches) {
-      return 1.5;
+      return 2.0;
     } else if (this._screenSize == ScreenSize.equalTo7Inches) {
       return 2.0;
     } else {
@@ -865,12 +865,14 @@ class BoardAttributesObject extends ChangeNotifier {
   Size get centerSize => this._centerSize;
 
   /* hole card view offsets */
-  Offset get holeCardViewOffset => _decide(
-        lessThan6Inches: const Offset(0, 50),
-        equalTo6Inches: const Offset(0, 60),
-        equalTo7Inches: const Offset(0, 90),
-        greaterThan7Inches: const Offset(0, 130),
-      ) as Offset;
+  Offset get holeCardViewOffset {
+    return _decide(
+      lessThan6Inches: Offset(0, 50.ph),
+      equalTo6Inches: Offset(0, 60.ph),
+      equalTo7Inches: Offset(0, 90),
+      greaterThan7Inches: Offset(0, 130),
+    ) as Offset;
+  }
 
   /* hold card view scales */
   double get holeCardViewScale => _decide(

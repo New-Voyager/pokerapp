@@ -23,7 +23,8 @@ class HighhandWidget extends StatelessWidget {
 
   final HighHandWinner winner;
   final String clubCode;
-  HighhandWidget(this.winner, {this.clubCode});
+  final String gameCode;
+  HighhandWidget(this.winner, {this.gameCode, this.clubCode});
 
   Widget cardsView(List<int> cards) {
     List<Widget> cardViews = [];
@@ -47,7 +48,7 @@ class HighhandWidget extends StatelessWidget {
     return InkWell(
       onTap: () {
         Navigator.of(context).pushNamed(Routes.hand_log_view, arguments: {
-          "gameCode": winner.gameCode,
+          "gameCode": gameCode,
           "handNum": winner.handNum,
           "clubCode": clubCode,
         });

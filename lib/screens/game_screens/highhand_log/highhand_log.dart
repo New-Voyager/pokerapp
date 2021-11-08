@@ -7,7 +7,6 @@ import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/game_screens/highhand_log/grouped_list_view.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
-import 'package:pokerapp/screens/game_screens/widgets/highhand_widget.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:provider/provider.dart';
 
@@ -82,25 +81,10 @@ class _HighHandLogViewState extends State<HighHandLogView>
                               )
                             : GroupedHandLogListView(
                                 winners: this.hhWinners,
+                                gameCode: widget.gameCode,
                                 clubCode: widget.clubCode,
                                 theme: theme,
                               ),
-
-                        // : ListView.separated(
-                        //     physics: BouncingScrollPhysics(),
-                        //     itemBuilder: (context, index) {
-                        //       this.hhWinners[index].gameCode =
-                        //           widget.gameCode;
-                        //       return HighhandWidget(
-                        //         this.hhWinners[index],
-                        //         clubCode: widget.clubCode,
-                        //       );
-                        //     },
-                        //     itemCount: hhWinners?.length ?? 0,
-                        //     separatorBuilder: (context, index) {
-                        //       return Divider();
-                        //     },
-                        //   ),
                       ),
                     ],
                   ),

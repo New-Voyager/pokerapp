@@ -24,6 +24,7 @@ import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/widgets/cards/animations/animating_shuffle_card_view.dart';
 import 'package:pokerapp/widgets/cards/community_cards_view/community_cards_view.dart';
 import 'package:provider/provider.dart';
+import "dart:math" show pi;
 
 class CenterView extends StatefulWidget {
   final TableState tableState;
@@ -339,15 +340,20 @@ class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
                   final gameState = GameState.getState(context);
                   final tableState = gameState.tableState;
                   log('CommunityCards: cards: ${tableState.cards} cardsOther: ${tableState.cardsOther} twoboards: ${tableState.twoBoardsNeeded}');
-                  Widget communityCards = CommunityCardsView(
-                    cards: tableState.cards,
-                    cardsOther: tableState.cardsOther,
-                    twoBoardsNeeded: tableState.twoBoardsNeeded,
-                    horizontal: true,
-                  );
 
                   // TODO: transform using Matrix to give perspective illusion
                   //
+                  Widget communityCards = Transform(
+                      transform: Matrix4.identity()
+                        ..setEntry(3, 2, 0.005)
+                        ..rotateX(-30 * pi / 180),
+                      alignment: FractionalOffset.center,
+                      child: CommunityCardsView(
+                        cards: tableState.cards,
+                        cardsOther: tableState.cardsOther,
+                        twoBoardsNeeded: tableState.twoBoardsNeeded,
+                        horizontal: true,
+                      ));
                   return communityCards;
                 },
               );
