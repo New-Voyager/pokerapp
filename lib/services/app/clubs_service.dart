@@ -94,7 +94,6 @@ class ClubsService {
         clubCode
         clubStatus
         memberStatus
-        balance
         memberCount
         imageId
         isOwner
@@ -315,12 +314,7 @@ class ClubsService {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     Map<String, dynamic> variables = {
       "clubCode": clubCode,
-      "club": {
-        "name": input.name,
-        "description": input.description,
-        "showHighRankStats": input.showHighRankStats,
-        "picUrl": input.picUrl
-      }
+      "club": input.toJson()
     };
 
     QueryResult result = await _client.mutate(

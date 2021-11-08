@@ -25,13 +25,12 @@ class ClubInteriorService {
           lastPlayedDate
           totalBuyins
           totalWinnings
-          balance
           rakePaid
           contactInfo
-          creditLimit
           autoBuyinApproval
           notes
           totalGames
+          availableCredit
         }
       }""";
 
@@ -63,6 +62,12 @@ class ClubInteriorService {
     }
   """;
 
+  static String setCreditMutation = """
+      mutation sc(\$clubCode: String!, \$playerUuid: String!, \$notes: String \$amount: Float!) {
+        ret: setCredit(clubCode:\$clubCode playerUuid:\$playerUuid, amount:\$amount, notes: \$notes) 
+      }
+  """;
+
   static String searchClub = """
     query (\$clubCode: String!) {
         club: searchClub(clubCode: \$clubCode) {
@@ -89,6 +94,21 @@ class ClubInteriorService {
   mutation (\$clubCode: String!, \$playerId: String!) {
     status: rejectMember(clubCode: \$clubCode, playerUuid: \$playerId)
   }
+  """;
+
+  static String creditHistoryQuery = """
+      query ch(\$clubCode: String!, \$playerUuid: String!) {
+        creditHistory(clubCode:\$clubCode, playerUuid:\$playerUuid) {
+          adminUuid
+          adminName
+          notes
+          gameCode
+          updateType
+          updatedCredits
+          amount
+          updateDate
+        }
+      }
   """;
 
   static Future<List<ClubMemberModel>> getMembers(String clubCode) async {
@@ -252,5 +272,50 @@ class ClubInteriorService {
     }
     final jsonResponse = result.data['status'].toString();
     return jsonResponse;
+  }
+
+  static Future<List<MemberCreditHistory>> getCreditHistory(
+      String clubCode, String playerUuid) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    Map<String, dynamic> variables = {
+      "clubCode": clubCode,
+      "playerUuid": playerUuid,
+    };
+    QueryResult result = await _client.query(
+        QueryOptions(document: gql(creditHistoryQuery), variables: variables));
+
+    if (result.hasException) return [];
+
+    final jsonResponse = result.data['creditHistory'];
+
+    final history = jsonResponse
+        .map<MemberCreditHistory>(
+            (var item) => MemberCreditHistory.fromJson(item))
+        .toList();
+    return history;
+  }
+
+  /*
+  
+*/
+
+  static Future<String> setPlayerCredit(
+      String clubCode, String playerID, double amount, String notes) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    Map<String, dynamic> variables = {
+      "clubCode": clubCode,
+      "playerUuid": playerID,
+      "amount": amount,
+      "notes": notes
+    };
+    QueryResult result = await _client.mutate(MutationOptions(
+        document: gql(setCreditMutation), variables: variables));
+    if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
+    final ret = result.data['ret'].toString();
+    return ret;
   }
 }

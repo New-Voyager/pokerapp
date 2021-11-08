@@ -147,6 +147,7 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
                                   child: Text("${_clubModel.clubName}",
                                       style: AppDecorators.getHeadLine2Style(
                                           theme: theme)),
+
                                   // child: Row(
                                   //   mainAxisAlignment: MainAxisAlignment.center,
                                   //   children: [
@@ -255,9 +256,9 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
                               ),
                             ),
 
-                            // Show high rank stats
+                            // track player credits
                             Visibility(
-                                visible: false,
+                                visible: true,
                                 child: Container(
                                   margin: EdgeInsets.symmetric(
                                       horizontal: 16, vertical: 8),
@@ -275,16 +276,12 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
                                           children: [
                                             _buildRadio(
                                                 value: _clubModel
-                                                    .showHighRankStats,
-                                                label: _appScreenText[
-                                                    'showHighRankStats'],
+                                                    .trackMemberCredit,
+                                                label: 'Track Member Credits',
                                                 onChange: (v) async {
                                                   ClubUpdateInput input =
                                                       ClubUpdateInput(
-                                                    name: _clubModel.clubName,
-                                                    description:
-                                                        _clubModel.description,
-                                                    showHighRankStats: v,
+                                                    trackMemberCredit: v,
                                                   );
                                                   await updateClubAPICall(
                                                       input);

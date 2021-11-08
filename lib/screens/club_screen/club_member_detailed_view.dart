@@ -15,6 +15,7 @@ import 'package:pokerapp/services/app/club_interior_service.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/alerts.dart';
+import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
@@ -252,6 +253,50 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                                     ),
                             ],
                           ),
+                        ),
+                        Divider(
+                          color: theme.supportingColor,
+                        ),
+                        ListTile(
+                          leading: Icon(Icons.credit_card,
+                              color: theme.secondaryColor),
+                          title: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Credits",
+                                style: AppDecorators.getHeadLine4Style(
+                                    theme: theme),
+                              ),
+                              SizedBox(width: 30.pw),
+                              Text(
+                                DataFormatter.chipsFormat(
+                                    _data.availableCredit),
+                                style: AppDecorators.getHeadLine3Style(
+                                        theme: theme)
+                                    .copyWith(
+                                        color: _data.availableCredit < 0
+                                            ? Colors.redAccent
+                                            : Colors.greenAccent),
+                              ),
+                            ],
+                          ),
+                          trailing: Icon(Icons.arrow_forward_ios,
+                              color: theme.accentColor),
+                          onTap: () async {
+                            bool ret = await Navigator.pushNamed(
+                              context,
+                              Routes.club_member_credit_detail_view,
+                              arguments: {
+                                'clubCode': widget.clubCode,
+                                'playerId': widget.playerId,
+                                'member': _data,
+                              },
+                            ) as bool;
+                            if (ret ?? false) {
+                              _fetchData();
+                            }
+                          },
                         ),
                         Divider(
                           color: theme.supportingColor,
