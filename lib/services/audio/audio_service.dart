@@ -60,7 +60,7 @@ class AudioService {
     await getAudioBytes(applauseSound);
     await getAudioBytes(fireworksSound);
     await getAudioBytes(betRaiseSound);
-    await getAudioBytes(turnRiverSound);
+    await getAudioBytes(flopSound);
     await getAudioBytes(flopSound);
     await getAudioBytes(clockTickingSound);
   }
