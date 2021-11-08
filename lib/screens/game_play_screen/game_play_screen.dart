@@ -658,19 +658,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     _appScreenText = getAppTextScreen("gameScreen");
   }
 
-  // void initPlayingTimer() {
-  //   // diamonds timer, which invokes every 30 seconds
-  //   // but adds diamonds ONLY after the duration of AppConstants.diamondUpdateDuration
-  //   _timer = Timer.periodic(const Duration(seconds: 30), (_) {
-  //     PlayerModel me;
-  //     try {
-  //       me = _gameState.me;
-  //     } catch (e) {}
-
-  //     if (me != null) _gameState.gameHiveStore.addDiamonds();
-  //   });
-  // }
-
   void reload() {
     close();
     init();
