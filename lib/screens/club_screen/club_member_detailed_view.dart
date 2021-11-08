@@ -15,6 +15,7 @@ import 'package:pokerapp/services/app/club_interior_service.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/alerts.dart';
+import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
@@ -257,24 +258,33 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                           color: theme.supportingColor,
                         ),
                         ListTile(
-                          leading: Text(
-                            "Credits",
-                            style:
-                                AppDecorators.getHeadLine4Style(theme: theme),
-                          ),
+                          leading: Icon(Icons.credit_card,
+                              color: theme.secondaryColor),
                           title: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "600",
+                                "Credits",
                                 style: AppDecorators.getHeadLine4Style(
                                     theme: theme),
                               ),
-                              Icon(Icons.navigate_next),
+                              SizedBox(width: 30.pw),
+                              Text(
+                                DataFormatter.chipsFormat(
+                                    _data.availableCredit),
+                                style: AppDecorators.getHeadLine3Style(
+                                        theme: theme)
+                                    .copyWith(
+                                        color: _data.availableCredit < 0
+                                            ? Colors.redAccent
+                                            : Colors.greenAccent),
+                              ),
                             ],
                           ),
-                          onTap: () {
-                            Navigator.pushNamed(
+                          trailing: Icon(Icons.arrow_forward_ios,
+                              color: theme.accentColor),
+                          onTap: () async {
+                            bool ret = await Navigator.pushNamed(
                               context,
                               Routes.club_member_credit_detail_view,
                               arguments: {
@@ -282,7 +292,10 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                                 'playerId': widget.playerId,
                                 'member': _data,
                               },
-                            );
+                            ) as bool;
+                            if (ret ?? false) {
+                              _fetchData();
+                            }
                           },
                         ),
                         Divider(

@@ -44,31 +44,6 @@ class _ProfilePopupState extends State<ProfilePopup> {
         AppDimensionsNew.getVerticalSizedBox(8),
         getStickers(),
       ],
-
-      //getCloseButton(),
-      //   Row(
-      //     crossAxisAlignment: CrossAxisAlignment.start,
-      //     children: [
-      //       /*
-      //         * member avatar
-      //         * */
-      //       //   SizedBox(width: 10),
-      //       //    getUserDetails(),
-      //       //    Spacer(),
-      //       //    communication(),
-      //       //   SizedBox(width: 15),
-      //     ],
-      //   ),
-      //   /*
-      //     * stickers
-      //     **/
-      //   //  SizedBox(height: 10),
-      //   getStickers(),
-      //   /*
-      //     * confirm button
-      //     * * */
-      //   //  getConfirmButton()
-      // ],
     );
   }
 

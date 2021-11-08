@@ -6,7 +6,7 @@ import 'package:pokerapp/screens/auth_screens/registration_new.dart';
 import 'package:pokerapp/screens/club_screen/announcements_view.dart';
 import 'package:pokerapp/screens/club_screen/bookmarked_hands.dart';
 import 'package:pokerapp/screens/club_screen/botscripts.dart';
-import 'package:pokerapp/screens/club_screen/club_activity_credit_screen.dart';
+import 'package:pokerapp/screens/club_screen/member_credit_history.dart';
 import 'package:pokerapp/screens/club_screen/club_main_screen.dart';
 import 'package:pokerapp/screens/club_screen/club_member_detailed_view.dart';
 import 'package:pokerapp/screens/club_screen/club_members_view.dart';

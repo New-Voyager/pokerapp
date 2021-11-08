@@ -65,7 +65,6 @@ class PendingApproval {
       */
     ret.name = data['name'].toString();
     ret.amount = double.parse(data['amount'].toString());
-    ret.balance = double.parse(data['outstandingBalance'].toString());
     ret.gameCode = data['gameCode'].toString();
     ret.clubCode = data['clubCode'].toString();
     ret.clubName = data['clubName'].toString();

@@ -12,11 +12,13 @@ class ClubUpdateInput {
     this.description,
     this.showHighRankStats,
     this.picUrl,
+    this.trackMemberCredit,
   });
 
   String name;
   String description;
   bool showHighRankStats;
+  bool trackMemberCredit;
   String picUrl;
 
   factory ClubUpdateInput.fromJson(Map<String, dynamic> json) =>
@@ -24,13 +26,27 @@ class ClubUpdateInput {
         name: json["name"],
         description: json["description"],
         showHighRankStats: json["showHighRankStats"],
+        trackMemberCredit: json["trackMemberCredit"],
         picUrl: json["picUrl"],
       );
 
-  Map<String, dynamic> toJson() => {
-        "name": name,
-        "description": description,
-        "showHighRankStats": showHighRankStats,
-        "picUrl": picUrl,
-      };
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> ret = {};
+    if (name != null) {
+      ret['name'] = name;
+    }
+    if (description != null) {
+      ret['description'] = description;
+    }
+    if (showHighRankStats != null) {
+      ret['showHighRankStats'] = showHighRankStats;
+    }
+    if (picUrl != null) {
+      ret['picUrl'] = picUrl;
+    }
+    if (trackMemberCredit != null) {
+      ret['trackMemberCredit'] = trackMemberCredit;
+    }
+    return ret;
+  }
 }
