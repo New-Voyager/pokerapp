@@ -291,7 +291,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                               arguments: {
                                 'clubCode': widget.clubCode,
                                 'playerId': widget.playerId,
-                                'member': _data,
+                                'owner': true,
                               },
                             ) as bool;
                             if (ret ?? false) {

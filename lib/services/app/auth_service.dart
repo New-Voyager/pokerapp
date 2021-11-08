@@ -14,7 +14,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
   AuthService._();
-  static String playerUuid;
   static AuthModel _user;
   static String updatUserDetailsQuery = """ 
       mutation updatePlayer(\$input :PlayerUpdateInput!){

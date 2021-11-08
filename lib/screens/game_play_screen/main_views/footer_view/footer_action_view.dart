@@ -395,19 +395,19 @@ class _FooterActionViewState extends State<FooterActionView> {
         /* on tapping on RAISE this button should highlight and show further options */
         case RAISE:
           raise = true;
-        if (!betWidgetShown) {
-          actionWidget = _buildRoundButton(
-            isSelected: _showOptions,
-            text: action.actionName,
-            onTap: () => setState(() {
-              _showOptions = !_showOptions;
-              widget.isBetWidgetVisible?.call(_showOptions);
-            }),
-            theme: theme,
-          );
+          if (!betWidgetShown) {
+            actionWidget = _buildRoundButton(
+              isSelected: _showOptions,
+              text: action.actionName,
+              onTap: () => setState(() {
+                _showOptions = !_showOptions;
+                widget.isBetWidgetVisible?.call(_showOptions);
+              }),
+              theme: theme,
+            );
           } else {
             closeButton = true;
-          }          
+          }
           break;
       }
       actionButtons.add(actionWidget);
@@ -438,18 +438,17 @@ class _FooterActionViewState extends State<FooterActionView> {
 
     if (closeButton) {
       actionButtons = [];
-      actionButtons.add(
-        CircleImageButton(
-              theme: theme,
-              icon: Icons.close,
-              onTap: () {
-                setState(() {
-                  _showOptions = !_showOptions;
-                  betWidgetShown = false;
-                  widget.isBetWidgetVisible?.call(_showOptions);
-                });
-              },
-            ));
+      actionButtons.add(CircleImageButton(
+        theme: theme,
+        icon: Icons.close,
+        onTap: () {
+          setState(() {
+            _showOptions = !_showOptions;
+            betWidgetShown = false;
+            widget.isBetWidgetVisible?.call(_showOptions);
+          });
+        },
+      ));
     }
     return Stack(
       clipBehavior: Clip.none,
