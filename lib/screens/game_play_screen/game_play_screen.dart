@@ -1139,7 +1139,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
             await _gameContextObj.joinAudio(context);
             // ui is still running
             // send stream id
-            _gameState.gameMessageService.sendMyInfo();
+            log('RTC: Requesting information about the other players');
             _gameState.gameMessageService.requestPlayerInfo();
             notification.dismiss();
             notification = Alerts.showNotification(

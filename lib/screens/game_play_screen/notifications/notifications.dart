@@ -4,6 +4,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/notification_mo
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/screens/game_play_screen/notifications/notifications_view/general_notification.dart';
 import 'package:pokerapp/screens/game_play_screen/notifications/notifications_view/high_hand_notification.dart';
+import 'package:pokerapp/screens/game_play_screen/widgets/overlay_notification.dart';
 import 'package:provider/provider.dart';
 
 class Notifications {
@@ -14,9 +15,12 @@ class Notifications {
   );
 
   static Widget _buildHighHandNotification(HHNotificationModel model) =>
-      HighHandNotification(
-        key: ValueKey('high hand notification'),
-        model: model,
+      OverlayHighHandNotificationWidget(
+        highHandCards: model.hhCards,
+        boardCards: model.hhCards,
+        handNo: model.handNum,
+        playerCards: model.playerCards,
+        name: model.playerName,
       );
 
   static Widget _buildGeneralNotification(GeneralNotificationModel model) =>

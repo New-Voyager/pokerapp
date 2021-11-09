@@ -8,6 +8,7 @@ class PendingApprovalsOption extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
+      physics: BouncingScrollPhysics(),
       itemCount: 5,
       itemBuilder: (context, index) {
         return liveGameItem();

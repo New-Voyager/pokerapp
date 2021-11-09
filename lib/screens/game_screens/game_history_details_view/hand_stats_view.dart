@@ -108,6 +108,7 @@ class _HandStatsViewState extends State<HandStatsView>
               ? CircularProgressWidget(
                   text: _appScreenText['loadingStatistics'])
               : SingleChildScrollView(
+                  physics: BouncingScrollPhysics(),
                   child: Column(
                     children: [
                       // Pie Charts

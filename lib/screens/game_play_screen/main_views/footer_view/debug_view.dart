@@ -35,6 +35,7 @@ class _DebugLogViewState extends State<DebugLogView> {
     }
 
     return ListView.builder(
+      physics: BouncingScrollPhysics(),
       itemCount: debugLog.logs.length,
       controller: _scrollController,
       //reverse: true,

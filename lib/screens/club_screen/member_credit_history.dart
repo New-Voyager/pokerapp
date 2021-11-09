@@ -17,8 +17,8 @@ class ClubActivityCreditScreen extends StatefulWidget {
   // final ClubHomePageModel clubHomePageModel;
   final String clubCode;
   final String playerId;
-  final ClubMemberModel member; // current session is owner?
-  const ClubActivityCreditScreen(this.clubCode, this.playerId, this.member);
+  final bool owner;
+  const ClubActivityCreditScreen(this.clubCode, this.playerId, this.owner);
 
   @override
   State<ClubActivityCreditScreen> createState() =>
@@ -41,7 +41,8 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
 
   void fetchData() async {
     try {
-      member = await ClubInteriorService.getClubMemberDetail(widget.clubCode, widget.playerId);
+      member = await ClubInteriorService.getClubMemberDetail(
+          widget.clubCode, widget.playerId);
       history = await ClubInteriorService.getCreditHistory(
           widget.clubCode, widget.playerId);
     } catch (err) {}
@@ -54,6 +55,7 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
       child: Container(
         decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
         child: ListView.builder(
+            physics: BouncingScrollPhysics(),
             itemCount: history.length,
             shrinkWrap: true,
             itemBuilder: (context, index) {
@@ -254,28 +256,29 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
                         ),
                       ),
                       Text(
-                        DataFormatter.chipsFormat(
-                            member.availableCredit),
+                        DataFormatter.chipsFormat(member.availableCredit),
                         style: AppDecorators.getHeadLine3Style(theme: theme)
                             .copyWith(
                                 color: member.availableCredit < 0
                                     ? Colors.redAccent
                                     : Colors.greenAccent),
                       ),
-                      RoundRectButton(
-                          theme: theme,
-                          text: 'Change',
-                          onTap: () async {
-                            bool ret = await SetCreditsDialog.prompt(
-                                context: context,
-                                clubCode: widget.clubCode,
-                                playerUuid: widget.playerId,
-                                credits: widget.member.availableCredit.toInt());
-                            if (ret) {
-                              changed = true;
-                              fetchData();
-                            }
-                          })
+                      !widget.owner
+                          ? SizedBox.shrink()
+                          : RoundRectButton(
+                              theme: theme,
+                              text: 'Change',
+                              onTap: () async {
+                                bool ret = await SetCreditsDialog.prompt(
+                                    context: context,
+                                    clubCode: widget.clubCode,
+                                    playerUuid: widget.playerId,
+                                    credits: member.availableCredit.toInt());
+                                if (ret) {
+                                  changed = true;
+                                  fetchData();
+                                }
+                              })
                     ]),
                 dividingSpace(),
                 Row(
@@ -307,42 +310,22 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
   }
 
   Widget buildBanner() {
-    final clubImageDecoration = BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(
-          width: (widget.member.imageUrl == null) ? 2.pw : 0,
-          color: theme.secondaryColor,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: theme.primaryColor,
-            blurRadius: 1.pw,
-            spreadRadius: 1.pw,
-            offset: Offset(1.pw, 4.pw),
-          ),
-        ],
-        image: (widget.member.imageUrl == null)
-            ? null
-            : DecorationImage(
-                image: CachedNetworkImageProvider(
-                  widget.member.imageUrl,
-                ),
-                fit: BoxFit.cover,
-              ));
     return Stack(
       alignment: Alignment.center,
       children: <Widget>[
         Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            BackArrowWidget(onBackHandle: () {
-              Navigator.of(context).pop(changed);
-            },),
+            BackArrowWidget(
+              onBackHandle: () {
+                Navigator.of(context).pop(changed);
+              },
+            ),
             dividingSpace(),
           ],
         ),
         Text(
-          widget.member.name,
+          member.name,
           style: TextStyle(
             fontSize: 20.0.pw,
             fontWeight: FontWeight.bold,

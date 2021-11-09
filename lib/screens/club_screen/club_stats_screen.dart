@@ -74,6 +74,7 @@ class _ClubStatsScreenState extends State<ClubStatsScreen>
                     children: [
                       AppDimensionsNew.getVerticalSizedBox(8),
                       TabBar(
+                        physics: const BouncingScrollPhysics(),
                         controller: _tabController,
                         tabs: [
                           Text(_appScreenText['NOLIMITHOLDEM']),
@@ -89,6 +90,7 @@ class _ClubStatsScreenState extends State<ClubStatsScreen>
                       AppDimensionsNew.getVerticalSizedBox(8),
                       Expanded(
                         child: TabBarView(
+                          physics: const BouncingScrollPhysics(),
                           controller: _tabController,
                           children: [
                             StatsDetailForGame(
@@ -139,6 +141,7 @@ class StatsDetailForGame extends StatelessWidget {
         return Container(
           margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: SingleChildScrollView(
+            physics: BouncingScrollPhysics(),
             child: Column(
               children: [
                 Align(

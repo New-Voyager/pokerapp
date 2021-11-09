@@ -74,6 +74,7 @@ class _SearchClubBottomSheetState extends State<SearchClubBottomSheet> {
               ),
               margin: EdgeInsets.only(top: 48),
               child: SingleChildScrollView(
+                physics: BouncingScrollPhysics(),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

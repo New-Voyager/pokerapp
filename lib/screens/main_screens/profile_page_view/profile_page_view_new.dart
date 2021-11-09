@@ -85,6 +85,7 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                   ? CircularProgressWidget(
                       text: _appScreenText['gettingDetails'])
                   : SingleChildScrollView(
+                      physics: BouncingScrollPhysics(),
                       child: Column(
                         children: [
                           HeadingWidget(heading: _appScreenText['myProfile']),

@@ -83,6 +83,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
           body: !loadingDone
               ? Center(child: CircularProgressWidget())
               : SingleChildScrollView(
+                  physics: BouncingScrollPhysics(),
                   child: Column(
                     children: [
                       Container(

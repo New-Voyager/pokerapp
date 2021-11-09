@@ -35,6 +35,7 @@ class HelpScreen extends StatelessWidget {
                 subTitleText: version,
               ),
               body: SingleChildScrollView(
+                physics: BouncingScrollPhysics(),
                 child: Column(
                   children: [
                     Container(

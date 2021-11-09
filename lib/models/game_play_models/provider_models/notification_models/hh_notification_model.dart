@@ -4,8 +4,9 @@ class HHNotificationModel {
   String gameCode;
   int handNum;
   String playerName;
-  List<CardObject> hhCards;
-  List<CardObject> playerCards;
+  List<int> hhCards;
+  List<int> playerCards;
+  List<int> boardCards;
 
   HHNotificationModel({
     this.gameCode,
@@ -13,5 +14,6 @@ class HHNotificationModel {
     this.playerName,
     this.hhCards,
     this.playerCards,
+    this.boardCards,
   });
 }

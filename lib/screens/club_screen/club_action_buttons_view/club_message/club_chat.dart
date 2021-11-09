@@ -55,6 +55,7 @@ class _ClubChatState extends State<ClubChat> {
                     }
                     scrollToBottomOfChat(scrollTime: 1, waitTime: 10);
                     return ListView.builder(
+                      physics: BouncingScrollPhysics(),
                       itemCount: snapshot.data.length,
                       controller: _scrollController,
                       itemBuilder: (context, index) {

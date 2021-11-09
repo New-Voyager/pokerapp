@@ -8,5 +8,6 @@ enum ClubActions {
   MESSAGE_HOST,
   REWARDS,
   BOTSCRIPTS,
-  SETTINGS
+  SETTINGS,
+  ACTIVITIES,
 }

@@ -341,6 +341,7 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
           resizeToAvoidBottomInset: true,
           floatingActionButton: devButtons,
           body: SingleChildScrollView(
+            physics: BouncingScrollPhysics(),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [

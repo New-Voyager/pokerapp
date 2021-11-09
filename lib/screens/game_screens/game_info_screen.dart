@@ -131,6 +131,7 @@ class _GameInfoScreenState extends State<GameInfoScreen> {
                 AppDimensionsNew.getVerticalSizedBox(8),
                 Expanded(
                   child: SingleChildScrollView(
+                    physics: BouncingScrollPhysics(),
                     child: (gameSettings == null || loading)
                         ? Center(child: CircularProgressWidget())
                         : Column(

@@ -122,6 +122,7 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
               decoration: AppDecorators.tileDecorationWithoutBorder(theme),
               child: allWaitingListPlayers.length > 0
                   ? ListView.builder(
+                      physics: BouncingScrollPhysics(),
                       itemCount: allWaitingListPlayers.length,
                       shrinkWrap: true,
                       itemBuilder: (_, index) => playerItem(
