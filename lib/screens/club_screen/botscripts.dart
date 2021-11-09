@@ -187,6 +187,7 @@ class _BotScriptsScreenState extends State<BotScriptsScreen>
       body: scripts == null
           ? Center(child: CircularProgressIndicator())
           : ListView.separated(
+              physics: BouncingScrollPhysics(),
               itemBuilder: (context, index) {
                 return getScript(scripts.scripts[index], context);
               },

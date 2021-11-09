@@ -281,11 +281,11 @@ class Routes {
         Map<String, dynamic> args = settings.arguments as Map<String, dynamic>;
         String clubCode = args["clubCode"];
         String playerId = args["playerId"];
-        ClubMemberModel clubMember = args["member"];
+        bool owner = args['owner'];
 
         return _getPageRoute(
           routeName: settings.name,
-          viewToShow: ClubActivityCreditScreen(clubCode, playerId, clubMember),
+          viewToShow: ClubActivityCreditScreen(clubCode, playerId, owner),
         );
 
       case hand_history_list:

@@ -195,6 +195,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
           body: !loadingDone
               ? CircularProgressWidget()
               : SingleChildScrollView(
+                  physics: BouncingScrollPhysics(),
                   child: Container(
                     margin:
                         EdgeInsets.only(left: 15, right: 15, top: 5, bottom: 5),
@@ -290,7 +291,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                               arguments: {
                                 'clubCode': widget.clubCode,
                                 'playerId': widget.playerId,
-                                'member': _data,
+                                'owner': true,
                               },
                             ) as bool;
                             if (ret ?? false) {

@@ -664,7 +664,7 @@ class _GameOptionState extends State<GameOption> {
 
             // show animations
             _buildCheckBox(
-              text: 'Chat allowed',
+              text: 'Show Chat',
               value: _gameSettings.chat ?? false,
               onChange: (bool v) async {
                 _gameSettings.chat = v;
@@ -1168,6 +1168,22 @@ class _GameOptionState extends State<GameOption> {
       },
     ));
 
+    // Vibration setting
+    children.add(_buildCheckBox(
+      text: _appScreenText['vibration'],
+      value: widget.gameState.playerLocalConfig.vibration ??
+          false, //widget.gameState.config.bombpot,
+      onChange: (bool v) {
+        // setting the value saves it to local storage too
+        widget.gameState.playerLocalConfig.vibration = v;
+        // widget.gameState.config.bombPot = v;
+        log('In toggle button widget, gameSounds = ${widget.gameState.playerLocalConfig.gameSound}');
+        if (closed) return;
+        setState(() {});
+        widget.gameState.communicationState.notify();
+      },
+    ));
+
 // Participate in audio conference
     // _buildCheckBox(
     //   text: "Participate in Audio conference",
@@ -1308,6 +1324,7 @@ class _GameOptionState extends State<GameOption> {
               SliverToBoxAdapter(
                 // show tabs for game and player settings
                 child: TabBar(
+                  physics: const BouncingScrollPhysics(),
                   tabs: tabs,
                   indicatorSize: TabBarIndicatorSize.label,
                   indicatorColor: theme.accentColor,
@@ -1320,7 +1337,7 @@ class _GameOptionState extends State<GameOption> {
 
           // show game and player settings body
           body: TabBarView(
-            physics: BouncingScrollPhysics(),
+            physics: const BouncingScrollPhysics(),
             children: children,
           ),
         ),

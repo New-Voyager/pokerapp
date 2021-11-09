@@ -92,6 +92,7 @@ class _PerformanceViewState extends State<PerformanceView>
                       : Column(
                           children: [
                             TabBar(
+                              physics: const BouncingScrollPhysics(),
                               controller: _tabController,
                               tabs: [
                                 Tab(text: _appScreenText['handStats']),
@@ -105,6 +106,7 @@ class _PerformanceViewState extends State<PerformanceView>
                             ),
                             Expanded(
                               child: TabBarView(
+                                physics: const BouncingScrollPhysics(),
                                 controller: _tabController,
                                 children: [
                                   // Hand statistics

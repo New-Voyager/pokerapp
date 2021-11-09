@@ -193,6 +193,7 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
       child: Column(
         children: [
           TabBar(
+            physics: const BouncingScrollPhysics(),
             tabs: [
               Text(
                 "Table",
@@ -223,6 +224,7 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
                           value: customizeService.gameState
                               .getNameplateSectionState(),
                           child: TabBarView(
+                            physics: const BouncingScrollPhysics(),
                             controller: _tabController,
                             children: [
                               // TABLE
@@ -231,6 +233,7 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
                                     Container(
                                   //height: size.height * 0.3,
                                   child: ListView.separated(
+                                    physics: BouncingScrollPhysics(),
                                     padding:
                                         EdgeInsets.symmetric(horizontal: 64),
                                     itemBuilder: (context, index) {
@@ -346,6 +349,7 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
                                     Container(
                                   //height: size.height * 0.3,
                                   child: ListView.separated(
+                                    physics: BouncingScrollPhysics(),
                                     padding:
                                         EdgeInsets.symmetric(horizontal: 64),
                                     itemBuilder: (context, index) {

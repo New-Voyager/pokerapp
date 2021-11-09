@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter_ion/flutter_ion.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
@@ -60,10 +61,11 @@ class Participant {
 
   void mute() async {
     if (remote) {
-      log('RTC: $name is muted');
+      log('RTC: $name [${this.streamId}] is muted');
       (stream as RemoteStream).mute?.call('audio');
       isMuted = true;
     } else {
+      log('RTC: $name [${this.streamId}] local is muted');
       final localStream = (stream as LocalStream);
       isMuted = true;
       var track = localStream.getTrack('audio');
@@ -75,10 +77,11 @@ class Participant {
 
   void unmute() async {
     if (remote) {
-      log('RTC: $name is unmuted');
+      log('RTC: $name [${this.streamId}] is unmuted');
       (stream as RemoteStream).unmute?.call('audio');
       isMuted = false;
     } else {
+      log('RTC: $name [${this.streamId}] local is unmuted');
       final localStream = (stream as LocalStream);
       var track = localStream.getTrack('audio');
       isMuted = false;
@@ -97,7 +100,6 @@ class IonAudioConferenceService {
   final GameState gameState;
   IonBaseConnector _connector;
   IonSDKSFU _rtc;
-  String _streamId;
   bool _inConference = false;
   bool _closed = false;
 
@@ -106,6 +108,7 @@ class IonAudioConferenceService {
       this.confRoom, this.player);
 
   void updatePlayerId(String streamId, int playerId) {
+    log('RTC: Update stream $streamId playerId: $playerId');
     for (final participant in participants) {
       if (participant.streamId == streamId) {
         participant.playerId = playerId;
@@ -128,14 +131,15 @@ class IonAudioConferenceService {
       String playerId = this.player.id.toString();
       await _rtc.join(this.confRoom, playerId);
       if (_closed) return;
-      log('ION: $playerId joined the conference');
+      log('RTC: $playerId joined the conference');
       var localStream = await LocalStream.getUserMedia(
           constraints: Constraints(audio: true, video: false));
-
+      if (Platform.isIOS) {
+        localStream.getTrack('audio').enableSpeakerphone(true);
+      }
       await _rtc.publish(localStream);
       if (_closed) return;
       log('RTC: name: $playerId  stream id ${localStream.stream.id}');
-      _streamId = localStream.stream.id;
       Participant participant = Participant(stream: localStream, remote: false);
       participant.playerId = this.player.id;
       participant.name = this.player.name;
@@ -144,9 +148,7 @@ class IonAudioConferenceService {
       if (gameState.me != null) {
         gameState.me.streamId = localStream.stream.id;
       }
-      //chatService.onAudioConfMessage = onAudioConfMessage;
-      //chatService.sendAudioConfResponse(localStream.stream.id);
-      //chatService.sendAudioConfRequest();
+      log('RTC: name: $playerId  ${localStream.stream.id} in the conference');
       _inConference = true;
     } catch (err) {
       close();
@@ -260,46 +262,6 @@ class IonAudioConferenceService {
         // update the UI
         gameState.talking(talking);
         gameState.stoppedTalking(stoppedTalking);
-      }
-    }
-  }
-
-  // onAudioConfMessage called when a chat broadcast message is received for audio conference
-  // type: AUDIO_CONF
-  // method: PUBLISH
-  // stream: {
-  //   playerId: <>
-  //   playerUuid: <>
-  //   streamId: <>
-  // }
-
-  // type: AUDIO_CONF
-  // method: REQUEST_STREAM_ID
-  onAudioConfMessage(String data) {
-    Map<String, dynamic> message = jsonDecode(data);
-    if (message.containsKey('method')) {
-      String method = message['method'];
-      if (method == 'REQUEST_STREAM_ID') {
-        // someone is requesting stream id
-        chatService.sendAudioConfResponse(this._streamId);
-      } else if (method == 'PUBLISH') {
-        // someone is publishing their stream id
-        log('AUDIOCONF: New stream found. $data');
-        final String streamId = message['streamId'];
-        if (streamId == _streamId) {
-          // my stream id, ignore
-        } else {
-          final participant = getParticipantByStreamId(streamId);
-          if (participant != null) {
-            // set player id information
-            // 'playerID': this.currentPlayer.id,
-            // 'name': this.currentPlayer.name,
-            // 'playerUuid': this.currentPlayer.uuid,
-            participant.playerId = message['playerId'];
-            participant.name = message['name'];
-            participant.playerUuid = message['uuid'];
-          }
-        }
       }
     }
   }

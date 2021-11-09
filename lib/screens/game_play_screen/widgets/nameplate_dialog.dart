@@ -66,6 +66,7 @@ class _NamePlateDailogState extends State<NamePlateDailog> {
           .isPlayerMuted(widget.seat.player.streamId);
     }
     return SingleChildScrollView(
+      physics: BouncingScrollPhysics(),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [

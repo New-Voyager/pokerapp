@@ -104,6 +104,20 @@ class ClubActionsNew extends StatelessWidget {
     );
   }
 
+  ClubActionButtonNew getActivitiesWidget(AppTheme theme) {
+    return ClubActionButtonNew(
+      this._clubHomePageModel,
+      ClubActions.ACTIVITIES,
+      'Activities',
+      Transform.scale(
+          scale: 2.0,
+          child: Icon(
+            Icons.list_alt_outlined,
+            color: theme.accentColor,
+          )),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<AppTheme>(
@@ -182,6 +196,10 @@ class ClubActionsNew extends StatelessWidget {
               Expanded(
                 flex: 3,
                 child: getSettingsWidget(theme),
+              ),
+              Expanded(
+                flex: 3,
+                child: getActivitiesWidget(theme),
               ),
             ],
           ),

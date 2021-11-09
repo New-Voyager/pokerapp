@@ -82,6 +82,7 @@ class _GameHistoryViewState extends State<GameHistoryView>
 
     // build game history list
     return ListView.separated(
+      physics: BouncingScrollPhysics(),
       shrinkWrap: true,
       itemBuilder: gameHistoryItem,
       itemCount: _prevGames.length,

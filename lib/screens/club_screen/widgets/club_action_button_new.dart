@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/club_actions.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/app_config.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/routes.dart';
+import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:provider/provider.dart';
 import 'package:badges/badges.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
@@ -124,6 +126,19 @@ class ClubActionButtonNew extends StatelessWidget {
                 context,
                 Routes.club_settings,
                 arguments: this._clubModel,
+              );
+              break;
+            case ClubActions.ACTIVITIES:
+              final currentPlayer = AuthService.get();
+
+              Navigator.pushNamed(
+                context,
+                Routes.club_member_credit_detail_view,
+                arguments: {
+                  'clubCode': clubModel.clubCode,
+                  'playerId': currentPlayer.uuid,
+                  'owner': false,
+                },
               );
               break;
             case ClubActions.REWARDS:

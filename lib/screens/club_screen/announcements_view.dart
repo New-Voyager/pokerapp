@@ -109,6 +109,7 @@ class _AnnouncementsViewState extends State<AnnouncementsView> {
                                   ),
                                 )
                               : ListView.builder(
+                                  physics: BouncingScrollPhysics(),
                                   itemCount: _listOfAnnounce.length,
                                   itemBuilder: (context, index) {
                                     AnnouncementModel model =
@@ -217,6 +218,7 @@ class _AnnouncementsViewState extends State<AnnouncementsView> {
             ],
           ),
           content: SingleChildScrollView(
+            physics: BouncingScrollPhysics(),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [

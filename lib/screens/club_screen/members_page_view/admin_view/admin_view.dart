@@ -52,6 +52,7 @@ class AdminView extends StatelessWidget {
         children: [
           /* tab bar */
           TabBar(
+            physics: const BouncingScrollPhysics(),
             isScrollable: true,
             indicatorPadding: EdgeInsets.zero,
             indicatorColor: Colors.transparent,
