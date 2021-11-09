@@ -70,7 +70,7 @@ class GameHistoryModel {
     bigBlind = double.parse(jsonData["bigBlind"].toString());
 
     if (jsonData["startedAt"] != null) {
-      startedAt = DateTime.parse(jsonData["startedAt"].toString());
+      startedAt = DateTime.parse(jsonData["startedAt"].toString()).toLocal();
     }
     if (jsonData["gameNum"] != null) {
       gameNum = int.parse(jsonData["gameNum"].toString());
@@ -214,11 +214,11 @@ class GameHistoryDetailModel extends ChangeNotifier {
 
       handsPlayed = int.parse(gameData['handsPlayed'].toString());
       if (dataAggregated) {
-        preflopHands = int.parse(gameData['preflopHands'].toString());
-        flopHands = int.parse(gameData['flopHands'].toString());
-        turnHands = int.parse(gameData['turnHands'].toString());
-        riverHands = int.parse(gameData['riverHands'].toString());
-        showdownHands = int.parse(gameData['showdownHands'].toString());
+        preflopHands = int.parse((gameData['preflopHands'] ?? 0).toString());
+        flopHands = int.parse((gameData['flopHands'] ?? 0).toString());
+        turnHands = int.parse((gameData['turnHands'] ?? 0).toString());
+        riverHands = int.parse((gameData['riverHands'] ?? 0).toString());
+        showdownHands = int.parse((gameData['showdownHands'] ?? 0).toString());
         // build hands stats
         handsData.add(
             new HandData('Pre-flop', (preflopHands / handsPlayed) * 100.0));
@@ -248,7 +248,8 @@ class GameHistoryDetailModel extends ChangeNotifier {
     }
     runTimeStr = DataFormatter.timeFormat(runTimeSec);
     endedAt =
-        DateTime.parse((gameData['endedAt'] ?? DateTime.now()).toString());
+        (DateTime.parse((gameData['endedAt'] ?? DateTime.now()).toString()))
+            .toLocal();
     if (this.playedGame) {
       sessionTime = int.parse(gameData['sessionTime'].toString());
       sessionTimeStr = DataFormatter.timeFormat(sessionTime);
