@@ -302,16 +302,16 @@ class IosBoardAttributesObject extends BoardAttributesObject {
 
   Offset get centerViewVerticalTranslate => _decide(
         lessThan6Inches: Offset(0.0, 0.0),
-        equalTo6Inches: Offset(0.0, 0.0),
+        equalTo6Inches: Offset(0.0, -20.0),
         equalTo7Inches: Offset.zero,
-        greaterThan7Inches: Offset(0.0, 150),
+        greaterThan7Inches: Offset(0.0, 0),
       ) as Offset;
 
   Offset get centerOffset => _decide(
         lessThan6Inches: Offset(10, 40),
-        equalTo6Inches: Offset(15, 70),
+        equalTo6Inches: Offset(15, 100),
         equalTo7Inches: Offset(15, 85),
-        greaterThan7Inches: Offset(10, -90),
+        greaterThan7Inches: Offset(10, 0),
       ) as Offset;
 
   double get footerViewHeightScale => _decide(
