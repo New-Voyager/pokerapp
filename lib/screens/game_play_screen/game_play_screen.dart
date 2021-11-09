@@ -826,89 +826,102 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         headerView = HeaderView(gameState: _gameState);
       }
 
-      children.addAll([
-        //_buildAudioWidget(),
+      children.addAll(
+        [
+          //_buildAudioWidget(),
 
-        // header view
-        headerView,
+          // header view
+          headerView,
 
-        // this widget, shows which winner is currently showing - high winner / low winner
-        // this widget also acts as a natural seperator between header and board view
-        // WhichWinnerWidget(seperator: divider1),
+          // this widget, shows which winner is currently showing - high winner / low winner
+          // this widget also acts as a natural seperator between header and board view
+          // WhichWinnerWidget(seperator: divider1),
 
-        // main board view
-        Stack(children: [
-          this.widget.showTop ? BackgroundView() : Container(),
-          this.widget.showTop && _gameState.customizationMode
-              ? Positioned(
-                  top: 10.ph,
-                  left: width - 50.pw,
-                  child: CircleImageButton(
-                    onTap: () async {
-                      await Navigator.of(context)
-                          .pushNamed(Routes.select_table);
-                      await _gameState.assets.initialize();
-                      final redrawTop = _gameState.redrawBoardSectionState;
-                      redrawTop.notify();
-                      setState(() {});
-                    },
-                    theme: theme,
-                    icon: Icons.edit,
-                  ),
-                )
-              : Container(),
-          Positioned(
-              top: 35.ph, child: _buildBoardView(boardDimensions, tableScale)),
-        ]),
+          // main board view
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              this.widget.showTop ? BackgroundView() : Container(),
+              this.widget.showTop && _gameState.customizationMode
+                  ? Positioned(
+                      top: 10,
+                      left: width - 50,
+                      child: CircleImageButton(
+                        onTap: () async {
+                          await Navigator.of(context)
+                              .pushNamed(Routes.select_table);
+                          await _gameState.assets.initialize();
+                          final redrawTop = _gameState.redrawBoardSectionState;
+                          redrawTop.notify();
+                          setState(() {});
+                        },
+                        theme: theme,
+                        icon: Icons.edit,
+                      ),
+                    )
+                  : Container(),
 
-        /* divider that divides the board view and the footer */
-        //Divider(color: AppColorsNew.dividerColor, thickness: 3),
-      ]);
+              // the position of board view is in center (as Stack has center alignment)
+              _buildBoardView(
+                boardDimensions,
+                tableScale,
+              ),
+            ],
+          ),
+
+          /* divider that divides the board view and the footer */
+          //Divider(color: AppColorsNew.dividerColor, thickness: 3),
+        ],
+      );
     }
 
     if (this.widget.showBottom) {
-      children.addAll([
-        // footer section
-        Consumer<RedrawFooterSectionState>(builder: (_, ___, __) {
-          log('RedrawFooter: building footer view');
-          return FooterViewWidget(
-            gameCode: widget.gameCode,
-            gameContextObject: _gameContextObj,
-            currentPlayer: _gameContextObj.gameState.currentPlayer,
-            gameInfo: _gameInfoModel,
-            toggleChatVisibility: _toggleChatVisibility,
-          );
-        }),
-      ]);
+      children.addAll(
+        [
+          // footer section
+          // Consumer<RedrawFooterSectionState>(
+          //   builder: (_, ___, __) {
+          //     log('RedrawFooter: building footer view');
+          //     return FooterViewWidget(
+          //       gameCode: widget.gameCode,
+          //       gameContextObject: _gameContextObj,
+          //       currentPlayer: _gameContextObj.gameState.currentPlayer,
+          //       gameInfo: _gameInfoModel,
+          //       toggleChatVisibility: _toggleChatVisibility,
+          //     );
+          //   },
+          // ),
+        ],
+      );
     }
     return Stack(
-      alignment: Alignment.topCenter,
+      alignment: Alignment.center,
       children: [
-        // this.widget.showTop ? BackgroundView() : Container(),
-        //Transform.translate(offset: Offset(0, 10.ph), child: BackgroundView()),
-        // this.widget.showTop && _gameState.customizationMode
-        //     ? Positioned(
-        //         top: 50.ph,
-        //         left: width - 50.pw,
-        //         child: CircleImageButton(
-        //           onTap: () async {
-        //             await Navigator.of(context).pushNamed(Routes.select_table);
-        //             await _gameState.assets.initialize();
-        //             final redrawTop = _gameState.redrawBoardSectionState;
-        //             redrawTop.notify();
-        //             setState(() {});
-        //           },
-        //           theme: theme,
-        //           icon: Icons.edit,
-        //         ),
-        //       )
-        //     : Container(),
-
         /* main view */
         Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: children,
         ),
+
+        // footer view
+        this.widget.showBottom
+            ? Align(
+                alignment: Alignment.bottomCenter,
+                child: Consumer<RedrawFooterSectionState>(
+                  builder: (_, ___, __) {
+                    log('RedrawFooter: building footer view');
+                    return FooterViewWidget(
+                      gameCode: widget.gameCode,
+                      gameContextObject: _gameContextObj,
+                      currentPlayer: _gameContextObj.gameState.currentPlayer,
+                      gameInfo: _gameInfoModel,
+                      toggleChatVisibility: _toggleChatVisibility,
+                    );
+                  },
+                ),
+              )
+            : const SizedBox.shrink(),
+
         this.widget.showTop &&
                 !_gameState.customizationMode &&
                 _gameState.currentPlayer.isAdmin()

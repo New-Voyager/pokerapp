@@ -767,6 +767,13 @@ class BoardAttributesObject extends ChangeNotifier {
         greaterThan7Inches: Offset(0.0, 60.ph),
       ) as Offset;
 
+  double get footerViewHeightScale => _decide(
+        lessThan6Inches: 0.45,
+        equalTo6Inches: .45,
+        equalTo7Inches: .45,
+        greaterThan7Inches: .45,
+      ) as double;
+
   double get centerPotScale => _decide(
         lessThan6Inches: 0.85,
         equalTo6Inches: 1.0,
