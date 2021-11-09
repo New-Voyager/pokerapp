@@ -19,6 +19,7 @@ class CardFormTextField extends StatelessWidget {
       this.inputFormatters,
       this.hintColor,
       this.maxLines,
+      this.maxLength,
       this.onTap});
   final Color hintColor;
   final AppTheme theme;
@@ -35,6 +36,7 @@ class CardFormTextField extends StatelessWidget {
   final Function onChanged;
   final Function onTap;
   final int maxLines;
+  final int maxLength;
 
   @override
   Widget build(BuildContext context) {
@@ -60,6 +62,7 @@ class CardFormTextField extends StatelessWidget {
           onChanged: onChanged,
           controller: controller,
           maxLines: maxLines ?? 1,
+          maxLength: maxLength ?? null,
           obscureText: obscureText ?? false,
           keyboardType: keyboardType,
           style: TextStyle(
