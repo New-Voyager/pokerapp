@@ -106,8 +106,8 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew>
                     clubModel.availableCredit == null
                         ? SizedBox.shrink()
                         : Positioned(
-                            top: 100.ph,
-                            right: 60.pw,
+                            top: 70.ph,
+                            right: 20.pw,
                             child: Column(children: [
                               Text('Credits'),
                               Text(clubModel.availableCredit.toString(),

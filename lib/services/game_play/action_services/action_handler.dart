@@ -321,6 +321,7 @@ class PlayerActionHandler {
         return;
       }
 
+      log('YourAction: raiseAmount: ${seatAction.raiseAmount} seatInSoFar: ${seatAction.seatInSoFar}');
       /* play an sound effect alerting the user */
       AudioService.playYourAction(mute: _gameState.playerLocalConfig.mute);
 
