@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -29,10 +30,16 @@ class PlayerActionHandler {
   BuildContext _context;
   GameState _gameState;
   HandActionProtoService _handActionProtoService;
+  PlayActionTimer _actionTimer;
 
   PlayerActionHandler(
       this._context, this._gameState, this._handActionProtoService);
 
+  void close() {
+    if (_actionTimer != null) {
+      _actionTimer.stop();
+    }
+  }
   Future<void> handleQueryCurrentHand(proto.HandMessageItem message) async {
     final currentHandState = message.currentHandState;
     log('Current hand state: $currentHandState');
@@ -325,10 +332,20 @@ class PlayerActionHandler {
       /* play an sound effect alerting the user */
       AudioService.playYourAction(mute: _gameState.playerLocalConfig.mute);
 
-      if (_gameState.playerLocalConfig.vibration) {
-        if (await Vibration.hasVibrator()) {
-          Vibration.vibrate();
+      // start timer
+      if (_actionTimer == null) {
+        _actionTimer = PlayActionTimer();
+      }
+      _actionTimer.start(_gameState.gameInfo.actionTime);
+
+      try {
+        if (_gameState.playerLocalConfig.vibration ?? true) {
+          if (await Vibration.hasVibrator()) {
+            Vibration.vibrate();
+          }
         }
+      } catch(err) {
+        // ignore 
       }
 
       if (_gameState.straddleBetThisHand == true) {
@@ -420,6 +437,11 @@ class PlayerActionHandler {
     int seatNo = playerActed.seatNo;
     log('HandMessage: ${message.playerActed.seatNo} action: ${message.playerActed.action.name}');
 
+    // stop the timer if running
+    if (_actionTimer != null) {
+      _actionTimer.stop();
+    }
+
     //log('Hand Message: ::handlePlayerActed:: START seatNo: $seatNo');
 
     if (_gameState.uiClosing) return;
@@ -477,5 +499,37 @@ class PlayerActionHandler {
         .updatePotChipUpdatesSilent(playerActed.potUpdates.toInt());
     _gameState.tableState.notifyAll();
     //log('Hand Message: ::handlePlayerActed:: END');
+  }
+}
+
+class PlayActionTimer {
+  int actionTimeout;
+  Timer timer;
+  void close() {
+    if (timer != null) {
+      timer.cancel();
+      timer = null;
+    }
+  }
+  
+  void start(int timeout) {
+    actionTimeout = timeout;
+    log('ActionTimer: Start action timer');
+    // start a timer
+    timer = Timer.periodic(Duration(milliseconds: 500), (timer) { 
+      this.tick();
+    });
+  }
+
+  void stop() {
+    log('ActionTimer: Stopped action timer');
+    if (timer != null) {
+      timer.cancel();
+      timer = null;
+    }
+  }
+
+  void tick() {
+    log('ActionTimer: Waiting for action...');
   }
 }
