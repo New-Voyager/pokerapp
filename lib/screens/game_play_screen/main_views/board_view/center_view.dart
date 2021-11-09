@@ -279,7 +279,9 @@ class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
   }
 
   Widget _buildMainCenterView(
-      final context, final BoardAttributesObject boardAttributes) {
+    final context,
+    final BoardAttributesObject boardAttributes,
+  ) {
     //log('potViewPos: building main center view');
 
     /**
@@ -316,62 +318,57 @@ class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
 
     final theme = AppTheme.getTheme(context);
 
-    return Transform.translate(
-      offset: boardAttributes.centerViewVerticalTranslate,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          pots,
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        pots,
 
-          // divider
-          SizedBox(height: boardAttributes.centerGap),
+        // divider
+        SizedBox(height: boardAttributes.centerGap),
 
-          /* community cards view */
-          ValueListenableBuilder<int>(
-            valueListenable: vnCommunityCardsRefresh,
-            builder: (_, __, ___) {
-              return ValueListenableBuilder3<List<CardObject>, List<CardObject>,
-                  bool>(
-                vnCards,
-                vnCardOthers,
-                vnTwoBoardsNeeded,
-                builder: (_, cards, cardsOther, twoBoardsNeeded, __) {
-                  final gameState = GameState.getState(context);
-                  final tableState = gameState.tableState;
-                  log('CommunityCards: cards: ${tableState.cards} cardsOther: ${tableState.cardsOther} twoboards: ${tableState.twoBoardsNeeded}');
+        /* community cards view */
+        ValueListenableBuilder<int>(
+          valueListenable: vnCommunityCardsRefresh,
+          builder: (_, __, ___) {
+            return ValueListenableBuilder3<List<CardObject>, List<CardObject>,
+                bool>(
+              vnCards,
+              vnCardOthers,
+              vnTwoBoardsNeeded,
+              builder: (_, cards, cardsOther, twoBoardsNeeded, __) {
+                final gameState = GameState.getState(context);
+                final tableState = gameState.tableState;
+                log('CommunityCards: cards: ${tableState.cards} cardsOther: ${tableState.cardsOther} twoboards: ${tableState.twoBoardsNeeded}');
 
-                  // TODO: transform using Matrix to give perspective illusion
-                  //
-                  Widget communityCards = Transform(
-                      transform: Matrix4.identity()
-                        ..setEntry(3, 2, 0.005)
-                        ..rotateX(-30 * pi / 180),
-                      alignment: FractionalOffset.center,
-                      child: CommunityCardsView(
-                        cards: tableState.cards,
-                        cardsOther: tableState.cardsOther,
-                        twoBoardsNeeded: tableState.twoBoardsNeeded,
-                        horizontal: true,
-                      ));
-                  return communityCards;
-                },
-              );
-            },
-          ),
+                return Transform(
+                  transform: Matrix4.identity()
+                    ..setEntry(3, 2, 0.005)
+                    ..rotateX(-30 * pi / 180),
+                  alignment: FractionalOffset.center,
+                  child: CommunityCardsView(
+                    cards: tableState.cards,
+                    cardsOther: tableState.cardsOther,
+                    twoBoardsNeeded: tableState.twoBoardsNeeded,
+                    horizontal: true,
+                  ),
+                );
+              },
+            );
+          },
+        ),
 
-          // divider
-          SizedBox(height: boardAttributes.potsViewGap),
+        // divider
+        SizedBox(height: boardAttributes.potsViewGap),
 
-          Stack(
-            alignment: Alignment.topCenter,
-            children: [
-              RankWidget(boardAttributes, theme, vnRankStr),
-              potUpdatesView(boa: boardAttributes)
-            ],
-          )
-        ],
-      ),
+        Stack(
+          alignment: Alignment.topCenter,
+          children: [
+            RankWidget(boardAttributes, theme, vnRankStr),
+            potUpdatesView(boa: boardAttributes)
+          ],
+        )
+      ],
     );
   }
 
