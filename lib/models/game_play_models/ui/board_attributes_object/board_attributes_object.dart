@@ -760,12 +760,12 @@ class BoardAttributesObject extends ChangeNotifier {
         greaterThan7Inches: Offset(0.0, -20.0),
       ) as Offset;
 
-  // Offset get centerViewVerticalTranslate => _decide(
-  //       lessThan6Inches: Offset(0.0, 15.0),
-  //       equalTo6Inches: Offset(0.0, 10.0),
-  //       equalTo7Inches: Offset.zero,
-  //       greaterThan7Inches: Offset(0.0, 60.ph),
-  //     ) as Offset;
+  Offset get centerViewVerticalTranslate => _decide(
+        lessThan6Inches: Offset(0.0, 15.0),
+        equalTo6Inches: Offset(0.0, 10.0),
+        equalTo7Inches: Offset.zero,
+        greaterThan7Inches: Offset(0.0, 60.ph),
+      ) as Offset;
 
   double get footerViewHeightScale => _decide(
         lessThan6Inches: 0.45,

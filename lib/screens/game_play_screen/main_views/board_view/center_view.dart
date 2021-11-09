@@ -318,57 +318,60 @@ class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
 
     final theme = AppTheme.getTheme(context);
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        pots,
+    return Transform.translate(
+      offset: boardAttributes.centerViewVerticalTranslate,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          pots,
 
-        // divider
-        SizedBox(height: boardAttributes.centerGap),
+          // divider
+          SizedBox(height: boardAttributes.centerGap),
 
-        /* community cards view */
-        ValueListenableBuilder<int>(
-          valueListenable: vnCommunityCardsRefresh,
-          builder: (_, __, ___) {
-            return ValueListenableBuilder3<List<CardObject>, List<CardObject>,
-                bool>(
-              vnCards,
-              vnCardOthers,
-              vnTwoBoardsNeeded,
-              builder: (_, cards, cardsOther, twoBoardsNeeded, __) {
-                final gameState = GameState.getState(context);
-                final tableState = gameState.tableState;
-                log('CommunityCards: cards: ${tableState.cards} cardsOther: ${tableState.cardsOther} twoboards: ${tableState.twoBoardsNeeded}');
+          /* community cards view */
+          ValueListenableBuilder<int>(
+            valueListenable: vnCommunityCardsRefresh,
+            builder: (_, __, ___) {
+              return ValueListenableBuilder3<List<CardObject>, List<CardObject>,
+                  bool>(
+                vnCards,
+                vnCardOthers,
+                vnTwoBoardsNeeded,
+                builder: (_, cards, cardsOther, twoBoardsNeeded, __) {
+                  final gameState = GameState.getState(context);
+                  final tableState = gameState.tableState;
+                  log('CommunityCards: cards: ${tableState.cards} cardsOther: ${tableState.cardsOther} twoboards: ${tableState.twoBoardsNeeded}');
 
-                return Transform(
-                  transform: Matrix4.identity()
-                    ..setEntry(3, 2, 0.005)
-                    ..rotateX(-30 * pi / 180),
-                  alignment: FractionalOffset.center,
-                  child: CommunityCardsView(
-                    cards: tableState.cards,
-                    cardsOther: tableState.cardsOther,
-                    twoBoardsNeeded: tableState.twoBoardsNeeded,
-                    horizontal: true,
-                  ),
-                );
-              },
-            );
-          },
-        ),
+                  return Transform(
+                    transform: Matrix4.identity()
+                      ..setEntry(3, 2, 0.005)
+                      ..rotateX(-30 * pi / 180),
+                    alignment: FractionalOffset.center,
+                    child: CommunityCardsView(
+                      cards: tableState.cards,
+                      cardsOther: tableState.cardsOther,
+                      twoBoardsNeeded: tableState.twoBoardsNeeded,
+                      horizontal: true,
+                    ),
+                  );
+                },
+              );
+            },
+          ),
 
-        // divider
-        SizedBox(height: boardAttributes.potsViewGap),
+          // divider
+          SizedBox(height: boardAttributes.potsViewGap),
 
-        Stack(
-          alignment: Alignment.topCenter,
-          children: [
-            RankWidget(boardAttributes, theme, vnRankStr),
-            potUpdatesView(boa: boardAttributes)
-          ],
-        )
-      ],
+          Stack(
+            alignment: Alignment.topCenter,
+            children: [
+              RankWidget(boardAttributes, theme, vnRankStr),
+              potUpdatesView(boa: boardAttributes)
+            ],
+          )
+        ],
+      ),
     );
   }
 

@@ -290,22 +290,29 @@ class IosBoardAttributesObject extends BoardAttributesObject {
         lessThan6Inches: Offset.zero,
         equalTo6Inches: Offset(0.0, 0.0),
         equalTo7Inches: Offset(0.0, 0.0),
-        greaterThan7Inches: Offset(0.0, 0.0),
+        greaterThan7Inches: Offset(0.0, 100.0),
       ) as Offset;
 
   Offset get centerViewButtonVerticalTranslate => _decide(
         lessThan6Inches: Offset.zero,
         equalTo6Inches: Offset(0.0, 0.0),
         equalTo7Inches: Offset(0.0, 0.0),
-        greaterThan7Inches: Offset(0.0, 0.0),
+        greaterThan7Inches: Offset(0.0, 70.0),
       ) as Offset;
 
-  // Offset get centerViewVerticalTranslate => _decide(
-  //       lessThan6Inches: Offset(0.0, 0.0),
-  //       equalTo6Inches: Offset(0.0, 0.0),
-  //       equalTo7Inches: Offset.zero,
-  //       greaterThan7Inches: Offset(0.0, 0),
-  //     ) as Offset;
+  Offset get centerViewVerticalTranslate => _decide(
+        lessThan6Inches: Offset(0.0, 0.0),
+        equalTo6Inches: Offset(0.0, 0.0),
+        equalTo7Inches: Offset.zero,
+        greaterThan7Inches: Offset(0.0, 150),
+      ) as Offset;
+
+  Offset get centerOffset => _decide(
+        lessThan6Inches: Offset(10, 40),
+        equalTo6Inches: Offset(15, 70),
+        equalTo7Inches: Offset(15, 85),
+        greaterThan7Inches: Offset(10, -90),
+      ) as Offset;
 
   double get footerViewHeightScale => _decide(
         lessThan6Inches: 0.45,
@@ -370,7 +377,7 @@ class IosBoardAttributesObject extends BoardAttributesObject {
         lessThan6Inches: 1.0,
         equalTo6Inches: 1.0,
         equalTo7Inches: 1.0,
-        greaterThan7Inches: 1.0,
+        greaterThan7Inches: .8,
       ) as double;
 
   double get communityCardSizeScales => _decide(
@@ -394,13 +401,7 @@ class IosBoardAttributesObject extends BoardAttributesObject {
         greaterThan7Inches: 0.0,
       ) as double;
 
-  /* table center view offsets, scaling and sizes */
-  Offset get centerOffset => _decide(
-        lessThan6Inches: Offset(10, 40),
-        equalTo6Inches: Offset(15, 70),
-        equalTo7Inches: Offset(15, 85),
-        greaterThan7Inches: Offset(10, 70),
-      ) as Offset;
+  /* table scale */
 
   double get tableScale => _decide(
         lessThan6Inches: 1.0,
