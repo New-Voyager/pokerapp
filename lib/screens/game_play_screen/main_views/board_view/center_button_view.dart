@@ -94,7 +94,7 @@ class CenterButtonView extends StatelessWidget {
 
     if (tableState.gameStatus == AppConstants.GAME_PAUSED) {
       if (!seatChange.seatChangeInProgress) {
-        if (gameContext.isAdmin()) {
+        if (gameContext.isHost()) {
           log('is admin: ${gameContext.isAdmin()} isHost: ${gameContext.isHost()}');
           return pauseButtons(context);
         } else {
@@ -238,7 +238,7 @@ class CenterButtonView extends StatelessWidget {
 
   Widget newGameButtons(BuildContext context) {
     return Consumer<GameContextObject>(builder: (context, gameContext, _) {
-      if (!gameContext.isAdmin()) {
+      if (!gameContext.isHost()) {
         return SizedBox.shrink();
       }
 
