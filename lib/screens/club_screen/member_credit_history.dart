@@ -227,8 +227,14 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
   Widget build(BuildContext context) {
     final theme = AppTheme.getTheme(context);
     if (loading) {
-      return Center(
-        child: CircularProgressWidget(),
+      return Container(
+        decoration: AppDecorators.bgRadialGradient(theme),
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          body: Center(
+            child: CircularProgressWidget(),
+          ),
+        ),
       );
     }
     return Container(
