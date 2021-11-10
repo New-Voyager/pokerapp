@@ -294,14 +294,14 @@ class IosBoardAttributesObject extends BoardAttributesObject {
       ) as Offset;
 
   Offset get centerViewButtonVerticalTranslate => _decide(
-        lessThan6Inches: Offset.zero,
+        lessThan6Inches: Offset(0.0, -10.0),
         equalTo6Inches: Offset(0.0, 0.0),
         equalTo7Inches: Offset(0.0, 0.0),
         greaterThan7Inches: Offset(0.0, 70.0),
       ) as Offset;
 
   Offset get centerViewVerticalTranslate => _decide(
-        lessThan6Inches: Offset(0.0, 0.0),
+        lessThan6Inches: Offset(0.0, 7.0),
         equalTo6Inches: Offset(0.0, -20.0),
         equalTo7Inches: Offset.zero,
         greaterThan7Inches: Offset(0.0, 0),
@@ -315,7 +315,7 @@ class IosBoardAttributesObject extends BoardAttributesObject {
       ) as Offset;
 
   double get boardViewPositionScale => _decide(
-        lessThan6Inches: .01,
+        lessThan6Inches: .05,
         equalTo6Inches: .03,
         equalTo7Inches: .01,
         greaterThan7Inches: .01,
@@ -329,28 +329,28 @@ class IosBoardAttributesObject extends BoardAttributesObject {
       ) as double;
 
   double get centerPotScale => _decide(
-        lessThan6Inches: 1.0,
+        lessThan6Inches: .8,
         equalTo6Inches: .8,
         equalTo7Inches: 1.0,
         greaterThan7Inches: 1.0,
       ) as double;
 
   double get centerPotUpdatesScale => _decide(
-        lessThan6Inches: 1.0,
+        lessThan6Inches: .8,
         equalTo6Inches: .8,
         equalTo7Inches: 1.0,
         greaterThan7Inches: 1.0,
       ) as double;
 
   double get centerRankStrScale => _decide(
-        lessThan6Inches: 1.0,
+        lessThan6Inches: .8,
         equalTo6Inches: 1.0,
         equalTo7Inches: 1.0,
         greaterThan7Inches: 1.0,
       ) as double;
 
   double get centerViewCenterScale => _decide(
-        lessThan6Inches: 1.0,
+        lessThan6Inches: .8,
         equalTo6Inches: 1.0,
         equalTo7Inches: 1.0,
         greaterThan7Inches: 1.30,
@@ -381,14 +381,14 @@ class IosBoardAttributesObject extends BoardAttributesObject {
       ) as double;
 
   double get communityCardDoubleBoardScaleFactor => _decide(
-        lessThan6Inches: 1.0,
+        lessThan6Inches: .9,
         equalTo6Inches: 1.0,
         equalTo7Inches: 1.0,
         greaterThan7Inches: .8,
       ) as double;
 
   double get communityCardSizeScales => _decide(
-        lessThan6Inches: 1.0,
+        lessThan6Inches: .9,
         equalTo6Inches: .8,
         equalTo7Inches: 1.0,
         greaterThan7Inches: 1.4,
