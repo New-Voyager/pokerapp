@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:typed_data';
 import 'package:pokerapp/proto/handmessage.pb.dart' as proto;
 import 'package:fixnum/fixnum.dart' as $fixnum;
 import 'package:pokerapp/services/nats/nats.dart';
+import 'package:pokerapp/utils/tickr.dart';
 
 class LivenessSender {
   int gameId;
@@ -11,19 +13,42 @@ class LivenessSender {
   Nats nats;
   String clientAliveSubject;
 
+  Ticker timer;
+
   LivenessSender(
     this.gameId,
     this.gameCode,
     this.playerId,
     this.nats,
     this.clientAliveSubject,
-  );
+  ) {
+    this.timer = Ticker();
+  }
 
   void sendAliveMsg() {
     ClientAliveMsg msg =
         new ClientAliveMsg(this.gameId, this.gameCode, this.playerId);
     Uint8List data = msg.toProto();
     this.nats.clientPub.pub(this.clientAliveSubject, data);
+  }
+
+  void close() {
+    log('LivenessSender: Close');
+    if (timer != null) {
+      timer.close();
+      timer = null;
+    }
+  }
+
+  void start() {
+    log('LivenessSender: Start');
+    // start a timer
+    timer.start(this.sendAliveMsg);
+  }
+
+  void stop() {
+    log('LivenessSender: Stop');
+    timer.stop();
   }
 }
 

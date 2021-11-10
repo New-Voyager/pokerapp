@@ -32,14 +32,13 @@ class PlayerActionHandler {
   GameState _gameState;
   LivenessSender _livenessSender;
   HandActionProtoService _handActionProtoService;
-  PlayActionTimer _actionTimer;
 
   PlayerActionHandler(this._context, this._gameState, this._livenessSender,
       this._handActionProtoService);
 
   void close() {
-    if (_actionTimer != null) {
-      _actionTimer.stop();
+    if (_livenessSender != null) {
+      _livenessSender.stop();
     }
   }
 
@@ -336,11 +335,8 @@ class PlayerActionHandler {
       /* play an sound effect alerting the user */
       AudioService.playYourAction(mute: _gameState.playerLocalConfig.mute);
 
-      // start timer
-      if (_actionTimer == null) {
-        _actionTimer = PlayActionTimer(_livenessSender.sendAliveMsg);
-      }
-      _actionTimer.start(_gameState.gameInfo.actionTime);
+      // Notify server we are alive while in action
+      _livenessSender.start();
 
       try {
         if (_gameState.playerLocalConfig.vibration ?? true) {
@@ -442,8 +438,8 @@ class PlayerActionHandler {
     log('HandMessage: ${message.playerActed.seatNo} action: ${message.playerActed.action.name}');
 
     // stop the timer if running
-    if (_actionTimer != null) {
-      _actionTimer.stop();
+    if (_livenessSender != null) {
+      _livenessSender.stop();
     }
 
     //log('Hand Message: ::handlePlayerActed:: START seatNo: $seatNo');
@@ -503,42 +499,5 @@ class PlayerActionHandler {
         .updatePotChipUpdatesSilent(playerActed.potUpdates.toInt());
     _gameState.tableState.notifyAll();
     //log('Hand Message: ::handlePlayerActed:: END');
-  }
-}
-
-class PlayActionTimer {
-  int actionTimeout;
-  Timer timer;
-  Function onTick;
-
-  PlayActionTimer(this.onTick);
-
-  void close() {
-    if (timer != null) {
-      timer.cancel();
-      timer = null;
-    }
-  }
-
-  void start(int timeout) {
-    actionTimeout = timeout;
-    log('ActionTimer: Start action timer');
-    // start a timer
-    timer = Timer.periodic(Duration(milliseconds: 1000), (timer) {
-      this.tick();
-    });
-  }
-
-  void stop() {
-    log('ActionTimer: Stopped action timer');
-    if (timer != null) {
-      timer.cancel();
-      timer = null;
-    }
-  }
-
-  void tick() {
-    log('ActionTimer: Waiting for action...');
-    onTick();
   }
 }
