@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:pokerapp/models/app_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
@@ -36,6 +37,7 @@ class CenterButtonView extends StatelessWidget {
     final gameState = GameState.getState(context);
     log('Termininating game ${gameState.gameCode}');
     await GameService.endGame(gameState.gameCode);
+    Provider.of<AppState>(context, listen: false).setGameEnded(true);
     if (!gameState.isGameRunning) {
       gameState.refresh();
     }
