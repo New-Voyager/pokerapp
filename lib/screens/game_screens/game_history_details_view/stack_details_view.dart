@@ -207,7 +207,7 @@ class _PointsLineChart extends State<PointsLineChart> with RouteAwareAnalytics {
                             ],
                             defaultRenderer: new charts.LineRendererConfig(
                               includePoints: true,
-                              radiusPx: 5,
+                              radiusPx: 10,
                             ),
                           ),
                         ),
