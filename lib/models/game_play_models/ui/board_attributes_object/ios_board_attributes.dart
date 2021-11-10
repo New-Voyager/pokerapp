@@ -314,6 +314,13 @@ class IosBoardAttributesObject extends BoardAttributesObject {
         greaterThan7Inches: Offset(10, 0),
       ) as Offset;
 
+  double get boardViewPositionScale => _decide(
+        lessThan6Inches: .01,
+        equalTo6Inches: .03,
+        equalTo7Inches: .01,
+        greaterThan7Inches: .01,
+      ) as double;
+
   double get footerViewHeightScale => _decide(
         lessThan6Inches: 0.45,
         equalTo6Inches: .45,

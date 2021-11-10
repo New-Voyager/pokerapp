@@ -862,6 +862,13 @@ class BoardAttributesObject extends ChangeNotifier {
         greaterThan7Inches: Offset(10, 40),
       ) as Offset;
 
+  double get boardViewPositionScale => _decide(
+        lessThan6Inches: .01,
+        equalTo6Inches: .03,
+        equalTo7Inches: .01,
+        greaterThan7Inches: .01,
+      ) as double;
+
   double get tableScale => _decide(
         lessThan6Inches: 1.0,
         equalTo6Inches: 1.0,

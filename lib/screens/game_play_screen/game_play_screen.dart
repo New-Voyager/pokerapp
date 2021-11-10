@@ -826,13 +826,13 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
           // main board view
           Stack(
-            alignment: Alignment.center,
+            // alignment: Alignment.center,
             children: [
               this.widget.showTop ? BackgroundView() : Container(),
               this.widget.showTop && _gameState.customizationMode
                   ? Positioned(
-                      top: 10,
-                      left: width - 50,
+                      top: 10.ph,
+                      left: width - 50.pw,
                       child: CircleImageButton(
                         onTap: () async {
                           await Navigator.of(context)
@@ -848,10 +848,14 @@ class _GamePlayScreenState extends State<GamePlayScreen>
                     )
                   : Container(),
 
-              // the position of board view is in center (as Stack has center alignment)
-              _buildBoardView(
-                boardDimensions,
-                tableScale,
+              // board view
+              Positioned(
+                top: MediaQuery.of(context).size.height *
+                    boardAttributes.boardViewPositionScale,
+                child: _buildBoardView(
+                  boardDimensions,
+                  tableScale,
+                ),
               ),
             ],
           ),
@@ -862,25 +866,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       );
     }
 
-    if (this.widget.showBottom) {
-      children.addAll(
-        [
-          // footer section
-          // Consumer<RedrawFooterSectionState>(
-          //   builder: (_, ___, __) {
-          //     log('RedrawFooter: building footer view');
-          //     return FooterViewWidget(
-          //       gameCode: widget.gameCode,
-          //       gameContextObject: _gameContextObj,
-          //       currentPlayer: _gameContextObj.gameState.currentPlayer,
-          //       gameInfo: _gameInfoModel,
-          //       toggleChatVisibility: _toggleChatVisibility,
-          //     );
-          //   },
-          // ),
-        ],
-      );
-    }
     return Stack(
       alignment: Alignment.center,
       children: [

@@ -130,38 +130,40 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
     final gco = context.read<GameContextObject>();
     final boardAttributes = context.read<BoardAttributesObject>();
 
-    return Stack(
-      children: [
-        Align(
-          alignment: Alignment.topCenter,
-          child: _buildHoleCardViewAndStraddleDialog(
-            gameState,
-            boardAttributes,
+    return SafeArea(
+      child: Stack(
+        children: [
+          Align(
+            alignment: Alignment.topCenter,
+            child: _buildHoleCardViewAndStraddleDialog(
+              gameState,
+              boardAttributes,
+            ),
           ),
-        ),
 
-        /* dark overlay to show in-front of cards, when the bet widget is displayed */
-        _buildDarkBackground(),
+          /* dark overlay to show in-front of cards, when the bet widget is displayed */
+          _buildDarkBackground(),
 
-        // action view (show when it is time for this user to act)
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: Consumer<ActionState>(builder: (context, actionState, __) {
-            if (actionState.show || actionState.showCheckFold) {
-              return _buildFooterActionView(context, gco, actionState);
-            } else {
-              return SizedBox.shrink();
-            }
-          }),
-        ),
-
-        // show post result options
-        Align(
+          // action view (show when it is time for this user to act)
+          Align(
             alignment: Alignment.bottomCenter,
-            child: ResultOptionsWidget(
-                gameState: gameState,
-                isHoleCardsVisibleVn: isHoleCardsVisibleVn)),
-      ],
+            child: Consumer<ActionState>(builder: (context, actionState, __) {
+              if (actionState.show || actionState.showCheckFold) {
+                return _buildFooterActionView(context, gco, actionState);
+              } else {
+                return SizedBox.shrink();
+              }
+            }),
+          ),
+
+          // show post result options
+          Align(
+              alignment: Alignment.bottomCenter,
+              child: ResultOptionsWidget(
+                  gameState: gameState,
+                  isHoleCardsVisibleVn: isHoleCardsVisibleVn)),
+        ],
+      ),
     );
   }
 
