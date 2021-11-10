@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/player_info.dart';
+import 'package:pokerapp/services/connectivity_check/liveness_sender.dart';
 import 'package:pokerapp/services/encryption/encryption_service.dart';
 import 'package:pokerapp/services/game_play/action_services/game_update_service.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_proto_service.dart';
@@ -27,6 +28,7 @@ class GameContextObject extends ChangeNotifier {
   GameUpdateService gameUpdateService;
   GameComService gameComService;
   EncryptionService encryptionService;
+  LivenessSender livenessSender;
   HandToPlayerTextService handToPlayerTextService;
   IonAudioConferenceService ionAudioConferenceService;
 
@@ -39,12 +41,14 @@ class GameContextObject extends ChangeNotifier {
     HandActionProtoService handActionProtoService,
     GameComService gameComService,
     EncryptionService encryptionService,
+    LivenessSender livenessSender,
   }) {
     this._gameCode = gameCode;
     this._currentPlayer = player;
     this._gameId = 0;
     this.gameComService = gameComService;
     this.encryptionService = encryptionService;
+    this.livenessSender = livenessSender;
     this.gameState = gameState;
     this.gameUpdateService = gameUpdateService;
     this.handActionProtoService = handActionProtoService;
@@ -176,6 +180,7 @@ class GameContextObject extends ChangeNotifier {
         this,
         gameComService,
         encryptionService,
+        livenessSender,
         currentPlayer,
       );
 

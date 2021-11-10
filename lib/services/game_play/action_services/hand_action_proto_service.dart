@@ -18,6 +18,7 @@ import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/audio/audio_service.dart';
+import 'package:pokerapp/services/connectivity_check/liveness_sender.dart';
 import 'package:pokerapp/services/encryption/encryption_service.dart';
 import 'package:pokerapp/services/game_play/action_services/action_handler.dart';
 import 'package:pokerapp/services/game_play/action_services/newhand_handler.dart';
@@ -118,12 +119,14 @@ class HandActionProtoService {
   final GameContextObject _gameContextObject;
   final BuildContext _context;
   final List<HandMessageObject> _messages = [];
+  PlayerActionHandler _actionHandler;
 
   bool _close = false;
   bool closed = false;
 
   GameComService _gameComService;
   EncryptionService _encryptionService;
+  LivenessSender _livenessSender;
   RetrySendingProtoMsg _retryMsg;
   pi.PlayerInfo _currentPlayer;
 
@@ -133,8 +136,12 @@ class HandActionProtoService {
     this._gameContextObject,
     this._gameComService,
     this._encryptionService,
+    this._livenessSender,
     this._currentPlayer,
-  );
+  ) {
+    this._actionHandler =
+        PlayerActionHandler(this._context, _gameState, _livenessSender, this);
+  }
 
   void close() {
     _close = true;
@@ -381,32 +388,28 @@ class HandActionProtoService {
           return handleDeal(message);
 
         case AppConstants.QUERY_CURRENT_HAND:
-          final handler = PlayerActionHandler(this._context, _gameState, this);
-          await handler.handleQueryCurrentHand(message);
+          await _actionHandler.handleQueryCurrentHand(message);
           return;
 
         case AppConstants.NEXT_ACTION:
-          final handler = PlayerActionHandler(this._context, _gameState, this);
           if (_gameState.handState == HandState.DEAL) {
             _gameState.handState = HandState.PREFLOP;
           }
-          await handler.handleNextAction(message);
+          await _actionHandler.handleNextAction(message);
           return;
 
         case AppConstants.PLAYER_ACTED:
           if (_gameState.handState == HandState.DEAL) {
             _gameState.handState = HandState.PREFLOP;
           }
-          final handler = PlayerActionHandler(this._context, _gameState, this);
-          await handler.handlePlayerActed(message);
+          await _actionHandler.handlePlayerActed(message);
           return;
 
         case AppConstants.YOUR_ACTION:
           if (_gameState.handState == HandState.DEAL) {
             _gameState.handState = HandState.PREFLOP;
           }
-          final handler = PlayerActionHandler(this._context, _gameState, this);
-          await handler.handleYourAction(message);
+          await _actionHandler.handleYourAction(message);
           return;
 
         case AppConstants.EXTEND_ACTION_TIMER:
