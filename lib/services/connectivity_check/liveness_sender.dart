@@ -13,6 +13,7 @@ class LivenessSender {
   Nats nats;
   String clientAliveSubject;
 
+  bool started;
   Ticker timer;
 
   LivenessSender(
@@ -23,6 +24,7 @@ class LivenessSender {
     this.clientAliveSubject,
   ) {
     this.timer = Ticker();
+    this.started = false;
   }
 
   void sendAliveMsg() {
@@ -41,14 +43,22 @@ class LivenessSender {
   }
 
   void start() {
+    if (this.started) {
+      return;
+    }
     log('LivenessSender: Start');
     // start a timer
     timer.start(this.sendAliveMsg);
+    started = true;
   }
 
   void stop() {
+    if (!this.started) {
+      return;
+    }
     log('LivenessSender: Stop');
     timer.stop();
+    started = false;
   }
 }
 
