@@ -18,6 +18,7 @@ import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/audio/audio_service.dart';
+import 'package:pokerapp/services/connectivity_check/liveness_sender.dart';
 import 'package:pokerapp/services/encryption/encryption_service.dart';
 import 'package:pokerapp/services/game_play/action_services/action_handler.dart';
 import 'package:pokerapp/services/game_play/action_services/newhand_handler.dart';
@@ -125,6 +126,7 @@ class HandActionProtoService {
 
   GameComService _gameComService;
   EncryptionService _encryptionService;
+  LivenessSender _livenessSender;
   RetrySendingProtoMsg _retryMsg;
   pi.PlayerInfo _currentPlayer;
 
@@ -134,9 +136,11 @@ class HandActionProtoService {
     this._gameContextObject,
     this._gameComService,
     this._encryptionService,
+    this._livenessSender,
     this._currentPlayer,
   ) {
-    this._actionHandler = PlayerActionHandler(this._context, _gameState, this);
+    this._actionHandler =
+        PlayerActionHandler(this._context, _gameState, _livenessSender, this);
   }
 
   void close() {

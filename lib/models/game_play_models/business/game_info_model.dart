@@ -54,8 +54,7 @@ class GameInfoModel {
   String handToAllChannel;
   String handToPlayerChannel;
   String gameChatChannel;
-  String pingChannel;
-  String pongChannel;
+  String clientAliveChannel;
 
   // janus related settings
   bool audioConfEnabled;
@@ -137,8 +136,7 @@ class GameInfoModel {
     this.handToAllChannel = data['handToAllChannel'];
     this.handToPlayerChannel = data['handToPlayerChannel'];
     this.gameChatChannel = data['gameChatChannel'];
-    this.pingChannel = data['pingChannel'];
-    this.pongChannel = data['pongChannel'];
+    this.clientAliveChannel = data['clientAliveChannel'];
 
     this.audioConfEnabled = data['audioConfEnabled'];
     this.janusUrl = data['janusUrl'];
@@ -225,8 +223,7 @@ class GameInfoModel {
       handToPlayerChannel
       handToPlayerTextChannel
       gameChatChannel
-      pingChannel
-      pongChannel
+      clientAliveChannel
       playerRunItTwiceConfig
       playerMuckLosingHandConfig
       audioConfEnabled

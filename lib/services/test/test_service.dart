@@ -952,7 +952,7 @@ class TestService {
         final gameContextObj =
             Provider.of<GameContextObject>(_context, listen: false);
         _handActionProtoService = HandActionProtoService(
-            _context, gameState, gameContextObj, null, null, null);
+            _context, gameState, gameContextObj, null, null, null, null);
         _handActionProtoService.loop();
       }
 

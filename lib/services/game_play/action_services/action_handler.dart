@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/services/audio/audio_service.dart';
+import 'package:pokerapp/services/connectivity_check/liveness_sender.dart';
 import 'package:provider/provider.dart';
 
 import 'package:pokerapp/enums/game_type.dart';
@@ -29,17 +30,19 @@ import 'hand_action_proto_service.dart';
 class PlayerActionHandler {
   BuildContext _context;
   GameState _gameState;
+  LivenessSender _livenessSender;
   HandActionProtoService _handActionProtoService;
   PlayActionTimer _actionTimer;
 
-  PlayerActionHandler(
-      this._context, this._gameState, this._handActionProtoService);
+  PlayerActionHandler(this._context, this._gameState, this._livenessSender,
+      this._handActionProtoService);
 
   void close() {
     if (_actionTimer != null) {
       _actionTimer.stop();
     }
   }
+
   Future<void> handleQueryCurrentHand(proto.HandMessageItem message) async {
     final currentHandState = message.currentHandState;
     log('Current hand state: $currentHandState');
@@ -334,7 +337,7 @@ class PlayerActionHandler {
 
       // start timer
       if (_actionTimer == null) {
-        _actionTimer = PlayActionTimer();
+        _actionTimer = PlayActionTimer(_livenessSender.sendAliveMsg);
       }
       _actionTimer.start(_gameState.gameInfo.actionTime);
 
@@ -344,8 +347,8 @@ class PlayerActionHandler {
             Vibration.vibrate();
           }
         }
-      } catch(err) {
-        // ignore 
+      } catch (err) {
+        // ignore
       }
 
       if (_gameState.straddleBetThisHand == true) {
@@ -505,18 +508,22 @@ class PlayerActionHandler {
 class PlayActionTimer {
   int actionTimeout;
   Timer timer;
+  Function onTick;
+
+  PlayActionTimer(this.onTick);
+
   void close() {
     if (timer != null) {
       timer.cancel();
       timer = null;
     }
   }
-  
+
   void start(int timeout) {
     actionTimeout = timeout;
     log('ActionTimer: Start action timer');
     // start a timer
-    timer = Timer.periodic(Duration(milliseconds: 500), (timer) { 
+    timer = Timer.periodic(Duration(milliseconds: 1000), (timer) {
       this.tick();
     });
   }
@@ -531,5 +538,6 @@ class PlayActionTimer {
 
   void tick() {
     log('ActionTimer: Waiting for action...');
+    onTick();
   }
 }

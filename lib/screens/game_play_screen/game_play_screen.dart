@@ -38,6 +38,7 @@ import 'package:pokerapp/screens/game_play_screen/widgets/icon_with_badge.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/app/player_service.dart';
 import 'package:pokerapp/services/audio/audio_service.dart';
+import 'package:pokerapp/services/connectivity_check/liveness_sender.dart';
 import 'package:pokerapp/services/connectivity_check/network_change_listener.dart';
 import 'package:pokerapp/services/encryption/encryption_service.dart';
 import 'package:pokerapp/services/game_play/action_services/game_action_service/util_action_services.dart';
@@ -197,8 +198,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       playerToHandChannel: _gameInfoModel.playerToHandChannel,
       handToPlayerTextChannel: _gameInfoModel.handToPlayerTextChannel,
       gameChatChannel: _gameInfoModel.gameChatChannel,
-      pingChannel: _gameInfoModel.pingChannel,
-      pongChannel: _gameInfoModel.pongChannel,
     );
 
     final encryptionService = EncryptionService();
@@ -217,6 +216,14 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       await _gameComService.init(natsClient);
       await encryptionService.init();
     }
+
+    final livenessSender = LivenessSender(
+      _gameInfoModel.gameID,
+      _gameInfoModel.gameCode,
+      _currentPlayer.id,
+      _nats,
+      _gameInfoModel.clientAliveChannel,
+    );
 
     _gameState = GameState();
     _gameState.isBotGame = widget.botGame;
@@ -271,6 +278,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         player: this._currentPlayer,
         gameComService: _gameComService,
         encryptionService: encryptionService,
+        livenessSender: livenessSender,
         gameState: _gameState,
       );
 
