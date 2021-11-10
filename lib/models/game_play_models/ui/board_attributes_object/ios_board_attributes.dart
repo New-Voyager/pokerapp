@@ -446,7 +446,7 @@ class IosBoardAttributesObject extends BoardAttributesObject {
 
   /* players configurations */
   double get playerViewScale => _decide(
-        lessThan6Inches: 1.0,
+        lessThan6Inches: .7,
         equalTo6Inches: .8,
         equalTo7Inches: 1.0,
         greaterThan7Inches: 1.3,
