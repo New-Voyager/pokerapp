@@ -102,6 +102,7 @@ class GameContextObject extends ChangeNotifier {
     gameComService?.dispose();
     encryptionService?.dispose();
     handActionProtoService?.close();
+    livenessSender?.close();
     super.dispose();
   }
 
