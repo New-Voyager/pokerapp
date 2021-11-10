@@ -437,11 +437,6 @@ class PlayerActionHandler {
     int seatNo = playerActed.seatNo;
     log('HandMessage: ${message.playerActed.seatNo} action: ${message.playerActed.action.name}');
 
-    // stop the timer if running
-    if (_livenessSender != null) {
-      _livenessSender.stop();
-    }
-
     //log('Hand Message: ::handlePlayerActed:: START seatNo: $seatNo');
 
     if (_gameState.uiClosing) return;

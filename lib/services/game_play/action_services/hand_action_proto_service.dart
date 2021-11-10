@@ -151,6 +151,8 @@ class HandActionProtoService {
     if (_retryMsg != null) {
       _retryMsg.cancel();
     }
+
+    _livenessSender?.stop();
   }
 
   void clear() {
@@ -330,6 +332,7 @@ class HandActionProtoService {
       final message = proto.HandMessage.fromBuffer(protoData);
       for (final item in message.messages) {
         _messages.add(HandMessageObject(message, item));
+        toggleLivenessSender(item);
       }
     } catch (err) {
       log('${err.toString()}');
@@ -444,6 +447,18 @@ class HandActionProtoService {
       log('Error: ${err.toString()}');
     } finally {
       ////log('Hand Message: ::handleMessage:: END messageType: $messageType');
+    }
+  }
+
+  void toggleLivenessSender(proto.HandMessageItem item) {
+    if (item.messageType == AppConstants.YOUR_ACTION) {
+      if (item.seatAction != null &&
+          _gameState.me != null &&
+          item.seatAction.seatNo == _gameState.me.seatNo) {
+        _livenessSender.start();
+      }
+    } else if (item.messageType == AppConstants.PLAYER_ACTED) {
+      _livenessSender.stop();
     }
   }
 
