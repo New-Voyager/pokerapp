@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_type.dart';
+import 'package:pokerapp/models/app_state.dart';
 import 'package:pokerapp/models/game/new_game_model.dart';
 import 'package:pokerapp/models/game/new_game_provider.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
@@ -76,6 +77,7 @@ class NewGameSettings2 extends StatelessWidget {
       } else {
         gameCode = await GameService.configurePlayerGame(gm);
       }
+      Provider.of<AppState>(context, listen: false).setNewGame(true);
       ConnectionDialog.dismiss(context: context);
     } catch (err) {
       ConnectionDialog.dismiss(context: context);
