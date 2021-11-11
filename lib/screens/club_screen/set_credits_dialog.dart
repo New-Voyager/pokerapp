@@ -27,97 +27,96 @@ class SetCreditsDialog {
         TextEditingController creditsController = TextEditingController();
         TextEditingController notesController = TextEditingController();
         creditsController.text = '$credits';
-        return Align(
-            alignment: Alignment.center,
-            child: Material(
-              color: Colors.transparent,
-              child: Container(
-                height: MediaQuery.of(context).size.height * 0.4,
-                margin: EdgeInsets.all(16),
-                padding: EdgeInsets.only(bottom: 24, top: 8, right: 8, left: 8),
-                // width: MediaQuery.of(context).size.width * 0.70,
-                // height: 200.ph,
-                decoration: AppDecorators.bgRadialGradient(theme).copyWith(
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: theme.accentColor, width: 3),
+        return AlertDialog(
+          backgroundColor: Colors.transparent,
+          contentPadding: EdgeInsets.zero,
+          content: Container(
+            // height: MediaQuery.of(context).size.height * 0.5,
+            // margin: EdgeInsets.all(16),
+            padding: EdgeInsets.only(bottom: 24, top: 8, right: 8, left: 8),
+            decoration: AppDecorators.bgRadialGradient(theme).copyWith(
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: theme.accentColor, width: 3),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                // sep
+                SizedBox(height: 15.ph),
+                Text(
+                  'Set Credits',
+                  style: TextStyle(
+                    fontSize: 16.dp,
+                  ),
                 ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    // sep
-                    SizedBox(height: 15.ph),
-                    Text(
-                      'Set Credits',
-                      style: TextStyle(
-                        fontSize: 16.dp,
-                      ),
-                    ),
-                    SizedBox(height: 15.ph),
-                    CardFormTextField(
-                      controller: creditsController,
-                      theme: theme,
-                      keyboardType: TextInputType.number,
-                      hintText: 'Set credits',
-                      onChanged: (val) {},
-                    ),
-
-                    // sep
-                    SizedBox(height: 15.ph),
-
-                    CardFormTextField(
-                      controller: notesController,
-                      theme: theme,
-                      keyboardType: TextInputType.text,
-                      hintText: 'Enter Notes',
-                      maxLines: 3,
-                      onChanged: (val) {},
-                    ),
-                    // sep
-                    SizedBox(height: 15.ph),
-
-                    /* yes / no button */
-                    Center(
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          /* no button */
-                          RoundRectButton(
-                            onTap: () {
-                              Navigator.pop(
-                                context,
-                                false,
-                              );
-                            },
-                            text: "Close",
-                            theme: theme,
-                          ),
-
-                          /* divider */
-                          SizedBox(width: 10.ph),
-
-                          /* true button */
-                          RoundRectButton(
-                            onTap: () {
-                              credits =
-                                  int.parse(creditsController.text ?? '0');
-                              notes = notesController.text;
-                              Navigator.pop(
-                                context,
-                                true,
-                              );
-                            },
-                            text: "Save",
-                            theme: theme,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+                SizedBox(height: 15.ph),
+                CardFormTextField(
+                  controller: creditsController,
+                  theme: theme,
+                  keyboardType: TextInputType.number,
+                  maxLength: 9,
+                  hintText: 'Set credits',
+                  onChanged: (val) {},
                 ),
-              ),
-            ));
+
+                // sep
+                SizedBox(height: 15.ph),
+
+                CardFormTextField(
+                  controller: notesController,
+                  theme: theme,
+                  keyboardType: TextInputType.text,
+                  hintText: 'Enter Notes',
+                  maxLines: 3,
+                  maxLength: 200,
+                  showCharacterCounter: true,
+                  onChanged: (val) {},
+                ),
+                // sep
+                SizedBox(height: 15.ph),
+
+                /* yes / no button */
+                Center(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      /* no button */
+                      RoundRectButton(
+                        onTap: () {
+                          Navigator.pop(
+                            context,
+                            false,
+                          );
+                        },
+                        text: "Close",
+                        theme: theme,
+                      ),
+
+                      /* divider */
+                      SizedBox(width: 10.ph),
+
+                      /* true button */
+                      RoundRectButton(
+                        onTap: () {
+                          credits = int.parse(creditsController.text ?? '0');
+                          notes = notesController.text;
+                          Navigator.pop(
+                            context,
+                            true,
+                          );
+                        },
+                        text: "Save",
+                        theme: theme,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
       },
     );
     if (ret) {
