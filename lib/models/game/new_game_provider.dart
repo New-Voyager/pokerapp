@@ -115,18 +115,16 @@ class NewGameModelProvider extends ChangeNotifier {
     return "";
   }
 
-  // int get gameLengthInMins => settings.gameLength;
-  // set gameLengthInMins(value) {
-  //   settings.gameLength = value;
-  //   notifyListeners();
-  // }
-  int get gameLengthInHrs => settings.gameLengthInHrs;
-  set gameLengthInHrs(value) {
-    settings.gameLengthInHrs = value;
-    settings.gameLength = value * 60;
-    log('settings.gameLength: ${settings.gameLength}, inHrs: ${settings.gameLengthInHrs}');
+  int get gameLengthInMins => settings.gameLength;
+  set gameLengthInMins(value) {
+    settings.gameLength = value;
     notifyListeners();
   }
+  // set gameLengthInHrs(value) {
+  //   settings.gameLength = value * 60;
+  //   log('settings.gameLength: ${settings.gameLength}, inHrs: ${settings.gameLength / 60}');
+  //   notifyListeners();
+  // }
 
   bool get buyInApproval => settings.buyInApproval ?? false;
   set buyInApproval(value) {
@@ -281,11 +279,15 @@ class NewGameModelProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // TODO: WE NEED THIS IN THE SETTING
-  bool _showPlayerBuyin;
-  get showPlayerBuyin => _showPlayerBuyin ?? false;
+  get allowFunAnimations => settings.allowFunAnimations;
+  set allowFunAnimations(bool value) {
+    settings.allowFunAnimations = value;
+    notifyListeners();
+  }
+
+  get showPlayerBuyin => settings.showPlayerBuyin;
   set showPlayerBuyin(bool value) {
-    _showPlayerBuyin = value;
+    settings.showPlayerBuyin = value;
     notifyListeners();
   }
 
