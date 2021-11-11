@@ -221,14 +221,13 @@ class NewGameModel {
     data['rakeCap'] = this.rakeCap;
 
     // multiple min/max with bigblind
-    data['buyInMin'] = this.buyInMin;
-    data['buyInMax'] = this.buyInMax;
+    data['buyInMin'] = this.buyInMin * this.bigBlind;
+    data['buyInMax'] = this.buyInMax * this.bigBlind;
 
     data['actionTime'] = this.actionTime;
     data['botGame'] = this.botGame;
     data['runItTwiceAllowed'] = this.runItTwice;
     data['muckLosingHand'] = this.muckLosingHand;
-    data['showPlayerBuyin'] = this.showPlayerBuyin;
     data['audioConfEnabled'] = this.audioConference;
     data['allowRabbitHunt'] = this.allowRabbitHunt;
     data['showHandRank'] = this.showHandRank;
@@ -241,9 +240,9 @@ class NewGameModel {
     data['breakAllowed'] = this.breakAllowed ?? true;
     data['showResult'] = this.showResult ?? true;
     data['highHandTracked'] = this.highHandTracked ?? false;
-    data['buyInWaitTime'] = this.buyInWaitTime;
-    data['waitList'] = this.waitList;
-    data['allowFunAnimations'] = this.allowFunAnimations;
+    data['buyInTimeout'] = this.buyInWaitTime;
+    data['waitlistAllowed'] = this.waitList;
+    //data['allowFunAnimations'] = this.allowFunAnimations;
 
     if (this.breakTime == null) {
       data['breakLength'] = 5;

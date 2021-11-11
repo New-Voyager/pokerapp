@@ -16,6 +16,8 @@ class NewGameModelProvider extends ChangeNotifier {
   List<GameType> roeSelectedGames = [];
   List<GameType> dealerSelectedGames = [];
 
+  bool notify = false;
+
   NewGameModelProvider(String clubCode) {
     settings = NewGameModel.withDefault(clubCode);
     settings.clubCode = clubCode;
@@ -234,6 +236,12 @@ class NewGameModelProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void notifyListeners() {
+    if (notify) {
+      super.notifyListeners();
+    }
+  }
+
   set buyInMax(int value) {
     settings.buyInMax = value;
     notifyListeners();
@@ -361,6 +369,6 @@ class NewGameModelProvider extends ChangeNotifier {
   get buyInWaitTime => settings.buyInWaitTime;
   set buyInWaitTime(int value) {
     settings.buyInWaitTime = value;
-    notifyListeners();
+    // notifyListeners();
   }
 }

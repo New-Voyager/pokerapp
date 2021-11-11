@@ -382,6 +382,7 @@ class NewGameSettings2 extends StatelessWidget {
           gmp.blinds = Blinds(bigBlind: savedModel.bigBlind);
           gmp.settings = savedModel;
         }
+        gmp.notify = true;
 
         return Container(
           decoration: AppDecorators.bgRadialGradient(theme),
