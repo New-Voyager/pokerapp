@@ -41,42 +41,54 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
     BoardAttributesObject boardAttributes,
   ) {
     return Builder(builder: (context) {
-      List<Widget> children = [];
+      // List<Widget> children = [];
       final gameState = GameState.getState(context);
       final theme = AppTheme.getTheme(context);
 
-      children.addAll([
-        // // main hole card view
-        Consumer4<StraddlePromptState, HoleCardsState, MyState, MarkedCards>(
-            builder: (_, __, ___, ____, markedCards, _____) {
-          log('Holecard view: rebuild');
-          return _buildHoleCardView(context);
-        }),
-      ]);
+      // children.addAll([
+      //   // // main hole card view
+      //   Consumer4<StraddlePromptState, HoleCardsState, MyState, MarkedCards>(
+      //       builder: (_, __, ___, ____, markedCards, _____) {
+      //     log('Holecard view: rebuild');
+      //     return _buildHoleCardView(context);
+      //   }),
+      // ]);
       Widget rankText;
       rankText = _getRankText(gameState, context);
 
       double scale = boardAttributes.holeCardViewScale;
       final offset = boardAttributes.holeCardViewOffset;
       return Stack(
-        alignment: Alignment.topCenter,
+        alignment: Alignment.center,
         children: [
           gameState.customizationMode
               ? BetIconButton(displayBetText: false)
               : Container(),
-          Align(
-            alignment: Alignment.topCenter,
-            child:
-                rankText, //Text('ABCC', style: AppDecorators.getAccentTextStyle(theme: theme),),
-          ),
-          // hole card view
+
+          // Align(
+          //   alignment: Alignment.topCenter,
+          //   child:
+          //       rankText, //Text('ABCC', style: AppDecorators.getAccentTextStyle(theme: theme),),
+          // ),
+
+          // hole card view & rank Text
           Transform.translate(
             offset: offset,
             child: Transform.scale(
               scale: scale,
-              child: Stack(
-                alignment: Alignment.bottomCenter,
-                children: children,
+              child: Column(
+                children: [
+                  rankText,
+                  Container(
+                    child: Consumer4<StraddlePromptState, HoleCardsState,
+                        MyState, MarkedCards>(
+                      builder: (_, __, ___, ____, markedCards, _____) {
+                        log('Holecard view: rebuild');
+                        return _buildHoleCardView(context);
+                      },
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -118,38 +130,40 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
     final gco = context.read<GameContextObject>();
     final boardAttributes = context.read<BoardAttributesObject>();
 
-    return Stack(
-      children: [
-        Align(
-          alignment: Alignment.topCenter,
-          child: _buildHoleCardViewAndStraddleDialog(
-            gameState,
-            boardAttributes,
+    return SafeArea(
+      child: Stack(
+        children: [
+          Align(
+            alignment: Alignment.topCenter,
+            child: _buildHoleCardViewAndStraddleDialog(
+              gameState,
+              boardAttributes,
+            ),
           ),
-        ),
 
-        /* dark overlay to show in-front of cards, when the bet widget is displayed */
-        _buildDarkBackground(),
+          /* dark overlay to show in-front of cards, when the bet widget is displayed */
+          _buildDarkBackground(),
 
-        // action view (show when it is time for this user to act)
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: Consumer<ActionState>(builder: (context, actionState, __) {
-            if (actionState.show || actionState.showCheckFold) {
-              return _buildFooterActionView(context, gco, actionState);
-            } else {
-              return SizedBox.shrink();
-            }
-          }),
-        ),
-
-        // show post result options
-        Align(
+          // action view (show when it is time for this user to act)
+          Align(
             alignment: Alignment.bottomCenter,
-            child: ResultOptionsWidget(
-                gameState: gameState,
-                isHoleCardsVisibleVn: isHoleCardsVisibleVn)),
-      ],
+            child: Consumer<ActionState>(builder: (context, actionState, __) {
+              if (actionState.show || actionState.showCheckFold) {
+                return _buildFooterActionView(context, gco, actionState);
+              } else {
+                return SizedBox.shrink();
+              }
+            }),
+          ),
+
+          // show post result options
+          Align(
+              alignment: Alignment.bottomCenter,
+              child: ResultOptionsWidget(
+                  gameState: gameState,
+                  isHoleCardsVisibleVn: isHoleCardsVisibleVn)),
+        ],
+      ),
     );
   }
 

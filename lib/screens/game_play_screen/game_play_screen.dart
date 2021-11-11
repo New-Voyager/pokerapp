@@ -17,6 +17,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/host_seat_chang
 import 'package:pokerapp/models/game_play_models/provider_models/marked_cards.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
+import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/ios_board_attributes.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
 import 'package:pokerapp/models/player_info.dart';
@@ -665,19 +666,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     _appScreenText = getAppTextScreen("gameScreen");
   }
 
-  // void initPlayingTimer() {
-  //   // diamonds timer, which invokes every 30 seconds
-  //   // but adds diamonds ONLY after the duration of AppConstants.diamondUpdateDuration
-  //   _timer = Timer.periodic(const Duration(seconds: 30), (_) {
-  //     PlayerModel me;
-  //     try {
-  //       me = _gameState.me;
-  //     } catch (e) {}
-
-  //     if (me != null) _gameState.gameHiveStore.addDiamonds();
-  //   });
-  // }
-
   void reload() {
     close();
     init();
@@ -833,89 +821,87 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         headerView = HeaderView(gameState: _gameState);
       }
 
-      children.addAll([
-        //_buildAudioWidget(),
+      children.addAll(
+        [
+          //_buildAudioWidget(),
 
-        // header view
-        headerView,
+          // header view
+          headerView,
 
-        // this widget, shows which winner is currently showing - high winner / low winner
-        // this widget also acts as a natural seperator between header and board view
-        // WhichWinnerWidget(seperator: divider1),
+          // this widget, shows which winner is currently showing - high winner / low winner
+          // this widget also acts as a natural seperator between header and board view
+          // WhichWinnerWidget(seperator: divider1),
 
-        // main board view
-        Stack(children: [
-          this.widget.showTop ? BackgroundView() : Container(),
-          this.widget.showTop && _gameState.customizationMode
-              ? Positioned(
-                  top: 10.ph,
-                  left: width - 50.pw,
-                  child: CircleImageButton(
-                    onTap: () async {
-                      await Navigator.of(context)
-                          .pushNamed(Routes.select_table);
-                      await _gameState.assets.initialize();
-                      final redrawTop = _gameState.redrawBoardSectionState;
-                      redrawTop.notify();
-                      setState(() {});
-                    },
-                    theme: theme,
-                    icon: Icons.edit,
-                  ),
-                )
-              : Container(),
-          Positioned(
-              top: 35.ph, child: _buildBoardView(boardDimensions, tableScale)),
-        ]),
+          // main board view
+          Stack(
+            // alignment: Alignment.center,
+            children: [
+              this.widget.showTop ? BackgroundView() : Container(),
+              this.widget.showTop && _gameState.customizationMode
+                  ? Positioned(
+                      top: 10.ph,
+                      left: width - 50.pw,
+                      child: CircleImageButton(
+                        onTap: () async {
+                          await Navigator.of(context)
+                              .pushNamed(Routes.select_table);
+                          await _gameState.assets.initialize();
+                          final redrawTop = _gameState.redrawBoardSectionState;
+                          redrawTop.notify();
+                          setState(() {});
+                        },
+                        theme: theme,
+                        icon: Icons.edit,
+                      ),
+                    )
+                  : Container(),
 
-        /* divider that divides the board view and the footer */
-        //Divider(color: AppColorsNew.dividerColor, thickness: 3),
-      ]);
+              // board view
+              Positioned(
+                top: MediaQuery.of(context).size.height *
+                    boardAttributes.boardViewPositionScale,
+                child: _buildBoardView(
+                  boardDimensions,
+                  tableScale,
+                ),
+              ),
+            ],
+          ),
+
+          /* divider that divides the board view and the footer */
+          //Divider(color: AppColorsNew.dividerColor, thickness: 3),
+        ],
+      );
     }
 
-    if (this.widget.showBottom) {
-      children.addAll([
-        // footer section
-        Consumer<RedrawFooterSectionState>(builder: (_, ___, __) {
-          log('RedrawFooter: building footer view');
-          return FooterViewWidget(
-            gameCode: widget.gameCode,
-            gameContextObject: _gameContextObj,
-            currentPlayer: _gameContextObj.gameState.currentPlayer,
-            gameInfo: _gameInfoModel,
-            toggleChatVisibility: _toggleChatVisibility,
-          );
-        }),
-      ]);
-    }
     return Stack(
-      alignment: Alignment.topCenter,
+      alignment: Alignment.center,
       children: [
-        // this.widget.showTop ? BackgroundView() : Container(),
-        //Transform.translate(offset: Offset(0, 10.ph), child: BackgroundView()),
-        // this.widget.showTop && _gameState.customizationMode
-        //     ? Positioned(
-        //         top: 50.ph,
-        //         left: width - 50.pw,
-        //         child: CircleImageButton(
-        //           onTap: () async {
-        //             await Navigator.of(context).pushNamed(Routes.select_table);
-        //             await _gameState.assets.initialize();
-        //             final redrawTop = _gameState.redrawBoardSectionState;
-        //             redrawTop.notify();
-        //             setState(() {});
-        //           },
-        //           theme: theme,
-        //           icon: Icons.edit,
-        //         ),
-        //       )
-        //     : Container(),
-
         /* main view */
         Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: children,
         ),
+
+        // footer view
+        this.widget.showBottom
+            ? Align(
+                alignment: Alignment.bottomCenter,
+                child: Consumer<RedrawFooterSectionState>(
+                  builder: (_, ___, __) {
+                    log('RedrawFooter: building footer view');
+                    return FooterViewWidget(
+                      gameCode: widget.gameCode,
+                      gameContextObject: _gameContextObj,
+                      currentPlayer: _gameContextObj.gameState.currentPlayer,
+                      gameInfo: _gameInfoModel,
+                      toggleChatVisibility: _toggleChatVisibility,
+                    );
+                  },
+                ),
+              )
+            : const SizedBox.shrink(),
+
         this.widget.showTop &&
                 !_gameState.customizationMode &&
                 _gameState.currentPlayer.isAdmin()
@@ -966,9 +952,16 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     if (_gameInfoModel == null) return Center(child: CircularProgressWidget());
 
     /* get the screen sizes, and initialize the board attributes */
-    BoardAttributesObject boardAttributes = BoardAttributesObject(
-      screenSize: Screen.diagonalInches,
-    );
+    BoardAttributesObject boardAttributes;
+    if (Platform.isIOS) {
+      boardAttributes = IosBoardAttributesObject(
+        screenSize: Screen.diagonalInches,
+      );
+    } else {
+      boardAttributes = BoardAttributesObject(
+        screenSize: Screen.diagonalInches,
+      );
+    }
 
     final providers = GamePlayScreenUtilMethods.getProviders(
       context: context,

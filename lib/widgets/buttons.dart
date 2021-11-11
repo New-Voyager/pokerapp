@@ -376,11 +376,12 @@ class ConfirmYesButton extends StatelessWidget {
           color: theme.confirmYesButtonBackgroundColor,
         ),
         child: Center(
-            child: Icon(
-          Icons.check,
-          color: theme.confirmYesButtonIconColor,
-          size: 20,
-        )),
+          child: Icon(
+            Icons.check,
+            color: theme.confirmYesButtonIconColor,
+            size: 20,
+          ),
+        ),
       ),
     );
   }
@@ -415,11 +416,12 @@ class ConfirmNoButton extends StatelessWidget {
           color: theme.confirmNoButtonBackgroundColor,
         ),
         child: Center(
-            child: Icon(
-          Icons.close,
-          color: theme.confirmNoButtonIconColor,
-          size: 20,
-        )),
+          child: Icon(
+            Icons.close,
+            color: theme.confirmNoButtonIconColor,
+            size: 20,
+          ),
+        ),
       ),
     );
   }

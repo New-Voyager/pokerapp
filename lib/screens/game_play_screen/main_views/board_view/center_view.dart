@@ -279,7 +279,9 @@ class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
   }
 
   Widget _buildMainCenterView(
-      final context, final BoardAttributesObject boardAttributes) {
+    final context,
+    final BoardAttributesObject boardAttributes,
+  ) {
     //log('potViewPos: building main center view');
 
     /**
@@ -341,20 +343,18 @@ class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
                   final tableState = gameState.tableState;
                   log('CommunityCards: cards: ${tableState.cards} cardsOther: ${tableState.cardsOther} twoboards: ${tableState.twoBoardsNeeded}');
 
-                  // TODO: transform using Matrix to give perspective illusion
-                  //
-                  Widget communityCards = Transform(
-                      transform: Matrix4.identity()
-                        ..setEntry(3, 2, 0.005)
-                        ..rotateX(-30 * pi / 180),
-                      alignment: FractionalOffset.center,
-                      child: CommunityCardsView(
-                        cards: tableState.cards,
-                        cardsOther: tableState.cardsOther,
-                        twoBoardsNeeded: tableState.twoBoardsNeeded,
-                        horizontal: true,
-                      ));
-                  return communityCards;
+                  return Transform(
+                    transform: Matrix4.identity()
+                      ..setEntry(3, 2, 0.005)
+                      ..rotateX(-30 * pi / 180),
+                    alignment: FractionalOffset.center,
+                    child: CommunityCardsView(
+                      cards: tableState.cards,
+                      cardsOther: tableState.cardsOther,
+                      twoBoardsNeeded: tableState.twoBoardsNeeded,
+                      horizontal: true,
+                    ),
+                  );
                 },
               );
             },

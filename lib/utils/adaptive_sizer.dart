@@ -5,11 +5,11 @@ const double mockupHeight = 812.0;
 double textScaleFactor = 1.5;
 
 extension PercentWidth on double {
-  double get pw => ((this / mockupWidth) * 100).w;
+  double get pw => this; // ((this / mockupWidth) * 100).w;
 }
 
 extension PercentHeight on double {
-  double get ph => ((this / mockupHeight) * 100).h;
+  double get ph => this; // ((this / mockupHeight) * 100).h;
 }
 
 extension PercentWidthOnInt on int {
