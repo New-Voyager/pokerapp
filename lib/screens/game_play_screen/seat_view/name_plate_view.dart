@@ -337,44 +337,6 @@ class NamePlateWidget extends StatelessWidget {
 
     // log('SeatView: Nameplate build ${seat.serverSeatPos}:L${seat.localSeatPos} pos: ${seat.seatPos.toString()} player: ${seat.player?.name} highlight: ${seat.player?.highlight}');
 
-    //Widget plateWidget;
-    if (seat.player?.highlight ?? false) {
-      int current = seat.actionTimer.getRemainingTime();
-      int total = seat.actionTimer.getTotalTime();
-      plateWidget = CountdownMs(
-          totalSeconds: total,
-          currentSeconds: total - seat.actionTimer.getRemainingTime(),
-          build: (_, time) {
-            double value = (time / (total * 1000));
-            double percent = 1 - value;
-            seat.actionTimer.setRemainingTime(time ~/ 1000);
-            Animation<Color> color =
-                AlwaysStoppedAnimation<Color>(Colors.green);
-            if (percent >= 0.75) {
-              color = AlwaysStoppedAnimation<Color>(Colors.red);
-            } else if (percent >= 0.50) {
-              color = AlwaysStoppedAnimation<Color>(Colors.yellow);
-            }
-            Widget ret = Column(children: [
-              Transform.rotate(
-                  angle: -math.pi,
-                  child: LinearProgressIndicator(
-                    minHeight: 5,
-                    value: value,
-                    backgroundColor: Colors.transparent,
-                    valueColor: color,
-                  )),
-              namePlate,
-            ]);
-            return ret;
-          });
-    } else {
-      plateWidget = Column(children: [
-        SizedBox(height: 5),
-        namePlate,
-      ]);
-    }
-
     plateWidget = namePlate;
     Widget ret = Opacity(
         opacity: childWhenDragging ? 0.50 : 1.0,

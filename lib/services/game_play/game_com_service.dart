@@ -122,9 +122,9 @@ class GameComService {
     this._nats.clientPub.pubString(this.playerToHandChannel, data);
   }
 
-  void sendProtoPlayerToHandChannel(Uint8List data) {
+  bool sendProtoPlayerToHandChannel(Uint8List data) {
     assert(active);
-    this._nats.clientPub.pub(this.playerToHandChannel, data);
+    return this._nats.clientPub.pub(this.playerToHandChannel, data);
   }
 
   void _close() {
