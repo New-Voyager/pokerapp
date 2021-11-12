@@ -81,13 +81,14 @@ class DisplayCardsWidget extends StatelessWidget {
       }
     }
     return Transform.translate(
-        offset: offset,
-        child: Transform.scale(
-          scale: scale,
-          child: StackCardView(
-            cards: _getCards(cards),
-          ),
-        ));
+      offset: offset,
+      child: Transform.scale(
+        scale: scale,
+        child: StackCardView(
+          cards: _getCards(cards),
+        ),
+      ),
+    );
   }
 
   @override

@@ -258,11 +258,13 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
     Seat seat,
     HandState handState,
   ) {
-    if (handState != HandState.RESULT) {
-      return SizedBox(width: 0, height: 0);
-    }
-    if (seat.player != null && !seat.player.inhand) {
-      return SizedBox(width: 0, height: 0);
+    if (seat?.player?.playerUuid != '') {
+      if (handState != HandState.RESULT) {
+        return const SizedBox.shrink();
+      }
+      if (seat.player != null && !seat.player.inhand) {
+        return const SizedBox.shrink();
+      }
     }
 
     return Transform.translate(
@@ -439,14 +441,16 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
               //SvgPicture.string(namePlateStr, width: 60, height: 50),
               // // main user body
               Opacity(
-                  opacity: opacity,
-                  child: Transform.scale(
-                      scale: scale,
-                      child: NamePlateWidget(
-                        widget.seat,
-                        globalKey: key,
-                        boardAttributes: boardAttributes,
-                      ))),
+                opacity: opacity,
+                child: Transform.scale(
+                  scale: scale,
+                  child: NamePlateWidget(
+                    widget.seat,
+                    globalKey: key,
+                    boardAttributes: boardAttributes,
+                  ),
+                ),
+              ),
 
               // result cards shown in player view at the time of result
               _buildDisplayCardsWidget(widget.seat, gameState.handState),
