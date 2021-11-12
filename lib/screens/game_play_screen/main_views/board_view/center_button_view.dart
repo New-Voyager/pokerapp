@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:pokerapp/models/app_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
@@ -36,6 +37,13 @@ class CenterButtonView extends StatelessWidget {
     final gameState = GameState.getState(context);
     log('Termininating game ${gameState.gameCode}');
     await GameService.endGame(gameState.gameCode);
+    if (gameState.uiClosing) {
+      return;
+    }
+    final appState = Provider.of<AppState>(context, listen: false);
+    if (appState != null) {
+      Provider.of<AppState>(context, listen: false).setGameEnded(true);
+    }
     if (!gameState.isGameRunning) {
       gameState.refresh();
     }
@@ -70,7 +78,7 @@ class CenterButtonView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    log('Center: Center buttons build');
+    // log('Center: Center buttons build');
     _appScreenText = getAppTextScreen("centerButtonView");
 
     final seatChange = Provider.of<SeatChangeNotifier>(context, listen: false);
@@ -268,7 +276,7 @@ class CenterButtonView extends StatelessWidget {
                   width: 48.pw,
                 ),
                 onTap: () {
-                  log('Center: Starting the game ${gameState.gameCode}');
+                  // log('Center: Starting the game ${gameState.gameCode}');
                   this.onStartGame();
                 },
                 text: _appScreenText['start'],

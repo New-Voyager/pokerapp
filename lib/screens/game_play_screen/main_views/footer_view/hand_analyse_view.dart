@@ -80,7 +80,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
     if (TestService.isTesting || widget.gameState.customizationMode) {
       return;
     }
-    log('refinements: _pollPendingApprovals is invoked');
+    // log('refinements: _pollPendingApprovals is invoked');
     //log('0-0-0-0- Polling for pending approvals');
     final approvals = await PlayerService.getPendingApprovals();
 

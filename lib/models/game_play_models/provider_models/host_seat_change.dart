@@ -100,7 +100,7 @@ class SeatChangeNotifier extends ChangeNotifier {
   }
 
   onSeatDragStart(Seat seat) {
-    log('SeatChange: Drag started');
+    // log('SeatChange: Drag started');
     allSeatChangeStatus[seat.localSeatPos].isDragging = true;
     for (int i = 0; i < allSeatChangeStatus.length; i++) {
       if (i != seat.localSeatPos) {
@@ -111,7 +111,7 @@ class SeatChangeNotifier extends ChangeNotifier {
   }
 
   onSeatDragEnd(DraggableDetails details) {
-    log('SeatChange: Player Drag ended details: ${details.toString()}');
+    log(' Player Drag ended details: ${details.toString()}');
     for (int i = 0; i < allSeatChangeStatus.length; i++) {
       allSeatChangeStatus[i].isDropAble = false;
       allSeatChangeStatus[i].isDragging = false;

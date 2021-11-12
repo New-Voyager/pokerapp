@@ -67,7 +67,6 @@ class NewGameModel {
   int minPlayers = 2;
   int maxPlayers = 9;
   int gameLength = 60;
-  int gameLengthInHrs = 1;
   bool buyInApproval = false;
   double rakePercentage = 0;
   double rakeCap = 0;
@@ -81,8 +80,10 @@ class NewGameModel {
   bool waitList = true;
   bool botGame = true;
   bool highHandTracked = false;
+  int buyInWaitTime;
   Rewards rewards;
   bool muckLosingHand = false;
+  bool showPlayerBuyin = false;
   bool audioConference = false;
   bool allowRabbitHunt = true;
   bool showHandRank = false;
@@ -91,6 +92,8 @@ class NewGameModel {
   bool showResult = true;
   bool showCheckFold = true;
   int breakTime = 5;
+  bool allowFunAnimations = true;
+
   /*
     bombPotEnabled: Boolean
     bombPotBet: Int
@@ -105,8 +108,6 @@ class NewGameModel {
 
   List<GameType> roeGames = [];
   List<GameType> dealerChoiceGames = [];
-
-  int buyInWaitTime;
 
   NewGameModel({
     this.clubCode,
@@ -132,6 +133,7 @@ class NewGameModel {
     this.waitList,
     this.botGame,
     this.muckLosingHand,
+    this.showPlayerBuyin,
     this.roeGames,
     this.dealerChoiceGames,
     this.allowRabbitHunt,
@@ -146,6 +148,8 @@ class NewGameModel {
     this.breakTime,
     this.showResult,
     this.highHandTracked,
+    this.buyInWaitTime,
+    this.allowFunAnimations,
   });
 
   NewGameModel.withDefault(String clubCode) {
@@ -167,11 +171,12 @@ class NewGameModel {
     buyInApproval = json['buyInApproval'];
     rakePercentage = json['rakePercentage'];
     rakeCap = json['rakeCap'];
-    buyInMin = json['buyInMin'];
-    buyInMax = json['buyInMax'];
+    buyInMin = json['buyInMin'].toInt();
+    buyInMax = json['buyInMax'].toInt();
     actionTime = json['actionTime'];
     botGame = json['botGame'];
     muckLosingHand = json['muckLosingHand'];
+    showPlayerBuyin = json['showPlayerBuyin'];
     runItTwice = json['runItTwiceAllowed'];
     roeGames = json['roeGames'];
     dealerChoiceGames = json['dealerChoiceGames'];
@@ -188,10 +193,13 @@ class NewGameModel {
     breakAllowed = json['breakAllowed'] ?? true;
     ipCheck = json['ipCheck'] ?? false;
     locationCheck = json['gpsCheck'] ?? false;
+    waitList = json['waitList'] ?? false;
     buttonStraddle = json['buttonStraddleAllowed'] ?? false;
     buttonStraddleBet = json['buttonStraddleBet'] ?? 2;
     showResult = json['showResult'] ?? true;
     highHandTracked = json['highHandTracked'] ?? false;
+    buyInWaitTime = json['buyInWaitTime'] ?? 60;
+    allowFunAnimations = json['allowFunAnimations'] ?? true;
   }
 
   Map<String, dynamic> toJson() {
@@ -232,6 +240,9 @@ class NewGameModel {
     data['breakAllowed'] = this.breakAllowed ?? true;
     data['showResult'] = this.showResult ?? true;
     data['highHandTracked'] = this.highHandTracked ?? false;
+    data['buyInTimeout'] = this.buyInWaitTime;
+    data['waitlistAllowed'] = this.waitList;
+    //data['allowFunAnimations'] = this.allowFunAnimations;
 
     if (this.breakTime == null) {
       data['breakLength'] = 5;

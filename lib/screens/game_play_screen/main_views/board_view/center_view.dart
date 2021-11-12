@@ -95,7 +95,7 @@ class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
     GameState gameState,
     Offset centerViewButtonOffset,
   ) {
-    log('Center: center_view _buildGamePauseOptions');
+    // log('Center: center_view _buildGamePauseOptions');
     return Transform.translate(
       offset: centerViewButtonOffset,
       child: Consumer2<SeatChangeNotifier, TableState>(
@@ -105,7 +105,7 @@ class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
           vnGameStatus,
           vnTableStatus,
           builder: (_, gameStatus, tableStatus, __) {
-            log('Center: Rebuilding center view: Is game running: ${gameState.isGameRunning}');
+            // log('Center: Rebuilding center view: Is game running: ${gameState.isGameRunning}');
             return CenterButtonView(
               isHost: this.widget.isHost,
               onStartGame: this.widget.onStartGame,
@@ -192,7 +192,7 @@ class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
     @required final BoardAttributesObject boardAttributes,
   }) {
     final gameState = GameState.getState(context);
-    log('Center: CenterView _mainBuild status: ${gameState.gameInfo.status}');
+    // log('Center: CenterView _mainBuild status: ${gameState.gameInfo.status}');
     //log('potViewPos: before game ended.');
     if (gameState.gameInfo.status == AppConstants.GAME_ENDED)
       return centerTextWidget(
@@ -249,7 +249,7 @@ class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     final gameState = GameState.getState(context);
     final boardAttributes = gameState.getBoardAttributes(context);
-    log('Center: CenterView build');
+    // log('Center: CenterView build');
 
     return ValueListenableBuilder3<String, String, bool>(
         vnGameStatus, vnTableStatus, vnShowCardShuffling,
@@ -298,7 +298,7 @@ class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
       transparent: true,
     );
     boardAttributes.potKey = potKey;
-    log('ChipAmountWidget: buildMainCenterView. potKey: ${boardAttributes.potKey}');
+    // log('ChipAmountWidget: buildMainCenterView. potKey: ${boardAttributes.potKey}');
 
     Widget multiplePots = _buildMultiplePots(boardAttributes);
 
@@ -341,7 +341,7 @@ class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
                 builder: (_, cards, cardsOther, twoBoardsNeeded, __) {
                   final gameState = GameState.getState(context);
                   final tableState = gameState.tableState;
-                  log('CommunityCards: cards: ${tableState.cards} cardsOther: ${tableState.cardsOther} twoboards: ${tableState.twoBoardsNeeded}');
+                  // log('CommunityCards: cards: ${tableState.cards} cardsOther: ${tableState.cardsOther} twoboards: ${tableState.twoBoardsNeeded}');
 
                   return Transform(
                     transform: Matrix4.identity()

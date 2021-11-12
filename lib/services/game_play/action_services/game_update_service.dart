@@ -1012,7 +1012,7 @@ class GameUpdateService {
     final hostSeatChange =
         Provider.of<SeatChangeNotifier>(_context, listen: false);
     var seatMoves = data['seatMoves'];
-    log('SeatChange: seatmoves: ${jsonEncode(data)}');
+    // log('SeatChange: seatmoves: ${jsonEncode(data)}');
     bool movedToOpenSeat = false;
     for (var move in seatMoves) {
       if (move['openSeat'] ?? false) {
@@ -1336,7 +1336,7 @@ class GameUpdateService {
     final oldSeatNo = data['oldSeatNo'];
     final newSeatNo = data['newSeatNo'];
 
-    log('SeatChange: player name: $playerName id: $playerId oldSeatNo: $oldSeatNo newSeatNo: $newSeatNo');
+    // log('SeatChange: player name: $playerName id: $playerId oldSeatNo: $oldSeatNo newSeatNo: $newSeatNo');
 
     final hostSeatChange =
         Provider.of<SeatChangeNotifier>(_context, listen: false);

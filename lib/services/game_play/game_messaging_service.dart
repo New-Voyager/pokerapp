@@ -286,7 +286,7 @@ class GameMessagingService {
       'sent': DateTime.now().toUtc().toIso8601String(),
       'text': currentHandNum,
     });
-    log('GameScreen: $body');
+    // log('GameScreen: $body');
     this.nats.clientPub.pubString(this.chatChannel, body);
   }
 
@@ -381,7 +381,7 @@ class ChatMessage {
       } else if (msg.type == 'ANIMATION') {
         msg.animationID = message['animation'];
       } else if (msg.type == 'CARDS') {
-        log('RevealCards: ${data}');
+        // log('RevealCards: ${data}');
         msg.text = message['text'].toString();
         msg.seatNo = message['seatNo'] == null
             ? -1

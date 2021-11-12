@@ -46,7 +46,6 @@ class StatusOptionsWidget extends StatelessWidget {
     } else {
       final buttonCountdownSpace = 10.ph;
       final countDownFontSize = 14;
-      log('StatusOptions: myState ${mySeat.player.status} missedBlind: ${mySeat.player.missedBlind} postedBlind: ${mySeat.player.postedBlind}');
       if (mySeat.player != null) {
         if (mySeat.player.status == AppConstants.WAIT_FOR_BUYIN ||
             mySeat.player.status == AppConstants.WAIT_FOR_BUYIN_APPROVAL) {

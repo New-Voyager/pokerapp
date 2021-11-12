@@ -28,9 +28,6 @@ class CreateClubDialog {
         final theme = AppTheme.getTheme(context);
         return AlertDialog(
           backgroundColor: Colors.transparent,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
           contentPadding: EdgeInsets.zero,
           content: Container(
               height: MediaQuery.of(context).size.height * 0.61,
@@ -140,6 +137,7 @@ class CreateClubDialog {
                                     : null,
                                 maxLines: 5,
                                 maxLength: 500,
+                                showCharacterCounter: true,
                                 onSaved: (String val) =>
                                     clubDetails['description'] = val.trim(),
                               ),

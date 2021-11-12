@@ -57,7 +57,7 @@ class NotificationHandler {
   AndroidNotificationDetails _androidDetails;
   IOSNotificationDetails _iosDetails;
   NotificationDetails _notificationDetails;
-  FGBGType _currentAppState;
+  FGBGType _currentAppState = FGBGType.foreground;
   bool initialized = false;
   ClubsUpdateState clubUpdateState;
   AppTextScreen notificationTexts;
@@ -70,6 +70,7 @@ class NotificationHandler {
   }
 
   void register(ClubsUpdateState clubUpdateState) async {
+    _currentAppState = FGBGType.foreground;
     this.notificationTexts = getAppTextScreen("notifications");
     this.clubUpdateState = clubUpdateState;
     // Get the token each time the application loads
@@ -90,7 +91,9 @@ class NotificationHandler {
   void playerNotifications(String message) {
     log('playerNotifications: $message');
     // if app is in background, return
-    if (_currentAppState == FGBGType.background) return;
+    if (_currentAppState != null) {
+      if (_currentAppState == FGBGType.background) return;
+    }
 
     dynamic json = jsonDecode(message);
     handlePlayerMessage(json, background: false, firebase: false);
@@ -302,6 +305,8 @@ class NotificationHandler {
         handleTestMessage(json);
       } else if (type == 'APPCOIN_NEEDED') {
         handleAppCoinNeeded(json);
+      } else if (type == 'BUYIN_REQUEST') {
+        handleBuyinRequest(json);
       }
     }
   }
@@ -440,6 +445,19 @@ class NotificationHandler {
         'Not enough coins to continue game: $gameCode. Game will end in $endMins mins. Please buy more coins to keep the game running.';
     showErrorDialog(navigatorKey.currentContext, 'Coins', message, info: true);
   }
+
+  // handle messages when app is running foreground
+  Future<void> handleBuyinRequest(Map<String, dynamic> json) async {
+    String gameCode = json['gameCode'].toString();
+    String playerName = json['playerName'];
+    double amount = double.parse(json['amount'].toString());
+    // toggle pending approvals
+    Alerts.showNotification(
+      titleText: 'Buyin Request',
+      subTitleText: 'Game: $gameCode Player $playerName is requesting $amount.',
+      duration: Duration(seconds: 5)
+    );
+  }  
 }
 
 NotificationHandler notificationHandler = NotificationHandler();

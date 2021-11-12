@@ -874,6 +874,8 @@ class GameService {
       "gameInput": input.toJson(),
     };
 
+    log(jsonEncode(variables));
+
     try {
       QueryResult result = await _client.mutate(
         MutationOptions(document: gql(_query), variables: variables),

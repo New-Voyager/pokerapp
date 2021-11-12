@@ -135,10 +135,8 @@ class _FooterViewState extends State<FooterView>
     return Consumer<MyState>(
         builder: (BuildContext _, MyState myState, Widget __) {
       final me = gameState.mySeat;
-      log('Customize: _buildMainView');
 
       bool showOptionsButtons = false;
-      log('StatusOptions: My state is changed. ');
       if (me != null && me.player != null) {
         if (me.player.inBreak) {
           //log('footerview: building status option widget: IN BREAK');
@@ -150,14 +148,12 @@ class _FooterViewState extends State<FooterView>
           showOptionsButtons = true;
         }
       } else {
-        log('StatusOptions:gameState.gameInfo.waitlistAllowed: ${gameState.gameInfo.waitlistAllowed}');
         if (gameState.gameInfo.waitlistAllowed) {
           // observer
           showOptionsButtons = true;
         }
       }
       if (showOptionsButtons) {
-        log('StatusOptions: building status option widget');
         return StatusOptionsWidget(gameState: gameState);
       }
 
@@ -298,8 +294,6 @@ class _FooterViewState extends State<FooterView>
     final RenderBox renderBox = context.findRenderObject();
     final pos = renderBox.localToGlobal(Offset.zero);
     final size = renderBox.size;
-
-    log('Footer view size: $size pos: $pos');
 
     final boardAttr = context.read<BoardAttributesObject>();
     boardAttr.setFooterDimensions(pos, size);

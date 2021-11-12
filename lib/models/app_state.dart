@@ -4,6 +4,9 @@ import 'club_model.dart';
 
 class AppState extends ChangeNotifier {
   int currentIndex = 0;
+  bool newGame = false;
+  bool gameEnded = false;
+
   List<ClubModel> myClubs = [];
   setIndex(int index) {
     currentIndex = index;
@@ -17,5 +20,15 @@ class AppState extends ChangeNotifier {
       }
     }
     return false;
+  }
+
+  setNewGame(bool value) {
+    newGame = value;
+    notifyListeners();
+  }
+
+  setGameEnded(bool value) {
+    gameEnded = value;
+    notifyListeners();
   }
 }

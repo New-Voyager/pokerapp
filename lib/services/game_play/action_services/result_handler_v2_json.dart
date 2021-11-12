@@ -53,7 +53,7 @@ class ResultHandlerV2Json {
   });
 
   Future<void> show() async {
-    log('Result: pauseTimeInMs: ${handResult.pauseTimeInMs}');
+    // log('Result: pauseTimeInMs: ${handResult.pauseTimeInMs}');
 
     if (gameState.mySeat != null) {
       gameState.showAction(false);

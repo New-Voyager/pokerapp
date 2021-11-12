@@ -261,7 +261,6 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
     if (handState != HandState.RESULT) {
       return SizedBox(width: 0, height: 0);
     }
-    log('HiLo: Status: seat: ${seat.player.name} inhand: ${seat.player.inhand}');
     if (seat.player != null && !seat.player.inhand) {
       return SizedBox(width: 0, height: 0);
     }
@@ -283,7 +282,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final theme = AppTheme.getTheme(context);
-    log('RedrawTop: PlayerView build ${widget.seat.serverSeatPos}:L${widget.seat.localSeatPos} pos: ${widget.seat.seatPos.toString()} player: ${widget.seat.player?.name}');
+    // log('RedrawTop: PlayerView build ${widget.seat.serverSeatPos}:L${widget.seat.localSeatPos} pos: ${widget.seat.seatPos.toString()} player: ${widget.seat.player?.name}');
     // widget.seat.key = GlobalKey(
     //   debugLabel: 'Seat:${widget.seat.serverSeatPos}',
     // ); //this.globalKey;
@@ -294,7 +293,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
     final gameState = GameState.getState(context);
     bool openSeat = widget.seat.isOpen;
     bool isMe = widget.seat.isMe;
-    log('SeatView1: seat: ${widget.seat.serverSeatPos} isOpen: ${openSeat} player: ${widget.seat.player}');
+    // log('SeatView: seat: ${widget.seat.serverSeatPos} isOpen: ${openSeat} player: ${widget.seat.player}');
     bool showdown = widget.gameState.showdown;
 
     // if open seat, just show open seat widget
@@ -382,18 +381,18 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
     }
     return DragTarget(
       onWillAccept: (data) {
-        log("SeatChange: Player onWillAccept $data");
+        // log("SeatChange: Player onWillAccept $data");
         widget.seat.dragEntered = true;
         setState(() {});
         return true;
       },
       onLeave: (data) {
-        log("SeatChange: Player onLeave $data");
+        // log("SeatChange: Player onLeave $data");
         widget.seat.dragEntered = false;
         setState(() {});
       },
       onAccept: (data) {
-        log('SeatChange: onDropped ${data}');
+        // log('SeatChange: onDropped ${data}');
         widget.seat.dragEntered = false;
         setState(() {});
         // call the API to make the seat change

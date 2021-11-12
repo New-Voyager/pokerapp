@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_type.dart';
+import 'package:pokerapp/models/app_state.dart';
 import 'package:pokerapp/models/game/new_game_model.dart';
 import 'package:pokerapp/models/game/new_game_provider.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
@@ -76,6 +77,7 @@ class NewGameSettings2 extends StatelessWidget {
       } else {
         gameCode = await GameService.configurePlayerGame(gm);
       }
+      Provider.of<AppState>(context, listen: false).setNewGame(true);
       ConnectionDialog.dismiss(context: context);
     } catch (err) {
       ConnectionDialog.dismiss(context: context);
@@ -365,21 +367,22 @@ class NewGameSettings2 extends StatelessWidget {
       builder: (BuildContext context, _) {
         final NewGameModelProvider gmp = context.read<NewGameModelProvider>();
 
-        // // Load default values if it is not from Saved Settings.
-        // if (savedModel == null) {
-        //   // Initializing values
-        //   // Initial value for BigBlind
-        //   gmp.blinds.bigBlind = 2.0;
-        //   // Initial value for Buyin Min and max
-        //   gmp.buyInMin = 30;
-        //   gmp.buyInMax = 100;
-        //   gmp.rakePercentage = 0;
-        //   gmp.rakeCap = 0;
-        //   gmp.buyInWaitTime = 120;
-        // } else {
-        //   gmp.blinds = Blinds(bigBlind: savedModel.bigBlind);
-        //   gmp.settings = savedModel;
-        // }
+        // Load default values if it is not from Saved Settings.
+        if (savedModel == null) {
+          // Initializing values
+          // Initial value for BigBlind
+          gmp.blinds.bigBlind = 2.0;
+          // Initial value for Buyin Min and max
+          gmp.buyInMin = 30;
+          gmp.buyInMax = 100;
+          gmp.rakePercentage = 0;
+          gmp.rakeCap = 0;
+          gmp.buyInWaitTime = 120;
+        } else {
+          gmp.blinds = Blinds(bigBlind: savedModel.bigBlind);
+          gmp.settings = savedModel;
+        }
+        gmp.notify = true;
 
         return Container(
           decoration: AppDecorators.bgRadialGradient(theme),
@@ -631,10 +634,10 @@ class NewGameSettings2 extends StatelessWidget {
                 _buildLabel(_appScreenText['gameTime'], theme),
                 sepV8,
                 RadioListWidget(
-                  defaultValue: gmp.gameLengthInHrs,
+                  defaultValue: gmp.gameLengthInMins ~/ 60,
                   values: NewGameConstants.GAME_LENGTH,
                   onSelect: (int value) {
-                    gmp.gameLengthInHrs = value;
+                    gmp.gameLengthInMins = value * 60;
                   },
                 ),
 
@@ -761,19 +764,23 @@ class NewGameSettings2 extends StatelessWidget {
                           theme: theme,
                         ),
 
-                        /* allow run it twice */
+                        /* allow fun animations */
                         _buildRadio(
                           label: _appScreenText['allowFunAnimation'],
                           theme: theme,
-                          value: true,
-                          onChange: (bool b) {},
+                          value: gmp.allowFunAnimations,
+                          onChange: (bool b) {
+                            gmp.allowFunAnimations = b;
+                          },
                         ),
 
                         /* allow run it twice */
                         _buildRadio(
                           label: _appScreenText['muckLosingHand'],
-                          value: false,
-                          onChange: (bool b) {},
+                          value: gmp.muckLosingHand,
+                          onChange: (bool b) {
+                            gmp.muckLosingHand = b;
+                          },
                           theme: theme,
                         ),
 

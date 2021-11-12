@@ -35,7 +35,7 @@ class PlayerCardsWidget extends StatelessWidget {
     if (this.noCards == 5) shiftMultiplier = 1.7;
     if (this.noCards == 4) shiftMultiplier = 1.45;
     if (this.noCards == 3) shiftMultiplier = 1.25;
-    log('PlayerCardsWidget: building ${seat.serverSeatPos}');
+    // log('PlayerCardsWidget: building ${seat.serverSeatPos}');
     double xOffset;
     if (showdown)
       xOffset = (alignment == Alignment.centerLeft ? 1 : -1) *
@@ -49,7 +49,7 @@ class PlayerCardsWidget extends StatelessWidget {
     if (showdown) {
       return const SizedBox.shrink();
     } else if (seat.folded ?? false) {
-      log('PlayerCardsWidget: [${seat.serverSeatPos}] Folded cards');
+      // log('PlayerCardsWidget: [${seat.serverSeatPos}] Folded cards');
       return Transform.translate(
         offset: Offset(
           xOffset * 0.30,
@@ -69,7 +69,7 @@ class PlayerCardsWidget extends StatelessWidget {
         xoffset = 0.75;
       }
       //log('Hole cards');
-      log('PlayerCardsWidget: [${seat.serverSeatPos}] Hidden cards');
+      // log('PlayerCardsWidget: [${seat.serverSeatPos}] Hidden cards');
       Widget plateHoleCards = Transform.translate(
         offset: Offset(
           xOffset * xoffset,
