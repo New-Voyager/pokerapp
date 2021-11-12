@@ -32,6 +32,7 @@ class PlayerActionHandler {
   GameState _gameState;
   LivenessSender _livenessSender;
   HandActionProtoService _handActionProtoService;
+  PlayActionTimer _actionTimer;
 
   PlayerActionHandler(this._context, this._gameState, this._livenessSender,
       this._handActionProtoService);
@@ -39,6 +40,9 @@ class PlayerActionHandler {
   void close() {
     if (_livenessSender != null) {
       _livenessSender.stop();
+    }
+    if (_actionTimer != null) {
+      _actionTimer.stop();
     }
   }
 
@@ -318,6 +322,16 @@ class PlayerActionHandler {
     }
   }
 
+  Function actionFunc(
+      ACTION actionType, int playerId, int seatNo, int handNum, int amount) {
+    void f() {
+      _handActionProtoService.playerActed(playerId, _gameState.handInfo.handNum,
+          seatNo, actionType.toString(), amount);
+    }
+
+    return f;
+  }
+
   Future<void> handleYourAction(proto.HandMessageItem message) async {
     if (_gameState.uiClosing) return;
     try {
@@ -334,6 +348,27 @@ class PlayerActionHandler {
       log('YourAction: raiseAmount: ${seatAction.raiseAmount} seatInSoFar: ${seatAction.seatInSoFar}');
       /* play an sound effect alerting the user */
       AudioService.playYourAction(mute: _gameState.playerLocalConfig.mute);
+
+      // start timer
+      if (_actionTimer == null) {
+        _actionTimer = PlayActionTimer();
+      }
+
+      bool checkAvailable = false;
+      for (final action in seatAction.availableActions) {
+        if (action == ACTION.CHECK) {
+          checkAvailable = true;
+        }
+      }
+      ACTION defaultAction = ACTION.FOLD;
+      if (checkAvailable) {
+        defaultAction = ACTION.CHECK;
+      }
+
+      _actionTimer.start(
+          _gameState.gameInfo.actionTime * 1000,
+          actionFunc(defaultAction, me.playerId, me.seatNo,
+              _gameState.handInfo.handNum, 0));
 
       // Notify server we are alive while in action
       _livenessSender.start();
@@ -437,6 +472,11 @@ class PlayerActionHandler {
     int seatNo = playerActed.seatNo;
     log('HandMessage: ${message.playerActed.seatNo} action: ${message.playerActed.action.name}');
 
+    // stop the timer if running
+    if (_actionTimer != null) {
+      _actionTimer.stop();
+    }
+
     //log('Hand Message: ::handlePlayerActed:: START seatNo: $seatNo');
 
     if (_gameState.uiClosing) return;
@@ -494,5 +534,50 @@ class PlayerActionHandler {
         .updatePotChipUpdatesSilent(playerActed.potUpdates.toInt());
     _gameState.tableState.notifyAll();
     //log('Hand Message: ::handlePlayerActed:: END');
+  }
+}
+
+class PlayActionTimer {
+  Timer _timer;
+  int _timeoutMilli;
+  int _elapsedMilli;
+  int _intervalMilli = 500;
+  Function _onFinished;
+
+  void close() {
+    if (_timer != null) {
+      _timer.cancel();
+      _timer = null;
+    }
+  }
+
+  void start(int timeoutMilli, Function onFinished) {
+    _timeoutMilli = timeoutMilli;
+    _onFinished = onFinished;
+    _elapsedMilli = 0;
+    log('ActionTimer: Start action timer');
+    // start a timer
+    _timer = Timer.periodic(Duration(milliseconds: _intervalMilli), (timer) {
+      this.tick();
+    });
+  }
+
+  void stop() {
+    log('ActionTimer: Stopped action timer');
+    if (_timer != null) {
+      _timer.cancel();
+      _timer = null;
+    }
+  }
+
+  void tick() {
+    log('ActionTimer: Waiting for action...');
+    _elapsedMilli += _intervalMilli;
+    if (_elapsedMilli > _timeoutMilli) {
+      _timer.cancel();
+      if (_onFinished != null) {
+        _onFinished();
+      }
+    }
   }
 }
