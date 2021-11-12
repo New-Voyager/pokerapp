@@ -258,7 +258,10 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
     Seat seat,
     HandState handState,
   ) {
-    if (seat?.player?.playerUuid != '') {
+    final bool isReplayHandsActor = seat?.player?.playerUuid == '';
+
+    // the following rules dont apply to the replay hands actor
+    if (!isReplayHandsActor) {
       if (handState != HandState.RESULT) {
         return const SizedBox.shrink();
       }
@@ -274,8 +277,9 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
         height: widget.boardAttributes.namePlateSize.height,
         width: widget.boardAttributes.namePlateSize.width,
         child: DisplayCardsWidget(
-          seat,
-          widget.gameState.showdown,
+          isReplayHandsActor: isReplayHandsActor,
+          seat: seat,
+          showdown: widget.gameState.showdown,
         ),
       ),
     );
