@@ -35,11 +35,6 @@ class NetworkChangeListener {
     await context.read<Nats>().reconnect();
   }
 
-  Future<void> _requestExtraActionTime() async {
-    final BuildContext context = navigatorKey.currentState.overlay.context;
-    await context.read<HandActionProtoService>().extendTimerOnReconnect();
-  }
-
   // if there is no internet connection, this function keeps waiting
   // and on internet availability, this function completes
   Future<void> _checkForInternetConnection() async {
@@ -80,9 +75,6 @@ class NetworkChangeListener {
     // if here - means we have internet
     // re establish connection to NATS
     await _rerestablishNats();
-
-    // if you are on the timer, request for additional time
-    await _requestExtraActionTime();
 
     // after nats connection reestablishes
     // as state changed (some states in a screen may need to refresh), add event to stream so that listeners can respond

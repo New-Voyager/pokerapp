@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/services/audio/audio_service.dart';
 import 'package:pokerapp/services/connectivity_check/liveness_sender.dart';
+import 'package:pokerapp/services/connectivity_check/network_change_listener.dart';
 import 'package:provider/provider.dart';
 
 import 'package:pokerapp/enums/game_type.dart';
@@ -35,7 +36,11 @@ class PlayerActionHandler {
   PlayActionTimer _actionTimer;
 
   PlayerActionHandler(this._context, this._gameState, this._livenessSender,
-      this._handActionProtoService);
+      this._handActionProtoService) {
+    this._context.read<NetworkChangeListener>().onConnectivityChange.listen(
+          (_) => extendTimerOnReconnect(),
+        );
+  }
 
   void close() {
     if (_livenessSender != null) {
@@ -249,6 +254,7 @@ class PlayerActionHandler {
       proto.HandMessageItem yourAction = proto.HandMessageItem();
       yourAction.seatAction = currentHandState.nextSeatAction;
       handleYourAction(yourAction);
+      _actionTimer.reset(remainingActionTime * 1000);
     }
     _gameState.notifyAllSeats();
     _gameState.myState.notify();
@@ -349,11 +355,6 @@ class PlayerActionHandler {
       /* play an sound effect alerting the user */
       AudioService.playYourAction(mute: _gameState.playerLocalConfig.mute);
 
-      // start timer
-      if (_actionTimer == null) {
-        _actionTimer = PlayActionTimer();
-      }
-
       bool checkAvailable = false;
       for (final action in seatAction.availableActions) {
         if (action == ACTION.CHECK) {
@@ -365,6 +366,11 @@ class PlayerActionHandler {
         defaultAction = ACTION.CHECK;
       }
 
+      // start timer
+      if (_actionTimer == null) {
+        log('Creating new action timer');
+        _actionTimer = PlayActionTimer();
+      }
       _actionTimer.start(
           _gameState.gameInfo.actionTime * 1000,
           actionFunc(defaultAction, me.playerId, me.seatNo,
@@ -535,13 +541,24 @@ class PlayerActionHandler {
     _gameState.tableState.notifyAll();
     //log('Hand Message: ::handlePlayerActed:: END');
   }
+
+  void extendTimerOnReconnect() {
+    log('extendTimerOnReconnect action_handler');
+    if (_actionTimer != null && _gameState?.me != null) {
+      int remaining = _actionTimer.remaining();
+      log('extendTimerOnReconnect remaining: $remaining');
+      if (_gameState.me.highlight && remaining <= 10000) {
+        _handActionProtoService.extendTimerOnReconnect();
+      }
+    }
+  }
 }
 
 class PlayActionTimer {
   Timer _timer;
-  int _timeoutMilli;
-  int _elapsedMilli;
-  int _intervalMilli = 500;
+  int _timeout;
+  int _elapsed;
+  int _interval = 500;
   Function _onFinished;
 
   void close() {
@@ -552,32 +569,48 @@ class PlayActionTimer {
   }
 
   void start(int timeoutMilli, Function onFinished) {
-    _timeoutMilli = timeoutMilli;
+    stop();
+    _timeout = timeoutMilli;
     _onFinished = onFinished;
-    _elapsedMilli = 0;
+    _elapsed = 0;
     log('ActionTimer: Start action timer');
     // start a timer
-    _timer = Timer.periodic(Duration(milliseconds: _intervalMilli), (timer) {
+    _timer = Timer.periodic(Duration(milliseconds: _interval), (timer) {
       this.tick();
     });
   }
 
+  void reset(int timeoutMilli) {
+    log('ActionTimer: reset $timeoutMilli');
+    _timeout = timeoutMilli;
+    _elapsed = 0;
+  }
+
   void stop() {
-    log('ActionTimer: Stopped action timer');
     if (_timer != null) {
+      log('ActionTimer: Stopping action timer');
       _timer.cancel();
       _timer = null;
     }
   }
 
   void tick() {
-    log('ActionTimer: Waiting for action...');
-    _elapsedMilli += _intervalMilli;
-    if (_elapsedMilli > _timeoutMilli) {
-      _timer.cancel();
+    _elapsed += _interval;
+    // log('$_elapsed/$_timeout');
+    if (_elapsed > _timeout) {
       if (_onFinished != null) {
         _onFinished();
       }
+      _elapsed = 0;
+      stop();
     }
+  }
+
+  int remaining() {
+    int remaining = _timeout - _elapsed;
+    if (remaining > 0) {
+      return remaining;
+    }
+    return 0;
   }
 }
