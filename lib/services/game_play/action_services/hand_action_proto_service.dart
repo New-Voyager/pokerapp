@@ -1,6 +1,9 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 import 'dart:typed_data';
+import 'package:connectivity/connectivity.dart';
 import 'package:fixnum/fixnum.dart' as $fixnum;
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_type.dart';
@@ -19,6 +22,7 @@ import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/audio/audio_service.dart';
 import 'package:pokerapp/services/connectivity_check/liveness_sender.dart';
+import 'package:pokerapp/services/connectivity_check/network_change_listener.dart';
 import 'package:pokerapp/services/encryption/encryption_service.dart';
 import 'package:pokerapp/services/game_play/action_services/action_handler.dart';
 import 'package:pokerapp/services/game_play/action_services/newhand_handler.dart';
@@ -283,6 +287,47 @@ class HandActionProtoService {
         messages: [messageItem]);
     final binMessage = handMessage.writeToBuffer();
     this._gameComService.sendProtoPlayerToHandChannel(binMessage);
+  }
+
+  extendTimerOnReconnect() async {
+    log('Requesting to extend action timer on network connectivity');
+    if (_gameState?.gameInfo?.tableStatus != AppConstants.GAME_RUNNING) {
+      log('extendTimerOnReconnect 1');
+      return;
+    }
+
+    log('extendTimerOnReconnect 2');
+    for (int i = 0; i < 5; i++) {
+      try {
+        final messageItem = proto.HandMessageItem(
+          messageType: 'EXTEND_ACTION_TIMER',
+          extendTimer:
+              proto.ExtendTimer(seatNo: _gameState.me.seatNo, extendBySec: 15),
+        );
+        int msgId = MessageId.incrementAndGet(_gameState.gameCode);
+        String messageId = msgId.toString();
+        int playerID = _gameState.currentPlayerId;
+        final handMessage = proto.HandMessage(
+            gameCode: _gameState.gameCode,
+            messageId: messageId,
+            playerId: $fixnum.Int64.parseInt(playerID.toString()),
+            messages: [messageItem]);
+        final binMessage = handMessage.writeToBuffer();
+        log('extendTimerOnReconnect 3');
+        bool res =
+            this._gameComService.sendProtoPlayerToHandChannel(binMessage);
+        log('extendTimerOnReconnect 3.1');
+        if (!res) {
+          log('extendTimerOnReconnect 4');
+          await Future.delayed(Duration(seconds: 1));
+          continue;
+        }
+        break;
+      } catch (e) {
+        log('extendTimerOnReconnect 5.$i $e');
+        await Future.delayed(Duration(seconds: 1));
+      }
+    }
   }
 
   queryCurrentHand() {
