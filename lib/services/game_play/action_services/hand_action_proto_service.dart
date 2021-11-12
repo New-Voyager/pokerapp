@@ -285,6 +285,25 @@ class HandActionProtoService {
     this._gameComService.sendProtoPlayerToHandChannel(binMessage);
   }
 
+  extendTimerOnReconnect() {
+    final messageItem = proto.HandMessageItem(
+      messageType: 'EXTEND_ACTION_TIMER',
+      extendTimer:
+          proto.ExtendTimer(seatNo: _gameState.me.seatNo, extendBySec: 15),
+    );
+    int msgId = MessageId.incrementAndGet(_gameState.gameCode);
+    String messageId = msgId.toString();
+    int playerID = _gameState.currentPlayerId;
+    final handMessage = proto.HandMessage(
+        gameCode: _gameState.gameCode,
+        messageId: messageId,
+        handNum: _gameState.currentHandNum,
+        playerId: $fixnum.Int64.parseInt(playerID.toString()),
+        messages: [messageItem]);
+    final binMessage = handMessage.writeToBuffer();
+    this._gameComService.sendProtoPlayerToHandChannel(binMessage);
+  }
+
   queryCurrentHand() {
     int msgId = MessageId.incrementAndGet(_gameState.gameCode);
     String messageId = msgId.toString();
