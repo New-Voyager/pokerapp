@@ -108,7 +108,7 @@ class _OpenSeatState extends State<OpenSeat> {
   @override
   Widget build(BuildContext context) {
     final gameState = GameState.getState(context);
-    log('SeatChange: OpenSeat build  ${widget.seat.serverSeatPos} ${widget.seatChangeInProgress} hostSeatChange: ${gameState.hostSeatChangeInProgress}');
+    // log('SeatChange: OpenSeat build  ${widget.seat.serverSeatPos} ${widget.seatChangeInProgress} hostSeatChange: ${gameState.hostSeatChangeInProgress}');
 
     final theme = AppTheme.getTheme(context);
 
@@ -126,17 +126,17 @@ class _OpenSeatState extends State<OpenSeat> {
         shadow = seatChangeShadow;
       }
       return DragTarget(onLeave: (data) {
-        log('SeatChange: OpenSeat onLeave ${data}');
+        // log('SeatChange: OpenSeat onLeave ${data}');
         dragEnter = false;
         setState(() {});
         return true;
       }, onWillAccept: (data) {
-        log('SeatChange: OpenSeat onWillAccept ${data}');
+        // log('SeatChange: OpenSeat onWillAccept ${data}');
         dragEnter = true;
         setState(() {});
         return true;
       }, onAccept: (data) {
-        log('SeatChange: OpenSeat onDropped ${data}');
+        // log('SeatChange: OpenSeat onDropped ${data}');
         // call the API to make the seat change
         SeatChangeService.hostSeatChangeMove(
           gameState.gameCode,
@@ -144,7 +144,6 @@ class _OpenSeatState extends State<OpenSeat> {
           widget.seat.serverSeatPos,
         );
       }, builder: (context, List<int> candidateData, rejectedData) {
-        log('RedrawFooter: Open seat');
         return openSeatWidget(theme, shadow, scn.seatChangeInProgress);
       });
     });

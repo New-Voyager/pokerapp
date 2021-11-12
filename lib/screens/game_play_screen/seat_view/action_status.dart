@@ -36,12 +36,16 @@ class ActionStatusWidget extends StatelessWidget {
       actionStr = action.toString().replaceAll('HandActions.', '');
     }
 
+    bool allin = seat.player.action.action == HandActions.ALLIN;
+
     if (seat.player.inBreak) {
       actionStr = "In Break";
+      allin = false;
     }
 
     if (action == HandActions.POST_BLIND) {
       actionStr = 'Blind';
+      allin = false;
     }
 
     if (action == HandActions.BOMB_POT_BET) {
@@ -63,7 +67,7 @@ class ActionStatusWidget extends StatelessWidget {
                   style: getStatusTextStyle(actionStr),
                 ),
                 Visibility(
-                  visible: seat.player.action.action == HandActions.ALLIN,
+                  visible: allin,
                   child: Container(
                     width: 20,
                     height: 20,

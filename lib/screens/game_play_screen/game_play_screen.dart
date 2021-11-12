@@ -432,7 +432,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
     /* collect the cards needs to be revealed */
     List<CardObject> _cardsToBeRevealed = markedCards.getCards();
-    log('RevealCards: Trying to sending marked cards ${_cardsToBeRevealed}');
+    // log('RevealCards: Trying to sending marked cards ${_cardsToBeRevealed}');
     List<int> cardNumbers = [];
     for (final c in _cardsToBeRevealed) {
       cardNumbers.add(c.cardNum);
@@ -441,9 +441,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     if (cardNumbers.length == 0) {
       return;
     }
-    log('RevealCards: cards sent ${cardNumbers}');
+    // log('RevealCards: cards sent ${cardNumbers}');
     markedCards.cardsSent(cardNumbers);
-    log('GameScreen: Sending cards');
+    // log('GameScreen: Sending cards');
 
     /* clear all the marked cards */
     // FIXME: markedCards.clear();
@@ -467,7 +467,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     }
 
     _gameState.handChangeState.addListener(() {
-      log('GameScreen: Hand State: ${_gameState.handState.toString()}');
       if (_gameState.handState == HandState.RESULT) {
         // send the marked cards for the first time
         _sendMarkedCards(context);
@@ -745,7 +744,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       );
 
   Widget _buildBoardView(Size boardDimensions, double tableScale) {
-    log('RedrawTop: Rebuilding board view');
+    // log('RedrawTop: Rebuilding board view');
     return Container(
       // key: UniqueKey(),
       width: boardDimensions.width,
@@ -889,7 +888,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
                 alignment: Alignment.bottomCenter,
                 child: Consumer<RedrawFooterSectionState>(
                   builder: (_, ___, __) {
-                    log('RedrawFooter: building footer view');
+                    // log('RedrawFooter: building footer view');
                     return FooterViewWidget(
                       gameCode: widget.gameCode,
                       gameContextObject: _gameContextObj,
@@ -1425,7 +1424,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     if (TestService.isTesting || _gameState.customizationMode) {
       return;
     }
-    log('refinements: _pollPendingApprovals is invoked');
+    // log('refinements: _pollPendingApprovals is invoked');
     //log('0-0-0-0- Polling for pending approvals');
     final approvals = await PlayerService.getPendingApprovals();
 

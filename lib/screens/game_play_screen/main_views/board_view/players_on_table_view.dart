@@ -368,7 +368,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
                       final seat = widget.gameState.getSeat(seatChangerPlayer);
                       String playerName = seat.player?.name;
                       int playerSeat = seat.player?.seatNo;
-                      log('SeatChange: data: Animation seat: ${seat.serverSeatPos}, ${playerName}/$playerSeat');
+                      // log('SeatChange: data: Animation seat: ${seat.serverSeatPos}, ${playerName}/$playerSeat');
                       return NamePlateWidget(
                         seat,
                         globalKey: null,
@@ -395,7 +395,6 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
       me = widget.gameState.me;
     }
 
-    log('PlayersOnTable: getPlayers');
     final maxPlayers = gameState.gameInfo?.maxPlayers ?? 9;
     index = -1;
     // update seat states in game state
@@ -415,7 +414,6 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
         }
       }
     }
-    log('PlayersOnTable: getPlayers serverSeatNo: $serverSeatNo');
 
     List<Widget> seats = [];
     for (int localSeat = 1;

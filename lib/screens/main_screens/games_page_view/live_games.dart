@@ -314,8 +314,6 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
 
   void _handleGameRefresh(InstaRefreshService irs) {
     if (!mounted) return;
-    // final InstaRefreshService irs = context.read<InstaRefreshService>();
-    log('pauldebug: _handleGameRefresh is being called: ${irs.needToRefreshLiveGames}');
 
     // for live games
     if (irs.needToRefreshLiveGames) {

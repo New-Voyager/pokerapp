@@ -44,7 +44,7 @@ class PlayerActionHandler {
 
   Future<void> handleQueryCurrentHand(proto.HandMessageItem message) async {
     final currentHandState = message.currentHandState;
-    log('Current hand state: $currentHandState');
+    // log('Current hand state: $currentHandState');
     if (_gameState.uiClosing) return;
 
     // current players cards
@@ -253,7 +253,7 @@ class PlayerActionHandler {
 
   Future<void> handleNextAction(proto.HandMessageItem message) async {
     // Audio.stop(context: context); fixme: this also does not play when we need to notify the user of his/her turn
-    log('NextAction: handle next action handState: ${_gameState.handState.toString()}'); // reset result in progress flag
+    // log('NextAction: handle next action handState: ${_gameState.handState.toString()}'); // reset result in progress flag
     try {
       // stop game audio
       // AudioService.stopSound();
@@ -290,7 +290,7 @@ class PlayerActionHandler {
       player.highlight = true;
 
       if (_gameState.uiClosing) return;
-      log('SeatView: Next action ${seat.serverSeatPos}:L${seat.localSeatPos} pos: ${seat.seatPos.toString()} player: ${seat.player?.name} highlight: ${seat.player.highlight}');
+      // log('SeatView: Next action ${seat.serverSeatPos}:L${seat.localSeatPos} pos: ${seat.seatPos.toString()} player: ${seat.player?.name} highlight: ${seat.player.highlight}');
       seat.setActionTimer(_gameState.gameInfo.actionTime);
       seat.notify();
 
@@ -435,7 +435,6 @@ class PlayerActionHandler {
   Future<void> handlePlayerActed(proto.HandMessageItem message) async {
     final playerActed = message.playerActed;
     int seatNo = playerActed.seatNo;
-    log('HandMessage: ${message.playerActed.seatNo} action: ${message.playerActed.action.name}');
 
     //log('Hand Message: ::handlePlayerActed:: START seatNo: $seatNo');
 
@@ -483,7 +482,7 @@ class PlayerActionHandler {
     if (stack != null) {
       seat.player.stack = stack;
     }
-    log('NEW_HAND: handlePlayerActed player: ${seat.player.name} stack ${seat.player.stack}');
+    // log('NEW_HAND: handlePlayerActed player: ${seat.player.name} stack ${seat.player.stack}');
 
     if (_gameState.uiClosing) return;
     // before showing the prompt --> turn off the highlight on other players

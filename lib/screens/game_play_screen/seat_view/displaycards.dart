@@ -22,7 +22,7 @@ class DisplayCardsWidget extends StatelessWidget {
       }
     }
     List<int> highlightedCards = seat.player.highlightCards;
-    log('RevealCards: name: ${seat.player.name} reveal: ${seat.player.revealCards}');
+    // log('RevealCards: name: ${seat.player.name} reveal: ${seat.player.revealCards}');
     //log('HiLo: name: ${seat.player.name} highlightedCards: ${highlightedCards} muck: ${seat.player.muckLosingHand} folded: ${seat.folded} seat.player.isActive: ${seat.player.isActive} reveal: ${seat.player.revealCards}');
 
     List<CardObject> cardObjects = [];
@@ -58,7 +58,6 @@ class DisplayCardsWidget extends StatelessWidget {
       }
       cardObjects.add(card);
     }
-    log('Reveal Cards Seat: ${seat.player.seatNo} card objects: $cardObjects');
 
     return cardObjects;
   }

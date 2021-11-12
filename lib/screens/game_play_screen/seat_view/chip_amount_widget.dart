@@ -43,7 +43,7 @@ class _ChipAmountWidgetState extends State<ChipAmountWidget>
     with AfterLayoutMixin<ChipAmountWidget> {
   @override
   Widget build(BuildContext context) {
-    log('ChipAmountWidget: Rebuilding ChipAmountWidget seat ${widget.seat.seatPos.toString()} position: ${widget.seat.potViewPos}');
+    // log('ChipAmountWidget: Rebuilding ChipAmountWidget seat ${widget.seat.seatPos.toString()} position: ${widget.seat.potViewPos}');
 
     bool showBet = false;
     Offset offset = Offset.zero;
@@ -197,11 +197,11 @@ class _ChipAmountWidgetState extends State<ChipAmountWidget>
 
   @override
   void afterFirstLayout(BuildContext context) {
-    log('111 ChipAmountWidget: Rebuilding ChipAmountWidget seat ${widget.seat.seatPos.toString()} position: ${widget.seat.potViewPos}');
+    // log('111 ChipAmountWidget: Rebuilding ChipAmountWidget seat ${widget.seat.seatPos.toString()} position: ${widget.seat.potViewPos}');
 
     calculatePotViewPos(context);
     if (widget.recalculatingNeeded.value || widget.seat.potViewPos == null) {
-      log('222 ChipAmountWidget: Rebuilding ChipAmountWidget seat ${widget.seat.seatPos.toString()} position: ${widget.seat.potViewPos}');
+      // log('222 ChipAmountWidget: Rebuilding ChipAmountWidget seat ${widget.seat.seatPos.toString()} position: ${widget.seat.potViewPos}');
       // widget.recalculatingNeeded.value = false;
 
       Future.delayed(const Duration(seconds: 2)).then((_) {

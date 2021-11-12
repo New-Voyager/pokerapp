@@ -100,10 +100,9 @@ class NewHandHandler {
 
     // update player's state and stack
     final playersInSeats = newHand.playersInSeats;
-    log('NEW_HAND: Hand num: ${newHand.handNum} button: ${newHand.buttonPos} sbPos: ${newHand.sbPos} bbPos: ${newHand.bbPos} sb: ${newHand.smallBlind} bb: ${newHand.bigBlind} bombPot: ${newHand.bombPot}');
+    // log('NEW_HAND: Hand num: ${newHand.handNum} button: ${newHand.buttonPos} sbPos: ${newHand.sbPos} bbPos: ${newHand.bbPos} sb: ${newHand.smallBlind} bb: ${newHand.bigBlind} bombPot: ${newHand.bombPot}');
     for (final seatNo in playersInSeats.keys) {
       final playerInSeat = playersInSeats[seatNo];
-      log('NEW_HAND: Player: ${playerInSeat.name} seatNo: $seatNo status: ${playerInSeat.status} missedBlind: ${playerInSeat.missedBlind} postedBlind: ${playerInSeat.postedBlind} inhand: ${playerInSeat.inhand} stack: ${playerInSeat.stack} breakTime: ${playerInSeat.breakExpTime}');
     }
     int retryCount = 0;
     bool newPlayerInTable = false;
@@ -139,7 +138,6 @@ class NewHandHandler {
         }
         playerObj.seatNo = seatNo;
         playerObj.stack = playerInSeat.stack.toInt();
-        log('NEW_HAND: updatePlayers player ${playerObj.name} stack: ${playerObj.stack}');
         playerObj.status = playerInSeat.status.name;
         playerObj.inhand = playerInSeat.inhand;
         playerObj.missedBlind = playerInSeat.missedBlind;
