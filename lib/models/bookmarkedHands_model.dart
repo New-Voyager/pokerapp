@@ -66,7 +66,7 @@ class BookmarkedHand {
           : SharedToClubModel.fromJson(json["sharedTo"]),
       gameCode: json["gameCode"],
       handNum: json["handNum"],
-      handlogData: HandResultData.fromJson(json["data"]),
+      handlogData: HandResultData.fromJson(jsonDecode(json["data"])),
       updatedAt: DateTime.parse(json["updatedAt"]),
     );
   }
