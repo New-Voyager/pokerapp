@@ -580,11 +580,11 @@ class GameUpdateService {
     final seat = gameState.getSeat(seatNo);
     log('Buyin is denied');
     if (closed || _gameState.uiClosing) return;
-    gameState.removePlayer(seatNo);
     bool isMe = false;
     if (seat.player.isMe) {
       isMe = true;
     }
+    gameState.removePlayer(seatNo);
     seat.player = null;
     seat.notify();
 
