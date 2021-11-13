@@ -488,6 +488,13 @@ class GameUpdateService {
     assert(_gameInfoModel != null);
 
     if (seat != null && seat.player != null) {
+      // Wait until hand is finished (result animation is completed)
+      // before showing the buy-in option.
+      int waited = 0, interval = 500, maxWait = 10000;
+      while (_gameState.handInProgress && waited <= maxWait) {
+        await Future.delayed(Duration(milliseconds: interval));
+        waited += interval;
+      }
       seat.player.waitForBuyInApproval = true;
       seat.player.status = PlayerStatus.WAIT_FOR_BUYIN
           .toString()
