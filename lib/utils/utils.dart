@@ -25,6 +25,10 @@ class Screen {
     return diagonalSize.toInt();
   }
 
+  static double get screenSizeInches {
+    return double.parse(Screen.diagonalInches.toStringAsPrecision(2));
+  }
+
   // bool isLandscape() =>
   //     MediaQuery.of(this.c).orientation == Orientation.landscape;
   //PIXELS
