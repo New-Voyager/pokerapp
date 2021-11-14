@@ -132,7 +132,92 @@ class AndroidAttribs {
       {
         "model": "motog",
         "screenSize": "411.4, 890.3",
-        "size": 6.5
+        "size": 6.5,
+        "board": {
+            "centerViewScale": 1.0,
+            "centerOffset": "15, 130",
+            "centerPotScale": 0.90,
+            "centerPotUpdatesScale": 0.80,
+            "centerRankScale": 0.80,
+            "boardScale": 0.90,
+            "tableScale": 1.30
+          }        
+      }
+    ''';
+    Map<String, dynamic> overrideMap = jsonDecode(override);
+    updateMap(defaultValue, overrideMap);
+    return defaultValue;
+  }
+
+  static Map<String, dynamic> getPixelXl() {
+    final defaultValue = getDefault();
+    String override = '''
+      {
+        "model": "pixel-xl",
+        "screenSize": "411.4, 683.4",
+        "size": 5.5,
+        "board": {
+          "centerViewScale": 0.85,
+          "centerOffset": "15, 100",
+          "centerPotScale": 0.90,
+          "centerPotUpdatesScale": 0.90,
+          "centerRankScale": 0.80,
+          "boardScale": 0.90,
+          "tableScale": 1.10,
+          "seatMap": {
+            "bottomCenter": "0, 80",
+            "bottomLeft": "15, 70",
+            "bottomRight": "-15, 70",
+            "middleLeft": "15, 70",
+            "middleRight": "-15, 70",
+            "topLeft": "15, 75",
+            "topRight": "-15, 75",
+            "topCenter": "0, 60",
+            "topCenter1": "-45, 60",
+            "topCenter2": "45, 60"
+          },
+          "betAmountFac": {
+            "bottomCenter": "0, -0.80",
+            "topCenter": "0.20, 0.70",
+            "middleLeft": "0.20, 0.75",
+            "middleRight": "0.0, 0.75",
+            "topRight": "-0.10, 0.70",
+            "topLeft": "0.30, 0.65",
+            "bottomLeft": "0.70, -0.85",
+            "bottomRight": "-0.60, -0.85",
+            "topCenter1": "0.20, 0.80",
+            "topCenter2": "-0.20, 0.80"
+          }          
+        },
+        "betImageScale": 2.5,
+        "footerActionScale": 0.90,
+        "footerViewHeightScale": 0.40,
+        "holeCardViewScale": 0.80,
+        "holeCardViewOffset": "0, 0",
+        "holeCardScale": {
+          "2": 1.45,
+          "4": 1.35,
+          "5": 1.15,
+          "default": 1
+        },
+        "holeCardDisplacement": {
+          "2": 35,
+          "4": 35,
+          "5": 35,
+          "default": 20
+        },
+        "holeCardDisplacementVisible": {
+          "2": 30,
+          "4": 25,
+          "5": 25,
+          "default": 20
+        },        
+
+        "seat": {
+          "scale": 0.90,
+          "holeCardOffset": "0, 0",
+          "holeCardScale": 1.0
+        }
       }
     ''';
     Map<String, dynamic> overrideMap = jsonDecode(override);

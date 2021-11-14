@@ -743,14 +743,14 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         },
       );
 
-  Widget _buildBoardView(Size boardDimensions, double tableScale) {
+  Widget _buildBoardView(Size boardDimensions, double boardScale) {
     // log('RedrawTop: Rebuilding board view');
     return Container(
       // key: UniqueKey(),
       width: boardDimensions.width,
       height: boardDimensions.height,
       child: Transform.scale(
-        scale: tableScale,
+        scale: boardScale,
         child: BoardView(
           gameComService: _gameContextObj?.gameComService,
           gameInfo: _gameInfoModel,
@@ -790,7 +790,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     bool isBoardHorizontal = true;
     final boardDimensions = BoardView.dimensions(context, isBoardHorizontal);
 
-    double tableScale = boardAttributes.boardScale;
+    double boardScale = boardAttributes.boardScale;
     double divider1 =
         boardAttributes.tableDividerHeightScale * dividerTotalHeight;
     final theme = AppTheme.getTheme(context);
@@ -862,7 +862,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
                 top: 0, //Screen.height / 2,
                 child: _buildBoardView(
                   boardDimensions,
-                  tableScale,
+                  boardScale,
                 ),
               ),
             ],

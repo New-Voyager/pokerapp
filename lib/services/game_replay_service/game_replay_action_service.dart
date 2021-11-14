@@ -158,6 +158,7 @@ class GameReplayActionService {
     if (_close) return;
 
     final GameState gameState = GameState.getState(_context);
+    gameState.showdown = true;
     gameState.resetSeatActions();
     for (final player in gameState.playersInGame) {
       player.winner = false;

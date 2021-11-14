@@ -438,21 +438,19 @@ class _FooterActionViewState extends State<FooterActionView> {
 
     if (closeButton) {
       actionButtons = [];
-      actionButtons.add(
-        Align(
+      actionButtons.add(Align(
           alignment: Alignment.bottomRight,
-          child:
-        CircleImageButton(
-        theme: theme,
-        icon: Icons.close,
-        onTap: () {
-          setState(() {
-            _showOptions = !_showOptions;
-            betWidgetShown = false;
-            widget.isBetWidgetVisible?.call(_showOptions);
-          });
-        },
-      )));
+          child: CircleImageButton(
+            theme: theme,
+            icon: Icons.close,
+            onTap: () {
+              setState(() {
+                _showOptions = !_showOptions;
+                betWidgetShown = false;
+                widget.isBetWidgetVisible?.call(_showOptions);
+              });
+            },
+          )));
     }
     return Stack(
       clipBehavior: Clip.none,
