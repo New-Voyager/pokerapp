@@ -8,6 +8,7 @@
 import 'dart:core' as $core;
 import 'dart:convert' as $convert;
 import 'dart:typed_data' as $typed_data;
+
 @$core.Deprecated('Use playerStatusDescriptor instead')
 const PlayerStatus$json = const {
   '1': 'PlayerStatus',
@@ -34,7 +35,8 @@ const PlayerStatus$json = const {
 };
 
 /// Descriptor for `PlayerStatus`. Decode as a `google.protobuf.EnumDescriptorProto`.
-final $typed_data.Uint8List playerStatusDescriptor = $convert.base64Decode('CgxQbGF5ZXJTdGF0dXMSGQoVUExBWUVSX1VOS05PV05fU1RBVFVTEAASDwoLTk9UX1BMQVlJTkcQARILCgdQTEFZSU5HEAISDAoISU5fUVVFVUUQAxIMCghJTl9CUkVBSxAEEg8KC1NUQU5ESU5HX1VQEAUSCAoETEVGVBAGEg4KCktJQ0tFRF9PVVQQBxILCgdCTE9DS0VEEAgSEwoPTE9TVF9DT05ORUNUSU9OEAkSEgoOV0FJVF9GT1JfQlVZSU4QChIQCgxMRUFWSU5HX0dBTUUQCxIQCgxUQUtJTkdfQlJFQUsQDBILCgdKT0lOSU5HEA0SFAoQV0FJVExJU1RfU0VBVElORxAOEhMKD1BFTkRJTkdfVVBEQVRFUxAPEhsKF1dBSVRfRk9SX0JVWUlOX0FQUFJPVkFMEBASFgoSTkVFRF9UT19QT1NUX0JMSU5EEBE=');
+final $typed_data.Uint8List playerStatusDescriptor = $convert.base64Decode(
+    'CgxQbGF5ZXJTdGF0dXMSGQoVUExBWUVSX1VOS05PV05fU1RBVFVTEAASDwoLTk9UX1BMQVlJTkcQARILCgdQTEFZSU5HEAISDAoISU5fUVVFVUUQAxIMCghJTl9CUkVBSxAEEg8KC1NUQU5ESU5HX1VQEAUSCAoETEVGVBAGEg4KCktJQ0tFRF9PVVQQBxILCgdCTE9DS0VEEAgSEwoPTE9TVF9DT05ORUNUSU9OEAkSEgoOV0FJVF9GT1JfQlVZSU4QChIQCgxMRUFWSU5HX0dBTUUQCxIQCgxUQUtJTkdfQlJFQUsQDBILCgdKT0lOSU5HEA0SFAoQV0FJVExJU1RfU0VBVElORxAOEhMKD1BFTkRJTkdfVVBEQVRFUxAPEhsKF1dBSVRfRk9SX0JVWUlOX0FQUFJPVkFMEBASFgoSTkVFRF9UT19QT1NUX0JMSU5EEBE=');
 @$core.Deprecated('Use gameTypeDescriptor instead')
 const GameType$json = const {
   '1': 'GameType',
@@ -49,7 +51,8 @@ const GameType$json = const {
 };
 
 /// Descriptor for `GameType`. Decode as a `google.protobuf.EnumDescriptorProto`.
-final $typed_data.Uint8List gameTypeDescriptor = $convert.base64Decode('CghHYW1lVHlwZRILCgdVTktOT1dOEAASCgoGSE9MREVNEAESBwoDUExPEAISDAoIUExPX0hJTE8QAxIRCg1GSVZFX0NBUkRfUExPEAQSFgoSRklWRV9DQVJEX1BMT19ISUxPEAU=');
+final $typed_data.Uint8List gameTypeDescriptor = $convert.base64Decode(
+    'CghHYW1lVHlwZRILCgdVTktOT1dOEAASCgoGSE9MREVNEAESBwoDUExPEAISDAoIUExPX0hJTE8QAxIRCg1GSVZFX0NBUkRfUExPEAQSFgoSRklWRV9DQVJEX1BMT19ISUxPEAU=');
 @$core.Deprecated('Use gameStatusDescriptor instead')
 const GameStatus$json = const {
   '1': 'GameStatus',
@@ -63,7 +66,8 @@ const GameStatus$json = const {
 };
 
 /// Descriptor for `GameStatus`. Decode as a `google.protobuf.EnumDescriptorProto`.
-final $typed_data.Uint8List gameStatusDescriptor = $convert.base64Decode('CgpHYW1lU3RhdHVzEhcKE0dBTUVfU1RBVFVTX1VOS05PV04QABIOCgpDT05GSUdVUkVEEAESCgoGQUNUSVZFEAISCgoGUEFVU0VEEAMSCQoFRU5ERUQQBA==');
+final $typed_data.Uint8List gameStatusDescriptor = $convert.base64Decode(
+    'CgpHYW1lU3RhdHVzEhcKE0dBTUVfU1RBVFVTX1VOS05PV04QABIOCgpDT05GSUdVUkVEEAESCgoGQUNUSVZFEAISCgoGUEFVU0VEEAMSCQoFRU5ERUQQBA==');
 @$core.Deprecated('Use tableStatusDescriptor instead')
 const TableStatus$json = const {
   '1': 'TableStatus',
@@ -76,7 +80,8 @@ const TableStatus$json = const {
 };
 
 /// Descriptor for `TableStatus`. Decode as a `google.protobuf.EnumDescriptorProto`.
-final $typed_data.Uint8List tableStatusDescriptor = $convert.base64Decode('CgtUYWJsZVN0YXR1cxIYChRUQUJMRV9TVEFUVVNfVU5LTk9XThAAEhkKFVdBSVRJTkdfVE9fQkVfU1RBUlRFRBABEhYKEk5PVF9FTk9VR0hfUExBWUVSUxACEhAKDEdBTUVfUlVOTklORxAD');
+final $typed_data.Uint8List tableStatusDescriptor = $convert.base64Decode(
+    'CgtUYWJsZVN0YXR1cxIYChRUQUJMRV9TVEFUVVNfVU5LTk9XThAAEhkKFVdBSVRJTkdfVE9fQkVfU1RBUlRFRBABEhYKEk5PVF9FTk9VR0hfUExBWUVSUxACEhAKDEdBTUVfUlVOTklORxAD');
 @$core.Deprecated('Use newUpdateDescriptor instead')
 const NewUpdate$json = const {
   '1': 'NewUpdate',
@@ -98,4 +103,5 @@ const NewUpdate$json = const {
 };
 
 /// Descriptor for `NewUpdate`. Decode as a `google.protobuf.EnumDescriptorProto`.
-final $typed_data.Uint8List newUpdateDescriptor = $convert.base64Decode('CglOZXdVcGRhdGUSGQoVVU5LTk9XTl9QTEFZRVJfVVBEQVRFEAASDgoKTkVXX1BMQVlFUhABEhAKDFJFTE9BRF9DSElQUxACEg8KC1NXSVRDSF9TRUFUEAMSDgoKVEFLRV9CUkVBSxAEEgwKCFNJVF9CQUNLEAUSEQoNTEVGVF9USEVfR0FNRRAGEg8KC0VNUFRZX1NUQUNLEAcSDQoJTkVXX0JVWUlOEAgSEgoOQlVZSU5fVElNRURPVVQQCRIlCiFORVdVUERBVEVfV0FJVF9GT1JfQlVZSU5fQVBQUk9WQUwQChIQCgxCVVlJTl9ERU5JRUQQCxIZChVORVdVUERBVEVfTk9UX1BMQVlJTkcQDA==');
+final $typed_data.Uint8List newUpdateDescriptor = $convert.base64Decode(
+    'CglOZXdVcGRhdGUSGQoVVU5LTk9XTl9QTEFZRVJfVVBEQVRFEAASDgoKTkVXX1BMQVlFUhABEhAKDFJFTE9BRF9DSElQUxACEg8KC1NXSVRDSF9TRUFUEAMSDgoKVEFLRV9CUkVBSxAEEgwKCFNJVF9CQUNLEAUSEQoNTEVGVF9USEVfR0FNRRAGEg8KC0VNUFRZX1NUQUNLEAcSDQoJTkVXX0JVWUlOEAgSEgoOQlVZSU5fVElNRURPVVQQCRIlCiFORVdVUERBVEVfV0FJVF9GT1JfQlVZSU5fQVBQUk9WQUwQChIQCgxCVVlJTl9ERU5JRUQQCxIZChVORVdVUERBVEVfTk9UX1BMQVlJTkcQDA==');

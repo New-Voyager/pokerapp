@@ -34,14 +34,13 @@ class ResultOptionsWidget extends StatelessWidget {
     return Consumer2<HandResultState, RabbitState>(
       builder: (context, vnfs, rb, __) {
         bool _showEye = false;
-        log('ResultOption: Notified');
         if (gameState.mySeat != null && !gameState.mySeat.player.inhand) {
-          log('ResultOption: gameState.mySeat != null && !gameState.mySeat.player.inhand');
+          // log('ResultOption: gameState.mySeat != null && !gameState.mySeat.player.inhand');
           return Container();
         }
 
         if (gameState.handState != HandState.RESULT) {
-          log('ResultOption: gameState.handState != HandState.RESULT');
+          // log('ResultOption: gameState.handState != HandState.RESULT');
           return Container();
         }
         // Eye: To mark all cards to be revealed
@@ -50,24 +49,24 @@ class ResultOptionsWidget extends StatelessWidget {
 
         // show eye
         if (!gameState.wonAtShowdown) {
-          log('ResultOption: gameState.wonAtShowdown');
+          // log('ResultOption: gameState.wonAtShowdown');
           // not in show down, show eye
           _showEye = true;
         } else {
-          log('ResultOption: 2 gameState.wonAtShowdown');
+          // log('ResultOption: 2 gameState.wonAtShowdown');
           // in showdown
           // if the player is a winner, then the cards are shown, no need for eye
           if (gameState.mySeat != null) {
-            log('ResultOption: gameState.mySeat != null');
+            // log('ResultOption: gameState.mySeat != null');
             if (gameState.mySeat.player.winner) {
-              log('ResultOption: gameState.mySeat.player.winner');
+              // log('ResultOption: gameState.mySeat.player.winner');
               _showEye = false;
             } else {
-              log('ResultOption: !gameState.mySeat.player.winner');
+              // log('ResultOption: !gameState.mySeat.player.winner');
               // player is not a winner
               // if the player does not muck his cards, then the cards are already shown
               if (!gameState.mySeat.player.muckLosingHand) {
-                log('ResultOption: !gameState.mySeat.player.muckLosingHand');
+                // log('ResultOption: !gameState.mySeat.player.muckLosingHand');
                 _showEye = false;
               } else {
                 _showEye = true;
@@ -86,7 +85,7 @@ class ResultOptionsWidget extends StatelessWidget {
         }
         final bool visibility = gameState.handState == HandState.RESULT &&
             (_showEye || _showRabbit);
-        log('RabbitState: building: visibility: $visibility wonAt: ${gameState.wonat.toString()} community cards: ${rb.communityCards} winner: ${gameState.mySeat.player.winner} handState: ${gameState.handState} _showEye: $_showEye rb.show: ${rb.show} rabbitHuntAllowed: $isRabbitHuntAllowed');
+        // log('RabbitState: building: visibility: $visibility wonAt: ${gameState.wonat.toString()} community cards: ${rb.communityCards} winner: ${gameState.mySeat.player.winner} handState: ${gameState.handState} _showEye: $_showEye rb.show: ${rb.show} rabbitHuntAllowed: $isRabbitHuntAllowed');
         // bool visibility = true;
         // bool _showRabbit = true;
 

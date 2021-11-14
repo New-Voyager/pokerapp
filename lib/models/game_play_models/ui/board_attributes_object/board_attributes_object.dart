@@ -1,6 +1,7 @@
 /* This class holds board attributes data, like orientation,
 * mappings and everything that is variable */
 
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:typed_data';
 
@@ -17,6 +18,7 @@ enum BoardOrientation {
 }
 
 enum ScreenSize {
+  lessThan6Inches,
   lessThan7Inches,
   equalTo7Inches,
   greaterThan7Inches,
@@ -240,46 +242,108 @@ Map<SeatPos, SeatPosAttribs> getSeatMap(int deviceSize) {
     };
   }
 
+  if (deviceSize <= 5) {
+    return {
+      /* bottom center */
+      SeatPos.bottomCenter: SeatPosAttribs(
+        Alignment.bottomCenter,
+        Offset(0, 80),
+        Alignment.centerRight,
+      ),
+      /* bottom left and bottom right  */
+      SeatPos.bottomLeft: SeatPosAttribs(
+        Alignment.bottomLeft,
+        Offset(15, 60),
+        Alignment.centerRight,
+      ),
+      SeatPos.bottomRight: SeatPosAttribs(
+        Alignment.bottomRight,
+        Offset(-15, 60),
+        Alignment.centerLeft,
+      ),
+      /* middle left and middle right */
+      SeatPos.middleLeft: SeatPosAttribs(
+        Alignment.centerLeft,
+        Offset(2, 65),
+        Alignment.centerRight,
+      ),
+      SeatPos.middleRight: SeatPosAttribs(
+        Alignment.centerRight,
+        Offset(2, 65),
+        Alignment.centerLeft,
+      ),
+
+      /* top left and top right  */
+      SeatPos.topLeft: SeatPosAttribs(
+        Alignment.topLeft,
+        Offset(2, 75),
+        Alignment.centerRight,
+      ),
+      SeatPos.topRight: SeatPosAttribs(
+        Alignment.topRight,
+        Offset(2, 75),
+        Alignment.centerLeft,
+      ),
+
+      /* center, center right & center left */
+      SeatPos.topCenter: SeatPosAttribs(
+        Alignment.topCenter,
+        Offset(0, 0),
+        Alignment.centerRight,
+      ),
+      SeatPos.topCenter1: SeatPosAttribs(
+        Alignment.topCenter,
+        Offset(-50, 60),
+        Alignment.centerRight,
+      ),
+      SeatPos.topCenter2: SeatPosAttribs(
+        Alignment.topCenter,
+        Offset(55, 60),
+        Alignment.centerLeft,
+      ),
+    };
+  }
+
   /* device configurations smaller than 7 inch configurations */
   return {
     /* bottom center */
     SeatPos.bottomCenter: SeatPosAttribs(
       Alignment.bottomCenter,
-      Offset(0, -5),
+      Offset(0, 60),
       Alignment.centerRight,
     ),
     /* bottom left and bottom right  */
     SeatPos.bottomLeft: SeatPosAttribs(
       Alignment.bottomLeft,
-      Offset(15, -5),
+      Offset(15, 50),
       Alignment.centerRight,
     ),
     SeatPos.bottomRight: SeatPosAttribs(
       Alignment.bottomRight,
-      Offset(-15, -5),
+      Offset(-15, 50),
       Alignment.centerLeft,
     ),
     /* middle left and middle right */
     SeatPos.middleLeft: SeatPosAttribs(
       Alignment.centerLeft,
-      Offset(10, 27),
+      Offset(2, 65),
       Alignment.centerRight,
     ),
     SeatPos.middleRight: SeatPosAttribs(
       Alignment.centerRight,
-      Offset(-10, 27),
+      Offset(2, 65),
       Alignment.centerLeft,
     ),
 
     /* top left and top right  */
     SeatPos.topLeft: SeatPosAttribs(
       Alignment.topLeft,
-      Offset(10, 75),
+      Offset(2, 100),
       Alignment.centerRight,
     ),
     SeatPos.topRight: SeatPosAttribs(
       Alignment.topRight,
-      Offset(-10, 75),
+      Offset(2, 100),
       Alignment.centerLeft,
     ),
 
@@ -291,12 +355,12 @@ Map<SeatPos, SeatPosAttribs> getSeatMap(int deviceSize) {
     ),
     SeatPos.topCenter1: SeatPosAttribs(
       Alignment.topCenter,
-      Offset(-70, 10),
+      Offset(-50, 60),
       Alignment.centerRight,
     ),
     SeatPos.topCenter2: SeatPosAttribs(
       Alignment.topCenter,
-      Offset(70, 10),
+      Offset(55, 60),
       Alignment.centerLeft,
     ),
   };
@@ -313,24 +377,24 @@ Map<SeatPos, Offset> getBetAmountPositionMap({
       /* bottom, bottom left and bottom right */
       SeatPos.bottomCenter: Offset(
         0,
-        -namePlateSize.height * 1.2,
+        -namePlateSize.height * 1.0,
       ),
       SeatPos.bottomLeft: Offset(
         namePlateSize.width * 0.70,
-        -namePlateSize.height * 1.2,
+        -namePlateSize.height * 0.80,
       ),
       SeatPos.bottomRight: Offset(
         -namePlateSize.width * 0.60,
-        -namePlateSize.height * 1.2,
+        -namePlateSize.height * 0.80,
       ),
 
       /* middle left and middle right */
       SeatPos.middleLeft: Offset(
-        -namePlateSize.width * 0.20,
+        -namePlateSize.width * 0.10,
         namePlateSize.height * 0.75,
       ),
       SeatPos.middleRight: Offset(
-        namePlateSize.width * 0.40,
+        namePlateSize.width * 0.20,
         namePlateSize.height * 0.75,
       ),
 
@@ -463,6 +527,467 @@ Map<SeatPos, Offset> getBetAmountPositionMap({
   };
 }
 
+class BoardAttributesJson {
+  Map<String, dynamic> getAttributes() {
+    String attribs = '''
+      {
+        "size": 6,
+        "appliesTo": "6",
+        "board": {
+          "playersTableOffset": "0.0, -25.0",
+          "namePlate": {
+            "width": 70,
+            "height": 55
+          },
+          "buttonPos": {
+            "topCenter": "25, 40",
+            "bottomCenter": "10, -40",
+            "middleLeft": "50, 0",
+            "middleRight": "-50, 0",
+            "topRight": "-40, 30",
+            "topLeft": "40, 30", 
+            "bottomLeft": "25, -40",
+            "bottomRight": "-20, -40",
+            "topCenter1": "0, 40",
+            "topCenter2": "0, 40"
+          },
+          "foldStopPos": {
+            "bottomCenter": "20, -140",
+            "topCenter": "20, 20",
+            "middleLeft": "100, -50",
+            "middleRight": "-70, -50",
+            "topRight": "-70, 20",
+            "topLeft": "100, 20",
+            "bottomLeft": "100, -120",
+            "bottomRight": "-70, -120",
+            "topCenter1": "30, 20",
+            "topCenter2": "-10, 20"
+          },
+          "boardSize": {
+            "width": 0.78,
+            "height": 2.0
+          },
+          "tableSizeInc": {
+            "dx": 50,
+            "dy": -70
+          },
+          "centerSizeInc": {
+            "dx": -30,
+            "dy": -70
+          },
+          "lottieScale": 1.0,
+          "betImageScale": 3.0,
+          "betSliderScale": 2.0,
+          "betAmountFac": {
+            "bottomCenter": "0, -1.0",
+            "topCenter": "0.20, 0.70",
+            "middleLeft": "0.30, 0.75",
+            "middleRight": "-0.10, 0.75",
+            "topRight": "-0.10, 0.70",
+            "topLeft": "0.30, 0.65",
+            "bottomLeft": "0.70, -0.80",
+            "bottomRight": "-0.60, -0.80",
+            "topCenter1": "0.20, 0.80",
+            "topCenter2": "-0.20, 0.80"
+          },
+          "cardShufflePos": "0, -30",
+          "centerButtonsPos": "0, -40",
+          "centerViewPos": "0, 15.0",
+          "centerPotScale": 1.0,
+          "centerPotUpdatesScale": 0.85,
+          "centerRankScale": 0.85,
+          "centerViewScale": 0.85,
+          "doubleBoardScale": 0.90,
+          "boardScale": 1.0,
+          "centerGap": 0.0,
+          "potViewGap": 0,
+          "centerOffset": "15, 130",
+          "seatMap": {
+            "bottomCenter": "0, 60",
+            "bottomLeft": "15, 50",
+            "bottomRight": "-15, 50",
+            "middleLeft": "2, 65",
+            "middleRight": "2, 65",
+            "topLeft": "2, 100",
+            "topRight": "2, 100",
+            "topCenter": "0, 60",
+            "topCenter1": "-50, 60",
+            "topCenter2": "55, 60"
+          }
+        },
+        "holeCardDisplacement": {
+          "2": 35,
+          "4": 35,
+          "5": 35,
+          "default": 20
+        },
+        "holeCardDisplacementVisible": {
+          "2": 30,
+          "4": 25,
+          "5": 25,
+          "default": 20
+        },        
+        "footerViewHeightScale": 0.45,
+        "holeCardScale": {
+          "2": 1.45,
+          "4": 1.35,
+          "5": 1.15,
+          "default": 1
+        },
+        "holeCardOffset": "0, 0",
+        "holeCardViewOffset": "0, 60",
+        "holeCardViewScale": 1.28,
+        "footerActionScale": 1.05,
+        "footerScale": 0.45,
+        "seat": {
+          "scale": 1.0,
+          "holeCardOffset": "0, 0",
+          "holeCardScale": 1.0
+        }
+      }
+    ''';
+    return jsonDecode(attribs);
+  }
+
+  Map<String, dynamic> attribs;
+  void init() {
+    attribs = getAttributes();
+  }
+
+  double get size => attribs["size"];
+  Size get namePlateSize {
+    if (attribs["board"]["namePlate"] != null) {
+      dynamic namePlate = attribs["board"]["namePlate"];
+      return Size(
+        double.parse(namePlate["width"].toString()),
+        double.parse(namePlate["height"].toString()),
+      );
+    }
+    return Size(70, 55);
+  }
+
+  Offset parseOffset(dynamic val) {
+    List<double> vals = val
+        .toString()
+        .split(',')
+        .map((e) => double.parse(e.toString()))
+        .toList();
+    return Offset(vals[0], vals[1]);
+  }
+
+  Offset get playerTableOffset {
+    if (attribs["board"]["playersTableOffset"] != null) {
+      dynamic offset = attribs["board"]["playersTableOffset"];
+      return parseOffset(offset);
+    }
+    return Offset(0.0, -25.0);
+  }
+
+  SeatPos getSeatPosEnum(String posStr) {
+    Map<String, SeatPos> pos = {
+      "bottomCenter": SeatPos.bottomCenter,
+      "bottomLeft": SeatPos.bottomLeft,
+      "bottomRight": SeatPos.bottomRight,
+      "middleLeft": SeatPos.middleLeft,
+      "middleRight": SeatPos.middleRight,
+      "topCenter": SeatPos.topCenter,
+      "topCenter1": SeatPos.topCenter1,
+      "topCenter2": SeatPos.topCenter2,
+      "topLeft": SeatPos.topLeft,
+      "topRight": SeatPos.topRight,
+    };
+    return pos[posStr];
+  }
+
+  Map<SeatPos, Offset> buttonPos() {
+    Map<SeatPos, Offset> ret = Map<SeatPos, Offset>();
+    if (attribs["board"]["buttonPos"] != null) {
+      final map = attribs["board"]["buttonPos"] as Map<String, dynamic>;
+      for (final pos in map.keys) {
+        final val = parseOffset(map[pos]);
+        ret[getSeatPosEnum(pos)] = val;
+      }
+    }
+    return ret;
+  }
+
+  Map<SeatPos, Offset> betAmountPos() {
+    Map<SeatPos, Offset> ret = Map<SeatPos, Offset>();
+    Size namePlateSize = this.namePlateSize;
+    if (attribs["board"]["betAmountFac"] != null) {
+      final map = attribs["board"]["betAmountFac"] as Map<String, dynamic>;
+      for (final pos in map.keys) {
+        final val = parseOffset(map[pos]);
+        ret[getSeatPosEnum(pos)] =
+            Offset(val.dx * namePlateSize.width, val.dy * namePlateSize.height);
+      }
+    }
+    return ret;
+  }
+
+  Map<SeatPos, Offset> foldCardPos() {
+    Map<SeatPos, Offset> ret = Map<SeatPos, Offset>();
+    if (attribs["board"]["foldStopPos"] != null) {
+      final map = attribs["board"]["foldStopPos"] as Map<String, dynamic>;
+      for (final pos in map.keys) {
+        final val = parseOffset(map[pos]);
+        ret[getSeatPosEnum(pos)] = val;
+      }
+    }
+    return ret;
+  }
+
+  Map<SeatPos, SeatPosAttribs> getSeatMap() {
+    Map<SeatPos, SeatPosAttribs> ret = Map<SeatPos, SeatPosAttribs>();
+    if (attribs["board"]["seatMap"] != null) {
+      final map = attribs["board"]["seatMap"] as Map<String, dynamic>;
+      for (final pos in map.keys) {
+        final val = map[pos];
+        if (pos == 'bottomCenter') {
+          ret[SeatPos.bottomCenter] = SeatPosAttribs(
+              Alignment.bottomCenter, parseOffset(val), Alignment.centerRight);
+        } else if (pos == 'bottomLeft') {
+          ret[SeatPos.bottomLeft] = SeatPosAttribs(
+              Alignment.bottomLeft, parseOffset(val), Alignment.centerRight);
+        } else if (pos == 'bottomRight') {
+          ret[SeatPos.bottomRight] = SeatPosAttribs(
+              Alignment.bottomRight, parseOffset(val), Alignment.centerLeft);
+        } else if (pos == 'bottomLeft') {
+          ret[SeatPos.bottomLeft] = SeatPosAttribs(
+              Alignment.bottomLeft, parseOffset(val), Alignment.centerRight);
+        } else if (pos == 'middleLeft') {
+          ret[SeatPos.middleLeft] = SeatPosAttribs(
+              Alignment.centerLeft, parseOffset(val), Alignment.centerRight);
+        } else if (pos == 'middleRight') {
+          ret[SeatPos.middleRight] = SeatPosAttribs(
+              Alignment.centerRight, parseOffset(val), Alignment.centerLeft);
+        } else if (pos == 'topLeft') {
+          ret[SeatPos.topLeft] = SeatPosAttribs(
+              Alignment.topLeft, parseOffset(val), Alignment.centerRight);
+        } else if (pos == 'bottomLeft') {
+          ret[SeatPos.bottomLeft] = SeatPosAttribs(
+              Alignment.bottomLeft, parseOffset(val), Alignment.centerRight);
+        } else if (pos == 'topRight') {
+          ret[SeatPos.topRight] = SeatPosAttribs(
+              Alignment.topRight, parseOffset(val), Alignment.centerLeft);
+        } else if (pos == 'topCenter') {
+          ret[SeatPos.topCenter] = SeatPosAttribs(
+              Alignment.topCenter, parseOffset(val), Alignment.centerRight);
+        } else if (pos == 'topCenter1') {
+          ret[SeatPos.topCenter1] = SeatPosAttribs(
+              Alignment.topCenter, parseOffset(val), Alignment.centerRight);
+        } else if (pos == 'topCenter2') {
+          ret[SeatPos.topCenter2] = SeatPosAttribs(
+              Alignment.topCenter, parseOffset(val), Alignment.centerLeft);
+        }
+      }
+    }
+    return ret;
+  }
+
+  double get lottieScale {
+    if (attribs["board"]["lottieScale"] != null) {
+      return double.parse(attribs["board"]["lottieScale"].toString());
+    }
+    return 2.0;
+  }
+
+  double get betImageScale {
+    if (attribs["board"]["betImageScale"] != null) {
+      return double.parse(attribs["board"]["betImageScale"].toString());
+    }
+    return 2.2;
+  }
+
+  double get betSliderScale {
+    if (attribs["board"]["betSliderScale"] != null) {
+      return double.parse(attribs["board"]["betSliderScale"].toString());
+    }
+    return 2.5;
+  }
+
+  Map<String, double> getHoleDisplacement() {
+    Map<String, double> ret = Map<String, double>();
+    if (attribs["holeCardDisplacement"] != null) {
+      final map = attribs["holeCardDisplacement"] as Map<String, dynamic>;
+      for (final noCardsStr in map.keys) {
+        ret[noCardsStr] = double.parse(map[noCardsStr].toString());
+      }
+    }
+    return ret;
+  }
+
+  Map<String, double> getHoleCardScale() {
+    Map<String, double> ret = Map<String, double>();
+    if (attribs["holeCardScale"] != null) {
+      final map = attribs["holeCardScale"] as Map<String, dynamic>;
+      for (final noCardsStr in map.keys) {
+        ret[noCardsStr] = double.parse(map[noCardsStr].toString());
+      }
+    }
+    return ret;
+  }
+
+  Map<String, double> getVisibleHoleDisplacement() {
+    Map<String, double> ret = Map<String, double>();
+    if (attribs["holeCardDisplacementVisible"] != null) {
+      final map =
+          attribs["holeCardDisplacementVisible"] as Map<String, dynamic>;
+      for (final noCardsStr in map.keys) {
+        ret[noCardsStr] = double.parse(map[noCardsStr].toString());
+      }
+    }
+    return ret;
+  }
+
+  Offset get cardShufflePos {
+    if (attribs['board']['cardShufflePos'] != null) {
+      return parseOffset(attribs['board']['cardShufflePos']);
+    }
+    return Offset.zero;
+  }
+
+  Offset get centerButtonsPos {
+    if (attribs['board']['centerButtonsPos'] != null) {
+      return parseOffset(attribs['board']['centerButtonsPos']);
+    }
+    return Offset.zero;
+  }
+
+  Offset get centerViewPos {
+    if (attribs['board']['centerViewPos'] != null) {
+      return parseOffset(attribs['board']['centerViewPos']);
+    }
+    return Offset.zero;
+  }
+
+  double get footerViewScale {
+    if (attribs["footerViewScale"] != null) {
+      return double.parse(attribs["footerViewScale"].toString());
+    }
+    return 0.45;
+  }
+
+  double get centerPotScale {
+    if (attribs["board"]["centerPotScale"] != null) {
+      return double.parse(attribs["board"]["centerPotScale"].toString());
+    }
+    return 1.0;
+  }
+
+  double get centerPotUpdatesScale {
+    if (attribs["centerPotUpdatesScale"] != null) {
+      return double.parse(attribs["centerPotUpdatesScale"].toString());
+    }
+    return 1.0;
+  }
+
+  double get centerRankStrScale {
+    if (attribs["centerRankStrScale"] != null) {
+      return double.parse(attribs["centerRankStrScale"].toString());
+    }
+    return 1.0;
+  }
+
+  double get centerViewCenterScale {
+    if (attribs["centerViewCenterScale"] != null) {
+      return double.parse(attribs["centerViewCenterScale"].toString());
+    }
+    return 0.85;
+  }
+
+  double get doubleBoardScale {
+    if (attribs["doubleBoardScale"] != null) {
+      return double.parse(attribs["doubleBoardScale"].toString());
+    }
+    return 0.90;
+  }
+
+  double get boardScale {
+    if (attribs["boardScale"] != null) {
+      return double.parse(attribs["boardScale"].toString());
+    }
+    return 1.0;
+  }
+
+  double get centerGap {
+    if (attribs["centerGap"] != null) {
+      return double.parse(attribs["centerGap"].toString());
+    }
+    return 0.0;
+  }
+
+  double get potViewGap {
+    if (attribs["potViewGap"] != null) {
+      return double.parse(attribs["potViewGap"].toString());
+    }
+    return 0.0;
+  }
+
+  Offset get centerOffet {
+    if (attribs['board']['centerOffset'] != null) {
+      return parseOffset(attribs['board']['centerOffset']);
+    }
+    return Offset.zero;
+  }
+
+  double get tableScale {
+    if (attribs['board']['tableScale'] != null) {
+      return double.parse(attribs['board']['tableScale']);
+    }
+    return 1.0;
+  }
+
+  Offset get holeCardOffset {
+    if (attribs['holeCardOffset'] != null) {
+      return parseOffset(attribs['holeCardOffset']);
+    }
+    return Offset.zero;
+  }
+
+  Offset get holeCardViewOffset {
+    if (attribs['holeCardViewOffset'] != null) {
+      return parseOffset(attribs['holeCardViewOffset']);
+    }
+    return Offset.zero;
+  }
+
+  double get holeCardViewScale {
+    if (attribs["holeCardViewScale"] != null) {
+      return double.parse(attribs["holeCardViewScale"].toString());
+    }
+    return 1.0;
+  }
+
+  double get footerActionScale {
+    if (attribs["footerActionScale"] != null) {
+      return double.parse(attribs["footerActionScale"].toString());
+    }
+    return 1.0;
+  }
+
+  double get playerViewScale {
+    if (attribs["seat"]["scale"] != null) {
+      return double.parse(attribs["seat"]["scale"].toString());
+    }
+    return 1.0;
+  }
+
+  Offset get playerHoleCardOffset {
+    if (attribs['seat']['holeCardOffset'] != null) {
+      return parseOffset(attribs['seat']['holeCardOffset']);
+    }
+    return Offset.zero;
+  }
+
+  double get playerHoleCardScale {
+    if (attribs["seat"]["holeCardScale"] != null) {
+      return double.parse(attribs["seat"]["holeCardScale"].toString());
+    }
+    return 1.0;
+  }
+}
+
 class BoardAttributesObject extends ChangeNotifier {
   BoardOrientation _boardOrientation;
   Size _boardSize;
@@ -488,6 +1013,14 @@ class BoardAttributesObject extends ChangeNotifier {
 
   // seat attrib map
   Map<SeatPos, SeatPosAttribs> _seatPosAttribs;
+  Map<SeatPos, Offset> _buttonPos;
+  Map<SeatPos, Offset> _foldCardPos;
+  Map<SeatPos, Offset> _betAmountPos;
+
+  // footer attribs
+  Map<String, double> _holeCardDisplacement;
+  Map<String, double> _holeCardVisibleDisplacement;
+  Map<String, double> _holeCardScale;
 
   // bet image
   Uint8List _betImage;
@@ -495,6 +1028,7 @@ class BoardAttributesObject extends ChangeNotifier {
   // center pot view key
   GlobalKey _potKey;
   Offset potGlobalPos;
+  BoardAttributesJson attribsObj;
 
   BoardAttributesObject({
     /*
@@ -502,16 +1036,27 @@ class BoardAttributesObject extends ChangeNotifier {
     @required double screenSize,
     BoardOrientation orientation = BoardOrientation.horizontal,
   }) {
+    attribsObj = BoardAttributesJson();
+    attribsObj.init();
     //this._screenSize = screenSize.round();
     this._screenDiagnolSize = Screen.screenSize;
     log('original screen size: $screenSize, rounded screen size: $_screenDiagnolSize');
     this._boardOrientation = orientation;
-    this._namePlateSize = Size(70, 55);
+    this._namePlateSize = attribsObj.namePlateSize; //Size(70, 55);
 
-    _playersOnTableOffset = Offset(0.0, -25.0);
+    _playersOnTableOffset = attribsObj.playerTableOffset; // Offset(0.0, -25.0);
+    this._seatPosAttribs = attribsObj.getSeatMap();
+    this._buttonPos = attribsObj.buttonPos();
+    this._foldCardPos = attribsObj.foldCardPos();
+    this._betAmountPos = attribsObj.betAmountPos();
 
-    this._seatPosAttribs = getSeatMap(this._screenDiagnolSize);
-    if (this._screenDiagnolSize <= 7) {
+    this._holeCardDisplacement = attribsObj.getHoleDisplacement();
+    this._holeCardVisibleDisplacement = attribsObj.getVisibleHoleDisplacement();
+    this._holeCardScale = attribsObj.getHoleCardScale();
+
+    if (Screen.diagonalInches <= 6) {
+      this._screenSize = ScreenSize.lessThan6Inches;
+    } else if (this._screenDiagnolSize <= 7) {
       this._screenSize = ScreenSize.lessThan7Inches;
     } else if (this._screenSize == 7) {
       this._screenSize = ScreenSize.equalTo7Inches;
@@ -553,41 +1098,11 @@ class BoardAttributesObject extends ChangeNotifier {
   }
 
   Map<SeatPos, Offset> buttonPos() {
-    if (_boardOrientation == BoardOrientation.horizontal) {
-      return {
-        SeatPos.topCenter: Offset(25, 40),
-        SeatPos.bottomCenter: Offset(10, -40),
-        SeatPos.middleLeft: Offset(50, 0),
-        SeatPos.middleRight: Offset(-50, 0),
-        SeatPos.topRight: Offset(-40, 30),
-        SeatPos.topLeft: Offset(40, 30),
-        SeatPos.bottomLeft: Offset(25, -40),
-        SeatPos.bottomRight: Offset(-20, -40),
-        SeatPos.topCenter1: Offset(0, 40),
-        SeatPos.topCenter2: Offset(0, 40),
-      };
-    }
-
-    return throw UnimplementedError();
+    return this._buttonPos;
   }
 
   Map<SeatPos, Offset> foldCardPos() {
-    if (_boardOrientation == BoardOrientation.horizontal) {
-      return {
-        SeatPos.bottomCenter: Offset(20, -140),
-        SeatPos.topCenter: Offset(20, 20),
-        SeatPos.middleLeft: Offset(100, -50),
-        SeatPos.middleRight: Offset(-70, -50),
-        SeatPos.topRight: Offset(-70, 0),
-        SeatPos.topLeft: Offset(100, 0),
-        SeatPos.bottomLeft: Offset(100, -120),
-        SeatPos.bottomRight: Offset(-70, -120),
-        SeatPos.topCenter1: Offset(30, 20),
-        SeatPos.topCenter2: Offset(-10, 20),
-      };
-    }
-
-    return throw UnimplementedError();
+    return this._foldCardPos;
   }
 
   Tuple2<Color, Color> buttonColor(GameType gameType) {
@@ -621,78 +1136,37 @@ class BoardAttributesObject extends ChangeNotifier {
   get tableSize => this._tableSize;
 
   double get lottieScale {
-    if (this._screenSize == ScreenSize.lessThan7Inches) {
-      return 1.0;
-    } else if (this._screenSize == ScreenSize.equalTo7Inches) {
-      return 1.3;
-    } else {
-      return 2.0;
-    }
+    return attribsObj.lottieScale;
   }
 
   double get betImageScale {
-    if (this._screenSize == ScreenSize.lessThan7Inches) {
-      return 3.0;
-    } else if (this._screenSize == ScreenSize.equalTo7Inches) {
-      return 2.0;
-    } else {
-      return 2.2;
-    }
+    return attribsObj.betImageScale;
   }
 
   double get betSliderScale {
-    if (this._screenSize == ScreenSize.lessThan7Inches) {
-      return 2.0;
-    } else if (this._screenSize == ScreenSize.equalTo7Inches) {
-      return 2.0;
-    } else {
-      return 2.5;
-    }
+    return attribsObj.betImageScale;
   }
 
-  double get betWidgetBottomGap {
-    if (this._screenSize == ScreenSize.lessThan7Inches) {
-      return 1.ph;
-    } else if (this._screenSize == ScreenSize.equalTo7Inches) {
-      return 20.ph;
-    } else {
-      return 60.ph;
-    }
+  Size get namePlateSize {
+    return this.attribsObj.namePlateSize;
   }
 
-  double get betWidgetBetChipBottomGap {
-    if (this._screenSize == ScreenSize.lessThan7Inches) {
-      return 35.ph;
-    } else if (this._screenSize == ScreenSize.equalTo7Inches) {
-      return 10.ph;
-    } else {
-      return 20.ph;
-    }
+  Offset get playerOnTableOffset {
+    return this.attribsObj.playerTableOffset;
   }
-
-  Size get namePlateSize => this._namePlateSize;
-
-  // GlobalKey get centerPotBetKey => this._centerPotBetKey;
-  // set centerPotBetKey(GlobalKey key) => this._centerPotBetKey = key;
-
-  Offset get playerOnTableOffset => this._playersOnTableOffset;
-  set playerOnTableOffset(Offset offset) => this._playersOnTableOffset = offset;
 
   void setFooterDimensions(Offset offset, Size size) {
     this._footerOffset = offset;
     this._footerSize = size;
   }
 
-  Size get footerSize => this._footerSize;
-
   SeatPosAttribs getSeatPosAttrib(SeatPos pos) {
-    return getSeatMap(this._screenDiagnolSize)[pos];
+    return this._seatPosAttribs[pos];
   }
 
-  Map<SeatPos, Offset> get betAmountPosition => getBetAmountPositionMap(
-        namePlateSize: this._namePlateSize,
-        deviceSize: this._screenDiagnolSize,
-      );
+  Map<SeatPos, Offset> get betAmountPosition {
+    return this._betAmountPos;
+  }
 
   dynamic _decide({
     @required dynamic lessThan6Inches,
@@ -726,209 +1200,282 @@ class BoardAttributesObject extends ChangeNotifier {
     @required int noOfCards,
     @required bool isCardVisible,
   }) {
-    switch (noOfCards) {
-      case 2:
-        if (isCardVisible) return 30.pw;
-        return 35.pw;
-
-      case 4:
-        if (isCardVisible) return 20.pw;
-        return 35.pw;
-
-      case 5:
-        if (isCardVisible) return 25.pw;
-        return 35.pw;
-
-      default:
-        return 20.pw;
+    double ret = 20.0;
+    if (isCardVisible) {
+      ret = _holeCardVisibleDisplacement[noOfCards.toString()];
+    } else {
+      ret = _holeCardDisplacement[noOfCards.toString()];
     }
+    return ret;
   }
 
   /* center view scales for different widgets */
-
-  Offset get centerViewCardShufflePosition => _decide(
-        lessThan6Inches: Offset.zero,
-        equalTo6Inches: Offset(0.0, -20.0),
-        equalTo7Inches: Offset(0.0, -50.0),
-        greaterThan7Inches: Offset(0.0, -40.0),
-      ) as Offset;
-
-  Offset get centerViewButtonVerticalTranslate => _decide(
-        lessThan6Inches: Offset.zero,
-        equalTo6Inches: Offset(0.0, -20.0),
-        equalTo7Inches: Offset(0.0, -20.0),
-        greaterThan7Inches: Offset(0.0, -20.0),
-      ) as Offset;
-
-  Offset get centerViewVerticalTranslate => _decide(
-        lessThan6Inches: Offset(0.0, 15.0),
-        equalTo6Inches: Offset(0.0, 10.0),
-        equalTo7Inches: Offset.zero,
-        greaterThan7Inches: Offset(0.0, 60.ph),
-      ) as Offset;
-
-  double get footerViewHeightScale => _decide(
-        lessThan6Inches: 0.45,
-        equalTo6Inches: .45,
-        equalTo7Inches: .45,
-        greaterThan7Inches: .45,
-      ) as double;
-
-  double get centerPotScale => _decide(
-        lessThan6Inches: 0.85,
-        equalTo6Inches: 1.0,
-        equalTo7Inches: 1.20,
-        greaterThan7Inches: 1.5,
-      ) as double;
-
-  double get centerPotUpdatesScale => _decide(
-        lessThan6Inches: 0.85,
-        equalTo6Inches: 1.0,
-        equalTo7Inches: 1.0,
-        greaterThan7Inches: 1.0,
-      ) as double;
-
-  double get centerRankStrScale => _decide(
-        lessThan6Inches: 0.85,
-        equalTo6Inches: 1.0,
-        equalTo7Inches: 1.10,
-        greaterThan7Inches: 1.15,
-      ) as double;
-
-  double get centerViewCenterScale => _decide(
-        lessThan6Inches: 0.85,
-        equalTo6Inches: 1.0,
-        equalTo7Inches: 1.10,
-        greaterThan7Inches: 1.30,
-      ) as double;
-
-  /// Different No of cards, will create different sized hole card
-  double get _getScaleBasedOnNoOfCards {
-    switch (_noOfCards) {
-      case 2:
-        return 1.45;
-
-      case 4:
-        return 1.35;
-
-      case 5:
-        return 1.15;
-
-      default:
-        return 1;
-    }
+  Offset get centerViewCardShufflePosition {
+    return attribsObj.cardShufflePos;
   }
 
-  double get holeCardSizeRatio => _decide(
-        lessThan6Inches: _getScaleBasedOnNoOfCards * 4.0,
-        equalTo6Inches: _getScaleBasedOnNoOfCards * 4.0,
-        equalTo7Inches: _getScaleBasedOnNoOfCards * 4.0,
-        greaterThan7Inches: _getScaleBasedOnNoOfCards * 4.0,
-      ) as double;
+  Offset get centerButtonsPos {
+    return attribsObj.centerButtonsPos;
+  }
 
-  double get communityCardDoubleBoardScaleFactor => _decide(
-        lessThan6Inches: 0.90,
-        equalTo6Inches: 0.90,
-        equalTo7Inches: 0.90,
-        greaterThan7Inches: 0.90,
-      ) as double;
+  Offset get centerViewPos {
+    return attribsObj.centerViewPos;
+  }
 
-  double get communityCardSizeScales => _decide(
-        lessThan6Inches: 0.85,
-        equalTo6Inches: 1.0,
-        equalTo7Inches: 1.05,
-        greaterThan7Inches: 1.50,
-      ) as double;
+  double get footerViewScale {
+    return attribsObj.footerViewScale;
+  }
 
-  double get centerGap => _decide(
-        lessThan6Inches: 0.0,
-        equalTo6Inches: 0.0,
-        equalTo7Inches: 10.0,
-        greaterThan7Inches: 2.ph,
-      ) as double;
+  double get centerPotScale {
+    return attribsObj.centerPotScale;
+  }
 
-  double get potsViewGap => _decide(
-        lessThan6Inches: 0.0,
-        equalTo6Inches: 0.0,
-        equalTo7Inches: 10.0,
-        greaterThan7Inches: 2.ph,
-      ) as double;
+  double get centerPotUpdatesScale {
+    return attribsObj.centerPotUpdatesScale;
+  }
 
-  /* table center view offsets, scaling and sizes */
-  Offset get centerOffset => _decide(
-        lessThan6Inches: Offset(10, 40),
-        equalTo6Inches: Offset(15, 60),
-        equalTo7Inches: Offset(15, 85),
-        greaterThan7Inches: Offset(10, 40),
-      ) as Offset;
+  double get centerRankStrScale {
+    return attribsObj.centerRankStrScale;
+  }
 
-  double get boardViewPositionScale => _decide(
-        lessThan6Inches: .01,
-        equalTo6Inches: .03,
-        equalTo7Inches: .01,
-        greaterThan7Inches: .01,
-      ) as double;
+  double get centerViewCenterScale {
+    return attribsObj.centerViewCenterScale;
+  }
 
-  double get tableScale => _decide(
-        lessThan6Inches: 1.0,
-        equalTo6Inches: 1.0,
-        equalTo7Inches: 0.90,
-        greaterThan7Inches: 0.85,
-      ) as double;
+  double get holeCardSizeRatio {
+    return _holeCardScale[_noOfCards.toString()] * 4.0;
+  }
 
-  Size get centerSize => this._centerSize;
+  double get doubleBoardScale {
+    return attribsObj.doubleBoardScale;
+  }
 
-  /* hole card view offsets */
+  double get boardScale {
+    return attribsObj.boardScale;
+  }
+
+  double get centerGap {
+    return attribsObj.centerGap;
+  }
+
+  double get potViewGap {
+    return attribsObj.potViewGap;
+  }
+
+  Offset get centerOffset {
+    return attribsObj.centerOffet;
+  }
+
+  double get tableScale {
+    return attribsObj.tableScale;
+  }
+
+  Size get centerSize {
+    return this._centerSize;
+  }
+
+  Offset get holeCardOffset {
+    return attribsObj.holeCardOffset;
+  }
+
   Offset get holeCardViewOffset {
-    return _decide(
-      lessThan6Inches: Offset(0, 50.ph),
-      equalTo6Inches: Offset(0, 60.ph),
-      equalTo7Inches: Offset(0, 90),
-      greaterThan7Inches: Offset(0, 130),
-    ) as Offset;
+    return attribsObj.holeCardViewOffset;
   }
 
-  /* hold card view scales */
-  double get holeCardViewScale => _decide(
-        lessThan6Inches: 1.20,
-        equalTo6Inches: 1.28,
-        equalTo7Inches: 1.45,
-        greaterThan7Inches: 1.75,
-      ) as double;
+  double get holeCardViewScale {
+    return attribsObj.holeCardViewScale;
+  }
 
-  double get footerActionViewScale => _decide(
-        lessThan6Inches: 1.0,
-        equalTo6Inches: 1.05,
-        equalTo7Inches: 1.2,
-        greaterThan7Inches: 1.3,
-      ) as double;
+  double get footerActionScale {
+    return attribsObj.footerActionScale;
+  }
 
-  /* players configurations */
-  double get playerViewScale => _decide(
-        lessThan6Inches: 0.85,
-        equalTo6Inches: 1.0,
-        equalTo7Inches: 1.4,
-        greaterThan7Inches: 1.7,
-      ) as double;
+  double get playerViewScale {
+    return attribsObj.playerViewScale;
+  }
 
-  /* player hole card configurations */
   Offset get playerHoleCardOffset {
-    return _decide(
-      lessThan6Inches: Offset.zero,
-      equalTo6Inches: Offset.zero,
-      equalTo7Inches: Offset(5.pw, -10.ph),
-      greaterThan7Inches: Offset(0, -5.ph),
-    ) as Offset;
+    return attribsObj.playerHoleCardOffset;
   }
 
   double get playerHoleCardScale {
-    return _decide(
-      lessThan6Inches: 1.0,
-      equalTo6Inches: 1.0,
-      equalTo7Inches: 1.5,
-      greaterThan7Inches: 1.0,
-    ) as double;
+    return attribsObj.playerHoleCardScale;
   }
+
+  // Offset get centerViewCardShufflePosition => _decide(
+  //       lessThan6Inches: Offset.zero,
+  //       equalTo6Inches: Offset(0.0, -20.0),
+  //       equalTo7Inches: Offset(0.0, -50.0),
+  //       greaterThan7Inches: Offset(0.0, -40.0),
+  //     ) as Offset;
+
+  // Offset get centerViewButtonVerticalTranslate => _decide(
+  //       lessThan6Inches: Offset.zero,
+  //       equalTo6Inches: Offset(0.0, -20.0),
+  //       equalTo7Inches: Offset(0.0, -20.0),
+  //       greaterThan7Inches: Offset(0.0, -20.0),
+  //     ) as Offset;
+
+  // Offset get centerViewVerticalTranslate => _decide(
+  //       lessThan6Inches: Offset(0.0, 15.0),
+  //       equalTo6Inches: Offset(0.0, 10.0),
+  //       equalTo7Inches: Offset.zero,
+  //       greaterThan7Inches: Offset(0.0, 60.ph),
+  //     ) as Offset;
+
+  // double get footerViewHeightScale => _decide(
+  //       lessThan6Inches: 0.45,
+  //       equalTo6Inches: .45,
+  //       equalTo7Inches: .45,
+  //       greaterThan7Inches: .45,
+  //     ) as double;
+
+  // double get centerPotScale => _decide(
+  //       lessThan6Inches: 0.85,
+  //       equalTo6Inches: 1.0,
+  //       equalTo7Inches: 1.20,
+  //       greaterThan7Inches: 1.5,
+  //     ) as double;
+
+  // double get centerPotUpdatesScale => _decide(
+  //       lessThan6Inches: 0.85,
+  //       equalTo6Inches: 1.0,
+  //       equalTo7Inches: 1.0,
+  //       greaterThan7Inches: 1.0,
+  //     ) as double;
+
+  // double get centerRankStrScale => _decide(
+  //       lessThan6Inches: 0.85,
+  //       equalTo6Inches: 1.0,
+  //       equalTo7Inches: 1.10,
+  //       greaterThan7Inches: 1.15,
+  //     ) as double;
+
+  // double get centerViewCenterScale => _decide(
+  //       lessThan6Inches: 0.85,
+  //       equalTo6Inches: 1.0,
+  //       equalTo7Inches: 1.10,
+  //       greaterThan7Inches: 1.30,
+  //     ) as double;
+
+  /// Different No of cards, will create different sized hole card
+  // double get _getScaleBasedOnNoOfCards {
+  //   switch (_noOfCards) {
+  //     case 2:
+  //       return 1.45;
+
+  //     case 4:
+  //       return 1.35;
+
+  //     case 5:
+  //       return 1.15;
+
+  //     default:
+  //       return 1;
+  //   }
+  // }
+
+  // double get holeCardSizeRatio => _decide(
+  //       lessThan6Inches: _getScaleBasedOnNoOfCards * 4.0,
+  //       equalTo6Inches: _getScaleBasedOnNoOfCards * 4.0,
+  //       equalTo7Inches: _getScaleBasedOnNoOfCards * 4.0,
+  //       greaterThan7Inches: _getScaleBasedOnNoOfCards * 4.0,
+  //     ) as double;
+
+  // double get communityCardDoubleBoardScaleFactor => _decide(
+  //       lessThan6Inches: 0.90,
+  //       equalTo6Inches: 0.90,
+  //       equalTo7Inches: 0.90,
+  //       greaterThan7Inches: 0.90,
+  //     ) as double;
+
+  // double get communityCardSizeScales => _decide(
+  //       lessThan6Inches: 0.85,
+  //       equalTo6Inches: 1.0,
+  //       equalTo7Inches: 1.05,
+  //       greaterThan7Inches: 1.50,
+  //     ) as double;
+
+  // double get centerGap => _decide(
+  //       lessThan6Inches: 0.0,
+  //       equalTo6Inches: 0.0,
+  //       equalTo7Inches: 10.0,
+  //       greaterThan7Inches: 2.ph,
+  //     ) as double;
+
+  // double get potsViewGap => _decide(
+  //       lessThan6Inches: 0.0,
+  //       equalTo6Inches: 0.0,
+  //       equalTo7Inches: 10.0,
+  //       greaterThan7Inches: 2.ph,
+  //     ) as double;
+
+  /* table center view offsets, scaling and sizes */
+  // Offset get centerOffset => _decide(
+  //       lessThan6Inches: Offset(10, 100),
+  //       equalTo6Inches: Offset(15, 130),
+  //       equalTo7Inches: Offset(15, 85),
+  //       greaterThan7Inches: Offset(10, 40),
+  //     ) as Offset;
+
+  // double get tableScale => _decide(
+  //       lessThan6Inches: 1.0,
+  //       equalTo6Inches: 1.0,
+  //       equalTo7Inches: 0.90,
+  //       greaterThan7Inches: 0.85,
+  //     ) as double;
+
+  /* hole card view offsets */
+  // Offset get holeCardViewOffset {
+  //   return _decide(
+  //     lessThan6Inches: Offset(0, 20.ph),
+  //     equalTo6Inches: Offset(0, 60.ph),
+  //     equalTo7Inches: Offset(0, 90),
+  //     greaterThan7Inches: Offset(0, 130),
+  //   ) as Offset;
+  // }
+
+  /* hold card view scales */
+  // double get holeCardViewScale => _decide(
+  //       lessThan6Inches: 0.95,
+  //       equalTo6Inches: 1.28,
+  //       equalTo7Inches: 1.45,
+  //       greaterThan7Inches: 1.75,
+  //     ) as double;
+
+  // double get footerActionViewScale => _decide(
+  //       lessThan6Inches: 0.90,
+  //       equalTo6Inches: 1.05,
+  //       equalTo7Inches: 1.2,
+  //       greaterThan7Inches: 1.3,
+  //     ) as double;
+
+  /* players configurations */
+  // double get playerViewScale => _decide(
+  //       lessThan6Inches: 0.85,
+  //       equalTo6Inches: 1.0,
+  //       equalTo7Inches: 1.4,
+  //       greaterThan7Inches: 1.7,
+  //     ) as double;
+
+  /* player hole card configurations */
+  // Offset get playerHoleCardOffset {
+  //   return _decide(
+  //     lessThan6Inches: Offset.zero,
+  //     equalTo6Inches: Offset.zero,
+  //     equalTo7Inches: Offset(5.pw, -10.ph),
+  //     greaterThan7Inches: Offset(0, -5.ph),
+  //   ) as Offset;
+  // }
+
+  // double get playerHoleCardScale {
+  //   return _decide(
+  //     lessThan6Inches: 1.0,
+  //     equalTo6Inches: 1.0,
+  //     equalTo7Inches: 1.5,
+  //     greaterThan7Inches: 1.0,
+  //   ) as double;
+  // }
 
   double get tableDividerHeightScale => _decide(
         lessThan6Inches: 0.40,
@@ -942,14 +1489,6 @@ class BoardAttributesObject extends ChangeNotifier {
 
   Uint8List get betImage => this._betImage;
   set betImage(Uint8List betImage) => this._betImage = betImage;
-
-  double get holeCardOffset {
-    double holeCardOffset = 0.ph;
-    if (_screenSize == ScreenSize.greaterThan7Inches) {
-      holeCardOffset = 25.ph;
-    }
-    return holeCardOffset;
-  }
 }
 
 Map<int, SeatPos> getSeatLocations(int maxSeats) {

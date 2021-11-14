@@ -453,11 +453,11 @@ class NotificationHandler {
     double amount = double.parse(json['amount'].toString());
     // toggle pending approvals
     Alerts.showNotification(
-      titleText: 'Buyin Request',
-      subTitleText: 'Game: $gameCode Player $playerName is requesting $amount.',
-      duration: Duration(seconds: 5)
-    );
-  }  
+        titleText: 'Buyin Request',
+        subTitleText:
+            'Game: $gameCode Player $playerName is requesting $amount.',
+        duration: Duration(seconds: 5));
+  }
 }
 
 NotificationHandler notificationHandler = NotificationHandler();

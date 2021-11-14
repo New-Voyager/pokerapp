@@ -66,10 +66,19 @@ class BoardView extends StatelessWidget {
       alignment: Alignment.center,
       children: [
         // table view - board image
-        Align(
-          alignment: Alignment.center,
-          child: TableView(width: dimensions.width, height: dimensions.height),
-        ),
+        // Align(
+        //   alignment: Alignment.center,
+        //   child: Transform.scale(
+        //     scale: 1.15,
+        //     child: TableView(width: dimensions.width, height: dimensions.height)),
+        // ),
+
+        Positioned(
+            bottom: -40,
+            child: Transform.scale(
+                scale: 1.25,
+                child: TableView(
+                    width: dimensions.width, height: dimensions.height))),
 
         /* players */
         Transform.translate(

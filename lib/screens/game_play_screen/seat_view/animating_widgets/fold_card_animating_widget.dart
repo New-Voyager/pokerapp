@@ -39,9 +39,9 @@ class FoldCardAnimatingWidget extends StatelessWidget {
       },
       duration: AppConstants.animationDuration,
       builder: (_, offset, child) {
-        //log('fold animation: seat pos: ${seat.uiSeatPos.toString()} seat no: ${seat.serverSeatPos} offset: $offset duration: ${AppConstants.animationDuration}');
         /* percentage of animation done */
         double pertDone = offset.dx / offsetMapping[this.seat.seatPos].dx;
+        log('fold animation: seat pos: ${seat.seatPos.toString()} seat no: ${seat.serverSeatPos} offset: $offset duration: ${AppConstants.animationDuration}');
 
         /* we start fading away the card after the cards have moved animatingFold90% */
         double opacityValue = pertDone > 0.90 ? (10 - 10 * pertDone) : 1.0;

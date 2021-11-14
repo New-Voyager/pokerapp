@@ -348,8 +348,6 @@ class BetWidget extends StatelessWidget {
         ),
         builder: (BuildContext context, _) {
           final valueNotifierVal = context.read<ValueNotifier<double>>();
-          Widget bottomGap =
-              SizedBox(height: boardAttributes.betWidgetBottomGap);
           return Column(
             mainAxisSize: MainAxisSize.min,
             children: [

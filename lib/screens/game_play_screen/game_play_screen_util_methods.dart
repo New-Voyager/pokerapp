@@ -93,6 +93,27 @@ class GamePlayScreenUtilMethods {
         //   labelBackgroundColor: Colors.black,
         //   onTap: () => TestService.testBetWidget(),
         // ),
+
+        SpeedDialChild(
+            child: Icon(
+              Icons.adb_rounded,
+              color: Colors.white,
+            ),
+            backgroundColor: Colors.red,
+            labelBackgroundColor: Colors.black,
+            label: 'Fold',
+            onTap: () {
+              TestService.animateFold();
+            }),
+        SpeedDialChild(
+            child: Icon(
+              Icons.adb_rounded,
+              color: Colors.white,
+            ),
+            backgroundColor: Colors.red,
+            labelBackgroundColor: Colors.black,
+            label: 'Shuffle',
+            onTap: () => TestService.showShuffle()),
         SpeedDialChild(
           child: Icon(
             Icons.adb_rounded,

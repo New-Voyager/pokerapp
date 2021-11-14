@@ -545,17 +545,17 @@ class _FooterActionViewState extends State<FooterActionView> {
                   /* bet widget */
                   Expanded(
                     child: Transform.scale(
-                      scale: boardAttributes.footerActionViewScale,
+                      scale: boardAttributes.footerActionScale,
                       child: _buildBetWidget(me.cards, actionState.action, 30),
                     ),
                   ),
 
                   /* bottom row */
                   Transform.scale(
-                    scale: boardAttributes.footerActionViewScale,
+                    scale: boardAttributes.footerActionScale,
                     alignment: Alignment.bottomCenter,
                     child: Container(
-                      padding: EdgeInsets.symmetric(vertical: 4.0),
+                      padding: EdgeInsets.symmetric(vertical: 2.0),
                       child: _buildActionWidgets(actionState.action, theme),
                     ),
                   ),
@@ -569,7 +569,7 @@ class _FooterActionViewState extends State<FooterActionView> {
                   children.add(
                     /* bottom row */
                     Transform.scale(
-                      scale: boardAttributes.footerActionViewScale,
+                      scale: boardAttributes.footerActionScale,
                       alignment: Alignment.bottomCenter,
                       child: Container(
                         padding: EdgeInsets.symmetric(vertical: 4.0),

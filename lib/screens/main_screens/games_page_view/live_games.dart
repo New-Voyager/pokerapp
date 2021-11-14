@@ -5,6 +5,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/shims/dart_ui_real.dart';
 import 'package:overlay_support/overlay_support.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/app_state.dart';
 import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/models/newmodels/game_model_new.dart';
@@ -84,22 +85,22 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
       }
     });
 
-    context.read<AppState>().addListener(() async {
-      final int currentIndex =
-          Provider.of<AppState>(context, listen: false).currentIndex;
-      if (context.read<AppState>().newGame ||
-          context.read<AppState>().gameEnded) {
-        if (currentIndex == 0) {
-          if (_tabController.index == 0) {
-            await _fetchLiveGames();
-          } else if (_tabController.index == 1) {
-            await _fetchPlayedGames();
+    if (appState != null) {
+      appState.addListener(() async {
+        final int currentIndex = appState.currentIndex;
+        if (appState.newGame || appState.gameEnded) {
+          if (currentIndex == 0) {
+            if (_tabController.index == 0) {
+              await _fetchLiveGames();
+            } else if (_tabController.index == 1) {
+              await _fetchPlayedGames();
+            }
           }
+          appState.setNewGame(false);
+          appState.setGameEnded(false);
         }
-        context.read<AppState>().setNewGame(false);
-        context.read<AppState>().setGameEnded(false);
-      }
-    });
+      });
+    }
   }
 
   @override

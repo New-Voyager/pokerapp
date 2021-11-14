@@ -165,7 +165,7 @@ class HoleStackCardView extends StatelessWidget {
     final MarkedCards markedCards = gameState.markedCardsState;
     //log('HoleCards: build cards: $cards');
     if (cards == null || cards.isEmpty) {
-      log('Customize: HoleCards: build cards are empty. $cards');
+      // log('Customize: HoleCards: build cards are empty. $cards');
       return const SizedBox.shrink();
     }
     int mid = (cards.length ~/ 2);

@@ -53,7 +53,7 @@ class GameScreenAssets {
 
   Uint8List getHoleCard(int card) {
     Uint8List bytes = cardNumberImage[card];
-    log('Customize: $card: bytes length ${bytes.length}');
+    // log('Customize: $card: bytes length ${bytes.length}');
     return bytes;
   }
 
@@ -119,17 +119,17 @@ class GameScreenAssets {
       );
     }
     try {
-      log('Customize: Loading cards');
+      // log('Customize: Loading cards');
       await loadCards(cardFace);
-      log('Customize: Loading cards successful');
+      // log('Customize: Loading cards successful');
     } catch (err) {
-      log('Customize: Loading default cards');
+      // log('Customize: Loading default cards');
       // fall back to default card
       cardFace = AssetService.getAssetForId(
         UserSettingsStore.VALUE_DEFAULT_CARDFACE,
       );
       await loadCards(cardFace);
-      log('Customize: Loading default cards successful');
+      // log('Customize: Loading default cards successful');
     }
   }
 
