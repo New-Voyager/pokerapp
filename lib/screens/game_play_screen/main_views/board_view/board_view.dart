@@ -59,24 +59,18 @@ class BoardView extends StatelessWidget {
     final isBoardHorizontal =
         boardAttributes.orientation == BoardOrientation.horizontal;
     var dimensions = boardAttributes.dimensions(context);
-
+    var bottomPos = boardAttributes.tableBottomPos;
+    var tableScale = boardAttributes.tableScale;
+    //bottomPos = -160;
     /* finally the view */
     return Stack(
       clipBehavior: Clip.none,
       alignment: Alignment.center,
       children: [
-        // table view - board image
-        // Align(
-        //   alignment: Alignment.center,
-        //   child: Transform.scale(
-        //     scale: 1.15,
-        //     child: TableView(width: dimensions.width, height: dimensions.height)),
-        // ),
-
         Positioned(
-            bottom: -40,
+            bottom: bottomPos,
             child: Transform.scale(
-                scale: 1.25,
+                scale: tableScale,
                 child: TableView(
                     width: dimensions.width, height: dimensions.height))),
 

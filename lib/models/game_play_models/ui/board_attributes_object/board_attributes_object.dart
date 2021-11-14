@@ -601,6 +601,8 @@ class BoardAttributesJson {
           "centerViewScale": 0.85,
           "doubleBoardScale": 0.90,
           "boardScale": 1.0,
+          "tableScale": 1.0,
+          "tableBottomPos": -40,
           "centerGap": 0.0,
           "potViewGap": 0,
           "centerOffset": "15, 130",
@@ -655,7 +657,8 @@ class BoardAttributesJson {
   void init() {
     // attribs = getAttributes();
     //attribs = IPhoneAttribs.getIPhone8Plus();
-    attribs = IPhoneAttribs.getIPhoneXS();
+    //attribs = IPhoneAttribs.getIPhoneXS();
+    attribs = IPhoneAttribs.getIPad97();
   }
 
   double get size => attribs["size"];
@@ -937,9 +940,16 @@ class BoardAttributesJson {
 
   double get tableScale {
     if (attribs['board']['tableScale'] != null) {
-      return double.parse(attribs['board']['tableScale']);
+      return double.parse(attribs['board']['tableScale'].toString());
     }
     return 1.0;
+  }
+
+  double get tableBottomPos {
+    if (attribs['board']['tableBottomPos'] != null) {
+      return double.parse(attribs['board']['tableBottomPos'].toString());
+    }
+    return -40;
   }
 
   Offset get holeCardOffset {
@@ -1272,6 +1282,10 @@ class BoardAttributesObject extends ChangeNotifier {
 
   double get tableScale {
     return attribsObj.tableScale;
+  }
+
+  double get tableBottomPos {
+    return attribsObj.tableBottomPos;
   }
 
   Size get centerSize {

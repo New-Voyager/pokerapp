@@ -155,6 +155,65 @@ class IPhoneAttribs {
     return defaultValue;
   }
 
+
+  static Map<String, dynamic> getIPad97() {
+    final defaultValue = getDefault();
+    String override = '''
+      {
+        "model": "iPhone Pro (9.7inch)",
+        "screenSize": "768.0, 1024.0",
+        "size": 8.5,
+        "board": {
+          "centerViewScale": 1.20,
+          "centerOffset": "15, 250",
+          "boardScale": 1.10,
+          "tableScale": 1.05,
+          "tableBottomPos": -140,
+          "seatMap": {
+            "bottomCenter": "0, 140",
+            "bottomLeft": "100, 140",
+            "bottomRight": "-100, 140",
+            "middleLeft": "50, 170",
+            "middleRight": "-50, 170",
+            "topLeft": "80, 220",
+            "topRight": "-80, 220",
+            "topCenter": "0, 160",
+            "topCenter1": "-80, 160",
+            "topCenter2": "80, 160"
+          },
+          "betAmountFac": {
+            "bottomCenter": "-0.25, -0.70",
+            "topCenter": "0.20, 0.70",
+            "middleLeft": "1.05, 0",
+            "middleRight": "-1.05, 0",
+            "topRight": "-0.65, 0.65",
+            "topLeft": "0.75, 0.50",
+            "bottomLeft": "0.70, -0.80",
+            "bottomRight": "-0.60, -0.80",
+            "topCenter1": "0.20, 0.80",
+            "topCenter2": "-0.20, 0.80"
+          },
+          "betImageScale": 3.0
+        },
+        "seat": {
+          "scale": 1.3,
+          "holeCardOffset": "0, 0",
+          "holeCardScale": 1.0
+        },
+        "holeCardScale": {
+          "2": 1.70,
+          "4": 1.35,
+          "5": 1.15,
+          "default": 1
+        }
+
+      }
+    ''';
+    Map<String, dynamic> overrideMap = jsonDecode(override);
+    updateMap(defaultValue, overrideMap);
+    return defaultValue;
+  }
+
   static Map<String, dynamic> getDefault() {
     String attribs = '''
       {
@@ -230,6 +289,8 @@ class IPhoneAttribs {
           "centerGap": 0.0,
           "potViewGap": 0,
           "centerOffset": "15, 115",
+          "tableBottomPos": -40,
+          "tableScale": 1.0,
           "seatMap": {
             "bottomCenter": "0, 100",
             "bottomLeft": "15, 90",
