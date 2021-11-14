@@ -60,6 +60,11 @@ enum SeatPos {
   bottomRight,
 }
 
+enum BetTextPos {
+  Right,
+  Left,
+}
+
 /*
  * This UI attribute is used for positioning the seat within PlayerOnTableView.
  */
@@ -348,10 +353,11 @@ class BoardAttributesJson {
   }
 
   double get centerPotUpdatesScale {
-    if (attribs["centerPotUpdatesScale"] != null) {
-      return double.parse(attribs["centerPotUpdatesScale"].toString());
+    double ret = 1.0;
+    if (attribs["board"]["centerPotUpdatesScale"] != null) {
+      ret = double.parse(attribs["board"]["centerPotUpdatesScale"].toString());
     }
-    return 1.0;
+    return ret;
   }
 
   double get centerRankStrScale {
@@ -785,182 +791,6 @@ class BoardAttributesObject extends ChangeNotifier {
   double get playerHoleCardScale {
     return attribsObj.playerHoleCardScale;
   }
-
-  // Offset get centerViewCardShufflePosition => _decide(
-  //       lessThan6Inches: Offset.zero,
-  //       equalTo6Inches: Offset(0.0, -20.0),
-  //       equalTo7Inches: Offset(0.0, -50.0),
-  //       greaterThan7Inches: Offset(0.0, -40.0),
-  //     ) as Offset;
-
-  // Offset get centerViewButtonVerticalTranslate => _decide(
-  //       lessThan6Inches: Offset.zero,
-  //       equalTo6Inches: Offset(0.0, -20.0),
-  //       equalTo7Inches: Offset(0.0, -20.0),
-  //       greaterThan7Inches: Offset(0.0, -20.0),
-  //     ) as Offset;
-
-  // Offset get centerViewVerticalTranslate => _decide(
-  //       lessThan6Inches: Offset(0.0, 15.0),
-  //       equalTo6Inches: Offset(0.0, 10.0),
-  //       equalTo7Inches: Offset.zero,
-  //       greaterThan7Inches: Offset(0.0, 60.ph),
-  //     ) as Offset;
-
-  // double get footerViewHeightScale => _decide(
-  //       lessThan6Inches: 0.45,
-  //       equalTo6Inches: .45,
-  //       equalTo7Inches: .45,
-  //       greaterThan7Inches: .45,
-  //     ) as double;
-
-  // double get centerPotScale => _decide(
-  //       lessThan6Inches: 0.85,
-  //       equalTo6Inches: 1.0,
-  //       equalTo7Inches: 1.20,
-  //       greaterThan7Inches: 1.5,
-  //     ) as double;
-
-  // double get centerPotUpdatesScale => _decide(
-  //       lessThan6Inches: 0.85,
-  //       equalTo6Inches: 1.0,
-  //       equalTo7Inches: 1.0,
-  //       greaterThan7Inches: 1.0,
-  //     ) as double;
-
-  // double get centerRankStrScale => _decide(
-  //       lessThan6Inches: 0.85,
-  //       equalTo6Inches: 1.0,
-  //       equalTo7Inches: 1.10,
-  //       greaterThan7Inches: 1.15,
-  //     ) as double;
-
-  // double get centerViewCenterScale => _decide(
-  //       lessThan6Inches: 0.85,
-  //       equalTo6Inches: 1.0,
-  //       equalTo7Inches: 1.10,
-  //       greaterThan7Inches: 1.30,
-  //     ) as double;
-
-  /// Different No of cards, will create different sized hole card
-  // double get _getScaleBasedOnNoOfCards {
-  //   switch (_noOfCards) {
-  //     case 2:
-  //       return 1.45;
-
-  //     case 4:
-  //       return 1.35;
-
-  //     case 5:
-  //       return 1.15;
-
-  //     default:
-  //       return 1;
-  //   }
-  // }
-
-  // double get holeCardSizeRatio => _decide(
-  //       lessThan6Inches: _getScaleBasedOnNoOfCards * 4.0,
-  //       equalTo6Inches: _getScaleBasedOnNoOfCards * 4.0,
-  //       equalTo7Inches: _getScaleBasedOnNoOfCards * 4.0,
-  //       greaterThan7Inches: _getScaleBasedOnNoOfCards * 4.0,
-  //     ) as double;
-
-  // double get communityCardDoubleBoardScaleFactor => _decide(
-  //       lessThan6Inches: 0.90,
-  //       equalTo6Inches: 0.90,
-  //       equalTo7Inches: 0.90,
-  //       greaterThan7Inches: 0.90,
-  //     ) as double;
-
-  // double get communityCardSizeScales => _decide(
-  //       lessThan6Inches: 0.85,
-  //       equalTo6Inches: 1.0,
-  //       equalTo7Inches: 1.05,
-  //       greaterThan7Inches: 1.50,
-  //     ) as double;
-
-  // double get centerGap => _decide(
-  //       lessThan6Inches: 0.0,
-  //       equalTo6Inches: 0.0,
-  //       equalTo7Inches: 10.0,
-  //       greaterThan7Inches: 2.ph,
-  //     ) as double;
-
-  // double get potsViewGap => _decide(
-  //       lessThan6Inches: 0.0,
-  //       equalTo6Inches: 0.0,
-  //       equalTo7Inches: 10.0,
-  //       greaterThan7Inches: 2.ph,
-  //     ) as double;
-
-  /* table center view offsets, scaling and sizes */
-  // Offset get centerOffset => _decide(
-  //       lessThan6Inches: Offset(10, 100),
-  //       equalTo6Inches: Offset(15, 130),
-  //       equalTo7Inches: Offset(15, 85),
-  //       greaterThan7Inches: Offset(10, 40),
-  //     ) as Offset;
-
-  // double get tableScale => _decide(
-  //       lessThan6Inches: 1.0,
-  //       equalTo6Inches: 1.0,
-  //       equalTo7Inches: 0.90,
-  //       greaterThan7Inches: 0.85,
-  //     ) as double;
-
-  /* hole card view offsets */
-  // Offset get holeCardViewOffset {
-  //   return _decide(
-  //     lessThan6Inches: Offset(0, 20.ph),
-  //     equalTo6Inches: Offset(0, 60.ph),
-  //     equalTo7Inches: Offset(0, 90),
-  //     greaterThan7Inches: Offset(0, 130),
-  //   ) as Offset;
-  // }
-
-  /* hold card view scales */
-  // double get holeCardViewScale => _decide(
-  //       lessThan6Inches: 0.95,
-  //       equalTo6Inches: 1.28,
-  //       equalTo7Inches: 1.45,
-  //       greaterThan7Inches: 1.75,
-  //     ) as double;
-
-  // double get footerActionViewScale => _decide(
-  //       lessThan6Inches: 0.90,
-  //       equalTo6Inches: 1.05,
-  //       equalTo7Inches: 1.2,
-  //       greaterThan7Inches: 1.3,
-  //     ) as double;
-
-  /* players configurations */
-  // double get playerViewScale => _decide(
-  //       lessThan6Inches: 0.85,
-  //       equalTo6Inches: 1.0,
-  //       equalTo7Inches: 1.4,
-  //       greaterThan7Inches: 1.7,
-  //     ) as double;
-
-  /* player hole card configurations */
-  // Offset get playerHoleCardOffset {
-  //   return _decide(
-  //     lessThan6Inches: Offset.zero,
-  //     equalTo6Inches: Offset.zero,
-  //     equalTo7Inches: Offset(5.pw, -10.ph),
-  //     greaterThan7Inches: Offset(0, -5.ph),
-  //   ) as Offset;
-  // }
-
-  // double get playerHoleCardScale {
-  //   return _decide(
-  //     lessThan6Inches: 1.0,
-  //     equalTo6Inches: 1.0,
-  //     equalTo7Inches: 1.5,
-  //     greaterThan7Inches: 1.0,
-  //   ) as double;
-  // }
-
   double get tableDividerHeightScale => _decide(
         lessThan6Inches: 0.40,
         equalTo6Inches: 0.40,
@@ -1032,6 +862,22 @@ Map<int, SeatPos> getSeatLocations(int maxSeats) {
     default:
       return {};
   }
+}
+Map<SeatPos, BetTextPos> betTextPos = {
+    SeatPos.bottomCenter: BetTextPos.Right,
+    SeatPos.bottomLeft: BetTextPos.Right,
+    SeatPos.middleLeft: BetTextPos.Left,
+    SeatPos.topLeft: BetTextPos.Left,
+    SeatPos.topCenter: BetTextPos.Left,
+    SeatPos.topCenter1: BetTextPos.Left,
+    SeatPos.topCenter2: BetTextPos.Right,
+    SeatPos.topRight: BetTextPos.Right,
+    SeatPos.middleRight: BetTextPos.Right,
+    SeatPos.bottomRight: BetTextPos.Right,
+  };
+
+BetTextPos getBetTextPos(SeatPos pos) {
+  return betTextPos[pos] ?? BetTextPos.Right;
 }
 
 /* we just need to care about 3 settings

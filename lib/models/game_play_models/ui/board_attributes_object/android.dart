@@ -132,7 +132,16 @@ class AndroidAttribs {
       {
         "model": "motog",
         "screenSize": "411.4, 890.3",
-        "size": 6.5
+        "size": 6.5,
+        "board": {
+            "centerViewScale": 1.0,
+            "centerOffset": "15, 130",
+            "centerPotScale": 0.90,
+            "centerPotUpdatesScale": 0.80,
+            "centerRankScale": 0.80,
+            "boardScale": 0.90,
+            "tableScale": 1.30
+          }        
       }
     ''';
     Map<String, dynamic> overrideMap = jsonDecode(override);
@@ -151,7 +160,7 @@ class AndroidAttribs {
           "centerViewScale": 0.85,
           "centerOffset": "15, 100",
           "centerPotScale": 0.90,
-          "centerPotUpdatesScale": 0.70,
+          "centerPotUpdatesScale": 0.90,
           "centerRankScale": 0.80,
           "boardScale": 0.90,
           "tableScale": 1.10,
