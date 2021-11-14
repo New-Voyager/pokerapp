@@ -512,8 +512,7 @@ class BetWidget extends StatelessWidget {
 
                 final double res = await NumericKeyboard2.show(
                   context,
-                  title:
-                      'Enter your bet',
+                  title: 'Enter your bet',
                   min: min,
                   max: max,
                 );

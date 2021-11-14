@@ -3,6 +3,7 @@
 
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -110,14 +111,18 @@ class SeatPosAttribs {
 }
 
 class BoardAttributesJson {
-
   Map<String, dynamic> attribs;
-  void init() {
-    // attribs = getAttributes();
-    //attribs = IPhoneAttribs.getIPhone8Plus();
-    //attribs = IPhoneAttribs.getIPhoneXS();
-    //attribs = IPhoneAttribs.getIPad97();
-    attribs = AndroidAttribs.get6Inch();
+  void init(double screenSize) {
+    if (Platform.isAndroid) {
+      if (screenSize == 5.3) {
+        attribs = AndroidAttribs.getPixelXl();
+      } else {
+        attribs = AndroidAttribs.get6Inch();
+      }
+    } else {
+      // iphone
+      attribs = IPhoneAttribs.getIPhoneXS();
+    }
   }
 
   double get size => attribs["size"];
@@ -509,11 +514,12 @@ class BoardAttributesObject extends ChangeNotifier {
     @required double screenSize,
     BoardOrientation orientation = BoardOrientation.horizontal,
   }) {
-    attribsObj = BoardAttributesJson();
-    attribsObj.init();
     //this._screenSize = screenSize.round();
     this._screenDiagnolSize = Screen.screenSize;
-    log('original screen size: $screenSize, rounded screen size: $_screenDiagnolSize');
+    log('original screen size: $screenSize, rounded screen size: ${Screen.screenSizeInches}');
+    attribsObj = BoardAttributesJson();
+    attribsObj.init(Screen.screenSizeInches);
+
     this._boardOrientation = orientation;
     this._namePlateSize = attribsObj.namePlateSize; //Size(70, 55);
 
@@ -1026,8 +1032,6 @@ Map<int, SeatPos> getSeatLocations(int maxSeats) {
       return {};
   }
 }
-
-
 
 /* we just need to care about 3 settings
 * 1. equals to 7 inch

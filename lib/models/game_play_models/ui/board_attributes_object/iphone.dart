@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 void updateMap(Map<String, dynamic> defaultMap, Map<String, dynamic> updates) {
-  for(final key in defaultMap.keys) {
+  for (final key in defaultMap.keys) {
     final val = defaultMap[key];
     if (updates.containsKey(key)) {
       if (val is Map) {
@@ -12,6 +12,7 @@ void updateMap(Map<String, dynamic> defaultMap, Map<String, dynamic> updates) {
     }
   }
 }
+
 class IPhoneAttribs {
   static Map<String, dynamic> getIPhone8Plus() {
     String attribs = '''
@@ -154,7 +155,6 @@ class IPhoneAttribs {
     updateMap(defaultValue, overrideMap);
     return defaultValue;
   }
-
 
   static Map<String, dynamic> getIPad97() {
     final defaultValue = getDefault();
