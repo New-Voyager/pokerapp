@@ -116,8 +116,8 @@ class BoardAttributesJson {
     // attribs = getAttributes();
     //attribs = IPhoneAttribs.getIPhone8Plus();
     //attribs = IPhoneAttribs.getIPhoneXS();
-    //attribs = IPhoneAttribs.getIPad97();
-    attribs = AndroidAttribs.get6Inch();
+    attribs = IPhoneAttribs.getIPad97();
+    // attribs = AndroidAttribs.get6Inch();
   }
 
   double get size => attribs["size"];
