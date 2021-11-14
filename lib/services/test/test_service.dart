@@ -11,6 +11,7 @@ import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
+import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/handlog_model.dart';
 import 'package:pokerapp/models/player_info.dart' as pi;
@@ -195,6 +196,7 @@ class TestService {
       List<PlayerModel> playerInSeats = [];
       for (final player in _gameInfo.playersInSeats) {
         if (player.seatNo <= maxPlayers) {
+          player.cards = [177, 177];
           playerInSeats.add(player);
         }
       }
@@ -451,7 +453,7 @@ class TestService {
     196, C4: A♦
     Ah, 10c, 9s, Jd, Ks 
     */
-    player.cards = [161, 200]; //, 168, 177]; //, 168, 177, 194];
+    player.cards = [161, 200, 168, 177, 177]; //, 168, 177, 194];
     player.rankText = 'Full House';
     final myState = gameState.myState;
     myState.notify();
@@ -558,6 +560,40 @@ class TestService {
     );
 
     tableState.notifyAll();
+  }
+
+  static void showShuffle() {
+    final gameState = GameState.getState(_context);
+    final TableState tableState = gameState.tableState;
+    tableState.updateCardShufflingAnimation(true);
+    Future.delayed(Duration(seconds: 2), () {
+      tableState.updateCardShufflingAnimation(false);
+    });
+  }
+
+  static void animateFold() {
+    final gameState = GameState.getState(_context);
+    for (final seat in gameState.seats) {
+      if (seat.seatPos != SeatPos.bottomCenter) {
+        continue;
+      }
+      if (seat.player != null) {
+        seat.player.cards = [177, 177];
+        seat.player.playerFolded = true;
+        seat.player.animatingFold = true;
+        seat.notify();
+      }
+    }
+    Future.delayed(Duration(seconds: 2), () {
+      for (final seat in gameState.seats) {
+        if (seat.player != null) {
+          seat.player.cards = [177, 177];
+          seat.player.playerFolded = false;
+          seat.player.animatingFold = false;
+          seat.notify();
+        }
+      }
+    });
   }
 
   static void fillCenterView() {

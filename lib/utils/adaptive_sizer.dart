@@ -1,7 +1,7 @@
 import 'package:sizer/sizer.dart';
 
-const double mockupWidth = 375.5;
-const double mockupHeight = 812.0;
+// const double mockupWidth = 375.5;
+// const double mockupHeight = 812.0;
 double textScaleFactor = 1.5;
 
 extension PercentWidth on double {

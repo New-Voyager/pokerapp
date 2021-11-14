@@ -80,6 +80,24 @@ class DeviceInfo {
     }
   }
 
+  static String get model {
+    if (Platform.isIOS) {
+      return _deviceInfo._deviceData['name'];
+    } else if (Platform.isAndroid) {
+      return _deviceInfo._deviceData['model'];
+    }
+    return 'Unknown';
+  }
+
+  static String get version {
+    if (Platform.isIOS) {
+      return _deviceInfo._deviceData['systemVersion'];
+    } else if (Platform.isAndroid) {
+      return _deviceInfo._deviceData['version.sdkInt'].toString();
+    }
+    return 'Unknown';
+  }
+
   Map<String, dynamic> _readAndroidBuildData(AndroidDeviceInfo build) {
     return <String, dynamic>{
       'version.securityPatch': build.version.securityPatch,

@@ -194,7 +194,7 @@ class NamePlateWidget extends StatelessWidget {
       playerNamePlate = nameplate.svg;
       playerProgress = nameplate.path;
     }
-    double scale = 1.05;
+    double scale = 0.95;
     // if (nameplate.id != "0") {
     //   scale = 1.2;
     // }

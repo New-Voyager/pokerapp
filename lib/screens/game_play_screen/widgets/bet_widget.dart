@@ -348,15 +348,13 @@ class BetWidget extends StatelessWidget {
         ),
         builder: (BuildContext context, _) {
           final valueNotifierVal = context.read<ValueNotifier<double>>();
-          Widget bottomGap =
-              SizedBox(height: boardAttributes.betWidgetBottomGap);
           return Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               FittedBox(
                 fit: BoxFit.fitWidth,
                 child: Transform.scale(
-                    scale: 1.2,
+                    scale: 1.0,
                     child: StackCardView(cards: _getCards(playerCards))),
               ),
               /* progress drag to bet */
@@ -390,15 +388,15 @@ class BetWidget extends StatelessWidget {
               /* button row for other bet options */
               Transform.scale(
                 alignment: Alignment.topCenter,
-                scale: isLargerDisplay ? 1.2 : 1.0,
+                scale: 0.90,
                 child: Container(
                   alignment: Alignment.center,
                   width: width / 1.5,
-                  height: 60.ph,
+                  height: 40.ph,
                   child: betAmountList(valueNotifierVal, appTheme),
                 ),
               ),
-              SizedBox(height: 5.ph),
+              // SizedBox(height: 5.ph),
 
               /* bet amount */
               ValueListenableBuilder<double>(
@@ -422,54 +420,6 @@ class BetWidget extends StatelessWidget {
         },
       ),
     ]);
-  }
-
-  Widget sleekSlider(AppTheme theme) {
-    return Consumer<ValueNotifier<double>>(
-      builder: (_, vnValue, __) => SleekCircularSlider(
-        onChange: (value) {
-          log('min: ${action.minRaiseAmount} max: ${action.maxRaiseAmount} val: ${vnValue.value}');
-          vnValue.value = value.round().toDouble();
-        },
-        min: action.minRaiseAmount.toDouble(),
-        max: action.maxRaiseAmount.toDouble(),
-        initialValue: vnValue.value,
-        appearance: CircularSliderAppearance(
-          size: 300.pw,
-          // startAngle: 0,
-          // angleRange: 275,
-          startAngle: 215,
-          angleRange: 110,
-          animationEnabled: false,
-          infoProperties: InfoProperties(
-            mainLabelStyle: TextStyle(
-              fontSize: 0,
-              color: Colors.white70,
-            ),
-            modifier: (double value) => '',
-          ),
-          customColors: CustomSliderColors(
-            hideShadow: false,
-            trackColor: theme.fillInColor.withAlpha(100),
-            dotColor: theme.accentColor,
-            progressBarColors: [
-              theme.primaryColorWithLight().withAlpha(50),
-              theme.primaryColorWithLight().withAlpha(100),
-              theme.primaryColorWithLight().withAlpha(150),
-              theme.primaryColorWithLight().withAlpha(200),
-              theme.primaryColorWithLight(),
-              theme.primaryColor,
-              theme.primaryColorWithDark(),
-            ],
-          ),
-          customWidths: CustomSliderWidths(
-            trackWidth: 12,
-            progressBarWidth: 12,
-            handlerSize: 16,
-          ),
-        ),
-      ),
-    );
   }
 
   Widget _buildBetAmountChild({
@@ -532,13 +482,13 @@ class BetWidget extends StatelessWidget {
                       ),
                     ),
             ),
-            Text(
-              isKeyboard ? '' : '${option.amount.toInt().toString()}',
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.white,
-              ),
-            ),
+            // Text(
+            //   isKeyboard ? '' : '${option.amount.toInt().toString()}',
+            //   style: TextStyle(
+            //     fontSize: 12,
+            //     color: Colors.white,
+            //   ),
+            // ),
           ],
         ),
       ),
@@ -547,7 +497,7 @@ class BetWidget extends StatelessWidget {
 
   Widget betAmountList(ValueNotifier<double> vnValue, AppTheme theme) {
     return Container(
-      height: 70.ph,
+      height: 40,
       child: ListView.builder(
         physics: BouncingScrollPhysics(),
         scrollDirection: Axis.horizontal,
@@ -563,7 +513,7 @@ class BetWidget extends StatelessWidget {
                 final double res = await NumericKeyboard2.show(
                   context,
                   title:
-                      'Enter your bet/raise amount (${action.minRaiseAmount.toString()} - ${action.maxRaiseAmount.toString()})',
+                      'Enter your bet',
                   min: min,
                   max: max,
                 );

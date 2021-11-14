@@ -174,7 +174,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
   @override
   Widget build(BuildContext context) {
     _context = context;
-    log('game started: ${widget.gameState.started}');
+    // log('game started: ${widget.gameState.started}');
     final theme = AppTheme.getTheme(context);
     return Align(
       alignment: Alignment.topLeft,

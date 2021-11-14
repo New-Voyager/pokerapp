@@ -227,6 +227,7 @@ class GameState {
     this.hostSeatChangeInProgress = hostSeatChangeInProgress ?? false;
 
     Map<int, SeatPos> seatPosLoc = getSeatLocations(gameInfo.maxPlayers);
+    log('Diagnoal inches: ${Screen.diagonalInches}');
     final seatPosAttribs = getSeatMap(Screen.screenSize);
 
     // 0: index reserved

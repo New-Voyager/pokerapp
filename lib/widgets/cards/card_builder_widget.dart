@@ -48,7 +48,7 @@ class CardBuilderWidget extends StatelessWidget {
         /* if we have a card type of community cards, then we must be on the 
           game screen, thus we can safely call BoardAttributesObject */
         final bao = context.read<BoardAttributesObject>();
-        return 1.2 * bao.communityCardSizeScales;
+        return 1.2 * bao.boardScale;
 
       case CardType.HoleCard:
         final bao = context.read<BoardAttributesObject>();

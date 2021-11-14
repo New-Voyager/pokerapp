@@ -28,7 +28,7 @@ class FooterViewWidget extends StatelessWidget {
 
     return IntrinsicHeight(
       child: Container(
-        height: MediaQuery.of(context).size.height * boa.footerViewHeightScale,
+        height: MediaQuery.of(context).size.height * boa.footerViewScale,
         key: UniqueKey(),
         decoration: BoxDecoration(
           image: DecorationImage(

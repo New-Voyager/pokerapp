@@ -227,7 +227,7 @@ class _FooterViewState extends State<FooterView>
     return ValueListenableBuilder<HandActions>(
       valueListenable: myLastActionVn,
       builder: (_, handAction, __) {
-        log('footer_view : _buildMyLastActionWidget : $handAction');
+        // log('footer_view : _buildMyLastActionWidget : $handAction');
         return MyLastActionAnimatingWidget(
           myAction: handAction,
         );

@@ -830,7 +830,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
           // this widget, shows which winner is currently showing - high winner / low winner
           // this widget also acts as a natural seperator between header and board view
           // WhichWinnerWidget(seperator: divider1),
-
+          // SizedBox(height: 40),
           // main board view
           Stack(
             // alignment: Alignment.center,
@@ -857,8 +857,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
               // board view
               Positioned(
-                top: MediaQuery.of(context).size.height *
-                    boardAttributes.boardViewPositionScale,
+                // top: MediaQuery.of(context).size.height *
+                //     boardAttributes.boardViewPositionScale,
+                top: 0, //Screen.height / 2,
                 child: _buildBoardView(
                   boardDimensions,
                   tableScale,
@@ -868,22 +869,32 @@ class _GamePlayScreenState extends State<GamePlayScreen>
           ),
 
           /* divider that divides the board view and the footer */
-          //Divider(color: AppColorsNew.dividerColor, thickness: 3),
+          // Divider(color: AppColorsNew.dividerColor, thickness: 3),
         ],
       );
     }
 
+    bool showBottom = this.widget.showBottom;
+    // showBottom = false;
+
     return Stack(
-      alignment: Alignment.center,
+      alignment: Alignment.topCenter,
+      clipBehavior: Clip.none,
       children: [
         /* main view */
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: children,
-        ),
+        Container(
+            clipBehavior: Clip.none,
+            height: (Screen.height),
+            width: Screen.width,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: children,
+            )),
 
         // footer view
-        this.widget.showBottom
+        showBottom
             ? Align(
                 alignment: Alignment.bottomCenter,
                 child: Consumer<RedrawFooterSectionState>(
@@ -952,16 +963,16 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
     /* get the screen sizes, and initialize the board attributes */
     BoardAttributesObject boardAttributes;
-    if (Platform.isIOS) {
-      boardAttributes = IosBoardAttributesObject(
-        screenSize: Screen.diagonalInches,
-      );
-    } else {
-      boardAttributes = BoardAttributesObject(
-        screenSize: Screen.diagonalInches,
-      );
-    }
+    // if (Platform.isIOS) {
+    //   boardAttributes = IosBoardAttributesObject(
+    //     screenSize: Screen.diagonalInches,
+    //   );
+    // } else {
+    // }
 
+    boardAttributes = BoardAttributesObject(
+      screenSize: Screen.diagonalInches,
+    );
     final providers = GamePlayScreenUtilMethods.getProviders(
       context: context,
       gameInfoModel: _gameInfoModel,

@@ -63,9 +63,9 @@ class _CommunicationViewState extends State<CommunicationView> {
               builder: (context, communicationState, __) {
                 List<Widget> children = [];
                 String status = gameState.myStatus;
-                log('PlayerStatus = ${status}, '
-                    'audioConferenceStatus = ${communicationState.audioConferenceStatus}, '
-                    'voiceChatEnable = ${communicationState.voiceChatEnable}');
+                // log('PlayerStatus = ${status}, '
+                //     'audioConferenceStatus = ${communicationState.audioConferenceStatus}, '
+                //     'voiceChatEnable = ${communicationState.voiceChatEnable}');
                 bool gameChatEnabled = (gameState.gameSettings.chat ?? true);
                 bool playerChatEnabled =
                     (gameState.playerLocalConfig.showChat ?? true);

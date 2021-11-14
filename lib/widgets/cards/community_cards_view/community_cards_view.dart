@@ -119,7 +119,7 @@ class CommunityCardsView extends StatelessWidget {
     if (twoBoardsNeeded ?? false) {
       return Transform.scale(
         alignment: Alignment.topCenter,
-        scale: boa.communityCardDoubleBoardScaleFactor,
+        scale: boa.doubleBoardScale,
         child: Column(
           children: [
             /* board 1 cards */
