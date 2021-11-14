@@ -85,8 +85,7 @@ class _AnnouncementsViewState extends State<AnnouncementsView> {
                             ),
                           ),
                           Visibility(
-                            visible: (widget.clubModel.isOwner ||
-                                widget.clubModel.isManager),
+                            visible: widget.clubModel.isOwner,
                             child: RoundRectButton(
                                 text: "+ ${_appScreenText['NEW']}",
                                 onTap: () => _handleNewAnnouncement(theme),
