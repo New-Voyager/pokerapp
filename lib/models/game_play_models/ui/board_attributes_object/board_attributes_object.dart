@@ -12,6 +12,7 @@ import 'package:pokerapp/utils/utils.dart';
 import 'package:tuple/tuple.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
+import 'android.dart';
 import 'iphone.dart';
 
 enum BoardOrientation {
@@ -108,557 +109,15 @@ class SeatPosAttribs {
   set size(Size size) => _size = size;
 }
 
-/* we just need to care about 3 settings
-* 1. equals to 7 inch
-* 2. less than 7 inch
-* 3. greater than 7 inch */
-
-Map<SeatPos, SeatPosAttribs> getSeatMap(int deviceSize) {
-  /* device configurations equal to the 7 inch configuration */
-  if (deviceSize == 7) {
-    return {
-      /* bottom center */
-      SeatPos.bottomCenter: SeatPosAttribs(
-        Alignment.bottomCenter,
-        Offset(0, -10),
-        Alignment.centerRight,
-      ),
-
-      /* bottom left and bottom right */
-      SeatPos.bottomLeft: SeatPosAttribs(
-        Alignment.bottomLeft,
-        Offset(30, -25),
-        Alignment.centerRight,
-      ),
-      SeatPos.bottomRight: SeatPosAttribs(
-        Alignment.bottomRight,
-        Offset(-30, -25),
-        Alignment.centerLeft,
-      ),
-
-      /* middle left and middle right */
-      SeatPos.middleLeft: SeatPosAttribs(
-        Alignment.centerLeft,
-        Offset(20, -10),
-        Alignment.centerRight,
-      ),
-      SeatPos.middleRight: SeatPosAttribs(
-        Alignment.centerRight,
-        Offset(-20, -10),
-        Alignment.centerLeft,
-      ),
-
-      /* top left and top right */
-      SeatPos.topLeft: SeatPosAttribs(
-        Alignment.topLeft,
-        Offset(40, 35),
-        Alignment.centerRight,
-      ),
-      SeatPos.topRight: SeatPosAttribs(
-        Alignment.topRight,
-        Offset(-40, 35),
-        Alignment.centerLeft,
-      ),
-
-      /* center, center left and center right */
-      SeatPos.topCenter: SeatPosAttribs(
-        Alignment.topCenter,
-        Offset(0, 20),
-        Alignment.centerLeft,
-      ),
-      SeatPos.topCenter1: SeatPosAttribs(
-        Alignment.topCenter,
-        Offset(-55, 15),
-        Alignment.centerRight,
-      ),
-      SeatPos.topCenter2: SeatPosAttribs(
-        Alignment.topCenter,
-        Offset(100, 15),
-        Alignment.centerLeft,
-      ),
-    };
-  }
-
-  /* device configurations larger than 7 inch configurations */
-  if (deviceSize > 7) {
-    return {
-      /* bottom center */
-      SeatPos.bottomCenter: SeatPosAttribs(
-        Alignment.bottomCenter,
-        Offset(0, -20),
-        Alignment.centerRight,
-      ),
-
-      /* bottom left and bottom right */
-      SeatPos.bottomLeft: SeatPosAttribs(
-        Alignment.bottomLeft,
-        Offset(60, -40),
-        Alignment.centerRight,
-      ),
-      SeatPos.bottomRight: SeatPosAttribs(
-        Alignment.bottomRight,
-        Offset(-60, -40),
-        Alignment.centerLeft,
-      ),
-
-      /* middle left and middle right */
-      SeatPos.middleLeft: SeatPosAttribs(
-        Alignment.centerLeft,
-        Offset(20, -15),
-        Alignment.centerRight,
-      ),
-      SeatPos.middleRight: SeatPosAttribs(
-        Alignment.centerRight,
-        Offset(-20, -15),
-        Alignment.centerLeft,
-      ),
-
-      /* top left and top right */
-      SeatPos.topLeft: SeatPosAttribs(
-        Alignment.topLeft,
-        Offset(70, 40),
-        Alignment.centerRight,
-      ),
-      SeatPos.topRight: SeatPosAttribs(
-        Alignment.topRight,
-        Offset(-70, 40),
-        Alignment.centerLeft,
-      ),
-
-      /* top center, center left and center right */
-      SeatPos.topCenter: SeatPosAttribs(
-        Alignment.topCenter,
-        Offset(0, 0),
-        Alignment.centerRight,
-      ),
-      SeatPos.topCenter1: SeatPosAttribs(
-        Alignment.topCenter,
-        Offset(-85, 0),
-        Alignment.centerRight,
-      ),
-      SeatPos.topCenter2: SeatPosAttribs(
-        Alignment.topCenter,
-        Offset(85, 0),
-        Alignment.centerLeft,
-      ),
-    };
-  }
-
-  if (deviceSize <= 5) {
-    return {
-      /* bottom center */
-      SeatPos.bottomCenter: SeatPosAttribs(
-        Alignment.bottomCenter,
-        Offset(0, 80),
-        Alignment.centerRight,
-      ),
-      /* bottom left and bottom right  */
-      SeatPos.bottomLeft: SeatPosAttribs(
-        Alignment.bottomLeft,
-        Offset(15, 60),
-        Alignment.centerRight,
-      ),
-      SeatPos.bottomRight: SeatPosAttribs(
-        Alignment.bottomRight,
-        Offset(-15, 60),
-        Alignment.centerLeft,
-      ),
-      /* middle left and middle right */
-      SeatPos.middleLeft: SeatPosAttribs(
-        Alignment.centerLeft,
-        Offset(2, 65),
-        Alignment.centerRight,
-      ),
-      SeatPos.middleRight: SeatPosAttribs(
-        Alignment.centerRight,
-        Offset(2, 65),
-        Alignment.centerLeft,
-      ),
-
-      /* top left and top right  */
-      SeatPos.topLeft: SeatPosAttribs(
-        Alignment.topLeft,
-        Offset(2, 75),
-        Alignment.centerRight,
-      ),
-      SeatPos.topRight: SeatPosAttribs(
-        Alignment.topRight,
-        Offset(2, 75),
-        Alignment.centerLeft,
-      ),
-
-      /* center, center right & center left */
-      SeatPos.topCenter: SeatPosAttribs(
-        Alignment.topCenter,
-        Offset(0, 0),
-        Alignment.centerRight,
-      ),
-      SeatPos.topCenter1: SeatPosAttribs(
-        Alignment.topCenter,
-        Offset(-50, 60),
-        Alignment.centerRight,
-      ),
-      SeatPos.topCenter2: SeatPosAttribs(
-        Alignment.topCenter,
-        Offset(55, 60),
-        Alignment.centerLeft,
-      ),
-    };
-  }
-
-  /* device configurations smaller than 7 inch configurations */
-  return {
-    /* bottom center */
-    SeatPos.bottomCenter: SeatPosAttribs(
-      Alignment.bottomCenter,
-      Offset(0, 60),
-      Alignment.centerRight,
-    ),
-    /* bottom left and bottom right  */
-    SeatPos.bottomLeft: SeatPosAttribs(
-      Alignment.bottomLeft,
-      Offset(15, 50),
-      Alignment.centerRight,
-    ),
-    SeatPos.bottomRight: SeatPosAttribs(
-      Alignment.bottomRight,
-      Offset(-15, 50),
-      Alignment.centerLeft,
-    ),
-    /* middle left and middle right */
-    SeatPos.middleLeft: SeatPosAttribs(
-      Alignment.centerLeft,
-      Offset(2, 65),
-      Alignment.centerRight,
-    ),
-    SeatPos.middleRight: SeatPosAttribs(
-      Alignment.centerRight,
-      Offset(2, 65),
-      Alignment.centerLeft,
-    ),
-
-    /* top left and top right  */
-    SeatPos.topLeft: SeatPosAttribs(
-      Alignment.topLeft,
-      Offset(2, 100),
-      Alignment.centerRight,
-    ),
-    SeatPos.topRight: SeatPosAttribs(
-      Alignment.topRight,
-      Offset(2, 100),
-      Alignment.centerLeft,
-    ),
-
-    /* center, center right & center left */
-    SeatPos.topCenter: SeatPosAttribs(
-      Alignment.topCenter,
-      Offset(0, 0),
-      Alignment.centerRight,
-    ),
-    SeatPos.topCenter1: SeatPosAttribs(
-      Alignment.topCenter,
-      Offset(-50, 60),
-      Alignment.centerRight,
-    ),
-    SeatPos.topCenter2: SeatPosAttribs(
-      Alignment.topCenter,
-      Offset(55, 60),
-      Alignment.centerLeft,
-    ),
-  };
-}
-
-/* bet positions configurations for different screen sizes */
-Map<SeatPos, Offset> getBetAmountPositionMap({
-  @required Size namePlateSize,
-  @required int deviceSize,
-}) {
-  /* for screen sizes less than 7 inch */
-  if (deviceSize < 7)
-    return {
-      /* bottom, bottom left and bottom right */
-      SeatPos.bottomCenter: Offset(
-        0,
-        -namePlateSize.height * 1.0,
-      ),
-      SeatPos.bottomLeft: Offset(
-        namePlateSize.width * 0.70,
-        -namePlateSize.height * 0.80,
-      ),
-      SeatPos.bottomRight: Offset(
-        -namePlateSize.width * 0.60,
-        -namePlateSize.height * 0.80,
-      ),
-
-      /* middle left and middle right */
-      SeatPos.middleLeft: Offset(
-        -namePlateSize.width * 0.10,
-        namePlateSize.height * 0.75,
-      ),
-      SeatPos.middleRight: Offset(
-        namePlateSize.width * 0.20,
-        namePlateSize.height * 0.75,
-      ),
-
-      /* top left and top right */
-      SeatPos.topLeft: Offset(
-        namePlateSize.width * 0.20,
-        namePlateSize.height * 0.70,
-      ),
-      SeatPos.topRight: Offset(
-        -namePlateSize.width * 0.20,
-        namePlateSize.height * 0.65,
-      ),
-
-      /* center, center left and center right */
-      SeatPos.topCenter: Offset(
-        namePlateSize.width * 0.20,
-        namePlateSize.height * 0.70,
-      ),
-      SeatPos.topCenter1: Offset(
-        namePlateSize.width * 0.20,
-        namePlateSize.height * 0.8,
-      ),
-      SeatPos.topCenter2: Offset(
-        namePlateSize.width * -0.20,
-        namePlateSize.height * 0.8,
-      ),
-    };
-
-  /* for screen sizes greater than 7 inch */
-  if (deviceSize > 7)
-    return {
-      /* bottom, bottom left and bottom right */
-      SeatPos.bottomCenter: Offset(
-        0,
-        -namePlateSize.height * 0.80,
-      ),
-      SeatPos.bottomLeft: Offset(
-        namePlateSize.width * 0.60,
-        -namePlateSize.height * 0.80,
-      ),
-      SeatPos.bottomRight: Offset(
-        -namePlateSize.width * 0.60,
-        -namePlateSize.height * 0.80,
-      ),
-
-      /* middle left and middle right */
-      SeatPos.middleLeft: Offset(
-        namePlateSize.width * 0.30,
-        namePlateSize.height * 0.60,
-      ),
-      SeatPos.middleRight: Offset(
-        -namePlateSize.width * 0.20,
-        namePlateSize.height * 0.60,
-      ),
-
-      /* top left and top right */
-      SeatPos.topLeft: Offset(
-        namePlateSize.width * 0.20,
-        namePlateSize.height * 0.70,
-      ),
-      SeatPos.topRight: Offset(
-        -namePlateSize.width * 0.20,
-        namePlateSize.height * 0.70,
-      ),
-
-      /* center, center left and center right */
-      SeatPos.topCenter: Offset(
-        namePlateSize.width * 0.20,
-        namePlateSize.height * 0.60,
-      ),
-      SeatPos.topCenter1: Offset(
-        namePlateSize.width * 0.20,
-        namePlateSize.height * 0.60,
-      ),
-      SeatPos.topCenter2: Offset(
-        namePlateSize.width * 0.20,
-        namePlateSize.height * 0.60,
-      ),
-    };
-
-  /* for screen sizes equals to 7 */
-  return {
-    /* bottom, bottom left and bottom right */
-    SeatPos.bottomCenter: Offset(
-      0,
-      -namePlateSize.height * 0.80,
-    ),
-    SeatPos.bottomLeft: Offset(
-      namePlateSize.width * 0.60,
-      -namePlateSize.height * 0.80,
-    ),
-    SeatPos.bottomRight: Offset(
-      -namePlateSize.width * 0.60,
-      -namePlateSize.height * 0.80,
-    ),
-
-    /* middle left and middle right */
-    SeatPos.middleLeft: Offset(
-      namePlateSize.width * 0.20,
-      namePlateSize.height * 0.60,
-    ),
-    SeatPos.middleRight: Offset(
-      -namePlateSize.width * 0.10,
-      namePlateSize.height * 0.60,
-    ),
-
-    /* top left and top right */
-    SeatPos.topLeft: Offset(
-      namePlateSize.width * 0.30,
-      namePlateSize.height * 0.70,
-    ),
-    SeatPos.topRight: Offset(
-      -namePlateSize.width * 0.30,
-      namePlateSize.height * 0.70,
-    ),
-
-    /* center, center left and center right */
-    SeatPos.topCenter: Offset(
-      namePlateSize.width * 0.20,
-      namePlateSize.height * 0.60,
-    ),
-    SeatPos.topCenter1: Offset(
-      namePlateSize.width * 0.20,
-      namePlateSize.height * 0.60,
-    ),
-    SeatPos.topCenter2: Offset(
-      namePlateSize.width * 0.20,
-      namePlateSize.height * 0.60,
-    ),
-  };
-}
-
 class BoardAttributesJson {
-  Map<String, dynamic> getAttributes() {
-    String attribs = '''
-      {
-        "size": 6,
-        "appliesTo": "6",
-        "board": {
-          "playersTableOffset": "0.0, -25.0",
-          "namePlate": {
-            "width": 70,
-            "height": 55
-          },
-          "buttonPos": {
-            "topCenter": "25, 40",
-            "bottomCenter": "10, -40",
-            "middleLeft": "50, 0",
-            "middleRight": "-50, 0",
-            "topRight": "-40, 30",
-            "topLeft": "40, 30", 
-            "bottomLeft": "25, -40",
-            "bottomRight": "-20, -40",
-            "topCenter1": "0, 40",
-            "topCenter2": "0, 40"
-          },
-          "foldStopPos": {
-            "bottomCenter": "20, -140",
-            "topCenter": "20, 20",
-            "middleLeft": "100, -50",
-            "middleRight": "-70, -50",
-            "topRight": "-70, 20",
-            "topLeft": "100, 20",
-            "bottomLeft": "100, -120",
-            "bottomRight": "-70, -120",
-            "topCenter1": "30, 20",
-            "topCenter2": "-10, 20"
-          },
-          "boardSize": {
-            "width": 0.78,
-            "height": 2.0
-          },
-          "tableSizeInc": {
-            "dx": 50,
-            "dy": -70
-          },
-          "centerSizeInc": {
-            "dx": -30,
-            "dy": -70
-          },
-          "lottieScale": 1.0,
-          "betImageScale": 3.0,
-          "betSliderScale": 2.0,
-          "betAmountFac": {
-            "bottomCenter": "0, -1.0",
-            "topCenter": "0.20, 0.70",
-            "middleLeft": "0.30, 0.75",
-            "middleRight": "-0.10, 0.75",
-            "topRight": "-0.10, 0.70",
-            "topLeft": "0.30, 0.65",
-            "bottomLeft": "0.70, -0.80",
-            "bottomRight": "-0.60, -0.80",
-            "topCenter1": "0.20, 0.80",
-            "topCenter2": "-0.20, 0.80"
-          },
-          "cardShufflePos": "0, -30",
-          "centerButtonsPos": "0, -40",
-          "centerViewPos": "0, 15.0",
-          "centerPotScale": 1.0,
-          "centerPotUpdatesScale": 0.85,
-          "centerRankScale": 0.85,
-          "centerViewScale": 0.85,
-          "doubleBoardScale": 0.90,
-          "boardScale": 1.0,
-          "tableScale": 1.0,
-          "tableBottomPos": -40,
-          "centerGap": 0.0,
-          "potViewGap": 0,
-          "centerOffset": "15, 130",
-          "seatMap": {
-            "bottomCenter": "0, 60",
-            "bottomLeft": "15, 50",
-            "bottomRight": "-15, 50",
-            "middleLeft": "2, 65",
-            "middleRight": "2, 65",
-            "topLeft": "2, 100",
-            "topRight": "2, 100",
-            "topCenter": "0, 60",
-            "topCenter1": "-50, 60",
-            "topCenter2": "55, 60"
-          }
-        },
-        "holeCardDisplacement": {
-          "2": 35,
-          "4": 35,
-          "5": 35,
-          "default": 20
-        },
-        "holeCardDisplacementVisible": {
-          "2": 30,
-          "4": 25,
-          "5": 25,
-          "default": 20
-        },        
-        "footerViewHeightScale": 0.45,
-        "holeCardScale": {
-          "2": 1.45,
-          "4": 1.35,
-          "5": 1.15,
-          "default": 1
-        },
-        "holeCardOffset": "0, 0",
-        "holeCardViewOffset": "0, 60",
-        "holeCardViewScale": 1.28,
-        "footerActionScale": 1.05,
-        "footerScale": 0.45,
-        "seat": {
-          "scale": 1.0,
-          "holeCardOffset": "0, 0",
-          "holeCardScale": 1.0
-        }
-      }
-    ''';
-    return jsonDecode(attribs);
-  }
 
   Map<String, dynamic> attribs;
   void init() {
     // attribs = getAttributes();
     //attribs = IPhoneAttribs.getIPhone8Plus();
     //attribs = IPhoneAttribs.getIPhoneXS();
-    attribs = IPhoneAttribs.getIPad97();
+    //attribs = IPhoneAttribs.getIPad97();
+    attribs = AndroidAttribs.get6Inch();
   }
 
   double get size => attribs["size"];
@@ -1566,4 +1025,427 @@ Map<int, SeatPos> getSeatLocations(int maxSeats) {
     default:
       return {};
   }
+}
+
+
+
+/* we just need to care about 3 settings
+* 1. equals to 7 inch
+* 2. less than 7 inch
+* 3. greater than 7 inch */
+
+Map<SeatPos, SeatPosAttribs> getSeatMap(int deviceSize) {
+  /* device configurations equal to the 7 inch configuration */
+  if (deviceSize == 7) {
+    return {
+      /* bottom center */
+      SeatPos.bottomCenter: SeatPosAttribs(
+        Alignment.bottomCenter,
+        Offset(0, -10),
+        Alignment.centerRight,
+      ),
+
+      /* bottom left and bottom right */
+      SeatPos.bottomLeft: SeatPosAttribs(
+        Alignment.bottomLeft,
+        Offset(30, -25),
+        Alignment.centerRight,
+      ),
+      SeatPos.bottomRight: SeatPosAttribs(
+        Alignment.bottomRight,
+        Offset(-30, -25),
+        Alignment.centerLeft,
+      ),
+
+      /* middle left and middle right */
+      SeatPos.middleLeft: SeatPosAttribs(
+        Alignment.centerLeft,
+        Offset(20, -10),
+        Alignment.centerRight,
+      ),
+      SeatPos.middleRight: SeatPosAttribs(
+        Alignment.centerRight,
+        Offset(-20, -10),
+        Alignment.centerLeft,
+      ),
+
+      /* top left and top right */
+      SeatPos.topLeft: SeatPosAttribs(
+        Alignment.topLeft,
+        Offset(40, 35),
+        Alignment.centerRight,
+      ),
+      SeatPos.topRight: SeatPosAttribs(
+        Alignment.topRight,
+        Offset(-40, 35),
+        Alignment.centerLeft,
+      ),
+
+      /* center, center left and center right */
+      SeatPos.topCenter: SeatPosAttribs(
+        Alignment.topCenter,
+        Offset(0, 20),
+        Alignment.centerLeft,
+      ),
+      SeatPos.topCenter1: SeatPosAttribs(
+        Alignment.topCenter,
+        Offset(-55, 15),
+        Alignment.centerRight,
+      ),
+      SeatPos.topCenter2: SeatPosAttribs(
+        Alignment.topCenter,
+        Offset(100, 15),
+        Alignment.centerLeft,
+      ),
+    };
+  }
+
+  /* device configurations larger than 7 inch configurations */
+  if (deviceSize > 7) {
+    return {
+      /* bottom center */
+      SeatPos.bottomCenter: SeatPosAttribs(
+        Alignment.bottomCenter,
+        Offset(0, -20),
+        Alignment.centerRight,
+      ),
+
+      /* bottom left and bottom right */
+      SeatPos.bottomLeft: SeatPosAttribs(
+        Alignment.bottomLeft,
+        Offset(60, -40),
+        Alignment.centerRight,
+      ),
+      SeatPos.bottomRight: SeatPosAttribs(
+        Alignment.bottomRight,
+        Offset(-60, -40),
+        Alignment.centerLeft,
+      ),
+
+      /* middle left and middle right */
+      SeatPos.middleLeft: SeatPosAttribs(
+        Alignment.centerLeft,
+        Offset(20, -15),
+        Alignment.centerRight,
+      ),
+      SeatPos.middleRight: SeatPosAttribs(
+        Alignment.centerRight,
+        Offset(-20, -15),
+        Alignment.centerLeft,
+      ),
+
+      /* top left and top right */
+      SeatPos.topLeft: SeatPosAttribs(
+        Alignment.topLeft,
+        Offset(70, 40),
+        Alignment.centerRight,
+      ),
+      SeatPos.topRight: SeatPosAttribs(
+        Alignment.topRight,
+        Offset(-70, 40),
+        Alignment.centerLeft,
+      ),
+
+      /* top center, center left and center right */
+      SeatPos.topCenter: SeatPosAttribs(
+        Alignment.topCenter,
+        Offset(0, 0),
+        Alignment.centerRight,
+      ),
+      SeatPos.topCenter1: SeatPosAttribs(
+        Alignment.topCenter,
+        Offset(-85, 0),
+        Alignment.centerRight,
+      ),
+      SeatPos.topCenter2: SeatPosAttribs(
+        Alignment.topCenter,
+        Offset(85, 0),
+        Alignment.centerLeft,
+      ),
+    };
+  }
+
+  if (deviceSize <= 5) {
+    return {
+      /* bottom center */
+      SeatPos.bottomCenter: SeatPosAttribs(
+        Alignment.bottomCenter,
+        Offset(0, 80),
+        Alignment.centerRight,
+      ),
+      /* bottom left and bottom right  */
+      SeatPos.bottomLeft: SeatPosAttribs(
+        Alignment.bottomLeft,
+        Offset(15, 60),
+        Alignment.centerRight,
+      ),
+      SeatPos.bottomRight: SeatPosAttribs(
+        Alignment.bottomRight,
+        Offset(-15, 60),
+        Alignment.centerLeft,
+      ),
+      /* middle left and middle right */
+      SeatPos.middleLeft: SeatPosAttribs(
+        Alignment.centerLeft,
+        Offset(2, 65),
+        Alignment.centerRight,
+      ),
+      SeatPos.middleRight: SeatPosAttribs(
+        Alignment.centerRight,
+        Offset(2, 65),
+        Alignment.centerLeft,
+      ),
+
+      /* top left and top right  */
+      SeatPos.topLeft: SeatPosAttribs(
+        Alignment.topLeft,
+        Offset(2, 75),
+        Alignment.centerRight,
+      ),
+      SeatPos.topRight: SeatPosAttribs(
+        Alignment.topRight,
+        Offset(2, 75),
+        Alignment.centerLeft,
+      ),
+
+      /* center, center right & center left */
+      SeatPos.topCenter: SeatPosAttribs(
+        Alignment.topCenter,
+        Offset(0, 0),
+        Alignment.centerRight,
+      ),
+      SeatPos.topCenter1: SeatPosAttribs(
+        Alignment.topCenter,
+        Offset(-50, 60),
+        Alignment.centerRight,
+      ),
+      SeatPos.topCenter2: SeatPosAttribs(
+        Alignment.topCenter,
+        Offset(55, 60),
+        Alignment.centerLeft,
+      ),
+    };
+  }
+
+  /* device configurations smaller than 7 inch configurations */
+  return {
+    /* bottom center */
+    SeatPos.bottomCenter: SeatPosAttribs(
+      Alignment.bottomCenter,
+      Offset(0, 60),
+      Alignment.centerRight,
+    ),
+    /* bottom left and bottom right  */
+    SeatPos.bottomLeft: SeatPosAttribs(
+      Alignment.bottomLeft,
+      Offset(15, 50),
+      Alignment.centerRight,
+    ),
+    SeatPos.bottomRight: SeatPosAttribs(
+      Alignment.bottomRight,
+      Offset(-15, 50),
+      Alignment.centerLeft,
+    ),
+    /* middle left and middle right */
+    SeatPos.middleLeft: SeatPosAttribs(
+      Alignment.centerLeft,
+      Offset(2, 65),
+      Alignment.centerRight,
+    ),
+    SeatPos.middleRight: SeatPosAttribs(
+      Alignment.centerRight,
+      Offset(2, 65),
+      Alignment.centerLeft,
+    ),
+
+    /* top left and top right  */
+    SeatPos.topLeft: SeatPosAttribs(
+      Alignment.topLeft,
+      Offset(2, 100),
+      Alignment.centerRight,
+    ),
+    SeatPos.topRight: SeatPosAttribs(
+      Alignment.topRight,
+      Offset(2, 100),
+      Alignment.centerLeft,
+    ),
+
+    /* center, center right & center left */
+    SeatPos.topCenter: SeatPosAttribs(
+      Alignment.topCenter,
+      Offset(0, 0),
+      Alignment.centerRight,
+    ),
+    SeatPos.topCenter1: SeatPosAttribs(
+      Alignment.topCenter,
+      Offset(-50, 60),
+      Alignment.centerRight,
+    ),
+    SeatPos.topCenter2: SeatPosAttribs(
+      Alignment.topCenter,
+      Offset(55, 60),
+      Alignment.centerLeft,
+    ),
+  };
+}
+
+/* bet positions configurations for different screen sizes */
+Map<SeatPos, Offset> getBetAmountPositionMap({
+  @required Size namePlateSize,
+  @required int deviceSize,
+}) {
+  /* for screen sizes less than 7 inch */
+  if (deviceSize < 7)
+    return {
+      /* bottom, bottom left and bottom right */
+      SeatPos.bottomCenter: Offset(
+        0,
+        -namePlateSize.height * 1.0,
+      ),
+      SeatPos.bottomLeft: Offset(
+        namePlateSize.width * 0.70,
+        -namePlateSize.height * 0.80,
+      ),
+      SeatPos.bottomRight: Offset(
+        -namePlateSize.width * 0.60,
+        -namePlateSize.height * 0.80,
+      ),
+
+      /* middle left and middle right */
+      SeatPos.middleLeft: Offset(
+        -namePlateSize.width * 0.10,
+        namePlateSize.height * 0.75,
+      ),
+      SeatPos.middleRight: Offset(
+        namePlateSize.width * 0.20,
+        namePlateSize.height * 0.75,
+      ),
+
+      /* top left and top right */
+      SeatPos.topLeft: Offset(
+        namePlateSize.width * 0.20,
+        namePlateSize.height * 0.70,
+      ),
+      SeatPos.topRight: Offset(
+        -namePlateSize.width * 0.20,
+        namePlateSize.height * 0.65,
+      ),
+
+      /* center, center left and center right */
+      SeatPos.topCenter: Offset(
+        namePlateSize.width * 0.20,
+        namePlateSize.height * 0.70,
+      ),
+      SeatPos.topCenter1: Offset(
+        namePlateSize.width * 0.20,
+        namePlateSize.height * 0.8,
+      ),
+      SeatPos.topCenter2: Offset(
+        namePlateSize.width * -0.20,
+        namePlateSize.height * 0.8,
+      ),
+    };
+
+  /* for screen sizes greater than 7 inch */
+  if (deviceSize > 7)
+    return {
+      /* bottom, bottom left and bottom right */
+      SeatPos.bottomCenter: Offset(
+        0,
+        -namePlateSize.height * 0.80,
+      ),
+      SeatPos.bottomLeft: Offset(
+        namePlateSize.width * 0.60,
+        -namePlateSize.height * 0.80,
+      ),
+      SeatPos.bottomRight: Offset(
+        -namePlateSize.width * 0.60,
+        -namePlateSize.height * 0.80,
+      ),
+
+      /* middle left and middle right */
+      SeatPos.middleLeft: Offset(
+        namePlateSize.width * 0.30,
+        namePlateSize.height * 0.60,
+      ),
+      SeatPos.middleRight: Offset(
+        -namePlateSize.width * 0.20,
+        namePlateSize.height * 0.60,
+      ),
+
+      /* top left and top right */
+      SeatPos.topLeft: Offset(
+        namePlateSize.width * 0.20,
+        namePlateSize.height * 0.70,
+      ),
+      SeatPos.topRight: Offset(
+        -namePlateSize.width * 0.20,
+        namePlateSize.height * 0.70,
+      ),
+
+      /* center, center left and center right */
+      SeatPos.topCenter: Offset(
+        namePlateSize.width * 0.20,
+        namePlateSize.height * 0.60,
+      ),
+      SeatPos.topCenter1: Offset(
+        namePlateSize.width * 0.20,
+        namePlateSize.height * 0.60,
+      ),
+      SeatPos.topCenter2: Offset(
+        namePlateSize.width * 0.20,
+        namePlateSize.height * 0.60,
+      ),
+    };
+
+  /* for screen sizes equals to 7 */
+  return {
+    /* bottom, bottom left and bottom right */
+    SeatPos.bottomCenter: Offset(
+      0,
+      -namePlateSize.height * 0.80,
+    ),
+    SeatPos.bottomLeft: Offset(
+      namePlateSize.width * 0.60,
+      -namePlateSize.height * 0.80,
+    ),
+    SeatPos.bottomRight: Offset(
+      -namePlateSize.width * 0.60,
+      -namePlateSize.height * 0.80,
+    ),
+
+    /* middle left and middle right */
+    SeatPos.middleLeft: Offset(
+      namePlateSize.width * 0.20,
+      namePlateSize.height * 0.60,
+    ),
+    SeatPos.middleRight: Offset(
+      -namePlateSize.width * 0.10,
+      namePlateSize.height * 0.60,
+    ),
+
+    /* top left and top right */
+    SeatPos.topLeft: Offset(
+      namePlateSize.width * 0.30,
+      namePlateSize.height * 0.70,
+    ),
+    SeatPos.topRight: Offset(
+      -namePlateSize.width * 0.30,
+      namePlateSize.height * 0.70,
+    ),
+
+    /* center, center left and center right */
+    SeatPos.topCenter: Offset(
+      namePlateSize.width * 0.20,
+      namePlateSize.height * 0.60,
+    ),
+    SeatPos.topCenter1: Offset(
+      namePlateSize.width * 0.20,
+      namePlateSize.height * 0.60,
+    ),
+    SeatPos.topCenter2: Offset(
+      namePlateSize.width * 0.20,
+      namePlateSize.height * 0.60,
+    ),
+  };
 }
