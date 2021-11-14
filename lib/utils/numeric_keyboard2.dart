@@ -63,7 +63,7 @@ class NumericKeyboard2 extends StatelessWidget {
           ),
         ),
       ),
-      height: MediaQuery.of(context).size.height * 0.45,
+      height: MediaQuery.of(context).size.height * 0.50,
       child: MultiProvider(
         providers: [
           /* this provider holds the input value as string */
@@ -129,7 +129,7 @@ class NumericKeyboard2 extends StatelessWidget {
     return Text(
       title,
       style: TextStyle(
-        fontSize: 18.dp,
+        fontSize: 16.dp,
         color: Colors.white,
       ),
     );

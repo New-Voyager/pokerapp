@@ -438,7 +438,11 @@ class _FooterActionViewState extends State<FooterActionView> {
 
     if (closeButton) {
       actionButtons = [];
-      actionButtons.add(CircleImageButton(
+      actionButtons.add(
+        Align(
+          alignment: Alignment.bottomRight,
+          child:
+        CircleImageButton(
         theme: theme,
         icon: Icons.close,
         onTap: () {
@@ -448,7 +452,7 @@ class _FooterActionViewState extends State<FooterActionView> {
             widget.isBetWidgetVisible?.call(_showOptions);
           });
         },
-      ));
+      )));
     }
     return Stack(
       clipBehavior: Clip.none,
@@ -460,7 +464,7 @@ class _FooterActionViewState extends State<FooterActionView> {
         ),
         Positioned(
           left: 20.pw,
-          top: -10.ph,
+          top: -40.ph,
           child: Consumer<ActionState>(builder: (_, __, ___) {
             // show time widget if the player is acting
             final gameState = GameState.getState(context);

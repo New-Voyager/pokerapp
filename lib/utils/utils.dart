@@ -82,7 +82,7 @@ class DeviceInfo {
 
   static String get model {
     if (Platform.isIOS) {
-      return _deviceInfo._deviceData['model'];
+      return _deviceInfo._deviceData['name'];
     } else if (Platform.isAndroid) {
       return _deviceInfo._deviceData['model'];
     }

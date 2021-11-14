@@ -12,6 +12,8 @@ import 'package:pokerapp/utils/utils.dart';
 import 'package:tuple/tuple.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
+import 'iphone.dart';
+
 enum BoardOrientation {
   horizontal,
   vertical,
@@ -651,7 +653,9 @@ class BoardAttributesJson {
 
   Map<String, dynamic> attribs;
   void init() {
-    attribs = getAttributes();
+    // attribs = getAttributes();
+    //attribs = IPhoneAttribs.getIPhone8Plus();
+    attribs = IPhoneAttribs.getIPhone8();
   }
 
   double get size => attribs["size"];
@@ -862,8 +866,8 @@ class BoardAttributesJson {
   }
 
   double get footerViewScale {
-    if (attribs["footerViewScale"] != null) {
-      return double.parse(attribs["footerViewScale"].toString());
+    if (attribs["footerViewHeightScale"] != null) {
+      return double.parse(attribs["footerViewHeightScale"].toString());
     }
     return 0.45;
   }

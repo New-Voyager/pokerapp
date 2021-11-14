@@ -963,16 +963,16 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
     /* get the screen sizes, and initialize the board attributes */
     BoardAttributesObject boardAttributes;
-    if (Platform.isIOS) {
-      boardAttributes = IosBoardAttributesObject(
-        screenSize: Screen.diagonalInches,
-      );
-    } else {
-      boardAttributes = BoardAttributesObject(
-        screenSize: Screen.diagonalInches,
-      );
-    }
+    // if (Platform.isIOS) {
+    //   boardAttributes = IosBoardAttributesObject(
+    //     screenSize: Screen.diagonalInches,
+    //   );
+    // } else {
+    // }
 
+    boardAttributes = BoardAttributesObject(
+      screenSize: Screen.diagonalInches,
+    );
     final providers = GamePlayScreenUtilMethods.getProviders(
       context: context,
       gameInfoModel: _gameInfoModel,
