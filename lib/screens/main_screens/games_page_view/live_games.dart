@@ -168,8 +168,14 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
       return;
     }
     log('fetching live games');
-    // final updatedLiveGames = await GameService.getLiveGamesNew();
-    final updatedLiveGames = await MockData.getLiveGames();
+
+    var appState = Provider.of<AppState>(context, listen: false);
+    var updatedLiveGames;
+    if (appState != null && appState.mockScreens) {
+      updatedLiveGames = await MockData.getLiveGames();
+    } else {
+      updatedLiveGames = await GameService.getLiveGamesNew();
+    }
 
     print("__________________");
     bool refresh = true;

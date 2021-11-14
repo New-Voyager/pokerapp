@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pokerapp/exceptions/exceptions.dart';
 import 'package:pokerapp/main_helper.dart';
+import 'package:pokerapp/models/app_state.dart';
 import 'package:pokerapp/models/club_model.dart';
 import 'package:pokerapp/models/club_update_input_model.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
@@ -112,8 +113,13 @@ class _ClubsPageViewState extends State<ClubsPageView>
   }
 
   Future<void> _fillClubs() async {
-    // _clubs = await ClubsService.getMyClubs();
-    _clubs = await MockData.getClubs();
+    var appState = Provider.of<AppState>(context, listen: false);
+
+    if (appState != null && appState.mockScreens) {
+      _clubs = await MockData.getClubs();
+    } else {
+      _clubs = await ClubsService.getMyClubs();
+    }
     for (final club in _clubs) {
       log('club: ${club.clubName} status: ${club.memberStatus}');
     }
