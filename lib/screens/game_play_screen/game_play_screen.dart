@@ -790,7 +790,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     bool isBoardHorizontal = true;
     final boardDimensions = BoardView.dimensions(context, isBoardHorizontal);
 
-    double tableScale = boardAttributes.tableScale;
+    double tableScale = boardAttributes.boardScale;
     double divider1 =
         boardAttributes.tableDividerHeightScale * dividerTotalHeight;
     final theme = AppTheme.getTheme(context);
