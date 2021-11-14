@@ -655,7 +655,7 @@ class BoardAttributesJson {
   void init() {
     // attribs = getAttributes();
     //attribs = IPhoneAttribs.getIPhone8Plus();
-    attribs = IPhoneAttribs.getIPhone8();
+    attribs = IPhoneAttribs.getIPhoneXS();
   }
 
   double get size => attribs["size"];
@@ -887,22 +887,22 @@ class BoardAttributesJson {
   }
 
   double get centerRankStrScale {
-    if (attribs["centerRankStrScale"] != null) {
-      return double.parse(attribs["centerRankStrScale"].toString());
+    if (attribs["board"]["centerRankStrScale"] != null) {
+      return double.parse(attribs["board"]["centerRankStrScale"].toString());
     }
     return 1.0;
   }
 
   double get centerViewCenterScale {
-    if (attribs["centerViewCenterScale"] != null) {
-      return double.parse(attribs["centerViewCenterScale"].toString());
+    if (attribs["board"]["centerViewScale"] != null) {
+      return double.parse(attribs["board"]["centerViewScale"].toString());
     }
     return 0.85;
   }
 
   double get doubleBoardScale {
-    if (attribs["doubleBoardScale"] != null) {
-      return double.parse(attribs["doubleBoardScale"].toString());
+    if (attribs["board"]["doubleBoardScale"] != null) {
+      return double.parse(attribs["board"]["doubleBoardScale"].toString());
     }
     return 0.90;
   }
@@ -915,15 +915,15 @@ class BoardAttributesJson {
   }
 
   double get centerGap {
-    if (attribs["centerGap"] != null) {
-      return double.parse(attribs["centerGap"].toString());
+    if (attribs["board"]["centerGap"] != null) {
+      return double.parse(attribs["board"]["centerGap"].toString());
     }
     return 0.0;
   }
 
   double get potViewGap {
-    if (attribs["potViewGap"] != null) {
-      return double.parse(attribs["potViewGap"].toString());
+    if (attribs["board"]["potViewGap"] != null) {
+      return double.parse(attribs["board"]["potViewGap"].toString());
     }
     return 0.0;
   }

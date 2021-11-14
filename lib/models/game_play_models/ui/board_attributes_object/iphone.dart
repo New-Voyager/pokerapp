@@ -1,5 +1,17 @@
 import 'dart:convert';
 
+void updateMap(Map<String, dynamic> defaultMap, Map<String, dynamic> updates) {
+  for(final key in defaultMap.keys) {
+    final val = defaultMap[key];
+    if (updates.containsKey(key)) {
+      if (val is Map) {
+        updateMap(val, updates[key]);
+      } else {
+        defaultMap[key] = updates[key];
+      }
+    }
+  }
+}
 class IPhoneAttribs {
   static Map<String, dynamic> getIPhone8Plus() {
     String attribs = '''
@@ -123,6 +135,27 @@ class IPhoneAttribs {
   }
 
   static Map<String, dynamic> getIPhone8() {
+    return getDefault();
+  }
+
+  static Map<String, dynamic> getIPhoneXS() {
+    final defaultValue = getDefault();
+    String override = '''
+      {
+        "model": "iPhone 10S",
+        "screenSize": "375.0, 812.0",
+        "size": 6.0,
+        "board": {
+          "centerViewScale": 0.90
+        }
+      }
+    ''';
+    Map<String, dynamic> overrideMap = jsonDecode(override);
+    updateMap(defaultValue, overrideMap);
+    return defaultValue;
+  }
+
+  static Map<String, dynamic> getDefault() {
     String attribs = '''
       {
         "model": "iPhone 8",

@@ -108,7 +108,7 @@ class BoardView extends StatelessWidget {
               // final pots = tableState.potChips;
 
               return Transform.scale(
-                scale: 1 / boardAttributes.tableScale,
+                scale: boardAttributes.centerViewCenterScale,
                 child: CenterView(
                   tableState: context.read<TableState>(),
                   gameCode: gameInfo.gameCode,
