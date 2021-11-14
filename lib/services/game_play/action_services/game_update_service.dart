@@ -6,6 +6,7 @@ import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/enums/player_status.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/notification_models/general_notification_model.dart';
@@ -29,12 +30,13 @@ import 'package:provider/provider.dart';
 
 class GameUpdateService {
   final GameState _gameState;
+  final GameContextObject _gameContextObj;
   final BuildContext _context;
   final List<dynamic> _messages = [];
   bool closed = false;
   AppTextScreen _appScreenText = getAppTextScreen("gameUpdateService");
 
-  GameUpdateService(this._context, this._gameState);
+  GameUpdateService(this._context, this._gameState, this._gameContextObj);
 
   void close() {
     closed = true;
@@ -401,8 +403,19 @@ class GameUpdateService {
       _gameState.myState.notify();
     }
     if (closed || _gameState.uiClosing) return;
-    _gameState.removePlayer(seatNo);
+
     if (!_gameState.handInProgress) {
+      if (seat != null && seat.player != null) {
+        if (_gameState.gameInfo.audioConfEnabled) {
+          if (seat.player.isMe && _gameContextObj != null) {
+            try {
+              _gameContextObj.leaveAudio();
+            } catch (err) {}
+          }
+        }
+      }
+      _gameState.removePlayer(seatNo);
+
       if (closed || _gameState.uiClosing) return;
       _gameState.notifyAllSeats();
       if (closed || _gameState.uiClosing) return;
@@ -475,6 +488,13 @@ class GameUpdateService {
     assert(_gameInfoModel != null);
 
     if (seat != null && seat.player != null) {
+      // Wait until hand is finished (result animation is completed)
+      // before showing the buy-in option.
+      int waited = 0, interval = 500, maxWait = 10000;
+      while (_gameState.handInProgress && waited <= maxWait) {
+        await Future.delayed(Duration(milliseconds: interval));
+        waited += interval;
+      }
       seat.player.waitForBuyInApproval = true;
       seat.player.status = PlayerStatus.WAIT_FOR_BUYIN
           .toString()
@@ -560,11 +580,11 @@ class GameUpdateService {
     final seat = gameState.getSeat(seatNo);
     log('Buyin is denied');
     if (closed || _gameState.uiClosing) return;
-    gameState.removePlayer(seatNo);
     bool isMe = false;
     if (seat.player.isMe) {
       isMe = true;
     }
+    gameState.removePlayer(seatNo);
     seat.player = null;
     seat.notify();
 
@@ -999,7 +1019,7 @@ class GameUpdateService {
     final hostSeatChange =
         Provider.of<SeatChangeNotifier>(_context, listen: false);
     var seatMoves = data['seatMoves'];
-    log('SeatChange: seatmoves: ${jsonEncode(data)}');
+    // log('SeatChange: seatmoves: ${jsonEncode(data)}');
     bool movedToOpenSeat = false;
     for (var move in seatMoves) {
       if (move['openSeat'] ?? false) {
@@ -1034,71 +1054,6 @@ class GameUpdateService {
     final positions =
         await SeatChangeService.hostSeatChangeSeatPositions(gameCode);
     gameState.seatChangePlayersUpdate(positions, notify: true);
-  }
-
-  void handleHighHand({
-    var data,
-    bool showNotification = false,
-  }) async {
-    if (data == null) return;
-
-    String gameCode = data['gameCode'] as String;
-    int handNum = data['handNum'] as int;
-
-    // TODO: HANDLE MULTIPLE HIGHHAND WINNERS
-    var winner = data['winners'][0];
-
-    String playerName = winner['playerName'];
-    List<CardObject> hhCards = winner['hhCards']
-        ?.map<CardObject>((c) => CardHelper.getCard(c as int))
-        ?.toList();
-
-    List<CardObject> playerCards = winner['playerCards']
-        ?.map<CardObject>((c) => CardHelper.getCard(c as int))
-        ?.toList();
-
-    if (showNotification) {
-      // show a notification
-
-      var notificationValueNotifier =
-          Provider.of<ValueNotifier<HHNotificationModel>>(
-        _context,
-        listen: false,
-      );
-
-      notificationValueNotifier.value = HHNotificationModel(
-        gameCode: gameCode,
-        handNum: handNum,
-        playerName: playerName,
-        hhCards: hhCards,
-        playerCards: playerCards,
-      );
-
-      /* wait for 5 seconds, then remove the notification */
-      await Future.delayed(AppConstants.notificationDuration);
-
-      notificationValueNotifier.value = null;
-    } else {
-      /* the player is in the current game - firework this user */
-      int seatNo = winner['seatNo'] as int;
-
-      final GameState gameState = Provider.of<GameState>(
-        _context,
-        listen: false,
-      );
-
-      // show firework
-      final seat = gameState.getSeat(seatNo);
-      final player = seat.player;
-      player.showFirework = true;
-      AudioService.playFireworks(mute: _gameState.playerLocalConfig.mute);
-      seat.notify();
-      await Future.delayed(AppConstants.notificationDuration);
-
-      // turn off firework
-      player.showFirework = false;
-      seat.notify();
-    }
   }
 
   void handleUpdateStatus({
@@ -1280,10 +1235,7 @@ class GameUpdateService {
       _gameState.actionState.show = false;
       _gameState.actionState.notify();
       if (forced) {
-        Alerts.showNotification(
-            titleText: _appScreenText['game'],
-            svgPath: 'assets/images/casino.svg',
-            subTitleText: _appScreenText['theGameIsTerminatedDueToError']);
+        notifyGameCrashed();
       }
       return;
     }
@@ -1352,15 +1304,20 @@ class GameUpdateService {
         _gameState.actionState.show = false;
         _gameState.actionState.notify();
         if (forced) {
-          Alerts.showNotification(
-              titleText: _appScreenText['game'],
-              svgPath: 'assets/images/casino.svg',
-              subTitleText: _appScreenText['theGameIsTerminatedDueToError']);
+          notifyGameCrashed();
         }
       }
 
       tableState.notifyAll();
     }
+  }
+
+  void notifyGameCrashed() {
+    Alerts.showNotification(
+        duration: Duration(seconds: 3),
+        titleText: _appScreenText['game'],
+        svgPath: 'assets/images/casino.svg',
+        subTitleText: _appScreenText['theGameIsTerminatedDueToError']);
   }
 
   void handlePlayerSeatChangeMove({
@@ -1386,7 +1343,7 @@ class GameUpdateService {
     final oldSeatNo = data['oldSeatNo'];
     final newSeatNo = data['newSeatNo'];
 
-    log('SeatChange: player name: $playerName id: $playerId oldSeatNo: $oldSeatNo newSeatNo: $newSeatNo');
+    // log('SeatChange: player name: $playerName id: $playerId oldSeatNo: $oldSeatNo newSeatNo: $newSeatNo');
 
     final hostSeatChange =
         Provider.of<SeatChangeNotifier>(_context, listen: false);

@@ -7,13 +7,16 @@ import 'package:flutter_fgbg/flutter_fgbg.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/enums/game_type.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/main_helper.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/overlay_notification.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
+import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/services/app/player_service.dart';
+import 'package:pokerapp/services/data/hive_models/player_state.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
@@ -54,7 +57,7 @@ class NotificationHandler {
   AndroidNotificationDetails _androidDetails;
   IOSNotificationDetails _iosDetails;
   NotificationDetails _notificationDetails;
-  FGBGType _currentAppState;
+  FGBGType _currentAppState = FGBGType.foreground;
   bool initialized = false;
   ClubsUpdateState clubUpdateState;
   AppTextScreen notificationTexts;
@@ -67,6 +70,7 @@ class NotificationHandler {
   }
 
   void register(ClubsUpdateState clubUpdateState) async {
+    _currentAppState = FGBGType.foreground;
     this.notificationTexts = getAppTextScreen("notifications");
     this.clubUpdateState = clubUpdateState;
     // Get the token each time the application loads
@@ -87,7 +91,9 @@ class NotificationHandler {
   void playerNotifications(String message) {
     log('playerNotifications: $message');
     // if app is in background, return
-    if (_currentAppState == FGBGType.background) return;
+    if (_currentAppState != null) {
+      if (_currentAppState == FGBGType.background) return;
+    }
 
     dynamic json = jsonDecode(message);
     handlePlayerMessage(json, background: false, firebase: false);
@@ -106,16 +112,28 @@ class NotificationHandler {
           this.clubUpdateState.notify();
 
           if (changed == 'NEW_MEMBER_REQUEST') {
-            String text = this.notificationTexts.getText('newClubMember',
-                values: {
-                  'playerName': json['playerName'],
-                  'clubCode': clubCode
-                });
-            Alerts.showNotification(
-              titleText: 'New Member',
-              subTitleText: text,
-              duration: Duration(seconds: 5),
-            );
+            // am I the owner of this club?
+            if (appState.isClubOwner(clubCode)) {
+              String text = this.notificationTexts.getText('newClubMember',
+                  values: {
+                    'playerName': json['playerName'],
+                    'clubCode': clubCode
+                  });
+              Alerts.showNotification(
+                titleText: 'New Member',
+                subTitleText: text,
+                duration: Duration(seconds: 5),
+              );
+            }
+          } else if (changed == 'PROMOTED') {
+            String playerUuid = json['playerUuid'];
+            if (playerUuid == playerState.playerUuid) {
+              Alerts.showNotification(
+                titleText: 'Promoted',
+                subTitleText: 'You are promoted as manager at club ${clubCode}',
+                duration: Duration(seconds: 5),
+              );
+            }
           }
         }
       } catch (err) {
@@ -287,6 +305,8 @@ class NotificationHandler {
         handleTestMessage(json);
       } else if (type == 'APPCOIN_NEEDED') {
         handleAppCoinNeeded(json);
+      } else if (type == 'BUYIN_REQUEST') {
+        handleBuyinRequest(json);
       }
     }
   }
@@ -299,7 +319,8 @@ class NotificationHandler {
     String type = json['type'];
     if (!(type == 'NEW_GAME' ||
         type == 'WAITLIST_SEATING' ||
-        type == 'HOST_MESSAGE')) {
+        type == 'HOST_MESSAGE' ||
+        type == 'TEST_PUSH')) {
       return;
     }
     String body = '';
@@ -320,6 +341,8 @@ class NotificationHandler {
         body =
             'A open seat is available at game: ${json['gameCode']}. $game $sb/$bb';
       } catch (err) {}
+    } else if (type == 'TEST_PUSH') {
+      body = 'This is a test notification!';
     }
 
     if (body.length == 0) {
@@ -422,6 +445,19 @@ class NotificationHandler {
         'Not enough coins to continue game: $gameCode. Game will end in $endMins mins. Please buy more coins to keep the game running.';
     showErrorDialog(navigatorKey.currentContext, 'Coins', message, info: true);
   }
+
+  // handle messages when app is running foreground
+  Future<void> handleBuyinRequest(Map<String, dynamic> json) async {
+    String gameCode = json['gameCode'].toString();
+    String playerName = json['playerName'];
+    double amount = double.parse(json['amount'].toString());
+    // toggle pending approvals
+    Alerts.showNotification(
+      titleText: 'Buyin Request',
+      subTitleText: 'Game: $gameCode Player $playerName is requesting $amount.',
+      duration: Duration(seconds: 5)
+    );
+  }  
 }
 
 NotificationHandler notificationHandler = NotificationHandler();

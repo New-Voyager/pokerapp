@@ -20,7 +20,9 @@ class ClubHomePageModel extends ChangeNotifier {
         memberUnreadMessageCount
         description
         picUrl
-        showHighRankStats        
+        showHighRankStats
+        trackMemberCredit
+        availableCredit        
       }
       liveGames(clubCode: \$clubCode) {
         status
@@ -53,12 +55,15 @@ class ClubHomePageModel extends ChangeNotifier {
   String description;
   String picUrl;
   bool showHighRankStats;
+  bool trackMemberCredit;
+  int availableCredit;
   int clubCoins; // filled for club owner and manager
   ClubHomePageModel(String clubCode, String clubName) {
     this.clubCode = clubCode;
     this.clubName = clubName;
     this.liveGames = [];
     this.playerBalance = null;
+    this.availableCredit = null;
   }
 
   // build data from the graphql response
@@ -79,6 +84,10 @@ class ClubHomePageModel extends ChangeNotifier {
     this.memberUnreadMessageCount = member['memberUnreadMessageCount'] ?? 0;
     this.description = member['description'] ?? "";
     this.picUrl = member['picUrl'] ?? "";
-    this.showHighRankStats = member['showHighRankStats'] ?? true;
+    this.showHighRankStats = member['showHighRankStats'] ?? false;
+    this.trackMemberCredit = member['trackMemberCredit'] ?? false;
+    if (member['availableCredit'] != null) {
+      this.availableCredit = int.parse(member['availableCredit'].toString());
+    }
   }
 }

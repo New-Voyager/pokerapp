@@ -59,6 +59,8 @@ void main() async {
   );
 }
 
+AppState appState = AppState();
+
 class MyApp extends StatefulWidget {
   // Create the initialization Future outside of `build`:
   @override
@@ -128,7 +130,7 @@ class _MyAppState extends State<MyApp> {
           create: (_) => ClubsUpdateState(),
         ),
         ChangeNotifierProvider<AppState>(
-          create: (_) => AppState(),
+          create: (_) => appState,
         ),
         ListenableProvider<InstaRefreshService>(
           create: (_) => InstaRefreshService(),

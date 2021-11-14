@@ -1,7 +1,10 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/services/audio/audio_service.dart';
+import 'package:pokerapp/services/connectivity_check/liveness_sender.dart';
+import 'package:pokerapp/services/connectivity_check/network_change_listener.dart';
 import 'package:provider/provider.dart';
 
 import 'package:pokerapp/enums/game_type.dart';
@@ -17,6 +20,7 @@ import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:pokerapp/widgets/run_it_twice_dialog.dart';
+import 'package:vibration/vibration.dart';
 
 import 'hand_action_proto_service.dart';
 
@@ -27,14 +31,29 @@ import 'hand_action_proto_service.dart';
 class PlayerActionHandler {
   BuildContext _context;
   GameState _gameState;
+  LivenessSender _livenessSender;
   HandActionProtoService _handActionProtoService;
+  PlayActionTimer _actionTimer;
 
-  PlayerActionHandler(
-      this._context, this._gameState, this._handActionProtoService);
+  PlayerActionHandler(this._context, this._gameState, this._livenessSender,
+      this._handActionProtoService) {
+    this._context.read<NetworkChangeListener>().onConnectivityChange.listen(
+          (_) => extendTimerOnReconnect(),
+        );
+  }
+
+  void close() {
+    if (_livenessSender != null) {
+      _livenessSender.stop();
+    }
+    if (_actionTimer != null) {
+      _actionTimer.stop();
+    }
+  }
 
   Future<void> handleQueryCurrentHand(proto.HandMessageItem message) async {
     final currentHandState = message.currentHandState;
-    log('Current hand state: $currentHandState');
+    // log('Current hand state: $currentHandState');
     if (_gameState.uiClosing) return;
 
     // current players cards
@@ -235,6 +254,7 @@ class PlayerActionHandler {
       proto.HandMessageItem yourAction = proto.HandMessageItem();
       yourAction.seatAction = currentHandState.nextSeatAction;
       handleYourAction(yourAction);
+      _actionTimer.reset(remainingActionTime * 1000);
     }
     _gameState.notifyAllSeats();
     _gameState.myState.notify();
@@ -243,7 +263,7 @@ class PlayerActionHandler {
 
   Future<void> handleNextAction(proto.HandMessageItem message) async {
     // Audio.stop(context: context); fixme: this also does not play when we need to notify the user of his/her turn
-    log('NextAction: handle next action handState: ${_gameState.handState.toString()}'); // reset result in progress flag
+    // log('NextAction: handle next action handState: ${_gameState.handState.toString()}'); // reset result in progress flag
     try {
       // stop game audio
       // AudioService.stopSound();
@@ -256,6 +276,9 @@ class PlayerActionHandler {
 
       if (_gameState.uiClosing) return;
       final seat = _gameState.getSeat(seatNo);
+      if (seat == null) {
+        return;
+      }
       final player = seat.player;
       assert(player != null);
 
@@ -277,7 +300,7 @@ class PlayerActionHandler {
       player.highlight = true;
 
       if (_gameState.uiClosing) return;
-      log('SeatView: Next action ${seat.serverSeatPos}:L${seat.localSeatPos} pos: ${seat.seatPos.toString()} player: ${seat.player?.name} highlight: ${seat.player.highlight}');
+      // log('SeatView: Next action ${seat.serverSeatPos}:L${seat.localSeatPos} pos: ${seat.seatPos.toString()} player: ${seat.player?.name} highlight: ${seat.player.highlight}');
       seat.setActionTimer(_gameState.gameInfo.actionTime);
       seat.notify();
 
@@ -305,6 +328,16 @@ class PlayerActionHandler {
     }
   }
 
+  Function actionFunc(
+      ACTION actionType, int playerId, int seatNo, int handNum, int amount) {
+    void f() {
+      _handActionProtoService.playerActed(playerId, _gameState.handInfo.handNum,
+          seatNo, actionType.toString(), amount);
+    }
+
+    return f;
+  }
+
   Future<void> handleYourAction(proto.HandMessageItem message) async {
     if (_gameState.uiClosing) return;
     try {
@@ -318,8 +351,43 @@ class PlayerActionHandler {
         return;
       }
 
+      log('YourAction: raiseAmount: ${seatAction.raiseAmount} seatInSoFar: ${seatAction.seatInSoFar}');
       /* play an sound effect alerting the user */
       AudioService.playYourAction(mute: _gameState.playerLocalConfig.mute);
+
+      bool checkAvailable = false;
+      for (final action in seatAction.availableActions) {
+        if (action == ACTION.CHECK) {
+          checkAvailable = true;
+        }
+      }
+      ACTION defaultAction = ACTION.FOLD;
+      if (checkAvailable) {
+        defaultAction = ACTION.CHECK;
+      }
+
+      // start timer
+      if (_actionTimer == null) {
+        log('Creating new action timer');
+        _actionTimer = PlayActionTimer();
+      }
+      _actionTimer.start(
+          _gameState.gameInfo.actionTime * 1000,
+          actionFunc(defaultAction, me.playerId, me.seatNo,
+              _gameState.handInfo.handNum, 0));
+
+      // Notify server we are alive while in action
+      _livenessSender.start();
+
+      try {
+        if (_gameState.playerLocalConfig.vibration ?? true) {
+          if (await Vibration.hasVibrator()) {
+            Vibration.vibrate();
+          }
+        }
+      } catch (err) {
+        // ignore
+      }
 
       if (_gameState.straddleBetThisHand == true) {
         // we have the straddleBet set to true, do a bet
@@ -408,7 +476,11 @@ class PlayerActionHandler {
   Future<void> handlePlayerActed(proto.HandMessageItem message) async {
     final playerActed = message.playerActed;
     int seatNo = playerActed.seatNo;
-    log('HandMessage: ${message.playerActed.seatNo} action: ${message.playerActed.action.name}');
+
+    // stop the timer if running
+    if (_actionTimer != null) {
+      _actionTimer.stop();
+    }
 
     //log('Hand Message: ::handlePlayerActed:: START seatNo: $seatNo');
 
@@ -456,7 +528,7 @@ class PlayerActionHandler {
     if (stack != null) {
       seat.player.stack = stack;
     }
-    log('NEW_HAND: handlePlayerActed player: ${seat.player.name} stack ${seat.player.stack}');
+    // log('NEW_HAND: handlePlayerActed player: ${seat.player.name} stack ${seat.player.stack}');
 
     if (_gameState.uiClosing) return;
     // before showing the prompt --> turn off the highlight on other players
@@ -467,5 +539,77 @@ class PlayerActionHandler {
         .updatePotChipUpdatesSilent(playerActed.potUpdates.toInt());
     _gameState.tableState.notifyAll();
     //log('Hand Message: ::handlePlayerActed:: END');
+  }
+
+  void extendTimerOnReconnect() {
+    log('extendTimerOnReconnect action_handler');
+    if (_actionTimer != null && _gameState?.me != null) {
+      int remaining = _actionTimer.remaining();
+      log('extendTimerOnReconnect remaining: $remaining');
+      if (_gameState.me.highlight && remaining <= 10000) {
+        _handActionProtoService.extendTimerOnReconnect();
+      }
+    }
+  }
+}
+
+class PlayActionTimer {
+  Timer _timer;
+  int _timeout;
+  int _elapsed;
+  int _interval = 500;
+  Function _onFinished;
+
+  void close() {
+    if (_timer != null) {
+      _timer.cancel();
+      _timer = null;
+    }
+  }
+
+  void start(int timeoutMilli, Function onFinished) {
+    stop();
+    _timeout = timeoutMilli;
+    _onFinished = onFinished;
+    _elapsed = 0;
+    log('ActionTimer: Start action timer');
+    // start a timer
+    _timer = Timer.periodic(Duration(milliseconds: _interval), (timer) {
+      this.tick();
+    });
+  }
+
+  void reset(int timeoutMilli) {
+    log('ActionTimer: reset $timeoutMilli');
+    _timeout = timeoutMilli;
+    _elapsed = 0;
+  }
+
+  void stop() {
+    if (_timer != null) {
+      log('ActionTimer: Stopping action timer');
+      _timer.cancel();
+      _timer = null;
+    }
+  }
+
+  void tick() {
+    _elapsed += _interval;
+    // log('$_elapsed/$_timeout');
+    if (_elapsed > _timeout) {
+      if (_onFinished != null) {
+        _onFinished();
+      }
+      _elapsed = 0;
+      stop();
+    }
+  }
+
+  int remaining() {
+    int remaining = _timeout - _elapsed;
+    if (remaining > 0) {
+      return remaining;
+    }
+    return 0;
   }
 }

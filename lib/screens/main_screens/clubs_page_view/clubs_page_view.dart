@@ -3,12 +3,10 @@ import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:pokerapp/exceptions/exceptions.dart';
 import 'package:pokerapp/main_helper.dart';
 import 'package:pokerapp/models/app_state.dart';
 import 'package:pokerapp/models/club_model.dart';
-import 'package:pokerapp/models/club_update_input_model.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
@@ -17,6 +15,7 @@ import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
+import 'package:pokerapp/screens/club_screen/create_club.dart';
 import 'package:pokerapp/screens/main_screens/clubs_page_view/widgets/club_item.dart';
 import 'package:pokerapp/screens/main_screens/clubs_page_view/widgets/create_club_bottom_sheet.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
@@ -64,6 +63,24 @@ class _ClubsPageViewState extends State<ClubsPageView>
   }
 
   void _createClub(BuildContext ctx) async {
+    final appScreenText = getAppTextScreen("createClubBottomSheet");
+    String clubCode = await CreateClubDialog.prompt(
+        context: ctx, appScreenText: appScreenText);
+    if (clubCode != null) {
+      /* finally, show a status message and fetch all the clubs (if required) */
+      Alerts.showNotification(
+          titleText: _appScreenText['club'],
+          subTitleText: '${_appScreenText['createdClub']}',
+          duration: Duration(seconds: 2));
+      final natsClient = Provider.of<Nats>(context, listen: false);
+      _toggleLoading();
+      natsClient.subscribeClubMessages(clubCode);
+      _fetchClubs();
+      _toggleLoading();
+    }
+  }
+
+  void _createClub2(BuildContext ctx) async {
     /* show a bottom sheet asking for club information */
 
     /* the bottom sheet returns

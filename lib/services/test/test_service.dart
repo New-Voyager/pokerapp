@@ -949,8 +949,10 @@ class TestService {
     try {
       if (_handActionProtoService == null) {
         final gameState = GameState.getState(_context);
-        _handActionProtoService =
-            HandActionProtoService(_context, gameState, null, null, null);
+        final gameContextObj =
+            Provider.of<GameContextObject>(_context, listen: false);
+        _handActionProtoService = HandActionProtoService(
+            _context, gameState, gameContextObj, null, null, null, null);
         _handActionProtoService.loop();
       }
 

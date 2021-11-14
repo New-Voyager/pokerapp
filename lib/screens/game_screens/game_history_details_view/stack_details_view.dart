@@ -12,6 +12,7 @@ import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/formatter.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 import 'dart:convert';
 
@@ -206,7 +207,7 @@ class _PointsLineChart extends State<PointsLineChart> with RouteAwareAnalytics {
                             ],
                             defaultRenderer: new charts.LineRendererConfig(
                               includePoints: true,
-                              radiusPx: 5,
+                              radiusPx: 10,
                             ),
                           ),
                         ),
@@ -259,7 +260,7 @@ class _PointsLineChart extends State<PointsLineChart> with RouteAwareAnalytics {
     }
 
     if (widget.liveGame) {
-      y = 50;
+      y = -50.ph;
     }
 
     if (currentStack.neutral) {
@@ -289,7 +290,7 @@ class _PointsLineChart extends State<PointsLineChart> with RouteAwareAnalytics {
     }
 
     return Positioned(
-      top: y,
+      bottom: 50.ph,
       left: x,
       child: InkWell(
         onTap: () {

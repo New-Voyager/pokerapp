@@ -10,6 +10,7 @@ class CustomAppBar extends AppBar {
   final context;
   final actionsList;
   final bool showBackButton;
+  final Function onBackHandle;
   final AppTheme theme;
   CustomAppBar({
     Key key,
@@ -18,14 +19,18 @@ class CustomAppBar extends AppBar {
     this.context,
     this.actionsList,
     this.showBackButton,
+    this.onBackHandle,
     @required this.theme,
   }) : super(
           key: key,
           backgroundColor: Colors.transparent,
           elevation: 0,
           // leadingWidth: 50.pw,
-          leading:
-              (showBackButton ?? true) ? BackArrowWidget() : SizedBox.shrink(),
+          leading: (showBackButton ?? true)
+              ? BackArrowWidget(
+                  onBackHandle: onBackHandle,
+                )
+              : SizedBox.shrink(),
           title: Container(
             height: 90.ph,
             child: Column(
@@ -53,9 +58,9 @@ class CustomAppBar extends AppBar {
 }
 
 class BackArrowWidget extends StatelessWidget {
-  const BackArrowWidget({
-    Key key,
-  }) : super(key: key);
+  final Function onBackHandle;
+
+  const BackArrowWidget({Key key, this.onBackHandle}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -66,16 +71,21 @@ class BackArrowWidget extends StatelessWidget {
         alignment: Alignment.centerLeft,
         padding: EdgeInsets.only(left: 16.pw),
         child: InkWell(
-          child: SvgPicture.asset(
-            'assets/images/backarrow.svg',
-            color: theme.secondaryColor,
-            width: 32.pw,
-            height: 32.pw,
-            fit: BoxFit.contain,
-          ),
-          borderRadius: BorderRadius.circular(32.pw),
-          onTap: () => Navigator.of(context).pop(),
-        ),
+            child: SvgPicture.asset(
+              'assets/images/backarrow.svg',
+              color: theme.secondaryColor,
+              width: 32.pw,
+              height: 32.pw,
+              fit: BoxFit.contain,
+            ),
+            borderRadius: BorderRadius.circular(32.pw),
+            onTap: () {
+              if (onBackHandle != null) {
+                onBackHandle();
+              } else {
+                Navigator.of(context).pop();
+              }
+            }),
       ),
     );
   }

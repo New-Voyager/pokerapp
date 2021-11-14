@@ -104,6 +104,20 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew>
                         appScreenText: _appScreenText,
                       ),
                     ),
+
+                    clubModel.availableCredit == null
+                        ? SizedBox.shrink()
+                        : Positioned(
+                            top: 70.ph,
+                            right: 20.pw,
+                            child: Column(children: [
+                              Text('Credits'),
+                              Text(clubModel.availableCredit.toString(),
+                                  style: TextStyle(
+                                      color: clubModel.availableCredit < 0
+                                          ? Colors.redAccent
+                                          : Colors.greenAccent))
+                            ])),
                   ],
                 ),
 

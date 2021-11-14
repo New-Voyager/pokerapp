@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
@@ -10,6 +11,7 @@ import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/services/audio/audio_service.dart';
 import 'package:pokerapp/services/game_play/graphql/seat_change_service.dart';
 import 'package:provider/provider.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class OpenSeat extends StatefulWidget {
   final Seat seat;
@@ -39,8 +41,8 @@ class _OpenSeatState extends State<OpenSeat> {
       return Padding(
         padding: const EdgeInsets.all(5),
         child: DefaultTextStyle(
-            style: const TextStyle(
-              fontSize: 10,
+            style: TextStyle(
+              fontSize: 10.dp,
               color: Colors.yellowAccent,
               shadows: [
                 Shadow(
@@ -71,7 +73,27 @@ class _OpenSeatState extends State<OpenSeat> {
     );
   }
 
-  Widget openSeatWidget(AppTheme theme, List<BoxShadow> shadow) {
+  Widget openSeatWidget(
+      AppTheme theme, List<BoxShadow> shadow, bool seatChangeInProgress) {
+    Widget openSeat = Container(
+      key: UniqueKey(),
+      width: 45.0,
+      height: 45.0,
+      child: Center(child: Text('Open')),
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: theme.primaryColorWithDark(),
+        boxShadow: shadow,
+      ),
+    );
+    if (!seatChangeInProgress) {
+      // openSeat = Shimmer.fromColors(
+      //       baseColor: Colors.white.withOpacity(0.80),
+      //       highlightColor: Colors.transparent,
+      //       period: Duration(seconds: 5),
+      //       child: openSeat, //_openSeat(theme),
+      //     );
+    }
     return InkWell(
         splashColor: theme.secondaryColor,
         borderRadius: BorderRadius.circular(16),
@@ -80,29 +102,13 @@ class _OpenSeatState extends State<OpenSeat> {
           AudioService.playClickSound();
           this.widget.onUserTap(widget.seat);
         },
-        child: Container(
-          key: UniqueKey(),
-          width: 45.0,
-          height: 45.0,
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              _openSeat(theme),
-            ],
-          ),
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: theme.primaryColorWithDark(),
-            boxShadow: shadow,
-            //color: Colors.blue[900],
-          ),
-        ));
+        child: openSeat);
   }
 
   @override
   Widget build(BuildContext context) {
     final gameState = GameState.getState(context);
-    log('SeatChange: OpenSeat build  ${widget.seat.serverSeatPos} ${widget.seatChangeInProgress} hostSeatChange: ${gameState.hostSeatChangeInProgress}');
+    // log('SeatChange: OpenSeat build  ${widget.seat.serverSeatPos} ${widget.seatChangeInProgress} hostSeatChange: ${gameState.hostSeatChangeInProgress}');
 
     final theme = AppTheme.getTheme(context);
 
@@ -119,19 +125,18 @@ class _OpenSeatState extends State<OpenSeat> {
       if (seatChangeShadow.length > 0) {
         shadow = seatChangeShadow;
       }
-
       return DragTarget(onLeave: (data) {
-        log('SeatChange: OpenSeat onLeave ${data}');
+        // log('SeatChange: OpenSeat onLeave ${data}');
         dragEnter = false;
         setState(() {});
         return true;
       }, onWillAccept: (data) {
-        log('SeatChange: OpenSeat onWillAccept ${data}');
+        // log('SeatChange: OpenSeat onWillAccept ${data}');
         dragEnter = true;
         setState(() {});
         return true;
       }, onAccept: (data) {
-        log('SeatChange: OpenSeat onDropped ${data}');
+        // log('SeatChange: OpenSeat onDropped ${data}');
         // call the API to make the seat change
         SeatChangeService.hostSeatChangeMove(
           gameState.gameCode,
@@ -139,8 +144,7 @@ class _OpenSeatState extends State<OpenSeat> {
           widget.seat.serverSeatPos,
         );
       }, builder: (context, List<int> candidateData, rejectedData) {
-        log('RedrawFooter: Open seat');
-        return openSeatWidget(theme, shadow);
+        return openSeatWidget(theme, shadow, scn.seatChangeInProgress);
       });
     });
   }

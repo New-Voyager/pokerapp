@@ -7,7 +7,6 @@ import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_proto_service.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/formatter.dart';
-import 'package:pokerapp/widgets/general_dialog_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:timer_count_down/timer_count_down.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
@@ -27,7 +26,7 @@ class RunItTwiceDialog {
       builder: (_) {
         final theme = AppTheme.getTheme(context);
         return Align(
-            alignment: Alignment.bottomCenter,
+            alignment: Alignment.center,
             child: Material(
               color: Colors.transparent,
               child: Container(

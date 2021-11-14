@@ -10,6 +10,7 @@ import 'package:pokerapp/resources/app_text_styles.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/routes.dart';
+import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
@@ -44,10 +45,16 @@ class _RestoreAccountScreenState extends State<RestoreAccountScreen> {
           backgroundColor: Colors.transparent,
           resizeToAvoidBottomInset: true,
           body: SingleChildScrollView(
+            physics: BouncingScrollPhysics(),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 AppDimensionsNew.getVerticalSizedBox(16.pw),
+
+                BackArrowWidget(
+                  onBackHandle: () => Navigator.pop(context),
+                ),
+
                 // Logo section
                 AppNameAndLogoWidget(appTheme, _appScreenText),
 

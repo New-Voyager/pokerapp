@@ -123,14 +123,21 @@ class CommunityCardsView extends StatelessWidget {
         child: Column(
           children: [
             /* board 1 cards */
-            buildSingleBoardCards(1, cards, dimBoard: tableState.dimBoard1),
+            buildSingleBoardCards(
+              1,
+              cards,
+              dimBoard: tableState.dimBoard1,
+            ),
 
             /* divider */
             const SizedBox(height: 2.0),
 
             /* board 2 cards */
-            buildSingleBoardCards(2, cardsOther,
-                dimBoard: tableState.dimBoard2),
+            buildSingleBoardCards(
+              2,
+              cardsOther,
+              dimBoard: tableState.dimBoard2,
+            ),
           ],
         ),
       );

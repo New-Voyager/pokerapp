@@ -32,7 +32,7 @@ class _GameHistoryViewState extends State<GameHistoryView>
 
   final ValueNotifier<bool> _filterAppliedVn = ValueNotifier<bool>(false);
   int _selectedMonthAsFilter = -1;
-
+  bool showFilterButton = false;
   AppTextScreen _appScreenText;
 
   bool _loadingData = true;
@@ -82,6 +82,7 @@ class _GameHistoryViewState extends State<GameHistoryView>
 
     // build game history list
     return ListView.separated(
+      physics: BouncingScrollPhysics(),
       shrinkWrap: true,
       itemBuilder: gameHistoryItem,
       itemCount: _prevGames.length,
@@ -182,24 +183,27 @@ class _GameHistoryViewState extends State<GameHistoryView>
             context: context,
             actionsList: [
               // button to show filter
-              Center(
-                child: ValueListenableBuilder(
-                    valueListenable: _filterAppliedVn,
-                    builder: (_, isFilterApplied, __) => isFilterApplied
-                        ? CircleImageButton(
-                            theme: theme,
-                            svgAsset: AppAssets.filterRemove,
-                            onTap: () {
-                              _filterAppliedVn.value = false;
-                            },
-                          )
-                        : CircleImageButton(
-                            theme: theme,
-                            svgAsset: AppAssets.filter,
-                            onTap: () {
-                              _showMonthPickerDialog(theme: theme);
-                            },
-                          )),
+              Visibility(
+                visible: showFilterButton,
+                child: Center(
+                  child: ValueListenableBuilder(
+                      valueListenable: _filterAppliedVn,
+                      builder: (_, isFilterApplied, __) => isFilterApplied
+                          ? CircleImageButton(
+                              theme: theme,
+                              svgAsset: AppAssets.filterRemove,
+                              onTap: () {
+                                _filterAppliedVn.value = false;
+                              },
+                            )
+                          : CircleImageButton(
+                              theme: theme,
+                              svgAsset: AppAssets.filter,
+                              onTap: () {
+                                _showMonthPickerDialog(theme: theme);
+                              },
+                            )),
+                ),
               ),
             ],
           ),

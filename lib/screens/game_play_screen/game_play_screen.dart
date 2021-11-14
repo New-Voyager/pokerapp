@@ -17,6 +17,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/host_seat_chang
 import 'package:pokerapp/models/game_play_models/provider_models/marked_cards.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
+import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/ios_board_attributes.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
 import 'package:pokerapp/models/player_info.dart';
@@ -38,6 +39,7 @@ import 'package:pokerapp/screens/game_play_screen/widgets/icon_with_badge.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/app/player_service.dart';
 import 'package:pokerapp/services/audio/audio_service.dart';
+import 'package:pokerapp/services/connectivity_check/liveness_sender.dart';
 import 'package:pokerapp/services/connectivity_check/network_change_listener.dart';
 import 'package:pokerapp/services/encryption/encryption_service.dart';
 import 'package:pokerapp/services/game_play/action_services/game_action_service/util_action_services.dart';
@@ -197,8 +199,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       playerToHandChannel: _gameInfoModel.playerToHandChannel,
       handToPlayerTextChannel: _gameInfoModel.handToPlayerTextChannel,
       gameChatChannel: _gameInfoModel.gameChatChannel,
-      pingChannel: _gameInfoModel.pingChannel,
-      pongChannel: _gameInfoModel.pongChannel,
     );
 
     final encryptionService = EncryptionService();
@@ -217,6 +217,14 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       await _gameComService.init(natsClient);
       await encryptionService.init();
     }
+
+    final livenessSender = LivenessSender(
+      _gameInfoModel.gameID,
+      _gameInfoModel.gameCode,
+      _currentPlayer.id,
+      _nats,
+      _gameInfoModel.clientAliveChannel,
+    );
 
     _gameState = GameState();
     _gameState.isBotGame = widget.botGame;
@@ -271,6 +279,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         player: this._currentPlayer,
         gameComService: _gameComService,
         encryptionService: encryptionService,
+        livenessSender: livenessSender,
         gameState: _gameState,
       );
 
@@ -423,7 +432,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
     /* collect the cards needs to be revealed */
     List<CardObject> _cardsToBeRevealed = markedCards.getCards();
-    log('RevealCards: Trying to sending marked cards ${_cardsToBeRevealed}');
+    // log('RevealCards: Trying to sending marked cards ${_cardsToBeRevealed}');
     List<int> cardNumbers = [];
     for (final c in _cardsToBeRevealed) {
       cardNumbers.add(c.cardNum);
@@ -432,9 +441,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     if (cardNumbers.length == 0) {
       return;
     }
-    log('RevealCards: cards sent ${cardNumbers}');
+    // log('RevealCards: cards sent ${cardNumbers}');
     markedCards.cardsSent(cardNumbers);
-    log('GameScreen: Sending cards');
+    // log('GameScreen: Sending cards');
 
     /* clear all the marked cards */
     // FIXME: markedCards.clear();
@@ -458,7 +467,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     }
 
     _gameState.handChangeState.addListener(() {
-      log('GameScreen: Hand State: ${_gameState.handState.toString()}');
       if (_gameState.handState == HandState.RESULT) {
         // send the marked cards for the first time
         _sendMarkedCards(context);
@@ -657,19 +665,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     _appScreenText = getAppTextScreen("gameScreen");
   }
 
-  // void initPlayingTimer() {
-  //   // diamonds timer, which invokes every 30 seconds
-  //   // but adds diamonds ONLY after the duration of AppConstants.diamondUpdateDuration
-  //   _timer = Timer.periodic(const Duration(seconds: 30), (_) {
-  //     PlayerModel me;
-  //     try {
-  //       me = _gameState.me;
-  //     } catch (e) {}
-
-  //     if (me != null) _gameState.gameHiveStore.addDiamonds();
-  //   });
-  // }
-
   void reload() {
     close();
     init();
@@ -749,7 +744,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       );
 
   Widget _buildBoardView(Size boardDimensions, double tableScale) {
-    log('RedrawTop: Rebuilding board view');
+    // log('RedrawTop: Rebuilding board view');
     return Container(
       // key: UniqueKey(),
       width: boardDimensions.width,
@@ -825,82 +820,87 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         headerView = HeaderView(gameState: _gameState);
       }
 
-      children.addAll([
-        //_buildAudioWidget(),
+      children.addAll(
+        [
+          //_buildAudioWidget(),
 
-        // header view
-        headerView,
+          // header view
+          headerView,
 
-        // RoundRectButton(
-        //     text: 'Refresh',
-        //     onTap: () {
-        //       log('RedrawTop: on refresh');
-        //       _gameState.redrawTop();
-        //     }),
-        // seperator
-        // SizedBox(width: width, height: divider1 / 2),
+          // this widget, shows which winner is currently showing - high winner / low winner
+          // this widget also acts as a natural seperator between header and board view
+          // WhichWinnerWidget(seperator: divider1),
 
-        // this widget, shows which winner is currently showing - high winner / low winner
-        // this widget also acts as a natural seperator between header and board view
-        WhichWinnerWidget(seperator: divider1),
+          // main board view
+          Stack(
+            // alignment: Alignment.center,
+            children: [
+              this.widget.showTop ? BackgroundView() : Container(),
+              this.widget.showTop && _gameState.customizationMode
+                  ? Positioned(
+                      top: 10.ph,
+                      left: width - 50.pw,
+                      child: CircleImageButton(
+                        onTap: () async {
+                          await Navigator.of(context)
+                              .pushNamed(Routes.select_table);
+                          await _gameState.assets.initialize();
+                          final redrawTop = _gameState.redrawBoardSectionState;
+                          redrawTop.notify();
+                          setState(() {});
+                        },
+                        theme: theme,
+                        icon: Icons.edit,
+                      ),
+                    )
+                  : Container(),
 
-        // seperator
-        // SizedBox(width: width, height: divider1 / 2),
-
-        // main board view
-        _buildBoardView(boardDimensions, tableScale),
-        // Consumer<RedrawTopSectionState>(builder: (_, ___, __) {
-        //   log('RedrawTop: Rebuilding top section');
-        //   return _buildBoardView(boardDimensions, tableScale);
-        // }),
-
-        /* divider that divides the board view and the footer */
-        Divider(color: AppColorsNew.dividerColor, thickness: 3),
-      ]);
-    }
-
-    if (this.widget.showBottom) {
-      children.addAll([
-        // footer section
-        Consumer<RedrawFooterSectionState>(builder: (_, ___, __) {
-          log('RedrawFooter: building footer view');
-          return FooterViewWidget(
-            gameCode: widget.gameCode,
-            gameContextObject: _gameContextObj,
-            currentPlayer: _gameContextObj.gameState.currentPlayer,
-            gameInfo: _gameInfoModel,
-            toggleChatVisibility: _toggleChatVisibility,
-          );
-        }),
-      ]);
-    }
-    return Stack(
-      alignment: Alignment.topCenter,
-      children: [
-        this.widget.showTop ? BackgroundView() : Container(),
-        this.widget.showTop && _gameState.customizationMode
-            ? Positioned(
-                top: 50.pw,
-                left: width - 50.pw,
-                child: CircleImageButton(
-                  onTap: () async {
-                    await Navigator.of(context).pushNamed(Routes.select_table);
-                    await _gameState.assets.initialize();
-                    final redrawTop = _gameState.redrawBoardSectionState;
-                    redrawTop.notify();
-                    setState(() {});
-                  },
-                  theme: theme,
-                  icon: Icons.edit,
+              // board view
+              Positioned(
+                top: MediaQuery.of(context).size.height *
+                    boardAttributes.boardViewPositionScale,
+                child: _buildBoardView(
+                  boardDimensions,
+                  tableScale,
                 ),
-              )
-            : Container(),
+              ),
+            ],
+          ),
 
+          /* divider that divides the board view and the footer */
+          //Divider(color: AppColorsNew.dividerColor, thickness: 3),
+        ],
+      );
+    }
+
+    return Stack(
+      alignment: Alignment.center,
+      children: [
         /* main view */
         Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: children,
         ),
+
+        // footer view
+        this.widget.showBottom
+            ? Align(
+                alignment: Alignment.bottomCenter,
+                child: Consumer<RedrawFooterSectionState>(
+                  builder: (_, ___, __) {
+                    // log('RedrawFooter: building footer view');
+                    return FooterViewWidget(
+                      gameCode: widget.gameCode,
+                      gameContextObject: _gameContextObj,
+                      currentPlayer: _gameContextObj.gameState.currentPlayer,
+                      gameInfo: _gameInfoModel,
+                      toggleChatVisibility: _toggleChatVisibility,
+                    );
+                  },
+                ),
+              )
+            : const SizedBox.shrink(),
+
         this.widget.showTop &&
                 !_gameState.customizationMode &&
                 _gameState.currentPlayer.isAdmin()
@@ -951,9 +951,16 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     if (_gameInfoModel == null) return Center(child: CircularProgressWidget());
 
     /* get the screen sizes, and initialize the board attributes */
-    BoardAttributesObject boardAttributes = BoardAttributesObject(
-      screenSize: Screen.diagonalInches,
-    );
+    BoardAttributesObject boardAttributes;
+    if (Platform.isIOS) {
+      boardAttributes = IosBoardAttributesObject(
+        screenSize: Screen.diagonalInches,
+      );
+    } else {
+      boardAttributes = BoardAttributesObject(
+        screenSize: Screen.diagonalInches,
+      );
+    }
 
     final providers = GamePlayScreenUtilMethods.getProviders(
       context: context,
@@ -1137,7 +1144,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
             await _gameContextObj.joinAudio(context);
             // ui is still running
             // send stream id
-            _gameState.gameMessageService.sendMyInfo();
+            log('RTC: Requesting information about the other players');
             _gameState.gameMessageService.requestPlayerInfo();
             notification.dismiss();
             notification = Alerts.showNotification(
@@ -1163,8 +1170,10 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       if (seat != null && seat.player != null) {
         final player = seat.player;
         log('RTC: PlayerInfo: name: ${player.name} streamId: ${player.streamId} namePlateId: ${player.namePlateId}');
-        _gameContextObj.ionAudioConferenceService
-            .updatePlayerId(player.streamId, player.playerId);
+        if (_gameContextObj.ionAudioConferenceService != null) {
+          _gameContextObj.ionAudioConferenceService
+              .updatePlayerId(player.streamId, player.playerId);
+        }
         if (player.streamId != info.streamId ||
             player.namePlateId != info.namePlateId) {
           player.streamId = info.streamId;
@@ -1415,7 +1424,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     if (TestService.isTesting || _gameState.customizationMode) {
       return;
     }
-    log('refinements: _pollPendingApprovals is invoked');
+    // log('refinements: _pollPendingApprovals is invoked');
     //log('0-0-0-0- Polling for pending approvals');
     final approvals = await PlayerService.getPendingApprovals();
 

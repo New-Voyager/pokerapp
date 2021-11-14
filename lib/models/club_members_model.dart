@@ -13,6 +13,7 @@ class ClubMemberModel extends ChangeNotifier {
   bool isOwner;
   bool isManager;
   String playerId;
+  double availableCredit;
   String _contactInfo;
   double _balance;
   String imageUrl;
@@ -71,7 +72,6 @@ class ClubMemberModel extends ChangeNotifier {
 
   int get totalGames => this._totalGames ?? 0;
 
-  double get balance => this._balance ?? 0;
   double get totalWinnings => this._totalWinnings ?? 0;
   double get totalBuyIns => this._totalBuyIns ?? 0;
   double get rake => this._rake ?? 0;
@@ -95,7 +95,6 @@ class ClubMemberModel extends ChangeNotifier {
     data.autoBuyInApproval = copyValue.autoBuyInApproval;
     data.isOwner = copyValue.isOwner;
     data.isManager = copyValue.isManager;
-    data._balance = copyValue._balance;
     data._rake = copyValue._rake;
     data._contactInfo = copyValue._contactInfo;
     data._notes = copyValue._notes;
@@ -130,7 +129,6 @@ class ClubMemberModel extends ChangeNotifier {
     this.isManager = jsonData['isManager'];
     this.playerId = jsonData['playerId'];
     this.contactInfo = jsonData['contactInfo'];
-    this._balance = double.parse(jsonData['balance'].toString());
     this._rake = 0;
     if (jsonData['rakePaid'] != null) {
       this._rake = double.parse(jsonData['rakePaid'].toString());
@@ -164,6 +162,8 @@ class ClubMemberModel extends ChangeNotifier {
     if (jsonData['notes'] != null) {
       this._notes = jsonData['notes'].toString();
     }
+    this.availableCredit =
+        double.parse((jsonData['availableCredit'] ?? '0').toString());
     this.edited = false;
   }
 
@@ -207,5 +207,46 @@ class ClubMemberModel extends ChangeNotifier {
         this.lastPlayedDate = '$years $yearStr ago';
       }
     }
+  }
+}
+
+/*
+query ch($clubCode: String!, $playerUuid: String!) {
+  creditHistory(clubCode:$clubCode, playerUuid:$playerUuid) {
+    adminUuid
+    adminName
+    notes
+    gameCode
+    updateType
+    updatedCredits
+    amount
+  	updateDate
+  }
+}
+*/
+class MemberCreditHistory {
+  String adminUuid;
+  String adminName;
+  String notes;
+  String gameCode;
+  String updateType;
+  double updatedCredits;
+  double amount;
+  DateTime updatedDate;
+
+  MemberCreditHistory();
+
+  factory MemberCreditHistory.fromJson(dynamic json) {
+    MemberCreditHistory history = MemberCreditHistory();
+    history.adminUuid = json['adminUuid'];
+    history.adminName = json['adminName'];
+    history.notes = json['notes'] ?? '';
+    history.gameCode = json['gameCode'] ?? '';
+    history.updateType = json['updateType'];
+    history.updatedCredits =
+        double.parse((json['updatedCredits'] ?? '0').toString());
+    history.amount = double.parse((json['amount'] ?? '0').toString());
+    history.updatedDate = DateTime.tryParse(json['updateDate'] ?? '');
+    return history;
   }
 }

@@ -81,19 +81,6 @@ class ClubItemView extends StatelessWidget {
               Row(
                 children: [
                   Flexible(child: clubName),
-                  Container(
-                    margin: EdgeInsets.only(right: 16, left: 8),
-                    child: Text(
-                      club.balance == '0' ? '' : club.balance,
-                      textAlign: TextAlign.end,
-                      style: AppDecorators.getHeadLine2Style(theme: theme)
-                          .copyWith(
-                        color: double.parse(club.balance) > 0
-                            ? AppColorsNew.positiveColor
-                            : AppColorsNew.negativeColor,
-                      ),
-                    ),
-                  ),
                 ],
               ),
               separator,

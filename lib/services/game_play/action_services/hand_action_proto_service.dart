@@ -1,6 +1,9 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 import 'dart:typed_data';
+import 'package:connectivity/connectivity.dart';
 import 'package:fixnum/fixnum.dart' as $fixnum;
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_type.dart';
@@ -18,6 +21,8 @@ import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/audio/audio_service.dart';
+import 'package:pokerapp/services/connectivity_check/liveness_sender.dart';
+import 'package:pokerapp/services/connectivity_check/network_change_listener.dart';
 import 'package:pokerapp/services/encryption/encryption_service.dart';
 import 'package:pokerapp/services/game_play/action_services/action_handler.dart';
 import 'package:pokerapp/services/game_play/action_services/newhand_handler.dart';
@@ -115,24 +120,32 @@ class HandMessageObject {
 
 class HandActionProtoService {
   final GameState _gameState;
+  final GameContextObject _gameContextObject;
   final BuildContext _context;
   final List<HandMessageObject> _messages = [];
+  PlayerActionHandler _actionHandler;
 
   bool _close = false;
   bool closed = false;
 
   GameComService _gameComService;
   EncryptionService _encryptionService;
+  LivenessSender _livenessSender;
   RetrySendingProtoMsg _retryMsg;
   pi.PlayerInfo _currentPlayer;
 
   HandActionProtoService(
     this._context,
     this._gameState,
+    this._gameContextObject,
     this._gameComService,
     this._encryptionService,
+    this._livenessSender,
     this._currentPlayer,
-  );
+  ) {
+    this._actionHandler =
+        PlayerActionHandler(this._context, _gameState, _livenessSender, this);
+  }
 
   void close() {
     _close = true;
@@ -142,6 +155,8 @@ class HandActionProtoService {
     if (_retryMsg != null) {
       _retryMsg.cancel();
     }
+
+    _livenessSender?.stop();
   }
 
   void clear() {
@@ -274,6 +289,47 @@ class HandActionProtoService {
     this._gameComService.sendProtoPlayerToHandChannel(binMessage);
   }
 
+  extendTimerOnReconnect() async {
+    log('Requesting to extend action timer on network connectivity');
+    if (_gameState?.gameInfo?.tableStatus != AppConstants.GAME_RUNNING) {
+      log('extendTimerOnReconnect 1');
+      return;
+    }
+
+    log('extendTimerOnReconnect 2');
+    for (int i = 0; i < 5; i++) {
+      try {
+        final messageItem = proto.HandMessageItem(
+          messageType: 'EXTEND_ACTION_TIMER',
+          extendTimer:
+              proto.ExtendTimer(seatNo: _gameState.me.seatNo, extendBySec: 15),
+        );
+        int msgId = MessageId.incrementAndGet(_gameState.gameCode);
+        String messageId = msgId.toString();
+        int playerID = _gameState.currentPlayerId;
+        final handMessage = proto.HandMessage(
+            gameCode: _gameState.gameCode,
+            messageId: messageId,
+            playerId: $fixnum.Int64.parseInt(playerID.toString()),
+            messages: [messageItem]);
+        final binMessage = handMessage.writeToBuffer();
+        log('extendTimerOnReconnect 3');
+        bool res =
+            this._gameComService.sendProtoPlayerToHandChannel(binMessage);
+        log('extendTimerOnReconnect 3.1');
+        if (!res) {
+          log('extendTimerOnReconnect 4');
+          await Future.delayed(Duration(seconds: 1));
+          continue;
+        }
+        break;
+      } catch (e) {
+        log('extendTimerOnReconnect 5.$i $e');
+        await Future.delayed(Duration(seconds: 1));
+      }
+    }
+  }
+
   queryCurrentHand() {
     int msgId = MessageId.incrementAndGet(_gameState.gameCode);
     String messageId = msgId.toString();
@@ -321,6 +377,7 @@ class HandActionProtoService {
       final message = proto.HandMessage.fromBuffer(protoData);
       for (final item in message.messages) {
         _messages.add(HandMessageObject(message, item));
+        toggleLivenessSender(item);
       }
     } catch (err) {
       log('${err.toString()}');
@@ -379,32 +436,28 @@ class HandActionProtoService {
           return handleDeal(message);
 
         case AppConstants.QUERY_CURRENT_HAND:
-          final handler = PlayerActionHandler(this._context, _gameState, this);
-          await handler.handleQueryCurrentHand(message);
+          await _actionHandler.handleQueryCurrentHand(message);
           return;
 
         case AppConstants.NEXT_ACTION:
-          final handler = PlayerActionHandler(this._context, _gameState, this);
           if (_gameState.handState == HandState.DEAL) {
             _gameState.handState = HandState.PREFLOP;
           }
-          await handler.handleNextAction(message);
+          await _actionHandler.handleNextAction(message);
           return;
 
         case AppConstants.PLAYER_ACTED:
           if (_gameState.handState == HandState.DEAL) {
             _gameState.handState = HandState.PREFLOP;
           }
-          final handler = PlayerActionHandler(this._context, _gameState, this);
-          await handler.handlePlayerActed(message);
+          await _actionHandler.handlePlayerActed(message);
           return;
 
         case AppConstants.YOUR_ACTION:
           if (_gameState.handState == HandState.DEAL) {
             _gameState.handState = HandState.PREFLOP;
           }
-          final handler = PlayerActionHandler(this._context, _gameState, this);
-          await handler.handleYourAction(message);
+          await _actionHandler.handleYourAction(message);
           return;
 
         case AppConstants.EXTEND_ACTION_TIMER:
@@ -439,6 +492,18 @@ class HandActionProtoService {
       log('Error: ${err.toString()}');
     } finally {
       ////log('Hand Message: ::handleMessage:: END messageType: $messageType');
+    }
+  }
+
+  void toggleLivenessSender(proto.HandMessageItem item) {
+    if (item.messageType == AppConstants.YOUR_ACTION) {
+      if (item.seatAction != null &&
+          _gameState.me != null &&
+          item.seatAction.seatNo == _gameState.me.seatNo) {
+        _livenessSender.start();
+      }
+    } else if (item.messageType == AppConstants.PLAYER_ACTED) {
+      _livenessSender.stop();
     }
   }
 
@@ -992,7 +1057,9 @@ class HandActionProtoService {
         replay: false,
       );
       await resultHandler.show();
-    } catch (err) {}
+    } catch (err) {
+      log('==== CRITICAL ====: Exception thrown at updatePotBeforeResultStatic. Error: ${err.toString()}');
+    }
     _gameState.handState = HandState.ENDED;
     _gameState.handInProgress = false;
 
@@ -1003,84 +1070,6 @@ class HandActionProtoService {
     }
 
     //log('Hand Message: ::handleResult:: END');
-  }
-
-  Future<void> showHighHands(final highHand) async {
-    final int handNum = int.parse(highHand['handNum'].toString());
-
-    // board Cards
-    List<CardObject> boardCards = [];
-    for (int c in highHand['boardCards']) boardCards.add(CardHelper.getCard(c));
-    final tableState = _context.read<TableState>();
-
-    List<Seat> playerSeats = [];
-
-    // process the winners - also mark cards for highlighting
-    final winners = highHand['winners'];
-    for (final winner in winners) {
-      final String name = winner['playerName'].toString();
-      final int playerID = int.parse(winner['playerId'].toString());
-
-      // get the player cards
-      final List<int> playerCards = [];
-      for (final v in winner['playerCards'])
-        playerCards.add(int.parse(v.toString()));
-
-      // get the board cards
-      final List<int> rawHighHandCards = [];
-      final List<CardObject> highHandCards = [];
-      for (final v in winner['hhCards']) {
-        final int value = int.parse(v.toString());
-        rawHighHandCards.add(value);
-        highHandCards.add(CardHelper.getCard(value));
-      }
-
-      // mark the board cards, that are part of high hands
-      for (CardObject co in boardCards)
-        if (rawHighHandCards.contains(co.cardNum)) co.highlight = true;
-
-      // prepare the player for animations and cards
-      final Seat seat = _gameState.getSeatByPlayer(playerID);
-      seat.player.showFirework = true;
-      seat.player.cards = playerCards;
-      seat.player.highlightCards =
-          rawHighHandCards; // this will highlight all the player cards that matches elements from this list
-      playerSeats.add(seat);
-
-      // show notification for winner
-      Alerts.showHighHandWinner(
-        playerCards: playerCards,
-        boardCards: boardCards,
-        highHandCards: rawHighHandCards,
-        name: name,
-        handNo: handNum,
-      );
-    }
-
-    // notify to build the table (community cards)
-    tableState.setBoardCards(1, boardCards);
-    tableState.notifyAll();
-    AudioService.playFireworks(mute: _gameState.playerLocalConfig.mute);
-
-    // notify to build the players
-    for (final s in playerSeats) s.notify();
-
-    /* wait for the animation to finish */
-    await Future.delayed(AppConstants.highHandFireworkAnimationDuration);
-
-    // finally clear players values and board values
-
-    // clear players
-    for (final s in playerSeats) {
-      s.player.showFirework = false;
-      s.player.cards = [];
-      s.player.highlightCards = [];
-      s.notify();
-    }
-
-    // clear the board
-    tableState.clear();
-    tableState.notifyAll();
   }
 
   Future<void> handleJsonMessage(String jsonMessage) async {

@@ -11,6 +11,12 @@ class AppStylesNew {
     fontSize: 10.dp,
     fontWeight: FontWeight.w400,
   );
+
+  static final buyinTextStyle = TextStyle(
+    color: AppColorsNew.gameOption3,
+    fontSize: 10.dp,
+    fontWeight: FontWeight.w400,
+  );
   static final cardHeaderTextStyle = TextStyle(
     color: AppColorsNew.newTextColor,
     fontSize: 12.dp,
@@ -509,9 +515,9 @@ class AppStylesNew {
     fontFamily: AppAssets.fontFamilyLato,
   );
 
-  static const gameCodeTextStyle = TextStyle(
+  static final gameCodeTextStyle = TextStyle(
     color: Colors.white60,
-    fontSize: 10.0,
+    fontSize: 12.dp,
     fontFamily: AppAssets.fontFamilyLato,
   );
 

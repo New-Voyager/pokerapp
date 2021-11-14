@@ -8,7 +8,6 @@ import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
-import 'package:pokerapp/screens/club_screen/club_action_screens/club_member_detailed_view/club_member_detailed_view.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/profile_popup.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/app/player_service.dart';
@@ -67,6 +66,7 @@ class _NamePlateDailogState extends State<NamePlateDailog> {
           .isPlayerMuted(widget.seat.player.streamId);
     }
     return SingleChildScrollView(
+      physics: BouncingScrollPhysics(),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [

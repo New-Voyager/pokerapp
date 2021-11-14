@@ -5,7 +5,6 @@ import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
-import 'package:pokerapp/services/connectivity_check/ping_responder.dart';
 import 'package:pokerapp/services/nats/message.dart';
 import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/services/nats/subscription.dart';
@@ -22,15 +21,12 @@ class GameComService {
   String playerToHandChannel;
   String handToPlayerTextChannel;
   String gameChatChannel;
-  String pingChannel;
-  String pongChannel;
 
   Subscription _gameToPlayerChannelSubs;
   Subscription _handToAllChannelSubs;
   Subscription _handToPlayerChannelSubs;
   Subscription _handToPlayerTextChannelSubs;
   Subscription _gameChatChannelSubs;
-  Subscription _pingChannelSubs;
 
   StreamController<Message> _gameToPlayerChannelInternal =
       StreamController.broadcast();
@@ -42,16 +38,12 @@ class GameComService {
       StreamController.broadcast();
   StreamController<Message> _gameChatChannelInternal =
       StreamController.broadcast();
-  StreamController<Message> _pingChannelInternal = StreamController.broadcast();
 
   // current player info
   PlayerInfo currentPlayer;
 
   // game chat object
   GameMessagingService _chat;
-
-  // responds to server ping
-  PingResponder _pingPong;
 
   GameMessagingService get chat => _chat;
 
@@ -65,8 +57,6 @@ class GameComService {
     @required this.playerToHandChannel,
     @required this.handToPlayerTextChannel,
     @required this.gameChatChannel,
-    @required this.pingChannel,
-    @required this.pongChannel,
   }) {
     // _client = Client();
     // _clientPub = Client();
@@ -112,10 +102,6 @@ class GameComService {
     _gameChatChannelSubs.stream
         .listen((event) => _gameChatChannelInternal.add(event));
 
-    log('subscribing to ${this.pingChannel}');
-    _pingChannelSubs = nats.clientSub.sub(this.pingChannel);
-    _pingChannelSubs.stream.listen((event) => _pingChannelInternal.add(event));
-
     if (this._chat == null) {
       this._chat = GameMessagingService(
         this.currentPlayer,
@@ -127,17 +113,6 @@ class GameComService {
       this._chat.start();
     }
 
-    if (this._pingPong == null) {
-      this._pingPong = PingResponder(
-        this.currentPlayer.id,
-        this.pongChannel,
-        nats,
-        _pingChannelInternal.stream, // use the internal stream here
-        true,
-      );
-      this._pingPong.start();
-    }
-
     this._nats = nats;
     this.active = true;
   }
@@ -147,9 +122,9 @@ class GameComService {
     this._nats.clientPub.pubString(this.playerToHandChannel, data);
   }
 
-  void sendProtoPlayerToHandChannel(Uint8List data) {
+  bool sendProtoPlayerToHandChannel(Uint8List data) {
     assert(active);
-    this._nats.clientPub.pub(this.playerToHandChannel, data);
+    return this._nats.clientPub.pub(this.playerToHandChannel, data);
   }
 
   void _close() {
@@ -167,9 +142,6 @@ class GameComService {
 
     // _gameChatChannelSubs?.unSub();
     _gameChatChannelSubs?.close();
-
-    // _pingChannelSubs?.unSub();
-    _pingChannelSubs?.close();
   }
 
   void dispose() {
@@ -181,7 +153,6 @@ class GameComService {
     _handToPlayerChannelSubs?.unSub();
     _handToPlayerTextChannelSubs?.unSub();
     _gameChatChannelSubs?.unSub();
-    _pingChannelSubs?.unSub();
 
     // close
     _close();
@@ -192,7 +163,6 @@ class GameComService {
     _handToPlayerChannelInternal.close();
     _handToPlayerTextChannelInternal.close();
     _gameChatChannelInternal.close();
-    _pingChannelInternal.close();
 
     active = false;
     // _client?.close();

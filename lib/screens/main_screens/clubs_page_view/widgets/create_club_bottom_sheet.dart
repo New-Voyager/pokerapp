@@ -84,6 +84,7 @@ class _CreateClubBottomSheetState extends State<CreateClubBottomSheet> {
                   child: Form(
                     key: _formKey,
                     child: SingleChildScrollView(
+                      physics: BouncingScrollPhysics(),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisSize: MainAxisSize.min,

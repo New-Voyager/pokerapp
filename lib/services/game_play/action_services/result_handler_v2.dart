@@ -7,6 +7,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/table_state.dar
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/services/audio/audio_service.dart';
+import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:pokerapp/proto/hand.pb.dart' as proto;
 import 'package:pokerapp/proto/handmessage.pb.dart' as proto;
@@ -56,8 +57,8 @@ class ResultHandlerV2 {
   });
 
   Future<void> show() async {
-    log('Result: result show');
-    log('Result: pauseTimeSecs: ${result.pauseTimeSecs}');
+    // log('Result: result show');
+    // log('Result: pauseTimeSecs: ${result.pauseTimeSecs}');
     tableState = gameState.tableState;
     for (final seat in gameState.seats) {
       if (seat != null && seat.player != null) {
@@ -69,13 +70,13 @@ class ResultHandlerV2 {
         seat.player.highlight = false;
         seat.player.highlightCards = [];
         seat.player.cards = playerInfo.cards;
-        log('Result: updating cards for seat: ${seat.player.seatNo} player: ${seat.player.name} cards: ${seat.player.cards}');
+        // log('Result: updating cards for seat: ${seat.player.seatNo} player: ${seat.player.name} cards: ${seat.player.cards}');
       }
     }
     gameState.wonat = result.wonAt;
-    log('Result: updating all seats');
+    // log('Result: updating all seats');
     gameState.seatsOnTableState.notify();
-    log('Result: updating all seats notified');
+    // log('Result: updating all seats notified');
 
     // update pots
     tableState.updatePotChipsSilent(
@@ -113,28 +114,20 @@ class ResultHandlerV2 {
     if (result.highHandWinners.length > 0) {
       final winner = result.highHandWinners[0];
       String playerName = winner.playerName;
-      List<CardObject> hhCards = winner.hhCards
-          ?.map<CardObject>((c) => CardHelper.getCard(c as int))
-          ?.toList();
+      List<int> hhCards = winner.hhCards;
 
-      List<CardObject> playerCards = winner.playerCards
-          ?.map<CardObject>((c) => CardHelper.getCard(c as int))
-          ?.toList();
+      List<int> playerCards = winner.playerCards;
 
-      var notificationValueNotifier =
-          Provider.of<ValueNotifier<HHNotificationModel>>(
-        context,
-        listen: false,
-      );
-
-      notificationValueNotifier.value = HHNotificationModel(
-        gameCode: gameState.gameCode,
-        handNum: result.handNum,
-        playerName: playerName,
-        hhCards: hhCards,
+      Alerts.showHighHandWinner(
         playerCards: playerCards,
+        boardCards: result.boards.first.cards,
+        highHandCards: hhCards,
+        name: playerName,
+        handNo: result.handNum,
       );
+
       AudioService.playFireworks(mute: gameState.playerLocalConfig.mute);
+
       for (final winner in result.highHandWinners) {
         // show firework
         final seat = gameState.getSeat(winner.seatNo);
@@ -162,10 +155,7 @@ class ResultHandlerV2 {
     } else {
       tableState.updateTwoBoardsNeeded(false);
     }
-    log('Result: result board: ${result.boards.length}');
-
-    /* then, change the status of the footer to show the result */
-    // context.read<ValueNotifier<FooterStatus>>().value = FooterStatus.Result;
+    // log('Result: result board: ${result.boards.length}');
 
     /**
      * DO the following for each pot:
@@ -173,12 +163,6 @@ class ResultHandlerV2 {
      *    2. delay
      *    3. show all the low pot winners
      */
-    // final boardCards = this.result.boards[0].cards;
-    // List<CardObject> boardCardsUpdate = [];
-    // for (final c in boardCards) {
-    //   boardCardsUpdate.add(CardHelper.getCard(c));
-    // }
-    // tableState.setBoardCards(1, boardCardsUpdate);
     final totalPots = result.potWinners.length;
     for (int i = totalPots - 1; i >= 0; i--) {
       final potWinner = result.potWinners[i];
@@ -190,34 +174,11 @@ class ResultHandlerV2 {
       }
     }
 
-    // // mark all winners
-    // for (int i = totalPots - 1; i >= 0; i--) {
-    //   final potWinner = result.potWinners[i];
-    //   for (final boardWinners in potWinner.boardWinners) {
-    //     // hi winners
-    //     for (final seatNo in boardWinners.hiWinners.keys) {
-    //       final seat = gameState.getSeat(seatNo);
-    //       if (seat.player != null) {
-    //         seat.player.winner = true;
-    //       }
-    //     }
-    //     for (final seatNo in boardWinners.lowWinners.keys) {
-    //       final seat = gameState.getSeat(seatNo);
-    //       if (seat.player != null) {
-    //         seat.player.loWinner = true;
-    //       }
-    //     }
-    //   }
-    // }
     gameState.handResultState.notify();
-
-    // for (final seat in gameState.seats) {
-    //   if (seat.player != null) {
-    //     log('ResultMessage: ${seat.serverSeatPos} name: ${seat.player.name} winner: ${seat.player.winner}');
-    //   }
-    // }
+    // log('Result: 1 show');
 
     for (int i = totalPots - 1; i >= 0; i--) {
+      // log('Result: 1 show pot: $i');
       final potWinner = result.potWinners[i];
       final potNo = potWinner.potNo;
 
@@ -226,6 +187,7 @@ class ResultHandlerV2 {
       tableState.notifyAll();
 
       for (final boardWinners in potWinner.boardWinners) {
+        // log('Result: 1 show pot: $i boardWinners: ${boardWinners.boardNo} rank: ${boardWinners.hiRankText}');
         // reset board, hi lo banners
         tableState.setWhichWinner(null);
         // clear all the boards
@@ -265,15 +227,20 @@ class ResultHandlerV2 {
         if (result.wonAt != proto.HandStatus.SHOW_DOWN) {
           rankText = '';
         }
+        // log('Result: 2 show pot: $i boardWinners: ${boardWinners.boardNo} rank: ${boardWinners.hiRankText}');
 
         for (final seat in gameState.seats) {
           if (seat != null && seat.player != null) {
             final playerInfo = result.playerInfo[seat.player.seatNo];
-            seat.player.cards = playerInfo.cards;
-            log('UpdateSeat: show winnners updating cards for seat: ${seat.player.seatNo} player: ${seat.player.name} cards: ${seat.player.cards}');
+            if (playerInfo != null) {
+              seat.player.cards = playerInfo.cards;
+            }
+            // log('Result: UpdateSeat: show winnners updating cards for seat: ${seat.player.seatNo} player: ${seat.player.name} cards: ${seat.player.cards}');
           }
         }
         AudioService.playApplause(mute: gameState.playerLocalConfig.mute);
+        // log('Result: 1 Show winners');
+
         await _showWinners(
           board,
           rankText,
@@ -312,13 +279,6 @@ class ResultHandlerV2 {
     // see whether this high hand
     if (result.highHandWinners.length > 0) {
       /* wait for 5 seconds, then remove the notification */
-      // await Future.delayed(AppConstants.notificationDuration);
-      var notificationValueNotifier =
-          Provider.of<ValueNotifier<HHNotificationModel>>(
-        context,
-        listen: false,
-      );
-      notificationValueNotifier.value = null;
       // turn off firework
       for (final winner in result.highHandWinners) {
         final seat = gameState.getSeat(winner.seatNo);
@@ -351,6 +311,7 @@ class ResultHandlerV2 {
   Future<void> _showWinners(
       final proto.Board board, String rank, List<proto.Winner> winners,
       {bool low = false}) async {
+    // log('Result: Show winners');
     for (int i = 0; i < winners.length; i++) {
       final winner = winners[i];
       final playerRank = board.playerRank[winner.seatNo];
@@ -420,7 +381,6 @@ class ResultHandlerV2 {
     if (result.wonAt == proto.HandStatus.SHOW_DOWN) {
       /* highlight the winning cards for players */
       seat.player.highlightCards = winner.playerCards;
-      log('HiLo22: low: ${winner.low} highlight cards: ${seat.player.highlightCards} player cards: ${seat.player.cards}');
 
       // log('WINNER player.cards: ${winner.playerCards} boardCards: ${winner.boardCards} setState: $setState ${winner.rankStr} ${AppConstants.chipMovingAnimationDuration}');
       /* highlight the winning cards for board 1 */
@@ -449,14 +409,13 @@ class ResultHandlerV2 {
 
       /* wait for the animation to finish */
       await Future.delayed(AppConstants.chipMovingAnimationDuration);
-      log('HiLo: low: ${winner.low} player: ${seat.player.name} highlight cards: ${seat.player.highlightCards}');
 
       gameState.notifyAllSeats();
       for (final seat in gameState.seats) {
         if (seat == null || seat.player == null) {
           continue;
         }
-        log('HiLo: Rebuild seat low: ${winner.low} player: ${seat.player.name} highlight cards: ${seat.player.highlightCards}');
+        // log('HiLo: Rebuild seat low: ${winner.low} player: ${seat.player.name} highlight cards: ${seat.player.highlightCards}');
         seat.notify();
       }
     }

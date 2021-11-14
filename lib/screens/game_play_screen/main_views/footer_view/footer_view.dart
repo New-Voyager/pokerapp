@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
@@ -14,7 +13,6 @@ import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/animating_widgets/my_last_action_animating_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/status_options_buttons.dart';
-import 'package:pokerapp/services/test/test_service.dart';
 import 'package:provider/provider.dart';
 import 'communication_view.dart';
 import 'customization_view.dart';
@@ -107,12 +105,6 @@ class _FooterViewState extends State<FooterView>
       visible = _gameState.gameHiveStore.getHoleCardsVisibilityState();
     }
     isHoleCardsVisibleVn.value = visible;
-
-    // _players = context.read<Players>();
-    // mePlayerModelVn.value = _players?.me?.copyWith();
-
-    // // listen for changes in my PlayerModel state
-    // _players?.addListener(onPlayersChanges);
     _gameState.myState.addListener(onPlayersChanges);
   }
 
@@ -143,10 +135,8 @@ class _FooterViewState extends State<FooterView>
     return Consumer<MyState>(
         builder: (BuildContext _, MyState myState, Widget __) {
       final me = gameState.mySeat;
-      log('Customize: _buildMainView');
 
       bool showOptionsButtons = false;
-      log('StatusOptions: My state is changed. ');
       if (me != null && me.player != null) {
         if (me.player.inBreak) {
           //log('footerview: building status option widget: IN BREAK');
@@ -158,14 +148,12 @@ class _FooterViewState extends State<FooterView>
           showOptionsButtons = true;
         }
       } else {
-        log('StatusOptions:gameState.gameInfo.waitlistAllowed: ${gameState.gameInfo.waitlistAllowed}');
         if (gameState.gameInfo.waitlistAllowed) {
           // observer
           showOptionsButtons = true;
         }
       }
       if (showOptionsButtons) {
-        log('StatusOptions: building status option widget');
         return StatusOptionsWidget(gameState: gameState);
       }
 
@@ -306,8 +294,6 @@ class _FooterViewState extends State<FooterView>
     final RenderBox renderBox = context.findRenderObject();
     final pos = renderBox.localToGlobal(Offset.zero);
     final size = renderBox.size;
-
-    log('Footer view size: $size pos: $pos');
 
     final boardAttr = context.read<BoardAttributesObject>();
     boardAttr.setFooterDimensions(pos, size);

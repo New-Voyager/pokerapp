@@ -94,7 +94,6 @@ class ClubsService {
         clubCode
         clubStatus
         memberStatus
-        balance
         memberCount
         imageId
         isOwner
@@ -315,12 +314,7 @@ class ClubsService {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     Map<String, dynamic> variables = {
       "clubCode": clubCode,
-      "club": {
-        "name": input.name,
-        "description": input.description,
-        "showHighRankStats": input.showHighRankStats,
-        "picUrl": input.picUrl
-      }
+      "club": input.toJson()
     };
 
     QueryResult result = await _client.mutate(
@@ -418,7 +412,7 @@ class ClubsService {
 
   static Future<ClubHomePageModel> getClubHomePageData(String clubCode) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
-    log('Getting club home page data');
+    // log('Getting club home page data');
     Map<String, dynamic> variables = {
       'clubCode': clubCode,
     };
@@ -476,7 +470,7 @@ class ClubsService {
 
   static Future<int> getClubCoins(String clubCode) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
-    log('Getting club home page data');
+    // log('Getting club home page data');
     Map<String, dynamic> variables = {
       'clubCode': clubCode,
     };
@@ -512,6 +506,31 @@ class ClubsService {
     final String query = """
       mutation kickMember(\$clubCode : String!, \$playerUuid: String!){
         ret: kickMember(clubCode:\$clubCode, playerUuid: \$playerUuid)
+      }
+    """;
+    QueryResult result = await _client.mutate(
+      MutationOptions(document: gql(query), variables: variables),
+    );
+
+    if (result.hasException) return '';
+
+    String res = result.data['ret'];
+
+    return res ?? false;
+  }
+
+  static Future<String> promotePlayer(
+      String clubCode, String playerId, bool isManager) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    Map<String, dynamic> variables = {
+      "clubCode": clubCode,
+      "playerUuid": playerId,
+      "update": {"isManager": isManager}
+    };
+    final String query = """
+      mutation updateClubMember(\$clubCode : String!, \$playerUuid: String! \$update: ClubMemberUpdateInput!){
+        ret: updateClubMember(clubCode:\$clubCode, playerUuid: \$playerUuid, update: \$update)
       }
     """;
     QueryResult result = await _client.mutate(

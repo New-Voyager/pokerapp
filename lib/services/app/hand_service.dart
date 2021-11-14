@@ -180,7 +180,6 @@ class HandService {
     } else {
       query = lastHandLogData;
     }
-    log("variables: $variables");
     QueryResult result = await _client
         .query(QueryOptions(document: gql(query), variables: variables));
 
@@ -190,7 +189,10 @@ class HandService {
       }
     }
     final handResultData = result.data['handResult']['data'];
-    final handResultDataJson = jsonDecode(handResultData);
+    dynamic handResultDataJson = handResultData;
+    if (handResultData is String) {
+      handResultDataJson = jsonDecode(handResultData);
+    }
     final me = await AuthService.get();
     final handLog = HandResultData.fromJson(handResultDataJson);
     handLog.myPlayerId = me.playerId;

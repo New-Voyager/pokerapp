@@ -45,12 +45,11 @@ class GameHistoryItemNew extends StatelessWidget {
       );
     }
 
-    return Consumer<AppTheme>(
-      builder: (_, theme, __) {
-        final gameType = gameTypeFromStr(game.gameTypeStr);
-        final gameStr = gameTypeStr(gameType);
+    return Consumer<AppTheme>(builder: (_, theme, __) {
+      final gameType = gameTypeFromStr(game.gameTypeStr);
+      final gameStr = gameTypeStr(gameType);
 
-        return Container(
+      return Container(
         margin: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
         decoration: AppDecorators.getGameItemDecoration(theme: theme),
         child: Container(
@@ -199,8 +198,7 @@ class GameHistoryItemNew extends StatelessWidget {
           ),
         ),
       );
-      }
-    );
+    });
   }
 
   Color getBalanceColor(double number) {

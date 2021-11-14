@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/announcement_model.dart';
 import 'package:pokerapp/models/app_state.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
@@ -99,6 +100,7 @@ class _MainScreenState extends State<MainScreen>
       for (final club in clubs) {
         _nats.subscribeClubMessages(club.clubCode);
       }
+      appState.myClubs = clubs;
 
       // TODO: WHY DO WE NEEDED THE DELAY?
       // Future.delayed(Duration(milliseconds: 100), () async {

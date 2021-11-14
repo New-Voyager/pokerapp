@@ -83,6 +83,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
           body: !loadingDone
               ? Center(child: CircularProgressWidget())
               : SingleChildScrollView(
+                  physics: BouncingScrollPhysics(),
                   child: Column(
                     children: [
                       Container(
@@ -608,6 +609,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
                 child: Text(_appScreenText['highHandWinners'])),
             HighhandWidget(
               this._gameDetail.hhWinners[0],
+              gameCode: widget.data.gameCode,
               clubCode: widget.clubCode,
             ),
           ],

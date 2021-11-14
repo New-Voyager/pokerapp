@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:pokerapp/models/app_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
@@ -9,7 +10,7 @@ import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
-import 'package:pokerapp/screens/club_screen/club_action_screens/club_member_detailed_view/club_member_detailed_view.dart';
+import 'package:pokerapp/screens/club_screen/club_member_detailed_view.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/data/game_log_store.dart';
 import 'package:pokerapp/services/game_play/graphql/seat_change_service.dart';
@@ -36,6 +37,13 @@ class CenterButtonView extends StatelessWidget {
     final gameState = GameState.getState(context);
     log('Termininating game ${gameState.gameCode}');
     await GameService.endGame(gameState.gameCode);
+    if (gameState.uiClosing) {
+      return;
+    }
+    final appState = Provider.of<AppState>(context, listen: false);
+    if (appState != null) {
+      Provider.of<AppState>(context, listen: false).setGameEnded(true);
+    }
     if (!gameState.isGameRunning) {
       gameState.refresh();
     }
@@ -70,7 +78,7 @@ class CenterButtonView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    log('Center: Center buttons build');
+    // log('Center: Center buttons build');
     _appScreenText = getAppTextScreen("centerButtonView");
 
     final seatChange = Provider.of<SeatChangeNotifier>(context, listen: false);
@@ -94,7 +102,7 @@ class CenterButtonView extends StatelessWidget {
 
     if (tableState.gameStatus == AppConstants.GAME_PAUSED) {
       if (!seatChange.seatChangeInProgress) {
-        if (gameContext.isAdmin()) {
+        if (gameContext.isHost()) {
           log('is admin: ${gameContext.isAdmin()} isHost: ${gameContext.isHost()}');
           return pauseButtons(context);
         } else {
@@ -238,7 +246,7 @@ class CenterButtonView extends StatelessWidget {
 
   Widget newGameButtons(BuildContext context) {
     return Consumer<GameContextObject>(builder: (context, gameContext, _) {
-      if (!gameContext.isAdmin()) {
+      if (!gameContext.isHost()) {
         return SizedBox.shrink();
       }
 
@@ -268,7 +276,7 @@ class CenterButtonView extends StatelessWidget {
                   width: 48.pw,
                 ),
                 onTap: () {
-                  log('Center: Starting the game ${gameState.gameCode}');
+                  // log('Center: Starting the game ${gameState.gameCode}');
                   this.onStartGame();
                 },
                 text: _appScreenText['start'],

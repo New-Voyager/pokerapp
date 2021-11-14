@@ -10,6 +10,7 @@ import 'package:pokerapp/screens/util_screens/replay_hand_controls/replay_hand_c
 import 'package:pokerapp/screens/util_screens/replay_hand_game_view/replay_hand_game_view.dart';
 import 'package:pokerapp/screens/util_screens/replay_hand_dialog/replay_hand_dialog_utils.dart';
 import 'package:pokerapp/services/app/hand_service.dart';
+import 'package:pokerapp/services/game_history/game_history_service.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:provider/provider.dart';
@@ -20,14 +21,21 @@ class ReplayHandDialog extends StatelessWidget {
     @required String gameCode,
     @required int handNumber,
   }) async {
+    HandResultData data;
     // show connection dialog
     ConnectionDialog.show(context: context, loadingText: "Loading hand ...");
 
     // fetch the hand result data
-    final HandResultData data = await HandService.getHandLog(
-      gameCode,
-      handNumber,
-    );
+
+    try {
+      data = await GameHistoryService.getHandLog(gameCode, handNumber);
+    } catch (err) {
+      try {
+        data = await HandService.getHandLog(gameCode, handNumber);
+      } catch (err) {
+        log('Error: ${err.toString()}');
+      }
+    }
 
     // close connection dialog
     Navigator.pop(context);

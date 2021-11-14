@@ -116,6 +116,7 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
       child: Column(
         children: [
           TabBar(
+            physics: const BouncingScrollPhysics(),
             tabs: [
               Text(
                 "Card Face",
@@ -134,6 +135,7 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
           ),
           Expanded(
               child: TabBarView(
+            physics: const BouncingScrollPhysics(),
             controller: _tabController,
             children: [
               // CardFace Widget
@@ -159,6 +161,7 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
       ),
       //height: size.height * 0.3,
       child: ListView.separated(
+        physics: BouncingScrollPhysics(),
         itemBuilder: (context, index) {
           final bool isSelected =
               (_selectedCardFaceAsset?.id == _cardFaceAssets[index].id);

@@ -22,7 +22,7 @@ class DisplayCardsWidget extends StatelessWidget {
       }
     }
     List<int> highlightedCards = seat.player.highlightCards;
-    log('RevealCards: name: ${seat.player.name} reveal: ${seat.player.revealCards}');
+    // log('RevealCards: name: ${seat.player.name} reveal: ${seat.player.revealCards}');
     //log('HiLo: name: ${seat.player.name} highlightedCards: ${highlightedCards} muck: ${seat.player.muckLosingHand} folded: ${seat.folded} seat.player.isActive: ${seat.player.isActive} reveal: ${seat.player.revealCards}');
 
     List<CardObject> cardObjects = [];
@@ -36,12 +36,15 @@ class DisplayCardsWidget extends StatelessWidget {
       if (seat.player.winner ?? false) {
         isWinner = true;
       }
-      if (isWinner && showdown) {
+      card.cardFace = CardFace.BACK;
+      if (showdown) {
+        card.cardFace = CardFace.FRONT;
+      }
+      if (isWinner) {
         if (highlightedCards != null && highlightedCards.contains(cardNum)) {
           card.highlight = true;
         }
       } else if (seat.player.muckLosingHand) {
-        // this player is not a winner
         card.cardFace = CardFace.BACK;
       }
 
@@ -55,7 +58,6 @@ class DisplayCardsWidget extends StatelessWidget {
       }
       cardObjects.add(card);
     }
-    log('Reveal Cards Seat: ${seat.player.seatNo} card objects: $cardObjects');
 
     return cardObjects;
   }
@@ -64,31 +66,39 @@ class DisplayCardsWidget extends StatelessWidget {
     if (cards == null || cards.length == 0) {
       return Container();
     }
-    if (cards.length == 4 || cards.length == 5) {
-      return Transform.scale(
-        scale: 1.2,
-        child: FittedBox(
-          fit: BoxFit.fitWidth,
-          child: StackCardView(cards: _getCards(cards)),
-        ),
-      );
+
+    if (seat.player.playerFolded && seat.player.revealCards.length == 0) {
+      return Container();
     }
 
-    // default case
-    return StackCardView(cards: _getCards(cards));
+    double scale = 1.0;
+    Offset offset = Offset(0, 0);
+    if (cards.length == 4 || cards.length == 5) {
+      offset = Offset(-18, 10);
+      if (cards.length == 5) {
+        scale = 0.85;
+        offset = Offset(-30, 10);
+      }
+    }
+    return Transform.translate(
+        offset: offset,
+        child: Transform.scale(
+          scale: scale,
+          child: StackCardView(
+            cards: _getCards(cards),
+          ),
+        ));
   }
 
   @override
   Widget build(BuildContext context) {
-    log('HiLo: UpdateSeat: DisplayCardsWidget Seat: ${seat.player.seatNo} highlight: ${seat.player.highlightCards} player: ${seat.player.name} cards: ${seat.player.cards} reveal cards: ${seat.player.revealCards}');
-    // log('UpdateSeat: seat no: ${seat.player.seatNo} updating cards widget: ${seat.player.cards}');
     List<int> seatPlayerCards = seat.player.cards;
     if (seat.player.revealCards.isEmpty) {
       // player didn't reveal the cards
       // if this is not showdown, don't show the cards
-      if (!showdown) {
-        seatPlayerCards = [];
-      }
+      // if (!showdown) {
+      //   seatPlayerCards = [];
+      // }
     }
     return AnimatedSwitcher(
       duration: AppConstants.fastAnimationDuration,

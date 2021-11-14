@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
@@ -15,11 +16,13 @@ import 'package:pokerapp/services/audio/audio_service.dart';
 class NewHandHandler {
   proto.NewHand newHand;
   GameState gameState;
+  GameContextObject gameContext;
   GameType gameType;
 
   NewHandHandler({
     @required this.newHand,
     @required this.gameState,
+    @required this.gameContext,
   });
 
   void resetBoard() {}
@@ -43,6 +46,43 @@ class NewHandHandler {
     );
   }
 
+  Future<void> leaveAudioConference() async {
+    if (!gameState.gameInfo.audioConfEnabled) {
+      return;
+    }
+    log('AudioConf: Leaving audio conference');
+    if (didILeaveTheGame()) {
+      // leave the conference
+      try {
+        this.gameContext.leaveAudio();
+      } catch (err) {}
+    }
+  }
+
+  bool didILeaveTheGame() {
+    bool didILeave = false;
+    bool inGame = false;
+    int myId = 0;
+    // was in the previous hand
+    for (final player in gameState.playersInGame) {
+      if (player.isMe) {
+        inGame = true;
+        myId = player.playerId;
+        break;
+      }
+    }
+    if (!inGame) {
+      return didILeave;
+    }
+    didILeave = true;
+    for (final playerInSeat in newHand.playersInSeats.values) {
+      if (playerInSeat.playerId != 0 && playerInSeat.playerId.toInt() == myId) {
+        didILeave = false;
+      }
+    }
+    return didILeave;
+  }
+
   Future<void> updatePlayers() async {
     // only count active players in this hand
     int noOfPlayers = 0;
@@ -60,10 +100,9 @@ class NewHandHandler {
 
     // update player's state and stack
     final playersInSeats = newHand.playersInSeats;
-    log('NEW_HAND: Hand num: ${newHand.handNum} button: ${newHand.buttonPos} sbPos: ${newHand.sbPos} bbPos: ${newHand.bbPos} sb: ${newHand.smallBlind} bb: ${newHand.bigBlind} bombPot: ${newHand.bombPot}');
+    // log('NEW_HAND: Hand num: ${newHand.handNum} button: ${newHand.buttonPos} sbPos: ${newHand.sbPos} bbPos: ${newHand.bbPos} sb: ${newHand.smallBlind} bb: ${newHand.bigBlind} bombPot: ${newHand.bombPot}');
     for (final seatNo in playersInSeats.keys) {
       final playerInSeat = playersInSeats[seatNo];
-      log('NEW_HAND: Player: ${playerInSeat.name} seatNo: $seatNo status: ${playerInSeat.status} missedBlind: ${playerInSeat.missedBlind} postedBlind: ${playerInSeat.postedBlind} inhand: ${playerInSeat.inhand} stack: ${playerInSeat.stack} breakTime: ${playerInSeat.breakExpTime}');
     }
     int retryCount = 0;
     bool newPlayerInTable = false;
@@ -99,10 +138,6 @@ class NewHandHandler {
         }
         playerObj.seatNo = seatNo;
         playerObj.stack = playerInSeat.stack.toInt();
-        log('NEW_HAND: updatePlayers player ${playerObj.name} stack: ${playerObj.stack}');
-        // if (newHand.bombPot) {
-        //   playerObj.stack = playerObj.stack + newHand.bombPotBet.toInt();
-        // }
         playerObj.status = playerInSeat.status.name;
         playerObj.inhand = playerInSeat.inhand;
         playerObj.missedBlind = playerInSeat.missedBlind;
@@ -112,8 +147,6 @@ class NewHandHandler {
         playerObj.autoStraddle = playerInSeat.autoStraddle;
         playerObj.playerFolded = false;
         playerObj.revealCards = [];
-
-        // playerObj.muckLosingHand = true;
 
         if (playerInSeat.buyInExpTime != null &&
             playerInSeat.breakExpTime.length > 0 &&
@@ -190,6 +223,8 @@ class NewHandHandler {
 
     if (gameState.uiClosing) return;
     gameState.clear();
+    if (gameState.uiClosing) return;
+    await leaveAudioConference();
 
     if (gameState.uiClosing) return;
     await updatePlayers();
@@ -281,13 +316,6 @@ class NewHandHandler {
   }
 
   Future<void> showDeal() async {
-    //log('Hand Message: ::handleDealStarted:: START');
-    // final me = _gameState.me(_context);
-
-    /* if I am present in this game,
-     Deal Start message is unnecessary */
-    // if (fromGameReplay == false && me == null) return;
-
     if (gameState.uiClosing) return;
     try {
       final TableState tableState = gameState.tableState;
@@ -343,7 +371,6 @@ class NewHandHandler {
         seat.player.noOfCardsVisible = handInfo.noCards;
         seat.notify();
       }
-      //}
 
       /* card distribution ends, put the value to NULL */
       gameState.cardDistributionState.seatNo = null;

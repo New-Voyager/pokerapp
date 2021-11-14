@@ -30,11 +30,10 @@ class LiveGameItem extends StatelessWidget {
         fit: BoxFit.cover,
       );
     }
-    return Consumer<AppTheme>(
-      builder: (_, theme, __) {
-        final gameType = gameTypeFromStr(game.gameType);
-        final gameTypeStr = gameTypeShortStr(gameType);
-        return Stack(
+    return Consumer<AppTheme>(builder: (_, theme, __) {
+      final gameType = gameTypeFromStr(game.gameType);
+      final gameTypeStr = gameTypeShortStr(gameType);
+      return Stack(
         children: [
           Container(
             margin: EdgeInsets.symmetric(
@@ -179,8 +178,6 @@ class LiveGameItem extends StatelessWidget {
           ),
         ],
       );
-      }
-    );
-      
+    });
   }
 }

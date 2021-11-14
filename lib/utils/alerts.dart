@@ -33,7 +33,7 @@ class Alerts {
 
   static void showHighHandWinner({
     @required List<int> playerCards,
-    @required List<CardObject> boardCards,
+    @required List<int> boardCards,
     @required List<int> highHandCards,
     @required String name,
     @required int handNo,

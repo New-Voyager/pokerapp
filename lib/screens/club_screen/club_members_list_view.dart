@@ -17,13 +17,13 @@ import 'package:provider/provider.dart';
 class ClubMembersListView extends StatefulWidget {
   List<ClubMemberModel> _membersList;
   final String clubCode;
-  //final Function fetchData;
+  final Function fetchData;
   final bool viewAsOwner;
   final MemberListOptions option;
   final AppTextScreen appScreenText;
 
   ClubMembersListView(this.clubCode, this._membersList, this.option,
-      this.viewAsOwner, this.appScreenText);
+      this.viewAsOwner, this.appScreenText, this.fetchData);
 
   @override
   _ClubMembersListViewState createState() => _ClubMembersListViewState();
@@ -71,6 +71,9 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
     }
     List<ClubMemberModel> _filteredList;
     _filteredList = widget._membersList;
+    _filteredList.sort((a, b) {
+      return b.name.toLowerCase().compareTo(a.name.toLowerCase());
+    });
     _filteredList.sort((a, b) {
       return a.status == ClubMemberStatus.PENDING ? 0 : 1;
     });
@@ -132,15 +135,17 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
                                             : AppDecorators.getSubtitle1Style(
                                                 theme: theme),
                                       ),
-                                      Text(
-                                        data.contactInfo,
-                                        textAlign: TextAlign.left,
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      ),
+                                      !widget.viewAsOwner ||
+                                              data.contactInfo == null ||
+                                              data.contactInfo.isEmpty
+                                          ? SizedBox.shrink()
+                                          : Text(
+                                              '    ' + '(${data.contactInfo})',
+                                              textAlign: TextAlign.left,
+                                              style: AppDecorators
+                                                  .getHeadLine5Style(
+                                                      theme: theme),
+                                            ),
                                     ],
                                   ),
                                 ),
@@ -211,12 +216,22 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
                             (widget.viewAsOwner ?? false)),
                         child: InkWell(
                           onTap: () async {
-                            Navigator.pushNamed(
+                            bool updated = await Navigator.pushNamed(
                               context,
                               Routes.club_member_detail_view,
-                              arguments: data,
-                            );
-                            setState(() {});
+                              arguments: {
+                                "clubCode": data.clubCode,
+                                "playerId": data.playerId,
+                                "currentOwner": true,
+                                "member": data
+                              },
+                            ) as bool;
+                            if (updated) {
+                              if (widget.fetchData != null) {
+                                await widget.fetchData();
+                              }
+                              setState(() {});
+                            }
                           },
                           child: Container(
                             padding: EdgeInsets.only(right: 8),

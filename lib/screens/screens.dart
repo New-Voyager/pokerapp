@@ -8,9 +8,6 @@ export 'game_play_screen/game_play_screen.dart';
 
 export 'club_screen/messages_page_view/messages_page_view.dart';
 
-export 'club_screen/club_action_screens/club_member_detailed_view/club_member_detailed_view.dart';
-export 'club_screen/club_action_screens/club_members_view/club_members_view.dart';
-
 export 'club_screen/rewards_screen/create_rewards_screen.dart';
 export 'club_screen/rewards_screen/rewards_list_screen.dart';
 

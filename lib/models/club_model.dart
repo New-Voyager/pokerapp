@@ -11,7 +11,6 @@ class ClubModel {
   String hostName;
   String joinDate;
   bool isActive;
-  String balance;
   bool hasJoined;
   bool incomingRequest;
   String invitationDate;
@@ -33,7 +32,6 @@ class ClubModel {
     this.imageID,
     this.isPrivate,
     this.isOwner,
-    this.balance,
     this.memberStatus,
 
     /* extra (for now) */
@@ -58,7 +56,6 @@ class ClubModel {
     if (jsonData['balance'] != null) {
       jsonData['balance'] = double.parse(jsonData['balance'].toString());
     }
-    this.balance = DataFormatter.chipsFormat(jsonData['balance']);
     this.pendingMemberCount = jsonData['pendingMemberCount'] ?? 0;
     this.hostUnreadMessageCount = jsonData['hostUnreadMessageCount'] ?? 0;
     this.unreadMessageCount = jsonData['unreadMessageCount'] ?? 0;

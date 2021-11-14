@@ -140,7 +140,6 @@ class PlayerService {
       approvals: pendingApprovals {
         name
         amount
-        outstandingBalance
         gameCode
         clubCode
         clubName

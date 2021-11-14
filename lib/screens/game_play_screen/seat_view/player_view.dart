@@ -34,6 +34,7 @@ import 'animating_widgets/stack_switch_seat_animating_widget.dart';
 import 'chip_amount_widget.dart';
 import 'dealer_button.dart';
 import 'name_plate_view.dart';
+import 'nameplate_cards.dart';
 import 'open_seat.dart';
 import 'dart:math' as math;
 import 'package:pokerapp/utils/adaptive_sizer.dart';
@@ -196,12 +197,6 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
       if (data != null && data['type'] != null && data['type'] == "host") {
         await _handleHostButtonClick(context);
       }
-      // show popup menu
-      // showPlayerPopup(context, widget.seat.key, widget.gameState, widget.seat);
-
-      // Enable this for popup buttons
-      // gameState.setTappedSeatPos(
-      //     context, widget.seatPos, widget.seat, widget.gameComService);
     }
   }
 
@@ -266,7 +261,6 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
     if (handState != HandState.RESULT) {
       return SizedBox(width: 0, height: 0);
     }
-    log('HiLo: Status: seat: ${seat.player.name} inhand: ${seat.player.inhand}');
     if (seat.player != null && !seat.player.inhand) {
       return SizedBox(width: 0, height: 0);
     }
@@ -288,7 +282,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final theme = AppTheme.getTheme(context);
-    log('RedrawTop: PlayerView build ${widget.seat.serverSeatPos}:L${widget.seat.localSeatPos} pos: ${widget.seat.seatPos.toString()} player: ${widget.seat.player?.name}');
+    // log('RedrawTop: PlayerView build ${widget.seat.serverSeatPos}:L${widget.seat.localSeatPos} pos: ${widget.seat.seatPos.toString()} player: ${widget.seat.player?.name}');
     // widget.seat.key = GlobalKey(
     //   debugLabel: 'Seat:${widget.seat.serverSeatPos}',
     // ); //this.globalKey;
@@ -299,7 +293,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
     final gameState = GameState.getState(context);
     bool openSeat = widget.seat.isOpen;
     bool isMe = widget.seat.isMe;
-    log('SeatView1: seat: ${widget.seat.serverSeatPos} isOpen: ${openSeat} player: ${widget.seat.player}');
+    // log('SeatView: seat: ${widget.seat.serverSeatPos} isOpen: ${openSeat} player: ${widget.seat.player}');
     bool showdown = widget.gameState.showdown;
 
     // if open seat, just show open seat widget
@@ -351,15 +345,19 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
       showFirework = true;
     }
 
+    bool highlight = false;
+    double scale = 1.0;
+    if (widget.seat.player != null) {
+      highlight = widget.seat.player.highlight;
+      if (highlight) {
+        // scale = 1.3;
+      }
+    }
+
     // we constrain the size to NOT shift the players widgets
     // and for large size fireworks, we use a scaling factor
     Size fireworksContainer = Size(50, 50);
     double fireworksScale = 1.5;
-
-    // if (widget.seat.key != null && widget.seat.key.currentContext != null) {
-    //   RenderBox seatBox = widget.seat.key.currentContext.findRenderObject();
-    //   fireworksContainer = Size(seatBox.size.width, seatBox.size.height * 2);
-    // }
 
     final boardAttributes = gameState.getBoardAttributes(context);
     widget.seat.betWidgetUIKey = GlobalKey();
@@ -383,18 +381,18 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
     }
     return DragTarget(
       onWillAccept: (data) {
-        log("SeatChange: Player onWillAccept $data");
+        // log("SeatChange: Player onWillAccept $data");
         widget.seat.dragEntered = true;
         setState(() {});
         return true;
       },
       onLeave: (data) {
-        log("SeatChange: Player onLeave $data");
+        // log("SeatChange: Player onLeave $data");
         widget.seat.dragEntered = false;
         setState(() {});
       },
       onAccept: (data) {
-        log('SeatChange: onDropped ${data}');
+        // log('SeatChange: onDropped ${data}');
         widget.seat.dragEntered = false;
         setState(() {});
         // call the API to make the seat change
@@ -423,6 +421,14 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
               Offset(((widget.boardAttributes.namePlateSize.width / 2)), 0);
         }
         Key key = widget.seat.key;
+        double opacity = 1.0;
+
+        if (!widget.seat.isOpen) {
+          if (widget.seat.player.highlight &&
+              widget.seat.player.connectivity.connectivityLost) {
+            opacity = 0.70;
+          }
+        }
         return InkWell(
           onTap: () => this.onTap(context),
           child: Stack(
@@ -432,11 +438,15 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
               // Container(width: 100, height: 60, color: Colors.grey[900]),
               //SvgPicture.string(namePlateStr, width: 60, height: 50),
               // // main user body
-              NamePlateWidget(
-                widget.seat,
-                globalKey: key,
-                boardAttributes: boardAttributes,
-              ),
+              Opacity(
+                  opacity: opacity,
+                  child: Transform.scale(
+                      scale: scale,
+                      child: NamePlateWidget(
+                        widget.seat,
+                        globalKey: key,
+                        boardAttributes: boardAttributes,
+                      ))),
 
               // result cards shown in player view at the time of result
               _buildDisplayCardsWidget(widget.seat, gameState.handState),
@@ -468,19 +478,13 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
               ),
 
               // player hole cards (tilted card on the bottom left)
-              Transform.translate(
-                offset: boardAttributes.playerHoleCardOffset,
-                child: Transform.scale(
-                  scale: boardAttributes.playerHoleCardScale,
-                  child: gameState.handState == HandState.RESULT
-                      ? SizedBox(width: 0, height: 0)
-                      : PlayerCardsWidget(
-                          widget.seat,
-                          this.widget.cardsAlignment,
-                          widget.seat.player?.noOfCardsVisible,
-                          showdown,
-                        ),
-                ),
+              PlayerCardsWidget(
+                boardAttributes,
+                gameState,
+                widget.seat,
+                this.widget.cardsAlignment,
+                widget.seat.player?.noOfCardsVisible,
+                showdown,
               ),
 
               // show dealer button, if user is a dealer
@@ -655,11 +659,14 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
       maintainState: true,
       maintainAnimation: true,
       maintainSize: true,
-      child: Image.asset(
-        'assets/images/network_connectivity/network_disconnected.png',
-        width: 14,
-        color: Colors.cyan,
-      ),
+      child: Stack(children: [
+        Icon(
+          Icons.wifi_off_rounded,
+          size: 32.pw,
+          color: Colors.orange,
+        ),
+        Container(),
+      ]),
     );
   }
 }
@@ -695,77 +702,5 @@ class SeatNoWidget extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-class PlayerCardsWidget extends StatelessWidget {
-  final Seat seat;
-  final Alignment alignment;
-  final bool showdown;
-  final int noCards;
-
-  const PlayerCardsWidget(
-    this.seat,
-    this.alignment,
-    this.noCards,
-    this.showdown,
-  );
-
-  @override
-  Widget build(BuildContext context) {
-    // if (seat.folded ?? false) {
-    //   return shrinkedSizedBox;
-    // }
-
-    double shiftMultiplier = 1.0;
-    if (this.noCards == 5) shiftMultiplier = 1.7;
-    if (this.noCards == 4) shiftMultiplier = 1.45;
-    if (this.noCards == 3) shiftMultiplier = 1.25;
-    log('PlayerCardsWidget: building ${seat.serverSeatPos}');
-    double xOffset;
-    if (showdown)
-      xOffset = (alignment == Alignment.centerLeft ? 1 : -1) *
-          25.0 *
-          (seat.cards?.length ?? 0.0);
-    else {
-      xOffset =
-          (alignment == Alignment.centerLeft ? 35.0 : -45.0 * shiftMultiplier);
-      xOffset = -45.0 * shiftMultiplier;
-    }
-    if (showdown) {
-      return const SizedBox.shrink();
-    } else if (seat.folded ?? false) {
-      log('PlayerCardsWidget: [${seat.serverSeatPos}] Folded cards');
-      return Transform.translate(
-        offset: Offset(
-          xOffset * 0.30,
-          45.0,
-        ),
-        child: FoldCardAnimatingWidget(seat: seat),
-      );
-    } else {
-      double xoffset = 0.90;
-      double scale = 1.0;
-      if (this.noCards == 5) {
-        scale = 0.75;
-        xoffset = 0.55;
-      }
-      if (this.noCards == 4) {
-        scale = 0.75;
-        xoffset = 0.75;
-      }
-      //log('Hole cards');
-      log('PlayerCardsWidget: [${seat.serverSeatPos}] Hidden cards');
-      return Transform.translate(
-        offset: Offset(
-          xOffset * xoffset,
-          25.0,
-        ),
-        child: Transform.scale(
-          scale: scale,
-          child: HiddenCardView(noOfCards: this.noCards),
-        ),
-      );
-    }
   }
 }

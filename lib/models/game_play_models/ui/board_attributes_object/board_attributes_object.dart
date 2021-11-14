@@ -251,23 +251,23 @@ Map<SeatPos, SeatPosAttribs> getSeatMap(int deviceSize) {
     /* bottom left and bottom right  */
     SeatPos.bottomLeft: SeatPosAttribs(
       Alignment.bottomLeft,
-      Offset(30, 20),
+      Offset(15, 20),
       Alignment.centerRight,
     ),
     SeatPos.bottomRight: SeatPosAttribs(
       Alignment.bottomRight,
-      Offset(-30, 20),
+      Offset(-15, 20),
       Alignment.centerLeft,
     ),
     /* middle left and middle right */
     SeatPos.middleLeft: SeatPosAttribs(
       Alignment.centerLeft,
-      Offset(5, 40),
+      Offset(10, 40),
       Alignment.centerRight,
     ),
     SeatPos.middleRight: SeatPosAttribs(
       Alignment.centerRight,
-      Offset(-5, 40),
+      Offset(-10, 40),
       Alignment.centerLeft,
     ),
 
@@ -556,7 +556,7 @@ class BoardAttributesObject extends ChangeNotifier {
     if (_boardOrientation == BoardOrientation.horizontal) {
       return {
         SeatPos.topCenter: Offset(25, 40),
-        SeatPos.bottomCenter: Offset(30, -40),
+        SeatPos.bottomCenter: Offset(10, -40),
         SeatPos.middleLeft: Offset(50, 0),
         SeatPos.middleRight: Offset(-50, 0),
         SeatPos.topRight: Offset(-40, 30),
@@ -642,7 +642,7 @@ class BoardAttributesObject extends ChangeNotifier {
 
   double get betSliderScale {
     if (this._screenSize == ScreenSize.lessThan7Inches) {
-      return 1.5;
+      return 2.0;
     } else if (this._screenSize == ScreenSize.equalTo7Inches) {
       return 2.0;
     } else {
@@ -767,6 +767,13 @@ class BoardAttributesObject extends ChangeNotifier {
         greaterThan7Inches: Offset(0.0, 60.ph),
       ) as Offset;
 
+  double get footerViewHeightScale => _decide(
+        lessThan6Inches: 0.45,
+        equalTo6Inches: .45,
+        equalTo7Inches: .45,
+        greaterThan7Inches: .45,
+      ) as double;
+
   double get centerPotScale => _decide(
         lessThan6Inches: 0.85,
         equalTo6Inches: 1.0,
@@ -855,6 +862,13 @@ class BoardAttributesObject extends ChangeNotifier {
         greaterThan7Inches: Offset(10, 40),
       ) as Offset;
 
+  double get boardViewPositionScale => _decide(
+        lessThan6Inches: .01,
+        equalTo6Inches: .03,
+        equalTo7Inches: .01,
+        greaterThan7Inches: .01,
+      ) as double;
+
   double get tableScale => _decide(
         lessThan6Inches: 1.0,
         equalTo6Inches: 1.0,
@@ -865,12 +879,14 @@ class BoardAttributesObject extends ChangeNotifier {
   Size get centerSize => this._centerSize;
 
   /* hole card view offsets */
-  Offset get holeCardViewOffset => _decide(
-        lessThan6Inches: const Offset(0, 50),
-        equalTo6Inches: const Offset(0, 60),
-        equalTo7Inches: const Offset(0, 90),
-        greaterThan7Inches: const Offset(0, 130),
-      ) as Offset;
+  Offset get holeCardViewOffset {
+    return _decide(
+      lessThan6Inches: Offset(0, 50.ph),
+      equalTo6Inches: Offset(0, 60.ph),
+      equalTo7Inches: Offset(0, 90),
+      greaterThan7Inches: Offset(0, 130),
+    ) as Offset;
+  }
 
   /* hold card view scales */
   double get holeCardViewScale => _decide(

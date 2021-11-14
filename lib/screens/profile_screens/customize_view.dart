@@ -110,6 +110,7 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
                         Container(
                           //   height: 56,
                           child: ListView.separated(
+                            physics: BouncingScrollPhysics(),
                             separatorBuilder: (context, index) =>
                                 AppDimensionsNew.getVerticalSizedBox(8),
                             itemCount: themeStyles.length,
@@ -223,6 +224,7 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
                 ),
                 Expanded(
                   child: SingleChildScrollView(
+                    physics: BouncingScrollPhysics(),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [

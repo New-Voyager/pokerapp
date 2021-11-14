@@ -84,6 +84,23 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
         _initTimer();
       }
     });
+
+    context.read<AppState>().addListener(() async {
+      final int currentIndex =
+          Provider.of<AppState>(context, listen: false).currentIndex;
+      if (context.read<AppState>().newGame ||
+          context.read<AppState>().gameEnded) {
+        if (currentIndex == 0) {
+          if (_tabController.index == 0) {
+            await _fetchLiveGames();
+          } else if (_tabController.index == 1) {
+            await _fetchPlayedGames();
+          }
+        }
+        context.read<AppState>().setNewGame(false);
+        context.read<AppState>().setGameEnded(false);
+      }
+    });
   }
 
   @override
@@ -307,8 +324,6 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
 
   void _handleGameRefresh(InstaRefreshService irs) {
     if (!mounted) return;
-    // final InstaRefreshService irs = context.read<InstaRefreshService>();
-    log('pauldebug: _handleGameRefresh is being called: ${irs.needToRefreshLiveGames}');
 
     // for live games
     if (irs.needToRefreshLiveGames) {
@@ -374,6 +389,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                 ),
 
                 TabBar(
+                  physics: const BouncingScrollPhysics(),
                   tabs: [
                     Tab(
                       child: Row(
@@ -429,6 +445,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                 // ),
                 Expanded(
                   child: TabBarView(
+                    physics: const BouncingScrollPhysics(),
                     controller: _tabController,
                     children: [
                       Stack(

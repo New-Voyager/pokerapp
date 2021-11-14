@@ -17,7 +17,29 @@ class ClubBannerViewNew extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Widget role = SizedBox.shrink();
     final theme = AppTheme.getTheme(context);
+    if (clubModel.isOwner) {
+      role = Container(
+          padding: EdgeInsets.all(3),
+          decoration: BoxDecoration(
+              border: Border.all(color: theme.secondaryColor),
+              borderRadius: BorderRadius.circular(
+                  15.ph) // use instead of BorderRadius.all(Radius.circular(20))
+              ),
+          child: Text('Owner',
+              style: AppDecorators.getHeadLine5Style(theme: theme)));
+    } else if (clubModel.isManager) {
+      role = Container(
+          padding: EdgeInsets.all(8),
+          decoration: BoxDecoration(
+              border: Border.all(color: theme.secondaryColor),
+              borderRadius: BorderRadius.circular(
+                  20) // use instead of BorderRadius.all(Radius.circular(20))
+              ),
+          child: Text('Manager',
+              style: AppDecorators.getHeadLine5Style(theme: theme)));
+    }
     final decoration = BoxDecoration(
         shape: BoxShape.circle,
         border: Border.all(
@@ -60,15 +82,7 @@ class ClubBannerViewNew extends StatelessWidget {
                     )
                   : SizedBox.shrink(),
             ),
-            // Positioned(
-            //   right: -40,
-            //   bottom: 10,
-            // child: Transform.scale(
-            // scale: 1.2,
-            // child: Icon(
-            //   Icons.settings_outlined,
-            //   color: theme.accentColor,
-            // ))),
+            Positioned(right: -100.pw, bottom: -70.ph, child: role),
           ],
         ),
         Padding(
@@ -83,10 +97,10 @@ class ClubBannerViewNew extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.baseline,
           textBaseline: TextBaseline.alphabetic,
           children: [
-            Text(
-              appScreenText['clubCode'] + ": ",
-              style: AppDecorators.getSubtitle3Style(theme: theme),
-            ),
+            // Text(
+            //   appScreenText['clubCode'] + ": ",
+            //   style: AppDecorators.getSubtitle3Style(theme: theme),
+            // ),
             Text(
               clubModel.clubCode,
               style: AppDecorators.getHeadLine3Style(theme: theme),

@@ -39,6 +39,7 @@ class ListOfClubMemberBottomSheet extends StatelessWidget {
                     );
                   }
                   return ListView.builder(
+                    physics: BouncingScrollPhysics(),
                     itemCount: snapshot.data.length,
                     itemBuilder: (context, index) {
                       if (snapshot.data[index].isOwner) {

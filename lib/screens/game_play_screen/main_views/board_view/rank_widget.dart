@@ -25,7 +25,8 @@ class RankWidget extends StatelessWidget {
       child: ValueListenableBuilder(
           valueListenable: rankTextNotifier,
           builder: (_, rankStr, __) {
-            Color color = theme.accentColorWithDark();
+            //Color color = theme.accentColorWithDark();
+            Color color = theme.fillInColor;
             if (rankStr.toString().toLowerCase() == 'low') {
               color = Colors.blueGrey;
             }
