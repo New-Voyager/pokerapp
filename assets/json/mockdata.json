@@ -26,6 +26,62 @@
             "tableCount": 4,
             "waitlistCount": 0,
             "clubCode": null
+        },
+        {
+            "gameCode": "ghijkl",
+            "gameType": "HOLDEM",
+            "clubName": null,
+            "buyInMin": 60,
+            "buyInMax": 200,
+            "smallBlind": 1,
+            "bigBlind": 2,
+            "maxPlayers": 6,
+            "elapsedTime": 1523,
+            "tableCount": 4,
+            "waitlistCount": 0,
+            "clubCode": null
+        },
+        {
+            "gameCode": "ghijkl",
+            "gameType": "HOLDEM",
+            "clubName": null,
+            "buyInMin": 60,
+            "buyInMax": 200,
+            "smallBlind": 1,
+            "bigBlind": 2,
+            "maxPlayers": 6,
+            "elapsedTime": 1523,
+            "tableCount": 4,
+            "waitlistCount": 0,
+            "clubCode": null
+        },
+        {
+            "gameCode": "ghijkl",
+            "gameType": "HOLDEM",
+            "clubName": null,
+            "buyInMin": 60,
+            "buyInMax": 200,
+            "smallBlind": 1,
+            "bigBlind": 2,
+            "maxPlayers": 6,
+            "elapsedTime": 1523,
+            "tableCount": 4,
+            "waitlistCount": 0,
+            "clubCode": null
+        },
+        {
+            "gameCode": "ghijkl",
+            "gameType": "HOLDEM",
+            "clubName": null,
+            "buyInMin": 60,
+            "buyInMax": 200,
+            "smallBlind": 1,
+            "bigBlind": 2,
+            "maxPlayers": 6,
+            "elapsedTime": 1523,
+            "tableCount": 4,
+            "waitlistCount": 0,
+            "clubCode": null
         }
     ],
     "clubs": [{
@@ -84,6 +140,25 @@
             "memberUnreadMessageCount": 0,
             "liveGameCount": 0,
             "picUrl": "https://i.pinimg.com/originals/96/4f/4f/964f4fdad15ac63a9431500296864a3c.jpg"
+        },
+        {
+            "__typename": "PlayerClub",
+            "name": "London Poker Club",
+            "clubCode": "cchzin",
+            "clubStatus": "ACTIVE",
+            "memberStatus": "ACTIVE",
+            "balance": 0,
+            "memberCount": 1,
+            "imageId": null,
+            "isOwner": true,
+            "private": true,
+            "host": "karun",
+            "pendingMemberCount": 0,
+            "hostUnreadMessageCount": 0,
+            "unreadMessageCount": 0,
+            "memberUnreadMessageCount": 0,
+            "liveGameCount": 0,
+            "picUrl": "https://i.pinimg.com/originals/96/4f/4f/964f4fdad15ac63a9431500296864a3c.jpg"
         }
     ],
     "clubHomePage": [{
@@ -121,5 +196,96 @@
             "buyInMax": 200,
             "tableCount": 0
         }]
-    }]
+    }],
+    "gameHistory": [{
+            "__typename": "ClubGameInfo",
+            "gameType": "PLO",
+            "gameCode": "cgnsosre",
+            "gameNum": 1,
+            "startedBy": "Mocked data 1",
+            "startedAt": "2021-11-14T06:19:40.611Z",
+            "endedBy": "karun",
+            "endedAt": "2021-11-14T06:28:22.737Z",
+            "sessionTime": 6,
+            "sessionTimeStr": "6 seconds",
+            "handsPlayed": 3,
+            "runTime": 9,
+            "runTimeStr": "9 minutes",
+            "smallBlind": 1,
+            "bigBlind": 2,
+            "balance": -199
+        },
+        {
+            "__typename": "ClubGameInfo",
+            "gameType": "PLO",
+            "gameCode": "cgnsosre",
+            "gameNum": 1,
+            "startedBy": "Mocked data 2",
+            "startedAt": "2021-11-14T06:19:40.611Z",
+            "endedBy": "karun",
+            "endedAt": "2021-11-14T06:28:22.737Z",
+            "sessionTime": 6,
+            "sessionTimeStr": "6 seconds",
+            "handsPlayed": 3,
+            "runTime": 9,
+            "runTimeStr": "9 minutes",
+            "smallBlind": 1,
+            "bigBlind": 2,
+            "balance": -199
+        }
+    ],
+    "gameDetails": {
+        "__typename": "Query",
+        "completedGame": {
+            "__typename": "CompletedGame",
+            "gameType": "PLO",
+            "gameCode": "cgne",
+            "gameNum": 1,
+            "smallBlind": 1,
+            "bigBlind": 2,
+            "startedBy": "karun",
+            "startedAt": "2021-11-14T06:19:40.611Z",
+            "endedBy": "karun",
+            "endedAt": "2021-11-14T06:28:22.737Z",
+            "sessionTime": 302,
+            "handsPlayed": 3,
+            "runTime": 523,
+            "runTimeStr": null,
+            "sessionTimeStr": null,
+            "handsDealt": 3,
+            "profit": -195,
+            "buyIn": 200,
+            "highHandTracked": false,
+            "dataAggregated": true,
+            "stackStat": [{
+                    "__typename": "GameStackStat",
+                    "handNum": 1,
+                    "before": 200,
+                    "after": 196
+                },
+                {
+                    "__typename": "GameStackStat",
+                    "handNum": 2,
+                    "before": 196,
+                    "after": 130
+                },
+                {
+                    "__typename": "GameStackStat",
+                    "handNum": 3,
+                    "before": 130,
+                    "after": 1
+                }
+            ],
+            "isHost": true,
+            "isManager": false,
+            "isOwner": true,
+            "handDataLink": "https://hands-pokerclub.nyc3.digitaloceanspaces.com/game/cgnsosre/hand.dat",
+            "preflopHands": 0,
+            "flopHands": 0,
+            "turnHands": 0,
+            "riverHands": 1,
+            "showdownHands": 2
+        },
+        "hhWinners": []
+    }
 }

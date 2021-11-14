@@ -4,6 +4,7 @@ import 'package:flutter/services.dart' as rootBundle;
 import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/models/club_model.dart';
 import 'package:pokerapp/models/club_weekly_activity_model.dart';
+import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/models/newmodels/game_model_new.dart';
 
 class MockData {
@@ -49,5 +50,26 @@ class MockData {
 
     return ClubHomePageModel.fromGQLResponse(
         clubCode, clubHomePage[0], weeklyActivity);
+  }
+
+  static Future<List<GameHistoryModel>> getGameHistory(String clubCode) async {
+    final jsondata =
+        await rootBundle.rootBundle.loadString("assets/json/mockdata.json");
+    final List gameHistory = json.decode(jsondata)["gameHistory"] as List;
+
+    return gameHistory
+        .map<GameHistoryModel>((var item) => GameHistoryModel.fromJson(item))
+        .toList();
+  }
+
+  static Future<GameHistoryDetailModel> getGameHistoryDetail(
+      GameHistoryDetailModel model) async {
+    final jsondata =
+        await rootBundle.rootBundle.loadString("assets/json/mockdata.json");
+    print("hehe");
+    // instantiate game history detail object
+    model.jsonData = json.decode(jsondata)["gameDetails"];
+    model.load();
+    return model;
   }
 }
