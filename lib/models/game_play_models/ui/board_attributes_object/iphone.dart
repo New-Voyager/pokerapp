@@ -225,8 +225,8 @@ class IPhoneAttribs {
         "footerViewHeightScale": 0.40,
         "holeCardScale": {
           "2": 0.90,
-          "4": 1.35,
-          "5": 1.15,
+          "4": 0.80,
+          "5": 0.80,
           "default": 1
         },
         "holeCardOffset": "0, 0",
