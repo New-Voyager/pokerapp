@@ -97,7 +97,7 @@ class _ChatScreenState extends State<ChatScreen> with RouteAwareAnalytics {
           appBar: CustomAppBar(
             theme: theme,
             context: context,
-            titleText: widget.name ?? _appScreenText['Message'],
+            titleText: widget.name ?? _appScreenText['MESSAGE'],
           ),
           body: _buildBody(isHostView),
         ),
