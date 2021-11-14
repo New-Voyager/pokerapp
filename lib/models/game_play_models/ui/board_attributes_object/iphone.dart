@@ -203,10 +203,21 @@ class IPhoneAttribs {
         "holeCardScale": {
           "2": 1.70,
           "4": 1.35,
-          "5": 1.15,
+          "5": 1.50,
           "default": 1
-        }
-
+        },
+        "holeCardDisplacement": {
+          "2": 35,
+          "4": 50,
+          "5": 50,
+          "default": 20
+        },
+        "holeCardDisplacementVisible": {
+          "2": 30,
+          "4": 50,
+          "5": 50,
+          "default": 20
+        }       
       }
     ''';
     Map<String, dynamic> overrideMap = jsonDecode(override);
