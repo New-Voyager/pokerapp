@@ -337,4 +337,67 @@ class IPhoneAttribs {
     ''';
     return jsonDecode(attribs);
   }
+
+
+  static Map<String, dynamic> getIPadAir() {
+    final defaultValue = getIPad97();
+    String override = '''
+      {
+        "model": "iPad Air (4th generation)",
+        "screenSize": "820.0, 1180.0",
+        "size": 9.5,
+        "board": {
+          "centerViewScale": 1.30,
+          "centerViewPos": "0, 50.0"
+        },
+        "holeCardDisplacement": {
+          "2": 50,
+          "4": 50,
+          "5": 40,
+          "default": 50
+        },
+        "holeCardDisplacementVisible": {
+          "2": 50,
+          "4": 50,
+          "5": 40,
+          "default": 50
+        },        
+        "footerViewHeightScale": 0.40,
+        "holeCardScale": {
+          "2": 1.10,
+          "4": 1.35,
+          "5": 1.15,
+          "default": 1
+        },
+        "holeCardOffset": "0, 0",
+        "holeCardViewOffset": "0, 50",
+        "holeCardViewScale": 1.70,
+        "footerActionScale": 1.30,
+        "footerScale": 0.45,
+        "seat": {
+          "scale": 1.30,
+          "holeCardOffset": "0, 0",
+          "holeCardScale": 1.0
+        }
+
+      }
+    ''';
+    Map<String, dynamic> overrideMap = jsonDecode(override);
+    updateMap(defaultValue, overrideMap);
+    return defaultValue;
+  }
+
+  static Map<String, dynamic> getAttribs(String deviceName, double screenSize) {
+    if (deviceName.contains('iPad')) {
+      if (deviceName.contains('iPad Air')) {
+        return getIPadAir();
+      } else {
+        return getIPad97();
+      }
+    } else {
+      return getIPhone8();
+    }
+  }
+
+
 }
