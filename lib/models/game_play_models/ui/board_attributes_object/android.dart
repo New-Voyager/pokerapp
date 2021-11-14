@@ -130,6 +130,9 @@ class AndroidAttribs {
     final defaultValue = getDefault();
     String override = '''
       {
+        "model": "motog",
+        "screenSize": "411.4, 890.3",
+        "size": 6.5
       }
     ''';
     Map<String, dynamic> overrideMap = jsonDecode(override);
