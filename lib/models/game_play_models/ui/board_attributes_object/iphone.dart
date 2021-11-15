@@ -241,7 +241,7 @@ class IPhoneAttribs {
         "size": 5.4,
         "board": {
           "centerViewScale": 0.85,
-          "tableScale": 1.1,
+          "tableScale": 1.3,
           "seatMap": {
             "bottomCenter": "0, 70",
             "bottomLeft": "15, 60",
@@ -257,8 +257,8 @@ class IPhoneAttribs {
           "betAmountFac": {
             "bottomCenter": "0, -1.0",
             "topCenter": "0.20, 0.70",
-            "middleLeft": "-0.30, 0.65",
-            "middleRight": "0.40, 0.65",
+            "middleLeft": "0.30, 0.65",
+            "middleRight": "-0.10, 0.65",
             "topRight": "-0.10, 0.70",
             "topLeft": "0.30, 0.65",
             "bottomLeft": "0.70, -0.8",
@@ -270,16 +270,16 @@ class IPhoneAttribs {
           "centerPotUpdatesScale": 0.7
         },
         "holeCardDisplacement": {
-          "2": 22,
-          "4": 15,
-          "5": 13,
-          "default": 20
+          "2": 30,
+          "4": 30,
+          "5": 25,
+          "default": 25
         },
         "holeCardDisplacementVisible": {
           "2": 22,
-          "4": 13,
-          "5": 13,
-          "default": 20
+          "4": 25,
+          "5": 25,
+          "default": 25
         },        
         "holeCardScale": {
           "2": 1.10,
@@ -298,7 +298,7 @@ class IPhoneAttribs {
     final defaultValue = getDefault();
     String override = '''
       {
-        "model": "iPhone 13 mini",
+        "model": "iPhone 13 Pro Max",
         "screenSize": "375.0, 812.0",
         "size": 5.4,
         "board": {
