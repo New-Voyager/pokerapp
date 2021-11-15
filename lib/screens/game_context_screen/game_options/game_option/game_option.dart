@@ -23,6 +23,7 @@ import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/numeric_keyboard2.dart';
 import 'package:pokerapp/utils/utils.dart';
+import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/radio_list_widget.dart';
 import 'package:pokerapp/widgets/switch_widget.dart';
 import 'package:provider/provider.dart';
@@ -228,63 +229,90 @@ class _GameOptionState extends State<GameOption> {
     @required final bool isHost,
     @required final AppTheme theme,
   }) {
-    List<OptionItemModel> gameActions = [];
+    //List<OptionItemModel> gameActions = [];
+    List<Widget> gameActions = [];
 
     if (isPlaying) {
       gameActions.addAll([
-        OptionItemModel(
-          title: _appScreenText['standup'],
-          iconData: Icons.exit_to_app_sharp,
-          onTap: (context) {
+        CircleImageButton(
+          theme: theme,
+          caption: _appScreenText['standup'],
+          icon: Icons.exit_to_app_sharp,
+          onTap: () {
             this.onLeave();
           },
         ),
       ]);
+      gameActions.add(SizedBox(width: 20));
+      // gameActions.addAll([
+      //   OptionItemModel(
+      //     title: _appScreenText['standup'],
+      //     iconData: Icons.exit_to_app_sharp,
+      //     onTap: (context) {
+      //       this.onLeave();
+      //     },
+      //   ),
+      // ]);
       final me = widget.gameState.me;
       if (me != null && me.stack < widget.gameState.gameInfo.buyInMax) {
-        gameActions.add(OptionItemModel(
-          title: _appScreenText['reload'],
-          iconData: Icons.shop,
-          onTap: (context) {
-            this.onReload();
-          },
-        ));
+
+        gameActions.add(
+          CircleImageButton(
+            theme: theme,
+            caption:  _appScreenText['reload'],
+            icon: Icons.shop,
+            onTap: () {
+              this.onReload();
+            },
+          ),
+        );        
+        gameActions.add(SizedBox(width: 20));
       }
     }
 
     if (widget.gameState.isGameRunning) {
       if (isPlaying) {
         gameActions.add(
-          OptionItemModel(
-            title: _appScreenText['break'],
-            iconData: Icons.shop,
-            onTap: (context) {
+          CircleImageButton(
+            theme: theme,
+            caption:  _appScreenText['break'],
+            svgAsset: 'assets/images/game/break.svg',
+            onTap: () {
               this.onBreak();
             },
           ),
-        );
+        );        
+        gameActions.add(SizedBox(width: 20));
       }
 
       if (isHost) {
         gameActions.add(
-          OptionItemModel(
-            title: _appScreenText['pause'],
-            iconData: Icons.pause,
-            onTap: (context) {
-              this.onPause();
-            },
-          ),
-        );
+            CircleImageButton(
+              theme: theme,
+              caption:  _appScreenText['pause'],
+              icon: Icons.pause,
+              onTap: () {
+                this.onPause();
+              },
+            ),
+          );         
+        gameActions.add(SizedBox(width: 20));
       }
     }
 
     if (isHost) {
-      gameActions.add(OptionItemModel(
-          title: _appScreenText['terminate'],
-          iconData: Icons.cancel_outlined,
-          onTap: (context) {
-            this.onEndGame();
-          }));
+
+        gameActions.add(
+            CircleImageButton(
+              theme: theme,
+              caption:  _appScreenText['terminate'],
+              icon: Icons.cancel,
+              onTap: () {
+                this.onEndGame();
+              },
+            ),
+          );         
+        gameActions.add(SizedBox(width: 20));
     }
 
     return Container(
@@ -295,9 +323,7 @@ class _GameOptionState extends State<GameOption> {
       child: Wrap(
         alignment: WrapAlignment.center,
         //mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          ...gameActions.map((e) => gameActionItem(e, theme)).toList(),
-        ],
+        children: gameActions,
       ),
     );
   }
@@ -1382,39 +1408,39 @@ class _GameOptionState extends State<GameOption> {
     );
   }
 
-  gameActionItem(OptionItemModel optionItemModel, AppTheme theme) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 5),
-      child: GestureDetector(
-        onTap: () {
-          if (optionItemModel.onTap != null) {
-            optionItemModel.onTap(context);
-          }
-        },
-        child: Column(
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: theme.accentColor,
-              ),
-              padding: EdgeInsets.all(10),
-              child: Icon(
-                optionItemModel.iconData ?? Icons.message,
-                size: 20.pw,
-                color: theme.primaryColorWithDark(),
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.all(5),
-              child: Text(
-                optionItemModel.title,
-                style: AppDecorators.getSubtitle3Style(theme: theme),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  // gameActionItem(CircleImageButton optionItemModel, AppTheme theme) {
+  //   return Container(
+  //     margin: EdgeInsets.symmetric(horizontal: 5),
+  //     child: GestureDetector(
+  //       onTap: () {
+  //         if (optionItemModel.onTap != null) {
+  //           optionItemModel.onTap();
+  //         }
+  //       },
+  //       child: Column(
+  //         children: [
+  //           Container(
+  //             decoration: BoxDecoration(
+  //               shape: BoxShape.circle,
+  //               color: theme.accentColor,
+  //             ),
+  //             padding: EdgeInsets.all(10),
+  //             child: Icon(
+  //               optionItemModel.icon ?? Icons.message,
+  //               size: 20.pw,
+  //               color: theme.primaryColorWithDark(),
+  //             ),
+  //           ),
+  //           Container(
+  //             padding: EdgeInsets.all(5),
+  //             child: Text(
+  //               optionItemModel.title,
+  //               style: AppDecorators.getSubtitle3Style(theme: theme),
+  //             ),
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 }
