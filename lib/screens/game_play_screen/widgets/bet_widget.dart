@@ -89,9 +89,9 @@ class BetWidget extends StatelessWidget {
           child: _buildBetAmountChild(
             theme: appTheme,
             option: action.options[index],
-            // onTap: () {
-            //   valueNotifierVal.value = option.amount.toDouble();
-            // },
+            onTap: () {
+              valueNotifierVal.value = option.amount.toDouble();
+            },
           ),
         );
       },
@@ -107,20 +107,20 @@ class BetWidget extends StatelessWidget {
         child: _buildBetAmountChild(
           theme: appTheme,
           isKeyboard: true,
-          // onTap: () async {
-          //   double min = action.minRaiseAmount.toDouble();
-          //   double max = action.maxRaiseAmount.toDouble();
-          //
-          //   final double res = await NumericKeyboard2.show(
-          //     context,
-          //     title:
-          //         'Enter your bet/raise amount (${action.minRaiseAmount.toString()} - ${action.maxRaiseAmount.toString()})',
-          //     min: min,
-          //     max: max,
-          //   );
-          //
-          //   if (res != null) valueNotifierVal.value = res;
-          // },
+          onTap: () async {
+            double min = action.minRaiseAmount.toDouble();
+            double max = action.maxRaiseAmount.toDouble();
+
+            final double res = await NumericKeyboard2.show(
+              context,
+              title:
+                  'Enter your bet/raise amount (${action.minRaiseAmount.toString()} - ${action.maxRaiseAmount.toString()})',
+              min: min,
+              max: max,
+            );
+
+            if (res != null) valueNotifierVal.value = res;
+          },
         ),
       ),
     ];
@@ -205,7 +205,7 @@ class BetWidget extends StatelessWidget {
 
   Widget _buildKeyboardButton(
       BuildContext context, AppTheme theme, ValueNotifier<double> vnValue) {
-    return InkWell(
+    return _buildBetAmountChild(
       onTap: () async {
         double min = action.minRaiseAmount.toDouble();
         double max = action.maxRaiseAmount.toDouble();
@@ -220,10 +220,8 @@ class BetWidget extends StatelessWidget {
 
         if (res != null) vnValue.value = res;
       },
-      child: _buildBetAmountChild(
-        theme: theme,
-        isKeyboard: true,
-      ),
+      theme: theme,
+      isKeyboard: true,
     );
   }
 
@@ -317,18 +315,19 @@ class BetWidget extends StatelessWidget {
     // show all-in or pot button on the left
     for (final option in action.options) {
       if (option.text == 'All-In' || option.text == 'Pot') {
-        betButtons.add(Positioned(
+        betButtons.add(
+          Positioned(
             top: 40,
             left: 30,
-            child: InkWell(
+            child: _buildBetAmountChild(
               onTap: () {
                 vnBetAmount.value = option.amount.toDouble();
               },
-              child: _buildBetAmountChild(
-                theme: theme,
-                option: option,
-              ),
-            )));
+              theme: theme,
+              option: option,
+            ),
+          ),
+        );
         break;
       }
     }
@@ -340,18 +339,19 @@ class BetWidget extends StatelessWidget {
       if (option.text == 'All-In' || option.text == 'Pot') {
         // skip handled
       } else {
-        betButtons.add(Positioned(
+        betButtons.add(
+          Positioned(
             top: top,
             right: right,
-            child: InkWell(
+            child: _buildBetAmountChild(
               onTap: () {
                 vnBetAmount.value = option.amount.toDouble();
               },
-              child: _buildBetAmountChild(
-                theme: theme,
-                option: option,
-              ),
-            )));
+              theme: theme,
+              option: option,
+            ),
+          ),
+        );
         top += 40;
       }
     }
@@ -545,73 +545,75 @@ class BetWidget extends StatelessWidget {
   }
 
   Widget _buildBetAmountChild({
-    bool betButton = false,
     bool isKeyboard = false,
     Option option,
-    //void onTap(),
+    void onTap(),
     AppTheme theme,
   }) {
     return FittedBox(
       fit: BoxFit.fitHeight,
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 4),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              padding: isKeyboard
-                  ? const EdgeInsets.all(4)
-                  : const EdgeInsets.all(8),
-              margin: isKeyboard
-                  ? const EdgeInsets.fromLTRB(0, 4, 0, 0)
-                  : const EdgeInsets.symmetric(vertical: 4),
-              decoration: BoxDecoration(
-                //color: Colors.red,
-                //  border: Border.all(color: Colors.white, width: 1.0),
-                shape: BoxShape.circle,
-                gradient: RadialGradient(
-                  // begin: Alignment.topRight,
-                  // end: Alignment.bottomLeft,
-                  colors: [
-                    theme.fillInColor,
-                    theme.primaryColorWithDark(),
-                  ],
-                  stops: [
-                    0.2,
-                    0.8,
+      child: InkWell(
+        onTap: onTap,
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 4),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                padding: isKeyboard
+                    ? const EdgeInsets.all(4)
+                    : const EdgeInsets.all(8),
+                margin: isKeyboard
+                    ? const EdgeInsets.fromLTRB(0, 4, 0, 0)
+                    : const EdgeInsets.symmetric(vertical: 4),
+                decoration: BoxDecoration(
+                  //color: Colors.red,
+                  //  border: Border.all(color: Colors.white, width: 1.0),
+                  shape: BoxShape.circle,
+                  gradient: RadialGradient(
+                    // begin: Alignment.topRight,
+                    // end: Alignment.bottomLeft,
+                    colors: [
+                      theme.fillInColor,
+                      theme.primaryColorWithDark(),
+                    ],
+                    stops: [
+                      0.2,
+                      0.8,
+                    ],
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: theme.secondaryColor,
+                      offset: Offset(0, 1),
+                      blurRadius: 0.5,
+                      spreadRadius: 0.5,
+                    )
                   ],
                 ),
-                boxShadow: [
-                  BoxShadow(
-                    color: theme.secondaryColor,
-                    offset: Offset(0, 1),
-                    blurRadius: 0.5,
-                    spreadRadius: 0.5,
-                  )
-                ],
-              ),
-              child: isKeyboard
-                  ? Icon(
-                      Icons.keyboard,
-                      color: Colors.white,
-                    )
-                  : Text(
-                      "${option.text}",
-                      style: TextStyle(
-                        fontSize: 10,
+                child: isKeyboard
+                    ? Icon(
+                        Icons.keyboard,
                         color: Colors.white,
+                      )
+                    : Text(
+                        "${option.text}",
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: Colors.white,
+                        ),
                       ),
-                    ),
-            ),
-            // Text(
-            //   isKeyboard ? '' : '${option.amount.toInt().toString()}',
-            //   style: TextStyle(
-            //     fontSize: 12,
-            //     color: Colors.white,
-            //   ),
-            // ),
-          ],
+              ),
+              // Text(
+              //   isKeyboard ? '' : '${option.amount.toInt().toString()}',
+              //   style: TextStyle(
+              //     fontSize: 12,
+              //     color: Colors.white,
+              //   ),
+              // ),
+            ],
+          ),
         ),
       ),
     );
@@ -627,7 +629,7 @@ class BetWidget extends StatelessWidget {
         itemBuilder: (context, index) {
           if (index == 0) {
             // show keyboard
-            return InkWell(
+            return _buildBetAmountChild(
               onTap: () async {
                 double min = action.minRaiseAmount.toDouble();
                 double max = action.maxRaiseAmount.toDouble();
@@ -641,23 +643,19 @@ class BetWidget extends StatelessWidget {
 
                 if (res != null) vnValue.value = res;
               },
-              child: _buildBetAmountChild(
-                theme: theme,
-                isKeyboard: true,
-              ),
+              theme: theme,
+              isKeyboard: true,
             );
           }
 
           final option = action.options[index - 1];
 
-          return InkWell(
+          return _buildBetAmountChild(
             onTap: () {
               vnValue.value = option.amount.toDouble();
             },
-            child: _buildBetAmountChild(
-              theme: theme,
-              option: action.options[index - 1],
-            ),
+            theme: theme,
+            option: action.options[index - 1],
           );
         },
         itemCount: action.options.length + 1,
