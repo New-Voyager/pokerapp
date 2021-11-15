@@ -51,21 +51,19 @@ class BetWidget extends StatelessWidget {
   double _getAngleBy(index) {
     final double angle = 45;
     switch (index) {
-
-      // keyboard
-      case -1:
+      case -1: // case -1 is keyboard
         return 0;
 
-      // all in button
-      case 3:
+      case 0: // case 0 is All In or Pot
         return angle;
 
       // other bet option buttons
-      case 0:
-        return 3 * angle;
+
       case 1:
-        return 4 * angle;
+        return 3 * angle;
       case 2:
+        return 4 * angle;
+      case 3:
         return 5 * angle;
 
       default:
@@ -79,7 +77,14 @@ class BetWidget extends StatelessWidget {
     @required ValueNotifier<double> valueNotifierVal,
     @required AppTheme appTheme,
   }) {
-    final actionOptions = action.options.asMap().entries.map<Widget>(
+    // keyboard button gets the index -1
+    // all in or pot gets the index 0 // Option.text = "Pot" OR Option.text = "All-In"
+    // other buttons gets index 1 - anything
+
+    // as the last of the list always contains the All In or Pot option, we can simply reverse the list to
+    // have the All In or Pot option at index 0
+    final actionOptions =
+        action.options.reversed.toList().asMap().entries.map<Widget>(
       (value) {
         final int index = value.key;
         final Option option = value.value;
@@ -88,7 +93,7 @@ class BetWidget extends StatelessWidget {
           _getAngleBy(index),
           child: _buildBetAmountChild(
             theme: appTheme,
-            option: action.options[index],
+            option: option,
             onTap: () {
               valueNotifierVal.value = option.amount.toDouble();
             },
@@ -101,9 +106,11 @@ class BetWidget extends StatelessWidget {
       // action option buttons
       ...actionOptions,
 
+      // all in OR POT button has the index 0
+
       // keyboard button
       _buildOtherBetOptionsButton(
-        _getAngleBy(-1),
+        _getAngleBy(-1), //  keyboard button has the index -1
         child: _buildBetAmountChild(
           theme: appTheme,
           isKeyboard: true,
