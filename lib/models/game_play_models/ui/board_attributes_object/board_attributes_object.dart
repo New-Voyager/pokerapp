@@ -11,7 +11,6 @@ import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_mappings.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:tuple/tuple.dart';
-import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 import 'android.dart';
 import 'iphone.dart';
