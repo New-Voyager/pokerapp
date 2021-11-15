@@ -3,10 +3,9 @@ import 'dart:convert';
 import 'iphone.dart';
 
 class AndroidAttribs {
-
   static Map<String, dynamic> getAttribs(double screenSize) {
     Map<String, dynamic> attribs = AndroidAttribs.get6Inch();
-    if (screenSize <= 5.3) { 
+    if (screenSize <= 5.3) {
       attribs = AndroidAttribs.getPixel2();
     }
     if (screenSize > 5.3 && screenSize <= 5.5) {
@@ -265,9 +264,9 @@ class AndroidAttribs {
         }
       }
       ''';
-       Map<String, dynamic> overrideMap = jsonDecode(override);
+    Map<String, dynamic> overrideMap = jsonDecode(override);
     updateMap(defaultValue, overrideMap);
-    return defaultValue;   
+    return defaultValue;
   }
 
   static Map<String, dynamic> getTen10InchTablet() {

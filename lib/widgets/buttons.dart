@@ -323,6 +323,7 @@ class CircleImageButtonOld extends StatelessWidget {
     );
   }
 }
+
 class CircleImageButton2 extends StatelessWidget {
   CircleImageButton2({
     @required this.onTap,

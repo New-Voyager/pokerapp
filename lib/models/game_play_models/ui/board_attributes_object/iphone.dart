@@ -549,7 +549,6 @@ class IPhoneAttribs {
     return jsonDecode(attribs);
   }
 
-
   static Map<String, dynamic> getIPadAir() {
     final defaultValue = getIPad97();
     String override = '''
@@ -617,6 +616,4 @@ class IPhoneAttribs {
       return getIPhone8();
     }
   }
-
-
 }

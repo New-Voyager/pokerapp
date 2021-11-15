@@ -255,17 +255,16 @@ class _GameOptionState extends State<GameOption> {
       // ]);
       final me = widget.gameState.me;
       if (me != null && me.stack < widget.gameState.gameInfo.buyInMax) {
-
         gameActions.add(
           CircleImageButton(
             theme: theme,
-            caption:  _appScreenText['reload'],
+            caption: _appScreenText['reload'],
             icon: Icons.shop,
             onTap: () {
               this.onReload();
             },
           ),
-        );        
+        );
         gameActions.add(SizedBox(width: 20));
       }
     }
@@ -275,44 +274,43 @@ class _GameOptionState extends State<GameOption> {
         gameActions.add(
           CircleImageButton(
             theme: theme,
-            caption:  _appScreenText['break'],
+            caption: _appScreenText['break'],
             svgAsset: 'assets/images/game/break.svg',
             onTap: () {
               this.onBreak();
             },
           ),
-        );        
+        );
         gameActions.add(SizedBox(width: 20));
       }
 
       if (isHost) {
         gameActions.add(
-            CircleImageButton(
-              theme: theme,
-              caption:  _appScreenText['pause'],
-              icon: Icons.pause,
-              onTap: () {
-                this.onPause();
-              },
-            ),
-          );         
+          CircleImageButton(
+            theme: theme,
+            caption: _appScreenText['pause'],
+            icon: Icons.pause,
+            onTap: () {
+              this.onPause();
+            },
+          ),
+        );
         gameActions.add(SizedBox(width: 20));
       }
     }
 
     if (isHost) {
-
-        gameActions.add(
-            CircleImageButton(
-              theme: theme,
-              caption:  _appScreenText['terminate'],
-              icon: Icons.cancel,
-              onTap: () {
-                this.onEndGame();
-              },
-            ),
-          );         
-        gameActions.add(SizedBox(width: 20));
+      gameActions.add(
+        CircleImageButton(
+          theme: theme,
+          caption: _appScreenText['terminate'],
+          icon: Icons.cancel,
+          onTap: () {
+            this.onEndGame();
+          },
+        ),
+      );
+      gameActions.add(SizedBox(width: 20));
     }
 
     return Container(
