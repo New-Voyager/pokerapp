@@ -216,7 +216,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                   // menu close button
                   CircleImageButton(
                       theme: theme,
-                      caption: 'Close',
+                      //caption: 'Close',
                       icon: Icons.navigate_before,
                       onTap: () {
                         vnShowMenuItems.value = false;
@@ -226,7 +226,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                   // last hand
                   CircleImageButton(
                       theme: theme,
-                      caption: 'Prev',
+                      //caption: 'Prev',
                       svgAsset: AppAssetsNew.lastHandPath,
                       onTap: () {
                         vnShowMenuItems.value = false;
@@ -237,7 +237,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                   // game history
                   CircleImageButton(
                       theme: theme,
-                      caption: 'History',
+                      //caption: 'History',
                       svgAsset: AppAssetsNew.handHistoryPath,
                       onTap: () {
                         vnShowMenuItems.value = false;
@@ -249,7 +249,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                   widget.gameState.gameInfo.highHandTracked ?? false
                       ? CircleImageButton(
                           theme: theme,
-                          caption: 'HH',
+                          //caption: 'HH',
                           svgAsset: AppAssetsNew.hhPath,
                           onTap: () {
                             vnShowMenuItems.value = false;
@@ -265,7 +265,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                   // game info
                   CircleImageButton(
                       theme: theme,
-                      caption: 'Info',
+                      //caption: 'Info',
                       icon: Icons.info_outline_rounded,
                       onTap: () {
                         vnShowMenuItems.value = false;
@@ -278,7 +278,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                       // result table
                       CircleImageButton(
                           theme: theme,
-                          caption: 'Result',
+                          //caption: 'Result',
                           svgAsset: AppAssetsNew.tableResultPath,
                           onTap: () {
                             vnShowMenuItems.value = false;
@@ -290,7 +290,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                   // player stack
                   CircleImageButton(
                       theme: theme,
-                      caption: 'Stats',
+                      //caption: 'Stats',
                       svgAsset: AppAssetsNew.playerStatsPath,
                       onTap: () {
                         vnShowMenuItems.value = false;

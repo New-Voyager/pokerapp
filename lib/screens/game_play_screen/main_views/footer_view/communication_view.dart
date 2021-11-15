@@ -55,7 +55,7 @@ class _CommunicationViewState extends State<CommunicationView> {
     final communicationState = gameState.communicationState;
     // final chat = SvgPicture.asset('assets/images/game/chat.svg',
     //     width: 16, height: 16, color: theme.primaryColorWithDark());
-    final chat = "assets/images/game/chat.svg";
+    final chat = "assets/images/game/chat2.svg";
 
     return ListenableProvider<CommunicationState>(
         create: (_) => communicationState,
