@@ -108,6 +108,7 @@ class NamePlateWidget extends StatelessWidget {
     BoxShadow shadow;
     bool winner = seat.player?.winner ?? false;
     bool highlight = seat.player?.highlight ?? false;
+    highlight = false;
     if (winner) {
       shadow = BoxShadow(
         color: Colors.lightGreen,

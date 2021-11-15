@@ -118,8 +118,8 @@ class _FooterViewState extends State<FooterView>
 
     return Consumer<GameContextObject>(
       builder: (context, gameContextObject, _) => Positioned(
-        left: 0,
-        top: 0,
+        left: 8,
+        top: 10,
         child: HandAnalyseView(
           gameState: gameState,
           clubCode: widget.clubCode,
@@ -182,7 +182,7 @@ class _FooterViewState extends State<FooterView>
 
   Widget _buildCommunicationWidget() {
     return Positioned(
-      right: 0,
+      right: 5,
       top: 0,
       child: Column(children: [
         Consumer2<GameSettingsState, CommunicationState>(
@@ -271,7 +271,6 @@ class _FooterViewState extends State<FooterView>
     } else {
       /* build main view - straddle prompt, hole cards, action view*/
       children.add(_buildMainView(gameState));
-
       /* hand analyse view */
       children.add(_buildHandAnalyseView(context));
 

@@ -167,7 +167,6 @@ class HelpScreen extends StatelessWidget {
       Container(
           margin: EdgeInsets.symmetric(vertical: 8),
           child: Text('Screen Dimensions: ${Screen.size}')),
-
       Container(
           margin: EdgeInsets.symmetric(vertical: 8),
           child: Text('model: ${DeviceInfo.model}')),
