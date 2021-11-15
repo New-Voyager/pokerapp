@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:pokerapp/services/app/insta_refresh_service.dart';
+import 'package:pokerapp/models/app_state.dart';
 import 'package:pokerapp/services/app/util_service.dart';
 import 'package:pokerapp/services/nats/message.dart';
 import 'package:provider/provider.dart';
@@ -25,13 +25,13 @@ class Nats {
   Map<String, Subscription> _clubSubs = Map<String, Subscription>();
   Function(String) playerNotifications;
   Function(String) clubNotifications;
-  InstaRefreshService _instaRefreshService;
+  AppState _appState;
 
   // functions listens for disconnection
   List<Function> disconnectListeners = [];
 
   Nats(this._providerContext) {
-    _instaRefreshService = _providerContext.read<InstaRefreshService>();
+    _appState = _providerContext.read<AppState>();
   }
 
   bool get connectionBroken {
@@ -152,25 +152,20 @@ class Nats {
     }
   }
 
-  void _instaRefreshServiceHelper(String message) {
+  void _updateAppState(String message) {
     final data = jsonDecode(message);
 
     final String type = data['type'];
     final String changed = data['changed'];
 
-    log('pauldebug: $type and $changed');
-
-    if (type == 'CLUB_UPDATED' &&
-        (changed == 'NEW_GAME' || changed == 'MEW_GAME')) {
-      // a new game has started in any of the club, set to refresh the live games screen
-      log('pauldebug: _instaRefreshService NEW_GAME');
-      _instaRefreshService.setNeedToRefreshLiveGames();
-    }
-
-    if (type == 'CLUB_UPDATED' && changed == 'GAME_ENDED') {
-      // a game in the club is ended, refresh the live games, as well as the game record
-      _instaRefreshService.setNeedToRefreshGameRecord();
-      _instaRefreshService.setNeedToRefreshLiveGames();
+    if (type == 'CLUB_UPDATED') {
+      if (changed == 'NEW_GAME') {
+        // a new game has started in any of the club, set to refresh the live games screen
+        _appState.setNewGame(true);
+      } else if (changed == 'GAME_ENDED') {
+        // a game in the club is ended, refresh the live games, as well as the game record
+        _appState.setGameEnded(true);
+      }
     }
   }
 
@@ -185,7 +180,7 @@ class Nats {
     clubSub.stream.listen((Message message) {
       if (clubNotifications != null) {
         clubNotifications(message.string);
-        _instaRefreshServiceHelper(message.string);
+        _updateAppState(message.string);
       }
 
       /*
