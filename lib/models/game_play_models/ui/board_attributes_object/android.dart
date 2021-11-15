@@ -3,6 +3,19 @@ import 'dart:convert';
 import 'iphone.dart';
 
 class AndroidAttribs {
+
+  static Map<String, dynamic> getAttribs(double screenSize) {
+    Map<String, dynamic> attribs = AndroidAttribs.get6Inch();
+    if (screenSize >= 5.3 && screenSize <= 5.5) {
+      attribs = AndroidAttribs.getPixelXl();
+    } else {
+      if (screenSize >= 9 && screenSize <= 10.5) {
+        attribs = getTen10InchTablet();
+      }
+    }
+    return attribs;
+  }
+
   static Map<String, dynamic> getDefault() {
     String attribs = '''
       {
@@ -132,7 +145,16 @@ class AndroidAttribs {
       {
         "model": "motog",
         "screenSize": "411.4, 890.3",
-        "size": 6.5
+        "size": 6.5,
+        "board": {
+            "centerViewScale": 1.0,
+            "centerOffset": "15, 130",
+            "centerPotScale": 0.90,
+            "centerPotUpdatesScale": 0.80,
+            "centerRankScale": 0.80,
+            "boardScale": 0.90,
+            "tableScale": 1.30
+          }        
       }
     ''';
     Map<String, dynamic> overrideMap = jsonDecode(override);
@@ -151,7 +173,7 @@ class AndroidAttribs {
           "centerViewScale": 0.85,
           "centerOffset": "15, 100",
           "centerPotScale": 0.90,
-          "centerPotUpdatesScale": 0.70,
+          "centerPotUpdatesScale": 0.90,
           "centerRankScale": 0.80,
           "boardScale": 0.90,
           "tableScale": 1.10,
@@ -209,6 +231,79 @@ class AndroidAttribs {
           "holeCardOffset": "0, 0",
           "holeCardScale": 1.0
         }
+      }
+    ''';
+    Map<String, dynamic> overrideMap = jsonDecode(override);
+    updateMap(defaultValue, overrideMap);
+    return defaultValue;
+  }
+
+  static Map<String, dynamic> getTen10InchTablet() {
+    final defaultValue = getDefault();
+    String override = '''
+      {
+        "model": "10Inch Tablet",
+        "screenSize": "800.0, 1264.0",
+        "size": 10.0,
+        "board": {
+          "centerViewScale": 1.60,
+          "centerPotScale": 0.80,
+          "centerPotUpdatesScale": 0.75,
+          "centerRankScale": 0.85,
+          "centerOffset": "15, 350",
+          "boardScale": 1.10,
+          "tableScale": 0.90,
+          "tableBottomPos": -140,
+          "seatMap": {
+            "bottomCenter": "0, 140",
+            "bottomLeft": "100, 120",
+            "bottomRight": "-100, 120",
+            "middleLeft": "50, 170",
+            "middleRight": "-50, 170",
+            "topLeft": "80, 220",
+            "topRight": "-80, 220",
+            "topCenter": "-80, 190",
+            "topCenter1": "-80, 190",
+            "topCenter2": "80, 190"
+          },
+          "betAmountFac": {
+            "bottomCenter": "-0.25, -0.80",
+            "topCenter": "0.20, 1.0",
+            "middleLeft": "0.60, 0.70",
+            "middleRight": "-0.75, 0.70",
+            "topRight": "-0.55, 0.70",
+            "topLeft": "0.75, 0.70",
+            "bottomLeft": "0.70, -0.80",
+            "bottomRight": "-0.60, -0.80",
+            "topCenter1": "0.10, 1.0",
+            "topCenter2": "-0.10, 1.0"
+          },
+          "betImageScale": 3.0
+        },
+        "seat": {
+          "scale": 1.4,
+          "holeCardOffset": "0, 0",
+          "holeCardScale": 1.0
+        },
+        "holeCardScale": {
+          "2": 2.0,
+          "4": 2.0,
+          "5": 2.0,
+          "default": 1
+        },
+        "holeCardDisplacement": {
+          "2": 60,
+          "4": 60,
+          "5": 60,
+          "default": 60
+        },
+        "holeCardDisplacementVisible": {
+          "2": 60,
+          "4": 60,
+          "5": 60,
+          "default": 20
+        },
+        "footerActionScale": 1.4
       }
     ''';
     Map<String, dynamic> overrideMap = jsonDecode(override);

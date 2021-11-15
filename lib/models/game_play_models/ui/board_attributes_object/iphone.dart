@@ -156,6 +156,206 @@ class IPhoneAttribs {
     return defaultValue;
   }
 
+  static Map<String, dynamic> getIPhone13() {
+    final defaultValue = getDefault();
+    String override = '''
+      {
+        "model": "iPhone 13",
+        "screenSize": "375.0, 812.0",
+        "size": 6.1,
+        "board": {
+          "centerViewScale": 0.90,
+          "tableScale": 1.15,
+          "seatMap": {
+            "bottomCenter": "0, 60",
+            "bottomLeft": "15, 50",
+            "bottomRight": "-15, 50",
+            "middleLeft": "2, 75",
+            "middleRight": "2, 75",
+            "topLeft": "2, 110",
+            "topRight": "2, 110",
+            "topCenter": "0, 60",
+            "topCenter1": "-50, 80",
+            "topCenter2": "55, 80"
+          },
+          "betAmountFac": {
+            "bottomCenter": "0, -1.0",
+            "topCenter": "0.20, 0.70",
+            "middleLeft": "0.10, 0.65",
+            "middleRight": "0.10, 0.65",
+            "topRight": "-0.10, 0.70",
+            "topLeft": "0.30, 0.65",
+            "bottomLeft": "0.70, -0.8",
+            "bottomRight": "-0.60, -0.8",
+            "topCenter1": "0.20, 0.65",
+            "topCenter2": "-0.20, 0.65"
+          },
+          "centerPotScale": 0.85,
+          "centerPotUpdatesScale": 0.7
+        },
+        "holeCardDisplacement": {
+          "2": 35,
+          "4": 30,
+          "5": 25,
+          "default": 25
+        },
+        "holeCardDisplacementVisible": {
+          "2": 30,
+          "4": 30,
+          "5": 25,
+          "default": 25
+        },        
+        "holeCardScale": {
+          "2": 1.05,
+          "4": 1.10,
+          "5": 1.10,
+          "default": 1
+        }
+      }
+    ''';
+    Map<String, dynamic> overrideMap = jsonDecode(override);
+    updateMap(defaultValue, overrideMap);
+    return defaultValue;
+  }
+
+  static Map<String, dynamic> getIPhone13Pro() {
+    final defaultValue = getIPhone13();
+    String override = '''
+      {
+        "base": "iPhone 13",
+        "model": "iPhone 13 Pro",
+        "screenSize": "390.0, 844.0",
+        "size": 6.2
+      }''';
+    Map<String, dynamic> overrideMap = jsonDecode(override);
+    updateMap(defaultValue, overrideMap);
+    return defaultValue;
+  }
+
+  static Map<String, dynamic> getIPhone13Mini() {
+    final defaultValue = getDefault();
+    String override = '''
+      {
+        "model": "iPhone 13 mini",
+        "screenSize": "375.0, 812.0",
+        "size": 5.4,
+        "board": {
+          "centerViewScale": 0.85,
+          "tableScale": 1.3,
+          "seatMap": {
+            "bottomCenter": "0, 70",
+            "bottomLeft": "15, 60",
+            "bottomRight": "-15, 60",
+            "middleLeft": "2, 75",
+            "middleRight": "2, 75",
+            "topLeft": "2, 105",
+            "topRight": "2, 105",
+            "topCenter": "0, 60",
+            "topCenter1": "-50, 50",
+            "topCenter2": "55, 50"
+          },
+          "betAmountFac": {
+            "bottomCenter": "0, -1.0",
+            "topCenter": "0.20, 0.70",
+            "middleLeft": "0.30, 0.65",
+            "middleRight": "-0.10, 0.65",
+            "topRight": "-0.10, 0.70",
+            "topLeft": "0.30, 0.65",
+            "bottomLeft": "0.70, -0.8",
+            "bottomRight": "-0.60, -0.8",
+            "topCenter1": "0.20, 1.05",
+            "topCenter2": "-0.20, 1.05"
+          },
+          "centerPotScale": 0.85,
+          "centerPotUpdatesScale": 0.7
+        },
+        "holeCardDisplacement": {
+          "2": 30,
+          "4": 30,
+          "5": 25,
+          "default": 25
+        },
+        "holeCardDisplacementVisible": {
+          "2": 22,
+          "4": 25,
+          "5": 25,
+          "default": 25
+        },        
+        "holeCardScale": {
+          "2": 1.10,
+          "4": 1.05,
+          "5": 1.00,
+          "default": 1
+        }
+      }
+    ''';
+    Map<String, dynamic> overrideMap = jsonDecode(override);
+    updateMap(defaultValue, overrideMap);
+    return defaultValue;
+  }
+
+  static Map<String, dynamic> getIPhone13ProMax() {
+    final defaultValue = getDefault();
+    String override = '''
+      {
+        "model": "iPhone 13 Pro Max",
+        "screenSize": "375.0, 812.0",
+        "size": 5.4,
+        "board": {
+          "centerViewScale": 1.1,
+          "tableScale": 1.2,
+          "seatMap": {
+            "bottomCenter": "0, 60",
+            "bottomLeft": "15, 50",
+            "bottomRight": "-15, 50",
+            "middleLeft": "2, 75",
+            "middleRight": "2, 75",
+            "topLeft": "2, 105",
+            "topRight": "2, 105",
+            "topCenter": "0, 60",
+            "topCenter1": "-50, 70",
+            "topCenter2": "55, 70"
+          },
+          "betAmountFac": {
+            "bottomCenter": "0, -1.0",
+            "topCenter": "0.20, 0.70",
+            "middleLeft": "0.10, 0.65",
+            "middleRight": "0.00, 0.65",
+            "topRight": "-0.10, 0.70",
+            "topLeft": "0.30, 0.65",
+            "bottomLeft": "0.70, -0.8",
+            "bottomRight": "-0.60, -0.8",
+            "topCenter1": "0.20, 0.7",
+            "topCenter2": "-0.20, 0.7"
+          },
+          "centerPotScale": 0.8,
+          "centerPotUpdatesScale": 0.7
+        },
+        "holeCardDisplacement": {
+          "2": 35,
+          "4": 20,
+          "5": 15,
+          "default": 20
+        },
+        "holeCardDisplacementVisible": {
+          "2": 30,
+          "4": 13,
+          "5": 13,
+          "default": 20
+        },        
+        "holeCardScale": {
+          "2": 1.3,
+          "4": 1.3,
+          "5": 1.2,
+          "default": 1
+        }
+      }
+    ''';
+    Map<String, dynamic> overrideMap = jsonDecode(override);
+    updateMap(defaultValue, overrideMap);
+    return defaultValue;
+  }
+
   static Map<String, dynamic> getIPad97() {
     final defaultValue = getDefault();
     String override = '''
@@ -203,10 +403,21 @@ class IPhoneAttribs {
         "holeCardScale": {
           "2": 1.70,
           "4": 1.35,
-          "5": 1.15,
+          "5": 1.50,
           "default": 1
-        }
-
+        },
+        "holeCardDisplacement": {
+          "2": 35,
+          "4": 50,
+          "5": 50,
+          "default": 20
+        },
+        "holeCardDisplacementVisible": {
+          "2": 30,
+          "4": 50,
+          "5": 50,
+          "default": 20
+        }       
       }
     ''';
     Map<String, dynamic> overrideMap = jsonDecode(override);
@@ -388,13 +599,21 @@ class IPhoneAttribs {
   }
 
   static Map<String, dynamic> getAttribs(String deviceName, double screenSize) {
-    if (deviceName.contains('iPad')) {
-      if (deviceName.contains('iPad Air')) {
+    String name = deviceName.toLowerCase();
+    if (name.contains('ipad')) {
+      if (name.contains('ipad air')) {
         return getIPadAir();
       } else {
         return getIPad97();
       }
     } else {
+      if (name.contains('iphone 13 pro')) {
+        return getIPhone13Pro();
+      } else if (name.contains('iphone 13 mini')) {
+        return getIPhone13Mini();
+      } else if (name.contains('iphone 13 pro max')) {
+        return getIPhone13ProMax();
+      }
       return getIPhone8();
     }
   }
