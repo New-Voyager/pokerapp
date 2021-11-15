@@ -460,19 +460,19 @@ class _FooterActionViewState extends State<FooterActionView> {
           mainAxisSize: MainAxisSize.max,
           children: actionButtons,
         ),
-        Positioned(
-          left: 20.pw,
-          top: -40.ph,
-          child: Consumer<ActionState>(builder: (_, __, ___) {
-            // show time widget if the player is acting
-            final gameState = GameState.getState(context);
-            if (gameState.actionState.show || TestService.isTesting) {
-              return TimeBankWidget(gameState);
-            } else {
-              return Container();
-            }
-          }),
-        ),
+        // Positioned(
+        //   left: 20.pw,
+        //   top: -40.ph,
+        //   child: Consumer<ActionState>(builder: (_, __, ___) {
+        //     // show time widget if the player is acting
+        //     final gameState = GameState.getState(context);
+        //     if (gameState.actionState.show || TestService.isTesting) {
+        //       return TimeBankWidget(gameState);
+        //     } else {
+        //       return Container();
+        //     }
+        //   }),
+        // ),
       ],
     );
   }

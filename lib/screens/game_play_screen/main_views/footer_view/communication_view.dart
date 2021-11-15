@@ -9,8 +9,11 @@ import 'package:pokerapp/models/game_play_models/business/game_chat_notfi_state.
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/time_bank.dart';
+import 'package:pokerapp/screens/game_play_screen/widgets/pending_approvals_button.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/voice_text_widget.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
+import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:provider/provider.dart';
@@ -52,6 +55,8 @@ class _CommunicationViewState extends State<CommunicationView> {
   Widget build(BuildContext context) {
     final theme = AppTheme.getTheme(context);
     final gameState = GameState.getState(context);
+    final gameContextObj =
+        Provider.of<GameContextObject>(context, listen: false);
     final communicationState = gameState.communicationState;
     // final chat = SvgPicture.asset('assets/images/game/chat.svg',
     //     width: 16, height: 16, color: theme.primaryColorWithDark());
@@ -112,6 +117,22 @@ class _CommunicationViewState extends State<CommunicationView> {
                 if (showVoiceText) {
                   children.addAll(voiceTextWidgets(widget.chatService));
                 }
+                if (!gameState.customizationMode &&
+                    gameState.currentPlayer.isAdmin()) {
+                  children.add(PendingApprovalsButton(
+                      theme, gameState, gameContextObj, mounted));
+                }
+                children.add(SizedBox(height: 100));
+                children.add(Consumer<ActionState>(builder: (_, __, ___) {
+                  // show time widget if the player is acting
+                  final gameState = GameState.getState(context);
+                  if (gameState.actionState.show || TestService.isTesting) {
+                    return TimeBankWidget(gameState);
+                  } else {
+                    return Container();
+                  }
+                }));
+
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: children,

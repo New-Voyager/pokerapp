@@ -3,10 +3,13 @@ import 'dart:convert';
 import 'iphone.dart';
 
 class AndroidAttribs {
-
   static Map<String, dynamic> getAttribs(double screenSize) {
     Map<String, dynamic> attribs = AndroidAttribs.get6Inch();
-    if (screenSize >= 5.3 && screenSize <= 5.5) {
+    if (screenSize <= 5.0) {
+      attribs = AndroidAttribs.getNexus5();
+    } else if (screenSize <= 5.3) {
+      attribs = AndroidAttribs.getPixel2();
+    } else if (screenSize > 5.3 && screenSize <= 5.5) {
       attribs = AndroidAttribs.getPixelXl();
     } else {
       if (screenSize >= 9 && screenSize <= 10.5) {
@@ -238,10 +241,85 @@ class AndroidAttribs {
     return defaultValue;
   }
 
+  static Map<String, dynamic> getPixel2() {
+    final defaultValue = getPixelXl();
+    String override = '''
+      {
+        "name": "pixel2",
+        "base": "pixelxl",
+        "model": "Pixel 2",
+        "screenSize": "411.4, 683.4",
+        "size": 5.3,
+        "board": {
+          "tableScale": 1.3,
+          "seatMap": {
+            "bottomCenter": "0, 80",
+            "bottomLeft": "15, 70",
+            "bottomRight": "-15, 70",
+            "middleLeft": "0, 70",
+            "middleRight": "0, 70",
+            "topLeft": "10, 75",
+            "topRight": "-10, 75",
+            "topCenter": "0, 60",
+            "topCenter1": "-45, 60",
+            "topCenter2": "45, 60"
+          }          
+        }
+      }
+      ''';
+    Map<String, dynamic> overrideMap = jsonDecode(override);
+    updateMap(defaultValue, overrideMap);
+    return defaultValue;
+  }
+
+  static Map<String, dynamic> getNexus5() {
+    final defaultValue = getPixel2();
+    String override = '''
+      {
+        "name": "nexus5",
+        "base": "pixel2",
+        "model": "Nexus 5",
+        "screenSize": "360.0, 592.0",
+        "size": 4.6,
+        "board": {
+          "centerViewScale": 0.70,
+          "centerOffset": "15, 80",
+          "centerPotScale": 0.90,
+          "centerPotUpdatesScale": 0.90,
+          "centerRankScale": 0.80,
+          "tableScale": 1.4,
+          "seatMap": {
+            "bottomCenter": "0, 80",
+            "bottomLeft": "15, 70",
+            "bottomRight": "-15, 70",
+            "middleLeft": "0, 70",
+            "middleRight": "0, 70",
+            "topLeft": "10, 75",
+            "topRight": "-10, 75",
+            "topCenter": "0, 60",
+            "topCenter1": "-45, 60",
+            "topCenter2": "45, 60"
+          },
+          "betImageScale": 2.0
+        },
+        "seat": {
+           "scale": 0.70,
+            "holeCardOffset": "0, 0",
+            "holeCardScale": 1.0
+          }               
+      }
+      ''';
+    Map<String, dynamic> overrideMap = jsonDecode(override);
+    updateMap(defaultValue, overrideMap);
+    return defaultValue;
+  }
+
   static Map<String, dynamic> getTen10InchTablet() {
     final defaultValue = getDefault();
     String override = '''
       {
+        "name":"lenova10",
+        "base":"default",
         "model": "10Inch Tablet",
         "screenSize": "800.0, 1264.0",
         "size": 10.0,

@@ -27,6 +27,7 @@ class _TimeBankWidgetState extends State<TimeBankWidget> {
   @override
   void initState() {
     availableTime = widget.gameState.gameHiveStore.getTimeBankTime();
+    // availableTime = 200;
     if (TestService.isTesting) {
       availableTime = 200;
     }
@@ -97,13 +98,13 @@ class _TimeBankWidgetState extends State<TimeBankWidget> {
           return Opacity(
               opacity: 1 - v,
               child: Transform.translate(
-                  offset: Offset(30.pw, -v * 30.ph),
+                  offset: Offset(-30.pw, -v * 30.ph),
                   child: Text(
                     '+' + time.toString(),
                     style: TextStyle(
                       fontSize: 12.dp,
                       color: theme.accentColor,
-                      fontWeight: FontWeight.normal,
+                      fontWeight: FontWeight.bold,
                     ),
                   )));
         },

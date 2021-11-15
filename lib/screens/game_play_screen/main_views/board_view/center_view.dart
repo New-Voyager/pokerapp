@@ -444,35 +444,36 @@ class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
                 opacity: _getOpacityForPotUpdatesView(
                   potChipsUpdates: potChipsUpdates,
                 ),
-                child: Row(mainAxisSize: MainAxisSize.min, children: [
-                  SvgPicture.asset(
-                    'assets/icons/potpokerchips.svg',
-                    color: Colors.yellow,
-                    width: 24.pw,
-                    height: 24.pw,
-                    fit: BoxFit.cover,
-                  ),
-                  SizedBox(
-                    width: 4.pw,
-                  ),
-                  Container(
+                child:                   Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 10.0,
                       vertical: 5.0,
                     ),
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(100.0),
-                      color: Colors.black26,
+                      borderRadius: BorderRadius.circular(20.0),
+                      color: Colors.black,
                     ),
-                    child: Text(
-                      '${DataFormatter.chipsFormat(potChipsUpdates?.toDouble())}',
-                      style: AppStylesNew.itemInfoTextStyleHeavy.copyWith(
-                        fontSize: 13.dp,
-                        fontWeight: FontWeight.w400,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SvgPicture.asset(
+                        'assets/icons/potpokerchips.svg',
+                        color: Colors.yellow,
+                        width: 24.pw,
+                        height: 24.pw,
+                        fit: BoxFit.cover,
                       ),
-                    ),
+                      SizedBox(width: 10),
+                      Text(
+                        '${DataFormatter.chipsFormat(potChipsUpdates?.toDouble())}',
+                        style: AppStylesNew.itemInfoTextStyleHeavy.copyWith(
+                          fontSize: 13.dp,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ],
                   ),
-                ]));
+                ));
           }),
     );
   }

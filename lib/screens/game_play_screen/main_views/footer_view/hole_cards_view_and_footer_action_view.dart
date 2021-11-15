@@ -45,45 +45,45 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
       final gameState = GameState.getState(context);
       final theme = AppTheme.getTheme(context);
 
-      // children.addAll([
-      //   // // main hole card view
-      //   Consumer4<StraddlePromptState, HoleCardsState, MyState, MarkedCards>(
-      //       builder: (_, __, ___, ____, markedCards, _____) {
-      //     log('Holecard view: rebuild');
-      //     return _buildHoleCardView(context);
-      //   }),
-      // ]);
       Widget rankText;
-      rankText = _getRankText(gameState, context);
+      rankText = Consumer<MyState>(builder: (_, __, ___) {
+        return _getRankText(gameState, context);
+      });
 
       double scale = boardAttributes.holeCardViewScale;
       final offset = boardAttributes.holeCardViewOffset;
       return Stack(
-        alignment: Alignment.center,
+        alignment: Alignment.topCenter,
         children: [
           gameState.customizationMode
               ? BetIconButton(displayBetText: false)
               : Container(),
+          Align(
+            alignment: Alignment.topCenter,
+            child: rankText,
+          ),
           // hole card view & rank Text
           Transform.translate(
-            offset: offset,
-            child: Column(
-              children: [
-                rankText,
-                Transform.scale(
-                    scale: scale,
-                    child: Container(
-                      child: Consumer4<StraddlePromptState, HoleCardsState,
-                          MyState, MarkedCards>(
-                        builder: (_, __, ___, ____, markedCards, _____) {
-                          // log('Holecard view: rebuild');
-                          return _buildHoleCardView(context);
-                        },
-                      ),
-                    )),
-              ],
-            ),
-          ),
+              offset: offset,
+              child: Container(
+                width: double.infinity,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Transform.scale(
+                        scale: scale,
+                        child: Container(
+                          child: Consumer4<StraddlePromptState, HoleCardsState,
+                              MyState, MarkedCards>(
+                            builder: (_, __, ___, ____, markedCards, _____) {
+                              // log('Holecard view: rebuild');
+                              return _buildHoleCardView(context);
+                            },
+                          ),
+                        )),
+                  ],
+                ),
+              )),
           StraddleWidget(gameState),
         ],
       );
@@ -167,18 +167,19 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
       borderColor = Colors.transparent;
     }
 
-    Widget rankText = me == null
-        ? const SizedBox.shrink()
-        : Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: 8,
-            ),
-            child: Text(
-              me.rankText,
-              style: AppDecorators.getHeadLine5Style(theme: theme),
-            ),
-          );
-    return rankText;
+    if (me == null || me.playerFolded) {
+      return SizedBox.shrink();
+    }
+
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: 8,
+      ),
+      child: Text(
+        me.rankText,
+        style: AppDecorators.getHeadLine5Style(theme: theme),
+      ),
+    );
   }
 
   Widget _buildHoleCardView(BuildContext context) {
@@ -224,9 +225,6 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
         );
       }
     }
-
-    // Widget rankText;
-    // rankText = _getRankText(gameState, context);
 
     return GestureDetector(
       onTap: () {

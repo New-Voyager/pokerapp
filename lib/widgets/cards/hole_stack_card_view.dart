@@ -109,22 +109,23 @@ class HoleStackCardView extends StatelessWidget {
     @required MarkedCards markedCards,
     @required double displacementValue,
     bool isCardVisible = false,
-  }) =>
-      FittedBox(
-        child: Transform.translate(
-          offset: Offset(xOffset, 0.0),
-          child: Stack(
-            alignment: Alignment.center,
-            children: _getChildren(
-              context: context,
-              mid: mid,
-              markedCards: markedCards,
-              displacementValue: displacementValue,
-              isCardVisible: isCardVisible,
-            ),
+  }) {
+    return FittedBox(
+      child: Transform.translate(
+        offset: Offset(xOffset, 0.0),
+        child: Stack(
+          alignment: Alignment.center,
+          children: _getChildren(
+            context: context,
+            mid: mid,
+            markedCards: markedCards,
+            displacementValue: displacementValue,
+            isCardVisible: isCardVisible,
           ),
         ),
-      );
+      ),
+    );
+  }
 
   Widget _buildFannedCards({
     @required BuildContext context,

@@ -64,6 +64,7 @@ import '../../routes.dart';
 import '../../services/test/test_service.dart';
 import 'game_play_screen_util_methods.dart';
 import 'location_updates.dart';
+import 'widgets/pending_approvals_button.dart';
 
 // FIXME: THIS NEEDS TO BE CHANGED AS PER DEVICE CONFIG
 const kScrollOffsetPosition = 40.0;
@@ -912,39 +913,42 @@ class _GamePlayScreenState extends State<GamePlayScreen>
               )
             : const SizedBox.shrink(),
 
-        this.widget.showTop &&
-                !_gameState.customizationMode &&
-                _gameState.currentPlayer.isAdmin()
-            ? Positioned(
-                right: 16,
-                top: 80,
-                child: Consumer2<PendingApprovalsState, GameContextObject>(
-                  builder: (context, value, gameContextObj, child) {
-                    if (!_gameContextObj.isAdmin())
-                      return const SizedBox.shrink();
+        // this.widget.showTop &&
+        //         !_gameState.customizationMode &&
+        //         _gameState.currentPlayer.isAdmin()
+        //   ? Positioned(right: 16, top: 80, child: PendingApprovalsButton(theme, _gameState, _gameContextObj, mounted))
+        //   : Container(),
 
-                    final approval = SvgPicture.asset(
-                      '',
-                      width: 16,
-                      height: 16,
-                      color: theme.primaryColorWithDark(),
-                    );
+        // ? Positioned(
+        //     right: 16,
+        //     top: 80,
+        //     child: Consumer2<PendingApprovalsState, GameContextObject>(
+        //       builder: (context, value, gameContextObj, child) {
+        //         if (!_gameContextObj.isAdmin())
+        //           return const SizedBox.shrink();
 
-                    return IconWithBadge(
-                      count: value.approvalList.length,
-                      onClickFunction: () =>
-                          onClickPendingBuyInApprovals(context),
-                      child: CircleImageButton(
-                          onTap: () {
-                            onClickPendingBuyInApprovals(context);
-                          },
-                          svgAsset: 'assets/images/game/clipboard.svg',
-                          theme: theme),
-                    );
-                  },
-                ),
-              )
-            : Container(),
+        //         final approval = SvgPicture.asset(
+        //           '',
+        //           width: 16,
+        //           height: 16,
+        //           color: theme.primaryColorWithDark(),
+        //         );
+
+        //         return IconWithBadge(
+        //           count: value.approvalList.length,
+        //           onClickFunction: () =>
+        //               onClickPendingBuyInApprovals(context),
+        //           child: CircleImageButton(
+        //               onTap: () {
+        //                 onClickPendingBuyInApprovals(context);
+        //               },
+        //               svgAsset: 'assets/images/game/clipboard.svg',
+        //               theme: theme),
+        //         );
+        //       },
+        //     ),
+        //   )
+        // : Container(),
 
         /* chat window widget */
         this.widget.showBottom ? _buildChatWindow() : Container(),
@@ -1193,256 +1197,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         }
       }
     }
-  }
-
-  Widget _buildStatefulBuilder(double height, BuildContext context) {
-    final theme = AppTheme.getTheme(context);
-    return StatefulBuilder(builder: (context, localSetState) {
-      return Container(
-        height: height / 2.5,
-        color: Colors.transparent,
-        child: Stack(
-          children: [
-            Container(
-              decoration: AppDecorators.bgRadialGradient(theme),
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: 13,
-                  ),
-                  Container(
-                      child: Text(
-                        _appScreenText['pendingApprovals'],
-                        style: AppDecorators.getAccentTextStyle(theme: theme),
-                      ),
-                      padding: EdgeInsets.all(8)),
-                  Expanded(
-                    child: Consumer<PendingApprovalsState>(
-                      builder: (_, pending, __) => // main body
-                          FutureBuilder(
-                        future: PlayerService.getPendingApprovals(),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.done) {
-                            if (snapshot.hasData) {
-                              List<PendingApproval> list = snapshot.data;
-
-                              if (list.length > 0) {
-                                return Container(
-                                  constraints: BoxConstraints(
-                                      minHeight: height / 3,
-                                      maxHeight: height / 2),
-                                  child: ListView.separated(
-                                    itemCount: list.length,
-                                    shrinkWrap: true,
-                                    separatorBuilder: (context, index) =>
-                                        Divider(
-                                      height: 8,
-                                      color: theme.fillInColor,
-                                    ),
-                                    itemBuilder: (context, index) {
-                                      final item = list[index];
-                                      return pendingApprovalsItem(theme, item);
-                                    },
-                                  ),
-                                );
-                              } else {
-                                return Container(
-                                  height: height / 4,
-                                  child: Center(
-                                    child: Text(
-                                      _appScreenText['noPendingApprovals'],
-                                      style: AppDecorators.getSubtitle1Style(
-                                          theme: theme),
-                                    ),
-                                  ),
-                                );
-                              }
-                            } else {
-                              return Container(
-                                height: height / 4,
-                                child: Center(
-                                  child: Text(_appScreenText[
-                                      'SomethingWentWrongTryAgain']),
-                                ),
-                              );
-                            }
-                          } else {
-                            return Container(
-                              height: height / 4,
-                              child: Center(
-                                child: CircularProgressWidget(),
-                              ),
-                            );
-                          }
-                        },
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Positioned(
-              right: 20,
-              child: Container(
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: theme.accentColor,
-                    ),
-                    padding: EdgeInsets.all(6),
-                    child: Icon(
-                      Icons.close,
-                      size: 20,
-                      color: theme.primaryColorWithDark(),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
-    });
-  }
-
-  Future<void> onClickPendingBuyInApprovals(BuildContext context) async {
-    final height = MediaQuery.of(context).size.height;
-    showBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      builder: (ctx) => _buildStatefulBuilder(height, context),
-    );
-  }
-
-  Widget pendingApprovalsItem(AppTheme theme, PendingApproval item) {
-    return Container(
-      decoration: AppDecorators.tileDecoration(theme),
-      padding: EdgeInsets.all(8),
-      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: ListTile(
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              height: 16,
-            ),
-            RichText(
-              text: TextSpan(
-                text: "${item.name}",
-                style: AppDecorators.getHeadLine4Style(theme: theme),
-                children: [
-                  TextSpan(
-                    text: " ${_appScreenText['requestBuyin']}",
-                    style: AppDecorators.getSubtitleStyle(theme: theme),
-                  ),
-                  TextSpan(
-                    text: " ${item.amount}",
-                    style: AppDecorators.getAccentTextStyle(theme: theme),
-                  ),
-                ],
-              ),
-            ),
-            // Text(
-            //   "${_appScreenText['outstandingBalance']}: ${item.balance}",
-            //   style: AppDecorators.getHeadLine4Style(theme: theme),
-            // ),
-            // SizedBox(
-            //   height: 16,
-            // ),
-          ],
-        ),
-        subtitle: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "${_appScreenText['game']}: ${item.gameType}",
-              style: AppDecorators.getSubtitle1Style(theme: theme),
-            ),
-            Text(
-              "${_appScreenText['code']}: ${item.gameCode}",
-              style: AppDecorators.getSubtitle1Style(theme: theme),
-            ),
-            Text(
-              "${_appScreenText['club']}: ${item.clubCode}",
-              style: AppDecorators.getSubtitle1Style(theme: theme),
-            ),
-            SizedBox(
-              height: 16,
-            )
-          ],
-        ),
-        trailing: Container(
-          width: 120.pw,
-          child: Row(
-            children: [
-              IconButton(
-                  icon: Icon(
-                    Icons.check_circle,
-                    color: Colors.green,
-                    size: 24.pw,
-                  ),
-                  onPressed: () async {
-                    final bool val = await PlayerService.approveBuyInRequest(
-                      item.gameCode,
-                      item.playerUuid,
-                    );
-                    if (val == null) {
-                      log("Exception in approve request");
-                    } else if (val) {
-                      _pollPendingApprovals();
-                    } else {
-                      log("Failed to approve request");
-                    }
-                  }),
-              SizedBox(width: 5.pw),
-              IconButton(
-                icon: Icon(
-                  Icons.cancel_rounded,
-                  size: 24.pw,
-                  color: theme.negativeOrErrorColor,
-                ),
-                onPressed: () async {
-                  final bool val = await PlayerService.declineBuyInRequest(
-                    item.gameCode,
-                    item.playerUuid,
-                  );
-
-                  if (val == null) {
-                    toast(_appScreenText['exceptionOccuredDeclineRequest']);
-                  } else if (val) {
-                    _pollPendingApprovals();
-                  } else {
-                    toast(
-                      _appScreenText['failedToDeclineRequest'],
-                    );
-                  }
-                },
-              )
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  _pollPendingApprovals() async {
-    if (TestService.isTesting || _gameState.customizationMode) {
-      return;
-    }
-    // log('refinements: _pollPendingApprovals is invoked');
-    //log('0-0-0-0- Polling for pending approvals');
-    final approvals = await PlayerService.getPendingApprovals();
-
-    // if not mounted, return from here
-    if (!mounted) return;
-    final state = Provider.of<PendingApprovalsState>(context, listen: false);
-    state.setPendingList(approvals);
   }
 
   GamePlayerInfo getPlayerInfo() {

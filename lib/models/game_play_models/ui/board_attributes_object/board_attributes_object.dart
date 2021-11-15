@@ -786,6 +786,7 @@ class BoardAttributesObject extends ChangeNotifier {
   double get playerHoleCardScale {
     return attribsObj.playerHoleCardScale;
   }
+
   double get tableDividerHeightScale => _decide(
         lessThan6Inches: 0.40,
         equalTo6Inches: 0.40,
@@ -858,18 +859,19 @@ Map<int, SeatPos> getSeatLocations(int maxSeats) {
       return {};
   }
 }
+
 Map<SeatPos, BetTextPos> betTextPos = {
-    SeatPos.bottomCenter: BetTextPos.Right,
-    SeatPos.bottomLeft: BetTextPos.Right,
-    SeatPos.middleLeft: BetTextPos.Left,
-    SeatPos.topLeft: BetTextPos.Left,
-    SeatPos.topCenter: BetTextPos.Left,
-    SeatPos.topCenter1: BetTextPos.Left,
-    SeatPos.topCenter2: BetTextPos.Right,
-    SeatPos.topRight: BetTextPos.Right,
-    SeatPos.middleRight: BetTextPos.Right,
-    SeatPos.bottomRight: BetTextPos.Right,
-  };
+  SeatPos.bottomCenter: BetTextPos.Right,
+  SeatPos.bottomLeft: BetTextPos.Right,
+  SeatPos.middleLeft: BetTextPos.Left,
+  SeatPos.topLeft: BetTextPos.Left,
+  SeatPos.topCenter: BetTextPos.Left,
+  SeatPos.topCenter1: BetTextPos.Left,
+  SeatPos.topCenter2: BetTextPos.Right,
+  SeatPos.topRight: BetTextPos.Right,
+  SeatPos.middleRight: BetTextPos.Right,
+  SeatPos.bottomRight: BetTextPos.Right,
+};
 
 BetTextPos getBetTextPos(SeatPos pos) {
   return betTextPos[pos] ?? BetTextPos.Right;
