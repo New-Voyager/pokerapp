@@ -453,7 +453,7 @@ class TestService {
     196, C4: A♦
     Ah, 10c, 9s, Jd, Ks 
     */
-    player.cards = [161, 200, 168, 177];//, 177]; //, 168, 177, 194];
+    player.cards = [161, 200, 168, 177]; //, 177]; //, 168, 177, 194];
     player.rankText = 'Full House';
     final myState = gameState.myState;
     myState.notify();
