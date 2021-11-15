@@ -452,6 +452,9 @@ class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
                     height: 24.pw,
                     fit: BoxFit.cover,
                   ),
+                  SizedBox(
+                    width: 4.pw,
+                  ),
                   Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 10.0,

@@ -145,9 +145,55 @@ class IPhoneAttribs {
       {
         "model": "iPhone 10S",
         "screenSize": "375.0, 812.0",
-        "size": 6.0,
+        "size": 5.8,
         "board": {
-          "centerViewScale": 0.90
+          "centerViewScale": 0.85,
+          "tableScale": 1.1,
+          "seatMap": {
+            "bottomCenter": "0, 70",
+            "bottomLeft": "15, 60",
+            "bottomRight": "-15, 60",
+            "middleLeft": "-4, 80",
+            "middleRight": "4, 80",
+            "topLeft": "-4, 110",
+            "topRight": "4, 110",
+            "topCenter": "0, 60",
+            "topCenter1": "-48, 72",
+            "topCenter2": "48, 72"
+          },
+          "betAmountFac": {
+            "bottomCenter": "0, -1.0",
+            "topCenter": "0.20, 0.70",
+            "middleLeft": "-0.2, 0.65",
+            "middleRight": "0.10, 0.65",
+            "topRight": "-0.10, 0.70",
+            "topLeft": "0.30, 0.65",
+            "bottomLeft": "0.70, -0.8",
+            "bottomRight": "-0.60, -0.8",
+            "topCenter1": "0.20, 0.65",
+            "topCenter2": "-0.20, 0.65"
+          },
+          "centerPotScale": 0.80,
+          "centerPotUpdatesScale": 0.80,
+          "centerViewPos": "0, 5.0"
+        },
+        "holeCardDisplacement": {
+          "2": 27,
+          "4": 18,
+          "5": 18,
+          "default": 25
+        },
+        "holeCardDisplacementVisible": {
+          "2": 27,
+          "4": 15,
+          "5": 13,
+          "default": 25
+        },        
+        "holeCardScale": {
+          "2": 1.05,
+          "4": 1.05,
+          "5": 1.0,
+          "default": 1
         }
       }
     ''';
@@ -156,11 +202,139 @@ class IPhoneAttribs {
     return defaultValue;
   }
 
-  static Map<String, dynamic> getIPhone13() {
+  static Map<String, dynamic> getIPhoneXSMax() {
     final defaultValue = getDefault();
     String override = '''
       {
-        "model": "iPhone 13",
+        "base": "iPhone 10S",
+        "model": "iPhone 10S Max",
+        "screenSize": "375.0, 812.0",
+        "size": 6.5,
+        "board": {
+          "centerViewScale": 1.05,
+          "tableScale": 1.2,
+          "seatMap": {
+            "bottomCenter": "0, 63",
+            "bottomLeft": "15, 53",
+            "bottomRight": "-15, 53",
+            "middleLeft": "-4, 80",
+            "middleRight": "4, 80",
+            "topLeft": "-4, 110",
+            "topRight": "4, 110",
+            "topCenter": "0, 60",
+            "topCenter1": "-55, 70",
+            "topCenter2": "55, 70"
+          },
+          "betAmountFac": {
+            "bottomCenter": "0, -1.0",
+            "topCenter": "0.20, 0.70",
+            "middleLeft": "-0.2, 0.65",
+            "middleRight": "0.10, 0.65",
+            "topRight": "-0.10, 0.70",
+            "topLeft": "0.30, 0.65",
+            "bottomLeft": "0.70, -0.8",
+            "bottomRight": "-0.60, -0.8",
+            "topCenter1": "0.20, 0.65",
+            "topCenter2": "-0.20, 0.65"
+          },
+          "centerPotScale": 0.80,
+          "centerPotUpdatesScale": 0.80,
+          "centerViewPos": "0, 20.0"
+        },
+        "holeCardDisplacement": {
+          "2": 27,
+          "4": 18,
+          "5": 18,
+          "default": 25
+        },
+        "holeCardDisplacementVisible": {
+          "2": 27,
+          "4": 15,
+          "5": 13,
+          "default": 25
+        },        
+        "holeCardScale": {
+          "2": 1.25,
+          "4": 1.22,
+          "5": 1.18,
+          "default": 1
+        }
+      }
+    ''';
+    Map<String, dynamic> overrideMap = jsonDecode(override);
+    updateMap(defaultValue, overrideMap);
+    return defaultValue;
+  }
+
+  static Map<String, dynamic> getIPhoneXR() {
+    final defaultValue = getDefault();
+    String override = '''
+      {
+        "base": "iPhone 10S",
+        "model": "iPhone 10R",
+        "screenSize": "375.0, 812.0",
+        "size": 6.1,
+        "board": {
+          "centerViewScale": 1.05,
+          "tableScale": 1.2,
+          "seatMap": {
+            "bottomCenter": "0, 65",
+            "bottomLeft": "15, 55",
+            "bottomRight": "-15, 55",
+            "middleLeft": "-4, 80",
+            "middleRight": "4, 80",
+            "topLeft": "-4, 110",
+            "topRight": "4, 110",
+            "topCenter": "0, 60",
+            "topCenter1": "-55, 63",
+            "topCenter2": "55, 63"
+          },
+          "betAmountFac": {
+            "bottomCenter": "0, -1.0",
+            "topCenter": "0.20, 0.70",
+            "middleLeft": "-0.2, 0.65",
+            "middleRight": "0.10, 0.65",
+            "topRight": "-0.10, 0.70",
+            "topLeft": "0.30, 0.65",
+            "bottomLeft": "0.70, -0.8",
+            "bottomRight": "-0.60, -0.8",
+            "topCenter1": "0.20, 0.65",
+            "topCenter2": "-0.20, 0.65"
+          },
+          "centerPotScale": 0.80,
+          "centerPotUpdatesScale": 0.80,
+          "centerViewPos": "0, 20.0"
+        },
+         "holeCardDisplacement": {
+          "2": 27,
+          "4": 20,
+          "5": 20,
+          "default": 25
+        },
+        "holeCardDisplacementVisible": {
+          "2": 27,
+          "4": 15,
+          "5": 13,
+          "default": 25
+        },        
+        "holeCardScale": {
+          "2": 1.25,
+          "4": 1.22,
+          "5": 1.18,
+          "default": 1
+        }
+      }
+    ''';
+    Map<String, dynamic> overrideMap = jsonDecode(override);
+    updateMap(defaultValue, overrideMap);
+    return defaultValue;
+  }
+
+  static Map<String, dynamic> getIPhone12() {
+    final defaultValue = getDefault();
+    String override = '''
+      {
+        "model": "iPhone 12",
         "screenSize": "375.0, 812.0",
         "size": 6.1,
         "board": {
@@ -218,12 +392,12 @@ class IPhoneAttribs {
     return defaultValue;
   }
 
-  static Map<String, dynamic> getIPhone13Pro() {
-    final defaultValue = getIPhone13();
+  static Map<String, dynamic> getIPhone12Pro() {
+    final defaultValue = getIPhone12();
     String override = '''
       {
-        "base": "iPhone 13",
-        "model": "iPhone 13 Pro",
+        "base": "iPhone 12",
+        "model": "iPhone 12 Pro",
         "screenSize": "390.0, 844.0",
         "size": 6.2
       }''';
@@ -232,11 +406,11 @@ class IPhoneAttribs {
     return defaultValue;
   }
 
-  static Map<String, dynamic> getIPhone13Mini() {
+  static Map<String, dynamic> getIPhone12Mini() {
     final defaultValue = getDefault();
     String override = '''
       {
-        "model": "iPhone 13 mini",
+        "model": "iPhone 12 mini",
         "screenSize": "375.0, 812.0",
         "size": 5.4,
         "board": {
@@ -294,13 +468,13 @@ class IPhoneAttribs {
     return defaultValue;
   }
 
-  static Map<String, dynamic> getIPhone13ProMax() {
+  static Map<String, dynamic> getIPhone12ProMax() {
     final defaultValue = getDefault();
     String override = '''
       {
-        "model": "iPhone 13 Pro Max",
+        "model": "iPhone 12 Pro Max",
         "screenSize": "375.0, 812.0",
-        "size": 5.4,
+        "size": 6.8,
         "board": {
           "centerViewScale": 1.1,
           "tableScale": 1.2,
@@ -328,8 +502,10 @@ class IPhoneAttribs {
             "topCenter1": "0.20, 0.7",
             "topCenter2": "-0.20, 0.7"
           },
-          "centerPotScale": 0.8,
-          "centerPotUpdatesScale": 0.7
+          "centerPotScale": 0.75,
+          "centerPotUpdatesScale": 0.70,
+          "centerGap": 2,
+          "centerViewPos": "0, 30.0"
         },
         "holeCardDisplacement": {
           "2": 35,
@@ -351,6 +527,61 @@ class IPhoneAttribs {
         }
       }
     ''';
+    Map<String, dynamic> overrideMap = jsonDecode(override);
+    updateMap(defaultValue, overrideMap);
+    return defaultValue;
+  }
+
+  static Map<String, dynamic> getIPhone13Mini() {
+    final defaultValue = getIPhone12Mini();
+    String override = '''
+      {
+        "base": "iPhone 13",
+        "model": "iPhone 13 mini",
+        "screenSize": "390.0, 844.0",
+        "size": 5.4
+      }''';
+    Map<String, dynamic> overrideMap = jsonDecode(override);
+    updateMap(defaultValue, overrideMap);
+    return defaultValue;
+  }
+
+  static Map<String, dynamic> getIPhone13() {
+    final defaultValue = getIPhone12();
+    String override = '''
+      {=
+        "model": "iPhone 13",
+        "screenSize": "390.0, 844.0",
+        "size": 6.2
+      }''';
+    Map<String, dynamic> overrideMap = jsonDecode(override);
+    updateMap(defaultValue, overrideMap);
+    return defaultValue;
+  }
+
+  static Map<String, dynamic> getIPhone13Pro() {
+    final defaultValue = getIPhone12Pro();
+    String override = '''
+      {
+        "base": "iPhone 12",
+        "model": "iPhone 12 Pro",
+        "screenSize": "390.0, 844.0",
+        "size": 6.8
+      }''';
+    Map<String, dynamic> overrideMap = jsonDecode(override);
+    updateMap(defaultValue, overrideMap);
+    return defaultValue;
+  }
+
+  static Map<String, dynamic> getIPhone13ProMax() {
+    final defaultValue = getIPhone12ProMax();
+    String override = '''
+      {
+        "base": "iPhone 12",
+        "model": "iPhone 12 Pro Max",
+        "screenSize": "390.0, 844.0",
+        "size": 6.8
+      }''';
     Map<String, dynamic> overrideMap = jsonDecode(override);
     updateMap(defaultValue, overrideMap);
     return defaultValue;
@@ -549,7 +780,6 @@ class IPhoneAttribs {
     return jsonDecode(attribs);
   }
 
-
   static Map<String, dynamic> getIPadAir() {
     final defaultValue = getIPad97();
     String override = '''
@@ -607,16 +837,31 @@ class IPhoneAttribs {
         return getIPad97();
       }
     } else {
-      if (name.contains('iphone 13 pro')) {
-        return getIPhone13Pro();
+      print("name is $name");
+      if (name.contains('iphone 12 mini')) {
+        return getIPhone12Mini();
+      } else if (name.contains('iphone 12 pro max')) {
+        return getIPhone12ProMax();
+      } else if (name.contains('iphone 12 pro')) {
+        return getIPhone12Pro();
+      } else if (name.contains('iphone 12')) {
+        return getIPhone12();
       } else if (name.contains('iphone 13 mini')) {
         return getIPhone13Mini();
       } else if (name.contains('iphone 13 pro max')) {
         return getIPhone13ProMax();
+      } else if (name.contains('iphone 13 pro')) {
+        return getIPhone13Pro();
+      } else if (name.contains('iphone 13')) {
+        return getIPhone13();
+      } else if (name.contains('iphone xs max')) {
+        return getIPhoneXSMax();
+      } else if (name.contains('iphone xʀ')) {
+        return getIPhoneXR();
+      } else if (name.contains('iphone xs')) {
+        return getIPhoneXS();
       }
       return getIPhone8();
     }
   }
-
-
 }
