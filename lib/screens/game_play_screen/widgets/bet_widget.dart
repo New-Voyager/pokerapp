@@ -522,6 +522,11 @@ class BetWidget extends StatelessWidget {
               Stack(
                 alignment: Alignment.center,
                 children: [
+                  // this widget reserves space for onTap Listeners when inside Stack
+                  Container(
+                    width: double.infinity,
+                  ),
+
                   // other bet buttons
                   ..._buildOtherBetOptions(
                     context: context,
