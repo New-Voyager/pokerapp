@@ -30,31 +30,34 @@ class PlayerHoleCardView extends StatelessWidget {
     final cardAsset =
         SvgPicture.memory(gameState.assets.getHoleCard(card.cardNum));
     //final cardAsset = SvgPicture.asset('assets/images/card_face/${card.cardNum}.svg');
-    return Stack(fit: StackFit.expand, children: [
-      cardAsset,
-      /* visible marker */
-      Positioned(
-        top: 50,
-        left: 5,
-        child: marked
-            ? Icon(
-                Icons.visibility,
-                color: Colors.green,
-              )
-            : const SizedBox.shrink(),
-      ),
-
-      /* tap widget */
-      Positioned(
-        top: 0,
-        left: 0,
-        bottom: 50.pw,
-        width: 30.pw,
-        child: GestureDetector(
-          onTap: onMarkTapCallback,
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        cardAsset,
+        /* visible marker */
+        Positioned(
+          top: 50,
+          left: 5,
+          child: marked
+              ? Icon(
+                  Icons.visibility,
+                  color: Colors.green,
+                )
+              : const SizedBox.shrink(),
         ),
-      )
-    ]);
+
+        /* tap widget */
+        Positioned(
+          top: 0,
+          left: 0,
+          bottom: 50.pw,
+          width: 30.pw,
+          child: GestureDetector(
+            onTap: onMarkTapCallback,
+          ),
+        )
+      ],
+    );
     //return Image.asset('assets/images/card_face/${card.cardNum}.png');
   }
 
