@@ -195,15 +195,15 @@ class IPhoneAttribs {
         },
         "holeCardDisplacement": {
           "2": 35,
-          "4": 20,
-          "5": 15,
-          "default": 20
+          "4": 30,
+          "5": 25,
+          "default": 25
         },
         "holeCardDisplacementVisible": {
           "2": 30,
-          "4": 15,
-          "5": 10,
-          "default": 20
+          "4": 30,
+          "5": 25,
+          "default": 25
         },        
         "holeCardScale": {
           "2": 1.05,
@@ -213,6 +213,20 @@ class IPhoneAttribs {
         }
       }
     ''';
+    Map<String, dynamic> overrideMap = jsonDecode(override);
+    updateMap(defaultValue, overrideMap);
+    return defaultValue;
+  }
+
+  static Map<String, dynamic> getIPhone13Pro() {
+    final defaultValue = getIPhone13();
+    String override = '''
+      {
+        "base": "iPhone 13",
+        "model": "iPhone 13 Pro",
+        "screenSize": "390.0, 844.0",
+        "size": 6.2
+      }''';
     Map<String, dynamic> overrideMap = jsonDecode(override);
     updateMap(defaultValue, overrideMap);
     return defaultValue;
@@ -585,13 +599,21 @@ class IPhoneAttribs {
   }
 
   static Map<String, dynamic> getAttribs(String deviceName, double screenSize) {
-    if (deviceName.contains('iPad')) {
-      if (deviceName.contains('iPad Air')) {
+    String name = deviceName.toLowerCase();
+    if (name.contains('ipad')) {
+      if (name.contains('ipad air')) {
         return getIPadAir();
       } else {
         return getIPad97();
       }
     } else {
+      if (name.contains('iphone 13 pro')) {
+        return getIPhone13Pro();
+      } else if (name.contains('iphone 13 mini')) {
+        return getIPhone13Mini();
+      } else if (name.contains('iphone 13 pro max')) {
+        return getIPhone13ProMax();
+      }
       return getIPhone8();
     }
   }
