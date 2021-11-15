@@ -32,7 +32,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/host_seat_chang
 
 class TestService {
   static bool get isTesting {
-    return false;
+    return true;
   }
 
   static var _showResult = false;
@@ -453,7 +453,7 @@ class TestService {
     196, C4: A♦
     Ah, 10c, 9s, Jd, Ks 
     */
-    player.cards = [161, 200, 168, 177];//, 177]; //, 168, 177, 194];
+    player.cards = [161, 200, 168, 177]; //, 177]; //, 168, 177, 194];
     player.rankText = 'Full House';
     final myState = gameState.myState;
     myState.notify();

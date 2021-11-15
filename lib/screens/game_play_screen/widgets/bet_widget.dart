@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:math' as math;
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -32,6 +33,98 @@ class BetWidget extends StatelessWidget {
     this.onSubmitCallBack,
     this.remainingTime,
   });
+
+  _buildOtherBetOptionsButton(double angle, {Widget child}) {
+    final double rad = (math.pi / 180.0) * angle;
+    final double radius = 70;
+
+    return Transform(
+      transform: Matrix4.identity()
+        ..translate(
+          radius * math.cos(rad),
+          radius * math.sin(rad),
+        ),
+      child: child,
+    );
+  }
+
+  double _getAngleBy(index) {
+    final double angle = 45;
+    switch (index) {
+
+      // keyboard
+      case -1:
+        return 0;
+
+      // all in button
+      case 3:
+        return angle;
+
+      // other bet option buttons
+      case 0:
+        return 3 * angle;
+      case 1:
+        return 4 * angle;
+      case 2:
+        return 5 * angle;
+
+      default:
+        return 0;
+    }
+  }
+
+  List<Widget> _buildOtherBetOptions({
+    @required BuildContext context,
+    @required bool isLargerDisplay,
+    @required ValueNotifier<double> valueNotifierVal,
+    @required AppTheme appTheme,
+  }) {
+    final actionOptions = action.options.asMap().entries.map<Widget>(
+      (value) {
+        final int index = value.key;
+        final Option option = value.value;
+
+        return _buildOtherBetOptionsButton(
+          _getAngleBy(index),
+          child: _buildBetAmountChild(
+            theme: appTheme,
+            option: action.options[index],
+            // onTap: () {
+            //   valueNotifierVal.value = option.amount.toDouble();
+            // },
+          ),
+        );
+      },
+    ).toList();
+
+    return [
+      // action option buttons
+      ...actionOptions,
+
+      // keyboard button
+      _buildOtherBetOptionsButton(
+        _getAngleBy(-1),
+        child: _buildBetAmountChild(
+          theme: appTheme,
+          isKeyboard: true,
+          // onTap: () async {
+          //   double min = action.minRaiseAmount.toDouble();
+          //   double max = action.maxRaiseAmount.toDouble();
+          //
+          //   final double res = await NumericKeyboard2.show(
+          //     context,
+          //     title:
+          //         'Enter your bet/raise amount (${action.minRaiseAmount.toString()} - ${action.maxRaiseAmount.toString()})',
+          //     min: min,
+          //     max: max,
+          //   );
+          //
+          //   if (res != null) valueNotifierVal.value = res;
+          // },
+        ),
+      ),
+    ];
+  }
 
   List<CardObject> _getCards(List<int> cards) {
     if (cards == null || cards.isEmpty) return [];
@@ -76,8 +169,9 @@ class BetWidget extends StatelessWidget {
       children: [
         // swipe up arrow
         Transform.translate(
-            offset: Offset(0, 85.ph),
-            child: JumpingTextWidget(text: 'Tap to bet')),
+          offset: Offset(0, 85.ph),
+          child: JumpingTextWidget(text: 'Tap to bet'),
+        ),
 
         // main child
         child,
@@ -180,15 +274,16 @@ class BetWidget extends StatelessWidget {
       ],
     );
     final Widget betChipWidget = GestureDetector(
-        onTap: () {
-          log('BET: tap detected');
-          onSubmitCallBack?.call(vnBetAmount.value);
-        },
-        child: Container(
-          height: s * boardAttributes.betImageScale,
-          width: s * boardAttributes.betImageScale,
-          child: betChipImage,
-        ));
+      onTap: () {
+        log('BET: tap detected');
+        onSubmitCallBack?.call(vnBetAmount.value);
+      },
+      child: Container(
+        height: s * boardAttributes.betImageScale,
+        width: s * boardAttributes.betImageScale,
+        child: betChipImage,
+      ),
+    );
 
     final bool isBetByTapActive = true;
     //gameState.playerLocalConfig.tapOrSwipeBetAction;
@@ -351,51 +446,57 @@ class BetWidget extends StatelessWidget {
           return Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              // cards
               FittedBox(
                 fit: BoxFit.fitWidth,
                 child: Transform.scale(
                     scale: 1.0,
                     child: StackCardView(cards: _getCards(playerCards))),
               ),
+
               /* progress drag to bet */
-              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                CircleImageButton2(
-                  theme: appTheme,
-                  icon: Icons.remove,
-                  onTap: () {
-                    double value = valueNotifierVal.value;
-                    value--;
-                    if (value < action.minRaiseAmount) {
-                      value = action.minRaiseAmount.toDouble();
-                    }
-                    valueNotifierVal.value = value;
-                  },
-                ),
-                _buildBetSeekBar(betSliderWidth, appTheme),
-                CircleImageButton2(
-                  theme: appTheme,
-                  icon: Icons.add,
-                  onTap: () {
-                    double value = valueNotifierVal.value;
-                    value++;
-                    if (value > action.maxRaiseAmount) {
-                      value = action.maxRaiseAmount.toDouble();
-                    }
-                    valueNotifierVal.value = value;
-                  },
-                ),
-              ]),
-              /* button row for other bet options */
-              Transform.scale(
-                alignment: Alignment.topCenter,
-                scale: 0.90,
-                child: Container(
-                  alignment: Alignment.center,
-                  width: width / 1.5,
-                  height: 40.ph,
-                  child: betAmountList(valueNotifierVal, appTheme),
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircleImageButton2(
+                    theme: appTheme,
+                    icon: Icons.remove,
+                    onTap: () {
+                      double value = valueNotifierVal.value;
+                      value--;
+                      if (value < action.minRaiseAmount) {
+                        value = action.minRaiseAmount.toDouble();
+                      }
+                      valueNotifierVal.value = value;
+                    },
+                  ),
+                  _buildBetSeekBar(betSliderWidth, appTheme),
+                  CircleImageButton2(
+                    theme: appTheme,
+                    icon: Icons.add,
+                    onTap: () {
+                      double value = valueNotifierVal.value;
+                      value++;
+                      if (value > action.maxRaiseAmount) {
+                        value = action.maxRaiseAmount.toDouble();
+                      }
+                      valueNotifierVal.value = value;
+                    },
+                  ),
+                ],
               ),
+
+              /* OLD UI button row for other bet options */
+              // Transform.scale(
+              //   alignment: Alignment.topCenter,
+              //   scale: 0.90,
+              //   child: Container(
+              //     alignment: Alignment.center,
+              //     width: width / 1.5,
+              //     height: 40.ph,
+              //     child: betAmountList(valueNotifierVal, appTheme),
+              //   ),
+              // ),
               // SizedBox(height: 5.ph),
 
               /* bet amount */
@@ -410,9 +511,30 @@ class BetWidget extends StatelessWidget {
                   ),
                 ),
               ),
-              /* bet button */
-              _buildBetButton(
-                  context, isLargerDisplay, valueNotifierVal, appTheme),
+
+              Stack(
+                alignment: Alignment.center,
+                children: [
+                  // other bet buttons
+                  ..._buildOtherBetOptions(
+                    context: context,
+                    isLargerDisplay: isLargerDisplay,
+                    valueNotifierVal: valueNotifierVal,
+                    appTheme: appTheme,
+                  ),
+
+                  /* bet button */
+                  Container(
+                    margin: EdgeInsets.symmetric(vertical: 50),
+                    child: _buildBetButton(
+                      context,
+                      isLargerDisplay,
+                      valueNotifierVal,
+                      appTheme,
+                    ),
+                  ),
+                ],
+              ),
 
               //SizedBox(height: 10.ph),
             ],
