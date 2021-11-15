@@ -118,11 +118,7 @@ class BoardAttributesJson {
   Map<String, dynamic> attribs;
   void init(double screenSize) {
     if (Platform.isAndroid) {
-      if (screenSize >= 5.3 && screenSize <= 5.5) {
-        attribs = AndroidAttribs.getPixelXl();
-      } else {
-        attribs = AndroidAttribs.get6Inch();
-      }
+      attribs = AndroidAttribs.getAttribs(screenSize);
     } else {
       // iphone
       // attribs = IPhoneAttribs.getIPhoneXS();
