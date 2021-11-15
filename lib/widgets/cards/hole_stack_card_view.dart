@@ -138,22 +138,14 @@ class HoleStackCardView extends StatelessWidget {
         offset: Offset(xOffset, 0.0),
         child: Stack(
           alignment: Alignment.center,
-          children: [
-            // the main cards
-            ..._getChildren(
-              context: context,
-              mid: mid,
-              markedCards: markedCards,
-              displacementValue: displacementValue,
-              isCardVisible: isCardVisible,
-              fanOut: true,
-            ),
-
-            // to expand out the stack view to full width
-            Container(
-              width: MediaQuery.of(context).size.width,
-            ),
-          ],
+          children: _getChildren(
+            context: context,
+            mid: mid,
+            markedCards: markedCards,
+            displacementValue: displacementValue,
+            isCardVisible: isCardVisible,
+            fanOut: true,
+          ),
         ),
       ),
     );
