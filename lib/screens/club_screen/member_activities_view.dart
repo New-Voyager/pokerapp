@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -8,9 +10,11 @@ import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/club_screen/set_credits_dialog.dart';
+import 'package:pokerapp/screens/club_screen/widgets/member_activity_filter_widget.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/club_interior_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
+import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 
@@ -43,7 +47,8 @@ class _ClubMemberActivitiesScreenState
     try {
       final activities = MemberActivity.getMockData();
       bool includeTips = true;
-      dts = DataSource(activities: activities, includeTips: includeTips);
+      dts = DataSource(
+          activities: activities, includeTips: includeTips, theme: theme);
       headers = [];
 
       headers.add('Name');
@@ -76,27 +81,63 @@ class _ClubMemberActivitiesScreenState
     }
     List<DataColumn> columns = [];
     for (final header in headers) {
-      columns.add(DataColumn(label: Text(header)));
+      columns.add(
+        DataColumn(
+          label: Text(
+            header,
+            style: AppDecorators.getSubtitle1Style(theme: theme)
+                .copyWith(color: theme.accentColor),
+          ),
+        ),
+      );
     }
 
     return Container(
-        decoration: AppDecorators.bgRadialGradient(theme),
-        child: Scaffold(
-            appBar: AppBar(
-              title: Text("Member Activities"),
-            ),
-            body: Column(children: [
-              // getFilterTile(),
-              SingleChildScrollView(
-                child: PaginatedDataTable(
-                  // header: Text('Member Activities'),
-                  columns: columns,
-                  source: dts,
-                  rowsPerPage: 10,
-                  columnSpacing: 15,
-                ),
+      decoration: AppDecorators.bgRadialGradient(theme),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: CustomAppBar(
+          titleText: "Member Activities",
+          theme: theme,
+          actionsList: [
+            IconButton(
+              onPressed: () async {
+                final ret = await Alerts.showDailog(
+                  context: context,
+                  child: MemberActivityFilterWidget(),
+                );
+                if (ret == null) {
+                  return;
+                }
+
+                log("RET: $ret");
+              },
+              icon: Icon(
+                Icons.filter_alt,
+                color: theme.accentColor,
               ),
-            ])));
+            )
+          ],
+        ),
+        body: Column(
+          children: [
+            // getFilterTile(),
+            SingleChildScrollView(
+              child: PaginatedDataTable(
+                // header: Text('Member Activities'),
+                columns: columns,
+                showFirstLastButtons: true,
+                arrowHeadColor: theme.accentColor,
+
+                source: dts,
+                rowsPerPage: 10,
+                columnSpacing: 15,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget buildBanner() {
@@ -213,7 +254,7 @@ class _ClubMemberActivitiesScreenState
         )
       ],
     );
-  }  
+  }
 
   Widget getPositive() {
     return Row(
@@ -229,7 +270,7 @@ class _ClubMemberActivitiesScreenState
         )
       ],
     );
-  }  
+  }
 
   Widget getInactive() {
     return Row(
@@ -245,7 +286,7 @@ class _ClubMemberActivitiesScreenState
         )
       ],
     );
-  }  
+  }
 
   Widget getNoFilter() {
     return Row(
@@ -261,28 +302,40 @@ class _ClubMemberActivitiesScreenState
         )
       ],
     );
-  }  
-
+  }
 }
 
 class DataSource extends DataTableSource {
   List<MemberActivity> activities;
   bool includeTips;
   bool includeLastPlayedDate;
+  AppTheme theme;
   DataSource(
       {this.activities,
       this.includeTips = false,
-      this.includeLastPlayedDate = false});
+      this.includeLastPlayedDate = false,
+      this.theme});
   @override
   DataRow getRow(int index) {
     MemberActivity activity = activities[index];
     List<DataCell> cells = [];
     cells.add(
-      DataCell(Container(width: 50, child: Text(activity.name))),
+      DataCell(
+        Container(
+          width: 50,
+          child: Text(activity.name),
+        ),
+      ),
     );
     cells.add(
-      DataCell(Container(
-          width: 50, child: Text(DataFormatter.chipsFormat(activity.credits)))),
+      DataCell(
+        Container(
+          width: 50,
+          child: Text(
+            DataFormatter.chipsFormat(activity.credits),
+          ),
+        ),
+      ),
     );
 
     if (includeTips) {
@@ -308,16 +361,24 @@ class DataSource extends DataTableSource {
         DataCell(Text(DataFormatter.chipsFormat(activity.tipsBackAmount))),
       );
     }
-
+    print("INDEX : ---- $index");
     return DataRow.byIndex(
       index: index,
       cells: cells,
       color: MaterialStateColor.resolveWith(
         (states) {
+          if (theme != null) {
+            if (index % 2 == 0) {
+              return theme.primaryColorWithDark(0.1);
+            } else {
+              return theme.primaryColorWithLight(0.1);
+            }
+          }
+
           if (index % 2 == 0) {
-            return Colors.blueGrey;
+            return Colors.blueGrey[600];
           } else {
-            return Colors.grey[700];
+            return Colors.grey[500];
           }
         },
       ),
