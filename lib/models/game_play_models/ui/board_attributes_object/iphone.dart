@@ -607,9 +607,56 @@ class IPhoneAttribs {
   }
 
   static Map<String, dynamic> getIPadPro() {
-    final defaultValue = getDefault();
+    final defaultMap = getIPadMini();
 
-    return defaultValue;
+    String override = '''
+      {
+       "model": "iPad Pro (11 inch / 12 inch)",
+       "screenSize": "1024.0, 1366.0",
+       "size": 12.9,
+        "board": {
+          "centerViewScale": 1.60,
+          "centerViewPos": "0, 100.0"
+        },
+        "holeCardDisplacement": {
+          "2": 50,
+          "4": 50,
+          "5": 40,
+          "default": 50
+        },
+        "holeCardDisplacementVisible": {
+          "2": 50,
+          "4": 50,
+          "5": 40,
+          "default": 50
+        },        
+        "footerViewHeightScale": 0.43,
+        "holeCardScale": {
+          "2": 1.40,
+          "4": 1.40,
+          "5": 1.20,
+          "default": 1
+        },
+        "holeCardOffset": "0, 0",
+        "holeCardViewOffset": "0, 90",
+        "otherBetOptionButtonsSpreadRadius": 90.0,
+        "footerRankTextSize": 28.0,
+        "holeCardViewScale": 1.6,
+        "footerActionScale": 1.50,
+        "footerScale": 0.70,
+        "seat": {
+          "scale": 1.50,
+          "holeCardOffset": "0, 0",
+          "holeCardScale": 1.0
+        }
+
+      }
+    ''';
+
+    Map<String, dynamic> overrideMap = jsonDecode(override);
+    updateMap(defaultMap, overrideMap);
+
+    return defaultMap;
   }
 
   static Map<String, dynamic> getIPadNormal() {
