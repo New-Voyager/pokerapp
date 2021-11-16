@@ -397,13 +397,15 @@ class IPhoneAttribs {
           },
           "betImageScale": 3.0
         },
+        "otherBetOptionButtonsSpreadRadius": 90.0,
         "seat": {
-          "scale": 1.3,
+          "scale": 1.2,
           "holeCardOffset": "0, 0",
           "holeCardScale": 1.0
         },
+        "holeCardViewOffset": "0, 50",
         "holeCardScale": {
-          "2": 1.70,
+          "2": 1.60,
           "4": 1.35,
           "5": 1.50,
           "default": 1
@@ -415,7 +417,7 @@ class IPhoneAttribs {
           "default": 20
         },
         "holeCardDisplacementVisible": {
-          "2": 30,
+          "2": 50,
           "4": 50,
           "5": 50,
           "default": 20
@@ -770,7 +772,7 @@ class IPhoneAttribs {
 
     // ipad's section
     if (name.contains('ipad')) {
-      if (name == 'iPad Pro (9.7-inch)') return getIPad97();
+      if (name == 'ipad pro (9.7-inch)') return getIPad97();
 
       if (name == 'ipad (9th generation)') return getIPadNormal();
 
