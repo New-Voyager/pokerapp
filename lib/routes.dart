@@ -6,6 +6,7 @@ import 'package:pokerapp/screens/auth_screens/registration_new.dart';
 import 'package:pokerapp/screens/club_screen/announcements_view.dart';
 import 'package:pokerapp/screens/club_screen/bookmarked_hands.dart';
 import 'package:pokerapp/screens/club_screen/botscripts.dart';
+import 'package:pokerapp/screens/club_screen/member_activities_view.dart';
 import 'package:pokerapp/screens/club_screen/member_credit_history.dart';
 import 'package:pokerapp/screens/club_screen/club_main_screen.dart';
 import 'package:pokerapp/screens/club_screen/club_member_detailed_view.dart';
@@ -79,6 +80,9 @@ class Routes {
   // ClubMembersCreditDetailsView  -- provider, arguments
   static const String club_member_credit_detail_view =
       '/club_member_credit_detail_view';
+  static const String club_member_activities_view =
+      '/club_member_activities_view';
+
   // HandHistoryListView  -- provider, arguments
   static const String hand_history_list = '/hand_history_list';
   // HighHandLogView
@@ -286,6 +290,15 @@ class Routes {
         return _getPageRoute(
           routeName: settings.name,
           viewToShow: ClubActivityCreditScreen(clubCode, playerId, owner),
+        );
+
+      case club_member_activities_view:
+        Map<String, dynamic> args = settings.arguments as Map<String, dynamic>;
+        String clubCode = args["clubCode"];
+
+        return _getPageRoute(
+          routeName: settings.name,
+          viewToShow: ClubMemberActivitiesScreen(clubCode),
         );
 
       case hand_history_list:
