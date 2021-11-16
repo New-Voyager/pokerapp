@@ -57,6 +57,7 @@ class IPhoneAttribs {
             "dx": 50,
             "dy": -70
           },
+          "tableScale": 1.2,
           "centerSizeInc": {
             "dx": -30,
             "dy": -70
@@ -67,7 +68,7 @@ class IPhoneAttribs {
           "betAmountFac": {
             "bottomCenter": "0, -1.0",
             "topCenter": "0.20, 0.70",
-            "middleLeft": "0.30, 0.75",
+            "middleLeft": "0.00, 0.75",
             "middleRight": "-0.10, 0.75",
             "topRight": "-0.10, 0.70",
             "topLeft": "0.30, 0.65",
@@ -78,18 +79,18 @@ class IPhoneAttribs {
           },
           "cardShufflePos": "0, -30",
           "centerButtonsPos": "0, -40",
-          "centerViewPos": "0, 15.0",
-          "centerPotScale": 1.0,
-          "centerPotUpdatesScale": 0.85,
+          "centerViewPos": "0, 5.0",
+          "centerPotScale": 0.80,
+          "centerPotUpdatesScale": 0.70,
           "centerRankScale": 0.85,
-          "centerViewScale": 0.85,
+          "centerViewScale": 0.93,
           "doubleBoardScale": 0.90,
           "boardScale": 1.0,
           "centerGap": 0.0,
           "potViewGap": 0,
           "centerOffset": "15, 115",
           "seatMap": {
-            "bottomCenter": "0, 100",
+            "bottomCenter": "0, 92",
             "bottomLeft": "15, 70",
             "bottomRight": "-15, 70",
             "middleLeft": "2, 75",
@@ -102,26 +103,26 @@ class IPhoneAttribs {
           }
         },
         "holeCardDisplacement": {
-          "2": 35,
+          "2": 45,
           "4": 35,
-          "5": 35,
+          "5": 27,
           "default": 20
         },
         "holeCardDisplacementVisible": {
-          "2": 30,
-          "4": 25,
-          "5": 25,
+          "2": 35,
+          "4": 20,
+          "5": 13,
           "default": 20
         },        
         "footerViewHeightScale": 0.40,
         "holeCardScale": {
           "2": 1.10,
-          "4": 1.35,
-          "5": 1.15,
+          "4": 1.10,
+          "5": 1.10,
           "default": 1
         },
         "holeCardOffset": "0, 0",
-        "holeCardViewOffset": "0, 30",
+        "holeCardViewOffset": "0, 55",
         "holeCardViewScale": 1.28,
         "footerActionScale": 1.05,
         "footerScale": 0.45,
@@ -139,11 +140,11 @@ class IPhoneAttribs {
     return getDefault();
   }
 
-  static Map<String, dynamic> getIPhoneXS() {
+  static Map<String, dynamic> getIPhoneX() {
     final defaultValue = getDefault();
     String override = '''
       {
-        "model": "iPhone 10S",
+        "model": "iPhone 10",
         "screenSize": "375.0, 812.0",
         "size": 5.8,
         "board": {
@@ -178,9 +179,9 @@ class IPhoneAttribs {
           "centerViewPos": "0, 5.0"
         },
         "holeCardDisplacement": {
-          "2": 27,
-          "4": 18,
-          "5": 18,
+          "2": 30,
+          "4": 27,
+          "5": 25,
           "default": 25
         },
         "holeCardDisplacementVisible": {
@@ -191,10 +192,25 @@ class IPhoneAttribs {
         },        
         "holeCardScale": {
           "2": 1.05,
-          "4": 1.05,
-          "5": 1.0,
+          "4": 1.0,
+          "5": 0.95,
           "default": 1
-        }
+        },
+        "holeCardViewOffset": "0, 60"
+      }
+    ''';
+    Map<String, dynamic> overrideMap = jsonDecode(override);
+    updateMap(defaultValue, overrideMap);
+    return defaultValue;
+  }
+
+  static Map<String, dynamic> getIPhoneXS() {
+    final defaultValue = getIPhoneX();
+    String override = '''
+      {
+        "model": "iPhone 10S",
+        "screenSize": "375.0, 812.0",
+        "size": 5.8,
       }
     ''';
     Map<String, dynamic> overrideMap = jsonDecode(override);
@@ -242,9 +258,9 @@ class IPhoneAttribs {
           "centerViewPos": "0, 20.0"
         },
         "holeCardDisplacement": {
-          "2": 27,
-          "4": 18,
-          "5": 18,
+          "2": 33,
+          "4": 30,
+          "5": 27,
           "default": 25
         },
         "holeCardDisplacementVisible": {
@@ -255,10 +271,11 @@ class IPhoneAttribs {
         },        
         "holeCardScale": {
           "2": 1.25,
-          "4": 1.22,
-          "5": 1.18,
+          "4": 1.15,
+          "5": 1.10,
           "default": 1
-        }
+        },
+        "holeCardViewOffset": "0, 60"
       }
     ''';
     Map<String, dynamic> overrideMap = jsonDecode(override);
@@ -306,23 +323,24 @@ class IPhoneAttribs {
           "centerViewPos": "0, 20.0"
         },
          "holeCardDisplacement": {
-          "2": 27,
-          "4": 20,
-          "5": 20,
+          "2": 35,
+          "4": 32,
+          "5": 27,
           "default": 25
         },
         "holeCardDisplacementVisible": {
-          "2": 27,
+          "2": 30,
           "4": 15,
           "5": 13,
           "default": 25
         },        
         "holeCardScale": {
           "2": 1.25,
-          "4": 1.22,
-          "5": 1.18,
+          "4": 1.20,
+          "5": 1.13,
           "default": 1
-        }
+        },
+        "holeCardViewOffset": "0, 60"
       }
     ''';
     Map<String, dynamic> overrideMap = jsonDecode(override);
@@ -375,16 +393,17 @@ class IPhoneAttribs {
         },
         "holeCardDisplacementVisible": {
           "2": 30,
-          "4": 30,
-          "5": 25,
+          "4": 15,
+          "5": 15,
           "default": 25
         },        
         "holeCardScale": {
-          "2": 1.05,
-          "4": 1.10,
-          "5": 1.10,
+          "2": 1.15,
+          "4": 1.05,
+          "5": 0.97,
           "default": 1
-        }
+        },
+        "holeCardViewOffset": "0, 60"
       }
     ''';
     Map<String, dynamic> overrideMap = jsonDecode(override);
@@ -444,23 +463,24 @@ class IPhoneAttribs {
           "centerPotUpdatesScale": 0.7
         },
         "holeCardDisplacement": {
-          "2": 30,
+          "2": 33,
           "4": 30,
-          "5": 25,
+          "5": 23,
           "default": 25
         },
         "holeCardDisplacementVisible": {
           "2": 22,
-          "4": 25,
-          "5": 25,
+          "4": 15,
+          "5": 13,
           "default": 25
         },        
         "holeCardScale": {
           "2": 1.10,
-          "4": 1.05,
-          "5": 1.00,
+          "4": 1.00,
+          "5": 0.95,
           "default": 1
-        }
+        },
+        "holeCardViewOffset": "0, 55"
       }
     ''';
     Map<String, dynamic> overrideMap = jsonDecode(override);
@@ -508,9 +528,9 @@ class IPhoneAttribs {
           "centerViewPos": "0, 30.0"
         },
         "holeCardDisplacement": {
-          "2": 35,
-          "4": 20,
-          "5": 15,
+          "2": 37,
+          "4": 33,
+          "5": 28,
           "default": 20
         },
         "holeCardDisplacementVisible": {
@@ -521,10 +541,11 @@ class IPhoneAttribs {
         },        
         "holeCardScale": {
           "2": 1.3,
-          "4": 1.3,
+          "4": 1.25,
           "5": 1.2,
           "default": 1
-        }
+        },
+        "holeCardViewOffset": "0, 65"
       }
     ''';
     Map<String, dynamic> overrideMap = jsonDecode(override);
@@ -549,7 +570,7 @@ class IPhoneAttribs {
   static Map<String, dynamic> getIPhone13() {
     final defaultValue = getIPhone12();
     String override = '''
-      {=
+      {
         "model": "iPhone 13",
         "screenSize": "390.0, 844.0",
         "size": 6.2
@@ -860,6 +881,10 @@ class IPhoneAttribs {
         return getIPhoneXR();
       } else if (name.contains('iphone xs')) {
         return getIPhoneXS();
+      } else if (name.contains('iphone x')) {
+        return getIPhoneX();
+      } else if (name.contains('iphone 8 plus')) {
+        return getIPhone8Plus();
       }
       return getIPhone8();
     }
