@@ -10,4 +10,5 @@ enum ClubActions {
   BOTSCRIPTS,
   SETTINGS,
   ACTIVITIES,
+  MEMBER_ACTIVITIES,
 }

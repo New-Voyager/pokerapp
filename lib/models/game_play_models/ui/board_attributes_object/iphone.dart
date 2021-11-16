@@ -362,6 +362,8 @@ class IPhoneAttribs {
     final defaultValue = getDefault();
     String override = '''
       {
+        "base": "default",
+        "name": "iPad97",
         "model": "iPhone Pro (9.7inch)",
         "screenSize": "768.0, 1024.0",
         "size": 8.5,

@@ -22,6 +22,7 @@ class AndroidAttribs {
   static Map<String, dynamic> getDefault() {
     String attribs = '''
       {
+        "name": "default",
         "size": 6,
         "appliesTo": "6",
         "board": {
@@ -146,6 +147,8 @@ class AndroidAttribs {
     final defaultValue = getDefault();
     String override = '''
       {
+        "base": "default",
+        "name": "6.5",
         "model": "motog",
         "screenSize": "411.4, 890.3",
         "size": 6.5,
@@ -169,6 +172,8 @@ class AndroidAttribs {
     final defaultValue = getDefault();
     String override = '''
       {
+        "base": "default",
+        "name": "pixel-xl",
         "model": "pixel-xl",
         "screenSize": "411.4, 683.4",
         "size": 5.5,
@@ -220,13 +225,13 @@ class AndroidAttribs {
           "2": 35,
           "4": 35,
           "5": 35,
-          "default": 20
+          "default": 35
         },
         "holeCardDisplacementVisible": {
           "2": 30,
           "4": 25,
           "5": 25,
-          "default": 20
+          "default": 25
         },        
 
         "seat": {
