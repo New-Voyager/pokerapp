@@ -168,7 +168,8 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
                             ]),
                         Align(
                             alignment: Alignment.centerRight,
-                            child: Text(item.updatedDate.toLocal().toString())),
+                            child: Text(DataFormatter.dateFormat(
+                                item.updatedDate.toLocal()))),
                         Divider(color: Colors.white),
                       ],
                     ),
@@ -210,7 +211,68 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
                         ),
                         Align(
                             alignment: Alignment.centerRight,
-                            child: Text(item.updatedDate.toLocal().toString())),
+                            child: Text(DataFormatter.dateFormat(
+                                item.updatedDate.toLocal()))),
+                        Divider(color: Colors.white),
+                      ],
+                    ),
+                  ),
+                );
+              } else if (item.updateType == 'ADD' ||
+                  item.updateType == 'DEDUCT') {
+                bool add = item.updateType == 'ADD';
+                historyItem = Container(
+                  color: theme.fillInColor,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                children: [
+                                  Text(item.notes),
+                                ],
+                              ),
+                              Column(
+                                children: [
+                                  Text(
+                                    item.updateType == 'ADD' ? 'Add' : 'Deduct',
+                                    style: AppStylesNew.buyinTextStyle.copyWith(
+                                        color: add
+                                            ? Colors.greenAccent
+                                            : Colors.redAccent,
+                                        fontSize: 12.dp,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  Text(
+                                    '${DataFormatter.chipsFormat(item.amount)}',
+                                    style: TextStyle(
+                                      color: !add
+                                          ? Colors.redAccent
+                                          : Colors.greenAccent,
+                                      fontSize: 12.dp,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Text(
+                                  '${DataFormatter.chipsFormat(item.updatedCredits)}',
+                                  style: TextStyle(
+                                    color: item.updatedCredits < 0
+                                        ? Colors.redAccent
+                                        : Colors.greenAccent,
+                                    fontSize: 12.dp,
+                                    fontWeight: FontWeight.w400,
+                                  ))
+                            ]),
+                        Align(
+                            alignment: Alignment.centerRight,
+                            child: Text(DataFormatter.dateFormat(
+                                item.updatedDate.toLocal()))),
                         Divider(color: Colors.white),
                       ],
                     ),

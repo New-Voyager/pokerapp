@@ -68,6 +68,18 @@ class ClubInteriorService {
       }
   """;
 
+  static String addCreditMutation = """
+      mutation ac(\$clubCode: String!, \$playerUuid: String!, \$notes: String \$amount: Float!) {
+        ret: addCredit(clubCode:\$clubCode playerUuid:\$playerUuid, amount:\$amount, notes: \$notes) 
+      }
+  """;
+
+  static String deductCreditMutation = """
+      mutation dc(\$clubCode: String!, \$playerUuid: String!, \$notes: String \$amount: Float!) {
+        ret: deductCredit(clubCode:\$clubCode playerUuid:\$playerUuid, amount:\$amount, notes: \$notes) 
+      }
+  """;
+
   static String searchClub = """
     query (\$clubCode: String!) {
         club: searchClub(clubCode: \$clubCode) {
@@ -310,6 +322,46 @@ class ClubInteriorService {
     };
     QueryResult result = await _client.mutate(MutationOptions(
         document: gql(setCreditMutation), variables: variables));
+    if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
+    final ret = result.data['ret'].toString();
+    return ret;
+  }
+
+  static Future<String> addPlayerCredit(
+      String clubCode, String playerID, double amount, String notes) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    Map<String, dynamic> variables = {
+      "clubCode": clubCode,
+      "playerUuid": playerID,
+      "amount": amount,
+      "notes": notes
+    };
+    QueryResult result = await _client.mutate(MutationOptions(
+        document: gql(addCreditMutation), variables: variables));
+    if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
+    final ret = result.data['ret'].toString();
+    return ret;
+  }
+
+  static Future<String> deductPlayerCredit(
+      String clubCode, String playerID, double amount, String notes) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    Map<String, dynamic> variables = {
+      "clubCode": clubCode,
+      "playerUuid": playerID,
+      "amount": amount,
+      "notes": notes
+    };
+    QueryResult result = await _client.mutate(MutationOptions(
+        document: gql(deductCreditMutation), variables: variables));
     if (result.hasException) {
       if (result.exception.graphqlErrors.length > 0) {
         return null;
