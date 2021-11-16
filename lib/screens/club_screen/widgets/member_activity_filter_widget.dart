@@ -157,21 +157,21 @@ class _MemberActivityFilterWidgetState
                     });
                   },
                 ),
-                RadioListTile(
-                  value: 6,
-                  groupValue: groupValue,
-                  title: Row(
-                    children: [
-                      Text("No Filter"),
-                    ],
-                  ),
-                  onChanged: (value) {
-                    FocusScope.of(context).unfocus();
-                    setState(() {
-                      groupValue = 6;
-                    });
-                  },
-                ),
+                // RadioListTile(
+                //   value: 6,
+                //   groupValue: groupValue,
+                //   title: Row(
+                //     children: [
+                //       Text("No Filter"),
+                //     ],
+                //   ),
+                //   onChanged: (value) {
+                //     FocusScope.of(context).unfocus();
+                //     setState(() {
+                //       groupValue = 6;
+                //     });
+                //   },
+                // ),
                 AppDimensionsNew.getVerticalSizedBox(16),
               ],
             ),
@@ -223,9 +223,9 @@ class _MemberActivityFilterWidgetState
                       valid = true;
                     }
                     if (valid) {
-                      Alerts.showNotification(
-                        titleText: "${ret['selection']}",
-                      );
+                      // Alerts.showNotification(
+                      //   titleText: "${ret['selection']}",
+                      // );
                       Navigator.of(context).pop(ret);
                     }
                   }

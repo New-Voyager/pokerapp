@@ -20,6 +20,7 @@ class ClubMemberModel extends ChangeNotifier {
   double _totalBuyIns;
   double _totalWinnings;
   double _rake;
+  int _tipsBack;
   bool autoBuyInApproval;
   int _creditLimit;
   String _notes;
@@ -75,11 +76,12 @@ class ClubMemberModel extends ChangeNotifier {
   double get totalWinnings => this._totalWinnings ?? 0;
   double get totalBuyIns => this._totalBuyIns ?? 0;
   double get rake => this._rake ?? 0;
+  int get tipsBack => this._tipsBack ?? 0;
   String get rakeStr => DataFormatter.chipsFormat(this._rake);
   String get balanceStr => DataFormatter.chipsFormat(this._balance);
   String get totalWinningsStr => DataFormatter.chipsFormat(this._totalWinnings);
   String get totalBuyinStr => DataFormatter.chipsFormat(this._totalBuyIns);
-
+  set tipsBack(int v) => _tipsBack = v;
   static ClubMemberModel copyWith(ClubMemberModel copyValue) {
     final data = new ClubMemberModel();
     data.name = copyValue.name;
@@ -98,6 +100,7 @@ class ClubMemberModel extends ChangeNotifier {
     data._rake = copyValue._rake;
     data._contactInfo = copyValue._contactInfo;
     data._notes = copyValue._notes;
+    data._tipsBack = copyValue._tipsBack;
     return data;
   }
 
@@ -133,7 +136,7 @@ class ClubMemberModel extends ChangeNotifier {
     if (jsonData['rakePaid'] != null) {
       this._rake = double.parse(jsonData['rakePaid'].toString());
     }
-
+    this._tipsBack = int.parse((jsonData['tipsBack'] ?? 0).toString());
     this.imageUrl = jsonData['imageUrl'];
 
     if (jsonData['totalGames'] != null) {

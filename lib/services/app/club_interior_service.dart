@@ -2,6 +2,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:pokerapp/main_helper.dart';
 import 'package:pokerapp/models/club_members_model.dart';
 import 'package:pokerapp/models/game_history_model.dart';
+import 'package:pokerapp/models/member_activity_model.dart';
 import 'package:pokerapp/models/search_club_model.dart';
 
 enum MemberListOptions {
@@ -31,6 +32,7 @@ class ClubInteriorService {
           notes
           totalGames
           availableCredit
+          tipsBack
         }
       }""";
 
@@ -111,6 +113,34 @@ class ClubInteriorService {
       }
   """;
 
+  static String clubMembersQuery = """
+      query ch(\$clubCode: String!, \$filter: MemberFilterInput) {
+         clubMembers(clubCode:\$clubCode, filter:\$filter) {
+            name
+            playerId
+            lastPlayedDate
+            availableCredit
+          }
+        }
+  """;
+
+  static String clubMembersDateFilterQuery = """
+        query clubMemberTracking(\$clubCode: String!, \$from: DateTime! \$end: DateTime!) {
+          clubMembers: clubMemberActivityGrouped(clubCode:\$clubCode, startDate:\$from endDate: \$end) {
+            playerName
+            playerId
+            playerUuid
+            tipsBack
+            tipsBack
+            tips
+            availableCredit
+            lastPlayedDate
+            buyIn
+            profit
+            gamesPlayed            
+          }
+        }
+    """;
   static Future<List<ClubMemberModel>> getMembers(String clubCode) async {
     return getClubMembers(clubCode, MemberListOptions.ALL);
   }
@@ -186,15 +216,15 @@ class ClubInteriorService {
 
   static Future<bool> updateClubMember(ClubMemberModel data) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
-    int creditLimit = 0;
-    if (data.creditLimit != '0' && data.creditLimit != '') {
-      creditLimit = int.parse(data.creditLimit.toString());
-    }
+    // int creditLimit = 0;
+    // if (data.creditLimit != '0' && data.creditLimit != '') {
+    //   creditLimit = int.parse(data.creditLimit.toString());
+    // }
     Map<String, dynamic> update = {
       "contactInfo": data.contactInfo,
       "notes": data.notes,
-      "creditLimit": creditLimit,
       "autoBuyinApproval": data.autoBuyInApproval,
+      "tipsBack": data.tipsBack,
     };
     Map<String, dynamic> variables = {
       "clubCode": data.clubCode,
@@ -295,10 +325,6 @@ class ClubInteriorService {
     return history;
   }
 
-  /*
-  
-*/
-
   static Future<String> setPlayerCredit(
       String clubCode, String playerID, double amount, String notes) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
@@ -317,5 +343,59 @@ class ClubInteriorService {
     }
     final ret = result.data['ret'].toString();
     return ret;
+  }
+
+  static Future<List<MemberActivity>> getMemberActivity(
+    String clubCode, {
+    bool unsettled = false,
+    bool inactiveMembers = false,
+    bool positive = false,
+    bool negative = false,
+    String inactiveDate = null,
+  }) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    Map<String, dynamic> variables = {
+      "clubCode": clubCode,
+      "filter": {
+        "unsettled": unsettled,
+        "positive": positive,
+        "negative": negative,
+        "inactiveFrom": inactiveDate,
+      }
+    };
+
+    QueryResult result = await _client.query(
+        QueryOptions(document: gql(clubMembersQuery), variables: variables));
+
+    if (result.hasException) return [];
+
+    final jsonResponse = result.data['clubMembers'];
+
+    final members = jsonResponse
+        .map<MemberActivity>((var item) => MemberActivity.fromJson(item))
+        .toList();
+    return members;
+  }
+
+  static Future<List<MemberActivity>> getMemberActivityDateFilter(
+      String clubCode, DateTime start, DateTime end) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    Map<String, dynamic> variables = {
+      "clubCode": clubCode,
+      "from": start.toIso8601String(),
+      "end": end.toIso8601String(),
+    };
+
+    QueryResult result = await _client.query(QueryOptions(
+        document: gql(clubMembersDateFilterQuery), variables: variables));
+
+    if (result.hasException) return [];
+
+    final jsonResponse = result.data['clubMembers'];
+
+    final members = jsonResponse
+        .map<MemberActivity>((var item) => MemberActivity.fromJson(item))
+        .toList();
+    return members;
   }
 }
