@@ -608,17 +608,34 @@ class IPhoneAttribs {
     return defaultMap;
   }
 
-  static Map<String, dynamic> getIPadPro() {
+  static Map<String, dynamic> getIPadPro12() {
+    final defaultMap = getIPadPro11();
+    String override = '''
+    {
+     "model": "iPad Pro 12 inch",
+     "size": 12.9,
+     "board": {
+        "centerViewScale": 1.60,
+        "centerViewPos": "0, 100.0"
+      }
+    }
+    ''';
+
+    updateMap(defaultMap, jsonDecode(override));
+    return defaultMap;
+  }
+
+  static Map<String, dynamic> getIPadPro11() {
     final defaultMap = getIPadMini();
 
     String override = '''
       {
-       "model": "iPad Pro (11 inch / 12 inch)",
+       "model": "iPad Pro 11 inch",
        "screenSize": "1024.0, 1366.0",
-       "size": 12.9,
+       "size": 11.0,
         "board": {
-          "centerViewScale": 1.60,
-          "centerViewPos": "0, 100.0"
+          "centerViewScale": 1.40,
+          "centerViewPos": "0, 60.0"
         },
         "holeCardDisplacement": {
           "2": 50,
@@ -778,8 +795,11 @@ class IPhoneAttribs {
 
       if (name.contains('air')) return getIPadAir();
 
-      if (name.contains('pro'))
-        return getIPadPro(); // both 11 inch and 12.9 inch has the same screen resolution
+      if (name.contains('pro')) {
+        if (name.contains('12')) return getIPadPro12();
+
+        return getIPadPro11();
+      }
 
       if (name.contains('mini')) return getIPadMini();
 
