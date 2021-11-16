@@ -660,9 +660,52 @@ class IPhoneAttribs {
   }
 
   static Map<String, dynamic> getIPadNormal() {
-    final defaultValue = getDefault();
+    final defaultMap = getIPad97();
+    String override = '''
+      {
+        "model": "iPad (9th generation)",
+        "screenSize": "810.0, 1080.0",
+        "size": 9.0,
+        "board": {
+          "centerViewScale": 1.30,
+          "centerViewPos": "0, 40.0"
+        },
+        "holeCardDisplacement": {
+          "2": 50,
+          "4": 50,
+          "5": 40,
+          "default": 50
+        },
+        "holeCardDisplacementVisible": {
+          "2": 50,
+          "4": 50,
+          "5": 40,
+          "default": 50
+        },
+        "footerViewHeightScale": 0.41,
+        "holeCardScale": {
+          "2": 1.10,
+          "4": 1.15,
+          "5": 1.15,
+          "default": 1
+        },
+        "holeCardOffset": "0, 0",
+        "holeCardViewOffset": "0, 80",
+        "holeCardViewScale": 1.60,
+        "footerActionScale": 1.30,
+        "otherBetOptionButtonsSpreadRadius": 90.0,
+        "footerScale": 0.45,
+        "seat": {
+          "scale": 1.2,
+          "holeCardOffset": "0, 0",
+          "holeCardScale": 1.0
+        }
 
-    return defaultValue;
+      }
+    ''';
+
+    updateMap(defaultMap, jsonDecode(override));
+    return defaultMap;
   }
 
   static Map<String, dynamic> getIPadAir() {
@@ -691,14 +734,15 @@ class IPhoneAttribs {
         "footerViewHeightScale": 0.40,
         "holeCardScale": {
           "2": 1.10,
-          "4": 1.35,
+          "4": 1.15,
           "5": 1.15,
           "default": 1
         },
         "holeCardOffset": "0, 0",
-        "holeCardViewOffset": "0, 50",
-        "holeCardViewScale": 1.70,
+        "holeCardViewOffset": "0, 60",
+        "holeCardViewScale": 1.60,
         "footerActionScale": 1.30,
+        "otherBetOptionButtonsSpreadRadius": 90.0,
         "footerScale": 0.45,
         "seat": {
           "scale": 1.30,
@@ -728,7 +772,7 @@ class IPhoneAttribs {
     if (name.contains('ipad')) {
       if (name == 'iPad Pro (9.7-inch)') return getIPad97();
 
-      if (name == 'iPad (9th generation)') return getIPadNormal();
+      if (name == 'ipad (9th generation)') return getIPadNormal();
 
       if (name.contains('air')) return getIPadAir();
 
