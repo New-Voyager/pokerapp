@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:pokerapp/utils/utils.dart';
+
 void updateMap(Map<String, dynamic> defaultMap, Map<String, dynamic> updates) {
   for (final key in defaultMap.keys) {
     final val = defaultMap[key];
@@ -528,6 +530,8 @@ class IPhoneAttribs {
           "default": 20
         },        
         "footerViewHeightScale": 0.40,
+        "footerRankTextSize": 20.0,
+        "otherBetOptionButtonsSpreadRadius": 70.0,
         "holeCardScale": {
           "2": 0.90,
           "4": 0.80,
@@ -547,6 +551,71 @@ class IPhoneAttribs {
       }
     ''';
     return jsonDecode(attribs);
+  }
+
+  static Map<String, dynamic> getIPadMini() {
+    final defaultMap = getIPad97();
+
+    String override = '''
+      {
+       "model": "iPad mini (6th generation)",
+       "screenSize": "744.0, 1133.0",
+       "size": 9.0,
+        "board": {
+          "centerViewScale": 1.30,
+          "centerViewPos": "0, 50.0"
+        },
+        "holeCardDisplacement": {
+          "2": 50,
+          "4": 50,
+          "5": 40,
+          "default": 50
+        },
+        "holeCardDisplacementVisible": {
+          "2": 50,
+          "4": 50,
+          "5": 40,
+          "default": 50
+        },        
+        "footerViewHeightScale": 0.42,
+        "holeCardScale": {
+          "2": 1.30,
+          "4": 1.35,
+          "5": 1.15,
+          "default": 1
+        },
+        "holeCardOffset": "0, 0",
+        "holeCardViewOffset": "0, 70",
+        "otherBetOptionButtonsSpreadRadius": 80.0,
+        "footerRankTextSize": 25.0,
+        "holeCardViewScale": 1.4,
+        "footerActionScale": 1.30,
+        "footerScale": 0.50,
+        "seat": {
+          "scale": 1.30,
+          "holeCardOffset": "0, 0",
+          "holeCardScale": 1.0
+        }
+
+      }
+    ''';
+
+    Map<String, dynamic> overrideMap = jsonDecode(override);
+    updateMap(defaultMap, overrideMap);
+
+    return defaultMap;
+  }
+
+  static Map<String, dynamic> getIPadPro() {
+    final defaultValue = getDefault();
+
+    return defaultValue;
+  }
+
+  static Map<String, dynamic> getIPadNormal() {
+    final defaultValue = getDefault();
+
+    return defaultValue;
   }
 
   static Map<String, dynamic> getIPadAir() {
@@ -597,15 +666,33 @@ class IPhoneAttribs {
     return defaultValue;
   }
 
+  /*
+  * iPad Pro (9.7-inch)
+  * iPad (9th generation)
+  * iPad Air (4th generation)
+  * iPad Pro (11-inch) (3rd generation)
+  * iPad Pro (12.9-inch) (5th generation)
+  * iPad mini (6th generation)
+  * */
   static Map<String, dynamic> getAttribs(String deviceName, double screenSize) {
     String name = deviceName.toLowerCase();
+
+    // ipad's section
     if (name.contains('ipad')) {
-      if (name.contains('ipad air')) {
-        return getIPadAir();
-      } else {
-        return getIPad97();
-      }
+      if (name == 'iPad Pro (9.7-inch)') return getIPad97();
+
+      if (name == 'iPad (9th generation)') return getIPadNormal();
+
+      if (name.contains('air')) return getIPadAir();
+
+      if (name.contains('pro'))
+        return getIPadPro(); // both 11 inch and 12.9 inch has the same screen resolution
+
+      if (name.contains('mini')) return getIPadMini();
+
+      return getDefault();
     } else {
+      // iphone's sections
       if (name.contains('iphone 13 pro')) {
         return getIPhone13Pro();
       } else if (name.contains('iphone 13 mini')) {

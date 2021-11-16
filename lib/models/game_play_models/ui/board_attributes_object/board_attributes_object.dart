@@ -333,6 +333,21 @@ class BoardAttributesJson {
     return Offset.zero;
   }
 
+  double get otherBetOptionButtonsSpreadRadius {
+    if (attribs['otherBetOptionButtonsSpreadRadius'] != null) {
+      return double.parse(
+          attribs['otherBetOptionButtonsSpreadRadius'].toString());
+    }
+    return 70.0;
+  }
+
+  double get selfRankTextSize {
+    if (attribs['footerRankTextSize'] != null) {
+      return double.parse(attribs['footerRankTextSize'].toString());
+    }
+    return 15.0;
+  }
+
   double get footerViewScale {
     if (attribs["footerViewHeightScale"] != null) {
       return double.parse(attribs["footerViewHeightScale"].toString());
@@ -701,6 +716,14 @@ class BoardAttributesObject extends ChangeNotifier {
 
   Offset get centerViewPos {
     return attribsObj.centerViewPos;
+  }
+
+  double get selfRankTextSize {
+    return attribsObj.selfRankTextSize;
+  }
+
+  double get otherBetOptionButtonsSpreadRadius {
+    return attribsObj.otherBetOptionButtonsSpreadRadius;
   }
 
   double get footerViewScale {

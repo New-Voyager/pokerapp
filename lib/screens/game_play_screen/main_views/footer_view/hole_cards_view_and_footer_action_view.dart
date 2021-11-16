@@ -47,7 +47,7 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
 
       Widget rankText;
       rankText = Consumer<MyState>(builder: (_, __, ___) {
-        return _getRankText(gameState, context);
+        return _getRankText(gameState, context, boardAttributes);
       });
 
       double scale = boardAttributes.holeCardViewScale;
@@ -71,6 +71,7 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Transform.scale(
+                        alignment: Alignment.topCenter,
                         scale: scale,
                         child: Container(
                           child: Consumer4<StraddlePromptState, HoleCardsState,
@@ -150,16 +151,19 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
 
           // show post result options
           Align(
-              alignment: Alignment.bottomCenter,
-              child: ResultOptionsWidget(
-                  gameState: gameState,
-                  isHoleCardsVisibleVn: isHoleCardsVisibleVn)),
+            alignment: Alignment.bottomCenter,
+            child: ResultOptionsWidget(
+              gameState: gameState,
+              isHoleCardsVisibleVn: isHoleCardsVisibleVn,
+            ),
+          ),
         ],
       ),
     );
   }
 
-  Widget _getRankText(GameState gameState, BuildContext context) {
+  Widget _getRankText(
+      GameState gameState, BuildContext context, BoardAttributesObject ba) {
     final me = gameState.me;
     final theme = AppTheme.getTheme(context);
     Color borderColor = theme.secondaryColor;
@@ -172,12 +176,12 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
     }
 
     return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: 8,
-      ),
+      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 10),
       child: Text(
         me.rankText,
-        style: AppDecorators.getHeadLine5Style(theme: theme),
+        style: AppDecorators.getHeadLine5Style(theme: theme).copyWith(
+          fontSize: ba.selfRankTextSize,
+        ),
       ),
     );
   }
