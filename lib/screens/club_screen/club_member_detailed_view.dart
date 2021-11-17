@@ -10,6 +10,7 @@ import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/app_icons.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
+import 'package:pokerapp/screens/club_screen/set_tips_back_dialog.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/club_interior_service.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
@@ -45,6 +46,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
   final bool isClubOwner; // current session is owner?
   String oldPhoneText;
   String oldNotes;
+  int oldTipsBack;
   TextEditingController _contactEditingController;
   TextEditingController _notesEditingController;
   bool updated = false;
@@ -57,6 +59,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
     _data = await ClubInteriorService.getClubMemberDetail(clubCode, playerId);
     oldPhoneText = _data.contactInfo;
     oldNotes = _data.notes;
+    oldTipsBack = _data.tipsBack;
     loadingDone = true;
     if (_data != null) {
       // update ui
@@ -85,7 +88,9 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
 
   void goBack(BuildContext context) async {
     if (this._data.edited) {
-      if (oldPhoneText != _data.contactInfo || oldNotes != _data.notes) {
+      if (oldPhoneText != _data.contactInfo ||
+          oldNotes != _data.notes ||
+          oldTipsBack != _data.tipsBack) {
         ConnectionDialog.show(
             context: context, loadingText: "Updating player information...");
         try {
@@ -306,32 +311,11 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                         Divider(
                           color: theme.supportingColor,
                         ),
-                        // contact info
-                        Container(
-                          padding: EdgeInsets.all(5),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Expanded(
-                                flex: 1,
-                                child: Icon(Icons.phone,
-                                    color: theme.secondaryColor),
-                              ),
-                              Expanded(
-                                flex: 8,
-                                child: Padding(
-                                  padding: EdgeInsets.only(left: 5),
-                                  child: CardFormTextField(
-                                    theme: theme,
-                                    controller: _contactEditingController,
-                                    hintText: _appScreenText['mobileNumber'],
-                                    maxLines: 1,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+                        tipsBack(theme),
+                        Divider(
+                          color: theme.fillInColor,
                         ),
+                        contactInfo(theme),
                         Divider(
                           color: theme.fillInColor,
                         ),
@@ -369,6 +353,74 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                   ),
                 ),
         ),
+      ),
+    );
+  }
+
+  Widget tipsBack(AppTheme theme) {
+    return ListTile(
+      leading: Icon(Icons.credit_card, color: theme.secondaryColor),
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            "Tips Back",
+            style: AppDecorators.getHeadLine4Style(theme: theme),
+          ),
+          SizedBox(width: 30.pw),
+          Text(
+            DataFormatter.chipsFormat(_data.tipsBack.toDouble()),
+            style: AppDecorators.getHeadLine3Style(theme: theme).copyWith(
+                color: _data.availableCredit < 0
+                    ? Colors.redAccent
+                    : Colors.greenAccent),
+          ),
+        ],
+      ),
+      trailing: Icon(Icons.arrow_forward_ios, color: theme.accentColor),
+      onTap: () async {
+        log('something');
+        int value = await SetTipsBackDialog.prompt(
+            context: context,
+            clubCode: widget.clubCode,
+            playerUuid: widget.playerId,
+            tipsBack: _data.tipsBack);
+        if (value != null) {
+          if (value <= 100) {
+            _data.tipsBack = value;
+            updated = true;
+            this._data.edited = true;
+            setState(() {});
+          }
+        }
+      },
+    );
+  }
+
+  Widget contactInfo(AppTheme theme) {
+    return // contact info
+        Container(
+      padding: EdgeInsets.all(5),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            flex: 1,
+            child: Icon(Icons.phone, color: theme.secondaryColor),
+          ),
+          Expanded(
+            flex: 8,
+            child: Padding(
+              padding: EdgeInsets.only(left: 5),
+              child: CardFormTextField(
+                theme: theme,
+                controller: _contactEditingController,
+                hintText: _appScreenText['mobileNumber'],
+                maxLines: 1,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
