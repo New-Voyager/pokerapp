@@ -47,6 +47,8 @@ class MemberActivity {
     activity.profit = double.parse((json['profit'] ?? 0).toString());
     activity.buyin = double.parse((json['buyIn'] ?? 0).toString());
     activity.gamesPlayed = int.parse((json['gamesPlayed'] ?? 0).toString());
+    activity.profit = double.parse((json['profit'] ?? 0).toString());
+    activity.buyin = double.parse((json['buyin'] ?? 0).toString());
     return activity;
   }
 

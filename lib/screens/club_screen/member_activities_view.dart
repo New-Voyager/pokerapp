@@ -8,6 +8,16 @@ import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:pokerapp/models/club_members_model.dart';
+import 'package:pokerapp/models/member_activity_model.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
+import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
+import 'package:pokerapp/screens/club_screen/set_credits_dialog.dart';
 import 'package:pokerapp/screens/club_screen/widgets/member_activity_filter_widget.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/club_interior_service.dart';
@@ -15,6 +25,7 @@ import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:timeago/timeago.dart' as timeago;
+import 'package:pokerapp/widgets/buttons.dart';
 
 class ClubMemberActivitiesScreen extends StatefulWidget {
   // final ClubHomePageModel clubHomePageModel;
@@ -146,15 +157,14 @@ class _ClubMemberActivitiesScreenState
         ),
       );
     }
-
     List<DataColumn> columns = [];
     for (final header in headers) {
       columns.add(
         DataColumn(
           label: Text(
             header,
-            style: AppDecorators.getSubtitle1Style(theme: theme).copyWith(
-                color: theme.accentColor, fontWeight: FontWeight.bold),
+            style: AppDecorators.getSubtitle1Style(theme: theme)
+                .copyWith(color: theme.accentColor),
           ),
         ),
       );
@@ -204,7 +214,6 @@ class _ClubMemberActivitiesScreenState
         subTitle,
       ]);
     }
-
     return Container(
       decoration: AppDecorators.bgRadialGradient(theme),
       child: Scaffold(
@@ -367,115 +376,6 @@ class _ClubMemberActivitiesScreenState
     return SizedBox(width: 16.0.ph, height: 16.0.ph);
   }
 
-  Widget getFilterTile() {
-    return Column(
-      children: [
-        getDateRange(),
-        getUnsettled(),
-        getNegative(),
-        getPositive(),
-        getInactive(),
-        getNoFilter(),
-      ],
-    );
-  }
-
-  Widget getDateRange() {
-    return Row(
-      children: [
-        Radio(
-          value: 0,
-          groupValue: 0,
-          onChanged: (int i) {},
-        ),
-        Text(
-          'Date Range',
-          style: new TextStyle(fontSize: 16.0),
-        )
-      ],
-    );
-  }
-
-  Widget getUnsettled() {
-    return Row(
-      children: [
-        Radio(
-          value: 1,
-          groupValue: 0,
-          onChanged: (int i) {},
-        ),
-        Text(
-          'Unsettled Credits',
-          style: new TextStyle(fontSize: 16.0),
-        )
-      ],
-    );
-  }
-
-  Widget getNegative() {
-    return Row(
-      children: [
-        Radio(
-          value: 2,
-          groupValue: 0,
-          onChanged: (int i) {},
-        ),
-        Text(
-          'Negative Credits',
-          style: new TextStyle(fontSize: 16.0),
-        )
-      ],
-    );
-  }
-
-  Widget getPositive() {
-    return Row(
-      children: [
-        Radio(
-          value: 3,
-          groupValue: 0,
-          onChanged: (int i) {},
-        ),
-        Text(
-          'Positive Credits',
-          style: new TextStyle(fontSize: 16.0),
-        )
-      ],
-    );
-  }
-
-  Widget getInactive() {
-    return Row(
-      children: [
-        Radio(
-          value: 4,
-          groupValue: 0,
-          onChanged: (int i) {},
-        ),
-        Text(
-          'Inactive Members',
-          style: new TextStyle(fontSize: 16.0),
-        )
-      ],
-    );
-  }
-
-  Widget getNoFilter() {
-    return Row(
-      children: [
-        Radio(
-          value: 5,
-          groupValue: 0,
-          onChanged: (int i) {},
-        ),
-        Text(
-          'No Filter',
-          style: new TextStyle(fontSize: 16.0),
-        )
-      ],
-    );
-  }
-
   void openMember(String playerUuid) async {
     log('clubCode: ${widget.clubCode} playerUuid: $playerUuid');
     bool updated = await Navigator.pushNamed(
@@ -512,7 +412,6 @@ class DataSource extends DataTableSource {
   DataRow getRow(int index) {
     MemberActivity activity = activities[index];
     List<DataCell> cells = [];
-
     Color color = null;
     cells.add(
       DataCell(
@@ -533,8 +432,7 @@ class DataSource extends DataTableSource {
             ),
           ), onTap: () {
         openMember(activity.playerUuid);
-      }),
-    );
+      }));
 
     if (includeTips) {
       cells.add(
@@ -590,7 +488,6 @@ class DataSource extends DataTableSource {
       color = Colors.grey[700];
     }
 
-    print("INDEX : ---- $index");
     return DataRow.byIndex(
       index: index,
       cells: cells,

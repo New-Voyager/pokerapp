@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/player_action.dart';
+import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/jumping_text_widget.dart';
@@ -26,17 +27,20 @@ class BetWidget extends StatelessWidget {
   final PlayerAction action;
   final int remainingTime;
   final List<int> playerCards;
+  final BoardAttributesObject boardAttributesObject;
 
   BetWidget({
     @required this.action,
     @required this.playerCards,
+    @required this.boardAttributesObject,
     this.onSubmitCallBack,
     this.remainingTime,
   });
 
   _buildOtherBetOptionsButton(double angle, {Widget child}) {
     final double rad = (math.pi / 180.0) * angle;
-    final double radius = 70;
+    final double radius =
+        boardAttributesObject.otherBetOptionButtonsSpreadRadius;
 
     return Transform(
       transform: Matrix4.identity()

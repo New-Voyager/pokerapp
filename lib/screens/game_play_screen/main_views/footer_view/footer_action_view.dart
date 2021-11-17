@@ -497,7 +497,11 @@ class _FooterActionViewState extends State<FooterActionView> {
   }
 
   Widget _buildBetWidget(
-      List<int> playerCards, PlayerAction playerAction, int remainingTime) {
+    List<int> playerCards,
+    PlayerAction playerAction,
+    int remainingTime, {
+    @required final BoardAttributesObject boardAttributes,
+  }) {
     return AnimatedSwitcher(
       duration: AppConstants.fastestAnimationDuration,
       reverseDuration: AppConstants.fastestAnimationDuration,
@@ -514,6 +518,7 @@ class _FooterActionViewState extends State<FooterActionView> {
                   playerCards: playerCards,
                   onSubmitCallBack: _betOrRaise,
                   remainingTime: remainingTime,
+                  boardAttributesObject: boardAttributes,
                 )
               : shrinkedBox,
     );
@@ -548,7 +553,12 @@ class _FooterActionViewState extends State<FooterActionView> {
                   Expanded(
                     child: Transform.scale(
                       scale: boardAttributes.footerActionScale,
-                      child: _buildBetWidget(me.cards, actionState.action, 30),
+                      child: _buildBetWidget(
+                        me.cards,
+                        actionState.action,
+                        30,
+                        boardAttributes: boardAttributes,
+                      ),
                     ),
                   ),
 

@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:pokerapp/utils/utils.dart';
+
 void updateMap(Map<String, dynamic> defaultMap, Map<String, dynamic> updates) {
   for (final key in defaultMap.keys) {
     final val = defaultMap[key];
@@ -397,13 +399,15 @@ class IPhoneAttribs {
           },
           "betImageScale": 3.0
         },
+        "otherBetOptionButtonsSpreadRadius": 90.0,
         "seat": {
-          "scale": 1.3,
+          "scale": 1.2,
           "holeCardOffset": "0, 0",
           "holeCardScale": 1.0
         },
+        "holeCardViewOffset": "0, 50",
         "holeCardScale": {
-          "2": 1.70,
+          "2": 1.60,
           "4": 1.35,
           "5": 1.50,
           "default": 1
@@ -415,7 +419,7 @@ class IPhoneAttribs {
           "default": 20
         },
         "holeCardDisplacementVisible": {
-          "2": 30,
+          "2": 50,
           "4": 50,
           "5": 50,
           "default": 20
@@ -530,6 +534,8 @@ class IPhoneAttribs {
           "default": 20
         },        
         "footerViewHeightScale": 0.40,
+        "footerRankTextSize": 20.0,
+        "otherBetOptionButtonsSpreadRadius": 70.0,
         "holeCardScale": {
           "2": 0.90,
           "4": 0.80,
@@ -549,6 +555,178 @@ class IPhoneAttribs {
       }
     ''';
     return jsonDecode(attribs);
+  }
+
+  static Map<String, dynamic> getIPadMini() {
+    final defaultMap = getIPad97();
+
+    String override = '''
+      {
+       "model": "iPad mini (6th generation)",
+       "screenSize": "744.0, 1133.0",
+       "size": 9.0,
+        "board": {
+          "centerViewScale": 1.30,
+          "centerViewPos": "0, 50.0"
+        },
+        "holeCardDisplacement": {
+          "2": 50,
+          "4": 50,
+          "5": 40,
+          "default": 50
+        },
+        "holeCardDisplacementVisible": {
+          "2": 50,
+          "4": 50,
+          "5": 40,
+          "default": 50
+        },        
+        "footerViewHeightScale": 0.42,
+        "holeCardScale": {
+          "2": 1.30,
+          "4": 1.35,
+          "5": 1.15,
+          "default": 1
+        },
+        "holeCardOffset": "0, 0",
+        "holeCardViewOffset": "0, 70",
+        "otherBetOptionButtonsSpreadRadius": 80.0,
+        "footerRankTextSize": 25.0,
+        "holeCardViewScale": 1.4,
+        "footerActionScale": 1.30,
+        "footerScale": 0.50,
+        "seat": {
+          "scale": 1.30,
+          "holeCardOffset": "0, 0",
+          "holeCardScale": 1.0
+        }
+
+      }
+    ''';
+
+    Map<String, dynamic> overrideMap = jsonDecode(override);
+    updateMap(defaultMap, overrideMap);
+
+    return defaultMap;
+  }
+
+  static Map<String, dynamic> getIPadPro12() {
+    final defaultMap = getIPadPro11();
+    String override = '''
+    {
+     "model": "iPad Pro 12 inch",
+     "size": 12.9,
+     "board": {
+        "centerViewScale": 1.60,
+        "centerViewPos": "0, 100.0"
+      }
+    }
+    ''';
+
+    updateMap(defaultMap, jsonDecode(override));
+    return defaultMap;
+  }
+
+  static Map<String, dynamic> getIPadPro11() {
+    final defaultMap = getIPadMini();
+
+    String override = '''
+      {
+       "model": "iPad Pro 11 inch",
+       "screenSize": "1024.0, 1366.0",
+       "size": 11.0,
+        "board": {
+          "centerViewScale": 1.40,
+          "centerViewPos": "0, 60.0"
+        },
+        "holeCardDisplacement": {
+          "2": 50,
+          "4": 50,
+          "5": 40,
+          "default": 50
+        },
+        "holeCardDisplacementVisible": {
+          "2": 50,
+          "4": 50,
+          "5": 40,
+          "default": 50
+        },        
+        "footerViewHeightScale": 0.43,
+        "holeCardScale": {
+          "2": 1.40,
+          "4": 1.40,
+          "5": 1.20,
+          "default": 1
+        },
+        "holeCardOffset": "0, 0",
+        "holeCardViewOffset": "0, 90",
+        "otherBetOptionButtonsSpreadRadius": 90.0,
+        "footerRankTextSize": 28.0,
+        "holeCardViewScale": 1.6,
+        "footerActionScale": 1.50,
+        "footerScale": 0.70,
+        "seat": {
+          "scale": 1.50,
+          "holeCardOffset": "0, 0",
+          "holeCardScale": 1.0
+        }
+
+      }
+    ''';
+
+    Map<String, dynamic> overrideMap = jsonDecode(override);
+    updateMap(defaultMap, overrideMap);
+
+    return defaultMap;
+  }
+
+  static Map<String, dynamic> getIPadNormal() {
+    final defaultMap = getIPad97();
+    String override = '''
+      {
+        "model": "iPad (9th generation)",
+        "screenSize": "810.0, 1080.0",
+        "size": 9.0,
+        "board": {
+          "centerViewScale": 1.30,
+          "centerViewPos": "0, 40.0"
+        },
+        "holeCardDisplacement": {
+          "2": 50,
+          "4": 50,
+          "5": 40,
+          "default": 50
+        },
+        "holeCardDisplacementVisible": {
+          "2": 50,
+          "4": 50,
+          "5": 40,
+          "default": 50
+        },
+        "footerViewHeightScale": 0.41,
+        "holeCardScale": {
+          "2": 1.10,
+          "4": 1.15,
+          "5": 1.15,
+          "default": 1
+        },
+        "holeCardOffset": "0, 0",
+        "holeCardViewOffset": "0, 80",
+        "holeCardViewScale": 1.60,
+        "footerActionScale": 1.30,
+        "otherBetOptionButtonsSpreadRadius": 90.0,
+        "footerScale": 0.45,
+        "seat": {
+          "scale": 1.2,
+          "holeCardOffset": "0, 0",
+          "holeCardScale": 1.0
+        }
+
+      }
+    ''';
+
+    updateMap(defaultMap, jsonDecode(override));
+    return defaultMap;
   }
 
   static Map<String, dynamic> getIPadAir() {
@@ -577,14 +755,15 @@ class IPhoneAttribs {
         "footerViewHeightScale": 0.40,
         "holeCardScale": {
           "2": 1.10,
-          "4": 1.35,
+          "4": 1.15,
           "5": 1.15,
           "default": 1
         },
         "holeCardOffset": "0, 0",
-        "holeCardViewOffset": "0, 50",
-        "holeCardViewScale": 1.70,
+        "holeCardViewOffset": "0, 60",
+        "holeCardViewScale": 1.60,
         "footerActionScale": 1.30,
+        "otherBetOptionButtonsSpreadRadius": 90.0,
         "footerScale": 0.45,
         "seat": {
           "scale": 1.30,
@@ -599,15 +778,36 @@ class IPhoneAttribs {
     return defaultValue;
   }
 
+  /*
+  * iPad Pro (9.7-inch)
+  * iPad (9th generation)
+  * iPad Air (4th generation)
+  * iPad Pro (11-inch) (3rd generation)
+  * iPad Pro (12.9-inch) (5th generation)
+  * iPad mini (6th generation)
+  * */
   static Map<String, dynamic> getAttribs(String deviceName, double screenSize) {
     String name = deviceName.toLowerCase();
+
+    // ipad's section
     if (name.contains('ipad')) {
-      if (name.contains('ipad air')) {
-        return getIPadAir();
-      } else {
-        return getIPad97();
+      if (name == 'ipad pro (9.7-inch)') return getIPad97();
+
+      if (name == 'ipad (9th generation)') return getIPadNormal();
+
+      if (name.contains('air')) return getIPadAir();
+
+      if (name.contains('pro')) {
+        if (name.contains('12')) return getIPadPro12();
+
+        return getIPadPro11();
       }
+
+      if (name.contains('mini')) return getIPadMini();
+
+      return getDefault();
     } else {
+      // iphone's sections
       if (name.contains('iphone 13 pro')) {
         return getIPhone13Pro();
       } else if (name.contains('iphone 13 mini')) {
