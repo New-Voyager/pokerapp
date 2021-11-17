@@ -45,6 +45,7 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
           widget.clubCode, widget.playerId);
       history = await ClubInteriorService.getCreditHistory(
           widget.clubCode, widget.playerId);
+      history = MemberCreditHistory.getMockData();
     } catch (err) {}
     loading = false;
     setState(() {});
