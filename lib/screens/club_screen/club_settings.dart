@@ -289,42 +289,6 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
                                                   // Fetch user details from server
                                                 },
                                                 theme: theme),
-                                            _buildRadio(
-                                                value: false,
-                                                label: 'Can See Member Details',
-                                                onChange: (v) async {},
-                                                theme: theme),
-                                            _buildRadio(
-                                                value: false,
-                                                label: 'Can See Tips',
-                                                onChange: (v) async {},
-                                                theme: theme),
-                                            _buildRadio(
-                                                value: false,
-                                                label: 'Can Make Announcement',
-                                                onChange: (v) async {},
-                                                theme: theme),
-                                            _buildRadio(
-                                                value: false,
-                                                label: 'Can Host Games',
-                                                onChange: (v) async {},
-                                                theme: theme),
-                                            _buildRadio(
-                                                value: false,
-                                                label: 'Can Approve Buyin',
-                                                onChange: (v) async {},
-                                                theme: theme),
-                                            _buildRadio(
-                                                value: false,
-                                                label:
-                                                    'Can View Member Activities',
-                                                onChange: (v) async {},
-                                                theme: theme),
-                                            _buildRadio(
-                                                value: false,
-                                                label: 'Can Update Credits',
-                                                onChange: (v) async {},
-                                                theme: theme),
                                           ],
                                         ),
                                       ),
@@ -332,6 +296,63 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
                                   ),
                                 )),
                           ],
+                        ),
+                      ),
+
+                      Visibility(
+                        visible: _clubModel.isOwner,
+                        child: Container(
+                          decoration: AppDecorators.tileDecoration(theme),
+                          padding:
+                              EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                          margin:
+                              EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Manager Roles",
+                                style: AppDecorators.getAccentTextStyle(
+                                    theme: theme),
+                                textAlign: TextAlign.center,
+                              ),
+                              _buildRadio(
+                                  value: false,
+                                  label: 'Can See Member Details',
+                                  onChange: (v) async {},
+                                  theme: theme),
+                              _buildRadio(
+                                  value: false,
+                                  label: 'Can See Tips',
+                                  onChange: (v) async {},
+                                  theme: theme),
+                              _buildRadio(
+                                  value: false,
+                                  label: 'Can Make Announcement',
+                                  onChange: (v) async {},
+                                  theme: theme),
+                              _buildRadio(
+                                  value: false,
+                                  label: 'Can Host Games',
+                                  onChange: (v) async {},
+                                  theme: theme),
+                              _buildRadio(
+                                  value: false,
+                                  label: 'Can Approve Buyin',
+                                  onChange: (v) async {},
+                                  theme: theme),
+                              _buildRadio(
+                                  value: false,
+                                  label: 'Can View Member Activities',
+                                  onChange: (v) async {},
+                                  theme: theme),
+                              _buildRadio(
+                                  value: false,
+                                  label: 'Can Update Credits',
+                                  onChange: (v) async {},
+                                  theme: theme),
+                            ],
+                          ),
                         ),
                       ),
 
