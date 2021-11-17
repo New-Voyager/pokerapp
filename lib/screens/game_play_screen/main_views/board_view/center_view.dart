@@ -444,15 +444,15 @@ class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
                 opacity: _getOpacityForPotUpdatesView(
                   potChipsUpdates: potChipsUpdates,
                 ),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10.0,
-                    vertical: 5.0,
-                  ),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20.0),
-                    color: Colors.black,
-                  ),
+                child:                   Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10.0,
+                      vertical: 5.0,
+                    ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20.0),
+                      color: Colors.black,
+                    ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
