@@ -103,4 +103,19 @@ class DataFormatter {
     DateFormat format = DateFormat("yyyyMMddhhmmss");
     return format.format(now);
   }
+
+  static String getDDMMMYYYYFormat(DateTime date) {
+    if (date == null) {
+      return '';
+    }
+    return DateFormat("dd MMM yyyy").format(date);
+  }
+
+  static String getTimeInHHMMFormatFromDate(DateTime local) {
+    if (local == null) {
+      return "0 Sec";
+    }
+
+    return "${local.hour}:${local.minute}";
+  }
 }
