@@ -14,6 +14,9 @@ class HighHandAnalysisScreen extends StatelessWidget {
       context: context,
     );
 
+    // if we don't have any cards, return
+    if (rankCards == null || rankCards.isEmpty) return;
+
     // fill the selected cards in the value notifier
     _selectedCards.value = rankCards;
   }
