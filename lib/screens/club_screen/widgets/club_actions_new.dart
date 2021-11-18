@@ -220,6 +220,18 @@ class ClubActionsNew extends StatelessWidget {
             ],
           ),
           AppDimensionsNew.getVerticalSizedBox(16),
+          ClubActionButtonNew(
+            this._clubHomePageModel,
+            ClubActions.HIGH_RANK_ANALYSIS,
+            'Hand rank Analysis',
+            // TODO: ADD TO APP SCREEN TEXT
+            // appScreenText['botScripts'],
+            SvgPicture.asset(
+              "assets/images/club/rewards.svg",
+              color: theme.accentColor,
+            ),
+          ),
+          AppDimensionsNew.getVerticalSizedBox(16),
           IntrinsicHeight(
             child: Row(
               children: [
