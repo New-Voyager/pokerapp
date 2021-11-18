@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_html/shims/dart_ui_real.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/app_state.dart';
@@ -20,7 +19,6 @@ import 'package:pokerapp/screens/game_screens/game_history_view/game_history_ite
 import 'package:pokerapp/screens/game_screens/new_game_settings/new_game_settings2.dart';
 import 'package:pokerapp/screens/main_screens/games_page_view/widgets/live_games_item.dart';
 import 'package:pokerapp/services/app/game_service.dart';
-import 'package:pokerapp/services/app/insta_refresh_service.dart';
 import 'package:pokerapp/services/test/mock_data.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
@@ -149,17 +147,6 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
     log('fetching played games');
     final updatedPlayedGames = await GameService.getPastGames();
     bool refresh = true;
-    // if (updatedPlayedGames.length == playedGames.length) {
-    //   final prevList = playedGames.map((e) => e.gameCode).toSet();
-    //   for (final pastGame in updatedPlayedGames) {
-    //     if (!prevList.contains(pastGame.gameCode)) {
-    //       refresh = true;
-    //       break;
-    //     }
-    //   }
-    // } else {
-    //   refresh = true;
-    // }
     if (refresh) {
       // playedGames.clear();
       playedGames = updatedPlayedGames;

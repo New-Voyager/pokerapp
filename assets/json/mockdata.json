@@ -1,6 +1,6 @@
 {
     "liveGames": [{
-            "gameCode": "abcdef",
+            "gameCode": "cgphkbco",
             "gameType": "HOLDEM",
             "clubName": null,
             "buyInMin": 60,
@@ -14,13 +14,13 @@
             "clubCode": null
         },
         {
-            "gameCode": "ghijkl",
-            "gameType": "HOLDEM",
+            "gameCode": "cgbhjiwm",
+            "gameType": "PLO",
             "clubName": null,
-            "buyInMin": 60,
-            "buyInMax": 200,
-            "smallBlind": 1,
-            "bigBlind": 2,
+            "buyInMin": 100,
+            "buyInMax": 400,
+            "smallBlind": 2,
+            "bigBlind": 4,
             "maxPlayers": 6,
             "elapsedTime": 1523,
             "tableCount": 4,
@@ -28,21 +28,21 @@
             "clubCode": null
         },
         {
-            "gameCode": "ghijkl",
-            "gameType": "HOLDEM",
+            "gameCode": "cghijzeo",
+            "gameType": "FIVE_CARD_PLO_HILO",
             "clubName": null,
-            "buyInMin": 60,
-            "buyInMax": 200,
+            "buyInMin": 100,
+            "buyInMax": 300,
             "smallBlind": 1,
             "bigBlind": 2,
-            "maxPlayers": 6,
+            "maxPlayers": 9,
             "elapsedTime": 1523,
             "tableCount": 4,
             "waitlistCount": 0,
             "clubCode": null
         },
         {
-            "gameCode": "ghijkl",
+            "gameCode": "cggmpqwz",
             "gameType": "HOLDEM",
             "clubName": null,
             "buyInMin": 60,
