@@ -20,15 +20,15 @@ class FullHouseBody extends StatelessWidget {
         CardSelector(
           cards: RankCardsUtils.getAllCardsFromSpade(),
           onCardSelect: (int c) {
-            firstCard.value = c;
             RankCardsUtils.onFullHouseFirstCardSelection(c, cards);
+            firstCard.value = c;
           },
         ),
 
         // second card selection widget
-        ValueListenableBuilder<List<int>>(
-          valueListenable: cards,
-          builder: (_, c, __) => c.isEmpty
+        ValueListenableBuilder<int>(
+          valueListenable: firstCard,
+          builder: (_, c, __) => c == -1
               ? const SizedBox.shrink()
               : Column(
                   children: [

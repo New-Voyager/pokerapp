@@ -45,7 +45,7 @@ class CardSelector extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 5),
       physics: BouncingScrollPhysics(),
       scrollDirection: Axis.horizontal,
-      child: ValueListenableBuilder(
+      child: ValueListenableBuilder<int>(
         valueListenable: selectedCard,
         builder: (_, __, ___) => Row(
           children: cards.map((e) => _buildBody(e)).toList(),
