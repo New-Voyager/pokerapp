@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/utils/card_helper.dart';
 
 class RankCardsUtils {
   RankCardsUtils._();
@@ -15,6 +16,26 @@ class RankCardsUtils {
 
   static List<int> _straightFlushAllCards() {
     return [129, 145, 177, 161, ...getAllCardsFromSpade()];
+  }
+
+  static void onFourOfKindSelection(
+    final int c,
+    final ValueNotifier<List<int>> cards,
+  ) {
+    final cardLabel = CardHelper.getCard(c).label;
+
+    final List<int> tmp = [];
+
+    CardHelper.cardValues.entries.forEach((element) {
+      final String value = element.value;
+      final int cardNum = element.key;
+
+      if (value.startsWith(cardLabel)) {
+        tmp.add(cardNum);
+      }
+    });
+
+    cards.value = tmp;
   }
 
   static void onStraightFlushCardsSelection(

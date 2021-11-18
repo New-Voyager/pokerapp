@@ -67,6 +67,8 @@ const Map<int, String> _cardValues = {
 class CardHelper {
   CardHelper._();
 
+  static Map<int, String> get cardValues => _cardValues;
+
   /* following util methods deals with the raw card values and data */
   static String _getCardFromNumber(int number) => _cardValues[number];
 

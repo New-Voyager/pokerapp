@@ -17,7 +17,9 @@ class FourOfKindBody extends StatelessWidget {
         const SizedBox(height: 5.0),
         CardSelector(
           cards: RankCardsUtils.getAllCardsFromSpade(),
-          onCardSelect: (int c) {},
+          onCardSelect: (int c) {
+            RankCardsUtils.onFourOfKindSelection(c, cards);
+          },
         ),
       ],
     );
