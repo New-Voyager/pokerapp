@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pokerapp/enums/game_type.dart';
+import 'package:pokerapp/models/app_state.dart';
 import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/models/hand_history_model.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
@@ -17,6 +18,7 @@ import 'package:pokerapp/screens/game_screens/game_history_details_view/stack_ch
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/screens/game_screens/widgets/highhand_widget.dart';
 import 'package:pokerapp/services/app/game_service.dart';
+import 'package:pokerapp/services/test/mock_data.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/widgets/buttons.dart';
@@ -48,7 +50,14 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
   AppTextScreen _appScreenText;
 
   _fetchData() async {
-    await GameService.getGameHistoryDetail(_gameDetail);
+    var appState = Provider.of<AppState>(context, listen: false);
+
+    if (appState != null && appState.mockScreens) {
+      await MockData.getGameHistoryDetail(_gameDetail);
+    } else {
+      await GameService.getGameHistoryDetail(_gameDetail);
+    }
+
     loadingDone = true;
     setState(() {
       // update ui
