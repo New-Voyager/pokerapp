@@ -19,13 +19,16 @@ class FullHouseBody extends StatelessWidget {
         const SizedBox(height: 5.0),
         CardSelector(
           cards: RankCardsUtils.getAllCardsFromSpade(),
-          onCardSelect: (int c) {},
+          onCardSelect: (int c) {
+            firstCard.value = c;
+            RankCardsUtils.onFullHouseFirstCardSelection(c, cards);
+          },
         ),
 
         // second card selection widget
-        ValueListenableBuilder(
-          valueListenable: firstCard,
-          builder: (_, fc, __) => fc == -1
+        ValueListenableBuilder<List<int>>(
+          valueListenable: cards,
+          builder: (_, c, __) => c.isEmpty
               ? const SizedBox.shrink()
               : Column(
                   children: [
@@ -35,8 +38,11 @@ class FullHouseBody extends StatelessWidget {
                     Text('Select second card'),
                     const SizedBox(height: 5.0),
                     CardSelector(
+                      withoutCard: firstCard.value,
                       cards: RankCardsUtils.getAllCardsFromSpade(),
-                      onCardSelect: (int c) {},
+                      onCardSelect: (int c) {
+                        RankCardsUtils.onFullHouseSecondCardSelection(c, cards);
+                      },
                     ),
                   ],
                 ),

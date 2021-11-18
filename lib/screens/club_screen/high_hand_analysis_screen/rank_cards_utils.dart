@@ -18,6 +18,46 @@ class RankCardsUtils {
     return [129, 145, 177, 161, ...getAllCardsFromSpade()];
   }
 
+  static void onFullHouseSecondCardSelection(
+    int c,
+    final ValueNotifier<List<int>> cards,
+  ) {
+    final cardLabel = CardHelper.getCard(c).label;
+
+    final List<int> tmp = [];
+
+    CardHelper.cardValues.entries.forEach((element) {
+      final String value = element.value;
+      final int cardNum = element.key;
+
+      if (value.startsWith(cardLabel)) {
+        tmp.add(cardNum);
+      }
+    });
+
+    cards.value = [...cards.value.sublist(0, 3), ...tmp.sublist(0, 2)];
+  }
+
+  static void onFullHouseFirstCardSelection(
+    int c,
+    final ValueNotifier<List<int>> cards,
+  ) {
+    final cardLabel = CardHelper.getCard(c).label;
+
+    final List<int> tmp = [];
+
+    CardHelper.cardValues.entries.forEach((element) {
+      final String value = element.value;
+      final int cardNum = element.key;
+
+      if (value.startsWith(cardLabel)) {
+        tmp.add(cardNum);
+      }
+    });
+
+    cards.value = tmp.sublist(0, 3);
+  }
+
   static void onFourOfKindSelection(
     final int c,
     final ValueNotifier<List<int>> cards,
