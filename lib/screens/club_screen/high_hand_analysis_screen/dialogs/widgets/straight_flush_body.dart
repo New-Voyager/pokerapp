@@ -14,7 +14,7 @@ class StraightFlushBody extends StatelessWidget {
     return Column(
       children: [
         Text('Select one card'),
-        const SizedBox(height: 15.0),
+        const SizedBox(height: 5.0),
         CardSelector(
           cards: RankCardsUtils.getCardsForStraightFlush(),
           onCardSelect: (int c) {

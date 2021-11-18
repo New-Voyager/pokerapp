@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/screens/club_screen/high_hand_analysis_screen/dialogs/widgets/cart_selector.dart';
+import 'package:pokerapp/screens/club_screen/high_hand_analysis_screen/rank_cards_utils.dart';
 
 class FourOfKindBody extends StatelessWidget {
   final ValueNotifier<List<int>> cards;
@@ -9,8 +11,15 @@ class FourOfKindBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Text("Four of Kind"),
+    return Column(
+      children: [
+        Text('Select one card'),
+        const SizedBox(height: 5.0),
+        CardSelector(
+          cards: RankCardsUtils.getAllCardsFromSpade(),
+          onCardSelect: (int c) {},
+        ),
+      ],
     );
   }
 }

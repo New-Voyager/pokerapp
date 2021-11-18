@@ -48,27 +48,21 @@ class RankCardSelectionDialog extends StatelessWidget {
 
   Widget _buildSelectionBody() {
     // reset the selected cards, as soon as a new body is selected
-    // selectedCards.value = [];
+    selectedCards.value = [];
 
     // build a body depending upon the type of rank cards
     switch (typeOfRankCards.value) {
       case RankType.FULL_HOUSE:
-        return FullHouseBody(
-          cards: selectedCards,
-        );
+        return FullHouseBody(cards: selectedCards);
 
       case RankType.STRAIGHT_FLUSH:
-        return StraightFlushBody(
-          cards: selectedCards,
-        );
+        return StraightFlushBody(cards: selectedCards);
 
       case RankType.FOUR_OF_KIND:
-        return FourOfKindBody(
-          cards: selectedCards,
-        );
+        return FourOfKindBody(cards: selectedCards);
     }
 
-    return FullHouseBody();
+    return FullHouseBody(cards: selectedCards);
   }
 
   Widget _buildCardsView() {
