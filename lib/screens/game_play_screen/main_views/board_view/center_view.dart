@@ -197,7 +197,7 @@ class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
     if (gameState.gameInfo.status == AppConstants.GAME_ENDED)
       return centerTextWidget(
         _appScreenText['gameEnded'],
-        boardAttributes.centerViewButtonVerticalTranslate,
+        boardAttributes.centerButtonsPos,
       );
 
     //log('potViewPos: before waiting for players.');
@@ -205,15 +205,14 @@ class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
         gameState.playersInSeatsCount <= 1 &&
         gameState.gameInfo.status != AppConstants.GAME_CONFIGURED) {
       String text = _appScreenText['waitingForPlayersToJoin'];
-      return centerTextWidget(
-          text, boardAttributes.centerViewButtonVerticalTranslate);
+      return centerTextWidget(text, boardAttributes.centerButtonsPos);
     }
 
     //log('potViewPos: before seat change progress.');
     if (gameState.gameInfo.tableStatus ==
         AppConstants.TABLE_STATUS_HOST_SEATCHANGE_IN_PROGRESS) {
       return centerTextWidget(_appScreenText['seatChangeInProgress'],
-          boardAttributes.centerViewButtonVerticalTranslate);
+          boardAttributes.centerButtonsPos);
     }
 
     final bool isGamePausedOrWaiting = gameState.gameInfo.status ==
@@ -230,7 +229,7 @@ class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
             alignment: Alignment.center,
             child: _buildGamePauseOptions(
               gameState,
-              boardAttributes.centerViewButtonVerticalTranslate,
+              boardAttributes.centerButtonsPos,
             )));
       }
     }
@@ -319,7 +318,7 @@ class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
     final theme = AppTheme.getTheme(context);
 
     return Transform.translate(
-      offset: boardAttributes.centerViewVerticalTranslate,
+      offset: boardAttributes.centerViewPos,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -361,7 +360,7 @@ class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
           ),
 
           // divider
-          SizedBox(height: boardAttributes.potsViewGap),
+          SizedBox(height: boardAttributes.potViewGap),
 
           Stack(
             alignment: Alignment.topCenter,
@@ -445,32 +444,36 @@ class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
                 opacity: _getOpacityForPotUpdatesView(
                   potChipsUpdates: potChipsUpdates,
                 ),
-                child: Row(mainAxisSize: MainAxisSize.min, children: [
-                  SvgPicture.asset(
-                    'assets/icons/potpokerchips.svg',
-                    color: Colors.yellow,
-                    width: 24.pw,
-                    height: 24.pw,
-                    fit: BoxFit.cover,
-                  ),
-                  Container(
+                child:                   Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 10.0,
                       vertical: 5.0,
                     ),
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(100.0),
-                      color: Colors.black26,
+                      borderRadius: BorderRadius.circular(20.0),
+                      color: Colors.black,
                     ),
-                    child: Text(
-                      '${DataFormatter.chipsFormat(potChipsUpdates?.toDouble())}',
-                      style: AppStylesNew.itemInfoTextStyleHeavy.copyWith(
-                        fontSize: 13.dp,
-                        fontWeight: FontWeight.w400,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SvgPicture.asset(
+                        'assets/icons/potpokerchips.svg',
+                        color: Colors.yellow,
+                        width: 24.pw,
+                        height: 24.pw,
+                        fit: BoxFit.cover,
                       ),
-                    ),
+                      SizedBox(width: 10),
+                      Text(
+                        '${DataFormatter.chipsFormat(potChipsUpdates?.toDouble())}',
+                        style: AppStylesNew.itemInfoTextStyleHeavy.copyWith(
+                          fontSize: 13.dp,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ],
                   ),
-                ]));
+                ));
           }),
     );
   }

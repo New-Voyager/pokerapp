@@ -174,7 +174,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
   @override
   Widget build(BuildContext context) {
     _context = context;
-    log('game started: ${widget.gameState.started}');
+    // log('game started: ${widget.gameState.started}');
     final theme = AppTheme.getTheme(context);
     return Align(
       alignment: Alignment.topLeft,
@@ -216,7 +216,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                   // menu close button
                   CircleImageButton(
                       theme: theme,
-                      caption: 'Close',
+                      //caption: 'Close',
                       icon: Icons.navigate_before,
                       onTap: () {
                         vnShowMenuItems.value = false;
@@ -226,8 +226,9 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                   // last hand
                   CircleImageButton(
                       theme: theme,
-                      caption: 'Prev',
-                      svgAsset: AppAssetsNew.lastHandPath,
+                      //caption: 'Prev',
+                      svgAsset:
+                          'assets/images/game/lasthand.svg', //AppAssetsNew.lastHandPath,
                       onTap: () {
                         vnShowMenuItems.value = false;
                         onClickViewHand(context);
@@ -237,8 +238,8 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                   // game history
                   CircleImageButton(
                       theme: theme,
-                      caption: 'History',
-                      svgAsset: AppAssetsNew.handHistoryPath,
+                      //caption: 'History',
+                      svgAsset: 'assets/images/game/handhistory.svg',
                       onTap: () {
                         vnShowMenuItems.value = false;
                         onClickViewHandAnalysis(context);
@@ -249,8 +250,8 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                   widget.gameState.gameInfo.highHandTracked ?? false
                       ? CircleImageButton(
                           theme: theme,
-                          caption: 'HH',
-                          svgAsset: AppAssetsNew.hhPath,
+                          //caption: 'HH',
+                          svgAsset: 'assets/images/game/highhand.svg',
                           onTap: () {
                             vnShowMenuItems.value = false;
                             onClickHighHand(context);
@@ -265,8 +266,8 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                   // game info
                   CircleImageButton(
                       theme: theme,
-                      caption: 'Info',
-                      icon: Icons.info_outline_rounded,
+                      //caption: 'Info',
+                      icon: Icons.info,
                       onTap: () {
                         vnShowMenuItems.value = false;
                         onGameInfoBottomSheet(context);
@@ -278,7 +279,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                       // result table
                       CircleImageButton(
                           theme: theme,
-                          caption: 'Result',
+                          //caption: 'Result',
                           svgAsset: AppAssetsNew.tableResultPath,
                           onTap: () {
                             vnShowMenuItems.value = false;
@@ -290,7 +291,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                   // player stack
                   CircleImageButton(
                       theme: theme,
-                      caption: 'Stats',
+                      //caption: 'Stats',
                       svgAsset: AppAssetsNew.playerStatsPath,
                       onTap: () {
                         vnShowMenuItems.value = false;

@@ -10,15 +10,22 @@ import 'package:pokerapp/utils/card_helper.dart';
 class DisplayCardsWidget extends StatelessWidget {
   final Seat seat;
   final bool showdown;
+  final bool isReplayHandsActor;
 
-  DisplayCardsWidget(this.seat, this.showdown);
+  DisplayCardsWidget({
+    @required this.seat,
+    @required this.showdown,
+    this.isReplayHandsActor = false,
+  });
 
   List<CardObject> _getCards(List<int> cards) {
-    if (cards == null || cards.isEmpty) return [];
+    if (!isReplayHandsActor) {
+      if (cards == null || cards.isEmpty) return [];
 
-    if (seat.player != null && seat.player.playerFolded) {
-      if (seat.player.revealCards.length == 0) {
-        return [];
+      if (seat.player != null && seat.player.playerFolded) {
+        if (seat.player.revealCards.length == 0) {
+          return [];
+        }
       }
     }
     List<int> highlightedCards = seat.player.highlightCards;
@@ -56,6 +63,9 @@ class DisplayCardsWidget extends StatelessWidget {
       if (seat.player.revealCards.contains(cardNum)) {
         card.cardFace = CardFace.FRONT;
       }
+      if (isReplayHandsActor) {
+        card.cardFace = CardFace.FRONT;
+      }
       cardObjects.add(card);
     }
 
@@ -81,13 +91,14 @@ class DisplayCardsWidget extends StatelessWidget {
       }
     }
     return Transform.translate(
-        offset: offset,
-        child: Transform.scale(
-          scale: scale,
-          child: StackCardView(
-            cards: _getCards(cards),
-          ),
-        ));
+      offset: offset,
+      child: Transform.scale(
+        scale: scale,
+        child: StackCardView(
+          cards: _getCards(cards),
+        ),
+      ),
+    );
   }
 
   @override

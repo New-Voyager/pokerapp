@@ -23,9 +23,11 @@ import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/numeric_keyboard2.dart';
 import 'package:pokerapp/utils/utils.dart';
+import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/radio_list_widget.dart';
 import 'package:pokerapp/widgets/switch_widget.dart';
 import 'package:provider/provider.dart';
+import 'package:buttons_tabbar/buttons_tabbar.dart';
 
 import 'seat_change_bottom_sheet.dart';
 import 'waiting_list.dart';
@@ -228,63 +230,88 @@ class _GameOptionState extends State<GameOption> {
     @required final bool isHost,
     @required final AppTheme theme,
   }) {
-    List<OptionItemModel> gameActions = [];
+    //List<OptionItemModel> gameActions = [];
+    List<Widget> gameActions = [];
 
     if (isPlaying) {
       gameActions.addAll([
-        OptionItemModel(
-          title: _appScreenText['standup'],
-          iconData: Icons.exit_to_app_sharp,
-          onTap: (context) {
+        CircleImageButton(
+          theme: theme,
+          caption: _appScreenText['standup'],
+          icon: Icons.exit_to_app_sharp,
+          onTap: () {
             this.onLeave();
           },
         ),
       ]);
+      gameActions.add(SizedBox(width: 20));
+      // gameActions.addAll([
+      //   OptionItemModel(
+      //     title: _appScreenText['standup'],
+      //     iconData: Icons.exit_to_app_sharp,
+      //     onTap: (context) {
+      //       this.onLeave();
+      //     },
+      //   ),
+      // ]);
       final me = widget.gameState.me;
       if (me != null && me.stack < widget.gameState.gameInfo.buyInMax) {
-        gameActions.add(OptionItemModel(
-          title: _appScreenText['reload'],
-          iconData: Icons.shop,
-          onTap: (context) {
-            this.onReload();
-          },
-        ));
+        gameActions.add(
+          CircleImageButton(
+            theme: theme,
+            caption: _appScreenText['reload'],
+            icon: Icons.shop,
+            onTap: () {
+              this.onReload();
+            },
+          ),
+        );
+        gameActions.add(SizedBox(width: 20));
       }
     }
 
     if (widget.gameState.isGameRunning) {
       if (isPlaying) {
         gameActions.add(
-          OptionItemModel(
-            title: _appScreenText['break'],
-            iconData: Icons.shop,
-            onTap: (context) {
+          CircleImageButton(
+            theme: theme,
+            caption: _appScreenText['break'],
+            svgAsset: 'assets/images/game/break.svg',
+            onTap: () {
               this.onBreak();
             },
           ),
         );
+        gameActions.add(SizedBox(width: 20));
       }
 
       if (isHost) {
         gameActions.add(
-          OptionItemModel(
-            title: _appScreenText['pause'],
-            iconData: Icons.pause,
-            onTap: (context) {
+          CircleImageButton(
+            theme: theme,
+            caption: _appScreenText['pause'],
+            icon: Icons.pause,
+            onTap: () {
               this.onPause();
             },
           ),
         );
+        gameActions.add(SizedBox(width: 20));
       }
     }
 
     if (isHost) {
-      gameActions.add(OptionItemModel(
-          title: _appScreenText['terminate'],
-          iconData: Icons.cancel_outlined,
-          onTap: (context) {
+      gameActions.add(
+        CircleImageButton(
+          theme: theme,
+          caption: _appScreenText['terminate'],
+          icon: Icons.cancel,
+          onTap: () {
             this.onEndGame();
-          }));
+          },
+        ),
+      );
+      gameActions.add(SizedBox(width: 20));
     }
 
     return Container(
@@ -295,9 +322,7 @@ class _GameOptionState extends State<GameOption> {
       child: Wrap(
         alignment: WrapAlignment.center,
         //mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          ...gameActions.map((e) => gameActionItem(e, theme)).toList(),
-        ],
+        children: gameActions,
       ),
     );
   }
@@ -1238,17 +1263,22 @@ class _GameOptionState extends State<GameOption> {
     int defaultIndex = 0;
     // ishost?, can change game settings
     if (isHost) {
+      tabs.add(Tab(
+        icon: Icon(Icons.settings),
+        text: "Game",
+      ));
+
       // tabs.add(Tab(
       //   child: Text('Game Settings'),
       // ));
-      tabs.add(Container(
-          // decoration: BoxDecoration(
-          //     borderRadius: BorderRadius.circular(50),
-          //     border: Border.all(color: theme.accentColor, width: 1)),
-          child: Align(
-        alignment: Alignment.center,
-        child: Text("Game\nSettings", textAlign: TextAlign.center),
-      )));
+      // tabs.add(Container(
+      //     // decoration: BoxDecoration(
+      //     //     borderRadius: BorderRadius.circular(50),
+      //     //     border: Border.all(color: theme.accentColor, width: 1)),
+      //     child: Align(
+      //   alignment: Alignment.center,
+      //   child: Text("Game\nSettings", textAlign: TextAlign.center),
+      // )));
       children.add(
           // game settings to be shown here
           // 1. allow seat change player
@@ -1263,18 +1293,19 @@ class _GameOptionState extends State<GameOption> {
       // tabs.add(Tab(
       //   child: Text('Player Settings'),
       // ));
-      tabs.add(Container(
-          // decoration: BoxDecoration(
-          //     borderRadius: BorderRadius.circular(50),
-          //     border: Border.all(color: theme.accentColor, width: 1)),
-          child: Align(
-        alignment: Alignment.center,
-        child: Text(
-          "Player\nSettings",
-          textAlign: TextAlign.center,
-        ),
-      )));
+      // tabs.add(Container(
+      //     child: Align(
+      //   alignment: Alignment.center,
+      //   child: Text(
+      //     "Player\nSettings",
+      //     textAlign: TextAlign.center,
+      //   ),
+      // )));
 
+      tabs.add(Tab(
+        icon: Icon(Icons.settings),
+        text: "Player",
+      ));
       children.add(
           // player settings to be shown here
           // 1. muck losing hand
@@ -1286,18 +1317,19 @@ class _GameOptionState extends State<GameOption> {
 
     bool waitinglistAllowed = gameInfo.waitlistAllowed;
     if (waitinglistAllowed) {
-      // tabs.add(Tab(
-      //   child: Text('Waiting List'),
-      // ));
-      tabs.add(Container(
-          // decoration: BoxDecoration(
-          //     borderRadius: BorderRadius.circular(50),
-          //     border: Border.all(color: theme.accentColor, width: 1)),
-          child: Align(
-        alignment: Alignment.center,
-        child:
-            Center(child: Text("Waiting\nList", textAlign: TextAlign.center)),
-      )));
+      tabs.add(Tab(
+        icon: Icon(Icons.queue),
+        text: "Queue",
+      ));
+      // tabs.add(Container(
+      //     // decoration: BoxDecoration(
+      //     //     borderRadius: BorderRadius.circular(50),
+      //     //     border: Border.all(color: theme.accentColor, width: 1)),
+      //     child: Align(
+      //   alignment: Alignment.center,
+      //   child:
+      //       Center(child: Text("Waiting\nList", textAlign: TextAlign.center)),
+      // )));
 
       children.add(_buildWaitingList(theme));
       if (widget.focusOnWaitingList) {
@@ -1323,14 +1355,30 @@ class _GameOptionState extends State<GameOption> {
               ),
               SliverToBoxAdapter(
                 // show tabs for game and player settings
-                child: TabBar(
-                  physics: const BouncingScrollPhysics(),
+                // child: TabBar(
+                //   physics: const BouncingScrollPhysics(),
+                //   tabs: tabs,
+                //   indicatorSize: TabBarIndicatorSize.label,
+                //   indicatorColor: theme.accentColor,
+                //   //labelColor: theme.secondaryColorWithLight(),
+                //   unselectedLabelColor: theme.secondaryColorWithDark(),
+                // ),
+                child: Center(
+                    child: ButtonsTabBar(
+                  backgroundColor: theme.accentColor,
+                  unselectedBackgroundColor: Colors.black,
+                  labelStyle: TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.bold),
+                  unselectedLabelStyle: TextStyle(
+                      color: theme.accentColor, fontWeight: FontWeight.bold),
+                  borderWidth: 2,
+                  unselectedBorderColor: theme.accentColor,
+                  radius: 30,
                   tabs: tabs,
-                  indicatorSize: TabBarIndicatorSize.label,
-                  indicatorColor: theme.accentColor,
-                  //labelColor: theme.secondaryColorWithLight(),
-                  unselectedLabelColor: theme.secondaryColorWithDark(),
-                ),
+                  contentPadding: EdgeInsets.all(10),
+                  physics: ScrollPhysics(),
+                  height: 50,
+                )),
               ),
             ];
           },
@@ -1382,39 +1430,39 @@ class _GameOptionState extends State<GameOption> {
     );
   }
 
-  gameActionItem(OptionItemModel optionItemModel, AppTheme theme) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 5),
-      child: GestureDetector(
-        onTap: () {
-          if (optionItemModel.onTap != null) {
-            optionItemModel.onTap(context);
-          }
-        },
-        child: Column(
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: theme.accentColor,
-              ),
-              padding: EdgeInsets.all(10),
-              child: Icon(
-                optionItemModel.iconData ?? Icons.message,
-                size: 20.pw,
-                color: theme.primaryColorWithDark(),
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.all(5),
-              child: Text(
-                optionItemModel.title,
-                style: AppDecorators.getSubtitle3Style(theme: theme),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  // gameActionItem(CircleImageButton optionItemModel, AppTheme theme) {
+  //   return Container(
+  //     margin: EdgeInsets.symmetric(horizontal: 5),
+  //     child: GestureDetector(
+  //       onTap: () {
+  //         if (optionItemModel.onTap != null) {
+  //           optionItemModel.onTap();
+  //         }
+  //       },
+  //       child: Column(
+  //         children: [
+  //           Container(
+  //             decoration: BoxDecoration(
+  //               shape: BoxShape.circle,
+  //               color: theme.accentColor,
+  //             ),
+  //             padding: EdgeInsets.all(10),
+  //             child: Icon(
+  //               optionItemModel.icon ?? Icons.message,
+  //               size: 20.pw,
+  //               color: theme.primaryColorWithDark(),
+  //             ),
+  //           ),
+  //           Container(
+  //             padding: EdgeInsets.all(5),
+  //             child: Text(
+  //               optionItemModel.title,
+  //               style: AppDecorators.getSubtitle3Style(theme: theme),
+  //             ),
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 }

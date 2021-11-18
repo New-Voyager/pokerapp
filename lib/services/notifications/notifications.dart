@@ -307,6 +307,14 @@ class NotificationHandler {
         handleAppCoinNeeded(json);
       } else if (type == 'BUYIN_REQUEST') {
         handleBuyinRequest(json);
+      } else if (type == 'NEW_GAME') {
+        handleNewGame(json);
+      } else if (type == 'GAME_ENDED') {
+        handleGameEnded(json);
+      } else if (type == 'CLUB_ANNOUNCEMENT') {
+        handleClubAnnouncement(json);
+      } else if (type == 'SYSTEM_ANNOUNCEMENT') {
+        handleSystemAnnouncement(json);
       }
     }
   }
@@ -453,11 +461,47 @@ class NotificationHandler {
     double amount = double.parse(json['amount'].toString());
     // toggle pending approvals
     Alerts.showNotification(
-      titleText: 'Buyin Request',
-      subTitleText: 'Game: $gameCode Player $playerName is requesting $amount.',
-      duration: Duration(seconds: 5)
-    );
-  }  
+        titleText: 'Buyin Request',
+        subTitleText:
+            'Game: $gameCode Player $playerName is requesting $amount.',
+        duration: Duration(seconds: 5));
+  }
+
+  Future<void> handleNewGame(Map<String, dynamic> json) async {
+    String gameCode = json['gameCode'].toString();
+    String gameType = json['gameType'].toString();
+    String sb = json['sb'].toString();
+    String bb = json['bb'].toString();
+    String clubName = json['clubName'].toString();
+    if (appState != null) {
+      appState.setNewGame(true);
+    }
+    Alerts.showNotification(
+        titleText: 'New Game',
+        subTitleText: 'Club $clubName started a new game $gameType $sb/$bb',
+        duration: Duration(seconds: 3));
+  }
+
+  Future<void> handleGameEnded(Map<String, dynamic> json) async {
+    if (appState != null) {
+      appState.setGameEnded(true);
+    }
+  }
+
+  Future<void> handleClubAnnouncement(Map<String, dynamic> json) async {
+    String clubName = json['clubName'].toString();
+    Alerts.showNotification(
+        titleText: 'Club Announcement',
+        subTitleText: 'Club $clubName made a new announcement',
+        duration: Duration(seconds: 3));
+  }
+
+  Future<void> handleSystemAnnouncement(Map<String, dynamic> json) async {
+    Alerts.showNotification(
+        titleText: 'System Announcement',
+        subTitleText: 'There is a new system announcement',
+        duration: Duration(seconds: 3));
+  }
 }
 
 NotificationHandler notificationHandler = NotificationHandler();

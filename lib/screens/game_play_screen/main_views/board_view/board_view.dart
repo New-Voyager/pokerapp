@@ -59,17 +59,20 @@ class BoardView extends StatelessWidget {
     final isBoardHorizontal =
         boardAttributes.orientation == BoardOrientation.horizontal;
     var dimensions = boardAttributes.dimensions(context);
-
+    var bottomPos = boardAttributes.tableBottomPos;
+    var tableScale = boardAttributes.tableScale;
+    //bottomPos = -160;
     /* finally the view */
     return Stack(
       clipBehavior: Clip.none,
       alignment: Alignment.center,
       children: [
-        // table view - board image
-        Align(
-          alignment: Alignment.center,
-          child: TableView(width: dimensions.width, height: dimensions.height),
-        ),
+        Positioned(
+            bottom: bottomPos,
+            child: Transform.scale(
+                scale: tableScale,
+                child: TableView(
+                    width: dimensions.width, height: dimensions.height))),
 
         /* players */
         Transform.translate(
@@ -99,7 +102,7 @@ class BoardView extends StatelessWidget {
               // final pots = tableState.potChips;
 
               return Transform.scale(
-                scale: 1 / boardAttributes.tableScale,
+                scale: boardAttributes.centerViewCenterScale,
                 child: CenterView(
                   tableState: context.read<TableState>(),
                   gameCode: gameInfo.gameCode,

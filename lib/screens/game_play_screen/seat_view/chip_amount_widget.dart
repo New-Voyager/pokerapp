@@ -119,9 +119,16 @@ class _ChipAmountWidgetState extends State<ChipAmountWidget>
     final widthSep = SizedBox(width: 2.0);
 
     final SeatPos seatPos = widget.seat.seatPos;
-    children.add(coin);
-    children.add(widthSep);
-    children.add(amount);
+    final textPos = betTextPos[seatPos] ?? BetTextPos.Right;
+    if (textPos == BetTextPos.Left) {
+      children.add(amount);
+      children.add(widthSep);
+      children.add(coin);
+    } else {
+      children.add(coin);
+      children.add(widthSep);
+      children.add(amount);
+    }
 
     // if (seatPos == SeatPos.topCenter ||
     //     seatPos == SeatPos.topCenter1 ||

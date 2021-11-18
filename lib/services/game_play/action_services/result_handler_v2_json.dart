@@ -277,6 +277,7 @@ class ResultHandlerV2Json {
     if (handResult.wonAt == AppConstants.SHOW_DOWN) {
       /* highlight the winning cards for players */
       seat.player.highlightCards = winner.playerCards;
+      seat.player.winner = true;
 
       // log('WINNER player.cards: ${winner.playerCards} boardCards: ${winner.boardCards} setState: $setState ${winner.rankStr} ${AppConstants.chipMovingAnimationDuration}');
       /* highlight the winning cards for board 1 */

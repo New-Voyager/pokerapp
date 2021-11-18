@@ -109,22 +109,23 @@ class HoleStackCardView extends StatelessWidget {
     @required MarkedCards markedCards,
     @required double displacementValue,
     bool isCardVisible = false,
-  }) =>
-      FittedBox(
-        child: Transform.translate(
-          offset: Offset(xOffset, 0.0),
-          child: Stack(
-            alignment: Alignment.center,
-            children: _getChildren(
-              context: context,
-              mid: mid,
-              markedCards: markedCards,
-              displacementValue: displacementValue,
-              isCardVisible: isCardVisible,
-            ),
+  }) {
+    return FittedBox(
+      child: Transform.translate(
+        offset: Offset(xOffset, 0.0),
+        child: Stack(
+          alignment: Alignment.center,
+          children: _getChildren(
+            context: context,
+            mid: mid,
+            markedCards: markedCards,
+            displacementValue: displacementValue,
+            isCardVisible: isCardVisible,
           ),
         ),
-      );
+      ),
+    );
+  }
 
   Widget _buildFannedCards({
     @required BuildContext context,
@@ -165,7 +166,7 @@ class HoleStackCardView extends StatelessWidget {
     final MarkedCards markedCards = gameState.markedCardsState;
     //log('HoleCards: build cards: $cards');
     if (cards == null || cards.isEmpty) {
-      log('Customize: HoleCards: build cards are empty. $cards');
+      // log('Customize: HoleCards: build cards are empty. $cards');
       return const SizedBox.shrink();
     }
     int mid = (cards.length ~/ 2);

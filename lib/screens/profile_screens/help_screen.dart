@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:pokerapp/build_info.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
+import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/screens/profile_screens/report_bug.dart';
 import 'package:pokerapp/screens/profile_screens/request_feature.dart';
+import 'package:pokerapp/services/app/auth_service.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/alerts.dart';
+import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/custom_divider.dart';
 import 'package:provider/provider.dart';
 
@@ -143,6 +148,7 @@ class HelpScreen extends StatelessWidget {
                         ],
                       ),
                     ),
+                    ...getSystemInfo(),
                   ],
                 ),
               ),
@@ -151,5 +157,23 @@ class HelpScreen extends StatelessWidget {
         );
       },
     );
+  }
+
+  List<Widget> getSystemInfo() {
+    return [
+      Container(
+          margin: EdgeInsets.symmetric(vertical: 8),
+          child: Text('Size: ${Screen.diagonalInches.toStringAsPrecision(2)}')),
+      Container(
+          margin: EdgeInsets.symmetric(vertical: 8),
+          child: Text('Screen Dimensions: ${Screen.size}')),
+      Container(
+          margin: EdgeInsets.symmetric(vertical: 8),
+          child: Text('model: ${DeviceInfo.model}')),
+      Container(
+          margin: EdgeInsets.symmetric(vertical: 8),
+          child: Text('version: ${DeviceInfo.version}')),
+      AppDimensionsNew.getVerticalSizedBox(80.ph),
+    ];
   }
 }

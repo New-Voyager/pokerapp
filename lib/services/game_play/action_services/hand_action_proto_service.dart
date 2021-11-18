@@ -712,6 +712,7 @@ class HandActionProtoService {
         await Future.delayed(AppConstants.cardDistributionAnimationDuration);
         if (_close) return;
 
+        log('CardDistribution: seatNo: $seatNo');
         final playerInSeat = _gameState.getSeat(seatNo);
         if (playerInSeat != null &&
             playerInSeat.player != null &&

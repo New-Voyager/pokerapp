@@ -55,7 +55,8 @@ class PotsView extends StatelessWidget {
                   color: highlight ? Colors.white : Colors.transparent,
                 ),
                 borderRadius: BorderRadius.circular(10.0),
-                color: this.transparent ? Colors.transparent : Colors.black26,
+                // color: this.transparent ? Colors.transparent : Colors.black26,
+                color: Colors.black,
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -67,12 +68,6 @@ class PotsView extends StatelessWidget {
                     alignment: Alignment.centerLeft,
                     child: SvgPicture.asset("assets/images/chip.svg",
                         width: 16.pw, height: 16.pw, color: chipColor),
-
-                    // Image.asset(
-                    //   'assets/images/chips.png',
-                    //   height: 15.pw,
-                    //   width: 15.pw,
-                    // ),
                   ),
 
                   // pot amount text

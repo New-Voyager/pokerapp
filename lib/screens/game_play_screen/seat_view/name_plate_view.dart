@@ -108,6 +108,7 @@ class NamePlateWidget extends StatelessWidget {
     BoxShadow shadow;
     bool winner = seat.player?.winner ?? false;
     bool highlight = seat.player?.highlight ?? false;
+    highlight = false;
     if (winner) {
       shadow = BoxShadow(
         color: Colors.lightGreen,
@@ -194,7 +195,7 @@ class NamePlateWidget extends StatelessWidget {
       playerNamePlate = nameplate.svg;
       playerProgress = nameplate.path;
     }
-    double scale = 1.05;
+    double scale = 0.95;
     // if (nameplate.id != "0") {
     //   scale = 1.2;
     // }

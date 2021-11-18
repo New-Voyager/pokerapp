@@ -5,6 +5,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/shims/dart_ui_real.dart';
 import 'package:overlay_support/overlay_support.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/app_state.dart';
 import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/models/newmodels/game_model_new.dart';
@@ -79,69 +80,11 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
     // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
     //   _serverPolling();
     // });
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      if (!TestService.isTesting) {
-        _initTimer();
-      }
-    });
 
-    context.read<AppState>().addListener(() async {
-      final int currentIndex =
-          Provider.of<AppState>(context, listen: false).currentIndex;
-      if (context.read<AppState>().newGame ||
-          context.read<AppState>().gameEnded) {
-        if (currentIndex == 0) {
-          if (_tabController.index == 0) {
-            await _fetchLiveGames();
-          } else if (_tabController.index == 1) {
-            await _fetchPlayedGames();
-          }
-        }
-        context.read<AppState>().setNewGame(false);
-        context.read<AppState>().setGameEnded(false);
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _disposeTimer();
-    _tabController.dispose();
-    super.dispose();
-  }
-
-  // Lifeccyle Methods
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    log("AppLifeCycleState : $state");
-    switch (state) {
-      case AppLifecycleState.paused:
-        _disposeTimer();
-        break;
-      case AppLifecycleState.detached:
-        _disposeTimer();
-        break;
-      case AppLifecycleState.inactive:
-        _disposeTimer();
-        break;
-      case AppLifecycleState.resumed:
-        _initTimer();
-        break;
-    }
-    super.didChangeAppLifecycleState(state);
-  }
-
-  _initTimer() async {
-    if (TestService.isTesting) {
-      // don't fetch live games in test mode
-      return;
-    }
-    if (_refreshTimer == null || !_refreshTimer.isActive) {
-      _refreshTimer =
-          Timer.periodic(const Duration(seconds: 10), (timer) async {
-        if (mounted) {
-          final int currentIndex =
-              Provider.of<AppState>(context, listen: false).currentIndex;
+    if (appState != null) {
+      appState.addListener(() async {
+        final int currentIndex = appState.currentIndex;
+        if (appState.newGame || appState.gameEnded) {
           if (currentIndex == 0) {
             if (_tabController.index == 0) {
               await _fetchLiveGames();
@@ -149,18 +92,17 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
               await _fetchPlayedGames();
             }
           }
+          appState.setNewGame(false);
+          appState.setGameEnded(false);
         }
       });
     }
   }
 
-  _disposeTimer() {
-    if (TestService.isTesting) {
-      return;
-    }
-    if (_refreshTimer != null || _refreshTimer.isActive) {
-      _refreshTimer.cancel();
-    }
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
   }
 
   // _serverPolling() async {
@@ -322,30 +264,26 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
     }
   }
 
-  void _handleGameRefresh(InstaRefreshService irs) {
+  void _handleGameRefresh(AppState appState) {
     if (!mounted) return;
-
-    // for live games
-    if (irs.needToRefreshLiveGames) {
+    final int currentIndex = appState.currentIndex;
+    if (currentIndex != 0) return;
+    if (appState.newGame || appState.gameEnded) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _fetchLiveGames();
-        irs.refreshLiveGamesDone();
-      });
-    }
-
-    // for played games
-    if (irs.needToRefreshGameRecord) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _fetchPlayedGames();
-        irs.refreshGameRecordDone();
+        appState.setNewGame(false);
+        if (appState.gameEnded) {
+          _fetchPlayedGames();
+          appState.setGameEnded(false);
+        }
       });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final irs = Provider.of<InstaRefreshService>(context);
-    _handleGameRefresh(irs);
+    final appState = Provider.of<AppState>(context);
+    _handleGameRefresh(appState);
 
     return Consumer<AppTheme>(
       builder: (_, appTheme, __) {
@@ -365,9 +303,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                     children: [
                       RoundRectButton(
                         onTap: () async {
-                          _disposeTimer();
                           await hostGame();
-                          _initTimer();
                         },
                         text: _appScreenText["host"],
                         theme: appTheme,
@@ -377,9 +313,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                               heading: _appScreenText['appName'])),
                       RoundRectButton(
                         onTap: () async {
-                          _disposeTimer();
                           await joinGame(appTheme);
-                          _initTimer();
                         },
                         theme: appTheme,
                         text: _appScreenText['join'],
@@ -467,15 +401,12 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                                         return LiveGameItem(
                                           game: liveGames[index],
                                           onTapFunction: () async {
-                                            _disposeTimer();
                                             await Navigator.of(context)
                                                 .pushNamed(
                                               Routes.game_play,
                                               arguments:
                                                   liveGames[index].gameCode,
                                             );
-                                            // Refreshes livegames again
-                                            _initTimer();
                                           },
                                         );
                                       },

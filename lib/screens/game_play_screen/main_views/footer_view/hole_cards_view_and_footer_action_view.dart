@@ -45,53 +45,46 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
       final gameState = GameState.getState(context);
       final theme = AppTheme.getTheme(context);
 
-      // children.addAll([
-      //   // // main hole card view
-      //   Consumer4<StraddlePromptState, HoleCardsState, MyState, MarkedCards>(
-      //       builder: (_, __, ___, ____, markedCards, _____) {
-      //     log('Holecard view: rebuild');
-      //     return _buildHoleCardView(context);
-      //   }),
-      // ]);
       Widget rankText;
-      rankText = _getRankText(gameState, context);
+      rankText = Consumer<MyState>(builder: (_, __, ___) {
+        return _getRankText(gameState, context, boardAttributes);
+      });
 
       double scale = boardAttributes.holeCardViewScale;
       final offset = boardAttributes.holeCardViewOffset;
       return Stack(
-        alignment: Alignment.center,
+        alignment: Alignment.topCenter,
         children: [
           gameState.customizationMode
               ? BetIconButton(displayBetText: false)
               : Container(),
-
-          // Align(
-          //   alignment: Alignment.topCenter,
-          //   child:
-          //       rankText, //Text('ABCC', style: AppDecorators.getAccentTextStyle(theme: theme),),
-          // ),
-
+          Align(
+            alignment: Alignment.topCenter,
+            child: rankText,
+          ),
           // hole card view & rank Text
           Transform.translate(
-            offset: offset,
-            child: Transform.scale(
-              scale: scale,
-              child: Column(
-                children: [
-                  rankText,
-                  Container(
-                    child: Consumer4<StraddlePromptState, HoleCardsState,
-                        MyState, MarkedCards>(
-                      builder: (_, __, ___, ____, markedCards, _____) {
-                        log('Holecard view: rebuild');
-                        return _buildHoleCardView(context);
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
+              offset: offset,
+              child: Container(
+                width: double.infinity,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Transform.scale(
+                        alignment: Alignment.topCenter,
+                        scale: scale,
+                        child: Container(
+                          child: Consumer4<StraddlePromptState, HoleCardsState,
+                              MyState, MarkedCards>(
+                            builder: (_, __, ___, ____, markedCards, _____) {
+                              // log('Holecard view: rebuild');
+                              return _buildHoleCardView(context);
+                            },
+                          ),
+                        )),
+                  ],
+                ),
+              )),
           StraddleWidget(gameState),
         ],
       );
@@ -158,16 +151,19 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
 
           // show post result options
           Align(
-              alignment: Alignment.bottomCenter,
-              child: ResultOptionsWidget(
-                  gameState: gameState,
-                  isHoleCardsVisibleVn: isHoleCardsVisibleVn)),
+            alignment: Alignment.bottomCenter,
+            child: ResultOptionsWidget(
+              gameState: gameState,
+              isHoleCardsVisibleVn: isHoleCardsVisibleVn,
+            ),
+          ),
         ],
       ),
     );
   }
 
-  Widget _getRankText(GameState gameState, BuildContext context) {
+  Widget _getRankText(
+      GameState gameState, BuildContext context, BoardAttributesObject ba) {
     final me = gameState.me;
     final theme = AppTheme.getTheme(context);
     Color borderColor = theme.secondaryColor;
@@ -175,18 +171,19 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
       borderColor = Colors.transparent;
     }
 
-    Widget rankText = me == null
-        ? const SizedBox.shrink()
-        : Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: 8.pw,
-            ),
-            child: Text(
-              me.rankText,
-              style: AppDecorators.getHeadLine3Style(theme: theme),
-            ),
-          );
-    return rankText;
+    if (me == null || me.playerFolded) {
+      return SizedBox.shrink();
+    }
+
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+      child: Text(
+        me.rankText,
+        style: AppDecorators.getHeadLine5Style(theme: theme).copyWith(
+          fontSize: ba.selfRankTextSize,
+        ),
+      ),
+    );
   }
 
   Widget _buildHoleCardView(BuildContext context) {
@@ -194,7 +191,7 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
     final theme = AppTheme.getTheme(context);
     final playerCards = gameState.getHoleCards();
     final boardAttributes = gameState.getBoardAttributes(context);
-    log('Holecards: rebuilding. Hole cards: ${playerCards}');
+    // log('Holecards: rebuilding. Hole cards: ${playerCards}');
     bool playerFolded = false;
     if (playerModel != null) {
       playerFolded = playerModel.playerFolded;
@@ -233,9 +230,6 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
       }
     }
 
-    // Widget rankText;
-    // rankText = _getRankText(gameState, context);
-
     return GestureDetector(
       onTap: () {
         isHoleCardsVisibleVn.value = !isHoleCardsVisibleVn.value;
@@ -248,14 +242,14 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
         gameState.holeCardsState.notify();
       },
       child: Transform.translate(
-        offset: Offset(0, boardAttributes.holeCardOffset),
+        offset: boardAttributes.holeCardOffset,
         child: Column(
           key: UniqueKey(),
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SizedBox(
-              height: 12.dp,
-            ),
+            // SizedBox(
+            //   height: 12.dp,
+            // ),
             Column(
               children: [
                 Stack(
@@ -306,7 +300,7 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
           cardVisible = true;
         }
 
-        log('Customize: HoleCards: isCardVisible: $isCardVisible cards: $cards cardsInt: $cardsInt');
+        // log('Customize: HoleCards: isCardVisible: $isCardVisible cards: $cards cardsInt: $cardsInt');
         return HoleStackCardView(
           cards: cards,
           deactivated: playerFolded ?? false,

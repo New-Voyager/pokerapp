@@ -209,6 +209,10 @@ class GameReplayService {
   /* we parse the hand log data here, and instantiate the game reply controller */
   Future<GameReplayController> buildController() async {
     final List<PlayerModel> players = _getPlayers(data.result.playerInfo);
+    for (final p in players) {
+      // this is done to mark which players perspective in replay hand
+      if (p.playerId == playerID) p.playerUuid = '';
+    }
     final List<int> seatNos = players.map((p) => p.seatNo).toList();
 
     final GameInfoModel gameInfoModel = GameInfoModel(
@@ -257,8 +261,7 @@ class GameReplayService {
       gameInfo: gameInfoModel,
       currentPlayer: PlayerInfo(
         id: currPlayer.playerId,
-        // FIXME: I KNOW THIS IS A BAD IDEA, BUT A TEMP FIX
-        uuid: '', // THIS IS MADE EMPTY TO KNOW WE ARE IN REPLAY MODE
+        uuid: '', // to mark which players perspective in replay hand
         name: currPlayer.name,
       ),
       replayMode: true,

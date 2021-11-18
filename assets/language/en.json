@@ -433,6 +433,7 @@
     },
     "profilePageNew": {
         "gettingDetails": "Getting details..",
+        "updatingDetails": "Updating details...",
         "myProfile": "My Profile",
         "games": "Games",
         "hands": "Hands",

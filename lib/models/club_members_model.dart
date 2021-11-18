@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/club_member_status.dart';
 import 'package:pokerapp/utils/formatter.dart';
@@ -20,6 +22,7 @@ class ClubMemberModel extends ChangeNotifier {
   double _totalBuyIns;
   double _totalWinnings;
   double _rake;
+  int _tipsBack;
   bool autoBuyInApproval;
   int _creditLimit;
   String _notes;
@@ -75,11 +78,12 @@ class ClubMemberModel extends ChangeNotifier {
   double get totalWinnings => this._totalWinnings ?? 0;
   double get totalBuyIns => this._totalBuyIns ?? 0;
   double get rake => this._rake ?? 0;
+  int get tipsBack => this._tipsBack ?? 0;
   String get rakeStr => DataFormatter.chipsFormat(this._rake);
   String get balanceStr => DataFormatter.chipsFormat(this._balance);
   String get totalWinningsStr => DataFormatter.chipsFormat(this._totalWinnings);
   String get totalBuyinStr => DataFormatter.chipsFormat(this._totalBuyIns);
-
+  set tipsBack(int v) => _tipsBack = v;
   static ClubMemberModel copyWith(ClubMemberModel copyValue) {
     final data = new ClubMemberModel();
     data.name = copyValue.name;
@@ -98,6 +102,7 @@ class ClubMemberModel extends ChangeNotifier {
     data._rake = copyValue._rake;
     data._contactInfo = copyValue._contactInfo;
     data._notes = copyValue._notes;
+    data._tipsBack = copyValue._tipsBack;
     return data;
   }
 
@@ -133,7 +138,7 @@ class ClubMemberModel extends ChangeNotifier {
     if (jsonData['rakePaid'] != null) {
       this._rake = double.parse(jsonData['rakePaid'].toString());
     }
-
+    this._tipsBack = int.parse((jsonData['tipsBack'] ?? 0).toString());
     this.imageUrl = jsonData['imageUrl'];
 
     if (jsonData['totalGames'] != null) {
@@ -248,5 +253,69 @@ class MemberCreditHistory {
     history.amount = double.parse((json['amount'] ?? '0').toString());
     history.updatedDate = DateTime.tryParse(json['updateDate'] ?? '');
     return history;
+  }
+
+  static List<MemberCreditHistory> getMockData() {
+    String data = '''{
+            "history": [
+              {
+                "adminUuid": "xyx",
+                "adminName": "steve",
+                "notes": "Fee back",
+                "updateType": "DEDUCT",
+                "amount": -35,
+                "updatedCredits": 65,
+                "updateDate": "2021-11-21T10:00:00Z"
+              },
+              {
+                "adminUuid": "xyx",
+                "adminName": "steve",
+                "notes": "Recd from sean",
+                "updateType": "DEDUCT",
+                "amount": -400,
+                "updatedCredits": 100,
+                "updateDate": "2021-11-21T09:00:00Z"
+              },
+              {
+                "adminUuid": "xyx",
+                "adminName": "steve",
+                "notes": "hh bonus",
+                "updateType": "ADD",
+                "amount": 100,
+                "updatedCredits": 500,
+                "updateDate": "2021-11-21T09:00:00Z"
+              },
+              {
+                "notes": "Game: ABCDE",
+                "updateType": "GAME_RESULT",
+                "amount": 400,
+                "updatedCredits": 400,
+                "updateDate": "2021-11-20T09:00:00Z"
+              },
+              {
+                "notes": "Game: ABCDE",
+                "updateType": "BUYIN",
+                "amount": -200,
+                "updatedCredits": 0,
+                "updateDate": "2021-11-20T08:00:00Z"
+              },
+              {
+                "adminUuid": "xyx",
+                "adminName": "steve",
+                "notes": "Set Credit",
+                "updateType": "CHANGE",
+                "amount": 200,
+                "updatedCredits": 200,
+                "updateDate": "2021-11-20T07:00:00Z"
+              }
+            ]
+        }''';
+    final json = jsonDecode(data);
+    List<MemberCreditHistory> ret = [];
+    for(final item in json['history']) {
+      ret.add(MemberCreditHistory.fromJson(item));
+    }
+
+    return ret;
   }
 }

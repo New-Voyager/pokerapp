@@ -25,11 +25,15 @@ class AppState extends ChangeNotifier {
 
   setNewGame(bool value) {
     newGame = value;
-    notifyListeners();
+    if (currentIndex == 0) {
+      notifyListeners();
+    }
   }
 
   setGameEnded(bool value) {
     gameEnded = value;
-    notifyListeners();
+    if (currentIndex == 0) {
+      notifyListeners();
+    }
   }
 }

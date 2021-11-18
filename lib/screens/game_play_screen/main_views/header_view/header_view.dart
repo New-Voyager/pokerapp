@@ -100,7 +100,7 @@ class HeaderView extends StatelessWidget {
   }
 
   Widget _buildGameMenuNavButton(BuildContext context, AppTheme theme) {
-    IconData iconData = Icons.more_vert;
+    IconData iconData = Icons.settings;
     final gameState = GameState.getState(context);
     if (gameState.customizationMode) {
       iconData = Icons.edit_rounded;

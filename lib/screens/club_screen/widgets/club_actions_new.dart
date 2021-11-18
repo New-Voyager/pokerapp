@@ -118,6 +118,15 @@ class ClubActionsNew extends StatelessWidget {
     );
   }
 
+  ClubActionButtonNew getMemberActivitiesWidget(AppTheme theme) {
+    return ClubActionButtonNew(
+        this._clubHomePageModel,
+        ClubActions.MEMBER_ACTIVITIES,
+        'Member Activities',
+        SvgPicture.asset('assets/images/game/memberactivities.svg',
+            color: theme.accentColor));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<AppTheme>(
@@ -201,6 +210,13 @@ class ClubActionsNew extends StatelessWidget {
                 flex: 3,
                 child: getActivitiesWidget(theme),
               ),
+              (_clubHomePageModel.trackMemberCredit &&
+                      _clubHomePageModel.isOwner)
+                  ? Expanded(
+                      flex: 3,
+                      child: getMemberActivitiesWidget(theme),
+                    )
+                  : Container(),
             ],
           ),
           AppDimensionsNew.getVerticalSizedBox(16),

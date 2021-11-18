@@ -484,12 +484,12 @@ class IosBoardAttributesObject extends BoardAttributesObject {
   Uint8List get betImage => this._betImage;
   set betImage(Uint8List betImage) => this._betImage = betImage;
 
-  double get holeCardOffset {
+  Offset get holeCardOffset {
     double holeCardOffset = 0;
     if (_screenSize == ScreenSize.greaterThan7Inches) {
       holeCardOffset = 0;
     }
-    return holeCardOffset;
+    return Offset(0, holeCardOffset);
   }
 }
 

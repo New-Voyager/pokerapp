@@ -438,17 +438,19 @@ class _FooterActionViewState extends State<FooterActionView> {
 
     if (closeButton) {
       actionButtons = [];
-      actionButtons.add(CircleImageButton(
-        theme: theme,
-        icon: Icons.close,
-        onTap: () {
-          setState(() {
-            _showOptions = !_showOptions;
-            betWidgetShown = false;
-            widget.isBetWidgetVisible?.call(_showOptions);
-          });
-        },
-      ));
+      actionButtons.add(Align(
+          alignment: Alignment.bottomRight,
+          child: CircleImageButton(
+            theme: theme,
+            icon: Icons.close,
+            onTap: () {
+              setState(() {
+                _showOptions = !_showOptions;
+                betWidgetShown = false;
+                widget.isBetWidgetVisible?.call(_showOptions);
+              });
+            },
+          )));
     }
     return Stack(
       clipBehavior: Clip.none,
@@ -458,19 +460,19 @@ class _FooterActionViewState extends State<FooterActionView> {
           mainAxisSize: MainAxisSize.max,
           children: actionButtons,
         ),
-        Positioned(
-          left: 20.pw,
-          top: -10.ph,
-          child: Consumer<ActionState>(builder: (_, __, ___) {
-            // show time widget if the player is acting
-            final gameState = GameState.getState(context);
-            if (gameState.actionState.show || TestService.isTesting) {
-              return TimeBankWidget(gameState);
-            } else {
-              return Container();
-            }
-          }),
-        ),
+        // Positioned(
+        //   left: 20.pw,
+        //   top: -40.ph,
+        //   child: Consumer<ActionState>(builder: (_, __, ___) {
+        //     // show time widget if the player is acting
+        //     final gameState = GameState.getState(context);
+        //     if (gameState.actionState.show || TestService.isTesting) {
+        //       return TimeBankWidget(gameState);
+        //     } else {
+        //       return Container();
+        //     }
+        //   }),
+        // ),
       ],
     );
   }
@@ -495,7 +497,11 @@ class _FooterActionViewState extends State<FooterActionView> {
   }
 
   Widget _buildBetWidget(
-      List<int> playerCards, PlayerAction playerAction, int remainingTime) {
+    List<int> playerCards,
+    PlayerAction playerAction,
+    int remainingTime, {
+    @required final BoardAttributesObject boardAttributes,
+  }) {
     return AnimatedSwitcher(
       duration: AppConstants.fastestAnimationDuration,
       reverseDuration: AppConstants.fastestAnimationDuration,
@@ -512,6 +518,7 @@ class _FooterActionViewState extends State<FooterActionView> {
                   playerCards: playerCards,
                   onSubmitCallBack: _betOrRaise,
                   remainingTime: remainingTime,
+                  boardAttributesObject: boardAttributes,
                 )
               : shrinkedBox,
     );
@@ -545,17 +552,22 @@ class _FooterActionViewState extends State<FooterActionView> {
                   /* bet widget */
                   Expanded(
                     child: Transform.scale(
-                      scale: boardAttributes.footerActionViewScale,
-                      child: _buildBetWidget(me.cards, actionState.action, 30),
+                      scale: boardAttributes.footerActionScale,
+                      child: _buildBetWidget(
+                        me.cards,
+                        actionState.action,
+                        30,
+                        boardAttributes: boardAttributes,
+                      ),
                     ),
                   ),
 
                   /* bottom row */
                   Transform.scale(
-                    scale: boardAttributes.footerActionViewScale,
+                    scale: boardAttributes.footerActionScale,
                     alignment: Alignment.bottomCenter,
                     child: Container(
-                      padding: EdgeInsets.symmetric(vertical: 4.0),
+                      padding: EdgeInsets.symmetric(vertical: 2.0),
                       child: _buildActionWidgets(actionState.action, theme),
                     ),
                   ),
@@ -569,7 +581,7 @@ class _FooterActionViewState extends State<FooterActionView> {
                   children.add(
                     /* bottom row */
                     Transform.scale(
-                      scale: boardAttributes.footerActionViewScale,
+                      scale: boardAttributes.footerActionScale,
                       alignment: Alignment.bottomCenter,
                       child: Container(
                         padding: EdgeInsets.symmetric(vertical: 4.0),
