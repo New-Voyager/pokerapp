@@ -303,7 +303,7 @@ class MemberCreditHistory {
                 "adminUuid": "xyx",
                 "adminName": "steve",
                 "notes": "Set Credit",
-                "updateType": "DEDUCT",
+                "updateType": "CHANGE",
                 "amount": 200,
                 "updatedCredits": 200,
                 "updateDate": "2021-11-20T07:00:00Z"

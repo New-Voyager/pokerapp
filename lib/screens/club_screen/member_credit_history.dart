@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
@@ -8,7 +7,6 @@ import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/club_screen/set_credits_dialog.dart';
-import 'package:pokerapp/screens/club_screen/widgets/activity_bullet.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/club_interior_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
@@ -48,7 +46,7 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
           widget.clubCode, widget.playerId);
       history = await ClubInteriorService.getCreditHistory(
           widget.clubCode, widget.playerId);
-      history = MemberCreditHistory.getMockData();
+      // history = MemberCreditHistory.getMockData();
       _dataTableSource = DataCreditSource(items: history, theme: theme);
     } catch (err) {}
     loading = false;
@@ -359,26 +357,6 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
                               })
                     ]),
                 dividingSpace(),
-                /*  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Activities",
-                        style: TextStyle(
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      Text(
-                        "Balance",
-                        style: TextStyle(
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ]),
-                dividingSpace(),
-                activities(), */
                 activitiesTable(),
               ],
             ),
@@ -417,7 +395,7 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
   // activities table using data source with paginationtableclass
   activitiesTable() {
     TextStyle headingStyle = AppDecorators.getAccentTextStyle(theme: theme)
-        .copyWith(fontWeight: FontWeight.normal);
+        .copyWith(fontSize: 8.dp, fontWeight: FontWeight.normal);
 
     return PaginatedDataTable(
       columnSpacing: 10.0,
@@ -440,19 +418,7 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
         ),
         DataColumn(
           label: Text(
-            "BuyIn",
-            style: headingStyle,
-          ),
-        ),
-        DataColumn(
-          label: Text(
-            "Stack",
-            style: headingStyle,
-          ),
-        ),
-        DataColumn(
-          label: Text(
-            "Adjustment",
+            "Type",
             style: headingStyle,
           ),
         ),
@@ -505,76 +471,109 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
 
 class DataCreditSource extends DataTableSource {
   List<MemberCreditHistory> items;
-
+  DateFormat format = DateFormat("dd MMM");
   AppTheme theme;
 
-  DataCreditSource({this.items, this.theme});
+  DataCreditSource({this.items, this.theme}) {
+    format.add_jm();
+  }
 
   @override
   DataRow getRow(int index) {
     MemberCreditHistory item = items[index];
-    print("${item.updateType}");
+    String text = format.format(item.updatedDate);
+    List<String> toks = text.split(' ');
+    String day = '${toks[0]} ${toks[1]}\n${toks[2]}${toks[3]}';
+    String type;
+    String amount = DataFormatter.chipsFormat(item.amount);
+    Color amountColor = Colors.white;
+    Color typeColor = Colors.white;
+    String notes = item.notes;
+    if (item.amount < 0) {
+      amountColor = Colors.red;
+    } else if (item.amount > 0) {
+      amountColor = Colors.green;
+    }
+    if (item.updateType == 'BUYIN') {
+      type = 'Buyin';
+      typeColor = Colors.redAccent;
+      notes = '${item.gameCode}';
+    }
+    if (item.updateType == 'GAME_RESULT') {
+      type = 'Result';
+      typeColor = Colors.yellowAccent;
+      notes = '${item.gameCode}';     
+    }
+    if (item.updateType == 'ADD' || item.updateType == 'DEDUCT') {
+      type = 'Adjust';
+      typeColor = Colors.lightBlue;
+    }
+
+    if (item.updateType == 'CHANGE') {
+      type = 'Set';
+      amountColor = Colors.white;
+      //typeColor = Colors.cyan;
+    } 
+
     return DataRow.byIndex(
       index: index,
       cells: [
         DataCell(
           Container(
-            width: 120.0.pw,
+            width: 50.pw,
             alignment: Alignment.center,
-            child: Text(
-              DataFormatter.getDDMMMYYYYFormat(item.updatedDate) +
-                  "\n" +
-                  DataFormatter.getTimeInHHMMFormatFromDate(item.updatedDate),
-              style: AppDecorators.getSubtitle1Style(theme: theme),
-            ),
+            child: FittedBox(child: Text(
+              day,
+              textAlign: TextAlign.start,
+              style: 
+              AppDecorators.getSubtitle1Style(theme: theme).copyWith(fontSize: 8.dp),
+            )),
           ),
         ),
         DataCell(
           Container(
             width: 100,
             child: Text(
-              item.notes + " asdfasf are ar a r aeraewr ae",
+              notes,
               style: AppDecorators.getSubtitle1Style(theme: theme),
             ),
           ),
         ),
         DataCell(
-          ActivityBulletWidget(
-            columnType: 'BUYIN',
-            type: item.updateType,
-          ),
-        ),
-        DataCell(
-          ActivityBulletWidget(
-            columnType: 'GAME_RESULT',
-            type: item.updateType,
-          ),
-        ),
-        DataCell(
-          ActivityBulletWidget(
-            columnType: 'ADJUSTMENT',
-            type: item.updateType,
-          ),
-        ),
-        DataCell(
           Text(
-            DataFormatter.chipsFormat(item.amount),
-            style: AppDecorators.getSubtitle1Style(theme: theme),
+            type,
+            style: AppDecorators.getSubtitle1Style(theme: theme).copyWith(color: typeColor),
           ),
+        ),        
+        DataCell(
+          Container(
+            alignment: Alignment.bottomRight,
+            child:
+          Text(
+            amount,
+            textAlign: TextAlign.right,
+            style: AppDecorators.getSubtitle1Style(theme: theme).
+              copyWith(color: amountColor,fontWeight: FontWeight.bold),
+          )),
         ),
         DataCell(
+          Container(
+            alignment: Alignment.bottomRight,
+            child:
+
           Text(
             DataFormatter.chipsFormat(item.updatedCredits),
+            textAlign: TextAlign.right,
             style: AppDecorators.getSubtitle1Style(theme: theme),
-          ),
+          )),
         ),
       ],
       color:
           MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
         if (index % 2 == 0) {
-          return theme.primaryColor;
+          return Colors.blueGrey[800];
         } else {
-          return theme.primaryColorWithLight(0.1);
+          return Colors.black54;
         }
       }),
     );
