@@ -53,13 +53,19 @@ class RankCardSelectionDialog extends StatelessWidget {
     // build a body depending upon the type of rank cards
     switch (typeOfRankCards.value) {
       case RankType.FULL_HOUSE:
-        return FullHouseBody();
+        return FullHouseBody(
+          cards: selectedCards,
+        );
 
       case RankType.STRAIGHT_FLUSH:
-        return StraightFlushBody();
+        return StraightFlushBody(
+          cards: selectedCards,
+        );
 
       case RankType.FOUR_OF_KIND:
-        return FourOfKindBody();
+        return FourOfKindBody(
+          cards: selectedCards,
+        );
     }
 
     return FullHouseBody();
