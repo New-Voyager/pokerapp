@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/exceptions/exceptions.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/main_helper.dart';
 import 'package:pokerapp/models/app_state.dart';
 import 'package:pokerapp/models/club_model.dart';
@@ -130,7 +131,7 @@ class _ClubsPageViewState extends State<ClubsPageView>
   }
 
   Future<void> _fillClubs() async {
-    var appState = Provider.of<AppState>(context, listen: false);
+    //var appState = Provider.of<AppState>(context, listen: false);
 
     if (appState != null && appState.mockScreens) {
       _clubs = await MockData.getClubs();
