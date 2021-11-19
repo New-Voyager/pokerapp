@@ -502,7 +502,7 @@ class DataCreditSource extends DataTableSource {
     if (item.updateType == 'GAME_RESULT') {
       type = 'Result';
       typeColor = Colors.yellowAccent;
-      notes = '${item.gameCode}';     
+      notes = '${item.gameCode}';
     }
     if (item.updateType == 'ADD' || item.updateType == 'DEDUCT') {
       type = 'Adjust';
@@ -513,7 +513,7 @@ class DataCreditSource extends DataTableSource {
       type = 'Set';
       amountColor = Colors.white;
       //typeColor = Colors.cyan;
-    } 
+    }
 
     return DataRow.byIndex(
       index: index,
@@ -522,11 +522,12 @@ class DataCreditSource extends DataTableSource {
           Container(
             width: 50.pw,
             alignment: Alignment.center,
-            child: FittedBox(child: Text(
+            child: FittedBox(
+                child: Text(
               day,
               textAlign: TextAlign.start,
-              style: 
-              AppDecorators.getSubtitle1Style(theme: theme).copyWith(fontSize: 8.dp),
+              style: AppDecorators.getSubtitle1Style(theme: theme)
+                  .copyWith(fontSize: 8.dp),
             )),
           ),
         ),
@@ -542,30 +543,28 @@ class DataCreditSource extends DataTableSource {
         DataCell(
           Text(
             type,
-            style: AppDecorators.getSubtitle1Style(theme: theme).copyWith(color: typeColor),
+            style: AppDecorators.getSubtitle1Style(theme: theme)
+                .copyWith(color: typeColor),
           ),
-        ),        
-        DataCell(
-          Container(
-            alignment: Alignment.bottomRight,
-            child:
-          Text(
-            amount,
-            textAlign: TextAlign.right,
-            style: AppDecorators.getSubtitle1Style(theme: theme).
-              copyWith(color: amountColor,fontWeight: FontWeight.bold),
-          )),
         ),
         DataCell(
           Container(
-            alignment: Alignment.bottomRight,
-            child:
-
-          Text(
-            DataFormatter.chipsFormat(item.updatedCredits),
-            textAlign: TextAlign.right,
-            style: AppDecorators.getSubtitle1Style(theme: theme),
-          )),
+              alignment: Alignment.bottomRight,
+              child: Text(
+                amount,
+                textAlign: TextAlign.right,
+                style: AppDecorators.getSubtitle1Style(theme: theme)
+                    .copyWith(color: amountColor, fontWeight: FontWeight.bold),
+              )),
+        ),
+        DataCell(
+          Container(
+              alignment: Alignment.bottomRight,
+              child: Text(
+                DataFormatter.chipsFormat(item.updatedCredits),
+                textAlign: TextAlign.right,
+                style: AppDecorators.getSubtitle1Style(theme: theme),
+              )),
         ),
       ],
       color:

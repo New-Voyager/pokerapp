@@ -220,9 +220,11 @@ class Routes {
         );
 
       case high_rank_analysis_screen:
+        var args = settings.arguments as dynamic;
+
         return _getPageRoute(
           routeName: settings.name,
-          viewToShow: HighHandAnalysisScreen(),
+          viewToShow: HighHandAnalysisScreen(args['clubCode']),
         );
 
       case message_page:

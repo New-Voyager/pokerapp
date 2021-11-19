@@ -312,7 +312,7 @@ class MemberCreditHistory {
         }''';
     final json = jsonDecode(data);
     List<MemberCreditHistory> ret = [];
-    for(final item in json['history']) {
+    for (final item in json['history']) {
       ret.add(MemberCreditHistory.fromJson(item));
     }
 

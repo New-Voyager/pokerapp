@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:pokerapp/enums/game_stages.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
 
@@ -331,7 +333,10 @@ class HandResultData {
 
   factory HandResultData.fromJson(dynamic json) {
     HandResultData ret = HandResultData();
-    ret.gameId = json["gameId"];
+    if (json is String) {
+      json = jsonDecode(json);
+    }
+    ret.gameId = json["gameId"].toString();
     ret.gameCode = json["gameCode"];
     ret.handNum = json["handNum"];
     ret.gameType = json["gameType"];

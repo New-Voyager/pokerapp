@@ -420,18 +420,17 @@ class DataSource extends DataTableSource {
         openMember(activity.playerUuid);
       }),
     );
-    cells.add(
-      DataCell(
-          Container(
-            width: 50,
-            child: Text(
-              DataFormatter.chipsFormat(activity.credits),
-              style: TextStyle(color: creditColor, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.right,
-            ),
-          ), onTap: () {
-        openMember(activity.playerUuid);
-      }));
+    cells.add(DataCell(
+        Container(
+          width: 50,
+          child: Text(
+            DataFormatter.chipsFormat(activity.credits),
+            style: TextStyle(color: creditColor, fontWeight: FontWeight.bold),
+            textAlign: TextAlign.right,
+          ),
+        ), onTap: () {
+      openMember(activity.playerUuid);
+    }));
 
     if (includeTips) {
       cells.add(
@@ -487,18 +486,16 @@ class DataSource extends DataTableSource {
       color = Colors.grey[700];
     }
 
-        
-
     return DataRow.byIndex(
       index: index,
       cells: cells,
       color: MaterialStateColor.resolveWith(
         (states) {
-  if (index % 2 == 0) {
-          color = Colors.blueGrey[800];
-        } else {
-          color = Colors.black54;
-        }            
+          if (index % 2 == 0) {
+            color = Colors.blueGrey[800];
+          } else {
+            color = Colors.black54;
+          }
           return color;
           if (theme != null) {
             if (index % 2 == 0) {
