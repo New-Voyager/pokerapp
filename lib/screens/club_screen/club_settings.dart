@@ -3,23 +3,17 @@ import 'dart:developer';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
-import 'package:overlay_support/overlay_support.dart';
-import 'package:pokerapp/main_helper.dart';
-import 'package:pokerapp/models/auth_model.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/models/club_update_input_model.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
-import 'package:pokerapp/models/user_update_input.dart';
 import 'package:pokerapp/resources/app_config.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
-import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/screens/main_screens/profile_page_view/profile_page_view_new.dart';
-import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
@@ -44,7 +38,7 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
   TextEditingController _controller = TextEditingController();
   ClubHomePageModel _clubModel;
   bool _loading = true;
-
+  bool updated = false;
   @override
   void initState() {
     _clubModel = widget.clubModel;
@@ -83,7 +77,14 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
             theme: theme,
             context: context,
             titleText: _appScreenText['title'],
-            subTitleText: "Code : ${_clubModel.clubCode}",
+            subTitleText: "Code : ${widget.clubModel.clubCode}",
+            onBackHandle: () async {
+              // save club settings
+              if (updated) {
+                await updateClubSettings();
+              }
+              Navigator.of(context).pop(updated);
+            },
           ),
           body: _loading
               ? Center(child: CircularProgressWidget())
@@ -148,25 +149,6 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
                                   child: Text("${_clubModel.clubName}",
                                       style: AppDecorators.getHeadLine2Style(
                                           theme: theme)),
-
-                                  // child: Row(
-                                  //   mainAxisAlignment: MainAxisAlignment.center,
-                                  //   children: [
-
-                                  //    // AppDimensionsNew.getHorizontalSpace(8),
-                                  //     // RoundIconButton(
-                                  //     //   icon: Icons.edit,
-                                  //     //   bgColor: theme.fillInColor,
-                                  //     //   iconColor: theme.accentColor,
-                                  //     //   size: 12.dp,
-                                  //     //   onTap: () async {
-                                  //     //     await _updateClubDetails(
-                                  //     //         SettingType.CLUB_NAME, theme);
-                                  //     //     // Fetch user details from server
-                                  //     //   },
-                                  //     // ),
-                                  //   ],
-                                  // ),
                                 ),
                               ],
                             ),
@@ -296,6 +278,82 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
                                   ),
                                 )),
                           ],
+                        ),
+                      ),
+
+                      Visibility(
+                        visible: _clubModel.isOwner,
+                        child: Container(
+                          decoration: AppDecorators.tileDecoration(theme),
+                          padding:
+                              EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                          margin:
+                              EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Manager Roles",
+                                style: AppDecorators.getAccentTextStyle(
+                                    theme: theme),
+                                textAlign: TextAlign.center,
+                              ),
+                              // _buildRadio(
+                              //     value: _clubModel.role.viewMemberActivities,
+                              //     label: 'Can See Member Activities',
+                              //     onChange: (v) async {
+                              //       updated = true;
+                              //     },
+                              //     theme: theme),
+                              _buildRadio(
+                                  value: _clubModel.role.seeTips,
+                                  label: 'Can See Tips',
+                                  onChange: (v) async {
+                                    _clubModel.role.seeTips = v;
+                                    updated = true;
+                                  },
+                                  theme: theme),
+                              _buildRadio(
+                                  value: _clubModel.role.makeAnnouncement,
+                                  label: 'Can Make Announcement',
+                                  onChange: (v) async {
+                                    updated = true;
+                                    _clubModel.role.makeAnnouncement = v;
+                                  },
+                                  theme: theme),
+                              _buildRadio(
+                                  value: _clubModel.role.hostGames,
+                                  label: 'Can Host Games',
+                                  onChange: (v) async {
+                                    _clubModel.role.hostGames = v;
+                                  },
+                                  theme: theme),
+                              _buildRadio(
+                                  value: _clubModel.role.approveBuyin,
+                                  label: 'Can Approve Buyin',
+                                  onChange: (v) async {
+                                    _clubModel.role.approveBuyin = v;
+                                    updated = true;
+                                  },
+                                  theme: theme),
+                              _buildRadio(
+                                  value: _clubModel.role.viewMemberActivities,
+                                  label: 'Can View Member Activities',
+                                  onChange: (v) async {
+                                    updated = true;
+                                    _clubModel.role.viewMemberActivities = v;
+                                  },
+                                  theme: theme),
+                              _buildRadio(
+                                  value: _clubModel.role.canUpdateCredits,
+                                  label: 'Can Update Credits',
+                                  onChange: (v) async {
+                                    updated = true;
+                                    _clubModel.role.canUpdateCredits = v;
+                                  },
+                                  theme: theme),
+                            ],
+                          ),
                         ),
                       ),
 
@@ -496,7 +554,7 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
           ));
       log("REQUEST : ${request.url}");
       request.files.add(await MultipartFile.fromPath('file', image.path));
-      request.fields['clubCode'] = widget.clubModel.clubCode;
+      request.fields['clubCode'] = _clubModel.clubCode;
       request.headers['Authorization'] = 'jwt ${AppConfig.jwt}';
 
       var res = await request.send();
@@ -513,6 +571,15 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
     ClubUpdateInput input = ClubUpdateInput(picUrl: '');
 
     updateClubAPICall(input);
+  }
+
+  Future<void> updateClubSettings() async {
+    if (updated) {
+      ConnectionDialog.show(context: context, loadingText: "Updating settings...");
+      await ClubsService.updateManagerRole(_clubModel.clubCode, _clubModel.role);
+      log('updateClubSettings');
+      ConnectionDialog.dismiss(context: context);
+    }
   }
 }
 
