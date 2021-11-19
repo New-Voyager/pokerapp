@@ -136,14 +136,14 @@ class LiveGameItem extends StatelessWidget {
                                 ),
                                 AppDimensionsNew.getVerticalSizedBox(4.ph),
                                 Text(
-                                  "${_appScreenText['gameId']} - ${game.gameCode}",
+                                  "${_appScreenText['gameId']}: ${game.gameCode}",
                                   style: AppDecorators.getSubtitle2Style(
                                       theme: theme),
                                 ),
                                 AppDimensionsNew.getVerticalSizedBox(2.ph),
                                 Text(
                                   GameModelNew.getSeatsAvailble(game) > 0
-                                      ? "${game.maxPlayers} ${_appScreenText['openSeats']}"
+                                      ? "${game.maxPlayers - game.tableCount} ${_appScreenText['openSeats']}"
                                       : game.waitlistCount > 0
                                           ? "${_appScreenText['tableIsFull']} (${game.waitlistCount} ${_appScreenText['waiting']})"
                                           : "${_appScreenText['tableIsFull']}",

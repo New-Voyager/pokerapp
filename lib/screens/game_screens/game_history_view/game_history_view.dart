@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_date_pickers/flutter_date_pickers.dart' as fdp;
 import 'package:pokerapp/main_helper.dart';
+import 'package:pokerapp/models/app_state.dart';
 import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
@@ -14,6 +15,7 @@ import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/game_screens/game_history_view/game_history_item_new.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/club_interior_service.dart';
+import 'package:pokerapp/services/test/mock_data.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:provider/provider.dart';
@@ -40,7 +42,14 @@ class _GameHistoryViewState extends State<GameHistoryView>
   List<GameHistoryModel> _prevGames;
 
   _fetchData() async {
-    _prevGames = await ClubInteriorService.getGameHistory(widget.clubCode);
+    var appState = Provider.of<AppState>(context, listen: false);
+
+    if (appState != null && appState.mockScreens) {
+      _prevGames = await MockData.getGameHistory(widget.clubCode);
+    } else {
+      _prevGames = await ClubInteriorService.getGameHistory(widget.clubCode);
+    }
+
     _loadingData = false;
     if (mounted) setState(() {});
   }
