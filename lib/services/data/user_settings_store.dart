@@ -14,7 +14,7 @@ class UserSettingsStore {
 
   static const String VALUE_DEFAULT_TABLE = "default-table";
   static const String VALUE_DEFAULT_BACKDROP = "default-backdrop";
-  static const String VALUE_DEFAULT_NAMEPLATE = "1";
+  static const String VALUE_DEFAULT_NAMEPLATE = "0";
   static const String VALUE_DEFAULT_BETDIAL = "default-betdial";
   static const String VALUE_DEFAULT_CARDFACE = "default-cardface";
   static const String VALUE_DEFAULT_CARDBACK = "default-cardback";

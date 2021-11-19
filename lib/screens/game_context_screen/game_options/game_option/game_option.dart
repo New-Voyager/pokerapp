@@ -24,6 +24,7 @@ import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/numeric_keyboard2.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/buttons.dart';
+import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:pokerapp/widgets/radio_list_widget.dart';
 import 'package:pokerapp/widgets/switch_widget.dart';
 import 'package:provider/provider.dart';
@@ -239,8 +240,13 @@ class _GameOptionState extends State<GameOption> {
           theme: theme,
           caption: _appScreenText['standup'],
           icon: Icons.exit_to_app_sharp,
-          onTap: () {
-            this.onLeave();
+          onTap: () async {
+            final response = await showPrompt(
+                context, 'Standup', "Do you want to leave the game?",
+                positiveButtonText: 'Yes', negativeButtonText: 'No');
+            if (response != null && response == true) {
+              this.onLeave();
+            }
           },
         ),
       ]);
@@ -306,8 +312,13 @@ class _GameOptionState extends State<GameOption> {
           theme: theme,
           caption: _appScreenText['terminate'],
           icon: Icons.cancel,
-          onTap: () {
-            this.onEndGame();
+          onTap: () async {
+            final response = await showPrompt(
+                context, 'Terminate', "Do you want to terminate the game?",
+                positiveButtonText: 'Yes', negativeButtonText: 'No');
+            if (response != null && response == true) {
+              this.onEndGame();
+            }
           },
         ),
       );
