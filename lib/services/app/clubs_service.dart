@@ -543,4 +543,26 @@ class ClubsService {
 
     return res ?? false;
   }
+
+  static Future<bool> updateManagerRole(String clubCode, ManagerRole role) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    Map<String, dynamic> variables = {
+      "clubCode": clubCode,
+      "role": role.toJson(),
+    };
+    final String query = """
+        mutation ucs(\$clubCode:String! \$role:ManagerRoleInput!) {
+          ret: updateManagerRole(clubCode:\$clubCode, role:\$role)
+        }
+    """;
+    QueryResult result = await _client.mutate(
+      MutationOptions(document: gql(query), variables: variables),
+    );
+
+    if (result.hasException) return null;
+
+    bool res = result.data['ret'];
+    return res ?? false;
+  }  
 }

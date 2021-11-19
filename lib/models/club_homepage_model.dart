@@ -2,6 +2,30 @@ import 'package:flutter/cupertino.dart';
 import 'package:pokerapp/models/club_weekly_activity_model.dart';
 import 'package:pokerapp/models/newmodels/game_model_new.dart';
 
+class ManagerRole {
+  bool approveMembers = true;
+  bool seeTips = true;
+  bool makeAnnouncement = true;
+  bool sendPrivateMessage = true;
+  bool hostGames = true;
+  bool approveBuyin = true;
+  bool viewMemberActivities = true;
+  bool canUpdateCredits = true;
+
+  dynamic toJson() {
+    return {
+      "approveMembers": approveMembers,
+      "seeTips": seeTips,
+      "makeAnnouncement": makeAnnouncement,
+      "sendPrivateMessage": sendPrivateMessage,
+      "hostGames": hostGames,
+      "approveBuyin": approveBuyin,
+      "viewMemberActivities": viewMemberActivities,
+      "canUpdateCredits": canUpdateCredits,
+    };
+  }
+}
+
 class ClubHomePageModel extends ChangeNotifier {
   // GraphQL query to get data to populate club home page
   static String query = """
@@ -22,7 +46,17 @@ class ClubHomePageModel extends ChangeNotifier {
         picUrl
         showHighRankStats
         trackMemberCredit
-        availableCredit        
+        availableCredit
+        managerRole {
+          approveMembers
+          seeTips
+          makeAnnouncement
+          sendPrivateMessage
+          hostGames
+          approveBuyin
+          viewMemberActivities
+          canUpdateCredits
+        }        
       }
       liveGames(clubCode: \$clubCode) {
         status
@@ -58,6 +92,7 @@ class ClubHomePageModel extends ChangeNotifier {
   bool trackMemberCredit;
   int availableCredit;
   int clubCoins; // filled for club owner and manager
+  ManagerRole role = ManagerRole();
   ClubHomePageModel(String clubCode, String clubName) {
     this.clubCode = clubCode;
     this.clubName = clubName;
@@ -88,6 +123,17 @@ class ClubHomePageModel extends ChangeNotifier {
     this.trackMemberCredit = member['trackMemberCredit'] ?? false;
     if (member['availableCredit'] != null) {
       this.availableCredit = int.parse(member['availableCredit'].toString());
+    }
+    if (data['member']['managerRole'] != null) {
+      dynamic role = data['member']['managerRole'];
+      this.role.approveBuyin = role['approveBuyin'];
+      this.role.seeTips = role['seeTips'];
+      this.role.makeAnnouncement = role['makeAnnouncement'];
+      this.role.sendPrivateMessage = role['sendPrivateMessage'];
+      this.role.hostGames = role['hostGames'];
+      this.role.approveMembers = role['approveMembers'];
+      this.role.viewMemberActivities = role['viewMemberActivities'];
+      this.role.canUpdateCredits = role['canUpdateCredits'];
     }
   }
 }
