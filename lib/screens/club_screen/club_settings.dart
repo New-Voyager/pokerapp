@@ -77,7 +77,7 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
             theme: theme,
             context: context,
             titleText: _appScreenText['title'],
-            subTitleText: "Code : ${_clubModel.clubCode}",
+            subTitleText: "Code : ${widget.clubModel.clubCode}",
             onBackHandle: () async {
               // save club settings
               if (updated) {
@@ -299,57 +299,57 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
                                 textAlign: TextAlign.center,
                               ),
                               // _buildRadio(
-                              //     value: widget.clubModel.role.viewMemberActivities,
+                              //     value: _clubModel.role.viewMemberActivities,
                               //     label: 'Can See Member Activities',
                               //     onChange: (v) async {
                               //       updated = true;
                               //     },
                               //     theme: theme),
                               _buildRadio(
-                                  value: widget.clubModel.role.seeTips,
+                                  value: _clubModel.role.seeTips,
                                   label: 'Can See Tips',
                                   onChange: (v) async {
-                                    widget.clubModel.role.seeTips = v;
+                                    _clubModel.role.seeTips = v;
                                     updated = true;
                                   },
                                   theme: theme),
                               _buildRadio(
-                                  value: widget.clubModel.role.makeAnnouncement,
+                                  value: _clubModel.role.makeAnnouncement,
                                   label: 'Can Make Announcement',
                                   onChange: (v) async {
                                     updated = true;
-                                    widget.clubModel.role.makeAnnouncement = v;
+                                    _clubModel.role.makeAnnouncement = v;
                                   },
                                   theme: theme),
                               _buildRadio(
-                                  value: widget.clubModel.role.hostGames,
+                                  value: _clubModel.role.hostGames,
                                   label: 'Can Host Games',
                                   onChange: (v) async {
-                                    widget.clubModel.role.hostGames = v;
+                                    _clubModel.role.hostGames = v;
                                   },
                                   theme: theme),
                               _buildRadio(
-                                  value: widget.clubModel.role.approveBuyin,
+                                  value: _clubModel.role.approveBuyin,
                                   label: 'Can Approve Buyin',
                                   onChange: (v) async {
-                                    widget.clubModel.role.approveBuyin = v;
+                                    _clubModel.role.approveBuyin = v;
                                     updated = true;
                                   },
                                   theme: theme),
                               _buildRadio(
-                                  value: widget.clubModel.role.viewMemberActivities,
+                                  value: _clubModel.role.viewMemberActivities,
                                   label: 'Can View Member Activities',
                                   onChange: (v) async {
                                     updated = true;
-                                    widget.clubModel.role.viewMemberActivities = v;
+                                    _clubModel.role.viewMemberActivities = v;
                                   },
                                   theme: theme),
                               _buildRadio(
-                                  value: widget.clubModel.role.canUpdateCredits,
+                                  value: _clubModel.role.canUpdateCredits,
                                   label: 'Can Update Credits',
                                   onChange: (v) async {
                                     updated = true;
-                                    widget.clubModel.role.canUpdateCredits = v;
+                                    _clubModel.role.canUpdateCredits = v;
                                   },
                                   theme: theme),
                             ],
@@ -554,7 +554,7 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
           ));
       log("REQUEST : ${request.url}");
       request.files.add(await MultipartFile.fromPath('file', image.path));
-      request.fields['clubCode'] = widget.clubModel.clubCode;
+      request.fields['clubCode'] = _clubModel.clubCode;
       request.headers['Authorization'] = 'jwt ${AppConfig.jwt}';
 
       var res = await request.send();
