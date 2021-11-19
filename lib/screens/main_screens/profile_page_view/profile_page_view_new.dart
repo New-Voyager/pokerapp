@@ -26,7 +26,6 @@ import 'package:pokerapp/widgets/card_form_text_field.dart';
 import 'package:pokerapp/widgets/custom_divider.dart';
 import 'package:pokerapp/widgets/heading_widget.dart';
 import 'package:provider/provider.dart';
-import 'package:package_info/package_info.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class ProfilePageNew extends StatefulWidget {
@@ -344,10 +343,8 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                             .bookmarkedHandsImagePath,
                                         index: 3,
                                         onTapFunction: () async {
-                                          PackageInfo packageInfo =
-                                              await PackageInfo.fromPlatform();
                                           String version =
-                                              "v${packageInfo.version}(${packageInfo.buildNumber})";
+                                              "${versionNumber}(${releaseDate})";
                                           Navigator.of(context).pushNamed(
                                             Routes.help,
                                             arguments: version,

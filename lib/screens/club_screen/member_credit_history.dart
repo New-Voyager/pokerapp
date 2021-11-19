@@ -1,6 +1,6 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:intl/intl.dart';
 import 'package:pokerapp/models/club_members_model.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
@@ -31,6 +31,7 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
   bool loading;
   ClubMemberModel member;
   bool changed = false;
+  DataTableSource _dataTableSource;
   @override
   void initState() {
     super.initState();
@@ -45,6 +46,8 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
           widget.clubCode, widget.playerId);
       history = await ClubInteriorService.getCreditHistory(
           widget.clubCode, widget.playerId);
+      // history = MemberCreditHistory.getMockData();
+      _dataTableSource = DataCreditSource(items: history, theme: theme);
     } catch (err) {}
     loading = false;
     setState(() {});
@@ -303,16 +306,21 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
       decoration: AppDecorators.bgRadialGradient(theme),
       child: Scaffold(
         backgroundColor: Colors.transparent,
+        appBar: CustomAppBar(
+          theme: theme,
+          context: context,
+          titleText: member.name,
+        ),
         body: SafeArea(
           child: Container(
             padding: EdgeInsets.all(16.0.pw),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                buildBanner(),
-                dividingSpace(),
-                Divider(color: Colors.white),
-                dividingSpace(),
+                // buildBanner(),
+                // dividingSpace(),
+                // Divider(color: Colors.white),
+                // dividingSpace(),
                 Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -349,26 +357,7 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
                               })
                     ]),
                 dividingSpace(),
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Activities",
-                        style: TextStyle(
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      Text(
-                        "Balance",
-                        style: TextStyle(
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ]),
-                dividingSpace(),
-                activities(),
+                activitiesTable(),
               ],
             ),
           ),
@@ -403,6 +392,53 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
     );
   }
 
+  // activities table using data source with paginationtableclass
+  activitiesTable() {
+    TextStyle headingStyle = AppDecorators.getAccentTextStyle(theme: theme)
+        .copyWith(fontSize: 8.dp, fontWeight: FontWeight.normal);
+
+    return PaginatedDataTable(
+      columnSpacing: 10.0,
+      rowsPerPage: 10,
+      onSelectAll: (b) {},
+      showFirstLastButtons: true,
+      arrowHeadColor: theme.accentColor,
+      columns: [
+        DataColumn(
+          label: Text(
+            "Date",
+            style: headingStyle,
+          ),
+        ),
+        DataColumn(
+          label: Text(
+            "Note",
+            style: headingStyle,
+          ),
+        ),
+        DataColumn(
+          label: Text(
+            "Type",
+            style: headingStyle,
+          ),
+        ),
+        DataColumn(
+          label: Text(
+            "Amount",
+            style: headingStyle,
+          ),
+        ),
+        DataColumn(
+          label: Text(
+            "Credits",
+            style: headingStyle,
+          ),
+        ),
+      ],
+      source: _dataTableSource,
+    );
+  }
+
   Widget bannerActionButton({IconData icon, String text, onPressed}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -431,4 +467,125 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
   Widget dividingSpace() {
     return SizedBox(width: 16.0.ph, height: 16.0.ph);
   }
+}
+
+class DataCreditSource extends DataTableSource {
+  List<MemberCreditHistory> items;
+  DateFormat format = DateFormat("dd MMM");
+  AppTheme theme;
+
+  DataCreditSource({this.items, this.theme}) {
+    format.add_jm();
+  }
+
+  @override
+  DataRow getRow(int index) {
+    MemberCreditHistory item = items[index];
+    String text = format.format(item.updatedDate);
+    List<String> toks = text.split(' ');
+    String day = '${toks[0]} ${toks[1]}\n${toks[2]}${toks[3]}';
+    String type;
+    String amount = DataFormatter.chipsFormat(item.amount);
+    Color amountColor = Colors.white;
+    Color typeColor = Colors.white;
+    String notes = item.notes;
+    if (item.amount < 0) {
+      amountColor = Colors.red;
+    } else if (item.amount > 0) {
+      amountColor = Colors.green;
+    }
+    if (item.updateType == 'BUYIN') {
+      type = 'Buyin';
+      typeColor = Colors.redAccent;
+      notes = '${item.gameCode}';
+    }
+    if (item.updateType == 'GAME_RESULT') {
+      type = 'Result';
+      typeColor = Colors.yellowAccent;
+      notes = '${item.gameCode}';     
+    }
+    if (item.updateType == 'ADD' || item.updateType == 'DEDUCT') {
+      type = 'Adjust';
+      typeColor = Colors.lightBlue;
+    }
+
+    if (item.updateType == 'CHANGE') {
+      type = 'Set';
+      amountColor = Colors.white;
+      //typeColor = Colors.cyan;
+    } 
+
+    return DataRow.byIndex(
+      index: index,
+      cells: [
+        DataCell(
+          Container(
+            width: 50.pw,
+            alignment: Alignment.center,
+            child: FittedBox(child: Text(
+              day,
+              textAlign: TextAlign.start,
+              style: 
+              AppDecorators.getSubtitle1Style(theme: theme).copyWith(fontSize: 8.dp),
+            )),
+          ),
+        ),
+        DataCell(
+          Container(
+            width: 100,
+            child: Text(
+              notes,
+              style: AppDecorators.getSubtitle1Style(theme: theme),
+            ),
+          ),
+        ),
+        DataCell(
+          Text(
+            type,
+            style: AppDecorators.getSubtitle1Style(theme: theme).copyWith(color: typeColor),
+          ),
+        ),        
+        DataCell(
+          Container(
+            alignment: Alignment.bottomRight,
+            child:
+          Text(
+            amount,
+            textAlign: TextAlign.right,
+            style: AppDecorators.getSubtitle1Style(theme: theme).
+              copyWith(color: amountColor,fontWeight: FontWeight.bold),
+          )),
+        ),
+        DataCell(
+          Container(
+            alignment: Alignment.bottomRight,
+            child:
+
+          Text(
+            DataFormatter.chipsFormat(item.updatedCredits),
+            textAlign: TextAlign.right,
+            style: AppDecorators.getSubtitle1Style(theme: theme),
+          )),
+        ),
+      ],
+      color:
+          MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
+        if (index % 2 == 0) {
+          return Colors.blueGrey[800];
+        } else {
+          return Colors.black54;
+        }
+      }),
+    );
+  }
+
+  @override
+  int get rowCount =>
+      items.length; // Manipulate this to which ever value you wish
+
+  @override
+  bool get isRowCountApproximate => false;
+
+  @override
+  int get selectedRowCount => 0;
 }

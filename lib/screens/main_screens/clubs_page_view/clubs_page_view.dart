@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/exceptions/exceptions.dart';
 import 'package:pokerapp/main_helper.dart';
+import 'package:pokerapp/models/app_state.dart';
 import 'package:pokerapp/models/club_model.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
@@ -19,6 +20,7 @@ import 'package:pokerapp/screens/main_screens/clubs_page_view/widgets/club_item.
 import 'package:pokerapp/screens/main_screens/clubs_page_view/widgets/create_club_bottom_sheet.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
 import 'package:pokerapp/services/nats/nats.dart';
+import 'package:pokerapp/services/test/mock_data.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
@@ -128,7 +130,13 @@ class _ClubsPageViewState extends State<ClubsPageView>
   }
 
   Future<void> _fillClubs() async {
-    _clubs = await ClubsService.getMyClubs();
+    var appState = Provider.of<AppState>(context, listen: false);
+
+    if (appState != null && appState.mockScreens) {
+      _clubs = await MockData.getClubs();
+    } else {
+      _clubs = await ClubsService.getMyClubs();
+    }
     for (final club in _clubs) {
       log('club: ${club.clubName} status: ${club.memberStatus}');
     }

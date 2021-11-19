@@ -4,6 +4,7 @@ import 'club_model.dart';
 
 class AppState extends ChangeNotifier {
   int currentIndex = 0;
+  bool mockScreens = false;
   bool newGame = false;
   bool gameEnded = false;
 

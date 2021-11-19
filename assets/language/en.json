@@ -101,7 +101,7 @@
     "liveGameItem": {
         "buyin": "BuyIn",
         "defaultType": "Game",
-        "gameId": "GameID",
+        "gameId": "Game Code",
         "openSeats": "Open Seats",
         "tableIsFull": "Table is Full",
         "waiting": "waiting",

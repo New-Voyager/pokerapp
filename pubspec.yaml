@@ -3,7 +3,7 @@ description: A new Flutter application.
 
 publish_to: "none"
 
-version: 0.5.9
+version: 0.5.32
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -135,6 +135,7 @@ flutter:
     - assets/images/card_face/
     - assets/language/
     - assets/json/nameplates.json
+    - assets/json/mockdata.json
 
   fonts:
     - family: Lato

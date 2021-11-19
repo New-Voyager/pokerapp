@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/club_member_status.dart';
 import 'package:pokerapp/utils/formatter.dart';
@@ -251,5 +253,69 @@ class MemberCreditHistory {
     history.amount = double.parse((json['amount'] ?? '0').toString());
     history.updatedDate = DateTime.tryParse(json['updateDate'] ?? '');
     return history;
+  }
+
+  static List<MemberCreditHistory> getMockData() {
+    String data = '''{
+            "history": [
+              {
+                "adminUuid": "xyx",
+                "adminName": "steve",
+                "notes": "Fee back",
+                "updateType": "DEDUCT",
+                "amount": -35,
+                "updatedCredits": 65,
+                "updateDate": "2021-11-21T10:00:00Z"
+              },
+              {
+                "adminUuid": "xyx",
+                "adminName": "steve",
+                "notes": "Recd from sean",
+                "updateType": "DEDUCT",
+                "amount": -400,
+                "updatedCredits": 100,
+                "updateDate": "2021-11-21T09:00:00Z"
+              },
+              {
+                "adminUuid": "xyx",
+                "adminName": "steve",
+                "notes": "hh bonus",
+                "updateType": "ADD",
+                "amount": 100,
+                "updatedCredits": 500,
+                "updateDate": "2021-11-21T09:00:00Z"
+              },
+              {
+                "notes": "Game: ABCDE",
+                "updateType": "GAME_RESULT",
+                "amount": 400,
+                "updatedCredits": 400,
+                "updateDate": "2021-11-20T09:00:00Z"
+              },
+              {
+                "notes": "Game: ABCDE",
+                "updateType": "BUYIN",
+                "amount": -200,
+                "updatedCredits": 0,
+                "updateDate": "2021-11-20T08:00:00Z"
+              },
+              {
+                "adminUuid": "xyx",
+                "adminName": "steve",
+                "notes": "Set Credit",
+                "updateType": "CHANGE",
+                "amount": 200,
+                "updatedCredits": 200,
+                "updateDate": "2021-11-20T07:00:00Z"
+              }
+            ]
+        }''';
+    final json = jsonDecode(data);
+    List<MemberCreditHistory> ret = [];
+    for(final item in json['history']) {
+      ret.add(MemberCreditHistory.fromJson(item));
+    }
+
+    return ret;
   }
 }
