@@ -6,6 +6,7 @@ import 'package:pokerapp/screens/auth_screens/registration_new.dart';
 import 'package:pokerapp/screens/club_screen/announcements_view.dart';
 import 'package:pokerapp/screens/club_screen/bookmarked_hands.dart';
 import 'package:pokerapp/screens/club_screen/botscripts.dart';
+import 'package:pokerapp/screens/club_screen/high_hand_analysis_screen/high_hand_analysis_screen.dart';
 import 'package:pokerapp/screens/club_screen/member_activities_view.dart';
 import 'package:pokerapp/screens/club_screen/member_credit_history.dart';
 import 'package:pokerapp/screens/club_screen/club_main_screen.dart';
@@ -121,6 +122,8 @@ class Routes {
   static const String bot_scripts = '/bot_scripts';
   // Hand Statistics screen
   static const String hand_statistics = "/hand_statistics";
+  // High Rank Analysis screen
+  static const String high_rank_analysis_screen = '/high_rank_analysis_screen';
 
   // Club Statistics screen
   static const String club_statistics = "/club_statistics";
@@ -214,6 +217,14 @@ class Routes {
         return _getPageRoute(
           routeName: settings.name,
           viewToShow: ClubMembersView(clubHomePageModel),
+        );
+
+      case high_rank_analysis_screen:
+        var args = settings.arguments as dynamic;
+
+        return _getPageRoute(
+          routeName: settings.name,
+          viewToShow: HighHandAnalysisScreen(args['clubCode']),
         );
 
       case message_page:

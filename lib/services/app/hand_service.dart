@@ -2,9 +2,11 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/main_helper.dart';
 import 'package:pokerapp/models/hand_history_model.dart';
 import 'package:pokerapp/models/handlog_model.dart';
+import 'package:pokerapp/screens/game_screens/highhand_log/grouped_list_view.dart';
 
 import 'auth_service.dart';
 
@@ -147,6 +149,21 @@ class HandService {
     mutation debugHand(\$gameCode:String!, \$handNum:Int!) {
       debugHandLog(gameCode: \$gameCode, handNum: \$handNum)
     }
+  """;
+
+  static String searchHandsQuery = """
+      query search(\$clubCode:String!, \$startDate:DateTime! \$endDate: DateTime!, \$gameTypes:[GameType!], \$minRank:Int!) {
+        hands: searchHands(clubCode:\$clubCode, 
+            startDate:\$startDate 
+            endDate:\$endDate 
+            gameTypes: \$gameTypes, 
+            minRank: \$minRank) {
+          rank
+          handNum
+          handTime
+          gameCode
+        }
+      }
   """;
 
   static Future<void> getAllHands(HandHistoryListModel model) async {
@@ -292,5 +309,32 @@ class HandService {
       return false;
     }
     return true;
+  }
+
+  static Future<dynamic> searchHands(String clubCode, DateTime startDate,
+      DateTime endDate, List<GameType> gameTypes, int minRank) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    List<String> gameTypesStr =
+        gameTypes.map((e) => e.toString().replaceAll('GameType.', '')).toList();
+    Map<String, dynamic> variables = {
+      "clubCode": clubCode,
+      "startDate": startDate.toIso8601String(),
+      "endDate": endDate.toIso8601String(),
+      "gameTypes": gameTypesStr,
+      "minRank": minRank,
+    };
+
+    QueryResult result = await _client.query(
+        QueryOptions(document: gql(searchHandsQuery), variables: variables));
+
+    if (result.hasException) {
+      return null;
+    }
+    List<SearchHighHandResult> ret = [];
+    for (final item in result.data['hands']) {
+      ret.add(SearchHighHandResult.fromJson(item));
+    }
+    return ret;
   }
 }

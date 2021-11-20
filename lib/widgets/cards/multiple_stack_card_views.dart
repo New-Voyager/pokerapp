@@ -188,7 +188,45 @@ class StackCardView02 extends StatelessWidget {
         );
       }
     }
-    return Row(children: cardViews);
+    return Row(
+      children: cardViews,
+    );
+  }
+}
+
+class StackCardView03 extends StatelessWidget {
+  final List<int> cards;
+
+  StackCardView03({
+    @required this.cards,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    List<Widget> cardViews = [];
+
+    if (cards != null) {
+      for (int c in this.cards) {
+        CardObject card = CardHelper.getCard(c);
+        card.cardType = CardType.HandLogOrHandHistoryCard;
+        cardViews.add(card.widget);
+        cardViews.add(SizedBox(width: 2.0));
+      }
+    }
+    // hide cards
+    if (this.cards.length < 5) {
+      // show back of the cards here
+      for (int i = 0; i < 5 - this.cards.length; i++) {
+        CardObject card = CardHelper.getCard(0);
+        card.cardType = CardType.HandLogOrHandHistoryCard;
+        cardViews.add(card.widget);
+        cardViews.add(SizedBox(width: 2.0));
+      }
+    }
+    return Row(
+      children: cardViews,
+      mainAxisAlignment: MainAxisAlignment.center,
+    );
   }
 }
 

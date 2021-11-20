@@ -3,22 +3,26 @@ import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
-class RadioListWidget extends StatelessWidget {
-  final List<int> values;
-  final int defaultValue;
-  final void Function(int value) onSelect;
+class RadioListWidget<T> extends StatelessWidget {
+  final List<T> values;
+  final T defaultValue;
+  final void Function(T value) onSelect;
+  final int padding;
+  final bool wrap;
 
   RadioListWidget({
     @required this.values,
     @required this.onSelect,
     this.defaultValue,
+    this.padding = 5,
+    this.wrap = true,
   });
 
   Widget _buildItem({
     AppTheme theme,
-    int v,
+    T v,
   }) =>
-      Consumer<ValueNotifier<int>>(
+      Consumer<ValueNotifier<T>>(
         builder: (_, vnCurrValue, __) => InkWell(
           onTap: () {
             vnCurrValue.value = v;
@@ -32,11 +36,11 @@ class RadioListWidget extends StatelessWidget {
                   : theme.primaryColorWithDark(),
               borderRadius: BorderRadius.circular(5.0),
             ),
+            padding: EdgeInsets.all(padding.toDouble()),
             height: 32.ph,
-            width: 32.pw,
             alignment: Alignment.center,
             child: Text(
-              v == -1 ? '∞' : v.toString(),
+              v.toString(),
               style: TextStyle(
                 fontSize: 10.dp,
                 color: theme.supportingColor,
@@ -57,7 +61,7 @@ class RadioListWidget extends StatelessWidget {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       physics: BouncingScrollPhysics(),
-      child: Row(
+      child: Wrap(
         children: values
             .map<Widget>(
               (v) => _buildItem(v: v, theme: theme),
@@ -70,8 +74,8 @@ class RadioListWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = AppTheme.getTheme(context);
-    return ListenableProvider<ValueNotifier<int>>(
-      create: (_) => ValueNotifier<int>(defaultValue),
+    return ListenableProvider<ValueNotifier<T>>(
+      create: (_) => ValueNotifier<T>(defaultValue),
       child: Container(
         padding: const EdgeInsets.symmetric(
           horizontal: 16.0,

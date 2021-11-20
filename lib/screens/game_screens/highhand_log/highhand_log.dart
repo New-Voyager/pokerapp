@@ -42,6 +42,9 @@ class _HighHandLogViewState extends State<HighHandLogView>
   AppTextScreen _appScreenText;
   void _fetchData() async {
     this.hhWinners = await GameService.getHighHandLog(widget.gameCode);
+    for (final winner in this.hhWinners) {
+      winner.gameCode = widget.gameCode;
+    }
     loadingDone = true;
     setState(() {});
   }
@@ -81,7 +84,6 @@ class _HighHandLogViewState extends State<HighHandLogView>
                               )
                             : GroupedHandLogListView(
                                 winners: this.hhWinners,
-                                gameCode: widget.gameCode,
                                 clubCode: widget.clubCode,
                                 theme: theme,
                               ),

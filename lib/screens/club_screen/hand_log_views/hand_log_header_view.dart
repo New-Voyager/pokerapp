@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_stages.dart';
+import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/handlog_model.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
@@ -19,6 +20,8 @@ class HandLogHeaderView extends StatelessWidget {
 
     final board1Cards = _handResult.getBoard1ShownCards();
     final board2Cards = _handResult.getBoard2ShownCards();
+    final gameType = gameTypeFromStr(_handResult.gameType);
+    final gameTypeStr = gameTypeShortStr(gameType);
     return Consumer<AppTheme>(
       builder: (_, theme, __) => Container(
         margin: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -32,11 +35,11 @@ class HandLogHeaderView extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "${_appScreenText['GAME']}: " + _handResult.gameId,
+                  "${_appScreenText['GAME']}: " + _handResult.gameCode,
                   style: AppDecorators.getSubtitle2Style(theme: theme),
                 ),
                 Text(
-                  _handResult.gameType,
+                  gameTypeStr,
                   style: AppDecorators.getHeadLine4Style(theme: theme),
                 ),
                 Text(

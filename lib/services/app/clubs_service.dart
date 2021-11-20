@@ -544,7 +544,8 @@ class ClubsService {
     return res ?? false;
   }
 
-  static Future<bool> updateManagerRole(String clubCode, ManagerRole role) async {
+  static Future<bool> updateManagerRole(
+      String clubCode, ManagerRole role) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
 
     Map<String, dynamic> variables = {
@@ -564,5 +565,5 @@ class ClubsService {
 
     bool res = result.data['ret'];
     return res ?? false;
-  }  
+  }
 }

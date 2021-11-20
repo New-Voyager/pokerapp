@@ -18,6 +18,7 @@ import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/widgets/button_widget.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
+import 'package:pokerapp/widgets/child_widgets.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:pokerapp/widgets/heading_widget.dart';
 import 'package:pokerapp/widgets/radio_list_widget.dart';
@@ -109,29 +110,6 @@ class NewGameSettings2 extends StatelessWidget {
         ),
       );
 
-  Widget _buildDecoratedContainer({
-    Widget child,
-    List<Widget> children,
-    @required AppTheme theme,
-  }) =>
-      Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 10.0,
-          vertical: 15.0,
-        ),
-        decoration: BoxDecoration(
-          color: theme.fillInColor,
-          borderRadius: BorderRadius.circular(5.0),
-        ),
-        child: children != null
-            ? Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                mainAxisSize: MainAxisSize.min,
-                children: children,
-              )
-            : child,
-      );
-
   Widget _buildSeperator(AppTheme theme) => Container(
         color: theme.fillInColor,
         width: double.infinity,
@@ -178,7 +156,7 @@ class NewGameSettings2 extends StatelessWidget {
   static const sepH10 = const SizedBox(width: 10.0);
 
   Widget _buildBreakConfig(AppTheme theme, NewGameModelProvider gmp) {
-    return _buildDecoratedContainer(
+    return DecoratedContainer(
       theme: theme,
       children: [
         SwitchWidget(
@@ -197,7 +175,7 @@ class NewGameSettings2 extends StatelessWidget {
                 : Column(
                     children: [
                       _buildLabel(_appScreenText['maxBreakTime'], theme),
-                      RadioListWidget(
+                      RadioListWidget<int>(
                         defaultValue: gmp.breakTime,
                         values: NewGameConstants.BREAK_WAIT_TIMES,
                         onSelect: (int value) {
@@ -213,7 +191,7 @@ class NewGameSettings2 extends StatelessWidget {
   }
 
   Widget _buildBuyinConfig(AppTheme theme, NewGameModelProvider gmp) {
-    return _buildDecoratedContainer(
+    return DecoratedContainer(
       theme: theme,
       children: [
         SwitchWidget(
@@ -232,7 +210,7 @@ class NewGameSettings2 extends StatelessWidget {
                 : Column(
                     children: [
                       _buildLabel(_appScreenText['buyinMaxTime'], theme),
-                      RadioListWidget(
+                      RadioListWidget<int>(
                         defaultValue: gmp.buyInWaitTime,
                         values: NewGameConstants.BUYIN_WAIT_TIMES,
                         onSelect: (int value) {
@@ -248,7 +226,7 @@ class NewGameSettings2 extends StatelessWidget {
   }
 
   Widget _buildButtonStraddleConfig(AppTheme theme, NewGameModelProvider gmp) {
-    return _buildDecoratedContainer(
+    return DecoratedContainer(
       theme: theme,
       children: [
         SwitchWidget(
@@ -303,7 +281,7 @@ class NewGameSettings2 extends StatelessWidget {
   }
 
   Widget _buildBombPotConfig(AppTheme theme, NewGameModelProvider gmp) {
-    return _buildDecoratedContainer(
+    return DecoratedContainer(
       theme: theme,
       children: [
         SwitchWidget(
@@ -326,7 +304,7 @@ class NewGameSettings2 extends StatelessWidget {
                       // bomb pot bet
                       _buildLabel(_appScreenText['bombPotBet'], theme),
 
-                      RadioListWidget(
+                      RadioListWidget<int>(
                         defaultValue: gmp.bombPotBet,
                         values: NewGameConstants.BOMB_POT_BET_SIZE,
                         onSelect: (int value) {
@@ -334,7 +312,7 @@ class NewGameSettings2 extends StatelessWidget {
                         },
                       ),
                       _buildLabel(_appScreenText['bombPotInterval'], theme),
-                      RadioListWidget(
+                      RadioListWidget<int>(
                         defaultValue: gmp.bombPotInterval,
                         values: NewGameConstants.BOMB_POT_INTERVALS,
                         onSelect: (int value) {
@@ -463,7 +441,7 @@ class NewGameSettings2 extends StatelessWidget {
                 /* players */
                 _buildLabel('PLAYERS', theme),
                 sepV8,
-                RadioListWidget(
+                RadioListWidget<int>(
                   defaultValue: gmp.maxPlayers,
                   values: [2, 4, 6, 8, 9],
                   onSelect: (int value) => gmp.maxPlayers = value,
@@ -511,7 +489,7 @@ class NewGameSettings2 extends StatelessWidget {
                 sepV20,
                 _buildLabel(_appScreenText['buyin'], theme),
                 sepV8,
-                _buildDecoratedContainer(
+                DecoratedContainer(
                   child: Column(children: [
                     Row(
                       children: [
@@ -577,7 +555,7 @@ class NewGameSettings2 extends StatelessWidget {
                 sepV20,
                 _buildLabel(_appScreenText["tips"], theme),
                 sepV8,
-                _buildDecoratedContainer(
+                DecoratedContainer(
                   child: Row(
                     children: [
                       /* min */
@@ -621,7 +599,7 @@ class NewGameSettings2 extends StatelessWidget {
                 sepV20,
                 _buildLabel(_appScreenText['actionTime'], theme),
                 sepV8,
-                RadioListWidget(
+                RadioListWidget<int>(
                   defaultValue: gmp.actionTime,
                   values: NewGameConstants.ACTION_TIMES,
                   onSelect: (int value) {
@@ -633,7 +611,7 @@ class NewGameSettings2 extends StatelessWidget {
                 sepV20,
                 _buildLabel(_appScreenText['gameTime'], theme),
                 sepV8,
-                RadioListWidget(
+                RadioListWidget<int>(
                   defaultValue: gmp.gameLengthInMins ~/ 60,
                   values: NewGameConstants.GAME_LENGTH,
                   onSelect: (int value) {
@@ -692,7 +670,7 @@ class NewGameSettings2 extends StatelessWidget {
 
                     /* sep */
                     sepV20,
-                    _buildDecoratedContainer(
+                    DecoratedContainer(
                       theme: theme,
                       children: [
                         /* allow audio conference */

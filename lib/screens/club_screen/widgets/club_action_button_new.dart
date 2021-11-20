@@ -162,6 +162,10 @@ class ClubActionButtonNew extends StatelessWidget {
                 arguments: clubModel,
               );
               break;
+            case ClubActions.HIGH_RANK_ANALYSIS:
+              Navigator.pushNamed(context, Routes.high_rank_analysis_screen,
+                  arguments: {'clubCode': clubModel.clubCode});
+              break;
           }
         },
         child: card,

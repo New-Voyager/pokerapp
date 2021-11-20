@@ -575,8 +575,10 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
 
   Future<void> updateClubSettings() async {
     if (updated) {
-      ConnectionDialog.show(context: context, loadingText: "Updating settings...");
-      await ClubsService.updateManagerRole(_clubModel.clubCode, _clubModel.role);
+      ConnectionDialog.show(
+          context: context, loadingText: "Updating settings...");
+      await ClubsService.updateManagerRole(
+          _clubModel.clubCode, _clubModel.role);
       log('updateClubSettings');
       ConnectionDialog.dismiss(context: context);
     }
