@@ -120,6 +120,7 @@ class _MainScreenState extends State<MainScreen>
         if (announcement.isImportant) {
           important.add(announcement);
         }
+        playerState.updateSysAnnounceReadDate();
         unreadAnnouncements++;
       }
     }
