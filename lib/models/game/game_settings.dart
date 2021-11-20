@@ -19,6 +19,7 @@ class GameSettings {
     this.doubleBoardBombPot,
     this.bombPotInterval,
     this.bombPotEveryHand,
+    this.bombPotNextHand,
     this.seatChangeAllowed,
     this.seatChangeTimeout,
     this.waitlistAllowed,
@@ -46,6 +47,7 @@ class GameSettings {
   int bombPotInterval;
   int bombPotIntervalInSecs;
   bool bombPotEveryHand;
+  bool bombPotNextHand;
   bool seatChangeAllowed;
   int seatChangeTimeout;
   bool waitlistAllowed;
@@ -74,6 +76,7 @@ class GameSettings {
       bombPotInterval: json["bombPotInterval"] ?? 15,
       // bombPotIntervalInSecs: json["bombPotIntervalInSecs"] ?? 15,
       bombPotEveryHand: json["bombPotEveryHand"] ?? false,
+      bombPotNextHand: json["bombPotNextHand"] ?? false,
       seatChangeAllowed: json["seatChangeAllowed"] ?? false,
       seatChangeTimeout: json["seatChangeTimeout"] ?? 10,
       waitlistAllowed: json["waitlistAllowed"] ?? false,
@@ -104,6 +107,7 @@ class GameSettings {
         "bombPotInterval": bombPotInterval,
         // "bombPotIntervalInSecs": bombPotIntervalInSecs,
         "bombPotEveryHand": bombPotEveryHand,
+        "bombPotNextHand": bombPotNextHand,
         "seatChangeAllowed": seatChangeAllowed,
         "seatChangeTimeout": seatChangeTimeout,
         "waitlistAllowed": waitlistAllowed,
