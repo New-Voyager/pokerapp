@@ -537,17 +537,24 @@ class IPhoneAttribs {
         },
         "holeCardDisplacementVisible": {
           "2": 30,
-          "4": 13,
-          "5": 13,
+          "4": 20,
+          "5": 20,
           "default": 20
         },        
         "holeCardScale": {
-          "2": 1.3,
-          "4": 1.25,
-          "5": 1.2,
+          "2": 1.50,
+          "4": 1.45,
+          "5": 1.25,
           "default": 1
         },
-        "holeCardViewOffset": "0, 65"
+        "seat": {
+          "scale": 1.0,
+          "holeCardOffset": "0, 0",
+          "holeCardScale": 1.0
+        },
+
+        "footerViewHeightScale": 0.45,
+        "holeCardViewOffset": "0, 50"
       }
     ''';
     Map<String, dynamic> overrideMap = jsonDecode(override);
