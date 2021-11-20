@@ -15,6 +15,7 @@ import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
+import 'package:pokerapp/screens/game_play_screen/bombpot_dialog.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/bottom_sheets/debuglog_bottomsheet.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/bottom_sheets/game_info_bottom_sheet.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/bottom_sheets/hand_history_bottomsheet.dart';
@@ -257,6 +258,17 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                             onClickHighHand(context);
                           })
                       : SizedBox.shrink(),
+                  SizedBox(width: 10.pw),
+
+                  // last hand
+                  CircleImageButton(
+                      theme: theme,
+                      svgAsset:
+                          'assets/images/game/bomb1.svg', //AppAssetsNew.lastHandPath,
+                      onTap: () async {
+                        vnShowMenuItems.value = false;
+                        await BombPotDialog.prompt(context: context, gameCode: widget.gameState.gameCode);
+                      }),
                   SizedBox(width: 10.pw),
                 ],
               ),
