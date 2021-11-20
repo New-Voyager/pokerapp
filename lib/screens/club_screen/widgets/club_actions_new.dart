@@ -223,7 +223,7 @@ class ClubActionsNew extends StatelessWidget {
           ClubActionButtonNew(
             this._clubHomePageModel,
             ClubActions.HIGH_RANK_ANALYSIS,
-            'Hand rank Analysis',
+            'Hand Rank\nAnalysis',
             // TODO: ADD TO APP SCREEN TEXT
             // appScreenText['botScripts'],
             SvgPicture.asset(

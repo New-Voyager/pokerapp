@@ -2,17 +2,22 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game_history_model.dart';
+import 'package:pokerapp/models/handlog_model.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
-import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/club_screen/high_hand_analysis_screen/dialogs/rank_card_selection_dialog.dart';
 import 'package:pokerapp/screens/game_screens/highhand_log/grouped_list_view.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
+import 'package:pokerapp/services/app/hand_service.dart';
+import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/widgets/button_widget.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/child_widgets.dart';
 import 'package:pokerapp/widgets/radio_list_widget.dart';
+import 'package:jiffy/jiffy.dart';
+import 'package:jiffy/src/enums/units.dart';
 import 'package:provider/provider.dart';
 
 class HighHandAnalysisScreen extends StatefulWidget {
@@ -25,8 +30,24 @@ class HighHandAnalysisScreen extends StatefulWidget {
 
 class _HighHandAnalysisScreenState extends State<HighHandAnalysisScreen> {
   final ValueNotifier<List<int>> _selectedCards = ValueNotifier<List<int>>([]);
-  bool loading = false;
-  List<HighHandWinner> result;
+  bool searching = false;
+  List<HighHandWinner> result = [];
+  bool filterSet = false;
+  bool closed = false;
+  List<GameType> selectedGames = [];
+
+  HHGroupType groupType = HHGroupType.HOURLY;
+  DateTime startDate;
+  DateTime endDate;
+  int minRank = 322;
+  List<GameType> gameTypes;
+  GameTypeSelection gameTypesWidget;
+
+  @override
+  void dispose() {
+    closed = true;
+    super.dispose();
+  }
 
   void _selectRankCards(BuildContext context) async {
     final rankCards = await RankCardSelectionDialog.show(
@@ -43,31 +64,105 @@ class _HighHandAnalysisScreenState extends State<HighHandAnalysisScreen> {
   @override
   void initState() {
     super.initState();
-    loading = true;
-    fetchData();
+    groupType = HHGroupType.HOURLY;
+    final now = DateTime.now();
+    startDate = DateTime(now.year, now.month, now.day, 0, 0, 0);
+    endDate = startDate.add(Duration(days: 1));
+    minRank = 322;
+    gameTypes = [];
+    gameTypes.addAll([
+      GameType.HOLDEM,
+      GameType.PLO,
+      GameType.PLO_HILO,
+      GameType.FIVE_CARD_PLO,
+      GameType.FIVE_CARD_PLO_HILO,
+    ]);
+    selectedGames.addAll(gameTypes);
+    // loading = true;
+    // fetchData();
   }
 
   void fetchData() async {
+    ConnectionDialog.show(context: context, loadingText: 'Searching ...');
     try {
-      loading = true;
-      dynamic json = jsonDecode(getHHLog());
-      List hhWinnersData = json['hhWinners'];
-      result = hhWinnersData.map((e) {
-        HighHandWinner winner = new HighHandWinner.fromJson(e);
-        //winner.gameCode = gameCode;
-        return winner;
-      }).toList();
+      searching = true;
+      setState(() {});
+      // await Future.delayed(Duration(seconds: 1));
+      // dynamic searchResult = jsonDecode(getSearchHands());
+      // dynamic hands = searchResult['data']['searchHands'];
+      // List<SearchHighHandResult> searchResults = [];
+      // for (final data in hands) {
+      //   searchResults.add(SearchHighHandResult.fromJson(data));
+      // }
+      final selectedGameTypes = selectedGames;
+      log('${selectedGameTypes.toString()}');
+      final searchResults = await HandService.searchHands(widget.clubCode,
+          startDate.toUtc(), endDate.toUtc(), selectedGameTypes, minRank);
+      GroupHighHandResult group = GroupHighHandResult(
+        clubCode: 'sss',
+        start: startDate, // DateTime.parse('2021-11-18T00:00:00Z'),
+        end: endDate, //DateTime.parse('2021-11-20T23:59:59Z'),
+        groupType: groupType, // HHGroupType.HOURLY,
+        winners: searchResults,
+      );
+      final highHands = group.list();
+      List<HighHandWinner> highHandWinners = [];
+      List<HandResultData> highHandData = [];
+      for (final hh in highHands) {
+        final log = await HandService.getHandLog(hh.gameCode, hh.handNum);
+        if (log != null) {
+          highHandData.add(log);
+          final playerInfo = log.result.playerInfo;
+          for (final board in log.result.boards) {
+            for (final playerRank in board.playerBoardRank.values) {
+              if (playerRank.hiRank == hh.rank) {
+                // this is a high hand
+                HighHandWinner hhWinner = HighHandWinner();
+                hhWinner.gameCode = hh.gameCode;
+                hhWinner.rank = hh.rank;
+                hhWinner.hhCards = playerRank.hiCards;
+                hhWinner.boardCards = board.cards;
+                hhWinner.handTime = hh.handTime;
+                hhWinner.handNum = hh.handNum;
+                hhWinner.winner = true;
+                hhWinner.player = playerInfo[playerRank.seatNo].name;
+                hhWinner.playerCards = playerInfo[playerRank.seatNo].cards;
+                highHandWinners.add(hhWinner);
+              }
+            }
+          }
+        }
+      }
+
+      // dynamic json = jsonDecode(getHHLog());
+      // List hhWinnersData = json['hhWinners'];
+      // result = hhWinnersData.map((e) {
+      //   HighHandWinner winner = new HighHandWinner.fromJson(e);
+      //   //winner.gameCode = gameCode;
+      //   return winner;
+      // }).toList();
+
+      // result = highHandWinners.map((e) {
+      //   HighHandWinner winner = new HighHandWinner.fromJson(e);
+      //   //winner.gameCode = gameCode;
+      //   return winner;
+      // }).toList();
+
+      result = highHandWinners;
     } catch (err) {
       log('error: ${err.toString()}');
     }
-    loading = false;
-    setState(() {});
+    ConnectionDialog.dismiss(context: context);
+    searching = false;
+    if (!closed) {
+      setState(() {});
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final appTheme = AppTheme.getTheme(context);
-    
+
     return getHighHand(context);
   }
 
@@ -92,17 +187,23 @@ class _HighHandAnalysisScreenState extends State<HighHandAnalysisScreen> {
 
   Widget getHighHand(BuildContext context) {
     final theme = AppTheme.getTheme(context);
-    if (loading) {
-      return Container(
-        decoration: AppDecorators.bgRadialGradient(theme),
-        child: Scaffold(
-          backgroundColor: Colors.transparent,
-          body: Center(
-            child: CircularProgressWidget(),
-          ),
-        ),
-      );
-    }
+    // Widget gameTypeSelection = ListenableProvider(create: selectedGames,
+    //     builder: (_, games, __), {
+    //         return GameTypeSelection();
+    //       });
+
+    // gameTypesWidget.selectedGames = gameTypes;
+    // if (searching) {
+    //   return Container(
+    //     decoration: AppDecorators.bgRadialGradient(theme),
+    //     child: Scaffold(
+    //       backgroundColor: Colors.transparent,
+    //       body: Center(
+    //         child: CircularProgressWidget(),
+    //       ),
+    //     ),
+    //   );
+    // }
     return Container(
       decoration: AppDecorators.bgRadialGradient(theme),
       child: Scaffold(
@@ -113,16 +214,21 @@ class _HighHandAnalysisScreenState extends State<HighHandAnalysisScreen> {
           titleText: 'High Hand Analysis',
         ),
         body: SafeArea(
-          child:  ListView(
-          //     // crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                ...rankSelectionWidget(theme),
-                ...dateSelectionFilter(theme),
-                ...groupFilter(theme),
-                SizedBox(height: 20),
-                Center(child: searchButton(theme)),
-                ...getResult(theme),
-              ],
+          child: ListView(
+            //     // crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              ...rankSelectionWidget(theme),
+              ...dateSelectionFilter(theme),
+              ...groupFilter(theme),
+              Center(child: AppLabel('Game Types', theme)),
+              GameTypeSelection(this.selectedGames),
+              SizedBox(height: 20),
+              Center(child: searchButton(theme)),
+              SizedBox(height: 20),
+              Divider(height: 3, thickness: 3, color: theme.accentColor),
+              SizedBox(height: 10),
+              ...getResult(theme),
+            ],
           ),
         ),
       ),
@@ -140,6 +246,13 @@ class _HighHandAnalysisScreenState extends State<HighHandAnalysisScreen> {
               defaultValue: 'Full House',
               values: ['Full House', 'Four Of Kind', 'Straight Flush'],
               onSelect: (String value) {
+                if (value == 'Full House') {
+                  minRank = 322;
+                } else if (value == 'Four Of Kind') {
+                  minRank = 166;
+                } else if (value == 'Straight Flush') {
+                  minRank = 10;
+                }
                 log('value: ${value}');
               })),
     ];
@@ -158,16 +271,48 @@ class _HighHandAnalysisScreenState extends State<HighHandAnalysisScreen> {
                 'Today',
                 'Yesterday',
                 'This Week',
-                'Last Week',
                 'This Month',
+                'Last Week',
                 'Last Month'
               ],
               onSelect: (String value) {
-                log('value: ${value}');
+                final now = DateTime.now();
+                if (value == 'Today') {
+                  startDate = DateTime(now.year, now.month, now.day, 0, 0, 0);
+                  endDate = startDate.add(Duration(days: 1));
+                } else if (value == 'Yesterday') {
+                  startDate = now.subtract(Duration(days: 1));
+                  startDate = DateTime(
+                      startDate.year, startDate.month, startDate.day, 0, 0, 0);
+                  endDate = startDate.add(Duration(days: 1));
+                } else if (value == 'This Week') {
+                  startDate = now.subtract(Duration(days: now.weekday));
+                  startDate = DateTime(
+                      startDate.year, startDate.month, startDate.day, 0, 0, 0);
+                  endDate = startDate.add(Duration(days: 7));
+                } else if (value == 'Last Week') {
+                  endDate = DateTime(now.year, now.month, now.day, 0, 0, 0);
+                  endDate = endDate.subtract(Duration(days: endDate.weekday));
+                  startDate = DateTime.parse(Jiffy(endDate.toIso8601String())
+                      .subtract(weeks: 1)
+                      .format('yyyy-MM-dd'));
+                } else if (value == 'This Month') {
+                  startDate = DateTime(now.year, now.month, 1, 0, 0, 0);
+                  endDate = DateTime.parse(Jiffy()
+                      .startOf(Units.MONTH)
+                      .add(months: 1)
+                      .format('yyyy-MM-dd'));
+                } else if (value == 'Last Month') {
+                  endDate = DateTime(now.year, now.month, 1, 0, 0, 0);
+                  startDate = DateTime.parse(Jiffy(startDate.toIso8601String())
+                      .subtract(months: 1)
+                      .format('yyyy-MM-dd'));
+                }
+
+                log('Start Date: ${startDate.toIso8601String()}  End Date: ${endDate.toIso8601String()}');
               })),
     ];
   }
-
 
   List<Widget> groupFilter(AppTheme theme) {
     return [
@@ -185,13 +330,24 @@ class _HighHandAnalysisScreenState extends State<HighHandAnalysisScreen> {
               ],
               onSelect: (String value) {
                 log('value: ${value}');
+                if (value == 'Hourly') {
+                  groupType = HHGroupType.HOURLY;
+                } else if (value == 'Daily') {
+                  groupType = HHGroupType.DAILY;
+                }
               })),
     ];
   }
 
   Widget searchButton(AppTheme theme) {
     return RoundRectButton(
-      onTap: () {},
+      onTap: () {
+        fetchData();
+      },
+      icon: Icon(
+        Icons.search,
+        color: theme.roundButtonTextColor,
+      ),
       text: "Search",
       theme: theme,
       fontSize: 16,
@@ -200,18 +356,23 @@ class _HighHandAnalysisScreenState extends State<HighHandAnalysisScreen> {
 
   List<Widget> getResult(AppTheme theme) {
     if ((result?.length ?? 0) == 0) {
-      return [Center(
-                    child: Text("No Data available"),
-                  )];
+      return [
+        Center(
+          child: Column(
+              children: [SizedBox(height: 70), Text("No Data available")]),
+        )
+      ];
     } else {
-      // return GroupedHandLogListView(
-      //                 winners: this.result,
-      //                 clubCode: widget.clubCode,
-      //                 theme: theme,
-      //               );
-
-        GroupedWinnersProcess winners = GroupedWinnersProcess(theme, this.result, widget.clubCode, HHGroupType.HOURLY);
-        return winners.list();
+      // DateTime start = DateTime(2021, 11, 17);
+      // DateTime end = DateTime(2021, 11, 19, 23, 59, 59);
+      GroupHighHands winners = GroupHighHands(
+          theme: theme,
+          start: startDate,
+          end: endDate,
+          winners: this.result,
+          clubCode: widget.clubCode,
+          groupType: HHGroupType.HOURLY);
+      return winners.list();
     }
   }
 }
@@ -297,7 +458,253 @@ String getHHLog() {
 		"handNum": 2,
     "gameCode": "cgbhstmg",
 		"winner": false
-	}]
+	},
+ {
+		"__typename": "HighHand",
+		"playerUuid": "5cd96779-c6b2-4dba-a814-f365b6b48aeb",
+		"playerName": "rob",
+		"playerCards": "[132,148,129,82]",
+		"boardCards": "[98,72,20,130,68]",
+		"highHand": "[132,129,72,130,68]",
+		"handTime": "2021-11-17T21:11:04.000Z",
+		"handNum": 2,
+    "gameCode": "cgbhstmg",
+		"winner": false
+	}, {
+		"__typename": "HighHand",
+		"playerUuid": "5cd96779-c6b2-4dba-a814-f365b6b48aeb",
+		"playerName": "rob",
+		"playerCards": "[132,148,129,82]",
+		"boardCards": "[98,72,20,130,68]",
+		"highHand": "[132,129,72,130,68]",
+		"handTime": "2021-11-17T21:10:04.000Z",
+		"handNum": 2,
+    "gameCode": "cgbhstmg",
+		"winner": false
+	}
+  ]
+}
+
+  ''';
+}
+
+String getSearchHands() {
+  return '''
+{
+  "data": {
+    "searchHands": [
+      {
+        "rank": 270,
+        "handNum": 1,
+        "handTime": "2021-11-19T20:16:54.000Z",
+        "gameCode": "cgocatdh"
+      },
+      {
+        "rank": 109,
+        "handNum": 2,
+        "handTime": "2021-11-19T20:17:49.000Z",
+        "gameCode": "cgthcwmi"
+      },
+      {
+        "rank": 287,
+        "handNum": 2,
+        "handTime": "2021-11-19T20:18:02.000Z",
+        "gameCode": "cgoblksn"
+      },
+      {
+        "rank": 191,
+        "handNum": 2,
+        "handTime": "2021-11-19T20:18:24.000Z",
+        "gameCode": "cgocatdh"
+      },
+      {
+        "rank": 194,
+        "handNum": 3,
+        "handTime": "2021-11-19T20:19:38.000Z",
+        "gameCode": "cgkhimxp"
+      },
+      {
+        "rank": 185,
+        "handNum": 4,
+        "handTime": "2021-11-19T20:19:41.000Z",
+        "gameCode": "cgthcwmi"
+      },
+      {
+        "rank": 247,
+        "handNum": 4,
+        "handTime": "2021-11-19T20:20:45.000Z",
+        "gameCode": "cgoblksn"
+      },
+      {
+        "rank": 203,
+        "handNum": 6,
+        "handTime": "2021-11-19T20:21:25.000Z",
+        "gameCode": "cgthcwmi"
+      },
+      {
+        "rank": 239,
+        "handNum": 6,
+        "handTime": "2021-11-19T20:21:25.000Z",
+        "gameCode": "cgpndjwb"
+      },
+      {
+        "rank": 221,
+        "handNum": 4,
+        "handTime": "2021-11-19T20:21:36.000Z",
+        "gameCode": "cgocatdh"
+      },
+      {
+        "rank": 273,
+        "handNum": 7,
+        "handTime": "2021-11-19T20:22:37.000Z",
+        "gameCode": "cgpndjwb"
+      },
+      {
+        "rank": 308,
+        "handNum": 5,
+        "handTime": "2021-11-19T20:22:47.000Z",
+        "gameCode": "cgocatdh"
+      },
+      {
+        "rank": 240,
+        "handNum": 6,
+        "handTime": "2021-11-19T20:22:48.000Z",
+        "gameCode": "cgoblksn"
+      },
+      {
+        "rank": 286,
+        "handNum": 8,
+        "handTime": "2021-11-19T20:23:10.000Z",
+        "gameCode": "cgthcwmi"
+      },
+      {
+        "rank": 211,
+        "handNum": 7,
+        "handTime": "2021-11-19T20:23:34.000Z",
+        "gameCode": "cgoblksn"
+      },
+      {
+        "rank": 248,
+        "handNum": 9,
+        "handTime": "2021-11-19T20:25:40.000Z",
+        "gameCode": "cgoblksn"
+      },
+      {
+        "rank": 227,
+        "handNum": 11,
+        "handTime": "2021-11-19T20:25:43.000Z",
+        "gameCode": "cgthcwmi"
+      },
+      {
+        "rank": 170,
+        "handNum": 12,
+        "handTime": "2021-11-19T20:26:30.000Z",
+        "gameCode": "cgthcwmi"
+      },
+      {
+        "rank": 302,
+        "handNum": 10,
+        "handTime": "2021-11-19T20:26:54.000Z",
+        "gameCode": "cgoblksn"
+      },
+      {
+        "rank": 206,
+        "handNum": 9,
+        "handTime": "2021-11-19T20:27:22.000Z",
+        "gameCode": "cgocatdh"
+      },
+      {
+        "rank": 221,
+        "handNum": 14,
+        "handTime": "2021-11-19T20:28:04.000Z",
+        "gameCode": "cgthcwmi"
+      },
+      {
+        "rank": 311,
+        "handNum": 10,
+        "handTime": "2021-11-19T20:28:22.000Z",
+        "gameCode": "cgocatdh"
+      },
+      {
+        "rank": 181,
+        "handNum": 11,
+        "handTime": "2021-11-19T20:29:25.000Z",
+        "gameCode": "cgocatdh"
+      },
+      {
+        "rank": 320,
+        "handNum": 14,
+        "handTime": "2021-11-19T20:30:26.000Z",
+        "gameCode": "cgpndjwb"
+      },
+      {
+        "rank": 238,
+        "handNum": 14,
+        "handTime": "2021-11-19T20:31:02.000Z",
+        "gameCode": "cgoblksn"
+      },
+      {
+        "rank": 319,
+        "handNum": 16,
+        "handTime": "2021-11-19T20:32:19.000Z",
+        "gameCode": "cgpndjwb"
+      },
+      {
+        "rank": 304,
+        "handNum": 20,
+        "handTime": "2021-11-19T20:32:23.000Z",
+        "gameCode": "cgthcwmi"
+      },
+      {
+        "rank": 320,
+        "handNum": 16,
+        "handTime": "2021-11-19T20:32:34.000Z",
+        "gameCode": "cgoblksn"
+      },
+      {
+        "rank": 314,
+        "handNum": 14,
+        "handTime": "2021-11-19T20:32:51.000Z",
+        "gameCode": "cgocatdh"
+      },
+      {
+        "rank": 63,
+        "handNum": 17,
+        "handTime": "2021-11-19T20:33:18.000Z",
+        "gameCode": "cgoblksn"
+      },
+      {
+        "rank": 41,
+        "handNum": 17,
+        "handTime": "2021-11-19T20:33:24.000Z",
+        "gameCode": "cgpndjwb"
+      },
+      {
+        "rank": 222,
+        "handNum": 19,
+        "handTime": "2021-11-19T20:35:02.000Z",
+        "gameCode": "cgoblksn"
+      },
+      {
+        "rank": 215,
+        "handNum": 24,
+        "handTime": "2021-11-19T18:45:04.000Z",
+        "gameCode": "cgthcwmi"
+      },
+      {
+        "rank": 239,
+        "handNum": 19,
+        "handTime": "2021-11-19T18:36:20.000Z",
+        "gameCode": "cgpndjwb"
+      },
+      {
+        "rank": 198,
+        "handNum": 25,
+        "handTime": "2021-11-19T18:35:46.000Z",
+        "gameCode": "cgthcwmi"
+      }
+    ]
+  }
 }
 
   ''';

@@ -123,6 +123,8 @@ class HighHandWinner {
   String highHandCards;
   bool winner;
 
+  HighHandWinner();
+
   HighHandWinner.fromJson(dynamic data) {
     gameCode = data['gameCode'];
     handNum = data['handNum'];
