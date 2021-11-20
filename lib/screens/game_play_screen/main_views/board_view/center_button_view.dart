@@ -16,6 +16,7 @@ import 'package:pokerapp/services/data/game_log_store.dart';
 import 'package:pokerapp/services/game_play/graphql/seat_change_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/alerts.dart';
+import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:provider/provider.dart';
 
 class CenterButtonView extends StatelessWidget {
@@ -34,18 +35,23 @@ class CenterButtonView extends StatelessWidget {
   }
 
   Future<void> _onTerminatePress(BuildContext context) async {
-    final gameState = GameState.getState(context);
-    log('Termininating game ${gameState.gameCode}');
-    await GameService.endGame(gameState.gameCode);
-    if (gameState.uiClosing) {
-      return;
-    }
-    final appState = Provider.of<AppState>(context, listen: false);
-    if (appState != null) {
-      Provider.of<AppState>(context, listen: false).setGameEnded(true);
-    }
-    if (!gameState.isGameRunning) {
-      gameState.refresh();
+    final response = await showPrompt(
+        context, 'Terminate', "Do you want to terminate the game?",
+        positiveButtonText: 'Yes', negativeButtonText: 'No');
+    if (response != null && response == true) {
+      final gameState = GameState.getState(context);
+      log('Termininating game ${gameState.gameCode}');
+      await GameService.endGame(gameState.gameCode);
+      if (gameState.uiClosing) {
+        return;
+      }
+      final appState = Provider.of<AppState>(context, listen: false);
+      if (appState != null) {
+        Provider.of<AppState>(context, listen: false).setGameEnded(true);
+      }
+      if (!gameState.isGameRunning) {
+        gameState.refresh();
+      }
     }
   }
 
