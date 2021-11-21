@@ -653,7 +653,7 @@ class IPhoneAttribs {
             "middleLeft": "1.05, 0",
             "middleRight": "-1.05, 0",
             "topRight": "-0.65, 0.65",
-            "topLeft": "0.75, 0.50",
+            "topLeft": "0.75, 0.65",
             "bottomLeft": "0.70, -0.80",
             "bottomRight": "-0.60, -0.80",
             "topCenter1": "0.20, 0.80",
@@ -765,6 +765,8 @@ class IPhoneAttribs {
           "centerViewScale": 0.85,
           "doubleBoardScale": 0.90,
           "boardScale": 1.0,
+          "centerDoubleBoardScale": 0.90,
+          "centerBoardScale": 1.4,
           "centerGap": 0.0,
           "potViewGap": 0,
           "centerOffset": "15, 115",
@@ -954,8 +956,11 @@ class IPhoneAttribs {
         "screenSize": "810.0, 1080.0",
         "size": 9.0,
         "board": {
+          "centerOffset": "15, 230",
           "centerViewScale": 1.30,
-          "centerViewPos": "0, 40.0"
+          "centerViewPos": "0, 40.0",
+          "centerDoubleBoardScale": 0.90,
+          "centerBoardScale": 1.4
         },
         "holeCardDisplacement": {
           "2": 50,

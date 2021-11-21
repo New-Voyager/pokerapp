@@ -32,7 +32,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/host_seat_chang
 
 class TestService {
   static bool get isTesting {
-    return false;
+    return true;
   }
 
   static var _showResult = false;
@@ -538,6 +538,9 @@ class TestService {
   //   initHandSevice();
   //   _handActionService.handle(resultMessage);
   // }
+  static void showDoubleBoard() {
+    fillBothBoardCards();
+  }
 
   static void fillBothBoardCards() {
     final gameState = GameState.getState(_context);
@@ -554,9 +557,11 @@ class TestService {
       2,
       [50, 50, 50, 50, 50].map((e) => CardHelper.getCard(e)).toList(),
     );
+    tableState.updateTwoBoardsNeeded(true);
 
     tableState.updatePotChipsSilent(
       potChips: [578],
+      potUpdatesChips: 100,
     );
 
     tableState.notifyAll();

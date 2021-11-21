@@ -446,6 +446,7 @@ class BetWidget extends StatelessWidget {
     final bool isLargerDisplay = screenSize >= 9;
     log('bet_widget : screenSize : $screenSize');
     //List<int> cards = [161, 200, 168, 177, 194];
+    Offset offset = boardAttributes.betWidgetOffset;
 
     return Stack(children: [
       ListenableProvider<ValueNotifier<double>>(
@@ -522,7 +523,9 @@ class BetWidget extends StatelessWidget {
                   ),
                 ),
               ),
-
+            Transform.translate(
+                offset: offset,
+                child: 
               Stack(
                 alignment: Alignment.center,
                 children: [
@@ -550,7 +553,7 @@ class BetWidget extends StatelessWidget {
                     ),
                   ),
                 ],
-              ),
+              )),
 
               //SizedBox(height: 10.ph),
             ],

@@ -419,6 +419,20 @@ class BoardAttributesJson {
     return Offset.zero;
   }
 
+  double get centerBoardScale {
+    if (attribs["board"]["centerBoardScale"] != null) {
+      return double.parse(attribs["board"]["centerBoardScale"].toString());
+    }
+    return 1.0;
+  }
+
+  double get centerDoubleBoardScale {
+    if (attribs["board"]["centerDoubleBoardScale"] != null) {
+      return double.parse(attribs["board"]["centerDoubleBoardScale"].toString());
+    }
+    return 1.0;
+  }
+
   double get tableScale {
     if (attribs['board']['tableScale'] != null) {
       return double.parse(attribs['board']['tableScale'].toString());
@@ -480,6 +494,13 @@ class BoardAttributesJson {
       return double.parse(attribs["footerActionScale"].toString());
     }
     return 1.0;
+  }
+
+  Offset get betWidgetOffset {
+    if (attribs['betWidgetOffset'] != null) {
+      return parseOffset(attribs['betWidgetOffset']);
+    }
+    return Offset.zero;    
   }
 
   double get playerViewScale {
@@ -780,6 +801,14 @@ class BoardAttributesObject extends ChangeNotifier {
     return attribsObj.centerViewCenterScale;
   }
 
+  double get centerBoardScale {
+    return attribsObj.centerBoardScale;
+  }
+
+  double get centerDoubleBoardScale {
+    return attribsObj.centerDoubleBoardScale;
+  }
+
   double get holeCardSizeRatio {
     return _holeCardScale[_noOfCards.toString()] * 4.0;
   }
@@ -830,6 +859,10 @@ class BoardAttributesObject extends ChangeNotifier {
 
   double get footerActionScale {
     return attribsObj.footerActionScale;
+  }
+
+  Offset get betWidgetOffset {
+    return attribsObj.betWidgetOffset;
   }
 
   double get playerViewScale {
