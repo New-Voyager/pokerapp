@@ -1,9 +1,11 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/game/game_settings.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/services/app/club_interior_service.dart';
+import 'package:pokerapp/services/game_play/graphql/gamesettings_service.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
@@ -60,33 +62,35 @@ class BombPotDialog {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Center(child: Text(dialogTitle,)),
+                    Center(
+                        child: Text(
+                      dialogTitle,
+                    )),
                     // sep
                     SizedBox(height: 15.ph),
                     ToggleButtons(
                       children: [
                         Container(
-                          padding: EdgeInsets.all(5),
-                        child: Text('Off',
-                            style: TextStyle(
-                            color:
-                                isSelected[0] ? Colors.black
-                                : theme.accentColor))),
-
+                            padding: EdgeInsets.all(5),
+                            child: Text('Off',
+                                style: TextStyle(
+                                    color: isSelected[0]
+                                        ? Colors.black
+                                        : theme.accentColor))),
                         Container(
-                          padding: EdgeInsets.all(5),
-                        child: Text('Next Hand',
-                            style: TextStyle(
-                            color:
-                                isSelected[1] ? Colors.black
-                                : theme.accentColor))),
+                            padding: EdgeInsets.all(5),
+                            child: Text('Next Hand',
+                                style: TextStyle(
+                                    color: isSelected[1]
+                                        ? Colors.black
+                                        : theme.accentColor))),
                         Container(
-                          padding: EdgeInsets.all(5),
-                        child: Text('Every Hand',
-                            style: TextStyle(
-                            color:
-                                isSelected[2] ? Colors.black
-                                : theme.accentColor))),
+                            padding: EdgeInsets.all(5),
+                            child: Text('Every Hand',
+                                style: TextStyle(
+                                    color: isSelected[2]
+                                        ? Colors.black
+                                        : theme.accentColor))),
                       ],
                       isSelected: isSelected,
                       selectedColor: Colors.black,
@@ -144,6 +148,20 @@ class BombPotDialog {
             );
           });
         });
+    if (ret) {
+      log('bomb pot: $ret');
+      if (isSelected[0]) {
+        // off
+      } else if (isSelected[1]) {
+        // next hand
+        Map<String, dynamic> json = new Map<String, dynamic>();
+        json['bombPotNextHand'] = true;
+        GameSettings gameSettings = GameSettings.fromJson(json);
+        await GameSettingsService.updateGameSettings(gameCode, gameSettings);
+      } else if (isSelected[2]) {
+        // every hand
+      }
+    }
     return ret;
   }
 }
