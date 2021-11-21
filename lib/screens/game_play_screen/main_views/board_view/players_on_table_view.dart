@@ -581,7 +581,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
         seat.seatPos == SeatPos.bottomLeft ||
         seat.seatPos == SeatPos.bottomRight) {
       if (seat.isOpen) {
-        offset = Offset(offset.dx, offset.dy - 30);
+        // offset = Offset(offset.dx, offset.dy - 40);
       }
     }
 

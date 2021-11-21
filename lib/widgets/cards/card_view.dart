@@ -9,9 +9,11 @@ import 'package:pokerapp/widgets/cards/card_builder_widget.dart';
 class CardView extends StatelessWidget {
   final CardObject card;
   final Uint8List cardBackBytes;
+  final bool doubleBoard;
   CardView({
     @required this.card,
     @required this.cardBackBytes,
+    this.doubleBoard = false
   });
 
   Widget _buildCardUI(
@@ -21,7 +23,7 @@ class CardView extends StatelessWidget {
   ) {
     String suitImage = CardHelper.getSuitImage(card.suit);
 
-    return Column(
+      Widget cardWidget = Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -36,7 +38,7 @@ class CardView extends StatelessWidget {
                       card.label == 'T' ? '10' : card.label ?? 'X',
                       style: TextStyle(
                         color: card.color,
-                        fontSize: 32.0,
+                        fontSize: 16.0,
                         fontWeight: FontWeight.w700,
                         fontFamily: AppAssets.fontFamilyLiterata,
                       ),
@@ -57,6 +59,10 @@ class CardView extends StatelessWidget {
         ),
       ],
     );
+    return Transform.scale(
+        scale: 1.0,
+        child: cardWidget
+      );
   }
 
   @override
@@ -70,6 +76,7 @@ class CardView extends StatelessWidget {
       cardBuilder: _buildCardUI,
       roundRadius: 2.5,
       cardFace: card.cardFace,
+      doubleBoard: this.doubleBoard,
     );
   }
 }

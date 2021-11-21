@@ -21,6 +21,7 @@ class CardBuilderWidget extends StatelessWidget {
   final double roundRadius;
   final CardFace cardFace;
   final Uint8List backCardBytes;
+  final bool doubleBoard;
 
   CardBuilderWidget({
     @required this.card,
@@ -32,6 +33,7 @@ class CardBuilderWidget extends StatelessWidget {
         Widget this.cardBuilder(TextStyle _, TextStyle __, BuildContext ___),
     this.shadow = false,
     this.roundRadius = 5.0,
+    this.doubleBoard = false,
     this.cardFace,
   }) : assert(card != null &&
             dim != null &&
@@ -42,13 +44,19 @@ class CardBuilderWidget extends StatelessWidget {
   static double getCardRatioFromCardType(
     CardType cardType,
     BuildContext context,
+    {bool doubleBoard = false }
   ) {
     switch (cardType) {
       case CardType.CommunityCard:
         /* if we have a card type of community cards, then we must be on the 
           game screen, thus we can safely call BoardAttributesObject */
         final bao = context.read<BoardAttributesObject>();
-        return 1.2 * bao.boardScale;
+        if (doubleBoard) {
+          return bao.centerDoubleBoardScale;
+        } else {
+          return bao.centerBoardScale;
+        } 
+        break;
 
       case CardType.HoleCard:
         final bao = context.read<BoardAttributesObject>();
@@ -93,6 +101,7 @@ class CardBuilderWidget extends StatelessWidget {
     double _ratio = getCardRatioFromCardType(
       card.cardType,
       context,
+      doubleBoard: this.doubleBoard,
     );
 
     // IMP: we ignore "dim" value if "highlight" is true

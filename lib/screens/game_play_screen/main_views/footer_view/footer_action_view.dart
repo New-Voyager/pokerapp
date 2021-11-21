@@ -513,13 +513,13 @@ class _FooterActionViewState extends State<FooterActionView> {
       child: playerAction?.options == null
           ? shrinkedBox
           : _showOptions
-              ? BetWidget(
-                  action: playerAction,
-                  playerCards: playerCards,
-                  onSubmitCallBack: _betOrRaise,
-                  remainingTime: remainingTime,
-                  boardAttributesObject: boardAttributes,
-                )
+              ?  BetWidget(
+                    action: playerAction,
+                    playerCards: playerCards,
+                    onSubmitCallBack: _betOrRaise,
+                    remainingTime: remainingTime,
+                    boardAttributesObject: boardAttributes,
+                  )
               : shrinkedBox,
     );
   }

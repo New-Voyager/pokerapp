@@ -63,6 +63,10 @@ class CommunityCardsView extends StatelessWidget {
       if (dimBoard) {
         card.dimBoard = true;
       }
+      if (twoBoardsNeeded) {
+        card.doubleBoard = true;
+      }
+
       if (!CommunityCardAttribute.hasEntry(idx)) {
         /* only add an entry, if there is no previous entry available */
         globalKey = GlobalKey();
@@ -119,7 +123,7 @@ class CommunityCardsView extends StatelessWidget {
     if (twoBoardsNeeded ?? false) {
       return Transform.scale(
         alignment: Alignment.topCenter,
-        scale: boa.doubleBoardScale,
+        scale: 1.0, //boa.doubleBoardScale,
         child: Column(
           children: [
             /* board 1 cards */

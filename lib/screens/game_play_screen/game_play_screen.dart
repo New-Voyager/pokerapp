@@ -786,10 +786,20 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   ) {
     var dividerTotalHeight = MediaQuery.of(context).size.height / 6;
 
-    final width = MediaQuery.of(context).size.width;
-
     bool isBoardHorizontal = true;
-    final boardDimensions = BoardView.dimensions(context, isBoardHorizontal);
+    var boardDimensions = BoardView.dimensions(context, isBoardHorizontal);
+    final screenSize =  MediaQuery.of(context).size;
+    final width = MediaQuery.of(context).size.width;
+    double footerHeight = MediaQuery.of(context).size.height * boardAttributes.footerViewScale;
+    double adjustment = boardAttributes.boardHeightAdjust;
+    double boardHeight = MediaQuery.of(context).size.height 
+                    - footerHeight + adjustment;
+    boardDimensions = Size(width, boardHeight);
+    log('Board dimensions: ${boardDimensions}, screen height: ${screenSize.height} footer height: ${footerHeight}');
+    // double footerHeight = MediaQuery.of(context).size.height * boardAttributes.footerViewScale;
+    // double heightOfBoard = MediaQuery.of(context).size.height - footerHeight;
+    // var dimensions = boardAttributes.dimensions(context);
+    // dimensions = Size(width, heightOfBoard);
 
     double boardScale = boardAttributes.boardScale;
     double divider1 =
@@ -877,7 +887,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
     bool showBottom = this.widget.showBottom;
     // showBottom = false;
-
     return Stack(
       alignment: Alignment.topCenter,
       clipBehavior: Clip.none,

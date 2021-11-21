@@ -86,11 +86,14 @@ class IPhoneAttribs {
           "centerPotUpdatesScale": 0.70,
           "centerRankScale": 0.85,
           "centerViewScale": 0.93,
-          "doubleBoardScale": 0.90,
+          "doubleBoardScale": 0.70,
           "boardScale": 1.0,
+          "centerDoubleBoardScale": 0.90,
+          "centerBoardScale": 1.4,
           "centerGap": 0.0,
           "potViewGap": 0,
-          "centerOffset": "15, 115",
+          "centerOffset": "15, 100",
+          "boardHeightAdjust": -175,
           "seatMap": {
             "bottomCenter": "0, 92",
             "bottomLeft": "15, 70",
@@ -350,6 +353,71 @@ class IPhoneAttribs {
     return defaultValue;
   }
 
+  static Map<String, dynamic> getIPhone10s() {
+    final defaultValue = getDefault();
+    String override = '''
+      {
+        "model": "iPhone 10s",
+        "screenSize": "375.0, 812.0",
+        "size": 6.1,
+        "board": {
+          "centerViewScale": 0.90,
+          "tableScale": 1.15,
+          "boardHeightAdjust": -70,
+          "tableBottomPos": 80,
+          "seatMap": {
+            "bottomCenter": "0, -50",
+            "bottomLeft": "15, -50",
+            "bottomRight": "-15, -50",
+            "middleLeft": "2, 0",
+            "middleRight": "2, 0",
+            "topLeft": "2, 110",
+            "topRight": "2, 110",
+            "topCenter": "0, 60",
+            "topCenter1": "-50, 80",
+            "topCenter2": "55, 80"
+          },
+          "betAmountFac": {
+            "bottomCenter": "0, -1.0",
+            "topCenter": "0.20, 0.70",
+            "middleLeft": "0.10, 0.65",
+            "middleRight": "0.10, 0.65",
+            "topRight": "-0.10, 0.70",
+            "topLeft": "0.30, 0.65",
+            "bottomLeft": "0.70, -0.8",
+            "bottomRight": "-0.60, -0.8",
+            "topCenter1": "0.20, 0.65",
+            "topCenter2": "-0.20, 0.65"
+          },
+          "centerPotScale": 0.85,
+          "centerPotUpdatesScale": 0.7
+        },
+        "holeCardDisplacement": {
+          "2": 35,
+          "4": 30,
+          "5": 25,
+          "default": 25
+        },
+        "holeCardDisplacementVisible": {
+          "2": 30,
+          "4": 15,
+          "5": 15,
+          "default": 25
+        },        
+        "holeCardScale": {
+          "2": 1.15,
+          "4": 1.05,
+          "5": 0.97,
+          "default": 1
+        },
+        "holeCardViewOffset": "0, 60"
+      }
+    ''';
+    Map<String, dynamic> overrideMap = jsonDecode(override);
+    updateMap(defaultValue, overrideMap);
+    return defaultValue;
+  }
+
   static Map<String, dynamic> getIPhone12() {
     final defaultValue = getDefault();
     String override = '''
@@ -499,18 +567,19 @@ class IPhoneAttribs {
         "size": 6.8,
         "board": {
           "centerViewScale": 1.1,
+          "centerButtonsPos": "0, 0",
           "tableScale": 1.2,
           "seatMap": {
-            "bottomCenter": "0, 60",
-            "bottomLeft": "15, 50",
-            "bottomRight": "-15, 50",
-            "middleLeft": "2, 75",
-            "middleRight": "2, 75",
+            "bottomCenter": "0, 10",
+            "bottomLeft": "15, -5",
+            "bottomRight": "-15, -5",
+            "middleLeft": "2, 55",
+            "middleRight": "2, 55",
             "topLeft": "2, 105",
             "topRight": "2, 105",
-            "topCenter": "0, 60",
-            "topCenter1": "-50, 70",
-            "topCenter2": "55, 70"
+            "topCenter": "0, 80",
+            "topCenter1": "-50, 80",
+            "topCenter2": "55, 80"
           },
           "betAmountFac": {
             "bottomCenter": "0, -1.0",
@@ -524,6 +593,7 @@ class IPhoneAttribs {
             "topCenter1": "0.20, 0.7",
             "topCenter2": "-0.20, 0.7"
           },
+          "boardHeightAdjust": -130,
           "centerPotScale": 0.75,
           "centerPotUpdatesScale": 0.70,
           "centerGap": 2,
@@ -754,51 +824,53 @@ class IPhoneAttribs {
             "topCenter2": "-0.20, 0.80"
           },
           "cardShufflePos": "0, -30",
-          "centerButtonsPos": "0, -40",
+          "centerButtonsPos": "0, -20",
           "centerViewPos": "0, 15.0",
           "centerPotScale": 1.0,
           "centerPotUpdatesScale": 0.85,
           "centerRankScale": 0.85,
           "centerViewScale": 0.85,
-          "doubleBoardScale": 0.90,
+          "centerDoubleBoardScale": 0.90,
+          "centerBoardScale": 1.4,
           "boardScale": 1.0,
           "centerGap": 0.0,
           "potViewGap": 0,
-          "centerOffset": "15, 115",
-          "tableBottomPos": -40,
-          "tableScale": 1.0,
+          "centerOffset": "15, 80",
+          "tableBottomPos": 40,
+          "tableScale": 1.3,
+          "boardHeightAdjust": -100,
           "seatMap": {
-            "bottomCenter": "0, 100",
-            "bottomLeft": "15, 90",
-            "bottomRight": "-15, 90",
-            "middleLeft": "0, 85",
-            "middleRight": "0, 85",
+            "bottomCenter": "0, 30",
+            "bottomLeft": "15, 20",
+            "bottomRight": "-15, 20",
+            "middleLeft": "0, 35",
+            "middleRight": "0, 35",
             "topLeft": "2, 80",
             "topRight": "2, 80",
-            "topCenter": "0, 55",
-            "topCenter1": "-45, 50",
-            "topCenter2": "48, 50"
+            "topCenter": "0, 35",
+            "topCenter1": "-45, 35",
+            "topCenter2": "48, 35"
           }
         },
         "holeCardDisplacement": {
           "2": 35,
-          "4": 35,
-          "5": 35,
+          "4": 30,
+          "5": 20,
           "default": 20
         },
         "holeCardDisplacementVisible": {
           "2": 30,
-          "4": 25,
-          "5": 25,
+          "4": 20,
+          "5": 20,
           "default": 20
         },        
         "footerViewHeightScale": 0.40,
         "footerRankTextSize": 20.0,
         "otherBetOptionButtonsSpreadRadius": 70.0,
         "holeCardScale": {
-          "2": 0.90,
-          "4": 0.80,
-          "5": 0.80,
+          "2": 1.00,
+          "4": 1.00,
+          "5": 0.90,
           "default": 1
         },
         "holeCardOffset": "0, 0",
@@ -806,8 +878,9 @@ class IPhoneAttribs {
         "holeCardViewScale": 1.28,
         "footerActionScale": 1.05,
         "footerScale": 0.45,
+        "betWidgetOffset": "0, -40",
         "seat": {
-          "scale": 0.90,
+          "scale": 0.70,
           "holeCardOffset": "0, 0",
           "holeCardScale": 1.0
         }
@@ -1067,7 +1140,9 @@ class IPhoneAttribs {
       return getDefault();
     } else {
       print("name is $name");
-      if (name.contains('iphone 12 mini')) {
+      if (name.contains('iphone 10s') || name.contains('iphone10s')) {
+        return getIPhone10s();
+      } else if (name.contains('iphone 12 mini')) {
         return getIPhone12Mini();
       } else if (name.contains('iphone 12 pro max')) {
         return getIPhone12ProMax();

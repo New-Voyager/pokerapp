@@ -122,7 +122,7 @@ class _CommunicationViewState extends State<CommunicationView> {
                   children.add(PendingApprovalsButton(
                       theme, gameState, gameContextObj, mounted));
                 }
-                children.add(SizedBox(height: 100));
+                children.add(SizedBox(height: 60));
                 children.add(Consumer<ActionState>(builder: (_, __, ___) {
                   // show time widget if the player is acting
                   final gameState = GameState.getState(context);

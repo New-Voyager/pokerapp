@@ -392,8 +392,22 @@ class BoardAttributesJson {
   }
 
   double get boardScale {
-    if (attribs["boardScale"] != null) {
-      return double.parse(attribs["boardScale"].toString());
+    if (attribs["board"]["boardScale"] != null) {
+      return double.parse(attribs["board"]["boardScale"].toString());
+    }
+    return 1.0;
+  }
+
+  double get centerBoardScale {
+    if (attribs["board"]["centerBoardScale"] != null) {
+      return double.parse(attribs["board"]["centerBoardScale"].toString());
+    }
+    return 1.0;
+  }
+
+  double get centerDoubleBoardScale {
+    if (attribs["board"]["centerDoubleBoardScale"] != null) {
+      return double.parse(attribs["board"]["centerDoubleBoardScale"].toString());
     }
     return 1.0;
   }
@@ -424,6 +438,13 @@ class BoardAttributesJson {
       return double.parse(attribs['board']['tableScale'].toString());
     }
     return 1.0;
+  }
+
+  double get boardHeightAdjust {
+    if (attribs['board']['boardHeightAdjust'] != null) {
+      return double.parse(attribs['board']['boardHeightAdjust'].toString());
+    }
+    return -130;
   }
 
   double get tableBottomPos {
@@ -480,6 +501,13 @@ class BoardAttributesJson {
       return double.parse(attribs["seat"]["holeCardScale"].toString());
     }
     return 1.0;
+  }
+
+  Offset get betWidgetOffset {
+    if (attribs['betWidgetOffset'] != null) {
+      return parseOffset(attribs['betWidgetOffset']);
+    }
+    return Offset.zero;    
   }
 }
 
@@ -758,6 +786,14 @@ class BoardAttributesObject extends ChangeNotifier {
     return attribsObj.boardScale;
   }
 
+  double get centerBoardScale {
+    return attribsObj.centerBoardScale;
+  }
+
+  double get centerDoubleBoardScale {
+    return attribsObj.centerDoubleBoardScale;
+  }
+
   double get centerGap {
     return attribsObj.centerGap;
   }
@@ -778,6 +814,14 @@ class BoardAttributesObject extends ChangeNotifier {
     return attribsObj.tableBottomPos;
   }
 
+  double get boardHeightAdjust {
+    return attribsObj.boardHeightAdjust;
+  }
+
+  Offset get betWidgetOffset {
+    return attribsObj.betWidgetOffset;
+  }
+  
   Size get centerSize {
     return this._centerSize;
   }

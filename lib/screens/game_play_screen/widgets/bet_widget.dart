@@ -446,7 +446,8 @@ class BetWidget extends StatelessWidget {
     final bool isLargerDisplay = screenSize >= 9;
     log('bet_widget : screenSize : $screenSize');
     //List<int> cards = [161, 200, 168, 177, 194];
-
+    Offset offset = boardAttributes.betWidgetOffset;
+    
     return Stack(children: [
       ListenableProvider<ValueNotifier<double>>(
         create: (_) => ValueNotifier<double>(
@@ -523,33 +524,36 @@ class BetWidget extends StatelessWidget {
                 ),
               ),
 
-              Stack(
-                alignment: Alignment.center,
-                children: [
-                  // this widget reserves space for onTap Listeners when inside Stack
-                  Container(
-                    width: double.infinity,
-                  ),
-
-                  // other bet buttons
-                  ..._buildOtherBetOptions(
-                    context: context,
-                    isLargerDisplay: isLargerDisplay,
-                    valueNotifierVal: valueNotifierVal,
-                    appTheme: appTheme,
-                  ),
-
-                  /* bet button */
-                  Container(
-                    margin: EdgeInsets.symmetric(vertical: 50),
-                    child: _buildBetButton(
-                      context,
-                      isLargerDisplay,
-                      valueNotifierVal,
-                      appTheme,
+              Transform.translate(
+                offset: offset,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    // this widget reserves space for onTap Listeners when inside Stack
+                    Container(
+                      width: double.infinity,
                     ),
-                  ),
-                ],
+              
+                    // other bet buttons
+                    ..._buildOtherBetOptions(
+                      context: context,
+                      isLargerDisplay: isLargerDisplay,
+                      valueNotifierVal: valueNotifierVal,
+                      appTheme: appTheme,
+                    ),
+              
+                    /* bet button */
+                    Container(
+                      margin: EdgeInsets.symmetric(vertical: 50),
+                      child: _buildBetButton(
+                        context,
+                        isLargerDisplay,
+                        valueNotifierVal,
+                        appTheme,
+                      ),
+                    ),
+                  ],
+                ),
               ),
 
               //SizedBox(height: 10.ph),

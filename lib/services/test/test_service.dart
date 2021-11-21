@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/models/game_model.dart';
@@ -32,7 +33,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/host_seat_chang
 
 class TestService {
   static bool get isTesting {
-    return false;
+    return true;
   }
 
   static var _showResult = false;
@@ -196,7 +197,7 @@ class TestService {
       List<PlayerModel> playerInSeats = [];
       for (final player in _gameInfo.playersInSeats) {
         if (player.seatNo <= maxPlayers) {
-          player.cards = [177, 177];
+          player.cards = [177, 100, 114, 120, 113];
           playerInSeats.add(player);
         }
       }
@@ -554,9 +555,11 @@ class TestService {
       2,
       [50, 50, 50, 50, 50].map((e) => CardHelper.getCard(e)).toList(),
     );
+    tableState.updateTwoBoardsNeeded(true);
 
     tableState.updatePotChipsSilent(
       potChips: [578],
+      potUpdatesChips: 100,
     );
 
     tableState.notifyAll();
@@ -665,6 +668,10 @@ class TestService {
     seat1.actionTimer.setTime(30, 30);
     seat1.player.highlight = true;
     seat1.notify();
+  }
+
+  static void showDoubleBoard() {
+    fillBothBoardCards();
   }
 
 //   static void sendRunItTwiceMessage() {

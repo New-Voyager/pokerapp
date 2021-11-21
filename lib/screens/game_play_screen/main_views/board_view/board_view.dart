@@ -58,10 +58,25 @@ class BoardView extends StatelessWidget {
     final boardAttributes = gameState.getBoardAttributes(context);
     final isBoardHorizontal =
         boardAttributes.orientation == BoardOrientation.horizontal;
+    // double width = MediaQuery.of(context).size.width;
+    // double footerHeight = MediaQuery.of(context).size.height * boardAttributes.footerViewScale;
+    // double heightOfBoard = MediaQuery.of(context).size.height - footerHeight;
     var dimensions = boardAttributes.dimensions(context);
+    // dimensions = Size(width, heightOfBoard);
+
+    var boardDimensions = BoardView.dimensions(context, isBoardHorizontal);
+    // final screenSize =  MediaQuery.of(context).size;
+    final width = MediaQuery.of(context).size.width;
+    double footerHeight = MediaQuery.of(context).size.height * boardAttributes.footerViewScale;
+    double adjustment = boardAttributes.boardHeightAdjust;
+    double boardHeight = MediaQuery.of(context).size.height 
+                    - footerHeight + adjustment;
+    dimensions = Size(width, boardHeight);
+
     var bottomPos = boardAttributes.tableBottomPos;
+    //bottomPos = 0;
     var tableScale = boardAttributes.tableScale;
-    //bottomPos = -160;
+    //bottomPos = 120;
     /* finally the view */
     return Stack(
       clipBehavior: Clip.none,
@@ -126,6 +141,15 @@ class BoardView extends StatelessWidget {
 
         /* this widget is used to show animating of stacks in case user changes seats */
         Align(child: StackSwitchSeatAnimatingWidget()),
+
+        Container(width: width, height: double.infinity, 
+                    decoration: BoxDecoration(
+                    border: Border.all(color: Colors.red),
+                    color: Colors.transparent,
+                  ),
+            ),
+        Align(alignment: Alignment.topCenter, child: Text('Board Height: ${boardHeight}, Footer Height: ${footerHeight} Adjustment: ${adjustment}')),
+
       ],
     );
   }

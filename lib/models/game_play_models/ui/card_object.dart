@@ -29,6 +29,7 @@ class CardObject {
   bool dim;
   bool dimBoard;
   bool otherHighlightColor;
+  bool doubleBoard = false;
 
   CardType cardType;
   CardFace cardFace;
@@ -44,6 +45,7 @@ class CardObject {
     this.cardFace = CardFace.FRONT,
     this.dimBoard = false,
     this.empty = false,
+    this.doubleBoard = false,
   });
 
   factory CardObject.emptyCard() {
@@ -60,6 +62,7 @@ class CardObject {
   Widget get widget => CardView(
         card: this,
         cardBackBytes: null,
+        doubleBoard: doubleBoard,
       );
 
   String get cardHash => '$cardNum';
