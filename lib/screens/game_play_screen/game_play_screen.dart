@@ -788,12 +788,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
     final width = MediaQuery.of(context).size.width;
 
-    bool isBoardHorizontal = true;
     //final boardDimensions = BoardView.dimensions(context, isBoardHorizontal);
     final boardDimensions = boardAttributes.dimensions(context);
     double boardScale = boardAttributes.boardScale;
-    double divider1 =
-        boardAttributes.tableDividerHeightScale * dividerTotalHeight;
     final theme = AppTheme.getTheme(context);
 
     List<Widget> children = [];
@@ -824,19 +821,10 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
       children.addAll(
         [
-          //_buildAudioWidget(),
-          // header view
-          // headerView,
-
-          // this widget, shows which winner is currently showing - high winner / low winner
-          // this widget also acts as a natural seperator between header and board view
-          // WhichWinnerWidget(seperator: divider1),
-          // SizedBox(height: 40),
           // main board view
           Stack(
             // alignment: Alignment.center,
             children: [
-//              Container(height: Screen.height),
               this.widget.showTop ? BackgroundView() : Container(),
               this.widget.showTop && _gameState.customizationMode
                   ? Positioned(
@@ -859,8 +847,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
               // board view
               Positioned(
-                // top: MediaQuery.of(context).size.height *
-                //     boardAttributes.boardViewPositionScale,
                 top: 0, //Screen.height / 2,
                 child: _buildBoardView(
                   boardDimensions,
@@ -878,7 +864,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     }
 
     bool showBottom = this.widget.showBottom;
-    // showBottom = false;
+    showBottom = true;
 
     return Stack(
       alignment: Alignment.topCenter,
@@ -888,8 +874,13 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
         /* main view */
         Container(
+          // decoration: BoxDecoration(
+          //   //border: Border.all(color: Colors.transparent),
+          //   color: Colors.green,
+          // ),
+
             clipBehavior: Clip.none,
-            height: (Screen.height),
+            height: boardDimensions.height,
             width: Screen.width,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -916,43 +907,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
                 ),
               )
             : const SizedBox.shrink(),
-
-        // this.widget.showTop &&
-        //         !_gameState.customizationMode &&
-        //         _gameState.currentPlayer.isAdmin()
-        //   ? Positioned(right: 16, top: 80, child: PendingApprovalsButton(theme, _gameState, _gameContextObj, mounted))
-        //   : Container(),
-
-        // ? Positioned(
-        //     right: 16,
-        //     top: 80,
-        //     child: Consumer2<PendingApprovalsState, GameContextObject>(
-        //       builder: (context, value, gameContextObj, child) {
-        //         if (!_gameContextObj.isAdmin())
-        //           return const SizedBox.shrink();
-
-        //         final approval = SvgPicture.asset(
-        //           '',
-        //           width: 16,
-        //           height: 16,
-        //           color: theme.primaryColorWithDark(),
-        //         );
-
-        //         return IconWithBadge(
-        //           count: value.approvalList.length,
-        //           onClickFunction: () =>
-        //               onClickPendingBuyInApprovals(context),
-        //           child: CircleImageButton(
-        //               onTap: () {
-        //                 onClickPendingBuyInApprovals(context);
-        //               },
-        //               svgAsset: 'assets/images/game/clipboard.svg',
-        //               theme: theme),
-        //         );
-        //       },
-        //     ),
-        //   )
-        // : Container(),
 
         /* chat window widget */
         this.widget.showBottom ? _buildChatWindow() : Container(),

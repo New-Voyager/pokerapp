@@ -73,14 +73,7 @@ class BoardView extends StatelessWidget {
                 scale: tableScale,
                 child: TableView(
                     width: dimensions.width, height: dimensions.height))),
-        Container(
-          width: dimensions.width,
-          height: double.infinity,
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.red),
-            color: Colors.transparent,
-          ),
-        ),
+
         /* players */
         Transform.translate(
           offset: boardAttributes.playerOnTableOffset,
@@ -130,7 +123,14 @@ class BoardView extends StatelessWidget {
             child: CardDistributionAnimatingWidget(),
           ),
         ),
-
+        Container(
+          width: dimensions.width,
+          height: dimensions.height,
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.red, width: 3),
+            color: Colors.transparent,
+          ),
+        ),
         /* this widget is used to show animating of stacks in case user changes seats */
         Align(child: StackSwitchSeatAnimatingWidget()),
       ],
