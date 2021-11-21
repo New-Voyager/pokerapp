@@ -58,6 +58,7 @@ class _CommunicationViewState extends State<CommunicationView> {
     final gameContextObj =
         Provider.of<GameContextObject>(context, listen: false);
     final communicationState = gameState.communicationState;
+    final boardAttributes = gameState.getBoardAttributes(context);
     // final chat = SvgPicture.asset('assets/images/game/chat.svg',
     //     width: 16, height: 16, color: theme.primaryColorWithDark());
     final chat = "assets/images/game/chat2.svg";
@@ -122,7 +123,7 @@ class _CommunicationViewState extends State<CommunicationView> {
                   children.add(PendingApprovalsButton(
                       theme, gameState, gameContextObj, mounted));
                 }
-                children.add(SizedBox(height: 100));
+                children.add(SizedBox(height: boardAttributes.timerGap));
                 children.add(Consumer<ActionState>(builder: (_, __, ___) {
                   // show time widget if the player is acting
                   final gameState = GameState.getState(context);

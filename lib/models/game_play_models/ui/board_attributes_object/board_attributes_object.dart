@@ -523,6 +523,14 @@ class BoardAttributesJson {
     }
     return 1.0;
   }
+
+  double get timerGap {
+    if (attribs["timerGap"] != null) {
+      return double.parse(attribs["timerGap"].toString());
+    }
+    return 1.0;
+  }
+
 }
 
 class BoardAttributesObject extends ChangeNotifier {
@@ -868,6 +876,11 @@ class BoardAttributesObject extends ChangeNotifier {
   double get playerViewScale {
     return attribsObj.playerViewScale;
   }
+
+  double get timerGap {
+    return attribsObj.timerGap;
+  }
+
 
   Offset get playerHoleCardOffset {
     return attribsObj.playerHoleCardOffset;

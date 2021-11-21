@@ -90,18 +90,22 @@ class IPhoneAttribs {
           "boardScale": 1.0,
           "centerGap": 0.0,
           "potViewGap": 0,
-          "centerOffset": "15, 115",
+          "centerDoubleBoardScale": 0.90,
+          "centerBoardScale": 1.4,
+          "centerOffset": "15, 160",
+          "boardHeightAdjust": 85,
+          "tableBottomPos": 20,
           "seatMap": {
-            "bottomCenter": "0, 92",
-            "bottomLeft": "15, 70",
-            "bottomRight": "-15, 70",
-            "middleLeft": "2, 75",
-            "middleRight": "2, 75",
-            "topLeft": "2, 80",
-            "topRight": "2, 80",
-            "topCenter": "0, 60",
-            "topCenter1": "-50, 60",
-            "topCenter2": "55, 60"
+            "bottomCenter": "0, 40",
+            "bottomLeft": "15, 30",
+            "bottomRight": "-15, 30",
+            "middleLeft": "2, 85",
+            "middleRight": "2, 85",
+            "topLeft": "2, 140",
+            "topRight": "2, 140",
+            "topCenter": "0, 110",
+            "topCenter1": "-50, 110",
+            "topCenter2": "55, 110"
           }
         },
         "holeCardDisplacement": {
@@ -129,7 +133,7 @@ class IPhoneAttribs {
         "footerActionScale": 1.05,
         "footerScale": 0.45,
         "seat": {
-          "scale": 0.90,
+          "scale": 0.95,
           "holeCardOffset": "0, 0",
           "holeCardScale": 1.0
         }
@@ -760,7 +764,7 @@ class IPhoneAttribs {
           "centerButtonsPos": "0, -40",
           "centerViewPos": "0, 15.0",
           "centerPotScale": 1.0,
-          "centerPotUpdatesScale": 0.85,
+          "centerPotUpdatesScale": 0.75,
           "centerRankScale": 0.85,
           "centerViewScale": 0.85,
           "doubleBoardScale": 0.90,
@@ -769,24 +773,24 @@ class IPhoneAttribs {
           "centerBoardScale": 1.4,
           "centerGap": 0.0,
           "potViewGap": 0,
-          "centerOffset": "15, 115",
-          "tableBottomPos": -40,
-          "tableScale": 1.0,
+          "centerOffset": "15, 130",
+          "tableBottomPos": 20,
+          "tableScale": 1.3,
           "headerTopPos": -30,
-          "boardHeightAdjust": 100,
-          "headerTopPos": -30,
+          "boardHeightAdjust": 75,
+          "headerTopPos": -10,
           "backDropOffset": "0, -50",
           "seatMap": {
-            "bottomCenter": "0, 100",
-            "bottomLeft": "15, 90",
-            "bottomRight": "-15, 90",
+            "bottomCenter": "0, 40",
+            "bottomLeft": "15, 35",
+            "bottomRight": "-15, 35",
             "middleLeft": "0, 85",
             "middleRight": "0, 85",
-            "topLeft": "2, 80",
-            "topRight": "2, 80",
-            "topCenter": "0, 55",
-            "topCenter1": "-45, 50",
-            "topCenter2": "48, 50"
+            "topLeft": "2, 130",
+            "topRight": "2, 130",
+            "topCenter": "0, 85",
+            "topCenter1": "-45, 85",
+            "topCenter2": "48, 85"
           }
         },
         "holeCardDisplacement": {
@@ -815,8 +819,9 @@ class IPhoneAttribs {
         "holeCardViewScale": 1.28,
         "footerActionScale": 1.05,
         "footerScale": 0.45,
+        "timerGap": 60,
         "seat": {
-          "scale": 0.90,
+          "scale": 0.80,
           "holeCardOffset": "0, 0",
           "holeCardScale": 1.0
         }
