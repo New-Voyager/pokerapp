@@ -789,8 +789,8 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     final width = MediaQuery.of(context).size.width;
 
     bool isBoardHorizontal = true;
-    final boardDimensions = BoardView.dimensions(context, isBoardHorizontal);
-
+    //final boardDimensions = BoardView.dimensions(context, isBoardHorizontal);
+    final boardDimensions = boardAttributes.dimensions(context);
     double boardScale = boardAttributes.boardScale;
     double divider1 =
         boardAttributes.tableDividerHeightScale * dividerTotalHeight;
@@ -818,15 +818,15 @@ class _GamePlayScreenState extends State<GamePlayScreen>
               )),
         );
       } else {
-        headerView = HeaderView(gameState: _gameState);
+        headerView = Container(
+            width: Screen.width, child: HeaderView(gameState: _gameState));
       }
 
       children.addAll(
         [
           //_buildAudioWidget(),
-
           // header view
-          headerView,
+          // headerView,
 
           // this widget, shows which winner is currently showing - high winner / low winner
           // this widget also acts as a natural seperator between header and board view
@@ -836,6 +836,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
           Stack(
             // alignment: Alignment.center,
             children: [
+//              Container(height: Screen.height),
               this.widget.showTop ? BackgroundView() : Container(),
               this.widget.showTop && _gameState.customizationMode
                   ? Positioned(
@@ -866,6 +867,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
                   boardScale,
                 ),
               ),
+              Positioned(top: boardAttributes.headerTopPos, child: headerView),
             ],
           ),
 
@@ -882,6 +884,8 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       alignment: Alignment.topCenter,
       clipBehavior: Clip.none,
       children: [
+        // this.widget.showTop ? BackgroundView() : Container(),
+
         /* main view */
         Container(
             clipBehavior: Clip.none,

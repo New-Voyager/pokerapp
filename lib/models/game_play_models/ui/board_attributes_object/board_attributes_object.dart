@@ -433,6 +433,27 @@ class BoardAttributesJson {
     return -40;
   }
 
+  double get boardHeightAdjust {
+    if (attribs['board']['boardHeightAdjust'] != null) {
+      return double.parse(attribs['board']['boardHeightAdjust'].toString());
+    }
+    return 100;
+  }
+
+  Offset get backDropOffset {
+    if (attribs['board']['backDropOffset'] != null) {
+      return parseOffset(attribs['board']['backDropOffset'].toString());
+    }
+    return Offset.zero;
+  }
+
+  double get headerTopPos {
+    if (attribs["board"]["headerTopPos"] != null) {
+      return double.parse(attribs["board"]["headerTopPos"].toString());
+    }
+    return -10;
+  }
+
   Offset get holeCardOffset {
     if (attribs['holeCardOffset'] != null) {
       return parseOffset(attribs['holeCardOffset']);
@@ -619,12 +640,13 @@ class BoardAttributesObject extends ChangeNotifier {
       widthOfBoard = MediaQuery.of(context).size.width;
       heightOfBoard = MediaQuery.of(context).size.height / 2.5;
     }
-    this._boardSize = Size(widthOfBoard, heightOfBoard);
     // NOTE: Hard coded
     /* NOTE: THE IMAGE IS SET TO STRETCH TO THE ENTIRE HEIGHT OF THIS AVAILABLE CONTAINER,
     THIS HEIGHT - 40 VARIABLE CAN BE CHANGED TO STRETCH IT FURTHER OR SQUEEZE IT*/
     this._tableSize = Size(widthOfBoard + 50, heightOfBoard - 70);
     this._centerSize = Size(widthOfBoard - 30, this._tableSize.height - 70);
+    double adjust = this.boardHeightAdjust;
+    this._boardSize = Size(widthOfBoard, heightOfBoard + adjust);
 
     return this._boardSize;
   }
@@ -728,6 +750,18 @@ class BoardAttributesObject extends ChangeNotifier {
 
   double get footerViewScale {
     return attribsObj.footerViewScale;
+  }
+
+  double get boardHeightAdjust {
+    return attribsObj.boardHeightAdjust;
+  }
+
+  Offset get backDropOffset {
+    return attribsObj.backDropOffset;
+  }
+
+  double get headerTopPos {
+    return attribsObj.headerTopPos;
   }
 
   double get centerPotScale {

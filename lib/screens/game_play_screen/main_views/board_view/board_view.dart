@@ -32,21 +32,21 @@ class BoardView extends StatelessWidget {
 
   final GlobalKey boardViewKey = GlobalKey();
 
-  static Size dimensions(BuildContext context, bool isHorizontal) {
-    var _widthMultiplier = 0.78;
-    var _heightMultiplier = 2.0;
+  // static Size dimensions(BuildContext context, bool isHorizontal) {
+  //   var _widthMultiplier = 0.78;
+  //   var _heightMultiplier = 2.0;
 
-    double width = MediaQuery.of(context).size.width;
-    double heightOfBoard = width * _widthMultiplier * _heightMultiplier;
-    double widthOfBoard = width * _widthMultiplier;
+  //   double width = MediaQuery.of(context).size.width;
+  //   double heightOfBoard = width * _widthMultiplier * _heightMultiplier;
+  //   double widthOfBoard = width * _widthMultiplier;
 
-    if (isHorizontal) {
-      widthOfBoard = MediaQuery.of(context).size.width;
-      heightOfBoard = MediaQuery.of(context).size.height / 2.8;
-    }
+  //   if (isHorizontal) {
+  //     widthOfBoard = MediaQuery.of(context).size.width;
+  //     heightOfBoard = MediaQuery.of(context).size.height / 2.8;
+  //   }
 
-    return Size(widthOfBoard, heightOfBoard);
-  }
+  //   return Size(widthOfBoard, heightOfBoard);
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +73,14 @@ class BoardView extends StatelessWidget {
                 scale: tableScale,
                 child: TableView(
                     width: dimensions.width, height: dimensions.height))),
-
+        Container(
+          width: dimensions.width,
+          height: double.infinity,
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.red),
+            color: Colors.transparent,
+          ),
+        ),
         /* players */
         Transform.translate(
           offset: boardAttributes.playerOnTableOffset,

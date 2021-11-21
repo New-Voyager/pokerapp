@@ -60,33 +60,35 @@ class BombPotDialog {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Center(child: Text(dialogTitle,)),
+                    Center(
+                        child: Text(
+                      dialogTitle,
+                    )),
                     // sep
                     SizedBox(height: 15.ph),
                     ToggleButtons(
                       children: [
                         Container(
-                          padding: EdgeInsets.all(5),
-                        child: Text('Off',
-                            style: TextStyle(
-                            color:
-                                isSelected[0] ? Colors.black
-                                : theme.accentColor))),
-
+                            padding: EdgeInsets.all(5),
+                            child: Text('Off',
+                                style: TextStyle(
+                                    color: isSelected[0]
+                                        ? Colors.black
+                                        : theme.accentColor))),
                         Container(
-                          padding: EdgeInsets.all(5),
-                        child: Text('Next Hand',
-                            style: TextStyle(
-                            color:
-                                isSelected[1] ? Colors.black
-                                : theme.accentColor))),
+                            padding: EdgeInsets.all(5),
+                            child: Text('Next Hand',
+                                style: TextStyle(
+                                    color: isSelected[1]
+                                        ? Colors.black
+                                        : theme.accentColor))),
                         Container(
-                          padding: EdgeInsets.all(5),
-                        child: Text('Every Hand',
-                            style: TextStyle(
-                            color:
-                                isSelected[2] ? Colors.black
-                                : theme.accentColor))),
+                            padding: EdgeInsets.all(5),
+                            child: Text('Every Hand',
+                                style: TextStyle(
+                                    color: isSelected[2]
+                                        ? Colors.black
+                                        : theme.accentColor))),
                       ],
                       isSelected: isSelected,
                       selectedColor: Colors.black,
