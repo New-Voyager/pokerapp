@@ -746,7 +746,12 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
   Widget _buildBoardView(Size boardDimensions, double boardScale) {
     // log('RedrawTop: Rebuilding board view');
-    return Container(
+    return 
+    
+    Transform.translate(
+      offset: Offset(0, 0),
+      child:
+      Container(
       // key: UniqueKey(),
       width: boardDimensions.width,
       height: boardDimensions.height,
@@ -759,7 +764,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
           onStartGame: startGame,
         ),
       ),
-    );
+    ));
   }
 
   void _queryCurrentHandIfNeeded() {
@@ -789,7 +794,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     final width = MediaQuery.of(context).size.width;
 
     bool isBoardHorizontal = true;
-    final boardDimensions = BoardView.dimensions(context, isBoardHorizontal);
+    final boardDimensions = boardAttributes.dimensions(context);
 
     double boardScale = boardAttributes.boardScale;
     double divider1 =

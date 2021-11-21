@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/board_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/decorative_views/background_view.dart';
 
@@ -13,7 +14,10 @@ class ReplayHandGameView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isBoardHorizontal = true;
-    var boardDimensions = BoardView.dimensions(context, isBoardHorizontal);
+    // var boardDimensions = BoardView.dimensions(context, isBoardHorizontal);
+    final gameState = GameState.getState(context);
+    final boardAttributes = gameState.getBoardAttributes(context);
+    var boardDimensions = boardAttributes.dimensions(context);
 
     return Stack(
       clipBehavior: Clip.none,

@@ -14,6 +14,7 @@ import 'package:pokerapp/screens/game_play_screen/main_views/board_view/decorati
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/players_on_table_view.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/animating_widgets/stack_switch_seat_animating_widget.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
+import 'package:pokerapp/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 class BoardView extends StatelessWidget {
@@ -32,21 +33,21 @@ class BoardView extends StatelessWidget {
 
   final GlobalKey boardViewKey = GlobalKey();
 
-  static Size dimensions(BuildContext context, bool isHorizontal) {
-    var _widthMultiplier = 0.78;
-    var _heightMultiplier = 2.0;
+  // static Size dimensions(BuildContext context, bool isHorizontal = true) {
+  //   var _widthMultiplier = 0.78;
+  //   var _heightMultiplier = 2.0;
 
-    double width = MediaQuery.of(context).size.width;
-    double heightOfBoard = width * _widthMultiplier * _heightMultiplier;
-    double widthOfBoard = width * _widthMultiplier;
+  //   double width = MediaQuery.of(context).size.width;
+  //   double heightOfBoard = width * _widthMultiplier * _heightMultiplier;
+  //   double widthOfBoard = width * _widthMultiplier;
 
-    if (isHorizontal) {
-      widthOfBoard = MediaQuery.of(context).size.width;
-      heightOfBoard = MediaQuery.of(context).size.height / 2.8;
-    }
+  //   if (isHorizontal) {
+  //     widthOfBoard = MediaQuery.of(context).size.width;
+  //     heightOfBoard = MediaQuery.of(context).size.height / 2.8;
+  //   }
 
-    return Size(widthOfBoard, heightOfBoard);
-  }
+  //   return Size(widthOfBoard, heightOfBoard+200);
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -55,11 +56,13 @@ class BoardView extends StatelessWidget {
     final theme = AppTheme.getTheme(context);
     final gameState = GameState.getState(context);
     gameState.boardKey = boardViewKey;
+    final height = Screen.height;
     final boardAttributes = gameState.getBoardAttributes(context);
     final isBoardHorizontal =
         boardAttributes.orientation == BoardOrientation.horizontal;
     var dimensions = boardAttributes.dimensions(context);
-    var bottomPos = boardAttributes.tableBottomPos;
+    var bottomPos = -boardAttributes.tableBottomPos;
+    bottomPos = 60;
     var tableScale = boardAttributes.tableScale;
     //bottomPos = -160;
     /* finally the view */
@@ -126,6 +129,14 @@ class BoardView extends StatelessWidget {
 
         /* this widget is used to show animating of stacks in case user changes seats */
         Align(child: StackSwitchSeatAnimatingWidget()),
+
+        Container(width: dimensions.width, height: double.infinity, 
+                    decoration: BoxDecoration(
+                    border: Border.all(color: Colors.green),
+                    color: Colors.transparent,
+                  ),
+            ),
+        Align(alignment: Alignment.topCenter, child: Text('Board Height: ${dimensions.height}')),        
       ],
     );
   }
