@@ -768,7 +768,7 @@ class IPhoneAttribs {
         "base": "iPhone 13",
         "model": "iPhone 13 Pro",
         "screenSize": "390.0, 844.0",
-        "size": 6.8
+        "size": 6.2
       }''';
     Map<String, dynamic> overrideMap = jsonDecode(override);
     updateMap(defaultValue, overrideMap);
@@ -1022,18 +1022,54 @@ class IPhoneAttribs {
        "screenSize": "744.0, 1133.0",
        "size": 9.0,
         "board": {
+          "centerViewPos": "0, -30.0",
+          "betImageScale": 4.2,
           "seatMap": {
-            "bottomCenter": "0, 10",
-            "bottomLeft": "140, 0",
-            "bottomRight": "-140, 0",
-            "middleLeft": "50, 90",
-            "middleRight": "-50, 90",
-            "topLeft": "80, 170",
-            "topRight": "-80, 170",
+            "bottomCenter": "0, -10",
+            "bottomLeft": "140, -20",
+            "bottomRight": "-140, -20",
+            "middleLeft": "20, 90",
+            "middleRight": "-20, 90",
+            "topLeft": "50, 170",
+            "topRight": "-50, 170",
             "topCenter": "0, 120",
-            "topCenter1": "-80, 120",
-            "topCenter2": "80, 120"
-          }          
+            "topCenter1": "-90, 120",
+            "topCenter2": "90, 120"
+          },
+          "betAmountFac": {
+            "bottomCenter": "-0.25, -1.0",
+            "topCenter": "0.20, 0.70",
+            "middleLeft": "1.05, 0",
+            "middleRight": "-1.05, 0",
+            "topRight": "-0.65, 0.65",
+            "topLeft": "0.75, 0.65",
+            "bottomLeft": "0.70, -0.90",
+            "bottomRight": "-0.60, -0.90",
+            "topCenter1": "0.20, 0.80",
+            "topCenter2": "-0.20, 0.80"
+          }
+        },
+        "betWidgetGap": 30,
+        "otherBetOptionButtonsSpreadRadius": 100.0,
+        "betButtonsOffset": "0, 100",
+        "holeCardViewOffset": "0, 40",
+        "holeCardScale": {
+          "2": 1.50,
+          "4": 1.40,
+          "5": 1.50,
+          "default": 1
+        },
+        "holeCardDisplacement": {
+          "2": 70,
+          "4": 70,
+          "5": 50,
+          "default": 20
+        },
+        "holeCardDisplacementVisible": {
+          "2": 60,
+          "4": 70,
+          "5": 70,
+          "default": 20
         }
      }
     ''';
@@ -1101,6 +1137,7 @@ class IPhoneAttribs {
         "default": 20
       },
       "betWidgetGap": 110,
+      "otherBetOptionButtonsSpreadRadius": 120.0,
       "timerGap": 20,
       "betButtonsOffset": "0, 95",
       "seat": {
@@ -1120,30 +1157,60 @@ class IPhoneAttribs {
 
     String override = '''
       {
-       "model": "iPad Pro 11 inch",
-       "screenSize": "1024.0, 1366.0",
-       "size": 11.0,
+        "model": "iPad Pro 11 inch",
+        "screenSize": "1024.0, 1366.0",
+        "size": 11.0,
         "board": {
-          "centerViewScale": 1.40,
-          "centerViewPos": "0, 30.0"
+          "centerViewScale": 1.30,
+          "centerViewPos": "0, 20.0",
+          "tableScale": 1.0,
+          "betImageScale": 3.6,
+          "seatMap": {
+            "bottomCenter": "0, -20",
+            "bottomLeft": "140, -30",
+            "bottomRight": "-140, -30",
+            "middleLeft": "30, 70",
+            "middleRight": "-30, 70",
+            "topLeft": "60, 170",
+            "topRight": "-60, 170",
+            "topCenter": "0, 120",
+            "topCenter1": "-80, 130",
+            "topCenter2": "80, 130"
+          },
+          "betAmountFac": {
+            "bottomCenter": "-0.25, -1.0",
+            "topCenter": "0.20, 0.70",
+            "middleLeft": "1.05, 0",
+            "middleRight": "-1.05, 0",
+            "topRight": "-0.65, 0.65",
+            "topLeft": "0.75, 0.65",
+            "bottomLeft": "0.70, -0.90",
+            "bottomRight": "-0.60, -0.90",
+            "topCenter1": "0.20, 0.80",
+            "topCenter2": "-0.20, 0.80"
+          },
+          "betSliderScale": 3.0
         },
+        "betButtonsOffset": "0, 87",
+        "betWidgetOffset": "0, -40",
+        "otherBetOptionButtonsSpreadRadius": 90,
         "holeCardDisplacement": {
           "2": 50,
           "4": 50,
-          "5": 40,
+          "5": 50,
           "default": 50
         },
         "holeCardDisplacementVisible": {
           "2": 50,
           "4": 50,
-          "5": 40,
+          "5": 50,
           "default": 50
         },        
         "footerViewHeightScale": 0.55,
         "holeCardScale": {
-          "2": 1.20,
-          "4": 1.10,
-          "5": 1.00,
+          "2": 1.30,
+          "4": 1.30,
+          "5": 1.30,
           "default": 1
         },
         "holeCardOffset": "0, 0",
