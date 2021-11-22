@@ -13,6 +13,9 @@ class BackgroundView extends StatelessWidget {
       return AnimatedSwitcher(
             duration: const Duration(milliseconds: 500),
             child:
+            Transform.translate(
+                    offset: boardAttributes.backDropOffset,
+                    child:
       Container(
         width: dimensions.width,
         height: dimensions.height,
@@ -21,7 +24,7 @@ class BackgroundView extends StatelessWidget {
             image: MemoryImage(
               gameState.assets.getBackDrop(),))
         ),
-      ));
+      )));
       return AnimatedSwitcher(
             duration: const Duration(milliseconds: 500),
             child:  Image.memory(

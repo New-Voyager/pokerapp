@@ -16,6 +16,8 @@ import 'package:pokerapp/screens/game_play_screen/seat_view/animating_widgets/st
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:provider/provider.dart';
 
+import 'decorative_views/background_view.dart';
+
 class BoardView extends StatelessWidget {
   final GameComService gameComService;
   final GameInfoModel gameInfo;
@@ -64,7 +66,7 @@ class BoardView extends StatelessWidget {
     //bottomPos = -160;
     /* finally the view */
     return Stack(
-      clipBehavior: Clip.none,
+      clipBehavior: Clip.antiAlias,
       alignment: Alignment.center,
       children: [
         Container(
@@ -74,7 +76,14 @@ class BoardView extends StatelessWidget {
             border: Border.all(color: Colors.red, width: 3),
             color: Colors.transparent,
           ),
-        ),        
+        ),
+
+          Container(
+                width: double.infinity,
+                height: dimensions.height,
+                child: 
+                   BackgroundView())                ,
+                   
         Positioned(
             bottom: bottomPos,
             child: Transform.scale(

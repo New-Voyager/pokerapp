@@ -818,17 +818,20 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         headerView = Container(
             width: Screen.width, child: HeaderView(gameState: _gameState));
       }
-
+      
       children.addAll(
         [
           // main board view
           Stack(
+            clipBehavior: Clip.antiAlias,
             alignment: Alignment.topCenter,
             children: [
-              this.widget.showTop ? Container(
-                width: double.infinity,
-                height: boardDimensions.height,
-                child: BackgroundView()) : Container(),
+              // this.widget.showTop ? Container(
+              //   width: double.infinity,
+              //   height: boardDimensions.height,
+              //   child: 
+              //      BackgroundView())
+              //   : Container(),
 
               this.widget.showTop && _gameState.customizationMode
                   ? Positioned(

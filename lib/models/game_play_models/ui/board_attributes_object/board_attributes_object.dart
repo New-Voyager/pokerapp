@@ -122,7 +122,7 @@ class BoardAttributesJson {
     } else {
       // iphone
       // attribs = IPhoneAttribs.getIPhoneXS();
-      attribs = IPhoneAttribs.getAttribs(DeviceInfo.name, screenSize);
+      attribs = IPhoneAttribs.getAttribs(DeviceInfo.model, screenSize);
     }
   }
 

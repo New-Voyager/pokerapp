@@ -296,6 +296,70 @@ class IPhoneAttribs {
     return defaultValue;
   }
 
+  static Map<String, dynamic> getIPhone11Pro() {
+    final defaultValue = getIPhone11();
+    String override = '''
+      {
+        "model": "iPhone 10S",
+        "screenSize": "375.0, 812.0",
+        "size": 5.8,
+
+        "board": {
+          "backDropOffset": "0, -50",
+          "centerViewPos": "0, 0",
+          "tableBottomPos": 10,
+           "seatMap": {
+            "bottomCenter": "0, 30",
+            "bottomLeft": "15, 20",
+            "bottomRight": "-15, 20",
+            "middleLeft": "-4, 50",
+            "middleRight": "4, 50",
+            "topLeft": "-4, 80",
+            "topRight": "4, 80",
+            "topCenter": "0, 60",
+            "topCenter1": "-48, 60",
+            "topCenter2": "48, 60"
+          }
+        }
+      }
+    ''';
+    Map<String, dynamic> overrideMap = jsonDecode(override);
+    updateMap(defaultValue, overrideMap);
+    return defaultValue;
+  }
+
+
+  static Map<String, dynamic> getIPhone11ProMax() {
+    final defaultValue = getIPhone11Pro();
+    String override = '''
+      {
+        "model": "iPhone 11 Pro Max",
+        "screenSize": "375.0, 812.0",
+        "size": 5.8,
+
+        "board": {
+          "backDropOffset": "0, -50",
+          "centerViewPos": "0, 0",
+          "tableBottomPos": 10,
+           "seatMap": {
+            "bottomCenter": "0, 10",
+            "bottomLeft": "15, 0",
+            "bottomRight": "-15, 0",
+            "middleLeft": "-4, 40",
+            "middleRight": "4, 40",
+            "topLeft": "-4, 80",
+            "topRight": "4, 80",
+            "topCenter": "0, 70",
+            "topCenter1": "-48, 70",
+            "topCenter2": "48, 70"
+          }
+        }
+      }
+    ''';
+    Map<String, dynamic> overrideMap = jsonDecode(override);
+    updateMap(defaultValue, overrideMap);
+    return defaultValue;
+  }
   static Map<String, dynamic> getIPhoneXS() {
     final defaultValue = getIPhoneX();
     String override = '''
@@ -1177,7 +1241,11 @@ class IPhoneAttribs {
       return getDefault();
     } else {
       print("name is $name");
-      if (name.contains('iphone 11')) {
+      if (name.contains('iphone 11 pro max')) {
+        return getIPhone11ProMax();
+      } else if (name.contains('iphone 11 pro')) {
+        return getIPhone11Pro();
+      } else if (name.contains('iphone 11')) {
         return getIPhone11();
       } else if (name.contains('iphone 12 mini')) {
         return getIPhone12Mini();
