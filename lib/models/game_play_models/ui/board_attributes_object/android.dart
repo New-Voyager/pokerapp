@@ -137,6 +137,7 @@ class AndroidAttribs {
         "footerActionScale": 1.05,
         "footerScale": 0.45,
         "betWidgetGap": 20,
+        "betWidgetOffset": "0, 0",
         "betButtonsOffset": "0, 80",
         "otherBetOptionButtonsSpreadRadius": 90,
         "seat": {
@@ -294,25 +295,64 @@ class AndroidAttribs {
         "size": 4.6,
         "board": {
           "centerViewScale": 0.70,
-          "centerOffset": "15, 80",
-          "centerPotScale": 0.90,
-          "centerPotUpdatesScale": 0.90,
-          "centerRankScale": 0.80,
-          "tableScale": 1.4,
+          "centerViewPos": "15, 20",
+          "centerOffset": "15, 20",
+          "centerPotScale": 0.70,
+          "centerPotUpdatesScale": 0.70,
+          "centerRankScale": 0.70,
+          "tableScale": 1.2,
           "seatMap": {
-            "bottomCenter": "0, 80",
-            "bottomLeft": "15, 70",
-            "bottomRight": "-15, 70",
-            "middleLeft": "0, 70",
-            "middleRight": "0, 70",
-            "topLeft": "10, 75",
-            "topRight": "-10, 75",
-            "topCenter": "0, 60",
-            "topCenter1": "-45, 60",
-            "topCenter2": "45, 60"
+            "bottomCenter": "0, 30",
+            "bottomLeft": "45, 30",
+            "bottomRight": "-45, 30",
+            "middleLeft": "0, 30",
+            "middleRight": "0, 30",
+            "topLeft": "10, 35",
+            "topRight": "-10, 35",
+            "topCenter": "0, 10",
+            "topCenter1": "-45, 10",
+            "topCenter2": "45, 10"
           },
-          "betImageScale": 2.0
+          "betAmountFac": {
+            "bottomCenter": "0, -0.80",
+            "topCenter": "0.20, 0.70",
+            "middleLeft": "0.60, 0.60",
+            "middleRight": "-0.30, 0.60",
+            "topRight": "-0.10, 0.70",
+            "topLeft": "0.30, 0.65",
+            "bottomLeft": "0.60, -0.75",
+            "bottomRight": "-0.30, -0.85",
+            "topCenter1": "0.20, 0.80",
+            "topCenter2": "0.0, 0.80"
+          },          
+          "betImageScale": 2.0,
+          "betWidgetOffset": "0, -50",
+          "bottomHeightAdjust": -70
         },
+        "footerViewHeightScale": 0.55,
+        "holeCardViewOffset": "0, 30",
+        "betWidgetGap": 0,
+        "betWidgetOffset": "0, -50",
+        "betButtonsOffset": "0, 60",
+        "otherBetOptionButtonsSpreadRadius": 70,
+        "holeCardScale": {
+          "2": 1.2,
+          "4": 1.0,
+          "5": 0.90,
+          "default": 1
+        },
+        "holeCardDisplacement": {
+          "2": 35,
+          "4": 35,
+          "5": 35,
+          "default": 35
+        },
+        "holeCardDisplacementVisible": {
+          "2": 30,
+          "4": 25,
+          "5": 25,
+          "default": 25
+        },        
         "seat": {
            "scale": 0.70,
             "holeCardOffset": "0, 0",
