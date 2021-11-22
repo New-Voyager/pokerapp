@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/screens/auth_screens/recover_account.dart';
 import 'package:pokerapp/screens/auth_screens/registration_new.dart';
 import 'package:pokerapp/screens/club_screen/announcements_view.dart';
@@ -183,18 +184,21 @@ class Routes {
       case game_play:
         String gameCode;
         bool botGame = false;
+        GameInfoModel gameInfo;
         if (settings.arguments is String) {
           gameCode = settings.arguments as String;
         } else {
           dynamic args = settings.arguments as dynamic;
           gameCode = args['gameCode'] as String;
           botGame = args['botGame'] ?? false;
+          gameInfo = args['gameInfo'] as GameInfoModel;
         }
         return _getPageRoute(
           routeName: settings.name,
           viewToShow: GamePlayScreen(
             gameCode: gameCode,
             botGame: botGame,
+            gameInfoModel: gameInfo,
           ),
         );
 

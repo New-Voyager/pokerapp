@@ -92,6 +92,7 @@ class GamePlayScreen extends StatefulWidget {
   final bool showTop;
   final bool showBottom;
   final bool botGame;
+  final GameInfoModel gameInfoModel;
   // NOTE: Enable this for agora audio testing
   GamePlayScreen({
     @required this.gameCode,
@@ -99,6 +100,7 @@ class GamePlayScreen extends StatefulWidget {
     this.botGame = false,
     this.showTop = true,
     this.showBottom = true,
+    this.gameInfoModel,
   }) : assert(gameCode != null);
 
   @override
@@ -177,6 +179,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   /* The init method returns a Future of all the initial game constants
   * This method is also responsible for subscribing to the NATS channels */
   Future<GameInfoModel> _init() async {
+    // check if there is a gameInfo passed, if not, then fetch the game info
     GameInfoModel _gameInfoModel = await _fetchGameInfo();
     _hostSeatChangeInProgress = false;
     if (_gameInfoModel.status == AppConstants.GAME_PAUSED &&
