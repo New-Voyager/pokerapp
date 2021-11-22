@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
@@ -14,7 +13,6 @@ import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
-import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/game_play_screen/bombpot_dialog.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/bottom_sheets/debuglog_bottomsheet.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/bottom_sheets/game_info_bottom_sheet.dart';
@@ -23,7 +21,6 @@ import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/bottom_
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/bottom_sheets/last_hand_analyse_bottomsheet.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/bottom_sheets/player_stats_bottomsheet.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/bottom_sheets/table_result_bottomsheet.dart';
-import 'package:pokerapp/screens/game_play_screen/widgets/icon_with_badge.dart';
 import 'package:pokerapp/services/app/player_service.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/widgets/buttons.dart';
@@ -260,8 +257,9 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                       : SizedBox.shrink(),
                   SizedBox(width: 10.pw),
 
-                  // last hand
-                  CircleImageButton(
+                  // bomb pot
+                  !widget.gameState.currentPlayer.isHost() ? Container()
+                  : CircleImageButton(
                       theme: theme,
                       svgAsset:
                           'assets/images/game/bomb1.svg', //AppAssetsNew.lastHandPath,
@@ -269,7 +267,8 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                         vnShowMenuItems.value = false;
                         await BombPotDialog.prompt(
                             context: context,
-                            gameCode: widget.gameState.gameCode);
+                            gameCode: widget.gameState.gameCode,
+                            gameState: widget.gameState);
                       }),
                   SizedBox(width: 10.pw),
                 ],
