@@ -363,6 +363,7 @@ class NewGameSettings2 extends StatelessWidget {
         if (savedModel == null) {
           // Initializing values
           // Initial value for BigBlind
+          gmp.gameType = mainGameType.index - 1;
           gmp.blinds.bigBlind = 2.0;
           // Initial value for Buyin Min and max
           gmp.buyInMin = 30;
@@ -823,27 +824,40 @@ class NewGameSettings2 extends StatelessWidget {
 
                 /* start button */
                 sepV20,
-                ButtonWidget(
-                  text: _appScreenText['start'],
-                  onTap: () {
-                    if (gmp.blinds.bigBlind % 2 != 0) {
-                      Alerts.showNotification(
-                        titleText: _appScreenText['gameCreationFailed'],
-                        subTitleText: _appScreenText['checkBigBlind'],
-                        duration: Duration(seconds: 5),
-                      );
-                      return;
-                    } else if (gmp.buyInMax < gmp.buyInMin) {
-                      Alerts.showNotification(
-                        titleText: _appScreenText['gameCreationFailed'],
-                        subTitleText: _appScreenText['checkBuyinRange'],
-                        duration: Duration(seconds: 5),
-                      );
-                      return;
-                    } else {
-                      Navigator.pop(context, gmp);
-                    }
-                  },
+                Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    ButtonWidget(
+                      text: _appScreenText['start'],
+                      onTap: () {
+                        if (gmp.blinds.bigBlind % 2 != 0) {
+                          Alerts.showNotification(
+                            titleText: _appScreenText['gameCreationFailed'],
+                            subTitleText: _appScreenText['checkBigBlind'],
+                            duration: Duration(seconds: 5),
+                          );
+                          return;
+                        } else if (gmp.buyInMax < gmp.buyInMin) {
+                          Alerts.showNotification(
+                            titleText: _appScreenText['gameCreationFailed'],
+                            subTitleText: _appScreenText['checkBuyinRange'],
+                            duration: Duration(seconds: 5),
+                          );
+                          return;
+                        } else {
+                          Navigator.pop(context, gmp);
+                        }
+                      },
+                    ),
+                    Positioned(
+                      right: 0,
+                      child: CircleImageButton(
+                        onTap: () async {},
+                        icon: Icons.save,
+                        theme: theme,
+                      ),
+                    ),
+                  ],
                 ),
 
                 /* sep */
