@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_type.dart';
@@ -53,8 +56,12 @@ class NewGameSettings2 extends StatelessWidget {
           horizontal: 15.0,
           vertical: 30.0,
         ),
-        child:
-            NewGameSettings2(clubCode, mainGameType, subGameTypes, savedModel),
+        child: NewGameSettings2(
+          clubCode,
+          mainGameType,
+          subGameTypes,
+          savedModel,
+        ),
       ),
     );
 
@@ -345,6 +352,13 @@ class NewGameSettings2 extends StatelessWidget {
       builder: (BuildContext context, _) {
         final NewGameModelProvider gmp = context.read<NewGameModelProvider>();
 
+        gmp.gameType = mainGameType;
+        if (mainGameType == GameType.ROE) {
+          gmp.roeGames = subGameTypes;
+        } else {
+          gmp.dealerChoiceGames = subGameTypes;
+        }
+
         // Load default values if it is not from Saved Settings.
         if (savedModel == null) {
           // Initializing values
@@ -418,7 +432,8 @@ class NewGameSettings2 extends StatelessWidget {
                         if (result != null && result.isNotEmpty) {
                           final instance = HiveDatasource.getInstance
                               .getBox(BoxType.GAME_SETTINGS_BOX);
-                          await instance.put(result, gmp.settings.toJson());
+                          log(jsonEncode(gmp.settings.toJson()));
+                          // await instance.put(result, gmp.settings.toJson());
                         }
                       },
                       icon: Icons.save,
