@@ -1023,42 +1023,20 @@ class IPhoneAttribs {
        "screenSize": "744.0, 1133.0",
        "size": 9.0,
         "board": {
-          "centerViewScale": 1.30,
-          "centerViewPos": "0, 50.0"
-        },
-        "holeCardDisplacement": {
-          "2": 50,
-          "4": 50,
-          "5": 40,
-          "default": 50
-        },
-        "holeCardDisplacementVisible": {
-          "2": 50,
-          "4": 50,
-          "5": 40,
-          "default": 50
-        },        
-        "footerViewHeightScale": 0.42,
-        "holeCardScale": {
-          "2": 1.30,
-          "4": 1.35,
-          "5": 1.15,
-          "default": 1
-        },
-        "holeCardOffset": "0, 0",
-        "holeCardViewOffset": "0, 70",
-        "otherBetOptionButtonsSpreadRadius": 80.0,
-        "footerRankTextSize": 25.0,
-        "holeCardViewScale": 1.4,
-        "footerActionScale": 1.30,
-        "footerScale": 0.50,
-        "seat": {
-          "scale": 1.30,
-          "holeCardOffset": "0, 0",
-          "holeCardScale": 1.0
+          "seatMap": {
+            "bottomCenter": "0, 10",
+            "bottomLeft": "140, 0",
+            "bottomRight": "-140, 0",
+            "middleLeft": "50, 90",
+            "middleRight": "-50, 90",
+            "topLeft": "80, 170",
+            "topRight": "-80, 170",
+            "topCenter": "0, 120",
+            "topCenter1": "-80, 120",
+            "topCenter2": "80, 120"
+          }          
         }
-
-      }
+     }
     ''';
 
     Map<String, dynamic> overrideMap = jsonDecode(override);
@@ -1074,9 +1052,28 @@ class IPhoneAttribs {
      "model": "iPad Pro 12 inch",
      "size": 12.9,
      "board": {
+       "tableScale": 0.90,
         "centerViewScale": 1.60,
-        "centerViewPos": "0, 100.0"
-      }
+        "centerViewPos": "0, 100.0",
+          "seatMap": {
+            "bottomCenter": "0, -30",
+            "bottomLeft": "140, -40",
+            "bottomRight": "-140, -40",
+            "middleLeft": "50, 90",
+            "middleRight": "-50, 90",
+            "topLeft": "110, 200",
+            "topRight": "-110, 200",
+            "topCenter": "0, 160",
+            "topCenter1": "-100, 160",
+            "topCenter2": "100, 160"
+          }        
+      },
+        "timerGap": 20,
+        "seat": {
+          "scale": 1.30,
+          "holeCardOffset": "0, 0",
+          "holeCardScale": 1.0
+        }
     }
     ''';
 
@@ -1094,7 +1091,7 @@ class IPhoneAttribs {
        "size": 11.0,
         "board": {
           "centerViewScale": 1.40,
-          "centerViewPos": "0, 60.0"
+          "centerViewPos": "0, 30.0"
         },
         "holeCardDisplacement": {
           "2": 50,
@@ -1108,11 +1105,11 @@ class IPhoneAttribs {
           "5": 40,
           "default": 50
         },        
-        "footerViewHeightScale": 0.43,
+        "footerViewHeightScale": 0.55,
         "holeCardScale": {
-          "2": 1.40,
-          "4": 1.40,
-          "5": 1.20,
+          "2": 1.20,
+          "4": 1.10,
+          "5": 1.00,
           "default": 1
         },
         "holeCardOffset": "0, 0",
@@ -1196,7 +1193,19 @@ class IPhoneAttribs {
         "size": 9.5,
         "board": {
           "centerViewScale": 1.30,
-          "centerViewPos": "0, 50.0"
+          "centerViewPos": "0, 20.0",
+          "seatMap": {
+            "bottomCenter": "0, -20",
+            "bottomLeft": "140, -20",
+            "bottomRight": "-140, -20",
+            "middleLeft": "50, 70",
+            "middleRight": "-50, 70",
+            "topLeft": "80, 170",
+            "topRight": "-80, 170",
+            "topCenter": "0, 120",
+            "topCenter1": "-80, 120",
+            "topCenter2": "80, 120"
+          }          
         },
         "holeCardDisplacement": {
           "2": 50,
@@ -1210,10 +1219,9 @@ class IPhoneAttribs {
           "5": 40,
           "default": 50
         },        
-        "footerViewHeightScale": 0.40,
         "holeCardScale": {
-          "2": 1.10,
-          "4": 1.15,
+          "2": 1.30,
+          "4": 1.25,
           "5": 1.15,
           "default": 1
         },

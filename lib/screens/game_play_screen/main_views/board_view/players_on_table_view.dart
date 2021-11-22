@@ -523,8 +523,10 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
                 }
               }
             }
+            double scale = boardAttributes.playerViewScale;
+            scale = 1.7;
             return Transform.scale(
-              scale: boardAttributes.playerViewScale,
+              scale: scale,
               child: Opacity(
                 opacity: seatActive ? 1.0 : 0.50,
                 child: PlayerView(
