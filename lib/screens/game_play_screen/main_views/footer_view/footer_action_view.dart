@@ -583,12 +583,12 @@ class _FooterActionViewState extends State<FooterActionView> {
               return Stack(
                 //mainAxisSize: MainAxisSize.min,
                 children: [
-                  Container(
-                      width: double.infinity,
-                      height: double.infinity,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.blue),
-                      )),
+                  // Container(
+                  //     width: double.infinity,
+                  //     height: double.infinity,
+                  //     decoration: BoxDecoration(
+                  //       border: Border.all(color: Colors.blue),
+                  //     )),
                   ...children,
                 ],
               );

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/models/handlog_model.dart';
@@ -42,6 +43,11 @@ class _HighHandAnalysisScreenState extends State<HighHandAnalysisScreen> {
   int minRank = 322;
   List<GameType> gameTypes;
   GameTypeSelection gameTypesWidget;
+  DateTime _fromDate = DateTime.now().subtract(
+    Duration(days: 7),
+  );
+  DateTime _toDate = DateTime.now();
+  DateTimeRange _dateTimeRange;
 
   @override
   void dispose() {
@@ -63,6 +69,11 @@ class _HighHandAnalysisScreenState extends State<HighHandAnalysisScreen> {
 
   @override
   void initState() {
+    _dateTimeRange = DateTimeRange(
+      start: _fromDate,
+      end: _toDate,
+    );
+
     super.initState();
     groupType = HHGroupType.HOURLY;
     final now = DateTime.now();
@@ -95,7 +106,10 @@ class _HighHandAnalysisScreenState extends State<HighHandAnalysisScreen> {
       //   searchResults.add(SearchHighHandResult.fromJson(data));
       // }
       final selectedGameTypes = selectedGames;
-      log('${selectedGameTypes.toString()}');
+      String startDateStr = startDate.toIso8601String();
+      String endDateStr = endDate.toIso8601String();
+
+      log('${selectedGameTypes.toString()} Start: $startDateStr End: $endDateStr');
       final searchResults = await HandService.searchHands(widget.clubCode,
           startDate.toUtc(), endDate.toUtc(), selectedGameTypes, minRank);
       GroupHighHandResult group = GroupHighHandResult(
@@ -259,6 +273,11 @@ class _HighHandAnalysisScreenState extends State<HighHandAnalysisScreen> {
   }
 
   List<Widget> dateSelectionFilter(AppTheme theme) {
+
+    DateTime date = endDate.subtract(Duration(days: 1));
+    String startDateStr = DateFormat('dd MMM').format(startDate);
+    String endDateStr = DateFormat('dd MMM').format(date);
+    
     return [
       Center(child: AppLabel('Date Range', theme)),
       SizedBox(
@@ -271,47 +290,89 @@ class _HighHandAnalysisScreenState extends State<HighHandAnalysisScreen> {
                 'Today',
                 'Yesterday',
                 'This Week',
-                'This Month',
-                'Last Week',
-                'Last Month'
+                'Custom',
+                // 'Last Week',
+                // 'Last Month'
               ],
-              onSelect: (String value) {
+              onSelect: (String value) async {
                 final now = DateTime.now();
                 if (value == 'Today') {
                   startDate = DateTime(now.year, now.month, now.day, 0, 0, 0);
                   endDate = startDate.add(Duration(days: 1));
+                  setState(() {});
                 } else if (value == 'Yesterday') {
                   startDate = now.subtract(Duration(days: 1));
                   startDate = DateTime(
                       startDate.year, startDate.month, startDate.day, 0, 0, 0);
                   endDate = startDate.add(Duration(days: 1));
+                  setState(() {});
                 } else if (value == 'This Week') {
                   startDate = now.subtract(Duration(days: now.weekday));
                   startDate = DateTime(
                       startDate.year, startDate.month, startDate.day, 0, 0, 0);
                   endDate = startDate.add(Duration(days: 7));
+                  setState(() {});
                 } else if (value == 'Last Week') {
                   endDate = DateTime(now.year, now.month, now.day, 0, 0, 0);
                   endDate = endDate.subtract(Duration(days: endDate.weekday));
                   startDate = DateTime.parse(Jiffy(endDate.toIso8601String())
                       .subtract(weeks: 1)
                       .format('yyyy-MM-dd'));
+                  setState(() {});
                 } else if (value == 'This Month') {
                   startDate = DateTime(now.year, now.month, 1, 0, 0, 0);
                   endDate = DateTime.parse(Jiffy()
                       .startOf(Units.MONTH)
                       .add(months: 1)
                       .format('yyyy-MM-dd'));
+                  setState(() {});
                 } else if (value == 'Last Month') {
                   endDate = DateTime(now.year, now.month, 1, 0, 0, 0);
                   startDate = DateTime.parse(Jiffy(startDate.toIso8601String())
                       .subtract(months: 1)
                       .format('yyyy-MM-dd'));
+                  setState(() {});
+                } else if (value == 'Custom') {
+                  await _handleDateRangePicker(context, theme);
+                  startDate = _dateTimeRange.start;
+                  endDate = _dateTimeRange.end.add(Duration(days:1));
+                  setState(() {});
                 }
 
                 log('Start Date: ${startDate.toIso8601String()}  End Date: ${endDate.toIso8601String()}');
               })),
+
+        Column(
+          children: [
+            Center(child: Text('Selected Dates')),
+            Center(child: Text('${startDateStr} - ${endDateStr}')),
+          ]
+        ),
     ];
+  }
+
+  _handleDateRangePicker(BuildContext context, AppTheme theme) async {
+    final dateRange = await showDateRangePicker(
+      initialDateRange: _dateTimeRange,
+      context: context,
+      firstDate: DateTime.now().subtract(Duration(days: 3650)),
+      lastDate: DateTime.now(),
+      builder: (BuildContext context, Widget child) {
+        return Theme(
+          data: ThemeData.light().copyWith(
+            primaryColor: theme.primaryColor,
+            accentColor: theme.accentColor,
+            colorScheme: ColorScheme.light(primary: theme.primaryColor),
+            buttonTheme: ButtonThemeData(textTheme: ButtonTextTheme.primary),
+          ),
+          child: child,
+        );
+      },
+    );
+
+    if (dateRange != null) {
+      _dateTimeRange = dateRange;
+    }
   }
 
   List<Widget> groupFilter(AppTheme theme) {
