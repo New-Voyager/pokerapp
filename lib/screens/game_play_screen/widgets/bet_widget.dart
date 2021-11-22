@@ -450,6 +450,7 @@ class BetWidget extends StatelessWidget {
     log('bet_widget : screenSize : $screenSize');
     //List<int> cards = [161, 200, 168, 177, 194];
     Offset offset = boardAttributes.betWidgetOffset;
+    double betWidgetGap = boardAttributes.betWidgetGap;
 
     return Stack(children: [
       ListenableProvider<ValueNotifier<double>>(
@@ -461,7 +462,7 @@ class BetWidget extends StatelessWidget {
           return Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              SizedBox(height: 10),
+              SizedBox(height: betWidgetGap),
               // cards
               FittedBox(
                 fit: BoxFit.fitWidth,

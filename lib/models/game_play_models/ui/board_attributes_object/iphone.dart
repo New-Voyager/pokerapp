@@ -518,16 +518,16 @@ class IPhoneAttribs {
           "centerViewScale": 0.90,
           "tableScale": 1.15,
           "seatMap": {
-            "bottomCenter": "0, 60",
-            "bottomLeft": "15, 50",
-            "bottomRight": "-15, 50",
-            "middleLeft": "2, 75",
-            "middleRight": "2, 75",
-            "topLeft": "2, 110",
-            "topRight": "2, 110",
+            "bottomCenter": "0, 20",
+            "bottomLeft": "15, 10",
+            "bottomRight": "-15, 10",
+            "middleLeft": "0, 35",
+            "middleRight": "0, 35",
+            "topLeft": "2, 80",
+            "topRight": "2, 80",
             "topCenter": "0, 60",
-            "topCenter1": "-50, 80",
-            "topCenter2": "55, 80"
+            "topCenter1": "-50, 60",
+            "topCenter2": "55, 60"
           },
           "betAmountFac": {
             "bottomCenter": "0, -1.0",
@@ -541,8 +541,13 @@ class IPhoneAttribs {
             "topCenter1": "0.20, 0.65",
             "topCenter2": "-0.20, 0.65"
           },
+          "tableBottomPos": 10,
+          "boardHeightAdjust": -20,
+          "bottomHeightAdjust": -150,
           "centerPotScale": 0.85,
-          "centerPotUpdatesScale": 0.7
+          "centerPotUpdatesScale": 0.7,
+          "centerViewPos": "0, 0.0",
+          "betImageScale": 3.0
         },
         "holeCardDisplacement": {
           "2": 35,
@@ -557,12 +562,15 @@ class IPhoneAttribs {
           "default": 25
         },        
         "holeCardScale": {
-          "2": 1.15,
+          "2": 1.10,
           "4": 1.05,
           "5": 0.97,
           "default": 1
         },
-        "holeCardViewOffset": "0, 60"
+        "footerViewHeightScale": 0.58,
+        "holeCardViewOffset": "0, 30",
+        "otherBetOptionButtonsSpreadRadius": 90.0,
+        "betButtonsOffset": "0, 80"
       }
     ''';
     Map<String, dynamic> overrideMap = jsonDecode(override);
@@ -585,7 +593,7 @@ class IPhoneAttribs {
   }
 
   static Map<String, dynamic> getIPhone12Mini() {
-    final defaultValue = getDefault();
+    final defaultValue = getIPhone12();
     String override = '''
       {
         "model": "iPhone 12 mini",
@@ -595,16 +603,16 @@ class IPhoneAttribs {
           "centerViewScale": 0.85,
           "tableScale": 1.3,
           "seatMap": {
-            "bottomCenter": "0, 70",
-            "bottomLeft": "15, 60",
-            "bottomRight": "-15, 60",
-            "middleLeft": "2, 75",
-            "middleRight": "2, 75",
-            "topLeft": "2, 105",
-            "topRight": "2, 105",
+            "bottomCenter": "0, 30",
+            "bottomLeft": "15, 10",
+            "bottomRight": "-15, 10",
+            "middleLeft": "-5, 45",
+            "middleRight": "5, 45",
+            "topLeft": "2, 70",
+            "topRight": "2, 70",
             "topCenter": "0, 60",
-            "topCenter1": "-50, 50",
-            "topCenter2": "55, 50"
+            "topCenter1": "-40, 50",
+            "topCenter2": "45, 50"
           },
           "betAmountFac": {
             "bottomCenter": "0, -1.0",
@@ -639,7 +647,8 @@ class IPhoneAttribs {
           "5": 0.95,
           "default": 1
         },
-        "holeCardViewOffset": "0, 55"
+        "footerHeightViewScale": 0.55,
+        "holeCardViewOffset": "0, 25"
       }
     ''';
     Map<String, dynamic> overrideMap = jsonDecode(override);
@@ -655,19 +664,19 @@ class IPhoneAttribs {
         "screenSize": "375.0, 812.0",
         "size": 6.8,
         "board": {
-          "centerViewScale": 1.1,
+          "centerViewScale": 0.90,
           "tableScale": 1.2,
           "seatMap": {
-            "bottomCenter": "0, 60",
-            "bottomLeft": "15, 50",
-            "bottomRight": "-15, 50",
-            "middleLeft": "2, 75",
-            "middleRight": "2, 75",
-            "topLeft": "2, 105",
-            "topRight": "2, 105",
-            "topCenter": "0, 60",
-            "topCenter1": "-50, 70",
-            "topCenter2": "55, 70"
+            "bottomCenter": "0, 20",
+            "bottomLeft": "15,10",
+            "bottomRight": "-15, 10",
+            "middleLeft": "2, 35",
+            "middleRight": "2, 35",
+            "topLeft": "2, 75",
+            "topRight": "2, 75",
+            "topCenter": "0, 50",
+            "topCenter1": "-50, 50",
+            "topCenter2": "55, 50"
           },
           "betAmountFac": {
             "bottomCenter": "0, -1.0",
@@ -681,11 +690,18 @@ class IPhoneAttribs {
             "topCenter1": "0.20, 0.7",
             "topCenter2": "-0.20, 0.7"
           },
+          "tableBottomPos": 0,
+          "boardHeightAdjust": -75,
           "centerPotScale": 0.75,
           "centerPotUpdatesScale": 0.70,
           "centerGap": 2,
-          "centerViewPos": "0, 30.0"
+          "centerViewPos": "0, -10.0",
+          "betImageScale": 3.0
+
         },
+        "otherBetOptionButtonsSpreadRadius": 90.0,
+        "betButtonsOffset": "0, 80",
+
         "holeCardDisplacement": {
           "2": 37,
           "4": 33,
@@ -699,9 +715,9 @@ class IPhoneAttribs {
           "default": 20
         },        
         "holeCardScale": {
-          "2": 1.50,
-          "4": 1.45,
-          "5": 1.25,
+          "2": 1.40,
+          "4": 1.20,
+          "5": 1.15,
           "default": 1
         },
         "seat": {
@@ -710,8 +726,8 @@ class IPhoneAttribs {
           "holeCardScale": 1.0
         },
 
-        "footerViewHeightScale": 0.45,
-        "holeCardViewOffset": "0, 50"
+        "footerViewHeightScale": 0.55,
+        "holeCardViewOffset": "0, 40"
       }
     ''';
     Map<String, dynamic> overrideMap = jsonDecode(override);
@@ -750,8 +766,8 @@ class IPhoneAttribs {
     final defaultValue = getIPhone12Pro();
     String override = '''
       {
-        "base": "iPhone 12",
-        "model": "iPhone 12 Pro",
+        "base": "iPhone 13",
+        "model": "iPhone 13 Pro",
         "screenSize": "390.0, 844.0",
         "size": 6.8
       }''';
@@ -764,10 +780,13 @@ class IPhoneAttribs {
     final defaultValue = getIPhone12ProMax();
     String override = '''
       {
-        "base": "iPhone 12",
-        "model": "iPhone 12 Pro Max",
+        "base": "iPhone 13",
+        "model": "iPhone 13 Pro Max",
         "screenSize": "390.0, 844.0",
-        "size": 6.8
+        "size": 6.8,
+        "board": {
+          
+        }
       }''';
     Map<String, dynamic> overrideMap = jsonDecode(override);
     updateMap(defaultValue, overrideMap);
@@ -786,23 +805,25 @@ class IPhoneAttribs {
         "board": {
           "centerViewScale": 1.20,
           "centerOffset": "15, 250",
-          "boardScale": 1.10,
-          "tableScale": 1.05,
-          "tableBottomPos": 20,
-          "boardHeightAdjust": 100,
+          "centerViewPos": "0, -10",
+          "boardScale": 1.2,
+          "tableScale": 1.1,
+          "tableBottomPos": 30,
+          "boardHeightAdjust": 30,
+          "bottomHeightAdjust": -140,
           "headerTopPos": -10,
           "backDropOffset": "0, -50",
           "seatMap": {
-            "bottomCenter": "0, 20",
-            "bottomLeft": "140, 10",
-            "bottomRight": "-140, 10",
+            "bottomCenter": "0, 10",
+            "bottomLeft": "140, 0",
+            "bottomRight": "-140, 0",
             "middleLeft": "50, 90",
             "middleRight": "-50, 90",
-            "topLeft": "80, 220",
-            "topRight": "-80, 220",
-            "topCenter": "0, 160",
-            "topCenter1": "-80, 160",
-            "topCenter2": "80, 160"
+            "topLeft": "80, 170",
+            "topRight": "-80, 170",
+            "topCenter": "0, 120",
+            "topCenter1": "-80, 120",
+            "topCenter2": "80, 120"
           },
           "betAmountFac": {
             "bottomCenter": "-0.25, -0.70",
@@ -816,9 +837,14 @@ class IPhoneAttribs {
             "topCenter1": "0.20, 0.80",
             "topCenter2": "-0.20, 0.80"
           },
-          "betImageScale": 3.0
+          "betImageScale": 4.0
         },
-        "otherBetOptionButtonsSpreadRadius": 90.0,
+        "betWidgetGap": 90,
+        "betButtonsOffset": "0, 90",
+        "betWidgetOffset": "0, -30",
+        "footerViewHeightScale": 0.55,
+        "footerHeightAdjust": -200,
+        "otherBetOptionButtonsSpreadRadius": 120.0,
         "seat": {
           "scale": 1.2,
           "holeCardOffset": "0, 0",
@@ -931,9 +957,9 @@ class IPhoneAttribs {
           "tableScale": 1.2,
           "headerTopPos": -30,
           "boardHeightAdjust": -40,
-          "bottomHeightAdjust": -90,
+          "bottomHeightAdjust": -130,
           "headerTopPos": -10,
-          "backDropOffset": "0, -20",
+          "backDropOffset": "0, -50",
           "seatMap": {
             "bottomCenter": "0, 30",
             "bottomLeft": "15, 15",
@@ -959,7 +985,7 @@ class IPhoneAttribs {
           "5": 25,
           "default": 20
         },        
-        "footerHeightAdjust": "0",
+        "footerHeightAdjust": 0,
         "footerViewHeightScale": 0.50,
         "footerRankTextSize": 20.0,
         "otherBetOptionButtonsSpreadRadius": 70.0,
@@ -969,6 +995,7 @@ class IPhoneAttribs {
           "5": 0.80,
           "default": 1
         },
+        "betWidgetGap": 10,
         "betWidgetOffset": "0, -40",
         "betButtonsOffset": "0, 50",
         "holeCardOffset": "0, 15",
@@ -1118,11 +1145,10 @@ class IPhoneAttribs {
         "screenSize": "810.0, 1080.0",
         "size": 9.0,
         "board": {
-          "centerOffset": "15, 230",
           "centerViewScale": 1.30,
-          "centerViewPos": "0, 40.0",
           "centerDoubleBoardScale": 0.90,
-          "centerBoardScale": 1.4
+          "centerBoardScale": 1.4,
+          "betImageScale": 3.0
         },
         "holeCardDisplacement": {
           "2": 50,
@@ -1136,7 +1162,6 @@ class IPhoneAttribs {
           "5": 40,
           "default": 50
         },
-        "footerViewHeightScale": 0.41,
         "holeCardScale": {
           "2": 1.10,
           "4": 1.15,
@@ -1224,19 +1249,28 @@ class IPhoneAttribs {
 
     // ipad's section
     if (name.contains('ipad')) {
-      if (name == 'ipad pro (9.7-inch)') return getIPad97();
+      if (name == 'ipad pro (9.7-inch)') {
+        return getIPad97();
+      }
 
-      if (name == 'ipad (9th generation)') return getIPadNormal();
+      if (name == 'ipad (9th generation)') {
+        return getIPadNormal();
+      }
 
-      if (name.contains('air')) return getIPadAir();
+      if (name.contains('air')) {
+        return getIPadAir();
+      }
 
       if (name.contains('pro')) {
-        if (name.contains('12')) return getIPadPro12();
-
+        if (name.contains('12')) {
+          return getIPadPro12();
+        }
         return getIPadPro11();
       }
 
-      if (name.contains('mini')) return getIPadMini();
+      if (name.contains('mini')) {
+        return getIPadMini();
+      }
 
       return getDefault();
     } else {
@@ -1255,14 +1289,12 @@ class IPhoneAttribs {
         return getIPhone12Pro();
       } else if (name.contains('iphone 12')) {
         return getIPhone12();
-      } else if (name.contains('iphone 13 pro')) {
-        return getIPhone13Pro();
-      } else if (name.contains('iphone 13 mini')) {
-        return getIPhone13Mini();
       } else if (name.contains('iphone 13 pro max')) {
         return getIPhone13ProMax();
       } else if (name.contains('iphone 13 pro')) {
         return getIPhone13Pro();
+      } else if (name.contains('iphone 13 mini')) {
+        return getIPhone13Mini();
       } else if (name.contains('iphone 13')) {
         return getIPhone13();
       } else if (name.contains('iphone xs max')) {

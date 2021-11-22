@@ -784,11 +784,8 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     BuildContext context,
     BoardAttributesObject boardAttributes,
   ) {
-    var dividerTotalHeight = MediaQuery.of(context).size.height / 6;
-
     final width = MediaQuery.of(context).size.width;
 
-    //final boardDimensions = BoardView.dimensions(context, isBoardHorizontal);
     final boardDimensions = boardAttributes.dimensions(context);
     double boardScale = boardAttributes.boardScale;
     final theme = AppTheme.getTheme(context);
@@ -826,12 +823,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
             clipBehavior: Clip.antiAlias,
             alignment: Alignment.topCenter,
             children: [
-              // this.widget.showTop ? Container(
-              //   width: double.infinity,
-              //   height: boardDimensions.height,
-              //   child: 
-              //      BackgroundView())
-              //   : Container(),
 
               this.widget.showTop && _gameState.customizationMode
                   ? Positioned(
@@ -931,7 +922,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     Widget column = Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        // this.widget.showTop ? BackgroundView() : Container(),
         headerView, 
         /* main view */
         Container(
@@ -983,12 +973,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
     /* get the screen sizes, and initialize the board attributes */
     BoardAttributesObject boardAttributes;
-    // if (Platform.isIOS) {
-    //   boardAttributes = IosBoardAttributesObject(
-    //     screenSize: Screen.diagonalInches,
-    //   );
-    // } else {
-    // }
 
     boardAttributes = BoardAttributesObject(
       screenSize: Screen.diagonalInches,
@@ -998,7 +982,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       gameInfoModel: _gameInfoModel,
       gameCode: widget.gameCode,
       gameState: _gameState,
-      //agora: agora,
       boardAttributes: boardAttributes,
       gameContextObject: _gameContextObj,
       hostSeatChangePlayers: _hostSeatChangeSeats,
@@ -1076,7 +1059,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
             //   onPressed: _reconnectGameComService,
             // ),
             resizeToAvoidBottomInset: true,
-            backgroundColor: Colors.transparent,
+            backgroundColor: Colors.black,
             body: _buildBody(theme),
           );
           if (!Platform.isIOS) {

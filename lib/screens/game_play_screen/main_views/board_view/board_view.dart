@@ -34,22 +34,6 @@ class BoardView extends StatelessWidget {
 
   final GlobalKey boardViewKey = GlobalKey();
 
-  // static Size dimensions(BuildContext context, bool isHorizontal) {
-  //   var _widthMultiplier = 0.78;
-  //   var _heightMultiplier = 2.0;
-
-  //   double width = MediaQuery.of(context).size.width;
-  //   double heightOfBoard = width * _widthMultiplier * _heightMultiplier;
-  //   double widthOfBoard = width * _widthMultiplier;
-
-  //   if (isHorizontal) {
-  //     widthOfBoard = MediaQuery.of(context).size.width;
-  //     heightOfBoard = MediaQuery.of(context).size.height / 2.8;
-  //   }
-
-  //   return Size(widthOfBoard, heightOfBoard);
-  // }
-
   @override
   Widget build(BuildContext context) {
     _appScreenText = getAppTextScreen("boardView");

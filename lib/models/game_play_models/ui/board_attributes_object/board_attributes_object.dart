@@ -511,6 +511,13 @@ class BoardAttributesJson {
     return Offset.zero;    
   }
 
+  double get betWidgetGap {
+    if (attribs['betWidgetGap'] != null) {
+      return double.parse(attribs['betWidgetGap'].toString());
+    }
+    return 10;    
+  }
+
   Offset get betButtonsOffset {
     if (attribs['betButtonsOffset'] != null) {
       return parseOffset(attribs['betButtonsOffset']);
@@ -713,7 +720,7 @@ class BoardAttributesObject extends ChangeNotifier {
   }
 
   double get betSliderScale {
-    return attribsObj.betImageScale;
+    return attribsObj.betSliderScale;
   }
 
   Size get namePlateSize {
@@ -898,6 +905,10 @@ class BoardAttributesObject extends ChangeNotifier {
 
   Offset get betWidgetOffset {
     return attribsObj.betWidgetOffset;
+  }
+
+  double get betWidgetGap {
+    return attribsObj.betWidgetGap;
   }
 
   Offset get betButtonsOffset {
