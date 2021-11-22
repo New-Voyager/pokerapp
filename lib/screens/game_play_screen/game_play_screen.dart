@@ -164,7 +164,8 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       }
     } else {
       debugPrint('fetching game data: ${widget.gameCode}');
-      gameInfo = await GameService.getGameInfo(widget.gameCode);
+      gameInfo = widget.gameInfoModel ??
+          await GameService.getGameInfo(widget.gameCode);
       this._currentPlayer = await PlayerService.getMyInfo(widget.gameCode);
     }
 
@@ -676,7 +677,12 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
   Future<void> init() async {
     log('game screen initState');
-    await _initGameInfoModel();
+    try {
+      await _initGameInfoModel();
+    } catch (e) {
+      log(e.toString());
+      Navigator.pop(context);
+    }
   }
 
   void close() {
