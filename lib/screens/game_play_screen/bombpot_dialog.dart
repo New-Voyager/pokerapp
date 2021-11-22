@@ -2,6 +2,8 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game/game_settings.dart';
+import 'package:pokerapp/models/game/new_game_model.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/services/app/club_interior_service.dart';
@@ -9,6 +11,9 @@ import 'package:pokerapp/services/game_play/graphql/gamesettings_service.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
+import 'package:pokerapp/widgets/child_widgets.dart';
+import 'package:pokerapp/widgets/radio_list_widget.dart';
+import 'package:pokerapp/widgets/switch_widget.dart';
 
 /* this dialog handles the timer, as well as the messages sent to the server, when on tapped / on dismissed */
 class BombPotDialog {
@@ -16,13 +21,15 @@ class BombPotDialog {
   static Future<bool> prompt({
     @required BuildContext context,
     @required String gameCode,
+    @required GameState gameState,
   }) async {
     final theme = AppTheme.getTheme(context);
-    String notes;
     List<bool> isSelected = [];
+    isSelected.add(false);
     isSelected.add(true);
     isSelected.add(false);
-    isSelected.add(false);
+    int bombPotBet = 5;
+    bool doubleBoardBombPot = true;
 
     final bool ret = await showDialog(
         barrierDismissible: false,
@@ -30,7 +37,6 @@ class BombPotDialog {
         builder: (_) {
           final theme = AppTheme.getTheme(context);
           TextEditingController creditsController = TextEditingController();
-          TextEditingController notesController = TextEditingController();
           creditsController.text = '';
 
           return StatefulBuilder(builder: (context, setState) {
@@ -62,10 +68,7 @@ class BombPotDialog {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Center(
-                        child: Text(
-                      dialogTitle,
-                    )),
+                    AppLabel(dialogTitle, theme),
                     // sep
                     SizedBox(height: 15.ph),
                     ToggleButtons(
@@ -106,6 +109,27 @@ class BombPotDialog {
                     ),
                     // sep
                     SizedBox(height: 15.ph),
+
+                    // double board or not
+
+                    // bomb pot bet size
+                    AppLabel('Bet Size', theme),
+
+                    RadioListWidget<int>(
+                      defaultValue: bombPotBet,
+                      values: NewGameConstants.BOMB_POT_BET_SIZE,
+                      onSelect: (int value) {
+                        bombPotBet = value;
+                      },
+                    ),
+
+                    SwitchWidget(
+                      value: doubleBoardBombPot,
+                      label: 'Double Board',
+                      onChange: (bool value) {
+                        doubleBoardBombPot = value;
+                      },
+                    ),
 
                     /* yes / no button */
                     Center(
@@ -152,14 +176,20 @@ class BombPotDialog {
       log('bomb pot: $ret');
       if (isSelected[0]) {
         // off
+        await GameSettingsService.updateBombPot(gameCode, enableBombPot: false);
       } else if (isSelected[1]) {
         // next hand
-        Map<String, dynamic> json = new Map<String, dynamic>();
-        json['bombPotNextHand'] = true;
-        GameSettings gameSettings = GameSettings.fromJson(json);
-        await GameSettingsService.updateGameSettings(gameCode, gameSettings);
+        await GameSettingsService.updateBombPot(gameCode,
+            bombPotNextHand: true,
+            bombPotBet: bombPotBet,
+            doubleBoardBombPot: doubleBoardBombPot);
       } else if (isSelected[2]) {
         // every hand
+        await GameSettingsService.updateBombPot(gameCode,
+            enableBombPot: true,
+            bombPotEveryHand: true,
+            bombPotBet: bombPotBet,
+            doubleBoardBombPot: doubleBoardBombPot);
       }
     }
     return ret;

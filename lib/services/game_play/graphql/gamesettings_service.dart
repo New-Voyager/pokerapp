@@ -108,6 +108,53 @@ query mySettings(\$gameCode:String!){
     return false;
   }
 
+  static Future<bool> updateBombPot(String gameCode,
+      {bool enableBombPot,
+      int bombPotBet,
+      bool bombPotNextHand,
+      bool bombPotEveryHand,
+      bool doubleBoardBombPot}) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    Map<String, dynamic> variables = {
+      "gameCode": gameCode,
+      "inputSettings": {}
+    };
+    Map<String, dynamic> settings = {};
+    if (enableBombPot != null) {
+      settings["bombPotEnabled"] = enableBombPot;
+    }
+
+    if (bombPotBet != null) {
+      settings["bombPotBet"] = bombPotBet;
+    }
+
+    if (bombPotNextHand != null) {
+      settings["bombPotNextHand"] = bombPotNextHand;
+    }
+
+    if (bombPotEveryHand != null) {
+      settings["bombPotEveryHand"] = bombPotEveryHand;
+    }
+
+    if (doubleBoardBombPot != null) {
+      settings["doubleBoardBombPot"] = doubleBoardBombPot;
+    }
+    variables["inputSettings"] = settings;
+
+    QueryResult result = await _client.query(QueryOptions(
+        document: gql(updateGameSettingsQuery), variables: variables));
+
+    if (result.hasException) {
+      log("Exception : ${result.exception.toString()}");
+      return false;
+    }
+
+    if (result.data['ret'] ?? true) {
+      return true;
+    }
+    return false;
+  }
+
   static Future<GamePlayerSettings> getGamePlayerSettings(
       String gameCode) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();

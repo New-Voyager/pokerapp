@@ -125,24 +125,22 @@ class _ChipAmountWidgetState extends State<ChipAmountWidget>
         fontFamily: AppAssets.fontFamilyLato,
       ),
     );
-    amount =
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 5.0),
-              // height: 30,
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: Colors.transparent,
-                ),
-                borderRadius: BorderRadius.circular(5.0),
-                // color: this.transparent ? Colors.transparent : Colors.black26,
-                //color: Colors.green[900],
-                // color: Colors.red[700],
-                // color: Colors.yellow[900],
-                color: color,
-              ),
-              child: amount);
-   
-    
+    amount = Container(
+        padding: EdgeInsets.symmetric(horizontal: 5.0),
+        // height: 30,
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: Colors.transparent,
+          ),
+          borderRadius: BorderRadius.circular(5.0),
+          // color: this.transparent ? Colors.transparent : Colors.black26,
+          //color: Colors.green[900],
+          // color: Colors.red[700],
+          // color: Colors.yellow[900],
+          color: color,
+        ),
+        child: amount);
+
     final widthSep = SizedBox(width: 2.0);
 
     final SeatPos seatPos = widget.seat.seatPos;

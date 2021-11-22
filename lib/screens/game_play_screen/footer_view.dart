@@ -24,8 +24,9 @@ class FooterViewWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final boa =  context.read<BoardAttributesObject>();
-    double footerHeight = MediaQuery.of(context).size.height * boa.footerViewScale;
+    final boa = context.read<BoardAttributesObject>();
+    double footerHeight =
+        MediaQuery.of(context).size.height * boa.footerViewScale;
     footerHeight += boa.bottomHeightAdjust;
     return IntrinsicHeight(
       child: Container(

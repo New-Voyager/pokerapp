@@ -255,7 +255,13 @@ class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
         builder: (_, gameStatus, tableStatus, showCardsShuffling, __) {
       List<Widget> children = [];
       if (showCardsShuffling) {
-        children.add((gameState?.handInfo?.bombPot ?? false)
+        bool showBombAnimation = (gameState?.handInfo?.bombPot) ?? false;
+
+        if (gameState.gameSettings.bombPotEveryHand) {
+          showBombAnimation = false;
+        }
+
+        children.add(showBombAnimation
             ? _bombPotAnimation()
             : _positionAnimationShuffleCardView(
                 offset: boardAttributes.centerViewCardShufflePosition,

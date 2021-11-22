@@ -363,7 +363,6 @@ class NewGameSettings2 extends StatelessWidget {
         if (savedModel == null) {
           // Initializing values
           // Initial value for BigBlind
-          gmp.gameType = mainGameType.index - 1;
           gmp.blinds.bigBlind = 2.0;
           // Initial value for Buyin Min and max
           gmp.buyInMin = 30;

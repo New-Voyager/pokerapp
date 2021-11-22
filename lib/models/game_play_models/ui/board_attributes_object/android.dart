@@ -415,7 +415,6 @@ class AndroidAttribs {
     return defaultValue;
   }
 
-
   static Map<String, dynamic> getNexus7() {
     final defaultValue = getNexus5();
     String override = '''

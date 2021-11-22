@@ -1379,8 +1379,8 @@ class HandInfoState extends ChangeNotifier {
     if (bigBlind != null) this._bigBlind = bigBlind;
     this._bombPot = false;
     if (bombPot != null) this._bombPot = bombPot;
+    this._doubleBoard = doubleBoard ?? false;
     if (this._bombPot) {
-      this._doubleBoard = doubleBoard;
       this._bombPotBet = bombPotBet;
     }
     if (notify) {

@@ -56,7 +56,7 @@ class BetWidget extends StatelessWidget {
     final double angle = 45;
     switch (index) {
       case -1: // case -1 is keyboard
-        return angle/2;
+        return angle / 2;
 
       case 0: // case 0 is All In or Pot
         return angle;
@@ -528,42 +528,41 @@ class BetWidget extends StatelessWidget {
                   ),
                 ),
               ),
-            Transform.translate(
-                offset: offset,
-                child: 
-              Stack(
-                alignment: Alignment.topCenter,
-                children: [
-                  // this widget reserves space for onTap Listeners when inside Stack
-                  Container(
-                    width: double.infinity,
-                    height: boardAttributes.footerHeight,
-                    // decoration: BoxDecoration(
-                    //   border: Border.all(color: Colors.cyan),
-                    //   //color: Colors.cyan,
-                    // )
-                  ),
+              Transform.translate(
+                  offset: offset,
+                  child: Stack(
+                    alignment: Alignment.topCenter,
+                    children: [
+                      // this widget reserves space for onTap Listeners when inside Stack
+                      Container(
+                        width: double.infinity,
+                        height: boardAttributes.footerHeight,
+                        // decoration: BoxDecoration(
+                        //   border: Border.all(color: Colors.cyan),
+                        //   //color: Colors.cyan,
+                        // )
+                      ),
 
-                  // other bet buttons
-                  ..._buildOtherBetOptions(
-                    context: context,
-                    isLargerDisplay: isLargerDisplay,
-                    valueNotifierVal: valueNotifierVal,
-                    appTheme: appTheme,
-                  ),
+                      // other bet buttons
+                      ..._buildOtherBetOptions(
+                        context: context,
+                        isLargerDisplay: isLargerDisplay,
+                        valueNotifierVal: valueNotifierVal,
+                        appTheme: appTheme,
+                      ),
 
-                  /* bet button */
-                  Container(
-                    margin: EdgeInsets.symmetric(vertical: 50),
-                    child: _buildBetButton(
-                      context,
-                      isLargerDisplay,
-                      valueNotifierVal,
-                      appTheme,
-                    ),
-                  ),            
-                ],
-              )),
+                      /* bet button */
+                      Container(
+                        margin: EdgeInsets.symmetric(vertical: 50),
+                        child: _buildBetButton(
+                          context,
+                          isLargerDisplay,
+                          valueNotifierVal,
+                          appTheme,
+                        ),
+                      ),
+                    ],
+                  )),
               //SizedBox(height: 10.ph),
             ],
           );

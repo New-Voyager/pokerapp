@@ -33,7 +33,7 @@ class CardBuilderWidget extends StatelessWidget {
         Widget this.cardBuilder(TextStyle _, TextStyle __, BuildContext ___),
     this.shadow = false,
     this.roundRadius = 5.0,
-    this.doubleBoard = false,    
+    this.doubleBoard = false,
     this.cardFace,
   }) : assert(card != null &&
             dim != null &&
@@ -42,10 +42,8 @@ class CardBuilderWidget extends StatelessWidget {
 
   /* this method returns the correct RATIO for a particular CARD TYPE */
   static double getCardRatioFromCardType(
-    CardType cardType,
-    BuildContext context,
-    {bool doubleBoard = false }    
-  ) {
+      CardType cardType, BuildContext context,
+      {bool doubleBoard = false}) {
     switch (cardType) {
       case CardType.CommunityCard:
         /* if we have a card type of community cards, then we must be on the 
@@ -55,9 +53,9 @@ class CardBuilderWidget extends StatelessWidget {
           return bao.centerDoubleBoardScale;
         } else {
           return bao.centerBoardScale;
-        } 
+        }
         break;
-        //return 1.2 * bao.boardScale;
+      //return 1.2 * bao.boardScale;
 
       case CardType.HoleCard:
         final bao = context.read<BoardAttributesObject>();

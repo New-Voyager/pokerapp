@@ -53,21 +53,20 @@ class BoardView extends StatelessWidget {
       clipBehavior: Clip.antiAlias,
       alignment: Alignment.center,
       children: [
-        Container(
-          width: dimensions.width,
-          height: dimensions.height,
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.red, width: 3),
-            color: Colors.transparent,
-          ),
-        ),
+        // Container(
+        //   width: dimensions.width,
+        //   height: dimensions.height,
+        //   decoration: BoxDecoration(
+        //     border: Border.all(color: Colors.red, width: 3),
+        //     color: Colors.transparent,
+        //   ),
+        // ),
 
-          Container(
-                width: double.infinity,
-                height: dimensions.height,
-                child: 
-                   BackgroundView())                ,
-                   
+        Container(
+            width: double.infinity,
+            height: dimensions.height,
+            child: BackgroundView()),
+
         Positioned(
             bottom: bottomPos,
             child: Transform.scale(

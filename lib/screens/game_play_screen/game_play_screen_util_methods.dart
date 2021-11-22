@@ -163,7 +163,7 @@ class GamePlayScreenUtilMethods {
           labelBackgroundColor: Colors.black,
           label: 'Show double board',
           onTap: () => TestService.showDoubleBoard(),
-        ),            
+        ),
         SpeedDialChild(
           child: Icon(
             Icons.adb_rounded,

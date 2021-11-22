@@ -428,7 +428,8 @@ class BoardAttributesJson {
 
   double get centerDoubleBoardScale {
     if (attribs["board"]["centerDoubleBoardScale"] != null) {
-      return double.parse(attribs["board"]["centerDoubleBoardScale"].toString());
+      return double.parse(
+          attribs["board"]["centerDoubleBoardScale"].toString());
     }
     return 1.0;
   }
@@ -460,7 +461,6 @@ class BoardAttributesJson {
     }
     return 0;
   }
-  
 
   Offset get backDropOffset {
     if (attribs['board']['backDropOffset'] != null) {
@@ -508,21 +508,21 @@ class BoardAttributesJson {
     if (attribs['betWidgetOffset'] != null) {
       return parseOffset(attribs['betWidgetOffset']);
     }
-    return Offset.zero;    
+    return Offset.zero;
   }
 
   double get betWidgetGap {
     if (attribs['betWidgetGap'] != null) {
       return double.parse(attribs['betWidgetGap'].toString());
     }
-    return 10;    
+    return 10;
   }
 
   Offset get betButtonsOffset {
     if (attribs['betButtonsOffset'] != null) {
       return parseOffset(attribs['betButtonsOffset']);
     }
-    return Offset.zero;    
+    return Offset.zero;
   }
 
   double get playerViewScale {
@@ -552,7 +552,6 @@ class BoardAttributesJson {
     }
     return 1.0;
   }
-
 }
 
 class BoardAttributesObject extends ChangeNotifier {
@@ -813,7 +812,6 @@ class BoardAttributesObject extends ChangeNotifier {
     return attribsObj.boardHeightAdjust;
   }
 
-
   double get bottomHeightAdjust {
     return attribsObj.bottomHeightAdjust;
   }
@@ -922,7 +920,6 @@ class BoardAttributesObject extends ChangeNotifier {
     return attribsObj.timerGap;
   }
 
-
   Offset get playerHoleCardOffset {
     return attribsObj.playerHoleCardOffset;
   }
@@ -1020,7 +1017,6 @@ Map<SeatPos, BetTextPos> betTextPos = {
 BetTextPos getBetTextPos(SeatPos pos) {
   return betTextPos[pos] ?? BetTextPos.Right;
 }
-
 
 /* bet positions configurations for different screen sizes */
 Map<SeatPos, Offset> getBetAmountPositionMap({
@@ -1182,7 +1178,6 @@ Map<SeatPos, Offset> getBetAmountPositionMap({
     ),
   };
 }
-
 
 /* we just need to care about 3 settings
 * 1. equals to 7 inch

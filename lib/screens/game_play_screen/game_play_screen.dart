@@ -824,7 +824,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         headerView = Container(
             width: Screen.width, child: HeaderView(gameState: _gameState));
       }
-      
+
       children.addAll(
         [
           // main board view
@@ -832,7 +832,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
             clipBehavior: Clip.antiAlias,
             alignment: Alignment.topCenter,
             children: [
-
               this.widget.showTop && _gameState.customizationMode
                   ? Positioned(
                       top: 10.ph,
@@ -931,13 +930,13 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     Widget column = Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        headerView, 
+        headerView,
         /* main view */
         Container(
-           clipBehavior: Clip.none,
-            height: boardDimensions.height,
-            width: Screen.width,
-            child: topView,
+          clipBehavior: Clip.none,
+          height: boardDimensions.height,
+          width: Screen.width,
+          child: topView,
         ),
 
         // footer view
@@ -961,18 +960,16 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       ],
     );
 
-    Stack allWidgets = Stack(
-      children: [
-        column,
-                /* chat window widget */
-        this.widget.showBottom ? _buildChatWindow() : Container(),
+    Stack allWidgets = Stack(children: [
+      column,
+      /* chat window widget */
+      this.widget.showBottom ? _buildChatWindow() : Container(),
 
-        /* notification view */
-        this.widget.showBottom
-            ? Notifications.buildNotificationWidget()
-            : Container(),
-      ]
-    );
+      /* notification view */
+      this.widget.showBottom
+          ? Notifications.buildNotificationWidget()
+          : Container(),
+    ]);
     return allWidgets;
   }
 

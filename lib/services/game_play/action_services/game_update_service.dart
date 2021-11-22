@@ -836,6 +836,13 @@ class GameUpdateService {
   }) async {
     // refresh game settings
     await _gameState.refreshSettings();
+    if (data['nextHandBombPot'] ?? false) {
+      // show notifications
+      Alerts.showNotification(
+          titleText: "Bomb Pot",
+          svgPath: 'assets/images/game/bomb1.svg',
+          subTitleText: 'Bomb Pot next hand');
+    }
     _gameState.gameSettingsState.notify();
   }
 

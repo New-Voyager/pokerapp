@@ -283,18 +283,15 @@ class _FooterViewState extends State<FooterView>
       /* my last action */
       children.add(_buildMyLastActionWidget(context));
     }
-    return Stack(
-      children: [
-        Container(width: double.infinity, height: double.infinity, 
-        
-        decoration: BoxDecoration(
-              color: Colors.transparent, 
-              border: Border.all(color: Colors.green, width: 3)
-            )),
+    return Stack(children: [
+      // Container(width: double.infinity, height: double.infinity,
+      // decoration: BoxDecoration(
+      //       color: Colors.transparent,
+      //       border: Border.all(color: Colors.green, width: 3)
+      //     )),
 
-        ...children,
-      ]
-    );
+      ...children,
+    ]);
   }
 
   @override
