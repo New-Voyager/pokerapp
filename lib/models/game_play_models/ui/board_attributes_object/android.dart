@@ -11,6 +11,8 @@ class AndroidAttribs {
       attribs = AndroidAttribs.getPixel2();
     } else if (screenSize > 5.3 && screenSize <= 5.5) {
       attribs = AndroidAttribs.getPixelXl();
+    } else if (screenSize > 7.0 && screenSize <= 9.0) {
+      attribs = AndroidAttribs.getNexus7();
     } else {
       if (screenSize >= 9 && screenSize <= 10.5) {
         attribs = getTen10InchTablet();
@@ -191,7 +193,7 @@ class AndroidAttribs {
           "centerPotUpdatesScale": 0.90,
           "centerRankScale": 0.80,
           "boardScale": 0.90,
-          "tableScale": 1.10,
+          "tableScale": 1.0,
           "seatMap": {
             "bottomCenter": "0, 80",
             "bottomLeft": "15, 70",
@@ -406,6 +408,76 @@ class AndroidAttribs {
             "holeCardOffset": "0, 0",
             "holeCardScale": 1.0
           }               
+      }
+      ''';
+    Map<String, dynamic> overrideMap = jsonDecode(override);
+    updateMap(defaultValue, overrideMap);
+    return defaultValue;
+  }
+
+
+  static Map<String, dynamic> getNexus7() {
+    final defaultValue = getNexus5();
+    String override = '''
+      {
+        "name": "nexus7",
+        "base": "pixel5",
+        "model": "Nexus 7",
+        "screenSize": "600.0, 912.0",
+        "size": 7.3,
+        "board": {
+
+          "centerViewScale": 1.0,
+          "centerViewPos": "15, 50",
+          "centerOffset": "15, 50",
+          "centerPotScale": 0.90,
+          "centerPotUpdatesScale": 0.90,
+
+          "tableBottomPos": 20,
+          "tableScale": 1.0,
+          "seatMap": {
+            "bottomCenter": "0, 10",
+            "bottomLeft": "45, 0",
+            "bottomRight": "-45, 0",
+            "middleLeft": "5, 30",
+            "middleRight": "5, 30",
+            "topLeft": "10, 70",
+            "topRight": "-10, 70",
+            "topCenter": "0, 45",
+            "topCenter1": "-60, 45",
+            "topCenter2": "60, 45"
+          },
+          "betAmountFac": {
+            "bottomCenter": "-0.5, -0.80",
+            "topCenter": "0.20, 0.70",
+            "middleLeft": "1.2, 0.0",
+            "middleRight": "-1.2, 0.0",
+            "topRight": "-1.0, 0.60",
+            "topLeft": "1.0, 0.60",
+            "bottomLeft": "0.60, -0.75",
+            "bottomRight": "-0.30, -0.85",
+            "topCenter1": "0.0, 0.80",
+            "topCenter2": "0.20, 0.80"
+          },          
+          "betImageScale": 4.0
+        },
+        "betWidgetGap": 30,
+        "betWidgetOffset": "0, 0",
+        "betButtonsOffset": "0, 90",
+        "otherBetOptionButtonsSpreadRadius": 110,
+
+        "holeCardViewOffset": "0, 30",
+        "holeCardScale": {
+          "2": 1.4,
+          "4": 1.2,
+          "5": 1.1,
+          "default": 1
+        },
+        "seat": {
+           "scale": 1.1,
+            "holeCardOffset": "0, 0",
+            "holeCardScale": 1.0
+          }          
       }
       ''';
     Map<String, dynamic> overrideMap = jsonDecode(override);
