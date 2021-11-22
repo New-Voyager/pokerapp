@@ -433,7 +433,7 @@ class NewGameSettings2 extends StatelessWidget {
                           final instance = HiveDatasource.getInstance
                               .getBox(BoxType.GAME_SETTINGS_BOX);
                           log(jsonEncode(gmp.settings.toJson()));
-                          // await instance.put(result, gmp.settings.toJson());
+                          await instance.put(result, gmp.settings.toJson());
                         }
                       },
                       icon: Icons.save,
