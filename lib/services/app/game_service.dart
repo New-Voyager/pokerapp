@@ -720,6 +720,7 @@ class GameService {
     );
 
     if (result.hasException) {
+      log(result.exception.toString());
       if (result.exception.graphqlErrors.length > 0) {
         return null;
       }

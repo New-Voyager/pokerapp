@@ -151,8 +151,8 @@ class StatusOptionsWidget extends StatelessWidget {
 
   Widget getCountdown(DateTime expiresAt,
       {Function onFinished, int fontSize = 14}) {
-    var remainingDuration = expiresAt.difference(DateTime.now());
-    if (remainingDuration.isNegative) {
+    var remainingDuration = expiresAt?.difference(DateTime.now());
+    if (remainingDuration == null || remainingDuration.isNegative) {
       remainingDuration = Duration.zero;
     }
     return Countdown(

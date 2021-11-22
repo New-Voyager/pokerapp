@@ -438,8 +438,8 @@ class GamePlayScreenUtilMethods {
 
     if (seat.player.inBreak && seat.player.breakTimeExpAt != null) {
       final now = DateTime.now().toUtc();
-      final diff = seat.player.breakTimeExpAt.difference(now);
-      return buyInTimer(context, seat, diff.inSeconds);
+      final diff = seat.player.breakTimeExpAt?.difference(now);
+      return buyInTimer(context, seat, diff?.inSeconds ?? 0);
     }
     //log('breakBuyIntimer Rebuild buyin button: seat.player.action.action: ${seat.player.action.action} seat.player.stack: ${seat.player.stack} seat.player.buyInTimeExpAt: ${seat.player.buyInTimeExpAt}');
 
@@ -448,9 +448,9 @@ class GamePlayScreenUtilMethods {
         seat.player.stack == 0 &&
         seat.player.buyInTimeExpAt != null) {
       final now = DateTime.now().toUtc();
-      final diff = seat.player.buyInTimeExpAt.difference(now);
+      final diff = seat.player.buyInTimeExpAt?.difference(now);
       //log('breakBuyIntimer Rebuild buyin button: buyInTimeExpAt: ${seat.player.buyInTimeExpAt.toIso8601String()} Remaining Diff: ${diff}');
-      return buyInTimer(context, seat, diff.inSeconds);
+      return buyInTimer(context, seat, diff?.inSeconds ?? 0);
     } else {
       //log('No buyin and no break in buttons');
       return SizedBox.shrink();
