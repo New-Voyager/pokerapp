@@ -63,6 +63,10 @@ class CommunityCardsView extends StatelessWidget {
       if (dimBoard) {
         card.dimBoard = true;
       }
+      if (twoBoardsNeeded) {
+        card.doubleBoard = true;
+      }
+
       if (!CommunityCardAttribute.hasEntry(idx)) {
         /* only add an entry, if there is no previous entry available */
         globalKey = GlobalKey();

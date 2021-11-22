@@ -784,22 +784,16 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     BuildContext context,
     BoardAttributesObject boardAttributes,
   ) {
-    var dividerTotalHeight = MediaQuery.of(context).size.height / 6;
-
     final width = MediaQuery.of(context).size.width;
 
-    bool isBoardHorizontal = true;
-    final boardDimensions = BoardView.dimensions(context, isBoardHorizontal);
-
+    final boardDimensions = boardAttributes.dimensions(context);
     double boardScale = boardAttributes.boardScale;
-    double divider1 =
-        boardAttributes.tableDividerHeightScale * dividerTotalHeight;
     final theme = AppTheme.getTheme(context);
 
     List<Widget> children = [];
 
+    Widget headerView;
     if (this.widget.showTop) {
-      Widget headerView;
       if (_gameState.customizationMode) {
         headerView = Align(
           alignment: Alignment.centerLeft,
@@ -818,25 +812,18 @@ class _GamePlayScreenState extends State<GamePlayScreen>
               )),
         );
       } else {
-        headerView = HeaderView(gameState: _gameState);
+        headerView = Container(
+            width: Screen.width, child: HeaderView(gameState: _gameState));
       }
-
+      
       children.addAll(
         [
-          //_buildAudioWidget(),
-
-          // header view
-          headerView,
-
-          // this widget, shows which winner is currently showing - high winner / low winner
-          // this widget also acts as a natural seperator between header and board view
-          // WhichWinnerWidget(seperator: divider1),
-          // SizedBox(height: 40),
           // main board view
           Stack(
-            // alignment: Alignment.center,
+            clipBehavior: Clip.antiAlias,
+            alignment: Alignment.topCenter,
             children: [
-              this.widget.showTop ? BackgroundView() : Container(),
+
               this.widget.showTop && _gameState.customizationMode
                   ? Positioned(
                       top: 10.ph,
@@ -858,8 +845,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
               // board view
               Positioned(
-                // top: MediaQuery.of(context).size.height *
-                //     boardAttributes.boardViewPositionScale,
                 top: 0, //Screen.height / 2,
                 child: _buildBoardView(
                   boardDimensions,
@@ -875,24 +860,76 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       );
     }
 
-    bool showBottom = this.widget.showBottom;
-    // showBottom = false;
+    Widget topView = Stack(
+      children: children,
+    );
 
-    return Stack(
-      alignment: Alignment.topCenter,
-      clipBehavior: Clip.none,
+    bool showBottom = this.widget.showBottom;
+    showBottom = true;
+
+    // Widget stack = Stack(
+    //   alignment: Alignment.topCenter,
+    //   clipBehavior: Clip.none,
+    //   children: [
+    //     // this.widget.showTop ? BackgroundView() : Container(),
+
+    //     /* main view */
+    //     Container(
+    //       decoration: BoxDecoration(
+    //         //border: Border.all(color: Colors.transparent),
+    //         color: Colors.green,
+    //       ),
+
+    //         clipBehavior: Clip.none,
+    //         height: boardDimensions.height,
+    //         width: Screen.width,
+    //         child: Column(
+    //           mainAxisAlignment: MainAxisAlignment.start,
+    //           mainAxisSize: MainAxisSize.min,
+    //           crossAxisAlignment: CrossAxisAlignment.stretch,
+    //           children: children,
+    //         )),
+
+    //     // footer view
+    //     showBottom
+    //         ? Align(
+    //             alignment: Alignment.bottomCenter,
+    //             child: Consumer<RedrawFooterSectionState>(
+    //               builder: (_, ___, __) {
+    //                 // log('RedrawFooter: building footer view');
+    //                 return FooterViewWidget(
+    //                   gameCode: widget.gameCode,
+    //                   gameContextObject: _gameContextObj,
+    //                   currentPlayer: _gameContextObj.gameState.currentPlayer,
+    //                   gameInfo: _gameInfoModel,
+    //                   toggleChatVisibility: _toggleChatVisibility,
+    //                 );
+    //               },
+    //             ),
+    //           )
+    //         : const SizedBox.shrink(),
+
+    //     /* chat window widget */
+    //     this.widget.showBottom ? _buildChatWindow() : Container(),
+
+    //     /* notification view */
+    //     this.widget.showBottom
+    //         ? Notifications.buildNotificationWidget()
+    //         : Container(),
+    //   ],
+    // );
+
+    Widget column = Column(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
+        headerView, 
         /* main view */
         Container(
-            clipBehavior: Clip.none,
-            height: (Screen.height),
+           clipBehavior: Clip.none,
+            height: boardDimensions.height,
             width: Screen.width,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: children,
-            )),
+            child: topView,
+        ),
 
         // footer view
         showBottom
@@ -912,53 +949,22 @@ class _GamePlayScreenState extends State<GamePlayScreen>
                 ),
               )
             : const SizedBox.shrink(),
+      ],
+    );
 
-        // this.widget.showTop &&
-        //         !_gameState.customizationMode &&
-        //         _gameState.currentPlayer.isAdmin()
-        //   ? Positioned(right: 16, top: 80, child: PendingApprovalsButton(theme, _gameState, _gameContextObj, mounted))
-        //   : Container(),
-
-        // ? Positioned(
-        //     right: 16,
-        //     top: 80,
-        //     child: Consumer2<PendingApprovalsState, GameContextObject>(
-        //       builder: (context, value, gameContextObj, child) {
-        //         if (!_gameContextObj.isAdmin())
-        //           return const SizedBox.shrink();
-
-        //         final approval = SvgPicture.asset(
-        //           '',
-        //           width: 16,
-        //           height: 16,
-        //           color: theme.primaryColorWithDark(),
-        //         );
-
-        //         return IconWithBadge(
-        //           count: value.approvalList.length,
-        //           onClickFunction: () =>
-        //               onClickPendingBuyInApprovals(context),
-        //           child: CircleImageButton(
-        //               onTap: () {
-        //                 onClickPendingBuyInApprovals(context);
-        //               },
-        //               svgAsset: 'assets/images/game/clipboard.svg',
-        //               theme: theme),
-        //         );
-        //       },
-        //     ),
-        //   )
-        // : Container(),
-
-        /* chat window widget */
+    Stack allWidgets = Stack(
+      children: [
+        column,
+                /* chat window widget */
         this.widget.showBottom ? _buildChatWindow() : Container(),
 
         /* notification view */
         this.widget.showBottom
             ? Notifications.buildNotificationWidget()
             : Container(),
-      ],
+      ]
     );
+    return allWidgets;
   }
 
   Widget _buildBody(AppTheme theme) {
@@ -967,12 +973,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
     /* get the screen sizes, and initialize the board attributes */
     BoardAttributesObject boardAttributes;
-    // if (Platform.isIOS) {
-    //   boardAttributes = IosBoardAttributesObject(
-    //     screenSize: Screen.diagonalInches,
-    //   );
-    // } else {
-    // }
 
     boardAttributes = BoardAttributesObject(
       screenSize: Screen.diagonalInches,
@@ -982,7 +982,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       gameInfoModel: _gameInfoModel,
       gameCode: widget.gameCode,
       gameState: _gameState,
-      //agora: agora,
       boardAttributes: boardAttributes,
       gameContextObject: _gameContextObj,
       hostSeatChangePlayers: _hostSeatChangeSeats,
@@ -1060,7 +1059,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
             //   onPressed: _reconnectGameComService,
             // ),
             resizeToAvoidBottomInset: true,
-            backgroundColor: Colors.transparent,
+            backgroundColor: Colors.black,
             body: _buildBody(theme),
           );
           if (!Platform.isIOS) {

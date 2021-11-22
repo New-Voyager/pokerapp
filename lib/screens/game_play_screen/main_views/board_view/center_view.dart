@@ -436,7 +436,7 @@ class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
 
     return Transform.scale(
       scale: boa.centerPotUpdatesScale,
-      alignment: Alignment.bottomCenter,
+      alignment: Alignment.topCenter,
       child: ValueListenableBuilder<int>(
           valueListenable: vnPotChipsUpdates,
           builder: (_, potChipsUpdates, __) {

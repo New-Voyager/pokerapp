@@ -158,6 +158,7 @@ class ReplayHandUtilScreen extends StatelessWidget {
               children: [
                 /* game view */
                 ReplayHandGameView(
+                  boardAttributes: boardAttributesObject,
                   gameInfoModel: gameReplayController.gameInfoModel,
                 ),
 

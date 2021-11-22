@@ -9,9 +9,11 @@ import 'package:pokerapp/widgets/cards/card_builder_widget.dart';
 class CardView extends StatelessWidget {
   final CardObject card;
   final Uint8List cardBackBytes;
+  final bool doubleBoard;  
   CardView({
     @required this.card,
     @required this.cardBackBytes,
+    this.doubleBoard = false    
   });
 
   Widget _buildCardUI(
@@ -70,6 +72,7 @@ class CardView extends StatelessWidget {
       cardBuilder: _buildCardUI,
       roundRadius: 2.5,
       cardFace: card.cardFace,
+      doubleBoard: this.doubleBoard,
     );
   }
 }

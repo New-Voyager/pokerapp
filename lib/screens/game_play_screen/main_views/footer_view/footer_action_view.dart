@@ -401,6 +401,7 @@ class _FooterActionViewState extends State<FooterActionView> {
               text: action.actionName,
               onTap: () => setState(() {
                 _showOptions = !_showOptions;
+                betWidgetShown = true;
                 widget.isBetWidgetVisible?.call(_showOptions);
               }),
               theme: theme,
@@ -460,19 +461,6 @@ class _FooterActionViewState extends State<FooterActionView> {
           mainAxisSize: MainAxisSize.max,
           children: actionButtons,
         ),
-        // Positioned(
-        //   left: 20.pw,
-        //   top: -40.ph,
-        //   child: Consumer<ActionState>(builder: (_, __, ___) {
-        //     // show time widget if the player is acting
-        //     final gameState = GameState.getState(context);
-        //     if (gameState.actionState.show || TestService.isTesting) {
-        //       return TimeBankWidget(gameState);
-        //     } else {
-        //       return Container();
-        //     }
-        //   }),
-        // ),
       ],
     );
   }
@@ -592,9 +580,17 @@ class _FooterActionViewState extends State<FooterActionView> {
                 }
               }
 
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                children: children,
+              return Stack(
+                //mainAxisSize: MainAxisSize.min,
+                children:  [
+                  Container(
+                    width: double.infinity, 
+                    height: double.infinity, 
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.blue),
+                    )),
+                  ...children,
+                ],
               );
             }),
       ),

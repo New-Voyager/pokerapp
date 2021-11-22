@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
@@ -104,9 +105,18 @@ class _ChipAmountWidgetState extends State<ChipAmountWidget>
         width: 15.0,
       );
     }
-
+    Color color = Colors.transparent;
+    if (action.action == HandActions.ALLIN) {
+      color = Colors.teal[700];
+    } else if (action.action == HandActions.BET) {
+      color = Colors.blue[800];
+    } else if (action.action == HandActions.RAISE) {
+      color = Colors.red[700];
+    } else if (action.action == HandActions.CALL) {
+      color = Colors.green[900];
+    }
     /* show the coin amount */
-    final amount = Text(
+    Widget amount = Text(
       DataFormatter.chipsFormat(action.amount),
       style: TextStyle(
         color: Colors.white,
@@ -115,7 +125,24 @@ class _ChipAmountWidgetState extends State<ChipAmountWidget>
         fontFamily: AppAssets.fontFamilyLato,
       ),
     );
-
+    amount =
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 5.0),
+              // height: 30,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Colors.transparent,
+                ),
+                borderRadius: BorderRadius.circular(5.0),
+                // color: this.transparent ? Colors.transparent : Colors.black26,
+                //color: Colors.green[900],
+                // color: Colors.red[700],
+                // color: Colors.yellow[900],
+                color: color,
+              ),
+              child: amount);
+   
+    
     final widthSep = SizedBox(width: 2.0);
 
     final SeatPos seatPos = widget.seat.seatPos;

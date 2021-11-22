@@ -267,7 +267,9 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                           'assets/images/game/bomb1.svg', //AppAssetsNew.lastHandPath,
                       onTap: () async {
                         vnShowMenuItems.value = false;
-                        await BombPotDialog.prompt(context: context, gameCode: widget.gameState.gameCode);
+                        await BombPotDialog.prompt(
+                            context: context,
+                            gameCode: widget.gameState.gameCode);
                       }),
                   SizedBox(width: 10.pw),
                 ],

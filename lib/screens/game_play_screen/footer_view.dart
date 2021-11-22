@@ -24,11 +24,12 @@ class FooterViewWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final boa = context.read<BoardAttributesObject>();
-
+    final boa =  context.read<BoardAttributesObject>();
+    double footerHeight = MediaQuery.of(context).size.height * boa.footerViewScale;
+    footerHeight += boa.bottomHeightAdjust;
     return IntrinsicHeight(
       child: Container(
-        height: MediaQuery.of(context).size.height * boa.footerViewScale,
+        height: footerHeight,
         key: UniqueKey(),
         decoration: BoxDecoration(
           image: DecorationImage(
