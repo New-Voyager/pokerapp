@@ -56,7 +56,7 @@ class BetWidget extends StatelessWidget {
     final double angle = 45;
     switch (index) {
       case -1: // case -1 is keyboard
-        return 0;
+        return angle/2;
 
       case 0: // case 0 is All In or Pot
         return angle;
@@ -81,6 +81,8 @@ class BetWidget extends StatelessWidget {
     @required ValueNotifier<double> valueNotifierVal,
     @required AppTheme appTheme,
   }) {
+    final gameState = GameState.getState(context);
+    final boa = gameState.getBoardAttributes(context);
     // keyboard button gets the index -1
     // all in or pot gets the index 0 // Option.text = "Pot" OR Option.text = "All-In"
     // other buttons gets index 1 - anything
@@ -93,7 +95,7 @@ class BetWidget extends StatelessWidget {
         final int index = value.key;
         final Option option = value.value;
 
-        return _buildOtherBetOptionsButton(
+        Widget child = _buildOtherBetOptionsButton(
           _getAngleBy(index),
           child: _buildBetAmountChild(
             theme: appTheme,
@@ -103,6 +105,7 @@ class BetWidget extends StatelessWidget {
             },
           ),
         );
+        return Transform.translate(offset: boa.betButtonsOffset, child: child);
       },
     ).toList();
 
@@ -458,6 +461,7 @@ class BetWidget extends StatelessWidget {
           return Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              SizedBox(height: 10),
               // cards
               FittedBox(
                 fit: BoxFit.fitWidth,
@@ -527,11 +531,16 @@ class BetWidget extends StatelessWidget {
                 offset: offset,
                 child: 
               Stack(
-                alignment: Alignment.center,
+                alignment: Alignment.topCenter,
                 children: [
                   // this widget reserves space for onTap Listeners when inside Stack
                   Container(
                     width: double.infinity,
+                    height: boardAttributes.footerHeight,
+                    // decoration: BoxDecoration(
+                    //   border: Border.all(color: Colors.cyan),
+                    //   //color: Colors.cyan,
+                    // )
                   ),
 
                   // other bet buttons
@@ -551,10 +560,9 @@ class BetWidget extends StatelessWidget {
                       valueNotifierVal,
                       appTheme,
                     ),
-                  ),
+                  ),            
                 ],
               )),
-
               //SizedBox(height: 10.ph),
             ],
           );

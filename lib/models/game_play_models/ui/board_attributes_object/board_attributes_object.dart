@@ -454,6 +454,14 @@ class BoardAttributesJson {
     return 100;
   }
 
+  double get bottomHeightAdjust {
+    if (attribs['board']['bottomHeightAdjust'] != null) {
+      return double.parse(attribs['board']['bottomHeightAdjust'].toString());
+    }
+    return 0;
+  }
+  
+
   Offset get backDropOffset {
     if (attribs['board']['backDropOffset'] != null) {
       return parseOffset(attribs['board']['backDropOffset'].toString());
@@ -499,6 +507,13 @@ class BoardAttributesJson {
   Offset get betWidgetOffset {
     if (attribs['betWidgetOffset'] != null) {
       return parseOffset(attribs['betWidgetOffset']);
+    }
+    return Offset.zero;    
+  }
+
+  Offset get betButtonsOffset {
+    if (attribs['betButtonsOffset'] != null) {
+      return parseOffset(attribs['betButtonsOffset']);
     }
     return Offset.zero;    
   }
@@ -674,11 +689,17 @@ class BoardAttributesObject extends ChangeNotifier {
     THIS HEIGHT - 40 VARIABLE CAN BE CHANGED TO STRETCH IT FURTHER OR SQUEEZE IT*/
     this._tableSize = Size(widthOfBoard + 50, heightOfBoard - 70);
     this._centerSize = Size(widthOfBoard - 30, this._tableSize.height - 70);
-    double adjust = this.boardHeightAdjust;
-    double footerHeight = Screen.height * this.footerViewScale;
+    double adjust = 0;
+    adjust = this.boardHeightAdjust;
+    double footerViewScale = this.footerViewScale;
+    double footerHeight = (Screen.height * footerViewScale);
     double boardHeight = Screen.height - footerHeight;
     this._boardSize = Size(widthOfBoard, boardHeight + adjust);
     return this._boardSize;
+  }
+
+  double get footerHeight {
+    return (Screen.height * footerViewScale);
   }
 
   get tableSize => this._tableSize;
@@ -786,6 +807,11 @@ class BoardAttributesObject extends ChangeNotifier {
     return attribsObj.boardHeightAdjust;
   }
 
+
+  double get bottomHeightAdjust {
+    return attribsObj.bottomHeightAdjust;
+  }
+
   Offset get backDropOffset {
     return attribsObj.backDropOffset;
   }
@@ -872,6 +898,10 @@ class BoardAttributesObject extends ChangeNotifier {
 
   Offset get betWidgetOffset {
     return attribsObj.betWidgetOffset;
+  }
+
+  Offset get betButtonsOffset {
+    return attribsObj.betButtonsOffset;
   }
 
   double get playerViewScale {

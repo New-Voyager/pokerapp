@@ -795,8 +795,8 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
     List<Widget> children = [];
 
+    Widget headerView;
     if (this.widget.showTop) {
-      Widget headerView;
       if (_gameState.customizationMode) {
         headerView = Align(
           alignment: Alignment.centerLeft,
@@ -823,9 +823,13 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         [
           // main board view
           Stack(
-            // alignment: Alignment.center,
+            alignment: Alignment.topCenter,
             children: [
-              this.widget.showTop ? BackgroundView() : Container(),
+              this.widget.showTop ? Container(
+                width: double.infinity,
+                height: boardDimensions.height,
+                child: BackgroundView()) : Container(),
+
               this.widget.showTop && _gameState.customizationMode
                   ? Positioned(
                       top: 10.ph,
@@ -853,7 +857,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
                   boardScale,
                 ),
               ),
-              Positioned(top: boardAttributes.headerTopPos, child: headerView),
             ],
           ),
 
@@ -863,31 +866,77 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       );
     }
 
+    Widget topView = Stack(
+      children: children,
+    );
+
     bool showBottom = this.widget.showBottom;
     showBottom = true;
 
-    return Stack(
-      alignment: Alignment.topCenter,
-      clipBehavior: Clip.none,
+    // Widget stack = Stack(
+    //   alignment: Alignment.topCenter,
+    //   clipBehavior: Clip.none,
+    //   children: [
+    //     // this.widget.showTop ? BackgroundView() : Container(),
+
+    //     /* main view */
+    //     Container(
+    //       decoration: BoxDecoration(
+    //         //border: Border.all(color: Colors.transparent),
+    //         color: Colors.green,
+    //       ),
+
+    //         clipBehavior: Clip.none,
+    //         height: boardDimensions.height,
+    //         width: Screen.width,
+    //         child: Column(
+    //           mainAxisAlignment: MainAxisAlignment.start,
+    //           mainAxisSize: MainAxisSize.min,
+    //           crossAxisAlignment: CrossAxisAlignment.stretch,
+    //           children: children,
+    //         )),
+
+    //     // footer view
+    //     showBottom
+    //         ? Align(
+    //             alignment: Alignment.bottomCenter,
+    //             child: Consumer<RedrawFooterSectionState>(
+    //               builder: (_, ___, __) {
+    //                 // log('RedrawFooter: building footer view');
+    //                 return FooterViewWidget(
+    //                   gameCode: widget.gameCode,
+    //                   gameContextObject: _gameContextObj,
+    //                   currentPlayer: _gameContextObj.gameState.currentPlayer,
+    //                   gameInfo: _gameInfoModel,
+    //                   toggleChatVisibility: _toggleChatVisibility,
+    //                 );
+    //               },
+    //             ),
+    //           )
+    //         : const SizedBox.shrink(),
+
+    //     /* chat window widget */
+    //     this.widget.showBottom ? _buildChatWindow() : Container(),
+
+    //     /* notification view */
+    //     this.widget.showBottom
+    //         ? Notifications.buildNotificationWidget()
+    //         : Container(),
+    //   ],
+    // );
+
+    Widget column = Column(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         // this.widget.showTop ? BackgroundView() : Container(),
-
+        headerView, 
         /* main view */
         Container(
-          // decoration: BoxDecoration(
-          //   //border: Border.all(color: Colors.transparent),
-          //   color: Colors.green,
-          // ),
-
-            clipBehavior: Clip.none,
+           clipBehavior: Clip.none,
             height: boardDimensions.height,
             width: Screen.width,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: children,
-            )),
+            child: topView,
+        ),
 
         // footer view
         showBottom
@@ -907,16 +956,22 @@ class _GamePlayScreenState extends State<GamePlayScreen>
                 ),
               )
             : const SizedBox.shrink(),
+      ],
+    );
 
-        /* chat window widget */
+    Stack allWidgets = Stack(
+      children: [
+        column,
+                /* chat window widget */
         this.widget.showBottom ? _buildChatWindow() : Container(),
 
         /* notification view */
         this.widget.showBottom
             ? Notifications.buildNotificationWidget()
             : Container(),
-      ],
+      ]
     );
+    return allWidgets;
   }
 
   Widget _buildBody(AppTheme theme) {
