@@ -157,10 +157,8 @@ class NewGameModel {
   }
 
   NewGameModel.fromJson(Map<String, dynamic> json) {
-    String gameTypeTmp = json["gameType"];
     title = json['title'];
-    this.gameType = GameType.values
-        .firstWhere((e) => e.toString() == 'GameType.' + gameTypeTmp);
+    this.gameType = GameTypeSerialization.fromJson(json["gameType"]);
     smallBlind = json['smallBlind'];
     bigBlind = json['bigBlind'];
     utgStraddleAllowed = json['utgStraddleAllowed'];
@@ -178,8 +176,14 @@ class NewGameModel {
     muckLosingHand = json['muckLosingHand'];
     showPlayerBuyin = json['showPlayerBuyin'];
     runItTwice = json['runItTwiceAllowed'];
-    roeGames = json['roeGames'];
-    dealerChoiceGames = json['dealerChoiceGames'];
+    roeGames = json['roeGames']
+            ?.map<GameType>((e) => GameTypeSerialization.fromJson(e))
+            ?.toList() ??
+        [];
+    dealerChoiceGames = json['dealerChoiceGames']
+            ?.map<GameType>((e) => GameTypeSerialization.fromJson(e))
+            ?.toList() ??
+        [];
     audioConference = json['audioConfEnabled'];
     allowRabbitHunt = json['allowRabbitHunt'];
     showHandRank = json['showHandRank'];
@@ -206,7 +210,7 @@ class NewGameModel {
     this.smallBlind = (this.bigBlind ~/ 2).toDouble();
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['title'] = this.title;
-    data['gameType'] = this.gameType.toString().replaceFirst('GameType.', '');
+    data['gameType'] = this.gameType.toJson();
     data['smallBlind'] = this.smallBlind;
     data['bigBlind'] = this.bigBlind;
     data['utgStraddleAllowed'] = this.utgStraddleAllowed;
@@ -253,17 +257,12 @@ class NewGameModel {
     data['ipCheck'] = this.ipCheck ?? false;
 
     if (this.gameType == GameType.ROE) {
-      data['roeGames'] = this
-          .roeGames
-          .map((e) => e.toString().replaceAll('GameType.', ''))
-          .toList();
+      data['roeGames'] = this.roeGames.map((e) => e.toJson()).toList();
     }
 
     if (this.gameType == GameType.DEALER_CHOICE) {
-      data['dealerChoiceGames'] = this
-          .dealerChoiceGames
-          .map((e) => e.toString().replaceAll('GameType.', ''))
-          .toList();
+      data['dealerChoiceGames'] =
+          this.dealerChoiceGames.map((e) => e.toJson()).toList();
     }
 
     if (this.rewards != null && this.rewards.id != 0) {

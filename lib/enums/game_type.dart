@@ -11,6 +11,12 @@ enum GameType {
   DEALER_CHOICE,
 }
 
+extension GameTypeSerialization on GameType {
+  String toJson() => this.toString().split(".").last;
+  static GameType fromJson(String s) =>
+      GameType.values.firstWhere((gameType) => gameType.toJson() == s);
+}
+
 String gameTypeStr(GameType type) {
   AppTextScreen appTextScreen = getAppTextScreen("gameType");
   switch (type) {
