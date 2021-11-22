@@ -451,7 +451,7 @@ class BoardAttributesJson {
     if (attribs['board']['boardHeightAdjust'] != null) {
       return double.parse(attribs['board']['boardHeightAdjust'].toString());
     }
-    return 100;
+    return 0;
   }
 
   double get bottomHeightAdjust {
@@ -698,7 +698,6 @@ class BoardAttributesObject extends ChangeNotifier {
     this._centerSize = Size(widthOfBoard - 30, this._tableSize.height - 70);
     double adjust = 0;
     adjust = this.boardHeightAdjust;
-    double footerViewScale = this.footerViewScale;
     double footerHeight = (Screen.height * footerViewScale);
     double boardHeight = Screen.height - footerHeight;
     this._boardSize = Size(widthOfBoard, boardHeight + adjust);
