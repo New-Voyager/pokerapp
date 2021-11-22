@@ -254,29 +254,77 @@ class AndroidAttribs {
   }
 
   static Map<String, dynamic> getPixel2() {
-    final defaultValue = getPixelXl();
+    final defaultValue = getNexus5();
     String override = '''
       {
         "name": "pixel2",
-        "base": "pixelxl",
+        "base": "nexus5",
         "model": "Pixel 2",
         "screenSize": "411.4, 683.4",
         "size": 5.3,
+
         "board": {
+          "centerViewScale": 0.85,
+          "centerOffset": "15, 60",
+          "centerPotScale": 0.90,
+          "centerPotUpdatesScale": 0.90,
+          "centerRankScale": 0.80,
+          "boardScale": 0.90,
           "tableScale": 1.3,
           "seatMap": {
-            "bottomCenter": "0, 80",
-            "bottomLeft": "15, 70",
-            "bottomRight": "-15, 70",
-            "middleLeft": "0, 70",
-            "middleRight": "0, 70",
-            "topLeft": "10, 75",
-            "topRight": "-10, 75",
-            "topCenter": "0, 60",
-            "topCenter1": "-45, 60",
-            "topCenter2": "45, 60"
+            "bottomCenter": "0, 30",
+            "bottomLeft": "15, 20",
+            "bottomRight": "-15, 20",
+            "middleLeft": "0, 30",
+            "middleRight": "0, 30",
+            "topLeft": "10, 35",
+            "topRight": "-10, 35",
+            "topCenter": "0, 20",
+            "topCenter1": "-45, 20",
+            "topCenter2": "45, 20"
+          },          
+          "betAmountFac": {
+            "bottomCenter": "0, -0.80",
+            "topCenter": "0.20, 0.70",
+            "middleLeft": "0.20, 0.75",
+            "middleRight": "0.0, 0.75",
+            "topRight": "-0.10, 0.70",
+            "topLeft": "0.30, 0.65",
+            "bottomLeft": "0.90, -0.75",
+            "bottomRight": "-0.60, -0.85",
+            "topCenter1": "0.20, 0.80",
+            "topCenter2": "-0.20, 0.80"
           }          
-        }
+        },
+        "betImageScale": 2.5,
+        "footerActionScale": 0.90,
+        "footerViewHeightScale": 0.50,
+        "holeCardViewScale": 0.80,
+        "holeCardViewOffset": "0, 40",
+        "holeCardScale": {
+          "2": 1.45,
+          "4": 1.35,
+          "5": 1.15,
+          "default": 1
+        },
+        "holeCardDisplacement": {
+          "2": 35,
+          "4": 35,
+          "5": 35,
+          "default": 35
+        },
+        "holeCardDisplacementVisible": {
+          "2": 30,
+          "4": 25,
+          "5": 25,
+          "default": 25
+        },        
+
+        "seat": {
+          "scale": 0.90,
+          "holeCardOffset": "0, 0",
+          "holeCardScale": 1.0
+        }        
       }
       ''';
     Map<String, dynamic> overrideMap = jsonDecode(override);
@@ -285,7 +333,7 @@ class AndroidAttribs {
   }
 
   static Map<String, dynamic> getNexus5() {
-    final defaultValue = getPixel2();
+    final defaultValue = getDefault();
     String override = '''
       {
         "name": "nexus5",
