@@ -220,7 +220,6 @@ class IPhoneAttribs {
     return defaultValue;
   }
 
-
   static Map<String, dynamic> getIPhone11() {
     final defaultValue = getDefault();
     String override = '''
@@ -328,7 +327,6 @@ class IPhoneAttribs {
     return defaultValue;
   }
 
-
   static Map<String, dynamic> getIPhone11ProMax() {
     final defaultValue = getIPhone11Pro();
     String override = '''
@@ -360,6 +358,7 @@ class IPhoneAttribs {
     updateMap(defaultValue, overrideMap);
     return defaultValue;
   }
+
   static Map<String, dynamic> getIPhoneXS() {
     final defaultValue = getIPhoneX();
     String override = '''
@@ -1053,27 +1052,62 @@ class IPhoneAttribs {
      "size": 12.9,
      "board": {
        "tableScale": 0.90,
-        "centerViewScale": 1.60,
-        "centerViewPos": "0, 100.0",
-          "seatMap": {
-            "bottomCenter": "0, -30",
-            "bottomLeft": "140, -40",
-            "bottomRight": "-140, -40",
-            "middleLeft": "50, 90",
-            "middleRight": "-50, 90",
-            "topLeft": "110, 200",
-            "topRight": "-110, 200",
-            "topCenter": "0, 160",
-            "topCenter1": "-100, 160",
-            "topCenter2": "100, 160"
-          }        
+        "centerViewScale": 1.40,
+        "centerViewPos": "0, 65.0",
+        "seatMap": {
+          "bottomCenter": "0, -40",
+          "bottomLeft": "180, -50",
+          "bottomRight": "-180, -50",
+          "middleLeft": "50, 90",
+          "middleRight": "-50, 90",
+          "topLeft": "110, 200",
+          "topRight": "-110, 200",
+          "topCenter": "0, 160",
+          "topCenter1": "-100, 160",
+          "topCenter2": "100, 160"
+        },
+        "betAmountFac": {
+          "bottomCenter": "-0.25, -1.0",
+          "topCenter": "0.20, 0.70",
+          "middleLeft": "1.05, 0",
+          "middleRight": "-1.05, 0",
+          "topRight": "-0.65, 0.65",
+          "topLeft": "0.75, 0.65",
+          "bottomLeft": "0.70, -0.90",
+          "bottomRight": "-0.60, -0.90",
+          "topCenter1": "0.20, 0.80",
+          "topCenter2": "-0.20, 0.80"
+        },
+        "potViewGap": 0,
+        "betSliderScale": 3.0
       },
-        "timerGap": 20,
-        "seat": {
-          "scale": 1.30,
-          "holeCardOffset": "0, 0",
-          "holeCardScale": 1.0
-        }
+      "holeCardViewOffset": "0, 90",
+      "holeCardScale": {
+        "2": 1.60,
+        "4": 1.35,
+        "5": 1.50,
+        "default": 1
+      },
+      "holeCardDisplacement": {
+        "2": 40,
+        "4": 50,
+        "5": 50,
+        "default": 20
+      },
+      "holeCardDisplacementVisible": {
+        "2": 60,
+        "4": 60,
+        "5": 60,
+        "default": 20
+      },
+      "betWidgetGap": 110,
+      "timerGap": 20,
+      "betButtonsOffset": "0, 95",
+      "seat": {
+        "scale": 1.30,
+        "holeCardOffset": "0, 0",
+        "holeCardScale": 1.0
+      }
     }
     ''';
 
@@ -1254,7 +1288,7 @@ class IPhoneAttribs {
   * */
   static Map<String, dynamic> getAttribs(String deviceName, double screenSize) {
     String name = deviceName.toLowerCase();
-
+    print("name is $name");
     // ipad's section
     if (name.contains('ipad')) {
       if (name == 'ipad pro (9.7-inch)') {
@@ -1282,7 +1316,6 @@ class IPhoneAttribs {
 
       return getDefault();
     } else {
-      print("name is $name");
       if (name.contains('iphone 11 pro max')) {
         return getIPhone11ProMax();
       } else if (name.contains('iphone 11 pro')) {
@@ -1309,8 +1342,7 @@ class IPhoneAttribs {
         return getIPhoneXSMax();
       } else if (name.contains('iphone xʀ')) {
         return getIPhoneXR();
-      } else if (name.contains('iphone xs') ||
-        name.contains('iphone10s')) {
+      } else if (name.contains('iphone xs') || name.contains('iphone10s')) {
         return getIPhoneXS();
       } else if (name.contains('iphone x')) {
         return getIPhoneX();
