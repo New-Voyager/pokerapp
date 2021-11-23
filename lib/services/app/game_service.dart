@@ -806,7 +806,7 @@ class GameService {
   }
 
   /* the following method facilitates buying chips */
-  static Future<bool> buyIn(String gameCode, int amount) async {
+  static Future<bool> buyIn(String gameCode, double amount) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
 
     String _mutation = """mutation{

@@ -677,9 +677,9 @@ class GameUpdateService {
     */
 
     int playerId = int.parse(data['playerId'].toString());
-    int oldStack = int.parse(data['oldStack'].toString());
-    int newStack = int.parse(data['newStack'].toString());
-    int reloadAmount = int.parse(data['reloadAmount'].toString());
+    double oldStack = double.parse(data['oldStack'].toString());
+    double newStack = double.parse(data['newStack'].toString());
+    double reloadAmount = double.parse(data['reloadAmount'].toString());
     final reloadState = StackReloadState(
       oldStack: oldStack,
       newStack: newStack,

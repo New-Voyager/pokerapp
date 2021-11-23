@@ -80,7 +80,7 @@ class ResultHandlerV2 {
 
     // update pots
     tableState.updatePotChipsSilent(
-      potChips: result.potWinners.map<int>((p) => p.amount.toInt()).toList(),
+      potChips: result.potWinners.map<double>((p) => p.amount).toList(),
     );
     tableState.dimPotsSilent(true);
     tableState.notifyAll();
@@ -299,7 +299,7 @@ class ResultHandlerV2 {
     for (final player in result.playerInfo.values) {
       final playerInSeat = gameState.getPlayerById(player.id.toInt());
       if (playerInSeat != null) {
-        playerInSeat.stack = player.balance.after.toInt();
+        playerInSeat.stack = player.balance.after;
         final seat = gameState.getSeat(playerInSeat.seatNo);
         if (seat != null) {
           seat.notify();

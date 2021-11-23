@@ -121,8 +121,8 @@ class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
   final vnCards = ValueNotifier<List<CardObject>>([]);
   final vnCardOthers = ValueNotifier<List<CardObject>>([]);
   final vnTwoBoardsNeeded = ValueNotifier<bool>(false);
-  final vnPotChips = ValueNotifier<List<int>>([]);
-  final vnPotChipsUpdates = ValueNotifier<int>(null);
+  final vnPotChips = ValueNotifier<List<double>>([]);
+  final vnPotChipsUpdates = ValueNotifier<double>(null);
   final vnPotToHighlight = ValueNotifier<int>(null);
   final vnRankStr = ValueNotifier<String>(null);
   final vnCommunityCardsRefresh = ValueNotifier<int>(null);
@@ -382,13 +382,13 @@ class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
 
   Widget _buildMultiplePots(boardAttributes) {
     //log('potViewPos: building multiple pots');
-    return ValueListenableBuilder2<List<int>, int>(
+    return ValueListenableBuilder2<List<double>, int>(
       vnPotChips,
       vnPotToHighlight,
       builder: (context, potChips, potToHighlight, __) {
         final List<Widget> pots = [];
 
-        final List<int> cleanedPotChips = potChips ?? [];
+        final List<double> cleanedPotChips = potChips ?? [];
         bool rebuildSeats = false;
         for (int i = 0; i < cleanedPotChips.length; i++) {
           if (cleanedPotChips[i] == null) cleanedPotChips[i] = 0;
@@ -429,7 +429,7 @@ class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
   }
 
   double _getOpacityForPotUpdatesView({
-    final int potChipsUpdates,
+    final double potChipsUpdates,
   }) {
     return (potChipsUpdates == null || potChipsUpdates == 0) ? 0 : 1;
   }
@@ -443,7 +443,7 @@ class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
     return Transform.scale(
       scale: boa.centerPotUpdatesScale,
       alignment: Alignment.topCenter,
-      child: ValueListenableBuilder<int>(
+      child: ValueListenableBuilder<double>(
           valueListenable: vnPotChipsUpdates,
           builder: (_, potChipsUpdates, __) {
             return Opacity(

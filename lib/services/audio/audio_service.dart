@@ -94,7 +94,7 @@ class AudioService {
     // the library we use only supports Android
     // if (!Platform.isAndroid) return;
     return;
-    
+
     if (!play) {
       return;
     }

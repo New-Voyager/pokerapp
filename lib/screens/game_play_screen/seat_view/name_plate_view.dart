@@ -16,6 +16,7 @@ import 'package:pokerapp/screens/game_play_screen/game_play_screen_util_methods.
 import 'package:pokerapp/screens/game_play_screen/seat_view/animating_widgets/stack_reload_animating_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/milliseconds_counter.dart';
 import 'package:pokerapp/services/audio/audio_service.dart';
+import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/widgets/nameplate.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
@@ -385,9 +386,9 @@ class NamePlateWidget extends StatelessWidget {
   }
 
   Widget stack(BuildContext context, AppTheme theme) {
-    Widget _buildStackTextWidget(int stack) => FittedBox(
+    Widget _buildStackTextWidget(double stack) => FittedBox(
             child: Text(
-          stack?.toString() ?? 'XX',
+          DataFormatter.chipsFormat(stack),
           style: AppDecorators.getSubtitle4Style(theme: theme)
               .copyWith(fontSize: 12.dp), //nameplate.meta.nameTextSize),
         ));

@@ -4,6 +4,7 @@ import 'dart:math' as math;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/player_action.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
@@ -125,13 +126,12 @@ class BetWidget extends StatelessWidget {
             double min = action.minRaiseAmount.toDouble();
             double max = action.maxRaiseAmount.toDouble();
 
-            final double res = await NumericKeyboard2.show(
-              context,
-              title:
-                  'Enter your bet/raise amount (${action.minRaiseAmount.toString()} - ${action.maxRaiseAmount.toString()})',
-              min: min,
-              max: max,
-            );
+            final double res = await NumericKeyboard2.show(context,
+                title:
+                    'Enter your bet/raise amount (${action.minRaiseAmount.toString()} - ${action.maxRaiseAmount.toString()})',
+                min: min,
+                max: max,
+                decimalAllowed: gameState.gameInfo.chipUnit == ChipUnit.CENT);
 
             if (res != null) valueNotifierVal.value = res;
           },
@@ -219,18 +219,18 @@ class BetWidget extends StatelessWidget {
 
   Widget _buildKeyboardButton(
       BuildContext context, AppTheme theme, ValueNotifier<double> vnValue) {
+    final gameState = GameState.getState(context);
     return _buildBetAmountChild(
       onTap: () async {
         double min = action.minRaiseAmount.toDouble();
         double max = action.maxRaiseAmount.toDouble();
 
-        final double res = await NumericKeyboard2.show(
-          context,
-          title:
-              'Enter your bet/raise amount (${action.minRaiseAmount.toString()} - ${action.maxRaiseAmount.toString()})',
-          min: min,
-          max: max,
-        );
+        final double res = await NumericKeyboard2.show(context,
+            title:
+                'Enter your bet/raise amount (${action.minRaiseAmount.toString()} - ${action.maxRaiseAmount.toString()})',
+            min: min,
+            max: max,
+            decimalAllowed: gameState.gameInfo.chipUnit == ChipUnit.CENT);
 
         if (res != null) vnValue.value = res;
       },
@@ -520,7 +520,7 @@ class BetWidget extends StatelessWidget {
               ValueListenableBuilder<double>(
                 valueListenable: valueNotifierVal,
                 builder: (_, double betAmount, __) => Text(
-                  DataFormatter.chipsFormat(betAmount.roundToDouble()),
+                  DataFormatter.chipsFormat(betAmount),
                   style: TextStyle(
                     fontSize: 12.dp,
                     fontWeight: FontWeight.bold,

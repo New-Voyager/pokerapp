@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:blinking_text/blinking_text.dart';
 import 'package:flutter/material.dart';
+import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/enums/player_status.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
@@ -119,13 +120,12 @@ class StatusOptionsWidget extends StatelessWidget {
     final gameInfo = gameState.gameInfo;
     gameState.buyInKeyboardShown = true;
     /* use numeric keyboard to get buyin */
-    double value = await NumericKeyboard2.show(
-      context,
-      title:
-          '${appScreenText['buyInEntry']} (${gameInfo.buyInMin} - ${gameInfo.buyInMax})',
-      min: gameInfo.buyInMin.toDouble(),
-      max: gameInfo.buyInMax.toDouble(),
-    );
+    double value = await NumericKeyboard2.show(context,
+        title:
+            '${appScreenText['buyInEntry']} (${gameInfo.buyInMin} - ${gameInfo.buyInMax})',
+        min: gameInfo.buyInMin.toDouble(),
+        max: gameInfo.buyInMax.toDouble(),
+        decimalAllowed: gameInfo.chipUnit == ChipUnit.CENT);
     gameState.buyInKeyboardShown = false;
 
     if (value == null) return;
@@ -133,7 +133,7 @@ class StatusOptionsWidget extends StatelessWidget {
     // buy chips
     await GameService.buyIn(
       gameInfo.gameCode,
-      value.toInt(),
+      value,
     );
   }
 

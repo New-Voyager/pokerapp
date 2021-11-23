@@ -10,8 +10,8 @@ const String ALLIN = 'ALLIN';
 
 class AvailableAction {
   String actionName;
-  int actionValue;
-  int minActionValue;
+  double actionValue;
+  double minActionValue;
 
   AvailableAction({
     @required this.actionName,
@@ -46,10 +46,10 @@ class PlayerAction {
   int _seatNo;
   List<AvailableAction> _actions;
 
-  int _minRaiseAmount;
-  int _maxRaiseAmount;
-  int _callAmount = 0;
-  int _allInAmount = 0;
+  double _minRaiseAmount;
+  double _maxRaiseAmount;
+  double _callAmount = 0;
+  double _allInAmount = 0;
 
   List<Option> _options;
 
@@ -123,10 +123,10 @@ class PlayerAction {
   factory PlayerAction.fromProto(int seatNo, proto.NextSeatAction seatAction) {
     PlayerAction yourAction = PlayerAction();
     yourAction._seatNo = seatNo;
-    yourAction._minRaiseAmount = seatAction.minRaiseAmount.toInt();
-    yourAction._maxRaiseAmount = seatAction.maxRaiseAmount.toInt();
-    yourAction._callAmount = seatAction.callAmount.toInt();
-    yourAction._allInAmount = seatAction.allInAmount.toInt();
+    yourAction._minRaiseAmount = seatAction.minRaiseAmount;
+    yourAction._maxRaiseAmount = seatAction.maxRaiseAmount;
+    yourAction._callAmount = seatAction.callAmount;
+    yourAction._allInAmount = seatAction.allInAmount;
     yourAction._options = [];
     for (final option in seatAction.betOptions) {
       Option betOption =
@@ -140,13 +140,11 @@ class PlayerAction {
       );
 
       if (availableAction == proto.ACTION.ALLIN) {
-        action.actionValue =
-            seatAction.allInAmount.toInt() - seatAction.seatInSoFar.toInt();
+        action.actionValue = seatAction.allInAmount - seatAction.seatInSoFar;
       } else if (availableAction == proto.ACTION.CALL) {
-        action.actionValue =
-            seatAction.callAmount.toInt() - seatAction.seatInSoFar.toInt();
+        action.actionValue = seatAction.callAmount - seatAction.seatInSoFar;
       } else if (availableAction == proto.ACTION.RAISE) {
-        action.minActionValue = seatAction.minRaiseAmount.toInt();
+        action.minActionValue = seatAction.minRaiseAmount;
       }
       yourAction._actions.add(action);
     }
@@ -157,10 +155,10 @@ class PlayerAction {
   List<AvailableAction> get actions => _actions;
   List<Option> get options => _options;
 
-  int get minRaiseAmount => _minRaiseAmount;
-  int get maxRaiseAmount => _maxRaiseAmount;
-  int get callAmount => _callAmount;
-  int get allInAmount => _allInAmount;
+  double get minRaiseAmount => _minRaiseAmount;
+  double get maxRaiseAmount => _maxRaiseAmount;
+  double get callAmount => _callAmount;
+  double get allInAmount => _allInAmount;
   int get seatNo => _seatNo;
 
   void sort() {

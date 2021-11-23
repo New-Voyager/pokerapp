@@ -370,7 +370,7 @@ class GameActions {
     this.seatPots,
   });
 
-  List<int> pots;
+  List<double> pots;
   List<ActionElement> actions;
   int potStart;
   List<SeatPot> seatPots;
@@ -412,10 +412,10 @@ class ActionElement {
 
   int seatNo;
   HandActions action;
-  int amount;
+  double amount;
   bool timedOut;
   int actionTime;
-  int stack;
+  double stack;
 
   factory ActionElement.fromJson(Map<String, dynamic> json) {
     final action = json['action'];

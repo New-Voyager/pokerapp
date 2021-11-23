@@ -191,7 +191,7 @@ class HandActionProtoService {
     @required GameState gameState,
     @required GameContextObject gameContextObject,
     String action,
-    int amount,
+    double amount,
   }) async {
     assert(action != null);
     if (TestService.isTesting) {
@@ -216,7 +216,7 @@ class HandActionProtoService {
     int handNum,
     int seatNo,
     String action,
-    int amount,
+    double amount,
   ) {
     if (_retryMsg != null) {
       _retryMsg.cancel();
@@ -566,8 +566,10 @@ class HandActionProtoService {
     // reset result in progress flag
     _gameState.tableState.resultInProgress = false;
 
-    NewHandHandler handler =
-        NewHandHandler(newHand: message.newHand, gameState: _gameState);
+    NewHandHandler handler = NewHandHandler(
+        newHand: message.newHand,
+        gameState: _gameState,
+        gameContext: _gameContextObject);
     handler.initialize();
     await handler.handle();
   }
@@ -770,9 +772,9 @@ class HandActionProtoService {
   // we update the pot only during
   void updatePot(List<double> potValues, String key, BuildContext context) {
     try {
-      List<int> pots = [];
+      List<double> pots = [];
       if (potValues != null) {
-        pots = potValues.map((e) => e.toInt()).toList();
+        pots = potValues;
       }
 
       if (_close) return;
@@ -996,20 +998,18 @@ class HandActionProtoService {
     @required final BuildContext context,
     final bool isRunItTwice = false,
   }) {
-    List<int> pots = [];
+    List<double> pots = [];
 
     /* get the pots and update them */
     if (isRunItTwice) {
       // todo: handle this situation
       final board1Winners = runItTwiceResult.board1Winners;
       board1Winners.forEach((key, winner) {
-        final amount = winner.amount.toInt();
-        pots.add(amount);
+        pots.add(winner.amount);
       });
     } else {
       potWinners.forEach((key, potWinner) {
-        final amount = potWinner.amount.toInt();
-        pots.add(amount);
+        pots.add(potWinner.amount);
       });
     }
 

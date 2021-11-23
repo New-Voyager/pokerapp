@@ -8,8 +8,8 @@ class GameModelNew {
   String clubName;
   int buyInMin;
   int buyInMax;
-  int smallBlind;
-  int bigBlind;
+  double smallBlind;
+  double bigBlind;
   int maxPlayers;
   int tableCount;
   int elapsedTime;
@@ -38,8 +38,8 @@ class GameModelNew {
     clubName = json['clubName'];
     buyInMin = json['buyInMin'];
     buyInMax = json['buyInMax'];
-    smallBlind = json['smallBlind'];
-    bigBlind = json['bigBlind'];
+    smallBlind = double.parse(json['smallBlind'].toString());
+    bigBlind = double.parse(json['bigBlind'].toString());
     maxPlayers = json['maxPlayers'];
     tableCount = json['tableCount'];
     elapsedTime = json['elapsedTime'];

@@ -233,7 +233,7 @@ class _FooterActionViewState extends State<FooterActionView> {
   void _takeAction({
     BuildContext context,
     String action,
-    int amount,
+    double amount,
   }) {
     final gameContextObj = context.read<GameContextObject>();
     final gameState = context.read<GameState>();
@@ -249,7 +249,7 @@ class _FooterActionViewState extends State<FooterActionView> {
   /* These utility function actually takes actions */
 
   void _fold(
-    int amount, {
+    double amount, {
     BuildContext context,
   }) {
     _takeAction(
@@ -272,7 +272,7 @@ class _FooterActionViewState extends State<FooterActionView> {
   }
 
   void _call(
-    int amount, {
+    double amount, {
     BuildContext context,
   }) {
     _takeAction(
@@ -289,7 +289,7 @@ class _FooterActionViewState extends State<FooterActionView> {
     _takeAction(
       context: context,
       action: BET,
-      amount: betAmount.toInt(),
+      amount: betAmount,
     );
 
     // bet twice
@@ -303,13 +303,13 @@ class _FooterActionViewState extends State<FooterActionView> {
     _takeAction(
       context: context,
       action: RAISE,
-      amount: betAmount.toInt(),
+      amount: betAmount,
     );
     _actionTaken(context);
   }
 
   void _allIn({
-    int amount,
+    double amount,
     BuildContext context,
   }) {
     _takeAction(

@@ -28,7 +28,7 @@ class GameReplayService {
         PlayerModel(
           name: playerInfo.name,
           seatNo: key,
-          stack: playerInfo.balance.before.toInt(),
+          stack: playerInfo.balance.before,
           playerId: playerInfo.id,
         ),
       );
@@ -220,8 +220,8 @@ class GameReplayService {
       gameType: data.gameType,
       tableStatus: null,
       status: null,
-      smallBlind: data.smallBlind.toInt(),
-      bigBlind: data.bigBlind.toInt(),
+      smallBlind: data.smallBlind,
+      bigBlind: data.bigBlind,
       playersInSeats: players,
     );
 

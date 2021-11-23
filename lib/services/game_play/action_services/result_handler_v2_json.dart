@@ -65,8 +65,7 @@ class ResultHandlerV2Json {
 
     // update pots
     tableState.updatePotChipsSilent(
-      potChips:
-          handResult.potWinners.map<int>((p) => p.amount.toInt()).toList(),
+      potChips: handResult.potWinners.map<double>((p) => p.amount).toList(),
     );
     tableState.dimPotsSilent(true);
     tableState.notifyAll();

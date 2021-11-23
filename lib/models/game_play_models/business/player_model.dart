@@ -12,9 +12,9 @@ import 'package:pokerapp/utils/card_helper.dart';
 import 'package:pokerapp/proto/hand.pb.dart' as proto;
 
 class StackReloadState {
-  int oldStack;
-  int newStack;
-  int reloadAmount;
+  double oldStack;
+  double newStack;
+  double reloadAmount;
 
   StackReloadState({
     @required this.oldStack,
@@ -29,9 +29,9 @@ class PlayerModel {
   int seatNo = -1;
   int playerId = 0;
   String playerUuid = '';
-  int buyIn = 0;
-  int stack = 0;
-  int startingStack = 0;
+  double buyIn = 0;
+  double stack = 0;
+  double startingStack = 0;
   String avatarUrl = '';
   String status = '';
   bool _inhand = true;
@@ -92,8 +92,8 @@ class PlayerModel {
     int seatNo,
     int playerId,
     String playerUuid,
-    int buyIn,
-    int stack,
+    double buyIn,
+    double stack,
     String status,
   }) {
     this.name = name;
@@ -123,8 +123,8 @@ class PlayerModel {
     this.name = data['name'];
     this.seatNo = data['seatNo'];
     this.playerUuid = data['playerUuid'];
-    this.buyIn = data['buyIn'];
-    this.stack = data['stack'];
+    this.buyIn = double.parse(data['buyIn'].toString());
+    this.stack = double.parse(data['stack'].toString());
     this.status = data['status'];
     this.playerId = int.parse(data['playerId'].toString());
     if (data['missedBlind'] != null) {
@@ -172,8 +172,8 @@ class PlayerModel {
   // a util method for updating the class variables
   void update({
     int seatNo,
-    int buyIn,
-    int stack,
+    double buyIn,
+    double stack,
     String status,
     bool showBuyIn,
     TablePosition playerType,

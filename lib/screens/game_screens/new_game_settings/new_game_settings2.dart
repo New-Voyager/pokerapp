@@ -465,33 +465,33 @@ class NewGameSettings2 extends StatelessWidget {
                 /* chip unit */
                 sepV20,
                 Consumer<NewGameModelProvider>(builder: (_, vnGmp, __) {
-                  return 
-                  Row (
-                    children: [
-                      Expanded(child: Text('Chip Unit') ,),
-                      Expanded(child: ToggleButtons(
-                        selectedColor: Colors.black,
-                        borderColor: theme.accentColor,
-                        fillColor: theme.accentColor,
-                        onPressed: (int index) {
-                          if (index == 0) {
-                            gmp.chipUnit = ChipUnit.DOLLAR;
-                          } else {
-                            gmp.chipUnit = ChipUnit.CENT;
-                          }
-                        },
-                        isSelected: [
-                          gmp.chipUnit == ChipUnit.DOLLAR,
-                          gmp.chipUnit == ChipUnit.CENT,
-                        ],
-                        children: [
+                  return Row(children: [
+                    Expanded(
+                      child: Text('Chip Unit'),
+                    ),
+                    Expanded(
+                        child: ToggleButtons(
+                      selectedColor: Colors.black,
+                      borderColor: theme.accentColor,
+                      fillColor: theme.accentColor,
+                      onPressed: (int index) {
+                        if (index == 0) {
+                          gmp.chipUnit = ChipUnit.DOLLAR;
+                        } else {
+                          gmp.chipUnit = ChipUnit.CENT;
+                        }
+                      },
+                      isSelected: [
+                        gmp.chipUnit == ChipUnit.DOLLAR,
+                        gmp.chipUnit == ChipUnit.CENT,
+                      ],
+                      children: [
                         Text('1'),
                         Text('.01'),
-                      ],))
-                    ]
-                  );
-                }
-              ),
+                      ],
+                    ))
+                  ]);
+                }),
 
                 /* big blind & ante */
                 sepV20,
@@ -867,7 +867,7 @@ class NewGameSettings2 extends StatelessWidget {
                         //     duration: Duration(seconds: 5),
                         //   );
                         //   return;
-                        // } else 
+                        // } else
                         if (gmp.buyInMax < gmp.buyInMin) {
                           Alerts.showNotification(
                             titleText: _appScreenText['gameCreationFailed'],
