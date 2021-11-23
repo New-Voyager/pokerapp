@@ -257,7 +257,7 @@ class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
       if (showCardsShuffling) {
         bool showBombAnimation = (gameState?.handInfo?.bombPot) ?? false;
 
-        if (gameState.gameSettings.bombPotEveryHand) {
+        if (gameState.gameSettings.bombPotEveryHand ?? false) {
           showBombAnimation = false;
         }
 
