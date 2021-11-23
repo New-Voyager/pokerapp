@@ -6,6 +6,7 @@ import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/boar
 import 'package:pokerapp/models/game_replay_models/game_replay_controller.dart';
 import 'package:pokerapp/models/handlog_model.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/util_screens/replay_hand_controls/replay_hand_controls.dart';
 import 'package:pokerapp/screens/util_screens/replay_hand_game_view/replay_hand_game_view.dart';
 import 'package:pokerapp/screens/util_screens/replay_hand_dialog/replay_hand_dialog_utils.dart';
@@ -137,6 +138,7 @@ class ReplayHandUtilScreen extends StatelessWidget {
     return IntrinsicHeight(
       child: Container(
         decoration: BoxDecoration(
+          color: context.read<AppTheme>().primaryColorWithDark(),
           border: Border.all(
             color: context.read<AppTheme>().accentColor,
             width: 1.5,
