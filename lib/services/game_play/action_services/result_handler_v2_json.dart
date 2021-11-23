@@ -177,6 +177,8 @@ class ResultHandlerV2Json {
           low: false,
         );
 
+        resetResult();
+
         if (boardWinners.lowWinners.length > 0) {
           // display low banner
           if (hiLoGame) {

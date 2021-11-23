@@ -255,6 +255,9 @@ class ResultHandlerV2 {
               boardIndex: board.boardNo,
             );
           }
+
+          resetResult();
+
           // display low banner
           if (hiLoGame) {
             // display high banner
