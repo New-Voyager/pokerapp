@@ -226,7 +226,7 @@ class GameUpdateService {
     }
     if (update || showBuyIn) {
       player.update(
-        stack: playerUpdate['stack'],
+        stack: double.parse(playerUpdate['stack'].toString()),
         buyIn: playerUpdate['buyIn'],
         showBuyIn: showBuyIn,
         status: status,
