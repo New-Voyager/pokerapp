@@ -462,6 +462,37 @@ class NewGameSettings2 extends StatelessWidget {
                   onSelect: (int value) => gmp.maxPlayers = value,
                 ),
 
+                /* chip unit */
+                sepV20,
+                Consumer<NewGameModelProvider>(builder: (_, vnGmp, __) {
+                  return 
+                  Row (
+                    children: [
+                      Expanded(child: Text('Chip Unit') ,),
+                      Expanded(child: ToggleButtons(
+                        selectedColor: Colors.black,
+                        borderColor: theme.accentColor,
+                        fillColor: theme.accentColor,
+                        onPressed: (int index) {
+                          if (index == 0) {
+                            gmp.chipUnit = ChipUnit.DOLLAR;
+                          } else {
+                            gmp.chipUnit = ChipUnit.CENT;
+                          }
+                        },
+                        isSelected: [
+                          gmp.chipUnit == ChipUnit.DOLLAR,
+                          gmp.chipUnit == ChipUnit.CENT,
+                        ],
+                        children: [
+                        Text('1'),
+                        Text('.01'),
+                      ],))
+                    ]
+                  );
+                }
+              ),
+
                 /* big blind & ante */
                 sepV20,
                 Row(
@@ -829,14 +860,15 @@ class NewGameSettings2 extends StatelessWidget {
                     ButtonWidget(
                       text: _appScreenText['start'],
                       onTap: () {
-                        if (gmp.blinds.bigBlind % 2 != 0) {
-                          Alerts.showNotification(
-                            titleText: _appScreenText['gameCreationFailed'],
-                            subTitleText: _appScreenText['checkBigBlind'],
-                            duration: Duration(seconds: 5),
-                          );
-                          return;
-                        } else if (gmp.buyInMax < gmp.buyInMin) {
+                        // if (gmp.blinds.bigBlind % 2 != 0) {
+                        //   Alerts.showNotification(
+                        //     titleText: _appScreenText['gameCreationFailed'],
+                        //     subTitleText: _appScreenText['checkBigBlind'],
+                        //     duration: Duration(seconds: 5),
+                        //   );
+                        //   return;
+                        // } else 
+                        if (gmp.buyInMax < gmp.buyInMin) {
                           Alerts.showNotification(
                             titleText: _appScreenText['gameCreationFailed'],
                             subTitleText: _appScreenText['checkBuyinRange'],

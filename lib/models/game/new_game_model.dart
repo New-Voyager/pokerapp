@@ -93,6 +93,7 @@ class NewGameModel {
   bool showCheckFold = true;
   int breakTime = 5;
   bool allowFunAnimations = true;
+  ChipUnit chipUnit = ChipUnit.DOLLAR;
 
   /*
     bombPotEnabled: Boolean
@@ -150,6 +151,7 @@ class NewGameModel {
     this.highHandTracked,
     this.buyInWaitTime,
     this.allowFunAnimations,
+    this.chipUnit,
   });
 
   NewGameModel.withDefault(String clubCode) {
@@ -159,6 +161,11 @@ class NewGameModel {
   NewGameModel.fromJson(Map<String, dynamic> json) {
     title = json['title'];
     this.gameType = GameTypeSerialization.fromJson(json["gameType"]);
+    if (json['chipUnit'] == null) {
+      chipUnit = ChipUnit.DOLLAR;
+    } else {
+      chipUnit = ChipUnitSerialization.fromJson(json['chipUnit']);
+    }
     smallBlind = json['smallBlind'];
     bigBlind = json['bigBlind'];
     utgStraddleAllowed = json['utgStraddleAllowed'];
@@ -207,10 +214,11 @@ class NewGameModel {
   }
 
   Map<String, dynamic> toJson() {
-    this.smallBlind = (this.bigBlind ~/ 2).toDouble();
+    //this.smallBlind = (this.bigBlind ~/ 2).toDouble();
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['title'] = this.title;
     data['gameType'] = this.gameType.toJson();
+    data['chipUnit'] = this.chipUnit.toJson();
     data['smallBlind'] = this.smallBlind;
     data['bigBlind'] = this.bigBlind;
     data['utgStraddleAllowed'] = this.utgStraddleAllowed;
