@@ -520,6 +520,7 @@ class _FooterActionViewState extends State<FooterActionView> {
     final me = gameState.me;
     return IntrinsicHeight(
       child: Container(
+        width: Screen.width,
         height: betWidgetShown ? (Screen.height / 2) - 15.ph : null,
         color: Colors.black.withOpacity(0.5),
         child: Consumer<ActionState>(
@@ -538,17 +539,26 @@ class _FooterActionViewState extends State<FooterActionView> {
               if (actionState.show) {
                 children.addAll([
                   /* bet widget */
-                  Expanded(
-                    child: Transform.scale(
-                      scale: boardAttributes.footerActionScale,
-                      child: _buildBetWidget(
-                        me.cards,
-                        actionState.action,
-                        30,
-                        boardAttributes: boardAttributes,
-                      ),
-                    ),
-                  ),
+                  AnimatedSwitcher(
+                      duration: AppConstants.fastestAnimationDuration,
+                      reverseDuration: AppConstants.fastestAnimationDuration,
+                      transitionBuilder: (child, animation) => ScaleTransition(
+                            alignment: Alignment.bottomCenter,
+                            scale: animation,
+                            child: child,
+                          ),
+                      child: Transform.scale(
+                        scale: boardAttributes.footerActionScale,
+                        child: _buildBetWidget(
+                          me.cards,
+                          actionState.action,
+                          30,
+                          boardAttributes: boardAttributes,
+                        ),
+                      )),
+                  // Expanded(
+                  //   child: ,
+                  // ),
 
                   /* bottom row */
                   Transform.scale(
