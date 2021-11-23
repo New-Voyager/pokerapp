@@ -258,18 +258,19 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                   SizedBox(width: 10.pw),
 
                   // bomb pot
-                  !widget.gameState.currentPlayer.isHost() ? Container()
-                  : CircleImageButton(
-                      theme: theme,
-                      svgAsset:
-                          'assets/images/game/bomb1.svg', //AppAssetsNew.lastHandPath,
-                      onTap: () async {
-                        vnShowMenuItems.value = false;
-                        await BombPotDialog.prompt(
-                            context: context,
-                            gameCode: widget.gameState.gameCode,
-                            gameState: widget.gameState);
-                      }),
+                  !widget.gameState.currentPlayer.isHost()
+                      ? Container()
+                      : CircleImageButton(
+                          theme: theme,
+                          svgAsset:
+                              'assets/images/game/bomb1.svg', //AppAssetsNew.lastHandPath,
+                          onTap: () async {
+                            vnShowMenuItems.value = false;
+                            await BombPotDialog.prompt(
+                                context: context,
+                                gameCode: widget.gameState.gameCode,
+                                gameState: widget.gameState);
+                          }),
                   SizedBox(width: 10.pw),
                 ],
               ),

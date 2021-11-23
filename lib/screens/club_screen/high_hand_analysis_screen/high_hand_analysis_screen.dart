@@ -273,11 +273,10 @@ class _HighHandAnalysisScreenState extends State<HighHandAnalysisScreen> {
   }
 
   List<Widget> dateSelectionFilter(AppTheme theme) {
-
     DateTime date = endDate.subtract(Duration(days: 1));
     String startDateStr = DateFormat('dd MMM').format(startDate);
     String endDateStr = DateFormat('dd MMM').format(date);
-    
+
     return [
       Center(child: AppLabel('Date Range', theme)),
       SizedBox(
@@ -335,19 +334,16 @@ class _HighHandAnalysisScreenState extends State<HighHandAnalysisScreen> {
                 } else if (value == 'Custom') {
                   await _handleDateRangePicker(context, theme);
                   startDate = _dateTimeRange.start;
-                  endDate = _dateTimeRange.end.add(Duration(days:1));
+                  endDate = _dateTimeRange.end.add(Duration(days: 1));
                   setState(() {});
                 }
 
                 log('Start Date: ${startDate.toIso8601String()}  End Date: ${endDate.toIso8601String()}');
               })),
-
-        Column(
-          children: [
-            Center(child: Text('Selected Dates')),
-            Center(child: Text('${startDateStr} - ${endDateStr}')),
-          ]
-        ),
+      Column(children: [
+        Center(child: Text('Selected Dates')),
+        Center(child: Text('${startDateStr} - ${endDateStr}')),
+      ]),
     ];
   }
 

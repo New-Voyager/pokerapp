@@ -143,8 +143,7 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
             alignment: Alignment.bottomCenter,
             child: Consumer<ActionState>(builder: (context, actionState, __) {
               if (actionState.show || actionState.showCheckFold) {
-                return Expanded(
-                    child: _buildFooterActionView(context, gco, actionState));
+                return _buildFooterActionView(context, gco, actionState);
               } else {
                 return SizedBox.shrink();
               }
