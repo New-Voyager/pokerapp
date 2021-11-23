@@ -479,7 +479,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
                       size: 10.dp,
                     ),
                     onPressed: () async {
-                      await handleNotesPopup(context, widget.seat);
+                      //await handleNotesPopup(context, widget.seat);
                     },
                   ),
                 ),

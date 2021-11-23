@@ -385,7 +385,9 @@ class GameActions {
     }
 
     return GameActions(
-      pots: json["pots"]?.map<double>((e) => double.parse(e.toString()))?.toList(),
+      pots: json["pots"]
+          ?.map<double>((e) => double.parse(e.toString()))
+          ?.toList(),
       potStart: double.parse(json["potStart"].toString()),
       actions: List<ActionElement>.from(
           json["actions"].map((x) => ActionElement.fromJson(x))),

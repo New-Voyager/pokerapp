@@ -225,9 +225,19 @@ class GameUpdateService {
       }
     }
     if (update || showBuyIn) {
+      double buyin = 0.0;
+      double stack = 0.0;
+      if (playerUpdate['stack'] != null) {
+        stack = double.parse(playerUpdate['stack'].toString());
+      }
+
+      if (playerUpdate['buyIn'] != null) {
+        buyin = double.parse(playerUpdate['buyIn'].toString());
+      }
+
       player.update(
-        stack: playerUpdate['stack'],
-        buyIn: playerUpdate['buyIn'],
+        stack: stack,
+        buyIn: buyin,
         showBuyIn: showBuyIn,
         status: status,
       );

@@ -496,6 +496,11 @@ class NewGameSettings2 extends StatelessWidget {
                 /* big blind & ante */
                 sepV20,
                 Consumer<NewGameModelProvider>(builder: (_, vnGmp, __) {
+                  double minValue = 2;
+                  double maxValue = 10000000;
+                  if (gmp.chipUnit == ChipUnit.CENT) {
+                    minValue = 0.1;
+                  }
                   return Row(
                     children: [
                       /* big blind */
@@ -504,8 +509,8 @@ class NewGameSettings2 extends StatelessWidget {
                           value: gmp.bigBlind,
                           decimalAllowed: gmp.chipUnit == ChipUnit.CENT,
                           label: _appScreenText['bigBlind'],
-                          minValue: 2,
-                          maxValue: 1000,
+                          minValue: minValue,
+                          maxValue: maxValue,
                           title: _appScreenText['enterBigBlind'],
                           onChange: (value) {
                             //gmp.blinds.bigBlind = value.toDouble();
@@ -605,42 +610,47 @@ class NewGameSettings2 extends StatelessWidget {
                 _buildLabel(_appScreenText["tips"], theme),
                 sepV8,
                 DecoratedContainer(
-                  child: Row(
-                    children: [
-                      /* min */
-                      Expanded(
-                        child: TextInputWidget(
-                          value: gmp.rakePercentage,
-                          small: true,
-                          trailing: '%',
-                          title: _appScreenText["tipsPercent"],
-                          minValue: 0,
-                          maxValue: 50,
-                          onChange: (value) {
-                            gmp.rakePercentage = value;
-                          },
+                  child:
+                      Consumer<NewGameModelProvider>(builder: (_, vnGmp, __) {
+                    return Row(
+                      children: [
+                        /* min */
+                        Expanded(
+                          child: TextInputWidget(
+                            value: gmp.rakePercentage,
+                            decimalAllowed: gmp.chipUnit == ChipUnit.CENT,
+                            small: true,
+                            trailing: '%',
+                            title: _appScreenText["tipsPercent"],
+                            minValue: 0,
+                            maxValue: 50,
+                            onChange: (value) {
+                              gmp.rakePercentage = value;
+                            },
+                          ),
                         ),
-                      ),
 
-                      // sep
-                      sepH10,
+                        // sep
+                        sepH10,
 
-                      /* max */
-                      Expanded(
-                        child: TextInputWidget(
-                          value: gmp.rakeCap,
-                          small: true,
-                          leading: _appScreenText['cap'],
-                          title: _appScreenText['maxTips'],
-                          minValue: 0,
-                          maxValue: -1,
-                          onChange: (value) {
-                            gmp.rakeCap = value;
-                          },
+                        /* max */
+                        Expanded(
+                          child: TextInputWidget(
+                            value: gmp.rakeCap,
+                            decimalAllowed: gmp.chipUnit == ChipUnit.CENT,
+                            small: true,
+                            leading: _appScreenText['cap'],
+                            title: _appScreenText['maxTips'],
+                            minValue: 0,
+                            maxValue: -1,
+                            onChange: (value) {
+                              gmp.rakeCap = value;
+                            },
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
+                      ],
+                    );
+                  }),
                   theme: theme,
                 ),
 
