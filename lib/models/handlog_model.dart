@@ -57,7 +57,7 @@ class ResultWinner {
   factory ResultWinner.fromJson(dynamic json) {
     ResultWinner winner = ResultWinner();
     winner.seatNo = json['seatNo'];
-    winner.amount = double.parse(json['seatNo'].toString());
+    winner.amount = double.parse(json['amount'].toString());
     return winner;
   }
 }
@@ -385,7 +385,9 @@ class GameActions {
     }
 
     return GameActions(
-      pots: json["pots"]?.map<double>((e) => double.parse(e.toString()))?.toList(),
+      pots: json["pots"]
+          ?.map<double>((e) => double.parse(e.toString()))
+          ?.toList(),
       potStart: double.parse(json["potStart"].toString()),
       actions: List<ActionElement>.from(
           json["actions"].map((x) => ActionElement.fromJson(x))),
