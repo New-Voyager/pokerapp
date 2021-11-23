@@ -306,8 +306,10 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
     if (openSeat) {
       bool seatChangeSeat = false;
       if (gameState.playerSeatChangeInProgress) {
-        seatChangeSeat =
+        if (gameState.seatChangeSeat != null) {
+          seatChangeSeat =
             widget.seat.seatPos == gameState.seatChangeSeat.seatPos;
+        }
       }
 
       final openSeatWidget = OpenSeat(
@@ -383,6 +385,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
         seat: widget.seat,
         boardAttributesObject: boardAttributes,
         gameInfo: gameInfo,
+        reverse: widget.seat.player.winner ,
       );
     }
     return DragTarget(

@@ -996,7 +996,7 @@ class GameUpdateService {
   }) async {
     final gameCode = _gameState.gameCode;
     final seatChangeHost = int.parse(data["seatChangeHostId"].toString());
-    final seatChange = Provider.of<SeatChangeNotifier>(_context, listen: false);
+    final seatChange = _gameState.seatChangeState;
     seatChange.updateSeatChangeInProgress(true);
     seatChange.updateSeatChangeHost(seatChangeHost);
 
@@ -1021,7 +1021,7 @@ class GameUpdateService {
     /* remove notification */
     valueNotifierNotModel.value = null;
 
-    final seatChange = Provider.of<SeatChangeNotifier>(_context, listen: false);
+    final seatChange = _gameState.seatChangeState;
     seatChange.updateSeatChangeInProgress(false);
     seatChange.notifyAll();
     _gameState.refresh();
@@ -1033,8 +1033,7 @@ class GameUpdateService {
     // {"gameId":"18", "gameCode":"CG-LBH8IW24N7XGE5", "messageType":"TABLE_UPDATE", "tableUpdate":{"type":"HostSeatChangeMove", "seatMoves":[{"playerId":"131", "playerUuid":"290bf492-9dde-448e-922d-40270e163649", "name":"rich", "oldSeatNo":6, "newSeatNo":1}, {"playerId":"122", "playerUuid":"c2dc2c3d-13da-46cc-8c66-caa0c77459de", "name":"young", "oldSeatNo":1, "newSeatNo":6}]}}
     // player is moved, show animation of the move
 
-    final hostSeatChange =
-        Provider.of<SeatChangeNotifier>(_context, listen: false);
+    final hostSeatChange = _gameState.seatChangeState;
     var seatMoves = data['seatMoves'];
     // log('SeatChange: seatmoves: ${jsonEncode(data)}');
     bool movedToOpenSeat = false;
@@ -1157,10 +1156,7 @@ class GameUpdateService {
     */
     _gameState.playerSeatChangeInProgress = true;
     // we are in seat change
-    Provider.of<SeatChangeNotifier>(
-      _context,
-      listen: false,
-    )..updateSeatChangeInProgress(true);
+    _gameState.seatChangeState.updateSeatChangeInProgress(true);
     _gameState.refresh();
 
     final playerId = data['playerId'];
@@ -1361,12 +1357,16 @@ class GameUpdateService {
     final newSeatNo = data['newSeatNo'];
 
     // log('SeatChange: player name: $playerName id: $playerId oldSeatNo: $oldSeatNo newSeatNo: $newSeatNo');
-
-    final hostSeatChange =
-        Provider.of<SeatChangeNotifier>(_context, listen: false);
-
+    if (!_gameState.hostSeatChangeInProgress) {
+      String name = data['playerName'];
+      // player moved seat
+      Alerts.showNotification(
+          titleText: '${name} has switched seats',
+          leadingIcon: Icons.info,
+          duration: Duration(seconds: 5));
+    }
     /* start animation */
-    hostSeatChange.onSeatDrop(oldSeatNo, newSeatNo);
+    _gameState.seatChangeState.onSeatDrop(oldSeatNo, newSeatNo);
 
     /* wait for the animation to finish */
     await Future.delayed(AppConstants.seatChangeAnimationDuration);
@@ -1389,10 +1389,7 @@ class GameUpdateService {
       }    
     */
     // we are in seat change
-    Provider.of<SeatChangeNotifier>(
-      _context,
-      listen: false,
-    )..updateSeatChangeInProgress(false);
+    _gameState.seatChangeState.updateSeatChangeInProgress(false);
 
     log('Seat change done');
     // refresh the table

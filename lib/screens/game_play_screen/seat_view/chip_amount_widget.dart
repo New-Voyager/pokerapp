@@ -25,6 +25,7 @@ class ChipAmountWidget extends StatefulWidget {
   final GameInfoModel gameInfo;
   final GlobalKey key;
   final NeedRecalculating recalculatingNeeded;
+  final bool reverse;
 
   ChipAmountWidget({
     @required this.recalculatingNeeded,
@@ -34,6 +35,7 @@ class ChipAmountWidget extends StatefulWidget {
     @required this.seat,
     @required this.boardAttributesObject,
     @required this.gameInfo,
+    this.reverse = false,
   });
 
   @override
@@ -115,6 +117,15 @@ class _ChipAmountWidgetState extends State<ChipAmountWidget>
     } else if (action.action == HandActions.CALL) {
       color = Colors.green[900];
     }
+
+    if (widget.animate) {
+      if (widget.reverse) {
+        color = Colors.green[900];
+      } else {
+        color = Colors.black;
+      }
+    }
+   
     /* show the coin amount */
     Widget amount = Text(
       DataFormatter.chipsFormat(action.amount),
@@ -133,10 +144,6 @@ class _ChipAmountWidgetState extends State<ChipAmountWidget>
             color: Colors.transparent,
           ),
           borderRadius: BorderRadius.circular(5.0),
-          // color: this.transparent ? Colors.transparent : Colors.black26,
-          //color: Colors.green[900],
-          // color: Colors.red[700],
-          // color: Colors.yellow[900],
           color: color,
         ),
         child: amount);
