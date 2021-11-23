@@ -212,7 +212,7 @@ class ResultHandlerV2Json {
     bool low = false,
   }) async {
     for (int i = 0; i < winners.length; i++) {
-      final winner = winners[0];
+      final winner = winners[i];
       final playerRank = board.playerBoardRank[winner.seatNo];
       List<int> winningCards = [];
       final playerInfo = handResult.playerInfo[winner.seatNo];
