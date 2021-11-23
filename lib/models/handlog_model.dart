@@ -57,7 +57,7 @@ class ResultWinner {
   factory ResultWinner.fromJson(dynamic json) {
     ResultWinner winner = ResultWinner();
     winner.seatNo = json['seatNo'];
-    winner.amount = double.parse(json['seatNo'].toString());
+    winner.amount = double.parse(json['amount'].toString());
     return winner;
   }
 }
@@ -370,9 +370,9 @@ class GameActions {
     this.seatPots,
   });
 
-  List<int> pots;
+  List<double> pots;
   List<ActionElement> actions;
-  int potStart;
+  double potStart;
   List<SeatPot> seatPots;
 
   factory GameActions.fromJson(Map<String, dynamic> json) {
@@ -385,8 +385,10 @@ class GameActions {
     }
 
     return GameActions(
-      pots: json["pots"]?.map<int>((e) => int.parse(e.toString()))?.toList(),
-      potStart: json["potStart"],
+      pots: json["pots"]
+          ?.map<double>((e) => double.parse(e.toString()))
+          ?.toList(),
+      potStart: double.parse(json["potStart"].toString()),
       actions: List<ActionElement>.from(
           json["actions"].map((x) => ActionElement.fromJson(x))),
       seatPots: seatPots,
@@ -412,10 +414,10 @@ class ActionElement {
 
   int seatNo;
   HandActions action;
-  int amount;
+  double amount;
   bool timedOut;
   int actionTime;
-  int stack;
+  double stack;
 
   factory ActionElement.fromJson(Map<String, dynamic> json) {
     final action = json['action'];
@@ -423,10 +425,10 @@ class ActionElement {
     return ActionElement(
       seatNo: json["seatNo"],
       action: actionValue,
-      amount: json["amount"],
+      amount: double.parse(json["amount"].toString()),
       timedOut: json["timedOut"],
       actionTime: json["actionTime"],
-      stack: json["stack"],
+      stack: double.parse(json["stack"].toString()),
     );
   }
 

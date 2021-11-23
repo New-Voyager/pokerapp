@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/utils/formatter.dart';
 
 class StackReloadAnimatingWidget extends StatefulWidget {
   final StackReloadState stackReloadState;
-  final Function(int stack) stackTextBuilder;
+  final Function(double stack) stackTextBuilder;
 
   StackReloadAnimatingWidget({
     @required this.stackReloadState,
@@ -19,17 +20,17 @@ class StackReloadAnimatingWidget extends StatefulWidget {
 class _StackReloadAnimatingWidgetState
     extends State<StackReloadAnimatingWidget> {
   StackReloadState get srs => widget.stackReloadState;
-  Function(int stack) get stackTextBuilder => widget.stackTextBuilder;
+  Function(double stack) get stackTextBuilder => widget.stackTextBuilder;
 
   Widget _currentWidget;
 
-  Widget _buildStackText(int value) => Container(
+  Widget _buildStackText(double value) => Container(
         key: UniqueKey(),
         child: stackTextBuilder(value),
       );
 
-  Widget _buildLoadedAmountText(int value) => Text(
-        '+ $value',
+  Widget _buildLoadedAmountText(double value) => Text(
+        '+ ${DataFormatter.chipsFormat(value)}',
         style: TextStyle(
           fontSize: 5.0,
           color: AppColorsNew.yellowAccentColor,

@@ -34,7 +34,8 @@ class NumericKeyboard2 extends StatelessWidget {
   final double min;
   final double max;
   final String title;
-  final int currValue;
+  final double currValue;
+  final bool decimalAllowed;
   bool firstKey = true;
 
   NumericKeyboard2({
@@ -43,16 +44,16 @@ class NumericKeyboard2 extends StatelessWidget {
     this.min,
     this.max,
     this.currValue,
-    // this.decimal = false,
+    this.decimalAllowed = true,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    int value = this.currValue;
+    double value = this.currValue;
 
-    if (value <= this.min) value = this.min.round();
+    if (value <= this.min) value = this.min; //.round();
 
-    String valueStr = value.round().toString();
+    String valueStr = value.toString();
 
     return Container(
       decoration: BoxDecoration(
@@ -287,12 +288,12 @@ class NumericKeyboard2 extends StatelessWidget {
     }
 
     // /* if we already have a decimal, do not allow anymore */
-    // if (buttonValue == '.') {
-    //   if (!decimal) {
-    //     return;
-    //   }
-    //   if (value.contains('.')) return;
-    // }
+    if (buttonValue == '.') {
+      if (!decimalAllowed) {
+        return;
+      }
+      if (value.contains('.')) return;
+    }
 
     /* numbers and decimal part */
     String newValue = '';
@@ -325,10 +326,10 @@ class NumericKeyboard2 extends StatelessWidget {
       splashColor = Colors.transparent;
     }
 
-    // if (value == '.' && !decimal) {
-    //   color = Colors.grey;
-    //   splashColor = Colors.white70;
-    // }
+    if (value == '.' && decimalAllowed) {
+      color = Colors.grey;
+      splashColor = Colors.white70;
+    }
     return Expanded(
       flex: flex,
       child: Builder(
@@ -456,7 +457,7 @@ class NumericKeyboard2 extends StatelessWidget {
             child: Row(
               children: [
                 _buildButton(
-                  value: '',
+                  value: decimalAllowed ? '.' : '',
                 ),
                 _buildButton(
                   value: '0',
@@ -473,16 +474,16 @@ class NumericKeyboard2 extends StatelessWidget {
   /* this method shows the keyboard, and returns numeric data */
   static Future<double> show(
     BuildContext context, {
-    bool decimal = false,
     String title = 'Title goes here',
     double min = 0,
     double max,
     double currentVal,
+    decimalAllowed = false,
   }) {
     if (currentVal == null) {
       currentVal = 0;
     }
-    final val = currentVal.floor();
+    final val = currentVal;
     return showGeneralDialog(
       barrierLabel: "Numeric Keyboard",
       barrierDismissible: true,
@@ -495,8 +496,8 @@ class NumericKeyboard2 extends StatelessWidget {
           title: title,
           min: min,
           max: max,
-          currValue: val.floor(),
-          // decimal: decimal,
+          currValue: val,
+          decimalAllowed: decimalAllowed,
         ),
       ),
       transitionBuilder: (context, anim1, _, child) => SlideTransition(

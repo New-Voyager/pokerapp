@@ -9,8 +9,8 @@ class TableState extends ChangeNotifier {
   /* This object holds the game status, table status, pot chips, and community cards */
   String _gameStatus;
   String _tableStatus;
-  List<int> _potChips;
-  int _potUpdatesChips;
+  List<double> _potChips;
+  double _potUpdatesChips;
   List<CardObject> _board1;
   List<CardObject> _board2;
   int _flipSpeed;
@@ -41,8 +41,8 @@ class TableState extends ChangeNotifier {
 
   TableState({
     String tableStatus,
-    List<int> potChips,
-    int potUpdatesChips,
+    List<double> potChips,
+    double potUpdatesChips,
     List<CardObject> communityCards,
   }) {
     this.clear();
@@ -123,12 +123,12 @@ class TableState extends ChangeNotifier {
     this._gameStatus = gameStatus;
   }
 
-  void updatePotChipsSilent({List<int> potChips, int potUpdatesChips}) {
+  void updatePotChipsSilent({List<double> potChips, double potUpdatesChips}) {
     this._potChips = potChips;
     this._potUpdatesChips = potUpdatesChips;
   }
 
-  void updatePotChipUpdatesSilent(int potUpdatesChips) {
+  void updatePotChipUpdatesSilent(double potUpdatesChips) {
     this._potUpdatesChips = potUpdatesChips;
   }
 
@@ -353,8 +353,8 @@ class TableState extends ChangeNotifier {
   String get tableStatus => _tableStatus;
   String get gameStatus => _gameStatus;
   int get potToHighlight => _potToHighlight;
-  List<int> get potChips => _potChips;
-  int get potChipsUpdates => _potUpdatesChips;
+  List<double> get potChips => _potChips;
+  double get potChipsUpdates => _potUpdatesChips;
   List<CardObject> get cards => _board1;
   List<CardObject> get cardsOther => _board2;
 

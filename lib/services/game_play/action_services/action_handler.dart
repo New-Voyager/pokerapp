@@ -158,15 +158,15 @@ class PlayerActionHandler {
     } catch (e) {}
 
     // update the pot values
-    List<int> pots = [];
+    List<double> pots = [];
     for (final pot in currentHandState.pots) {
-      int potValue = 0;
-      potValue = pot.toInt();
+      double potValue = 0;
+      potValue = pot;
       pots.add(potValue);
     }
-    int potUpdates = 0;
+    double potUpdates = 0;
     if (currentHandState.potUpdates != null) {
-      potUpdates = currentHandState.potUpdates.toInt();
+      potUpdates = currentHandState.potUpdates;
     }
 
     tableState.updatePotChipsSilent(
@@ -307,14 +307,14 @@ class PlayerActionHandler {
       /* check if pot is available, if true, update the pot value in the table state object */
       if (actionChange.pots != null && actionChange.pots.length > 0) {
         try {
-          List<int> pots = actionChange.pots
-              ?.map<int>((e) => int.parse(e.toString()))
+          List<double> pots = actionChange.pots
+              ?.map<double>((e) => double.parse(e.toString()))
               ?.toList();
           double potUpdates = actionChange.potUpdates;
 
           tableState.updatePotChipsSilent(
             potChips: pots,
-            potUpdatesChips: potUpdates.toInt(),
+            potUpdatesChips: potUpdates,
           );
           tableState.notifyAll();
         } catch (e) {}
@@ -329,7 +329,7 @@ class PlayerActionHandler {
   }
 
   Function actionFunc(
-      ACTION actionType, int playerId, int seatNo, int handNum, int amount) {
+      ACTION actionType, int playerId, int seatNo, int handNum, double amount) {
     void f() {
       _handActionProtoService.playerActed(playerId, _gameState.handInfo.handNum,
           seatNo, actionType.toString(), amount);
@@ -398,7 +398,7 @@ class PlayerActionHandler {
           gameContextObject: gameContextObject,
           gameState: _gameState,
           action: AppConstants.STRADDLE,
-          amount: 2 * _gameState.gameInfo.bigBlind,
+          amount: 2.0 * _gameState.gameInfo.bigBlind,
         );
 
         // once, the first bet is done, set straddleBet to false, and wait for next hand
@@ -524,7 +524,7 @@ class PlayerActionHandler {
     }
     seat.notify();
 
-    int stack = playerActed.stack?.toInt();
+    final stack = playerActed.stack;
     if (stack != null) {
       seat.player.stack = stack;
     }
@@ -535,8 +535,7 @@ class PlayerActionHandler {
     _gameState.resetActionHighlight(-1);
 
     // update pot chip updates
-    _gameState.tableState
-        .updatePotChipUpdatesSilent(playerActed.potUpdates.toInt());
+    _gameState.tableState.updatePotChipUpdatesSilent(playerActed.potUpdates);
     _gameState.tableState.notifyAll();
     //log('Hand Message: ::handlePlayerActed:: END');
   }

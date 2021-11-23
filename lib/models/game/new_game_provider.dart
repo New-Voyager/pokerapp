@@ -213,15 +213,25 @@ class NewGameModelProvider extends ChangeNotifier {
         ante: settings.ante);
   }
 
-  double get smallBlind => settings.smallBlind;
-  set smallBlind(double value) {
-    settings.smallBlind = value;
-    notifyListeners();
+  double get smallBlind {
+    return settings.smallBlind;
   }
+  // set smallBlind(double value) {
+  //   settings.smallBlind = value;
+  //   notifyListeners();
+  // }
 
   double get bigBlind => settings.bigBlind;
   set bigBlind(double value) {
     settings.bigBlind = value;
+    if (settings.chipUnit == ChipUnit.CENT) {
+      double sb = (settings.bigBlind / 2);
+      settings.smallBlind = double.parse(sb.toStringAsFixed(2));
+    } else {
+      settings.smallBlind = (settings.bigBlind / 2).floor().toDouble();
+    }
+    settings.straddleBet = settings.bigBlind * 2;
+
     notifyListeners();
   }
 
@@ -382,5 +392,14 @@ class NewGameModelProvider extends ChangeNotifier {
   set buyInWaitTime(int value) {
     settings.buyInWaitTime = value;
     // notifyListeners();
+  }
+
+  set chipUnit(ChipUnit chipUnit) {
+    settings.chipUnit = chipUnit;
+    notifyListeners();
+  }
+
+  get chipUnit {
+    return settings.chipUnit;
   }
 }

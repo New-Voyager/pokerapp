@@ -462,43 +462,82 @@ class NewGameSettings2 extends StatelessWidget {
                   onSelect: (int value) => gmp.maxPlayers = value,
                 ),
 
+                /* chip unit */
+                sepV20,
+                Consumer<NewGameModelProvider>(builder: (_, vnGmp, __) {
+                  return Row(children: [
+                    Expanded(
+                      child: Text('Chip Unit'),
+                    ),
+                    Expanded(
+                        child: ToggleButtons(
+                      selectedColor: Colors.black,
+                      borderColor: theme.accentColor,
+                      fillColor: theme.accentColor,
+                      onPressed: (int index) {
+                        if (index == 0) {
+                          gmp.chipUnit = ChipUnit.DOLLAR;
+                        } else {
+                          gmp.chipUnit = ChipUnit.CENT;
+                        }
+                      },
+                      isSelected: [
+                        gmp.chipUnit == ChipUnit.DOLLAR,
+                        gmp.chipUnit == ChipUnit.CENT,
+                      ],
+                      children: [
+                        Text('1'),
+                        Text('.01'),
+                      ],
+                    ))
+                  ]);
+                }),
+
                 /* big blind & ante */
                 sepV20,
-                Row(
-                  children: [
-                    /* big blind */
-                    Expanded(
-                      child: TextInputWidget(
-                        value: gmp.bigBlind,
-                        label: _appScreenText['bigBlind'],
-                        minValue: 2,
-                        maxValue: 1000,
-                        title: _appScreenText['enterBigBlind'],
-                        onChange: (value) {
-                          //gmp.blinds.bigBlind = value.toDouble();
-                          gmp.bigBlind = value.toDouble();
-                        },
+                Consumer<NewGameModelProvider>(builder: (_, vnGmp, __) {
+                  double minValue = 2;
+                  double maxValue = 10000000;
+                  if (gmp.chipUnit == ChipUnit.CENT) {
+                    minValue = 0.1;
+                  }
+                  return Row(
+                    children: [
+                      /* big blind */
+                      Expanded(
+                        child: TextInputWidget(
+                          value: gmp.bigBlind,
+                          decimalAllowed: gmp.chipUnit == ChipUnit.CENT,
+                          label: _appScreenText['bigBlind'],
+                          minValue: minValue,
+                          maxValue: maxValue,
+                          title: _appScreenText['enterBigBlind'],
+                          onChange: (value) {
+                            //gmp.blinds.bigBlind = value.toDouble();
+                            gmp.bigBlind = value.toDouble();
+                          },
+                        ),
                       ),
-                    ),
 
-                    // sep
-                    sepH10,
+                      // sep
+                      sepH10,
 
-                    /* ante */
-                    // Expanded(
-                    //   child: TextInputWidget(
-                    //     value: gmp.blinds.ante,
-                    //     label: 'Ante',
-                    //     title: 'Enter ante',
-                    //     minValue: 0,
-                    //     maxValue: 1000,
-                    //     onChange: (value) {
-                    //       gmp.blinds.ante = value.toDouble();
-                    //     },
-                    //   ),
-                    // ),
-                  ],
-                ),
+                      /* ante */
+                      // Expanded(
+                      //   child: TextInputWidget(
+                      //     value: gmp.blinds.ante,
+                      //     label: 'Ante',
+                      //     title: 'Enter ante',
+                      //     minValue: 0,
+                      //     maxValue: 1000,
+                      //     onChange: (value) {
+                      //       gmp.blinds.ante = value.toDouble();
+                      //     },
+                      //   ),
+                      // ),
+                    ],
+                  );
+                }),
 
                 /* buyin */
                 sepV20,
@@ -571,42 +610,47 @@ class NewGameSettings2 extends StatelessWidget {
                 _buildLabel(_appScreenText["tips"], theme),
                 sepV8,
                 DecoratedContainer(
-                  child: Row(
-                    children: [
-                      /* min */
-                      Expanded(
-                        child: TextInputWidget(
-                          value: gmp.rakePercentage,
-                          small: true,
-                          trailing: '%',
-                          title: _appScreenText["tipsPercent"],
-                          minValue: 0,
-                          maxValue: 50,
-                          onChange: (value) {
-                            gmp.rakePercentage = value;
-                          },
+                  child:
+                      Consumer<NewGameModelProvider>(builder: (_, vnGmp, __) {
+                    return Row(
+                      children: [
+                        /* min */
+                        Expanded(
+                          child: TextInputWidget(
+                            value: gmp.rakePercentage,
+                            decimalAllowed: gmp.chipUnit == ChipUnit.CENT,
+                            small: true,
+                            trailing: '%',
+                            title: _appScreenText["tipsPercent"],
+                            minValue: 0,
+                            maxValue: 50,
+                            onChange: (value) {
+                              gmp.rakePercentage = value;
+                            },
+                          ),
                         ),
-                      ),
 
-                      // sep
-                      sepH10,
+                        // sep
+                        sepH10,
 
-                      /* max */
-                      Expanded(
-                        child: TextInputWidget(
-                          value: gmp.rakeCap,
-                          small: true,
-                          leading: _appScreenText['cap'],
-                          title: _appScreenText['maxTips'],
-                          minValue: 0,
-                          maxValue: -1,
-                          onChange: (value) {
-                            gmp.rakeCap = value;
-                          },
+                        /* max */
+                        Expanded(
+                          child: TextInputWidget(
+                            value: gmp.rakeCap,
+                            decimalAllowed: gmp.chipUnit == ChipUnit.CENT,
+                            small: true,
+                            leading: _appScreenText['cap'],
+                            title: _appScreenText['maxTips'],
+                            minValue: 0,
+                            maxValue: -1,
+                            onChange: (value) {
+                              gmp.rakeCap = value;
+                            },
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
+                      ],
+                    );
+                  }),
                   theme: theme,
                 ),
 
@@ -829,14 +873,15 @@ class NewGameSettings2 extends StatelessWidget {
                     ButtonWidget(
                       text: _appScreenText['start'],
                       onTap: () {
-                        if (gmp.blinds.bigBlind % 2 != 0) {
-                          Alerts.showNotification(
-                            titleText: _appScreenText['gameCreationFailed'],
-                            subTitleText: _appScreenText['checkBigBlind'],
-                            duration: Duration(seconds: 5),
-                          );
-                          return;
-                        } else if (gmp.buyInMax < gmp.buyInMin) {
+                        // if (gmp.blinds.bigBlind % 2 != 0) {
+                        //   Alerts.showNotification(
+                        //     titleText: _appScreenText['gameCreationFailed'],
+                        //     subTitleText: _appScreenText['checkBigBlind'],
+                        //     duration: Duration(seconds: 5),
+                        //   );
+                        //   return;
+                        // } else
+                        if (gmp.buyInMax < gmp.buyInMin) {
                           Alerts.showNotification(
                             titleText: _appScreenText['gameCreationFailed'],
                             subTitleText: _appScreenText['checkBuyinRange'],

@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:pokerapp/enums/game_type.dart';
 
 import 'player_model.dart';
 
@@ -14,15 +15,16 @@ class GameInfoModel {
   String gameCode;
   String clubCode; // optional
   int actionTime;
-  int buyInMax;
-  int buyInMin;
+  double buyInMax;
+  double buyInMin;
   int maxPlayers;
   String title;
   String gameType; // fixme: is it okay to use GameType or String?
   String tableStatus;
   String status;
-  int smallBlind;
-  int bigBlind;
+  ChipUnit chipUnit;
+  double smallBlind;
+  double bigBlind;
   List<int> availableSeats;
   List<PlayerModel> playersInSeats;
   String gameToken;
@@ -86,14 +88,18 @@ class GameInfoModel {
     this.gameID = data['gameID'] ?? 0;
     this.gameCode = data['gameCode'];
     this.clubCode = data['clubCode'];
-    this.buyInMax = data['buyInMax'];
     this.actionTime = data['actionTime'];
     this.maxPlayers = maxPlayers ?? data['maxPlayers'];
     this.title = data['title'];
     this.gameType = data['gameType'];
-    this.buyInMin = data['buyInMin'];
-    this.smallBlind = data['smallBlind'];
-    this.bigBlind = data['bigBlind'];
+    this.chipUnit = ChipUnit.DOLLAR;
+    if (data['chipUnit'] == 'CENT') {
+      this.chipUnit = ChipUnit.CENT;
+    }
+    this.buyInMin = double.parse(data['buyInMin'].toString());
+    this.buyInMax = double.parse(data['buyInMax'].toString());
+    this.smallBlind = double.parse(data['smallBlind'].toString());
+    this.bigBlind = double.parse(data['bigBlind'].toString());
     this.status = data['status'];
     this.tableStatus = data['tableStatus'];
     this.utgStraddleAllowed = data['utgStraddleAllowed'] ?? true;
@@ -188,6 +194,7 @@ class GameInfoModel {
       ipCheck
       gpsCheck
       handNum
+      chipUnit
 
       sessionTime
       runningTime

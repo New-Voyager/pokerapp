@@ -16,6 +16,7 @@ class TextInputWidget extends StatelessWidget {
   final FontWeight labelFontWeight;
   final bool small;
   final String title;
+  final bool decimalAllowed;
   final void Function(double value) onChange;
 
   final double minValue;
@@ -29,6 +30,7 @@ class TextInputWidget extends StatelessWidget {
     this.labelFontWeight = FontWeight.normal,
     this.small = false,
     this.title = '',
+    this.decimalAllowed = false,
     @required this.minValue,
     @required this.maxValue,
     @required this.onChange,
@@ -140,6 +142,7 @@ class TextInputWidget extends StatelessWidget {
             min: minValue,
             max: maxValue,
             currentVal: value.toDouble(),
+            decimalAllowed: this.decimalAllowed,
           );
 
           if (val != null) {

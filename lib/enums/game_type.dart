@@ -115,3 +115,14 @@ List<GameType> gameChoices() {
     GameType.DEALER_CHOICE,
   ];
 }
+
+enum ChipUnit {
+  DOLLAR,
+  CENT,
+}
+
+extension ChipUnitSerialization on ChipUnit {
+  String toJson() => this.toString().split(".").last;
+  static ChipUnit fromJson(String s) =>
+      ChipUnit.values.firstWhere((chipUnit) => chipUnit.toJson() == s);
+}

@@ -47,7 +47,7 @@ class StraddleWidget extends StatelessWidget {
                     gameContextObject: gameContextObject,
                     gameState: gameState,
                     action: AppConstants.STRADDLE,
-                    amount: 2 * gameState.gameInfo.bigBlind,
+                    amount: 2.0 * gameState.gameInfo.bigBlind,
                   );
                 } else {
                   log('Player does not want to straddle');

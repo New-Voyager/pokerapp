@@ -15,6 +15,7 @@ import 'package:pokerapp/screens/game_play_screen/widgets/bet_widget.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_proto_service.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
+import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:provider/provider.dart';
@@ -224,7 +225,7 @@ class _FooterActionViewState extends State<FooterActionView> {
     widget.isBetWidgetVisible?.call(false);
 
     /* finally change the state to no more allow user to take action */
-    final gameState = Provider.of<GameState>(context, listen: false);
+    final gameState = GameState.getState(context);
     gameState.showAction(false);
   }
 
@@ -233,10 +234,10 @@ class _FooterActionViewState extends State<FooterActionView> {
   void _takeAction({
     BuildContext context,
     String action,
-    int amount,
+    double amount,
   }) {
     final gameContextObj = context.read<GameContextObject>();
-    final gameState = context.read<GameState>();
+    final gameState = GameState.getState(context);
 
     HandActionProtoService.takeAction(
       gameContextObject: gameContextObj,
@@ -249,7 +250,7 @@ class _FooterActionViewState extends State<FooterActionView> {
   /* These utility function actually takes actions */
 
   void _fold(
-    int amount, {
+    double amount, {
     BuildContext context,
   }) {
     _takeAction(
@@ -272,7 +273,7 @@ class _FooterActionViewState extends State<FooterActionView> {
   }
 
   void _call(
-    int amount, {
+    double amount, {
     BuildContext context,
   }) {
     _takeAction(
@@ -289,7 +290,7 @@ class _FooterActionViewState extends State<FooterActionView> {
     _takeAction(
       context: context,
       action: BET,
-      amount: betAmount.toInt(),
+      amount: betAmount,
     );
 
     // bet twice
@@ -303,13 +304,13 @@ class _FooterActionViewState extends State<FooterActionView> {
     _takeAction(
       context: context,
       action: RAISE,
-      amount: betAmount.toInt(),
+      amount: betAmount,
     );
     _actionTaken(context);
   }
 
   void _allIn({
-    int amount,
+    double amount,
     BuildContext context,
   }) {
     _takeAction(
@@ -382,7 +383,9 @@ class _FooterActionViewState extends State<FooterActionView> {
         case CALL:
           if (playerAction.callAmount > 0) {
             actionWidget = _buildRoundButton(
-              text: action.actionName + ' ' + action.actionValue.toString(),
+              text: action.actionName +
+                  ' ' +
+                  DataFormatter.chipsFormat(action.actionValue),
               onTap: () => _call(
                 playerAction.callAmount,
                 context: context,
@@ -416,7 +419,9 @@ class _FooterActionViewState extends State<FooterActionView> {
 
     if ((!bet) && (!raise) && (allin != null)) {
       actionButtons.add(_buildRoundButton(
-        text: allin.actionName + ' ' + allin.actionValue.toString(),
+        text: allin.actionName +
+            ' ' +
+            DataFormatter.chipsFormat(allin.actionValue),
         onTap: () => _allIn(
           amount: playerAction.allInAmount,
           context: context,

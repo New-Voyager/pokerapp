@@ -137,7 +137,7 @@ class NewHandHandler {
           playerObj = new PlayerModel();
         }
         playerObj.seatNo = seatNo;
-        playerObj.stack = playerInSeat.stack.toInt();
+        playerObj.stack = playerInSeat.stack;
         playerObj.status = playerInSeat.status.name;
         playerObj.inhand = playerInSeat.inhand;
         playerObj.missedBlind = playerInSeat.missedBlind;

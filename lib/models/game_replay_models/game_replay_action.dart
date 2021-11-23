@@ -25,8 +25,8 @@ class GameReplayAction {
   final List<int> seatNos;
 
   /* the start pot holds the value of pot before the round begins */
-  final int startPot;
-  final List<int> pots;
+  final double startPot;
+  final List<double> pots;
 
   /* action contains the acted player's action */
   final ActionElement action;

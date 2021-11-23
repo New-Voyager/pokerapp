@@ -109,7 +109,7 @@ class HandlogSummary extends StatelessWidget {
           Expanded(
             flex: 2,
             child: Text(
-              player.balance.after.toString(),
+              DataFormatter.chipsFormat(player.balance.after),
               style: AppDecorators.getSubtitle1Style(theme: theme)
                   .copyWith(fontWeight: FontWeight.w500),
               textAlign: TextAlign.right,

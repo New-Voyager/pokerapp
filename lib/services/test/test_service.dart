@@ -958,7 +958,7 @@ class TestService {
 
   static void showKeyboard() async {
     final value = await NumericKeyboard2.show(_context,
-        title: 'Buyin amount 30-100', min: 30, max: 100, decimal: false);
+        title: 'Buyin amount 30-100', min: 30, max: 100, decimalAllowed: false);
     log('typed value: $value');
   }
 

@@ -225,9 +225,19 @@ class GameUpdateService {
       }
     }
     if (update || showBuyIn) {
+      double buyin = 0.0;
+      double stack = 0.0;
+      if (playerUpdate['stack'] != null) {
+        stack = double.parse(playerUpdate['stack'].toString());
+      }
+
+      if (playerUpdate['buyIn'] != null) {
+        buyin = double.parse(playerUpdate['buyIn'].toString());
+      }
+
       player.update(
-        stack: playerUpdate['stack'],
-        buyIn: playerUpdate['buyIn'],
+        stack: stack,
+        buyIn: buyin,
         showBuyIn: showBuyIn,
         status: status,
       );
@@ -677,9 +687,9 @@ class GameUpdateService {
     */
 
     int playerId = int.parse(data['playerId'].toString());
-    int oldStack = int.parse(data['oldStack'].toString());
-    int newStack = int.parse(data['newStack'].toString());
-    int reloadAmount = int.parse(data['reloadAmount'].toString());
+    double oldStack = double.parse(data['oldStack'].toString());
+    double newStack = double.parse(data['newStack'].toString());
+    double reloadAmount = double.parse(data['reloadAmount'].toString());
     final reloadState = StackReloadState(
       oldStack: oldStack,
       newStack: newStack,

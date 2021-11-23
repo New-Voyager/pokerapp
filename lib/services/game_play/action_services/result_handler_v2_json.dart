@@ -65,8 +65,7 @@ class ResultHandlerV2Json {
 
     // update pots
     tableState.updatePotChipsSilent(
-      potChips:
-          handResult.potWinners.map<int>((p) => p.amount.toInt()).toList(),
+      potChips: handResult.potWinners.map<double>((p) => p.amount).toList(),
     );
     tableState.dimPotsSilent(true);
     tableState.notifyAll();
@@ -178,6 +177,8 @@ class ResultHandlerV2Json {
           low: false,
         );
 
+        resetResult();
+
         if (boardWinners.lowWinners.length > 0) {
           // display low banner
           if (hiLoGame) {
@@ -213,7 +214,7 @@ class ResultHandlerV2Json {
     bool low = false,
   }) async {
     for (int i = 0; i < winners.length; i++) {
-      final winner = winners[0];
+      final winner = winners[i];
       final playerRank = board.playerBoardRank[winner.seatNo];
       List<int> winningCards = [];
       final playerInfo = handResult.playerInfo[winner.seatNo];

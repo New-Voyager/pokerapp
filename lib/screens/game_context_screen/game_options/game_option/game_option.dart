@@ -131,7 +131,7 @@ class _GameOptionState extends State<GameOption> {
             _appScreenText['stackIsGreaterThankMaxBuyIn']);
         return;
       }
-      int reloadMax = widget.gameState.gameInfo.buyInMax - me.stack;
+      double reloadMax = widget.gameState.gameInfo.buyInMax - me.stack;
       int reloadMin = 1;
       /* use numeric keyboard to get reload value */
       double value = await NumericKeyboard2.show(
@@ -139,6 +139,7 @@ class _GameOptionState extends State<GameOption> {
         title: 'Reload ($reloadMin - $reloadMax)',
         min: reloadMin.toDouble(),
         max: reloadMax.toDouble(),
+        decimalAllowed: gameInfo.chipUnit == ChipUnit.CENT,
       );
 
       if (value == null) return;

@@ -5,6 +5,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:blinking_text/blinking_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/enums/player_status.dart';
 import 'package:pokerapp/models/game_play_models/business/game_chat_notfi_state.dart';
@@ -498,12 +499,14 @@ class GamePlayScreenUtilMethods {
     }
 
     gameState.buyInKeyboardShown = true;
+    bool decimalAllowed = true;
     /* use numeric keyboard to get buyin */
     double value = await NumericKeyboard2.show(
       context,
       title: 'Buy In (${gameInfo.buyInMin} - ${gameInfo.buyInMax})',
       min: gameInfo.buyInMin.toDouble(),
       max: gameInfo.buyInMax.toDouble(),
+      decimalAllowed: gameInfo.chipUnit == ChipUnit.CENT,
     );
     gameState.buyInKeyboardShown = false;
 
@@ -512,7 +515,7 @@ class GamePlayScreenUtilMethods {
     // buy chips
     await GameService.buyIn(
       gameInfo.gameCode,
-      value.toInt(),
+      value,
     );
   }
 }

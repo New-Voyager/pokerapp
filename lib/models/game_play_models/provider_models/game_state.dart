@@ -927,7 +927,7 @@ class GameState {
         name: playerInSeatModel.name,
         seatNo: playerInSeatModel.seatNo,
         playerUuid: playerInSeatModel.playerId,
-        stack: playerInSeatModel.stack.toInt(),
+        stack: playerInSeatModel.stack,
       ));
     });
     if (notify) {
@@ -1152,10 +1152,10 @@ class GameState {
   }
 
   void updatePlayersStack(Map<dynamic, dynamic> stackData) {
-    Map<int, int> stacks = Map<int, int>();
+    Map<int, double> stacks = Map<int, double>();
 
     for (final key in stackData.keys) {
-      stacks[key.toInt()] = stackData[key].toInt();
+      stacks[key.toInt()] = stackData[key];
     }
     // stacks contains, <seatNo, stack> mapping
     stacks.forEach((seatNo, stack) {
