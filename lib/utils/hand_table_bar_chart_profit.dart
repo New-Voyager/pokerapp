@@ -3,6 +3,7 @@ import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:pokerapp/models/table_record.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/utils/formatter.dart';
 
 class HandTableBarChartProfit extends StatelessWidget {
   final TableRecord _handTableRecord;
@@ -30,7 +31,7 @@ class HandTableBarChartProfit extends StatelessWidget {
             ? charts.ColorUtil.fromDartColor(Colors.green)
             : charts.ColorUtil.fromDartColor(Colors.red),
         labelAccessorFn: (TableRecordRow tableRow, index) =>
-            '  ${tableRow.profit.toStringAsFixed(0)}',
+            '  ${DataFormatter.chipsFormat(tableRow.profit)}',
         insideLabelStyleAccessorFn: (_, __) => charts.TextStyleSpec(
           color: charts.ColorUtil.fromDartColor(Colors.white),
           fontSize: 14,

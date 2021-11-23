@@ -495,41 +495,44 @@ class NewGameSettings2 extends StatelessWidget {
 
                 /* big blind & ante */
                 sepV20,
-                Row(
-                  children: [
-                    /* big blind */
-                    Expanded(
-                      child: TextInputWidget(
-                        value: gmp.bigBlind,
-                        label: _appScreenText['bigBlind'],
-                        minValue: 2,
-                        maxValue: 1000,
-                        title: _appScreenText['enterBigBlind'],
-                        onChange: (value) {
-                          //gmp.blinds.bigBlind = value.toDouble();
-                          gmp.bigBlind = value.toDouble();
-                        },
+                Consumer<NewGameModelProvider>(builder: (_, vnGmp, __) {
+                  return Row(
+                    children: [
+                      /* big blind */
+                      Expanded(
+                        child: TextInputWidget(
+                          value: gmp.bigBlind,
+                          decimalAllowed: gmp.chipUnit == ChipUnit.CENT,
+                          label: _appScreenText['bigBlind'],
+                          minValue: 2,
+                          maxValue: 1000,
+                          title: _appScreenText['enterBigBlind'],
+                          onChange: (value) {
+                            //gmp.blinds.bigBlind = value.toDouble();
+                            gmp.bigBlind = value.toDouble();
+                          },
+                        ),
                       ),
-                    ),
 
-                    // sep
-                    sepH10,
+                      // sep
+                      sepH10,
 
-                    /* ante */
-                    // Expanded(
-                    //   child: TextInputWidget(
-                    //     value: gmp.blinds.ante,
-                    //     label: 'Ante',
-                    //     title: 'Enter ante',
-                    //     minValue: 0,
-                    //     maxValue: 1000,
-                    //     onChange: (value) {
-                    //       gmp.blinds.ante = value.toDouble();
-                    //     },
-                    //   ),
-                    // ),
-                  ],
-                ),
+                      /* ante */
+                      // Expanded(
+                      //   child: TextInputWidget(
+                      //     value: gmp.blinds.ante,
+                      //     label: 'Ante',
+                      //     title: 'Enter ante',
+                      //     minValue: 0,
+                      //     maxValue: 1000,
+                      //     onChange: (value) {
+                      //       gmp.blinds.ante = value.toDouble();
+                      //     },
+                      //   ),
+                      // ),
+                    ],
+                  );
+                }),
 
                 /* buyin */
                 sepV20,

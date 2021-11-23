@@ -372,7 +372,7 @@ class GameActions {
 
   List<double> pots;
   List<ActionElement> actions;
-  int potStart;
+  double potStart;
   List<SeatPot> seatPots;
 
   factory GameActions.fromJson(Map<String, dynamic> json) {
@@ -385,8 +385,8 @@ class GameActions {
     }
 
     return GameActions(
-      pots: json["pots"]?.map<int>((e) => int.parse(e.toString()))?.toList(),
-      potStart: json["potStart"],
+      pots: json["pots"]?.map<double>((e) => double.parse(e.toString()))?.toList(),
+      potStart: double.parse(json["potStart"].toString()),
       actions: List<ActionElement>.from(
           json["actions"].map((x) => ActionElement.fromJson(x))),
       seatPots: seatPots,
@@ -423,10 +423,10 @@ class ActionElement {
     return ActionElement(
       seatNo: json["seatNo"],
       action: actionValue,
-      amount: json["amount"],
+      amount: double.parse(json["amount"].toString()),
       timedOut: json["timedOut"],
       actionTime: json["actionTime"],
-      stack: json["stack"],
+      stack: double.parse(json["stack"].toString()),
     );
   }
 

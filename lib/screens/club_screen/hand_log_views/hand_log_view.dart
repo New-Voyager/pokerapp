@@ -91,7 +91,7 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
         }
       } else {
         try {
-          _handResult = await GameHistoryService.getHandLog(
+          _handResult = await   GameHistoryService.getHandLog(
               widget.gameCode, widget.handNum);
         } catch (err) {
           try {

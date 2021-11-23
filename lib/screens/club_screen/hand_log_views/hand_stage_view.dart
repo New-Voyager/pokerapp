@@ -6,6 +6,7 @@ import 'package:pokerapp/models/handlog_model.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_stage_header.dart';
+import 'package:pokerapp/utils/formatter.dart';
 
 class HandStageView extends StatelessWidget {
   final HandResultData handResult;
@@ -184,7 +185,7 @@ class HandStageView extends StatelessWidget {
           Expanded(
             flex: 2,
             child: Text(
-              actions.actions[index].stack.toString(),
+              DataFormatter.chipsFormat(actions.actions[index].stack),
               style: AppDecorators.getSubtitle1Style(theme: theme),
               textAlign: TextAlign.right,
             ),
