@@ -146,33 +146,35 @@ class ReplayHandUtilScreen extends StatelessWidget {
             width: 1.5,
           ),
         ),
-        child: MultiProvider(
-          providers: ReplayHandScreenUtils.getProviders(
-            boardAttributesObject,
-            gameReplayController.gameState,
+        child: ClipRRect(
+          child: MultiProvider(
+            providers: ReplayHandScreenUtils.getProviders(
+              boardAttributesObject,
+              gameReplayController.gameState,
+            ),
+            builder: (BuildContext context, _) {
+              /* initialize the game controller, after we have the context
+                 that can give access to the provider models */
+              gameReplayController.initController(context);
+
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  /* game view */
+                  ReplayHandGameView(
+                    boardAttributes: boardAttributesObject,
+                    gameInfoModel: gameReplayController.gameInfoModel,
+                  ),
+
+                  /* controls */
+                  ReplayHandControls(
+                    gameReplayController: gameReplayController,
+                  ),
+                ],
+              );
+            },
           ),
-          builder: (BuildContext context, _) {
-            /* initialize the game controller, after we have the context
-               that can give access to the provider models */
-            gameReplayController.initController(context);
-
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                /* game view */
-                ReplayHandGameView(
-                  boardAttributes: boardAttributesObject,
-                  gameInfoModel: gameReplayController.gameInfoModel,
-                ),
-
-                /* controls */
-                ReplayHandControls(
-                  gameReplayController: gameReplayController,
-                ),
-              ],
-            );
-          },
         ),
       ),
     );
