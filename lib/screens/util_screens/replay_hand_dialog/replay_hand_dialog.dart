@@ -135,12 +135,14 @@ class ReplayHandUtilScreen extends StatelessWidget {
       screenSize: Screen.diagonalInches,
     );
 
+    final appTheme = context.read<AppTheme>();
+
     return IntrinsicHeight(
       child: Container(
         decoration: BoxDecoration(
-          color: context.read<AppTheme>().primaryColorWithDark(),
+          color: appTheme.primaryColorWithDark(),
           border: Border.all(
-            color: context.read<AppTheme>().accentColor,
+            color: appTheme.accentColor,
             width: 1.5,
           ),
         ),
