@@ -4,7 +4,7 @@ import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_type.dart';
-import 'package:pokerapp/models/app_state.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game/new_game_model.dart';
 import 'package:pokerapp/models/game/new_game_provider.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
@@ -13,8 +13,6 @@ import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/services/app/game_service.dart';
-import 'package:pokerapp/services/data/box_type.dart';
-import 'package:pokerapp/services/data/hive_datasource_impl.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
@@ -85,7 +83,7 @@ class NewGameSettings2 extends StatelessWidget {
       } else {
         gameCode = await GameService.configurePlayerGame(gm);
       }
-      Provider.of<AppState>(context, listen: false).setNewGame(true);
+      appState.setNewGame(true);
       ConnectionDialog.dismiss(context: context);
     } catch (err) {
       ConnectionDialog.dismiss(context: context);
@@ -391,50 +389,7 @@ class NewGameSettings2 extends StatelessWidget {
                   children: [
                     CircleImageButton(
                       onTap: () async {
-                        // Setting default name for settings with timestamp
-                        String defaultText =
-                            '${_appScreenText['settings']}_${DataFormatter.yymmddhhmmssFormat()}';
-                        TextEditingController _controller =
-                            TextEditingController(text: defaultText);
-                        final result = await showDialog(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                            backgroundColor: theme.fillInColor,
-                            title: Text(
-                              _appScreenText['saveSettings'],
-                              style:
-                                  AppDecorators.getHeadLine4Style(theme: theme),
-                            ),
-                            content: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                CardFormTextField(
-                                  theme: theme,
-                                  controller: _controller,
-                                  maxLines: 1,
-                                  hintText: _appScreenText['enterText'],
-                                ),
-                                AppDimensionsNew.getVerticalSizedBox(12),
-                                RoundRectButton(
-                                  text: _appScreenText['save'],
-                                  theme: theme,
-                                  onTap: () {
-                                    if (_controller.text.isNotEmpty) {
-                                      Navigator.of(context)
-                                          .pop(_controller.text);
-                                    }
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                        if (result != null && result.isNotEmpty) {
-                          final instance = HiveDatasource.getInstance
-                              .getBox(BoxType.GAME_SETTINGS_BOX);
-                          log(jsonEncode(gmp.settings.toJson()));
-                          await instance.put(result, gmp.settings.toJson());
-                        }
+                        await onSaveSettings(context, theme, gmp);
                       },
                       icon: Icons.save,
                       theme: theme,
@@ -496,6 +451,11 @@ class NewGameSettings2 extends StatelessWidget {
                 /* big blind & ante */
                 sepV20,
                 Consumer<NewGameModelProvider>(builder: (_, vnGmp, __) {
+                  double minValue = 2;
+                  double maxValue = 10000000;
+                  if (gmp.chipUnit == ChipUnit.CENT) {
+                    minValue = 0.1;
+                  }
                   return Row(
                     children: [
                       /* big blind */
@@ -504,8 +464,8 @@ class NewGameSettings2 extends StatelessWidget {
                           value: gmp.bigBlind,
                           decimalAllowed: gmp.chipUnit == ChipUnit.CENT,
                           label: _appScreenText['bigBlind'],
-                          minValue: 2,
-                          maxValue: 1000,
+                          minValue: minValue,
+                          maxValue: maxValue,
                           title: _appScreenText['enterBigBlind'],
                           onChange: (value) {
                             //gmp.blinds.bigBlind = value.toDouble();
@@ -605,42 +565,47 @@ class NewGameSettings2 extends StatelessWidget {
                 _buildLabel(_appScreenText["tips"], theme),
                 sepV8,
                 DecoratedContainer(
-                  child: Row(
-                    children: [
-                      /* min */
-                      Expanded(
-                        child: TextInputWidget(
-                          value: gmp.rakePercentage,
-                          small: true,
-                          trailing: '%',
-                          title: _appScreenText["tipsPercent"],
-                          minValue: 0,
-                          maxValue: 50,
-                          onChange: (value) {
-                            gmp.rakePercentage = value;
-                          },
+                  child:
+                      Consumer<NewGameModelProvider>(builder: (_, vnGmp, __) {
+                    return Row(
+                      children: [
+                        /* min */
+                        Expanded(
+                          child: TextInputWidget(
+                            value: gmp.rakePercentage,
+                            decimalAllowed: gmp.chipUnit == ChipUnit.CENT,
+                            small: true,
+                            trailing: '%',
+                            title: _appScreenText["tipsPercent"],
+                            minValue: 0,
+                            maxValue: 50,
+                            onChange: (value) {
+                              gmp.rakePercentage = value;
+                            },
+                          ),
                         ),
-                      ),
 
-                      // sep
-                      sepH10,
+                        // sep
+                        sepH10,
 
-                      /* max */
-                      Expanded(
-                        child: TextInputWidget(
-                          value: gmp.rakeCap,
-                          small: true,
-                          leading: _appScreenText['cap'],
-                          title: _appScreenText['maxTips'],
-                          minValue: 0,
-                          maxValue: -1,
-                          onChange: (value) {
-                            gmp.rakeCap = value;
-                          },
+                        /* max */
+                        Expanded(
+                          child: TextInputWidget(
+                            value: gmp.rakeCap,
+                            decimalAllowed: gmp.chipUnit == ChipUnit.CENT,
+                            small: true,
+                            leading: _appScreenText['cap'],
+                            title: _appScreenText['maxTips'],
+                            minValue: 0,
+                            maxValue: -1,
+                            onChange: (value) {
+                              gmp.rakeCap = value;
+                            },
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
+                      ],
+                    );
+                  }),
                   theme: theme,
                 ),
 
@@ -886,7 +851,9 @@ class NewGameSettings2 extends StatelessWidget {
                     Positioned(
                       right: 0,
                       child: CircleImageButton(
-                        onTap: () async {},
+                        onTap: () async {
+                          await onSaveSettings(context, theme, gmp);
+                        },
                         icon: Icons.save,
                         theme: theme,
                       ),
@@ -902,5 +869,66 @@ class NewGameSettings2 extends StatelessWidget {
         );
       },
     );
+  }
+
+  Future<void> onSaveSettings(
+      BuildContext context, AppTheme theme, NewGameModelProvider gmp) async {
+    
+    String gameType = gameTypeShortStr(gmp.gameType);
+    String blinds = '${DataFormatter.chipsFormat(gmp.smallBlind)}/${DataFormatter.chipsFormat(gmp.bigBlind)}';
+    String maxPlayers = '${gmp.maxPlayers}';
+    String title = '$gameType-$blinds-$maxPlayers';
+    final keys = appService.gameTemplates.getSettings();
+    bool found = keys.indexOf(title) != -1;
+    if (found) {
+      // add a suffix to get a new name
+      for (int i = 0; i < 100; i++) {
+        String titleTmp = '$title-$i';
+        if (keys.indexOf(title) == -1) {
+          title = titleTmp;
+          break;
+        }
+      }
+    }
+
+    // Setting default name for settings with timestamp
+    String defaultText = title;
+    TextEditingController _controller =
+        TextEditingController(text: defaultText);
+    final result = await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: theme.fillInColor,
+        title: Text(
+          _appScreenText['saveSettings'],
+          style: AppDecorators.getHeadLine4Style(theme: theme),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CardFormTextField(
+              theme: theme,
+              controller: _controller,
+              maxLines: 1,
+              hintText: _appScreenText['enterText'],
+            ),
+            AppDimensionsNew.getVerticalSizedBox(12),
+            RoundRectButton(
+              text: _appScreenText['save'],
+              theme: theme,
+              onTap: () {
+                if (_controller.text.isNotEmpty) {
+                  Navigator.of(context).pop(_controller.text);
+                }
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+    if (result != null && result.isNotEmpty) {
+      log(jsonEncode(gmp.settings.toJson()));
+      await appService.gameTemplates.save(result, gmp.settings.toJson());
+    }
   }
 }

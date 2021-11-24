@@ -178,24 +178,26 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
         context: context,
       );
 
-      if (data != null && data['type'] != null && data['type'] == "animation") {
-        final bool result = await playerState
-            .deductDiamonds(AppConfig.noOfDiamondsForAnimation);
-        if (result) {
-          gameState.gameComService.gameMessaging.sendAnimation(
-            gameState.me?.seatNo,
-            widget.seat.player.seatNo,
-            data['animationID'],
-          );
+      if (data != null && data is Map) {
+        if (data != null && data['type'] != null && data['type'] == "animation") {
+          final bool result = await playerState
+              .deductDiamonds(AppConfig.noOfDiamondsForAnimation);
+          if (result) {
+            gameState.gameComService.gameMessaging.sendAnimation(
+              gameState.me?.seatNo,
+              widget.seat.player.seatNo,
+              data['animationID'],
+            );
+          }
         }
-      }
 
-      if (data != null && data['type'] != null && data['type'] == "buyin") {
-        await _handleLimitButtonClick(context, widget.seat);
-      }
+        if (data != null && data['type'] != null && data['type'] == "buyin") {
+          await _handleLimitButtonClick(context, widget.seat);
+        }
 
-      if (data != null && data['type'] != null && data['type'] == "host") {
-        await _handleHostButtonClick(context);
+        if (data != null && data['type'] != null && data['type'] == "host") {
+          await _handleHostButtonClick(context);
+        }
       }
     }
   }
@@ -306,8 +308,10 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
     if (openSeat) {
       bool seatChangeSeat = false;
       if (gameState.playerSeatChangeInProgress) {
-        seatChangeSeat =
-            widget.seat.seatPos == gameState.seatChangeSeat.seatPos;
+        if (gameState.seatChangeSeat != null) {
+          seatChangeSeat =
+              widget.seat.seatPos == gameState.seatChangeSeat.seatPos;
+        }
       }
 
       final openSeatWidget = OpenSeat(
@@ -383,6 +387,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
         seat: widget.seat,
         boardAttributesObject: boardAttributes,
         gameInfo: gameInfo,
+        reverse: widget.seat.player.winner,
       );
     }
     return DragTarget(
@@ -479,7 +484,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
                       size: 10.dp,
                     ),
                     onPressed: () async {
-                      await handleNotesPopup(context, widget.seat);
+                      //await handleNotesPopup(context, widget.seat);
                     },
                   ),
                 ),

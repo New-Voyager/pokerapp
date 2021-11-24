@@ -120,7 +120,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
       if (fromSeatNo == null || toSeatNo == null) return;
       if (fromSeatNo == 0 || toSeatNo == 0) return;
 
-      log('Seat Change data: $fromSeatNo (${fromSeat.player.name}/${fromSeat.player.stack}, ${fromSeat.seatPos.toString()}) and $toSeatNo (${toSeat.player.name}/${toSeat.player.stack} ${toSeat.seatPos.toString()})');
+      // log('Seat Change data: $fromSeatNo (${fromSeat.player.name}/${fromSeat.player.stack}, ${fromSeat.seatPos.toString()}) and $toSeatNo (${toSeat.player.name}/${toSeat.player.stack} ${toSeat.seatPos.toString()})');
 
       final positions = findPositionOfFromAndToUser(
         fromSeat: fromSeatNo,
@@ -131,6 +131,9 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
 
       seatChangeFrom = positions[0];
       seatChangeTo = positions[1];
+      if (seatChangeFrom == null || seatChangeTo == null) {
+        return;
+      }
 
       seatChangeAnimationController.reset();
 

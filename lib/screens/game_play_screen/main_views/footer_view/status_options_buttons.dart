@@ -13,6 +13,7 @@ import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/game_context_screen/game_options/game_option_bottom_sheet.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/game_service.dart';
+import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/numeric_keyboard2.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
@@ -119,10 +120,11 @@ class StatusOptionsWidget extends StatelessWidget {
     final gameState = GameState.getState(context);
     final gameInfo = gameState.gameInfo;
     gameState.buyInKeyboardShown = true;
+    String title =
+        '${appScreenText['buyInEntry']} (${DataFormatter.chipsFormat(gameInfo.buyInMin)} - ${DataFormatter.chipsFormat(gameInfo.buyInMax)})';
     /* use numeric keyboard to get buyin */
     double value = await NumericKeyboard2.show(context,
-        title:
-            '${appScreenText['buyInEntry']} (${gameInfo.buyInMin} - ${gameInfo.buyInMax})',
+        title: title,
         min: gameInfo.buyInMin.toDouble(),
         max: gameInfo.buyInMax.toDouble(),
         decimalAllowed: gameInfo.chipUnit == ChipUnit.CENT);

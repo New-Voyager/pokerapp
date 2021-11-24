@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/enums/game_type.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/main_helper.dart';
 import 'package:pokerapp/models/game/new_game_model.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
@@ -248,10 +249,10 @@ class _ChooseGameNewState extends State<ChooseGameNew>
   }
 
   _handleLoadGameClick(BuildContext context, AppTheme theme) async {
-    final instance =
-        HiveDatasource.getInstance.getBox(BoxType.GAME_SETTINGS_BOX);
+    // final instance =
+    //     HiveDatasource.getInstance.getBox(BoxType.GAME_SETTINGS_BOX);
     int selectedIndex = -1;
-
+    final templates = appService.gameTemplates.getSettings();
     final indexSelected = await showDialog(
       context: context,
       builder: (context) {
@@ -267,7 +268,7 @@ class _ChooseGameNewState extends State<ChooseGameNew>
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    instance.keys.toList().length == 0
+                        templates.length == 0
                         ? Expanded(
                             child: Center(
                                 child: Text(_appScreenText['noSavedSettings'])))
@@ -280,7 +281,7 @@ class _ChooseGameNewState extends State<ChooseGameNew>
                                         ? AppColorsNew.yellowAccentColor
                                         : AppColorsNew.actionRowBgColor,
                                     title: Text(
-                                        "${instance.keys.toList()[index]}"),
+                                        "${templates[index]}"),
                                     leading: (selectedIndex == index)
                                         ? Icon(Icons.done)
                                         : null,
@@ -292,19 +293,19 @@ class _ChooseGameNewState extends State<ChooseGameNew>
                               },
                               separatorBuilder: (context, index) =>
                                   AppDimensionsNew.getVerticalSizedBox(8),
-                              itemCount: instance.keys.toList().length,
+                              itemCount: templates.length,
                               physics: ClampingScrollPhysics(),
                             ),
                           ),
                     RoundRectButton(
                         onTap: () {
-                          if (instance.keys.toList().length == 0) {
+                          if (templates.length == 0) {
                             Navigator.of(context).pop();
                           } else {
                             Navigator.of(context).pop(selectedIndex);
                           }
                         },
-                        text: instance.keys.toList().length == 0
+                        text: templates.length == 0
                             ? _appScreenText['ok']
                             : _appScreenText['start'],
                         theme: theme),
@@ -317,11 +318,11 @@ class _ChooseGameNewState extends State<ChooseGameNew>
       },
     );
     if (indexSelected != null && indexSelected != -1) {
-      final jsonGame = instance.get(instance.keys.toList()[indexSelected]);
+      final jsonGame = appService.gameTemplates.getSetting(templates[indexSelected]);
       if (jsonGame != null) {
         NewGameModel game;
         try {
-          game = NewGameModel.fromJson(jsonGame.cast<String, dynamic>());
+          game = NewGameModel.fromJson(jsonGame);
         } on Exception {
           log("Failed to parse game string");
         }

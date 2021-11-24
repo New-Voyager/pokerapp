@@ -25,6 +25,7 @@ class ChipAmountWidget extends StatefulWidget {
   final GameInfoModel gameInfo;
   final GlobalKey key;
   final NeedRecalculating recalculatingNeeded;
+  final bool reverse;
 
   ChipAmountWidget({
     @required this.recalculatingNeeded,
@@ -34,6 +35,7 @@ class ChipAmountWidget extends StatefulWidget {
     @required this.seat,
     @required this.boardAttributesObject,
     @required this.gameInfo,
+    this.reverse = false,
   });
 
   @override
@@ -115,6 +117,15 @@ class _ChipAmountWidgetState extends State<ChipAmountWidget>
     } else if (action.action == HandActions.CALL) {
       color = Colors.green[900];
     }
+
+    if (widget.animate) {
+      if (widget.reverse) {
+        color = Colors.green[900];
+      } else {
+        color = Colors.black;
+      }
+    }
+
     /* show the coin amount */
     Widget amount = Text(
       DataFormatter.chipsFormat(action.amount),
@@ -133,10 +144,6 @@ class _ChipAmountWidgetState extends State<ChipAmountWidget>
             color: Colors.transparent,
           ),
           borderRadius: BorderRadius.circular(5.0),
-          // color: this.transparent ? Colors.transparent : Colors.black26,
-          //color: Colors.green[900],
-          // color: Colors.red[700],
-          // color: Colors.yellow[900],
           color: color,
         ),
         child: amount);
@@ -224,6 +231,18 @@ class _ChipAmountWidgetState extends State<ChipAmountWidget>
     if (box != null && potViewPos != null) {
       widget.seat.potViewPos = box.globalToLocal(potViewPos);
     }
+    // if (box != null && potViewPos != null) { // && widget.seat.potViewPos == null) {
+    //   // SOMA: Big hack here
+    //   // If we are animating low winner, don't recalculate pot view pos again
+    //   if (widget.seat != null &&
+    //       widget.seat.player != null &&
+    //       widget.seat.player.loWinner) {
+    //     if (widget.seat.potViewPos != null) {
+    //       return;
+    //     }
+    //   }
+    //   widget.seat.potViewPos = box.globalToLocal(potViewPos);
+    // }
     // log('potViewPos: Setting potViewPos for seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos}');
   }
 
@@ -244,7 +263,7 @@ class _ChipAmountWidgetState extends State<ChipAmountWidget>
   }
 }
 
-class ChipAmountAnimatingWidget extends StatefulWidget {
+class ChipAmountAnimatingWidget extends StatelessWidget {
   final int seatPos;
   final Widget child;
   final bool reverse;
@@ -257,70 +276,30 @@ class ChipAmountAnimatingWidget extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _ChipAmountAnimatingWidgetState createState() =>
-      _ChipAmountAnimatingWidgetState();
-}
-
-class _ChipAmountAnimatingWidgetState extends State<ChipAmountAnimatingWidget>
-    with TickerProviderStateMixin {
-  AnimationController animationController;
-  Animation<Offset> animation;
-  Offset end;
-  Offset begin;
-
-  @override
-  void initState() {
-    /* calling animate in init state */
-    animate();
-
-    super.initState();
-  }
-
-  void animate() async {
-    animationController = new AnimationController(
-      vsync: this,
-      duration: AppConstants.chipMovingAnimationDuration,
-    );
-
+  Widget build(BuildContext context) {
     final gameState = GameState.getState(context);
-    final seat = gameState.getSeat(widget.seatPos);
+    final seat = gameState.getSeat(seatPos);
+
     Offset end = seat.potViewPos;
-    Offset begin = Offset(0, 0);
-    begin = seat.betWidgetPos;
-    this.begin = begin;
-    if (widget.reverse ?? false) {
+    Offset begin = seat.betWidgetPos;
+
+    if (reverse ?? false) {
       Offset swap = end;
       end = begin;
       begin = swap;
     }
 
-    this.end = end;
-
-    animation = Tween<Offset>(
-      begin: begin,
-      end: end,
-    ).animate(animationController);
-
-    animationController.addListener(() {
-      setState(() {});
-    });
-
-    animationController.forward();
-  }
-
-  @override
-  void dispose() {
-    animationController?.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    /* if animation is NULL do nothing */
-    if (animation == null) return Container();
-    return Transform.translate(
-      offset: animation.value,
-      child: widget.child,
+    return TweenAnimationBuilder(
+      child: child,
+      tween: Tween<Offset>(
+        begin: begin,
+        end: end,
+      ),
+      duration: AppConstants.chipMovingAnimationDuration,
+      builder: (_, offset, child) => Transform.translate(
+        offset: offset,
+        child: child,
+      ),
     );
   }
 }

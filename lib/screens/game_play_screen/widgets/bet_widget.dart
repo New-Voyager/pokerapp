@@ -227,7 +227,7 @@ class BetWidget extends StatelessWidget {
 
         final double res = await NumericKeyboard2.show(context,
             title:
-                'Enter your bet/raise amount (${action.minRaiseAmount.toString()} - ${action.maxRaiseAmount.toString()})',
+                'Enter your bet/raise amount (${DataFormatter.chipsFormat(action.minRaiseAmount)} - ${DataFormatter.chipsFormat(action.maxRaiseAmount)})',
             min: min,
             max: max,
             decimalAllowed: gameState.gameInfo.chipUnit == ChipUnit.CENT);
@@ -632,13 +632,13 @@ class BetWidget extends StatelessWidget {
                         ),
                       ),
               ),
-              // Text(
-              //   isKeyboard ? '' : '${option.amount.toInt().toString()}',
-              //   style: TextStyle(
-              //     fontSize: 12,
-              //     color: Colors.white,
-              //   ),
-              // ),
+              Text(
+                isKeyboard ? '' : '${DataFormatter.chipsFormat(option.amount)}',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.white,
+                ),
+              ),
             ],
           ),
         ),

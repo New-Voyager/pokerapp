@@ -126,7 +126,6 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
     }
     log('fetching live games');
 
-    var appState = Provider.of<AppState>(context, listen: false);
     var updatedLiveGames;
     if (appState != null && appState.mockScreens) {
       updatedLiveGames = await MockData.getLiveGames();
@@ -269,7 +268,6 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
 
   @override
   Widget build(BuildContext context) {
-    final appState = Provider.of<AppState>(context);
     _handleGameRefresh(appState);
 
     return Consumer<AppTheme>(

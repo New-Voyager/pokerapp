@@ -6,6 +6,8 @@ import 'package:pokerapp/utils/utils.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
+import 'formatter.dart';
+
 const BACKSPACE_BTN = 'bksp';
 const sizedBox20 = const SizedBox(
   height: 20,
@@ -53,7 +55,12 @@ class NumericKeyboard2 extends StatelessWidget {
 
     if (value <= this.min) value = this.min; //.round();
 
-    String valueStr = value.toString();
+    String valueStr = '';
+    if (decimalAllowed) {
+      valueStr = DataFormatter.chipsFormat(value);
+    } else {
+      valueStr = value.floor().toString();
+    }
 
     return Container(
       decoration: BoxDecoration(

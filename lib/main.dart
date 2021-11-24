@@ -14,8 +14,8 @@ import 'package:pokerapp/models/ui/app_theme_data.dart';
 import 'package:pokerapp/resources/app_config.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/routes.dart';
+import 'package:pokerapp/services/app_service.dart';
 import 'package:pokerapp/services/connectivity_check/network_change_listener.dart';
-import 'package:pokerapp/services/data/hive_datasource_impl.dart';
 import 'package:pokerapp/services/nats/nats.dart';
 import 'package:provider/provider.dart';
 import 'main_helper.dart';
@@ -24,13 +24,16 @@ import 'package:sizer/sizer.dart';
 
 import 'models/ui/app_theme_styles.dart';
 
+AppService appService = AppService();
+AppState appState = AppState();
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // Register all the models and services before the app starts
   if (Platform.isAndroid) {
     InAppPurchaseAndroidPlatformAddition.enablePendingPurchases();
   }
-  await HiveDatasource.getInstance.init();
+  await appService.init();
 
   var flavorApp = FlavorConfig(
     appName: 'PokerDev',
@@ -57,8 +60,6 @@ void main() async {
     ),
   );
 }
-
-AppState appState = AppState();
 
 class MyApp extends StatefulWidget {
   // Create the initialization Future outside of `build`:
@@ -88,6 +89,12 @@ class _MyAppState extends State<MyApp> {
     }
 
     setState(() {});
+  }
+
+  @override
+  void dispose() {
+    appService.close();
+    super.dispose();
   }
 
   @override

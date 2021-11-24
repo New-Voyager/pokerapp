@@ -26,6 +26,7 @@ import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/data/game_hive_store.dart';
 import 'package:pokerapp/services/data/game_log_store.dart';
+import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
@@ -332,11 +333,6 @@ class GamePlayScreenUtilMethods {
     List<PlayerInSeat> hostSeatChangePlayers,
     bool seatChangeInProgress = false,
   }) {
-    // initialize game state object
-    final seatChangeProvider = SeatChangeNotifier(
-        seatChangeInProgress: seatChangeInProgress,
-        players: hostSeatChangePlayers);
-
     var providers = [
       /* a header object is used to update the header section of
         * the game screen - it contains data regarding the current hand no, club name,
@@ -499,11 +495,12 @@ class GamePlayScreenUtilMethods {
     }
 
     gameState.buyInKeyboardShown = true;
-    bool decimalAllowed = true;
+    String title =
+        'Buy In (${DataFormatter.chipsFormat(gameInfo.buyInMin)} - ${DataFormatter.chipsFormat(gameInfo.buyInMax)})';
     /* use numeric keyboard to get buyin */
     double value = await NumericKeyboard2.show(
       context,
-      title: 'Buy In (${gameInfo.buyInMin} - ${gameInfo.buyInMax})',
+      title: title,
       min: gameInfo.buyInMin.toDouble(),
       max: gameInfo.buyInMax.toDouble(),
       decimalAllowed: gameInfo.chipUnit == ChipUnit.CENT,

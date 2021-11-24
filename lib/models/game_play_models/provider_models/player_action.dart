@@ -22,7 +22,7 @@ class AvailableAction {
 
 class Option {
   String text;
-  int amount;
+  double amount;
 
   Option({
     @required this.text,
@@ -129,8 +129,7 @@ class PlayerAction {
     yourAction._allInAmount = seatAction.allInAmount;
     yourAction._options = [];
     for (final option in seatAction.betOptions) {
-      Option betOption =
-          Option(amount: option.amount.toInt(), text: option.text);
+      Option betOption = Option(amount: option.amount, text: option.text);
       yourAction._options.add(betOption);
     }
     yourAction._actions = [];
