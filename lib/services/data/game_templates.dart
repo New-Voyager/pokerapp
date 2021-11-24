@@ -9,14 +9,14 @@ class GameTemplateStore {
   void open() {
     _box = HiveDatasource.getInstance.getBox(BoxType.GAME_TEMPLATE_BOX);
   }
-  
+
   void close() {
     if (_box != null) {
       _box.close();
     }
     _box = null;
   }
-  
+
   void save(String key, dynamic json) {
     _box.put(key, json);
   }

@@ -179,7 +179,9 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
       );
 
       if (data != null && data is Map) {
-        if (data != null && data['type'] != null && data['type'] == "animation") {
+        if (data != null &&
+            data['type'] != null &&
+            data['type'] == "animation") {
           final bool result = await playerState
               .deductDiamonds(AppConfig.noOfDiamondsForAnimation);
           if (result) {

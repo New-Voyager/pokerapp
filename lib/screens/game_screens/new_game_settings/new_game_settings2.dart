@@ -873,9 +873,9 @@ class NewGameSettings2 extends StatelessWidget {
 
   Future<void> onSaveSettings(
       BuildContext context, AppTheme theme, NewGameModelProvider gmp) async {
-    
     String gameType = gameTypeShortStr(gmp.gameType);
-    String blinds = '${DataFormatter.chipsFormat(gmp.smallBlind)}/${DataFormatter.chipsFormat(gmp.bigBlind)}';
+    String blinds =
+        '${DataFormatter.chipsFormat(gmp.smallBlind)}/${DataFormatter.chipsFormat(gmp.bigBlind)}';
     String maxPlayers = '${gmp.maxPlayers}';
     String title = '$gameType-$blinds-$maxPlayers';
     final keys = appService.gameTemplates.getSettings();

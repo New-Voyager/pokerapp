@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
+import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/models/member_activity_model.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
@@ -20,7 +21,8 @@ import 'package:timeago/timeago.dart' as timeago;
 class ClubMemberActivitiesScreen extends StatefulWidget {
   // final ClubHomePageModel clubHomePageModel;
   final String clubCode;
-  const ClubMemberActivitiesScreen(this.clubCode);
+  final ClubHomePageModel club;
+  const ClubMemberActivitiesScreen(this.clubCode, this.club);
 
   @override
   State<ClubMemberActivitiesScreen> createState() =>
@@ -108,6 +110,7 @@ class _ClubMemberActivitiesScreenState
     }
     dts = DataSource(
         clubCode: widget.clubCode,
+        club: widget.club,
         openMember: openMember,
         activities: activities,
         includeTips: includeTips,
@@ -367,6 +370,17 @@ class _ClubMemberActivitiesScreenState
   }
 
   void openMember(String playerUuid) async {
+    bool canOpen = false;
+    if (widget.club.isOwner) {
+      canOpen = true;
+    } else {
+      if (widget.club.isManager && widget.club.role.canUpdateCredits) {
+        canOpen = true;
+      }
+    }
+    if (!canOpen) {
+      return;
+    }
     log('clubCode: ${widget.clubCode} playerUuid: $playerUuid');
     bool updated = await Navigator.pushNamed(
       context,
@@ -386,12 +400,14 @@ class _ClubMemberActivitiesScreenState
 class DataSource extends DataTableSource {
   List<MemberActivity> activities;
   String clubCode;
+  ClubHomePageModel club;
   bool includeTips;
   bool includeLastPlayedDate;
   AppTheme theme;
   Function openMember;
   DataSource(
       {this.clubCode,
+      this.club,
       this.activities,
       this.openMember,
       this.includeTips = false,

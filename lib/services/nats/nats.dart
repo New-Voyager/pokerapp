@@ -30,8 +30,7 @@ class Nats {
   // functions listens for disconnection
   List<Function> disconnectListeners = [];
 
-  Nats(this._providerContext) {
-  }
+  Nats(this._providerContext) {}
 
   bool get connectionBroken {
     if (_clientPub.status == Status.disconnected ||

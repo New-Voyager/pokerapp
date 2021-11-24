@@ -254,16 +254,15 @@ class ResultHandlerV2 {
           final winners = boardWinners.hiWinners.values.toList();
           final winner = winners[0];
           // there is only one winner
-          for(final w in boardWinners.lowWinners.values.toList()) {
+          for (final w in boardWinners.lowWinners.values.toList()) {
             winner.amount += w.amount;
-          } 
+          }
           await _showWinners(
             board,
             rankText,
             winners,
             low: false,
           );
-
         } else {
           await _showWinners(
             board,

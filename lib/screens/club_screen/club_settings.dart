@@ -298,13 +298,6 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
                                     theme: theme),
                                 textAlign: TextAlign.center,
                               ),
-                              // _buildRadio(
-                              //     value: _clubModel.role.viewMemberActivities,
-                              //     label: 'Can See Member Activities',
-                              //     onChange: (v) async {
-                              //       updated = true;
-                              //     },
-                              //     theme: theme),
                               _buildRadio(
                                   value: _clubModel.role.seeTips,
                                   label: 'Can See Tips',
@@ -325,17 +318,18 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
                                   value: _clubModel.role.hostGames,
                                   label: 'Can Host Games',
                                   onChange: (v) async {
+                                    updated = true;
                                     _clubModel.role.hostGames = v;
                                   },
                                   theme: theme),
-                              _buildRadio(
-                                  value: _clubModel.role.approveBuyin,
-                                  label: 'Can Approve Buyin',
-                                  onChange: (v) async {
-                                    _clubModel.role.approveBuyin = v;
-                                    updated = true;
-                                  },
-                                  theme: theme),
+                              // _buildRadio(
+                              //     value: _clubModel.role.approveBuyin,
+                              //     label: 'Can Approve Buyin',
+                              //     onChange: (v) async {
+                              //       _clubModel.role.approveBuyin = v;
+                              //       updated = true;
+                              //     },
+                              //     theme: theme),
                               _buildRadio(
                                   value: _clubModel.role.viewMemberActivities,
                                   label: 'Can View Member Activities',

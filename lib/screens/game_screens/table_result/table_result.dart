@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pokerapp/main_helper.dart';
+import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/models/table_record.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
@@ -15,6 +16,7 @@ import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/hand_table_bar_chart_profit.dart';
+import 'package:provider/provider.dart';
 import 'package:share/share.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
@@ -32,12 +34,14 @@ class TableResultScreen extends StatefulWidget {
   final int rakeWidth = 15;
   final bool showDownload;
   final bool showTips;
+  final ClubHomePageModel club;
 
   TableResultScreen({
     this.gameCode,
     this.showDownload = true,
     this.showBackButton = true,
     this.showTips = false,
+    this.club = null,
   });
 
   @override
@@ -55,7 +59,7 @@ class _TableResultScreenState extends State<TableResultScreen>
   Map<int, Widget> tableWidgets;
   int _selectedTableWidget = 0;
   AppTextScreen _appScreenText;
-
+  bool showTips = false;
   void _fetchData() async {
     data = await GameService.getGameTableRecord(widget.gameCode);
     data.sort();
@@ -67,6 +71,16 @@ class _TableResultScreenState extends State<TableResultScreen>
     super.initState();
     _appScreenText = getAppTextScreen("tableResultScreen");
     _fetchData();
+    showTips = widget.showTips;
+    // // ClubHomePageModel model =
+    // //     Provider.of<ClubHomePageModel>(context, listen: false);
+    if (widget.club != null) {
+      if (widget.club.isManager) {
+        if (widget.club.role != null) {
+          showTips = widget.club.role.seeTips;
+        }
+      }
+    }
   }
 
   double getTotalRake() {
@@ -130,7 +144,7 @@ class _TableResultScreenState extends State<TableResultScreen>
               flex: widget.profitWidth,
               text: _appScreenText['profit'],
             ),
-            widget.showTips
+            showTips
                 ? _buildHeaderChild(
                     flex: widget.rakeWidth,
                     text: _appScreenText['tips'],
@@ -249,7 +263,7 @@ class _TableResultScreenState extends State<TableResultScreen>
                           data: tableRowRecord.profit,
                           theme: theme,
                         ),
-                        widget.showTips
+                        showTips
                             ? _buildTableContentChild(
                                 flex: widget.rakeWidth,
                                 data: DataFormatter.chipsFormat(
@@ -330,10 +344,10 @@ class _TableResultScreenState extends State<TableResultScreen>
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            widget.showTips
+                            showTips
                                 ? Text(
                                     _appScreenText['tips'],
-                                    style: AppDecorators.getSubtitle3Style(
+                                    style: AppDecorators.getHeadLine3Style(
                                         theme: theme),
                                   )
                                 : Container(),
@@ -341,7 +355,7 @@ class _TableResultScreenState extends State<TableResultScreen>
                             // sep
                             SizedBox(width: 10.0.pw),
 
-                            widget.showTips
+                            showTips
                                 ? Text(
                                     DataFormatter.chipsFormat(getTotalRake())
                                         .toString(),

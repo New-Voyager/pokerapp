@@ -5,6 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/app_state.dart';
+import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/models/hand_history_model.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
@@ -31,8 +32,8 @@ import 'hands_chart_view.dart';
 class GameHistoryDetailView extends StatefulWidget {
   final GameHistoryDetailModel data;
   final String clubCode;
-
-  GameHistoryDetailView(this.data, this.clubCode);
+  final ClubHomePageModel club;
+  GameHistoryDetailView(this.data, this.clubCode, this.club);
 
   @override
   _GameHistoryDetailView createState() => _GameHistoryDetailView();
@@ -635,6 +636,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
       arguments: {
         'model': model,
         'clubCode': widget.clubCode,
+        'club': widget.club,
       },
     );
   }
@@ -810,6 +812,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
                 arguments: {
                   "gameCode": _gameDetail.gameCode,
                   "clubCode": widget.clubCode,
+                  "club": widget.club,
                   "showTips": _gameDetail.isOwner ??
                       false || _gameDetail.isHost ??
                       false,

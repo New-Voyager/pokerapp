@@ -106,7 +106,8 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew>
                       ),
                     ),
 
-                    clubModel.availableCredit == null
+                    clubModel.availableCredit == null ||
+                            !clubModel.trackMemberCredit
                         ? SizedBox.shrink()
                         : Positioned(
                             top: 70.ph,
@@ -154,7 +155,6 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew>
     }
     if (clubData.isManager || clubData.isOwner) {
       clubData.clubCoins = await ClubsService.getClubCoins(widget.clubCode);
-      ;
     }
 
     return clubData;

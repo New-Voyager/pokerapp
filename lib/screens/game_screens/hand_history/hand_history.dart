@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/main_helper.dart';
 import 'package:pokerapp/models/auth_model.dart';
+import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/models/hand_history_model.dart';
 import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
@@ -27,8 +28,9 @@ class HandHistoryListView extends StatefulWidget {
   final bool isInBottomSheet;
   final bool isLeadingBackIconShow;
   final bool liveGame;
+  final ClubHomePageModel club;
 
-  HandHistoryListView(this.data, this.clubCode,
+  HandHistoryListView(this.data, this.clubCode, this.club,
       {this.isInBottomSheet = false,
       this.isLeadingBackIconShow = true,
       this.liveGame = false});
