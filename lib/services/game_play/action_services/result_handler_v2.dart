@@ -365,6 +365,7 @@ class ResultHandlerV2 {
         winner: winningPlayer,
         boardIndex: board.boardNo,
         setState: setState,
+        low: low,
       );
     }
     await Future.delayed(Duration(milliseconds: result.pauseTimeSecs));
@@ -397,6 +398,7 @@ class ResultHandlerV2 {
     final Winner winner,
     final boardIndex = 1,
     final bool setState = false,
+    final bool low = false,
   }) async {
     // for (final seat in gameState.seats) {
     //   log('ResultMessage 111: ${seat.serverSeatPos} name: ${seat.player.name} winner: ${seat.player.winner}');
@@ -405,6 +407,9 @@ class ResultHandlerV2 {
     /* highlight the hi winners */
     final seat = gameState.getSeat(winner.seatNo);
     seat.player.winner = true;
+    if (low) {
+      seat.player.loWinner = low;
+    }
 
     // highlight winning cards and rank if we are in showdown
     if (result.wonAt == proto.HandStatus.SHOW_DOWN) {

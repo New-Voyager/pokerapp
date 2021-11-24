@@ -31,7 +31,7 @@ class Seat extends ChangeNotifier {
   SeatPos _uiPos;
   SeatPosAttribs _attribs;
   bool dragEntered;
-
+  //int potViewSettleCount = 0;
   // UI attributes
   // Offset _screenPos;
 
@@ -153,6 +153,11 @@ class Seat extends ChangeNotifier {
 
   Offset get potViewPos => this._attribs.potPos;
   set potViewPos(Offset pos) {
+    // if (potViewSettleCount >= 3) {
+    //   return;
+    // } else {
+    //   potViewSettleCount++;
+    // }
     if (_attribs != null) {
       this._attribs.potPos = pos;
     }
