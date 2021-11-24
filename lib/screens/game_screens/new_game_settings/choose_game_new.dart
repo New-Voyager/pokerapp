@@ -268,7 +268,7 @@ class _ChooseGameNewState extends State<ChooseGameNew>
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                        templates.length == 0
+                    templates.length == 0
                         ? Expanded(
                             child: Center(
                                 child: Text(_appScreenText['noSavedSettings'])))
@@ -280,8 +280,7 @@ class _ChooseGameNewState extends State<ChooseGameNew>
                                     tileColor: (selectedIndex == index)
                                         ? AppColorsNew.yellowAccentColor
                                         : AppColorsNew.actionRowBgColor,
-                                    title: Text(
-                                        "${templates[index]}"),
+                                    title: Text("${templates[index]}"),
                                     leading: (selectedIndex == index)
                                         ? Icon(Icons.done)
                                         : null,
@@ -318,7 +317,8 @@ class _ChooseGameNewState extends State<ChooseGameNew>
       },
     );
     if (indexSelected != null && indexSelected != -1) {
-      final jsonGame = appService.gameTemplates.getSetting(templates[indexSelected]);
+      final jsonGame =
+          appService.gameTemplates.getSetting(templates[indexSelected]);
       if (jsonGame != null) {
         NewGameModel game;
         try {

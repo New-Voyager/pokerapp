@@ -129,129 +129,89 @@ class ClubActionsNew extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<AppTheme>(
-      builder: (_, theme, __) => Column(
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: ClubActionButtonNew(
-                  this._clubHomePageModel,
-                  ClubActions.GAME_HISTORY,
-                  appScreenText['gameHistory'],
-                  SvgPicture.asset(
-                    "assets/images/club/game_history.svg",
-                    color: theme.accentColor,
-                  ),
-                ),
-              ),
-              Expanded(
-                child: getMembers(theme),
-              ),
-              Expanded(
-                child: ClubActionButtonNew(
-                  this._clubHomePageModel,
-                  ClubActions.BOOKMARKED_HANDS,
-                  appScreenText['bookmarkedHands'],
-                  SvgPicture.asset(
-                    "assets/images/club/bookmarks.svg",
-                    color: theme.accentColor,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          AppDimensionsNew.getVerticalSizedBox(16.ph),
-          Row(
-            children: [
-              Expanded(
-                child: getChat(theme),
-              ),
+    return Consumer<AppTheme>(builder: (_, theme, __) {
+      List<Widget> clubWidgets = getClubButtons(theme);
+      return Column(children: clubWidgets);
+    });
+  }
 
-              // Visibility(
-              //   visible: _clubHomePageModel.showHighRankStats,
-              //   child: Expanded(
-              //     flex: 3,
-              //     child: ClubActionButtonNew(
-              //       this._clubHomePageModel,
-              //       ClubActions.ANALYSIS,
-              //       appScreenText['analysis'],
-              //       SvgPicture.asset(
-              //         "assets/icons/analysis.svg",
-              //         color: theme.accentColor,
-              //       ),
-              //     ),
-              //   ),
-              // ),
-              Expanded(
-                child: getHostMemberChatWidget(theme),
-              ),
-              Expanded(
-                child: ClubActionButtonNew(
-                  this._clubHomePageModel,
-                  ClubActions.ANNOUNCEMETS,
-                  appScreenText['announcements'],
-                  SvgPicture.asset(
-                    "assets/images/club/announcements.svg",
-                    color: theme.accentColor,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          AppDimensionsNew.getVerticalSizedBox(16),
-          Row(
-            children: [
-              Expanded(
-                flex: 3,
-                child: getSettingsWidget(theme),
-              ),
-              Expanded(
-                flex: 3,
-                child: getActivitiesWidget(theme),
-              ),
-              (_clubHomePageModel.trackMemberCredit &&
-                      _clubHomePageModel.isOwner)
-                  ? Expanded(
-                      flex: 3,
-                      child: getMemberActivitiesWidget(theme),
-                    )
-                  : Container(),
-            ],
-          ),
-          AppDimensionsNew.getVerticalSizedBox(16),
-          ClubActionButtonNew(
-            this._clubHomePageModel,
-            ClubActions.HIGH_RANK_ANALYSIS,
-            'Hand Rank\nAnalysis',
-            // TODO: ADD TO APP SCREEN TEXT
-            // appScreenText['botScripts'],
-            SvgPicture.asset(
-              "assets/images/club/rewards.svg",
-              color: theme.accentColor,
-            ),
-          ),
-          AppDimensionsNew.getVerticalSizedBox(16),
-          IntrinsicHeight(
-            child: Row(
-              children: [
-                Expanded(
-                  flex: 3,
-                  child: ClubActionButtonNew(
-                    this._clubHomePageModel,
-                    ClubActions.BOTSCRIPTS,
-                    appScreenText['botScripts'],
-                    SvgPicture.asset(
-                      "assets/images/club/rewards.svg",
-                      color: theme.accentColor,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
+  List<Widget> getClubButtons(AppTheme theme) {
+    List<Widget> buttons = [];
+    buttons.add(ClubActionButtonNew(
+      this._clubHomePageModel,
+      ClubActions.GAME_HISTORY,
+      appScreenText['gameHistory'],
+      SvgPicture.asset(
+        "assets/images/club/game_history.svg",
+        color: theme.accentColor,
       ),
-    );
+    ));
+    buttons.add(getMembers(theme));
+    buttons.add(ClubActionButtonNew(
+      this._clubHomePageModel,
+      ClubActions.BOOKMARKED_HANDS,
+      appScreenText['bookmarkedHands'],
+      SvgPicture.asset(
+        "assets/images/club/bookmarks.svg",
+        color: theme.accentColor,
+      ),
+    ));
+    buttons.add(getChat(theme));
+
+    buttons.add(getHostMemberChatWidget(theme));
+
+    buttons.add(ClubActionButtonNew(
+      this._clubHomePageModel,
+      ClubActions.ANNOUNCEMETS,
+      appScreenText['announcements'],
+      SvgPicture.asset(
+        "assets/images/club/announcements.svg",
+        color: theme.accentColor,
+      ),
+    ));
+
+    buttons.add(getSettingsWidget(theme));
+
+    if (_clubHomePageModel.trackMemberCredit) {
+      buttons.add(getActivitiesWidget(theme));
+    }
+
+    if (_clubHomePageModel.trackMemberCredit && _clubHomePageModel.isOwner) {
+      buttons.add(getMemberActivitiesWidget(theme));
+    }
+
+    if (_clubHomePageModel.isManager || _clubHomePageModel.isOwner) {
+      buttons.add(ClubActionButtonNew(
+        this._clubHomePageModel,
+        ClubActions.HIGH_RANK_ANALYSIS,
+        'Hand Rank\nAnalysis',
+        // TODO: ADD TO APP SCREEN TEXT
+        // appScreenText['botScripts'],
+        SvgPicture.asset(
+          "assets/images/club/rewards.svg",
+          color: theme.accentColor,
+        ),
+      ));
+    }
+    buttons.add(ClubActionButtonNew(
+      this._clubHomePageModel,
+      ClubActions.BOTSCRIPTS,
+      appScreenText['botScripts'],
+      SvgPicture.asset(
+        "assets/images/club/rewards.svg",
+        color: theme.accentColor,
+      ),
+    ));
+    List<Widget> rows = [];
+    List<Widget> rowChildren = [];
+    for (int i = 0; i < buttons.length; i++) {
+      if (i % 3 == 0) {
+        rowChildren = [];
+        rows.add(AppDimensionsNew.getVerticalSizedBox(16));
+        rows.add(Row(children: rowChildren));
+      }
+      rowChildren.add(Expanded(child: buttons[i]));
+    }
+    return rows;
   }
 }

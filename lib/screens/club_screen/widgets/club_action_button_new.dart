@@ -62,14 +62,17 @@ class ClubActionButtonNew extends StatelessWidget {
     }
 
     return Consumer<ClubHomePageModel>(
-      builder: (_, ClubHomePageModel clubModel, __) => GestureDetector(
+        builder: (_, ClubHomePageModel clubModel, __) {
+      return GestureDetector(
         onTap: () {
           switch (_action) {
             case ClubActions.GAME_HISTORY:
               return Navigator.pushNamed(
                 context,
                 Routes.game_history,
-                arguments: clubModel.clubCode,
+                arguments: {
+                  "clubModel": clubModel
+                }
               );
               break;
 
@@ -169,7 +172,7 @@ class ClubActionButtonNew extends StatelessWidget {
           }
         },
         child: card,
-      ),
-    );
+      );
+    });
   }
 }

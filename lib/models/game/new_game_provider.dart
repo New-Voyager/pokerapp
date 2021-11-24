@@ -78,7 +78,7 @@ class NewGameModelProvider extends ChangeNotifier {
   set gameType(GameType type) {
     settings.gameType = type;
   }
-  
+
   GameType get gameType {
     return settings.gameType;
   }

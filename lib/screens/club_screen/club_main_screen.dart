@@ -106,7 +106,8 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew>
                       ),
                     ),
 
-                    clubModel.availableCredit == null
+                    clubModel.availableCredit == null ||
+                            !clubModel.trackMemberCredit
                         ? SizedBox.shrink()
                         : Positioned(
                             top: 70.ph,
