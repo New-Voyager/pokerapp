@@ -32,7 +32,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/host_seat_chang
 
 class TestService {
   static bool get isTesting {
-    return false;
+    return true;
   }
 
   static var _showResult = false;
@@ -49,6 +49,25 @@ class TestService {
   TestService._();
 
   static set context(BuildContext context) => _context = context;
+
+  static showMuckLosingHand() {
+    final gameState = GameState.getState(_context);
+    for (int seatNo = 1; seatNo <= 9; seatNo++) {
+      final seat = gameState.getSeat(seatNo);
+      seat.player.muckLosingHand = true;
+      seat.player.winner = false;
+      seat.notify();
+    }
+  }
+
+  // static showPlayerFolded() {
+  //   final gameState = GameState.getState(_context);
+  //   for (int seatNo = 1; seatNo <= 9; seatNo++) {
+  //     final seat = gameState.getSeat(seatNo);
+  //     seat.player.playerFolded = true;
+  //     seat.notify();
+  //   }
+  // }
 
   static showTextNotification() {
     String title = 'Seat Change Progress';
