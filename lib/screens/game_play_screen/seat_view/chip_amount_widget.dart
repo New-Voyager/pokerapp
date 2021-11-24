@@ -228,14 +228,14 @@ class _ChipAmountWidgetState extends State<ChipAmountWidget>
     // final potViewPos = potViewBox.localToGlobal(Offset(0, 0));
     final potViewPos = widget.boardAttributesObject.potGlobalPos;
     final RenderBox box = context.findRenderObject();
-    if (box != null && potViewPos != null) { 
+    if (box != null && potViewPos != null) {
       widget.seat.potViewPos = box.globalToLocal(potViewPos);
-    }    
+    }
     // if (box != null && potViewPos != null) { // && widget.seat.potViewPos == null) {
     //   // SOMA: Big hack here
     //   // If we are animating low winner, don't recalculate pot view pos again
-    //   if (widget.seat != null && 
-    //       widget.seat.player != null && 
+    //   if (widget.seat != null &&
+    //       widget.seat.player != null &&
     //       widget.seat.player.loWinner) {
     //     if (widget.seat.potViewPos != null) {
     //       return;
@@ -263,7 +263,7 @@ class _ChipAmountWidgetState extends State<ChipAmountWidget>
   }
 }
 
-class ChipAmountAnimatingWidget extends StatefulWidget {
+class ChipAmountAnimatingWidget extends StatelessWidget {
   final int seatPos;
   final Widget child;
   final bool reverse;
@@ -276,67 +276,30 @@ class ChipAmountAnimatingWidget extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _ChipAmountAnimatingWidgetState createState() =>
-      _ChipAmountAnimatingWidgetState();
-}
-
-class _ChipAmountAnimatingWidgetState extends State<ChipAmountAnimatingWidget>
-    with TickerProviderStateMixin {
-  AnimationController animationController;
-  Animation<Offset> animation;
-  Offset end;
-  Offset begin;
-
-  @override
-  void initState() {
-    /* calling animate in init state */
-    animate();
-
-    super.initState();
-  }
-
-  void animate() async {
-    animationController = new AnimationController(
-      vsync: this,
-      duration: AppConstants.chipMovingAnimationDuration,
-    );
-
+  Widget build(BuildContext context) {
     final gameState = GameState.getState(context);
-    final seat = gameState.getSeat(widget.seatPos);
-    this.end = seat.potViewPos;
-    this.begin = seat.betWidgetPos;
-    if (widget.reverse ?? false) {
-      //Offset swap = end;
-      this.end = seat.betWidgetPos;
-      this.begin = seat.potViewPos;
-      // log('ShowWinners seat: ${seat.seatPos.toString()} begin: ${begin.toString()} end: ${end.toString()}');
+    final seat = gameState.getSeat(seatPos);
+
+    Offset end = seat.potViewPos;
+    Offset begin = seat.betWidgetPos;
+
+    if (reverse ?? false) {
+      Offset swap = end;
+      end = begin;
+      begin = swap;
     }
 
-    animation = Tween<Offset>(
-      begin: begin,
-      end: end,
-    ).animate(animationController);
-
-    animationController.addListener(() {
-      setState(() {});
-    });
-
-    animationController.forward();
-  }
-
-  @override
-  void dispose() {
-    animationController?.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    /* if animation is NULL do nothing */
-    if (animation == null) return Container();
-    return Transform.translate(
-      offset: animation.value,
-      child: widget.child,
+    return TweenAnimationBuilder(
+      child: child,
+      tween: Tween<Offset>(
+        begin: begin,
+        end: end,
+      ),
+      duration: AppConstants.chipMovingAnimationDuration,
+      builder: (_, offset, child) => Transform.translate(
+        offset: offset,
+        child: child,
+      ),
     );
   }
 }
