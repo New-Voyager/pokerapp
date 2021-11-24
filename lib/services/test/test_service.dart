@@ -52,8 +52,10 @@ class TestService {
 
   static showMuckLosingHand() {
     final gameState = GameState.getState(_context);
+    gameState.handState = HandState.RESULT;
     for (int seatNo = 1; seatNo <= 9; seatNo++) {
       final seat = gameState.getSeat(seatNo);
+      seat.player.cards = [177, 177, 177, 177];
       seat.player.muckLosingHand = true;
       seat.player.winner = false;
       seat.notify();
