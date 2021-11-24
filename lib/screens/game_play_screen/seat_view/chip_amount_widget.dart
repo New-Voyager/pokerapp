@@ -228,9 +228,21 @@ class _ChipAmountWidgetState extends State<ChipAmountWidget>
     // final potViewPos = potViewBox.localToGlobal(Offset(0, 0));
     final potViewPos = widget.boardAttributesObject.potGlobalPos;
     final RenderBox box = context.findRenderObject();
-    if (box != null && potViewPos != null && widget.seat.potViewPos == null) {
+    if (box != null && potViewPos != null) { 
       widget.seat.potViewPos = box.globalToLocal(potViewPos);
-    }
+    }    
+    // if (box != null && potViewPos != null) { // && widget.seat.potViewPos == null) {
+    //   // SOMA: Big hack here
+    //   // If we are animating low winner, don't recalculate pot view pos again
+    //   if (widget.seat != null && 
+    //       widget.seat.player != null && 
+    //       widget.seat.player.loWinner) {
+    //     if (widget.seat.potViewPos != null) {
+    //       return;
+    //     }
+    //   }
+    //   widget.seat.potViewPos = box.globalToLocal(potViewPos);
+    // }
     // log('potViewPos: Setting potViewPos for seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos}');
   }
 

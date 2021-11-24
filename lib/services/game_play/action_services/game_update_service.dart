@@ -515,18 +515,20 @@ class GameUpdateService {
           continue;
         }
         if (player.seatNo == seat.player.seatNo) {
-          seat.player.buyInTimeExpAt = player.buyInTimeExpAt.toLocal();
-          DateTime now = DateTime.now();
-          if (seat.player.buyInTimeExpAt != null) {
-            final diff = seat.player.buyInTimeExpAt.difference(now);
-            log('now: ${now.toIso8601String()} buyInTimeExpAt: ${seat.player.buyInTimeExpAt.toIso8601String()} buyInTimeExpAt time expires in ${diff.inSeconds}');
-          }
+          if (player.buyInTimeExpAt != null) {
+            seat.player.buyInTimeExpAt = player.buyInTimeExpAt.toLocal();
+            DateTime now = DateTime.now();
+            if (seat.player.buyInTimeExpAt != null) {
+              final diff = seat.player.buyInTimeExpAt.difference(now);
+              log('now: ${now.toIso8601String()} buyInTimeExpAt: ${seat.player.buyInTimeExpAt.toIso8601String()} buyInTimeExpAt time expires in ${diff.inSeconds}');
+            }
 
-          // update my state to show sitback button
-          if (seat.player.isMe) {
-            if (closed || _gameState.uiClosing) return;
-            final myState = _gameState.myState;
-            myState.notify();
+            // update my state to show sitback button
+            if (seat.player.isMe) {
+              if (closed || _gameState.uiClosing) return;
+              final myState = _gameState.myState;
+              myState.notify();
+            }
           }
           break;
         }

@@ -193,7 +193,7 @@ class _MainScreenState extends State<MainScreen>
               fabBgColor: theme.secondaryColorWithDark(0.2),
               onItemClick: (i) {
                 setState(() => _navPos = i);
-                Provider.of<AppState>(context, listen: false).setIndex(i);
+                appState.setIndex(i);
               },
               items: [
                 CurvedNavItem(

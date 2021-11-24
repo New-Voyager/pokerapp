@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/app_state.dart';
 import 'package:pokerapp/services/app/util_service.dart';
 import 'package:pokerapp/services/nats/message.dart';
@@ -25,13 +26,11 @@ class Nats {
   Map<String, Subscription> _clubSubs = Map<String, Subscription>();
   Function(String) playerNotifications;
   Function(String) clubNotifications;
-  AppState _appState;
 
   // functions listens for disconnection
   List<Function> disconnectListeners = [];
 
   Nats(this._providerContext) {
-    _appState = _providerContext.read<AppState>();
   }
 
   bool get connectionBroken {
@@ -161,10 +160,10 @@ class Nats {
     if (type == 'CLUB_UPDATED') {
       if (changed == 'NEW_GAME') {
         // a new game has started in any of the club, set to refresh the live games screen
-        _appState.setNewGame(true);
+        appState.setNewGame(true);
       } else if (changed == 'GAME_ENDED') {
         // a game in the club is ended, refresh the live games, as well as the game record
-        _appState.setGameEnded(true);
+        appState.setGameEnded(true);
       }
     }
   }

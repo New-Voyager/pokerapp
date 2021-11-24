@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/main_helper.dart';
 import 'package:pokerapp/models/app_state.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
@@ -145,7 +146,6 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew>
 
   Future<ClubHomePageModel> fetchData() async {
     // if the current user is manager or club owner, get club coins
-    var appState = Provider.of<AppState>(context, listen: false);
     var clubData;
     if (appState != null && appState.mockScreens) {
       clubData = await MockData.getClubHomePageData(widget.clubCode);
