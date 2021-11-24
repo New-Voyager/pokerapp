@@ -27,10 +27,18 @@ class _AnnouncementsViewState extends State<AnnouncementsView> {
   List<AnnouncementModel> _listOfAnnounce = [];
   bool loading = true;
   AppTextScreen _appScreenText;
-
+  bool canAnnounce = false;
   @override
   void initState() {
     super.initState();
+    if (widget.clubModel.isOwner) {
+      canAnnounce = true;
+    } else {
+      if (widget.clubModel.isManager &&
+          widget.clubModel.role.makeAnnouncement) {
+        canAnnounce = true;
+      }
+    }
     _appScreenText = getAppTextScreen("announcementsView");
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -85,7 +93,7 @@ class _AnnouncementsViewState extends State<AnnouncementsView> {
                             ),
                           ),
                           Visibility(
-                            visible: widget.clubModel.isOwner,
+                            visible: canAnnounce,
                             child: RoundRectButton(
                                 text: "+ ${_appScreenText['NEW']}",
                                 onTap: () => _handleNewAnnouncement(theme),
@@ -113,69 +121,7 @@ class _AnnouncementsViewState extends State<AnnouncementsView> {
                                   itemBuilder: (context, index) {
                                     AnnouncementModel model =
                                         _listOfAnnounce.elementAt(index);
-                                    return Container(
-                                      margin: EdgeInsets.all(8),
-                                      padding: EdgeInsets.symmetric(
-                                          vertical: 8, horizontal: 16),
-                                      decoration:
-                                          AppDecorators.tileDecoration(theme),
-                                      child: Column(
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Expanded(
-                                                child: Text(
-                                                  model.text,
-                                                  style: AppDecorators
-                                                      .getHeadLine4Style(
-                                                          theme: theme),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          AppDimensionsNew.getVerticalSizedBox(
-                                              16),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.end,
-                                            children: [
-                                              // Icon(
-                                              //   Icons.person,
-                                              //   color: theme
-                                              //       .secondaryColorWithDark(),
-                                              //   size: 16,
-                                              // ),
-                                              // AppDimensionsNew
-                                              //     .getHorizontalSpace(4),
-                                              // Text(
-                                              //   "Soma",
-                                              //   style: AppDecorators
-                                              //       .getSubtitle3Style(
-                                              //     theme: theme,
-                                              //   ),
-                                              // ),
-                                              AppDimensionsNew
-                                                  .getHorizontalSpace(16),
-                                              Icon(
-                                                Icons.access_time,
-                                                color: theme
-                                                    .secondaryColorWithDark(),
-                                                size: 16,
-                                              ),
-                                              AppDimensionsNew
-                                                  .getHorizontalSpace(4),
-                                              Text(
-                                                "${DataFormatter.dateFormat(model.createdAt)}",
-                                                style: AppDecorators
-                                                    .getSubtitle3Style(
-                                                  theme: theme,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    );
+                                    return getAnnouncementItem(model, theme);
                                   },
                                 ),
                     ),
@@ -299,5 +245,54 @@ class _AnnouncementsViewState extends State<AnnouncementsView> {
             duration: Duration(seconds: 5));
       }
     }
+  }
+
+  Widget getAnnouncementItem(AnnouncementModel model, AppTheme theme) {
+    return Container(
+        margin: EdgeInsets.all(8),
+        padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+        decoration: AppDecorators.tileDecoration(theme),
+        child: Column(children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  model.text,
+                  style: AppDecorators.getHeadLine4Style(theme: theme),
+                ),
+              ),
+            ],
+          ),
+          AppDimensionsNew.getVerticalSizedBox(16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "Posted by " +
+                    (model.playerName == '' ? 'admin' : model.playerName),
+                style: AppDecorators.getSubtitle3Style(
+                  theme: theme,
+                ),
+              ),
+              Row(
+                children: [
+                  AppDimensionsNew.getHorizontalSpace(16),
+                  Icon(
+                    Icons.access_time,
+                    color: theme.secondaryColorWithDark(),
+                    size: 16,
+                  ),
+                  AppDimensionsNew.getHorizontalSpace(4),
+                  Text(
+                    "${DataFormatter.dateFormat(model.createdAt)}",
+                    style: AppDecorators.getSubtitle3Style(
+                      theme: theme,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ]));
   }
 }

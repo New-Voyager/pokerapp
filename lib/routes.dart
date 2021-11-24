@@ -311,10 +311,11 @@ class Routes {
       case club_member_activities_view:
         Map<String, dynamic> args = settings.arguments as Map<String, dynamic>;
         String clubCode = args["clubCode"];
+        final club = args["club"];
 
         return _getPageRoute(
           routeName: settings.name,
-          viewToShow: ClubMemberActivitiesScreen(clubCode),
+          viewToShow: ClubMemberActivitiesScreen(clubCode, club),
         );
 
       case hand_history_list:
@@ -355,7 +356,8 @@ class Routes {
         var club = args["club"] as ClubHomePageModel;
         return _getPageRoute(
           routeName: settings.name,
-          viewToShow: TableResultScreen(gameCode: gameCode, showTips: showTips, club: club),
+          viewToShow: TableResultScreen(
+              gameCode: gameCode, showTips: showTips, club: club),
         );
 
       case game_history_detail_view:

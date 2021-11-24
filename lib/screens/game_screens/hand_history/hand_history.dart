@@ -29,7 +29,7 @@ class HandHistoryListView extends StatefulWidget {
   final bool isLeadingBackIconShow;
   final bool liveGame;
   final ClubHomePageModel club;
-  
+
   HandHistoryListView(this.data, this.clubCode, this.club,
       {this.isInBottomSheet = false,
       this.isLeadingBackIconShow = true,

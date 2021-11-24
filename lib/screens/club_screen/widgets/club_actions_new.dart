@@ -176,7 +176,10 @@ class ClubActionsNew extends StatelessWidget {
       buttons.add(getActivitiesWidget(theme));
     }
 
-    if (_clubHomePageModel.trackMemberCredit && _clubHomePageModel.isOwner) {
+    if (_clubHomePageModel.trackMemberCredit &&
+        (_clubHomePageModel.isOwner ||
+            (_clubHomePageModel.isManager &&
+                _clubHomePageModel.role.viewMemberActivities))) {
       buttons.add(getMemberActivitiesWidget(theme));
     }
 

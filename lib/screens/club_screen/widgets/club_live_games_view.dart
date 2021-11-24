@@ -68,6 +68,14 @@ class ClubLiveGamesView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool canHostGame = false;
+    if (clubModel.isOwner) {
+      canHostGame = true;
+    } else {
+      if (clubModel.isManager && clubModel.role.hostGames) {
+        canHostGame = true;
+      }
+    }
     return Consumer<AppTheme>(
       builder: (_, theme, __) => Container(
         margin: EdgeInsets.only(
@@ -83,39 +91,12 @@ class ClubLiveGamesView extends StatelessWidget {
             Align(
               alignment: Alignment.topRight,
               child: Visibility(
-                visible: (clubModel.isManager || clubModel.isOwner),
+                visible: canHostGame,
                 child: Padding(
                   padding: const EdgeInsets.only(right: 8.0),
                   child: RoundRectButton(
                     onTap: () async {
-                      // get this value from API
-                      int minCoinsNeeded = 10;
-                      // if the player does not have enough coins
-                      // don't host the game
-                      if (clubModel.clubCoins < 10) {
-                        showErrorDialog(context, 'Error',
-                            'Not enough coins to host a game. $minCoinsNeeded required to host a game');
-                        return;
-                      }
-
-                      final dynamic result = await Navigator.pushNamed(
-                        context,
-                        Routes.new_game_settings,
-                        arguments: this.clubModel.clubCode,
-                      );
-
-                      if (result != null) {
-                        /* show game settings dialog */
-                        NewGameSettings2.show(
-                          context,
-                          clubCode: this.clubModel.clubCode,
-                          mainGameType: result['gameType'],
-                          subGameTypes: List.from(
-                                result['gameTypes'],
-                              ) ??
-                              [],
-                        );
-                      }
+                      hostGame(context);
                     },
                     text: 'Host Game', //_appScreenText['hostGame'],
                     theme: theme,
@@ -156,5 +137,36 @@ class ClubLiveGamesView extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  hostGame(BuildContext context) async {
+    // get this value from API
+    int minCoinsNeeded = 10;
+    // if the player does not have enough coins
+    // don't host the game
+    if (clubModel.clubCoins < 10) {
+      showErrorDialog(context, 'Error',
+          'Not enough coins to host a game. $minCoinsNeeded required to host a game');
+      return;
+    }
+
+    final dynamic result = await Navigator.pushNamed(
+      context,
+      Routes.new_game_settings,
+      arguments: this.clubModel.clubCode,
+    );
+
+    if (result != null) {
+      /* show game settings dialog */
+      NewGameSettings2.show(
+        context,
+        clubCode: this.clubModel.clubCode,
+        mainGameType: result['gameType'],
+        subGameTypes: List.from(
+              result['gameTypes'],
+            ) ??
+            [],
+      );
+    }
   }
 }

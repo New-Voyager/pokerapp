@@ -67,13 +67,8 @@ class ClubActionButtonNew extends StatelessWidget {
         onTap: () {
           switch (_action) {
             case ClubActions.GAME_HISTORY:
-              return Navigator.pushNamed(
-                context,
-                Routes.game_history,
-                arguments: {
-                  "club": clubModel
-                }
-              );
+              return Navigator.pushNamed(context, Routes.game_history,
+                  arguments: {"club": clubModel});
               break;
 
             case ClubActions.MEMBERS:
@@ -150,6 +145,7 @@ class ClubActionButtonNew extends StatelessWidget {
                 Routes.club_member_activities_view,
                 arguments: {
                   'clubCode': clubModel.clubCode,
+                  'club': clubModel,
                 },
               );
               break;

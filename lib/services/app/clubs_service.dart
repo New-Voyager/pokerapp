@@ -144,6 +144,7 @@ class ClubsService {
     text
     createdAt
     expiresAt
+    playerName
   }
 }
   """;

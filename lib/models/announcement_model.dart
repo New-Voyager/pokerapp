@@ -20,12 +20,14 @@ class AnnouncementModel {
     this.createdAt,
     this.expiresAt,
     this.level,
+    this.playerName,
   });
 
   String text;
   DateTime createdAt;
   DateTime expiresAt;
   String level;
+  String playerName = 'admin';
 
   factory AnnouncementModel.fromJson(Map<String, dynamic> json) {
     log("$json");
@@ -34,6 +36,7 @@ class AnnouncementModel {
       createdAt: DateTime.parse(json["createdAt"]).toLocal(),
       expiresAt: DateTime.parse(json["expiresAt"]).toLocal(),
       level: json["level"],
+      playerName: json['playerName'] ?? '',
     );
   }
 
@@ -42,6 +45,7 @@ class AnnouncementModel {
         "createdAt": createdAt.toIso8601String(),
         "expiresAt": expiresAt.toIso8601String(),
         "level": level,
+        "playerName": playerName,
       };
 
   bool get isImportant {

@@ -50,7 +50,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
   TextEditingController _contactEditingController;
   TextEditingController _notesEditingController;
   bool updated = false;
-
+  bool closed = false;
   _ClubMembersDetailsView(this.clubCode, this.playerId, this.isClubOwner);
 
   AppTextScreen _appScreenText;
@@ -61,6 +61,11 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
     oldNotes = _data.notes;
     oldTipsBack = _data.tipsBack;
     loadingDone = true;
+
+    if (closed) {
+      return;
+    }
+
     if (_data != null) {
       // update ui
       _contactEditingController =
@@ -86,8 +91,14 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
     _fetchData();
   }
 
+  @override
+  void dispose() {
+    closed = true;
+    super.dispose();
+  }
+
   void goBack(BuildContext context) async {
-    if (this._data.edited) {
+    if (this._data != null && this._data.edited) {
       if (oldPhoneText != _data.contactInfo ||
           oldNotes != _data.notes ||
           oldTipsBack != _data.tipsBack) {
@@ -385,7 +396,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
             clubCode: widget.clubCode,
             playerUuid: widget.playerId,
             tipsBack: _data.tipsBack);
-        if (value != null) {
+        if (value != null && !closed) {
           if (value <= 100) {
             _data.tipsBack = value;
             updated = true;

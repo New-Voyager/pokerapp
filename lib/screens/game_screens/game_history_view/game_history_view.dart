@@ -47,7 +47,8 @@ class _GameHistoryViewState extends State<GameHistoryView>
     if (appState != null && appState.mockScreens) {
       _prevGames = await MockData.getGameHistory(widget.clubModel.clubCode);
     } else {
-      _prevGames = await ClubInteriorService.getGameHistory(widget.clubModel.clubCode);
+      _prevGames =
+          await ClubInteriorService.getGameHistory(widget.clubModel.clubCode);
     }
 
     _loadingData = false;
@@ -73,7 +74,11 @@ class _GameHistoryViewState extends State<GameHistoryView>
           Navigator.pushNamed(
             context,
             Routes.game_history_detail_view,
-            arguments: {'club': widget.clubModel, 'model': model, 'clubCode': widget.clubModel.clubCode},
+            arguments: {
+              'club': widget.clubModel,
+              'model': model,
+              'clubCode': widget.clubModel.clubCode
+            },
           );
         },
         child: GameHistoryItemNew(game: _prevGames[index]));
@@ -188,7 +193,8 @@ class _GameHistoryViewState extends State<GameHistoryView>
           appBar: CustomAppBar(
             theme: theme,
             titleText: _appScreenText['gameHistory'],
-            subTitleText: "${_appScreenText['clubCode']}: ${widget.clubModel.clubCode}",
+            subTitleText:
+                "${_appScreenText['clubCode']}: ${widget.clubModel.clubCode}",
             context: context,
             actionsList: [
               // button to show filter
