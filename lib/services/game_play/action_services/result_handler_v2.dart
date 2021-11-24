@@ -101,7 +101,10 @@ class ResultHandlerV2 {
     for (final c in result.boards[0].cards) {
       boardCards1CO.add(CardHelper.getCard(c));
     }
-
+    bool showdown = false;
+    if (result.wonAt == proto.HandStatus.SHOW_DOWN) {
+      showdown = true;
+    }
     if (result.wonAt == proto.HandStatus.PREFLOP) {
       boardCards1CO = [];
     } else if (result.wonAt == proto.HandStatus.FLOP) {
@@ -240,35 +243,57 @@ class ResultHandlerV2 {
         }
         AudioService.playApplause(mute: gameState.playerLocalConfig.mute);
         // log('Result: 1 Show winners');
-
-        await _showWinners(
-          board,
-          rankText,
-          boardWinners.hiWinners.values.toList(),
-          low: false,
-        );
-
-        if (boardWinners.lowWinners.length > 0) {
-          // clear all the boards
-          for (final board in result.boards) {
-            resetResult(
-              boardIndex: board.boardNo,
-            );
-          }
-
-          resetResult();
-
-          // display low banner
-          if (hiLoGame) {
-            // display high banner
-            tableState.setWhichWinner(AppConstants.LOW_WINNERS);
-          }
+        bool oneWinner = false;
+        if (boardWinners.hiWinners.values.toList().length == 1) {
+          oneWinner = true;
+        }
+        if (boardWinners.lowWinners.values.toList().length != 1) {
+          oneWinner = false;
+        }
+        if (!showdown && oneWinner) {
+          final winners = boardWinners.hiWinners.values.toList();
+          final winner = winners[0];
+          // there is only one winner
+          for(final w in boardWinners.lowWinners.values.toList()) {
+            winner.amount += w.amount;
+          } 
           await _showWinners(
             board,
-            boardWinners.hiRankText,
-            boardWinners.lowWinners.values.toList(),
-            low: true,
+            rankText,
+            winners,
+            low: false,
           );
+
+        } else {
+          await _showWinners(
+            board,
+            rankText,
+            boardWinners.hiWinners.values.toList(),
+            low: false,
+          );
+
+          if (boardWinners.lowWinners.length > 0) {
+            // clear all the boards
+            for (final board in result.boards) {
+              resetResult(
+                boardIndex: board.boardNo,
+              );
+            }
+
+            resetResult();
+
+            // display low banner
+            if (hiLoGame) {
+              // display high banner
+              tableState.setWhichWinner(AppConstants.LOW_WINNERS);
+            }
+            await _showWinners(
+              board,
+              boardWinners.hiRankText,
+              boardWinners.lowWinners.values.toList(),
+              low: true,
+            );
+          }
         }
       }
 
