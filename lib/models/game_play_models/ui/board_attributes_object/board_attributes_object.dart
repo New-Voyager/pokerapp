@@ -940,6 +940,19 @@ class BoardAttributesObject extends ChangeNotifier {
 
   Uint8List get betImage => this._betImage;
   set betImage(Uint8List betImage) => this._betImage = betImage;
+
+  double getMuckCardScale(int noCards) {
+    // double screenSize = Screen.screenSizeInches;
+
+    if (noCards == 2) {
+      return 0.9;
+    } else if (noCards == 4) {
+      return 0.8;
+    } else if (noCards == 5) {
+      return 0.7;
+    }
+    return 0.7;
+  }
 }
 
 Map<int, SeatPos> getSeatLocations(int maxSeats) {
