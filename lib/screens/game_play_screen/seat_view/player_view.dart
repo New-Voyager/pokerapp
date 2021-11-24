@@ -178,24 +178,26 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
         context: context,
       );
 
-      if (data != null && data['type'] != null && data['type'] == "animation") {
-        final bool result = await playerState
-            .deductDiamonds(AppConfig.noOfDiamondsForAnimation);
-        if (result) {
-          gameState.gameComService.gameMessaging.sendAnimation(
-            gameState.me?.seatNo,
-            widget.seat.player.seatNo,
-            data['animationID'],
-          );
+      if (data != null && data is Map) {
+        if (data != null && data['type'] != null && data['type'] == "animation") {
+          final bool result = await playerState
+              .deductDiamonds(AppConfig.noOfDiamondsForAnimation);
+          if (result) {
+            gameState.gameComService.gameMessaging.sendAnimation(
+              gameState.me?.seatNo,
+              widget.seat.player.seatNo,
+              data['animationID'],
+            );
+          }
         }
-      }
 
-      if (data != null && data['type'] != null && data['type'] == "buyin") {
-        await _handleLimitButtonClick(context, widget.seat);
-      }
+        if (data != null && data['type'] != null && data['type'] == "buyin") {
+          await _handleLimitButtonClick(context, widget.seat);
+        }
 
-      if (data != null && data['type'] != null && data['type'] == "host") {
-        await _handleHostButtonClick(context);
+        if (data != null && data['type'] != null && data['type'] == "host") {
+          await _handleHostButtonClick(context);
+        }
       }
     }
   }
