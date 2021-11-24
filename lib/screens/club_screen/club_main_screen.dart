@@ -154,7 +154,6 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew>
     }
     if (clubData.isManager || clubData.isOwner) {
       clubData.clubCoins = await ClubsService.getClubCoins(widget.clubCode);
-      ;
     }
 
     return clubData;
