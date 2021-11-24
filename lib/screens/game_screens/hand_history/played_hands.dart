@@ -369,6 +369,13 @@ class _PlayedHandsScreenState extends State<PlayedHandsScreen> {
                     endIndent: 8,
                   ),
                   Container(
+                      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text('${widget.history[index].handTimeInDate}')
+                          ])),
+                  Container(
                     margin: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,

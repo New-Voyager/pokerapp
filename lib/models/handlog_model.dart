@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:pokerapp/enums/game_stages.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
+import 'package:pokerapp/utils/formatter.dart';
 
 class BoardPlayerRank {
   int boardNo;
@@ -216,6 +217,7 @@ class HandResultData {
   int actionTime;
   int noCards;
   int maxPlayers;
+  DateTime handEndedTime;
   double smallBlind;
   double bigBlind;
   bool runItTwice;
@@ -231,6 +233,13 @@ class HandResultData {
 
   GameStages wonAt() {
     return getGameStage(result.wonAt);
+  }
+
+  String get handEndedAt {
+    if (handEndedTime == null) {
+      return '';
+    }
+    return DataFormatter.dateFormat(handEndedTime);
   }
 
   List<int> getMyCards() {
@@ -346,6 +355,9 @@ class HandResultData {
     ret.bigBlind = double.parse((json['bigBlind'] ?? 2).toString());
 
     final handLog = json["handLog"];
+    ret.handEndedTime =
+        DateTime.fromMillisecondsSinceEpoch(handLog['handEndedAt'] * 1000);
+    ;
     ret.preflopActions = GameActions.fromJson(handLog["preflopActions"]);
     ret.flopActions = GameActions.fromJson(handLog["flopActions"]);
     ret.turnActions = GameActions.fromJson(handLog["turnActions"]);

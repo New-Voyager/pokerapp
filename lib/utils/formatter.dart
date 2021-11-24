@@ -1,7 +1,7 @@
 import 'package:intl/intl.dart';
 
 final DateFormat _dateFormatter =
-    DateFormat.yMd().add_jm(); // internationalize this
+    DateFormat.yMd().add_jms(); // internationalize this
 final NumberFormat _chipsFormatter = new NumberFormat("0.00");
 final NumberFormat _timeFormatter = new NumberFormat("00");
 

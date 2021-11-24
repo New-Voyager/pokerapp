@@ -22,6 +22,7 @@ class HandService {
             totalPot    
             summary
             handTime
+            timeEnded
             authorized
           }
           winningHands: myWinningHands(gameCode: \$gameCode) {

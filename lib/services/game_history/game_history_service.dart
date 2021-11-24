@@ -62,6 +62,7 @@ class GameHistoryServiceImpl {
       item.noCards = summary['noCards'];
       DateTime started = DateTime.tryParse(handJson['timeStarted']);
       DateTime ended = DateTime.tryParse(handJson['timeEnded']);
+      item.handEndedAt = ended;
       int handTime = 0;
       if (ended != null && started != null) {
         handTime = ended.difference(started).inSeconds;

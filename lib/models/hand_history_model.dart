@@ -53,6 +53,15 @@ class HandHistoryItem {
   double totalPot;
   List<int> headsupPlayers;
   Map<int, double> playersReceived;
+  DateTime handEndedAt;
+
+  String get handTimeInDate {
+    if (handEndedAt == null) {
+      return '';
+    }
+    String date = DataFormatter.dateFormat(handEndedAt.toLocal());
+    return date;
+  }
 }
 
 class HandHistoryListModel extends ChangeNotifier {
@@ -79,6 +88,7 @@ class HandHistoryListModel extends ChangeNotifier {
       item.noCards = int.parse(summary['noCards'].toString());
       item.handTime = DataFormatter.getTimeInHHMMFormat(
           int.parse(hand['handTime'].toString()));
+      item.handEndedAt = DateTime.tryParse(hand['timeEnded']);
       item.authorized = hand['authorized'];
       dynamic boardCards = summary['boardCards'];
 

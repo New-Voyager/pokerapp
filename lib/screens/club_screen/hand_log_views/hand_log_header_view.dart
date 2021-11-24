@@ -52,68 +52,75 @@ class HandLogHeaderView extends StatelessWidget {
 
             // community cards, and your cards row
             Container(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              child: Column(
                 children: [
-                  Container(
-                    margin: EdgeInsets.only(top: 5, bottom: 5),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          margin: EdgeInsets.only(bottom: 5),
-                          child: Text(
-                            "${_appScreenText['communityCards']}",
-                            style:
-                                AppDecorators.getSubtitle3Style(theme: theme),
-                          ),
-                        ),
-                        StackCardView02(
-                          cards: board1Cards,
-                          show: _handResult.wonAt() == GameStages.SHOWDOWN,
-                        ),
-                        board2Cards == null
-                            ? Container()
-                            : SizedBox(
-                                height: 10.dp,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(top: 5, bottom: 5),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              margin: EdgeInsets.only(bottom: 5),
+                              child: Text(
+                                "${_appScreenText['communityCards']}",
+                                style: AppDecorators.getSubtitle3Style(
+                                    theme: theme),
                               ),
-                        board2Cards == null
-                            ? Container()
-                            : StackCardView02(
-                                cards: board2Cards,
-                                show:
-                                    _handResult.wonAt() == GameStages.SHOWDOWN,
-                              ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(
-                      top: 5,
-                    ),
-                    child: Visibility(
-                      visible: _handResult.getMyCards().length > 0,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Container(
-                            margin: EdgeInsets.only(bottom: 5),
-                            child: Text(
-                              "${_appScreenText['yourCards']}",
-                              style:
-                                  AppDecorators.getSubtitle3Style(theme: theme),
                             ),
-                          ),
-                          StackCardView00(
-                            cards: _handResult.getMyCards(),
-                            show: true,
-                          ),
-                        ],
+                            StackCardView02(
+                              cards: board1Cards,
+                              show: _handResult.wonAt() == GameStages.SHOWDOWN,
+                            ),
+                            board2Cards == null
+                                ? Container()
+                                : SizedBox(
+                                    height: 10.dp,
+                                  ),
+                            board2Cards == null
+                                ? Container()
+                                : StackCardView02(
+                                    cards: board2Cards,
+                                    show: _handResult.wonAt() ==
+                                        GameStages.SHOWDOWN,
+                                  ),
+                          ],
+                        ),
                       ),
-                    ),
+                      Container(
+                        margin: EdgeInsets.only(
+                          top: 5,
+                        ),
+                        child: Visibility(
+                          visible: _handResult.getMyCards().length > 0,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Container(
+                                margin: EdgeInsets.only(bottom: 5),
+                                child: Text(
+                                  "${_appScreenText['yourCards']}",
+                                  style: AppDecorators.getSubtitle3Style(
+                                      theme: theme),
+                                ),
+                              ),
+                              StackCardView00(
+                                cards: _handResult.getMyCards(),
+                                show: true,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [Text('${_handResult.handEndedAt}')]),
                 ],
               ),
             ),
