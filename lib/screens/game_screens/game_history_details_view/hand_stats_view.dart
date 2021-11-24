@@ -232,7 +232,7 @@ class _HandStatsViewState extends State<HandStatsView>
                             _buildOneStageRow(
                               title: buildOneItemInLegend(
                                   _appScreenText['preflop'],
-                                  AppColorsNew.preflopColor,
+                                  theme.preFlopColor,
                                   theme),
                               thisVal: stats.thisGame.inPreflop,
                               allVal: stats.alltime.inPreflop,
@@ -241,7 +241,7 @@ class _HandStatsViewState extends State<HandStatsView>
                             _buildOneStageRow(
                               title: buildOneItemInLegend(
                                   _appScreenText['flop'],
-                                  AppColorsNew.flopColor,
+                                  theme.flopColor,
                                   theme),
                               thisVal: stats.thisGame.inFlop,
                               allVal: stats.alltime.inFlop,
@@ -250,7 +250,7 @@ class _HandStatsViewState extends State<HandStatsView>
                             _buildOneStageRow(
                               title: buildOneItemInLegend(
                                   _appScreenText['turn'],
-                                  AppColorsNew.turnColor,
+                                  theme.turnColor,
                                   theme),
                               thisVal: stats.thisGame.inTurn,
                               allVal: stats.alltime.inTurn,
@@ -259,7 +259,7 @@ class _HandStatsViewState extends State<HandStatsView>
                             _buildOneStageRow(
                               title: buildOneItemInLegend(
                                   _appScreenText['river'],
-                                  AppColorsNew.riverColor,
+                                  theme.riverColor,
                                   theme),
                               thisVal: stats.thisGame.inRiver,
                               allVal: stats.alltime.inRiver,
@@ -268,7 +268,7 @@ class _HandStatsViewState extends State<HandStatsView>
                             _buildOneStageRow(
                               title: buildOneItemInLegend(
                                   _appScreenText['showdown'],
-                                  AppColorsNew.showDownColor,
+                                  theme.showDownColor,
                                   theme),
                               thisVal: stats.thisGame.wentToShowDown,
                               allVal: stats.alltime.wentToShowDown,
@@ -539,13 +539,13 @@ class _HandStatsViewState extends State<HandStatsView>
               flex: 2,
               child: Row(
                 children: [
-                  Expanded(
-                    child: Text(
-                      thisVal.toString(),
-                      textAlign: TextAlign.center,
-                      style: AppDecorators.getSubtitle1Style(theme: theme),
-                    ),
-                  ),
+                  // Expanded(
+                  //   child: Text(
+                  //     thisVal.toString(),
+                  //     textAlign: TextAlign.center,
+                  //     style: AppDecorators.getSubtitle1Style(theme: theme),
+                  //   ),
+                  // ),
                   Expanded(
                     child: Text(
                       stats.thisGame.totalHands == 0
@@ -563,13 +563,13 @@ class _HandStatsViewState extends State<HandStatsView>
             flex: showThisGame ? 2 : 5,
             child: Row(
               children: [
-                Expanded(
-                  child: Text(
-                    allVal.toString(),
-                    textAlign: TextAlign.right,
-                    style: AppDecorators.getSubtitle1Style(theme: theme),
-                  ),
-                ),
+                // Expanded(
+                //   child: Text(
+                //     allVal.toString(),
+                //     textAlign: TextAlign.right,
+                //     style: AppDecorators.getSubtitle1Style(theme: theme),
+                //   ),
+                // ),
                 Expanded(
                   child: Text(
                     stats.alltime.totalHands == 0
@@ -607,13 +607,13 @@ class _HandStatsViewState extends State<HandStatsView>
               flex: 2,
               child: Row(
                 children: [
-                  Expanded(
-                    child: Text(
-                      thisVal.toString(),
-                      textAlign: TextAlign.center,
-                      style: AppDecorators.getSubtitle1Style(theme: theme),
-                    ),
-                  ),
+                  // Expanded(
+                  //   child: Text(
+                  //     thisVal.toString(),
+                  //     textAlign: TextAlign.center,
+                  //     style: AppDecorators.getSubtitle1Style(theme: theme),
+                  //   ),
+                  // ),
                   Expanded(
                     child: Text(
                       stats.thisGame.totalHands == 0
@@ -631,13 +631,13 @@ class _HandStatsViewState extends State<HandStatsView>
             flex: showThisGame ? 2 : 3,
             child: Row(
               children: [
-                Expanded(
-                  child: Text(
-                    allVal.toString(),
-                    textAlign: TextAlign.center,
-                    style: AppDecorators.getSubtitle1Style(theme: theme),
-                  ),
-                ),
+                // Expanded(
+                //   child: Text(
+                //     allVal.toString(),
+                //     textAlign: TextAlign.center,
+                //     style: AppDecorators.getSubtitle1Style(theme: theme),
+                //   ),
+                // ),
                 Expanded(
                   child: Text(
                     stats.alltime.totalHands == 0
