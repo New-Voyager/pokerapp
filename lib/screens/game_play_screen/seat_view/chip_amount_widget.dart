@@ -125,7 +125,7 @@ class _ChipAmountWidgetState extends State<ChipAmountWidget>
         color = Colors.black;
       }
     }
-   
+
     /* show the coin amount */
     Widget amount = Text(
       DataFormatter.chipsFormat(action.amount),

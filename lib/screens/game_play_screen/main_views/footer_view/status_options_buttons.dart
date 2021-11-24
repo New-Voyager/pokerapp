@@ -120,7 +120,8 @@ class StatusOptionsWidget extends StatelessWidget {
     final gameState = GameState.getState(context);
     final gameInfo = gameState.gameInfo;
     gameState.buyInKeyboardShown = true;
-    String title = '${appScreenText['buyInEntry']} (${DataFormatter.chipsFormat(gameInfo.buyInMin)} - ${DataFormatter.chipsFormat(gameInfo.buyInMax)})';
+    String title =
+        '${appScreenText['buyInEntry']} (${DataFormatter.chipsFormat(gameInfo.buyInMin)} - ${DataFormatter.chipsFormat(gameInfo.buyInMax)})';
     /* use numeric keyboard to get buyin */
     double value = await NumericKeyboard2.show(context,
         title: title,

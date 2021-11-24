@@ -495,7 +495,8 @@ class GamePlayScreenUtilMethods {
     }
 
     gameState.buyInKeyboardShown = true;
-    String title = 'Buy In (${DataFormatter.chipsFormat(gameInfo.buyInMin)} - ${DataFormatter.chipsFormat(gameInfo.buyInMax)})';
+    String title =
+        'Buy In (${DataFormatter.chipsFormat(gameInfo.buyInMin)} - ${DataFormatter.chipsFormat(gameInfo.buyInMax)})';
     /* use numeric keyboard to get buyin */
     double value = await NumericKeyboard2.show(
       context,

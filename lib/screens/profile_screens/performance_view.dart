@@ -33,7 +33,7 @@ class _PerformanceViewState extends State<PerformanceView>
   void initState() {
     _appScreenText = getAppTextScreen("performanceView");
 
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 1, vsync: this);
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _fetch();
@@ -96,7 +96,7 @@ class _PerformanceViewState extends State<PerformanceView>
                               controller: _tabController,
                               tabs: [
                                 Tab(text: _appScreenText['handStats']),
-                                Tab(text: _appScreenText['performance']),
+                                //Tab(text: _appScreenText['performance']),
                               ],
                               labelColor: theme.secondaryColorWithLight(),
                               unselectedLabelColor:
@@ -118,38 +118,7 @@ class _PerformanceViewState extends State<PerformanceView>
                                   ),
 
                                   // Performance
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Padding(
-                                        padding: EdgeInsets.all(16.pw),
-                                        child: Column(
-                                          children: [
-                                            Text(
-                                              _appScreenText['recentGames'],
-                                              style: AppDecorators
-                                                  .getSubtitle3Style(
-                                                      theme: theme),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: Container(
-                                          margin: EdgeInsets.only(
-                                              left: 16, right: 16, bottom: 16),
-                                          padding: EdgeInsets.all(8),
-                                          decoration:
-                                              AppDecorators.tileDecoration(
-                                                  theme),
-                                          child:
-                                              PerformanceBarChart(performance),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                  // performanceView(theme),
                                 ],
                               ),
                             ),
@@ -160,21 +129,33 @@ class _PerformanceViewState extends State<PerformanceView>
     );
   }
 
-  // String getBalanceFormatted(double bal) {
-  //   if (bal.abs() > 999999999) {
-  //     double val = bal / 1000000000;
-  //     return "${val.toStringAsFixed(1)}${_appScreenText['B']}";
-  //   }
-  //   if (bal.abs() > 999999) {
-  //     double val = bal / 1000000;
-  //     return "${val.toStringAsFixed(1)}${_appScreenText['M']}";
-  //   }
-  //   if (bal.abs() > 999) {
-  //     double val = bal / 1000;
-  //     return "${val.toStringAsFixed(1)}${_appScreenText['K']}";
-  //   }
-  //   return "${bal.toStringAsFixed(1)}";
-  // }
+  Widget performanceView(AppTheme theme) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Padding(
+          padding: EdgeInsets.all(16.pw),
+          child: Column(
+            children: [
+              Text(
+                _appScreenText['recentGames'],
+                style: AppDecorators.getSubtitle3Style(theme: theme),
+              ),
+            ],
+          ),
+        ),
+        Expanded(
+          child: Container(
+            margin: EdgeInsets.only(left: 16, right: 16, bottom: 16),
+            padding: EdgeInsets.all(8),
+            decoration: AppDecorators.tileDecoration(theme),
+            child: PerformanceBarChart(performance),
+          ),
+        ),
+      ],
+    );
+  }
 }
 
 class PerformanceBarChart extends StatelessWidget {
