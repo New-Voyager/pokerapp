@@ -34,12 +34,14 @@ class TableResultScreen extends StatefulWidget {
   final int rakeWidth = 15;
   final bool showDownload;
   final bool showTips;
+  final ClubHomePageModel club;
 
   TableResultScreen({
     this.gameCode,
     this.showDownload = true,
     this.showBackButton = true,
     this.showTips = false,
+    this.club = null,
   });
 
   @override
@@ -72,13 +74,13 @@ class _TableResultScreenState extends State<TableResultScreen>
     showTips = widget.showTips;
     // // ClubHomePageModel model =
     // //     Provider.of<ClubHomePageModel>(context, listen: false);
-    // if (model != null) {
-    //   if (model.isManager) {
-    //     if (model.role != null && model.role.seeTips) {
-    //       showTips = true;
-    //     }
-    //   }
-    // }
+    if (widget.club != null) {
+      if (widget.club.isManager) {
+        if (widget.club.role != null) {
+          showTips = widget.club.role.seeTips;
+        }
+      }
+    }
   }
 
   double getTotalRake() {
@@ -142,7 +144,7 @@ class _TableResultScreenState extends State<TableResultScreen>
               flex: widget.profitWidth,
               text: _appScreenText['profit'],
             ),
-            widget.showTips
+            showTips
                 ? _buildHeaderChild(
                     flex: widget.rakeWidth,
                     text: _appScreenText['tips'],
@@ -261,7 +263,7 @@ class _TableResultScreenState extends State<TableResultScreen>
                           data: tableRowRecord.profit,
                           theme: theme,
                         ),
-                        widget.showTips
+                        showTips
                             ? _buildTableContentChild(
                                 flex: widget.rakeWidth,
                                 data: DataFormatter.chipsFormat(
@@ -342,10 +344,10 @@ class _TableResultScreenState extends State<TableResultScreen>
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            widget.showTips
+                            showTips
                                 ? Text(
                                     _appScreenText['tips'],
-                                    style: AppDecorators.getSubtitle3Style(
+                                    style: AppDecorators.getHeadLine3Style(
                                         theme: theme),
                                   )
                                 : Container(),
@@ -353,7 +355,7 @@ class _TableResultScreenState extends State<TableResultScreen>
                             // sep
                             SizedBox(width: 10.0.pw),
 
-                            widget.showTips
+                            showTips
                                 ? Text(
                                     DataFormatter.chipsFormat(getTotalRake())
                                         .toString(),

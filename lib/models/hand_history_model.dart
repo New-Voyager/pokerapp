@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
+import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/utils/formatter.dart';
 
 class Winner {
@@ -57,6 +58,7 @@ class HandHistoryItem {
 class HandHistoryListModel extends ChangeNotifier {
   String gameCode;
   bool isOwner;
+  ClubHomePageModel club;
   dynamic jsonData;
   List<HandHistoryItem> allHands;
   List<HandHistoryItem> winningHands;

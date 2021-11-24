@@ -71,7 +71,7 @@ class ClubActionButtonNew extends StatelessWidget {
                 context,
                 Routes.game_history,
                 arguments: {
-                  "clubModel": clubModel
+                  "club": clubModel
                 }
               );
               break;

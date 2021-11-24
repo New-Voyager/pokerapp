@@ -210,10 +210,11 @@ class Routes {
         );
 
       case game_history:
-        var clubCode = settings.arguments as String;
+        Map<String, dynamic> args = settings.arguments as Map<String, dynamic>;
+        var clubModel = args["club"] as ClubHomePageModel;
         return _getPageRoute(
           routeName: settings.name,
-          viewToShow: GameHistoryView(clubCode),
+          viewToShow: GameHistoryView(clubModel),
         );
 
       case club_members_view:
@@ -319,6 +320,7 @@ class Routes {
       case hand_history_list:
         var args = settings.arguments as dynamic;
         var model = args['model'] as HandHistoryListModel;
+        var club = args['club'] as ClubHomePageModel;
         var clubCode = args['clubCode'];
         return _getPageRoute(
           routeName: settings.name,
@@ -330,6 +332,7 @@ class Routes {
                   HandHistoryListView(
                 data,
                 clubCode,
+                club,
               ),
             ),
           ),
@@ -349,14 +352,16 @@ class Routes {
         var args = settings.arguments as dynamic;
         var gameCode = args["gameCode"];
         var showTips = args["showTips"] ?? false;
+        var club = args["club"] as ClubHomePageModel;
         return _getPageRoute(
           routeName: settings.name,
-          viewToShow: TableResultScreen(gameCode: gameCode, showTips: showTips),
+          viewToShow: TableResultScreen(gameCode: gameCode, showTips: showTips, club: club),
         );
 
       case game_history_detail_view:
         var args = settings.arguments as dynamic;
         var model = args['model'] as GameHistoryDetailModel;
+        var club = args['club'] as ClubHomePageModel;
         var clubCode = args['clubCode'];
         return _getPageRoute(
           routeName: settings.name,
@@ -365,7 +370,7 @@ class Routes {
             builder: (BuildContext context, _) =>
                 Consumer<GameHistoryDetailModel>(
               builder: (_, GameHistoryDetailModel data, __) =>
-                  GameHistoryDetailView(data, clubCode),
+                  GameHistoryDetailView(data, clubCode, club),
             ),
           ),
         );

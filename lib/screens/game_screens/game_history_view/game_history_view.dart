@@ -6,6 +6,7 @@ import 'package:flutter_date_pickers/flutter_date_pickers.dart' as fdp;
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/main_helper.dart';
 import 'package:pokerapp/models/app_state.dart';
+import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
@@ -22,8 +23,8 @@ import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:provider/provider.dart';
 
 class GameHistoryView extends StatefulWidget {
-  final String clubCode;
-  GameHistoryView(this.clubCode);
+  final ClubHomePageModel clubModel;
+  GameHistoryView(this.clubModel);
 
   @override
   _GameHistoryViewState createState() => _GameHistoryViewState();
@@ -44,9 +45,9 @@ class _GameHistoryViewState extends State<GameHistoryView>
 
   _fetchData() async {
     if (appState != null && appState.mockScreens) {
-      _prevGames = await MockData.getGameHistory(widget.clubCode);
+      _prevGames = await MockData.getGameHistory(widget.clubModel.clubCode);
     } else {
-      _prevGames = await ClubInteriorService.getGameHistory(widget.clubCode);
+      _prevGames = await ClubInteriorService.getGameHistory(widget.clubModel.clubCode);
     }
 
     _loadingData = false;
@@ -72,7 +73,7 @@ class _GameHistoryViewState extends State<GameHistoryView>
           Navigator.pushNamed(
             context,
             Routes.game_history_detail_view,
-            arguments: {'model': model, 'clubCode': widget.clubCode},
+            arguments: {'club': widget.clubModel, 'model': model, 'clubCode': widget.clubModel.clubCode},
           );
         },
         child: GameHistoryItemNew(game: _prevGames[index]));
@@ -187,7 +188,7 @@ class _GameHistoryViewState extends State<GameHistoryView>
           appBar: CustomAppBar(
             theme: theme,
             titleText: _appScreenText['gameHistory'],
-            subTitleText: "${_appScreenText['clubCode']}: ${widget.clubCode}",
+            subTitleText: "${_appScreenText['clubCode']}: ${widget.clubModel.clubCode}",
             context: context,
             actionsList: [
               // button to show filter

@@ -34,6 +34,7 @@ class _HandHistoryAnalyseBottomSheetState
                 child: HandHistoryListView(
                   widget.model,
                   widget.clubCode,
+                  null,
                   isInBottomSheet: true,
                   isLeadingBackIconShow: false,
                   liveGame: true,
