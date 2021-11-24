@@ -228,7 +228,7 @@ class _ChipAmountWidgetState extends State<ChipAmountWidget>
     // final potViewPos = potViewBox.localToGlobal(Offset(0, 0));
     final potViewPos = widget.boardAttributesObject.potGlobalPos;
     final RenderBox box = context.findRenderObject();
-    if (box != null && potViewPos != null) {
+    if (box != null && potViewPos != null && widget.seat.potViewPos == null) {
       widget.seat.potViewPos = box.globalToLocal(potViewPos);
     }
     // log('potViewPos: Setting potViewPos for seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos}');
@@ -291,17 +291,14 @@ class _ChipAmountAnimatingWidgetState extends State<ChipAmountAnimatingWidget>
 
     final gameState = GameState.getState(context);
     final seat = gameState.getSeat(widget.seatPos);
-    Offset end = seat.potViewPos;
-    Offset begin = Offset(0, 0);
-    begin = seat.betWidgetPos;
-    this.begin = begin;
+    this.end = seat.potViewPos;
+    this.begin = seat.betWidgetPos;
     if (widget.reverse ?? false) {
-      Offset swap = end;
-      end = begin;
-      begin = swap;
+      //Offset swap = end;
+      this.end = seat.betWidgetPos;
+      this.begin = seat.potViewPos;
+      // log('ShowWinners seat: ${seat.seatPos.toString()} begin: ${begin.toString()} end: ${end.toString()}');
     }
-
-    this.end = end;
 
     animation = Tween<Offset>(
       begin: begin,

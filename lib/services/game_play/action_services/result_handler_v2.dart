@@ -331,6 +331,7 @@ class ResultHandlerV2 {
           board.cards, winningCards, winner.amount, rank, low);
       bool setState = false;
       if (i == winners.length - 1) {
+        // log('ShowWinners low: ${low}');
         setState = true;
       }
 
@@ -418,6 +419,7 @@ class ResultHandlerV2 {
         if (seat == null || seat.player == null) {
           continue;
         }
+        // log('ShowWinners show animation');
         // log('HiLo: Rebuild seat low: ${winner.low} player: ${seat.player.name} highlight cards: ${seat.player.highlightCards}');
         seat.notify();
       }
