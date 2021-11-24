@@ -253,6 +253,7 @@ class ResultHandlerV2Json {
       player.highlight = false;
       player.action.reset();
       player.highlightCards = [];
+      player.action.animateAction = false;
     }
 
     tableState.updateRankStrSilent(null);
@@ -294,6 +295,7 @@ class ResultHandlerV2Json {
     /* update the stack amount for the winners */
     seat.player.action.amount = winner.amount.toDouble();
     seat.player.action.winner = true;
+    seat.player.action.animateAction = true;
 
     /** set state */
     if (setState) {
@@ -302,8 +304,9 @@ class ResultHandlerV2Json {
       tableState.refreshCommunityCards();
       gameState.notifyAllSeats();
 
+      // we don't need this as we don't wanna do animation for all the seats
       /* finally animate the moving stack */
-      gameState.animateSeatActions();
+      // gameState.animateSeatActions();
 
       /* wait for the animation to finish */
       await Future.delayed(AppConstants.chipMovingAnimationDuration);
