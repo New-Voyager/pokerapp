@@ -203,7 +203,8 @@
         "bombPotBet": "Bomb Pot bet amount (x BBs)",
         "seatChangeAllowed": "Player Seat Change allowed",
         "hhTracked": "Track high-hand (entire game)",
-        "showRearrange": "Show rearrange button"
+        "showRearrange": "Show rearrange button",
+        "serviceFee": "Service Fee"
     },
     "clubsPageView": {
         "createdClub": "Created club",
