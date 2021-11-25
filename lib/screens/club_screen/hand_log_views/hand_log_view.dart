@@ -122,7 +122,11 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
     for (var item in model.bookmarkedHands) {
       list.add(item);
     }
-    setState(() {});
+    if (!disposed) {
+      setState(() {
+        // update ui
+      });
+    }
   }
 
   loadJsonData() async {
@@ -131,6 +135,9 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
 
     //final jsonResult = json.decode(data);
     //_handLogModel = HandLogModelNew.fromJson(jsonResult);
+    if (disposed) {
+      return;
+    }
 
     setState(() {
       _isLoading = false;

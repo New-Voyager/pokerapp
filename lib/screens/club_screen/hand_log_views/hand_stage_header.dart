@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/handlog_model.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
@@ -34,7 +35,7 @@ class HandStageHeader extends StatelessWidget {
       }
       String players = playersInPots.join(',');
 
-      final potValue = DataFormatter.chipsFormat(seatPots[i].pot);
+      final potValue = DataFormatter.chipsFormat(seatPots[i].pot, chipUnit: ChipUnit.CENT);
       final widget = Container(
         margin: EdgeInsets.all(8),
         child: Text(
@@ -158,7 +159,7 @@ class HandStageHeader extends StatelessWidget {
           ? Container(
               margin: EdgeInsets.all(8),
               child: Text(
-                "Pot: ${actions.potStart ?? 0}",
+                "Pot: ${DataFormatter.chipsFormat(actions.potStart ?? 0, chipUnit: ChipUnit.CENT)}",
                 style: AppDecorators.getSubtitle1Style(theme: theme)
                     .copyWith(fontWeight: FontWeight.w700),
               ),

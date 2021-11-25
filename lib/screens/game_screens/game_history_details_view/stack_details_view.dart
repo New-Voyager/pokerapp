@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/main_helper.dart';
 import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
@@ -370,12 +371,12 @@ class PlayerStackChartModel {
 
   PlayerStackChartModel(var e, {bool first: false}) {
     handNum = e["handNum"];
-    before = double.parse(e["before"].toString());
+    before = double.parse(e["before"].toString()) / 100;
     if (first) {
       handNum = handNum - 1;
-      after = double.parse(e["before"].toString());
+      after = double.parse(e["before"].toString()) / 100;
     } else {
-      after = double.parse(e["after"].toString());
+      after = double.parse(e["after"].toString()) / 100;
     }
     difference = (after - before);
     var absDiff = difference.abs();

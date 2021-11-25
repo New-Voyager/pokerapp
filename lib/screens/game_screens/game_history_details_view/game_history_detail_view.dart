@@ -628,8 +628,8 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
   }
 
   void onHandHistoryPressed(BuildContext context) {
-    final model =
-        HandHistoryListModel(_gameDetail.gameCode, _gameDetail.isOwner);
+    final model = HandHistoryListModel(
+        _gameDetail.gameCode, _gameDetail.isOwner, _gameDetail.chipUnit);
     Navigator.pushNamed(
       context,
       Routes.hand_history_list,
@@ -653,8 +653,8 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
   }
 
   void onHigh(BuildContext context) {
-    final model =
-        HandHistoryListModel(_gameDetail.gameCode, _gameDetail.isOwner);
+    final model = HandHistoryListModel(
+        _gameDetail.gameCode, _gameDetail.isOwner, _gameDetail.chipUnit);
     Navigator.pushNamed(
       context,
       Routes.hand_history_list,

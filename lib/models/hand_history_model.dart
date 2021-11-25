@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
+import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/utils/formatter.dart';
 
@@ -68,11 +69,12 @@ class HandHistoryListModel extends ChangeNotifier {
   String gameCode;
   bool isOwner;
   ClubHomePageModel club;
+  ChipUnit chipUnit;
   dynamic jsonData;
   List<HandHistoryItem> allHands;
   List<HandHistoryItem> winningHands;
 
-  HandHistoryListModel(this.gameCode, this.isOwner);
+  HandHistoryListModel(this.gameCode, this.isOwner, this.chipUnit);
   Map<int, String> players = new Map<int, String>();
 
   void getHands(List handsData, List<HandHistoryItem> hands) {

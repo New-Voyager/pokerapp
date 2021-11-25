@@ -39,6 +39,7 @@ class GameService {
           gameNum
           smallBlind
           bigBlind
+          chipUnit
           startedBy
           startedAt
           endedBy

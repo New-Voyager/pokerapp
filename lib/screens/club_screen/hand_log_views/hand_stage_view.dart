@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_stages.dart';
+import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/handlog_model.dart';
@@ -176,7 +177,8 @@ class HandStageView extends StatelessWidget {
             child: Text(
               actions.actions[index].action != HandActions.CHECK &&
                       actions.actions[index].action != HandActions.FOLD
-                  ? actions.actions[index].amount.toString()
+                  ? DataFormatter.chipsFormat(actions.actions[index].amount,
+                      chipUnit: ChipUnit.CENT)
                   : "",
               style: AppDecorators.getSubtitle1Style(theme: theme),
               textAlign: TextAlign.center,
@@ -185,7 +187,8 @@ class HandStageView extends StatelessWidget {
           Expanded(
             flex: 2,
             child: Text(
-              DataFormatter.chipsFormat(actions.actions[index].stack),
+              DataFormatter.chipsFormat(actions.actions[index].stack,
+                  chipUnit: ChipUnit.CENT),
               style: AppDecorators.getSubtitle1Style(theme: theme),
               textAlign: TextAlign.right,
             ),
