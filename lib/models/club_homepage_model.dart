@@ -90,7 +90,7 @@ class ClubHomePageModel extends ChangeNotifier {
   String picUrl;
   bool showHighRankStats;
   bool trackMemberCredit;
-  int availableCredit;
+  double availableCredit;
   int clubCoins; // filled for club owner and manager
   ManagerRole role = ManagerRole();
   ClubHomePageModel(String clubCode, String clubName) {
@@ -122,7 +122,7 @@ class ClubHomePageModel extends ChangeNotifier {
     this.showHighRankStats = member['showHighRankStats'] ?? false;
     this.trackMemberCredit = member['trackMemberCredit'] ?? false;
     if (member['availableCredit'] != null) {
-      this.availableCredit = int.parse(member['availableCredit'].toString());
+      this.availableCredit = double.parse(member['availableCredit'].toString());
     }
     if (data['member']['managerRole'] != null) {
       dynamic role = data['member']['managerRole'];
