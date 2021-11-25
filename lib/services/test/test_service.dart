@@ -32,7 +32,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/host_seat_chang
 
 class TestService {
   static bool get isTesting {
-    return false;
+    return true;
   }
 
   static var _showResult = false;
@@ -50,6 +50,14 @@ class TestService {
 
   static set context(BuildContext context) => _context = context;
 
+  static showDealerWidget() {
+    final gameState = GameState.getState(_context);
+    for (int seatNo = 1; seatNo <= 9; seatNo++) {
+      final seat = gameState.getSeat(seatNo);
+      seat.dealer = true;
+    }
+  }
+  
   static showMuckLosingHand() {
     final gameState = GameState.getState(_context);
     gameState.handState = HandState.RESULT;

@@ -234,6 +234,16 @@ class GamePlayScreenUtilMethods {
           ),
           backgroundColor: Colors.red,
           labelBackgroundColor: Colors.black,
+          label: 'Show Dealer Widget',
+          onTap: () => TestService.showDealerWidget(),
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
+          labelBackgroundColor: Colors.black,
           label: 'Notification',
           onTap: () => TestService.showTextNotification(),
         ),
