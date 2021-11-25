@@ -427,7 +427,7 @@ class _TableResultScreenState extends State<TableResultScreen>
         String subject = '${_appScreenText['tableResultGame']}: $gameCode';
         Share.share(result, subject: subject);
       } catch (err) {
-        log('Error: ${err.toString()}');
+        log('Error: ${err.toString()}, ${err.stackTrace}');
       }
     });
   }

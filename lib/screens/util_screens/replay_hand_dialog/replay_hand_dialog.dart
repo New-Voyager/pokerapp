@@ -34,7 +34,7 @@ class ReplayHandDialog extends StatelessWidget {
       try {
         data = await HandService.getHandLog(gameCode, handNumber);
       } catch (err) {
-        log('Error: ${err.toString()}');
+        log('Error: ${err.toString()}, ${err.stackTrace}');
       }
     }
 

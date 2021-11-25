@@ -91,6 +91,15 @@ class TestService {
     }
   }
 
+  static showCardDistribution() async {
+    final _gameState = GameState.getState(_context);
+    for (int i = 1; i <= 9; i++) {
+      _gameState.cardDistributionState.seatNo = i;
+      await Future.delayed(const Duration(milliseconds: 300));
+      _gameState.cardDistributionState.seatNo = null;
+    }
+  }
+
   static showRank() async {
     final gameState = GameState.getState(_context);
     final seat = gameState.getSeat(1);
@@ -357,6 +366,7 @@ class TestService {
   }
 
   static Future<void> testBetWidget() async {
+    return showCardDistribution();
     BuildContext context = _context;
 
     final gameState = Provider.of<GameState>(context, listen: false);
@@ -1001,7 +1011,7 @@ class TestService {
       log('$result');
       _handActionProtoService.handleResult2(result);
     } catch (err) {
-      log('Error: ${err.toString()}');
+      log('Error: ${err.toString()}, ${err.stackTrace}');
     }
   }
 }

@@ -489,7 +489,7 @@ class HandActionProtoService {
           return handleAnnouncement(message);
       }
     } catch (err) {
-      log('Error: ${err.toString()}');
+      log('Error: ${err.toString()}, ${err.stackTrace}');
     } finally {
       ////log('Hand Message: ::handleMessage:: END messageType: $messageType');
     }
@@ -575,6 +575,7 @@ class HandActionProtoService {
   }
 
   Future<void> handleDeal(proto.HandMessageItem message) async {
+    return;
     //log('Hand Message: ::handleDeal:: START');
 
     // play the deal sound effect

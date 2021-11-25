@@ -164,7 +164,7 @@ class _HighHandAnalysisScreenState extends State<HighHandAnalysisScreen> {
 
       result = highHandWinners;
     } catch (err) {
-      log('error: ${err.toString()}');
+      log('error: ${err.toString()}, ${err.stackTrace}');
     }
     ConnectionDialog.dismiss(context: context);
     searching = false;
