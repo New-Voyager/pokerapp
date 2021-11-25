@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game/new_game_model.dart';
@@ -819,6 +820,26 @@ class NewGameSettings2 extends StatelessWidget {
                     ),
                   ],
                 ),
+                sepV20,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    _buildLabel(_appScreenText['serviceFee'], theme),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        _buildLabel("10", theme),
+                        Image.asset(
+                          'assets/images/appcoin.png',
+                          height: 16.pw,
+                          width: 16.pw,
+                        ),
+                        _buildLabel("coins/hour", theme),
+                      ],
+                    ),
+                  ],
+                ),
+                sepV20,
 
                 /* start button */
                 sepV20,

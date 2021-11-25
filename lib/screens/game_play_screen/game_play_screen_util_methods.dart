@@ -247,6 +247,16 @@ class GamePlayScreenUtilMethods {
           label: 'Notification',
           onTap: () => TestService.showTextNotification(),
         ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
+          labelBackgroundColor: Colors.black,
+          label: 'Show Muck Losing Hand',
+          onTap: () => TestService.showMuckLosingHand(),
+        ),
       ],
       backgroundColor: AppColorsNew.appAccentColor,
     );

@@ -28,7 +28,7 @@ class IPhoneAttribs {
             "height": 55
           },
           "buttonPos": {
-            "topCenter": "25, 40",
+            "topCenter": "10, 40",
             "bottomCenter": "10, -40",
             "middleLeft": "50, 0",
             "middleRight": "-50, 0",
