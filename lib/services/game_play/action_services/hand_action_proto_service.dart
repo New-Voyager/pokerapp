@@ -575,7 +575,7 @@ class HandActionProtoService {
   }
 
   Future<void> handleDeal(proto.HandMessageItem message) async {
-    return;
+    //return;
     //log('Hand Message: ::handleDeal:: START');
 
     // play the deal sound effect
