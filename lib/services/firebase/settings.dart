@@ -28,7 +28,7 @@ Future<FirebaseOptions> getFirebaseSettings(String apiUrl) async {
     final fbOptions = FirebaseOptions.fromMap(settings);
     return fbOptions;
   } catch (err) {
-    log('Error: ${err.toString()}');
+    log('Error: ${err.toString()}, ${err.stackTrace}');
     return null;
   }
 }

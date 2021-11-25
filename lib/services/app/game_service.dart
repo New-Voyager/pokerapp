@@ -893,7 +893,7 @@ class GameService {
       log('Created game: $gameCode');
       return gameCode;
     } catch (err) {
-      log('Error: ${err.toString()}');
+      log('Error: ${err.toString()}, ${err.stackTrace}');
       return null;
     }
   }

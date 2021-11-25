@@ -305,21 +305,24 @@ class NamePlateWidget extends StatelessWidget {
                         //SizedBox(height: 2),
                         // player name
                         FittedBox(
-                          child: Text(seat.player?.name ?? '',
-                              style:
-                                  AppDecorators.getSubtitle4Style(theme: theme)
-                                      .copyWith(
-                                          fontWeight: FontWeight.normal,
-                                          fontSize: 12.dp)
-                              //fontSize: nameplate.meta.nameTextSize),
-                              ),
+                          fit: BoxFit.fitWidth,
+                          child: Text(
+                            seat.player?.name ?? '',
+                            style: AppDecorators.getSubtitle4Style(theme: theme)
+                                .copyWith(
+                              fontWeight: FontWeight.normal,
+                              fontSize: 12.dp,
+                            ),
+                            //fontSize: nameplate.meta.nameTextSize),
+                          ),
                         ),
-                        //Spacer(),
+
                         // divider
                         Transform.scale(
-                            scale: scale, child: PlayerViewDivider()),
+                          scale: scale,
+                          child: PlayerViewDivider(),
+                        ),
 
-                        //Spacer(),
                         // bottom widget - to show stack, sit back time, etc.
                         Align(
                           alignment: Alignment.topRight,
@@ -341,19 +344,21 @@ class NamePlateWidget extends StatelessWidget {
 
     plateWidget = namePlate;
     Widget ret = Opacity(
-        opacity: childWhenDragging ? 0.50 : 1.0,
-        child: Container(
-            width: 100,
-            height: 75,
-            //width: boardAttributes.namePlateSize.width,
-            //height: boardAttributes.namePlateSize.height,
-            padding: const EdgeInsets.symmetric(
-              vertical: 5.0,
-            ),
-            decoration: BoxDecoration(
-              boxShadow: shadow,
-            ),
-            child: plateWidget));
+      opacity: childWhenDragging ? 0.50 : 1.0,
+      child: Container(
+        width: 100,
+        height: 76,
+        //width: boardAttributes.namePlateSize.width,
+        //height: boardAttributes.namePlateSize.height,
+        padding: const EdgeInsets.symmetric(
+          vertical: 5.0,
+        ),
+        decoration: BoxDecoration(
+          boxShadow: shadow,
+        ),
+        child: plateWidget,
+      ),
+    );
     return ret;
   }
 

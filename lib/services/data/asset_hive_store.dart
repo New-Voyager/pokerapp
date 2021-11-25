@@ -99,7 +99,7 @@ class Asset {
         final loadedAsset = await rootBundle.load(downloadedPath);
         return loadedAsset.buffer.asUint8List();
       } catch (err) {
-        log('Error: ${err.toString()}');
+        log('Error: ${err.toString()}, ${err.stackTrace}');
       }
     }
   }

@@ -87,7 +87,7 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
           _handResult =
               await HandService.getHandLog(widget.gameCode, widget.handNum);
         } catch (err) {
-          log('Error: ${err.toString()}');
+          log('Error: ${err.toString()}, ${err.stackTrace}');
         }
       } else {
         try {
@@ -100,7 +100,7 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
             _handResult =
                 await HandService.getHandLog(widget.gameCode, widget.handNum);
           } catch (err) {
-            log('Error: ${err.toString()}');
+            log('Error: ${err.toString()}, ${err.stackTrace}');
           }
         }
       }

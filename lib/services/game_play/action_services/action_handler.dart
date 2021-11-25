@@ -246,8 +246,8 @@ class PlayerActionHandler {
       log('QueryCurrentHand: seat no: ${seatToAct.serverSeatPos} action timer: ${_gameState.gameInfo.actionTime} remainingTime: $remainingActionTime');
       seatToAct.actionTimer
           .setTime(_gameState.gameInfo.actionTime, remainingActionTime);
+      log('QueryCurrentHand: 1 seat no: ${seatToAct.serverSeatPos} action timer: ${seatToAct.actionTimer.getTotalTime()} remainingTime: ${seatToAct.actionTimer.getRemainingTime()}');
     }
-    log('QueryCurrentHand: 1 seat no: ${seatToAct.serverSeatPos} action timer: ${seatToAct.actionTimer.getTotalTime()} remainingTime: ${seatToAct.actionTimer.getRemainingTime()}');
 
     if (mySeat != null && nextSeatToAct == mySeat.serverSeatPos) {
       // i am next to act
@@ -258,7 +258,9 @@ class PlayerActionHandler {
     }
     _gameState.notifyAllSeats();
     _gameState.myState.notify();
-    log('QueryCurrentHand: 3 seat no: ${seatToAct.serverSeatPos} action timer: ${seatToAct.actionTimer.getTotalTime()} remainingTime: ${seatToAct.actionTimer.getRemainingTime()}');
+
+    if (seatToAct != null)
+      log('QueryCurrentHand: 3 seat no: ${seatToAct.serverSeatPos} action timer: ${seatToAct.actionTimer.getTotalTime()} remainingTime: ${seatToAct.actionTimer.getRemainingTime()}');
   }
 
   Future<void> handleNextAction(proto.HandMessageItem message) async {

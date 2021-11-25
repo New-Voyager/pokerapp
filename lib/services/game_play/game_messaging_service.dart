@@ -412,7 +412,7 @@ class ChatMessage {
       }
       return msg;
     } catch (err) {
-      log('Error: ${err.toString()}');
+      log('Error: ${err.toString()}, ${err.stackTrace}');
       return null;
     }
   }
