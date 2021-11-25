@@ -511,7 +511,7 @@ class AndroidAttribs {
             "middleRight": "-50, 50",
             "topLeft": "80, 170",
             "topRight": "-80, 170",
-            "topCenter": "-80, 130",
+            "topCenter": "0, 130",
             "topCenter1": "-80, 130",
             "topCenter2": "80, 130"
           },
