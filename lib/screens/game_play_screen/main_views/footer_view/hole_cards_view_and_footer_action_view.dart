@@ -58,33 +58,27 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
           gameState.customizationMode
               ? BetIconButton(displayBetText: false)
               : Container(),
+
           Align(
             alignment: Alignment.topCenter,
             child: rankText,
           ),
+
           // hole card view & rank Text
           Transform.translate(
-              offset: offset,
-              child: Container(
-                width: double.infinity,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Transform.scale(
-                        alignment: Alignment.topCenter,
-                        scale: scale,
-                        child: Container(
-                          child: Consumer4<StraddlePromptState, HoleCardsState,
-                              MyState, MarkedCards>(
-                            builder: (_, __, ___, ____, markedCards, _____) {
-                              // log('Holecard view: rebuild');
-                              return _buildHoleCardView(context);
-                            },
-                          ),
-                        )),
-                  ],
-                ),
-              )),
+            offset: offset,
+            child: Transform.scale(
+              alignment: Alignment.topCenter,
+              scale: scale,
+              child: Consumer4<StraddlePromptState, HoleCardsState, MyState,
+                  MarkedCards>(
+                builder: (_, __, ___, ____, markedCards, _____) {
+                  // log('Holecard view: rebuild');
+                  return _buildHoleCardView(context);
+                },
+              ),
+            ),
+          ),
           StraddleWidget(gameState),
         ],
       );
@@ -204,7 +198,9 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
       cardsInt: playerCards,
       straddlePrompt: gameState.straddlePrompt,
     );
+
     if (gameState.straddlePrompt) return cardsWidget;
+
     Widget shuffleButton = Container();
     if (playerModel != null && playerModel.cards != null) {
       if (playerModel.cards.length > 2 &&
@@ -231,46 +227,32 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
       }
     }
 
-    return GestureDetector(
-      onTap: () {
-        isHoleCardsVisibleVn.value = !isHoleCardsVisibleVn.value;
+    return Transform.translate(
+      offset: boardAttributes.holeCardOffset,
+      child: GestureDetector(
+        onTap: () {
+          isHoleCardsVisibleVn.value = !isHoleCardsVisibleVn.value;
 
-        // write the final _isCardVisible value to local storage
-        gameState.gameHiveStore.setHoleCardsVisibilityState(
-          isHoleCardsVisibleVn.value,
-        );
+          // write the final _isCardVisible value to local storage
+          gameState.gameHiveStore.setHoleCardsVisibilityState(
+            isHoleCardsVisibleVn.value,
+          );
 
-        gameState.holeCardsState.notify();
-      },
-      child: Transform.translate(
-        offset: boardAttributes.holeCardOffset,
-        child: Column(
-          key: UniqueKey(),
-          crossAxisAlignment: CrossAxisAlignment.center,
+          gameState.holeCardsState.notify();
+        },
+        child: Stack(
+          alignment: Alignment.center,
           children: [
-            // SizedBox(
-            //   height: 12.dp,
-            // ),
-            Column(
-              children: [
-                Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    cardsWidget,
-                    Visibility(
-                      visible: isHoleCardsVisibleVn.value,
-                      child: Positioned(
-                        bottom: 40,
-                        left: 0,
-                        right: 0,
-                        child: shuffleButton,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+            cardsWidget,
+            Visibility(
+              visible: isHoleCardsVisibleVn.value,
+              child: Positioned(
+                bottom: 40,
+                left: 0,
+                right: 0,
+                child: shuffleButton,
+              ),
             ),
-            //shuffleButton,
           ],
         ),
       ),
