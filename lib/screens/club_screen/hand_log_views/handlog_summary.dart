@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/handlog_model.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
@@ -97,7 +98,7 @@ class HandlogSummary extends StatelessWidget {
           Expanded(
             flex: 2,
             child: Text(
-              DataFormatter.chipsFormat(diff),
+              DataFormatter.chipsFormat(diff, chipUnit: ChipUnit.CENT),
               style: TextStyle(
                 color: (diff > 0) ? Colors.green : Colors.red,
                 fontSize: 12.0,
@@ -109,7 +110,8 @@ class HandlogSummary extends StatelessWidget {
           Expanded(
             flex: 2,
             child: Text(
-              DataFormatter.chipsFormat(player.balance.after),
+              DataFormatter.chipsFormat(player.balance.after,
+                  chipUnit: ChipUnit.CENT),
               style: AppDecorators.getSubtitle1Style(theme: theme)
                   .copyWith(fontWeight: FontWeight.w500),
               textAlign: TextAlign.right,

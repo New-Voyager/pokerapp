@@ -258,7 +258,7 @@ class PotWinnersView extends StatelessWidget {
         margin: EdgeInsets.symmetric(horizontal: 8),
         alignment: Alignment.centerRight,
         child: Text(
-          DataFormatter.chipsFormat(pot.amount),
+          DataFormatter.chipsFormat(pot.amount, chipUnit: ChipUnit.CENT),
           style: AppDecorators.getHeadLine4Style(theme: theme),
         ),
       ),

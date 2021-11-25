@@ -1,4 +1,5 @@
 import 'package:intl/intl.dart';
+import 'package:pokerapp/enums/game_type.dart';
 
 final DateFormat _dateFormatter =
     DateFormat.yMd().add_jms(); // internationalize this
@@ -6,9 +7,14 @@ final NumberFormat _chipsFormatter = new NumberFormat("0.00");
 final NumberFormat _timeFormatter = new NumberFormat("00");
 
 class DataFormatter {
-  static String chipsFormat(double value) {
+  static String chipsFormat(double value,
+      {ChipUnit chipUnit = ChipUnit.DOLLAR}) {
     if (value == null) {
       return '';
+    }
+
+    if (chipUnit == ChipUnit.CENT) {
+      value = value / 100;
     }
 
     if (value == value.round()) {

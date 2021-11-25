@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/handlog_model.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
+import 'package:pokerapp/utils/formatter.dart';
 import 'package:provider/provider.dart';
 
 class HandLogActionView extends StatelessWidget {
@@ -56,7 +58,8 @@ class HandLogActionView extends StatelessWidget {
                 Expanded(
                   flex: 2,
                   child: Text(
-                    player.balance.after.toString(),
+                    DataFormatter.chipsFormat(player.balance.after,
+                        chipUnit: ChipUnit.CENT),
                     style: AppDecorators.getSubtitle1Style(theme: theme),
                     textAlign: TextAlign.right,
                   ),

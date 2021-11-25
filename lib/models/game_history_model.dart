@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
+import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/utils/formatter.dart';
 
 class GameHistoryModel {
@@ -180,6 +181,7 @@ class GameHistoryDetailModel extends ChangeNotifier {
   bool isManager;
   String handDataLink = '';
   bool dataAggregated = false;
+  ChipUnit chipUnit = ChipUnit.DOLLAR;
 
   List<HandData> handsData = [];
   List<HighHandWinner> hhWinners = [];
@@ -259,7 +261,11 @@ class GameHistoryDetailModel extends ChangeNotifier {
       profit = double.parse((gameData['profit'] ?? '0').toString());
       buyIn = double.parse((gameData['buyIn'] ?? '0').toString());
     }
-
+    if (gameData['chipUnit'] == 'DOLLAR') {
+      chipUnit = ChipUnit.DOLLAR;
+    } else {
+      chipUnit = ChipUnit.CENT;
+    }
     isOwner = gameData['isOwner'];
     isHost = gameData['isHost'];
     isManager = gameData['isManager'];

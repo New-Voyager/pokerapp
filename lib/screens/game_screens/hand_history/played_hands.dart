@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/auth_model.dart';
 import 'package:pokerapp/models/bookmarkedHands_model.dart';
 import 'package:pokerapp/models/hand_history_model.dart';
@@ -23,13 +24,14 @@ final _separator = SizedBox(
 
 class PlayedHandsScreen extends StatefulWidget {
   final List<HandHistoryItem> history;
+  final ChipUnit chipUnit;
   final String gameCode;
   final String clubCode;
   final bool isInBottomSheet;
   final AuthModel currentPlayer;
   final bool liveGame;
-  PlayedHandsScreen(
-      this.gameCode, this.history, this.clubCode, this.currentPlayer,
+  PlayedHandsScreen(this.chipUnit, this.gameCode, this.history, this.clubCode,
+      this.currentPlayer,
       {this.isInBottomSheet = false, this.liveGame = false});
 
   @override
@@ -338,7 +340,8 @@ class _PlayedHandsScreenState extends State<PlayedHandsScreen> {
 
   getListItem(BuildContext context, int index, bool isTheHandBookmarked,
       AppTheme theme) {
-    WinnerWidget winnerWidget = new WinnerWidget(item: widget.history[index]);
+    WinnerWidget winnerWidget = new WinnerWidget(
+        item: widget.history[index], chipUnit: widget.chipUnit);
     return Builder(
       builder: (context) {
         return GestureDetector(
@@ -476,8 +479,9 @@ class _PlayedHandsScreenState extends State<PlayedHandsScreen> {
 
 class WinnerWidget extends StatelessWidget {
   final HandHistoryItem item;
+  final ChipUnit chipUnit;
 
-  WinnerWidget({this.item});
+  WinnerWidget({this.item, this.chipUnit});
 
   List<Widget> getCommunityCards() {
     List<Widget> communityCards = [
@@ -627,7 +631,7 @@ class WinnerWidget extends StatelessWidget {
                   ),
                   _separator,
                   Text(
-                    DataFormatter.chipsFormat(pot),
+                    DataFormatter.chipsFormat(pot, chipUnit: ChipUnit.CENT),
                     style: AppDecorators.getSubtitle2Style(theme: theme),
                   ),
                 ],
