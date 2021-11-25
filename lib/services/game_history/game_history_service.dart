@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
+import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/models/hand_history_model.dart';
 import 'package:pokerapp/models/handlog_model.dart';
@@ -42,7 +43,21 @@ class GameHistoryServiceImpl {
 
   Future<HandHistoryListModel> getHandHistory(
       String gameCode, int playerId) async {
-    HandHistoryListModel ret = HandHistoryListModel(gameCode, true);
+    ChipUnit chipUnit = ChipUnit.DOLLAR;
+    final gameInfo = await GameService.getGameInfo(gameCode);
+    if (gameInfo == null) {
+      GameHistoryDetailModel historyDetailModel =
+          GameHistoryDetailModel(gameCode, true);
+      final historyGame =
+          await GameService.getGameHistoryDetail(historyDetailModel);
+      if (historyGame == null) {
+        return null;
+      }
+      chipUnit = historyGame.chipUnit;
+    }
+
+    HandHistoryListModel ret = HandHistoryListModel(gameCode, true, chipUnit);
+
     final list = await this.getHandHistoryList(gameCode);
     List<HandHistoryItem> allHands = [];
     List<HandHistoryItem> winningHands = [];

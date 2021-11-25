@@ -228,6 +228,7 @@ class _HandHistoryState extends State<HandHistoryListView>
 
   Widget getFilteredView(AppTheme theme) {
     return PlayedHandsScreen(
+      _data.chipUnit,
       _data.gameCode,
       filteredHands,
       widget.clubCode,
@@ -261,6 +262,7 @@ class _HandHistoryState extends State<HandHistoryListView>
               physics: const BouncingScrollPhysics(),
               children: [
                 PlayedHandsScreen(
+                  _data.chipUnit,
                   _data.gameCode,
                   _data.getMyHands(),
                   //_data.getAllHands(),
@@ -269,6 +271,7 @@ class _HandHistoryState extends State<HandHistoryListView>
                   isInBottomSheet: widget.isInBottomSheet,
                 ),
                 PlayedHandsScreen(
+                  _data.chipUnit,
                   _data.gameCode,
                   _data.getWinningHands(),
                   widget.clubCode,

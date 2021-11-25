@@ -120,7 +120,8 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
   }
 
   Future<void> onClickViewHandAnalysis(BuildContext context) async {
-    final model = HandHistoryListModel(widget.gameState.gameCode, true);
+    final model = HandHistoryListModel(
+        widget.gameState.gameCode, true, widget.gameState.gameInfo.chipUnit);
     showBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
