@@ -30,7 +30,6 @@ class CreateClubDialog {
           backgroundColor: Colors.transparent,
           contentPadding: EdgeInsets.zero,
           content: Container(
-              height: MediaQuery.of(context).size.height * 0.61,
               padding: EdgeInsets.only(bottom: 24, top: 8, right: 8, left: 8),
               decoration: AppDecorators.bgRadialGradient(theme).copyWith(
                 borderRadius: BorderRadius.circular(16),
@@ -97,52 +96,54 @@ class CreateClubDialog {
                           AppDecorators.tileDecorationWithoutBorder(theme),
                       child: Form(
                         key: _formKey,
-                        child: SingleChildScrollView(
-                          physics: BouncingScrollPhysics(),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              SizedBox(height: 10.ph),
-                              /* club name */
-                              Text(
-                                appScreenText['name'],
-                                style: AppDecorators.getSubtitleStyle(
-                                    theme: theme),
-                              ),
-                              SizedBox(height: 5.ph),
-                              CardFormTextField(
-                                theme: theme,
-                                elevation: 0.0,
-                                hintText: appScreenText['nameHint'],
-                                validator: (String val) => val.trim().isEmpty
-                                    ? appScreenText['provideClubName']
-                                    : null,
-                                onSaved: (String val) =>
-                                    clubDetails['name'] = val.trim(),
-                              ),
-                              SizedBox(height: 5.ph),
-                              Text(
-                                appScreenText['description'],
-                                style: AppDecorators.getSubtitleStyle(
-                                    theme: theme),
-                              ),
-                              SizedBox(height: 5.ph),
-                              CardFormTextField(
-                                theme: theme,
-                                elevation: 0.0,
-                                hintText: appScreenText['descriptionHint'],
-                                validator: (String val) => val.trim().isEmpty
-                                    ? appScreenText['provideDescription']
-                                    : null,
-                                maxLines: 5,
-                                maxLength: 500,
-                                showCharacterCounter: true,
-                                onSaved: (String val) =>
-                                    clubDetails['description'] = val.trim(),
-                              ),
-                              SizedBox(height: 20.ph),
-                            ],
+                        child: Container(
+                          child: SingleChildScrollView(
+                            physics: BouncingScrollPhysics(),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                SizedBox(height: 10.ph),
+                                /* club name */
+                                Text(
+                                  appScreenText['name'],
+                                  style: AppDecorators.getSubtitleStyle(
+                                      theme: theme),
+                                ),
+                                SizedBox(height: 5.ph),
+                                CardFormTextField(
+                                  theme: theme,
+                                  elevation: 0.0,
+                                  hintText: appScreenText['nameHint'],
+                                  validator: (String val) => val.trim().isEmpty
+                                      ? appScreenText['provideClubName']
+                                      : null,
+                                  onSaved: (String val) =>
+                                      clubDetails['name'] = val.trim(),
+                                ),
+                                SizedBox(height: 5.ph),
+                                Text(
+                                  appScreenText['description'],
+                                  style: AppDecorators.getSubtitleStyle(
+                                      theme: theme),
+                                ),
+                                SizedBox(height: 5.ph),
+                                CardFormTextField(
+                                  theme: theme,
+                                  elevation: 0.0,
+                                  hintText: appScreenText['descriptionHint'],
+                                  validator: (String val) => val.trim().isEmpty
+                                      ? appScreenText['provideDescription']
+                                      : null,
+                                  maxLines: 5,
+                                  maxLength: 500,
+                                  showCharacterCounter: true,
+                                  onSaved: (String val) =>
+                                      clubDetails['description'] = val.trim(),
+                                ),
+                                SizedBox(height: 20.ph),
+                              ],
+                            ),
                           ),
                         ),
                       ),

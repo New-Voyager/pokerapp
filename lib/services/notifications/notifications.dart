@@ -328,7 +328,11 @@ class NotificationHandler {
     if (!(type == 'NEW_GAME' ||
         type == 'WAITLIST_SEATING' ||
         type == 'HOST_MESSAGE' ||
-        type == 'TEST_PUSH')) {
+        type == 'TEST_PUSH' ||
+        type == 'SYSTEM_ANNOUNCEMENT' ||
+        type == 'CLUB_ANNOUNCEMENT' ||
+        type == 'HOST_TO_MEMBER' ||
+        type == 'MEMBER_TO_HOST')) {
       return;
     }
     String body = '';
@@ -351,8 +355,15 @@ class NotificationHandler {
       } catch (err) {}
     } else if (type == 'TEST_PUSH') {
       body = 'This is a test notification!';
+    } else if (type == 'SYSTEM_ANNOUNCEMENT') {
+      body = json['shortText'];
+    } else if (type == 'CLUB_ANNOUNCEMENT') {
+      body = json['clubName'] + ': ' + json['shortText'];
+    } else if (type == 'HOST_TO_MEMBER') {
+      body = json['clubName'] + ' host: ' + json['text'];
+    } else if (type == 'MEMBER_TO_HOST') {
+      body = json['clubName'] + ' ${json['sender']}: ' + json['text'];
     }
-
     if (body.length == 0) {
       return;
     }
@@ -369,7 +380,9 @@ class NotificationHandler {
 
     final _androidDetails = AndroidNotificationDetails(
         "com.voyagerent.pokerapp.channel", "pokerapp", "Poker App Channel",
-        sound: RawResourceAndroidNotificationSound('check'), playSound: true);
+        sound: RawResourceAndroidNotificationSound('check'),
+        playSound: true,
+        color: Color.fromARGB(255, 0, 255, 0));
     final _iosDetails = IOSNotificationDetails();
     final _notificationDetails =
         NotificationDetails(android: _androidDetails, iOS: _iosDetails);
@@ -491,16 +504,16 @@ class NotificationHandler {
   Future<void> handleClubAnnouncement(Map<String, dynamic> json) async {
     String clubName = json['clubName'].toString();
     Alerts.showNotification(
-        titleText: 'Club Announcement',
-        subTitleText: 'Club $clubName made a new announcement',
-        duration: Duration(seconds: 3));
+        titleText: clubName,
+        subTitleText: json['shortText'],
+        duration: Duration(seconds: 5));
   }
 
   Future<void> handleSystemAnnouncement(Map<String, dynamic> json) async {
     Alerts.showNotification(
-        titleText: 'System Announcement',
-        subTitleText: 'There is a new system announcement',
-        duration: Duration(seconds: 3));
+        titleText: 'Announcement',
+        subTitleText: json['shortText'],
+        duration: Duration(seconds: 5));
   }
 }
 

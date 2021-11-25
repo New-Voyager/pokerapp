@@ -4,6 +4,7 @@ import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pokerapp/enums/game_type.dart';
+import 'package:ios_utsname_ext/extension.dart';
 
 class Screen {
   final Size _size;
@@ -86,7 +87,7 @@ class DeviceInfo {
 
   static String get model {
     if (Platform.isIOS) {
-      return _deviceInfo._deviceData['name'];
+      return _deviceInfo._deviceData['model'];
     } else if (Platform.isAndroid) {
       return _deviceInfo._deviceData['model'];
     }
@@ -135,11 +136,16 @@ class DeviceInfo {
   }
 
   Map<String, dynamic> _readIosDeviceInfo(IosDeviceInfo data) {
+    String model = data.utsname.machine.iOSProductName;
+    if (model.contains('Simulator')) {
+      model = data.name;
+    }
+
     return <String, dynamic>{
       'name': data.name,
       'systemName': data.systemName,
       'systemVersion': data.systemVersion,
-      'model': data.model,
+      'model': model,
       'localizedModel': data.localizedModel,
       'identifierForVendor': data.identifierForVendor,
       'isPhysicalDevice': data.isPhysicalDevice,
