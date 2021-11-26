@@ -35,16 +35,16 @@ class AndroidAttribs {
             "height": 55
           },
           "buttonPos": {
-            "topCenter": "25, 40",
-            "bottomCenter": "10, -40",
+            "topCenter": "50, 0",
+            "bottomCenter": "50, 0",
             "middleLeft": "50, 0",
             "middleRight": "-50, 0",
-            "topRight": "-40, 30",
-            "topLeft": "40, 30", 
-            "bottomLeft": "25, -40",
-            "bottomRight": "-20, -40",
-            "topCenter1": "0, 40",
-            "topCenter2": "0, 40"
+            "topRight": "-50, 0",
+            "topLeft": "50, 0", 
+            "bottomLeft": "50, 0",
+            "bottomRight": "-50, 0",
+            "topCenter1": "50, 0",
+            "topCenter2": "50, 0"
           },
           "foldStopPos": {
             "bottomCenter": "20, -130",
