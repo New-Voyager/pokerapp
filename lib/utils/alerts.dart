@@ -113,6 +113,43 @@ class Alerts {
           ),
           content: StatefulBuilder(
             builder: (_, localSetState) {
+              Widget fiveCardGames = Column(
+                children: [
+                  GameTypeChip(
+                    gameType: GameType.FIVE_CARD_PLO,
+                    selected: list.contains(GameType.FIVE_CARD_PLO),
+                    onTapFunc: (val) {
+                      if (val) {
+                        list.add(GameType.FIVE_CARD_PLO);
+                      } else {
+                        if (list.length <= 2) {
+                          toast("minimum 2 game types required");
+                          return;
+                        }
+                        list.remove(GameType.FIVE_CARD_PLO);
+                      }
+                      localSetState(() {});
+                    },
+                  ),
+                  GameTypeChip(
+                    gameType: GameType.FIVE_CARD_PLO_HILO,
+                    selected: list.contains(GameType.FIVE_CARD_PLO_HILO),
+                    onTapFunc: (val) {
+                      if (val) {
+                        list.add(GameType.FIVE_CARD_PLO_HILO);
+                      } else {
+                        if (list.length <= 2) {
+                          toast("minimum 2 game types required");
+                          return;
+                        }
+                        list.remove(GameType.FIVE_CARD_PLO_HILO);
+                      }
+                      localSetState(() {});
+                    },
+                  ),
+                ],
+              );
+
               return Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -206,38 +243,11 @@ class Alerts {
                             localSetState(() {});
                           },
                         ),
-                        GameTypeChip(
-                          gameType: GameType.FIVE_CARD_PLO,
-                          selected: list.contains(GameType.FIVE_CARD_PLO),
-                          onTapFunc: (val) {
-                            if (val) {
-                              list.add(GameType.FIVE_CARD_PLO);
-                            } else {
-                              if (list.length <= 2) {
-                                toast("minimum 2 game types required");
-                                return;
-                              }
-                              list.remove(GameType.FIVE_CARD_PLO);
-                            }
-                            localSetState(() {});
-                          },
-                        ),
-                        GameTypeChip(
-                          gameType: GameType.FIVE_CARD_PLO_HILO,
-                          selected: list.contains(GameType.FIVE_CARD_PLO_HILO),
-                          onTapFunc: (val) {
-                            if (val) {
-                              list.add(GameType.FIVE_CARD_PLO_HILO);
-                            } else {
-                              if (list.length <= 2) {
-                                toast("minimum 2 game types required");
-                                return;
-                              }
-                              list.remove(GameType.FIVE_CARD_PLO_HILO);
-                            }
-                            localSetState(() {});
-                          },
-                        ),
+                        (gameState == null)
+                            ? fiveCardGames
+                            : (gameState.gameInfo.maxPlayers == 8)
+                                ? fiveCardGames
+                                : Container(),
                       ],
                     ),
                   ),
