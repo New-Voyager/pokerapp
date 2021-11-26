@@ -411,7 +411,8 @@ class BetWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildBetSeekBar(double width, AppTheme appTheme) {
+  Widget _buildBetSeekBar(
+      double width, AppTheme appTheme, GameState gameState) {
     return Container(
       width: width,
       child: SliderTheme(
@@ -425,14 +426,22 @@ class BetWidget extends StatelessWidget {
           trackHeight: 10.0,
         ),
         child: Consumer<ValueNotifier<double>>(
-          builder: (_, vnBetAmount, __) => Slider(
-            min: action.minRaiseAmount.toDouble(),
-            max: action.maxRaiseAmount.toDouble(),
-            value: vnBetAmount.value,
-            onChanged: (newBetAmount) {
-              vnBetAmount.value = newBetAmount;
-            },
-          ),
+          builder: (_, vnBetAmount, __) {
+            final min = action.minRaiseAmount.toDouble();
+            final max = action.maxRaiseAmount.toDouble();
+            return Slider(
+              min: min,
+              max: max,
+              value: vnBetAmount.value,
+              onChanged: (newBetAmount) {
+                if (gameState.gameInfo.chipUnit == ChipUnit.DOLLAR) {
+                  vnBetAmount.value = newBetAmount.round().toDouble();
+                } else {
+                  vnBetAmount.value = newBetAmount;
+                }
+              },
+            );
+          },
         ),
       ),
     );
@@ -451,6 +460,8 @@ class BetWidget extends StatelessWidget {
     //List<int> cards = [161, 200, 168, 177, 194];
     Offset offset = boardAttributes.betWidgetOffset;
     double betWidgetGap = boardAttributes.betWidgetGap;
+
+    final bool isCentsGame = gameState.gameInfo.chipUnit == ChipUnit.CENT;
 
     return Stack(children: [
       ListenableProvider<ValueNotifier<double>>(
@@ -480,20 +491,28 @@ class BetWidget extends StatelessWidget {
                     icon: Icons.remove,
                     onTap: () {
                       double value = valueNotifierVal.value;
-                      value--;
+                      if (isCentsGame) {
+                        value -= 0.01;
+                      } else {
+                        value--;
+                      }
                       if (value < action.minRaiseAmount) {
                         value = action.minRaiseAmount.toDouble();
                       }
                       valueNotifierVal.value = value;
                     },
                   ),
-                  _buildBetSeekBar(betSliderWidth, appTheme),
+                  _buildBetSeekBar(betSliderWidth, appTheme, gameState),
                   CircleImageButton2(
                     theme: appTheme,
                     icon: Icons.add,
                     onTap: () {
                       double value = valueNotifierVal.value;
-                      value++;
+                      if (isCentsGame) {
+                        value += 0.01;
+                      } else {
+                        value++;
+                      }
                       if (value > action.maxRaiseAmount) {
                         value = action.maxRaiseAmount.toDouble();
                       }

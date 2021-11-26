@@ -57,7 +57,7 @@ class TestService {
       seat.dealer = true;
     }
   }
-  
+
   static showMuckLosingHand() {
     final gameState = GameState.getState(_context);
     gameState.handState = HandState.RESULT;
@@ -395,7 +395,7 @@ class TestService {
   }
 
   static Future<void> testBetWidget() async {
-    return showCardDistribution();
+    // return showCardDistribution();
     BuildContext context = _context;
 
     final gameState = Provider.of<GameState>(context, listen: false);
@@ -405,22 +405,22 @@ class TestService {
         {
           "seatNo": 1,
           "availableActions": ["FOLD", "BET", "CALL", "ALLIN"],
-          "callAmount": 2,
-          "minRaiseAmount": 4,
-          "maxRaiseAmount": 30,
-          "allInAmount": 30,
+          "callAmount": 2.0,
+          "minRaiseAmount": 4.0,
+          "maxRaiseAmount": 30.0,
+          "allInAmount": 30.0,
           "betOptions": [{
             "text": "3BB",
-            "amount": 6
+            "amount": 6.0
           }, {
             "text": "5BB",
-            "amount": 10
+            "amount": 10.0
           }, {
             "text": "10BB",
-            "amount": 20
+            "amount": 20.0
           }, {
             "text": "All-In",
-            "amount": 30
+            "amount": 30.0
           }]
         }''';
     final seatAction = jsonDecode(seatActionJsonStr);

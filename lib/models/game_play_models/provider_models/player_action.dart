@@ -88,7 +88,7 @@ class PlayerAction {
     */
 
     // FIXME: MIN RAISE AMOUNT VALUE NOT RECEIVING?
-    playerAction._minRaiseAmount = seatAction['minRaiseAmount'] ?? 2;
+    playerAction._minRaiseAmount = seatAction['minRaiseAmount'] ?? 2.0;
     playerAction._maxRaiseAmount = seatAction['maxRaiseAmount'];
 
     playerAction._options = seatAction['betOptions']

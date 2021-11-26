@@ -7,8 +7,10 @@ final NumberFormat _chipsFormatter = new NumberFormat("0.00");
 final NumberFormat _timeFormatter = new NumberFormat("00");
 
 class DataFormatter {
-  static String chipsFormat(double value,
-      {ChipUnit chipUnit = ChipUnit.DOLLAR}) {
+  static String chipsFormat(
+    double value, {
+    ChipUnit chipUnit = ChipUnit.DOLLAR,
+  }) {
     if (value == null) {
       return '';
     }
