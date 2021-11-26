@@ -23,6 +23,14 @@ class GameLocalConfig {
     _save();
   }
 
+  // Show hand rank
+  bool _showHandRank = true;
+  get showHandRank => _showHandRank;
+  set showHandRank(bool value) {
+    _showHandRank = value;
+    _save();
+  }
+
   // Show rearrange button
   bool _showRearrange = true;
   get showRearrange => _showRearrange ?? true;
@@ -105,6 +113,7 @@ class GameLocalConfig {
         'inAudioConference': this._inAudioConference,
         'tapOrSwipeBetAction': this._tapOrSwipeBetAction,
         'showCheckFold': this._showCheckFold,
+        'showHandRank': this._showHandRank,
         'showRearrange': this._showRearrange
       };
 
@@ -118,6 +127,7 @@ class GameLocalConfig {
     this._inAudioConference = json['inAudioConference'];
     this._tapOrSwipeBetAction = json['tapOrSwipeBetAction'];
     this._showCheckFold = json['showCheckFold'];
+    this._showHandRank = json['showHandRank'];
     this._showRearrange = json['showRearrange'];
   }
 }
