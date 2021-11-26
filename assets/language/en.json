@@ -734,7 +734,8 @@
         "swipe": "Swipe",
         "tap": "Tap",
         "gameCheckFold": "Show Check/Fold",
-        "SHOWREARRANGE": "Show rearrange button"
+        "handRank": "Show Hand Rank",
+        "showRearrange": "Show rearrange button"
     },
     "gameOptionsBottomSheet": {
         "game": "Game",

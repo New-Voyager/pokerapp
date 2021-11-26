@@ -911,6 +911,19 @@ class _GameOptionState extends State<GameOption> {
       },
     ));
 
+    // show Hand Rank
+    children.add(_buildCheckBox(
+      text: _appScreenText['handRank'],
+      value: widget.gameState.playerLocalConfig.showHandRank,
+      onChange: (bool v) async {
+        // setting the value saves it to local storage too
+        widget.gameState.playerLocalConfig.showHandRank = v;
+        log('In toggle button widget, Show Hank Rank = ${widget.gameState.playerLocalConfig.showHandRank}');
+        if (closed) return;
+        setState(() {});
+      },
+    ));
+
     // show ReArrage
     children.add(_buildCheckBox(
       text: _appScreenText['showRearrange'],
