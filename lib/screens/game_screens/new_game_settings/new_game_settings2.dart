@@ -346,16 +346,30 @@ class NewGameSettings2 extends StatelessWidget {
   Widget build(BuildContext context) {
     _appScreenText = getAppTextScreen("newGameSettings2");
     final theme = AppTheme.getTheme(context);
+
     return ListenableProvider<NewGameModelProvider>(
       create: (_) => NewGameModelProvider(clubCode),
       builder: (BuildContext context, _) {
         final NewGameModelProvider gmp = context.read<NewGameModelProvider>();
 
         gmp.gameType = mainGameType;
+
+        var playerCounts = [2, 4, 6, 8, 9];
+
         if (mainGameType == GameType.ROE) {
           gmp.roeGames = subGameTypes;
         } else {
           gmp.dealerChoiceGames = subGameTypes;
+        }
+
+        if (((mainGameType == GameType.ROE ||
+                        mainGameType == GameType.DEALER_CHOICE) &&
+                    subGameTypes.contains(GameType.FIVE_CARD_PLO) ||
+                subGameTypes.contains(GameType.FIVE_CARD_PLO_HILO)) ||
+            mainGameType == GameType.FIVE_CARD_PLO ||
+            mainGameType == GameType.FIVE_CARD_PLO_HILO) {
+          playerCounts = [2, 4, 6, 8];
+          gmp.maxPlayers = 8;
         }
 
         // Load default values if it is not from Saved Settings.
@@ -414,7 +428,7 @@ class NewGameSettings2 extends StatelessWidget {
                 sepV8,
                 RadioListWidget<int>(
                   defaultValue: gmp.maxPlayers,
-                  values: [2, 4, 6, 8, 9],
+                  values: playerCounts,
                   onSelect: (int value) => gmp.maxPlayers = value,
                 ),
 
