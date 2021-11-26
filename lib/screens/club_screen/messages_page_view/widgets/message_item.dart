@@ -201,97 +201,100 @@ class MessageItem extends StatelessWidget {
     // log("TIME : ${DateTime.now().millisecondsSinceEpoch}");
 
     return Container(
-        padding: EdgeInsets.all(8),
-        margin: EdgeInsets.only(
-          right: isMe ? 0.0 : extraPadding,
-          left: isMe ? extraPadding : 0.0,
-        ),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(5.0),
-          color: isMe ? theme.fillInColor : theme.primaryColor,
-        ),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Flexible(
-                  flex: 3,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      RichText(
-                        text: TextSpan(
-                          text: playerName,
-                          style: AppDecorators.getAccentTextStyle(theme: theme),
-                          children: [
-                            TextSpan(
-                              text: " shared a hand",
-                              style:
-                                  AppDecorators.getSubtitle2Style(theme: theme),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Text(
-                        "($gameStr)",
-                        style: AppDecorators.getSubtitle1Style(theme: theme),
-                      ),
-                    ],
-                  ),
-                ),
-                Row(
+      padding: EdgeInsets.all(8),
+      margin: EdgeInsets.only(
+        right: isMe ? 0.0 : extraPadding,
+        left: isMe ? extraPadding : 0.0,
+      ),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(5.0),
+        color: isMe ? theme.fillInColor : theme.primaryColor,
+      ),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Flexible(
+                flex: 3,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CircleImageButton(
-                      onTap: () {
-                        Navigator.of(context)
-                            .pushNamed(Routes.hand_log_view, arguments: {
-                          "gameCode": messageModel.sharedHand.gameCode,
-                          "handNum": messageModel.sharedHand.handNum,
-                          "clubCode": messageModel.clubCode,
-                        });
-                      },
-                      icon: Icons.format_align_justify_rounded,
-                      theme: theme,
+                    RichText(
+                      text: TextSpan(
+                        text: playerName,
+                        style: AppDecorators.getAccentTextStyle(theme: theme),
+                        children: [
+                          TextSpan(
+                            text: " shared a hand",
+                            style:
+                                AppDecorators.getSubtitle2Style(theme: theme),
+                          ),
+                        ],
+                      ),
                     ),
-                    SizedBox(width: 5),
-                    CircleImageButton(
-                      theme: theme,
-                      icon: Icons.replay,
-                      onTap: () {
-                        ReplayHandDialog.show(
-                          context: context,
-                          gameCode: messageModel.sharedHand.gameCode,
-                          handNumber: messageModel.sharedHand.handNum,
-                          playerID: playerInfo['id'],
-                        );
-                      },
-                    )
+                    Text(
+                      "($gameStr)",
+                      style: AppDecorators.getSubtitle1Style(theme: theme),
+                    ),
                   ],
                 ),
-              ],
-            ),
-            SizedBox(height: 10),
-            PotWinnersView(
-                HandResultData.fromJson(
-                  messageModel.sharedHand.data,
-                ),
-                0),
-            Container(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
+              ),
+              Row(
                 children: [
-                  ChatTimeWidget(
-                    date: messageModel.messageTime,
-                    isSender: isMe,
+                  CircleImageButton(
+                    onTap: () {
+                      Navigator.of(context)
+                          .pushNamed(Routes.hand_log_view, arguments: {
+                        "gameCode": messageModel.sharedHand.gameCode,
+                        "handNum": messageModel.sharedHand.handNum,
+                        "clubCode": messageModel.clubCode,
+                      });
+                    },
+                    icon: Icons.format_align_justify_rounded,
+                    theme: theme,
+                  ),
+                  SizedBox(width: 5),
+                  CircleImageButton(
+                    theme: theme,
+                    icon: Icons.replay,
+                    onTap: () {
+                      ReplayHandDialog.show(
+                        context: context,
+                        gameCode: messageModel.sharedHand.gameCode,
+                        handNumber: messageModel.sharedHand.handNum,
+                        playerID: playerInfo['id'],
+                      );
+                    },
                   )
                 ],
               ),
+            ],
+          ),
+          SizedBox(height: 10),
+          PotWinnersView(
+            HandResultData.fromJson(
+              messageModel.sharedHand.data,
             ),
-          ],
-        ));
+            0,
+            isMessageItem: true,
+          ),
+          Container(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                ChatTimeWidget(
+                  date: messageModel.messageTime,
+                  isSender: isMe,
+                )
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _buildMessage(BuildContext context, bool isMe, AppTheme theme) {

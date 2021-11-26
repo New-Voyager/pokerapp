@@ -12,11 +12,20 @@ import 'package:pokerapp/widgets/cards/multiple_stack_card_views.dart';
 class PotWinnersView extends StatelessWidget {
   final HandResultData handResult;
   final int potNo;
-  PotWinnersView(this.handResult, this.potNo);
+  final bool isMessageItem;
+
+  PotWinnersView(
+    this.handResult,
+    this.potNo, {
+    this.isMessageItem = false,
+  });
+
   @override
   Widget build(BuildContext context) {
     final theme = AppTheme.getTheme(context);
-    Widget bw = boardWinners(potNo, theme);
+
+    final Widget bw = boardWinners(potNo, theme);
+
     // players in the pot
     List<int> seatsInPots = [];
     for (final pot in handResult.result.potWinners) {
@@ -37,25 +46,27 @@ class PotWinnersView extends StatelessWidget {
     bool isOnlyOnePot = handResult.result.potWinners.length == 1;
 
     return Container(
-        decoration: AppDecorators.tileDecoration(theme),
-        padding: EdgeInsets.only(bottom: 16.pw, top: 8.pw, left: 4.pw),
-        child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              potTitle(theme),
-              isOnlyOnePot
-                  ? Container()
-                  : Container(
-                      margin: EdgeInsets.symmetric(horizontal: 8),
-                      alignment: Alignment.centerRight,
-                      child: Text(
-                        players,
-                        style: AppDecorators.getHeadLine4Style(theme: theme),
-                      ),
-                    ),
-              bw
-            ]));
+      decoration: AppDecorators.tileDecoration(theme),
+      padding: EdgeInsets.only(bottom: 16.pw, top: 8.pw, left: 4.pw),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          potTitle(theme),
+          isOnlyOnePot
+              ? Container()
+              : Container(
+                  margin: EdgeInsets.symmetric(horizontal: 8),
+                  alignment: Alignment.centerRight,
+                  child: Text(
+                    players,
+                    style: AppDecorators.getHeadLine4Style(theme: theme),
+                  ),
+                ),
+          bw,
+        ],
+      ),
+    );
   }
 
   Widget boardWinners(int potNo, AppTheme theme) {
@@ -77,8 +88,13 @@ class PotWinnersView extends StatelessWidget {
     );
   }
 
-  List<Widget> hiWinnerTile(int boardNo, bool firstWinner, ResultWinner winner,
-      bool hi, bool multipleBoards) {
+  List<Widget> hiWinnerTile(
+    final int boardNo,
+    final bool firstWinner,
+    final ResultWinner winner,
+    final bool hi,
+    final bool multipleBoards,
+  ) {
     final board = this.handResult.result.boards[boardNo - 1];
     final playerRank = this.handResult.getPlayerRank(boardNo, winner.seatNo);
     final player = this.handResult.getPlayerBySeatNo(winner.seatNo);
@@ -157,21 +173,35 @@ class PotWinnersView extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [Text(player.name), playerView],
     );
-    Widget row = Row(
+
+    final bool needToShrink = isMessageItem && (playerCards.length != 2);
+
+    final Widget row = Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         // display player cards
         playerView,
+
+        needToShrink ? const SizedBox(width: 20.0) : const SizedBox.shrink(),
+
         // display hi cards
         boardView
       ],
     );
-    children.add(row);
+
+    final w = needToShrink ? FittedBox(child: row) : row;
+
+    children.add(w);
+
     return children;
   }
 
-  Widget boardWinner(bool hiLoGame, bool multipleBoards,
-      ResultBoardWinner boardWinner, AppTheme theme) {
+  Widget boardWinner(
+    bool hiLoGame,
+    bool multipleBoards,
+    ResultBoardWinner boardWinner,
+    AppTheme theme,
+  ) {
     String hiWinnersText = '';
     if (multipleBoards) {
       if (hiLoGame) {
@@ -204,8 +234,15 @@ class PotWinnersView extends StatelessWidget {
       //children.add(SizedBox(height: 5.dp));
       bool firstWinner = true;
       for (final winner in boardWinner.hiWinners.values) {
-        hiWinners.children.addAll(hiWinnerTile(
-            boardWinner.boardNo, firstWinner, winner, true, multipleBoards));
+        hiWinners.children.addAll(
+          hiWinnerTile(
+            boardWinner.boardNo,
+            firstWinner,
+            winner,
+            true,
+            multipleBoards,
+          ),
+        );
         firstWinner = false;
       }
     }
@@ -215,17 +252,25 @@ class PotWinnersView extends StatelessWidget {
       //children.add(SizedBox(height: 5.dp));
       bool firstWinner = true;
       for (final winner in boardWinner.lowWinners.values) {
-        lowWinners.children.addAll(hiWinnerTile(
-            boardWinner.boardNo, firstWinner, winner, false, multipleBoards));
+        lowWinners.children.addAll(
+          hiWinnerTile(
+            boardWinner.boardNo,
+            firstWinner,
+            winner,
+            false,
+            multipleBoards,
+          ),
+        );
         firstWinner = false;
       }
     }
+
     List<Widget> allWidgets = [];
+
     allWidgets.addAll(hiWinners.children);
-    allWidgets.add(SizedBox(
-      height: 5.dp,
-    ));
+    allWidgets.add(SizedBox(height: 5.dp));
     allWidgets.addAll(lowWinners.children);
+
     final winners = Column(children: allWidgets);
     return winners;
   }
@@ -242,27 +287,30 @@ class PotWinnersView extends StatelessWidget {
     final pot = handResult.result.potWinners[potNo];
 
     return Container(
-        // decoration: AppDecorators.tileDecoration(theme),
-        // padding: EdgeInsets.only(bottom: 16.pw, top: 8.pw, left: 4.pw),
-        child:
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-      Container(
-        margin: EdgeInsets.symmetric(horizontal: 8),
-        alignment: Alignment.centerRight,
-        child: Text(
-          "$potStr",
-          style: AppDecorators.getHeadLine4Style(theme: theme),
-        ),
+      // decoration: AppDecorators.tileDecoration(theme),
+      // padding: EdgeInsets.only(bottom: 16.pw, top: 8.pw, left: 4.pw),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 8),
+            alignment: Alignment.centerRight,
+            child: Text(
+              "$potStr",
+              style: AppDecorators.getHeadLine4Style(theme: theme),
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 8),
+            alignment: Alignment.centerRight,
+            child: Text(
+              DataFormatter.chipsFormat(pot.amount, chipUnit: ChipUnit.CENT),
+              style: AppDecorators.getHeadLine4Style(theme: theme),
+            ),
+          ),
+        ],
       ),
-      Container(
-        margin: EdgeInsets.symmetric(horizontal: 8),
-        alignment: Alignment.centerRight,
-        child: Text(
-          DataFormatter.chipsFormat(pot.amount, chipUnit: ChipUnit.CENT),
-          style: AppDecorators.getHeadLine4Style(theme: theme),
-        ),
-      ),
-    ]));
+    );
   }
 }
 
@@ -322,7 +370,9 @@ class HandWinnersView2 extends StatelessWidget {
             itemCount: handResult.result.potWinners.length,
             itemBuilder: (context, index) {
               return PotWinnersView(
-                  handResult, handResult.result.potWinners[index].potNo);
+                handResult,
+                handResult.result.potWinners[index].potNo,
+              );
             },
           ),
         ),
