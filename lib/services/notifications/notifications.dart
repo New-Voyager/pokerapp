@@ -315,6 +315,8 @@ class NotificationHandler {
         handleClubAnnouncement(json);
       } else if (type == 'SYSTEM_ANNOUNCEMENT') {
         handleSystemAnnouncement(json);
+      } else if (type == 'BUYIN_REQUEST') {
+        handleBuyinRequest(json);
       }
     }
   }
@@ -476,8 +478,13 @@ class NotificationHandler {
     Alerts.showNotification(
         titleText: 'Buyin Request',
         subTitleText:
-            'Game: $gameCode Player $playerName is requesting $amount.',
+            'Game: $gameCode Player $playerName is requesting ${DataFormatter.chipsFormat(amount)}.',
         duration: Duration(seconds: 5));
+    appState.buyinApprovals.shake = true;
+    appState.buyinApprovals.notify();
+    await Future.delayed(Duration(milliseconds: 500));
+    appState.buyinApprovals.shake = false;
+    appState.buyinApprovals.notify();
   }
 
   Future<void> handleNewGame(Map<String, dynamic> json) async {

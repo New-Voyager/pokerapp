@@ -483,6 +483,7 @@ class NewGameSettings2 extends StatelessWidget {
                           label: _appScreenText['bigBlind'],
                           minValue: minValue,
                           maxValue: maxValue,
+                          evenNumber: true,
                           title: _appScreenText['enterBigBlind'],
                           onChange: (value) {
                             //gmp.blinds.bigBlind = value.toDouble();
@@ -499,7 +500,8 @@ class NewGameSettings2 extends StatelessWidget {
                         child: TextInputWidget(
                           value: gmp.ante,
                           label: 'Ante',
-                          title: 'Enter ante (0-${DataFormatter.chipsFormat(gmp.bigBlind)})',
+                          title:
+                              'Enter ante (0-${DataFormatter.chipsFormat(gmp.bigBlind)})',
                           decimalAllowed: gmp.chipUnit == ChipUnit.CENT,
                           minValue: 0,
                           maxValue: gmp.bigBlind,

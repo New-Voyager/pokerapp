@@ -122,7 +122,7 @@ class LiveGameItem extends StatelessWidget {
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
                                     Text(
-                                      '${_appScreenText['buyin']}: ${game.buyInMin}-${game.buyInMax}',
+                                      '${_appScreenText['buyin']}: ${DataFormatter.chipsFormat(game.buyInMin)}-${DataFormatter.chipsFormat(game.buyInMax)}',
                                       style: AppDecorators.getSubtitle1Style(
                                           theme: theme),
                                     ),
@@ -130,7 +130,7 @@ class LiveGameItem extends StatelessWidget {
                                   ],
                                 ),
                                 Text(
-                                  "${gameTypeStr} ${game.smallBlind}/${game.bigBlind}",
+                                  "${gameTypeStr} ${DataFormatter.chipsFormat(game.smallBlind)}/${DataFormatter.chipsFormat(game.bigBlind)}",
                                   style: AppDecorators.getHeadLine4Style(
                                       theme: theme),
                                 ),

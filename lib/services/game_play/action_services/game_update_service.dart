@@ -26,6 +26,7 @@ import 'package:pokerapp/services/data/game_log_store.dart';
 import 'package:pokerapp/services/game_play/graphql/seat_change_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/card_helper.dart';
+import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:provider/provider.dart';
 
 class GameUpdateService {
@@ -593,7 +594,8 @@ class GameUpdateService {
     log('Buyin is denied');
     if (closed || _gameState.uiClosing) return;
     bool isMe = false;
-    if (seat.player.isMe) {
+
+    if (seat.player != null && seat.player.isMe) {
       isMe = true;
     }
     gameState.removePlayer(seatNo);
@@ -605,8 +607,8 @@ class GameUpdateService {
       final myState = gameState.myState;
       myState.notify();
 
-      showAlertDialog(_context, _appScreenText['buyInRequest'],
-          _appScreenText['TheHostDeniedTheBuyinRequest']);
+      showErrorDialog(_context, _appScreenText['buyInRequest'],
+          _appScreenText['hostDeniedBuyInRequest']);
     }
   }
 

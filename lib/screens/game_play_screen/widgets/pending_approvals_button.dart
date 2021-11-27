@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:overlay_support/overlay_support.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
@@ -12,10 +13,11 @@ import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/services/app/player_service.dart';
 import 'package:pokerapp/services/test/test_service.dart';
+import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
-
+import 'package:animated_widgets/animated_widgets.dart';
 import 'icon_with_badge.dart';
 
 class PendingApprovalsButton extends StatelessWidget {
@@ -36,23 +38,27 @@ class PendingApprovalsButton extends StatelessWidget {
       builder: (context, value, gameContextObj, child) {
         if (!gameContextObject.isAdmin()) return const SizedBox.shrink();
 
-        final approval = SvgPicture.asset(
-          '',
-          width: 16,
-          height: 16,
-          color: theme.primaryColorWithDark(),
-        );
-
+        Widget button = CircleImageButton(
+            onTap: () {
+              onClickPendingBuyInApprovals(context);
+            },
+            svgAsset: 'assets/images/game/tasks.svg',
+            //icon: Icons.task_alt,
+            theme: theme);
+        if (appState.buyinApprovals.shake) {
+          button = ShakeAnimatedWidget(
+            enabled: true,
+            duration: Duration(milliseconds: 500),
+            shakeAngle: Rotation.deg(z: 20),
+            curve: Curves.linear,
+            child: button,
+          );
+          return button;
+        }
         return IconWithBadge(
           count: value.approvalList.length,
           onClickFunction: () => onClickPendingBuyInApprovals(context),
-          child: CircleImageButton(
-              onTap: () {
-                onClickPendingBuyInApprovals(context);
-              },
-              svgAsset: 'assets/images/game/tasks.svg',
-              //icon: Icons.task_alt,
-              theme: theme),
+          child: button,
         );
       },
     );
@@ -206,7 +212,7 @@ class PendingApprovalsButton extends StatelessWidget {
                     style: AppDecorators.getSubtitleStyle(theme: theme),
                   ),
                   TextSpan(
-                    text: " ${item.amount}",
+                    text: " ${DataFormatter.chipsFormat(item.amount)}",
                     style: AppDecorators.getAccentTextStyle(theme: theme),
                   ),
                 ],
@@ -246,13 +252,8 @@ class PendingApprovalsButton extends StatelessWidget {
           width: 120.pw,
           child: Row(
             children: [
-              IconButton(
-                  icon: Icon(
-                    Icons.check_circle,
-                    color: Colors.green,
-                    size: 24.pw,
-                  ),
-                  onPressed: () async {
+              ConfirmYesButton(
+                  onTap: () async {
                     final bool val = await PlayerService.approveBuyInRequest(
                       item.gameCode,
                       item.playerUuid,
@@ -264,31 +265,24 @@ class PendingApprovalsButton extends StatelessWidget {
                     } else {
                       log("Failed to approve request");
                     }
-                  }),
-              SizedBox(width: 5.pw),
-              IconButton(
-                icon: Icon(
-                  Icons.cancel_rounded,
-                  size: 24.pw,
-                  color: theme.negativeOrErrorColor,
-                ),
-                onPressed: () async {
-                  final bool val = await PlayerService.declineBuyInRequest(
-                    item.gameCode,
-                    item.playerUuid,
-                  );
-
-                  if (val == null) {
-                    toast(appTextScreen['exceptionOccuredDeclineRequest']);
-                  } else if (val) {
-                    _pollPendingApprovals(context);
-                  } else {
-                    toast(
-                      appTextScreen['failedToDeclineRequest'],
+                  },
+                  theme: theme),
+              SizedBox(width: 10.pw),
+              ConfirmNoButton(
+                  onTap: () async {
+                    final bool val = await PlayerService.declineBuyInRequest(
+                      item.gameCode,
+                      item.playerUuid,
                     );
-                  }
-                },
-              )
+                    if (val == null) {
+                      log("Error occurred when declining request");
+                    } else if (val) {
+                      _pollPendingApprovals(context);
+                    } else {
+                      log("Error occurred when declining request");
+                    }
+                  },
+                  theme: theme),
             ],
           ),
         ),
