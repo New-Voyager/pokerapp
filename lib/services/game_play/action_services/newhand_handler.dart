@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_type.dart';
+import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
@@ -220,8 +221,8 @@ class NewHandHandler {
     gameState.actionState.notify();
     ////log('Hand Message: ::handleNewHand:: START');
     AudioService.playNewHand(mute: gameState.playerLocalConfig.mute);
-
     if (gameState.uiClosing) return;
+
     gameState.clear();
     if (gameState.uiClosing) return;
     await leaveAudioConference();
@@ -230,6 +231,48 @@ class NewHandHandler {
     await updatePlayers();
     // set small blind and big blind
     if (gameState.uiClosing) return;
+    if (gameState.uiClosing) return;
+    final TableState tableState = gameState.tableState;
+    gameState.resetSeatActions(newHand: true);
+
+    // remove all the community cards
+    tableState.clear();
+    tableState.notifyAll();
+    if (gameState.uiClosing) return;
+
+    await showDeal();
+    if (gameState.uiClosing) return;
+
+
+    if (newHand.ante != null && newHand.ante > 0.0) {
+      double pot = 0;
+      // show ante animation
+      for (final seatNo in newHand.playersInSeats.keys) {
+        final seat = gameState.getSeat(seatNo);
+        if (seat != null && seat.player != null) {
+          seat.player.resetSeatAction();
+        }
+
+        if (newHand.playersInSeats[seatNo].inhand) {
+          seat.player.action.setAnte(newHand.ante);
+          pot += newHand.ante;
+          seat.player.action.animateAction = true;
+          seat.notify();
+        }
+      }
+      await Future.delayed(Duration(milliseconds: 400));
+      tableState.updatePotChipsSilent(potChips: [pot]);
+      tableState.notifyAll();
+
+      if (gameState.uiClosing) return;
+      for (final seatNo in newHand.playersInSeats.keys) {
+        final seat = gameState.getSeat(seatNo);
+        if (seat != null && seat.player != null) {
+          seat.player.resetSeatAction();
+          seat.notify();
+        }
+      }
+    };
 
     if (!newHand.bombPot) {
       final sbSeat = gameState.getSeat(newHand.sbPos);
@@ -242,11 +285,6 @@ class NewHandHandler {
       bbSeat.player.action.amount = gameState.gameInfo.bigBlind.toDouble();
     }
 
-    if (gameState.uiClosing) return;
-    final TableState tableState = gameState.tableState;
-    // remove all the community cards
-    tableState.clear();
-    tableState.notifyAll();
 
     if (gameState.uiClosing) return;
 
@@ -272,7 +310,6 @@ class NewHandHandler {
       }
     }
 
-    gameState.resetSeatActions(newHand: true);
     // set player actions
     for (final seatNo in newHand.playersActed.keys) {
       final seat = gameState.getSeat(seatNo);

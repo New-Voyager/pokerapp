@@ -204,19 +204,6 @@ class NewGameModelProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  set blinds(Blinds blinds) {
-    settings.setBlinds(blinds);
-    notifyListeners();
-  }
-
-  Blinds get blinds {
-    return Blinds(
-        smallBlind: settings.smallBlind,
-        bigBlind: settings.bigBlind,
-        straddle: settings.straddleBet,
-        ante: settings.ante);
-  }
-
   double get smallBlind {
     return settings.smallBlind;
   }

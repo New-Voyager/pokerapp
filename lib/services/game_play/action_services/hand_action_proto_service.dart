@@ -395,6 +395,7 @@ class HandActionProtoService {
     //debugLog(_gameState.gameCode, jsonData);
 
     String messageType = messageObject.item.messageType;
+    log('${messageType}');
     if (_retryMsg != null) {
       bool handled = _retryMsg.handleMsg(messageObject.item);
       // cancel retry now
@@ -426,8 +427,8 @@ class HandActionProtoService {
           await handleNewHand(message);
           return;
 
-        case AppConstants.DEAL_STARTED:
-          return handleDealStarted();
+        // case AppConstants.DEAL_STARTED:
+        //   return handleDealStarted();
 
         case AppConstants.BOMB_POT:
           return handleBombPot();
@@ -614,9 +615,9 @@ class HandActionProtoService {
 
       // start the animation
       if (_close || _gameState.uiClosing) return;
-      _gameState.cardDistributionState.seatNo = localSeatNo;
+      // _gameState.cardDistributionState.seatNo = localSeatNo;
       // wait for the animation to finish
-      await Future.delayed(AppConstants.cardDistributionAnimationDuration);
+      // await Future.delayed(AppConstants.cardDistributionAnimationDuration);
       final playerInSeat = _gameState.getSeat(seatNo);
       if (playerInSeat != null &&
           playerInSeat.player != null &&

@@ -211,6 +211,7 @@ class NewGameModel {
     highHandTracked = json['highHandTracked'] ?? false;
     buyInWaitTime = json['buyInWaitTime'] ?? 60;
     allowFunAnimations = json['allowFunAnimations'] ?? true;
+    ante = json['ante'] ?? 0.0;
   }
 
   Map<String, dynamic> toJson() {
@@ -221,6 +222,7 @@ class NewGameModel {
     data['chipUnit'] = this.chipUnit.toJson();
     data['smallBlind'] = this.smallBlind;
     data['bigBlind'] = this.bigBlind;
+    data['ante'] = this.ante;
     data['utgStraddleAllowed'] = this.utgStraddleAllowed;
     data['buttonStraddleAllowed'] = this.buttonStraddle;
     data['buttonStraddleBet'] = this.buttonStraddleBet;

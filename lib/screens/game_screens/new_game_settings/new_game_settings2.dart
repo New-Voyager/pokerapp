@@ -376,7 +376,7 @@ class NewGameSettings2 extends StatelessWidget {
         if (savedModel == null) {
           // Initializing values
           // Initial value for BigBlind
-          gmp.blinds.bigBlind = 2.0;
+          gmp.bigBlind = 2.0;
           // Initial value for Buyin Min and max
           gmp.buyInMin = 30;
           gmp.buyInMax = 100;
@@ -384,7 +384,7 @@ class NewGameSettings2 extends StatelessWidget {
           gmp.rakeCap = 0;
           gmp.buyInWaitTime = 120;
         } else {
-          gmp.blinds = Blinds(bigBlind: savedModel.bigBlind);
+          gmp.bigBlind = savedModel.bigBlind;
           gmp.settings = savedModel;
         }
         gmp.notify = true;
@@ -465,6 +465,7 @@ class NewGameSettings2 extends StatelessWidget {
 
                 /* big blind & ante */
                 sepV20,
+                _buildLabel('Blind', theme),
                 Consumer<NewGameModelProvider>(builder: (_, vnGmp, __) {
                   double minValue = 2;
                   double maxValue = 10000000;
@@ -493,18 +494,19 @@ class NewGameSettings2 extends StatelessWidget {
                       sepH10,
 
                       /* ante */
-                      // Expanded(
-                      //   child: TextInputWidget(
-                      //     value: gmp.blinds.ante,
-                      //     label: 'Ante',
-                      //     title: 'Enter ante',
-                      //     minValue: 0,
-                      //     maxValue: 1000,
-                      //     onChange: (value) {
-                      //       gmp.blinds.ante = value.toDouble();
-                      //     },
-                      //   ),
-                      // ),
+                      Expanded(
+                        child: TextInputWidget(
+                          value: gmp.ante,
+                          label: 'Ante',
+                          title: 'Enter ante (0-${DataFormatter.chipsFormat(gmp.bigBlind)})',
+                          decimalAllowed: gmp.chipUnit == ChipUnit.CENT,
+                          minValue: 0,
+                          maxValue: gmp.bigBlind,
+                          onChange: (value) {
+                            gmp.ante = value.toDouble();
+                          },
+                        ),
+                      ),
                     ],
                   );
                 }),

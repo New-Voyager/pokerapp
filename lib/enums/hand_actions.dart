@@ -11,6 +11,7 @@ enum HandActions {
   ALLIN,
   BOMB_POT_BET,
   POST_BLIND,
+  ANTE,
   UNKNOWN,
 }
 

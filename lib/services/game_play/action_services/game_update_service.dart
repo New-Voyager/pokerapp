@@ -288,7 +288,7 @@ class GameUpdateService {
     if (!newPlayerModel.isMe) {
       bool found = _gameState.newPlayer(newPlayerModel);
       if (!found) {
-        if (newPlayerModel.stack == 0) {
+        if (newPlayerModel.stack <= _gameState.gameInfo.ante) {
           newPlayerModel.showBuyIn = true;
         }
       }

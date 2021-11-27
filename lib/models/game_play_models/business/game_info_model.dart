@@ -25,6 +25,7 @@ class GameInfoModel {
   ChipUnit chipUnit;
   double smallBlind;
   double bigBlind;
+  double ante;
   List<int> availableSeats;
   List<PlayerModel> playersInSeats;
   String gameToken;
@@ -100,6 +101,7 @@ class GameInfoModel {
     this.buyInMax = double.parse(data['buyInMax'].toString());
     this.smallBlind = double.parse(data['smallBlind'].toString());
     this.bigBlind = double.parse(data['bigBlind'].toString());
+    this.ante = double.parse(data['ante'].toString());
     this.status = data['status'];
     this.tableStatus = data['tableStatus'];
     this.utgStraddleAllowed = data['utgStraddleAllowed'] ?? true;
@@ -181,6 +183,7 @@ class GameInfoModel {
       buyInMin
       smallBlind
       bigBlind
+      ante
       utgStraddleAllowed
       buttonStraddleAllowed
       buttonStraddleBet

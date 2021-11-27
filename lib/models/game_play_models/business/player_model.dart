@@ -452,6 +452,12 @@ class PlayerActedState {
     _amount = amount;
   }
 
+  void setAnte(double amount) {
+    // keeping the playerAction null shows NO label in the player's nameplate
+    _playerAction = null;
+    _amount = amount;
+  }
+
   void reset({bool stickAction}) {
     amount = 0.0;
     _animate = false;

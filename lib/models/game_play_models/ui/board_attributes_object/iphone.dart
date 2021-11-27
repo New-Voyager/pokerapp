@@ -1381,7 +1381,7 @@ class IPhoneAttribs {
         return getIPadMini();
       }
 
-      return getDefault();
+      return getIPad97();
     } else {
       if (name.contains('iphone 11 pro max')) {
         return getIPhone11ProMax();
