@@ -17,6 +17,7 @@ class TextInputWidget extends StatelessWidget {
   final bool small;
   final String title;
   final bool decimalAllowed;
+  final bool evenNumber;
   final void Function(double value) onChange;
 
   final double minValue;
@@ -31,6 +32,7 @@ class TextInputWidget extends StatelessWidget {
     this.small = false,
     this.title = '',
     this.decimalAllowed = false,
+    this.evenNumber = false,
     @required this.minValue,
     @required this.maxValue,
     @required this.onChange,
@@ -143,6 +145,7 @@ class TextInputWidget extends StatelessWidget {
             max: maxValue,
             currentVal: value.toDouble(),
             decimalAllowed: this.decimalAllowed,
+            evenNumber: this.evenNumber,
           );
 
           if (val != null) {

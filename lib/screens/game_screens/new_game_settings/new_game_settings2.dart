@@ -483,6 +483,7 @@ class NewGameSettings2 extends StatelessWidget {
                           label: _appScreenText['bigBlind'],
                           minValue: minValue,
                           maxValue: maxValue,
+                          evenNumber: true,
                           title: _appScreenText['enterBigBlind'],
                           onChange: (value) {
                             //gmp.blinds.bigBlind = value.toDouble();

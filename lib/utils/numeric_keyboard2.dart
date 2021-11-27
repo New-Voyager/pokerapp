@@ -3,6 +3,7 @@ import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/utils/utils.dart';
+import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
@@ -38,6 +39,7 @@ class NumericKeyboard2 extends StatelessWidget {
   final String title;
   final double currValue;
   final bool decimalAllowed;
+  final bool evenNumber;
   bool firstKey = true;
 
   NumericKeyboard2({
@@ -47,6 +49,7 @@ class NumericKeyboard2 extends StatelessWidget {
     this.max,
     this.currValue,
     this.decimalAllowed = true,
+    this.evenNumber = false,
   }) : super(key: key);
 
   @override
@@ -148,19 +151,32 @@ class NumericKeyboard2 extends StatelessWidget {
     String value,
     double min,
     double max,
-  ) {
+  ) async {
+    bool decimalPresent = value.indexOf('.') != -1;
     double v = double.parse(value);
-
+    final errorNotifier = Provider.of<ValueNotifier<bool>>(
+        context,
+        listen: false,
+      );
     if (min == null) min = 0;
     if (max == null || max == -1) max = double.infinity;
+    if (evenNumber) {
+      double vBig = v;
+      if (decimalPresent) {
+        vBig = (v * 100).toInt().toDouble();
+      }
+      if ((vBig%2) != 0) {
+        // validate whether it is even number
+        errorNotifier.value = true;
+        await showErrorDialog(context, 'Error', 'Enter even number');
+        return;
+      }
+    }
 
     if (min <= v && v <= max) return Navigator.pop(context, v);
 
     /* else show error */
-    Provider.of<ValueNotifier<bool>>(
-      context,
-      listen: false,
-    ).value = true;
+    errorNotifier.value = true;
   }
 
   Widget _buildAmountWidget({
@@ -486,6 +502,7 @@ class NumericKeyboard2 extends StatelessWidget {
     double max,
     double currentVal,
     decimalAllowed = false,
+    evenNumber = false,
   }) {
     if (currentVal == null) {
       currentVal = 0;
@@ -505,6 +522,7 @@ class NumericKeyboard2 extends StatelessWidget {
           max: max,
           currValue: val,
           decimalAllowed: decimalAllowed,
+          evenNumber: evenNumber,
         ),
       ),
       transitionBuilder: (context, anim1, _, child) => SlideTransition(
