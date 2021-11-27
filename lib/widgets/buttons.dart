@@ -479,18 +479,20 @@ class ConfirmYesButton extends StatelessWidget {
       },
       borderRadius: BorderRadius.circular(12.0),
       child: Container(
-        width: 24.0,
-        height: 24.0,
+        width: 32.0,
+        height: 32.0,
         padding: EdgeInsets.all(2),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12.0),
-          color: theme.confirmYesButtonBackgroundColor,
+          shape: BoxShape.circle,
+          border: Border.all(
+              color: theme.confirmYesButtonBackgroundColor, width: 2),
+          color: Colors.black,
         ),
         child: Center(
           child: Icon(
             Icons.check,
-            color: theme.confirmYesButtonIconColor,
-            size: 20,
+            color: theme.confirmYesButtonBackgroundColor,
+            size: 24,
           ),
         ),
       ),
@@ -500,6 +502,48 @@ class ConfirmYesButton extends StatelessWidget {
 
 class ConfirmNoButton extends StatelessWidget {
   ConfirmNoButton({
+    @required this.onTap,
+    @required this.theme,
+    this.split = false,
+    this.adaptive = true,
+  });
+
+  final bool adaptive;
+  final AppTheme theme;
+  final Function onTap;
+  final bool split;
+
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        // playsound
+        this.onTap();
+      },
+      borderRadius: BorderRadius.circular(12.0),
+      child: Container(
+        width: 32.0,
+        height: 32.0,
+        padding: EdgeInsets.all(2),
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border:
+              Border.all(color: theme.confirmNoButtonBackgroundColor, width: 2),
+          color: Colors.black,
+        ),
+        child: Center(
+          child: Icon(
+            Icons.close,
+            color: theme.confirmNoButtonBackgroundColor,
+            size: 24,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class ConfirmNoButton2 extends StatelessWidget {
+  ConfirmNoButton2({
     @required this.onTap,
     @required this.theme,
     this.split = false,

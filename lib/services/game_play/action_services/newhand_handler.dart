@@ -243,7 +243,6 @@ class NewHandHandler {
     await showDeal();
     if (gameState.uiClosing) return;
 
-
     if (newHand.ante != null && newHand.ante > 0.0) {
       double pot = 0;
       // show ante animation
@@ -272,7 +271,8 @@ class NewHandHandler {
           seat.notify();
         }
       }
-    };
+    }
+    ;
 
     if (!newHand.bombPot) {
       final sbSeat = gameState.getSeat(newHand.sbPos);
@@ -284,7 +284,6 @@ class NewHandHandler {
       bbSeat.player.action.bb = true;
       bbSeat.player.action.amount = gameState.gameInfo.bigBlind.toDouble();
     }
-
 
     if (gameState.uiClosing) return;
 

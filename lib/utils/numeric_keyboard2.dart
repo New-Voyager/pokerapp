@@ -155,9 +155,9 @@ class NumericKeyboard2 extends StatelessWidget {
     bool decimalPresent = value.indexOf('.') != -1;
     double v = double.parse(value);
     final errorNotifier = Provider.of<ValueNotifier<bool>>(
-        context,
-        listen: false,
-      );
+      context,
+      listen: false,
+    );
     if (min == null) min = 0;
     if (max == null || max == -1) max = double.infinity;
     if (evenNumber) {
@@ -165,7 +165,7 @@ class NumericKeyboard2 extends StatelessWidget {
       if (decimalPresent) {
         vBig = (v * 100).toInt().toDouble();
       }
-      if ((vBig%2) != 0) {
+      if ((vBig % 2) != 0) {
         // validate whether it is even number
         errorNotifier.value = true;
         await showErrorDialog(context, 'Error', 'Enter even number');

@@ -9,6 +9,7 @@ import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/screens/game_context_screen/game_options/game_option_bottom_sheet.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/screens/main_screens/purchase_page_view/coin_update.dart';
+import 'package:pokerapp/utils/formatter.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
@@ -22,9 +23,9 @@ class HeaderView extends StatelessWidget {
 
   String _getTitleText(HandInfoState his) {
     if (his != null) {
-      String smallBlind = his.smallBlind.toString().replaceAll('.0', '');
+      String smallBlind = DataFormatter.chipsFormat(his.smallBlind);
 
-      String bigBlind = his.bigBlind.toString().replaceAll('.0', '');
+      String bigBlind = DataFormatter.chipsFormat(his.bigBlind);
 
       return '${his.gameType} $smallBlind/$bigBlind';
     }
@@ -38,7 +39,7 @@ class HeaderView extends StatelessWidget {
         String titleText = "";
         if (his.handNum == 0) {
           titleText =
-              "${gameTypeStr(gameTypeFromStr(gameState.gameInfo.gameType))}  ${gameState.gameInfo.smallBlind}/${gameState.gameInfo.bigBlind}";
+              "${gameTypeStr(gameTypeFromStr(gameState.gameInfo.gameType))}  ${DataFormatter.chipsFormat(gameState.gameInfo.smallBlind)}/${DataFormatter.chipsFormat(gameState.gameInfo.bigBlind)}";
         } else {
           titleText = _getTitleText(his);
         }
@@ -55,13 +56,15 @@ class HeaderView extends StatelessWidget {
             /* hand number */
             RichText(
               text: TextSpan(
-                text: _appScreenText['hand'],
+                text: his.handNum == 0 ? 'Code: ' : _appScreenText['hand'],
                 style: AppDecorators.getHeadLine4Style(theme: theme).copyWith(
                   fontWeight: FontWeight.w600,
                 ),
                 children: [
                   TextSpan(
-                    text: " #${his.handNum}",
+                    text: his.handNum == 0
+                        ? '${gameState.gameInfo.gameCode}'
+                        : " #${his.handNum}",
                     style: AppDecorators.getAccentTextStyle(theme: theme),
                   )
                 ],

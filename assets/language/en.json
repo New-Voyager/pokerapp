@@ -512,7 +512,7 @@
     },
     "gameUpdateService": {
         "buyInRequest": "BuyIn Request",
-        "TheHostDeniedTheBuyinRequest": "The host denied the buyin request",
+        "hostDeniedBuyInRequest": "The host denied the buyin request",
         "isInvitedToTakeTheOpenSeat": "is invited to take the open seat.",
         "waitlist": "Waitlist",
         "seatChangeInProgress": "Seat change in progress",

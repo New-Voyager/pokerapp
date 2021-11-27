@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:pokerapp/models/pending_approvals.dart';
 
 import 'club_model.dart';
 
@@ -7,6 +8,8 @@ class AppState extends ChangeNotifier {
   bool mockScreens = false;
   bool newGame = false;
   bool gameEnded = false;
+  PendingApprovalsState buyinApprovals = PendingApprovalsState();
+  ClubsUpdateState clubUpdateState = ClubsUpdateState();
 
   List<ClubModel> myClubs = [];
   setIndex(int index) {

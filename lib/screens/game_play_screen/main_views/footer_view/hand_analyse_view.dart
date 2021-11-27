@@ -23,6 +23,7 @@ import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/bottom_
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/bottom_sheets/table_result_bottomsheet.dart';
 import 'package:pokerapp/services/app/player_service.dart';
 import 'package:pokerapp/services/test/test_service.dart';
+import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
@@ -352,7 +353,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                     style: AppDecorators.getSubtitleStyle(theme: theme),
                   ),
                   TextSpan(
-                    text: " ${item.amount}",
+                    text: " ${DataFormatter.chipsFormat(item.amount)}",
                     style: AppDecorators.getAccentTextStyle(theme: theme),
                   ),
                 ],
@@ -392,49 +393,41 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
           width: 120.pw,
           child: Row(
             children: [
-              IconButton(
-                  icon: Icon(
-                    Icons.check_circle,
-                    color: Colors.green,
-                    size: 24.pw,
-                  ),
-                  onPressed: () async {
-                    final bool val = await PlayerService.approveBuyInRequest(
-                      item.gameCode,
-                      item.playerUuid,
-                    );
-                    if (val == null) {
-                      log("Exception in approve request");
-                    } else if (val) {
-                      _pollPendingApprovals();
-                    } else {
-                      log("Failed to approve request");
-                    }
-                  }),
-              SizedBox(width: 5.pw),
-              IconButton(
-                icon: Icon(
-                  Icons.cancel_rounded,
-                  size: 24.pw,
-                  color: theme.negativeOrErrorColor,
-                ),
-                onPressed: () async {
-                  final bool val = await PlayerService.declineBuyInRequest(
+              ConfirmYesButton(
+                theme: theme,
+                onTap: () async {
+                  final bool val = await PlayerService.approveBuyInRequest(
                     item.gameCode,
                     item.playerUuid,
                   );
-
                   if (val == null) {
-                    toast(_appScreenText['exceptionOccuredDeclineRequest']);
+                    log("Exception in approve request");
                   } else if (val) {
                     _pollPendingApprovals();
                   } else {
-                    toast(
-                      _appScreenText['failedToDeclineRequest'],
-                    );
+                    log("Failed to approve request");
                   }
                 },
-              )
+              ),
+              SizedBox(width: 5.pw),
+              ConfirmNoButton(
+                  onTap: () async {
+                    final bool val = await PlayerService.declineBuyInRequest(
+                      item.gameCode,
+                      item.playerUuid,
+                    );
+
+                    if (val == null) {
+                      toast(_appScreenText['exceptionOccuredDeclineRequest']);
+                    } else if (val) {
+                      _pollPendingApprovals();
+                    } else {
+                      toast(
+                        _appScreenText['failedToDeclineRequest'],
+                      );
+                    }
+                  },
+                  theme: theme),
             ],
           ),
         ),

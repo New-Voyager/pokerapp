@@ -130,10 +130,10 @@ class _MyAppState extends State<MyApp> {
         ),
 
         ListenableProvider<PendingApprovalsState>(
-          create: (_) => PendingApprovalsState(),
+          create: (_) => appState.buyinApprovals,
         ),
         ListenableProvider<ClubsUpdateState>(
-          create: (_) => ClubsUpdateState(),
+          create: (_) => appState.clubUpdateState,
         ),
         ChangeNotifierProvider<AppState>(
           create: (_) => appState,
