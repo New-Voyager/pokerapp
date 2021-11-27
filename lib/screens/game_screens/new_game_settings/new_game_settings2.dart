@@ -71,6 +71,7 @@ class NewGameSettings2 extends StatelessWidget {
 
     gm.gameType = mainGameType;
     gm.roeGames = subGameTypes;
+    gm.chipUnit = ChipUnit.DOLLAR;
     gm.dealerChoiceGames = subGameTypes;
 
     String gameCode;
