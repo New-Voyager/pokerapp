@@ -12,6 +12,7 @@ import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/game_play/graphql/gamesettings_service.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/utils.dart';
+import 'package:pokerapp/widgets/texts.dart';
 
 class GameInfoScreen extends StatefulWidget {
   final GameState gameState;
@@ -58,6 +59,9 @@ class _GameInfoScreenState extends State<GameInfoScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (this.gameInfo == null || loading) {
+      return CircularProgressWidget();
+    }
     theme = AppTheme.getTheme(context);
     final gameInfo = this.gameInfo;
 
@@ -123,47 +127,7 @@ class _GameInfoScreenState extends State<GameInfoScreen> {
                   ],
                 ),
                 AppDimensionsNew.getVerticalSizedBox(8),
-                Container(
-                  decoration: AppDecorators.tileDecorationWithoutBorder(theme),
-                  padding: EdgeInsets.symmetric(horizontal: 4, vertical: 8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            appScreenText["runningTime"],
-                            style:
-                                AppDecorators.getSubtitle1Style(theme: theme),
-                          ),
-                          Text(
-                            "${DataFormatter.getTimeInHHMMFormat(gameInfo.runningTime)}",
-                            style:
-                                AppDecorators.getAccentTextStyle(theme: theme)
-                                    .copyWith(fontWeight: FontWeight.normal),
-                          ),
-                        ],
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text(
-                            appScreenText["handsDealt"],
-                            style:
-                                AppDecorators.getSubtitle1Style(theme: theme),
-                          ),
-                          Text(
-                            "${gameInfo.handNum}",
-                            style:
-                                AppDecorators.getAccentTextStyle(theme: theme)
-                                    .copyWith(fontWeight: FontWeight.normal),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
+                getSessionInfo(theme),
                 AppDimensionsNew.getVerticalSizedBox(8),
                 Expanded(
                   child: SingleChildScrollView(
@@ -236,6 +200,107 @@ class _GameInfoScreenState extends State<GameInfoScreen> {
                 ),
               ],
             ),
+    );
+  }
+
+  Widget getSessionInfo(AppTheme theme) {
+    List<Column> children = [];
+    children.add(Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        WrapText(
+          appScreenText["runningTime"],
+          theme,
+          style: AppDecorators.getSubtitle1Style(theme: theme),
+        ),
+        Text(
+          "${DataFormatter.getTimeInHHMMFormat(gameInfo.runningTime)}",
+          style: AppDecorators.getAccentTextStyle(theme: theme)
+              .copyWith(fontWeight: FontWeight.normal),
+        ),
+      ],
+    ));
+    children.add(Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        WrapText(
+          appScreenText["handsDealt"],
+          theme,
+          style: AppDecorators.getSubtitle1Style(theme: theme),
+        ),
+        WrapText(
+          "${gameInfo.handNum}",
+          theme,
+          style: AppDecorators.getAccentTextStyle(theme: theme)
+              .copyWith(fontWeight: FontWeight.normal),
+        ),
+      ],
+    ));
+
+    if ((gameInfo.noHandsPlayed ?? 0) != 0) {
+      children.add(Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          WrapText(
+            'Hands Played',
+            theme,
+            style: AppDecorators.getSubtitle1Style(theme: theme),
+          ),
+          Text(
+            "${gameInfo.noHandsPlayed}",
+            style: AppDecorators.getAccentTextStyle(theme: theme)
+                .copyWith(fontWeight: FontWeight.normal),
+          ),
+        ],
+      ));
+    }
+
+    if ((gameInfo.buyin ?? 0) != 0) {
+      children.add(Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Text(
+            'Buyin',
+            style: AppDecorators.getSubtitle1Style(theme: theme),
+          ),
+          Text(
+            "${DataFormatter.chipsFormat(gameInfo.buyin)}",
+            style: AppDecorators.getAccentTextStyle(theme: theme)
+                .copyWith(fontWeight: FontWeight.normal),
+          ),
+        ],
+      ));
+    }
+
+    if ((gameInfo.stack ?? 0) != 0) {
+      double profit = gameInfo.stack - gameInfo.buyin;
+      Color color = Colors.green;
+      if (profit < 0) {
+        color = Colors.red;
+      }
+      children.add(Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Text(
+            'Profit',
+            style: AppDecorators.getSubtitle1Style(theme: theme),
+          ),
+          Text(
+            "${DataFormatter.chipsFormat(profit)}",
+            style: AppDecorators.getAccentTextStyle(theme: theme)
+                .copyWith(fontWeight: FontWeight.normal, color: color),
+          ),
+        ],
+      ));
+    }
+
+    return Container(
+      decoration: AppDecorators.tileDecorationWithoutBorder(theme),
+      padding: EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: children,
+      ),
     );
   }
 

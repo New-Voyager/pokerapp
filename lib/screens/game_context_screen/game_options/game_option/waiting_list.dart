@@ -59,7 +59,7 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
     });
   }
 
-  getAllWaitingPlayers() async {
+  Future<void> getAllWaitingPlayers() async {
     final result = await WaitlistService.listOfWaitingPlayer(widget.gameCode);
 
     if (result != null) {
@@ -227,9 +227,7 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
             label: _appScreenText['addMeToWaitingList'],
             value: isInWaitingList,
             onChange: (bool value) async {
-              setState(() {
-                isInWaitingList = value;
-              });
+              isInWaitingList = value;
               if (isInWaitingList) {
                 widget.gameState.gameInfo.playerGameStatus =
                     AppConstants.IN_QUEUE;
@@ -239,7 +237,6 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
                   widget.gameState.gameInfo.playerGameStatus =
                       AppConstants.IN_QUEUE;
                 }
-                widget.gameState.redrawFooter();
               } else {
                 widget.gameState.gameInfo.playerGameStatus =
                     AppConstants.NOT_PLAYING;
@@ -249,10 +246,12 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
                   widget.gameState.gameInfo.playerGameStatus =
                       AppConstants.NOT_PLAYING;
                 }
-                widget.gameState.redrawFooter();
               }
               widget.gameState.redrawFooter();
-              getAllWaitingPlayers();
+              getAllWaitingPlayers().then((v) {
+                  setState(() {
+                  });
+              });
             },
           ));
     } else {

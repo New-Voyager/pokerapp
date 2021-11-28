@@ -48,6 +48,8 @@ class GameInfoModel {
   bool gpsCheck = false;
   bool highHandTracked = false;
   int handNum = 0;
+  double buyin = null;
+  double stack = null;
   String sfuUrl = 'http://67.205.136.63:7000';
 
   // nats channels
@@ -131,6 +133,13 @@ class GameInfoModel {
     this.ipCheck = data['ipCheck'] ?? false;
     this.gpsCheck = data['gpsCheck'] ?? false;
     this.handNum = data['handNum'] ?? 0;
+    if (data['buyin'] != null) {
+      this.buyin = double.parse(data['buyin'].toString());
+    }
+
+    if (data['stack'] != null) {
+      this.stack = double.parse(data['stack'].toString());
+    }
 
     this.isHost = true;
     if (data['isHost'] != null) {
@@ -203,6 +212,8 @@ class GameInfoModel {
       runningTime
       noHandsWon
       noHandsPlayed
+      buyin
+      stack
 
       seatInfo {
         availableSeats

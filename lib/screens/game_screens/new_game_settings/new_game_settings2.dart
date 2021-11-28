@@ -787,24 +787,24 @@ class NewGameSettings2 extends StatelessWidget {
                         ),
 
                         /* allow run it twice */
-                        _buildRadio(
-                          label: _appScreenText['muckLosingHand'],
-                          value: gmp.muckLosingHand,
-                          onChange: (bool b) {
-                            gmp.muckLosingHand = b;
-                          },
-                          theme: theme,
-                        ),
+                        // _buildRadio(
+                        //   label: _appScreenText['muckLosingHand'],
+                        //   value: gmp.muckLosingHand,
+                        //   onChange: (bool b) {
+                        //     gmp.muckLosingHand = b;
+                        //   },
+                        //   theme: theme,
+                        // ),
 
-                        /* show player buyin */
-                        _buildRadio(
-                          label: _appScreenText['showPlayerBuyin'],
-                          value: gmp.showPlayerBuyin,
-                          onChange: (bool b) {
-                            gmp.showPlayerBuyin = b;
-                          },
-                          theme: theme,
-                        ),
+                        // /* show player buyin */
+                        // _buildRadio(
+                        //   label: _appScreenText['showPlayerBuyin'],
+                        //   value: gmp.showPlayerBuyin,
+                        //   onChange: (bool b) {
+                        //     gmp.showPlayerBuyin = b;
+                        //   },
+                        //   theme: theme,
+                        // ),
 
                         /* allow rabbit hunt */
                         _buildRadio(
