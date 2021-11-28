@@ -488,7 +488,8 @@ class DataSource extends DataTableSource {
         final diff = DateTime.now().difference(lastPlayedDate);
         final ago = new DateTime.now().subtract(diff);
         cells.add(
-          DataCell(Text(timeago.format(ago)), onTap: () {
+          DataCell(Text(timeago.format(ago).replaceAll("about", "")),
+              onTap: () {
             openMember(activity.playerUuid);
           }),
         );

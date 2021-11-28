@@ -60,6 +60,42 @@ class _GameInfoScreenState extends State<GameInfoScreen> {
   Widget build(BuildContext context) {
     theme = AppTheme.getTheme(context);
     final gameInfo = this.gameInfo;
+
+    List<TableRow> tableItems = [];
+    tableItems.add(_buildOneRow(
+        col1: appScreenText["buyIn"],
+        col2:
+            "${DataFormatter.chipsFormat(gameInfo.buyInMin)}/${DataFormatter.chipsFormat(gameInfo.buyInMax)}"));
+    tableItems.add(_buildOneRow(
+        col1: appScreenText["highHandTracked"],
+        col2: _getYesNo(gameInfo?.highHandTracked)));
+    tableItems.add(_buildOneRow(
+        col1: appScreenText["runitTwiceAllowed"],
+        col2: _getYesNo(gameSettings?.runItTwiceAllowed)));
+    tableItems.add(_buildOneRow(
+        col1: appScreenText["bombPotEnabled"],
+        col2: _getYesNo(gameSettings?.bombPotEnabled)));
+    if (gameSettings != null && gameSettings.bombPotEnabled) {
+      tableItems.add(_buildOneRow(
+          col1: appScreenText["bombPotInterval"],
+          col2: gameSettings?.bombPotInterval?.toString()));
+      tableItems.add(_buildOneRow(
+          col1: appScreenText["doubleBoardBombPot"],
+          col2: _getYesNo(gameSettings?.doubleBoardBombPot)));
+    }
+    tableItems.add(_buildOneRow(
+        col1: appScreenText["utgStraddleAllowed"],
+        col2: _getYesNo(gameInfo.utgStraddleAllowed)));
+    tableItems.add(_buildOneRow(
+        col1: appScreenText["animations"],
+        col2: _getYesNo(gameSettings?.funAnimations)));
+    tableItems.add(_buildOneRow(
+        col1: appScreenText["chatEnabled"],
+        col2: _getYesNo(gameSettings?.chat)));
+    tableItems.add(_buildOneRow(
+        col1: appScreenText["showResult"],
+        col2: _getYesNo(gameSettings?.showResult)));
+
     return Container(
       padding: EdgeInsets.all(16),
       decoration: AppDecorators.bgRadialGradient(theme),
@@ -69,7 +105,7 @@ class _GameInfoScreenState extends State<GameInfoScreen> {
           : Column(
               children: [
                 Text(
-                  "${gameTypeStr(gameTypeFromStr(gameInfo.gameType))} ${gameInfo.smallBlind}/${gameInfo.bigBlind}",
+                  "${gameTypeStr(gameTypeFromStr(gameInfo.gameType))} ${DataFormatter.chipsFormat(gameInfo.smallBlind)}/${DataFormatter.chipsFormat(gameInfo.bigBlind)}",
                   style: AppDecorators.getHeadLine3Style(theme: theme),
                 ),
                 Row(
@@ -147,47 +183,7 @@ class _GameInfoScreenState extends State<GameInfoScreen> {
                                   1: FixedColumnWidth(
                                       MediaQuery.of(context).size.width * 0.3),
                                 },
-                                children: [
-                                  _buildOneRow(
-                                      col1: appScreenText["buyIn"],
-                                      col2:
-                                          "${gameInfo.buyInMin}/${gameInfo.buyInMax}"),
-                                  _buildOneRow(
-                                      col1: appScreenText["highHandTracked"],
-                                      col2:
-                                          _getYesNo(gameInfo?.highHandTracked)),
-                                  _buildOneRow(
-                                      col1: appScreenText["runitTwiceAllowed"],
-                                      col2: _getYesNo(
-                                          gameSettings?.runItTwiceAllowed)),
-                                  _buildOneRow(
-                                      col1: appScreenText["bombPotEnabled"],
-                                      col2: _getYesNo(
-                                          gameSettings?.bombPotEnabled)),
-                                  _buildOneRow(
-                                      col1: appScreenText["bombPotInterval"],
-                                      col2: gameSettings?.bombPotInterval
-                                          ?.toString()),
-                                  _buildOneRow(
-                                      col1: appScreenText["doubleBoardBombPot"],
-                                      col2: _getYesNo(
-                                          gameSettings?.doubleBoardBombPot)),
-                                  _buildOneRow(
-                                      col1: appScreenText["utgStraddleAllowed"],
-                                      col2: _getYesNo(
-                                          gameInfo.utgStraddleAllowed)),
-                                  _buildOneRow(
-                                      col1: appScreenText["animations"],
-                                      col2: _getYesNo(
-                                          gameSettings?.funAnimations)),
-                                  _buildOneRow(
-                                      col1: appScreenText["chatEnabled"],
-                                      col2: _getYesNo(gameSettings?.chat)),
-                                  _buildOneRow(
-                                      col1: appScreenText["showResult"],
-                                      col2:
-                                          _getYesNo(gameSettings?.showResult)),
-                                ],
+                                children: tableItems,
                               ),
                               AppDimensionsNew.getVerticalSizedBox(8),
                               Visibility(
@@ -255,11 +251,17 @@ class _GameInfoScreenState extends State<GameInfoScreen> {
       ),
       Container(
         padding: EdgeInsets.symmetric(horizontal: 4),
-        child: Text(
-          col2,
-          textAlign: TextAlign.end,
-          style: AppDecorators.getHeadLine4Style(theme: theme).copyWith(
-            fontWeight: FontWeight.w600,
+        child: Flexible(
+          child: FittedBox(
+            alignment: Alignment.centerRight,
+            fit: BoxFit.scaleDown,
+            child: Text(
+              col2,
+              textAlign: TextAlign.end,
+              style: AppDecorators.getHeadLine4Style(theme: theme).copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
           ),
         ),
       ),
