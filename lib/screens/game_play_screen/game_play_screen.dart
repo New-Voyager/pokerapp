@@ -562,7 +562,8 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     if (me != null && me.seatNo != null && me.seatNo != 0) {
       // if the game is paused, don't let the user to switch
       if (tableState.gameStatus == AppConstants.GAME_PAUSED) {
-        showErrorDialog(context, 'Error', 'Cannot switch seat when game is paused');
+        showErrorDialog(
+            context, 'Error', 'Cannot switch seat when game is paused');
         return;
       }
 
@@ -663,6 +664,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         Alerts.showNotification(
           titleText: "Tap on an open seat to join the game!",
+          duration: Duration(seconds: 10),
         );
       });
     }
@@ -903,7 +905,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
     bool showBottom = this.widget.showBottom;
 
-
     // Widget stack = Stack(
     //   alignment: Alignment.topCenter,
     //   clipBehavior: Clip.none,
@@ -959,30 +960,32 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     if (widget.showTop) {
       gameScreenChildren.add(headerView);
       // top view
-      gameScreenChildren.add(Container(
+      gameScreenChildren.add(
+        Container(
           clipBehavior: Clip.none,
           height: boardDimensions.height,
           width: Screen.width,
           child: topView,
-        ),);
+        ),
+      );
     }
 
     if (widget.showBottom) {
       gameScreenChildren.add(Align(
-                alignment: Alignment.bottomCenter,
-                child: Consumer<RedrawFooterSectionState>(
-                  builder: (_, ___, __) {
-                    // log('RedrawFooter: building footer view');
-                    return FooterViewWidget(
-                      gameCode: widget.gameCode,
-                      gameContextObject: _gameContextObj,
-                      currentPlayer: _gameContextObj.gameState.currentPlayer,
-                      gameInfo: _gameInfoModel,
-                      toggleChatVisibility: _toggleChatVisibility,
-                    );
-                  },
-                ),
-              ));
+        alignment: Alignment.bottomCenter,
+        child: Consumer<RedrawFooterSectionState>(
+          builder: (_, ___, __) {
+            // log('RedrawFooter: building footer view');
+            return FooterViewWidget(
+              gameCode: widget.gameCode,
+              gameContextObject: _gameContextObj,
+              currentPlayer: _gameContextObj.gameState.currentPlayer,
+              gameInfo: _gameInfoModel,
+              toggleChatVisibility: _toggleChatVisibility,
+            );
+          },
+        ),
+      ));
     }
     Widget column = Column(
       mainAxisAlignment: MainAxisAlignment.center,

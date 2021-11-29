@@ -459,6 +459,7 @@ class NotificationHandler {
           // show notification
           Alerts.showNotification(
             titleText: "Tap on an open seat to join the game!",
+            duration: Duration(seconds: 10),
           );
 
           // we are already in REQ game play screen, no need to navigate

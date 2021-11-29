@@ -249,8 +249,7 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
               }
               widget.gameState.redrawFooter();
               getAllWaitingPlayers().then((v) {
-                  setState(() {
-                  });
+                setState(() {});
               });
             },
           ));

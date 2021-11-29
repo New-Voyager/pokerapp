@@ -8,10 +8,12 @@ class WrapText extends StatelessWidget {
   final bool wrap;
   final TextStyle style;
 
-  WrapText(this.text, this.theme, {
-      this.wrap = true,
-      this.style,
-    });
+  WrapText(
+    this.text,
+    this.theme, {
+    this.wrap = true,
+    this.style,
+  });
   @override
   Widget build(BuildContext context) {
     TextStyle style = this.style;
@@ -19,7 +21,9 @@ class WrapText extends StatelessWidget {
       style = AppDecorators.getHeadLine3Style(theme: this.theme);
     }
     String text = this.text.replaceAll(' ', '\n');
-    return Text(text, style: style,);
+    return Text(
+      text,
+      style: style,
+    );
   }
-
 }
