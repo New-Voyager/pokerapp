@@ -6,6 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/announcement_model.dart';
 import 'package:pokerapp/models/app_state.dart';
+import 'package:pokerapp/models/newmodels/app_settings_model.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
 import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
@@ -23,6 +24,7 @@ import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/app/gif_cache_service.dart';
 import 'package:pokerapp/services/app/loadassets_service.dart';
 import 'package:pokerapp/services/app/player_service.dart';
+import 'package:pokerapp/services/data/app_settings.dart';
 import 'package:pokerapp/services/data/hive_models/player_state.dart';
 import 'package:pokerapp/services/game_history/game_history_service.dart';
 import 'package:pokerapp/services/nats/nats.dart';
@@ -59,6 +61,13 @@ class _MainScreenState extends State<MainScreen>
 
   Future<void> _init() async {
     log('Initialize main screen');
+
+    AppSettingsStore as = appService.appSettings;
+    Map<String, dynamic> appSettingsMap = as.getSetting('AppSettings');
+    if (appSettingsMap != null) {
+      String gameCode = AppSettingsModel.fromJson(appSettingsMap).playerInGame;
+      print(gameCode);
+    }
 
     // initialize device
     await DeviceInfo.init();
@@ -131,6 +140,7 @@ class _MainScreenState extends State<MainScreen>
       showErrorDialog(context, 'Announcement', importantAnnouncements,
           info: true);
     }
+
     // WidgetsBinding.instance.addPostFrameCallback((_) async {
     // });
   }

@@ -8,6 +8,7 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/enums/player_status.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game_play_models/business/game_chat_notfi_state.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
@@ -19,11 +20,13 @@ import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat_change_model.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
+import 'package:pokerapp/models/newmodels/app_settings_model.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/game_service.dart';
+import 'package:pokerapp/services/data/app_settings.dart';
 import 'package:pokerapp/services/data/game_hive_store.dart';
 import 'package:pokerapp/services/data/game_log_store.dart';
 import 'package:pokerapp/utils/formatter.dart';
@@ -317,6 +320,12 @@ class GamePlayScreenUtilMethods {
       // update hive store
       GameHiveStore ghs = gameState.gameHiveStore;
       ghs.initialize(gameState.gameCode);
+
+      AppSettingsStore as = appService.appSettings;
+      as.save(
+          "AppSettings",
+          AppSettingsModel.fromJson(
+              AppSettingsModel(playerInGame: gameCode).toJson()));
 
       ConnectionDialog.dismiss(context: context);
       if (newPlayerModel.isMe) {
