@@ -17,23 +17,11 @@ class AppSettingsStore {
     _box = null;
   }
 
-  void save(String key, dynamic json) {
-    _box.put(key, json);
-    print(_box.get("AppSettings"));
+  String get playerInGame {
+    return _box.get('playerInGame');
   }
 
-  List<String> getSettings() {
-    List<String> ret = [];
-    for (final key in _box.keys) {
-      ret.add(key.toString());
-    }
-    return ret;
-  }
-
-  Map<String, dynamic> getSetting(String key) {
-    if (_box.get(key) != null) {
-      return _box.get(key).cast<String, dynamic>();
-    }
-    return null;
+  set playerInGame(String gameCode) {
+    _box.put('playerInGame', gameCode);
   }
 }

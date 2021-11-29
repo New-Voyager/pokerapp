@@ -3,9 +3,11 @@ import 'dart:developer';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:pokerapp/enums/game_status.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/announcement_model.dart';
 import 'package:pokerapp/models/app_state.dart';
+import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/newmodels/app_settings_model.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
 import 'package:pokerapp/models/player_info.dart';
@@ -61,13 +63,6 @@ class _MainScreenState extends State<MainScreen>
 
   Future<void> _init() async {
     log('Initialize main screen');
-
-    AppSettingsStore as = appService.appSettings;
-    Map<String, dynamic> appSettingsMap = as.getSetting('AppSettings');
-    if (appSettingsMap != null) {
-      String gameCode = AppSettingsModel.fromJson(appSettingsMap).playerInGame;
-      print(gameCode);
-    }
 
     // initialize device
     await DeviceInfo.init();
@@ -139,6 +134,22 @@ class _MainScreenState extends State<MainScreen>
           important.map((e) => e.text).toList().join("\n");
       showErrorDialog(context, 'Announcement', importantAnnouncements,
           info: true);
+    }
+
+    AppSettingsStore as = appService.appSettings;
+    String gameCode = as.playerInGame;
+
+    if (gameCode != null) {
+      GameInfoModel gameInfo = await GameService.getGameInfo(gameCode);
+      if (gameInfo != null && gameInfo.status == "ACTIVE") {
+        Navigator.pushNamed(
+          context,
+          Routes.game_play,
+          arguments: gameCode,
+        );
+      } else {
+        as.playerInGame = null;
+      }
     }
 
     // WidgetsBinding.instance.addPostFrameCallback((_) async {

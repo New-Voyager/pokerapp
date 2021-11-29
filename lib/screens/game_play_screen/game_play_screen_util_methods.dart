@@ -322,10 +322,7 @@ class GamePlayScreenUtilMethods {
       ghs.initialize(gameState.gameCode);
 
       AppSettingsStore as = appService.appSettings;
-      as.save(
-          "AppSettings",
-          AppSettingsModel.fromJson(
-              AppSettingsModel(playerInGame: gameCode).toJson()));
+      as.playerInGame = gameCode;
 
       ConnectionDialog.dismiss(context: context);
       if (newPlayerModel.isMe) {
