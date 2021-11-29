@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game_play_models/business/game_chat_notfi_state.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
@@ -93,6 +94,7 @@ class GamePlayScreen extends StatefulWidget {
   final bool showBottom;
   final bool botGame;
   final GameInfoModel gameInfoModel;
+  final bool isFromWaitListNotification;
   // NOTE: Enable this for agora audio testing
   GamePlayScreen({
     @required this.gameCode,
@@ -101,6 +103,7 @@ class GamePlayScreen extends StatefulWidget {
     this.showTop = true,
     this.showBottom = true,
     this.gameInfoModel,
+    this.isFromWaitListNotification = false,
   }) : assert(gameCode != null);
 
   @override
@@ -399,6 +402,8 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   /* dispose method for closing connections and un subscribing to channels */
   @override
   void dispose() {
+    appState.removeGameCode();
+
     if (_gameState != null) {
       _gameState.uiClosing = true;
     }
@@ -642,9 +647,27 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
   AppTextScreen _appScreenText;
 
+  bool _showWaitListHandlingNotificationCalled = false;
+  void _showWaitListHandlingNotification() {
+    if (_showWaitListHandlingNotificationCalled) return;
+    _showWaitListHandlingNotificationCalled = true;
+
+    if (widget.isFromWaitListNotification) {
+      // if we are from the wait list notification, show a banner
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        Alerts.showNotification(
+          titleText: "Tap on an open seat to join the game!",
+        );
+      });
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+
+    // store in app state that we are in the game_play_screen
+    appState.setCurrentScreenGameCode(widget.gameCode);
 
     _streamSub =
         context.read<NetworkChangeListener>().onConnectivityChange.listen(
@@ -997,6 +1020,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     return MultiProvider(
       providers: providers,
       builder: (BuildContext context, _) {
+        _showWaitListHandlingNotification();
         this._providerContext = context;
 
         /* this function listens for marked cards in the result and sends as necessary */

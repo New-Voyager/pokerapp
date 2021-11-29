@@ -184,6 +184,7 @@ class Routes {
       case game_play:
         String gameCode;
         bool botGame = false;
+        bool isFromWaitListNotification = false;
         GameInfoModel gameInfo;
         if (settings.arguments is String) {
           gameCode = settings.arguments as String;
@@ -192,6 +193,8 @@ class Routes {
           gameCode = args['gameCode'] as String;
           botGame = args['botGame'] ?? false;
           gameInfo = args['gameInfo'] as GameInfoModel;
+          isFromWaitListNotification =
+              args['isFromWaitListNotification'] as bool;
         }
         return _getPageRoute(
           routeName: settings.name,
@@ -199,6 +202,7 @@ class Routes {
             gameCode: gameCode,
             botGame: botGame,
             gameInfoModel: gameInfo,
+            isFromWaitListNotification: isFromWaitListNotification,
           ),
         );
 
@@ -291,8 +295,8 @@ class Routes {
           viewToShow: ChangeNotifierProvider<ClubMemberModel>(
             create: (_) => member,
             builder: (BuildContext context, _) => Consumer<ClubMemberModel>(
-              builder: (_, ClubMemberModel data, __) =>
-                  ClubMembersDetailsView(clubCode, playerId, isCurrentOwner, member),
+              builder: (_, ClubMemberModel data, __) => ClubMembersDetailsView(
+                  clubCode, playerId, isCurrentOwner, member),
             ),
           ),
         );

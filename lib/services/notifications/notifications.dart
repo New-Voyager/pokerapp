@@ -433,9 +433,11 @@ class NotificationHandler {
       if (json["gameType"] != null) {
         String gameType = json["gameType"].toString();
         String sb = DataFormatter.chipsFormat(
-            double.parse(json['smallBlind'].toString()));
+          double.parse(json['smallBlind'].toString()),
+        );
         String bb = DataFormatter.chipsFormat(
-            double.parse(json['bigBlind'].toString()));
+          double.parse(json['bigBlind'].toString()),
+        );
         game = ' at $gameType $sb/$bb';
       }
       String title = 'Do you want to take a open seat $game?';
@@ -447,11 +449,28 @@ class NotificationHandler {
           'A seat open in game $game.\n\nDo you want to take the open seat?';
 
       final res = await showWaitlistInvitation(
-          navigatorKey.currentContext, message, 10);
+        navigatorKey.currentContext,
+        message,
+        10,
+      );
+
       if (res) {
+        if (appState.currentScreenGameCode == gameCode) {
+          // show notification
+          Alerts.showNotification(
+            titleText: "Tap on an open seat to join the game!",
+          );
+
+          // we are already in REQ game play screen, no need to navigate
+          return;
+        }
+
         navigatorKey.currentState.pushNamed(
           Routes.game_play,
-          arguments: gameCode,
+          arguments: {
+            'gameCode': gameCode,
+            'isFromWaitListNotification': true,
+          },
         );
       }
     }
