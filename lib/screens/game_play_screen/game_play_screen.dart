@@ -652,7 +652,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     if (_showWaitListHandlingNotificationCalled) return;
     _showWaitListHandlingNotificationCalled = true;
 
-    if (widget.isFromWaitListNotification) {
+    if (widget.isFromWaitListNotification == true) {
       // if we are from the wait list notification, show a banner
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         Alerts.showNotification(
