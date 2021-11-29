@@ -465,6 +465,11 @@ class NotificationHandler {
           return;
         }
 
+        if (appState.currentScreenGameCode.isNotEmpty) {
+          // then we are in a different game play screen, pop off the old game play screen
+          navigatorKey.currentState.pop();
+        }
+
         navigatorKey.currentState.pushNamed(
           Routes.game_play,
           arguments: {
