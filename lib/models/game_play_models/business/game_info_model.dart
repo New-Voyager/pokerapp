@@ -103,7 +103,11 @@ class GameInfoModel {
     this.buyInMax = double.parse(data['buyInMax'].toString());
     this.smallBlind = double.parse(data['smallBlind'].toString());
     this.bigBlind = double.parse(data['bigBlind'].toString());
-    this.ante = double.parse(data['ante'].toString());
+    if (data['ante'] != null) {
+      this.ante = double.parse(data['ante'].toString());
+    } else {
+      data['ante'] = 0.0;
+    }
     this.status = data['status'];
     this.tableStatus = data['tableStatus'];
     this.utgStraddleAllowed = data['utgStraddleAllowed'] ?? true;

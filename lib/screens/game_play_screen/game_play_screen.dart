@@ -560,6 +560,12 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     }
 
     if (me != null && me.seatNo != null && me.seatNo != 0) {
+      // if the game is paused, don't let the user to switch
+      if (tableState.gameStatus == AppConstants.GAME_PAUSED) {
+        showErrorDialog(context, 'Error', 'Cannot switch seat when game is paused');
+        return;
+      }
+
       log('Player ${me.name} switches seat to ${seat.serverSeatPos}');
       await SeatChangeService.switchSeat(widget.gameCode, seat.serverSeatPos);
     } else {
@@ -896,7 +902,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     );
 
     bool showBottom = this.widget.showBottom;
-    showBottom = true;
+
 
     // Widget stack = Stack(
     //   alignment: Alignment.topCenter,
@@ -949,22 +955,20 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     //         : Container(),
     //   ],
     // );
-
-    Widget column = Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        headerView,
-        /* main view */
-        Container(
+    List<Widget> gameScreenChildren = [];
+    if (widget.showTop) {
+      gameScreenChildren.add(headerView);
+      // top view
+      gameScreenChildren.add(Container(
           clipBehavior: Clip.none,
           height: boardDimensions.height,
           width: Screen.width,
           child: topView,
-        ),
+        ),);
+    }
 
-        // footer view
-        showBottom
-            ? Align(
+    if (widget.showBottom) {
+      gameScreenChildren.add(Align(
                 alignment: Alignment.bottomCenter,
                 child: Consumer<RedrawFooterSectionState>(
                   builder: (_, ___, __) {
@@ -978,9 +982,11 @@ class _GamePlayScreenState extends State<GamePlayScreen>
                     );
                   },
                 ),
-              )
-            : const SizedBox.shrink(),
-      ],
+              ));
+    }
+    Widget column = Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: gameScreenChildren,
     );
 
     Stack allWidgets = Stack(children: [
