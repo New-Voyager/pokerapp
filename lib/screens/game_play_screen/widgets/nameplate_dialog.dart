@@ -4,6 +4,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
@@ -13,6 +14,7 @@ import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/app/player_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/widgets/buttons.dart';
+import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:pokerapp/widgets/num_diamond_widget.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
@@ -105,25 +107,36 @@ class _NamePlateDailogState extends State<NamePlateDailog> {
                         visible: widget.gameState.currentPlayer.isAdmin(),
                         child: CircleImageButton(
                             theme: theme,
-                            icon: Icons.ac_unit,
+                            icon: Icons.remove,
                             caption: "Kick\n",
                             split: true,
                             onTap: () async {
-                              await PlayerService.kickPlayer(
-                                  widget.gameState.gameCode,
-                                  widget.seat.player.playerUuid);
-                              Alerts.showNotification(
-                                  titleText: _appText[
-                                      'playerWillBeRemovedAfterThisHand'],
-                                  duration: Duration(seconds: 5));
-                              Navigator.of(context).pop();
+                              final result = await showPrompt(context, "Kick",
+                                  "Do you want to remove '${widget.gameState.currentPlayer.name}' from the game?",
+                                  positiveButtonText: "Yes", negativeButtonText: "No");
+                              if (result != null) {
+                                if (result == true) {
+                                await PlayerService.kickPlayer(
+                                    widget.gameState.gameCode,
+                                    widget.seat.player.playerUuid);
+                                if (widget.gameState.gameInfo.status == AppConstants.GAME_PAUSED) {
+                                  // player is removed from the game
+                                } else {
+                                  Alerts.showNotification(
+                                      titleText: _appText[
+                                          'playerWillBeRemovedAfterThisHand'],
+                                      duration: Duration(seconds: 5));
+                                }
+                                Navigator.of(context).pop();
+                              }
+                              }
                             })),
                     SizedBox(width: 16.pw),
                     Visibility(
                         visible: widget.gameState.currentPlayer.isHost(),
                         child: CircleImageButton(
                             theme: theme,
-                            icon: Icons.ac_unit,
+                            icon: Icons.verified_user,
                             caption: 'Assign\nHost',
                             split: true,
                             onTap: () {
@@ -132,7 +145,7 @@ class _NamePlateDailogState extends State<NamePlateDailog> {
                     SizedBox(width: 16.pw),
                     Visibility(
                         visible:
-                            true, // widget.gameState.currentPlayer.isAdmin(),
+                            widget.gameState.gameInfo.audioConfEnabled, // widget.gameState.currentPlayer.isAdmin(),
                         child: CircleImageButton(
                           onTap: () {
                             widget.gameContextObject.ionAudioConferenceService

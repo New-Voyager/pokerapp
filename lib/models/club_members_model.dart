@@ -6,6 +6,7 @@ import 'package:pokerapp/utils/formatter.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class ClubMemberModel extends ChangeNotifier {
+  bool creditTracking = false;
   String clubCode;
   String name;
   DateTime joinedDate;

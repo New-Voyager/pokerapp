@@ -292,7 +292,7 @@ class Routes {
             create: (_) => member,
             builder: (BuildContext context, _) => Consumer<ClubMemberModel>(
               builder: (_, ClubMemberModel data, __) =>
-                  ClubMembersDetailsView(clubCode, playerId, isCurrentOwner),
+                  ClubMembersDetailsView(clubCode, playerId, isCurrentOwner, member),
             ),
           ),
         );

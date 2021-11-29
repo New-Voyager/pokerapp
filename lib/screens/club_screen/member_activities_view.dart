@@ -478,7 +478,7 @@ class DataSource extends DataTableSource {
 
     if (includeLastPlayedDate) {
       cells.add(
-        DataCell(Text('123-456-7890'), onTap: () {
+        DataCell(Text(activity.contactInfo), onTap: () {
           openMember(activity.playerUuid);
         }),
       );
@@ -487,8 +487,10 @@ class DataSource extends DataTableSource {
         var lastPlayedDate = activity.lastPlayedDate.toLocal();
         final diff = DateTime.now().difference(lastPlayedDate);
         final ago = new DateTime.now().subtract(diff);
+        String agoText = timeago.format(ago).replaceAll("about", "");
+        agoText = agoText.replaceAll("minutes", "mins");
         cells.add(
-          DataCell(Text(timeago.format(ago).replaceAll("about", "")),
+          DataCell(Text(agoText),
               onTap: () {
             openMember(activity.playerUuid);
           }),

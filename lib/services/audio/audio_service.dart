@@ -91,6 +91,7 @@ class AudioService {
   }
 
   static playSound(String soundFile, {bool mute}) {
+    return;
     // the library we use only supports Android
     // if (!Platform.isAndroid) return;
     if (!play) {

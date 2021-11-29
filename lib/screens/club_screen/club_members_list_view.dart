@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/club_member_status.dart';
+import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/models/club_members_model.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
@@ -17,12 +18,13 @@ import 'package:provider/provider.dart';
 class ClubMembersListView extends StatefulWidget {
   List<ClubMemberModel> _membersList;
   final String clubCode;
+  final ClubHomePageModel club;
   final Function fetchData;
   final bool viewAsOwner;
   final MemberListOptions option;
   final AppTextScreen appScreenText;
 
-  ClubMembersListView(this.clubCode, this._membersList, this.option,
+  ClubMembersListView(this.club, this.clubCode, this._membersList, this.option,
       this.viewAsOwner, this.appScreenText, this.fetchData);
 
   @override
@@ -88,6 +90,7 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
             final member = widget._membersList[index];
             member.clubCode = this.widget.clubCode;
             final data = ClubMemberModel.copyWith(member);
+            data.creditTracking = this.widget.club.trackMemberCredit;
             //log("-=-=-=-  Manager:${data.isManager} Owner:${data.isOwner} Name:${data.name}");
             return Container(
               decoration: (data.isManager || data.isOwner)
@@ -135,17 +138,17 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
                                             : AppDecorators.getSubtitle1Style(
                                                 theme: theme),
                                       ),
-                                      !widget.viewAsOwner ||
-                                              data.contactInfo == null ||
-                                              data.contactInfo.isEmpty
-                                          ? SizedBox.shrink()
-                                          : Text(
-                                              '    ' + '(${data.contactInfo})',
-                                              textAlign: TextAlign.left,
-                                              style: AppDecorators
-                                                  .getHeadLine5Style(
-                                                      theme: theme),
-                                            ),
+                                      // !widget.viewAsOwner ||
+                                      //         data.contactInfo == null ||
+                                      //         data.contactInfo.isEmpty
+                                      //     ? SizedBox.shrink()
+                                      //     : Text(
+                                      //         '    ' + '(${data.contactInfo})',
+                                      //         textAlign: TextAlign.left,
+                                      //         style: AppDecorators
+                                      //             .getHeadLine5Style(
+                                      //                 theme: theme),
+                                      //       ),
                                     ],
                                   ),
                                 ),
@@ -223,7 +226,8 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
                                 "clubCode": data.clubCode,
                                 "playerId": data.playerId,
                                 "currentOwner": true,
-                                "member": data
+                                "club": widget.club,
+                                "member": data,
                               },
                             ) as bool;
                             if (updated) {

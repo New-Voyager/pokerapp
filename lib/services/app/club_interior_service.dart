@@ -131,6 +131,7 @@ class ClubInteriorService {
             name
             playerId
             lastPlayedDate
+            contactInfo
             availableCredit
           }
         }

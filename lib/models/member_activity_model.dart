@@ -5,6 +5,7 @@ class MemberActivity {
   String playerUuid;
   double credits;
   DateTime lastPlayedDate;
+  String contactInfo;
 
   // info with date filter
   bool tipsIncluded;
@@ -22,6 +23,9 @@ class MemberActivity {
       activity.name = json['name'];
     } else {
       activity.name = json['playerName'];
+    }
+    if (json['contactInfo'] != null) {
+      activity.contactInfo = json['contactInfo'] ?? '';
     }
 
     if (json['playerUuid'] != null) {

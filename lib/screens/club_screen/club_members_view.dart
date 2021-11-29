@@ -125,6 +125,7 @@ class _ClubMembersViewState extends State<ClubMembersView>
                             controller: _controller,
                             children: <Widget>[
                               ClubMembersListView(
+                                  this._clubHomePageModel,
                                   this._clubHomePageModel.clubCode,
                                   _all,
                                   MemberListOptions.ALL,
@@ -138,6 +139,7 @@ class _ClubMembersViewState extends State<ClubMembersView>
                               //   _clubHomePageModel.isOwner,
                               // ),
                               ClubMembersListView(
+                                this._clubHomePageModel,
                                 this._clubHomePageModel.clubCode,
                                 _managers,
                                 MemberListOptions.MANAGERS,
@@ -146,6 +148,7 @@ class _ClubMembersViewState extends State<ClubMembersView>
                                 _fetchData,
                               ),
                               ClubMembersListView(
+                                this._clubHomePageModel,
                                 this._clubHomePageModel.clubCode,
                                 _inactive,
                                 MemberListOptions.INACTIVE,

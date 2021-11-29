@@ -26,9 +26,10 @@ import 'package:provider/provider.dart';
 class ClubMembersDetailsView extends StatefulWidget {
   final String clubCode;
   final String playerId;
+  final ClubMemberModel member;
   final bool isClubOwner; // current session is owner?
 
-  ClubMembersDetailsView(this.clubCode, this.playerId, this.isClubOwner);
+  ClubMembersDetailsView(this.clubCode, this.playerId, this.isClubOwner, this.member);
 
   @override
   _ClubMembersDetailsView createState() =>
@@ -44,6 +45,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
   final String clubCode;
   final String playerId;
   final bool isClubOwner; // current session is owner?
+  bool creditTracking = false;
   String oldPhoneText;
   String oldNotes;
   int oldTipsBack;
@@ -64,6 +66,13 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
 
     if (closed) {
       return;
+    } 
+
+    if (widget.member == null) {
+      _data.creditTracking = true;
+      creditTracking = true;
+    } else {
+      creditTracking = widget.member.creditTracking ?? false;
     }
 
     if (_data != null) {
@@ -274,7 +283,9 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                         Divider(
                           color: theme.supportingColor,
                         ),
-                        ListTile(
+                        
+                        !creditTracking ? Container()
+                        : ListTile(
                           leading: Icon(Icons.credit_card,
                               color: theme.secondaryColor),
                           title: Row(
@@ -315,14 +326,16 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                             }
                           },
                         ),
-                        Divider(
+                        !creditTracking ? Container()
+                        : Divider(
                           color: theme.supportingColor,
                         ),
                         detailTile(theme),
                         Divider(
                           color: theme.supportingColor,
                         ),
-                        tipsBack(theme),
+                        !creditTracking ? Container()
+                        :  tipsBack(theme),
                         Divider(
                           color: theme.fillInColor,
                         ),
