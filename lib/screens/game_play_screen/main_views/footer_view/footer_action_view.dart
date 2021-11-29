@@ -580,6 +580,8 @@ class _FooterActionViewState extends State<FooterActionView> {
                 if (mySeat.player != null &&
                     mySeat.player.isActive &&
                     mySeat.player.inhand &&
+                    mySeat.player.cards != null &&
+                    mySeat.player.cards.length > 0 &&
                     gameState.playerLocalConfig.showCheckFold) {
                   children.add(
                     /* bottom row */

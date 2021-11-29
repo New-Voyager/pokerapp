@@ -29,7 +29,8 @@ class ClubMembersDetailsView extends StatefulWidget {
   final ClubMemberModel member;
   final bool isClubOwner; // current session is owner?
 
-  ClubMembersDetailsView(this.clubCode, this.playerId, this.isClubOwner, this.member);
+  ClubMembersDetailsView(
+      this.clubCode, this.playerId, this.isClubOwner, this.member);
 
   @override
   _ClubMembersDetailsView createState() =>
@@ -66,7 +67,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
 
     if (closed) {
       return;
-    } 
+    }
 
     if (widget.member == null) {
       _data.creditTracking = true;
@@ -283,59 +284,61 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                         Divider(
                           color: theme.supportingColor,
                         ),
-                        
-                        !creditTracking ? Container()
-                        : ListTile(
-                          leading: Icon(Icons.credit_card,
-                              color: theme.secondaryColor),
-                          title: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "Credits",
-                                style: AppDecorators.getHeadLine4Style(
-                                    theme: theme),
+
+                        !creditTracking
+                            ? Container()
+                            : ListTile(
+                                leading: Icon(Icons.credit_card,
+                                    color: theme.secondaryColor),
+                                title: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      "Credits",
+                                      style: AppDecorators.getHeadLine4Style(
+                                          theme: theme),
+                                    ),
+                                    SizedBox(width: 30.pw),
+                                    Text(
+                                      DataFormatter.chipsFormat(
+                                          _data.availableCredit),
+                                      style: AppDecorators.getHeadLine3Style(
+                                              theme: theme)
+                                          .copyWith(
+                                              color: _data.availableCredit < 0
+                                                  ? Colors.redAccent
+                                                  : Colors.greenAccent),
+                                    ),
+                                  ],
+                                ),
+                                trailing: Icon(Icons.arrow_forward_ios,
+                                    color: theme.accentColor),
+                                onTap: () async {
+                                  bool ret = await Navigator.pushNamed(
+                                    context,
+                                    Routes.club_member_credit_detail_view,
+                                    arguments: {
+                                      'clubCode': widget.clubCode,
+                                      'playerId': widget.playerId,
+                                      'owner': true,
+                                    },
+                                  ) as bool;
+                                  if (ret ?? false) {
+                                    _fetchData();
+                                  }
+                                },
                               ),
-                              SizedBox(width: 30.pw),
-                              Text(
-                                DataFormatter.chipsFormat(
-                                    _data.availableCredit),
-                                style: AppDecorators.getHeadLine3Style(
-                                        theme: theme)
-                                    .copyWith(
-                                        color: _data.availableCredit < 0
-                                            ? Colors.redAccent
-                                            : Colors.greenAccent),
+                        !creditTracking
+                            ? Container()
+                            : Divider(
+                                color: theme.supportingColor,
                               ),
-                            ],
-                          ),
-                          trailing: Icon(Icons.arrow_forward_ios,
-                              color: theme.accentColor),
-                          onTap: () async {
-                            bool ret = await Navigator.pushNamed(
-                              context,
-                              Routes.club_member_credit_detail_view,
-                              arguments: {
-                                'clubCode': widget.clubCode,
-                                'playerId': widget.playerId,
-                                'owner': true,
-                              },
-                            ) as bool;
-                            if (ret ?? false) {
-                              _fetchData();
-                            }
-                          },
-                        ),
-                        !creditTracking ? Container()
-                        : Divider(
-                          color: theme.supportingColor,
-                        ),
                         detailTile(theme),
                         Divider(
                           color: theme.supportingColor,
                         ),
-                        !creditTracking ? Container()
-                        :  tipsBack(theme),
+                        !creditTracking ? Container() : tipsBack(theme),
                         Divider(
                           color: theme.fillInColor,
                         ),

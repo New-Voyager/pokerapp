@@ -113,22 +113,24 @@ class _NamePlateDailogState extends State<NamePlateDailog> {
                             onTap: () async {
                               final result = await showPrompt(context, "Kick",
                                   "Do you want to remove '${widget.gameState.currentPlayer.name}' from the game?",
-                                  positiveButtonText: "Yes", negativeButtonText: "No");
+                                  positiveButtonText: "Yes",
+                                  negativeButtonText: "No");
                               if (result != null) {
                                 if (result == true) {
-                                await PlayerService.kickPlayer(
-                                    widget.gameState.gameCode,
-                                    widget.seat.player.playerUuid);
-                                if (widget.gameState.gameInfo.status == AppConstants.GAME_PAUSED) {
-                                  // player is removed from the game
-                                } else {
-                                  Alerts.showNotification(
-                                      titleText: _appText[
-                                          'playerWillBeRemovedAfterThisHand'],
-                                      duration: Duration(seconds: 5));
+                                  await PlayerService.kickPlayer(
+                                      widget.gameState.gameCode,
+                                      widget.seat.player.playerUuid);
+                                  if (widget.gameState.gameInfo.status ==
+                                      AppConstants.GAME_PAUSED) {
+                                    // player is removed from the game
+                                  } else {
+                                    Alerts.showNotification(
+                                        titleText: _appText[
+                                            'playerWillBeRemovedAfterThisHand'],
+                                        duration: Duration(seconds: 5));
+                                  }
+                                  Navigator.of(context).pop();
                                 }
-                                Navigator.of(context).pop();
-                              }
                               }
                             })),
                     SizedBox(width: 16.pw),
@@ -144,8 +146,8 @@ class _NamePlateDailogState extends State<NamePlateDailog> {
                             })),
                     SizedBox(width: 16.pw),
                     Visibility(
-                        visible:
-                            widget.gameState.gameInfo.audioConfEnabled, // widget.gameState.currentPlayer.isAdmin(),
+                        visible: widget.gameState.gameInfo
+                            .audioConfEnabled, // widget.gameState.currentPlayer.isAdmin(),
                         child: CircleImageButton(
                           onTap: () {
                             widget.gameContextObject.ionAudioConferenceService

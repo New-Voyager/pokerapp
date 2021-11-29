@@ -205,7 +205,7 @@ class ClubActionsNew extends StatelessWidget {
     //     color: theme.accentColor,
     //   ),
     // ));
-    
+
     List<Widget> rows = [];
     List<Widget> rowChildren = [];
     for (int i = 0; i < buttons.length; i++) {
