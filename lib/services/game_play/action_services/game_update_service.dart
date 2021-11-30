@@ -877,6 +877,8 @@ class GameUpdateService {
     } else if (type == AppConstants.TableWaitlistSeating) {
       // show a flush bar at the top
       handleWaitlistSeating(data: data);
+    } else if (type == AppConstants.TableUpdateReserveSeat) {
+      handleReserveSeat(data: data);
     }
   }
 
@@ -943,6 +945,22 @@ class GameUpdateService {
     );
   }
 
+  void handleReserveSeat({
+    var data,
+  }) async {
+    if (closed || _gameState.uiClosing) return;
+    // final waitlistState = _gameState.getWaitlistState(_context);
+    // waitlistState.fromJson(data);
+    // waitlistState.notify();
+    final playerName = data['playerName'];
+    final seatNo = data['seatNo'];
+    String message =
+        '$playerName reserved seat $seatNo to switch next hand';
+    Alerts.showNotification(titleText: 'Seat Change', subTitleText: message);
+    final seat = _gameState.getSeat(seatNo);
+    seat.reserved = true;
+    seat.notify();
+  }
   void handlePlayerSeatChange({
     var data,
   }) async {

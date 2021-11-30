@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
@@ -75,11 +76,19 @@ class _OpenSeatState extends State<OpenSeat> {
 
   Widget openSeatWidget(
       AppTheme theme, List<BoxShadow> shadow, bool seatChangeInProgress) {
+    String text = 'Open';
+    if (widget.seat.reserved) {
+      text = 'Reserved';
+    }
+    
     Widget openSeat = Container(
       key: UniqueKey(),
       width: 45.0,
       height: 45.0,
-      child: Center(child: Text('Open')),
+      child: Center(child: 
+        widget.seat.reserved ? SvgPicture.asset('assets/images/game/lock.svg', color: theme.accentColor)
+        : Text(text)
+      ),
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: theme.primaryColorWithDark(),
@@ -98,6 +107,9 @@ class _OpenSeatState extends State<OpenSeat> {
         splashColor: theme.secondaryColor,
         borderRadius: BorderRadius.circular(16),
         onTap: () {
+          if (widget.seat.reserved) {
+            return;
+          }
           log('Pressed ${widget.seat.seatPos.toString()}');
           AudioService.playClickSound();
           this.widget.onUserTap(widget.seat);
