@@ -98,145 +98,153 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
                   : AppDecorators.tileDecorationWithoutBorder(theme),
               child: Column(
                 children: [
-                  Row(
-                    children: <Widget>[
-                      Container(
-                        margin: EdgeInsets.symmetric(
-                          horizontal: 16,
-                        ),
-                        child: CircleAvatar(
-                          radius: 20,
-                          backgroundColor: theme.supportingColor.withAlpha(100),
-                          child: ClipOval(
-                            child: data.imageUrl == null
-                                ? Icon(AppIcons.user, color: theme.fillInColor)
-                                : Image.network(
-                                    data.imageUrl,
-                                  ),
+                  InkWell(
+                    onTap: () async {
+                      bool updated = await Navigator.pushNamed(
+                        context,
+                        Routes.club_member_detail_view,
+                        arguments: {
+                          "clubCode": data.clubCode,
+                          "playerId": data.playerId,
+                          "currentOwner": true,
+                          "club": widget.club,
+                          "member": data,
+                        },
+                      ) as bool;
+                      if (updated) {
+                        if (widget.fetchData != null) {
+                          await widget.fetchData();
+                        }
+                        setState(() {});
+                      }
+                    },
+                    child: Row(
+                      children: <Widget>[
+                        Container(
+                          margin: EdgeInsets.symmetric(
+                            horizontal: 16,
+                          ),
+                          child: CircleAvatar(
+                            radius: 20,
+                            backgroundColor:
+                                theme.supportingColor.withAlpha(100),
+                            child: ClipOval(
+                              child: data.imageUrl == null
+                                  ? Icon(AppIcons.user,
+                                      color: theme.fillInColor)
+                                  : Image.network(
+                                      data.imageUrl,
+                                    ),
+                            ),
                           ),
                         ),
-                      ),
-                      Expanded(
-                        flex: 6,
-                        child: Column(
-                          children: <Widget>[
-                            Stack(
-                              children: [
-                                Container(
-                                  margin: EdgeInsets.only(top: 8, bottom: 8),
+                        Expanded(
+                          flex: 6,
+                          child: Column(
+                            children: <Widget>[
+                              Stack(
+                                children: [
+                                  Container(
+                                    margin: EdgeInsets.only(top: 8, bottom: 8),
+                                    child: Row(
+                                      children: <Widget>[
+                                        Text(
+                                          data.name,
+                                          textAlign: TextAlign.left,
+                                          style: (data.isManager ||
+                                                  data.isOwner)
+                                              ? AppDecorators
+                                                      .getAccentTextStyle(
+                                                          theme: theme)
+                                                  .copyWith(
+                                                      fontWeight:
+                                                          FontWeight.normal)
+                                              : AppDecorators.getSubtitle1Style(
+                                                  theme: theme),
+                                        ),
+                                        // !widget.viewAsOwner ||
+                                        //         data.contactInfo == null ||
+                                        //         data.contactInfo.isEmpty
+                                        //     ? SizedBox.shrink()
+                                        //     : Text(
+                                        //         '    ' + '(${data.contactInfo})',
+                                        //         textAlign: TextAlign.left,
+                                        //         style: AppDecorators
+                                        //             .getHeadLine5Style(
+                                        //                 theme: theme),
+                                        //       ),
+                                      ],
+                                    ),
+                                  ),
+                                  Positioned(
+                                    top: 0,
+                                    right: 5,
+                                    child: Visibility(
+                                      visible: (data.isManager || data.isOwner),
+                                      child: Container(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 8,
+                                          vertical: 2,
+                                        ),
+                                        decoration:
+                                            AppDecorators.tileDecoration(theme)
+                                                .copyWith(),
+                                        child: Text(
+                                          (data.isManager
+                                              ? widget.appScreenText['manager']
+                                              : data.isOwner
+                                                  ? widget
+                                                      .appScreenText['owner']
+                                                  : ""),
+                                          style:
+                                              AppDecorators.getSubtitle2Style(
+                                                  theme: theme),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Visibility(
+                                visible:
+                                    data.status != ClubMemberStatus.PENDING,
+                                child: Padding(
+                                  padding: EdgeInsets.only(top: 5, bottom: 5),
                                   child: Row(
                                     children: <Widget>[
                                       Text(
-                                        data.name,
+                                        data.lastPlayedDate,
                                         textAlign: TextAlign.left,
-                                        style: (data.isManager || data.isOwner)
-                                            ? AppDecorators.getAccentTextStyle(
-                                                    theme: theme)
-                                                .copyWith(
-                                                    fontWeight:
-                                                        FontWeight.normal)
-                                            : AppDecorators.getSubtitle1Style(
-                                                theme: theme),
+                                        style: AppDecorators.getSubtitle3Style(
+                                            theme: theme),
                                       ),
-                                      // !widget.viewAsOwner ||
-                                      //         data.contactInfo == null ||
-                                      //         data.contactInfo.isEmpty
-                                      //     ? SizedBox.shrink()
-                                      //     : Text(
-                                      //         '    ' + '(${data.contactInfo})',
-                                      //         textAlign: TextAlign.left,
-                                      //         style: AppDecorators
-                                      //             .getHeadLine5Style(
-                                      //                 theme: theme),
-                                      //       ),
                                     ],
                                   ),
                                 ),
-                                Positioned(
-                                  top: 0,
-                                  right: 5,
-                                  child: Visibility(
-                                    visible: (data.isManager || data.isOwner),
-                                    child: Container(
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 8,
-                                        vertical: 2,
-                                      ),
-                                      decoration:
-                                          AppDecorators.tileDecoration(theme)
-                                              .copyWith(),
-                                      child: Text(
-                                        (data.isManager
-                                            ? widget.appScreenText['manager']
-                                            : data.isOwner
-                                                ? widget.appScreenText['owner']
-                                                : ""),
-                                        style: AppDecorators.getSubtitle2Style(
+                              ),
+                              Visibility(
+                                visible:
+                                    data.status == ClubMemberStatus.PENDING,
+                                child: Padding(
+                                  padding: EdgeInsets.only(top: 5, bottom: 5),
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        widget.appScreenText['pendingApproval'],
+                                        textAlign: TextAlign.left,
+                                        style: AppDecorators.getSubtitle3Style(
                                             theme: theme),
                                       ),
-                                    ),
+                                    ],
                                   ),
                                 ),
-                              ],
-                            ),
-                            Visibility(
-                              visible: data.status != ClubMemberStatus.PENDING,
-                              child: Padding(
-                                padding: EdgeInsets.only(top: 5, bottom: 5),
-                                child: Row(
-                                  children: <Widget>[
-                                    Text(
-                                      data.lastPlayedDate,
-                                      textAlign: TextAlign.left,
-                                      style: AppDecorators.getSubtitle3Style(
-                                          theme: theme),
-                                    ),
-                                  ],
-                                ),
                               ),
-                            ),
-                            Visibility(
-                              visible: data.status == ClubMemberStatus.PENDING,
-                              child: Padding(
-                                padding: EdgeInsets.only(top: 5, bottom: 5),
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      widget.appScreenText['pendingApproval'],
-                                      textAlign: TextAlign.left,
-                                      style: AppDecorators.getSubtitle3Style(
-                                          theme: theme),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                      Visibility(
-                        visible: ((data.status != ClubMemberStatus.PENDING) &&
-                            (widget.viewAsOwner ?? false)),
-                        child: InkWell(
-                          onTap: () async {
-                            bool updated = await Navigator.pushNamed(
-                              context,
-                              Routes.club_member_detail_view,
-                              arguments: {
-                                "clubCode": data.clubCode,
-                                "playerId": data.playerId,
-                                "currentOwner": true,
-                                "club": widget.club,
-                                "member": data,
-                              },
-                            ) as bool;
-                            if (updated) {
-                              if (widget.fetchData != null) {
-                                await widget.fetchData();
-                              }
-                              setState(() {});
-                            }
-                          },
+                        Visibility(
+                          visible: ((data.status != ClubMemberStatus.PENDING) &&
+                              (widget.viewAsOwner ?? false)),
                           child: Container(
                             padding: EdgeInsets.only(right: 8),
                             child: Icon(
@@ -246,8 +254,8 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                   Visibility(
                     visible:
