@@ -349,7 +349,7 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
                                     context: context,
                                     clubCode: widget.clubCode,
                                     playerUuid: widget.playerId,
-                                    credits: member.availableCredit.toInt());
+                                    credits: member.availableCredit.toDouble());
                                 if (ret) {
                                   changed = true;
                                   fetchData();
