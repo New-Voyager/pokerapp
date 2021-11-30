@@ -21,6 +21,7 @@ class NewGameModelProvider extends ChangeNotifier {
   NewGameModelProvider(String clubCode) {
     settings = NewGameModel.withDefault(clubCode);
     settings.clubCode = clubCode;
+    settings.chipUnit = ChipUnit.DOLLAR;
     // NewGameConstants.ACTION_TIMES.forEach((key, value) {
     //   actionTimes.add(value);
     // });

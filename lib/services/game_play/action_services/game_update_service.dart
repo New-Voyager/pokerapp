@@ -1393,7 +1393,9 @@ class GameUpdateService {
       }    
     */
     // we are in seat change
+    _gameState.playerSeatChangeInProgress = false;
     _gameState.seatChangeState.updateSeatChangeInProgress(false);
+    _gameState.tableState.notifyAll();
 
     log('Seat change done');
     // refresh the table

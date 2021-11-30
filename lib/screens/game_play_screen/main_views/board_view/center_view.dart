@@ -208,6 +208,11 @@ class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
       return centerTextWidget(text, boardAttributes.centerButtonsPos);
     }
 
+    if (gameState.tableState.tableStatus == AppConstants.TABLE_STATUS_NOT_ENOUGH_PLAYERS) {
+      String text = _appScreenText['waitingForPlayersToJoin'];
+      return centerTextWidget(text, boardAttributes.centerButtonsPos);
+    }
+
     //log('potViewPos: before seat change progress.');
     if (gameState.gameInfo.tableStatus ==
         AppConstants.TABLE_STATUS_HOST_SEATCHANGE_IN_PROGRESS) {

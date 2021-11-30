@@ -151,8 +151,6 @@ class _FooterActionViewState extends State<FooterActionView> {
     Color borderColor = Colors.white;
 
     final button = Container(
-      // duration: AppConstants.fastAnimationDuration,
-      // curve: Curves.bounceInOut,
       height: 34.ph,
       width: 150.pw,
       margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
@@ -294,7 +292,6 @@ class _FooterActionViewState extends State<FooterActionView> {
     );
 
     // bet twice
-    // _actionTaken(context);
     _actionTaken(context);
   }
 
@@ -331,8 +328,6 @@ class _FooterActionViewState extends State<FooterActionView> {
       }
     }
     playerAction.actions.map((e) => log("player actionsL:  ${e.actionName} "));
-    // final allin = playerAction?.actions
-    //     ?.firstWhere((element) => element.actionName == ALLIN, orElse: null);
     List<Widget> actionButtons = [];
 
     bool closeButton = false;
@@ -561,9 +556,6 @@ class _FooterActionViewState extends State<FooterActionView> {
                           boardAttributes: boardAttributes,
                         ),
                       )),
-                  // Expanded(
-                  //   child: ,
-                  // ),
 
                   /* bottom row */
                   Transform.scale(
@@ -598,14 +590,7 @@ class _FooterActionViewState extends State<FooterActionView> {
               }
 
               return Stack(
-                //mainAxisSize: MainAxisSize.min,
                 children: [
-                  // Container(
-                  //     width: double.infinity,
-                  //     height: double.infinity,
-                  //     decoration: BoxDecoration(
-                  //       border: Border.all(color: Colors.blue),
-                  //     )),
                   ...children,
                 ],
               );

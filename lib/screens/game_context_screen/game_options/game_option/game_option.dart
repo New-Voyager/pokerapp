@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game/game_player_settings.dart';
 import 'package:pokerapp/models/game/game_settings.dart';
@@ -178,29 +179,29 @@ class _GameOptionState extends State<GameOption> {
     _gamePlayerSettings = widget.gameState.playerSettings;
     gameSecondaryOptions = [];
     _fetchGameInfo().then((value) {
-      if (_gameSettings.seatChangeAllowed) {
-        gameSecondaryOptions.add(
-          OptionItemModel(
-            title: _appScreenText['seatChange'],
-            image: "assets/images/casino.png",
-            name: _appScreenText['requestSeatChange'],
-            backGroundColor: Colors.redAccent,
-            onTap: (context) async {
-              await showModalBottomSheet(
-                context: context,
-                isScrollControlled: true,
-                builder: (ctx) {
-                  return SeatChangeBottomSheet(
-                    widget.gameState,
-                    widget.gameCode,
-                    widget.playerUuid,
-                  );
-                },
-              );
-            },
-          ),
-        );
-      }
+      // if (_gameSettings.seatChangeAllowed) {
+      //   gameSecondaryOptions.add(
+      //     OptionItemModel(
+      //       title: _appScreenText['seatChange'],
+      //       image: "assets/images/casino.png",
+      //       name: _appScreenText['requestSeatChange'],
+      //       backGroundColor: Colors.redAccent,
+      //       onTap: (context) async {
+      //         await showModalBottomSheet(
+      //           context: context,
+      //           isScrollControlled: true,
+      //           builder: (ctx) {
+      //             return SeatChangeBottomSheet(
+      //               widget.gameState,
+      //               widget.gameCode,
+      //               widget.playerUuid,
+      //             );
+      //           },
+      //         );
+      //       },
+      //     ),
+      //   );
+      // }
       isFetching = false;
       setState(() {});
     });
@@ -601,67 +602,6 @@ class _GameOptionState extends State<GameOption> {
                                 values: [1, 3, 5, 10, 15],
                                 onSelect: (int value) async {
                                   _gameSettings.breakLength = value;
-                                  await updateGameSettings();
-                                },
-                              ),
-                            ],
-                          ),
-                        )
-                      : const SizedBox.shrink(),
-                ],
-              ),
-            ),
-
-            AppDimensionsNew.getVerticalSizedBox(8),
-            // player seat change
-            Container(
-              decoration: _gameSettings.seatChangeAllowed
-                  ? AppDecorators.tileDecorationWithoutBorder(theme)
-                  : BoxDecoration(),
-              child: Column(
-                children: [
-                  _buildCheckBox(
-                    text: 'Player Seat Change Allowed',
-                    value: _gameSettings.seatChangeAllowed,
-                    onChange: (bool v) async {
-                      _gameSettings.seatChangeAllowed = v;
-                      if (_gameSettings.seatChangeTimeout == null ||
-                          _gameSettings.seatChangeTimeout == 0) {
-                        _gameSettings.seatChangeTimeout = 10;
-                      }
-                      await updateGameSettings();
-                      if (closed) return;
-                      setState(() {});
-                    },
-                  ),
-                  _gameSettings.seatChangeAllowed
-                      ? Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 16,
-                          ),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              // choose interval label
-                              Container(
-                                margin: EdgeInsets.only(
-                                    bottom: 10.0, left: 10.0, right: 10.0),
-                                child: Text(
-                                  'Prompt Timeout (in seconds)',
-                                  style: AppDecorators.getHeadLine4Style(
-                                      theme: theme),
-                                ),
-                              ),
-                              // choose interval
-                              RadioListWidget(
-                                defaultValue:
-                                    _gameSettings.seatChangeTimeout == null
-                                        ? 10
-                                        : _gameSettings.seatChangeTimeout,
-                                values: [5, 10, 15],
-                                onSelect: (int value) async {
-                                  _gameSettings.seatChangeTimeout = value;
                                   await updateGameSettings();
                                 },
                               ),
@@ -1292,18 +1232,6 @@ class _GameOptionState extends State<GameOption> {
         icon: Icon(Icons.settings),
         text: "Game",
       ));
-
-      // tabs.add(Tab(
-      //   child: Text('Game Settings'),
-      // ));
-      // tabs.add(Container(
-      //     // decoration: BoxDecoration(
-      //     //     borderRadius: BorderRadius.circular(50),
-      //     //     border: Border.all(color: theme.accentColor, width: 1)),
-      //     child: Align(
-      //   alignment: Alignment.center,
-      //   child: Text("Game\nSettings", textAlign: TextAlign.center),
-      // )));
       children.add(
           // game settings to be shown here
           // 1. allow seat change player
@@ -1315,18 +1243,6 @@ class _GameOptionState extends State<GameOption> {
     }
 
     if (isPlaying) {
-      // tabs.add(Tab(
-      //   child: Text('Player Settings'),
-      // ));
-      // tabs.add(Container(
-      //     child: Align(
-      //   alignment: Alignment.center,
-      //   child: Text(
-      //     "Player\nSettings",
-      //     textAlign: TextAlign.center,
-      //   ),
-      // )));
-
       tabs.add(Tab(
         icon: Icon(Icons.settings),
         text: "Player",
@@ -1346,21 +1262,24 @@ class _GameOptionState extends State<GameOption> {
         icon: Icon(Icons.queue),
         text: "Queue",
       ));
-      // tabs.add(Container(
-      //     // decoration: BoxDecoration(
-      //     //     borderRadius: BorderRadius.circular(50),
-      //     //     border: Border.all(color: theme.accentColor, width: 1)),
-      //     child: Align(
-      //   alignment: Alignment.center,
-      //   child:
-      //       Center(child: Text("Waiting\nList", textAlign: TextAlign.center)),
-      // )));
-
       children.add(_buildWaitingList(theme));
       if (widget.focusOnWaitingList) {
         defaultIndex = tabs.length - 1;
       }
     }
+
+    if (_gameSettings.seatChangeAllowed) {
+      tabs.add(Tab(
+        icon: SvgPicture.asset('assets/images/game/transfer-up.svg', color: theme.accentColor),
+        text: "Seat Change",
+      ));
+      children.add(SeatChangeBottomSheet(
+                    widget.gameState,
+                    widget.gameCode,
+                    widget.playerUuid,
+                  ));
+    }
+
 
     if (children.length >= 1 && (isHost || isPlaying)) {
       return DefaultTabController(
@@ -1455,39 +1374,4 @@ class _GameOptionState extends State<GameOption> {
     );
   }
 
-  // gameActionItem(CircleImageButton optionItemModel, AppTheme theme) {
-  //   return Container(
-  //     margin: EdgeInsets.symmetric(horizontal: 5),
-  //     child: GestureDetector(
-  //       onTap: () {
-  //         if (optionItemModel.onTap != null) {
-  //           optionItemModel.onTap();
-  //         }
-  //       },
-  //       child: Column(
-  //         children: [
-  //           Container(
-  //             decoration: BoxDecoration(
-  //               shape: BoxShape.circle,
-  //               color: theme.accentColor,
-  //             ),
-  //             padding: EdgeInsets.all(10),
-  //             child: Icon(
-  //               optionItemModel.icon ?? Icons.message,
-  //               size: 20.pw,
-  //               color: theme.primaryColorWithDark(),
-  //             ),
-  //           ),
-  //           Container(
-  //             padding: EdgeInsets.all(5),
-  //             child: Text(
-  //               optionItemModel.title,
-  //               style: AppDecorators.getSubtitle3Style(theme: theme),
-  //             ),
-  //           ),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
 }

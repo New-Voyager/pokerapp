@@ -76,7 +76,7 @@ class NewGameModel {
   bool locationCheck = false;
   bool ipCheck = false;
   bool runItTwice = true;
-  bool seatChangeAllowed = false;
+  bool seatChangeAllowed = true;
   bool waitList = true;
   bool botGame = true;
   bool highHandTracked = false;
