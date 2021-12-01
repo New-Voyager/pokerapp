@@ -50,6 +50,7 @@ class NewGameSettings2 extends StatelessWidget {
   }) async {
     NewGameModelProvider gmp = await showDialog<NewGameModelProvider>(
       context: context,
+      barrierDismissible: false,
       builder: (_) => Dialog(
         insetPadding: const EdgeInsets.symmetric(
           horizontal: 15.0,

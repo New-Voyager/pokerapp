@@ -15,7 +15,7 @@ class SetCreditsDialog {
     @required BuildContext context,
     @required String clubCode,
     @required String playerUuid,
-    @required int credits,
+    @required double credits,
   }) async {
     final theme = AppTheme.getTheme(context);
     String notes;
@@ -103,7 +103,8 @@ class SetCreditsDialog {
                     CardFormTextField(
                       controller: creditsController,
                       theme: theme,
-                      keyboardType: TextInputType.number,
+                      keyboardType:
+                          TextInputType.numberWithOptions(decimal: true),
                       maxLength: 9,
                       hintText: 'enter value',
                       onChanged: (val) {},
@@ -149,8 +150,8 @@ class SetCreditsDialog {
                           /* true button */
                           RoundRectButton(
                             onTap: () {
-                              credits =
-                                  int.parse(creditsController.text ?? '0');
+                              credits = double.parse(
+                                  creditsController.text.trim() ?? '0');
                               notes = notesController.text;
                               Navigator.pop(
                                 context,
