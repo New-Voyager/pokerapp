@@ -23,6 +23,7 @@ import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/app/gif_cache_service.dart';
 import 'package:pokerapp/services/app/loadassets_service.dart';
 import 'package:pokerapp/services/app/player_service.dart';
+import 'package:pokerapp/services/app/quick_game_navigation_service.dart';
 import 'package:pokerapp/services/data/hive_models/player_state.dart';
 import 'package:pokerapp/services/game_history/game_history_service.dart';
 import 'package:pokerapp/services/nats/nats.dart';
@@ -108,6 +109,9 @@ class _MainScreenState extends State<MainScreen>
       // });
     }
     assetLoader.load();
+
+    // check for active game and if there, redirect
+    QuickGameNavigationService.handle(context: context);
 
     // read announcments
     final announcements = await GameService.getSystemAnnouncements();
