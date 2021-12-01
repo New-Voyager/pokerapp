@@ -3,10 +3,11 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game_play_models/ui/nameplate_object.dart';
 import 'package:pokerapp/services/app/asset_service.dart';
 import 'package:pokerapp/services/data/asset_hive_store.dart';
-import 'package:pokerapp/services/data/user_settings_store.dart';
+import 'package:pokerapp/services/data/user_settings.dart';
 import 'package:pokerapp/utils/utils.dart';
 
 class GameScreenAssets {
@@ -69,7 +70,7 @@ class GameScreenAssets {
     cardStrImage = Map<String, Uint8List>();
     cardNumberImage = Map<int, Uint8List>();
     Asset backdrop = AssetService.getAssetForId(
-      UserSettingsStore.getSelectedBackdropId(),
+      appService.userSettings.getSelectedBackdropId(),
     );
     if (backdrop == null) {
       backdrop = AssetService.getAssetForId(
@@ -79,7 +80,7 @@ class GameScreenAssets {
     backdropBytes = await backdrop.getBytes();
 
     Asset table = AssetService.getAssetForId(
-      UserSettingsStore.getSelectedTableId(),
+      appService.userSettings.getSelectedTableId(),
     );
     if (table == null) {
       table = AssetService.getAssetForId(UserSettingsStore.VALUE_DEFAULT_TABLE);
@@ -87,11 +88,11 @@ class GameScreenAssets {
     boardBytes = await table.getBytes();
 
     nameplate = AssetService.getNameplateForId(
-      UserSettingsStore.getSelectedNameplateId(),
+      appService.userSettings.getSelectedNameplateId(),
     );
 
     Asset betImage = AssetService.getAssetForId(
-      UserSettingsStore.getSelectedBetDial(),
+      appService.userSettings.getSelectedBetDial(),
     );
     if (betImage == null) {
       betImage = AssetService.getAssetForId(
@@ -101,7 +102,7 @@ class GameScreenAssets {
     betImageBytes = await betImage.getBytes();
 
     Asset cardBack = AssetService.getAssetForId(
-      UserSettingsStore.getSelectedCardBackId(),
+      appService.userSettings.getSelectedCardBackId(),
     );
     if (cardBack == null) {
       cardBack = AssetService.getAssetForId(
@@ -111,7 +112,7 @@ class GameScreenAssets {
     holeCardBackBytes = await cardBack.getBytes();
 
     Asset cardFace = AssetService.getAssetForId(
-      UserSettingsStore.getSelectedCardFaceId(),
+      appService.userSettings.getSelectedCardFaceId(),
     );
     if (cardFace == null) {
       cardFace = AssetService.getAssetForId(

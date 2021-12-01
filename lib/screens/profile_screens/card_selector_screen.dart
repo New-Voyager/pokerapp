@@ -6,6 +6,7 @@ import 'package:path/path.dart' as path;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/models/ui/app_theme_data.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
@@ -185,7 +186,7 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
               } else {
                 isDownloading = false;
               }
-              UserSettingsStore.setSelectedCardFaceId(
+              appService.userSettings.setSelectedCardFaceId(
                   _cardFaceAssets[index].id);
 
               final theme = AppTheme.getTheme(context);
@@ -276,7 +277,7 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
               } else {
                 isDownloading = false;
               }
-              UserSettingsStore.setSelectedCardBackId(
+              appService.userSettings.setSelectedCardBackId(
                   _cardBackAssets[index].id);
               final theme = AppTheme.getTheme(context);
               AppThemeData data = theme.themeData;
