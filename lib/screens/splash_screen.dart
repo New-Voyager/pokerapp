@@ -17,7 +17,6 @@ import 'package:pokerapp/services/connectivity_check/network_change_listener.dar
 import 'package:pokerapp/services/data/asset_hive_store.dart';
 import 'package:pokerapp/services/data/box_type.dart';
 import 'package:pokerapp/services/data/hive_datasource_impl.dart';
-import 'package:pokerapp/services/data/user_settings_store.dart';
 import 'package:provider/provider.dart';
 import 'package:upgrader/upgrader.dart';
 
@@ -47,7 +46,6 @@ class _SplashScreenState extends State<SplashScreen> {
     await AssetHiveStore.openAssetStore();
     // initialize asset store with default value
     await AssetService.updateBundledAssets();
-    await UserSettingsStore.openSettingsStore();
     await AudioService.init();
 
     // this function call will NOT end until we have internet access

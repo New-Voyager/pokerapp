@@ -6,6 +6,7 @@ import 'package:path/path.dart' as path;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/models/ui/app_theme_data.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
@@ -17,9 +18,7 @@ import 'package:pokerapp/services/app/asset_service.dart';
 import 'package:pokerapp/services/data/asset_hive_store.dart';
 import 'package:pokerapp/services/data/box_type.dart';
 import 'package:pokerapp/services/data/hive_datasource_impl.dart';
-import 'package:pokerapp/services/data/user_settings_store.dart';
 import 'package:pokerapp/services/game_play/customization_service.dart';
-import 'package:pokerapp/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 class CardSelectorScreen extends StatefulWidget {
@@ -185,7 +184,7 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
               } else {
                 isDownloading = false;
               }
-              UserSettingsStore.setSelectedCardFaceId(
+              appService.userSettings.setSelectedCardFaceId(
                   _cardFaceAssets[index].id);
 
               final theme = AppTheme.getTheme(context);
@@ -276,7 +275,7 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
               } else {
                 isDownloading = false;
               }
-              UserSettingsStore.setSelectedCardBackId(
+              appService.userSettings.setSelectedCardBackId(
                   _cardBackAssets[index].id);
               final theme = AppTheme.getTheme(context);
               AppThemeData data = theme.themeData;

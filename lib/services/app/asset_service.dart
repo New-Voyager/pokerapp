@@ -10,7 +10,8 @@ import 'package:pokerapp/resources/app_config.dart';
 import 'package:http/http.dart' as http;
 import 'package:pokerapp/services/data/asset_hive_store.dart';
 import 'package:archive/archive_io.dart';
-import 'package:pokerapp/services/data/user_settings_store.dart';
+import 'package:pokerapp/services/data/user_settings.dart';
+import 'package:pokerapp/services/data/user_settings_store_old.dart';
 import 'package:flutter/services.dart' as rootBundle;
 
 class AssetService {
@@ -241,7 +242,6 @@ class AssetService {
       await getStore();
     }
 
-    await UserSettingsStore.openSettingsStore();
     // default assets
     // assets/images/default/cardface
     // assets/images/default/backdrop.png
