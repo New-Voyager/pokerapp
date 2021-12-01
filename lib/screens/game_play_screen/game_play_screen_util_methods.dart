@@ -28,6 +28,7 @@ import 'package:pokerapp/services/data/game_hive_store.dart';
 import 'package:pokerapp/services/data/game_log_store.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
+import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 import 'package:timer_count_down/timer_count_down.dart';
@@ -530,9 +531,16 @@ class GamePlayScreenUtilMethods {
     if (value == null) return;
 
     // buy chips
-    await GameService.buyIn(
+    final resp = await GameService.buyIn(
       gameInfo.gameCode,
       value,
     );
+    if (!resp.approved) {
+      if (resp.insufficientCredits) {
+        String message =
+            'Not enough credits available. Available credits: ${DataFormatter.chipsFormat(resp.availableCredits)}';
+        showErrorDialog(context, 'Credits', message);
+      }
+    }
   }
 }

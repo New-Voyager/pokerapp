@@ -133,10 +133,17 @@ class StatusOptionsWidget extends StatelessWidget {
     if (value == null) return;
 
     // buy chips
-    await GameService.buyIn(
+    final resp = await GameService.buyIn(
       gameInfo.gameCode,
       value,
     );
+    if (!resp.approved) {
+      if (resp.insufficientCredits) {
+        String message =
+            'Not enough credits available. Available credits: ${DataFormatter.chipsFormat(resp.availableCredits)}';
+        showErrorDialog(context, 'Credits', message);
+      }
+    }
   }
 
   Widget getBuyinButton(

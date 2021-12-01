@@ -31,6 +31,7 @@ class Seat extends ChangeNotifier {
   SeatPos _uiPos;
   SeatPosAttribs _attribs;
   bool dragEntered;
+  bool reserved = false;
   //int potViewSettleCount = 0;
   // UI attributes
   // Offset _screenPos;

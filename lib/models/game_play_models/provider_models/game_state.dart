@@ -1028,6 +1028,7 @@ class GameState {
     }
     for (final seat in _seats) {
       seat.dealer = false;
+      seat.reserved = false;
     }
 
     if (notify) {

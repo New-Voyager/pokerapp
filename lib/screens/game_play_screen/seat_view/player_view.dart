@@ -326,24 +326,27 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
         seatChangeInProgress: gameState.hostSeatChangeInProgress,
         seatChangeSeat: seatChangeSeat,
       );
-
-      if (widget.seat.dealer)
-        return Stack(
-          alignment: Alignment.center,
-          children: [
-            // dealer button
-            DealerButtonWidget(
-              widget.seat.seatPos,
-              isMe,
-              GameType.HOLDEM,
-            ),
-
-            // main open seat widget
-            openSeatWidget,
-          ],
+      List<Widget> children = [];
+      if (widget.seat.dealer) {
+        children.add(
+          // dealer button
+          DealerButtonWidget(
+            widget.seat.seatPos,
+            isMe,
+            GameType.HOLDEM,
+          ),
         );
-
-      return openSeatWidget;
+      }
+      children.add(openSeatWidget);
+      children.add(
+        Consumer<SeatChangeNotifier>(builder: (_, scn, __) {
+          return (gameState.hostSeatChangeInProgress ||
+                  gameState.playerSeatChangeInProgress)
+              ? SeatNoWidget(widget.seat)
+              : const SizedBox.shrink();
+        }),
+      );
+      return Stack(alignment: Alignment.center, children: children);
     }
 
     final GameInfoModel gameInfo =
@@ -520,11 +523,12 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
                   ? _animatingChipAmount(chipAmountWidget)
                   : chipAmountWidget,
 
-              Consumer<SeatChangeNotifier>(
-                builder: (_, scn, __) => gameState.hostSeatChangeInProgress
+              Consumer<SeatChangeNotifier>(builder: (_, scn, __) {
+                return (gameState.hostSeatChangeInProgress ||
+                        gameState.playerSeatChangeInProgress)
                     ? SeatNoWidget(widget.seat)
-                    : const SizedBox.shrink(),
-              ),
+                    : const SizedBox.shrink();
+              }),
 
               playerStatusIcons(),
               widget.seat.player.showMicOff

@@ -73,12 +73,12 @@ class _SeatChangeBottomSheetState extends State<SeatChangeBottomSheet> {
         decoration: AppDecorators.bgRadialGradient(theme),
         height: height / 2,
         child: Scaffold(
-          backgroundColor: Colors.transparent,
-          appBar: CustomAppBar(
-            theme: theme,
-            context: context,
-            titleText: _appScreenText['seatChange'],
-          ),
+          // backgroundColor: Colors.transparent,
+          // appBar: CustomAppBar(
+          //   theme: theme,
+          //   context: context,
+          //   titleText: _appScreenText['seatChange'],
+          // ),
           body: Column(
             mainAxisSize: MainAxisSize.max,
             children: [

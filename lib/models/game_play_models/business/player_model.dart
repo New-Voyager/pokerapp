@@ -50,7 +50,7 @@ class PlayerModel {
   int noOfCardsVisible = 0;
   bool missedBlind = false;
   bool postedBlind = false;
-  bool muckLosingHand = false;
+  bool muckLosingHand = true;
   bool autoStraddle = false;
   bool buttonStraddle = false;
 

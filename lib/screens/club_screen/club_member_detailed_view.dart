@@ -21,6 +21,7 @@ import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
+import 'package:pokerapp/widgets/switch_widget.dart';
 import 'package:provider/provider.dart';
 
 class ClubMembersDetailsView extends StatefulWidget {
@@ -281,10 +282,20 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                             ],
                           ),
                         ),
+                        //           Divider(
+                        //             color: theme.supportingColor,
+                        //           ),
+                        // SwitchWidget(
+                        //   icon: Icons.verified_user,
+                        //   value: true,
+                        //   label: 'Auto Buyin Approval',
+                        //   onChange: (bool newValue) => setState(() {
+                        //   }),
+                        //   // useSpacer: false,
+                        // ),
                         Divider(
                           color: theme.supportingColor,
                         ),
-
                         !creditTracking
                             ? Container()
                             : ListTile(
@@ -396,11 +407,9 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
           ),
           SizedBox(width: 30.pw),
           Text(
-            DataFormatter.chipsFormat(_data.tipsBack.toDouble()),
-            style: AppDecorators.getHeadLine3Style(theme: theme).copyWith(
-                color: _data.availableCredit < 0
-                    ? Colors.redAccent
-                    : Colors.greenAccent),
+            DataFormatter.chipsFormat(_data.tipsBack.toDouble()) + '%',
+            style: AppDecorators.getHeadLine3Style(theme: theme)
+                .copyWith(color: Colors.white),
           ),
         ],
       ),
