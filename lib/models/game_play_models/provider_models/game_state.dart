@@ -441,7 +441,9 @@ class GameState {
 
   void close() {
     if (!this.replayMode) {
-      gameHiveStore.close();
+      if (gameHiveStore != null) {
+        gameHiveStore.close();
+      }
     }
   }
 

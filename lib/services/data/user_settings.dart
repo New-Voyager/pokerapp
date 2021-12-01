@@ -22,13 +22,16 @@ class UserSettingsStore {
   static const String VALUE_DEFAULT_CARDFACE = "default-cardface";
   static const String VALUE_DEFAULT_CARDBACK = "default-cardback";
 
+  static const String KEY_LAST_GAME = "last-game";
+
   UserSettingsStore();
 
   void open() async {
     _box = HiveDatasource.getInstance.getBox(BoxType.USER_SETTINGS_BOX);
-    if (_box.isEmpty) {
+    final assets = _box.get(KEY_SELECTED_ASSETS);
+    if (assets == null) {
       await loadDefault();
-    }    
+    }  
   }
 
   void close() {
@@ -38,19 +41,20 @@ class UserSettingsStore {
     _box = null;
   }
 
-
-  Future<void> loadDefault() async {
-    await _box.clear();
-    await _box.put(
-      KEY_SELECTED_ASSETS,
-      {
+  Map<String, String> defaultAssets() {
+    return {
         KEY_SELECTED_BACKDROP: VALUE_DEFAULT_BACKDROP,
         KEY_SELECTED_TABLE: VALUE_DEFAULT_TABLE,
         KEY_SELECTED_BETDIAL: VALUE_DEFAULT_BETDIAL,
         KEY_SELECTED_NAMEPLATE: VALUE_DEFAULT_NAMEPLATE,
         KEY_SELECTED_CARDFACE: VALUE_DEFAULT_CARDFACE,
         KEY_SELECTED_CARDBACK: VALUE_DEFAULT_CARDBACK,
-      },
+      };
+  }
+  Future<void> loadDefault() async {
+    await _box.put(
+      KEY_SELECTED_ASSETS,
+      defaultAssets(),
     );
   }
 
@@ -61,7 +65,10 @@ class UserSettingsStore {
   }
 
   Map<String, String> getSelectedAssets() {
-    final assets = _box.get(KEY_SELECTED_ASSETS);
+    dynamic assets = _box.get(KEY_SELECTED_ASSETS);
+    if (assets == null) {
+      assets = defaultAssets();
+    }
     Map<String, String> ret = Map<String, String>();
     for (final key in assets.keys) {
       final keyStr = key.toString();
@@ -133,5 +140,26 @@ class UserSettingsStore {
 
   void setSelectedAssets(Map<String, String> values) {
     _box.put(KEY_SELECTED_ASSETS, values);
+  }
+
+  Future<void> setLastGame(String gameCode) async {
+    try {
+      await _box.put(KEY_LAST_GAME, gameCode);
+    } catch(e) {
+      // ignore the error
+    }
+  }
+
+  String getLastGame() {
+    try {
+      String gameCode = _box.get(KEY_LAST_GAME) as String;
+      if (gameCode == null) {
+        gameCode = '';
+      }
+      return gameCode;
+    } catch(e) {
+      // ignore the error
+    }
+    return '';
   }
 }

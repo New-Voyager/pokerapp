@@ -41,7 +41,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
   bool _isPlayedGamesLoading = true;
   List<GameModelNew> liveGames = [];
   List<GameHistoryModel> playedGames = [];
-
+  bool closed = false;
   TabController _tabController;
 
   Timer _refreshTimer;
@@ -100,6 +100,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
   @override
   void dispose() {
     _tabController.dispose();
+    closed = true;
     super.dispose();
   }
 
@@ -137,6 +138,9 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
     bool refresh = true;
     if (refresh) {
       liveGames = updatedLiveGames;
+      if (closed) {
+        return;
+      }
       // liveGames.addAll(updatedLiveGames);
       setState(() => _isLoading = false);
     }
@@ -149,6 +153,10 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
     if (refresh) {
       // playedGames.clear();
       playedGames = updatedPlayedGames;
+      if (closed) {
+        return;
+      }
+
       setState(() => _isPlayedGamesLoading = false);
     }
   }
@@ -166,6 +174,10 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
       liveGames.add(GameModelNew.fromJson(item));
     }
     log("Size : ${liveGames.length}");
+    if (closed) {
+      return;
+    }
+
     setState(() {
       _isLoading = false;
       _isPlayedGamesLoading = false;
