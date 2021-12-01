@@ -88,7 +88,10 @@ class ClubMessageService {
     return next;
   }
 
-  static Stream<List<ClubMessageModel>> pollMessages(String clubCode) {
+  static Stream<List<ClubMessageModel>> pollMessages(
+    String clubCode, {
+    final bool isSharedHandsOnly = false,
+  }) {
     if (_stream == null || _stream.isClosed)
       _stream = StreamController<List<ClubMessageModel>>.broadcast();
 
@@ -99,8 +102,20 @@ class ClubMessageService {
         int len = _messages.length;
         next = await _fetchData(clubCode, next, _messages);
         if (_messages.length != len && !_stream.isClosed) {
-          _stream.sink.add(_messages.reversed.toList());
-          ClubMessageService.markMessagesAsRead(clubCode);
+          if (isSharedHandsOnly) {
+            List<ClubMessageModel> sharedHandMessages = [];
+
+            _messages.reversed.forEach((message) {
+              if (message.messageType == MessageType.HAND) {
+                sharedHandMessages.add(message);
+              }
+            });
+
+            _stream.sink.add(sharedHandMessages);
+          } else {
+            _stream.sink.add(_messages.reversed.toList());
+            ClubMessageService.markMessagesAsRead(clubCode);
+          }
         }
       });
     }

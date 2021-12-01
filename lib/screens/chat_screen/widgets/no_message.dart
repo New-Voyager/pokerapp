@@ -5,6 +5,12 @@ import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class NoMessageWidget extends StatelessWidget {
+  final bool isHandOnly;
+
+  NoMessageWidget({
+    this.isHandOnly = false,
+  });
+
   @override
   Widget build(BuildContext context) {
     AppTextScreen appScreenText = getAppTextScreen("global");
@@ -19,7 +25,9 @@ class NoMessageWidget extends StatelessWidget {
           color: theme.fillInColor,
         ),
         Text(
-          appScreenText['noMessages'],
+          isHandOnly
+              ? appScreenText['noSharedHands']
+              : appScreenText['noMessages'],
           textAlign: TextAlign.center,
           style: AppDecorators.getSubtitle3Style(theme: theme),
         )
