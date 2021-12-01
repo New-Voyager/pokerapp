@@ -954,13 +954,13 @@ class GameUpdateService {
     // waitlistState.notify();
     final playerName = data['playerName'];
     final seatNo = data['seatNo'];
-    String message =
-        '$playerName reserved seat $seatNo to switch next hand';
+    String message = '$playerName reserved seat $seatNo to switch next hand';
     Alerts.showNotification(titleText: 'Seat Change', subTitleText: message);
     final seat = _gameState.getSeat(seatNo);
     seat.reserved = true;
     seat.notify();
   }
+
   void handlePlayerSeatChange({
     var data,
   }) async {

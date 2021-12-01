@@ -630,16 +630,16 @@ class _GamePlayScreenState extends State<GamePlayScreen>
               showErrorDialog(context, 'Error',
                   'IP check is enabled in this game. There is another player in the table with the same IP.');
             } else if (e.code == 'SEAT_RESERVED') {
-                showErrorDialog(context, 'Error', e.message);
-                if (e.extensions['seatNo'] != null) {
-                  final seatNo = int.parse(e.extensions['seatNo']);
-                  final seat = gameState.getSeat(seatNo);
-                  if (seat != null && seat.isOpen) {
-                    seat.reserved = true;
-                    seat.notify();
-                  }
+              showErrorDialog(context, 'Error', e.message);
+              if (e.extensions['seatNo'] != null) {
+                final seatNo = int.parse(e.extensions['seatNo']);
+                final seat = gameState.getSeat(seatNo);
+                if (seat != null && seat.isOpen) {
+                  seat.reserved = true;
+                  seat.notify();
                 }
-            }else {
+              }
+            } else {
               showErrorDialog(context, 'Error', e.message);
             }
           } else {

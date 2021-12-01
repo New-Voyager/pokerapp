@@ -80,15 +80,16 @@ class _OpenSeatState extends State<OpenSeat> {
     if (widget.seat.reserved) {
       text = 'Reserved';
     }
-    
+
     Widget openSeat = Container(
       key: UniqueKey(),
       width: 45.0,
       height: 45.0,
-      child: Center(child: 
-        widget.seat.reserved ? SvgPicture.asset('assets/images/game/lock.svg', color: theme.accentColor)
-        : Text(text)
-      ),
+      child: Center(
+          child: widget.seat.reserved
+              ? SvgPicture.asset('assets/images/game/lock.svg',
+                  color: theme.accentColor)
+              : Text(text)),
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: theme.primaryColorWithDark(),

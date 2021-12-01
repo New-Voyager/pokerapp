@@ -22,6 +22,7 @@ import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/game_play/graphql/gamesettings_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/alerts.dart';
+import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/numeric_keyboard2.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/buttons.dart';
@@ -121,13 +122,12 @@ class _GameOptionState extends State<GameOption> {
   }
 
   void onReload() async {
-    Navigator.of(context).pop();
-
     // get current player's stack
     final me = widget.gameState.me;
 
     if (me != null) {
       if (me.stack >= widget.gameState.gameInfo.buyInMax) {
+        Navigator.of(context).pop();
         showAlertDialog(context, "${_appScreenText['reload']}",
             _appScreenText['stackIsGreaterThankMaxBuyIn']);
         return;
@@ -145,7 +145,15 @@ class _GameOptionState extends State<GameOption> {
 
       if (value == null) return;
 
-      GameService.reload(gameCode, value.toInt());
+      final ret = await GameService.reload(gameCode, value.toInt());
+      if (!ret.approved) {
+        if (ret.insufficientCredits) {
+          String message =
+              'Not enough credits available. Available credits: ${DataFormatter.chipsFormat(ret.availableCredits)}';
+          await showErrorDialog(context, 'Credits', message);
+        }
+      }
+      Navigator.of(context).pop();
     }
   }
 
@@ -1270,16 +1278,16 @@ class _GameOptionState extends State<GameOption> {
 
     if (_gameSettings.seatChangeAllowed) {
       tabs.add(Tab(
-        icon: SvgPicture.asset('assets/images/game/transfer-up.svg', color: theme.accentColor),
+        icon: SvgPicture.asset('assets/images/game/transfer-up.svg',
+            color: theme.accentColor),
         text: "Seat Change",
       ));
       children.add(SeatChangeBottomSheet(
-                    widget.gameState,
-                    widget.gameCode,
-                    widget.playerUuid,
-                  ));
+        widget.gameState,
+        widget.gameCode,
+        widget.playerUuid,
+      ));
     }
-
 
     if (children.length >= 1 && (isHost || isPlaying)) {
       return DefaultTabController(
@@ -1373,5 +1381,4 @@ class _GameOptionState extends State<GameOption> {
           : Container(),
     );
   }
-
 }

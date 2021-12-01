@@ -394,4 +394,13 @@ class NewGameModelProvider extends ChangeNotifier {
   get chipUnit {
     return settings.chipUnit;
   }
+
+  set buyInApprovalLimit(BuyInApprovalLimit buyInLimit) {
+    settings.buyInApprovalLimit = buyInLimit;
+    notifyListeners();
+  }
+
+  BuyInApprovalLimit get buyInApprovalLimit {
+    return settings.buyInApprovalLimit;
+  }
 }

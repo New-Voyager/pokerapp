@@ -18,6 +18,12 @@ class NewGameConstants {
   static const List<int> BOMB_POT_BET_SIZE = [2, 3, 4, 5, 10, 15, 20];
   static const List<int> BREAK_WAIT_TIMES = [3, 5, 10, 15, 30];
 
+  static const List<String> BUYIN_LIMIT_CHOICES = [
+    'No Limit',
+    'Credit Limit'
+        'Host Approval'
+  ];
+
   // static const Map<int, String> ACTION_TIMES = {
   //   10: "10 Seconds",
   //   20: "20 Seconds",
@@ -94,6 +100,7 @@ class NewGameModel {
   int breakTime = 5;
   bool allowFunAnimations = true;
   ChipUnit chipUnit = ChipUnit.DOLLAR;
+  BuyInApprovalLimit buyInApprovalLimit = BuyInApprovalLimit.BUYIN_NO_LIMIT;
 
   /*
     bombPotEnabled: Boolean
@@ -152,6 +159,7 @@ class NewGameModel {
     this.buyInWaitTime,
     this.allowFunAnimations,
     this.chipUnit,
+    this.buyInApprovalLimit,
   });
 
   NewGameModel.withDefault(String clubCode) {
@@ -212,6 +220,12 @@ class NewGameModel {
     buyInWaitTime = json['buyInWaitTime'] ?? 60;
     allowFunAnimations = json['allowFunAnimations'] ?? true;
     ante = json['ante'] ?? 0.0;
+    if (json['buyInLimit'] == null) {
+      buyInApprovalLimit = BuyInApprovalLimit.BUYIN_NO_LIMIT;
+    } else {
+      buyInApprovalLimit =
+          BuyInApprovalLimitSerialization.fromJson(json['buyInLimit']);
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -254,6 +268,7 @@ class NewGameModel {
     data['breakAllowed'] = this.breakAllowed ?? true;
     data['showResult'] = this.showResult ?? true;
     data['highHandTracked'] = this.highHandTracked ?? false;
+    data['buyInLimit'] = this.buyInApprovalLimit.toJson();
     data['buyInTimeout'] = this.buyInWaitTime;
     data['waitlistAllowed'] = this.waitList;
     //data['allowFunAnimations'] = this.allowFunAnimations;

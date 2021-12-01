@@ -282,17 +282,17 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                             ],
                           ),
                         ),
-              //           Divider(
-              //             color: theme.supportingColor,
-              //           ),
-              // SwitchWidget(
-              //   icon: Icons.verified_user,
-              //   value: true,
-              //   label: 'Auto Buyin Approval',
-              //   onChange: (bool newValue) => setState(() {
-              //   }),
-              //   // useSpacer: false,
-              // ),
+                        //           Divider(
+                        //             color: theme.supportingColor,
+                        //           ),
+                        // SwitchWidget(
+                        //   icon: Icons.verified_user,
+                        //   value: true,
+                        //   label: 'Auto Buyin Approval',
+                        //   onChange: (bool newValue) => setState(() {
+                        //   }),
+                        //   // useSpacer: false,
+                        // ),
                         Divider(
                           color: theme.supportingColor,
                         ),
@@ -408,8 +408,8 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
           SizedBox(width: 30.pw),
           Text(
             DataFormatter.chipsFormat(_data.tipsBack.toDouble()) + '%',
-            style: AppDecorators.getHeadLine3Style(theme: theme).copyWith(
-                color: Colors.white),
+            style: AppDecorators.getHeadLine3Style(theme: theme)
+                .copyWith(color: Colors.white),
           ),
         ],
       ),

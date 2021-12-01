@@ -11,6 +11,7 @@ import 'package:pokerapp/models/game/new_game_model.dart';
 import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/models/game_model.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
+import 'package:pokerapp/models/game_play_models/business/game_resp.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/newmodels/game_model_new.dart';
 import 'package:pokerapp/models/player_info.dart';
@@ -807,12 +808,18 @@ class GameService {
   }
 
   /* the following method facilitates buying chips */
-  static Future<bool> buyIn(String gameCode, double amount) async {
+  static Future<BuyInResponse> buyIn(String gameCode, double amount) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
 
     String _mutation = """mutation{
       buyIn(gameCode:"$gameCode", amount: $amount){
         approved
+        missedBlind
+        status
+        approved
+        expireSeconds
+        availableCredits
+        insufficientCredits
       }
     }
     """;
@@ -827,17 +834,22 @@ class GameService {
       }
     }
 
-    final buyIn = result.data['buyIn'];
-    return buyIn['approved'];
+    final buyInResp = result.data['buyIn'];
+    return BuyInResponse.fromJson(buyInResp);
   }
 
   /* the following method facilitates buying chips */
-  static Future<String> reload(String gameCode, int amount) async {
+  static Future<BuyInResponse> reload(String gameCode, int amount) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
 
     String _mutation = """mutation (\$gameCode: String!, \$amount: Float!)  {
       reload(gameCode:\$gameCode, amount: \$amount){
         approved
+        status
+        expireSeconds
+        missedBlind
+        availableCredits
+        insufficientCredits
       }
     }
     """;
@@ -855,8 +867,9 @@ class GameService {
         return null;
       }
     }
-
-    return result.data['approved'];
+    final resp = result.data['reload'];
+    final ret = BuyInResponse.fromJson(resp);
+    return ret;
   }
 
   static Future<String> configureClubGame(

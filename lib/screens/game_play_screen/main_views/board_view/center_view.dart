@@ -208,7 +208,8 @@ class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
       return centerTextWidget(text, boardAttributes.centerButtonsPos);
     }
 
-    if (gameState.tableState.tableStatus == AppConstants.TABLE_STATUS_NOT_ENOUGH_PLAYERS) {
+    if (gameState.tableState.tableStatus ==
+        AppConstants.TABLE_STATUS_NOT_ENOUGH_PLAYERS) {
       String text = _appScreenText['waitingForPlayersToJoin'];
       return centerTextWidget(text, boardAttributes.centerButtonsPos);
     }

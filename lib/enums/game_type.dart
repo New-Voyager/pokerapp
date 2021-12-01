@@ -126,3 +126,15 @@ extension ChipUnitSerialization on ChipUnit {
   static ChipUnit fromJson(String s) =>
       ChipUnit.values.firstWhere((chipUnit) => chipUnit.toJson() == s);
 }
+
+enum BuyInApprovalLimit {
+  BUYIN_NO_LIMIT,
+  BUYIN_CREDIT_LIMIT,
+  BUYIN_HOST_APPROVAL
+}
+
+extension BuyInApprovalLimitSerialization on BuyInApprovalLimit {
+  String toJson() => this.toString().split(".").last;
+  static BuyInApprovalLimit fromJson(String s) =>
+      BuyInApprovalLimit.values.firstWhere((e) => e.toJson() == s);
+}
