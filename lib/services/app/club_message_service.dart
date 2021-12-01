@@ -113,7 +113,14 @@ class ClubMessageService {
 
             _stream.sink.add(sharedHandMessages);
           } else {
-            _stream.sink.add(_messages.reversed.toList());
+            List<ClubMessageModel> chatMessages = [];
+
+            _messages.reversed.forEach((message) {
+              if (message.messageType != MessageType.HAND) {
+                chatMessages.add(message);
+              }
+            });
+            _stream.sink.add(chatMessages);
             ClubMessageService.markMessagesAsRead(clubCode);
           }
         }
