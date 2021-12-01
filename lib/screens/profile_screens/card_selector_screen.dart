@@ -18,7 +18,7 @@ import 'package:pokerapp/services/app/asset_service.dart';
 import 'package:pokerapp/services/data/asset_hive_store.dart';
 import 'package:pokerapp/services/data/box_type.dart';
 import 'package:pokerapp/services/data/hive_datasource_impl.dart';
-import 'package:pokerapp/services/data/user_settings_store.dart';
+import 'package:pokerapp/services/data/user_settings_store_old.dart';
 import 'package:pokerapp/services/game_play/customization_service.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:provider/provider.dart';
