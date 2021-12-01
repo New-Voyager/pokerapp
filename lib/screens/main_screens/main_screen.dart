@@ -148,7 +148,7 @@ class _MainScreenState extends State<MainScreen>
           arguments: gameCode,
         );
       } else {
-        as.playerInGame = null;
+        appSettings.playerInGame = null;
       }
     }
 

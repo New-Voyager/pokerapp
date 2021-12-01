@@ -322,8 +322,8 @@ class GamePlayScreenUtilMethods {
       GameHiveStore ghs = gameState.gameHiveStore;
       ghs.initialize(gameState.gameCode);
 
-      AppSettingsStore as = appService.appSettings;
-      as.playerInGame = gameCode;
+      AppSettingsStore appSettings = appService.appSettings;
+      appSettings.playerInGame = gameCode;
 
       ConnectionDialog.dismiss(context: context);
       if (newPlayerModel.isMe) {

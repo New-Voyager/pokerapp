@@ -1,10 +1,10 @@
 import 'dart:developer';
 
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/enums/game_type.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game/game_player_settings.dart';
 import 'package:pokerapp/models/game/game_settings.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
@@ -15,7 +15,6 @@ import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
-import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/game_service.dart';
@@ -85,7 +84,7 @@ class _GameOptionState extends State<GameOption> {
           subTitleText: _appScreenText['youWillStandupAfterThisHand']);
       GameService.leaveGame(this.gameCode);
     }
-
+    appService.appSettings.playerInGame = null;
     if (!widget.gameState.running) {
       await GameService.leaveGame(this.gameCode);
       widget.gameState.refresh();
