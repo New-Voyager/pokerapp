@@ -1,14 +1,10 @@
 import 'dart:developer';
 
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:pokerapp/enums/game_status.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/announcement_model.dart';
-import 'package:pokerapp/models/app_state.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
-import 'package:pokerapp/models/newmodels/app_settings_model.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
 import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
@@ -33,6 +29,7 @@ import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/services/notifications/notifications.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
+import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/curved_bottom_navigation.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
@@ -136,11 +133,14 @@ class _MainScreenState extends State<MainScreen>
           info: true);
     }
 
-    AppSettingsStore as = appService.appSettings;
-    String gameCode = as.playerInGame;
+    AppSettingsStore appSettings = appService.appSettings;
+    String gameCode = appSettings.playerInGame;
 
     if (gameCode != null) {
-      GameInfoModel gameInfo = await GameService.getGameInfo(gameCode);
+      GameInfoModel gameInfo = null;
+      ConnectionDialog.show(context: context, loadingText: 'Loading last active game...');
+      gameInfo = await GameService.getGameInfo(gameCode);
+      ConnectionDialog.dismiss(context: context);
       if (gameInfo != null && gameInfo.status == "ACTIVE") {
         Navigator.pushNamed(
           context,
