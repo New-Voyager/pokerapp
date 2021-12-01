@@ -58,7 +58,8 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
           gameState.customizationMode
               ? BetIconButton(displayBetText: false)
               : Container(),
-          gameState.playerLocalConfig.showHandRank
+          gameState.customizationMode ||
+                  gameState.playerLocalConfig.showHandRank
               ? Align(
                   alignment: Alignment.topCenter,
                   child: rankText,

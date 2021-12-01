@@ -19,7 +19,7 @@ class GqlError {
       if (key == 'code' || key == 'exception') {
         continue;
       }
-      e._extensions[key] = ext[key];
+      e._extensions[key] = ext[key].toString();
     }
     return e;
   }

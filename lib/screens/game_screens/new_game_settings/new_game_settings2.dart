@@ -50,6 +50,7 @@ class NewGameSettings2 extends StatelessWidget {
   }) async {
     NewGameModelProvider gmp = await showDialog<NewGameModelProvider>(
       context: context,
+      barrierDismissible: false,
       builder: (_) => Dialog(
         insetPadding: const EdgeInsets.symmetric(
           horizontal: 15.0,
@@ -71,7 +72,6 @@ class NewGameSettings2 extends StatelessWidget {
 
     gm.gameType = mainGameType;
     gm.roeGames = subGameTypes;
-    gm.chipUnit = ChipUnit.DOLLAR;
     gm.dealerChoiceGames = subGameTypes;
 
     String gameCode;
@@ -198,6 +198,107 @@ class NewGameSettings2 extends StatelessWidget {
   }
 
   Widget _buildBuyinConfig(AppTheme theme, NewGameModelProvider gmp) {
+    return DecoratedContainer(
+      theme: theme,
+      children: [
+        Consumer<NewGameModelProvider>(builder: (_, vnGmp, __) {
+          List<bool> isSelected = [];
+          isSelected
+              .add(gmp.buyInApprovalLimit == BuyInApprovalLimit.BUYIN_NO_LIMIT);
+          isSelected.add(
+              gmp.buyInApprovalLimit == BuyInApprovalLimit.BUYIN_CREDIT_LIMIT);
+          isSelected.add(
+              gmp.buyInApprovalLimit == BuyInApprovalLimit.BUYIN_HOST_APPROVAL);
+
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildLabel('Buyin Limit', theme),
+
+              Center(
+                child: ToggleButtons(
+                  children: [
+                    Container(
+                        padding: EdgeInsets.all(10),
+                        child: Text('No Limit',
+                            style: TextStyle(
+                                color: gmp.buyInApprovalLimit ==
+                                        BuyInApprovalLimit.BUYIN_NO_LIMIT
+                                    ? Colors.black
+                                    : theme.accentColor))),
+                    Container(
+                        padding: EdgeInsets.all(10),
+                        child: Text('Credit Limit',
+                            style: TextStyle(
+                                color: gmp.buyInApprovalLimit ==
+                                        BuyInApprovalLimit.BUYIN_CREDIT_LIMIT
+                                    ? Colors.black
+                                    : theme.accentColor))),
+                    Container(
+                        padding: EdgeInsets.all(10),
+                        child: Text('Host Approval',
+                            style: TextStyle(
+                                color: gmp.buyInApprovalLimit ==
+                                        BuyInApprovalLimit.BUYIN_HOST_APPROVAL
+                                    ? Colors.black
+                                    : theme.accentColor))),
+                  ],
+                  isSelected: isSelected,
+                  borderColor: theme.accentColor,
+                  borderRadius: BorderRadius.all(Radius.circular(25)),
+                  selectedColor: Colors.black,
+                  fillColor: theme.accentColor,
+                  onPressed: (int index) {
+                    if (index == 0) {
+                      gmp.buyInApprovalLimit =
+                          BuyInApprovalLimit.BUYIN_NO_LIMIT;
+                    } else if (index == 1) {
+                      gmp.buyInApprovalLimit =
+                          BuyInApprovalLimit.BUYIN_CREDIT_LIMIT;
+                    } else if (index == 2) {
+                      gmp.buyInApprovalLimit =
+                          BuyInApprovalLimit.BUYIN_HOST_APPROVAL;
+                    }
+                  },
+                ),
+              ),
+              // RadioListWidget<String>(
+              //   defaultValue: gmp.buyInApprovalLimit.toJson(),
+              //   values: NewGameConstants.BUYIN_LIMIT_CHOICES,
+              //   onSelect: (String value) {
+              //     gmp.buyInApprovalLimit = BuyInApprovalLimitSerialization.fromJson(value);
+              //   },
+              // ),
+            ],
+          );
+        }),
+
+        // buy in wait time
+        Consumer<NewGameModelProvider>(
+          builder: (_, vnGmp, __) => _buildAnimatedSwitcher(
+            child: vnGmp.buyInApprovalLimit ==
+                    BuyInApprovalLimit.BUYIN_HOST_APPROVAL
+                ? Column(
+                    children: [
+                      _buildLabel(_appScreenText['buyinMaxTime'], theme),
+                      RadioListWidget<int>(
+                        defaultValue: gmp.buyInWaitTime,
+                        values: NewGameConstants.BUYIN_WAIT_TIMES,
+                        onSelect: (int value) {
+                          gmp.buyInWaitTime = value;
+                        },
+                      ),
+                    ],
+                  )
+                : SizedBox.shrink(),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildBuyinConfig2(AppTheme theme, NewGameModelProvider gmp) {
     return DecoratedContainer(
       theme: theme,
       children: [
@@ -691,13 +792,13 @@ class NewGameSettings2 extends StatelessWidget {
                   theme: theme,
                 ),
                 sepV20,
+                _buildBuyinConfig(theme, gmp),
+                sepV20,
                 ExpansionTile(
                   subtitle: Text(_appScreenText['chooseAdvanceConfig'],
                       style: AppStylesNew.labelTextStyle),
                   title: Text(_appScreenText['advanceConfig']),
                   children: [
-                    _buildBuyinConfig(theme, gmp),
-                    sepV20,
                     _buildBreakConfig(theme, gmp),
                     sepV20,
                     _buildBombPotConfig(theme, gmp),

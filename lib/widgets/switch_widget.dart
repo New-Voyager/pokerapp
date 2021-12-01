@@ -11,7 +11,7 @@ class SwitchWidget extends StatelessWidget {
   final bool disabled;
   final String activeText;
   final String inactiveText;
-
+  final IconData icon;
   /* ui variables */
   // final bool useSpacer;
 
@@ -19,6 +19,7 @@ class SwitchWidget extends StatelessWidget {
     Key key,
     @required this.label,
     @required this.onChange,
+    this.icon = null,
     this.value = false,
     // this.useSpacer = true,
     this.disabled = false,
@@ -29,6 +30,11 @@ class SwitchWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = AppTheme.getTheme(context);
+    List<Widget> iconChildren = [];
+    if (this.icon != null) {
+      iconChildren.add(Icon(icon, color: theme.accentColor));
+      iconChildren.add(SizedBox(width: 20));
+    }
     return ListenableProvider<ValueNotifier<bool>>(
       create: (_) => ValueNotifier<bool>(value),
       child: Container(
@@ -36,6 +42,7 @@ class SwitchWidget extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            ...iconChildren,
             /* label */
             Expanded(
               child: Text(

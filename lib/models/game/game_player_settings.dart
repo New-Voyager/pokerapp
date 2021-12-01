@@ -16,7 +16,7 @@ class GamePlayerSettings {
     this.buttonStraddle,
     this.buttonStraddleBet,
     this.bombPotEnabled,
-    this.muckLosingHand,
+    this.muckLosingHand = true,
     this.runItTwiceEnabled,
   });
 

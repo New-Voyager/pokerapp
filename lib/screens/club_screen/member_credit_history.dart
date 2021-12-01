@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:pokerapp/models/club_members_model.dart';
+import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
@@ -12,6 +13,8 @@ import 'package:pokerapp/services/app/club_interior_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/widgets/buttons.dart';
+
+import '../../routes.dart';
 
 class ClubActivityCreditScreen extends StatefulWidget {
   // final ClubHomePageModel clubHomePageModel;
@@ -32,6 +35,7 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
   ClubMemberModel member;
   bool changed = false;
   DataTableSource _dataTableSource;
+
   @override
   void initState() {
     super.initState();
@@ -47,10 +51,25 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
       history = await ClubInteriorService.getCreditHistory(
           widget.clubCode, widget.playerId);
       // history = MemberCreditHistory.getMockData();
-      _dataTableSource = DataCreditSource(items: history, theme: theme);
+      _dataTableSource =
+          DataCreditSource(items: history, theme: theme, onTap: openItem);
     } catch (err) {}
     loading = false;
     setState(() {});
+  }
+
+  Future<void> openItem(String activity, String gameCode) async {
+    if (activity != "BUYIN" && activity != "GAME_RESULT") {
+      return;
+    }
+    Navigator.pushNamed(
+      context,
+      Routes.game_history_detail_view,
+      arguments: {
+        'clubCode': widget.clubCode,
+        'model': GameHistoryDetailModel(gameCode, false),
+      },
+    );
   }
 
   Widget activities() {
@@ -349,7 +368,7 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
                                     context: context,
                                     clubCode: widget.clubCode,
                                     playerUuid: widget.playerId,
-                                    credits: member.availableCredit.toInt());
+                                    credits: member.availableCredit.toDouble());
                                 if (ret) {
                                   changed = true;
                                   fetchData();
@@ -473,8 +492,9 @@ class DataCreditSource extends DataTableSource {
   List<MemberCreditHistory> items;
   DateFormat format = DateFormat("dd MMM");
   AppTheme theme;
+  Function onTap;
 
-  DataCreditSource({this.items, this.theme}) {
+  DataCreditSource({this.items, this.theme, this.onTap}) {
     format.add_jm();
   }
 
@@ -530,6 +550,11 @@ class DataCreditSource extends DataTableSource {
                   .copyWith(fontSize: 8.dp),
             )),
           ),
+          onTap: () async {
+            if (onTap != null) {
+              await onTap(item.updateType, item.gameCode);
+            }
+          },
         ),
         DataCell(
           Container(
@@ -539,6 +564,11 @@ class DataCreditSource extends DataTableSource {
               style: AppDecorators.getSubtitle1Style(theme: theme),
             ),
           ),
+          onTap: () async {
+            if (onTap != null) {
+              await onTap(item.updateType, item.gameCode);
+            }
+          },
         ),
         DataCell(
           Text(
@@ -546,6 +576,11 @@ class DataCreditSource extends DataTableSource {
             style: AppDecorators.getSubtitle1Style(theme: theme)
                 .copyWith(color: typeColor),
           ),
+          onTap: () async {
+            if (onTap != null) {
+              await onTap(item.updateType, item.gameCode);
+            }
+          },
         ),
         DataCell(
           Container(
@@ -556,6 +591,11 @@ class DataCreditSource extends DataTableSource {
                 style: AppDecorators.getSubtitle1Style(theme: theme)
                     .copyWith(color: amountColor, fontWeight: FontWeight.bold),
               )),
+          onTap: () async {
+            if (onTap != null) {
+              await onTap(item.updateType, item.gameCode);
+            }
+          },
         ),
         DataCell(
           Container(
@@ -565,6 +605,11 @@ class DataCreditSource extends DataTableSource {
                 textAlign: TextAlign.right,
                 style: AppDecorators.getSubtitle1Style(theme: theme),
               )),
+          onTap: () async {
+            if (onTap != null) {
+              await onTap(item.updateType, item.gameCode);
+            }
+          },
         ),
       ],
       color:

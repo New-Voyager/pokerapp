@@ -490,8 +490,7 @@ class DataSource extends DataTableSource {
         String agoText = timeago.format(ago).replaceAll("about", "");
         agoText = agoText.replaceAll("minutes", "mins");
         cells.add(
-          DataCell(Text(agoText),
-              onTap: () {
+          DataCell(Text(agoText), onTap: () {
             openMember(activity.playerUuid);
           }),
         );

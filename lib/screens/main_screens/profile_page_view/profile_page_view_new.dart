@@ -238,21 +238,21 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                         },
                                       ),
                                       CustomDivider(),
+                                      // ListTileItem(
+                                      //   text: _appScreenText[
+                                      //       'customizeGameScreen'],
+                                      //   imagePath:
+                                      //       AppAssetsNew.customizeImagePath,
+                                      //   index: 3,
+                                      //   onTapFunction: () {
+                                      //     Navigator.of(context).pushNamed(
+                                      //       Routes.game_screen_customize,
+                                      //     );
+                                      //   },
+                                      // ),
+                                      // CustomDivider(),
                                       ListTileItem(
-                                        text: _appScreenText[
-                                            'customizeGameScreen'],
-                                        imagePath:
-                                            AppAssetsNew.customizeImagePath,
-                                        index: 3,
-                                        onTapFunction: () {
-                                          Navigator.of(context).pushNamed(
-                                            Routes.game_screen_customize,
-                                          );
-                                        },
-                                      ),
-                                      CustomDivider(),
-                                      ListTileItem(
-                                        text: _appScreenText['pickTheme'],
+                                        text: _appScreenText['chooseTheme'],
                                         imagePath:
                                             AppAssetsNew.customizeImagePath,
                                         index: 4,
