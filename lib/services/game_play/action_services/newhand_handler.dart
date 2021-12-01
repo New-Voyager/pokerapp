@@ -240,6 +240,13 @@ class NewHandHandler {
     tableState.notifyAll();
     if (gameState.uiClosing) return;
 
+    /* marking the dealer */
+    // it could be a dead button
+    final Seat seat = gameState.getSeat(newHand.buttonPos);
+    seat.dealer = true;
+
+    if (gameState.uiClosing) return;
+
     await showDeal();
     if (gameState.uiClosing) return;
 
@@ -323,11 +330,6 @@ class NewHandHandler {
       }
     }
 
-    /* marking the dealer */
-    // it could be a dead button
-    if (gameState.uiClosing) return;
-    final Seat seat = gameState.getSeat(newHand.buttonPos);
-    seat.dealer = true;
     /* get a new card back asset to be shown */
     if (gameState.uiClosing) return;
     final myState = gameState.myState;
