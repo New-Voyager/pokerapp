@@ -16,6 +16,7 @@ import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/newmodels/game_model_new.dart';
 import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/models/table_record.dart';
+import 'package:pokerapp/services/app/quick_game_navigation_service.dart';
 import 'package:pokerapp/services/data/box_type.dart';
 import 'package:pokerapp/services/data/hive_datasource_impl.dart';
 import 'package:pokerapp/services/gql_errors.dart';
@@ -804,6 +805,10 @@ class GameService {
     }
     final seatPlayer = result.data['takeSeat'];
     PlayerModel player = PlayerModel.fromJson(seatPlayer);
+
+    // player has taken a seat in a game, save this to QuickGameNavigationService
+    await QuickGameNavigationService.addGame(gameCode);
+
     return player;
   }
 

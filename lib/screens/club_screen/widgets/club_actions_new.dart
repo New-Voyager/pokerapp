@@ -158,6 +158,16 @@ class ClubActionsNew extends StatelessWidget {
     ));
     buttons.add(getChat(theme));
 
+    // shared hands
+    buttons.add(
+      ClubActionButtonNew(
+        this._clubHomePageModel,
+        ClubActions.SHARED_HANDS,
+        appScreenText['shared_hands'],
+        SvgPicture.asset("assets/images/club/sharedhands.svg", color: theme.accentColor),
+      ),
+    );
+
     buttons.add(getHostMemberChatWidget(theme));
 
     buttons.add(ClubActionButtonNew(

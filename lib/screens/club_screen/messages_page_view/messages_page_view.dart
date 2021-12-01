@@ -27,8 +27,10 @@ import 'club_chat_model.dart';
 class MessagesPageView extends StatefulWidget {
   MessagesPageView({
     @required this.clubCode,
+    @required this.isSharedHandsOnly,
   });
 
+  final bool isSharedHandsOnly;
   final String clubCode;
 
   @override
@@ -149,11 +151,15 @@ class _MessagesPageViewState extends State<MessagesPageView>
           ),
           body: SafeArea(
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 /* main view to show messages */
                 Expanded(
                   child: StreamBuilder<List<ClubMessageModel>>(
-                    stream: ClubMessageService.pollMessages(widget.clubCode),
+                    stream: ClubMessageService.pollMessages(
+                      widget.clubCode,
+                      isSharedHandsOnly: widget.isSharedHandsOnly,
+                    ),
                     builder: (_, snapshot) {
                       if (snapshot.hasError || _players == null)
                         return CircularProgressWidget(
@@ -161,7 +167,9 @@ class _MessagesPageViewState extends State<MessagesPageView>
                         );
 
                       if (snapshot.data?.isEmpty ?? true)
-                        return NoMessageWidget();
+                        return NoMessageWidget(
+                          isHandOnly: widget.isSharedHandsOnly,
+                        );
 
                       messages = snapshot.data;
                       var mess = _convert();
@@ -187,15 +195,17 @@ class _MessagesPageViewState extends State<MessagesPageView>
                 ),
 
                 // chat text field
-                ChatTextField(
-                  icon: FontAwesomeIcons.icons,
-                  appScreenText: _appScreenText,
-                  onGifSelectTap: () => _openGifDrawer(theme),
-                  textEditingController: _textController,
-                  onSend: _sendMessage,
-                  onEmojiSelectTap: _onEmojiSelectTap,
-                  onTap: _onTap,
-                ),
+                widget.isSharedHandsOnly
+                    ? const SizedBox.shrink()
+                    : ChatTextField(
+                        icon: FontAwesomeIcons.icons,
+                        appScreenText: _appScreenText,
+                        onGifSelectTap: () => _openGifDrawer(theme),
+                        textEditingController: _textController,
+                        onSend: _sendMessage,
+                        onEmojiSelectTap: _onEmojiSelectTap,
+                        onTap: _onTap,
+                      ),
 
                 // emoji picker
                 ValueListenableBuilder<bool>(

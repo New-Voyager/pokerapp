@@ -165,6 +165,14 @@ class ClubActionButtonNew extends StatelessWidget {
               Navigator.pushNamed(context, Routes.high_rank_analysis_screen,
                   arguments: {'clubCode': clubModel.clubCode});
               break;
+            case ClubActions.SHARED_HANDS:
+              return navigatorKey.currentState.pushNamed(
+                Routes.message_page,
+                arguments: {
+                  'clubCode': clubModel.clubCode,
+                  'sharedHands': true,
+                },
+              );
           }
         },
         child: card,

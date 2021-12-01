@@ -237,11 +237,20 @@ class Routes {
         );
 
       case message_page:
-        var clubCode = settings.arguments as String;
+        String clubCode;
+        bool sharedHands = false;
+        if (settings.arguments is String) {
+          clubCode = settings.arguments;
+        } else {
+          clubCode = (settings.arguments as Map)['clubCode'];
+          sharedHands = (settings.arguments as Map)['sharedHands'];
+        }
+
         return _getPageRoute(
           routeName: settings.name,
           viewToShow: MessagesPageView(
             clubCode: clubCode,
+            isSharedHandsOnly: sharedHands,
           ),
         );
 
