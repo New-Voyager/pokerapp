@@ -99,7 +99,8 @@ class ResultHandlerV2 {
     /* set board 1 cards */
     List<CardObject> boardCards1CO = [];
     for (final c in result.boards[0].cards) {
-      boardCards1CO.add(CardHelper.getCard(c));
+      boardCards1CO
+          .add(CardHelper.getCard(c, colorCards: gameState.colorCards));
     }
     bool showdown = false;
     if (result.wonAt == proto.HandStatus.SHOW_DOWN) {
@@ -143,7 +144,8 @@ class ResultHandlerV2 {
     if (result.boards.length == 2) {
       List<CardObject> boardCards2CO = [];
       for (final c in result.boards[1].cards) {
-        boardCards2CO.add(CardHelper.getCard(c));
+        boardCards2CO
+            .add(CardHelper.getCard(c, colorCards: gameState.colorCards));
       }
       if (result.wonAt == proto.HandStatus.PREFLOP) {
         boardCards2CO = [];

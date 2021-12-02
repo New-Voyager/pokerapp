@@ -594,7 +594,9 @@ class TestService {
     */ /* board 2 */
     tableState.setBoardCards(
       2,
-      [50, 50, 50, 50, 50].map((e) => CardHelper.getCard(e)).toList(),
+      [50, 50, 50, 50, 50]
+          .map((e) => CardHelper.getCard(e, colorCards: gameState.colorCards))
+          .toList(),
     );
     tableState.updateTwoBoardsNeeded(true);
 
