@@ -512,6 +512,8 @@ class GameState {
     return _playersInGame;
   }
 
+  get colorCards => playerLocalConfig.colorCards;
+
   bool get ended {
     return this._gameInfo.status == AppConstants.GAME_ENDED;
   }

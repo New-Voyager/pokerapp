@@ -872,6 +872,19 @@ class _GameOptionState extends State<GameOption> {
       },
     ));
 
+    // show Hand Rank
+    children.add(_buildCheckBox(
+      text: _appScreenText['colorCards'],
+      value: widget.gameState.playerLocalConfig.colorCards,
+      onChange: (bool v) async {
+        // setting the value saves it to local storage too
+        widget.gameState.playerLocalConfig.colorCards = v;
+        log('In toggle button widget, Color Cards = ${widget.gameState.playerLocalConfig.colorCards}');
+        if (closed) return;
+        setState(() {});
+      },
+    ));
+
     // show ReArrage
     children.add(_buildCheckBox(
       text: _appScreenText['showRearrange'],
