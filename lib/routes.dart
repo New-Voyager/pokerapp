@@ -315,10 +315,11 @@ class Routes {
         String clubCode = args["clubCode"];
         String playerId = args["playerId"];
         bool owner = args['owner'];
+        final member = args['member'];
 
         return _getPageRoute(
           routeName: settings.name,
-          viewToShow: ClubActivityCreditScreen(clubCode, playerId, owner),
+          viewToShow: ClubActivityCreditScreen(clubCode, playerId, owner, member),
         );
 
       case club_member_activities_view:

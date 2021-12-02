@@ -91,6 +91,7 @@ class ClubHomePageModel extends ChangeNotifier {
   bool showHighRankStats;
   bool trackMemberCredit;
   double availableCredit;
+  bool refreshCredits = false;
   int clubCoins; // filled for club owner and manager
   ManagerRole role = ManagerRole();
   ClubHomePageModel(String clubCode, String clubName) {

@@ -333,9 +333,10 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                                       'clubCode': widget.clubCode,
                                       'playerId': widget.playerId,
                                       'owner': true,
+                                      'member': widget.member,
                                     },
                                   ) as bool;
-                                  if (ret ?? false) {
+                                  if (widget.member.refreshCredits) {
                                     _fetchData();
                                   }
                                 },

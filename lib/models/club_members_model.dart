@@ -29,6 +29,7 @@ class ClubMemberModel extends ChangeNotifier {
   String _notes;
   int _totalGames;
   bool edited = false;
+  bool refreshCredits = false;
 
   ClubMemberModel();
 

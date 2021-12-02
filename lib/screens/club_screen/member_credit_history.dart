@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
+import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/models/club_members_model.dart';
 import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
@@ -21,7 +22,8 @@ class ClubActivityCreditScreen extends StatefulWidget {
   final String clubCode;
   final String playerId;
   final bool owner;
-  const ClubActivityCreditScreen(this.clubCode, this.playerId, this.owner);
+  final ClubMemberModel member;
+  const ClubActivityCreditScreen(this.clubCode, this.playerId, this.owner, this.member);
 
   @override
   State<ClubActivityCreditScreen> createState() =>
@@ -373,6 +375,7 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
 
                                 if (ret) {
                                   changed = true;
+                                  widget.member.refreshCredits = true;
                                   fetchData();
                                 }
                               })
