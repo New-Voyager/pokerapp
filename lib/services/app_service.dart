@@ -24,5 +24,5 @@ class AppService {
       userSettings.close();
     }
     userSettings = null;
-  } 
+  }
 }

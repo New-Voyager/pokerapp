@@ -264,3 +264,39 @@ class GameInfoModel {
     }
   } """;
 }
+
+class ClubInfo {
+  bool trackMemberCredit = false;
+  bool canUpdateCredits = false;
+  bool isOwner = false;
+  bool isManager = false;
+
+  ClubInfo();
+
+  factory ClubInfo.fromJson(dynamic json) {
+    final clubInfo = ClubInfo();
+    clubInfo.isOwner = json['isOwner'] ?? false;
+    clubInfo.isManager = json['isManager'] ?? false;
+    clubInfo.trackMemberCredit = json['trackMemberCredit'] ?? false;
+    if (json['managerRole'] != null) {
+      clubInfo.canUpdateCredits =
+          json['managerRole']['trackMemberCredit'] ?? false;
+    }
+    return clubInfo;
+  }
+
+  static String getQuery() {
+    return """
+        query club(\$clubCode: String!){
+          clubInfo(clubCode:\$clubCode) {
+            trackMemberCredit
+            isOwner
+            isManager
+            managerRole {
+              canUpdateCredits
+            }
+          }
+        }
+    """;
+  }
+}

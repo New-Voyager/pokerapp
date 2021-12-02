@@ -184,8 +184,8 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
               } else {
                 isDownloading = false;
               }
-              appService.userSettings.setSelectedCardFaceId(
-                  _cardFaceAssets[index].id);
+              appService.userSettings
+                  .setSelectedCardFaceId(_cardFaceAssets[index].id);
 
               final theme = AppTheme.getTheme(context);
               AppThemeData data = theme.themeData;
@@ -275,8 +275,8 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
               } else {
                 isDownloading = false;
               }
-              appService.userSettings.setSelectedCardBackId(
-                  _cardBackAssets[index].id);
+              appService.userSettings
+                  .setSelectedCardBackId(_cardBackAssets[index].id);
               final theme = AppTheme.getTheme(context);
               AppThemeData data = theme.themeData;
               theme.updateThemeData(data);

@@ -137,6 +137,7 @@ class GameState {
   GameInfoModel _gameInfo;
   GameSettings _gameSettings;
   GamePlayerSettings _playerSettings;
+  ClubInfo clubInfo;
 
   //Map<int, Seat> _seats = Map<int, Seat>();
   List<Seat> _seats = [];

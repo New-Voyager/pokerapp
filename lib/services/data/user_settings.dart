@@ -31,7 +31,7 @@ class UserSettingsStore {
     final assets = _box.get(KEY_SELECTED_ASSETS);
     if (assets == null) {
       await loadDefault();
-    }  
+    }
   }
 
   void close() {
@@ -43,14 +43,15 @@ class UserSettingsStore {
 
   Map<String, String> defaultAssets() {
     return {
-        KEY_SELECTED_BACKDROP: VALUE_DEFAULT_BACKDROP,
-        KEY_SELECTED_TABLE: VALUE_DEFAULT_TABLE,
-        KEY_SELECTED_BETDIAL: VALUE_DEFAULT_BETDIAL,
-        KEY_SELECTED_NAMEPLATE: VALUE_DEFAULT_NAMEPLATE,
-        KEY_SELECTED_CARDFACE: VALUE_DEFAULT_CARDFACE,
-        KEY_SELECTED_CARDBACK: VALUE_DEFAULT_CARDBACK,
-      };
+      KEY_SELECTED_BACKDROP: VALUE_DEFAULT_BACKDROP,
+      KEY_SELECTED_TABLE: VALUE_DEFAULT_TABLE,
+      KEY_SELECTED_BETDIAL: VALUE_DEFAULT_BETDIAL,
+      KEY_SELECTED_NAMEPLATE: VALUE_DEFAULT_NAMEPLATE,
+      KEY_SELECTED_CARDFACE: VALUE_DEFAULT_CARDFACE,
+      KEY_SELECTED_CARDBACK: VALUE_DEFAULT_CARDBACK,
+    };
   }
+
   Future<void> loadDefault() async {
     await _box.put(
       KEY_SELECTED_ASSETS,
@@ -145,7 +146,7 @@ class UserSettingsStore {
   Future<void> setLastGame(String gameCode) async {
     try {
       await _box.put(KEY_LAST_GAME, gameCode);
-    } catch(e) {
+    } catch (e) {
       // ignore the error
     }
   }
@@ -157,7 +158,7 @@ class UserSettingsStore {
         gameCode = '';
       }
       return gameCode;
-    } catch(e) {
+    } catch (e) {
       // ignore the error
     }
     return '';

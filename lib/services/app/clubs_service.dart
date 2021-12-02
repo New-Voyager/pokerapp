@@ -9,6 +9,7 @@ import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/models/club_model.dart';
 import 'package:pokerapp/models/club_update_input_model.dart';
 import 'package:pokerapp/models/club_weekly_activity_model.dart';
+import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/host_message_summary_model.dart';
 import 'package:pokerapp/models/messages_from_member.dart';
 
@@ -373,6 +374,49 @@ class ClubsService {
     bool res = result.data['ret'];
 
     return res ?? false;
+  }
+
+  static Future<ClubInfo> getClubInfoForGame(String clubCode) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    Map<String, dynamic> variables = {"clubCode": clubCode};
+    QueryResult result = await _client.query(
+      QueryOptions(document: gql(ClubInfo.getQuery()), variables: variables),
+    );
+    if (result.hasException) return null;
+    var jsonResponse = result.data['clubInfo'];
+    return ClubInfo.fromJson(jsonResponse);
+  }
+
+  static Future<double> getAvailableCredit(
+      String clubCode, String playerUuid) async {
+    String query = """
+          query clubMember(\$clubCode: String! \$playerUuid:String!) {
+            clubMembers(clubCode:\$clubCode, filter:{
+              playerId: \$playerUuid
+            }) {
+              availableCredit
+            }
+          }
+    """;
+
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    Map<String, dynamic> variables = {
+      "clubCode": clubCode,
+      "playerUuid": playerUuid
+    };
+    QueryResult result = await _client.query(
+      QueryOptions(document: gql(query), variables: variables),
+    );
+    if (result.hasException) return null;
+    var jsonResponse = result.data['clubMembers'];
+    if (jsonResponse == null || jsonResponse.length == 0) {
+      return 0;
+    }
+    double credit = 0;
+    if (jsonResponse[0]['availableCredit'] != null) {
+      credit = double.parse(jsonResponse[0]['availableCredit'].toString());
+    }
+    return credit;
   }
 
   static Future<List<AnnouncementModel>> getAnnouncementsForAClub(

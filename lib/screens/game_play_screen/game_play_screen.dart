@@ -37,6 +37,7 @@ import 'package:pokerapp/screens/game_play_screen/main_views/header_view/header_
 import 'package:pokerapp/screens/game_play_screen/main_views/which_winner_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/notifications/notifications.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/icon_with_badge.dart';
+import 'package:pokerapp/services/app/clubs_service.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/app/player_service.dart';
 import 'package:pokerapp/services/audio/audio_service.dart';
@@ -180,11 +181,32 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     return gameInfo;
   }
 
+  Future<ClubInfo> _fetchClubInfo(String clubCode) async {
+    ClubInfo clubInfo = ClubInfo();
+
+    if (widget.customizationService != null) {
+    } else if (TestService.isTesting) {
+    } else {
+      debugPrint('fetching game data: ${widget.gameCode}');
+      try {
+        clubInfo = await ClubsService.getClubInfoForGame(clubCode);
+        return clubInfo;
+      } catch (e) {
+        // we can still run the game
+      }
+    }
+    return clubInfo;
+  }
+
   /* The init method returns a Future of all the initial game constants
   * This method is also responsible for subscribing to the NATS channels */
   Future<GameInfoModel> _init() async {
     // check if there is a gameInfo passed, if not, then fetch the game info
     GameInfoModel _gameInfoModel = await _fetchGameInfo();
+    ClubInfo clubInfo = ClubInfo();
+    if (_gameInfoModel.clubCode != null && !_gameInfoModel.clubCode.isEmpty) {
+      clubInfo = await _fetchClubInfo(_gameInfoModel.clubCode);
+    }
     _hostSeatChangeInProgress = false;
     if (_gameInfoModel.status == AppConstants.GAME_PAUSED &&
         _gameInfoModel.tableStatus ==
@@ -235,6 +257,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     );
 
     _gameState = GameState();
+    _gameState.clubInfo = clubInfo;
     _gameState.isBotGame = widget.botGame;
     if (widget.customizationService != null) {
       _gameState.customizationMode = true;

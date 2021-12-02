@@ -14,6 +14,7 @@ import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_config.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
+import 'package:pokerapp/screens/club_screen/set_credits_dialog.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/nameplate_dialog.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/game_service.dart';
@@ -21,7 +22,6 @@ import 'package:pokerapp/services/data/hive_models/player_state.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/widgets/blinking_widget.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
-import 'package:pokerapp/widgets/cards/hidden_card_view.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/displaycards.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/game_play/graphql/seat_change_service.dart';
@@ -29,7 +29,6 @@ import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:provider/provider.dart';
 
 import 'action_status.dart';
-import 'animating_widgets/fold_card_animating_widget.dart';
 import 'animating_widgets/stack_switch_seat_animating_widget.dart';
 import 'chip_amount_widget.dart';
 import 'dealer_button.dart';
@@ -163,9 +162,9 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
           return;
         }
       }
-      if (me != null && widget.seat.seatPos == mySeat.seatPos) {
-        return;
-      }
+      // if (me != null && widget.seat.seatPos == mySeat.seatPos) {
+      //   return;
+      // }
 
       final data = await Alerts.showBottomSheetDailog(
         child: NamePlateDailog(
@@ -199,6 +198,17 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
 
         if (data != null && data['type'] != null && data['type'] == "host") {
           await _handleHostButtonClick(context);
+        }
+
+        if (data != null && data['type'] != null && data['type'] == "credits") {
+          // set credits for the player
+          bool ret = await SetCreditsDialog.prompt(
+              context: context,
+              clubCode: gameState.gameInfo.clubCode,
+              playerUuid: widget.seat.player.playerUuid,
+              name: widget.seat.player.name,
+              credits: null);
+          if (ret ?? false) {}
         }
       }
     }

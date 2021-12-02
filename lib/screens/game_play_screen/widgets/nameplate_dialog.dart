@@ -67,6 +67,14 @@ class _NamePlateDailogState extends State<NamePlateDailog> {
       playerMuted = widget.gameContextObject.ionAudioConferenceService
           .isPlayerMuted(widget.seat.player.streamId);
     }
+    bool showCreditLimit = false;
+    final gameState = widget.gameState;
+    if (gameState.clubInfo != null) {
+      if (gameState.clubInfo.trackMemberCredit &&
+          (gameState.clubInfo.canUpdateCredits || gameState.clubInfo.isOwner)) {
+        showCreditLimit = true;
+      }
+    }
     return SingleChildScrollView(
       physics: BouncingScrollPhysics(),
       child: Column(
@@ -162,15 +170,27 @@ class _NamePlateDailogState extends State<NamePlateDailog> {
                           split: true,
                         )),
                     SizedBox(width: 16.pw),
+                    // Visibility(
+                    //   visible: widget.gameState.currentPlayer.isAdmin(),
+                    //   child: CircleImageButton(
+                    //       theme: theme,
+                    //       icon: Icons.home_repair_service_outlined,
+                    //       caption: "Buyin\nLimit",
+                    //       split: true,
+                    //       onTap: () {
+                    //         Navigator.of(context).pop({"type": "buyin"});
+                    //         //  _handleLimitButtonClick(context);
+                    //       }),
+                    // ),
                     Visibility(
-                      visible: widget.gameState.currentPlayer.isAdmin(),
+                      visible: showCreditLimit,
                       child: CircleImageButton(
                           theme: theme,
                           icon: Icons.home_repair_service_outlined,
-                          caption: "Buyin\nLimit",
+                          caption: "Change\nCredits",
                           split: true,
                           onTap: () {
-                            Navigator.of(context).pop({"type": "buyin"});
+                            Navigator.of(context).pop({"type": "credits"});
                             //  _handleLimitButtonClick(context);
                           }),
                     ),

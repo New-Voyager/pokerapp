@@ -164,7 +164,8 @@ class ClubActionsNew extends StatelessWidget {
         this._clubHomePageModel,
         ClubActions.SHARED_HANDS,
         appScreenText['shared_hands'],
-        SvgPicture.asset("assets/images/club/sharedhands.svg", color: theme.accentColor),
+        SvgPicture.asset("assets/images/club/sharedhands.svg",
+            color: theme.accentColor),
       ),
     );
 
