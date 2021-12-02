@@ -22,6 +22,7 @@ class GameScreenAssets {
   Uint8List betImageBytes;
   Map<String, Uint8List> cardStrImage;
   Map<int, Uint8List> cardNumberImage;
+  Map<String, Uint8List> colorCards = Map<String, Uint8List>();
 
   NamePlateDesign nameplate;
 
@@ -52,8 +53,16 @@ class GameScreenAssets {
     return holeCardBackBytes;
   }
 
-  Uint8List getHoleCard(int card) {
+  Uint8List getHoleCard(int card, {bool color = false}) {
+    if (color) {
+      String cardStr = CardConvUtils.getString(card);
+      if (colorCards[cardStr] != null) {
+        return colorCards[cardStr];
+      }
+    }
+
     Uint8List bytes = cardNumberImage[card];
+
     // log('Customize: $card: bytes length ${bytes.length}');
     return bytes;
   }
@@ -137,6 +146,16 @@ class GameScreenAssets {
   void loadCards(Asset cardFace) async {
     cardStrImage.clear();
     cardNumberImage.clear();
+    colorCards.clear();
+
+    // load color cards
+    for (int card in CardConvUtils.cardNumbers.keys) {
+      final cardStr = CardConvUtils.getString(card);
+      Uint8List cardBytes;
+      final cardData = await rootBundle.load('assets/images/color-card_face/$cardStr.svg');
+      cardBytes = cardData.buffer.asUint8List();
+      colorCards[cardStr] = cardBytes;
+    }
 
     for (int card in CardConvUtils.cardNumbers.keys) {
       final cardStr = CardConvUtils.getString(card);
