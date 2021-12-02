@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'iphone.dart';
 
 class AndroidAttribs {
-  static Map<String, dynamic> getAttribs(double screenSize) {
+  static Map<String, dynamic> getAttribs(String model, double screenSize) {
     Map<String, dynamic> attribs = AndroidAttribs.get6Inch();
     if (screenSize <= 5.0) {
       attribs = AndroidAttribs.getNexus5();
@@ -11,8 +11,10 @@ class AndroidAttribs {
       attribs = AndroidAttribs.getPixel2();
     } else if (screenSize > 5.3 && screenSize <= 5.5) {
       attribs = AndroidAttribs.getPixelXl();
-    } else if (screenSize > 7.0 && screenSize <= 9.0) {
+    } else if (screenSize > 7.0 && screenSize < 7.5) {
       attribs = AndroidAttribs.getNexus7();
+    } else if (screenSize >= 7.5 && screenSize <= 9.0) {
+      attribs = AndroidAttribs.get75();
     } else {
       if (screenSize >= 9 && screenSize <= 10.5) {
         attribs = getTen10InchTablet();
@@ -92,6 +94,8 @@ class AndroidAttribs {
           "centerPotUpdatesScale": 0.85,
           "centerRankScale": 0.85,
           "centerViewScale": 0.85,
+          "centerDoubleBoardScale": 1.0,
+          "centerBoardScale": 1.0,
           "doubleBoardScale": 0.90,
           "boardScale": 1.0,
           "tableScale": 1.0,
@@ -470,6 +474,78 @@ class AndroidAttribs {
           "2": 1.4,
           "4": 1.2,
           "5": 1.1,
+          "default": 1
+        },
+        "seat": {
+           "scale": 1.1,
+            "holeCardOffset": "0, 0",
+            "holeCardScale": 1.0
+          }          
+      }
+      ''';
+    Map<String, dynamic> overrideMap = jsonDecode(override);
+    updateMap(defaultValue, overrideMap);
+    return defaultValue;
+  }
+
+  // SM-T220
+  static Map<String, dynamic> get75() {
+    final defaultValue = getNexus7();
+    String override = '''
+      {
+        "name": "sm-T220",
+        "base": "nexus7",
+        "model": "SM-T220",
+        "screenSize": "600.9, 958.5",
+        "size": 7.5,
+        "board": {
+          "centerViewScale": 1.0,
+          "centerViewPos": "15, 60",
+          "centerOffset": "15, 60",
+          "centerPotScale": 0.90,
+          "centerPotUpdatesScale": 0.90,
+          "centerDoubleBoardScale": 0.90,
+          "centerBoardScale": 1.3,
+          "doubleBoardScale": 1.0,
+          "boardScale": 1.2,
+          "tableBottomPos": 20,
+          "tableScale": 1.0,
+          "seatMap": {
+            "bottomCenter": "0, 10",
+            "bottomLeft": "45, 0",
+            "bottomRight": "-45, 0",
+            "middleLeft": "10, 30",
+            "middleRight": "-10, 30",
+            "topLeft": "10, 70",
+            "topRight": "-10, 70",
+            "topCenter": "0, 45",
+            "topCenter1": "-70, 45",
+            "topCenter2": "70, 45"
+          },
+          "betAmountFac": {
+            "bottomCenter": "-0.5, -0.80",
+            "topCenter": "0.20, 0.70",
+            "middleLeft": "1.2, 0.0",
+            "middleRight": "-1.2, 0.0",
+            "topRight": "-1.0, 0.60",
+            "topLeft": "1.0, 0.60",
+            "bottomLeft": "0.60, -0.75",
+            "bottomRight": "-0.30, -0.85",
+            "topCenter1": "0.0, 0.80",
+            "topCenter2": "0.20, 0.80"
+          },          
+          "betImageScale": 4.0
+        },
+        "betWidgetGap": 30,
+        "betWidgetOffset": "0, 0",
+        "betButtonsOffset": "0, 90",
+        "otherBetOptionButtonsSpreadRadius": 110,
+
+        "holeCardViewOffset": "0, 50",
+        "holeCardScale": {
+          "2": 1.6,
+          "4": 1.5,
+          "5": 1.5,
           "default": 1
         },
         "seat": {

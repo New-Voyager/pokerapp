@@ -2,11 +2,13 @@ class AnimationObject {
   final String id;
   final String assetSvg;
   final String assetJson;
+  final String assetPng;
 
   const AnimationObject({
     this.id,
     this.assetSvg,
     this.assetJson,
+    this.assetPng
   });
 }
 
@@ -18,6 +20,11 @@ class AnimationAssets {
   static const bombPotAnimation = '$_base/bombpot.json';
 
   static const List<AnimationObject> animationObjects = const [
+    const AnimationObject(
+      id: 'cheers',
+      assetPng: '$_base/cheers.png',
+      assetJson: '$_base/cheers.json',
+    ),    
     const AnimationObject(
       id: 'chicken',
       assetSvg: '$_base/chicken.svg',
