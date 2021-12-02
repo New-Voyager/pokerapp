@@ -152,9 +152,14 @@ class GameScreenAssets {
     for (int card in CardConvUtils.cardNumbers.keys) {
       final cardStr = CardConvUtils.getString(card);
       Uint8List cardBytes;
-      final cardData = await rootBundle.load('assets/images/color-card_face/$cardStr.svg');
-      cardBytes = cardData.buffer.asUint8List();
-      colorCards[cardStr] = cardBytes;
+      try {
+        final cardData = await rootBundle.load('assets/images/color-card_face/$cardStr.svg');
+        cardBytes = cardData.buffer.asUint8List();
+        colorCards[cardStr] = cardBytes;
+      } catch(err) {
+        log('Unable to load asset: ${err.toString()}');
+        throw err;
+      }
     }
 
     for (int card in CardConvUtils.cardNumbers.keys) {
