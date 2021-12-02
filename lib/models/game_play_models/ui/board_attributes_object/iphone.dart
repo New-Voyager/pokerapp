@@ -159,18 +159,18 @@ class IPhoneAttribs {
         "size": 5.8,
         "board": {
           "centerViewScale": 0.85,
-          "tableScale": 1.1,
+          "tableScale": 1.2,
           "seatMap": {
             "bottomCenter": "0, 30",
             "bottomLeft": "15, 20",
             "bottomRight": "-15, 20",
-            "middleLeft": "-4, 60",
-            "middleRight": "4, 60",
-            "topLeft": "-4, 110",
-            "topRight": "4, 110",
+            "middleLeft": "-8, 50",
+            "middleRight": "8, 50",
+            "topLeft": "-4, 100",
+            "topRight": "4, 100",
             "topCenter": "0, 90",
-            "topCenter1": "-48, 90",
-            "topCenter2": "48, 90"
+            "topCenter1": "-48, 65",
+            "topCenter2": "48, 65"
           },
           "betAmountFac": {
             "bottomCenter": "0, -1.0",
@@ -188,7 +188,7 @@ class IPhoneAttribs {
           "centerPotUpdatesScale": 0.80,
           "centerViewPos": "0, 5.0",
           "tableBottomPos": 0,
-          "backDropOffset": "0, 0",
+          "backDropOffset": "0, -30",
           "betImageScale": 2.5
         },
         "holeCardDisplacement": {

@@ -3,9 +3,9 @@ import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/main.dart';
+import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/models/game/new_game_model.dart';
 import 'package:pokerapp/models/game/new_game_provider.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
@@ -13,6 +13,7 @@ import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
+import 'package:pokerapp/services/app/clubs_service.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/formatter.dart';
@@ -48,6 +49,8 @@ class NewGameSettings2 extends StatelessWidget {
     @required List<GameType> subGameTypes,
     NewGameModel savedModel,
   }) async {
+    ClubHomePageModel clubHomePageModel =
+        await ClubsService.getClubHomePageData(clubCode);
     NewGameModelProvider gmp = await showDialog<NewGameModelProvider>(
       context: context,
       barrierDismissible: false,
@@ -57,7 +60,7 @@ class NewGameSettings2 extends StatelessWidget {
           vertical: 30.0,
         ),
         child: NewGameSettings2(
-          clubCode,
+          clubHomePageModel,
           mainGameType,
           subGameTypes,
           savedModel,
@@ -98,12 +101,13 @@ class NewGameSettings2 extends StatelessWidget {
           context, _appScreenText['error'], _appScreenText['createGameFailed']);
   }
 
-  final String clubCode;
+  final ClubHomePageModel clubHomePageModel;
   final GameType mainGameType;
   final List<GameType> subGameTypes;
   final NewGameModel savedModel;
+
   NewGameSettings2(
-    this.clubCode,
+    this.clubHomePageModel,
     this.mainGameType,
     this.subGameTypes,
     this.savedModel,
@@ -203,10 +207,44 @@ class NewGameSettings2 extends StatelessWidget {
       children: [
         Consumer<NewGameModelProvider>(builder: (_, vnGmp, __) {
           List<bool> isSelected = [];
+          bool showCreditLimit = false;
           isSelected
               .add(gmp.buyInApprovalLimit == BuyInApprovalLimit.BUYIN_NO_LIMIT);
-          isSelected.add(
-              gmp.buyInApprovalLimit == BuyInApprovalLimit.BUYIN_CREDIT_LIMIT);
+
+          List<Widget> toggleButtons = [];
+          toggleButtons.add(Container(
+              padding: EdgeInsets.all(10),
+              child: Text('No Limit',
+                  style: TextStyle(
+                      color: gmp.buyInApprovalLimit ==
+                              BuyInApprovalLimit.BUYIN_NO_LIMIT
+                          ? Colors.black
+                          : theme.accentColor))));
+
+          if (!(clubHomePageModel != null &&
+              !clubHomePageModel.trackMemberCredit)) {
+            showCreditLimit = true;
+            isSelected.add(gmp.buyInApprovalLimit ==
+                BuyInApprovalLimit.BUYIN_CREDIT_LIMIT);
+            toggleButtons.add(Container(
+                padding: EdgeInsets.all(10),
+                child: Text('Credit Limit',
+                    style: TextStyle(
+                        color: gmp.buyInApprovalLimit ==
+                                BuyInApprovalLimit.BUYIN_CREDIT_LIMIT
+                            ? Colors.black
+                            : theme.accentColor))));
+          }
+
+          toggleButtons.add(Container(
+              padding: EdgeInsets.all(10),
+              child: Text('Host Approval',
+                  style: TextStyle(
+                      color: gmp.buyInApprovalLimit ==
+                              BuyInApprovalLimit.BUYIN_HOST_APPROVAL
+                          ? Colors.black
+                          : theme.accentColor))));
+
           isSelected.add(
               gmp.buyInApprovalLimit == BuyInApprovalLimit.BUYIN_HOST_APPROVAL);
 
@@ -218,32 +256,7 @@ class NewGameSettings2 extends StatelessWidget {
 
               Center(
                 child: ToggleButtons(
-                  children: [
-                    Container(
-                        padding: EdgeInsets.all(10),
-                        child: Text('No Limit',
-                            style: TextStyle(
-                                color: gmp.buyInApprovalLimit ==
-                                        BuyInApprovalLimit.BUYIN_NO_LIMIT
-                                    ? Colors.black
-                                    : theme.accentColor))),
-                    Container(
-                        padding: EdgeInsets.all(10),
-                        child: Text('Credit Limit',
-                            style: TextStyle(
-                                color: gmp.buyInApprovalLimit ==
-                                        BuyInApprovalLimit.BUYIN_CREDIT_LIMIT
-                                    ? Colors.black
-                                    : theme.accentColor))),
-                    Container(
-                        padding: EdgeInsets.all(10),
-                        child: Text('Host Approval',
-                            style: TextStyle(
-                                color: gmp.buyInApprovalLimit ==
-                                        BuyInApprovalLimit.BUYIN_HOST_APPROVAL
-                                    ? Colors.black
-                                    : theme.accentColor))),
-                  ],
+                  children: toggleButtons,
                   isSelected: isSelected,
                   borderColor: theme.accentColor,
                   borderRadius: BorderRadius.all(Radius.circular(25)),
@@ -254,8 +267,13 @@ class NewGameSettings2 extends StatelessWidget {
                       gmp.buyInApprovalLimit =
                           BuyInApprovalLimit.BUYIN_NO_LIMIT;
                     } else if (index == 1) {
-                      gmp.buyInApprovalLimit =
-                          BuyInApprovalLimit.BUYIN_CREDIT_LIMIT;
+                      if (showCreditLimit) {
+                        gmp.buyInApprovalLimit =
+                            BuyInApprovalLimit.BUYIN_CREDIT_LIMIT;
+                      } else {
+                        gmp.buyInApprovalLimit =
+                            BuyInApprovalLimit.BUYIN_HOST_APPROVAL;
+                      }
                     } else if (index == 2) {
                       gmp.buyInApprovalLimit =
                           BuyInApprovalLimit.BUYIN_HOST_APPROVAL;
@@ -448,6 +466,11 @@ class NewGameSettings2 extends StatelessWidget {
   Widget build(BuildContext context) {
     _appScreenText = getAppTextScreen("newGameSettings2");
     final theme = AppTheme.getTheme(context);
+
+    String clubCode = "";
+    if (clubHomePageModel != null) {
+      clubCode = clubHomePageModel.clubCode;
+    }
 
     return ListenableProvider<NewGameModelProvider>(
       create: (_) => NewGameModelProvider(clubCode),
