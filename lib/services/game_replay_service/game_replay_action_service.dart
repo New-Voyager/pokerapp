@@ -128,10 +128,16 @@ class GameReplayActionService {
 
     /* finally update the community cards */
     final TableState tableState = _context.read<TableState>();
+    final gameState = GameState.getState(_context);
 
     tableState.addFlopCards(
       1,
-      action.boardCards.map((c) => CardHelper.getCard(c)).toList(),
+      action.boardCards
+          .map((c) => CardHelper.getCard(
+                c,
+                colorCards: gameState.colorCards,
+              ))
+          .toList(),
     );
 
     tableState.notifyAll();
@@ -145,10 +151,11 @@ class GameReplayActionService {
 
     /* finally update the community cards */
     final TableState tableState = _context.read<TableState>();
+    final GameState gameState = GameState.getState(_context);
 
     tableState.addTurnOrRiverCard(
       1,
-      CardHelper.getCard(action.boardCard),
+      CardHelper.getCard(action.boardCard, colorCards: gameState.colorCards),
     );
 
     tableState.notifyAll();

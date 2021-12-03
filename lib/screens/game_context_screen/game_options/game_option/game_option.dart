@@ -872,7 +872,7 @@ class _GameOptionState extends State<GameOption> {
       },
     ));
 
-    // show Hand Rank
+    // color cards
     children.add(_buildCheckBox(
       text: _appScreenText['colorCards'],
       value: widget.gameState.playerLocalConfig.colorCards,
@@ -882,6 +882,10 @@ class _GameOptionState extends State<GameOption> {
         log('In toggle button widget, Color Cards = ${widget.gameState.playerLocalConfig.colorCards}');
         if (closed) return;
         setState(() {});
+        widget.gameState.tableState.notifyAll();
+        widget.gameState.tableState.refreshCommunityCards();
+        widget.gameState.redrawBoard();
+        widget.gameState.refresh();
       },
     ));
 

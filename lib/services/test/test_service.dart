@@ -262,10 +262,11 @@ class TestService {
 
   static Future<void> addTurnOrRiverCard() async {
     final tableState = _getTableState();
+    final gameState = GameState.getState(_context);
 
     tableState.addTurnOrRiverCard(
       1,
-      CardHelper.getCard(162),
+      CardHelper.getCard(162, colorCards: gameState.colorCards),
     );
 
     tableState.notifyAll();
@@ -273,10 +274,16 @@ class TestService {
 
   static Future<void> addFlopCards() async {
     final tableState = _getTableState();
+    final gameState = GameState.getState(_context);
 
     tableState.addFlopCards(
       1,
-      [130, 152, 193].map<CardObject>((e) => CardHelper.getCard(e)).toList(),
+      [130, 152, 193]
+          .map<CardObject>((e) => CardHelper.getCard(
+                e,
+                colorCards: gameState.colorCards,
+              ))
+          .toList(),
     );
     tableState.updateRankStrSilent('Straight');
     tableState.notifyAll();
@@ -648,16 +655,21 @@ class TestService {
 
     tableState.addFlopCards(
       1,
-      [50, 50, 50].map((e) => CardHelper.getCard(e)).toList(),
+      [50, 50, 50]
+          .map((e) => CardHelper.getCard(
+                e,
+                colorCards: gameState.colorCards,
+              ))
+          .toList(),
     );
 
     tableState.addTurnOrRiverCard(
       1,
-      CardHelper.getCard(200),
+      CardHelper.getCard(200, colorCards: gameState.colorCards),
     );
     tableState.addTurnOrRiverCard(
       1,
-      CardHelper.getCard(200),
+      CardHelper.getCard(200, colorCards: gameState.colorCards),
     );
 
     tableState.updatePotChipsSilent(

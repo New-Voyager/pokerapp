@@ -518,12 +518,12 @@ class HandActionProtoService {
 
     final List<CardObject> b1 = [];
     for (final c in board1Cards) {
-      b1.add(CardHelper.getCard(c));
+      b1.add(CardHelper.getCard(c, colorCards: gameState.colorCards));
     }
 
     final List<CardObject> b2 = [];
     for (final c in board2Cards) {
-      b2.add(CardHelper.getCard(c));
+      b2.add(CardHelper.getCard(c, colorCards: gameState.colorCards));
     }
 
     tableState.updateTwoBoardsNeeded(true);
@@ -842,6 +842,7 @@ class HandActionProtoService {
           int.parse(
             board.cards[i].toString(),
           ),
+          colorCards: _gameState.colorCards,
         );
         cards.add(c);
       }
@@ -858,6 +859,7 @@ class HandActionProtoService {
             int.parse(
               board.cards[i].toString(),
             ),
+            colorCards: _gameState.colorCards,
           );
           cards.add(c);
         }
@@ -876,7 +878,8 @@ class HandActionProtoService {
       var board = message.turn.boards[0];
       var turnCard = board.cards[3];
       playerCardRanks = message.turn.playerCardRanks;
-      tableState.addTurnOrRiverCard(1, CardHelper.getCard(turnCard));
+      tableState.addTurnOrRiverCard(
+          1, CardHelper.getCard(turnCard, colorCards: _gameState.colorCards));
       tableState.notifyAll();
       await Future.delayed(Duration(seconds: 1));
       if (message.turn.boards.length == 2) {
@@ -885,7 +888,8 @@ class HandActionProtoService {
           tableState.updateTwoBoardsNeeded(true);
         }
         turnCard = board.cards[3];
-        tableState.addTurnOrRiverCard(2, CardHelper.getCard(turnCard));
+        tableState.addTurnOrRiverCard(
+            2, CardHelper.getCard(turnCard, colorCards: _gameState.colorCards));
         AudioService.playFlop(mute: _gameState.playerLocalConfig.mute);
         tableState.notifyAll();
         await Future.delayed(Duration(seconds: 1));
@@ -896,7 +900,8 @@ class HandActionProtoService {
       var board = message.river.boards[0];
       var riverCard = board.cards[4];
       playerCardRanks = message.river.playerCardRanks;
-      tableState.addTurnOrRiverCard(1, CardHelper.getCard(riverCard));
+      tableState.addTurnOrRiverCard(
+          1, CardHelper.getCard(riverCard, colorCards: _gameState.colorCards));
       AudioService.playFlop(mute: _gameState.playerLocalConfig.mute);
       tableState.notifyAll();
       await Future.delayed(Duration(seconds: 1));
@@ -907,7 +912,8 @@ class HandActionProtoService {
           // flop the cards here (run it twice)
         }
         riverCard = board.cards[4];
-        tableState.addTurnOrRiverCard(2, CardHelper.getCard(riverCard));
+        tableState.addTurnOrRiverCard(2,
+            CardHelper.getCard(riverCard, colorCards: _gameState.colorCards));
         AudioService.playFlop(mute: _gameState.playerLocalConfig.mute);
         tableState.notifyAll();
         await Future.delayed(Duration(seconds: 1));

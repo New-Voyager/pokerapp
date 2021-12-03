@@ -57,6 +57,8 @@ class ResultHandlerV2 {
   });
 
   Future<void> show() async {
+    print("lol");
+    print("__)_)_)_");
     // log('Result: result show');
     // log('Result: pauseTimeSecs: ${result.pauseTimeSecs}');
     tableState = gameState.tableState;
