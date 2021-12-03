@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -78,6 +79,26 @@ class NotificationHandler {
     await saveFirebaseToken(token);
     // Any time the token refreshes, store this in the database too.
     FirebaseMessaging.instance.onTokenRefresh.listen(saveFirebaseToken);
+
+    if (Platform.isIOS) {
+      FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+      NotificationSettings settings = await messaging.requestPermission(
+        alert: true,
+        announcement: false,
+        badge: true,
+        carPlay: false,
+        criticalAlert: false,
+        provisional: false,
+        sound: true,
+      );
+
+      if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
+      } else {
+      }      
+    }
+
     // register Nats push notifications
     _registerPushNotifications();
     _androidDetails = AndroidNotificationDetails(
