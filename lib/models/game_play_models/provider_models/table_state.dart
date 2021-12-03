@@ -95,18 +95,15 @@ class TableState extends ChangeNotifier {
     const _100crore = 1000000000;
     _communityCardRefresh = r.nextInt(_100crore);
 
-    List<CardObject> _tempBoard = [];
-    _board1.forEach((card) {
-      _tempBoard.add(CardHelper.getCard(card.cardNum, colorCards: colorCards));
-    });
-    _board1 = _tempBoard;
+    for (int i = 0; i < _board1.length; i++) {
+      _board1[i] =
+          CardHelper.getCard(_board1[i].cardNum, colorCards: colorCards);
+    }
 
-    _tempBoard.clear();
-
-    _board2.forEach((card) {
-      _tempBoard.add(CardHelper.getCard(card.cardNum, colorCards: colorCards));
-    });
-    _board2 = _tempBoard;
+    for (int i = 0; i < _board2.length; i++) {
+      _board2[i] =
+          CardHelper.getCard(_board2[i].cardNum, colorCards: colorCards);
+    }
     notifyListeners();
   }
 

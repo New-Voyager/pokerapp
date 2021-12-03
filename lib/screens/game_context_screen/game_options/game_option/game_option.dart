@@ -882,6 +882,7 @@ class _GameOptionState extends State<GameOption> {
         log('In toggle button widget, Color Cards = ${widget.gameState.playerLocalConfig.colorCards}');
         if (closed) return;
         setState(() {});
+        widget.gameState.tableState.notifyAll();
         widget.gameState.tableState.refreshCommunityCards(colorCards: v);
       },
     ));
