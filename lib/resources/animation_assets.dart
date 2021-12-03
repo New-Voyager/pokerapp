@@ -20,11 +20,11 @@ class AnimationAssets {
   static const bombPotAnimation = '$_base/bombpot.json';
 
   static const List<AnimationObject> animationObjects = const [
-    const AnimationObject(
-      id: 'cheers',
-      assetPng: '$_base/cheers.png',
-      assetJson: '$_base/cheers.json',
-    ),    
+    // const AnimationObject(
+    //   id: 'cheers',
+    //   assetPng: '$_base/cheers.png',
+    //   assetJson: '$_base/cheers.json',
+    // ),    
     const AnimationObject(
       id: 'chicken',
       assetSvg: '$_base/chicken.svg',

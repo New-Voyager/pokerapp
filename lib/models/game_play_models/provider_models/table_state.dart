@@ -95,14 +95,18 @@ class TableState extends ChangeNotifier {
     const _100crore = 1000000000;
     _communityCardRefresh = r.nextInt(_100crore);
 
-    for (int i = 0; i < _board1.length; i++) {
-      _board1[i] =
-          CardHelper.getCard(_board1[i].cardNum, colorCards: colorCards);
+    if (_board1 != null) {
+      for (int i = 0; i < _board1.length; i++) {
+        _board1[i] =
+            CardHelper.getCard(_board1[i].cardNum, colorCards: colorCards);
+      }
     }
 
-    for (int i = 0; i < _board2.length; i++) {
-      _board2[i] =
-          CardHelper.getCard(_board2[i].cardNum, colorCards: colorCards);
+    if (_board2 != null) {
+      for (int i = 0; i < _board2.length; i++) {
+        _board2[i] =
+            CardHelper.getCard(_board2[i].cardNum, colorCards: colorCards);
+      }
     }
     notifyListeners();
   }
