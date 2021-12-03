@@ -35,6 +35,11 @@
 	<string>Need to access Microphone for audio chat</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Need to access photo library to choose club picture</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
