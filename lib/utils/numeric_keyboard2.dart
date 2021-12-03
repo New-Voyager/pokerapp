@@ -162,8 +162,8 @@ class NumericKeyboard2 extends StatelessWidget {
     if (max == null || max == -1) max = double.infinity;
     if (evenNumber) {
       double vBig = v;
-      if (decimalPresent) {
-        vBig = (v * 100).toInt().toDouble();
+      if (decimalPresent || decimalAllowed) {
+        vBig = (v * 100).roundToDouble();
       }
       if ((vBig % 2) != 0) {
         // validate whether it is even number
