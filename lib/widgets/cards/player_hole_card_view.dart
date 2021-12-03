@@ -28,7 +28,8 @@ class PlayerHoleCardView extends StatelessWidget {
   ) {
     final gameState = GameState.getState(context);
     final cardAsset =
-        SvgPicture.memory(gameState.assets.getHoleCard(card.cardNum, color: true));
+        SvgPicture.memory(gameState.assets.getHoleCard(card.cardNum, 
+            color: gameState.colorCards));
     //final cardAsset = SvgPicture.asset('assets/images/card_face/${card.cardNum}.svg');
     return Stack(fit: StackFit.expand, children: [
       cardAsset,

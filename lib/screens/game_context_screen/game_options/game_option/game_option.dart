@@ -885,7 +885,7 @@ class _GameOptionState extends State<GameOption> {
         widget.gameState.tableState.notifyAll();
         widget.gameState.tableState.refreshCommunityCards();
         widget.gameState.redrawBoard();
-        widget.gameState.refresh();
+        widget.gameState.redrawFooter();
       },
     ));
 
