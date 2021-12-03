@@ -1,9 +1,9 @@
-import 'dart:developer';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
+import 'package:pokerapp/utils/card_helper.dart';
 
 class TableState extends ChangeNotifier {
   /* This object holds the game status, table status, pot chips, and community cards */
@@ -91,9 +91,22 @@ class TableState extends ChangeNotifier {
     // notifyListeners();
   }
 
-  void refreshCommunityCards() {
+  void refreshCommunityCards({bool colorCards = false}) {
     const _100crore = 1000000000;
     _communityCardRefresh = r.nextInt(_100crore);
+
+    List<CardObject> _tempBoard = [];
+    _board1.forEach((card) {
+      _tempBoard.add(CardHelper.getCard(card.cardNum, colorCards: colorCards));
+    });
+    _board1 = _tempBoard;
+
+    _tempBoard.clear();
+
+    _board2.forEach((card) {
+      _tempBoard.add(CardHelper.getCard(card.cardNum, colorCards: colorCards));
+    });
+    _board2 = _tempBoard;
     notifyListeners();
   }
 

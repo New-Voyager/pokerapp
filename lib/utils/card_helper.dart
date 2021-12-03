@@ -106,14 +106,14 @@ class CardHelper {
   static Color _getColoredCard(String suit) {
     switch (suit) {
       case AppConstants.blackSpade:
-        return Colors.purple;
+        return Colors.black;
       case AppConstants.redHeart:
       case AppConstants.redHeart2:
-        return Colors.purple;
+        return Colors.red;
       case AppConstants.blackClub:
-        return Colors.purple;
+        return Colors.green;
       case AppConstants.redDiamond:
-        return Colors.purple;
+        return Colors.blue;
     }
 
     return Colors.black;
