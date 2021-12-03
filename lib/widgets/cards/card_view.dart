@@ -53,6 +53,7 @@ class CardView extends StatelessWidget {
               suitImage,
               height: 20,
               width: 20,
+              color: card.color,
             ),
           ),
         ),

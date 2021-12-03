@@ -84,7 +84,8 @@ class ResultHandlerV2Json {
     /* set board 1 cards */
     List<CardObject> boardCards1CO = [];
     for (final c in handResult.boards[0].cards) {
-      boardCards1CO.add(CardHelper.getCard(c));
+      boardCards1CO
+          .add(CardHelper.getCard(c, colorCards: gameState.colorCards));
     }
     tableState.setBoardCards(1, boardCards1CO);
 
@@ -92,7 +93,8 @@ class ResultHandlerV2Json {
     if (handResult.boards.length == 2) {
       List<CardObject> boardCards2CO = [];
       for (final c in handResult.boards[1].cards) {
-        boardCards2CO.add(CardHelper.getCard(c));
+        boardCards2CO
+            .add(CardHelper.getCard(c, colorCards: gameState.colorCards));
       }
       tableState.setBoardCards(2, boardCards2CO);
       tableState.updateTwoBoardsNeeded(true);
@@ -112,7 +114,8 @@ class ResultHandlerV2Json {
     final boardCards = this.handResult.boards[0].cards;
     List<CardObject> boardCardsUpdate = [];
     for (final c in boardCards) {
-      boardCardsUpdate.add(CardHelper.getCard(c));
+      boardCardsUpdate
+          .add(CardHelper.getCard(c, colorCards: gameState.colorCards));
     }
     tableState.setBoardCards(1, boardCardsUpdate);
     final totalPots = handResult.potWinners.length;

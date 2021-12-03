@@ -125,7 +125,10 @@ class PlayerActionHandler {
       if (boardCardsNum != null) {
         tableState.setBoardCards(
           1,
-          boardCardsNum.map<CardObject>((c) => CardHelper.getCard(c)).toList(),
+          boardCardsNum
+              .map<CardObject>((c) =>
+                  CardHelper.getCard(c, colorCards: _gameState.colorCards))
+              .toList(),
         );
       }
 
@@ -151,7 +154,10 @@ class PlayerActionHandler {
         if (secondBoard != null) {
           tableState.setBoardCards(
             2,
-            secondBoard.map<CardObject>((c) => CardHelper.getCard(c)).toList(),
+            secondBoard
+                .map<CardObject>((c) =>
+                    CardHelper.getCard(c, colorCards: _gameState.colorCards))
+                .toList(),
           );
         }
       }

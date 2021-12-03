@@ -102,6 +102,23 @@ class CardHelper {
     return Colors.black;
   }
 
+  /* card color util */
+  static Color _getColoredCard(String suit) {
+    switch (suit) {
+      case AppConstants.blackSpade:
+        return Colors.black;
+      case AppConstants.redHeart:
+      case AppConstants.redHeart2:
+        return Colors.red;
+      case AppConstants.blackClub:
+        return Colors.green;
+      case AppConstants.redDiamond:
+        return Colors.blue;
+    }
+
+    return Colors.black;
+  }
+
   static String getSuitImage(String suit) {
     switch (suit) {
       case AppConstants.blackSpade:
@@ -120,34 +137,44 @@ class CardHelper {
 
   /* methods that returns Card Objects */
 
-  static CardObject _getCardFromCardValues(int cardNum, String card) {
+  static CardObject _getCardFromCardValues(int cardNum, String card,
+      {bool colorCards = false}) {
     String label = card[0];
     String suit = card[1];
     if (suit == AppConstants.redHeart || suit == AppConstants.redHeart2) {
       suit = AppConstants.redHeart;
     }
 
+    Color color = _getColor(suit);
+
+    if (colorCards) {
+      color = _getColoredCard(suit);
+    }
+
     return CardObject(
       cardNum: cardNum,
       label: label,
       suit: suit,
-      color: _getColor(suit),
+      color: color,
     );
   }
 
   /* the following three methods are made public */
 
-  static CardObject getCard(int n) {
+  static CardObject getCard(int n, {bool colorCards = false}) {
     if (n == 0) {
       return CardObject.emptyCard();
     }
-    return _getCardFromCardValues(n, _getCardFromNumber(n));
+    return _getCardFromCardValues(n, _getCardFromNumber(n),
+        colorCards: colorCards);
   }
 
-  static List<CardObject> getCards(String s) => getRawCardNumbers(s)
-      .map<CardObject>(
-          (int c) => _getCardFromCardValues(c, _getCardFromNumber(c)))
-      .toList();
+  static List<CardObject> getCards(String s, {bool colorCards = false}) =>
+      getRawCardNumbers(s)
+          .map<CardObject>((int c) => _getCardFromCardValues(
+              c, _getCardFromNumber(c),
+              colorCards: colorCards))
+          .toList();
 
 // This map gives card ranking used in club stats screen
 

@@ -135,6 +135,7 @@ flutter:
     - assets/images/cards/
     - assets/images/club/
     - assets/images/livegames/
+    - assets/images/color-card_face/
     - assets/images/card_face/
     - assets/language/
     - assets/json/nameplates.json
