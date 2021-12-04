@@ -111,9 +111,9 @@ class CardHelper {
       case AppConstants.redHeart2:
         return Colors.red;
       case AppConstants.blackClub:
-        return Colors.green;
+        return Color.fromRGBO(2, 94, 11, 1);
       case AppConstants.redDiamond:
-        return Colors.blue;
+        return Color.fromRGBO(3, 13, 109, 1);
     }
 
     return Colors.black;

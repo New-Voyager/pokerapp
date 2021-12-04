@@ -441,7 +441,7 @@ class ResultHandlerV2 {
       /* update state */
       gameState.notifyAllSeats();
       tableState.notifyAll();
-      tableState.refreshCommunityCards();
+      tableState.refreshCommunityCards(colorCards: gameState.colorCards);
 
       // we dont need this as we don't wanna do animation for all the seats
       /* finally animate the moving stack */
