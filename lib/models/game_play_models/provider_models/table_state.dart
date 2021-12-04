@@ -97,15 +97,17 @@ class TableState extends ChangeNotifier {
 
     if (_board1 != null) {
       for (int i = 0; i < _board1.length; i++) {
-        _board1[i] =
+        CardObject c =
             CardHelper.getCard(_board1[i].cardNum, colorCards: colorCards);
+        _board1[i].color = c.color;
       }
     }
 
     if (_board2 != null) {
       for (int i = 0; i < _board2.length; i++) {
-        _board2[i] =
+        CardObject c =
             CardHelper.getCard(_board2[i].cardNum, colorCards: colorCards);
+        _board2[i].color = c.color;
       }
     }
     notifyListeners();

@@ -1,5 +1,7 @@
 import 'package:pokerapp/services/data/game_hive_store.dart';
 
+import '../../../main.dart';
+
 class GameLocalConfig {
   GameHiveStore _gameHiveStore;
 
@@ -32,11 +34,11 @@ class GameLocalConfig {
   }
 
   // Color cards
-  bool _colorCards = false;
+  bool _colorCards = appService.userSettings.getColorCards();
   get colorCards => _colorCards;
   set colorCards(bool value) {
     _colorCards = value;
-    _save();
+    appService.userSettings.setColorCards(_colorCards);
   }
 
   // Show rearrange button
@@ -122,7 +124,6 @@ class GameLocalConfig {
         'tapOrSwipeBetAction': this._tapOrSwipeBetAction,
         'showCheckFold': this._showCheckFold,
         'showHandRank': this._showHandRank,
-        'colorCards': this._colorCards,
         'showRearrange': this._showRearrange
       };
 
@@ -137,7 +138,6 @@ class GameLocalConfig {
     this._tapOrSwipeBetAction = json['tapOrSwipeBetAction'];
     this._showCheckFold = json['showCheckFold'];
     this._showHandRank = json['showHandRank'];
-    this._colorCards = json['colorCards'];
     this._showRearrange = json['showRearrange'];
   }
 }
