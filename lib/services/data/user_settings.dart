@@ -23,6 +23,7 @@ class UserSettingsStore {
   static const String VALUE_DEFAULT_CARDBACK = "default-cardback";
 
   static const String KEY_LAST_GAME = "last-game";
+  static const String KEY_COLOR_CARDS = "color-cards";
 
   UserSettingsStore();
 
@@ -141,6 +142,24 @@ class UserSettingsStore {
 
   void setSelectedAssets(Map<String, String> values) {
     _box.put(KEY_SELECTED_ASSETS, values);
+  }
+
+  Future<void> setColorCards(bool colorCards) async {
+    try {
+      await _box.put(KEY_COLOR_CARDS, colorCards);
+    } catch (e) {
+      // ignore the error
+    }
+  }
+
+  bool getColorCards() {
+    try {
+      bool colorCards = _box.get(KEY_COLOR_CARDS) as bool;
+      return colorCards;
+    } catch (e) {
+      // ignore the error
+    }
+    return false;
   }
 
   Future<void> setLastGame(String gameCode) async {
