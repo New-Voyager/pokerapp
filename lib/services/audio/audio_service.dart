@@ -36,8 +36,8 @@ const String clockTickingSound = 'assets/sound_effects/clock_ticking.mp3';
 
 class AudioService {
   static AudioPlayer audioPlayer;
-   // add it to your class as a static member
-  // static AudioCache player = AudioCache(prefix: 'assets/sound_effects/');  
+  // add it to your class as a static member
+  // static AudioCache player = AudioCache(prefix: 'assets/sound_effects/');
 
   static final Map<String, Uri> _audioFileCache = Map<String, Uri>();
   static final Map<String, Uint8List> _audioCache = Map<String, Uint8List>();
@@ -83,7 +83,7 @@ class AudioService {
     await getAudioBytes(clockTickingSound);
     if (Platform.isIOS) {
       // for iphone store the file in local
-      
+
     }
   }
 
@@ -97,7 +97,8 @@ class AudioService {
         if (Platform.isIOS) {
           // store it locally
           // create a temporary file on the device to be read by the native side
-          final file = File('${(await getTemporaryDirectory()).path}/$assetFile');
+          final file =
+              File('${(await getTemporaryDirectory()).path}/$assetFile');
           await file.create(recursive: true);
           await file.writeAsBytes(data.buffer.asUint8List());
           _audioFileCache[assetFile] = file.uri;
@@ -123,8 +124,7 @@ class AudioService {
   }
 
   static playSound(String soundFile, {bool mute}) {
-    // the library we use only supports Android
-    // if (!Platform.isAndroid) return;
+    return;
     if (!play) {
       return;
     }
@@ -138,9 +138,8 @@ class AudioService {
         if (Platform.isAndroid) {
           audioPlayer.playBytes(_audioCache[soundFile]);
         } else {
-          audioPlayer.play(
-            _audioFileCache[soundFile].toString(),
-            isLocal: true);
+          audioPlayer.play(_audioFileCache[soundFile].toString(),
+              isLocal: true);
         }
       } catch (err) {
         log('Could not play sound. Error: ${err.toString()}');

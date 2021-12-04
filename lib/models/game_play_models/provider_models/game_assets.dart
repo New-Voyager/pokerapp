@@ -54,7 +54,7 @@ class GameScreenAssets {
   }
 
   Uint8List getHoleCard(int card, {bool color = false}) {
-    if (color) {
+    if (color ?? false) {
       String cardStr = CardConvUtils.getString(card);
       if (colorCards[cardStr] != null) {
         return colorCards[cardStr];

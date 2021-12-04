@@ -166,6 +166,8 @@ const NewHand$json = const {
     const {'1': 'double_board', '3': 16, '4': 1, '5': 8, '10': 'doubleBoard'},
     const {'1': 'bomb_pot_bet', '3': 17, '4': 1, '5': 1, '10': 'bombPotBet'},
     const {'1': 'ante', '3': 18, '4': 1, '5': 1, '10': 'ante'},
+    const {'1': 'pots', '3': 19, '4': 3, '5': 1, '10': 'pots'},
+    const {'1': 'pot_updates', '3': 20, '4': 1, '5': 1, '10': 'potUpdates'},
   ],
   '3': const [
     NewHand_PlayerCardsEntry$json,
@@ -220,7 +222,7 @@ const NewHand_PlayersActedEntry$json = const {
 
 /// Descriptor for `NewHand`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List newHandDescriptor = $convert.base64Decode(
-    'CgdOZXdIYW5kEhkKCGhhbmRfbnVtGAEgASgNUgdoYW5kTnVtEh0KCmJ1dHRvbl9wb3MYAiABKA1SCWJ1dHRvblBvcxIVCgZzYl9wb3MYAyABKA1SBXNiUG9zEhUKBmJiX3BvcxgEIAEoDVIFYmJQb3MSKAoQbmV4dF9hY3Rpb25fc2VhdBgFIAEoDVIObmV4dEFjdGlvblNlYXQSQQoMcGxheWVyX2NhcmRzGAYgAygLMh4uZ2FtZS5OZXdIYW5kLlBsYXllckNhcmRzRW50cnlSC3BsYXllckNhcmRzEisKCWdhbWVfdHlwZRgHIAEoDjIOLmdhbWUuR2FtZVR5cGVSCGdhbWVUeXBlEhkKCG5vX2NhcmRzGAggASgNUgdub0NhcmRzEh8KC3NtYWxsX2JsaW5kGAkgASgBUgpzbWFsbEJsaW5kEhsKCWJpZ19ibGluZBgKIAEoAVIIYmlnQmxpbmQSGQoIYnJpbmdfaW4YCyABKAFSB2JyaW5nSW4SGgoIc3RyYWRkbGUYDCABKAFSCHN0cmFkZGxlEksKEHBsYXllcnNfaW5fc2VhdHMYDSADKAsyIS5nYW1lLk5ld0hhbmQuUGxheWVyc0luU2VhdHNFbnRyeVIOcGxheWVyc0luU2VhdHMSRAoNcGxheWVyc19hY3RlZBgOIAMoCzIfLmdhbWUuTmV3SGFuZC5QbGF5ZXJzQWN0ZWRFbnRyeVIMcGxheWVyc0FjdGVkEhkKCGJvbWJfcG90GA8gASgIUgdib21iUG90EiEKDGRvdWJsZV9ib2FyZBgQIAEoCFILZG91YmxlQm9hcmQSIAoMYm9tYl9wb3RfYmV0GBEgASgBUgpib21iUG90QmV0EhIKBGFudGUYEiABKAFSBGFudGUaPgoQUGxheWVyQ2FyZHNFbnRyeRIQCgNrZXkYASABKA1SA2tleRIUCgV2YWx1ZRgCIAEoCVIFdmFsdWU6AjgBGloKE1BsYXllcnNJblNlYXRzRW50cnkSEAoDa2V5GAEgASgNUgNrZXkSLQoFdmFsdWUYAiABKAsyFy5nYW1lLlBsYXllckluU2VhdFN0YXRlUgV2YWx1ZToCOAEaVQoRUGxheWVyc0FjdGVkRW50cnkSEAoDa2V5GAEgASgNUgNrZXkSKgoFdmFsdWUYAiABKAsyFC5nYW1lLlBsYXllckFjdFJvdW5kUgV2YWx1ZToCOAE=');
+    'CgdOZXdIYW5kEhkKCGhhbmRfbnVtGAEgASgNUgdoYW5kTnVtEh0KCmJ1dHRvbl9wb3MYAiABKA1SCWJ1dHRvblBvcxIVCgZzYl9wb3MYAyABKA1SBXNiUG9zEhUKBmJiX3BvcxgEIAEoDVIFYmJQb3MSKAoQbmV4dF9hY3Rpb25fc2VhdBgFIAEoDVIObmV4dEFjdGlvblNlYXQSQQoMcGxheWVyX2NhcmRzGAYgAygLMh4uZ2FtZS5OZXdIYW5kLlBsYXllckNhcmRzRW50cnlSC3BsYXllckNhcmRzEisKCWdhbWVfdHlwZRgHIAEoDjIOLmdhbWUuR2FtZVR5cGVSCGdhbWVUeXBlEhkKCG5vX2NhcmRzGAggASgNUgdub0NhcmRzEh8KC3NtYWxsX2JsaW5kGAkgASgBUgpzbWFsbEJsaW5kEhsKCWJpZ19ibGluZBgKIAEoAVIIYmlnQmxpbmQSGQoIYnJpbmdfaW4YCyABKAFSB2JyaW5nSW4SGgoIc3RyYWRkbGUYDCABKAFSCHN0cmFkZGxlEksKEHBsYXllcnNfaW5fc2VhdHMYDSADKAsyIS5nYW1lLk5ld0hhbmQuUGxheWVyc0luU2VhdHNFbnRyeVIOcGxheWVyc0luU2VhdHMSRAoNcGxheWVyc19hY3RlZBgOIAMoCzIfLmdhbWUuTmV3SGFuZC5QbGF5ZXJzQWN0ZWRFbnRyeVIMcGxheWVyc0FjdGVkEhkKCGJvbWJfcG90GA8gASgIUgdib21iUG90EiEKDGRvdWJsZV9ib2FyZBgQIAEoCFILZG91YmxlQm9hcmQSIAoMYm9tYl9wb3RfYmV0GBEgASgBUgpib21iUG90QmV0EhIKBGFudGUYEiABKAFSBGFudGUSEgoEcG90cxgTIAMoAVIEcG90cxIfCgtwb3RfdXBkYXRlcxgUIAEoAVIKcG90VXBkYXRlcxo+ChBQbGF5ZXJDYXJkc0VudHJ5EhAKA2tleRgBIAEoDVIDa2V5EhQKBXZhbHVlGAIgASgJUgV2YWx1ZToCOAEaWgoTUGxheWVyc0luU2VhdHNFbnRyeRIQCgNrZXkYASABKA1SA2tleRItCgV2YWx1ZRgCIAEoCzIXLmdhbWUuUGxheWVySW5TZWF0U3RhdGVSBXZhbHVlOgI4ARpVChFQbGF5ZXJzQWN0ZWRFbnRyeRIQCgNrZXkYASABKA1SA2tleRIqCgV2YWx1ZRgCIAEoCzIULmdhbWUuUGxheWVyQWN0Um91bmRSBXZhbHVlOgI4AQ==');
 @$core.Deprecated('Use handDealCardsDescriptor instead')
 const HandDealCards$json = const {
   '1': 'HandDealCards',
@@ -295,6 +297,7 @@ const Flop$json = const {
       '6': '.game.Board',
       '10': 'boards'
     },
+    const {'1': 'pot_updates', '3': 8, '4': 1, '5': 1, '10': 'potUpdates'},
   ],
   '3': const [Flop_PlayerBalanceEntry$json, Flop_PlayerCardRanksEntry$json],
 };
@@ -321,7 +324,7 @@ const Flop_PlayerCardRanksEntry$json = const {
 
 /// Descriptor for `Flop`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List flopDescriptor = $convert.base64Decode(
-    'CgRGbG9wEhQKBWJvYXJkGAEgAygNUgVib2FyZBIaCghjYXJkc1N0chgCIAEoCVIIY2FyZHNTdHISEgoEcG90cxgDIAMoAVIEcG90cxIwCgpzZWF0c19wb3RzGAQgAygLMhEuZ2FtZS5TZWF0c0luUG90c1IJc2VhdHNQb3RzEkQKDnBsYXllcl9iYWxhbmNlGAUgAygLMh0uZ2FtZS5GbG9wLlBsYXllckJhbGFuY2VFbnRyeVINcGxheWVyQmFsYW5jZRJLChFwbGF5ZXJfY2FyZF9yYW5rcxgGIAMoCzIfLmdhbWUuRmxvcC5QbGF5ZXJDYXJkUmFua3NFbnRyeVIPcGxheWVyQ2FyZFJhbmtzEiMKBmJvYXJkcxgHIAMoCzILLmdhbWUuQm9hcmRSBmJvYXJkcxpAChJQbGF5ZXJCYWxhbmNlRW50cnkSEAoDa2V5GAEgASgNUgNrZXkSFAoFdmFsdWUYAiABKAFSBXZhbHVlOgI4ARpCChRQbGF5ZXJDYXJkUmFua3NFbnRyeRIQCgNrZXkYASABKA1SA2tleRIUCgV2YWx1ZRgCIAEoCVIFdmFsdWU6AjgB');
+    'CgRGbG9wEhQKBWJvYXJkGAEgAygNUgVib2FyZBIaCghjYXJkc1N0chgCIAEoCVIIY2FyZHNTdHISEgoEcG90cxgDIAMoAVIEcG90cxIwCgpzZWF0c19wb3RzGAQgAygLMhEuZ2FtZS5TZWF0c0luUG90c1IJc2VhdHNQb3RzEkQKDnBsYXllcl9iYWxhbmNlGAUgAygLMh0uZ2FtZS5GbG9wLlBsYXllckJhbGFuY2VFbnRyeVINcGxheWVyQmFsYW5jZRJLChFwbGF5ZXJfY2FyZF9yYW5rcxgGIAMoCzIfLmdhbWUuRmxvcC5QbGF5ZXJDYXJkUmFua3NFbnRyeVIPcGxheWVyQ2FyZFJhbmtzEiMKBmJvYXJkcxgHIAMoCzILLmdhbWUuQm9hcmRSBmJvYXJkcxIfCgtwb3RfdXBkYXRlcxgIIAEoAVIKcG90VXBkYXRlcxpAChJQbGF5ZXJCYWxhbmNlRW50cnkSEAoDa2V5GAEgASgNUgNrZXkSFAoFdmFsdWUYAiABKAFSBXZhbHVlOgI4ARpCChRQbGF5ZXJDYXJkUmFua3NFbnRyeRIQCgNrZXkYASABKA1SA2tleRIUCgV2YWx1ZRgCIAEoCVIFdmFsdWU6AjgB');
 @$core.Deprecated('Use turnDescriptor instead')
 const Turn$json = const {
   '1': 'Turn',
@@ -362,6 +365,7 @@ const Turn$json = const {
       '6': '.game.Board',
       '10': 'boards'
     },
+    const {'1': 'pot_updates', '3': 9, '4': 1, '5': 1, '10': 'potUpdates'},
   ],
   '3': const [Turn_PlayerBalanceEntry$json, Turn_PlayerCardRanksEntry$json],
 };
@@ -388,7 +392,7 @@ const Turn_PlayerCardRanksEntry$json = const {
 
 /// Descriptor for `Turn`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List turnDescriptor = $convert.base64Decode(
-    'CgRUdXJuEhQKBWJvYXJkGAEgAygNUgVib2FyZBIbCgl0dXJuX2NhcmQYAiABKA1SCHR1cm5DYXJkEhoKCGNhcmRzU3RyGAMgASgJUghjYXJkc1N0chISCgRwb3RzGAQgAygBUgRwb3RzEjAKCnNlYXRzX3BvdHMYBSADKAsyES5nYW1lLlNlYXRzSW5Qb3RzUglzZWF0c1BvdHMSRAoOcGxheWVyX2JhbGFuY2UYBiADKAsyHS5nYW1lLlR1cm4uUGxheWVyQmFsYW5jZUVudHJ5Ug1wbGF5ZXJCYWxhbmNlEksKEXBsYXllcl9jYXJkX3JhbmtzGAcgAygLMh8uZ2FtZS5UdXJuLlBsYXllckNhcmRSYW5rc0VudHJ5Ug9wbGF5ZXJDYXJkUmFua3MSIwoGYm9hcmRzGAggAygLMgsuZ2FtZS5Cb2FyZFIGYm9hcmRzGkAKElBsYXllckJhbGFuY2VFbnRyeRIQCgNrZXkYASABKA1SA2tleRIUCgV2YWx1ZRgCIAEoAVIFdmFsdWU6AjgBGkIKFFBsYXllckNhcmRSYW5rc0VudHJ5EhAKA2tleRgBIAEoDVIDa2V5EhQKBXZhbHVlGAIgASgJUgV2YWx1ZToCOAE=');
+    'CgRUdXJuEhQKBWJvYXJkGAEgAygNUgVib2FyZBIbCgl0dXJuX2NhcmQYAiABKA1SCHR1cm5DYXJkEhoKCGNhcmRzU3RyGAMgASgJUghjYXJkc1N0chISCgRwb3RzGAQgAygBUgRwb3RzEjAKCnNlYXRzX3BvdHMYBSADKAsyES5nYW1lLlNlYXRzSW5Qb3RzUglzZWF0c1BvdHMSRAoOcGxheWVyX2JhbGFuY2UYBiADKAsyHS5nYW1lLlR1cm4uUGxheWVyQmFsYW5jZUVudHJ5Ug1wbGF5ZXJCYWxhbmNlEksKEXBsYXllcl9jYXJkX3JhbmtzGAcgAygLMh8uZ2FtZS5UdXJuLlBsYXllckNhcmRSYW5rc0VudHJ5Ug9wbGF5ZXJDYXJkUmFua3MSIwoGYm9hcmRzGAggAygLMgsuZ2FtZS5Cb2FyZFIGYm9hcmRzEh8KC3BvdF91cGRhdGVzGAkgASgBUgpwb3RVcGRhdGVzGkAKElBsYXllckJhbGFuY2VFbnRyeRIQCgNrZXkYASABKA1SA2tleRIUCgV2YWx1ZRgCIAEoAVIFdmFsdWU6AjgBGkIKFFBsYXllckNhcmRSYW5rc0VudHJ5EhAKA2tleRgBIAEoDVIDa2V5EhQKBXZhbHVlGAIgASgJUgV2YWx1ZToCOAE=');
 @$core.Deprecated('Use riverDescriptor instead')
 const River$json = const {
   '1': 'River',
@@ -429,6 +433,7 @@ const River$json = const {
       '6': '.game.Board',
       '10': 'boards'
     },
+    const {'1': 'pot_updates', '3': 10, '4': 1, '5': 1, '10': 'potUpdates'},
   ],
   '3': const [River_PlayerBalanceEntry$json, River_PlayerCardRanksEntry$json],
 };
@@ -455,7 +460,7 @@ const River_PlayerCardRanksEntry$json = const {
 
 /// Descriptor for `River`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List riverDescriptor = $convert.base64Decode(
-    'CgVSaXZlchIUCgVib2FyZBgBIAMoDVIFYm9hcmQSHQoKcml2ZXJfY2FyZBgCIAEoDVIJcml2ZXJDYXJkEhoKCGNhcmRzU3RyGAMgASgJUghjYXJkc1N0chISCgRwb3RzGAQgAygBUgRwb3RzEjAKCnNlYXRzX3BvdHMYBSADKAsyES5nYW1lLlNlYXRzSW5Qb3RzUglzZWF0c1BvdHMSRQoOcGxheWVyX2JhbGFuY2UYBiADKAsyHi5nYW1lLlJpdmVyLlBsYXllckJhbGFuY2VFbnRyeVINcGxheWVyQmFsYW5jZRJMChFwbGF5ZXJfY2FyZF9yYW5rcxgHIAMoCzIgLmdhbWUuUml2ZXIuUGxheWVyQ2FyZFJhbmtzRW50cnlSD3BsYXllckNhcmRSYW5rcxIjCgZib2FyZHMYCSADKAsyCy5nYW1lLkJvYXJkUgZib2FyZHMaQAoSUGxheWVyQmFsYW5jZUVudHJ5EhAKA2tleRgBIAEoDVIDa2V5EhQKBXZhbHVlGAIgASgBUgV2YWx1ZToCOAEaQgoUUGxheWVyQ2FyZFJhbmtzRW50cnkSEAoDa2V5GAEgASgNUgNrZXkSFAoFdmFsdWUYAiABKAlSBXZhbHVlOgI4AQ==');
+    'CgVSaXZlchIUCgVib2FyZBgBIAMoDVIFYm9hcmQSHQoKcml2ZXJfY2FyZBgCIAEoDVIJcml2ZXJDYXJkEhoKCGNhcmRzU3RyGAMgASgJUghjYXJkc1N0chISCgRwb3RzGAQgAygBUgRwb3RzEjAKCnNlYXRzX3BvdHMYBSADKAsyES5nYW1lLlNlYXRzSW5Qb3RzUglzZWF0c1BvdHMSRQoOcGxheWVyX2JhbGFuY2UYBiADKAsyHi5nYW1lLlJpdmVyLlBsYXllckJhbGFuY2VFbnRyeVINcGxheWVyQmFsYW5jZRJMChFwbGF5ZXJfY2FyZF9yYW5rcxgHIAMoCzIgLmdhbWUuUml2ZXIuUGxheWVyQ2FyZFJhbmtzRW50cnlSD3BsYXllckNhcmRSYW5rcxIjCgZib2FyZHMYCSADKAsyCy5nYW1lLkJvYXJkUgZib2FyZHMSHwoLcG90X3VwZGF0ZXMYCiABKAFSCnBvdFVwZGF0ZXMaQAoSUGxheWVyQmFsYW5jZUVudHJ5EhAKA2tleRgBIAEoDVIDa2V5EhQKBXZhbHVlGAIgASgBUgV2YWx1ZToCOAEaQgoUUGxheWVyQ2FyZFJhbmtzRW50cnkSEAoDa2V5GAEgASgNUgNrZXkSFAoFdmFsdWUYAiABKAlSBXZhbHVlOgI4AQ==');
 @$core.Deprecated('Use seatCardsDescriptor instead')
 const SeatCards$json = const {
   '1': 'SeatCards',

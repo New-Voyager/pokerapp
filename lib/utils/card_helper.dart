@@ -147,7 +147,7 @@ class CardHelper {
 
     Color color = _getColor(suit);
 
-    if (colorCards) {
+    if (colorCards ?? false) {
       color = _getColoredCard(suit);
     }
 

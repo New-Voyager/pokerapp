@@ -318,15 +318,10 @@ class PlayerActionHandler {
           List<double> pots = actionChange.pots
               ?.map<double>((e) => double.parse(e.toString()))
               ?.toList();
-          double potUpdates = actionChange.potUpdates;
-          double totalPot = 0.0;
-          for(final v in pots) {
-            totalPot += v;
-          }
 
           tableState.updatePotChipsSilent(
             potChips: pots,
-            potUpdatesChips: totalPot,
+            potUpdatesChips: actionChange.potUpdates,
           );
           tableState.notifyAll();
         } catch (e) {}

@@ -465,6 +465,12 @@ class HandActionProtoService {
           await handleExtendTimer(message);
           return;
 
+        case AppConstants.PREFLOP:
+          ////log('Hand Message: ::handleStageChange:: FLOP');
+          _gameState.handState = HandState.PREFLOP;
+          await handleStageChange(message, 'preflop');
+          ////log('Hand Message: ::handleStageChange:: FLOP DONE');
+          return;
         case AppConstants.FLOP:
           ////log('Hand Message: ::handleStageChange:: FLOP');
           _gameState.handState = HandState.FLOP;
@@ -780,7 +786,7 @@ class HandActionProtoService {
         pots = potValues;
       }
 
-      for(final v in potValues) {
+      for (final v in potValues) {
         totalPot += v;
       }
 
@@ -805,7 +811,6 @@ class HandActionProtoService {
     assert(stage != null);
     // log('stage update start');
     //log('Hand Message: ::handleStageChange:: START');
-
 
     if (_close) return;
     final TableState tableState = _gameState.tableState;

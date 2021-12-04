@@ -767,6 +767,18 @@ class NewHand extends $pb.GeneratedMessage {
             ? ''
             : 'ante',
         $pb.PbFieldType.OD)
+    ..p<$core.double>(
+        19,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'pots',
+        $pb.PbFieldType.PD)
+    ..a<$core.double>(
+        20,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'potUpdates',
+        $pb.PbFieldType.OD)
     ..hasRequiredFields = false;
 
   NewHand._() : super();
@@ -789,6 +801,8 @@ class NewHand extends $pb.GeneratedMessage {
     $core.bool? doubleBoard,
     $core.double? bombPotBet,
     $core.double? ante,
+    $core.Iterable<$core.double>? pots,
+    $core.double? potUpdates,
   }) {
     final _result = create();
     if (handNum != null) {
@@ -844,6 +858,12 @@ class NewHand extends $pb.GeneratedMessage {
     }
     if (ante != null) {
       _result.ante = ante;
+    }
+    if (pots != null) {
+      _result.pots.addAll(pots);
+    }
+    if (potUpdates != null) {
+      _result.potUpdates = potUpdates;
     }
     return _result;
   }
@@ -1061,6 +1081,21 @@ class NewHand extends $pb.GeneratedMessage {
   $core.bool hasAnte() => $_has(17);
   @$pb.TagNumber(18)
   void clearAnte() => clearField(18);
+
+  @$pb.TagNumber(19)
+  $core.List<$core.double> get pots => $_getList(18);
+
+  @$pb.TagNumber(20)
+  $core.double get potUpdates => $_getN(19);
+  @$pb.TagNumber(20)
+  set potUpdates($core.double v) {
+    $_setDouble(19, v);
+  }
+
+  @$pb.TagNumber(20)
+  $core.bool hasPotUpdates() => $_has(19);
+  @$pb.TagNumber(20)
+  void clearPotUpdates() => clearField(20);
 }
 
 class HandDealCards extends $pb.GeneratedMessage {
@@ -1373,6 +1408,12 @@ class Flop extends $pb.GeneratedMessage {
             : 'boards',
         $pb.PbFieldType.PM,
         subBuilder: $0.Board.create)
+    ..a<$core.double>(
+        8,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'potUpdates',
+        $pb.PbFieldType.OD)
     ..hasRequiredFields = false;
 
   Flop._() : super();
@@ -1384,6 +1425,7 @@ class Flop extends $pb.GeneratedMessage {
     $core.Map<$core.int, $core.double>? playerBalance,
     $core.Map<$core.int, $core.String>? playerCardRanks,
     $core.Iterable<$0.Board>? boards,
+    $core.double? potUpdates,
   }) {
     final _result = create();
     if (board != null) {
@@ -1406,6 +1448,9 @@ class Flop extends $pb.GeneratedMessage {
     }
     if (boards != null) {
       _result.boards.addAll(boards);
+    }
+    if (potUpdates != null) {
+      _result.potUpdates = potUpdates;
     }
     return _result;
   }
@@ -1464,6 +1509,18 @@ class Flop extends $pb.GeneratedMessage {
 
   @$pb.TagNumber(7)
   $core.List<$0.Board> get boards => $_getList(6);
+
+  @$pb.TagNumber(8)
+  $core.double get potUpdates => $_getN(7);
+  @$pb.TagNumber(8)
+  set potUpdates($core.double v) {
+    $_setDouble(7, v);
+  }
+
+  @$pb.TagNumber(8)
+  $core.bool hasPotUpdates() => $_has(7);
+  @$pb.TagNumber(8)
+  void clearPotUpdates() => clearField(8);
 }
 
 class Turn extends $pb.GeneratedMessage {
@@ -1532,6 +1589,12 @@ class Turn extends $pb.GeneratedMessage {
             : 'boards',
         $pb.PbFieldType.PM,
         subBuilder: $0.Board.create)
+    ..a<$core.double>(
+        9,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'potUpdates',
+        $pb.PbFieldType.OD)
     ..hasRequiredFields = false;
 
   Turn._() : super();
@@ -1544,6 +1607,7 @@ class Turn extends $pb.GeneratedMessage {
     $core.Map<$core.int, $core.double>? playerBalance,
     $core.Map<$core.int, $core.String>? playerCardRanks,
     $core.Iterable<$0.Board>? boards,
+    $core.double? potUpdates,
   }) {
     final _result = create();
     if (board != null) {
@@ -1569,6 +1633,9 @@ class Turn extends $pb.GeneratedMessage {
     }
     if (boards != null) {
       _result.boards.addAll(boards);
+    }
+    if (potUpdates != null) {
+      _result.potUpdates = potUpdates;
     }
     return _result;
   }
@@ -1639,6 +1706,18 @@ class Turn extends $pb.GeneratedMessage {
 
   @$pb.TagNumber(8)
   $core.List<$0.Board> get boards => $_getList(7);
+
+  @$pb.TagNumber(9)
+  $core.double get potUpdates => $_getN(8);
+  @$pb.TagNumber(9)
+  set potUpdates($core.double v) {
+    $_setDouble(8, v);
+  }
+
+  @$pb.TagNumber(9)
+  $core.bool hasPotUpdates() => $_has(8);
+  @$pb.TagNumber(9)
+  void clearPotUpdates() => clearField(9);
 }
 
 class River extends $pb.GeneratedMessage {
@@ -1707,6 +1786,12 @@ class River extends $pb.GeneratedMessage {
             : 'boards',
         $pb.PbFieldType.PM,
         subBuilder: $0.Board.create)
+    ..a<$core.double>(
+        10,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'potUpdates',
+        $pb.PbFieldType.OD)
     ..hasRequiredFields = false;
 
   River._() : super();
@@ -1719,6 +1804,7 @@ class River extends $pb.GeneratedMessage {
     $core.Map<$core.int, $core.double>? playerBalance,
     $core.Map<$core.int, $core.String>? playerCardRanks,
     $core.Iterable<$0.Board>? boards,
+    $core.double? potUpdates,
   }) {
     final _result = create();
     if (board != null) {
@@ -1744,6 +1830,9 @@ class River extends $pb.GeneratedMessage {
     }
     if (boards != null) {
       _result.boards.addAll(boards);
+    }
+    if (potUpdates != null) {
+      _result.potUpdates = potUpdates;
     }
     return _result;
   }
@@ -1814,6 +1903,18 @@ class River extends $pb.GeneratedMessage {
 
   @$pb.TagNumber(9)
   $core.List<$0.Board> get boards => $_getList(7);
+
+  @$pb.TagNumber(10)
+  $core.double get potUpdates => $_getN(8);
+  @$pb.TagNumber(10)
+  set potUpdates($core.double v) {
+    $_setDouble(8, v);
+  }
+
+  @$pb.TagNumber(10)
+  $core.bool hasPotUpdates() => $_has(8);
+  @$pb.TagNumber(10)
+  void clearPotUpdates() => clearField(10);
 }
 
 class SeatCards extends $pb.GeneratedMessage {
