@@ -94,9 +94,9 @@ class NotificationHandler {
       );
 
       if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
-      } else {
-      }      
+      } else if (settings.authorizationStatus ==
+          AuthorizationStatus.provisional) {
+      } else {}
     }
 
     // register Nats push notifications

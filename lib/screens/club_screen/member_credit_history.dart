@@ -23,7 +23,8 @@ class ClubActivityCreditScreen extends StatefulWidget {
   final String playerId;
   final bool owner;
   final ClubMemberModel member;
-  const ClubActivityCreditScreen(this.clubCode, this.playerId, this.owner, this.member);
+  const ClubActivityCreditScreen(
+      this.clubCode, this.playerId, this.owner, this.member);
 
   @override
   State<ClubActivityCreditScreen> createState() =>

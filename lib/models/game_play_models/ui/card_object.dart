@@ -28,6 +28,7 @@ class CardObject {
   bool highlight;
   bool dim;
   bool dimBoard;
+  bool reveal = false;
   bool otherHighlightColor;
   bool doubleBoard = false;
 

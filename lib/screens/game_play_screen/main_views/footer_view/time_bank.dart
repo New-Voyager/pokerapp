@@ -36,7 +36,7 @@ class _TimeBankWidgetState extends State<TimeBankWidget> {
 
   @override
   Widget build(BuildContext context) {
-    log('timebank: rebuild timebank widget');
+    // log('timebank: rebuild timebank widget');
     final theme = AppTheme.getTheme(context);
     final gameState = GameState.getState(context);
     final gameContextObj = context.read<GameContextObject>();
@@ -52,7 +52,7 @@ class _TimeBankWidgetState extends State<TimeBankWidget> {
         icon: Icons.access_alarms,
         theme: theme,
         onTap: () async {
-          log('timebank: on timebank clicked');
+          // log('timebank: on timebank clicked');
           animate = false;
           int extendTime = minExtendTime;
           if (availableTime < extendTime) {
@@ -68,7 +68,7 @@ class _TimeBankWidgetState extends State<TimeBankWidget> {
           final mySeat = gameState.mySeat;
           if (mySeat != null) {
             if (!TestService.isTesting) {
-              log('TimeBank: extend time $extendTime');
+              // log('TimeBank: extend time $extendTime');
               gameContextObj.handActionProtoService.extendTime(
                   mySeat.player.playerId,
                   mySeat.player.seatNo,
@@ -77,7 +77,7 @@ class _TimeBankWidgetState extends State<TimeBankWidget> {
             }
           }
 
-          log('Remaining timebank: ${widget.gameState.gameHiveStore.getTimeBankTime()}');
+          // log('Remaining timebank: ${widget.gameState.gameHiveStore.getTimeBankTime()}');
           setState(() {});
           animate = true;
           setState(() {});
@@ -85,7 +85,7 @@ class _TimeBankWidgetState extends State<TimeBankWidget> {
       ),
     );
     if (animate) {
-      log('timebank: animation is added');
+      // log('timebank: animation is added');
       final animation = TweenAnimationBuilder<double>(
         tween: Tween<double>(begin: 0, end: 1),
         onEnd: () {

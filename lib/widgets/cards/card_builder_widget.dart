@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -5,6 +6,7 @@ import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/boar
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
+import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/cards/pulsating_card_container.dart';
 import 'package:provider/provider.dart';
 
@@ -105,12 +107,15 @@ class CardBuilderWidget extends StatelessWidget {
 
     // IMP: we ignore "dim" value if "highlight" is true
     bool toDim = dim;
-    if (highlight) toDim = false;
+    if (highlight || card.reveal) {
+      toDim = false;
+    }
 
+    // log('Card ${CardConvUtils.getString(card.cardNum)} shadow: $shadow reveal: ${card.reveal} dimboard: ${card.dimBoard} highlight : $highlight, dim: ${toDim} type: ${card.cardType.toString()}');
     BoxDecoration fgDecoration;
     if (toDim) {
       fgDecoration = BoxDecoration(
-        color: Colors.black26,
+        color: Colors.black45,
         backgroundBlendMode: BlendMode.darken,
       );
     }
@@ -119,6 +124,10 @@ class CardBuilderWidget extends StatelessWidget {
         color: Color(0x99000000),
         backgroundBlendMode: BlendMode.darken,
       );
+    }
+
+    if (card.reveal) {
+      fgDecoration = null;
     }
 
     final double height = AppDimensions.cardHeight * _ratio;
@@ -160,10 +169,11 @@ class CardBuilderWidget extends StatelessWidget {
 
   _buildCardBackSide(
       TextStyle cardTextStyle, TextStyle suitTextStyle, BuildContext context) {
-    if (cardFace == CardFace.FRONT)
+    if (cardFace == CardFace.FRONT) {
       return isCardVisible
           ? cardBuilder(cardTextStyle, suitTextStyle, context)
           : Container();
+    }
 
     // final gameState = GameState.getState(context);
     // final image = Image.memory(gameState.assets.getHoleCardBack());

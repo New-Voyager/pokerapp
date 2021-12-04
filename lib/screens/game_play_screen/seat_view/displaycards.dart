@@ -38,6 +38,13 @@ class DisplayCardsWidget extends StatelessWidget {
       card.cardType = CardType.PlayerCard;
       card.dim = true;
 
+      if (seat.player.revealCards.length > 0) {
+        bool revealedCard = seat.player.revealCards.indexOf(card.cardNum) != -1;
+        if (revealedCard) {
+          card.reveal = true;
+        }
+      }
+
       // if we are in showdown and this player is a winner, show his cards
       bool isWinner = false;
       if (seat.player.winner ?? false) {

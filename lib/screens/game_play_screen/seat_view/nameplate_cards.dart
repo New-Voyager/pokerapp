@@ -46,7 +46,14 @@ class PlayerCardsWidget extends StatelessWidget {
           (alignment == Alignment.centerLeft ? 35.0 : -45.0 * shiftMultiplier);
       xOffset = -45.0 * shiftMultiplier;
     }
+    bool show = true;
     if (showdown) {
+      show = false;
+    } else if (seat.player != null &&
+        (!seat.player.inhand || seat.player.inBreak)) {
+      show = false;
+    }
+    if (!show) {
       return const SizedBox.shrink();
     } else if (seat.folded ?? false) {
       // log('PlayerCardsWidget: [${seat.serverSeatPos}] Folded cards');

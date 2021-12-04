@@ -21,7 +21,10 @@ class StackCardView extends StatelessWidget {
     List<Widget> _children = [];
 
     cards.forEach((CardObject card) {
-      if (deactivated) card.dim = true;
+      if (deactivated) {
+        card.dim = true;
+        // log('Player cards: reveal ${card.cardType}: ${card.dim}');
+      }
 
       _children.add(card.widget);
       _children.add(const SizedBox(width: 2.0));

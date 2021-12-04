@@ -395,7 +395,7 @@ class HandActionProtoService {
     //debugLog(_gameState.gameCode, jsonData);
 
     String messageType = messageObject.item.messageType;
-    log('${messageType}');
+    //log('${messageType}');
     if (_retryMsg != null) {
       bool handled = _retryMsg.handleMsg(messageObject.item);
       // cancel retry now
@@ -775,8 +775,13 @@ class HandActionProtoService {
   void updatePot(List<double> potValues, String key, BuildContext context) {
     try {
       List<double> pots = [];
+      double totalPot = 0;
       if (potValues != null) {
         pots = potValues;
+      }
+
+      for(final v in potValues) {
+        totalPot += v;
       }
 
       if (_close) return;
@@ -784,7 +789,7 @@ class HandActionProtoService {
 
       tableState.updatePotChipsSilent(
         potChips: pots,
-        potUpdatesChips: null,
+        potUpdatesChips: totalPot,
       );
       if (_close) return;
       tableState.notifyAll();
@@ -800,6 +805,7 @@ class HandActionProtoService {
     assert(stage != null);
     // log('stage update start');
     //log('Hand Message: ::handleStageChange:: START');
+
 
     if (_close) return;
     final TableState tableState = _gameState.tableState;
@@ -846,7 +852,7 @@ class HandActionProtoService {
         );
         cards.add(c);
       }
-
+      AudioService.playFlop(mute: _gameState.playerLocalConfig.mute);
       tableState.addFlopCards(1, cards);
       tableState.notifyAll();
       await Future.delayed(Duration(seconds: 1));
@@ -863,7 +869,6 @@ class HandActionProtoService {
           );
           cards.add(c);
         }
-        AudioService.playFlop(mute: _gameState.playerLocalConfig.mute);
         tableState.addFlopCards(2, cards);
         tableState.updateTwoBoardsNeeded(true);
         tableState.notifyAll();

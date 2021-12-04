@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
 
 const String clickSound = 'assets/sound_effects/button_press.mp3';
 const String betRaiseSound = 'assets/sound_effects/bet_call1.mp3';
@@ -17,11 +18,28 @@ const String flopSound = 'assets/sound_effects/flop.mp3';
 const String turnRiverSound = 'assets/sound_effects/river.mp3';
 const String applauseSound = 'assets/sound_effects/applause.mp3';
 const String fireworksSound = 'assets/animations/fireworks.mp3';
-
 const String clockTickingSound = 'assets/sound_effects/clock_ticking.mp3';
+
+// const String clickSound = 'button_press.mp3';
+// const String betRaiseSound = 'bet_call1.mp3';
+// const String allInSound = 'allin.mp3';
+// const String foldSound = 'fold.mp3';
+// const String checkSound = 'check.mp3';
+// const String dealSound = 'deal.mp3';
+// const String newHandSound = 'new_hand.mp3';
+// const String playerTurnSound = 'player_turn.mp3';
+// const String flopSound = 'flop.mp3';
+// const String turnRiverSound = 'river.mp3';
+// const String applauseSound = 'applause.mp3';
+// const String fireworksSound = 'fireworks.mp3';
+// const String clockTickingSound = 'clock_ticking.mp3';
 
 class AudioService {
   static AudioPlayer audioPlayer;
+   // add it to your class as a static member
+  // static AudioCache player = AudioCache(prefix: 'assets/sound_effects/');  
+
+  static final Map<String, Uri> _audioFileCache = Map<String, Uri>();
   static final Map<String, Uint8List> _audioCache = Map<String, Uint8List>();
   static bool play = true;
   AudioService._();
@@ -63,6 +81,10 @@ class AudioService {
     await getAudioBytes(flopSound);
     await getAudioBytes(flopSound);
     await getAudioBytes(clockTickingSound);
+    if (Platform.isIOS) {
+      // for iphone store the file in local
+      
+    }
   }
 
   static Future<Uint8List> getAudioBytes(String assetFile) async {
@@ -71,6 +93,15 @@ class AudioService {
       try {
         final data = (await rootBundle.load(assetFile)).buffer.asUint8List();
         _audioCache[assetFile] = data;
+
+        if (Platform.isIOS) {
+          // store it locally
+          // create a temporary file on the device to be read by the native side
+          final file = File('${(await getTemporaryDirectory()).path}/$assetFile');
+          await file.create(recursive: true);
+          await file.writeAsBytes(data.buffer.asUint8List());
+          _audioFileCache[assetFile] = file.uri;
+        }
       } catch (err) {
         log('File loading failed. ${err.toString()}');
         _audioCache[assetFile] = Uint8List(0);
@@ -81,13 +112,14 @@ class AudioService {
 
   static playClickSound() {
     log('Playing click sound');
-    if (_audioCache[clickSound] != null) {
-      try {
-        audioPlayer.playBytes(_audioCache[clickSound]);
-      } catch (err) {
-        log('Could not play sound. Error: ${err.toString()}');
-      }
-    }
+    playSound(clickSound);
+    // if (_audioCache[clickSound] != null) {
+    //   try {
+    //     audioPlayer.playBytes(_audioCache[clickSound]);
+    //   } catch (err) {
+    //     log('Could not play sound. Error: ${err.toString()}');
+    //   }
+    // }
   }
 
   static playSound(String soundFile, {bool mute}) {
@@ -100,9 +132,16 @@ class AudioService {
     if (mute ?? false) {
       return;
     }
+    //player.play(soundFile);
     if (_audioCache[soundFile] != null) {
       try {
-        audioPlayer.playBytes(_audioCache[soundFile]);
+        if (Platform.isAndroid) {
+          audioPlayer.playBytes(_audioCache[soundFile]);
+        } else {
+          audioPlayer.play(
+            _audioFileCache[soundFile].toString(),
+            isLocal: true);
+        }
       } catch (err) {
         log('Could not play sound. Error: ${err.toString()}');
       }
