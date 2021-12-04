@@ -466,6 +466,14 @@ class PlayerActionHandler {
       }
 
       if (_gameState.uiClosing) return;
+
+      // fix the bet amount in the action
+      if (_gameState.gameInfo.chipUnit == ChipUnit.DOLLAR) {
+        for (final option in seatAction.betOptions) {
+          option.amount = option.amount.toInt().toDouble();
+        }
+      }
+
       _gameState.setActionProto(seatAction.seatNo, seatAction);
 
       if (_gameState.uiClosing) return;
