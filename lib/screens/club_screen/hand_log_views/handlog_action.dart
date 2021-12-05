@@ -58,8 +58,7 @@ class HandLogActionView extends StatelessWidget {
                 Expanded(
                   flex: 2,
                   child: Text(
-                    DataFormatter.chipsFormat(player.balance.after,
-                        chipUnit: ChipUnit.CENT),
+                    DataFormatter.chipsFormat(player.balance.after),
                     style: AppDecorators.getSubtitle1Style(theme: theme),
                     textAlign: TextAlign.right,
                   ),

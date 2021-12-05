@@ -177,8 +177,7 @@ class HandStageView extends StatelessWidget {
             child: Text(
               actions.actions[index].action != HandActions.CHECK &&
                       actions.actions[index].action != HandActions.FOLD
-                  ? DataFormatter.chipsFormat(actions.actions[index].amount,
-                      chipUnit: ChipUnit.CENT)
+                  ? DataFormatter.chipsFormat(actions.actions[index].amount)
                   : "",
               style: AppDecorators.getSubtitle1Style(theme: theme),
               textAlign: TextAlign.center,
@@ -187,8 +186,7 @@ class HandStageView extends StatelessWidget {
           Expanded(
             flex: 2,
             child: Text(
-              DataFormatter.chipsFormat(actions.actions[index].stack,
-                  chipUnit: ChipUnit.CENT),
+              DataFormatter.chipsFormat(actions.actions[index].stack),
               style: AppDecorators.getSubtitle1Style(theme: theme),
               textAlign: TextAlign.right,
             ),

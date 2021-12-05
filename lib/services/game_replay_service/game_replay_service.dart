@@ -28,7 +28,7 @@ class GameReplayService {
         PlayerModel(
           name: playerInfo.name,
           seatNo: key,
-          stack: playerInfo.balance.before,
+          stack: playerInfo.balance.before / 100,
           playerId: playerInfo.id,
         ),
       );
@@ -220,25 +220,33 @@ class GameReplayService {
       gameType: data.gameType,
       tableStatus: null,
       status: null,
-      smallBlind: data.smallBlind,
-      bigBlind: data.bigBlind,
+      smallBlind: data.smallBlind / 100,
+      bigBlind: data.bigBlind / 100,
       playersInSeats: players,
     );
 
     /* finding the current Player */
-    final PlayerModel currPlayer = players.firstWhere(
-      (p) => p.playerId == playerID,
-    );
+    PlayerModel currPlayer = null;
+    for (final player in players) {
+      if (player.playerId == playerID) {
+        currPlayer = player;
+        break;
+      }
+    }
 
     final Map<int, List<int>> playerCards = _getPlayerCards(
       data.result.playerInfo,
       playerID,
     );
+    List<int> currPlayerCards = [];
+    if (currPlayer != null) {
+      currPlayerCards = playerCards[currPlayer.seatNo];
+    }
 
     List<int> board1Cards = data.getBoard1();
 
     final List<GameReplayAction> actions = _getActions(
-      myCards: playerCards[currPlayer.seatNo],
+      myCards: currPlayerCards,
       noCards: data.noCards,
       flopCards: board1Cards.sublist(0, 3),
       riverCard: board1Cards[3],
@@ -260,9 +268,9 @@ class GameReplayService {
       gameCode: gameCode,
       gameInfo: gameInfoModel,
       currentPlayer: PlayerInfo(
-        id: currPlayer.playerId,
+        id: playerID,
         uuid: '', // to mark which players perspective in replay hand
-        name: currPlayer.name,
+        name: currPlayer == null ? '' : currPlayer.name,
       ),
       replayMode: true,
     );

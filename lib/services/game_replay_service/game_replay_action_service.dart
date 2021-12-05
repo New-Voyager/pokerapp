@@ -87,7 +87,7 @@ class GameReplayActionService {
 
     tableState.updatePotChipsSilent(
       potChips: tableState.potChips,
-      potUpdatesChips: (tableState.potChipsUpdates ?? 0) + action.amount,
+      // potUpdatesChips: (tableState.potChipsUpdates ?? 0) + action.amount,
     );
 
     tableState.notifyAll();
@@ -238,9 +238,15 @@ class GameReplayActionService {
 
     /* finding the current Player */
     final playerID = gameState.currentPlayerId;
-    final PlayerModel currPlayer =
-        gameState.playersInGame.firstWhere((p) => p.playerId == playerID);
-    currPlayer.cards = action.myCards;
+    PlayerModel currPlayer;
+
+    for (final player in gameState.playersInGame) {
+      if (player.playerId == playerID) {
+        currPlayer = player;
+        currPlayer.cards = action.myCards;
+        break;
+      }
+    }
 
     final noCards = action.noCards;
     final List<int> seatNos = action.seatNos;

@@ -8,16 +8,14 @@ final NumberFormat _timeFormatter = new NumberFormat("00");
 
 class DataFormatter {
   static String chipsFormat(
-    double value, {
-    ChipUnit chipUnit = ChipUnit.DOLLAR,
-  }) {
+    double value) {
     if (value == null) {
       return '';
     }
 
-    if (chipUnit == ChipUnit.CENT) {
-      value = value / 100;
-    }
+    // if (chipUnit == ChipUnit.CENT) {
+    //   value = value / 100;
+    // }
 
     if (value == value.round()) {
       return '${value.toInt()}';
