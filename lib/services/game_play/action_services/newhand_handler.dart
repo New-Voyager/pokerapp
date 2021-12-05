@@ -250,6 +250,9 @@ class NewHandHandler {
     await showDeal();
     if (gameState.uiClosing) return;
 
+    tableState.updatePotChipsSilent(
+        potChips: [], potUpdatesChips: newHand.potUpdates);
+
     if (newHand.ante != null && newHand.ante > 0.0) {
       double pot = 0;
       // show ante animation
@@ -267,8 +270,7 @@ class NewHandHandler {
         }
       }
       await Future.delayed(Duration(milliseconds: 400));
-      tableState.updatePotChipsSilent(potChips: [pot]);
-      tableState.notifyAll();
+      //tableState.notifyAll();
 
       if (gameState.uiClosing) return;
       for (final seatNo in newHand.playersInSeats.keys) {

@@ -318,11 +318,10 @@ class PlayerActionHandler {
           List<double> pots = actionChange.pots
               ?.map<double>((e) => double.parse(e.toString()))
               ?.toList();
-          double potUpdates = actionChange.potUpdates;
 
           tableState.updatePotChipsSilent(
             potChips: pots,
-            potUpdatesChips: potUpdates,
+            potUpdatesChips: actionChange.potUpdates,
           );
           tableState.notifyAll();
         } catch (e) {}
@@ -359,7 +358,7 @@ class PlayerActionHandler {
         return;
       }
 
-      log('YourAction: raiseAmount: ${seatAction.raiseAmount} seatInSoFar: ${seatAction.seatInSoFar}');
+      // log('YourAction: raiseAmount: ${seatAction.raiseAmount} seatInSoFar: ${seatAction.seatInSoFar}');
       /* play an sound effect alerting the user */
       AudioService.playYourAction(mute: _gameState.playerLocalConfig.mute);
 
@@ -467,6 +466,14 @@ class PlayerActionHandler {
       }
 
       if (_gameState.uiClosing) return;
+
+      // fix the bet amount in the action
+      if (_gameState.gameInfo.chipUnit == ChipUnit.DOLLAR) {
+        for (final option in seatAction.betOptions) {
+          option.amount = option.amount.toInt().toDouble();
+        }
+      }
+
       _gameState.setActionProto(seatAction.seatNo, seatAction);
 
       if (_gameState.uiClosing) return;
@@ -543,7 +550,6 @@ class PlayerActionHandler {
     _gameState.resetActionHighlight(-1);
 
     // update pot chip updates
-    _gameState.tableState.updatePotChipUpdatesSilent(playerActed.potUpdates);
     _gameState.tableState.notifyAll();
     //log('Hand Message: ::handlePlayerActed:: END');
   }
@@ -579,7 +585,7 @@ class PlayActionTimer {
     _timeout = timeoutMilli;
     _onFinished = onFinished;
     _elapsed = 0;
-    log('ActionTimer: Start action timer');
+    // log('ActionTimer: Start action timer');
     // start a timer
     _timer = Timer.periodic(Duration(milliseconds: _interval), (timer) {
       this.tick();
@@ -587,14 +593,14 @@ class PlayActionTimer {
   }
 
   void reset(int timeoutMilli) {
-    log('ActionTimer: reset $timeoutMilli');
+    // log('ActionTimer: reset $timeoutMilli');
     _timeout = timeoutMilli;
     _elapsed = 0;
   }
 
   void stop() {
     if (_timer != null) {
-      log('ActionTimer: Stopping action timer');
+      // log('ActionTimer: Stopping action timer');
       _timer.cancel();
       _timer = null;
     }

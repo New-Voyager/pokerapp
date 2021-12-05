@@ -319,7 +319,8 @@ class Routes {
 
         return _getPageRoute(
           routeName: settings.name,
-          viewToShow: ClubActivityCreditScreen(clubCode, playerId, owner, member),
+          viewToShow:
+              ClubActivityCreditScreen(clubCode, playerId, owner, member),
         );
 
       case club_member_activities_view:

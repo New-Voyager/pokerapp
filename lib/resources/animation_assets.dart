@@ -4,12 +4,8 @@ class AnimationObject {
   final String assetJson;
   final String assetPng;
 
-  const AnimationObject({
-    this.id,
-    this.assetSvg,
-    this.assetJson,
-    this.assetPng
-  });
+  const AnimationObject(
+      {this.id, this.assetSvg, this.assetJson, this.assetPng});
 }
 
 class AnimationAssets {
@@ -24,7 +20,7 @@ class AnimationAssets {
     //   id: 'cheers',
     //   assetPng: '$_base/cheers.png',
     //   assetJson: '$_base/cheers.json',
-    // ),    
+    // ),
     const AnimationObject(
       id: 'chicken',
       assetSvg: '$_base/chicken.svg',

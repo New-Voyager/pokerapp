@@ -77,7 +77,7 @@ class SwitchWidget extends StatelessWidget {
                 showOnOff: true,
                 activeText: activeText,
                 inactiveText: inactiveText,
-                value: vnValue.value,
+                value: vnValue.value ?? false,
                 onToggle: (bool newValue) {
                   vnValue.value = newValue;
                   onChange(newValue);

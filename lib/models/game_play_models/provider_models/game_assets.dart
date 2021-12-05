@@ -54,7 +54,7 @@ class GameScreenAssets {
   }
 
   Uint8List getHoleCard(int card, {bool color = false}) {
-    if (color) {
+    if (color ?? false) {
       String cardStr = CardConvUtils.getString(card);
       if (colorCards[cardStr] != null) {
         return colorCards[cardStr];
@@ -153,10 +153,11 @@ class GameScreenAssets {
       final cardStr = CardConvUtils.getString(card);
       Uint8List cardBytes;
       try {
-        final cardData = await rootBundle.load('assets/images/color-card_face/$cardStr.svg');
+        final cardData =
+            await rootBundle.load('assets/images/color-card_face/$cardStr.svg');
         cardBytes = cardData.buffer.asUint8List();
         colorCards[cardStr] = cardBytes;
-      } catch(err) {
+      } catch (err) {
         log('Unable to load asset: ${err.toString()}');
         throw err;
       }

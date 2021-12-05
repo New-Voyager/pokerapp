@@ -425,7 +425,7 @@ class _FooterActionViewState extends State<FooterActionView> {
       ));
     }
 
-    log('BetAction: actionButtons.length ${actionButtons.length}');
+    // log('BetAction: actionButtons.length ${actionButtons.length}');
 
     /*  if (actionButtons.length > 0 && actionButtons.length < 3 && allin != null) {
       actionButtons.add(_buildRoundButton(
@@ -526,7 +526,7 @@ class _FooterActionViewState extends State<FooterActionView> {
         child: Consumer<ActionState>(
             key: ValueKey('buildActionButtons'),
             builder: (_, actionState, __) {
-              log('BetAction: build actionState.show ${actionState.show} handState: ${gameState.handState.toString()}');
+              // log('BetAction: build actionState.show ${actionState.show} handState: ${gameState.handState.toString()}');
               if (gameState.handState == HandState.RESULT ||
                   gameState.handState == HandState.SHOWDOWN ||
                   gameState.handState == HandState.ENDED ||

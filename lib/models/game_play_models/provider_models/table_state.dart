@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -140,6 +141,7 @@ class TableState extends ChangeNotifier {
   }
 
   void updatePotChipsSilent({List<double> potChips, double potUpdatesChips}) {
+    // log('updatePotChipsSilent: potChips: ${potChips} potUpdates: $potUpdatesChips');
     this._potChips = potChips;
     this._potUpdatesChips = potUpdatesChips;
   }
