@@ -579,7 +579,7 @@ class WinnerWidget extends StatelessWidget {
         return getWinnerWidget(
             name: winner.name,
             cards: winner.cards,
-            pot: winner.amount,
+            pot: winner.amount / 100,
             showCards: winner.showCards,
             theme: theme);
       },
@@ -631,7 +631,7 @@ class WinnerWidget extends StatelessWidget {
                   ),
                   _separator,
                   Text(
-                    DataFormatter.chipsFormat(pot, chipUnit: ChipUnit.CENT),
+                    DataFormatter.chipsFormat(pot),
                     style: AppDecorators.getSubtitle2Style(theme: theme),
                   ),
                 ],

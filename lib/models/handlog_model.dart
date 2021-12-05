@@ -58,7 +58,7 @@ class ResultWinner {
   factory ResultWinner.fromJson(dynamic json) {
     ResultWinner winner = ResultWinner();
     winner.seatNo = json['seatNo'];
-    winner.amount = double.parse(json['amount'].toString());
+    winner.amount = double.parse(json['amount'].toString()) / 100;
     return winner;
   }
 }
@@ -71,10 +71,10 @@ class PlayerBalance {
   factory PlayerBalance.fromJson(dynamic json) {
     PlayerBalance ret = PlayerBalance();
     if (json['before'] != null) {
-      ret.before = double.parse(json['before'].toString());
+      ret.before = double.parse(json['before'].toString()) / 100;
     }
     if (json['after'] != null) {
-      ret.after = double.parse(json['after'].toString());
+      ret.after = double.parse(json['after'].toString()) / 100;
     }
     return ret;
   }
@@ -351,8 +351,8 @@ class HandResultData {
     ret.gameType = json["gameType"];
     ret.noCards = json['noCards'];
     ret.maxPlayers = json['maxPlayers'] ?? 9;
-    ret.smallBlind = double.parse((json['smallBlind'] ?? 1).toString());
-    ret.bigBlind = double.parse((json['bigBlind'] ?? 2).toString());
+    ret.smallBlind = double.parse((json['smallBlind'] ?? 1).toString()) / 100;
+    ret.bigBlind = double.parse((json['bigBlind'] ?? 2).toString()) / 100;
 
     final handLog = json["handLog"];
     ret.handEndedTime =
@@ -398,9 +398,9 @@ class GameActions {
 
     return GameActions(
       pots: json["pots"]
-          ?.map<double>((e) => double.parse(e.toString()))
+          ?.map<double>((e) => double.parse(e.toString()) / 100)
           ?.toList(),
-      potStart: double.parse(json["potStart"].toString()),
+      potStart: double.parse(json["potStart"].toString()) / 100,
       actions: List<ActionElement>.from(
           json["actions"].map((x) => ActionElement.fromJson(x))),
       seatPots: seatPots,
@@ -437,10 +437,10 @@ class ActionElement {
     return ActionElement(
       seatNo: json["seatNo"],
       action: actionValue,
-      amount: double.parse(json["amount"].toString()),
+      amount: double.parse(json["amount"].toString()) / 100,
       timedOut: json["timedOut"],
       actionTime: json["actionTime"],
-      stack: double.parse(json["stack"].toString()),
+      stack: double.parse(json["stack"].toString()) / 100,
     );
   }
 
@@ -515,7 +515,7 @@ class SeatPot {
     for (final seat in json['seats']) {
       seatPot.seats.add(int.parse(seat.toString()));
     }
-    seatPot.pot = double.parse(json['pot'].toString());
+    seatPot.pot = double.parse(json['pot'].toString()) / 100;
     return seatPot;
   }
 }

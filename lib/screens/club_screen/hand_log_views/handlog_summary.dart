@@ -98,7 +98,7 @@ class HandlogSummary extends StatelessWidget {
           Expanded(
             flex: 2,
             child: Text(
-              DataFormatter.chipsFormat(diff, chipUnit: ChipUnit.CENT),
+              DataFormatter.chipsFormat(diff),
               style: TextStyle(
                 color: (diff > 0) ? Colors.green : Colors.red,
                 fontSize: 12.0,
@@ -110,8 +110,7 @@ class HandlogSummary extends StatelessWidget {
           Expanded(
             flex: 2,
             child: Text(
-              DataFormatter.chipsFormat(player.balance.after,
-                  chipUnit: ChipUnit.CENT),
+              DataFormatter.chipsFormat(player.balance.after),
               style: AppDecorators.getSubtitle1Style(theme: theme)
                   .copyWith(fontWeight: FontWeight.w500),
               textAlign: TextAlign.right,

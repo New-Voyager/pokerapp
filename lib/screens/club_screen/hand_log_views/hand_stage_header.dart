@@ -36,7 +36,7 @@ class HandStageHeader extends StatelessWidget {
       String players = playersInPots.join(',');
 
       final potValue =
-          DataFormatter.chipsFormat(seatPots[i].pot, chipUnit: ChipUnit.CENT);
+          DataFormatter.chipsFormat(seatPots[i].pot);
       final widget = Container(
         margin: EdgeInsets.all(8),
         child: Text(
@@ -160,7 +160,7 @@ class HandStageHeader extends StatelessWidget {
           ? Container(
               margin: EdgeInsets.all(8),
               child: Text(
-                "Pot: ${DataFormatter.chipsFormat(actions.potStart ?? 0, chipUnit: ChipUnit.CENT)}",
+                "Pot: ${DataFormatter.chipsFormat(actions.potStart ?? 0)}",
                 style: AppDecorators.getSubtitle1Style(theme: theme)
                     .copyWith(fontWeight: FontWeight.w700),
               ),
