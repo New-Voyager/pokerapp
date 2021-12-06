@@ -148,17 +148,21 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
 
   _fetchPlayedGames() async {
     log('fetching played games');
-    final updatedPlayedGames = await GameService.getPastGames();
-    bool refresh = true;
-    if (refresh) {
-      // playedGames.clear();
-      playedGames = updatedPlayedGames;
-      if (closed) {
-        return;
-      }
 
-      setState(() => _isPlayedGamesLoading = false);
+    if (appState != null && appState.mockScreens) {
+      playedGames = await MockData.getPlayedGames();
+    } else {
+      final updatedPlayedGames = await GameService.getPastGames();
+      bool refresh = true;
+      if (refresh) {
+        // playedGames.clear();
+        playedGames = updatedPlayedGames;
+        if (closed) {
+          return;
+        }
+      }
     }
+    setState(() => _isPlayedGamesLoading = false);
   }
 
   _loadTestLiveGames() async {

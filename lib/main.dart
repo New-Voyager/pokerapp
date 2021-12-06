@@ -35,12 +35,20 @@ void main() async {
   }
   await appService.init();
 
+  // var flavorApp = FlavorConfig(
+  //   appName: 'PokerDev',
+  //   flavorName: Flavor.DEV.toString(),
+  //   apiBaseUrl: 'https://demo.pokerclub.app',
+  //   child: MyApp(),
+  // );
+
   var flavorApp = FlavorConfig(
-    appName: 'PokerDev',
+    appName: 'PokerClubApp',
     flavorName: Flavor.DEV.toString(),
     apiBaseUrl: 'https://demo.pokerclub.app',
     child: MyApp(),
   );
+
   // var flavorApp = FlavorConfig(
   //   appName: 'PokerDev',
   //   flavorName: Flavor.PROD.toString(),

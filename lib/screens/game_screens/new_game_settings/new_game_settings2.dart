@@ -68,7 +68,13 @@ class NewGameSettings2 extends StatelessWidget {
       ),
     );
 
-    if (gmp == null) return;
+    if (gmp == null) {
+      return;
+    }
+
+    if (gmp.cancelled) {
+      return;
+    }
 
     /* otherwise, start tha game */
     final NewGameModel gm = gmp.settings;
@@ -541,7 +547,10 @@ class NewGameSettings2 extends StatelessWidget {
                       ),
                     ),
                     CircleImageButton(
-                      onTap: () => Navigator.of(context).pop(),
+                      onTap: () {
+                        gmp.cancelled = true;
+                        Navigator.pop(context, null);
+                      },
                       theme: theme,
                       icon: Icons.close,
                     ),
@@ -804,6 +813,17 @@ class NewGameSettings2 extends StatelessWidget {
                 ),
                 /* sep */
                 sepV20,
+                /* allow audio conference */
+                _buildRadio(
+                  label: _appScreenText['useAudioConf'],
+                  value: gmp.audioConference,
+                  onChange: (bool b) {
+                    gmp.audioConference = b;
+                  },
+                  theme: theme,
+                ),
+                /* sep */
+                sepV20,
 
                 /* Highhand Tracked */
                 _buildRadio(
@@ -819,8 +839,9 @@ class NewGameSettings2 extends StatelessWidget {
                 sepV20,
                 ExpansionTile(
                   subtitle: Text(_appScreenText['chooseAdvanceConfig'],
-                      style: AppStylesNew.labelTextStyle),
-                  title: Text(_appScreenText['advanceConfig']),
+                      style: AppDecorators.getHeadLine6Style(theme: theme)),
+                  title: Text(_appScreenText['advanceConfig'],
+                      style: AppDecorators.getHeadLine4Style(theme: theme)),
                   children: [
                     _buildBreakConfig(theme, gmp),
                     sepV20,
@@ -831,16 +852,6 @@ class NewGameSettings2 extends StatelessWidget {
                     DecoratedContainer(
                       theme: theme,
                       children: [
-                        /* allow audio conference */
-                        _buildRadio(
-                          label: _appScreenText['useAudioConf'],
-                          value: gmp.audioConference,
-                          onChange: (bool b) {
-                            gmp.audioConference = b;
-                          },
-                          theme: theme,
-                        ),
-
                         /* allow audio conference */
                         // _buildRadio(
                         //   label: _appScreenText['USEAGORAAUDIOCONFERENCE'],
@@ -986,9 +997,18 @@ class NewGameSettings2 extends StatelessWidget {
 
                 /* start button */
                 sepV20,
-                Stack(
-                  alignment: Alignment.center,
+                Row(
+                  ///alignment: Alignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    CircleImageButton(
+                      onTap: () {
+                        gmp.cancelled = true;
+                        Navigator.pop(context, null);
+                      },
+                      theme: theme,
+                      icon: Icons.close,
+                    ),
                     ButtonWidget(
                       text: _appScreenText['start'],
                       onTap: () {
@@ -1012,21 +1032,32 @@ class NewGameSettings2 extends StatelessWidget {
                         }
                       },
                     ),
-                    Positioned(
-                      right: 0,
-                      child: CircleImageButton(
-                        onTap: () async {
-                          await onSaveSettings(context, theme, gmp);
-                        },
-                        icon: Icons.save,
-                        theme: theme,
-                      ),
+                    CircleImageButton(
+                      onTap: () async {
+                        await onSaveSettings(context, theme, gmp);
+                      },
+                      icon: Icons.save,
+                      theme: theme,
                     ),
                   ],
                 ),
 
                 /* sep */
                 sepV20,
+                sepV20,
+                Column(
+
+                    ///alignment: Alignment.center,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                          '*Audio Beta: This feature may or may not be available in future versions',
+                          style: AppDecorators.getHeadLine6Style(theme: theme)),
+                      Text(
+                          '*High-hand: Tracks high hand occurred in the entire game',
+                          style: AppDecorators.getHeadLine6Style(theme: theme)),
+                    ]),
               ],
             ),
           ),

@@ -306,6 +306,7 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
   Widget build(BuildContext context) {
     bool isDevMode =
         FlavorConfig.of(context).flavorName == Flavor.DEV.toString();
+    isDevMode = true;
     Widget devButtons = null;
     if (isDevMode) {
       devButtons = Column(
