@@ -83,6 +83,7 @@ dependencies:
   horizontal_data_table: ^3.5.0
   jiffy: ^4.1.0
   ios_utsname_ext: ^2.1.0
+  onboarding_overlay: ^2.3.5
 
 dev_dependencies:
   #build_runner: ^2.1.0
