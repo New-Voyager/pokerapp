@@ -529,7 +529,7 @@ class DataCreditSource extends DataTableSource {
   @override
   DataRow getRow(int index) {
     MemberCreditHistory item = items[index];
-    String text = format.format(item.updatedDate);
+    String text = format.format(item.updatedDate.toLocal());
     List<String> toks = text.split(' ');
     String day = '${toks[0]} ${toks[1]}\n${toks[2]}${toks[3]}';
     String type;

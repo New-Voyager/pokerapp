@@ -120,7 +120,7 @@ class _NamePlateDailogState extends State<NamePlateDailog> {
                             split: true,
                             onTap: () async {
                               final result = await showPrompt(context, "Kick",
-                                  "Do you want to remove '${widget.gameState.currentPlayer.name}' from the game?",
+                                  "Do you want to remove '${widget.seat.player.name}' from the game?",
                                   positiveButtonText: "Yes",
                                   negativeButtonText: "No");
                               if (result != null) {

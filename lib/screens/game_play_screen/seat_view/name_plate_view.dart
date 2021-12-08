@@ -272,7 +272,13 @@ class NamePlateWidget extends StatelessWidget {
         scale: scale,
       );
     }
-
+    String playerName = '';
+    if (seat.player != null) {
+      playerName = seat.player.name;
+    }
+    if (playerName == null) {
+      playerName = '';
+    }
     Stack namePlate = Stack(
       alignment: Alignment.center,
       clipBehavior: Clip.hardEdge,
@@ -304,18 +310,21 @@ class NamePlateWidget extends StatelessWidget {
                       children: [
                         //SizedBox(height: 2),
                         // player name
-                        FittedBox(
-                          fit: BoxFit.fitWidth,
-                          child: Text(
-                            seat.player?.name ?? '',
-                            style: AppDecorators.getSubtitle4Style(theme: theme)
-                                .copyWith(
-                              fontWeight: FontWeight.normal,
-                              fontSize: 12.dp,
-                            ),
-                            //fontSize: nameplate.meta.nameTextSize),
-                          ),
-                        ),
+                        playerName == null || playerName == ''
+                            ? Container()
+                            : FittedBox(
+                                fit: BoxFit.fitWidth,
+                                child: Text(
+                                  playerName,
+                                  style: AppDecorators.getSubtitle4Style(
+                                          theme: theme)
+                                      .copyWith(
+                                    fontWeight: FontWeight.normal,
+                                    fontSize: 12.dp,
+                                  ),
+                                  //fontSize: nameplate.meta.nameTextSize),
+                                ),
+                              ),
 
                         // divider
                         Transform.scale(

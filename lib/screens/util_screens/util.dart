@@ -90,6 +90,7 @@ showWaitlistInvitation(
   AppTheme theme = AppTheme.getTheme(context);
   final res = await showDialog(
     context: context,
+    barrierDismissible: false,
     builder: (context) => AlertDialog(
       backgroundColor: theme.fillInColor,
       elevation: 5,
@@ -112,7 +113,7 @@ showWaitlistInvitation(
           text: 'No',
           theme: theme,
           onTap: () {
-            Navigator.of(context).pop();
+            Navigator.of(context).pop(false);
           },
         ),
         RoundRectButton(

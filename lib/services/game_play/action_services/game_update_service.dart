@@ -415,14 +415,30 @@ class GameUpdateService {
     }
     if (closed || _gameState.uiClosing) return;
 
+    bool removePlayer = false;
     if (!_gameState.handInProgress) {
+      removePlayer = true;
+    } else {
       if (seat != null && seat.player != null) {
-        if (_gameState.gameInfo.audioConfEnabled) {
-          if (seat.player.isMe && _gameContextObj != null) {
-            try {
-              _gameContextObj.leaveAudio();
-            } catch (err) {}
+        if (!seat.player.inhand) {
+          removePlayer = true;
+        } else {
+          if (seat.player.status == 'WAIT_FOR_BUYIN') {
+            removePlayer = true;
           }
+        }
+      }
+    }
+
+    if (removePlayer) {
+      if (_gameState.gameInfo.audioConfEnabled) {
+        if (seat != null &&
+            seat.player != null &&
+            seat.player.isMe &&
+            _gameContextObj != null) {
+          try {
+            _gameContextObj.leaveAudio();
+          } catch (err) {}
         }
       }
       _gameState.removePlayer(seatNo);
@@ -501,11 +517,11 @@ class GameUpdateService {
     if (seat != null && seat.player != null) {
       // Wait until hand is finished (result animation is completed)
       // before showing the buy-in option.
-      int waited = 0, interval = 500, maxWait = 10000;
-      while (_gameState.handInProgress && waited <= maxWait) {
-        await Future.delayed(Duration(milliseconds: interval));
-        waited += interval;
-      }
+      // int waited = 0, interval = 500, maxWait = 10000;
+      // while (_gameState.handInProgress && waited <= maxWait) {
+      //   await Future.delayed(Duration(milliseconds: interval));
+      //   waited += interval;
+      // }
       seat.player.waitForBuyInApproval = true;
       seat.player.status = PlayerStatus.WAIT_FOR_BUYIN
           .toString()
@@ -743,6 +759,8 @@ class GameUpdateService {
     var data,
   }) {
     var playerUpdate = data;
+    String dataStr = jsonEncode(playerUpdate);
+    log('PLAYER_UPDATE: $dataStr');
     String newUpdate = playerUpdate['newUpdate'];
     String playerStatus = playerUpdate['status'];
     int playerId = int.parse(playerUpdate['playerId'].toString());

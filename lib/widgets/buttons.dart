@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/models/ui/app_theme_styles.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 import 'blinking_widget.dart';
@@ -578,6 +579,59 @@ class ConfirmNoButton2 extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class IconAndTitleWidget extends StatelessWidget {
+  final IconData icon;
+  final String text;
+  final Function onTap;
+  final Widget child;
+  IconAndTitleWidget({this.icon, this.text, this.onTap, this.child});
+  @override
+  Widget build(BuildContext context) {
+    final theme = AppTheme.getTheme(context);
+    return Column(
+      children: [
+        InkWell(
+          onTap: () {
+            onTap();
+          },
+          child: child ??
+              Container(
+                decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: theme.primaryColorWithDark(),
+                    boxShadow: [
+                      BoxShadow(
+                        color: theme.secondaryColor,
+                        spreadRadius: 2,
+                        blurRadius: 2,
+                        offset: Offset(1, 0),
+                      ),
+                    ]),
+                child: Icon(
+                  icon ?? Icons.info,
+                  size: 20.dp,
+                  color: theme.supportingColor,
+                ),
+                padding: EdgeInsets.all(16),
+              ),
+        ),
+        InkWell(
+          onTap: () {
+            onTap();
+          },
+          child: Container(
+            padding: EdgeInsets.all(5),
+            child: Text(
+              text,
+              style: AppDecorators.getSubtitle3Style(theme: theme),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

@@ -124,6 +124,7 @@ class AudioService {
   }
 
   static playSound(String soundFile, {bool mute}) {
+    return;
     if (!play) {
       return;
     }

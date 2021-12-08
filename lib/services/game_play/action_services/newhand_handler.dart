@@ -402,7 +402,7 @@ class NewHandHandler {
         }
 
         // start the animation
-        log('CardDistribution: seatNo: $seatNo');
+        // log('CardDistribution: seatNo: $seatNo');
         gameState.cardDistributionState.seatNo = seatNo;
         if (gameState.uiClosing) return;
 

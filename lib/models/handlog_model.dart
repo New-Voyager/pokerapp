@@ -153,7 +153,7 @@ class ResultPotWinner {
   factory ResultPotWinner.fromJson(dynamic json) {
     ResultPotWinner resultPotWinner = ResultPotWinner();
     resultPotWinner.potNo = json['potNo'];
-    resultPotWinner.amount = double.parse(json['amount'].toString());
+    resultPotWinner.amount = double.parse(json['amount'].toString()) / 100;
     resultPotWinner.seatsInPots = json['seatsInPots'].cast<int>();
     resultPotWinner.boardWinners = [];
     if (json['boardWinners'] != null) {
