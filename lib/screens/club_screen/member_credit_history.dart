@@ -400,7 +400,9 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
 
                 // download button
                 customButton.CustomTextButton(
-                  onTap: _handleDownload,
+                  onTap: (history == null || history.isEmpty)
+                      ? null
+                      : _handleDownload,
                   text: 'Download',
                 ),
               ],
@@ -412,6 +414,8 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
   }
 
   void _handleDownload() async {
+    if (history == null || history.isEmpty) return;
+
     final csv = MemberCreditHistory.makeCsv(
       headers: headers,
       history: history,

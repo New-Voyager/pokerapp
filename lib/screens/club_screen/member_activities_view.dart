@@ -113,8 +113,10 @@ class _ClubMemberActivitiesScreenState
     } catch (err) {
       failed = true;
     }
-    memberActivitiesForDownload.clear();
-    memberActivitiesForDownload.addAll(activities);
+    if (activities != null && activities.isNotEmpty) {
+      memberActivitiesForDownload.clear();
+      memberActivitiesForDownload.addAll(activities);
+    }
 
     dts = DataSource(
         clubCode: widget.clubCode,
@@ -323,7 +325,9 @@ class _ClubMemberActivitiesScreenState
               ),
               const SizedBox(height: 20.0),
               CustomTextButton(
-                onTap: _handleDownload,
+                onTap: memberActivitiesForDownload.isEmpty
+                    ? null
+                    : _handleDownload,
                 text: 'Download',
               ),
             ],
@@ -334,6 +338,8 @@ class _ClubMemberActivitiesScreenState
   }
 
   void _handleDownload() async {
+    if (memberActivitiesForDownload.isEmpty) return;
+
     final csv = MemberActivity.makeCsv(
       headers: headers,
       activities: memberActivitiesForDownload,
