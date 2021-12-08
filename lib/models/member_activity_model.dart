@@ -1,5 +1,9 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
+import 'package:csv/csv.dart';
+import 'package:intl/intl.dart';
+
 class MemberActivity {
   String name;
   String playerUuid;
@@ -54,6 +58,69 @@ class MemberActivity {
     activity.profit = double.parse((json['profit'] ?? 0).toString());
     activity.buyin = double.parse((json['buyin'] ?? 0).toString());
     return activity;
+  }
+
+/*
+headers.add('Name');
+    headers.add('Credits');
+    if (includeTips) {
+      headers.add('Tips');
+      headers.add('TB %');
+      headers.add('TB');
+      headers.add('Buyin');
+      headers.add('Profit');
+    }
+    if (includeLastPlayedDate) {
+      headers.add('Contact');
+      headers.add('Last Active');
+    }*/
+
+  static String _getValue(MemberActivity activity, String h) {
+    switch (h.toLowerCase()) {
+      case 'name':
+        return activity.name;
+
+      case 'credits':
+        return activity.credits.toString();
+
+      case 'tips':
+        return activity.tips.toString();
+
+      case 'tb %':
+        return activity.tipsBack.toString();
+
+      case 'buyin':
+        return activity.buyin.toString();
+
+      case 'profit':
+        return activity.profit.toString();
+
+      case 'contact':
+        return activity.contactInfo;
+
+      // yyyy-mm-dd hh:mm
+      case 'last active':
+        return DateFormat('yyyy-MM-dd hh:mm a').format(
+          activity.lastPlayedDate.toLocal(),
+        );
+
+      default:
+        return "";
+    }
+  }
+
+  static String makeCsv({
+    @required final List<String> headers,
+    @required final List<MemberActivity> activities,
+  }) {
+    final csvList = <List<dynamic>>[];
+
+    for (final a in activities) {
+      csvList.add(headers.map((h) => _getValue(a, h)).toList());
+    }
+
+    final csvConverter = ListToCsvConverter();
+    return csvConverter.convert([headers, ...csvList]);
   }
 
   static List<MemberActivity> getMockData() {

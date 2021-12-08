@@ -19,12 +19,15 @@ class CustomTextButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      child: Text(
-        split ? text?.replaceFirst(" ", "\n") ?? 'Text' : text ?? 'Text',
-        textAlign: TextAlign.center,
-        style: AppStylesNew.textButtonStyle,
+    return Opacity(
+      opacity: onTap == null ? 0.50 : 1.0,
+      child: InkWell(
+        onTap: onTap,
+        child: Text(
+          split ? text?.replaceFirst(" ", "\n") ?? 'Text' : text ?? 'Text',
+          textAlign: TextAlign.center,
+          style: AppStylesNew.textButtonStyle,
+        ),
       ),
     );
   }
