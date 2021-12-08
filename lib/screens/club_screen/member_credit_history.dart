@@ -1,7 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
-import 'package:pokerapp/models/club_homepage_model.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:pokerapp/models/club_members_model.dart';
 import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
@@ -14,6 +16,8 @@ import 'package:pokerapp/services/app/club_interior_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/widgets/buttons.dart';
+import 'package:pokerapp/widgets/custom_text_button.dart' as customButton;
+import 'package:share/share.dart';
 
 import '../../routes.dart';
 
@@ -34,6 +38,8 @@ class ClubActivityCreditScreen extends StatefulWidget {
 class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
   AppTheme theme;
   List<MemberCreditHistory> history;
+
+  final List<String> headers = ['Date', 'Note', 'Type', 'Amount', 'Credits'];
   bool loading;
   ClubMemberModel member;
   bool changed = false;
@@ -54,8 +60,11 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
       history = await ClubInteriorService.getCreditHistory(
           widget.clubCode, widget.playerId);
       // history = MemberCreditHistory.getMockData();
-      _dataTableSource =
-          DataCreditSource(items: history, theme: theme, onTap: openItem);
+      _dataTableSource = DataCreditSource(
+        items: history,
+        theme: theme,
+        onTap: openItem,
+      );
     } catch (err) {}
     loading = false;
     setState(() {});
@@ -75,240 +84,240 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
     );
   }
 
-  Widget activities() {
-    return Expanded(
-      child: Container(
-        decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
-        child: ListView.builder(
-            physics: BouncingScrollPhysics(),
-            itemCount: history.length,
-            shrinkWrap: true,
-            itemBuilder: (context, index) {
-              final item = history[index];
-              Widget historyItem = Container();
-              if (item.updateType == 'GAME_RESULT') {
-                historyItem = Container(
-                  color: theme.fillInColor,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      children: [
-                        Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                children: [
-                                  Text('Game Code',
-                                      style: AppStylesNew.gameCodeTextStyle),
-                                  Text(item.gameCode)
-                                ],
-                              ),
-                              Column(
-                                children: [
-                                  Text(
-                                    "Stack",
-                                    style: AppStylesNew.accentTextStyle
-                                        .copyWith(
-                                            fontSize: 12.dp,
-                                            fontWeight: FontWeight.bold),
-                                  ),
-                                  Text(
-                                    '${DataFormatter.chipsFormat(item.amount)}',
-                                    style: TextStyle(
-                                      color: item.amount < 0
-                                          ? Colors.redAccent
-                                          : Colors.greenAccent,
-                                      fontSize: 12.dp,
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Text(
-                                  '${DataFormatter.chipsFormat(item.updatedCredits)}',
-                                  style: TextStyle(
-                                    color: item.updatedCredits < 0
-                                        ? Colors.redAccent
-                                        : Colors.greenAccent,
-                                    fontSize: 12.dp,
-                                    fontWeight: FontWeight.w400,
-                                  ))
-                            ]),
-                        Align(
-                            alignment: Alignment.centerRight,
-                            child: Text(item.updatedDate.toLocal().toString())),
-                        Divider(color: Colors.white),
-                      ],
-                    ),
-                  ),
-                );
-              } else if (item.updateType == 'BUYIN') {
-                historyItem = Container(
-                  color: theme.fillInColor,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      children: [
-                        Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                children: [
-                                  Text('Game Code',
-                                      style: AppStylesNew.gameCodeTextStyle),
-                                  Text(item.gameCode)
-                                ],
-                              ),
-                              Column(
-                                children: [
-                                  Text(
-                                    "Buyin",
-                                    style: AppStylesNew.buyinTextStyle.copyWith(
-                                        fontSize: 12.dp,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  Text(
-                                    '${DataFormatter.chipsFormat(item.amount)}',
-                                    style: TextStyle(
-                                      color: item.amount < 0
-                                          ? Colors.redAccent
-                                          : Colors.greenAccent,
-                                      fontSize: 12.dp,
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Text(
-                                  '${DataFormatter.chipsFormat(item.updatedCredits)}',
-                                  style: TextStyle(
-                                    color: item.updatedCredits < 0
-                                        ? Colors.redAccent
-                                        : Colors.greenAccent,
-                                    fontSize: 12.dp,
-                                    fontWeight: FontWeight.w400,
-                                  ))
-                            ]),
-                        Align(
-                            alignment: Alignment.centerRight,
-                            child: Text(DataFormatter.dateFormat(
-                                item.updatedDate.toLocal()))),
-                        Divider(color: Colors.white),
-                      ],
-                    ),
-                  ),
-                );
-              } else if (item.updateType == 'CHANGE') {
-                historyItem = Container(
-                  color: theme.fillInColor,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      children: [
-                        Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                children: [
-                                  Text(item.notes),
-                                ],
-                              ),
-                              Text(
-                                  '${DataFormatter.chipsFormat(item.updatedCredits)}',
-                                  style: TextStyle(
-                                    color: item.updatedCredits < 0
-                                        ? Colors.redAccent
-                                        : Colors.greenAccent,
-                                    fontSize: 12.dp,
-                                    fontWeight: FontWeight.w400,
-                                  ))
-                            ]),
-                        SizedBox(
-                          height: 5.ph,
-                        ),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: Text('Updated by ${item.adminName}',
-                              style: AppStylesNew.footerResultTextStyle3),
-                        ),
-                        Align(
-                            alignment: Alignment.centerRight,
-                            child: Text(DataFormatter.dateFormat(
-                                item.updatedDate.toLocal()))),
-                        Divider(color: Colors.white),
-                      ],
-                    ),
-                  ),
-                );
-              } else if (item.updateType == 'ADD' ||
-                  item.updateType == 'DEDUCT') {
-                bool add = item.updateType == 'ADD';
-                historyItem = Container(
-                  color: theme.fillInColor,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      children: [
-                        Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                children: [
-                                  Text(item.notes),
-                                ],
-                              ),
-                              Column(
-                                children: [
-                                  Text(
-                                    item.updateType == 'ADD' ? 'Add' : 'Deduct',
-                                    style: AppStylesNew.buyinTextStyle.copyWith(
-                                        color: add
-                                            ? Colors.greenAccent
-                                            : Colors.redAccent,
-                                        fontSize: 12.dp,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  Text(
-                                    '${DataFormatter.chipsFormat(item.amount)}',
-                                    style: TextStyle(
-                                      color: !add
-                                          ? Colors.redAccent
-                                          : Colors.greenAccent,
-                                      fontSize: 12.dp,
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Text(
-                                  '${DataFormatter.chipsFormat(item.updatedCredits)}',
-                                  style: TextStyle(
-                                    color: item.updatedCredits < 0
-                                        ? Colors.redAccent
-                                        : Colors.greenAccent,
-                                    fontSize: 12.dp,
-                                    fontWeight: FontWeight.w400,
-                                  ))
-                            ]),
-                        Align(
-                            alignment: Alignment.centerRight,
-                            child: Text(DataFormatter.dateFormat(
-                                item.updatedDate.toLocal()))),
-                        Divider(color: Colors.white),
-                      ],
-                    ),
-                  ),
-                );
-              }
-              return historyItem;
-            }),
-      ),
-    );
-  }
+  // Widget activities() {
+  //   return Expanded(
+  //     child: Container(
+  //       decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
+  //       child: ListView.builder(
+  //           physics: BouncingScrollPhysics(),
+  //           itemCount: history.length,
+  //           shrinkWrap: true,
+  //           itemBuilder: (context, index) {
+  //             final item = history[index];
+  //             Widget historyItem = Container();
+  //             if (item.updateType == 'GAME_RESULT') {
+  //               historyItem = Container(
+  //                 color: theme.fillInColor,
+  //                 child: Padding(
+  //                   padding: const EdgeInsets.all(8.0),
+  //                   child: Column(
+  //                     children: [
+  //                       Row(
+  //                           crossAxisAlignment: CrossAxisAlignment.start,
+  //                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                           children: [
+  //                             Column(
+  //                               children: [
+  //                                 Text('Game Code',
+  //                                     style: AppStylesNew.gameCodeTextStyle),
+  //                                 Text(item.gameCode)
+  //                               ],
+  //                             ),
+  //                             Column(
+  //                               children: [
+  //                                 Text(
+  //                                   "Stack",
+  //                                   style: AppStylesNew.accentTextStyle
+  //                                       .copyWith(
+  //                                           fontSize: 12.dp,
+  //                                           fontWeight: FontWeight.bold),
+  //                                 ),
+  //                                 Text(
+  //                                   '${DataFormatter.chipsFormat(item.amount)}',
+  //                                   style: TextStyle(
+  //                                     color: item.amount < 0
+  //                                         ? Colors.redAccent
+  //                                         : Colors.greenAccent,
+  //                                     fontSize: 12.dp,
+  //                                     fontWeight: FontWeight.w400,
+  //                                   ),
+  //                                 ),
+  //                               ],
+  //                             ),
+  //                             Text(
+  //                                 '${DataFormatter.chipsFormat(item.updatedCredits)}',
+  //                                 style: TextStyle(
+  //                                   color: item.updatedCredits < 0
+  //                                       ? Colors.redAccent
+  //                                       : Colors.greenAccent,
+  //                                   fontSize: 12.dp,
+  //                                   fontWeight: FontWeight.w400,
+  //                                 ))
+  //                           ]),
+  //                       Align(
+  //                           alignment: Alignment.centerRight,
+  //                           child: Text(item.updatedDate.toLocal().toString())),
+  //                       Divider(color: Colors.white),
+  //                     ],
+  //                   ),
+  //                 ),
+  //               );
+  //             } else if (item.updateType == 'BUYIN') {
+  //               historyItem = Container(
+  //                 color: theme.fillInColor,
+  //                 child: Padding(
+  //                   padding: const EdgeInsets.all(8.0),
+  //                   child: Column(
+  //                     children: [
+  //                       Row(
+  //                           crossAxisAlignment: CrossAxisAlignment.start,
+  //                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                           children: [
+  //                             Column(
+  //                               children: [
+  //                                 Text('Game Code',
+  //                                     style: AppStylesNew.gameCodeTextStyle),
+  //                                 Text(item.gameCode)
+  //                               ],
+  //                             ),
+  //                             Column(
+  //                               children: [
+  //                                 Text(
+  //                                   "Buyin",
+  //                                   style: AppStylesNew.buyinTextStyle.copyWith(
+  //                                       fontSize: 12.dp,
+  //                                       fontWeight: FontWeight.bold),
+  //                                 ),
+  //                                 Text(
+  //                                   '${DataFormatter.chipsFormat(item.amount)}',
+  //                                   style: TextStyle(
+  //                                     color: item.amount < 0
+  //                                         ? Colors.redAccent
+  //                                         : Colors.greenAccent,
+  //                                     fontSize: 12.dp,
+  //                                     fontWeight: FontWeight.w400,
+  //                                   ),
+  //                                 ),
+  //                               ],
+  //                             ),
+  //                             Text(
+  //                                 '${DataFormatter.chipsFormat(item.updatedCredits)}',
+  //                                 style: TextStyle(
+  //                                   color: item.updatedCredits < 0
+  //                                       ? Colors.redAccent
+  //                                       : Colors.greenAccent,
+  //                                   fontSize: 12.dp,
+  //                                   fontWeight: FontWeight.w400,
+  //                                 ))
+  //                           ]),
+  //                       Align(
+  //                           alignment: Alignment.centerRight,
+  //                           child: Text(DataFormatter.dateFormat(
+  //                               item.updatedDate.toLocal()))),
+  //                       Divider(color: Colors.white),
+  //                     ],
+  //                   ),
+  //                 ),
+  //               );
+  //             } else if (item.updateType == 'CHANGE') {
+  //               historyItem = Container(
+  //                 color: theme.fillInColor,
+  //                 child: Padding(
+  //                   padding: const EdgeInsets.all(8.0),
+  //                   child: Column(
+  //                     children: [
+  //                       Row(
+  //                           crossAxisAlignment: CrossAxisAlignment.start,
+  //                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                           children: [
+  //                             Column(
+  //                               children: [
+  //                                 Text(item.notes),
+  //                               ],
+  //                             ),
+  //                             Text(
+  //                                 '${DataFormatter.chipsFormat(item.updatedCredits)}',
+  //                                 style: TextStyle(
+  //                                   color: item.updatedCredits < 0
+  //                                       ? Colors.redAccent
+  //                                       : Colors.greenAccent,
+  //                                   fontSize: 12.dp,
+  //                                   fontWeight: FontWeight.w400,
+  //                                 ))
+  //                           ]),
+  //                       SizedBox(
+  //                         height: 5.ph,
+  //                       ),
+  //                       Align(
+  //                         alignment: Alignment.centerRight,
+  //                         child: Text('Updated by ${item.adminName}',
+  //                             style: AppStylesNew.footerResultTextStyle3),
+  //                       ),
+  //                       Align(
+  //                           alignment: Alignment.centerRight,
+  //                           child: Text(DataFormatter.dateFormat(
+  //                               item.updatedDate.toLocal()))),
+  //                       Divider(color: Colors.white),
+  //                     ],
+  //                   ),
+  //                 ),
+  //               );
+  //             } else if (item.updateType == 'ADD' ||
+  //                 item.updateType == 'DEDUCT') {
+  //               bool add = item.updateType == 'ADD';
+  //               historyItem = Container(
+  //                 color: theme.fillInColor,
+  //                 child: Padding(
+  //                   padding: const EdgeInsets.all(8.0),
+  //                   child: Column(
+  //                     children: [
+  //                       Row(
+  //                           crossAxisAlignment: CrossAxisAlignment.start,
+  //                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                           children: [
+  //                             Column(
+  //                               children: [
+  //                                 Text(item.notes),
+  //                               ],
+  //                             ),
+  //                             Column(
+  //                               children: [
+  //                                 Text(
+  //                                   item.updateType == 'ADD' ? 'Add' : 'Deduct',
+  //                                   style: AppStylesNew.buyinTextStyle.copyWith(
+  //                                       color: add
+  //                                           ? Colors.greenAccent
+  //                                           : Colors.redAccent,
+  //                                       fontSize: 12.dp,
+  //                                       fontWeight: FontWeight.bold),
+  //                                 ),
+  //                                 Text(
+  //                                   '${DataFormatter.chipsFormat(item.amount)}',
+  //                                   style: TextStyle(
+  //                                     color: !add
+  //                                         ? Colors.redAccent
+  //                                         : Colors.greenAccent,
+  //                                     fontSize: 12.dp,
+  //                                     fontWeight: FontWeight.w400,
+  //                                   ),
+  //                                 ),
+  //                               ],
+  //                             ),
+  //                             Text(
+  //                                 '${DataFormatter.chipsFormat(item.updatedCredits)}',
+  //                                 style: TextStyle(
+  //                                   color: item.updatedCredits < 0
+  //                                       ? Colors.redAccent
+  //                                       : Colors.greenAccent,
+  //                                   fontSize: 12.dp,
+  //                                   fontWeight: FontWeight.w400,
+  //                                 ))
+  //                           ]),
+  //                       Align(
+  //                           alignment: Alignment.centerRight,
+  //                           child: Text(DataFormatter.dateFormat(
+  //                               item.updatedDate.toLocal()))),
+  //                       Divider(color: Colors.white),
+  //                     ],
+  //                   ),
+  //                 ),
+  //               );
+  //             }
+  //             return historyItem;
+  //           }),
+  //     ),
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -339,55 +348,86 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                // buildBanner(),
-                // dividingSpace(),
-                // Divider(color: Colors.white),
-                // dividingSpace(),
+                // header
                 Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Credits",
-                        style: TextStyle(
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.w600,
-                        ),
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Credits",
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.w600,
                       ),
-                      Text(
-                        DataFormatter.chipsFormat(member.availableCredit),
-                        style: AppDecorators.getHeadLine3Style(theme: theme)
-                            .copyWith(
-                                color: member.availableCredit < 0
-                                    ? Colors.redAccent
-                                    : Colors.greenAccent),
-                      ),
-                      !widget.owner
-                          ? SizedBox.shrink()
-                          : RoundRectButton(
-                              theme: theme,
-                              text: 'Change',
-                              onTap: () async {
-                                bool ret = await SetCreditsDialog.prompt(
-                                    context: context,
-                                    clubCode: widget.clubCode,
-                                    playerUuid: widget.playerId,
-                                    name: member.name,
-                                    credits: member.availableCredit.toDouble());
+                    ),
+                    Text(
+                      DataFormatter.chipsFormat(member.availableCredit),
+                      style: AppDecorators.getHeadLine3Style(theme: theme)
+                          .copyWith(
+                              color: member.availableCredit < 0
+                                  ? Colors.redAccent
+                                  : Colors.greenAccent),
+                    ),
+                    !widget.owner
+                        ? SizedBox.shrink()
+                        : RoundRectButton(
+                            theme: theme,
+                            text: 'Change',
+                            onTap: () async {
+                              bool ret = await SetCreditsDialog.prompt(
+                                  context: context,
+                                  clubCode: widget.clubCode,
+                                  playerUuid: widget.playerId,
+                                  name: member.name,
+                                  credits: member.availableCredit.toDouble());
 
-                                if (ret) {
-                                  changed = true;
-                                  widget.member.refreshCredits = true;
-                                  fetchData();
-                                }
-                              })
-                    ]),
-                dividingSpace(),
-                activitiesTable(),
+                              if (ret) {
+                                changed = true;
+                                widget.member.refreshCredits = true;
+                                fetchData();
+                              }
+                            },
+                          )
+                  ],
+                ),
+
+                // main table
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: 5.0),
+                    child: activitiesTable(),
+                  ),
+                ),
+
+                // download button
+                customButton.CustomTextButton(
+                  onTap: _handleDownload,
+                  text: 'Download',
+                ),
               ],
             ),
           ),
         ),
       ),
+    );
+  }
+
+  void _handleDownload() async {
+    final csv = MemberCreditHistory.makeCsv(
+      headers: headers,
+      history: history,
+    );
+
+    print(csv);
+
+    final tempDir = await getTemporaryDirectory();
+
+    final file = File('${tempDir.path}/Member Credit History.csv');
+    await file.writeAsString(csv);
+
+    Share.shareFiles(
+      [file.path],
+      mimeTypes: ['text/csv'],
+      subject: 'Member Credit History',
     );
   }
 
@@ -419,8 +459,11 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
 
   // activities table using data source with paginationtableclass
   activitiesTable() {
-    TextStyle headingStyle = AppDecorators.getAccentTextStyle(theme: theme)
-        .copyWith(fontSize: 8.dp, fontWeight: FontWeight.normal);
+    TextStyle headingStyle =
+        AppDecorators.getAccentTextStyle(theme: theme).copyWith(
+      fontSize: 8.dp,
+      fontWeight: FontWeight.normal,
+    );
 
     return PaginatedDataTable(
       columnSpacing: 10.0,
@@ -428,38 +471,13 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
       onSelectAll: (b) {},
       showFirstLastButtons: true,
       arrowHeadColor: theme.accentColor,
-      columns: [
-        DataColumn(
-          label: Text(
-            "Date",
-            style: headingStyle,
-          ),
-        ),
-        DataColumn(
-          label: Text(
-            "Note",
-            style: headingStyle,
-          ),
-        ),
-        DataColumn(
-          label: Text(
-            "Type",
-            style: headingStyle,
-          ),
-        ),
-        DataColumn(
-          label: Text(
-            "Amount",
-            style: headingStyle,
-          ),
-        ),
-        DataColumn(
-          label: Text(
-            "Credits",
-            style: headingStyle,
-          ),
-        ),
-      ],
+      columns: headers
+          .map<DataColumn>(
+            (header) => DataColumn(
+              label: Text(header, style: headingStyle),
+            ),
+          )
+          .toList(),
       source: _dataTableSource,
     );
   }
