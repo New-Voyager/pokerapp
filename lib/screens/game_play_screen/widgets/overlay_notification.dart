@@ -2,12 +2,53 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:pokerapp/widgets/cards/multiple_stack_card_views.dart';
+import 'package:provider/provider.dart';
+
+class ParentOverlayNotificationWidget extends StatelessWidget {
+  final Widget child;
+
+  ParentOverlayNotificationWidget({
+    @required this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final AppTheme appTheme = context.read<AppTheme>();
+    return SlideDismissible(
+      key: ValueKey("overlayNotification"),
+      direction: DismissDirection.horizontal,
+      child: SafeArea(
+        child: Card(
+          color: appTheme.primaryColorWithDark(0.9),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+            side: BorderSide(
+              width: 2,
+              color: appTheme.accentColor,
+            ),
+          ),
+          elevation: 5,
+          child: Container(
+            margin: EdgeInsets.symmetric(horizontal: 10.pw),
+            padding: EdgeInsets.symmetric(horizontal: 16.pw, vertical: 10.ph),
+            // decoration: BoxDecoration(
+            //   color: AppColorsNew.notificationBackgroundColor,
+            //   borderRadius: BorderRadius.circular(8.pw),
+            // ),
+            child: child,
+          ),
+        ),
+      ),
+    );
+  }
+}
 
 class OverlayNotificationWidget extends StatelessWidget {
   final String amount;
@@ -60,9 +101,12 @@ class OverlayNotificationWidget extends StatelessWidget {
         height: 32.pw,
         width: 32.pw,
         decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            //color: Colors.black,
-            border: Border.all(color: AppColorsNew.notificationIconColor)),
+          shape: BoxShape.circle,
+          //color: Colors.black,
+          border: Border.all(
+            color: AppColorsNew.notificationIconColor,
+          ),
+        ),
         padding: EdgeInsets.all(5.pw),
         margin: EdgeInsets.symmetric(
           horizontal: 5.pw,
@@ -75,59 +119,47 @@ class OverlayNotificationWidget extends StatelessWidget {
         Icons.info_outline,
       );
     }
-    return SlideDismissible(
-      key: ValueKey("overlayNotification"),
-      direction: DismissDirection.horizontal,
-      child: SafeArea(
-        child: Card(
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 16.pw, vertical: 8.ph),
-            decoration: BoxDecoration(
-              color: AppColorsNew.notificationBackgroundColor,
-              borderRadius: BorderRadius.circular(8.pw),
-            ),
-            child: Row(
+    return ParentOverlayNotificationWidget(
+      child: Row(
+        children: [
+          leadingImage,
+          AppDimensionsNew.getHorizontalSpace(8),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                leadingImage,
-                AppDimensionsNew.getHorizontalSpace(8),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        title,
-                        style: TextStyle(
-                          color: AppColorsNew.notificationTitleColor,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 10.dp,
-                        ),
-                      ),
-                      subTitle == null
-                          ? SizedBox.shrink()
-                          : Text(
-                              subTitle,
-                              style: TextStyle(
-                                color: AppColorsNew.notificationTextColor,
-                                fontWeight: FontWeight.w400,
-                                fontSize: 8.dp,
-                              ),
-                            ),
-                    ],
+                Text(
+                  title,
+                  style: TextStyle(
+                    color: AppColorsNew.notificationTitleColor,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 10.dp,
                   ),
                 ),
-                AppDimensionsNew.getHorizontalSpace(8),
-                IconButton(
-                    icon: Icon(
-                      Icons.cancel_rounded,
-                      color: AppColorsNew.darkGreenShadeColor,
-                    ),
-                    onPressed: () {
-                      OverlaySupportEntry.of(context).dismiss();
-                    }),
+                subTitle == null
+                    ? SizedBox.shrink()
+                    : Text(
+                        subTitle,
+                        style: TextStyle(
+                          color: AppColorsNew.notificationTextColor,
+                          fontWeight: FontWeight.w400,
+                          fontSize: 8.dp,
+                        ),
+                      ),
               ],
             ),
           ),
-        ),
+          AppDimensionsNew.getHorizontalSpace(8),
+          IconButton(
+            icon: Icon(
+              Icons.cancel_rounded,
+              color: AppColorsNew.notificationIconColor,
+            ),
+            onPressed: () {
+              OverlaySupportEntry.of(context).dismiss();
+            },
+          ),
+        ],
       ),
     );
   }
@@ -165,95 +197,83 @@ class OverlayRabbitHuntNotificationWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SlideDismissible(
-      key: ValueKey("overlayNotification"),
-      direction: DismissDirection.horizontal,
-      child: SafeArea(
-        child: Card(
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 16.pw, vertical: 8.ph),
-            decoration: BoxDecoration(
-              color: AppColorsNew.notificationBackgroundColor,
-              borderRadius: BorderRadius.circular(8.pw),
-            ),
-            child: Row(
+    return ParentOverlayNotificationWidget(
+      child: Row(
+        children: [
+          // icon
+          SvgPicture.asset(
+            AppAssets.rabbit,
+            height: 24.pw,
+            width: 24.pw,
+            color: Colors.white,
+          ),
+
+          // sep
+          AppDimensionsNew.getHorizontalSpace(8),
+
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                // icon
-                SvgPicture.asset(
-                  AppAssets.rabbit,
-                  height: 24.pw,
-                  width: 24.pw,
-                  color: Colors.white,
+                // hand number
+                Text(
+                  'Hand #$handNo',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: AppColorsNew.notificationTextColor,
+                    fontWeight: FontWeight.w400,
+                    fontSize: 8.dp,
+                  ),
                 ),
 
-                // sep
-                AppDimensionsNew.getHorizontalSpace(8),
-
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisSize: MainAxisSize.min,
+                // cards
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 15.0),
+                  child: Row(
                     children: [
-                      // hand number
-                      Text(
-                        'Hand #$handNo',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: AppColorsNew.notificationTextColor,
-                          fontWeight: FontWeight.w400,
-                          fontSize: 8.dp,
-                        ),
+                      // player cards
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(name),
+                          StackCardView00(cards: playerCards),
+                        ],
                       ),
 
-                      // cards
-                      Container(
-                        margin: EdgeInsets.symmetric(horizontal: 15.0),
-                        child: Row(
-                          children: [
-                            // player cards
-                            Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(name),
-                                StackCardView00(cards: playerCards),
-                              ],
-                            ),
+                      // spacer
+                      Spacer(),
 
-                            // spacer
-                            Spacer(),
-
-                            // community cards
-                            Column(
-                              children: [
-                                Text('Community'),
-                                StackCardView(
-                                  cards: _getCards(),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
+                      // community cards
+                      Column(
+                        children: [
+                          Text('Community'),
+                          StackCardView(
+                            cards: _getCards(),
+                          ),
+                        ],
                       ),
                     ],
                   ),
                 ),
-
-                // sep
-                AppDimensionsNew.getHorizontalSpace(8),
-
-                // cancel button
-                IconButton(
-                    icon: Icon(
-                      Icons.cancel_rounded,
-                      color: AppColorsNew.darkGreenShadeColor,
-                    ),
-                    onPressed: () {
-                      OverlaySupportEntry.of(context).dismiss();
-                    }),
               ],
             ),
           ),
-        ),
+
+          // sep
+          AppDimensionsNew.getHorizontalSpace(8),
+
+          // cancel button
+          IconButton(
+            icon: Icon(
+              Icons.cancel_rounded,
+              color: AppColorsNew.notificationIconColor,
+            ),
+            onPressed: () {
+              OverlaySupportEntry.of(context).dismiss();
+            },
+          ),
+        ],
       ),
     );
   }
@@ -289,82 +309,58 @@ class OverlayHighHandNotificationWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SlideDismissible(
-      key: ValueKey("overlayNotification"),
-      direction: DismissDirection.horizontal,
-      child: SafeArea(
-        child: Card(
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 16.pw, vertical: 8.ph),
-            decoration: BoxDecoration(
-              color: AppColorsNew.notificationBackgroundColor,
-              borderRadius: BorderRadius.circular(8.pw),
-            ),
-            child: Row(
+    return ParentOverlayNotificationWidget(
+      child: Row(
+        children: [
+          // icon
+          SvgPicture.asset(
+            AppAssets.highHand,
+            height: 24.pw,
+            width: 24.pw,
+            color: Colors.white,
+          ),
+
+          // sep
+          AppDimensionsNew.getHorizontalSpace(8),
+
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                // icon
-                SvgPicture.asset(
-                  AppAssets.highHand,
-                  height: 24.pw,
-                  width: 24.pw,
-                  color: Colors.white,
+                // hand number
+                Text(
+                  'Hand #$handNo',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: AppColorsNew.notificationTextColor,
+                    fontWeight: FontWeight.w400,
+                    fontSize: 8.dp,
+                  ),
                 ),
 
-                // sep
-                AppDimensionsNew.getHorizontalSpace(8),
-
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisSize: MainAxisSize.min,
+                // cards
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 15.0),
+                  child: Row(
                     children: [
-                      // hand number
-                      Text(
-                        'Hand #$handNo',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: AppColorsNew.notificationTextColor,
-                          fontWeight: FontWeight.w400,
-                          fontSize: 8.dp,
-                        ),
+                      // player cards
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(name),
+                          StackCardView00(cards: playerCards),
+                        ],
                       ),
 
-                      // cards
-                      Container(
-                        margin: EdgeInsets.symmetric(horizontal: 15.0),
-                        child: Row(
-                          children: [
-                            // player cards
-                            Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(name),
-                                StackCardView00(cards: playerCards),
-                              ],
-                            ),
+                      // spacer
+                      Spacer(),
 
-                            // spacer
-                            Spacer(),
-
-                            // community cards
-                            Column(
-                              children: [
-                                Text('Community'),
-                                StackCardView(cards: _getCards()),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-
-                      // sep
-                      AppDimensionsNew.getVerticalSizedBox(5.0),
-
-                      // high hand cards
+                      // community cards
                       Column(
                         children: [
-                          Text('High Hand Cards'),
-                          StackCardView00(cards: highHandCards),
+                          Text('Community'),
+                          StackCardView(cards: _getCards()),
                         ],
                       ),
                     ],
@@ -372,21 +368,33 @@ class OverlayHighHandNotificationWidget extends StatelessWidget {
                 ),
 
                 // sep
-                AppDimensionsNew.getHorizontalSpace(8),
+                AppDimensionsNew.getVerticalSizedBox(5.0),
 
-                // cancel button
-                IconButton(
-                    icon: Icon(
-                      Icons.cancel_rounded,
-                      color: AppColorsNew.darkGreenShadeColor,
-                    ),
-                    onPressed: () {
-                      OverlaySupportEntry.of(context).dismiss();
-                    }),
+                // high hand cards
+                Column(
+                  children: [
+                    Text('High Hand Cards'),
+                    StackCardView00(cards: highHandCards),
+                  ],
+                ),
               ],
             ),
           ),
-        ),
+
+          // sep
+          AppDimensionsNew.getHorizontalSpace(8),
+
+          // cancel button
+          IconButton(
+            icon: Icon(
+              Icons.cancel_rounded,
+              color: AppColorsNew.notificationIconColor,
+            ),
+            onPressed: () {
+              OverlaySupportEntry.of(context).dismiss();
+            },
+          ),
+        ],
       ),
     );
   }
