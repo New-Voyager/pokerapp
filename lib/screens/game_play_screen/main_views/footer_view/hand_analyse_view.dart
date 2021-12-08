@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
+import 'dart:io';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -47,18 +48,11 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
   final ValueNotifier<bool> vnShowMenuItems = ValueNotifier<bool>(false);
 
   Timer _timer;
-  BuildContext _context;
   AppTextScreen _appScreenText;
 
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      // start the poll for pending approvals, every 10 seconds
-      // while (mounted) {
-      //   //log('0-0-0-0- inside while Polling for pending approvals');
-      //   await Future.delayed(Duration(seconds: 10));
-      //   _pollPendingApprovals();
-      // }
       _timer = Timer.periodic(const Duration(seconds: 10), (_) {
         if (mounted) _pollPendingApprovals();
       });
@@ -85,7 +79,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
 
     // if not mounted, return from here
     if (!mounted) return;
-    final state = Provider.of<PendingApprovalsState>(_context, listen: false);
+    final state = Provider.of<PendingApprovalsState>(context, listen: false);
     state.setPendingList(approvals);
   }
 
@@ -173,52 +167,34 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
 
   @override
   Widget build(BuildContext context) {
-    _context = context;
-    // log('game started: ${widget.gameState.started}');
-    final theme = AppTheme.getTheme(context);
-    return Align(
-      alignment: Alignment.topLeft,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // build the menu widget, and on tap expand the options from left
-          _buildMenuWidget(context),
-          SizedBox(height: 10.ph),
-        ],
-      ),
-    );
+    return _buildMenuWidget();
   }
 
-  Widget _buildMenuWidget(BuildContext context) {
-    AppTheme theme = AppTheme.getTheme(context);
-
-    return Stack(
-      alignment: Alignment.centerLeft,
-      children: [
-        // MAIN MENU
-        CircleImageButton(
-          icon: Icons.menu,
-          onTap: () => vnShowMenuItems.value = true,
-          theme: theme,
-        ),
-
-        // Other options
-        ValueListenableBuilder(
-          valueListenable: vnShowMenuItems,
-          child: Container(
-            color: theme.primaryColorWithDark(0.5),
-            padding: EdgeInsets.symmetric(horizontal: 5.ph),
+  Widget _buildMenuButtons(AppTheme theme) {
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.35,
+      color: theme.primaryColorWithDark(0.5),
+      padding: EdgeInsets.symmetric(horizontal: 5.ph),
+      child: RawScrollbar(
+        thumbColor: theme.accentColor,
+        thickness: 5,
+        radius: Radius.circular(20.0),
+        isAlwaysShown: true,
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // menu close button
                 CircleImageButton(
-                    theme: theme,
-                    //caption: 'Close',
-                    icon: Icons.close,
-                    onTap: () {
-                      vnShowMenuItems.value = false;
-                    }),
+                  theme: theme,
+                  //caption: 'Close',
+                  icon: Icons.close,
+                  onTap: () {
+                    vnShowMenuItems.value = false;
+                  },
+                ),
                 SizedBox(height: 10.pw),
                 Row(
                   mainAxisSize: MainAxisSize.min,
@@ -440,27 +416,35 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                   ],
                 ),
                 SizedBox(height: 10.pw),
-
-                // SizedBox(height: 10.ph),
-                // Column(
-                //   crossAxisAlignment: CrossAxisAlignment.start,
-                //   children: [
-                //  ],
-                // )
               ],
             ),
           ),
-          builder: (_, showMenu, child) => AnimatedSwitcher(
-            duration: AppConstants.fastestAnimationDuration,
-            transitionBuilder: (child, animation) => SizeTransition(
-              axis: Axis.horizontal,
-              sizeFactor: animation,
-              child: child,
-            ),
-            child: showMenu ? child : const SizedBox.shrink(),
-          ),
         ),
-      ],
+      ),
+    );
+  }
+
+  Widget _buildMenuWidget() {
+    AppTheme theme = AppTheme.getTheme(context);
+
+    return ValueListenableBuilder(
+      valueListenable: vnShowMenuItems,
+      child: _buildMenuButtons(theme),
+      builder: (_, showMenu, child) => AnimatedSwitcher(
+        duration: AppConstants.fastestAnimationDuration,
+        transitionBuilder: (child, animation) => SizeTransition(
+          axis: Axis.horizontal,
+          sizeFactor: animation,
+          child: child,
+        ),
+        child: showMenu
+            ? child
+            : CircleImageButton(
+                icon: Icons.menu,
+                onTap: () => vnShowMenuItems.value = true,
+                theme: theme,
+              ),
+      ),
     );
   }
 
