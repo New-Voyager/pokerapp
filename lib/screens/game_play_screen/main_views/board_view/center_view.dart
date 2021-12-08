@@ -226,24 +226,30 @@ class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
         gameState.gameInfo.tableStatus == AppConstants.WAITING_TO_BE_STARTED;
 
     //log('potViewPos: before is paused or waiting isGameRunning: ${gameState.isGameRunning} isGamePausedOrWaiting: $isGamePausedOrWaiting ${gameState.gameInfo.tableStatus}');
-    /* if the game is paused, show the options available during game pause */
     List<Widget> children = [];
-    // don't show start/pause buttons for bot script games
-    if (!gameState.isBotGame) {
-      if (isGamePausedOrWaiting || !gameState.isGameRunning) {
-        children.add(Align(
-            alignment: Alignment.center,
-            child: _buildGamePauseOptions(
-              gameState,
-              boardAttributes.centerButtonsPos,
-            )));
-      }
-    }
 
     /* if we reach here, means, the game is RUNNING */
     /* The following view, shows the community cards
      and the pot chips, if they are nulls, put the default values */
     children.add(_buildMainCenterView(context, boardAttributes));
+
+    /* if the game is paused, show the options available during game pause */
+    // don't show start/pause buttons for bot script games
+    if (!gameState.isBotGame) {
+      if (isGamePausedOrWaiting || !gameState.isGameRunning) {
+        children.add(
+          Align(
+            alignment: Alignment.center,
+            child: _buildGamePauseOptions(
+              gameState,
+              boardAttributes.centerButtonsPos,
+            ),
+          ),
+        );
+      }
+    }
+
+    // stack
     return Stack(
       alignment: Alignment.topCenter,
       children: children,
