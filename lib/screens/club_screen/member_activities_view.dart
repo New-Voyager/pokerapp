@@ -37,6 +37,7 @@ class _ClubMemberActivitiesScreenState
     extends State<ClubMemberActivitiesScreen> {
   AppTheme theme;
   List<String> headers = [];
+  final List<MemberActivity> memberActivitiesForDownload = [];
   List<MemberActivity> allActivities;
   bool filtered = false;
   bool loading;
@@ -112,6 +113,9 @@ class _ClubMemberActivitiesScreenState
     } catch (err) {
       failed = true;
     }
+    memberActivitiesForDownload.clear();
+    memberActivitiesForDownload.addAll(activities);
+
     dts = DataSource(
         clubCode: widget.clubCode,
         club: widget.club,
@@ -160,8 +164,9 @@ class _ClubMemberActivitiesScreenState
         DataColumn(
           label: Text(
             header,
-            style: AppDecorators.getSubtitle1Style(theme: theme)
-                .copyWith(color: theme.accentColor),
+            style: AppDecorators.getSubtitle1Style(theme: theme).copyWith(
+              color: theme.accentColor,
+            ),
           ),
         ),
       );
@@ -204,12 +209,17 @@ class _ClubMemberActivitiesScreenState
       );
       String startDate = DateFormat.yMMMd().format(start);
       String endDate = DateFormat.yMMMd().format(end);
-      Widget subTitle = Text('$startDate - $endDate',
-          style: AppDecorators.getHeadLine4Style(theme: theme));
-      filter = Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-        title,
-        subTitle,
-      ]);
+      Widget subTitle = Text(
+        '$startDate - $endDate',
+        style: AppDecorators.getHeadLine4Style(theme: theme),
+      );
+      filter = Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          title,
+          subTitle,
+        ],
+      );
     }
     return SafeArea(
       top: false,
@@ -326,7 +336,7 @@ class _ClubMemberActivitiesScreenState
   void _handleDownload() async {
     final csv = MemberActivity.makeCsv(
       headers: headers,
-      activities: allActivities,
+      activities: memberActivitiesForDownload,
     );
 
     print(csv);
