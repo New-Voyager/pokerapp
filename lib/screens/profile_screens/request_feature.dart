@@ -3,6 +3,7 @@ import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/services/app/game_service.dart';
+import 'package:pokerapp/services/app/help_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/widgets/buttons.dart';
@@ -48,7 +49,7 @@ class _RequestFeatureWidgetState extends State<RequestFeatureWidget> {
               if (_controller.text.isNotEmpty) {
                 ConnectionDialog.show(
                     context: context, loadingText: "Submitting request..");
-                await GameService.requestFeature(
+                await HelpService.requestFeature(
                     feature: _controller.text.trim());
                 ConnectionDialog.dismiss(context: context);
                 Alerts.showNotification(titleText: "Request submitted");

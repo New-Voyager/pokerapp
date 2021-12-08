@@ -14,7 +14,10 @@
       "request": "launch",
       "type": "dart",
       "program": "lib/main.dart",
-      "args": []
+      "args": [
+        "--flavor",
+        "dev"
+      ]
     },
     {
       "name": "pokerapp-ios",

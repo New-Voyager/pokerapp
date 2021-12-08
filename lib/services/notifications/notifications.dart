@@ -16,6 +16,7 @@ import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/overlay_notification.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
+import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/app/player_service.dart';
 import 'package:pokerapp/services/data/hive_models/player_state.dart';
 import 'package:pokerapp/utils/alerts.dart';
@@ -467,7 +468,7 @@ class NotificationHandler {
         subTitle = subTitle + '\n' + 'Club: ${json["clubName"]}';
       }
       final message =
-          'A seat open in game $game.\n\nDo you want to take the open seat?';
+          'A seat is reserved for you in game $game.\n\nDo you want to take the seat?';
 
       final res = await showWaitlistInvitation(
         navigatorKey.currentContext,
@@ -478,10 +479,10 @@ class NotificationHandler {
       if (res) {
         if (appState.currentScreenGameCode == gameCode) {
           // show notification
-          Alerts.showNotification(
-            titleText: "Tap on an open seat to join the game!",
-            duration: Duration(seconds: 10),
-          );
+          // Alerts.showNotification(
+          //   titleText: "Tap on an open seat to join the game!",
+          //   duration: Duration(seconds: 10),
+          // );
 
           // we are already in REQ game play screen, no need to navigate
           return;
@@ -499,6 +500,11 @@ class NotificationHandler {
             'isFromWaitListNotification': true,
           },
         );
+      } else {
+        // decline the seat
+        try {
+          await GameService.declineWaitlist(gameCode: gameCode);
+        } catch (e) {}
       }
     }
   }
