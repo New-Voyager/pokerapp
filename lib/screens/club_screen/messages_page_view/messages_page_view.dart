@@ -161,7 +161,7 @@ class _MessagesPageViewState extends State<MessagesPageView>
                       isSharedHandsOnly: widget.isSharedHandsOnly,
                     ),
                     builder: (_, snapshot) {
-                      if (snapshot.hasError || _players == null)
+                      if (snapshot.connectionState == ConnectionState.waiting)
                         return CircularProgressWidget(
                           text: _appScreenText['loadingMessages'],
                         );

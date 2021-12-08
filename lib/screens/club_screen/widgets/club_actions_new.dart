@@ -207,15 +207,15 @@ class ClubActionsNew extends StatelessWidget {
         ),
       ));
     }
-    // buttons.add(ClubActionButtonNew(
-    //   this._clubHomePageModel,
-    //   ClubActions.BOTSCRIPTS,
-    //   appScreenText['botScripts'],
-    //   SvgPicture.asset(
-    //     "assets/images/club/rewards.svg",
-    //     color: theme.accentColor,
-    //   ),
-    // ));
+    buttons.add(ClubActionButtonNew(
+      this._clubHomePageModel,
+      ClubActions.BOTSCRIPTS,
+      appScreenText['botScripts'],
+      SvgPicture.asset(
+        "assets/images/club/rewards.svg",
+        color: theme.accentColor,
+      ),
+    ));
 
     List<Widget> rows = [];
     List<Widget> rowChildren = [];
