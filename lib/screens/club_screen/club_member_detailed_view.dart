@@ -336,7 +336,8 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                                       'member': widget.member,
                                     },
                                   ) as bool;
-                                  if (widget.member.refreshCredits) {
+                                  if (widget.member != null &&
+                                      widget.member.refreshCredits) {
                                     _fetchData();
                                   }
                                 },

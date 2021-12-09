@@ -201,7 +201,8 @@ class HandStageHeader extends StatelessWidget {
     if (length > 1) {
       String sidePots = "(";
       for (int i = 1; i < handResult.result.potWinners.length; i++) {
-        sidePots += DataFormatter.chipsFormat(handResult.result.potWinners[i].amount);
+        sidePots +=
+            DataFormatter.chipsFormat(handResult.result.potWinners[i].amount);
         if (i != length - 1) {
           sidePots += ",";
         }

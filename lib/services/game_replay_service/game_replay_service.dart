@@ -28,7 +28,7 @@ class GameReplayService {
         PlayerModel(
           name: playerInfo.name,
           seatNo: key,
-          stack: playerInfo.balance.before / 100,
+          stack: playerInfo.balance.before,
           playerId: playerInfo.id,
         ),
       );

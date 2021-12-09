@@ -390,20 +390,30 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
                   ],
                 ),
 
+                // download button
+                Align(
+                    alignment: Alignment.topRight,
+                    child: RoundRectButton(
+                      theme: theme,
+                      icon: Icon(
+                        Icons.download,
+                        size: 24,
+                        color: theme.roundButton2TextColor,
+                      ),
+                      text: 'Download',
+                      onTap: () {
+                        if (history != null && !history.isEmpty) {
+                          _handleDownload();
+                        }
+                      },
+                    )),
+
                 // main table
                 Expanded(
                   child: Padding(
                     padding: EdgeInsets.symmetric(vertical: 5.0),
                     child: activitiesTable(),
                   ),
-                ),
-
-                // download button
-                customButton.CustomTextButton(
-                  onTap: (history == null || history.isEmpty)
-                      ? null
-                      : _handleDownload,
-                  text: 'Download',
                 ),
               ],
             ),

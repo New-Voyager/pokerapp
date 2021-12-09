@@ -17,8 +17,8 @@ import 'package:pokerapp/services/app/club_interior_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/formatter.dart';
+import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/custom_icon_button.dart';
-import 'package:pokerapp/widgets/custom_text_button.dart';
 import 'package:share/share.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -164,11 +164,11 @@ class _ClubMemberActivitiesScreenState
     for (final header in headers) {
       columns.add(
         DataColumn(
-          label: Text(
-            header,
-            style: AppDecorators.getSubtitle1Style(theme: theme).copyWith(
-              color: theme.accentColor,
-            ),
+          label: Center(
+            child: Text(header,
+                style: AppDecorators.getSubtitle1Style(theme: theme).copyWith(
+                  color: theme.accentColor,
+                )),
           ),
         ),
       );
@@ -311,24 +311,37 @@ class _ClubMemberActivitiesScreenState
           body: Column(
             children: [
               filter,
+              const SizedBox(height: 20.0),
+
+// download button
+              Align(
+                  alignment: Alignment.topRight,
+                  child: RoundRectButton(
+                    theme: theme,
+                    icon: Icon(
+                      Icons.download,
+                      size: 24,
+                      color: theme.roundButton2TextColor,
+                    ),
+                    text: 'Download',
+                    onTap: () {
+                      if (!memberActivitiesForDownload.isEmpty) {
+                        _handleDownload();
+                      }
+                    },
+                  )),
+              const SizedBox(height: 10.0),
+
               Expanded(
                 child: PaginatedDataTable(
                   // header: Text('Member Activities'),
                   columns: columns,
                   showFirstLastButtons: true,
                   arrowHeadColor: theme.accentColor,
-
                   source: dts,
                   rowsPerPage: 10,
                   columnSpacing: 15,
                 ),
-              ),
-              const SizedBox(height: 20.0),
-              CustomTextButton(
-                onTap: memberActivitiesForDownload.isEmpty
-                    ? null
-                    : _handleDownload,
-                text: 'Download',
               ),
             ],
           ),
@@ -483,7 +496,7 @@ class DataSource extends DataTableSource {
     );
     cells.add(DataCell(
         Container(
-          width: 50,
+          width: 100,
           child: Text(
             DataFormatter.chipsFormat(activity.credits),
             style: TextStyle(color: creditColor, fontWeight: FontWeight.bold),

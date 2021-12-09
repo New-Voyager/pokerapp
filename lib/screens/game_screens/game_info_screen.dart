@@ -70,6 +70,20 @@ class _GameInfoScreenState extends State<GameInfoScreen> {
         col1: appScreenText["buyIn"],
         col2:
             "${DataFormatter.chipsFormat(gameInfo.buyInMin)}/${DataFormatter.chipsFormat(gameInfo.buyInMax)}"));
+
+    if (gameInfo.tipsPercentage != null && gameInfo.tipsPercentage > 0) {
+      if (gameInfo.tipsCap != null) {
+        tableItems.add(_buildOneRow(
+            col1: 'Tips',
+            col2:
+                "${DataFormatter.chipsFormat(gameInfo.tipsPercentage)}% Cap: ${gameInfo.tipsCap}"));
+      } else {
+        tableItems.add(_buildOneRow(
+            col1: 'Tips',
+            col2: "${DataFormatter.chipsFormat(gameInfo.tipsPercentage)}%"));
+      }
+    }
+
     tableItems.add(_buildOneRow(
         col1: appScreenText["highHandTracked"],
         col2: _getYesNo(gameInfo?.highHandTracked)));
@@ -316,16 +330,14 @@ class _GameInfoScreenState extends State<GameInfoScreen> {
       ),
       Container(
         padding: EdgeInsets.symmetric(horizontal: 4),
-        child: Flexible(
-          child: FittedBox(
-            alignment: Alignment.centerRight,
-            fit: BoxFit.scaleDown,
-            child: Text(
-              col2,
-              textAlign: TextAlign.end,
-              style: AppDecorators.getHeadLine4Style(theme: theme).copyWith(
-                fontWeight: FontWeight.w600,
-              ),
+        child: FittedBox(
+          alignment: Alignment.centerRight,
+          fit: BoxFit.scaleDown,
+          child: Text(
+            col2,
+            textAlign: TextAlign.end,
+            style: AppDecorators.getHeadLine4Style(theme: theme).copyWith(
+              fontWeight: FontWeight.w600,
             ),
           ),
         ),
