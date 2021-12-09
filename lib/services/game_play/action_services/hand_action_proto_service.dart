@@ -3,11 +3,9 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
-import 'package:connectivity/connectivity.dart';
 import 'package:fixnum/fixnum.dart' as $fixnum;
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_type.dart';
-import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
@@ -22,7 +20,6 @@ import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/audio/audio_service.dart';
 import 'package:pokerapp/services/connectivity_check/liveness_sender.dart';
-import 'package:pokerapp/services/connectivity_check/network_change_listener.dart';
 import 'package:pokerapp/services/encryption/encryption_service.dart';
 import 'package:pokerapp/services/game_play/action_services/action_handler.dart';
 import 'package:pokerapp/services/game_play/action_services/newhand_handler.dart';
@@ -30,7 +27,6 @@ import 'package:pokerapp/services/game_play/action_services/result_handler_v2.da
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/card_helper.dart';
-import 'package:provider/provider.dart';
 
 import '../game_com_service.dart';
 import '../message_id.dart';
@@ -572,7 +568,7 @@ class HandActionProtoService {
   Future<void> handleNewHand(proto.HandMessageItem message) async {
     // reset result in progress flag
     _gameState.tableState.resultInProgress = false;
-
+    log(message.toString());
     NewHandHandler handler = NewHandHandler(
         newHand: message.newHand,
         gameState: _gameState,

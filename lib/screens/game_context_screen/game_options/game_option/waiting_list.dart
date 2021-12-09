@@ -74,7 +74,7 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    log('waiting list: build');
+    // log('waiting list: build');
     _appScreenText = getAppTextScreen("waitingListBottomSheet");
 
     if (loading) {
@@ -259,7 +259,7 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
   }
 
   header(AppTheme theme) {
-    log('waiting list: header');
+    //log('waiting list: header');
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: Stack(

@@ -10,22 +10,17 @@ import 'package:pokerapp/models/game_play_models/provider_models/game_context.da
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/notification_models/general_notification_model.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/notification_models/hh_notification_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat_change_model.dart';
-import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/screens/game_play_screen/pop_ups/seat_change_confirmation_pop_up.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/count_down_timer.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/overlay_notification.dart';
-import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/game_service.dart';
-import 'package:pokerapp/services/audio/audio_service.dart';
 import 'package:pokerapp/services/data/game_log_store.dart';
 import 'package:pokerapp/services/game_play/graphql/seat_change_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
-import 'package:pokerapp/utils/card_helper.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:provider/provider.dart';
 
@@ -169,6 +164,11 @@ class GameUpdateService {
           return handleGameEnding(
             data: data,
           );
+        case AppConstants.WAITLIST_SEATING:
+          return handleWaitlistSeating(
+            data: data,
+          );
+          break;
       }
     }
   }
@@ -698,6 +698,44 @@ class GameUpdateService {
     }
   }
 
+
+  void handleNewBuyin({
+    @required var playerUpdate,
+  }) async {
+    if (closed || _gameState.uiClosing) return;
+    final GameState gameState = GameState.getState(_context);
+    int seatNo = playerUpdate['seatNo'];
+    final seat = gameState.getSeat(seatNo);
+    GameInfoModel _gameInfoModel =
+        await GameService.getGameInfo(_gameState.gameCode);
+    assert(_gameInfoModel != null);
+
+    if (seat != null && seat.player != null) {
+      // get break exp time
+      for (final player in _gameInfoModel.playersInSeats) {
+        if (player.seatNo == seat.serverSeatPos) {
+          seat.player.status = player.status;
+          if (player.status != 'IN_BREAK') {
+            seat.player.inBreak = false;
+          }
+          if (playerUpdate['stack'] != null) {
+            seat.player.stack = double.parse(playerUpdate['stack'].toString());
+          }
+          seat.player.buyInTimeExpAt = null;
+          seat.player.showBuyIn = false;
+          // update my state to show sitback button
+          if (seat.player.isMe) {
+            if (closed || _gameState.uiClosing) return;
+            final myState = _gameState.myState;
+            myState.notify();
+          }
+          break;
+        }
+      }
+      seat.notify();
+    }
+  }  
+
   void handleStackReloaded({
     var data,
   }) async {
@@ -828,6 +866,11 @@ class GameUpdateService {
           playerUpdate: playerUpdate,
         );
 
+      case AppConstants.NEW_BUYIN:
+        return handleNewBuyin(
+          playerUpdate: playerUpdate,
+        );
+
       default:
         return updatePlayer(
           playerUpdate: playerUpdate,
@@ -950,17 +993,26 @@ class GameUpdateService {
     // final waitlistState = _gameState.getWaitlistState(_context);
     // waitlistState.fromJson(data);
     // waitlistState.notify();
-    final playerName = data['waitlistPlayerName'];
-    String message =
-        '$playerName ${_appScreenText['isInvitedToTakeTheOpenSeat']}';
+    // final playerName = data['waitlistPlayerName'];
+    // String message =
+    //     '$playerName ${_appScreenText['isInvitedToTakeTheOpenSeat']}';
 
-    showOverlayNotification(
-      (context) => OverlayNotificationWidget(
-        title: '${_appScreenText['Waitlist']}',
-        subTitle: message,
-      ),
-      duration: Duration(seconds: 10),
-    );
+    // showOverlayNotification(
+    //   (context) => OverlayNotificationWidget(
+    //     title: '${_appScreenText['Waitlist']}',
+    //     subTitle: message,
+    //   ),
+    //   duration: Duration(seconds: 10),
+    // );
+
+    // {"type":"WAITLIST_SEATING","gameCode":"cgpckqqe","gameType":"HOLDEM","smallBlind":1,"bigBlind":2,"title":"HOLDEM 100/200","clubName":"club1","waitlistPlayerId":1178,"expTime":"2021-12-09T10:28:33.122Z","requestId":"9a0abef6-7add-4563-8209-575020a3b067"}"
+    if (data['waitlistPlayerId'] != null) {
+      final playerId = int.parse(data['waitlistPlayerId'].toString());
+      if (playerId == _gameContextObj.currentPlayer.id) {
+        // refresh the screen
+        _gameState.refresh(rebuildSeats: true);
+      }
+    }
   }
 
   void handleReserveSeat({

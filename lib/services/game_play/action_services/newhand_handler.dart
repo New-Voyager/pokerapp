@@ -102,9 +102,9 @@ class NewHandHandler {
     // update player's state and stack
     final playersInSeats = newHand.playersInSeats;
     // log('NEW_HAND: Hand num: ${newHand.handNum} button: ${newHand.buttonPos} sbPos: ${newHand.sbPos} bbPos: ${newHand.bbPos} sb: ${newHand.smallBlind} bb: ${newHand.bigBlind} bombPot: ${newHand.bombPot}');
-    for (final seatNo in playersInSeats.keys) {
-      final playerInSeat = playersInSeats[seatNo];
-    }
+    // for (final seatNo in playersInSeats.keys) {
+    //   final playerInSeat = playersInSeats[seatNo];
+    // }
     int retryCount = 0;
     bool newPlayerInTable = false;
     while (retryCount < 2) {
