@@ -1,9 +1,9 @@
-name: pokerapp
-description: A new Flutter application.
+name: pokerclubapp
+description: PokerClubApp
 
 publish_to: "none"
 
-version: 0.5.36
+version: 0.5.59
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
