@@ -3,6 +3,8 @@ import 'package:pokerapp/main.dart';
 enum OnboardingType {
   HOST_BUTTON,
   JOIN_BUTTON,
+  SEARCH_CLUB_BUTTON,
+  CREATE_CLUB_BUTTON,
 }
 
 class OnboardingService {
@@ -29,5 +31,29 @@ class OnboardingService {
 
   static set showJoinButton(bool v) {
     appService.sharedPreferences.setBool('livegames.joinbutton', v);
+  }
+
+  static bool get showSearchClubButton {
+    bool ret = appService.sharedPreferences.getBool('clubs.searchbutton');
+    if (ret == null) {
+      ret = true;
+    }
+    return ret;
+  }
+
+  static set showSearchClubButton(bool v) {
+    appService.sharedPreferences.setBool('clubs.searchbutton', v);
+  }
+
+  static bool get showCreateClubButton {
+    bool ret = appService.sharedPreferences.getBool('clubs.createbutton');
+    if (ret == null) {
+      ret = true;
+    }
+    return ret;
+  }
+
+  static set showCreateClubButton(bool v) {
+    appService.sharedPreferences.setBool('clubs.createbutton', v);
   }
 }
