@@ -183,7 +183,7 @@
         "breakAllowed": "Break allowed",
         "maxBreakTime": "Max break time (in minutes)",
         "MINS": "mins",
-        "useAudioConf": "Use Audio Conference    (Beta)",
+        "useAudioConf": "Audio Conference (Beta) *",
         "botGame": "Bot Game",
         "locationCheck": "Location Check",
         "ipCheck": "IP Check",
@@ -203,7 +203,7 @@
         "bombPotInterval": "Bomb Pot interval (in mins)",
         "bombPotBet": "Bomb Pot bet amount (x BBs)",
         "seatChangeAllowed": "Player Seat Change allowed",
-        "hhTracked": "Track high-hand (entire game)",
+        "hhTracked": "Track high-hand *",
         "showRearrange": "Show rearrange button",
         "serviceFee": "Service Fee"
     },

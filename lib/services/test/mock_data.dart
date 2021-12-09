@@ -24,6 +24,20 @@ class MockData {
     }
   }
 
+  static Future<List<GameHistoryModel>> getPlayedGames() async {
+    final List<GameHistoryModel> playedGames = [];
+
+    try {
+      final jsondata =
+          await rootBundle.rootBundle.loadString("assets/json/mockdata.json");
+      final List playedGames = json.decode(jsondata)["pastGames"] as List;
+      return playedGames.map((e) => GameHistoryModel.fromJson(e)).toList();
+    } catch (e) {
+      log("Exception in converting to model: $e");
+      return playedGames;
+    }
+  }
+
   static Future<List<ClubModel>> getClubs() async {
     final List<ClubModel> clubs = [];
 

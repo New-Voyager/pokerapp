@@ -35,8 +35,7 @@ class HandStageHeader extends StatelessWidget {
       }
       String players = playersInPots.join(',');
 
-      final potValue =
-          DataFormatter.chipsFormat(seatPots[i].pot);
+      final potValue = DataFormatter.chipsFormat(seatPots[i].pot);
       final widget = Container(
         margin: EdgeInsets.all(8),
         child: Text(
@@ -140,13 +139,13 @@ class HandStageHeader extends StatelessWidget {
     Color stageColor = theme.preFlopColor;
 
     if (stageName == 'Flop') {
-      stageColor = AppColorsNew.flopColor;
+      stageColor = theme.flopColor; //.flopColor;
     } else if (stageName == 'Turn') {
-      stageColor = AppColorsNew.turnColor;
+      stageColor = theme.turnColor;
     } else if (stageName == 'River') {
-      stageColor = AppColorsNew.riverColor;
+      stageColor = theme.riverColor;
     } else if (stageName == 'Showdown') {
-      stageColor = AppColorsNew.showDownColor;
+      stageColor = theme.showDownColor;
     }
 
     if (actions != null && actions.seatPots != null) {
@@ -194,7 +193,7 @@ class HandStageHeader extends StatelessWidget {
     if (length == 1) {
       return Container(
         child: Text(
-          "Pot: $potAmount",
+          "Pot: ${DataFormatter.chipsFormat(potAmount)}",
           style: AppDecorators.getSubtitle1Style(theme: theme),
         ),
       );
@@ -202,7 +201,8 @@ class HandStageHeader extends StatelessWidget {
     if (length > 1) {
       String sidePots = "(";
       for (int i = 1; i < handResult.result.potWinners.length; i++) {
-        sidePots += handResult.result.potWinners[i].amount.toString();
+        sidePots +=
+            DataFormatter.chipsFormat(handResult.result.potWinners[i].amount);
         if (i != length - 1) {
           sidePots += ",";
         }
@@ -214,7 +214,7 @@ class HandStageHeader extends StatelessWidget {
         children: [
           Container(
               child: Text(
-            "Pot: $potAmount",
+            "Pot: ${DataFormatter.chipsFormat(potAmount)}",
             style: AppDecorators.getSubtitle1Style(theme: theme),
           )),
           Container(

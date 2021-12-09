@@ -460,7 +460,12 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
           }
         }
         return InkWell(
-          onTap: () => this.onTap(context),
+          onTap: () {
+            if (widget.gameState.replayMode) {
+              return;
+            }
+            this.onTap(context);
+          },
           child: Stack(
             clipBehavior: Clip.none,
             alignment: Alignment.center,

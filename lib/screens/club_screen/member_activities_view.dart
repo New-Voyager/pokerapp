@@ -1,13 +1,14 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/models/member_activity_model.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
-import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/club_screen/widgets/member_activity_filter_widget.dart';
@@ -16,6 +17,9 @@ import 'package:pokerapp/services/app/club_interior_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/formatter.dart';
+import 'package:pokerapp/widgets/buttons.dart';
+import 'package:pokerapp/widgets/custom_icon_button.dart';
+import 'package:share/share.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class ClubMemberActivitiesScreen extends StatefulWidget {
@@ -33,6 +37,7 @@ class _ClubMemberActivitiesScreenState
     extends State<ClubMemberActivitiesScreen> {
   AppTheme theme;
   List<String> headers = [];
+  final List<MemberActivity> memberActivitiesForDownload = [];
   List<MemberActivity> allActivities;
   bool filtered = false;
   bool loading;
@@ -108,6 +113,11 @@ class _ClubMemberActivitiesScreenState
     } catch (err) {
       failed = true;
     }
+    if (activities != null && activities.isNotEmpty) {
+      memberActivitiesForDownload.clear();
+      memberActivitiesForDownload.addAll(activities);
+    }
+
     dts = DataSource(
         clubCode: widget.clubCode,
         club: widget.club,
@@ -154,10 +164,11 @@ class _ClubMemberActivitiesScreenState
     for (final header in headers) {
       columns.add(
         DataColumn(
-          label: Text(
-            header,
-            style: AppDecorators.getSubtitle1Style(theme: theme)
-                .copyWith(color: theme.accentColor),
+          label: Center(
+            child: Text(header,
+                style: AppDecorators.getSubtitle1Style(theme: theme).copyWith(
+                  color: theme.accentColor,
+                )),
           ),
         ),
       );
@@ -200,117 +211,164 @@ class _ClubMemberActivitiesScreenState
       );
       String startDate = DateFormat.yMMMd().format(start);
       String endDate = DateFormat.yMMMd().format(end);
-      Widget subTitle = Text('$startDate - $endDate',
-          style: AppDecorators.getHeadLine4Style(theme: theme));
-      filter = Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-        title,
-        subTitle,
-      ]);
+      Widget subTitle = Text(
+        '$startDate - $endDate',
+        style: AppDecorators.getHeadLine4Style(theme: theme),
+      );
+      filter = Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          title,
+          subTitle,
+        ],
+      );
     }
-    return Container(
-      decoration: AppDecorators.bgRadialGradient(theme),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: CustomAppBar(
-          titleText: "Member Activities",
-          theme: theme,
-          actionsList: [
-            IconButton(
-              onPressed: () async {
-                if (filtered) {
-                  filtered = false;
-                  unsettled = false;
-                  negative = false;
-                  positive = false;
-                  inactive = false;
-                  daterange = false;
-                  loading = true;
-                  setState(() {});
-                  await fetchData();
-                  return;
-                }
-                final ret = await Alerts.showDailog(
-                  context: context,
-                  child: MemberActivityFilterWidget(),
-                );
-                if (ret == null) {
-                  return;
-                }
-
-                if (ret is bool) {
-                  if (!ret) {
+    return SafeArea(
+      top: false,
+      child: Container(
+        decoration: AppDecorators.bgRadialGradient(theme),
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: CustomAppBar(
+            titleText: "Member Activities",
+            theme: theme,
+            actionsList: [
+              IconButton(
+                onPressed: () async {
+                  if (filtered) {
+                    filtered = false;
+                    unsettled = false;
+                    negative = false;
+                    positive = false;
+                    inactive = false;
+                    daterange = false;
+                    loading = true;
+                    setState(() {});
+                    await fetchData();
                     return;
                   }
-                }
-
-                if (ret['status'] ?? false) {
-                  unsettled = false;
-                  negative = false;
-                  positive = false;
-                  inactive = false;
-                  daterange = false;
-                  filtered = true;
-                  var option = ret['selection'];
-                  if (option == 'unsettled') {
-                    // unsettled members
-                    unsettled = true;
-                  } else if (option == 'negative') {
-                    negative = true;
-                  } else if (option == 'positive') {
-                    positive = true;
-                  } else if (option == 'inactive') {
-                    inactive = true;
-                  } else if (option == 'date') {
-                    daterange = true;
-                    var range = ret['range'] as DateTimeRange;
-                    start = DateTime(range.start.year, range.start.month,
-                            range.start.day, 0, 0, 0)
-                        .toUtc();
-                    end = DateTime(range.end.year, range.end.month,
-                            range.end.day, 23, 59, 59)
-                        .toUtc();
-                    log('start: ${start.toIso8601String()} end: ${end.toIso8601String()}');
+                  final ret = await Alerts.showDailog(
+                    context: context,
+                    child: MemberActivityFilterWidget(),
+                  );
+                  if (ret == null) {
+                    return;
                   }
-                  loading = true;
-                  setState(() {});
-                  await fetchData();
-                }
 
-                log("RET: $ret");
-              },
-              icon: filtered
-                  ? Icon(
-                      Icons.cancel_outlined,
-                      color: theme.accentColor,
-                    )
-                  : Icon(
-                      Icons.filter_alt,
-                      color: theme.accentColor,
+                  if (ret is bool) {
+                    if (!ret) {
+                      return;
+                    }
+                  }
+
+                  if (ret['status'] ?? false) {
+                    unsettled = false;
+                    negative = false;
+                    positive = false;
+                    inactive = false;
+                    daterange = false;
+                    filtered = true;
+                    var option = ret['selection'];
+                    if (option == 'unsettled') {
+                      // unsettled members
+                      unsettled = true;
+                    } else if (option == 'negative') {
+                      negative = true;
+                    } else if (option == 'positive') {
+                      positive = true;
+                    } else if (option == 'inactive') {
+                      inactive = true;
+                    } else if (option == 'date') {
+                      daterange = true;
+                      var range = ret['range'] as DateTimeRange;
+                      start = DateTime(range.start.year, range.start.month,
+                              range.start.day, 0, 0, 0)
+                          .toUtc();
+                      end = DateTime(range.end.year, range.end.month,
+                              range.end.day, 23, 59, 59)
+                          .toUtc();
+                      log('start: ${start.toIso8601String()} end: ${end.toIso8601String()}');
+                    }
+                    loading = true;
+                    setState(() {});
+                    await fetchData();
+                  }
+
+                  log("RET: $ret");
+                },
+                icon: filtered
+                    ? Icon(
+                        Icons.cancel_outlined,
+                        color: theme.accentColor,
+                      )
+                    : Icon(
+                        Icons.filter_alt,
+                        color: theme.accentColor,
+                      ),
+              )
+            ],
+          ),
+          body: Column(
+            children: [
+              filter,
+              const SizedBox(height: 20.0),
+
+// download button
+              Align(
+                  alignment: Alignment.topRight,
+                  child: RoundRectButton(
+                    theme: theme,
+                    icon: Icon(
+                      Icons.download,
+                      size: 24,
+                      color: theme.roundButton2TextColor,
                     ),
-            )
-          ],
-        ),
-        body: Column(
-          children: [
-            filter,
-            // getFilterTile(),
-            SingleChildScrollView(
-              child: Column(children: [
-                PaginatedDataTable(
+                    text: 'Download',
+                    onTap: () {
+                      if (!memberActivitiesForDownload.isEmpty) {
+                        _handleDownload();
+                      }
+                    },
+                  )),
+              const SizedBox(height: 10.0),
+
+              Expanded(
+                child: PaginatedDataTable(
                   // header: Text('Member Activities'),
                   columns: columns,
                   showFirstLastButtons: true,
                   arrowHeadColor: theme.accentColor,
-
                   source: dts,
                   rowsPerPage: 10,
                   columnSpacing: 15,
-                )
-              ]),
-            ),
-          ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
+    );
+  }
+
+  void _handleDownload() async {
+    if (memberActivitiesForDownload.isEmpty) return;
+
+    final csv = MemberActivity.makeCsv(
+      headers: headers,
+      activities: memberActivitiesForDownload,
+    );
+
+    print(csv);
+
+    final tempDir = await getTemporaryDirectory();
+
+    final file = File('${tempDir.path}/Member Activities.csv');
+    await file.writeAsString(csv);
+
+    Share.shareFiles(
+      [file.path],
+      mimeTypes: ['text/csv'],
+      subject: 'Member Activities',
     );
   }
 
@@ -438,7 +496,7 @@ class DataSource extends DataTableSource {
     );
     cells.add(DataCell(
         Container(
-          width: 50,
+          width: 100,
           child: Text(
             DataFormatter.chipsFormat(activity.credits),
             style: TextStyle(color: creditColor, fontWeight: FontWeight.bold),

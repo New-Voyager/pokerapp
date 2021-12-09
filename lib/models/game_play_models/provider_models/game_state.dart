@@ -765,7 +765,7 @@ class GameState {
       seat.notify();
     }
 
-    log('In GameState refresh(), _gameInfo.status = ${_gameInfo.status}');
+    // log('In GameState refresh(), _gameInfo.status = ${_gameInfo.status}');
     if (_gameInfo.status == AppConstants.GAME_ACTIVE &&
         tableState.gameStatus != AppConstants.GAME_RUNNING) {
       //this._myState.gameStatus = GameStatus.RUNNING;

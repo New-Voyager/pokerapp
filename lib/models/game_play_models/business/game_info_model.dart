@@ -50,6 +50,8 @@ class GameInfoModel {
   int handNum = 0;
   double buyin = null;
   double stack = null;
+  double tipsPercentage = null;
+  double tipsCap = null;
   String sfuUrl = 'http://67.205.136.63:7000';
 
   // nats channels
@@ -126,6 +128,14 @@ class GameInfoModel {
     this.playerMuckLosingHand = data['playerMuckLosingHandConfig'] ?? false;
     this.botGame = data['botGame'];
     this.highHandTracked = data['highHandTracked'] ?? false;
+
+    if (data['rakeCap'] != null) {
+      this.tipsCap = double.parse(data['rakeCap'].toString());
+    }
+
+    if (data['rakeCap'] != null) {
+      this.tipsPercentage = double.parse(data['rakePercentage'].toString());
+    }
 
     this.sessionTime = data['sessionTime'] ?? 0;
     this.runningTime = data['runningTime'] ?? 0;
@@ -211,6 +221,9 @@ class GameInfoModel {
       gpsCheck
       handNum
       chipUnit
+
+      rakeCap
+      rakePercentage
 
       sessionTime
       runningTime

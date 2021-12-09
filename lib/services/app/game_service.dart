@@ -1208,53 +1208,6 @@ class GameService {
     return playerNotes;
   }
 
-  static String requestFeatureQuery = """
-    mutation requestFeature(\$feature :String!){
-      ret:requestFeature(feature :\$feature)
-    }
-  """;
-
-  static Future<bool> requestFeature({String feature}) async {
-    GraphQLClient _client = graphQLConfiguration.clientToQuery();
-
-    Map<String, dynamic> variables = {"feature": feature};
-    QueryResult result = await _client.query(
-      QueryOptions(document: gql(requestFeatureQuery), variables: variables),
-    );
-
-    if (result.hasException) {
-      if (result.exception.graphqlErrors.length > 0) {
-        return false;
-      }
-    }
-
-    return true;
-  }
-
-  static String reportBugQuery = """
-   
-mutation reportBug(\$bug :String!){
-  ret:reportBug(bug :\$bug)
-}
-  """;
-
-  static Future<bool> reportBug({String bug}) async {
-    GraphQLClient _client = graphQLConfiguration.clientToQuery();
-
-    Map<String, dynamic> variables = {"bug": bug};
-    QueryResult result = await _client.query(
-      QueryOptions(document: gql(reportBugQuery), variables: variables),
-    );
-
-    if (result.hasException) {
-      if (result.exception.graphqlErrors.length > 0) {
-        return false;
-      }
-    }
-
-    return true;
-  }
-
   static Future<bool> setBuyinLimit(
       {String gameCode, int playerId, String playerUuid, double limit}) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
@@ -1308,6 +1261,31 @@ mutation reportBug(\$bug :String!){
     }
 
     return result.data['data'] ?? false;
+  }
+
+  static Future<bool> declineWaitlist({
+    String gameCode,
+  }) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    String declineWaitlistQuery = """
+        mutation declineWaitlist(\$gameCode: String!){
+			    ret: declineWaitlistSeat(gameCode:\$gameCode)
+        }
+      """;
+
+    Map<String, dynamic> variables = {
+      "gameCode": gameCode,
+    };
+    QueryResult result = await _client.query(
+      QueryOptions(document: gql(declineWaitlistQuery), variables: variables),
+    );
+
+    if (result.hasException) {
+      return false;
+    }
+
+    return result.data['ret'] ?? false;
   }
 }
 

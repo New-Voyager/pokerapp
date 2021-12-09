@@ -17,6 +17,7 @@ class NewGameModelProvider extends ChangeNotifier {
   List<GameType> dealerSelectedGames = [];
 
   bool notify = false;
+  bool cancelled = false;
 
   NewGameModelProvider(String clubCode) {
     settings = NewGameModel.withDefault(clubCode);

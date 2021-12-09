@@ -25,7 +25,7 @@ class ClubItemView extends StatelessWidget {
     var separator = SizedBox(height: 10.0, width: 10.0);
     Widget clubName = Text(
       club.clubName,
-      style: AppDecorators.getHeadLine2Style(theme: theme),
+      style: AppDecorators.getHeadLine3Style(theme: theme),
     );
 
     if (club.hostUnreadMessageCount != 0 ||

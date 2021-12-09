@@ -111,8 +111,9 @@ class _AnnouncementsViewState extends State<AnnouncementsView> {
                               ? Center(
                                   child: Text(
                                     _appScreenText['noAnnouncements'],
-                                    style: AppDecorators.getCenterTextTextstyle(
-                                        appTheme: theme),
+                                    style: AppDecorators.getAccentTextStyle(
+                                      theme: theme,
+                                    ),
                                   ),
                                 )
                               : ListView.builder(

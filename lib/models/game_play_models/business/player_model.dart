@@ -105,7 +105,7 @@ class PlayerModel {
     this.status = status;
     this._action = PlayerActedState();
     this._connectivity = PlayerConnectivityState();
-    log('NEW_HAND: PlayerModel::PlayerModel player: ${name} stack ${stack}');
+    // log('NEW_HAND: PlayerModel::PlayerModel player: ${name} stack ${stack}');
 
     // default values
     this.isMe = false;
@@ -134,7 +134,7 @@ class PlayerModel {
     this._connectivity = PlayerConnectivityState();
     // Notes
     this.hasNotes = data['hasNotes'] ?? false;
-    log('NEW_HAND: PlayerModel::fromJson player: ${name} stack ${stack}');
+    // log('NEW_HAND: PlayerModel::fromJson player: ${name} stack ${stack}');
 
     DateTime now = DateTime.now();
     if (data['buyInExpTime'] != null) {
@@ -178,7 +178,7 @@ class PlayerModel {
     bool showBuyIn,
     TablePosition playerType,
   }) {
-    log('NEW_HAND: PlayerModel::update player: ${name} stack ${stack}');
+    //log('NEW_HAND: PlayerModel::update player: ${name} stack ${stack}');
     this.seatNo = seatNo ?? this.seatNo;
     this.buyIn = buyIn ?? this.buyIn;
     this.stack = stack ?? this.stack;

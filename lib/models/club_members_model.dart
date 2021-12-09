@@ -1,6 +1,8 @@
 import 'dart:convert';
 
+import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:pokerapp/enums/club_member_status.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -255,6 +257,45 @@ class MemberCreditHistory {
     history.amount = double.parse((json['amount'] ?? '0').toString());
     history.updatedDate = DateTime.tryParse(json['updateDate'] ?? '');
     return history;
+  }
+
+  static String _getValue(MemberCreditHistory history, String header) {
+    switch (header.toLowerCase()) {
+      case 'note':
+        return history.notes;
+
+      case 'type':
+        return history.updateType;
+
+      case 'amount':
+        return history.amount.toString();
+
+      case 'credits':
+        return history.updatedCredits.toString();
+
+      // yyyy-mm-dd hh:mm
+      case 'date':
+        return DateFormat('yyyy-MM-dd hh:mm a').format(
+          history.updatedDate.toLocal(),
+        );
+
+      default:
+        return "";
+    }
+  }
+
+  static String makeCsv({
+    @required final List<MemberCreditHistory> history,
+    @required final List<String> headers,
+  }) {
+    final csvList = <List<dynamic>>[];
+
+    for (final h in history) {
+      csvList.add(headers.map((header) => _getValue(h, header)).toList());
+    }
+
+    final csvConverter = ListToCsvConverter();
+    return csvConverter.convert([headers, ...csvList]);
   }
 
   static List<MemberCreditHistory> getMockData() {

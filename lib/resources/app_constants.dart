@@ -90,7 +90,7 @@ class AppConstants {
   );
 
   static const Duration seatChangeAnimationDuration = const Duration(
-    milliseconds: 1000,
+    milliseconds: 500,
   );
 
   static const Duration popUpAnimationDuration = const Duration(
@@ -203,6 +203,7 @@ class AppConstants {
   static const String HIGH_HAND = 'HIGH_HAND';
   static const String GAME_STATUS = 'GAME_STATUS';
   static const String GAME_ENDING = 'GAME_ENDING';
+  static const String WAITLIST_SEATING = 'WAITLIST_SEATING';
   static const String NEW_HAND = 'NEW_HAND';
   static const String DEAL_STARTED = 'DEAL_STARTED';
   static const String BOMB_POT = 'BOMBPOT';

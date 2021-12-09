@@ -35,7 +35,7 @@ class LivenessSender {
   }
 
   void close() {
-    log('LivenessSender: Close');
+    //log('LivenessSender: Close');
     if (timer != null) {
       timer.close();
       timer = null;
@@ -46,7 +46,7 @@ class LivenessSender {
     if (this.started) {
       return;
     }
-    log('LivenessSender: Start');
+    //log('LivenessSender: Start');
     // start a timer
     timer.start(this.sendAliveMsg);
     started = true;
@@ -56,7 +56,7 @@ class LivenessSender {
     if (!this.started) {
       return;
     }
-    log('LivenessSender: Stop');
+    //log('LivenessSender: Stop');
     timer.stop();
     started = false;
   }

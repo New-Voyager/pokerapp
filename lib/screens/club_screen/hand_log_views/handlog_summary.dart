@@ -98,7 +98,7 @@ class HandlogSummary extends StatelessWidget {
           Expanded(
             flex: 2,
             child: Text(
-              DataFormatter.chipsFormat(diff),
+              ((diff > 0) ? '+' : '') + DataFormatter.chipsFormat(diff),
               style: TextStyle(
                 color: (diff > 0) ? Colors.green : Colors.red,
                 fontSize: 12.0,

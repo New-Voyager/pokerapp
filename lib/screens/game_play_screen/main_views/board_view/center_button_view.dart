@@ -17,6 +17,7 @@ import 'package:pokerapp/services/data/game_log_store.dart';
 import 'package:pokerapp/services/game_play/graphql/seat_change_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/alerts.dart';
+import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:provider/provider.dart';
 
@@ -169,81 +170,66 @@ class CenterButtonView extends StatelessWidget {
     final providerContext = context;
     return Consumer<GameContextObject>(
       builder: (context, gameContext, _) => gameContext.isAdmin()
-          ? Center(
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20.0,
-                  vertical: 10.0,
-                ),
-                decoration: AppStylesNew.resumeBgDecoration,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      margin: EdgeInsets.only(bottom: 8),
-                      child: Text(
-                        _appScreenText['gamePaused'],
-                        style: AppStylesNew.cardHeaderTextStyle,
+          ? Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 20.0,
+                vertical: 10.0,
+              ),
+              decoration: AppStylesNew.resumeBgDecoration,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(bottom: 8),
+                    child: Text(
+                      _appScreenText['gamePaused'],
+                      style: AppStylesNew.cardHeaderTextStyle,
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      // Resume Button
+                      IconAndTitleWidget(
+                        child: SvgPicture.asset(
+                          AppAssetsNew.resumeImagePath,
+                          height: 48.ph,
+                          width: 48.pw,
+                        ),
+                        onTap: () {
+                          _onResumePress(context, gameState.gameCode);
+                        },
+                        text: _appScreenText['resume'],
                       ),
-                    ),
-                    Wrap(
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      alignment: WrapAlignment.center,
-                      children: [
-                        IconAndTitleWidget(
-                          child: SvgPicture.asset(
-                            AppAssetsNew.resumeImagePath,
-                            height: 48.ph,
-                            width: 48.pw,
-                          ),
-                          onTap: () {
-                            return _onResumePress(context, gameState.gameCode);
-                          },
-                          text: _appScreenText['resume'],
-                        ),
 
-                        SizedBox(width: 15.pw),
-                        IconAndTitleWidget(
-                          child: SvgPicture.asset(
-                            AppAssetsNew.seatChangeImagePath,
-                            height: 48.ph,
-                            width: 48.pw,
-                          ),
-                          onTap: () {
-                            _onRearrangeSeatsPress(providerContext);
-                          },
-                          text: _appScreenText['rearrange'],
+                      // Rearrange Button
+                      IconAndTitleWidget(
+                        child: SvgPicture.asset(
+                          AppAssetsNew.seatChangeImagePath,
+                          height: 48.ph,
+                          width: 48.pw,
                         ),
-                        SizedBox(width: 15.pw),
-                        IconAndTitleWidget(
-                          child: SvgPicture.asset(
-                            AppAssetsNew.terminateImagePath,
-                            height: 48.ph,
-                            width: 48.pw,
-                          ),
-                          onTap: () => _onTerminatePress(context),
-                          text: _appScreenText['terminate'],
+                        onTap: () {
+                          _onRearrangeSeatsPress(providerContext);
+                        },
+                        text: _appScreenText['rearrange'],
+                      ),
+
+                      // Terminate Button
+                      IconAndTitleWidget(
+                        child: SvgPicture.asset(
+                          AppAssetsNew.terminateImagePath,
+                          height: 48.ph,
+                          width: 48.pw,
                         ),
-                        // Padding(
-                        //   padding: const EdgeInsets.symmetric(
-                        //     horizontal: 10.0,
-                        //   ),
-                        //   child: CustomTextButton(
-                        //     adaptive: false,
-                        //     text: 'Terminate',
-                        //     onTap: _onTerminatePress,
-                        //   ),
-                        // ),
-                        // CustomTextButton(
-                        //   adaptive: false,
-                        //   split: true,
-                        //   text: 'Rearrange Seats',
-                        //   onTap: () => _onRearrangeSeatsPress(context),
-                        // ),
-                      ],
-                    ),
-                  ],
-                ),
+                        onTap: () {
+                          _onTerminatePress(context);
+                        },
+                        text: _appScreenText['terminate'],
+                      ),
+                    ],
+                  ),
+                ],
               ),
             )
           : Container(),

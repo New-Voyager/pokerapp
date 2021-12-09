@@ -69,7 +69,7 @@ class CardDistributionAnimatingWidget extends StatelessWidget {
           context,
           model.seatNo,
         );
-        log('CardDistribution seatNo: ${model.seatNo} offset: ${finalOffset}');
+        // log('CardDistribution seatNo: ${model.seatNo} offset: ${finalOffset}');
 
         return TweenAnimationBuilder<Offset>(
           key: ValueKey(model.seatNo),
