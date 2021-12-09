@@ -52,6 +52,7 @@ class ClubMembersListView extends StatefulWidget {
 }
 
 class _ClubMembersListViewState extends State<ClubMembersListView> {
+  TextEditingController searchTextController = TextEditingController();
   Color getBalanceColor(double number, AppTheme theme) {
     if (number == null) {
       return Colors.white;
@@ -66,7 +67,8 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
 
   @override
   Widget build(BuildContext context) {
-    log('rebuilding club member list. ${widget.option.toString()}');
+    String searchText = searchTextController.text;
+    log('rebuilding club member list. ${widget.option.toString()} search: $searchText');
 
     for (final member in widget._membersList) {
       log('member: ${member.name} status: ${member.status.toString()}');
@@ -80,14 +82,59 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
       return a.status == ClubMemberStatus.PENDING ? 0 : 1;
     });
 
+    // removed unmatched items
+    if (searchText.isNotEmpty) {
+      List<ClubMemberModel> list = [];
+      String searchStr = searchText.toLowerCase();
+      for(final item in _filteredList) {
+        if (item.name.toLowerCase().startsWith(searchStr)) {
+          list.add(item);
+        }
+      }
+      _filteredList = list;
+    }
+    
+
+
+
     return Consumer<AppTheme>(
       builder: (_, theme, __) => Container(
         margin: EdgeInsets.all(15),
         child: ListView.separated(
           physics: BouncingScrollPhysics(),
-          itemCount: _filteredList.length,
+          itemCount: _filteredList.length + 1,
           itemBuilder: (context, index) {
-            final member = widget._membersList[index];
+            if (index == 0) {
+              return Container(
+                width: double.infinity,
+                height: 40,
+                //color: Colors.white,
+                child: Center(
+                  child: TextField(
+                    controller: searchTextController,
+                    style: AppDecorators.getSubtitle1Style(theme: theme),
+                    onChanged: (String text) {
+                      setState(() {
+                        
+                      });
+                    },
+                    decoration: InputDecoration(
+                      hintText: 'Search',
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5.0),
+                          borderSide: BorderSide(color: theme.accentColor)),
+                      focusedBorder: new OutlineInputBorder(
+                        borderRadius: new BorderRadius.circular(10.0),
+                        borderSide: BorderSide(color: theme.accentColor),
+                      ),
+                      prefixIcon: Icon(Icons.search, color: theme.accentColor),
+                    ),
+                  ),
+                ),
+              );
+            }
+            index--;
+            final member = _filteredList[index];
             member.clubCode = this.widget.clubCode;
             final data = ClubMemberModel.copyWith(member);
             data.creditTracking = this.widget.club.trackMemberCredit;
