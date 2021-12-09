@@ -84,6 +84,7 @@ dependencies:
   vibration: ^1.7.3
   wakelock: ^0.5.6
   web_socket_channel: ^2.1.0
+  onboarding_overlay: ^2.3.5
 
 dev_dependencies:
   build_test: ^2.1.3

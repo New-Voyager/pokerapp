@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:onboarding_overlay/onboarding_overlay.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/app_state.dart';
@@ -19,6 +20,7 @@ import 'package:pokerapp/screens/game_screens/game_history_view/game_history_ite
 import 'package:pokerapp/screens/game_screens/new_game_settings/new_game_settings2.dart';
 import 'package:pokerapp/screens/main_screens/games_page_view/widgets/live_games_item.dart';
 import 'package:pokerapp/services/app/game_service.dart';
+import 'package:pokerapp/services/onboarding.dart';
 import 'package:pokerapp/services/test/mock_data.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
@@ -37,6 +39,7 @@ class LiveGamesScreen extends StatefulWidget {
 
 class _LiveGamesScreenState extends State<LiveGamesScreen>
     with SingleTickerProviderStateMixin, WidgetsBindingObserver {
+  final GlobalKey<OnboardingState> onboardingKey = GlobalKey<OnboardingState>();
   bool _isLoading = true;
   bool _isPlayedGamesLoading = true;
   List<GameModelNew> liveGames = [];
@@ -95,6 +98,19 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
         }
       });
     }
+
+    focusNodes = List<FocusNode>.generate(
+      2,
+      (int i) => FocusNode(),
+      growable: false,
+    );
+
+    WidgetsBinding.instance.addPostFrameCallback((Duration timeStamp) {
+      final OnboardingState onboarding = onboardingKey.currentState;
+      if (onboarding != null) {
+        onboarding.show();
+      }
+    });
   }
 
   @override
@@ -282,161 +298,244 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
     }
   }
 
+  List<FocusNode> focusNodes;
+  Map<int, OnboardingType> onboardOptions = {};
+
+  List<OnboardingStep> getOnboardingSteps(AppTheme appTheme) {
+    List<OnboardingStep> steps = [];
+
+    bool onboardHostButton = OnboardingService.showHostButton;
+    bool onboardJoinButton = OnboardingService.showJoinButton;
+    if (onboardHostButton) {
+      onboardOptions[steps.length] = OnboardingType.HOST_BUTTON;
+      steps.add(OnboardingStep(
+        focusNode: focusNodes[0],
+        title: 'Host a game',
+        bodyText: "Tap here to host a game",
+        titleTextColor: Colors.white,
+        labelBoxPadding: const EdgeInsets.all(16.0),
+        labelBoxDecoration: BoxDecoration(
+          shape: BoxShape.rectangle,
+          borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+          color: appTheme.fillInColor,
+          border: Border.all(
+            color: appTheme.secondaryColor,
+            width: 1.0,
+            style: BorderStyle.solid,
+          ),
+        ),
+        arrowPosition: ArrowPosition.top,
+        hasArrow: true,
+        hasLabelBox: true,
+        fullscreen: true,
+      ));
+    }
+
+    if (onboardJoinButton) {
+      onboardOptions[steps.length] = OnboardingType.JOIN_BUTTON;
+      steps.add(
+        OnboardingStep(
+          focusNode: focusNodes[1],
+          title: "Join a game",
+          bodyText: "Tap here to join a friend's a game",
+          titleTextColor: Colors.white,
+          labelBoxPadding: const EdgeInsets.all(16.0),
+          labelBoxDecoration: BoxDecoration(
+            shape: BoxShape.rectangle,
+            borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+            color: appTheme.fillInColor,
+            border: Border.all(
+              color: appTheme.secondaryColor,
+              width: 1.0,
+              style: BorderStyle.solid,
+            ),
+          ),
+          arrowPosition: ArrowPosition.top,
+          hasArrow: true,
+          hasLabelBox: true,
+          fullscreen: true,
+        ),
+      );
+    }
+    return steps;
+  }
+
   @override
   Widget build(BuildContext context) {
     _handleGameRefresh(appState);
 
     return Consumer<AppTheme>(
       builder: (_, appTheme, __) {
-        return Container(
-          decoration: AppDecorators.bgRadialGradient(appTheme),
-          child: SafeArea(
-            child: Scaffold(
-              backgroundColor: Colors.transparent,
-              body: Column(children: [
-                // AppBar
-                Container(
-                  margin: EdgeInsets.symmetric(
-                    horizontal: 16,
+        List<OnboardingStep> steps = getOnboardingSteps(appTheme);
+        Widget mainView = getMainView(appTheme);
+        if (steps.length == 0) {
+          return mainView;
+        }
+
+        return Onboarding(
+            key: onboardingKey,
+            autoSizeTexts: true,
+            steps: steps,
+            onChanged: (int index) {
+              log('Onboarding: index: $index, type: ${onboardOptions[index]}');
+              if (onboardOptions[index] == OnboardingType.HOST_BUTTON) {
+                OnboardingService.showHostButton = false;
+              } else if (onboardOptions[index] == OnboardingType.JOIN_BUTTON) {
+                OnboardingService.showJoinButton = false;
+              }
+            },
+            child: mainView);
+      },
+    );
+  }
+
+  Widget getMainView(AppTheme appTheme) {
+    return Container(
+      decoration: AppDecorators.bgRadialGradient(appTheme),
+      child: SafeArea(
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          body: Column(children: [
+            // AppBar
+            Container(
+              margin: EdgeInsets.symmetric(
+                horizontal: 16,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  RoundRectButton(
+                    onTap: () async {
+                      await hostGame();
+                    },
+                    text: _appScreenText["host"],
+                    theme: appTheme,
+                    focusNode: focusNodes[0],
                   ),
+                  Expanded(
+                      child: HeadingWidget(heading: _appScreenText['appName'])),
+                  RoundRectButton(
+                    onTap: () async {
+                      await joinGame(appTheme);
+                    },
+                    theme: appTheme,
+                    text: _appScreenText['join'],
+                    focusNode: focusNodes[1],
+                  ),
+                ],
+              ),
+            ),
+
+            TabBar(
+              physics: const BouncingScrollPhysics(),
+              tabs: [
+                Tab(
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      RoundRectButton(
-                        onTap: () async {
-                          await hostGame();
-                        },
-                        text: _appScreenText["host"],
-                        theme: appTheme,
+                      Image.asset(
+                        AppAssetsNew.liveGamesTabImagePath,
+                        height: 16.ph,
+                        width: 16.pw,
+                        color: _tabController.index == 0
+                            ? appTheme.secondaryColor
+                            : appTheme.secondaryColorWithDark(),
                       ),
-                      Expanded(
-                          child: HeadingWidget(
-                              heading: _appScreenText['appName'])),
-                      RoundRectButton(
-                        onTap: () async {
-                          await joinGame(appTheme);
-                        },
-                        theme: appTheme,
-                        text: _appScreenText['join'],
+                      AppDimensionsNew.getHorizontalSpace(8),
+                      Text(
+                        _appScreenText['liveGames'],
                       ),
                     ],
                   ),
                 ),
-
-                TabBar(
-                  physics: const BouncingScrollPhysics(),
-                  tabs: [
-                    Tab(
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Image.asset(
-                            AppAssetsNew.liveGamesTabImagePath,
-                            height: 16.ph,
-                            width: 16.pw,
-                            color: _tabController.index == 0
-                                ? appTheme.secondaryColor
-                                : appTheme.secondaryColorWithDark(),
-                          ),
-                          AppDimensionsNew.getHorizontalSpace(8),
-                          Text(
-                            _appScreenText['liveGames'],
-                          ),
-                        ],
-                      ),
-                    ),
-                    Tab(
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Image.asset(
-                            AppAssetsNew.playedGamesTabImagePath,
-                            height: 16.ph,
-                            width: 16.pw,
-                            color: _tabController.index == 1
-                                ? appTheme.secondaryColor
-                                : appTheme.secondaryColorWithDark(),
-                          ),
-                          AppDimensionsNew.getHorizontalSpace(8),
-                          Text(
-                            _appScreenText['gameRecord'],
-                          )
-                        ],
-                      ),
-                    ),
-                  ],
-                  indicatorColor: appTheme.accentColor,
-                  labelColor: appTheme.secondaryColor,
-                  unselectedLabelColor: appTheme.secondaryColorWithDark(0.2),
-                  indicatorSize: TabBarIndicatorSize.label,
-                  //labelStyle: AppDecorators.getSubtitle2Style(theme: appTheme),
-                  //unselectedLabelStyle: AppDecorators.getSubtitle1Style(theme: appTheme),
-                  controller: _tabController,
-                ),
-                // HeadingWidget(
-                //   heading: 'Live Games',
-                // ),
-                Expanded(
-                  child: TabBarView(
-                    physics: const BouncingScrollPhysics(),
-                    controller: _tabController,
+                Tab(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Stack(
-                        children: [
-                          _isLoading
-                              ? Container()
-                              : liveGames.isEmpty
-                                  ? Center(
-                                      child: Text(
-                                        _appScreenText['noLiveGames'],
-                                        style: AppDecorators.getAccentTextStyle(
-                                            theme: appTheme),
-                                      ),
-                                    )
-                                  : ListView.separated(
-                                      physics: BouncingScrollPhysics(),
-                                      shrinkWrap: true,
-                                      itemBuilder: (context, index) {
-                                        return LiveGameItem(
-                                          game: liveGames[index],
-                                          onTapFunction: () async {
-                                            await Navigator.of(context)
-                                                .pushNamed(
-                                              Routes.game_play,
-                                              arguments:
-                                                  liveGames[index].gameCode,
-                                            );
-                                          },
+                      Image.asset(
+                        AppAssetsNew.playedGamesTabImagePath,
+                        height: 16.ph,
+                        width: 16.pw,
+                        color: _tabController.index == 1
+                            ? appTheme.secondaryColor
+                            : appTheme.secondaryColorWithDark(),
+                      ),
+                      AppDimensionsNew.getHorizontalSpace(8),
+                      Text(
+                        _appScreenText['gameRecord'],
+                      )
+                    ],
+                  ),
+                ),
+              ],
+              indicatorColor: appTheme.accentColor,
+              labelColor: appTheme.secondaryColor,
+              unselectedLabelColor: appTheme.secondaryColorWithDark(0.2),
+              indicatorSize: TabBarIndicatorSize.label,
+              //labelStyle: AppDecorators.getSubtitle2Style(theme: appTheme),
+              //unselectedLabelStyle: AppDecorators.getSubtitle1Style(theme: appTheme),
+              controller: _tabController,
+            ),
+            // HeadingWidget(
+            //   heading: 'Live Games',
+            // ),
+            Expanded(
+              child: TabBarView(
+                physics: const BouncingScrollPhysics(),
+                controller: _tabController,
+                children: [
+                  Stack(
+                    children: [
+                      _isLoading
+                          ? Container()
+                          : liveGames.isEmpty
+                              ? Center(
+                                  child: Text(
+                                    _appScreenText['noLiveGames'],
+                                    style: AppDecorators.getAccentTextStyle(
+                                        theme: appTheme),
+                                  ),
+                                )
+                              : ListView.separated(
+                                  physics: BouncingScrollPhysics(),
+                                  shrinkWrap: true,
+                                  itemBuilder: (context, index) {
+                                    return LiveGameItem(
+                                      game: liveGames[index],
+                                      onTapFunction: () async {
+                                        await Navigator.of(context).pushNamed(
+                                          Routes.game_play,
+                                          arguments: liveGames[index].gameCode,
                                         );
                                       },
-                                      padding: EdgeInsets.only(
-                                        bottom: 64.ph,
-                                        top: 16.ph,
-                                      ),
-                                      separatorBuilder: (
-                                        context,
-                                        index,
-                                      ) =>
-                                          AppDimensionsNew.getVerticalSizedBox(
-                                        16.ph,
-                                      ),
-                                      itemCount: liveGames?.length,
-                                    ),
-                        ],
-                      ),
-                      _isPlayedGamesLoading
-                          ? Container()
-                          : getPlayedGames(appTheme),
+                                    );
+                                  },
+                                  padding: EdgeInsets.only(
+                                    bottom: 64.ph,
+                                    top: 16.ph,
+                                  ),
+                                  separatorBuilder: (
+                                    context,
+                                    index,
+                                  ) =>
+                                      AppDimensionsNew.getVerticalSizedBox(
+                                    16.ph,
+                                  ),
+                                  itemCount: liveGames?.length,
+                                ),
                     ],
                   ),
-                ),
-              ]),
+                  _isPlayedGamesLoading
+                      ? Container()
+                      : getPlayedGames(appTheme),
+                ],
+              ),
             ),
-          ),
-        );
-      },
+          ]),
+        ),
+      ),
     );
   }
 

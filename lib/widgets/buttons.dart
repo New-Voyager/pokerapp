@@ -12,6 +12,7 @@ class RoundRectButton extends StatelessWidget {
     @required this.text,
     @required this.onTap,
     @required this.theme,
+    this.focusNode,
     this.fontSize,
     this.split = false,
     this.adaptive = true,
@@ -25,9 +26,11 @@ class RoundRectButton extends StatelessWidget {
   final bool split;
   final double fontSize;
   final Icon icon;
+  final FocusNode focusNode;
 
   Widget build(BuildContext context) {
     return InkWell(
+      focusNode: focusNode,
       onTap: () {
         // playsound
         this.onTap();

@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
@@ -11,15 +12,19 @@ import 'package:pokerapp/models/game_play_models/provider_models/host_seat_chang
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_constants.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/animating_widgets/my_last_action_animating_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/status_options_buttons.dart';
+import 'package:pokerapp/utils/alerts.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
 import 'communication_view.dart';
 import 'customization_view.dart';
 import 'hand_analyse_view.dart';
 import 'hole_cards_view_and_footer_action_view.dart';
 import 'seat_change_confirm_widget.dart';
 import 'package:collection/collection.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 import 'time_bank.dart';
 
@@ -172,6 +177,71 @@ class _FooterViewState extends State<FooterView>
     });
   }
 
+  /* straddle prompt builder / footer action view builder / hole card view builder */
+  Widget _buildGameInfo(GameState gameState) {
+    final width = MediaQuery.of(context).size.width;
+    final theme = AppTheme.getTheme(context);
+    List<Widget> children = [];
+    if (gameState.currentPlayer.isHost()) {
+      children.addAll([
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Game Code',
+                style: AppDecorators.getHeadLine3Style(theme: theme)),
+            SizedBox(width: 10),
+            Text(gameState.gameInfo.gameCode,
+                style: AppDecorators.getHeadLine3Style(theme: theme).copyWith(
+                    color: theme.accentColor, fontWeight: FontWeight.bold)),
+            GestureDetector(
+              child: Padding(
+                padding: EdgeInsets.all(8.pw),
+                child: Icon(
+                  Icons.copy,
+                  color: theme.secondaryColor,
+                  size: 24.pw,
+                ),
+              ),
+              onTap: () {
+                Clipboard.setData(
+                  new ClipboardData(text: gameState.gameInfo.gameCode),
+                );
+                Alerts.showNotification(
+                  titleText: 'Code copied to clipboard',
+                );
+              },
+            )
+          ],
+        ),
+        SizedBox(height: 20),
+        Text('Invite your friends to join',
+            style: AppDecorators.getHeadLine4Style(theme: theme)),
+      ]);
+    }
+    if (!gameState.isPlaying) {
+      children.addAll([
+        SizedBox(height: 20),
+        // BlinkText('Select an open seat to play',
+        // style:  AppDecorators.getHeadLine4Style(theme: theme),
+        // duration: Duration(seconds: 2),)
+
+        Shimmer.fromColors(
+          period: Duration(seconds: 3),
+          baseColor: Colors.white,
+          highlightColor: Colors.white.withOpacity(0.50),
+          child: Text('Tap on open seat to play',
+              style: AppDecorators.getHeadLine4Style(theme: theme)),
+        )
+      ]);
+    }
+    return Align(
+        alignment: Alignment.center,
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.center, children: children));
+
+    //Text('Game Code: ${gameState.gameInfo.gameCode}'));
+  }
+
   Widget _buildCustomizationView() {
     return Positioned(
       right: 0,
@@ -256,6 +326,13 @@ class _FooterViewState extends State<FooterView>
       children.add(_buildMainView(gameState));
       /* communication widgets */
       children.add(_buildCustomizationView());
+    } else if (gameState.gameInfo.status == AppConstants.GAME_CONFIGURED) {
+      // display game information
+      children.add(_buildGameInfo(gameState));
+      /* hand analyse view */
+      children.add(_buildHandAnalyseView(context));
+      /* communication widgets */
+      children.add(_buildCommunicationWidget());
     } else if (!gameState.isPlaying) {
       // the player can join the waitlist
       log('Player is not playing, but can join waitlist');
