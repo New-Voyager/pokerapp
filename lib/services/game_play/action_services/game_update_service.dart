@@ -698,7 +698,6 @@ class GameUpdateService {
     }
   }
 
-
   void handleNewBuyin({
     @required var playerUpdate,
   }) async {
@@ -734,7 +733,7 @@ class GameUpdateService {
       }
       seat.notify();
     }
-  }  
+  }
 
   void handleStackReloaded({
     var data,
