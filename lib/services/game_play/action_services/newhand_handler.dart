@@ -353,6 +353,10 @@ class NewHandHandler {
     }
     gameState.notifyAllSeats();
     tableState.notifyAll();
+
+    if (gameState.handInfo.handNum == 1) {
+      gameState.redrawFooter();
+    }
   }
 
   Future<void> showDeal() async {

@@ -1354,6 +1354,7 @@ class GameUpdateService {
           tableStatus == AppConstants.TABLE_STATUS_GAME_RUNNING_1) {
         tableStatus = AppConstants.TABLE_STATUS_GAME_RUNNING;
       }
+      _gameState.redrawFooter();
       if (tableStatus == tableState.tableStatus) {
         return;
       }
@@ -1378,6 +1379,7 @@ class GameUpdateService {
         tableState.gameStatus != gameStatus) {
       tableState.updateTableStatusSilent(tableStatus);
       tableState.updateGameStatusSilent(gameStatus);
+      _gameState.redrawFooter();
 
       if (gameStatus == AppConstants.GAME_ACTIVE &&
           (tableStatus == AppConstants.TABLE_STATUS_GAME_RUNNING ||

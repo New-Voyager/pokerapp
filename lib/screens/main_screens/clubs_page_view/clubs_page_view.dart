@@ -191,7 +191,7 @@ class _ClubsPageViewState extends State<ClubsPageView>
       if (onboarding != null) {
         onboarding.show();
       }
-    });    
+    });
   }
 
   void refreshClubScreen() {
@@ -228,10 +228,10 @@ class _ClubsPageViewState extends State<ClubsPageView>
   }
 
   List<FocusNode> focusNodes = List<FocusNode>.generate(
-      2,
-      (int i) => FocusNode(),
-      growable: false,
-    );
+    2,
+    (int i) => FocusNode(),
+    growable: false,
+  );
   Map<int, OnboardingType> onboardOptions = {};
 
   List<OnboardingStep> getOnboardingSteps(AppTheme appTheme) {
@@ -299,34 +299,35 @@ class _ClubsPageViewState extends State<ClubsPageView>
     log('Language code: ${locale.languageCode}');
     return Consumer<AppTheme>(builder: (_, theme, __) {
       Widget mainView = buildMainView(theme);
-        List<OnboardingStep> steps = getOnboardingSteps(theme);
-        if (steps.length == 0) {
-          return mainView;
+      List<OnboardingStep> steps = getOnboardingSteps(theme);
+      if (steps.length == 0) {
+        return mainView;
+      }
+
+      Future.delayed(Duration(milliseconds: 500), () {
+        if (appState.currentIndex != 1) {
+          return;
         }
+        final OnboardingState onboarding = onboardingKey.currentState;
+        if (onboarding != null) {
+          onboarding.show();
+        }
+      });
 
-        Future.delayed(Duration(milliseconds: 500), () {
-          if (appState.currentIndex != 1) {
-            return;
-          }
-          final OnboardingState onboarding = onboardingKey.currentState;
-          if (onboarding != null) {
-            onboarding.show();
-          }
-        });        
-
-        return Onboarding(
-            key: onboardingKey,
-            autoSizeTexts: true,
-            steps: steps,
-            onChanged: (int index) {
-              log('Onboarding: index: $index, type: ${onboardOptions[index]}');
-              if (onboardOptions[index] == OnboardingType.SEARCH_CLUB_BUTTON) {
-                OnboardingService.showSearchClubButton = false;
-              } else if (onboardOptions[index] == OnboardingType.CREATE_CLUB_BUTTON) {
-                OnboardingService.showCreateClubButton = false;
-              }
-            },
-            child: mainView);      
+      return Onboarding(
+          key: onboardingKey,
+          autoSizeTexts: true,
+          steps: steps,
+          onChanged: (int index) {
+            log('Onboarding: index: $index, type: ${onboardOptions[index]}');
+            if (onboardOptions[index] == OnboardingType.SEARCH_CLUB_BUTTON) {
+              OnboardingService.showSearchClubButton = false;
+            } else if (onboardOptions[index] ==
+                OnboardingType.CREATE_CLUB_BUTTON) {
+              OnboardingService.showCreateClubButton = false;
+            }
+          },
+          child: mainView);
     });
   }
 
@@ -405,15 +406,17 @@ class _ClubsPageViewState extends State<ClubsPageView>
                               ),
                             )
                           : Expanded(
-                              child: 
-                              ListView.separated(
+                              child: ListView.separated(
                                 physics: const BouncingScrollPhysics(),
                                 padding: const EdgeInsets.only(
                                   bottom: 15.0,
                                 ),
                                 itemBuilder: (_, index) {
                                   if (index == 0) {
-                                    return Center(child: Text('Tap a club to go to club screen'),);
+                                    return Center(
+                                      child: Text(
+                                          'Tap a club to go to club screen'),
+                                    );
                                   }
                                   var club = _clubs[index - 1];
                                   return InkWell(
@@ -456,7 +459,7 @@ class _ClubsPageViewState extends State<ClubsPageView>
                                 },
                                 separatorBuilder: (_, __) =>
                                     const SizedBox(height: 16.0),
-                                itemCount: _clubs.length+1,
+                                itemCount: _clubs.length + 1,
                               ),
                             ),
                 ],
