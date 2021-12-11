@@ -1023,19 +1023,20 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       ));
     }
     Widget column = Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: gameScreenChildren,
     );
 
     Stack allWidgets = Stack(children: [
+      Container(width: Screen.width, height: Screen.height, color: Colors.red),
       column,
       /* chat window widget */
       this.widget.showBottom ? _buildChatWindow() : Container(),
 
       /* notification view */
-      this.widget.showBottom
-          ? Notifications.buildNotificationWidget()
-          : Container(),
+      // this.widget.showBottom
+      //     ? Notifications.buildNotificationWidget()
+      //     : Container(),
     ]);
     return allWidgets;
   }
@@ -1115,10 +1116,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     if (widget.customizationService != null) {
       this._currentPlayer = widget.customizationService.currentPlayer;
     }
-
-    return SafeArea(
-      bottom: false,
-      child: Consumer<AppTheme>(
+    final body = Consumer<AppTheme>(
         builder: (_, theme, __) {
           Widget mainBody = Scaffold(
             /* FIXME: THIS FLOATING ACTION BUTTON IS FOR SHOWING THE TESTS */
@@ -1150,8 +1148,15 @@ class _GamePlayScreenState extends State<GamePlayScreen>
             },
           );
         },
-      ),
-    );
+      );
+
+
+    // return SafeArea(
+    //   bottom: false,
+    //   child: 
+      
+    return body;
+    //);
   }
 
   @override

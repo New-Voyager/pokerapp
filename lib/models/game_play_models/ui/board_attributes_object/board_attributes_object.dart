@@ -552,6 +552,13 @@ class BoardAttributesJson {
     }
     return 1.0;
   }
+
+  bool get useSafeArea {
+    if (attribs['safeArea'] == null) {
+      return true;
+    }
+    return attribs['safeArea'];
+  }
 }
 
 class BoardAttributesObject extends ChangeNotifier {
@@ -952,6 +959,10 @@ class BoardAttributesObject extends ChangeNotifier {
       return 0.7;
     }
     return 0.7;
+  }
+
+  bool get useSafeArea {
+    return attribsObj.useSafeArea;
   }
 }
 

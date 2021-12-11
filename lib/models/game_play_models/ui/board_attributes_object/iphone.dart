@@ -147,7 +147,21 @@ class IPhoneAttribs {
   }
 
   static Map<String, dynamic> getIPhone8() {
-    return getDefault();
+    final defaultValue = getDefault();
+    String override = '''
+      {
+        "model": "iPhone 8",
+        "screenSize": "375.0, 667.0",
+        "size": 5.1,
+        "safeArea": false,
+        "board": {
+        },
+        "footerHeightAdjust": 0
+      }
+    ''';
+    Map<String, dynamic> overrideMap = jsonDecode(override);
+    updateMap(defaultValue, overrideMap);
+    return defaultValue;
   }
 
   static Map<String, dynamic> getIPhoneX() {
