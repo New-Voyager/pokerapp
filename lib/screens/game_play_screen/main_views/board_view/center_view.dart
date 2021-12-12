@@ -363,7 +363,7 @@ class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
                   return Transform(
                     transform: Matrix4.identity()
                       ..setEntry(3, 2, 0.005)
-                      ..rotateX(-30 * pi / 180),
+                      ..rotateX(-20 * pi / 180),
                     alignment: FractionalOffset.center,
                     child: CommunityCardsView(
                       cards: tableState.cards,

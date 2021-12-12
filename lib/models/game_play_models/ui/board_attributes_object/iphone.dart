@@ -90,7 +90,7 @@ class IPhoneAttribs {
           "boardScale": 1.0,
           "centerGap": 0.0,
           "potViewGap": 0,
-          "centerDoubleBoardScale": 0.90,
+          "centerDoubleBoardScale": 1.0,
           "centerBoardScale": 1.4,
           "centerOffset": "15, 90",
           "boardHeightAdjust": -40,
@@ -149,14 +149,35 @@ class IPhoneAttribs {
   static Map<String, dynamic> getIPhone8() {
     final defaultValue = getDefault();
     String override = '''
-      {
-        "model": "iPhone 8",
+     {
+        "model": "iPhone SE",
         "screenSize": "375.0, 667.0",
         "size": 5.1,
         "safeArea": false,
         "board": {
+          "bottomHeightAdjust": -54
         },
-        "footerHeightAdjust": 0
+        "betWidgetOffset": "0, -40"
+      }
+    ''';
+    Map<String, dynamic> overrideMap = jsonDecode(override);
+    updateMap(defaultValue, overrideMap);
+    return defaultValue;
+  }
+
+
+  static Map<String, dynamic> getIPhoneSE() {
+    final defaultValue = getIPhone8();
+    String override = '''
+      {
+        "model": "iPhone SE",
+        "screenSize": "375.0, 667.0",
+        "size": 5.1,
+        "safeArea": false,
+        "board": {
+          "bottomHeightAdjust": -54
+        },
+        "betWidgetOffset": "0, -40"
       }
     ''';
     Map<String, dynamic> overrideMap = jsonDecode(override);
@@ -171,6 +192,7 @@ class IPhoneAttribs {
         "model": "iPhone 10",
         "screenSize": "375.0, 812.0",
         "size": 5.8,
+        "safeArea": true,
         "board": {
           "centerViewScale": 0.85,
           "tableScale": 1.2,
@@ -203,7 +225,9 @@ class IPhoneAttribs {
           "centerViewPos": "0, 5.0",
           "tableBottomPos": 0,
           "backDropOffset": "0, -30",
-          "betImageScale": 2.5
+          "betImageScale": 2.5,
+          "centerDoubleBoardScale": 1.0,
+          "centerBoardScale": 1.4
         },
         "holeCardDisplacement": {
           "2": 30,
@@ -245,7 +269,7 @@ class IPhoneAttribs {
           "centerViewScale": 0.85,
           "tableScale": 1.2,
           "seatMap": {
-            "bottomCenter": "0, 30",
+            "bottomCenter": "0, 35",
             "bottomLeft": "15, 20",
             "bottomRight": "-15, 20",
             "middleLeft": "-4, 50",
@@ -268,14 +292,16 @@ class IPhoneAttribs {
             "topCenter1": "0.20, 0.65",
             "topCenter2": "-0.20, 0.65"
           },
-          "centerPotScale": 0.80,
-          "centerPotUpdatesScale": 0.80,
-          "centerViewPos": "0, 35.0",
+          "centerPotScale": 0.90,
+          "centerPotUpdatesScale": 0.90,
+          "centerViewPos": "0, 20.0",
           "tableBottomPos": -10,
           "boardHeightAdjust": 0,
           "bottomHeightAdjust": -130,
-          "backDropOffset": "0, 0",
-          "betImageScale": 3.0
+          "backDropOffset": "0, -50",
+          "betImageScale": 3.0,
+          "centerDoubleBoardScale": 1.2,
+          "centerBoardScale": 1.60
         },
         "holeCardDisplacement": {
           "2": 30,
@@ -313,13 +339,16 @@ class IPhoneAttribs {
     final defaultValue = getIPhone11();
     String override = '''
       {
-        "model": "iPhone 10S",
+        "model": "iPhone 11 Pro",
         "screenSize": "375.0, 812.0",
         "size": 5.8,
 
         "board": {
           "backDropOffset": "0, -50",
           "centerViewPos": "0, 0",
+          "centerViewPos": "0, -10",
+          "centerDoubleBoardScale": 1.0,
+          "centerBoardScale": 1.3,
           "tableBottomPos": 10,
            "seatMap": {
             "bottomCenter": "0, 30",
@@ -560,7 +589,8 @@ class IPhoneAttribs {
           "centerPotScale": 0.85,
           "centerPotUpdatesScale": 0.7,
           "centerViewPos": "0, 0.0",
-          "betImageScale": 3.0
+          "betImageScale": 3.0,
+          "centerDoubleBoardScale": 1.0
         },
         "holeCardDisplacement": {
           "2": 35,
@@ -818,7 +848,9 @@ class IPhoneAttribs {
         "board": {
           "centerViewScale": 1.20,
           "centerOffset": "15, 250",
-          "centerViewPos": "0, -10",
+          "centerViewPos": "0, -30",
+          "centerDoubleBoardScale": 1.2,
+          "centerBoardScale": 1.4,
           "boardScale": 1.2,
           "tableScale": 1.1,
           "tableBottomPos": 30,
@@ -839,7 +871,7 @@ class IPhoneAttribs {
             "topCenter2": "80, 120"
           },
           "betAmountFac": {
-            "bottomCenter": "-0.25, -0.70",
+            "bottomCenter": "-0.25, -1.0",
             "topCenter": "0.20, 0.70",
             "middleLeft": "1.05, 0",
             "middleRight": "-1.05, 0",
@@ -1429,7 +1461,10 @@ class IPhoneAttribs {
         return getIPhoneX();
       } else if (name.contains('iphone 8 plus')) {
         return getIPhone8Plus();
+      } else if (name.contains('iphone se')) {
+        return getIPhoneSE();
       }
+      
       return getIPhone8();
     }
   }

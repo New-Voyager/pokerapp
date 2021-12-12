@@ -138,6 +138,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   LocationUpdates _locationUpdates;
   Nats _nats;
   NetworkConnectionDialog _dialog;
+  BoardAttributesObject boardAttributes;
 
   // Timer _timer;
 
@@ -234,6 +235,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     final encryptionService = EncryptionService();
     // instantiate the dialog object
     _dialog = NetworkConnectionDialog();
+    _gameState = GameState();
 
     if (!TestService.isTesting && widget.customizationService == null) {
       // subscribe the NATs channels
@@ -256,7 +258,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       _gameInfoModel.clientAliveChannel,
     );
 
-    _gameState = GameState();
     _gameState.clubInfo = clubInfo;
     _gameState.isBotGame = widget.botGame;
     if (widget.customizationService != null) {
@@ -709,6 +710,10 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   void initState() {
     super.initState();
 
+    boardAttributes = BoardAttributesObject(
+      screenSize: Screen.diagonalInches,
+    );
+
     // store in app state that we are in the game_play_screen
     appState.setCurrentScreenGameCode(widget.gameCode);
 
@@ -1046,11 +1051,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     if (_gameInfoModel == null) return Center(child: CircularProgressWidget());
 
     /* get the screen sizes, and initialize the board attributes */
-    BoardAttributesObject boardAttributes;
 
-    boardAttributes = BoardAttributesObject(
-      screenSize: Screen.diagonalInches,
-    );
     final providers = GamePlayScreenUtilMethods.getProviders(
       context: context,
       gameInfoModel: _gameInfoModel,
@@ -1136,7 +1137,11 @@ class _GamePlayScreenState extends State<GamePlayScreen>
           );
           if (!Platform.isIOS) {
             mainBody = SafeArea(child: mainBody);
+          } 
+          if (boardAttributes.useSafeArea) {
+            return SafeArea(child: mainBody);
           }
+
           return WillPopScope(
             child: Container(
               decoration: AppDecorators.bgRadialGradient(theme),
@@ -1149,7 +1154,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
           );
         },
       );
-
 
     // return SafeArea(
     //   bottom: false,
