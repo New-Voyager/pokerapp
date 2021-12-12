@@ -299,20 +299,20 @@ class _ClubsPageViewState extends State<ClubsPageView>
     log('Language code: ${locale.languageCode}');
     return Consumer<AppTheme>(builder: (_, theme, __) {
       Widget mainView = buildMainView(theme);
-      List<OnboardingStep> steps = getOnboardingSteps(theme);
+      List<OnboardingStep> steps = []; //getOnboardingSteps(theme);
       if (steps.length == 0) {
         return mainView;
       }
 
-      Future.delayed(Duration(milliseconds: 500), () {
-        if (appState.currentIndex != 1) {
-          return;
-        }
-        final OnboardingState onboarding = onboardingKey.currentState;
-        if (onboarding != null) {
-          onboarding.show();
-        }
-      });
+      // Future.delayed(Duration(milliseconds: 500), () {
+      //   if (appState.currentIndex != 1) {
+      //     return;
+      //   }
+      //   final OnboardingState onboarding = onboardingKey.currentState;
+      //   if (onboarding != null) {
+      //     onboarding.show();
+      //   }
+      // });
 
       return Onboarding(
           key: onboardingKey,

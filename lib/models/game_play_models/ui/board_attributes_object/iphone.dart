@@ -165,7 +165,6 @@ class IPhoneAttribs {
     return defaultValue;
   }
 
-
   static Map<String, dynamic> getIPhoneSE() {
     final defaultValue = getIPhone8();
     String override = '''
@@ -1425,7 +1424,7 @@ class IPhoneAttribs {
           return getIPadPro12();
         }
         return getIPadPro11();
-      } 
+      }
 
       if (name.contains('mini')) {
         return getIPadMini();
@@ -1468,7 +1467,7 @@ class IPhoneAttribs {
       } else if (name.contains('iphone se')) {
         return getIPhoneSE();
       }
-      
+
       return getIPhone8();
     }
   }

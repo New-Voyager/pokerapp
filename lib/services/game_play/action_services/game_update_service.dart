@@ -1305,7 +1305,18 @@ class GameUpdateService {
   }) async {
     String tableStatus = data['tableStatus'];
     String gameStatus = data['gameStatus'];
+    if (_gameState.handInProgress) {
+      int maxRetries = 10;
+      // if we are in middle of the hand, don't close it yet
+      while (_gameState.handInProgress) {
+        await Future.delayed(Duration(milliseconds: 1000));
+        maxRetries--;
 
+        if (maxRetries == 0) {
+          break;
+        }
+      }
+    }
     /*
       {"gameId":"90","gameCode":"CG-Z44IXIK44KWKBQW","messageType":"GAME_STATUS","status":{"status":"ACTIVE","tableStatus":"WAITING_TO_BE_STARTED"}}
       {"gameId":"90","gameCode":"CG-Z44IXIK44KWKBQW","messageType":"GAME_STATUS","status":{"status":"PAUSED","tableStatus":"GAME_RUNNING"}}

@@ -5,6 +5,8 @@ class BuyInResponse {
   int expireSeconds;
   double availableCredits;
   bool insufficientCredits;
+  bool appliedNextHand;
+  bool applied;
 
   BuyInResponse();
 
@@ -22,6 +24,13 @@ class BuyInResponse {
     if (json['availableCredits'] != null) {
       resp.availableCredits = double.parse(json['availableCredits'].toString());
     }
+    if (json['appliedNextHand'] != null) {
+      resp.appliedNextHand = json['appliedNextHand'];
+    }
+    if (json['applied'] != null) {
+      resp.applied = json['applied'];
+    }
+
     return resp;
   }
 }

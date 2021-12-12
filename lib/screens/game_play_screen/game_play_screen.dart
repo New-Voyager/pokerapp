@@ -1118,47 +1118,46 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       this._currentPlayer = widget.customizationService.currentPlayer;
     }
     final body = Consumer<AppTheme>(
-        builder: (_, theme, __) {
-          Widget mainBody = Scaffold(
-            /* FIXME: THIS FLOATING ACTION BUTTON IS FOR SHOWING THE TESTS */
-            floatingActionButton:
-                GamePlayScreenUtilMethods.floatingActionButton(
-              onReload: () {},
-              isCustomizationMode: widget.customizationService != null,
-            ),
-            // floating button to refresh network TEST
-            // floatingActionButton: FloatingActionButton(
-            //   child: Icon(Icons.android_rounded),
-            //   onPressed: _reconnectGameComService,
-            // ),
-            resizeToAvoidBottomInset: true,
-            backgroundColor: Colors.black,
-            body: _buildBody(theme),
-          );
-          if (!Platform.isIOS) {
-            mainBody = SafeArea(child: mainBody);
-          } 
-          if (boardAttributes.useSafeArea) {
-            return SafeArea(child: mainBody);
-          }
+      builder: (_, theme, __) {
+        Widget mainBody = Scaffold(
+          /* FIXME: THIS FLOATING ACTION BUTTON IS FOR SHOWING THE TESTS */
+          floatingActionButton: GamePlayScreenUtilMethods.floatingActionButton(
+            onReload: () {},
+            isCustomizationMode: widget.customizationService != null,
+          ),
+          // floating button to refresh network TEST
+          // floatingActionButton: FloatingActionButton(
+          //   child: Icon(Icons.android_rounded),
+          //   onPressed: _reconnectGameComService,
+          // ),
+          resizeToAvoidBottomInset: true,
+          backgroundColor: Colors.black,
+          body: _buildBody(theme),
+        );
+        if (!Platform.isIOS) {
+          mainBody = SafeArea(child: mainBody);
+        }
+        if (boardAttributes.useSafeArea) {
+          return SafeArea(child: mainBody);
+        }
 
-          return WillPopScope(
-            child: Container(
-              decoration: AppDecorators.bgRadialGradient(theme),
-              child: mainBody,
-            ),
-            onWillPop: () async {
-              // don't go back if the user swipes
-              return false;
-            },
-          );
-        },
-      );
+        return WillPopScope(
+          child: Container(
+            decoration: AppDecorators.bgRadialGradient(theme),
+            child: mainBody,
+          ),
+          onWillPop: () async {
+            // don't go back if the user swipes
+            return false;
+          },
+        );
+      },
+    );
 
     // return SafeArea(
     //   bottom: false,
-    //   child: 
-      
+    //   child:
+
     return body;
     //);
   }
