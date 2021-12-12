@@ -155,7 +155,7 @@ class _NamePlateDailogState extends State<NamePlateDailog> {
                     SizedBox(width: 16.pw),
                     Visibility(
                         visible: widget.gameState.gameInfo
-                            .audioConfEnabled, // widget.gameState.currentPlayer.isAdmin(),
+                            .audioConfEnabled ?? false, // widget.gameState.currentPlayer.isAdmin(),
                         child: CircleImageButton(
                           onTap: () {
                             widget.gameContextObject.ionAudioConferenceService

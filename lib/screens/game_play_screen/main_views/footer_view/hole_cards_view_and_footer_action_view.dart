@@ -52,14 +52,14 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
 
       double scale = boardAttributes.holeCardViewScale;
       final offset = boardAttributes.holeCardViewOffset;
+      bool showHandRank =  gameState.playerLocalConfig.showHandRank  ?? true;
       return Stack(
         alignment: Alignment.topCenter,
         children: [
           gameState.customizationMode
               ? BetIconButton(displayBetText: false)
               : Container(),
-          gameState.customizationMode ||
-                  gameState.playerLocalConfig.showHandRank
+          gameState.customizationMode || showHandRank
               ? Align(
                   alignment: Alignment.topCenter,
                   child: rankText,
