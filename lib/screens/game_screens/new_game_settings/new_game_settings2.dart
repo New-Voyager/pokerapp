@@ -260,31 +260,34 @@ class NewGameSettings2 extends StatelessWidget {
             children: [
               _buildLabel('Buyin Limit', theme),
 
-              Center(
-                child: ToggleButtons(
-                  children: toggleButtons,
-                  isSelected: isSelected,
-                  borderColor: theme.accentColor,
-                  borderRadius: BorderRadius.all(Radius.circular(25)),
-                  selectedColor: Colors.black,
-                  fillColor: theme.accentColor,
-                  onPressed: (int index) {
-                    if (index == 0) {
-                      gmp.buyInApprovalLimit =
-                          BuyInApprovalLimit.BUYIN_NO_LIMIT;
-                    } else if (index == 1) {
-                      if (showCreditLimit) {
+              FittedBox(
+                fit: BoxFit.fitWidth,
+                child: Center(
+                  child: ToggleButtons(
+                    children: toggleButtons,
+                    isSelected: isSelected,
+                    borderColor: theme.accentColor,
+                    borderRadius: BorderRadius.all(Radius.circular(25)),
+                    selectedColor: Colors.black,
+                    fillColor: theme.accentColor,
+                    onPressed: (int index) {
+                      if (index == 0) {
                         gmp.buyInApprovalLimit =
-                            BuyInApprovalLimit.BUYIN_CREDIT_LIMIT;
-                      } else {
+                            BuyInApprovalLimit.BUYIN_NO_LIMIT;
+                      } else if (index == 1) {
+                        if (showCreditLimit) {
+                          gmp.buyInApprovalLimit =
+                              BuyInApprovalLimit.BUYIN_CREDIT_LIMIT;
+                        } else {
+                          gmp.buyInApprovalLimit =
+                              BuyInApprovalLimit.BUYIN_HOST_APPROVAL;
+                        }
+                      } else if (index == 2) {
                         gmp.buyInApprovalLimit =
                             BuyInApprovalLimit.BUYIN_HOST_APPROVAL;
                       }
-                    } else if (index == 2) {
-                      gmp.buyInApprovalLimit =
-                          BuyInApprovalLimit.BUYIN_HOST_APPROVAL;
-                    }
-                  },
+                    },
+                  ),
                 ),
               ),
               // RadioListWidget<String>(
@@ -521,545 +524,561 @@ class NewGameSettings2 extends StatelessWidget {
         gmp.notify = true;
 
         return Container(
-          decoration: AppDecorators.bgRadialGradient(theme),
-          child: SingleChildScrollView(
-            physics: BouncingScrollPhysics(),
-            padding: const EdgeInsets.symmetric(
-              horizontal: 20.0,
+          decoration: AppDecorators.bgRadialGradient(theme).copyWith(
+            border: Border.all(
+              color: theme.secondaryColorWithDark(),
+              width: 2,
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    CircleImageButton(
-                      onTap: () async {
-                        await onSaveSettings(context, theme, gmp);
-                      },
-                      icon: Icons.save,
-                      theme: theme,
+            borderRadius: BorderRadius.circular(4),
+          ),
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  CircleImageButton(
+                    onTap: () async {
+                      await onSaveSettings(context, theme, gmp);
+                    },
+                    icon: Icons.save,
+                    theme: theme,
+                  ),
+                  /* HEADING */
+                  Expanded(
+                    child: HeadingWidget(
+                      heading: _appScreenText['gameSettings'],
                     ),
-                    /* HEADING */
-                    Expanded(
-                      child: HeadingWidget(
-                        heading: _appScreenText['gameSettings'],
-                      ),
-                    ),
-                    CircleImageButton(
-                      onTap: () {
-                        gmp.cancelled = true;
-                        Navigator.pop(context, null);
-                      },
-                      theme: theme,
-                      icon: Icons.close,
-                    ),
-                  ],
-                ),
+                  ),
+                  CircleImageButton(
+                    onTap: () {
+                      gmp.cancelled = true;
+                      Navigator.pop(context, null);
+                    },
+                    theme: theme,
+                    icon: Icons.close,
+                  ),
+                ],
+              ),
+              Expanded(
+                child: Scrollbar(
+                  thickness: 4,
+                  isAlwaysShown: true,
+                  child: ListView(
+                    shrinkWrap: true,
 
-                /* players */
-                _buildLabel('PLAYERS', theme),
-                sepV8,
-                RadioListWidget<int>(
-                  defaultValue: gmp.maxPlayers,
-                  values: playerCounts,
-                  onSelect: (int value) => gmp.maxPlayers = value,
-                ),
-
-                /* chip unit */
-                sepV20,
-                Consumer<NewGameModelProvider>(builder: (_, vnGmp, __) {
-                  return Row(children: [
-                    Expanded(
-                      child: Text('Chip Unit'),
-                    ),
-                    Expanded(
-                        child: ToggleButtons(
-                      selectedColor: Colors.black,
-                      borderColor: theme.accentColor,
-                      fillColor: theme.accentColor,
-                      onPressed: (int index) {
-                        if (index == 0) {
-                          gmp.chipUnit = ChipUnit.DOLLAR;
-                        } else {
-                          gmp.chipUnit = ChipUnit.CENT;
-                        }
-                      },
-                      isSelected: [
-                        gmp.chipUnit == ChipUnit.DOLLAR,
-                        gmp.chipUnit == ChipUnit.CENT,
-                      ],
-                      children: [
-                        Text('1'),
-                        Text('.01'),
-                      ],
-                    ))
-                  ]);
-                }),
-
-                /* big blind & ante */
-                sepV20,
-                _buildLabel('Blind', theme),
-                Consumer<NewGameModelProvider>(builder: (_, vnGmp, __) {
-                  double minValue = 2;
-                  double maxValue = 10000000;
-                  if (gmp.chipUnit == ChipUnit.CENT) {
-                    minValue = 0.1;
-                  }
-                  return Row(
+                    //crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      /* big blind */
-                      Expanded(
-                        child: TextInputWidget(
-                          value: gmp.bigBlind,
-                          decimalAllowed: gmp.chipUnit == ChipUnit.CENT,
-                          label: _appScreenText['bigBlind'],
-                          minValue: minValue,
-                          maxValue: maxValue,
-                          evenNumber: true,
-                          title: _appScreenText['enterBigBlind'],
-                          onChange: (value) {
-                            //gmp.blinds.bigBlind = value.toDouble();
-                            gmp.bigBlind = value.toDouble();
-                          },
-                        ),
+                      /* players */
+                      _buildLabel('PLAYERS', theme),
+                      sepV8,
+                      RadioListWidget<int>(
+                        defaultValue: gmp.maxPlayers,
+                        values: playerCounts,
+                        onSelect: (int value) => gmp.maxPlayers = value,
                       ),
 
-                      // sep
-                      sepH10,
-
-                      /* ante */
-                      Expanded(
-                        child: TextInputWidget(
-                          value: gmp.ante,
-                          label: 'Ante',
-                          title:
-                              'Enter ante (0-${DataFormatter.chipsFormat(gmp.bigBlind)})',
-                          decimalAllowed: gmp.chipUnit == ChipUnit.CENT,
-                          minValue: 0,
-                          maxValue: gmp.bigBlind,
-                          onChange: (value) {
-                            gmp.ante = value.toDouble();
-                          },
-                        ),
-                      ),
-                    ],
-                  );
-                }),
-
-                /* buyin */
-                sepV20,
-                _buildLabel(_appScreenText['buyin'], theme),
-                sepV8,
-                DecoratedContainer(
-                  child: Column(children: [
-                    Row(
-                      children: [
-                        /* min */
-                        Expanded(
-                          child: TextInputWidget(
-                            value: gmp.buyInMin.toDouble(),
-                            small: true,
-                            label: _appScreenText['min'],
-                            trailing: _appScreenText['bb'],
-                            title: _appScreenText['enterMinBuyin'],
-                            minValue: 0,
-                            maxValue: 1000,
-                            onChange: (value) {
-                              gmp.buyInMin = value.floor();
-
-                              if (gmp.buyInMax <= value.floor()) {
-                                Alerts.showNotification(
-                                    titleText:
-                                        _appScreenText['buyInMoreThanMin'],
-                                    duration: Duration(seconds: 5));
-                              }
-                            },
-                          ),
-                        ),
-
-                        // sep
-                        sepH10,
-
-                        /* max */
-                        Expanded(
-                          child: TextInputWidget(
-                            value: gmp.buyInMax.toDouble(),
-                            small: true,
-                            label: _appScreenText['max'],
-                            title: _appScreenText['enterMaxBuyin'],
-                            trailing: _appScreenText['bb'],
-                            minValue: 0,
-                            maxValue: 1000,
-                            onChange: (value) {
-                              gmp.buyInMax = value.floor();
-                              if (gmp.buyInMin >= value.floor()) {
-                                Alerts.showNotification(
-                                    titleText:
-                                        _appScreenText['buyinMaxBBGreater'],
-                                    duration: Duration(seconds: 5));
-                              }
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 4.ph),
-                    Consumer<NewGameModelProvider>(builder: (_, vnGmp, __) {
-                      return Text(
-                          ' (${DataFormatter.chipsFormat(gmp.buyInMin * gmp.bigBlind)} - ${DataFormatter.chipsFormat(gmp.buyInMax * gmp.bigBlind)}) ');
-                    }),
-                  ]),
-                  theme: theme,
-                ),
-
-                /* tips */
-                sepV20,
-                _buildLabel(_appScreenText["tips"], theme),
-                sepV8,
-                DecoratedContainer(
-                  child:
+                      /* chip unit */
+                      sepV20,
                       Consumer<NewGameModelProvider>(builder: (_, vnGmp, __) {
-                    return Row(
-                      children: [
-                        /* min */
-                        Expanded(
-                          child: TextInputWidget(
-                            value: gmp.rakePercentage,
-                            decimalAllowed: gmp.chipUnit == ChipUnit.CENT,
-                            small: true,
-                            trailing: '%',
-                            title: _appScreenText["tipsPercent"],
-                            minValue: 0,
-                            maxValue: 50,
-                            onChange: (value) {
-                              gmp.rakePercentage = value;
-                            },
+                        return Row(children: [
+                          Expanded(
+                            child: Text('Chip Unit'),
                           ),
-                        ),
-
-                        // sep
-                        sepH10,
-
-                        /* max */
-                        Expanded(
-                          child: TextInputWidget(
-                            value: gmp.rakeCap,
-                            decimalAllowed: gmp.chipUnit == ChipUnit.CENT,
-                            small: true,
-                            leading: _appScreenText['cap'],
-                            title: _appScreenText['maxTips'],
-                            minValue: 0,
-                            maxValue: -1,
-                            onChange: (value) {
-                              gmp.rakeCap = value;
+                          Expanded(
+                              child: ToggleButtons(
+                            selectedColor: Colors.black,
+                            borderColor: theme.accentColor,
+                            fillColor: theme.accentColor,
+                            onPressed: (int index) {
+                              if (index == 0) {
+                                gmp.chipUnit = ChipUnit.DOLLAR;
+                              } else {
+                                gmp.chipUnit = ChipUnit.CENT;
+                              }
                             },
-                          ),
-                        ),
-                      ],
-                    );
-                  }),
-                  theme: theme,
-                ),
+                            isSelected: [
+                              gmp.chipUnit == ChipUnit.DOLLAR,
+                              gmp.chipUnit == ChipUnit.CENT,
+                            ],
+                            children: [
+                              Text('1'),
+                              Text('.01'),
+                            ],
+                          ))
+                        ]);
+                      }),
 
-                /* action time */
-                sepV20,
-                _buildLabel(_appScreenText['actionTime'], theme),
-                sepV8,
-                RadioListWidget<int>(
-                  defaultValue: gmp.actionTime,
-                  values: NewGameConstants.ACTION_TIMES,
-                  onSelect: (int value) {
-                    gmp.actionTime = value;
-                  },
-                ),
-
-                /* game time */
-                sepV20,
-                _buildLabel(_appScreenText['gameTime'], theme),
-                sepV8,
-                RadioListWidget<int>(
-                  defaultValue: gmp.gameLengthInMins ~/ 60,
-                  values: NewGameConstants.GAME_LENGTH,
-                  onSelect: (int value) {
-                    gmp.gameLengthInMins = value * 60;
-                  },
-                ),
-
-                /* sep */
-                sepV20,
-
-                /* UTG straddle */
-                _buildRadio(
-                  label: _appScreenText['utgStraddle'],
-                  value: gmp.straddleAllowed,
-                  onChange: (bool b) {
-                    gmp.straddleAllowed = b;
-                  },
-                  theme: theme,
-                ),
-                sepV20,
-                _buildButtonStraddleConfig(theme, gmp),
-                sepV20,
-
-                /* allow run it twice */
-                _buildRadio(
-                  label: _appScreenText['allowRunItTwice'],
-                  value: gmp.runItTwice,
-                  onChange: (bool b) {
-                    gmp.runItTwice = b;
-                  },
-                  theme: theme,
-                ),
-                /* sep */
-                sepV20,
-                /* allow audio conference */
-                _buildRadio(
-                  label: _appScreenText['useAudioConf'],
-                  value: gmp.audioConference,
-                  onChange: (bool b) {
-                    gmp.audioConference = b;
-                  },
-                  theme: theme,
-                ),
-                /* sep */
-                sepV20,
-
-                /* Highhand Tracked */
-                _buildRadio(
-                  label: _appScreenText['hhTracked'],
-                  value: gmp.highHandTracked,
-                  onChange: (bool b) {
-                    gmp.highHandTracked = b;
-                  },
-                  theme: theme,
-                ),
-                sepV20,
-                _buildBuyinConfig(theme, gmp),
-                sepV20,
-                ExpansionTile(
-                  subtitle: Text(_appScreenText['chooseAdvanceConfig'],
-                      style: AppDecorators.getHeadLine6Style(theme: theme)),
-                  title: Text(_appScreenText['advanceConfig'],
-                      style: AppDecorators.getHeadLine4Style(theme: theme)),
-                  children: [
-                    _buildBreakConfig(theme, gmp),
-                    sepV20,
-                    _buildBombPotConfig(theme, gmp),
-
-                    /* sep */
-                    sepV20,
-                    DecoratedContainer(
-                      theme: theme,
-                      children: [
-                        /* allow audio conference */
-                        // _buildRadio(
-                        //   label: _appScreenText['USEAGORAAUDIOCONFERENCE'],
-                        //   value: gmp.useAgora,
-                        //   onChange: (bool b) {
-                        //     gmp.useAgora = b;
-                        //   },
-                        //   theme: theme,
-                        // ),
-
-                        /* bot games */
-                        _buildRadio(
-                          label: _appScreenText['botGame'],
-                          value: gmp.botGame,
-                          onChange: (bool b) {
-                            gmp.botGame = b;
-                          },
-                          theme: theme,
-                        ),
-                        /* location check */
-                        _buildRadio(
-                          label: _appScreenText['locationCheck'],
-                          value: gmp.locationCheck,
-                          onChange: (bool b) {
-                            gmp.locationCheck = b;
-                          },
-                          theme: theme,
-                        ),
-
-                        /* ip check */
-                        _buildRadio(
-                          label: _appScreenText['ipCheck'],
-                          value: gmp.ipCheck,
-                          onChange: (bool b) {
-                            gmp.ipCheck = b;
-                          },
-                          theme: theme,
-                        ),
-
-                        /* waitlist */
-                        _buildRadio(
-                          label: _appScreenText['waitlist'],
-                          value: gmp.waitList,
-                          onChange: (bool b) {
-                            gmp.waitList = b;
-                          },
-                          theme: theme,
-                        ),
-
-                        /* seat change allowed */
-                        _buildRadio(
-                          label: _appScreenText['seatChangeAllowed'],
-                          value: gmp.seatChangeAllowed,
-                          onChange: (bool b) {
-                            gmp.seatChangeAllowed = b;
-                          },
-                          theme: theme,
-                        ),
-
-                        /* allow fun animations */
-                        _buildRadio(
-                          label: _appScreenText['allowFunAnimation'],
-                          theme: theme,
-                          value: gmp.allowFunAnimations,
-                          onChange: (bool b) {
-                            gmp.allowFunAnimations = b;
-                          },
-                        ),
-
-                        /* allow run it twice */
-                        // _buildRadio(
-                        //   label: _appScreenText['muckLosingHand'],
-                        //   value: gmp.muckLosingHand,
-                        //   onChange: (bool b) {
-                        //     gmp.muckLosingHand = b;
-                        //   },
-                        //   theme: theme,
-                        // ),
-
-                        // /* show player buyin */
-                        // _buildRadio(
-                        //   label: _appScreenText['showPlayerBuyin'],
-                        //   value: gmp.showPlayerBuyin,
-                        //   onChange: (bool b) {
-                        //     gmp.showPlayerBuyin = b;
-                        //   },
-                        //   theme: theme,
-                        // ),
-
-                        /* allow rabbit hunt */
-                        _buildRadio(
-                          label: _appScreenText['allowRabbitHunt'],
-                          value: gmp.allowRabbitHunt,
-                          onChange: (bool b) {
-                            gmp.allowRabbitHunt = b;
-                          },
-                          theme: theme,
-                        ),
-
-                        /* show hand rank */
-                        _buildRadio(
-                          label: _appScreenText['showHandRank'],
-                          value: gmp.showHandRank,
-                          onChange: (bool b) {
-                            gmp.showHandRank = b;
-                          },
-                          theme: theme,
-                        ),
-
-                        /* show table result */
-                        _buildRadio(
-                          label: _appScreenText['showResult'],
-                          value: gmp.showResult,
-                          onChange: (bool b) {
-                            gmp.showResult = b;
-                          },
-                          theme: theme,
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                sepV20,
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    _buildLabel(_appScreenText['serviceFee'], theme),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        _buildLabel("10", theme),
-                        Image.asset(
-                          'assets/images/appcoin.png',
-                          height: 16.pw,
-                          width: 16.pw,
-                        ),
-                        _buildLabel("coins/hour", theme),
-                      ],
-                    ),
-                  ],
-                ),
-                sepV20,
-
-                /* start button */
-                sepV20,
-                Row(
-                  ///alignment: Alignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    CircleImageButton(
-                      onTap: () {
-                        gmp.cancelled = true;
-                        Navigator.pop(context, null);
-                      },
-                      theme: theme,
-                      icon: Icons.close,
-                    ),
-                    ButtonWidget(
-                      text: _appScreenText['start'],
-                      onTap: () {
-                        // if (gmp.blinds.bigBlind % 2 != 0) {
-                        //   Alerts.showNotification(
-                        //     titleText: _appScreenText['gameCreationFailed'],
-                        //     subTitleText: _appScreenText['checkBigBlind'],
-                        //     duration: Duration(seconds: 5),
-                        //   );
-                        //   return;
-                        // } else
-                        if (gmp.buyInMax < gmp.buyInMin) {
-                          Alerts.showNotification(
-                            titleText: _appScreenText['gameCreationFailed'],
-                            subTitleText: _appScreenText['checkBuyinRange'],
-                            duration: Duration(seconds: 5),
-                          );
-                          return;
-                        } else {
-                          Navigator.pop(context, gmp);
+                      /* big blind & ante */
+                      sepV20,
+                      _buildLabel('Blind', theme),
+                      Consumer<NewGameModelProvider>(builder: (_, vnGmp, __) {
+                        double minValue = 2;
+                        double maxValue = 10000000;
+                        if (gmp.chipUnit == ChipUnit.CENT) {
+                          minValue = 0.1;
                         }
-                      },
-                    ),
-                    CircleImageButton(
-                      onTap: () async {
-                        await onSaveSettings(context, theme, gmp);
-                      },
-                      icon: Icons.save,
-                      theme: theme,
-                    ),
-                  ],
+                        return Row(
+                          children: [
+                            /* big blind */
+                            Expanded(
+                              child: TextInputWidget(
+                                value: gmp.bigBlind,
+                                decimalAllowed: gmp.chipUnit == ChipUnit.CENT,
+                                label: _appScreenText['bigBlind'],
+                                minValue: minValue,
+                                maxValue: maxValue,
+                                evenNumber: true,
+                                title: _appScreenText['enterBigBlind'],
+                                onChange: (value) {
+                                  //gmp.blinds.bigBlind = value.toDouble();
+                                  gmp.bigBlind = value.toDouble();
+                                },
+                              ),
+                            ),
+
+                            // sep
+                            sepH10,
+
+                            /* ante */
+                            Expanded(
+                              child: TextInputWidget(
+                                value: gmp.ante,
+                                label: 'Ante',
+                                title:
+                                    'Enter ante (0-${DataFormatter.chipsFormat(gmp.bigBlind)})',
+                                decimalAllowed: gmp.chipUnit == ChipUnit.CENT,
+                                minValue: 0,
+                                maxValue: gmp.bigBlind,
+                                onChange: (value) {
+                                  gmp.ante = value.toDouble();
+                                },
+                              ),
+                            ),
+                          ],
+                        );
+                      }),
+
+                      /* buyin */
+                      sepV20,
+                      _buildLabel(_appScreenText['buyin'], theme),
+                      sepV8,
+                      DecoratedContainer(
+                        child: Column(children: [
+                          Row(
+                            children: [
+                              /* min */
+                              Expanded(
+                                child: TextInputWidget(
+                                  value: gmp.buyInMin.toDouble(),
+                                  small: true,
+                                  label: _appScreenText['min'],
+                                  trailing: _appScreenText['bb'],
+                                  title: _appScreenText['enterMinBuyin'],
+                                  minValue: 0,
+                                  maxValue: 1000,
+                                  onChange: (value) {
+                                    gmp.buyInMin = value.floor();
+
+                                    if (gmp.buyInMax <= value.floor()) {
+                                      Alerts.showNotification(
+                                          titleText: _appScreenText[
+                                              'buyInMoreThanMin'],
+                                          duration: Duration(seconds: 5));
+                                    }
+                                  },
+                                ),
+                              ),
+
+                              // sep
+                              sepH10,
+
+                              /* max */
+                              Expanded(
+                                child: TextInputWidget(
+                                  value: gmp.buyInMax.toDouble(),
+                                  small: true,
+                                  label: _appScreenText['max'],
+                                  title: _appScreenText['enterMaxBuyin'],
+                                  trailing: _appScreenText['bb'],
+                                  minValue: 0,
+                                  maxValue: 1000,
+                                  onChange: (value) {
+                                    gmp.buyInMax = value.floor();
+                                    if (gmp.buyInMin >= value.floor()) {
+                                      Alerts.showNotification(
+                                          titleText: _appScreenText[
+                                              'buyinMaxBBGreater'],
+                                          duration: Duration(seconds: 5));
+                                    }
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 4.ph),
+                          Consumer<NewGameModelProvider>(
+                              builder: (_, vnGmp, __) {
+                            return Text(
+                                ' (${DataFormatter.chipsFormat(gmp.buyInMin * gmp.bigBlind)} - ${DataFormatter.chipsFormat(gmp.buyInMax * gmp.bigBlind)}) ');
+                          }),
+                        ]),
+                        theme: theme,
+                      ),
+
+                      /* tips */
+                      sepV20,
+                      _buildLabel(_appScreenText["tips"], theme),
+                      sepV8,
+                      DecoratedContainer(
+                        child: Consumer<NewGameModelProvider>(
+                            builder: (_, vnGmp, __) {
+                          return Row(
+                            children: [
+                              /* min */
+                              Expanded(
+                                child: TextInputWidget(
+                                  value: gmp.rakePercentage,
+                                  decimalAllowed: gmp.chipUnit == ChipUnit.CENT,
+                                  small: true,
+                                  trailing: '%',
+                                  title: _appScreenText["tipsPercent"],
+                                  minValue: 0,
+                                  maxValue: 50,
+                                  onChange: (value) {
+                                    gmp.rakePercentage = value;
+                                  },
+                                ),
+                              ),
+
+                              // sep
+                              sepH10,
+
+                              /* max */
+                              Expanded(
+                                child: TextInputWidget(
+                                  value: gmp.rakeCap,
+                                  decimalAllowed: gmp.chipUnit == ChipUnit.CENT,
+                                  small: true,
+                                  leading: _appScreenText['cap'],
+                                  title: _appScreenText['maxTips'],
+                                  minValue: 0,
+                                  maxValue: -1,
+                                  onChange: (value) {
+                                    gmp.rakeCap = value;
+                                  },
+                                ),
+                              ),
+                            ],
+                          );
+                        }),
+                        theme: theme,
+                      ),
+
+                      /* action time */
+                      sepV20,
+                      _buildLabel(_appScreenText['actionTime'], theme),
+                      sepV8,
+                      RadioListWidget<int>(
+                        defaultValue: gmp.actionTime,
+                        values: NewGameConstants.ACTION_TIMES,
+                        onSelect: (int value) {
+                          gmp.actionTime = value;
+                        },
+                      ),
+
+                      /* game time */
+                      sepV20,
+                      _buildLabel(_appScreenText['gameTime'], theme),
+                      sepV8,
+                      RadioListWidget<int>(
+                        defaultValue: gmp.gameLengthInMins ~/ 60,
+                        values: NewGameConstants.GAME_LENGTH,
+                        onSelect: (int value) {
+                          gmp.gameLengthInMins = value * 60;
+                        },
+                      ),
+
+                      /* sep */
+                      sepV20,
+
+                      /* UTG straddle */
+                      _buildRadio(
+                        label: _appScreenText['utgStraddle'],
+                        value: gmp.straddleAllowed,
+                        onChange: (bool b) {
+                          gmp.straddleAllowed = b;
+                        },
+                        theme: theme,
+                      ),
+                      sepV20,
+                      _buildButtonStraddleConfig(theme, gmp),
+                      sepV20,
+
+                      /* allow run it twice */
+                      _buildRadio(
+                        label: _appScreenText['allowRunItTwice'],
+                        value: gmp.runItTwice,
+                        onChange: (bool b) {
+                          gmp.runItTwice = b;
+                        },
+                        theme: theme,
+                      ),
+                      /* sep */
+                      sepV20,
+                      /* allow audio conference */
+                      _buildRadio(
+                        label: _appScreenText['useAudioConf'],
+                        value: gmp.audioConference,
+                        onChange: (bool b) {
+                          gmp.audioConference = b;
+                        },
+                        theme: theme,
+                      ),
+                      /* sep */
+                      sepV20,
+
+                      /* Highhand Tracked */
+                      _buildRadio(
+                        label: _appScreenText['hhTracked'],
+                        value: gmp.highHandTracked,
+                        onChange: (bool b) {
+                          gmp.highHandTracked = b;
+                        },
+                        theme: theme,
+                      ),
+                      sepV20,
+                      _buildBuyinConfig(theme, gmp),
+                      sepV20,
+                      ExpansionTile(
+                        subtitle: Text(_appScreenText['chooseAdvanceConfig'],
+                            style:
+                                AppDecorators.getHeadLine6Style(theme: theme)),
+                        title: Text(_appScreenText['advanceConfig'],
+                            style:
+                                AppDecorators.getHeadLine4Style(theme: theme)),
+                        children: [
+                          _buildBreakConfig(theme, gmp),
+                          sepV20,
+                          _buildBombPotConfig(theme, gmp),
+
+                          /* sep */
+                          sepV20,
+                          DecoratedContainer(
+                            theme: theme,
+                            children: [
+                              /* allow audio conference */
+                              // _buildRadio(
+                              //   label: _appScreenText['USEAGORAAUDIOCONFERENCE'],
+                              //   value: gmp.useAgora,
+                              //   onChange: (bool b) {
+                              //     gmp.useAgora = b;
+                              //   },
+                              //   theme: theme,
+                              // ),
+
+                              /* bot games */
+                              _buildRadio(
+                                label: _appScreenText['botGame'],
+                                value: gmp.botGame,
+                                onChange: (bool b) {
+                                  gmp.botGame = b;
+                                },
+                                theme: theme,
+                              ),
+                              /* location check */
+                              _buildRadio(
+                                label: _appScreenText['locationCheck'],
+                                value: gmp.locationCheck,
+                                onChange: (bool b) {
+                                  gmp.locationCheck = b;
+                                },
+                                theme: theme,
+                              ),
+
+                              /* ip check */
+                              _buildRadio(
+                                label: _appScreenText['ipCheck'],
+                                value: gmp.ipCheck,
+                                onChange: (bool b) {
+                                  gmp.ipCheck = b;
+                                },
+                                theme: theme,
+                              ),
+
+                              /* waitlist */
+                              _buildRadio(
+                                label: _appScreenText['waitlist'],
+                                value: gmp.waitList,
+                                onChange: (bool b) {
+                                  gmp.waitList = b;
+                                },
+                                theme: theme,
+                              ),
+
+                              /* seat change allowed */
+                              _buildRadio(
+                                label: _appScreenText['seatChangeAllowed'],
+                                value: gmp.seatChangeAllowed,
+                                onChange: (bool b) {
+                                  gmp.seatChangeAllowed = b;
+                                },
+                                theme: theme,
+                              ),
+
+                              /* allow fun animations */
+                              _buildRadio(
+                                label: _appScreenText['allowFunAnimation'],
+                                theme: theme,
+                                value: gmp.allowFunAnimations,
+                                onChange: (bool b) {
+                                  gmp.allowFunAnimations = b;
+                                },
+                              ),
+
+                              /* allow run it twice */
+                              // _buildRadio(
+                              //   label: _appScreenText['muckLosingHand'],
+                              //   value: gmp.muckLosingHand,
+                              //   onChange: (bool b) {
+                              //     gmp.muckLosingHand = b;
+                              //   },
+                              //   theme: theme,
+                              // ),
+
+                              // /* show player buyin */
+                              // _buildRadio(
+                              //   label: _appScreenText['showPlayerBuyin'],
+                              //   value: gmp.showPlayerBuyin,
+                              //   onChange: (bool b) {
+                              //     gmp.showPlayerBuyin = b;
+                              //   },
+                              //   theme: theme,
+                              // ),
+
+                              /* allow rabbit hunt */
+                              _buildRadio(
+                                label: _appScreenText['allowRabbitHunt'],
+                                value: gmp.allowRabbitHunt,
+                                onChange: (bool b) {
+                                  gmp.allowRabbitHunt = b;
+                                },
+                                theme: theme,
+                              ),
+
+                              /* show hand rank */
+                              _buildRadio(
+                                label: _appScreenText['showHandRank'],
+                                value: gmp.showHandRank,
+                                onChange: (bool b) {
+                                  gmp.showHandRank = b;
+                                },
+                                theme: theme,
+                              ),
+
+                              /* show table result */
+                              _buildRadio(
+                                label: _appScreenText['showResult'],
+                                value: gmp.showResult,
+                                onChange: (bool b) {
+                                  gmp.showResult = b;
+                                },
+                                theme: theme,
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      sepV20,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          _buildLabel(_appScreenText['serviceFee'], theme),
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              _buildLabel("10", theme),
+                              Image.asset(
+                                'assets/images/appcoin.png',
+                                height: 16.pw,
+                                width: 16.pw,
+                              ),
+                              _buildLabel("coins/hour", theme),
+                            ],
+                          ),
+                        ],
+                      ),
+                      sepV20,
+
+                      /* start button */
+                      /* sep */
+                      sepV20,
+                      sepV20,
+                      Column(
+
+                          ///alignment: Alignment.center,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                                '*Audio Beta: This feature may or may not be available in future versions',
+                                style: AppDecorators.getHeadLine6Style(
+                                    theme: theme)),
+                            Text(
+                                '*High-hand: Tracks high hand occurred in the entire game',
+                                style: AppDecorators.getHeadLine6Style(
+                                    theme: theme)),
+                          ]),
+                    ],
+                  ),
                 ),
-
-                /* sep */
-                sepV20,
-                sepV20,
-                Column(
-
-                    ///alignment: Alignment.center,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                          '*Audio Beta: This feature may or may not be available in future versions',
-                          style: AppDecorators.getHeadLine6Style(theme: theme)),
-                      Text(
-                          '*High-hand: Tracks high hand occurred in the entire game',
-                          style: AppDecorators.getHeadLine6Style(theme: theme)),
-                    ]),
-              ],
-            ),
+              ),
+              sepV20,
+              Row(
+                ///alignment: Alignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  CircleImageButton(
+                    onTap: () {
+                      gmp.cancelled = true;
+                      Navigator.pop(context, null);
+                    },
+                    theme: theme,
+                    icon: Icons.close,
+                  ),
+                  ButtonWidget(
+                    text: _appScreenText['start'],
+                    onTap: () {
+                      // if (gmp.blinds.bigBlind % 2 != 0) {
+                      //   Alerts.showNotification(
+                      //     titleText: _appScreenText['gameCreationFailed'],
+                      //     subTitleText: _appScreenText['checkBigBlind'],
+                      //     duration: Duration(seconds: 5),
+                      //   );
+                      //   return;
+                      // } else
+                      if (gmp.buyInMax < gmp.buyInMin) {
+                        Alerts.showNotification(
+                          titleText: _appScreenText['gameCreationFailed'],
+                          subTitleText: _appScreenText['checkBuyinRange'],
+                          duration: Duration(seconds: 5),
+                        );
+                        return;
+                      } else {
+                        Navigator.pop(context, gmp);
+                      }
+                    },
+                  ),
+                  CircleImageButton(
+                    onTap: () async {
+                      await onSaveSettings(context, theme, gmp);
+                    },
+                    icon: Icons.save,
+                    theme: theme,
+                  ),
+                ],
+              ),
+            ],
           ),
         );
       },
