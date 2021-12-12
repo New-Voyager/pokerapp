@@ -128,17 +128,16 @@ class GamePlayScreenUtilMethods {
           onTap: () => TestService.setActionTimer(),
         ),
         SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          label: 'Show Bet Widget',
-          labelBackgroundColor: Colors.black,
-          onTap: () {
-            TestService.testBetWidget();
-          }
-        ),
+            child: Icon(
+              Icons.adb_rounded,
+              color: Colors.white,
+            ),
+            backgroundColor: Colors.red,
+            label: 'Show Bet Widget',
+            labelBackgroundColor: Colors.black,
+            onTap: () {
+              TestService.testBetWidget();
+            }),
 
         SpeedDialChild(
           child: Icon(
@@ -161,17 +160,16 @@ class GamePlayScreenUtilMethods {
           onTap: () => TestService.showDoubleBoard(),
         ),
         SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          label: 'Show Bet Widget',
-          labelBackgroundColor: Colors.black,
-          onTap: () {
-            TestService.testBetWidget();
-          }
-        ),        
+            child: Icon(
+              Icons.adb_rounded,
+              color: Colors.white,
+            ),
+            backgroundColor: Colors.red,
+            label: 'Show Bet Widget',
+            labelBackgroundColor: Colors.black,
+            onTap: () {
+              TestService.testBetWidget();
+            }),
         SpeedDialChild(
           child: Icon(
             Icons.adb_rounded,

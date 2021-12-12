@@ -86,16 +86,13 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
     if (searchText.isNotEmpty) {
       List<ClubMemberModel> list = [];
       String searchStr = searchText.toLowerCase();
-      for(final item in _filteredList) {
+      for (final item in _filteredList) {
         if (item.name.toLowerCase().startsWith(searchStr)) {
           list.add(item);
         }
       }
       _filteredList = list;
     }
-    
-
-
 
     return Consumer<AppTheme>(
       builder: (_, theme, __) => Container(
@@ -114,9 +111,7 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
                     controller: searchTextController,
                     style: AppDecorators.getSubtitle1Style(theme: theme),
                     onChanged: (String text) {
-                      setState(() {
-                        
-                      });
+                      setState(() {});
                     },
                     decoration: InputDecoration(
                       hintText: 'Search',

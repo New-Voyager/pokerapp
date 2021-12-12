@@ -52,7 +52,7 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
 
       double scale = boardAttributes.holeCardViewScale;
       final offset = boardAttributes.holeCardViewOffset;
-      bool showHandRank =  gameState.playerLocalConfig.showHandRank  ?? true;
+      bool showHandRank = gameState.playerLocalConfig.showHandRank ?? true;
       return Stack(
         alignment: Alignment.topCenter,
         children: [

@@ -855,6 +855,8 @@ class GameService {
         missedBlind
         availableCredits
         insufficientCredits
+        appliedNextHand
+        applied
       }
     }
     """;
