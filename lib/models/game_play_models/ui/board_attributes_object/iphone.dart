@@ -1068,7 +1068,7 @@ class IPhoneAttribs {
        "screenSize": "744.0, 1133.0",
        "size": 9.0,
         "board": {
-          "centerViewPos": "0, -30.0",
+          "centerViewPos": "0, -10.0",
           "betImageScale": 4.2,
           "seatMap": {
             "bottomCenter": "0, -10",
@@ -1207,12 +1207,14 @@ class IPhoneAttribs {
         "screenSize": "1024.0, 1366.0",
         "size": 11.0,
         "board": {
-          "centerViewScale": 1.30,
-          "centerViewPos": "0, 20.0",
+          "centerViewScale": 1.50,
+          "centerViewPos": "0, 30.0",
           "tableScale": 1.0,
           "betImageScale": 3.6,
+          "centerBoardScale": 1.4,
+          "centerDoubleBoardScale": 1.0,
           "seatMap": {
-            "bottomCenter": "0, -20",
+            "bottomCenter": "0, -10",
             "bottomLeft": "140, -30",
             "bottomRight": "-140, -30",
             "middleLeft": "30, 70",
@@ -1224,7 +1226,7 @@ class IPhoneAttribs {
             "topCenter2": "80, 130"
           },
           "betAmountFac": {
-            "bottomCenter": "-0.25, -1.0",
+            "bottomCenter": "-0.25, -0.90",
             "topCenter": "0.20, 0.70",
             "middleLeft": "1.05, 0",
             "middleRight": "-1.05, 0",
@@ -1290,9 +1292,11 @@ class IPhoneAttribs {
         "size": 9.0,
         "board": {
           "centerViewScale": 1.30,
-          "centerDoubleBoardScale": 0.90,
           "centerBoardScale": 1.4,
-          "betImageScale": 3.0
+          "betImageScale": 3.0,
+          "centerViewPos": "0, -10",
+          "centerDoubleBoardScale": 1.2,
+          "centerBoardScale": 1.4
         },
         "holeCardDisplacement": {
           "2": 50,
@@ -1340,7 +1344,7 @@ class IPhoneAttribs {
         "size": 9.5,
         "board": {
           "centerViewScale": 1.30,
-          "centerViewPos": "0, 20.0",
+          "centerViewPos": "0, 0.0",
           "seatMap": {
             "bottomCenter": "0, -20",
             "bottomLeft": "140, -20",
@@ -1421,7 +1425,7 @@ class IPhoneAttribs {
           return getIPadPro12();
         }
         return getIPadPro11();
-      }
+      } 
 
       if (name.contains('mini')) {
         return getIPadMini();

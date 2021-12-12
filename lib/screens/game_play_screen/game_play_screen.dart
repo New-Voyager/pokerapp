@@ -1033,7 +1033,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     );
 
     Stack allWidgets = Stack(children: [
-      Container(width: Screen.width, height: Screen.height, color: Colors.red),
+      // Container(width: Screen.width, height: Screen.height, color: Colors.red),
       column,
       /* chat window widget */
       this.widget.showBottom ? _buildChatWindow() : Container(),
