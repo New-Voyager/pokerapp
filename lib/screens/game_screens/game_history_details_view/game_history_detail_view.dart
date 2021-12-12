@@ -65,6 +65,14 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
   }
 
   @override
+  void setState(Function fn) {
+    if (!mounted) {
+      return;
+    }
+    super.setState(fn);
+  }
+
+  @override
   void initState() {
     _appScreenText = getAppTextScreen("gameHistoryDetailView");
 

@@ -355,6 +355,7 @@ class NewHandHandler {
     tableState.notifyAll();
 
     if (gameState.handInfo.handNum == 1) {
+      gameState.myState.notify();
       gameState.redrawFooter();
     }
   }

@@ -382,7 +382,7 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
                                 changed = true;
                                 if (widget.member != null) {
                                   widget.member.refreshCredits = true;
-                                } 
+                                }
                                 if (member != null) {
                                   member.refreshCredits = true;
                                 }

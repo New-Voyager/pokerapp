@@ -119,6 +119,7 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
 
     final gco = context.read<GameContextObject>();
     final boardAttributes = context.read<BoardAttributesObject>();
+    log('RedrawFooter: rebuilding HoleCardsViewAndFooterActionView');
 
     return SafeArea(
       child: Stack(

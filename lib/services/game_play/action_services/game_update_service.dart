@@ -102,6 +102,8 @@ class GameUpdateService {
       debugLog(_gameState.gameCode, jsonData);
     }
     String type = data['type']; // new format used by API server
+    //log('PlayerState: $type messageType: $messageType');
+
     if (messageType != null) {
       // delegate further actions to sub services as per messageType
       switch (messageType) {
@@ -506,9 +508,11 @@ class GameUpdateService {
   void handlePlayerWaitForBuyin({
     @required var playerUpdate,
   }) async {
+    //log('PlayerState: handlePlayerWaitForBuyin');
     int seatNo = playerUpdate['seatNo'];
     if (closed || _gameState.uiClosing) return;
     final seat = _gameState.getSeat(seatNo);
+    await waitForHandToFinish();
 
     GameInfoModel _gameInfoModel =
         await GameService.getGameInfo(_gameState.gameCode);
@@ -526,6 +530,7 @@ class GameUpdateService {
       seat.player.status = PlayerStatus.WAIT_FOR_BUYIN
           .toString()
           .replaceAll('PlayerStatus.', '');
+
       // get break exp time
       for (final player in _gameInfoModel.playersInSeats) {
         if (seat.player == null) {
@@ -542,6 +547,8 @@ class GameUpdateService {
 
             // update my state to show sitback button
             if (seat.player.isMe) {
+              await waitForHandToFinish();
+
               if (closed || _gameState.uiClosing) return;
               final myState = _gameState.myState;
               myState.notify();
@@ -1300,11 +1307,7 @@ class GameUpdateService {
         subTitleText: _appScreenText['theGameWillEndAfterThisHand']);
   }
 
-  void handleNewUpdateStatus({
-    var data,
-  }) async {
-    String tableStatus = data['tableStatus'];
-    String gameStatus = data['gameStatus'];
+  void waitForHandToFinish() async {
     if (_gameState.handInProgress) {
       int maxRetries = 10;
       // if we are in middle of the hand, don't close it yet
@@ -1317,6 +1320,14 @@ class GameUpdateService {
         }
       }
     }
+  }
+
+  void handleNewUpdateStatus({
+    var data,
+  }) async {
+    String tableStatus = data['tableStatus'];
+    String gameStatus = data['gameStatus'];
+    await waitForHandToFinish();
     /*
       {"gameId":"90","gameCode":"CG-Z44IXIK44KWKBQW","messageType":"GAME_STATUS","status":{"status":"ACTIVE","tableStatus":"WAITING_TO_BE_STARTED"}}
       {"gameId":"90","gameCode":"CG-Z44IXIK44KWKBQW","messageType":"GAME_STATUS","status":{"status":"PAUSED","tableStatus":"GAME_RUNNING"}}

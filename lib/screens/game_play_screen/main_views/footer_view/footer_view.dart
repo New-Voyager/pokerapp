@@ -70,11 +70,15 @@ class _FooterViewState extends State<FooterView>
       playerStateChanged =
           (mePlayerModelVn.value.playerFolded != me.playerFolded);
     }
-    return cardsChanged || playerStateChanged;
+    bool rebuild = cardsChanged || playerStateChanged;
+    log('RedrawFooter: FooterView rebuild: $rebuild');
+
+    return rebuild;
   }
 
   void onPlayersChanges() {
     final PlayerModel me = _gameState.me;
+    log('RedrawFooter: onPlayersChanges');
 
     if (me == null) {
       return;
@@ -166,8 +170,11 @@ class _FooterViewState extends State<FooterView>
       return Consumer<MyState>(builder: (_, ___, __) {
         final me = gameState.me;
         if (me == null && !gameState.customizationMode) {
+          log('RedrawFooter: rebuilding hole card me is null');
           return SizedBox(width: width);
         } else {
+          log('RedrawFooter: rebuilding hole card');
+
           return HoleCardsViewAndFooterActionView(
             playerModel: me,
             isHoleCardsVisibleVn: isHoleCardsVisibleVn,
@@ -326,7 +333,8 @@ class _FooterViewState extends State<FooterView>
       children.add(_buildMainView(gameState));
       /* communication widgets */
       children.add(_buildCustomizationView());
-    } else if (gameState.gameInfo.status == AppConstants.GAME_CONFIGURED) {
+    } else if (gameState.tableState.gameStatus ==
+        AppConstants.GAME_CONFIGURED) {
       // display game information
       children.add(_buildGameInfo(gameState));
       /* hand analyse view */

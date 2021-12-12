@@ -1015,7 +1015,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         alignment: Alignment.bottomCenter,
         child: Consumer<RedrawFooterSectionState>(
           builder: (_, ___, __) {
-            // log('RedrawFooter: building footer view');
+            log('RedrawFooter: building footer view');
             return FooterViewWidget(
               gameCode: widget.gameCode,
               gameContextObject: _gameContextObj,

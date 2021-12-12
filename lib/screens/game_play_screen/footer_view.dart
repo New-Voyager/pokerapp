@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
@@ -28,6 +30,8 @@ class FooterViewWidget extends StatelessWidget {
     double footerHeight =
         MediaQuery.of(context).size.height * boa.footerViewScale;
     footerHeight += boa.bottomHeightAdjust;
+    log('RedrawFooter: FooterViewWidget build');
+
     return IntrinsicHeight(
       child: Container(
         height: footerHeight,
