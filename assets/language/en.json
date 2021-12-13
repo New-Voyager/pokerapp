@@ -219,7 +219,10 @@
         "joinedAt": "Joined at",
         "hostedBy": "Hosted by",
         "clubs": "Clubs",
-        "club": "Club"
+        "club": "Club",
+        "invitationCode": "Invitation Code",
+        "enterInvitationCode": "Enter Invitation Code",
+        "validateInvitationCode": "Check"
     },
     "searchClubBottomSheet": {
         "enterClubCode": "Enter club code",
