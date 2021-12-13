@@ -325,41 +325,6 @@ class NewGameSettings2 extends StatelessWidget {
     );
   }
 
-  Widget _buildBuyinConfig2(AppTheme theme, NewGameModelProvider gmp) {
-    return DecoratedContainer(
-      theme: theme,
-      children: [
-        SwitchWidget(
-          value: gmp.buyInApproval,
-          label: _appScreenText['buyinApproval'],
-          onChange: (bool value) {
-            gmp.buyInApproval = value;
-          },
-        ),
-
-        // buy in wait time
-        Consumer<NewGameModelProvider>(
-          builder: (_, vnGmp, __) => _buildAnimatedSwitcher(
-            child: vnGmp.buyInApproval == false
-                ? const SizedBox.shrink()
-                : Column(
-                    children: [
-                      _buildLabel(_appScreenText['buyinMaxTime'], theme),
-                      RadioListWidget<int>(
-                        defaultValue: gmp.buyInWaitTime,
-                        values: NewGameConstants.BUYIN_WAIT_TIMES,
-                        onSelect: (int value) {
-                          gmp.buyInWaitTime = value;
-                        },
-                      ),
-                    ],
-                  ),
-          ),
-        ),
-      ],
-    );
-  }
-
   Widget _buildButtonStraddleConfig(AppTheme theme, NewGameModelProvider gmp) {
     return DecoratedContainer(
       theme: theme,
@@ -400,13 +365,6 @@ class NewGameSettings2 extends StatelessWidget {
                           vnGmp.buttonStraddleBetAmount = value.toInt();
                         },
                       )
-                      // RadioListWidget(
-                      //   defaultValue: gmp.buyInWaitTime,
-                      //   values: NewGameConstants.BUYIN_WAIT_TIMES,
-                      //   onSelect: (int value) {
-                      //     gmp.buyInWaitTime = value;
-                      //   },
-                      // ),
                     ],
                   ),
           ),
@@ -504,6 +462,13 @@ class NewGameSettings2 extends StatelessWidget {
             mainGameType == GameType.FIVE_CARD_PLO_HILO) {
           playerCounts = [2, 4, 6, 8];
           gmp.maxPlayers = 8;
+        }
+
+        if (clubHomePageModel != null) {
+          gmp.settings.showResultOption = clubHomePageModel.showGameResult;
+          if (!gmp.settings.showResultOption) {
+            gmp.showResult = false;
+          }
         }
 
         // Load default values if it is not from Saved Settings.
@@ -977,13 +942,16 @@ class NewGameSettings2 extends StatelessWidget {
                               ),
 
                               /* show table result */
-                              _buildRadio(
-                                label: _appScreenText['showResult'],
-                                value: gmp.showResult,
-                                onChange: (bool b) {
-                                  gmp.showResult = b;
-                                },
-                                theme: theme,
+                              Visibility(
+                                visible: gmp.showResultOption,
+                                child: _buildRadio(
+                                  label: _appScreenText['showResult'],
+                                  value: gmp.showResult,
+                                  onChange: (bool b) {
+                                    gmp.showResult = b;
+                                  },
+                                  theme: theme,
+                                ),
                               ),
                             ],
                           ),

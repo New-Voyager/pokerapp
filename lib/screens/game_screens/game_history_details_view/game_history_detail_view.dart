@@ -791,51 +791,68 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
                   ),
           ),
           AppDimensionsNew.getVerticalSizedBox(16),
-          ListTile(
-            tileColor: theme.fillInColor,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-            leading: Container(
-              width: 36.ph,
-              height: 36.ph,
-              padding: EdgeInsets.all(8),
-              decoration:
-                  BoxDecoration(color: Colors.blue, shape: BoxShape.circle),
-              child: SvgPicture.asset(
-                'assets/images/casino.svg',
-                color: theme.supportingColor,
-                width: 24.ph,
-                height: 24.ph,
-                fit: BoxFit.contain,
-              ),
-            ),
-            title: Text(
-              _appScreenText['tableResult'],
-              style: AppDecorators.getHeadLine4Style(theme: theme),
-            ),
-            onTap: () {
-              Navigator.pushNamed(
-                context,
-                Routes.table_result,
-                arguments: {
-                  "gameCode": _gameDetail.gameCode,
-                  "clubCode": widget.clubCode,
-                  "club": widget.club,
-                  "showTips": _gameDetail.isOwner ??
-                      false || _gameDetail.isHost ??
-                      false,
-                },
-              );
-            },
-            trailing: Icon(
-              Icons.arrow_forward_ios,
-              color: theme.accentColor,
-              size: 12.dp,
-            ),
-          ),
+          _getTableResult(theme),
           AppDimensionsNew.getVerticalSizedBox(16),
           hhTile,
         ],
+      ),
+    );
+  }
+
+  Widget _getTableResult(AppTheme theme) {
+    bool show = true;
+    if (widget.club != null) {
+      show = widget.club.showGameResult;
+      if (widget.club.isOwner || widget.club.isManager) {
+        show = true;
+      }
+    } else {
+      show = widget.data.showGameResult;
+      if (widget.data.isHost) {
+        show = true;
+      }
+    }
+
+    return Visibility(
+      visible: show,
+      child: ListTile(
+        tileColor: theme.fillInColor,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        leading: Container(
+          width: 36.ph,
+          height: 36.ph,
+          padding: EdgeInsets.all(8),
+          decoration: BoxDecoration(color: Colors.blue, shape: BoxShape.circle),
+          child: SvgPicture.asset(
+            'assets/images/casino.svg',
+            color: theme.supportingColor,
+            width: 24.ph,
+            height: 24.ph,
+            fit: BoxFit.contain,
+          ),
+        ),
+        title: Text(
+          _appScreenText['tableResult'],
+          style: AppDecorators.getHeadLine4Style(theme: theme),
+        ),
+        onTap: () {
+          Navigator.pushNamed(
+            context,
+            Routes.table_result,
+            arguments: {
+              "gameCode": _gameDetail.gameCode,
+              "clubCode": widget.clubCode,
+              "club": widget.club,
+              "showTips":
+                  _gameDetail.isOwner ?? false || _gameDetail.isHost ?? false,
+            },
+          );
+        },
+        trailing: Icon(
+          Icons.arrow_forward_ios,
+          color: theme.accentColor,
+          size: 12.dp,
+        ),
       ),
     );
   }
