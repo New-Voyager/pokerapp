@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:overlay_support/overlay_support.dart';
@@ -414,11 +416,17 @@ class OverlayHighHandNotificationWidget extends StatelessWidget {
 
 class OverlayRunItTwice extends StatelessWidget {
   static void showPrompt({
+    @required GameState gameState,
+    @required GameContextObject gameContextObject,
     @required final int expiresAtInSeconds,
     @required final BuildContext context,
   }) {
     showOverlayNotification(
-      (context) => OverlayRunItTwice(expiresAtInSeconds: expiresAtInSeconds),
+      (context) => OverlayRunItTwice(
+        expiresAtInSeconds: expiresAtInSeconds,
+        gameContextObject: gameContextObject,
+        gameState: gameState,
+      ),
       duration: Duration(seconds: expiresAtInSeconds),
       context: context,
       position: NotificationPosition.bottom,
@@ -426,8 +434,12 @@ class OverlayRunItTwice extends StatelessWidget {
   }
 
   final int expiresAtInSeconds;
+  final GameState gameState;
+  final GameContextObject gameContextObject;
 
   const OverlayRunItTwice({
+    @required this.gameState,
+    @required this.gameContextObject,
     @required this.expiresAtInSeconds,
   });
 
@@ -445,13 +457,13 @@ class OverlayRunItTwice extends StatelessWidget {
       return;
     }
 
-    final gameContextObj = context.read<GameContextObject>();
-    final gameState = context.read<GameState>();
-
+    // final gameContextObj = context.read<GameContextObject>();
+    // final gameState = context.read<GameState>();
+    log('RunItTwice: action: $playerAction');
     /* send the player action, as PLAYER_ACTED message: RUN_IT_TWICE_YES or RUN_IT_TWICE_NO */
     HandActionProtoService.takeAction(
       gameState: gameState,
-      gameContextObject: gameContextObj,
+      gameContextObject: gameContextObject,
       action: playerAction,
     );
 
@@ -473,24 +485,27 @@ class OverlayRunItTwice extends StatelessWidget {
         child: Row(
           children: [
             // count down timer
-            Expanded(
-              flex: 1,
-              child: FittedBox(
-                fit: BoxFit.fitWidth,
-                child: Countdown(
-                  seconds: expiresAtInSeconds,
-                  onFinished: () {
-                    Navigator.pop(context);
-                  },
-                  build: (_, timeLeft) {
-                    return Text(
-                      DataFormatter.timeFormatMMSS(timeLeft),
-                      style: TextStyle(
-                        color: Colors.red,
-                      ),
+            FittedBox(
+              fit: BoxFit.fitWidth,
+              child: Countdown(
+                seconds: expiresAtInSeconds,
+                onFinished: () {
+                  Navigator.pop(context);
+                },
+                build: (_, timeLeft) {
+                  if (timeLeft == 0) {
+                    HandActionProtoService.takeAction(
+                      gameState: gameState,
+                      gameContextObject: gameContextObject,
+                      action: AppConstants.RUN_IT_TWICE_NO,
                     );
-                  },
-                ),
+                  }
+                  return Text(
+                    //DataFormatter.timeFormatMMSS(timeLeft),
+                    timeLeft.toInt().toString(),
+                    style: TextStyle(color: Colors.red, fontSize: 13.dp),
+                  );
+                },
               ),
             ),
 
@@ -530,7 +545,7 @@ class OverlayRunItTwice extends StatelessWidget {
                     color: Colors.red,
                   ),
                   onPressed: () {
-                    _handleButtonTaps(isYes: true, context: context);
+                    _handleButtonTaps(isYes: false, context: context);
                   },
                 ),
               ],

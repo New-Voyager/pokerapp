@@ -25,7 +25,6 @@ import 'package:pokerapp/services/test/hand_messages.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/numeric_keyboard2.dart';
-import 'package:pokerapp/widgets/run_it_twice_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/main_helper.dart';
@@ -33,7 +32,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/host_seat_chang
 
 class TestService {
   static bool get isTesting {
-    return true;
+    return false;
   }
 
   static var _showResult = false;
@@ -72,7 +71,11 @@ class TestService {
   }
 
   static void promptRunItTwice() {
+    final gameState = GameState.getState(_context);
+    final gameContextObject = _context.read<GameContextObject>();
     OverlayRunItTwice.showPrompt(
+      gameContextObject: gameContextObject,
+      gameState: gameState,
       expiresAtInSeconds: 30,
       context: _context,
     );

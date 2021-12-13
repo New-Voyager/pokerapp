@@ -453,9 +453,12 @@ class PlayerActionHandler {
           false) {
         if (_gameState.uiClosing) return;
         int secondsTillTimeout = seatAction.secondsTillTimesout;
+        final gameContextObject = _context.read<GameContextObject>();
 
         return OverlayRunItTwice.showPrompt(
           expiresAtInSeconds: secondsTillTimeout,
+          gameState: _gameState,
+          gameContextObject: gameContextObject,
           context: _context,
         );
       } else {
