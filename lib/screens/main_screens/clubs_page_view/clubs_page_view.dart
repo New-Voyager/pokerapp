@@ -97,7 +97,7 @@ class _ClubsPageViewState extends State<ClubsPageView>
           RoundRectButton(
             text: _appScreenText['validateInvitationCode'],
             onTap: () async {
-              bool isInvitationCodeValid = false;
+              bool isInvitationCodeValid = true;
               // TODO: CHECK FOR VALIDITY OF INVITATION CODE
 
               // if invitation code is invalid, return NULL
@@ -127,6 +127,7 @@ class _ClubsPageViewState extends State<ClubsPageView>
     // create club dialog
     String clubCode = await CreateClubDialog.prompt(
       context: ctx,
+      invitationCode: invitationCode,
       appScreenText: getAppTextScreen("createClubBottomSheet"),
     );
 
