@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:pokerapp/screens/game_play_screen/widgets/overlay_notification.dart';
 import 'package:pokerapp/services/audio/audio_service.dart';
 import 'package:pokerapp/services/connectivity_check/liveness_sender.dart';
 import 'package:pokerapp/services/connectivity_check/network_change_listener.dart';
@@ -16,10 +17,8 @@ import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/proto/hand.pb.dart';
 import 'package:pokerapp/proto/handmessage.pb.dart' as proto;
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
-import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/utils/card_helper.dart';
-import 'package:pokerapp/widgets/run_it_twice_dialog.dart';
 import 'package:vibration/vibration.dart';
 
 import 'hand_action_proto_service.dart';
@@ -455,9 +454,9 @@ class PlayerActionHandler {
         if (_gameState.uiClosing) return;
         int secondsTillTimeout = seatAction.secondsTillTimesout;
 
-        return RunItTwiceDialog.promptRunItTwice(
+        return OverlayRunItTwice.showPrompt(
+          expiresAtInSeconds: secondsTillTimeout,
           context: _context,
-          expTime: secondsTillTimeout,
         );
       } else {
         if (availableActions?.contains(AppConstants.STRADDLE) ?? false) {

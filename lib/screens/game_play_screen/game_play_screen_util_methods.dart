@@ -56,89 +56,6 @@ class GamePlayScreenUtilMethods {
       overlayOpacity: 0.1,
       icon: Icons.all_inclusive_rounded,
       children: [
-        // SpeedDialChild(
-        //   child: Icon(
-        //     Icons.adb_rounded,
-        //     color: Colors.white,
-        //   ),
-        //   backgroundColor: Colors.red,
-        //   label: 'Flop Cards',
-        //   labelBackgroundColor: Colors.black,
-        //   onTap: () => TestService.addFlopCards(),
-        // ),
-        // SpeedDialChild(
-        //   child: Icon(
-        //     Icons.adb_rounded,
-        //     color: Colors.white,
-        //   ),
-        //   backgroundColor: Colors.red,
-        //   label: 'Show Sitback',
-        //   labelBackgroundColor: Colors.black,
-        //   onTap: () => TestService.showSitBack(),
-        // ),
-        // SpeedDialChild(
-        //   child: Icon(
-        //     Icons.adb_rounded,
-        //     color: Colors.white,
-        //   ),
-        //   backgroundColor: Colors.red,
-        //   label: 'Show Result',
-        //   labelBackgroundColor: Colors.black,
-        //   onTap: () => TestService.showHandResult2(),
-        // ),
-        // SpeedDialChild(
-        //   child: Icon(
-        //     Icons.adb_rounded,
-        //     color: Colors.white,
-        //   ),
-        //   backgroundColor: Colors.red,
-        //   label: 'Show Action View',
-        //   labelBackgroundColor: Colors.black,
-        //   onTap: () => TestService.testBetWidget(),
-        // ),
-
-        // SpeedDialChild(
-        //     child: Icon(
-        //       Icons.adb_rounded,
-        //       color: Colors.white,
-        //     ),
-        //     backgroundColor: Colors.red,
-        //     labelBackgroundColor: Colors.black,
-        //     label: 'Fold',
-        //     onTap: () {
-        //       TestService.animateFold();
-        //     }),
-        // SpeedDialChild(
-        //     child: Icon(
-        //       Icons.adb_rounded,
-        //       color: Colors.white,
-        //     ),
-        //     backgroundColor: Colors.red,
-        //     labelBackgroundColor: Colors.black,
-        //     label: 'Shuffle',
-        //     onTap: () => TestService.showShuffle()),
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          label: 'Action',
-          labelBackgroundColor: Colors.black,
-          onTap: () => TestService.setActionTimer(),
-        ),
-        SpeedDialChild(
-            child: Icon(
-              Icons.adb_rounded,
-              color: Colors.white,
-            ),
-            backgroundColor: Colors.red,
-            label: 'Show Bet Widget',
-            labelBackgroundColor: Colors.black,
-            onTap: () {
-              TestService.testBetWidget();
-            }),
-
         SpeedDialChild(
           child: Icon(
             Icons.adb_rounded,
@@ -146,131 +63,226 @@ class GamePlayScreenUtilMethods {
           ),
           backgroundColor: Colors.red,
           labelBackgroundColor: Colors.black,
-          label: 'Show holecards',
-          onTap: () => TestService.showHoleCards(),
-        ),
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          labelBackgroundColor: Colors.black,
-          label: 'Show double board',
-          onTap: () => TestService.showDoubleBoard(),
-        ),
-        SpeedDialChild(
-            child: Icon(
-              Icons.adb_rounded,
-              color: Colors.white,
-            ),
-            backgroundColor: Colors.red,
-            label: 'Show Bet Widget',
-            labelBackgroundColor: Colors.black,
-            onTap: () {
-              TestService.testBetWidget();
-            }),
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          labelBackgroundColor: Colors.black,
-          label: 'Show Bets',
-          onTap: () => TestService.showBets(),
-        ),
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          labelBackgroundColor: Colors.black,
-          label: 'Fill center view',
-          onTap: () => TestService.fillCenterView(),
-        ),
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          labelBackgroundColor: Colors.black,
-          label: 'Simulate Bet Movement',
-          onTap: () => TestService.simulateBetMovement(),
-        ),
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          label: 'Show Rank',
-          labelBackgroundColor: Colors.black,
-          onTap: () => TestService.showRank(),
-        ),
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          label: 'Fireworks',
-          labelBackgroundColor: Colors.black,
-          onTap: () => TestService.showFireworks(),
-        ),
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          label: 'Mic Animation',
-          labelBackgroundColor: Colors.black,
-          onTap: () => TestService.showMicAnimation(),
-        ),
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          labelBackgroundColor: Colors.black,
-          label: 'Seat Change Prompt',
-          onTap: () => TestService.showSeatChangePrompt(),
-        ),
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          labelBackgroundColor: Colors.black,
-          label: 'Show Dealer Widget',
-          onTap: () => TestService.showDealerWidget(),
-        ),
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          labelBackgroundColor: Colors.black,
-          label: 'Notification',
-          onTap: () => TestService.showTextNotification(),
-        ),
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          labelBackgroundColor: Colors.black,
-          label: 'Show Muck Losing Hand',
-          onTap: () => TestService.showMuckLosingHand(),
+          label: 'Prompt run it twice',
+          onTap: () => TestService.promptRunItTwice(),
         ),
       ],
+      // children: [
+      // SpeedDialChild(
+      //   child: Icon(
+      //     Icons.adb_rounded,
+      //     color: Colors.white,
+      //   ),
+      //   backgroundColor: Colors.red,
+      //   label: 'Flop Cards',
+      //   labelBackgroundColor: Colors.black,
+      //   onTap: () => TestService.addFlopCards(),
+      // ),
+      // SpeedDialChild(
+      //   child: Icon(
+      //     Icons.adb_rounded,
+      //     color: Colors.white,
+      //   ),
+      //   backgroundColor: Colors.red,
+      //   label: 'Show Sitback',
+      //   labelBackgroundColor: Colors.black,
+      //   onTap: () => TestService.showSitBack(),
+      // ),
+      // SpeedDialChild(
+      //   child: Icon(
+      //     Icons.adb_rounded,
+      //     color: Colors.white,
+      //   ),
+      //   backgroundColor: Colors.red,
+      //   label: 'Show Result',
+      //   labelBackgroundColor: Colors.black,
+      //   onTap: () => TestService.showHandResult2(),
+      // ),
+      // SpeedDialChild(
+      //   child: Icon(
+      //     Icons.adb_rounded,
+      //     color: Colors.white,
+      //   ),
+      //   backgroundColor: Colors.red,
+      //   label: 'Show Action View',
+      //   labelBackgroundColor: Colors.black,
+      //   onTap: () => TestService.testBetWidget(),
+      // ),
+
+      // SpeedDialChild(
+      //     child: Icon(
+      //       Icons.adb_rounded,
+      //       color: Colors.white,
+      //     ),
+      //     backgroundColor: Colors.red,
+      //     labelBackgroundColor: Colors.black,
+      //     label: 'Fold',
+      //     onTap: () {
+      //       TestService.animateFold();
+      //     }),
+      // SpeedDialChild(
+      //     child: Icon(
+      //       Icons.adb_rounded,
+      //       color: Colors.white,
+      //     ),
+      //     backgroundColor: Colors.red,
+      //     labelBackgroundColor: Colors.black,
+      //     label: 'Shuffle',
+      //     onTap: () => TestService.showShuffle()),
+      //   SpeedDialChild(
+      //     child: Icon(
+      //       Icons.adb_rounded,
+      //       color: Colors.white,
+      //     ),
+      //     backgroundColor: Colors.red,
+      //     label: 'Action',
+      //     labelBackgroundColor: Colors.black,
+      //     onTap: () => TestService.setActionTimer(),
+      //   ),
+      //   SpeedDialChild(
+      //       child: Icon(
+      //         Icons.adb_rounded,
+      //         color: Colors.white,
+      //       ),
+      //       backgroundColor: Colors.red,
+      //       label: 'Show Bet Widget',
+      //       labelBackgroundColor: Colors.black,
+      //       onTap: () {
+      //         TestService.testBetWidget();
+      //       }),
+
+      //   SpeedDialChild(
+      //     child: Icon(
+      //       Icons.adb_rounded,
+      //       color: Colors.white,
+      //     ),
+      //     backgroundColor: Colors.red,
+      //     labelBackgroundColor: Colors.black,
+      //     label: 'Show holecards',
+      //     onTap: () => TestService.showHoleCards(),
+      //   ),
+      //   SpeedDialChild(
+      //     child: Icon(
+      //       Icons.adb_rounded,
+      //       color: Colors.white,
+      //     ),
+      //     backgroundColor: Colors.red,
+      //     labelBackgroundColor: Colors.black,
+      //     label: 'Show double board',
+      //     onTap: () => TestService.showDoubleBoard(),
+      //   ),
+      //   SpeedDialChild(
+      //       child: Icon(
+      //         Icons.adb_rounded,
+      //         color: Colors.white,
+      //       ),
+      //       backgroundColor: Colors.red,
+      //       label: 'Show Bet Widget',
+      //       labelBackgroundColor: Colors.black,
+      //       onTap: () {
+      //         TestService.testBetWidget();
+      //       }),
+      //   SpeedDialChild(
+      //     child: Icon(
+      //       Icons.adb_rounded,
+      //       color: Colors.white,
+      //     ),
+      //     backgroundColor: Colors.red,
+      //     labelBackgroundColor: Colors.black,
+      //     label: 'Show Bets',
+      //     onTap: () => TestService.showBets(),
+      //   ),
+      //   SpeedDialChild(
+      //     child: Icon(
+      //       Icons.adb_rounded,
+      //       color: Colors.white,
+      //     ),
+      //     backgroundColor: Colors.red,
+      //     labelBackgroundColor: Colors.black,
+      //     label: 'Fill center view',
+      //     onTap: () => TestService.fillCenterView(),
+      //   ),
+      //   SpeedDialChild(
+      //     child: Icon(
+      //       Icons.adb_rounded,
+      //       color: Colors.white,
+      //     ),
+      //     backgroundColor: Colors.red,
+      //     labelBackgroundColor: Colors.black,
+      //     label: 'Simulate Bet Movement',
+      //     onTap: () => TestService.simulateBetMovement(),
+      //   ),
+      //   SpeedDialChild(
+      //     child: Icon(
+      //       Icons.adb_rounded,
+      //       color: Colors.white,
+      //     ),
+      //     backgroundColor: Colors.red,
+      //     label: 'Show Rank',
+      //     labelBackgroundColor: Colors.black,
+      //     onTap: () => TestService.showRank(),
+      //   ),
+      //   SpeedDialChild(
+      //     child: Icon(
+      //       Icons.adb_rounded,
+      //       color: Colors.white,
+      //     ),
+      //     backgroundColor: Colors.red,
+      //     label: 'Fireworks',
+      //     labelBackgroundColor: Colors.black,
+      //     onTap: () => TestService.showFireworks(),
+      //   ),
+      //   SpeedDialChild(
+      //     child: Icon(
+      //       Icons.adb_rounded,
+      //       color: Colors.white,
+      //     ),
+      //     backgroundColor: Colors.red,
+      //     label: 'Mic Animation',
+      //     labelBackgroundColor: Colors.black,
+      //     onTap: () => TestService.showMicAnimation(),
+      //   ),
+      //   SpeedDialChild(
+      //     child: Icon(
+      //       Icons.adb_rounded,
+      //       color: Colors.white,
+      //     ),
+      //     backgroundColor: Colors.red,
+      //     labelBackgroundColor: Colors.black,
+      //     label: 'Seat Change Prompt',
+      //     onTap: () => TestService.showSeatChangePrompt(),
+      //   ),
+      //   SpeedDialChild(
+      //     child: Icon(
+      //       Icons.adb_rounded,
+      //       color: Colors.white,
+      //     ),
+      //     backgroundColor: Colors.red,
+      //     labelBackgroundColor: Colors.black,
+      //     label: 'Show Dealer Widget',
+      //     onTap: () => TestService.showDealerWidget(),
+      //   ),
+      //   SpeedDialChild(
+      //     child: Icon(
+      //       Icons.adb_rounded,
+      //       color: Colors.white,
+      //     ),
+      //     backgroundColor: Colors.red,
+      //     labelBackgroundColor: Colors.black,
+      //     label: 'Notification',
+      //     onTap: () => TestService.showTextNotification(),
+      //   ),
+      //   SpeedDialChild(
+      //     child: Icon(
+      //       Icons.adb_rounded,
+      //       color: Colors.white,
+      //     ),
+      //     backgroundColor: Colors.red,
+      //     labelBackgroundColor: Colors.black,
+      //     label: 'Show Muck Losing Hand',
+      //     onTap: () => TestService.showMuckLosingHand(),
+      //   ),
+      // ],
       backgroundColor: AppColorsNew.appAccentColor,
     );
   }

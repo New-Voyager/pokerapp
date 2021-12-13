@@ -25,6 +25,7 @@ import 'package:pokerapp/services/test/hand_messages.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/numeric_keyboard2.dart';
+import 'package:pokerapp/widgets/run_it_twice_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/main_helper.dart';
@@ -32,7 +33,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/host_seat_chang
 
 class TestService {
   static bool get isTesting {
-    return false;
+    return true;
   }
 
   static var _showResult = false;
@@ -68,6 +69,17 @@ class TestService {
       seat.player.winner = false;
       seat.notify();
     }
+  }
+
+  static void promptRunItTwice() {
+    OverlayRunItTwice.showPrompt(
+      expiresAtInSeconds: 30,
+      context: _context,
+    );
+    // RunItTwiceDialog.promptRunItTwice(
+    //   context: _context,
+    //   expTime: 30,
+    // );
   }
 
   // static showPlayerFolded() {

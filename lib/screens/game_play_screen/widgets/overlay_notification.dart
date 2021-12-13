@@ -1,21 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:overlay_support/overlay_support.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_assets.dart';
+import 'package:pokerapp/resources/app_constants.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
+import 'package:pokerapp/services/game_play/action_services/hand_action_proto_service.dart';
+import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/card_helper.dart';
+import 'package:pokerapp/utils/formatter.dart';
+import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/cards/multiple_stack_card_views.dart';
 import 'package:provider/provider.dart';
+import 'package:timer_count_down/timer_count_down.dart';
 
 class ParentOverlayNotificationWidget extends StatelessWidget {
   final Widget child;
+  final bool isDismissible;
 
   ParentOverlayNotificationWidget({
     @required this.child,
+    this.isDismissible = true,
   });
 
   @override
@@ -23,7 +34,8 @@ class ParentOverlayNotificationWidget extends StatelessWidget {
     final AppTheme appTheme = context.read<AppTheme>();
     return SlideDismissible(
       key: ValueKey("overlayNotification"),
-      direction: DismissDirection.horizontal,
+      direction:
+          isDismissible ? DismissDirection.horizontal : DismissDirection.none,
       child: SafeArea(
         child: Card(
           color: appTheme.primaryColorWithDark(0.9),
@@ -395,6 +407,138 @@ class OverlayHighHandNotificationWidget extends StatelessWidget {
             },
           ),
         ],
+      ),
+    );
+  }
+}
+
+class OverlayRunItTwice extends StatelessWidget {
+  static void showPrompt({
+    @required final int expiresAtInSeconds,
+    @required final BuildContext context,
+  }) {
+    showOverlayNotification(
+      (context) => OverlayRunItTwice(expiresAtInSeconds: expiresAtInSeconds),
+      duration: Duration(seconds: expiresAtInSeconds),
+      context: context,
+      position: NotificationPosition.bottom,
+    );
+  }
+
+  final int expiresAtInSeconds;
+
+  const OverlayRunItTwice({
+    @required this.expiresAtInSeconds,
+  });
+
+  void _handleButtonTaps({
+    @required bool isYes,
+    @required BuildContext context,
+  }) {
+    final String playerAction =
+        isYes ? AppConstants.RUN_IT_TWICE_YES : AppConstants.RUN_IT_TWICE_NO;
+
+    /* if we are in testing mode just return from this function */
+    if (TestService.isTesting) {
+      return;
+    }
+
+    final gameContextObj = context.read<GameContextObject>();
+    final gameState = context.read<GameState>();
+
+    /* send the player action, as PLAYER_ACTED message: RUN_IT_TWICE_YES or RUN_IT_TWICE_NO */
+    HandActionProtoService.takeAction(
+      gameState: gameState,
+      gameContextObject: gameContextObj,
+      action: playerAction,
+    );
+
+    // dismiss the prompt
+    OverlaySupportEntry.of(context).dismiss();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.read<AppTheme>();
+    return ParentOverlayNotificationWidget(
+      isDismissible: false,
+      child: Container(
+        margin: EdgeInsets.all(16),
+        padding: EdgeInsets.only(bottom: 24, top: 8, right: 8, left: 8),
+        decoration: AppDecorators.bgRadialGradient(theme).copyWith(
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: theme.accentColor, width: 3),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            /* show count down timer */
+            Countdown(
+              seconds: expiresAtInSeconds,
+              onFinished: () {
+                Navigator.pop(context);
+              },
+              build: (_, timeLeft) {
+                return Text(
+                  DataFormatter.timeFormatMMSS(timeLeft),
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontSize: 14.dp,
+                  ),
+                );
+              },
+            ),
+
+            // sep
+            SizedBox(height: 15.ph),
+            Text(
+              'Do you want to run it twice?',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 15.dp),
+            ),
+            // sep
+            SizedBox(height: 15.ph),
+
+            /* yes / no button */
+            Center(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  /* no button */
+                  RoundRectButton(
+                    onTap: () {
+                      _handleButtonTaps(isYes: false, context: context);
+                    },
+                    text: "No",
+                    theme: theme,
+                    icon: Icon(
+                      Icons.cancel,
+                      color: theme.accentColor,
+                    ),
+                  ),
+
+                  /* divider */
+                  const SizedBox(width: 10.0),
+
+                  /* true button */
+                  RoundRectButton(
+                    onTap: () {
+                      _handleButtonTaps(isYes: true, context: context);
+                    },
+                    text: "Yes",
+                    theme: theme,
+                    icon: Icon(
+                      Icons.check,
+                      color: theme.accentColor,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
