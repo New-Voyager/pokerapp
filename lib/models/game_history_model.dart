@@ -181,6 +181,7 @@ class GameHistoryDetailModel extends ChangeNotifier {
   bool isManager;
   String handDataLink = '';
   bool dataAggregated = false;
+  bool showGameResult = true;
   ChipUnit chipUnit = ChipUnit.DOLLAR;
 
   List<HandData> handsData = [];
@@ -270,6 +271,10 @@ class GameHistoryDetailModel extends ChangeNotifier {
     isHost = gameData['isHost'];
     isManager = gameData['isManager'];
     handDataLink = gameData['handDataLink'];
+
+    if (jsonData['showGameResult'] != null) {
+      showGameResult = jsonData['showGameResult'];
+    }
   }
 
   String get gameHandsText {

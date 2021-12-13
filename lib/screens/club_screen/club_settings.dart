@@ -239,44 +239,8 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
                               ),
                             ),
 
-                            // track player credits
-                            Visibility(
-                                visible: true,
-                                child: Container(
-                                  margin: EdgeInsets.symmetric(
-                                      horizontal: 16, vertical: 8),
-                                  child: Column(
-                                    children: [
-                                      //
-                                      Container(
-                                        decoration:
-                                            AppDecorators.tileDecoration(theme),
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: 8, horizontal: 16),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            _buildRadio(
-                                                value: _clubModel
-                                                    .trackMemberCredit,
-                                                label: 'Track Member Credits',
-                                                onChange: (v) async {
-                                                  ClubUpdateInput input =
-                                                      ClubUpdateInput(
-                                                    trackMemberCredit: v,
-                                                  );
-                                                  await updateClubAPICall(
-                                                      input);
-                                                  // Fetch user details from server
-                                                },
-                                                theme: theme),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                )),
+                            // club settings
+                            _getClubSettings(theme),
                           ],
                         ),
                       ),
@@ -507,6 +471,50 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
 
       //setState(() {});
     }
+  }
+
+  Widget _getClubSettings(AppTheme theme) {
+    return Visibility(
+        visible: true,
+        child: Container(
+          margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: Column(
+            children: [
+              //
+              Container(
+                decoration: AppDecorators.tileDecoration(theme),
+                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildRadio(
+                        value: _clubModel.trackMemberCredit,
+                        label: 'Track Member Credits',
+                        onChange: (v) async {
+                          ClubUpdateInput input = ClubUpdateInput(
+                            trackMemberCredit: v,
+                          );
+                          await updateClubAPICall(input);
+                          // Fetch user details from server
+                        },
+                        theme: theme),
+                    _buildRadio(
+                        value: _clubModel.showGameResult,
+                        label: 'Show Game Result',
+                        onChange: (v) async {
+                          ClubUpdateInput input = ClubUpdateInput(
+                            showGameResult: v,
+                          );
+                          await updateClubAPICall(input);
+                          // Fetch user details from server
+                        },
+                        theme: theme),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ));
   }
 
   updateClubAPICall(ClubUpdateInput input) async {
