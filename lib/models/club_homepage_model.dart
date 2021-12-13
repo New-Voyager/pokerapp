@@ -47,6 +47,7 @@ class ClubHomePageModel extends ChangeNotifier {
         showHighRankStats
         trackMemberCredit
         availableCredit
+        showGameResult
         managerRole {
           approveMembers
           seeTips
@@ -90,6 +91,7 @@ class ClubHomePageModel extends ChangeNotifier {
   String picUrl;
   bool showHighRankStats;
   bool trackMemberCredit;
+  bool showGameResult;
   double availableCredit;
   bool refreshCredits = false;
   int clubCoins; // filled for club owner and manager
@@ -122,6 +124,7 @@ class ClubHomePageModel extends ChangeNotifier {
     this.picUrl = member['picUrl'] ?? "";
     this.showHighRankStats = member['showHighRankStats'] ?? false;
     this.trackMemberCredit = member['trackMemberCredit'] ?? false;
+    this.showGameResult = member['showGameResult'] ?? true;
     if (member['availableCredit'] != null) {
       this.availableCredit = double.parse(member['availableCredit'].toString());
     }
