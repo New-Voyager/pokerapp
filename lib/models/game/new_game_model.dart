@@ -95,6 +95,7 @@ class NewGameModel {
   bool showHandRank = false;
   bool useAgora = false;
   bool breakAllowed = true;
+  bool showResultOption = true;
   bool showResult = true;
   bool showCheckFold = true;
   int breakTime = 5;
