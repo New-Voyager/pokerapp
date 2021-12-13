@@ -70,6 +70,21 @@ class TestService {
     }
   }
 
+  static void promptRunItTwice() {
+    final gameState = GameState.getState(_context);
+    final gameContextObject = _context.read<GameContextObject>();
+    OverlayRunItTwice.showPrompt(
+      gameContextObject: gameContextObject,
+      gameState: gameState,
+      expiresAtInSeconds: 30,
+      context: _context,
+    );
+    // RunItTwiceDialog.promptRunItTwice(
+    //   context: _context,
+    //   expTime: 30,
+    // );
+  }
+
   // static showPlayerFolded() {
   //   final gameState = GameState.getState(_context);
   //   for (int seatNo = 1; seatNo <= 9; seatNo++) {

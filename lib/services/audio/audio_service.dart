@@ -127,6 +127,7 @@ class AudioService {
     if (!play) {
       return;
     }
+    return;
     //log('Playing click sound');
     if (mute ?? false) {
       return;
