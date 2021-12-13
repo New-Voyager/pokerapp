@@ -440,6 +440,8 @@ class OverlayRunItTwice extends StatelessWidget {
 
     /* if we are in testing mode just return from this function */
     if (TestService.isTesting) {
+      // dismiss the prompt
+      OverlaySupportEntry.of(context).dismiss();
       return;
     }
 
@@ -459,83 +461,79 @@ class OverlayRunItTwice extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = context.read<AppTheme>();
-    return ParentOverlayNotificationWidget(
-      isDismissible: false,
-      child: Container(
-        margin: EdgeInsets.all(16),
-        padding: EdgeInsets.only(bottom: 24, top: 8, right: 8, left: 8),
-        decoration: AppDecorators.bgRadialGradient(theme).copyWith(
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: theme.accentColor, width: 3),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.center,
+    // final theme = context.read<AppTheme>();
+    return Container(
+      margin: const EdgeInsets.only(
+        bottom: 10.0,
+        left: 5.0,
+        right: 5.0,
+      ),
+      child: ParentOverlayNotificationWidget(
+        isDismissible: false,
+        child: Row(
           children: [
-            /* show count down timer */
-            Countdown(
-              seconds: expiresAtInSeconds,
-              onFinished: () {
-                Navigator.pop(context);
-              },
-              build: (_, timeLeft) {
-                return Text(
-                  DataFormatter.timeFormatMMSS(timeLeft),
-                  style: TextStyle(
-                    color: Colors.red,
-                    fontSize: 14.dp,
-                  ),
-                );
-              },
-            ),
-
-            // sep
-            SizedBox(height: 15.ph),
-            Text(
-              'Do you want to run it twice?',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 15.dp),
-            ),
-            // sep
-            SizedBox(height: 15.ph),
-
-            /* yes / no button */
-            Center(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  /* no button */
-                  RoundRectButton(
-                    onTap: () {
-                      _handleButtonTaps(isYes: false, context: context);
-                    },
-                    text: "No",
-                    theme: theme,
-                    icon: Icon(
-                      Icons.cancel,
-                      color: theme.accentColor,
-                    ),
-                  ),
-
-                  /* divider */
-                  const SizedBox(width: 10.0),
-
-                  /* true button */
-                  RoundRectButton(
-                    onTap: () {
-                      _handleButtonTaps(isYes: true, context: context);
-                    },
-                    text: "Yes",
-                    theme: theme,
-                    icon: Icon(
-                      Icons.check,
-                      color: theme.accentColor,
-                    ),
-                  ),
-                ],
+            // count down timer
+            Expanded(
+              flex: 1,
+              child: FittedBox(
+                fit: BoxFit.fitWidth,
+                child: Countdown(
+                  seconds: expiresAtInSeconds,
+                  onFinished: () {
+                    Navigator.pop(context);
+                  },
+                  build: (_, timeLeft) {
+                    return Text(
+                      DataFormatter.timeFormatMMSS(timeLeft),
+                      style: TextStyle(
+                        color: Colors.red,
+                      ),
+                    );
+                  },
+                ),
               ),
+            ),
+
+            // run it twice text
+            Expanded(
+              flex: 3,
+              child: Text(
+                'Run it twice?',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 13.dp),
+              ),
+            ),
+
+            // finally yes / no buttons
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                /* true button */
+                IconButton(
+                  iconSize: 35.0,
+                  icon: Icon(
+                    Icons.check_circle_outline_sharp,
+                    color: Colors.green,
+                  ),
+                  onPressed: () {
+                    _handleButtonTaps(isYes: true, context: context);
+                  },
+                ),
+
+                /* no button */
+                IconButton(
+                  iconSize: 35.0,
+                  icon: Icon(
+                    Icons.cancel_rounded,
+                    color: Colors.red,
+                  ),
+                  onPressed: () {
+                    _handleButtonTaps(isYes: true, context: context);
+                  },
+                ),
+              ],
             ),
           ],
         ),

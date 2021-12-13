@@ -9,7 +9,7 @@ import 'blinking_widget.dart';
 
 class RoundRectButton extends StatelessWidget {
   RoundRectButton({
-    @required this.text,
+    this.text,
     @required this.onTap,
     @required this.theme,
     this.focusNode,
@@ -59,19 +59,23 @@ class RoundRectButton extends StatelessWidget {
               ),
               visible: icon != null,
             ),
-            Text(
-              split ? text?.replaceFirst(" ", "\n") ?? 'Text' : text ?? 'Text',
-              textAlign: TextAlign.center,
-              style: (fontSize == null)
-                  ? theme.roundedButtonTextStyle.copyWith(
-                      color: theme.roundButtonTextColor,
-                      fontWeight: FontWeight.bold,
-                    )
-                  : theme.roundedButtonTextStyle.copyWith(
-                      fontSize: fontSize,
-                      fontWeight: FontWeight.bold,
-                      color: theme.roundButtonTextColor),
-            )
+            text == null
+                ? const SizedBox.shrink()
+                : Text(
+                    split
+                        ? text?.replaceFirst(" ", "\n") ?? 'Text'
+                        : text ?? 'Text',
+                    textAlign: TextAlign.center,
+                    style: (fontSize == null)
+                        ? theme.roundedButtonTextStyle.copyWith(
+                            color: theme.roundButtonTextColor,
+                            fontWeight: FontWeight.bold,
+                          )
+                        : theme.roundedButtonTextStyle.copyWith(
+                            fontSize: fontSize,
+                            fontWeight: FontWeight.bold,
+                            color: theme.roundButtonTextColor),
+                  )
           ],
         ),
       ),
