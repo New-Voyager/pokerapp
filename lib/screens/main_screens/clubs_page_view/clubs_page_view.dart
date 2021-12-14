@@ -114,12 +114,18 @@ class _ClubsPageViewState extends State<ClubsPageView>
   }
 
   void _createClub(BuildContext ctx) async {
-    // invitation code dialog
-    final String invitationCode = await showInvitationCodeCheckDialog();
+    // final appScreenText = getAppTextScreen("createClubBottomSheet");
+    String invitationCode = '';
+    bool getInvitationCode = false;
 
-    // if invitation code is null, then either the dialog was closed, or validation failed
-    if (invitationCode == null) {
-      return;
+    if (getInvitationCode) {
+      // invitation code dialog
+      // invitationCode = await showInvitationCodeCheckDialog();
+
+      // if invitation code is null, then either the dialog was closed, or validation failed
+      // if (invitationCode == null) {
+      //   return;
+      // }
     }
 
     // if we come here, we have a valid invitation code, in the variable [invitationCode]
