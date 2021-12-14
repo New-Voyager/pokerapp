@@ -16,7 +16,12 @@ class ActionStatusWidget extends StatelessWidget {
     /* The status message is not shown, if
     * 1. The seat is empty - nothing to show
     * 2. The current user is to act - the current user is highlighted */
-    if (seat.isOpen || seat.player.highlight) return shrinkedSizedBox;
+    if (seat.isOpen || seat.player.highlight) {
+      return shrinkedSizedBox;
+    }
+    if (seat.player != null && seat.player.inhand) {
+      return shrinkedSizedBox;
+    }
 
     //String action;
     //seat.player.status = "CHECK";
