@@ -22,7 +22,7 @@
     {
       "name": "pokerapp-ios",
       "request": "launch",
-      "type": "dart",
+      "txype": "dart",
       "program": "lib/main.dart",
       "args": [
         "--flavor",
