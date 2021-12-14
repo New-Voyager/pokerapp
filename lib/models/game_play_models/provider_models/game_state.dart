@@ -492,14 +492,6 @@ class GameState {
     return this._handInfo._gameType;
   }
 
-  bool get running {
-    if (this._gameInfo.status == 'ACTIVE' &&
-        this._gameInfo.tableStatus == 'GAME_RUNNING') {
-      return true;
-    }
-    return false;
-  }
-
   bool get botGame {
     return this._gameInfo.botGame ?? false;
   }
