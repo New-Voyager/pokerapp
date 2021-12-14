@@ -26,6 +26,7 @@ import 'package:pokerapp/services/onboarding.dart';
 import 'package:pokerapp/services/test/mock_data.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/widgets/buttons.dart';
+import 'package:pokerapp/widgets/card_form_text_field.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:pokerapp/widgets/heading_widget.dart';
 import 'package:provider/provider.dart';
@@ -66,10 +67,70 @@ class _ClubsPageViewState extends State<ClubsPageView>
     Alerts.showSnackBar(ctx, 'Could not delete');
   }
 
+  Future<String> showInvitationCodeCheckDialog() {
+    final appTheme = context.read<AppTheme>();
+    final invitationCodeVn = ValueNotifier<String>("");
+
+    return showDialog<String>(
+      context: context,
+      builder: (context) => AlertDialog(
+        actionsPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        backgroundColor: appTheme.fillInColor,
+        title: Text(
+          _appScreenText['invitationCode'],
+          style: AppDecorators.getSubtitle2Style(theme: appTheme),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CardFormTextField(
+              theme: appTheme,
+              hintText: _appScreenText['enterInvitationCode'],
+              onChanged: (val) {
+                invitationCodeVn.value = val;
+              },
+              keyboardType: TextInputType.name,
+            ),
+          ],
+        ),
+        actions: [
+          RoundRectButton(
+            text: _appScreenText['validateInvitationCode'],
+            onTap: () async {
+              bool isInvitationCodeValid = true;
+              // TODO: CHECK FOR VALIDITY OF INVITATION CODE
+
+              // if invitation code is invalid, return NULL
+              Navigator.pop<String>(
+                context,
+                isInvitationCodeValid ? invitationCodeVn.value : null,
+              );
+            },
+            theme: appTheme,
+          ),
+        ],
+      ),
+    );
+  }
+
   void _createClub(BuildContext ctx) async {
-    final appScreenText = getAppTextScreen("createClubBottomSheet");
+    // invitation code dialog
+    final String invitationCode = await showInvitationCodeCheckDialog();
+
+    // if invitation code is null, then either the dialog was closed, or validation failed
+    if (invitationCode == null) {
+      return;
+    }
+
+    // if we come here, we have a valid invitation code, in the variable [invitationCode]
+
+    // create club dialog
     String clubCode = await CreateClubDialog.prompt(
-        context: ctx, appScreenText: appScreenText);
+      context: ctx,
+      invitationCode: invitationCode,
+      appScreenText: getAppTextScreen("createClubBottomSheet"),
+    );
+
     if (clubCode != null) {
       /* finally, show a status message and fetch all the clubs (if required) */
       Alerts.showNotification(

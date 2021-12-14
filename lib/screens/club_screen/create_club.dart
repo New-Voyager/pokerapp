@@ -14,7 +14,8 @@ import 'package:pokerapp/widgets/dialogs.dart';
 class CreateClubDialog {
   static Future<String> prompt(
       {@required BuildContext context,
-      @required AppTextScreen appScreenText}) async {
+      @required AppTextScreen appScreenText,
+      String invitationCode = '',}) async {
     String name;
     String description;
     final Map<String, String> clubDetails = {};
@@ -82,6 +83,26 @@ class CreateClubDialog {
                         ),
                       ],
                     ),
+                  ),
+                  Visibility(
+                    visible: invitationCode != null && !invitationCode.isEmpty,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 15),
+                    child: Row(
+                        
+                        children: [
+                          Text(
+                            "Invitation Code: ",
+                            style: AppDecorators.getHeadLine5Style(theme: theme),
+                          ),
+                          Text(
+                            invitationCode,
+                            style: AppDecorators.getHeadLine5Style(theme: theme)
+                            .copyWith(color: theme.accentColor),
+                          ),
+                        ]
+                    )),
                   ),
                   Flexible(
                     child: Container(
