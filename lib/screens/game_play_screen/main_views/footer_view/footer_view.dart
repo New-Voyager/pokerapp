@@ -142,46 +142,49 @@ class _FooterViewState extends State<FooterView>
   Widget _buildMainView(GameState gameState) {
     final width = MediaQuery.of(context).size.width;
     return Consumer<MyState>(
-        builder: (BuildContext _, MyState myState, Widget __) {
-      final me = gameState.mySeat;
+      builder: (
+        BuildContext _,
+        MyState myState,
+        Widget __,
+      ) {
+        final me = gameState.mySeat;
 
-      bool showOptionsButtons = false;
-      if (me != null && me.player != null) {
-        if (me.player.inBreak) {
-          //log('footerview: building status option widget: IN BREAK');
-          showOptionsButtons = true;
-        } else if (me.player.status == AppConstants.WAIT_FOR_BUYIN ||
-            me.player.status == AppConstants.WAIT_FOR_BUYIN_APPROVAL) {
-          showOptionsButtons = true;
-        } else if (me.player.missedBlind) {
-          showOptionsButtons = true;
+        bool showOptionsButtons = false;
+        if (me != null && me.player != null) {
+          if (me.player.inBreak) {
+            //log('footerview: building status option widget: IN BREAK');
+            showOptionsButtons = true;
+          } else if (me.player.status == AppConstants.WAIT_FOR_BUYIN ||
+              me.player.status == AppConstants.WAIT_FOR_BUYIN_APPROVAL) {
+            showOptionsButtons = true;
+          } else if (me.player.missedBlind) {
+            showOptionsButtons = true;
+          }
+        } else {
+          if (gameState.gameInfo.waitlistAllowed) {
+            // observer
+            showOptionsButtons = true;
+          }
         }
-      } else {
-        if (gameState.gameInfo.waitlistAllowed) {
-          // observer
-          showOptionsButtons = true;
+        if (showOptionsButtons) {
+          return StatusOptionsWidget(gameState: gameState);
         }
-      }
-      if (showOptionsButtons) {
-        return StatusOptionsWidget(gameState: gameState);
-      }
 
-      /* build the HoleCardsViewAndFooterActionView only if me is NOT null */
-      return Consumer<MyState>(builder: (_, ___, __) {
-        final me = gameState.me;
-        if (me == null && !gameState.customizationMode) {
+        /* build the HoleCardsViewAndFooterActionView only if me is NOT null */
+        final mee = gameState.me;
+        if (mee == null && !gameState.customizationMode) {
           log('RedrawFooter: rebuilding hole card me is null');
           return SizedBox(width: width);
         } else {
           log('RedrawFooter: rebuilding hole card');
 
           return HoleCardsViewAndFooterActionView(
-            playerModel: me,
+            playerModel: mee,
             isHoleCardsVisibleVn: isHoleCardsVisibleVn,
           );
         }
-      });
-    });
+      },
+    );
   }
 
   /* straddle prompt builder / footer action view builder / hole card view builder */

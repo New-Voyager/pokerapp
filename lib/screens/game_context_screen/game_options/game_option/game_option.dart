@@ -78,15 +78,16 @@ class _GameOptionState extends State<GameOption> {
   void onLeave() async {
     // Dismisses bottomsheet
     Navigator.of(context).pop();
-    if (widget.gameState.running) {
-      Alerts.showNotification(
-          titleText: _appScreenText['game'],
-          svgPath: 'assets/images/casino.svg',
-          subTitleText: _appScreenText['youWillStandupAfterThisHand']);
-      GameService.leaveGame(this.gameCode);
-    }
 
-    if (!widget.gameState.running) {
+    if (widget.gameState.isGameRunning) {
+      GameService.leaveGame(this.gameCode);
+
+      Alerts.showNotification(
+        titleText: _appScreenText['game'],
+        svgPath: 'assets/images/casino.svg',
+        subTitleText: _appScreenText['youWillStandupAfterThisHand'],
+      );
+    } else {
       await GameService.leaveGame(this.gameCode);
       widget.gameState.refresh();
     }
@@ -252,9 +253,13 @@ class _GameOptionState extends State<GameOption> {
           icon: Icons.exit_to_app_sharp,
           onTap: () async {
             final response = await showPrompt(
-                context, 'Standup', "Do you want to leave the game?",
-                positiveButtonText: 'Yes', negativeButtonText: 'No');
-            if (response != null && response == true) {
+              context,
+              'Standup',
+              "Do you want to leave the game?",
+              positiveButtonText: 'Yes',
+              negativeButtonText: 'No',
+            );
+            if (response == true) {
               this.onLeave();
             }
           },
