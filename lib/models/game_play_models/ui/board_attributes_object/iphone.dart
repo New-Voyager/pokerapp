@@ -419,7 +419,7 @@ class IPhoneAttribs {
   }
 
   static Map<String, dynamic> getIPhoneXSMax() {
-    final defaultValue = getDefault();
+    final defaultValue = getIPhoneXS();
     String override = '''
       {
         "base": "iPhone 10S",
@@ -427,25 +427,26 @@ class IPhoneAttribs {
         "screenSize": "375.0, 812.0",
         "size": 6.5,
         "board": {
+          "centerBoardScale": 1.2,
           "centerViewScale": 1.05,
           "tableScale": 1.2,
           "seatMap": {
-            "bottomCenter": "0, 63",
-            "bottomLeft": "15, 53",
-            "bottomRight": "-15, 53",
-            "middleLeft": "-4, 80",
-            "middleRight": "4, 80",
+            "bottomCenter": "0, 23",
+            "bottomLeft": "15, 20",
+            "bottomRight": "-15, 20",
+            "middleLeft": "-4, 70",
+            "middleRight": "4, 70",
             "topLeft": "-4, 110",
             "topRight": "4, 110",
-            "topCenter": "0, 60",
-            "topCenter1": "-55, 70",
-            "topCenter2": "55, 70"
+            "topCenter": "0, 80",
+            "topCenter1": "-55, 80",
+            "topCenter2": "55, 80"
           },
           "betAmountFac": {
             "bottomCenter": "0, -1.0",
             "topCenter": "0.20, 0.70",
-            "middleLeft": "-0.2, 0.65",
-            "middleRight": "0.10, 0.65",
+            "middleLeft": "0.2, 0.75",
+            "middleRight": "-0.20, 0.75",
             "topRight": "-0.10, 0.70",
             "topLeft": "0.30, 0.65",
             "bottomLeft": "0.70, -0.8",
@@ -455,7 +456,7 @@ class IPhoneAttribs {
           },
           "centerPotScale": 0.80,
           "centerPotUpdatesScale": 0.80,
-          "centerViewPos": "0, 20.0"
+          "centerViewPos": "0, 25.0"
         },
         "holeCardDisplacement": {
           "2": 33,
