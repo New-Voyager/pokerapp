@@ -279,6 +279,20 @@ class GameUpdateService {
     final timeTaken = end.difference(start);
     debugLog(_gameState.gameCode,
         'Time taken to fetch game information: ${timeTaken.inMilliseconds}');
+    while (newPlayerModel == null) {
+      await Future.delayed(Duration(seconds: 1));
+      GameInfoModel _gameInfoModel =
+        await GameService.getGameInfo(_gameState.gameCode);
+      assert(_gameInfoModel != null);
+      List<PlayerModel> playerModels = _gameInfoModel.playersInSeats;
+      newPlayerModel = playerModels.firstWhere(
+        (pm) => pm.seatNo == seatNo,
+        orElse: () => null,
+      ); // this must return a PLayerModel object
+    }
+    if (newPlayerModel == null) {
+      return;
+    }
 
     assert(newPlayerModel != null);
     // put the status of the fetched player
@@ -1170,6 +1184,24 @@ class GameUpdateService {
     gameState.seatChangePlayersUpdate(positions, notify: true);
   }
 
+  void refreshScreen() async {
+    if (_gameState.handInProgress) {
+      int i = 0;
+      // if we are in middle of the hand, don't close it yet
+      while (_gameState.handInProgress && i < 3) {
+        await Future.delayed(Duration(milliseconds: 1000));
+        i++;
+      }
+    }
+    // end the game
+    log('Refresh Screen');
+    resetBoard();
+    _gameState.ended = true;
+    _gameState.refresh();
+    _gameState.tableState.updateTableStatusSilent(AppConstants.GAME_ENDED);
+    _gameState.seatsOnTableState.notify();
+  }
+
   void handleUpdateStatus({
     var status,
   }) async {
@@ -1186,7 +1218,10 @@ class GameUpdateService {
     */
 
     final tableState = _gameState.tableState;
-
+    if (tableStatus == AppConstants.TABLE_STATUS_NOT_ENOUGH_PLAYERS) {
+      // redraw the board
+      await refreshScreen();
+    }
     if (tableState.tableStatus != tableStatus ||
         tableState.gameStatus != gameStatus) {
       tableState.updateTableStatusSilent(tableStatus);
@@ -1202,21 +1237,7 @@ class GameUpdateService {
         * This is done to get update of the game */
         //gameContext.handActionService.queryCurrentHand();
       } else if (gameStatus == AppConstants.GAME_ENDED) {
-        if (_gameState.handInProgress) {
-          int i = 0;
-          // if we are in middle of the hand, don't close it yet
-          while (_gameState.handInProgress && i < 3) {
-            await Future.delayed(Duration(milliseconds: 1000));
-            i++;
-          }
-        }
-        // end the game
-        log('Game has ended. Update the state');
-        resetBoard();
-        _gameState.ended = true;
-        _gameState.refresh();
-        tableState.updateTableStatusSilent(AppConstants.GAME_ENDED);
-        _gameState.seatsOnTableState.notify();
+        await refreshScreen();
       } else if (gameStatus == AppConstants.GAME_PAUSED) {
         log('Game has paused. Update the state');
         resetBoard();
@@ -1337,33 +1358,40 @@ class GameUpdateService {
     }
     */
     final tableState = _gameState.tableState;
+
     if (gameStatus == AppConstants.GAME_ENDED) {
       var forced = data['forced'] ?? false;
-      if (_gameState.handInProgress && !forced) {
-        int i = 0;
-        // if we are in middle of the hand, don't close it yet
-        while (_gameState.handInProgress && i < 3) {
-          await Future.delayed(Duration(milliseconds: 1000));
-          i++;
-        }
-      }
-      // end the game
-      log('Game has ended. Update the state');
-      _gameState.ended = true;
-      resetBoard();
-      _gameState.refresh();
-      _gameState.handInfo.notify();
-      tableState.updateTableStatusSilent(AppConstants.GAME_ENDED);
-      if (_gameState.mySeat != null && _gameState.mySeat.player != null) {
-        _gameState.mySeat.player.reset();
-      }
-      _gameState.myState.notify();
-      _gameState.actionState.show = false;
-      _gameState.actionState.notify();
+      await refreshScreen();
+
+      // if (_gameState.handInProgress && !forced) {
+      //   int i = 0;
+      //   // if we are in middle of the hand, don't close it yet
+      //   while (_gameState.handInProgress && i < 3) {
+      //     await Future.delayed(Duration(milliseconds: 1000));
+      //     i++;
+      //   }
+      // }
+      // // end the game
+      // log('Game has ended. Update the state');
+      // _gameState.ended = true;
+      // resetBoard();
+      // _gameState.refresh();
+      // _gameState.handInfo.notify();
+      // tableState.updateTableStatusSilent(AppConstants.GAME_ENDED);
+      // if (_gameState.mySeat != null && _gameState.mySeat.player != null) {
+      //   _gameState.mySeat.player.reset();
+      // }
+      // _gameState.myState.notify();
+      // _gameState.actionState.show = false;
+      // _gameState.actionState.notify();
       if (forced) {
         notifyGameCrashed();
       }
       return;
+    }
+
+    if (tableStatus == AppConstants.TABLE_STATUS_NOT_ENOUGH_PLAYERS) {
+      await refreshScreen();
     }
 
     // if the status hasn't changed, don't do anything
@@ -1412,31 +1440,7 @@ class GameUpdateService {
         * that the game is running.
         * This is done to get update of the game */
         //gameContext.handActionService.queryCurrentHand();
-      } else if (gameStatus == AppConstants.GAME_ENDED) {
-        var forced = data['forced'] ?? false;
-        if (_gameState.handInProgress && !forced) {
-          // if we are in middle of the hand, don't close it yet
-          while (_gameState.handInProgress) {
-            await Future.delayed(Duration(milliseconds: 1000));
-          }
-        }
-        // end the game
-        log('Game has ended. Update the state');
-        resetBoard();
-        _gameState.refresh();
-        tableState.updateTableStatusSilent(AppConstants.GAME_ENDED);
-        if (_gameState.mySeat != null && _gameState.mySeat.player != null) {
-          _gameState.mySeat.player.reset();
-        }
-        _gameState.myState.notify();
-        _gameState.actionState.show = false;
-        _gameState.actionState.notify();
-        if (forced) {
-          notifyGameCrashed();
-        }
       }
-
-      tableState.notifyAll();
     }
   }
 

@@ -175,6 +175,40 @@ class _GameChatState extends State<GameChat> {
     if (text != null) {
       text = text.replaceFirst('LOCAL:', '');
     }
+
+    List<Widget> bubble = [];
+
+    if (isMe) {
+      if (text != null) {
+        bubble.add( Text(
+                        text,
+                        style: AppDecorators.getHeadLine4Style(theme: theme),
+                      ));
+        bubble.add(SizedBox(width: 10));
+      }
+      bubble.add(Text(
+                    message.fromName.toString(),
+                    style: AppDecorators.getSubtitle2Style(theme: theme)
+                        .copyWith(color: theme.accentColor),
+                    softWrap: true,
+                  ));
+    } else {
+      if (text != null) {
+        bubble.add(Text(
+                      message.fromName.toString(),
+                      style: AppDecorators.getSubtitle2Style(theme: theme)
+                          .copyWith(color: theme.accentColor),
+                      softWrap: true,
+                    ));
+        bubble.add(SizedBox(width: 10));
+      }
+      bubble.add( Text(
+                      text,
+                      style: AppDecorators.getHeadLine4Style(theme: theme),
+                    ));
+
+    }
+
     return Align(
       alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
       child: IntrinsicWidth(
@@ -193,23 +227,7 @@ class _GameChatState extends State<GameChat> {
             children: [
               /* name of player & time */
               Row(
-                children: [
-                  // name
-                  Text(
-                    message.fromName.toString(),
-                    style: AppDecorators.getSubtitle2Style(theme: theme)
-                        .copyWith(color: theme.accentColor),
-                    softWrap: true,
-                  ),
-
-                  // sep
-                  Container(
-                    margin: EdgeInsets.symmetric(horizontal: 5.0),
-                    //color: const Color(0xff848484),
-                    height: 10.0,
-                    width: 1.0,
-                  ),
-                ],
+                children: bubble
               ),
 
               // sep
@@ -217,23 +235,19 @@ class _GameChatState extends State<GameChat> {
 
               // message / gif
               message.text != null
-                  ? Text(
-                      text,
-                      style: AppDecorators.getHeadLine4Style(theme: theme),
-                    )
+                  ? Container()
                   : AttributedGifWidget(url: message.giphyLink),
-
-              AppDimensionsNew.getVerticalSizedBox(4),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  // time
-                  Text(
-                    "${AppConstants.CHAT_DATE_TIME_FORMAT.format(message.received.toLocal())}",
-                    style: AppDecorators.getSubtitle3Style(theme: theme),
-                  ),
-                ],
-              )
+              // AppDimensionsNew.getVerticalSizedBox(4),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.end,
+              //   children: [
+              //     // time
+              //     Text(
+              //       "${AppConstants.CHAT_DATE_TIME_FORMAT.format(message.received.toLocal())}",
+              //       style: AppDecorators.getSubtitle3Style(theme: theme),
+              //     ),
+              //   ],
+              // )
             ],
           ),
         ),
