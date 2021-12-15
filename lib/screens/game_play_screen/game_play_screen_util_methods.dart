@@ -68,67 +68,66 @@ class GamePlayScreenUtilMethods {
       //   ),
       // ],
       children: [
-      SpeedDialChild(
-        child: Icon(
-          Icons.adb_rounded,
-          color: Colors.white,
-        ),
-        backgroundColor: Colors.red,
-        label: 'Flop Cards',
-        labelBackgroundColor: Colors.black,
-        onTap: () => TestService.addFlopCards(),
-      ),
-      SpeedDialChild(
-        child: Icon(
-          Icons.adb_rounded,
-          color: Colors.white,
-        ),
-        backgroundColor: Colors.red,
-        label: 'Show Sitback',
-        labelBackgroundColor: Colors.black,
-        onTap: () => TestService.showSitBack(),
-      ),
-      SpeedDialChild(
-        child: Icon(
-          Icons.adb_rounded,
-          color: Colors.white,
-        ),
-        backgroundColor: Colors.red,
-        label: 'Show Result',
-        labelBackgroundColor: Colors.black,
-        onTap: () => TestService.showHandResult2(),
-      ),
-      SpeedDialChild(
-        child: Icon(
-          Icons.adb_rounded,
-          color: Colors.white,
-        ),
-        backgroundColor: Colors.red,
-        label: 'Show Action View',
-        labelBackgroundColor: Colors.black,
-        onTap: () => TestService.testBetWidget(),
-      ),
-
-      SpeedDialChild(
+        SpeedDialChild(
           child: Icon(
             Icons.adb_rounded,
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
+          label: 'Flop Cards',
           labelBackgroundColor: Colors.black,
-          label: 'Fold',
-          onTap: () {
-            TestService.animateFold();
-          }),
-      SpeedDialChild(
+          onTap: () => TestService.addFlopCards(),
+        ),
+        SpeedDialChild(
           child: Icon(
             Icons.adb_rounded,
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
+          label: 'Show Sitback',
           labelBackgroundColor: Colors.black,
-          label: 'Shuffle',
-          onTap: () => TestService.showShuffle()),
+          onTap: () => TestService.showSitBack(),
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
+          label: 'Show Result',
+          labelBackgroundColor: Colors.black,
+          onTap: () => TestService.showHandResult2(),
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
+          label: 'Show Action View',
+          labelBackgroundColor: Colors.black,
+          onTap: () => TestService.testBetWidget(),
+        ),
+        SpeedDialChild(
+            child: Icon(
+              Icons.adb_rounded,
+              color: Colors.white,
+            ),
+            backgroundColor: Colors.red,
+            labelBackgroundColor: Colors.black,
+            label: 'Fold',
+            onTap: () {
+              TestService.animateFold();
+            }),
+        SpeedDialChild(
+            child: Icon(
+              Icons.adb_rounded,
+              color: Colors.white,
+            ),
+            backgroundColor: Colors.red,
+            labelBackgroundColor: Colors.black,
+            label: 'Shuffle',
+            onTap: () => TestService.showShuffle()),
         SpeedDialChild(
           child: Icon(
             Icons.adb_rounded,
@@ -150,7 +149,6 @@ class GamePlayScreenUtilMethods {
             onTap: () {
               TestService.testBetWidget();
             }),
-
         SpeedDialChild(
           child: Icon(
             Icons.adb_rounded,

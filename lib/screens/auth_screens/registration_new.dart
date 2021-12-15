@@ -1,5 +1,6 @@
+import 'dart:convert';
 import 'dart:developer';
-
+import 'package:crypto/crypto.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_udid/flutter_udid.dart';
@@ -509,12 +510,18 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
 
     if (_formKey.currentState.validate()) {
       log("Form is correct");
+
       String deviceId = new Uuid().v4().toString();
-      try {
-        final devId = await FlutterUdid.udid;
-        deviceId = devId;
-      } catch (err) {
-        // couldn't get device id, use the uuid
+      if (_emailCtrl.text.trim().isNotEmpty) {
+        // generate sha1 from email address
+        deviceId = sha1.convert(utf8.encode(_emailCtrl.text)).toString();
+      } else {
+        try {
+          final devId = await FlutterUdid.udid;
+          deviceId = devId;
+        } catch (err) {
+          // couldn't get device id, use the uuid
+        }
       }
 
       ConnectionDialog.show(
