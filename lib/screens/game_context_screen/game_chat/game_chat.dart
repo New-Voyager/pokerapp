@@ -180,33 +180,32 @@ class _GameChatState extends State<GameChat> {
 
     if (isMe) {
       if (text != null) {
-        bubble.add( Text(
-                        text,
-                        style: AppDecorators.getHeadLine4Style(theme: theme),
-                      ));
+        bubble.add(Text(
+          text,
+          style: AppDecorators.getHeadLine4Style(theme: theme),
+        ));
         bubble.add(SizedBox(width: 10));
       }
       bubble.add(Text(
-                    message.fromName.toString(),
-                    style: AppDecorators.getSubtitle2Style(theme: theme)
-                        .copyWith(color: theme.accentColor),
-                    softWrap: true,
-                  ));
+        message.fromName.toString(),
+        style: AppDecorators.getSubtitle2Style(theme: theme)
+            .copyWith(color: theme.accentColor),
+        softWrap: true,
+      ));
     } else {
       if (text != null) {
         bubble.add(Text(
-                      message.fromName.toString(),
-                      style: AppDecorators.getSubtitle2Style(theme: theme)
-                          .copyWith(color: theme.accentColor),
-                      softWrap: true,
-                    ));
+          message.fromName.toString(),
+          style: AppDecorators.getSubtitle2Style(theme: theme)
+              .copyWith(color: theme.accentColor),
+          softWrap: true,
+        ));
         bubble.add(SizedBox(width: 10));
       }
-      bubble.add( Text(
-                      text,
-                      style: AppDecorators.getHeadLine4Style(theme: theme),
-                    ));
-
+      bubble.add(Text(
+        text,
+        style: AppDecorators.getHeadLine4Style(theme: theme),
+      ));
     }
 
     return Align(
@@ -226,9 +225,7 @@ class _GameChatState extends State<GameChat> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               /* name of player & time */
-              Row(
-                children: bubble
-              ),
+              Row(children: bubble),
 
               // sep
               SizedBox(height: 2),

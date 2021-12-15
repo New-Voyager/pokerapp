@@ -282,7 +282,7 @@ class GameUpdateService {
     while (newPlayerModel == null) {
       await Future.delayed(Duration(seconds: 1));
       GameInfoModel _gameInfoModel =
-        await GameService.getGameInfo(_gameState.gameCode);
+          await GameService.getGameInfo(_gameState.gameCode);
       assert(_gameInfoModel != null);
       List<PlayerModel> playerModels = _gameInfoModel.playersInSeats;
       newPlayerModel = playerModels.firstWhere(

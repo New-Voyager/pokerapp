@@ -331,13 +331,19 @@ class _FooterViewState extends State<FooterView>
   Widget build(BuildContext context) {
     final gameState = GameState.getState(context);
     final theme = AppTheme.getTheme(context);
+    bool playerGame = false;
+    if (gameState.gameInfo.clubCode == null ||
+        gameState.gameInfo.clubCode == '') {
+      playerGame = true;
+    }
     List<Widget> children = [];
     if (gameState.customizationMode) {
       children.add(_buildMainView(gameState));
       /* communication widgets */
       children.add(_buildCustomizationView());
     } else if (gameState.tableState.gameStatus ==
-        AppConstants.GAME_CONFIGURED) {
+            AppConstants.GAME_CONFIGURED &&
+        playerGame) {
       // display game information
       children.add(_buildGameInfo(gameState));
       /* hand analyse view */
