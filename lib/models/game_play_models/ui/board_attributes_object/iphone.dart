@@ -401,6 +401,27 @@ class IPhoneAttribs {
     return defaultValue;
   }
 
+  static Map<String, dynamic> getIPhone11XSMaxGlobal() {
+    final defaultValue = getIPhone11();
+    String override = '''
+      {
+        "model": "iPhone 11 XS Max Global",
+        "screenSize": "414.0, 896.0",
+        "size": 6.6,
+
+        "board": {
+          "centerBoardScale": 1.35
+        },
+        "seat": {
+          "scale": 0.90
+        }
+      }
+    ''';
+    Map<String, dynamic> overrideMap = jsonDecode(override);
+    updateMap(defaultValue, overrideMap);
+    return defaultValue;
+  }
+
   static Map<String, dynamic> getIPhoneXS() {
     final defaultValue = getIPhoneX();
     String override = '''
@@ -1455,6 +1476,9 @@ class IPhoneAttribs {
         return getIPhone13Mini();
       } else if (name.contains('iphone 13')) {
         return getIPhone13();
+//        iPhone 11 XS Max Global
+      } else if (name.contains('iphone xs max global')) {
+        return getIPhone11XSMaxGlobal();
       } else if (name.contains('iphone xs max')) {
         return getIPhoneXSMax();
       } else if (name.contains('iphone xʀ')) {
