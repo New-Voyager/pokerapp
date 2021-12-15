@@ -6,6 +6,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
@@ -24,11 +25,9 @@ class ChipAmountWidget extends StatefulWidget {
   final BoardAttributesObject boardAttributesObject;
   final GameInfoModel gameInfo;
   final GlobalKey key;
-  final NeedRecalculating recalculatingNeeded;
   final bool reverse;
 
   ChipAmountWidget({
-    @required this.recalculatingNeeded,
     @required this.animate,
     @required this.potKey,
     @required this.key,
@@ -198,67 +197,17 @@ class _ChipAmountWidgetState extends State<ChipAmountWidget>
   }
 
   void calculatePotViewPos(BuildContext context) {
-    // ONLY checking if widget.seat.potViewPos is Null is not helpful, as AFTER SEAT CHANGE, the potViewPos changes, but due to this condition
-    // the new seat position are not calculated, thus calculating the potViewPos every hand
-    // if (widget.seat.potViewPos != null && !widget.recalculatingNeeded) {
-    //   return;
-    // }
-
-    // // log('potViewPos: 2 afterFirstLayout ChipAmountWidget seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos}');
-    // when widget.animate is true, I am not in this widget
-    // if (this.widget.animate) {
-    //   // log('potViewPos: 2 return afterFirstLayout ChipAmountWidget seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos}');
-    //   return;
-    // }
-
-    // final potKey = widget.boardAttributesObject.potKey; //.getPotsKey(0);
-    // log('333 ChipAmountWidget: 3 afterFirstLayout potKey: $potKey ChipAmountWidget seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos}');
-
-    // if (potKey == null || potKey.currentContext == null) {
-    //   log('444 ChipAmountWidget: Rebuilding ChipAmountWidget seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos} potKey: $potKey');
-
-    //   // log('potViewPos: 3 return afterFirstLayout ChipAmountWidget seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos} potKey: ${potKey} potKey.currentContext: ${potKey.currentContext}');
-    //   return;
-    // }
-
-    // // log('pauldebug: CALCULATING SEAT POS');
-
-    // //  log('potViewPos: 4 afterFirstLayout ChipAmountWidget seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos}');
-    // final RenderBox potViewBox = potKey.currentContext.findRenderObject();
-    // final potViewPos = potViewBox.localToGlobal(Offset(0, 0));
     final potViewPos = widget.boardAttributesObject.potGlobalPos;
     final RenderBox box = context.findRenderObject();
     if (box != null && potViewPos != null) {
-      widget.seat.potViewPos = box.globalToLocal(potViewPos);
+      appState.setPosForSeat(widget.seat, box.globalToLocal(potViewPos));
     }
-    // if (box != null && potViewPos != null) { // && widget.seat.potViewPos == null) {
-    //   // SOMA: Big hack here
-    //   // If we are animating low winner, don't recalculate pot view pos again
-    //   if (widget.seat != null &&
-    //       widget.seat.player != null &&
-    //       widget.seat.player.loWinner) {
-    //     if (widget.seat.potViewPos != null) {
-    //       return;
-    //     }
-    //   }
-    //   widget.seat.potViewPos = box.globalToLocal(potViewPos);
-    // }
-    // log('potViewPos: Setting potViewPos for seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos}');
   }
 
   @override
   void afterFirstLayout(BuildContext context) {
-    // log('111 ChipAmountWidget: Rebuilding ChipAmountWidget seat ${widget.seat.seatPos.toString()} position: ${widget.seat.potViewPos}');
-
-    calculatePotViewPos(context);
-    if (widget.recalculatingNeeded.value || widget.seat.potViewPos == null) {
-      // log('222 ChipAmountWidget: Rebuilding ChipAmountWidget seat ${widget.seat.seatPos.toString()} position: ${widget.seat.potViewPos}');
-      // widget.recalculatingNeeded.value = false;
-
-      Future.delayed(const Duration(seconds: 2)).then((_) {
-        // set to false, ONLY after recalculation for all the players are DONE
-        widget.recalculatingNeeded.value = false;
-      });
+    if (!appState.isPosAvailableFor(widget.seat)) {
+      calculatePotViewPos(context);
     }
   }
 }
@@ -280,8 +229,10 @@ class ChipAmountAnimatingWidget extends StatelessWidget {
     final gameState = GameState.getState(context);
     final seat = gameState.getSeat(seatPos);
 
-    Offset end = seat.potViewPos;
+    Offset end = appState.getPosForSeat(seat);
     Offset begin = seat.betWidgetPos;
+
+    print('ChipAmountAnimatingWidget: end:$end begin:$begin');
 
     if (reverse ?? false) {
       Offset swap = end;

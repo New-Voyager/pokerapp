@@ -1,4 +1,7 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
+import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
 
 import 'club_model.dart';
@@ -11,6 +14,20 @@ class AppState extends ChangeNotifier {
   bool gameEnded = false;
   PendingApprovalsState buyinApprovals = PendingApprovalsState();
   ClubsUpdateState clubUpdateState = ClubsUpdateState();
+
+  Map<SeatPos, Offset> _chipPotViewPos = Map<SeatPos, Offset>();
+
+  bool isPosAvailableFor(Seat seat) {
+    return _chipPotViewPos.containsKey(seat.seatPos);
+  }
+
+  void setPosForSeat(Seat seat, Offset pos) {
+    _chipPotViewPos[seat.seatPos] = pos;
+  }
+
+  Offset getPosForSeat(Seat seat) {
+    return _chipPotViewPos[seat.seatPos];
+  }
 
   List<ClubModel> myClubs = [];
   setIndex(int index) {

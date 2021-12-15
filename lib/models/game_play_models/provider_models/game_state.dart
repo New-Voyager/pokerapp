@@ -675,11 +675,6 @@ class GameState {
       this.redrawBackdropSectionState;
 
   void redrawBoard() {
-    for (var seat in this._seats) {
-      seat.potViewPos = null;
-      seat.betWidgetPos = null;
-      seat.attribs?.resetKey();
-    }
     this.redrawBoardSectionState.notify();
   }
 
