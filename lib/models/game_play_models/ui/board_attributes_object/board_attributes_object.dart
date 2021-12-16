@@ -72,7 +72,7 @@ class SeatPosAttribs {
   final Offset topLeft;
   final Alignment holeCardPos;
   GlobalKey _key;
-  Offset _potViewPos;
+  // Offset _potViewPos;
   Offset _betWidgetPos;
   GlobalKey _betWidgetUiKey;
   Size _size;
@@ -101,8 +101,8 @@ class SeatPosAttribs {
   Offset get parentRelativePos => _parentRelativePos;
   set parentRelativePos(Offset pos) => _parentRelativePos = pos;
 
-  Offset get potPos => _potViewPos;
-  set potPos(Offset pos) => _potViewPos = pos;
+  // Offset get potPos => _potViewPos;
+  // set potPos(Offset pos) => _potViewPos = pos;
 
   Offset get betWidgetPos => _betWidgetPos;
   set betWidgetPos(Offset pos) => _betWidgetPos = pos;

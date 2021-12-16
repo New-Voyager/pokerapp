@@ -864,18 +864,25 @@ class _GameOptionState extends State<GameOption> {
       },
     ));
 
-    // show Hand Rank
-    children.add(_buildCheckBox(
-      text: _appScreenText['handRank'],
-      value: widget.gameState.playerLocalConfig.showHandRank,
-      onChange: (bool v) async {
-        // setting the value saves it to local storage too
-        widget.gameState.playerLocalConfig.showHandRank = v;
-        log('In toggle button widget, Show Hank Rank = ${widget.gameState.playerLocalConfig.showHandRank}');
-        if (closed) return;
-        setState(() {});
-      },
-    ));
+    bool showHandStrength =
+        true; //widget.gameState.playerLocalConfig.showHandRank;
+    if (!widget.gameState.gameSettings.showHandRank) {
+      showHandStrength = false;
+    }
+    if (showHandStrength) {
+      // show Hand Rank
+      children.add(_buildCheckBox(
+        text: _appScreenText['handRank'],
+        value: widget.gameState.playerLocalConfig.showHandRank,
+        onChange: (bool v) async {
+          // setting the value saves it to local storage too
+          widget.gameState.playerLocalConfig.showHandRank = v;
+          log('In toggle button widget, Show Hank Rank = ${widget.gameState.playerLocalConfig.showHandRank}');
+          if (closed) return;
+          setState(() {});
+        },
+      ));
+    }
 
     // color cards
     children.add(_buildCheckBox(
@@ -889,6 +896,7 @@ class _GameOptionState extends State<GameOption> {
         setState(() {});
         widget.gameState.tableState.notifyAll();
         widget.gameState.tableState.refreshCommunityCards(colorCards: v);
+        widget.gameState.redrawFooter();
       },
     ));
 

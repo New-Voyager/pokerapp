@@ -552,7 +552,7 @@ showPlayerPopup(context, GlobalKey seatKey, GameState gameState, Seat seat) {
                           const SizedBox(height: 8.0),
                           /* hand number */
 
-                          ProfilePopup(),
+                          ProfilePopup(gameState: gameState),
                           AppDimensionsNew.getVerticalSizedBox(32),
 
                           // show REVEAL button / share button

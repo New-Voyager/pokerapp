@@ -227,8 +227,8 @@ class NewGameSettings2 extends StatelessWidget {
                           ? Colors.black
                           : theme.accentColor))));
 
-          if (!(clubHomePageModel != null &&
-              !clubHomePageModel.trackMemberCredit)) {
+          if (clubHomePageModel != null &&
+              clubHomePageModel.trackMemberCredit) {
             showCreditLimit = true;
             isSelected.add(gmp.buyInApprovalLimit ==
                 BuyInApprovalLimit.BUYIN_CREDIT_LIMIT);
@@ -259,37 +259,35 @@ class NewGameSettings2 extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildLabel('Buyin Limit', theme),
-
-              FittedBox(
+              Center(
+                  child: FittedBox(
                 fit: BoxFit.fitWidth,
-                child: Center(
-                  child: ToggleButtons(
-                    children: toggleButtons,
-                    isSelected: isSelected,
-                    borderColor: theme.accentColor,
-                    borderRadius: BorderRadius.all(Radius.circular(25)),
-                    selectedColor: Colors.black,
-                    fillColor: theme.accentColor,
-                    onPressed: (int index) {
-                      if (index == 0) {
+                child: ToggleButtons(
+                  children: toggleButtons,
+                  isSelected: isSelected,
+                  borderColor: theme.accentColor,
+                  borderRadius: BorderRadius.all(Radius.circular(25)),
+                  selectedColor: Colors.black,
+                  fillColor: theme.accentColor,
+                  onPressed: (int index) {
+                    if (index == 0) {
+                      gmp.buyInApprovalLimit =
+                          BuyInApprovalLimit.BUYIN_NO_LIMIT;
+                    } else if (index == 1) {
+                      if (showCreditLimit) {
                         gmp.buyInApprovalLimit =
-                            BuyInApprovalLimit.BUYIN_NO_LIMIT;
-                      } else if (index == 1) {
-                        if (showCreditLimit) {
-                          gmp.buyInApprovalLimit =
-                              BuyInApprovalLimit.BUYIN_CREDIT_LIMIT;
-                        } else {
-                          gmp.buyInApprovalLimit =
-                              BuyInApprovalLimit.BUYIN_HOST_APPROVAL;
-                        }
-                      } else if (index == 2) {
+                            BuyInApprovalLimit.BUYIN_CREDIT_LIMIT;
+                      } else {
                         gmp.buyInApprovalLimit =
                             BuyInApprovalLimit.BUYIN_HOST_APPROVAL;
                       }
-                    },
-                  ),
+                    } else if (index == 2) {
+                      gmp.buyInApprovalLimit =
+                          BuyInApprovalLimit.BUYIN_HOST_APPROVAL;
+                    }
+                  },
                 ),
-              ),
+              )),
               // RadioListWidget<String>(
               //   defaultValue: gmp.buyInApprovalLimit.toJson(),
               //   values: NewGameConstants.BUYIN_LIMIT_CHOICES,
@@ -494,7 +492,7 @@ class NewGameSettings2 extends StatelessWidget {
               color: theme.secondaryColorWithDark(),
               width: 2,
             ),
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: BorderRadius.circular(10),
           ),
           padding: const EdgeInsets.all(16),
           child: Column(
@@ -816,6 +814,8 @@ class NewGameSettings2 extends StatelessWidget {
                       _buildBuyinConfig(theme, gmp),
                       sepV20,
                       ExpansionTile(
+                        iconColor: theme.accentColor,
+                        collapsedIconColor: theme.accentColor,
                         subtitle: Text(_appScreenText['chooseAdvanceConfig'],
                             style:
                                 AppDecorators.getHeadLine6Style(theme: theme)),
@@ -1003,17 +1003,17 @@ class NewGameSettings2 extends StatelessWidget {
               ),
               sepV20,
               Row(
-                ///alignment: Alignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //alignment: Alignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  CircleImageButton(
-                    onTap: () {
-                      gmp.cancelled = true;
-                      Navigator.pop(context, null);
-                    },
-                    theme: theme,
-                    icon: Icons.close,
-                  ),
+                  // CircleImageButton(
+                  //   onTap: () {
+                  //     gmp.cancelled = true;
+                  //     Navigator.pop(context, null);
+                  //   },
+                  //   theme: theme,
+                  //   icon: Icons.close,
+                  // ),
                   ButtonWidget(
                     text: _appScreenText['start'],
                     onTap: () {
@@ -1037,13 +1037,13 @@ class NewGameSettings2 extends StatelessWidget {
                       }
                     },
                   ),
-                  CircleImageButton(
-                    onTap: () async {
-                      await onSaveSettings(context, theme, gmp);
-                    },
-                    icon: Icons.save,
-                    theme: theme,
-                  ),
+                  // CircleImageButton(
+                  //   onTap: () async {
+                  //     await onSaveSettings(context, theme, gmp);
+                  //   },
+                  //   icon: Icons.save,
+                  //   theme: theme,
+                  // ),
                 ],
               ),
             ],

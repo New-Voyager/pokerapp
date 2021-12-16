@@ -207,7 +207,10 @@ class _NamePlateDailogState extends State<NamePlateDailog> {
               padding: EdgeInsets.all(16),
               margin: EdgeInsets.symmetric(vertical: 8),
               decoration: AppDecorators.tileDecorationWithoutBorder(theme),
-              child: ProfilePopup(),
+              child: ProfilePopup(
+                seat: widget.seat,
+                gameState: gameState,
+              ),
             ),
           ),
 
