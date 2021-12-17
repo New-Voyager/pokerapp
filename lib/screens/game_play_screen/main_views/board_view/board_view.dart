@@ -68,11 +68,15 @@ class BoardView extends StatelessWidget {
             child: BackgroundView()),
 
         Positioned(
-            bottom: bottomPos,
-            child: Transform.scale(
-                scale: tableScale,
-                child: TableView(
-                    width: dimensions.width, height: dimensions.height))),
+          bottom: bottomPos,
+          child: Transform.scale(
+            scale: tableScale,
+            child: TableView(
+              width: dimensions.width,
+              height: dimensions.height,
+            ),
+          ),
+        ),
 
         /* center view */
         Positioned(
