@@ -1,9 +1,7 @@
-import 'dart:developer';
+import 'dart:math';
 
 import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/main.dart';
@@ -13,7 +11,6 @@ import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
-import 'package:pokerapp/screens/game_play_screen/seat_view/player_view.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
@@ -235,9 +232,10 @@ class ChipAmountAnimatingWidget extends StatelessWidget {
     print('ChipAmountAnimatingWidget: end:$end begin:$begin');
 
     if (reverse ?? false) {
-      Offset swap = end;
-      end = begin;
-      begin = swap;
+      return WinnerChipAnimation(
+        begin: end,
+        end: begin,
+      );
     }
 
     return TweenAnimationBuilder(
@@ -251,6 +249,66 @@ class ChipAmountAnimatingWidget extends StatelessWidget {
         offset: offset,
         child: child,
       ),
+    );
+  }
+}
+
+const int startDelay = 200;
+const int noOfCoins = 6;
+
+class WinnerChipAnimation extends StatelessWidget {
+  final Offset begin;
+  final Offset end;
+  final double winningAmount;
+
+  WinnerChipAnimation({
+    @required this.begin,
+    @required this.end,
+    this.winningAmount = 100.0,
+  });
+
+  Widget _coin() {
+    return Container(
+      height: 25.0,
+      width: 25.0,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: Colors.yellow,
+        border: Border.all(
+          color: Colors.red,
+          width: 3.0,
+        ),
+      ),
+    );
+  }
+
+  Widget _tweenAnimator(int idx) {
+    return TweenAnimationBuilder(
+      key: ValueKey(idx),
+      curve: Curves.easeInOutSine,
+      child: _coin(),
+      tween: Tween<Offset>(
+        begin: begin,
+        end: end,
+      ),
+      duration: Duration(
+        milliseconds: AppConstants.chipMovingAnimationDuration.inMilliseconds +
+            (startDelay * idx),
+      ),
+      builder: (_, offset, child) => Transform.translate(
+        offset: offset,
+        child: child,
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      alignment: Alignment.center,
+      children: List.generate(noOfCoins, (i) => i + 1)
+          .map<Widget>((i) => _tweenAnimator(i))
+          .toList(),
     );
   }
 }
