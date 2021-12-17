@@ -68,24 +68,13 @@ class BoardView extends StatelessWidget {
             child: BackgroundView()),
 
         Positioned(
-            bottom: bottomPos,
-            child: Transform.scale(
-                scale: tableScale,
-                child: TableView(
-                    width: dimensions.width, height: dimensions.height))),
-
-        /* players */
-        Transform.translate(
-          offset: boardAttributes.playerOnTableOffset,
-          child: PlayersOnTableView(
-            gameComService: gameComService,
-            isBoardHorizontal:
-                boardAttributes.orientation == BoardOrientation.horizontal,
-            widthOfBoard: dimensions.width,
-            heightOfBoard: dimensions.height,
-            onUserTap: onUserTap,
-            maxPlayers: gameInfo.maxPlayers,
-            gameState: gameState,
+          bottom: bottomPos,
+          child: Transform.scale(
+            scale: tableScale,
+            child: TableView(
+              width: dimensions.width,
+              height: dimensions.height,
+            ),
           ),
         ),
 
@@ -112,6 +101,21 @@ class BoardView extends StatelessWidget {
                 ),
               );
             },
+          ),
+        ),
+
+        /* players */
+        Transform.translate(
+          offset: boardAttributes.playerOnTableOffset,
+          child: PlayersOnTableView(
+            gameComService: gameComService,
+            isBoardHorizontal:
+                boardAttributes.orientation == BoardOrientation.horizontal,
+            widthOfBoard: dimensions.width,
+            heightOfBoard: dimensions.height,
+            onUserTap: onUserTap,
+            maxPlayers: gameInfo.maxPlayers,
+            gameState: gameState,
           ),
         ),
 
