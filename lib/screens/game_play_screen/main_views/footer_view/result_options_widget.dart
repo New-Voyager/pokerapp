@@ -30,7 +30,7 @@ class ResultOptionsWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final gameState = GameState.getState(context);
     final theme = AppTheme.getTheme(context);
-    final bool isRabbitHuntAllowed = gameState.gameInfo.allowRabbitHunt;
+    final bool isRabbitHuntAllowed = gameState.gameSettings.allowRabbitHunt;
     return Consumer2<HandResultState, RabbitState>(
       builder: (context, vnfs, rb, __) {
         bool _showEye = false;

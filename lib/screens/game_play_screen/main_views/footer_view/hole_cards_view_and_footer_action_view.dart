@@ -47,7 +47,15 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
 
       Widget rankText;
       rankText = Consumer<MyState>(builder: (_, __, ___) {
-        return _getRankText(gameState, context, boardAttributes);
+        bool showHandStrength = gameState.playerLocalConfig.showHandRank;
+        if (!gameState.gameSettings.showHandRank) {
+          showHandStrength = false;
+        }
+        if (showHandStrength) {
+          return _getRankText(gameState, context, boardAttributes);
+        } else {
+          return Container();
+        }
       });
 
       double scale = boardAttributes.holeCardViewScale;

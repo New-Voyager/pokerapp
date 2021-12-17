@@ -204,6 +204,7 @@ class HandActionProtoService {
       actionState.action.seatNo,
       action,
       amount,
+      false,
     );
   }
 
@@ -213,6 +214,7 @@ class HandActionProtoService {
     int seatNo,
     String action,
     double amount,
+    bool isTimedout,
   ) {
     if (_retryMsg != null) {
       _retryMsg.cancel();
@@ -247,6 +249,7 @@ class HandActionProtoService {
       playerActed: proto.HandAction(
         seatNo: seatNo,
         action: actionEnum,
+        timedOut: isTimedout,
       ),
     );
     if (amount != null) {

@@ -338,7 +338,7 @@ class PlayerActionHandler {
       ACTION actionType, int playerId, int seatNo, int handNum, double amount) {
     void f() {
       _handActionProtoService.playerActed(playerId, _gameState.handInfo.handNum,
-          seatNo, actionType.toString(), amount);
+          seatNo, actionType.toString(), amount, true);
     }
 
     return f;
@@ -431,7 +431,8 @@ class PlayerActionHandler {
               _gameState.handInfo.handNum,
               me.seatNo,
               ACTION.CHECK.toString(),
-              0);
+              0,
+              false);
           return;
         }
 
@@ -441,7 +442,8 @@ class PlayerActionHandler {
               _gameState.handInfo.handNum,
               me.seatNo,
               ACTION.FOLD.toString(),
-              0);
+              0,
+              false);
           return;
         }
       }

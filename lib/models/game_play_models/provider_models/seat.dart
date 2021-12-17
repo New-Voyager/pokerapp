@@ -152,17 +152,12 @@ class Seat extends ChangeNotifier {
   GlobalKey get betWidgetUIKey => this._attribs.betWidgetUiKey;
   set betWidgetUIKey(GlobalKey key) => this._attribs.betWidgetUiKey = key;
 
-  Offset get potViewPos => this._attribs.potPos;
-  set potViewPos(Offset pos) {
-    // if (potViewSettleCount >= 3) {
-    //   return;
-    // } else {
-    //   potViewSettleCount++;
-    // }
-    if (_attribs != null) {
-      this._attribs.potPos = pos;
-    }
-  }
+  // Offset get potViewPos => this._attribs.potPos;
+  // set potViewPos(Offset pos) {
+  //   if (_attribs != null) {
+  //     this._attribs.potPos = pos;
+  //   }
+  // }
 
   Offset get betWidgetPos => this._attribs.betWidgetPos;
   set betWidgetPos(Offset offset) {

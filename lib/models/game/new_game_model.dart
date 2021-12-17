@@ -219,7 +219,7 @@ class NewGameModel {
     showResult = json['showResult'] ?? true;
     highHandTracked = json['highHandTracked'] ?? false;
     buyInWaitTime = json['buyInWaitTime'] ?? 60;
-    allowFunAnimations = json['allowFunAnimations'] ?? true;
+    allowFunAnimations = json['funAnimations'] ?? true;
     ante = json['ante'] ?? 0.0;
     if (json['buyInLimit'] == null) {
       buyInApprovalLimit = BuyInApprovalLimit.BUYIN_NO_LIMIT;
@@ -268,6 +268,7 @@ class NewGameModel {
     data['seatChangeAllowed'] = this.seatChangeAllowed ?? false;
     data['breakAllowed'] = this.breakAllowed ?? true;
     data['showResult'] = this.showResult ?? true;
+    data['funAnimations'] = this.allowFunAnimations ?? true;
     data['highHandTracked'] = this.highHandTracked ?? false;
     data['buyInLimit'] = this.buyInApprovalLimit.toJson();
     data['buyInTimeout'] = this.buyInWaitTime;

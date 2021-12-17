@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
@@ -12,7 +13,8 @@ import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class ProfilePopup extends StatefulWidget {
   final Seat seat;
-  ProfilePopup({Key key, this.seat}) : super(key: key);
+  final GameState gameState;
+  ProfilePopup({Key key, this.seat, this.gameState}) : super(key: key);
 
   @override
   _ProfilePopupState createState() => _ProfilePopupState();
@@ -90,52 +92,57 @@ class _ProfilePopupState extends State<ProfilePopup> {
         ),
       );
 
-  Widget getStickers() => Wrap(
-        alignment: WrapAlignment.center,
-        children: [
-          ...AnimationAssets.animationObjects
-              .map(
-                (animationObject) => GestureDetector(
-                  onTap: () {
-                    Navigator.pop(
-                      context,
-                      {
-                        "type": "animation",
-                        "isMicOn": _isMicOn,
-                        "isChatOn": _isChatOn,
-                        "animationID": animationObject.id,
-                      },
-                    );
-                    // setState(
-                    //   () => _animationID = animationObject.id,
-                    // );
-                  },
-                  child: Container(
-                    height: 56.ph,
-                    width: 56.pw,
-                    decoration: BoxDecoration(
-                      color: Colors.transparent,
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColorsNew.newSelectedGreenColor,
-                          spreadRadius: 0.1,
-                          blurRadius: 0.1,
-                        ),
-                      ],
-                      shape: BoxShape.circle,
-                    ),
-                    padding: const EdgeInsets.all(8),
-                    margin: const EdgeInsets.all(5),
-                    child: SvgPicture.asset(
-                      animationObject.assetSvg,
-                      fit: BoxFit.contain,
-                    ),
+  Widget getStickers() {
+    if (!widget.gameState.gameSettings.funAnimations) {
+      return Container();
+    }
+    return Wrap(
+      alignment: WrapAlignment.center,
+      children: [
+        ...AnimationAssets.animationObjects
+            .map(
+              (animationObject) => GestureDetector(
+                onTap: () {
+                  Navigator.pop(
+                    context,
+                    {
+                      "type": "animation",
+                      "isMicOn": _isMicOn,
+                      "isChatOn": _isChatOn,
+                      "animationID": animationObject.id,
+                    },
+                  );
+                  // setState(
+                  //   () => _animationID = animationObject.id,
+                  // );
+                },
+                child: Container(
+                  height: 56.ph,
+                  width: 56.pw,
+                  decoration: BoxDecoration(
+                    color: Colors.transparent,
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColorsNew.newSelectedGreenColor,
+                        spreadRadius: 0.1,
+                        blurRadius: 0.1,
+                      ),
+                    ],
+                    shape: BoxShape.circle,
+                  ),
+                  padding: const EdgeInsets.all(8),
+                  margin: const EdgeInsets.all(5),
+                  child: SvgPicture.asset(
+                    animationObject.assetSvg,
+                    fit: BoxFit.contain,
                   ),
                 ),
-              )
-              .toList(),
-        ],
-      );
+              ),
+            )
+            .toList(),
+      ],
+    );
+  }
 
   Widget communication() {
     return Column(
