@@ -1,8 +1,10 @@
 import 'dart:developer';
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/enums/game_type.dart';
+import 'package:pokerapp/models/game_play_models/business/game_chat_notfi_state.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
@@ -19,6 +21,7 @@ import 'package:pokerapp/screens/game_play_screen/widgets/nameplate_dialog.dart'
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/data/hive_models/player_state.dart';
+import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/widgets/blinking_widget.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
@@ -74,6 +77,8 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
   AnimationController _lottieController;
   AssetImage _gifAssetImage;
 
+  Timer _messagePopupTimer;
+
   @override
   void initState() {
     super.initState();
@@ -100,6 +105,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
   void dispose() {
     super.dispose();
     _lottieController?.dispose();
+    _messagePopupTimer?.cancel();
   }
 
   onTap(BuildContext context) async {
@@ -453,6 +459,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
               // Container(width: 100, height: 60, color: Colors.grey[900]),
               //SvgPicture.string(namePlateStr, width: 60, height: 50),
               // // main user body
+
               Opacity(
                 opacity: opacity,
                 child: Transform.scale(
@@ -582,6 +589,53 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
                         return shrinkedSizedBox;
                       },
                     ),
+
+              Visibility(
+                visible: !widget.seat.isMe,
+                child: Positioned(
+                  left: -90,
+                  child: Consumer<GameChatNotifState>(
+                    builder: (_, gcns, __) {
+                      if (gcns.showBubble) {
+                        List<ChatMessage> messages = widget.gameContextObject
+                            .gameComService.gameMessaging.messages;
+
+                        if (messages.length != 0) {
+                          Iterable<ChatMessage> reversedMessages =
+                              messages.reversed;
+                          ChatMessage chatMessage = reversedMessages.firstWhere(
+                              (element) =>
+                                  element.fromPlayer ==
+                                  widget.seat.player.playerId,
+                              orElse: null);
+
+                          if (chatMessage != null) {
+                            if (_messagePopupTimer == null ||
+                                !_messagePopupTimer.isActive) {
+                              _messagePopupTimer =
+                                  Timer(Duration(seconds: 3), () {
+                                gcns.hideBubble();
+                              });
+                            }
+                            return Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  color: theme.fillInColor,
+                                  border: Border.all(
+                                    color: theme.accentColor,
+                                    width: 2,
+                                  ),
+                                ),
+                                padding: EdgeInsets.all(5.0),
+                                child: Text(chatMessage.text));
+                          }
+                        }
+                      }
+                      return Text("");
+                    },
+                  ),
+                ),
+              ),
             ],
           ),
         );
