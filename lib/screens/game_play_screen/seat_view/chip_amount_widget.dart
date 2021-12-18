@@ -285,7 +285,7 @@ class WinnerChipAnimation extends StatelessWidget {
   Widget _tweenAnimator(int idx) {
     return TweenAnimationBuilder(
       key: ValueKey(idx),
-      curve: Curves.easeInOutSine,
+      curve: Curves.easeInOutQuad,
       child: _coin(),
       tween: Tween<Offset>(
         begin: begin,
@@ -302,13 +302,42 @@ class WinnerChipAnimation extends StatelessWidget {
     );
   }
 
+  Widget _winningAmountAnimation() {
+    return TweenAnimationBuilder(
+      curve: Curves.easeOut,
+      tween: Tween<double>(begin: 0, end: 1),
+      duration: const Duration(milliseconds: 2000),
+      child: Text(
+        '+ $winningAmount',
+        style: TextStyle(
+          color: Colors.amber,
+          fontSize: 50.0,
+        ),
+      ),
+      builder: (_, v, child) => Opacity(
+        opacity: 1 - v,
+        child: Transform.translate(
+          offset: Offset(0.0, -v * 40),
+          child: child,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
-      alignment: Alignment.center,
-      children: List.generate(noOfCoins, (i) => i + 1)
-          .map<Widget>((i) => _tweenAnimator(i))
-          .toList(),
+      alignment: Alignment.topCenter,
+      children: [
+        // coins animation
+        ...List.generate(noOfCoins, (i) => i + 1)
+            .reversed
+            .map<Widget>((i) => _tweenAnimator(i))
+            .toList(),
+
+        // winning amount
+        _winningAmountAnimation(),
+      ],
     );
   }
 }
