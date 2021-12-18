@@ -12,6 +12,7 @@ class AppState extends ChangeNotifier {
   bool mockScreens = false;
   bool newGame = false;
   bool gameEnded = false;
+  String currentFlavor = '';
   PendingApprovalsState buyinApprovals = PendingApprovalsState();
   ClubsUpdateState clubUpdateState = ClubsUpdateState();
 

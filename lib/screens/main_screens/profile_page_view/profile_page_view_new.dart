@@ -6,6 +6,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 //import 'package:get_version/get_version.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/build_info.dart';
+import 'package:pokerapp/flavor_config.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/main_helper.dart';
 import 'package:pokerapp/models/auth_model.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
@@ -75,6 +77,15 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
   Widget build(BuildContext context) {
     return Consumer<AppTheme>(
       builder: (_, theme, __) {
+        String id = '';
+
+        if (_currentUser != null) {
+          id = _currentUser.uuid;
+          if (appState.currentFlavor == Flavor.DEV.toString()) {
+            id = id + '/${_currentUser.playerId}';
+          }
+        }
+
         return Container(
           decoration: AppDecorators.bgRadialGradient(theme),
           child: SafeArea(
@@ -383,7 +394,7 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                           AppDimensionsNew.getVerticalSizedBox(20.ph),
                           Container(
                               margin: EdgeInsets.symmetric(vertical: 8),
-                              child: Text('id: ${AuthService.getUuid()}')),
+                              child: Text('id: ${id}')),
                           Container(
                               margin: EdgeInsets.symmetric(vertical: 8),
                               child: Text('${versionNumber} ${releaseDate}')),

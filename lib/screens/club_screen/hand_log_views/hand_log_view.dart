@@ -4,6 +4,7 @@ import 'package:pokerapp/main_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_stages.dart';
 import 'package:pokerapp/models/bookmarkedHands_model.dart';
+import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/models/handlog_model.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
@@ -22,6 +23,7 @@ import 'package:pokerapp/services/app/hand_service.dart';
 import 'package:pokerapp/services/game_history/game_history_service.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
+import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 
 import '../../../routes.dart';
@@ -31,6 +33,7 @@ class HandLogView extends StatefulWidget {
   final String gameCode;
   final bool isAppbarWithHandNumber;
   final String clubCode;
+  final ClubHomePageModel club;
   final int handNum;
   final bool liveGame;
   final HandResultData handResult;
@@ -40,6 +43,7 @@ class HandLogView extends StatefulWidget {
       {this.isAppbarWithHandNumber = false,
       this.clubCode,
       this.handResult,
+      this.club,
       this.isBottomSheet = false,
       this.liveGame = false});
 
@@ -55,6 +59,8 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
   AppTextScreen _appScreenText;
   HandResultData _handResult;
   bool disposed = false;
+  bool canViewTips = false;
+
   @override
   void dispose() {
     disposed = true;
@@ -65,7 +71,15 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
   void initState() {
     super.initState();
     _appScreenText = getAppTextScreen("handLogView");
-
+    if (widget.club != null) {
+      if (widget.club.isOwner) {
+        canViewTips = true;
+      } else if (widget.club.isManager) {
+        if (widget.club.role.seeTips) {
+          canViewTips = true;
+        }
+      }
+    }
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _fetchBookmarksForGame(widget.gameCode);
       if (TestService.isTesting && widget.handResult == null) {
@@ -346,6 +360,12 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
       HandLogActionView(handResult: _handResult, appTextScreen: _appScreenText),
       AppDimensionsNew.getVerticalSizedBox(8),
       HandlogSummary(handResult: _handResult, appTextScreen: _appScreenText),
+      !(canViewTips ?? false)
+          ? Container()
+          : Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+              Text('Tips'),
+              Text(DataFormatter.chipsFormat(_handResult.tipsPaid))
+            ]),
     ];
   }
 
