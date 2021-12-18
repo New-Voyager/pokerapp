@@ -140,6 +140,7 @@ String iPhoneAttribs = """
         "name": "iPhone 8 Plus",
         "model": "iPhone 8 Plus",
         "models": ["iPhone 8 Plus"],
+        "screenSize": "414.0, 736.0",
         "size": 5.6,
         "board": {
           "playersTableOffset": "0.0, -25.0",

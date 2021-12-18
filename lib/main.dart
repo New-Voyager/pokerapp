@@ -90,8 +90,6 @@ class _MyAppState extends State<MyApp> {
 
   void _init(BuildContext context) async {
     try {
-      //Screen.init(context);
-      //appService.initScreenAttribs();
       await initAppText('en');
       _firebaseApp = await _initialization(context);
     } catch (e) {
