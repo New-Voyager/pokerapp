@@ -20,7 +20,7 @@ class ScreenAttributeObject {
     String screenSizeStr = map['screenSize'];
     this.screenSize = Size(double.parse(screenSizeStr.split(",")[0].trim()),
         double.parse(screenSizeStr.split(",")[1].trim()));
-    this.defaultAttribs = map['defaultAttribs'];
+    this.defaultAttribs = map['default'];
 
     this.attribs = map;
   }

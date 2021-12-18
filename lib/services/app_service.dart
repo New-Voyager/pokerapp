@@ -1,4 +1,8 @@
+import 'dart:developer';
+
+import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/screen_attributes.dart';
 import 'package:pokerapp/services/data/game_templates.dart';
+import 'package:pokerapp/utils/utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'data/hive_datasource_impl.dart';
@@ -18,6 +22,17 @@ class AppService {
     sharedPreferences = await SharedPreferences.getInstance();
   }
 
+  void initScreenAttribs() {
+    try {
+      final size = Screen.size;
+      ScreenAttributes.buildList();
+      final attribs = ScreenAttributes.getScreenAttribs(DeviceInfo.model, Screen.diagonalInches, size);
+      log('attribs length: ${attribs.length}');
+    } catch(err) {
+      log('Error: ${err.toString()}');
+    }
+  }
+
   void close() {
     if (gameTemplates != null) {
       gameTemplates.close();
@@ -28,4 +43,6 @@ class AppService {
     }
     userSettings = null;
   }
+
+
 }

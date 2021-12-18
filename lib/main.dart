@@ -17,6 +17,7 @@ import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/services/app_service.dart';
 import 'package:pokerapp/services/connectivity_check/network_change_listener.dart';
 import 'package:pokerapp/services/nats/nats.dart';
+import 'package:pokerapp/utils/utils.dart';
 import 'package:provider/provider.dart';
 import 'main_helper.dart';
 import 'models/ui/app_text.dart';
@@ -89,6 +90,8 @@ class _MyAppState extends State<MyApp> {
 
   void _init(BuildContext context) async {
     try {
+      //Screen.init(context);
+      //appService.initScreenAttribs();
       await initAppText('en');
       _firebaseApp = await _initialization(context);
     } catch (e) {
