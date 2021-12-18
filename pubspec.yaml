@@ -85,6 +85,7 @@ dependencies:
   wakelock: ^0.5.6
   web_socket_channel: ^2.1.0
   onboarding_overlay: ^2.3.5
+  flutter_chat_bubble: ^2.0.0
 
 dev_dependencies:
   build_test: ^2.1.3
