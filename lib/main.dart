@@ -49,6 +49,7 @@ void main() async {
         'https://demo.pokerclub.app', //'https://api.pokerclub.app', //'https://demo.pokerclub.app',
     child: MyApp(),
   );
+  appState.currentFlavor = flavorApp.flavorName;
 
   // var flavorApp = FlavorConfig(
   //   appName: 'PokerDev',

@@ -234,6 +234,7 @@ class _HandHistoryState extends State<HandHistoryListView>
       widget.clubCode,
       currentPlayer,
       isInBottomSheet: widget.isInBottomSheet,
+      club: widget.club,
     );
   }
 
@@ -269,6 +270,7 @@ class _HandHistoryState extends State<HandHistoryListView>
                   widget.clubCode,
                   currentPlayer,
                   isInBottomSheet: widget.isInBottomSheet,
+                  club: widget.club,
                 ),
                 PlayedHandsScreen(
                   _data.chipUnit,
@@ -277,6 +279,7 @@ class _HandHistoryState extends State<HandHistoryListView>
                   widget.clubCode,
                   currentPlayer,
                   isInBottomSheet: widget.isInBottomSheet,
+                  club: widget.club,
                 ),
               ],
               controller: _tabController,

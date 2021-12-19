@@ -208,9 +208,16 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
                   ConnectionDialog.show(
                       context: context,
                       loadingText: 'Logging in as bot $botName');
-                  // login with bot name
-                  Map<String, dynamic> resp =
-                      await AuthService.loginBot(botName);
+
+                  int playerId = int.tryParse(botName);
+                  Map<String, dynamic> resp;
+                  if (playerId != 0) {
+                    // login with player id
+                    resp = await AuthService.loginPlayer(playerId);
+                  } else {
+                    // login with bot name
+                    resp = await AuthService.loginBot(botName);
+                  }
 
                   if (resp['status']) {
                     // successful
