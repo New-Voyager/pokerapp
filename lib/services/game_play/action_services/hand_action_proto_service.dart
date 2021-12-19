@@ -409,7 +409,7 @@ class HandActionProtoService {
       }
     }
 
-    ////log('Hand Message: ::handleMessage:: START messageType: $messageType');
+    // log('Hand Message: ::handleMessage:: START messageType: $messageType');
     final message = messageObject.item;
     try {
       // delegate further actions to sub services as per messageType
@@ -526,21 +526,21 @@ class HandActionProtoService {
       b1.add(CardHelper.getCard(c, colorCards: gameState.colorCards));
     }
 
+    /* show the board 1 cards */
+    await tableState.addAllCommunityCardsForRunItTwiceScenario(1, b1);
+    await Future.delayed(Duration(seconds: 1));
+
+    /* pause for a bit todo: get duration */
+    // await Future.delayed(const Duration(milliseconds: 200));
+    tableState.updateTwoBoardsNeeded(true);
     final List<CardObject> b2 = [];
     for (final c in board2Cards) {
       b2.add(CardHelper.getCard(c, colorCards: gameState.colorCards));
     }
 
-    tableState.updateTwoBoardsNeeded(true);
-
-    /* show the board 1 cards */
-    await tableState.addAllCommunityCardsForRunItTwiceScenario(1, b1);
-
-    /* pause for a bit todo: get duration */
-    // await Future.delayed(const Duration(milliseconds: 200));
-
-    /* show the board 2 cards */
+    // /* show the board 2 cards */
     await tableState.addAllCommunityCardsForRunItTwiceScenario(2, b2);
+    await Future.delayed(Duration(milliseconds: 1500));
 
     /* pause for a bit todo: get duration */
     // await Future.delayed(const Duration(milliseconds: 2000));
@@ -548,7 +548,8 @@ class HandActionProtoService {
 
   Future<void> handleRunItTwice(proto.HandMessageItem message) async {
     final runItTwice = message.runItTwice;
-
+    Alerts.showNotification(
+        titleText: 'Run it twice', duration: Duration(seconds: 3));
     final List<int> board1Cards = [];
     final List board1 = runItTwice.board1;
     for (int c in board1) {
@@ -558,10 +559,10 @@ class HandActionProtoService {
     final List<int> board2Cards = [];
     final List board2 = runItTwice.board2;
     for (int c in board2) {
-      board1Cards.add(int.parse(c.toString()));
+      board2Cards.add(int.parse(c.toString()));
     }
 
-    return handleRunItTwiceStatic(
+    await handleRunItTwiceStatic(
       context: _context,
       board1Cards: board1Cards,
       board2Cards: board2Cards,
