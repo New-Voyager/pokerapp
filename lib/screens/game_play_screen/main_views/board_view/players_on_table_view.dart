@@ -425,31 +425,6 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
         localSeat++) {
       final seat = widget.gameState.getSeat(localSeat);
       chatBubbles.add(PlayerChatBubble(gameComService, seat));
-      /*
-      chatBubbles.add(
-        Consumer<GameChatNotifState>(
-          builder: (_, gcns, __) {
-            final bool toShowBubble = gcns.showBubble;
-            final seat = widget.gameState.getSeat(localSeat);
-
-            if (toShowBubble == true) {
-              // && seat.isMe == false) {
-              log('ChatBubble: seat no: ${seat.serverSeatPos}');
-              final offset = findPositionOfUser(seatNo: seat.localSeatPos);
-              if (offset == null) {
-                return SizedBox.shrink();
-              }
-              return Transform.translate(
-                offset: findPositionOfUser(seatNo: seat.localSeatPos),
-                child: PlayerChatBubble(gameComService, seat, gcns),
-              );
-            } else {
-              return const SizedBox.shrink();
-            }
-          },
-        ),
-      );
-      */
     }
 
     return chatBubbles;
