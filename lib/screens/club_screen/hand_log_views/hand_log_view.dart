@@ -343,8 +343,8 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
         handResult: _handResult,
       ),
       AppDimensionsNew.getVerticalSizedBox(8),
-      HandLogActionView(handResult: _handResult, appTextScreen: _appScreenText),
-      AppDimensionsNew.getVerticalSizedBox(8),
+      // HandLogActionView(handResult: _handResult, appTextScreen: _appScreenText),
+      // AppDimensionsNew.getVerticalSizedBox(8),
       HandlogSummary(handResult: _handResult, appTextScreen: _appScreenText),
     ];
   }

@@ -98,6 +98,15 @@ class HandlogSummary extends StatelessWidget {
           Expanded(
             flex: 2,
             child: Text(
+              DataFormatter.chipsFormat(player.balance.before),
+              style: AppDecorators.getSubtitle1Style(theme: theme)
+                  .copyWith(fontWeight: FontWeight.w500),
+              textAlign: TextAlign.right,
+            ),
+          ),
+          Expanded(
+            flex: 2,
+            child: Text(
               ((diff > 0) ? '+' : '') + DataFormatter.chipsFormat(diff),
               style: TextStyle(
                 color: (diff > 0) ? Colors.green : Colors.red,
