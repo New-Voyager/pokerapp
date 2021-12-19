@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 class GameChatNotifState extends ChangeNotifier {
-  bool _showBubble = true;
+  bool _showBubble = false;
   int _count = 0;
 
   bool get hasUnreadMessages => _count != 0;

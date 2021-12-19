@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lottie/lottie.dart';
+import 'package:pokerapp/models/game_play_models/business/game_chat_notfi_state.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
@@ -11,6 +12,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/host_seat_chang
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/board_view/player_chat_bubble.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/name_plate_view.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/player_view.dart';
 import 'package:pokerapp/services/audio/audio_service.dart';
@@ -272,7 +274,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
   /**
    * Returns screen position of a nameplate within the parent
    */
-  Offset findPositionOfUser({int seatNo}) {
+  Offset findPositionOfUser({@required int seatNo}) {
     final gameState = GameState.getState(context);
     /* if available in cache, get from there */
     final seat = gameState.getSeat(seatNo);
@@ -380,10 +382,44 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
                     }),
                   )
                 : SizedBox.shrink(),
+
+            // chat bubble
+            ...getChatBubbles(context),
           ],
         ),
       );
     });
+  }
+
+  List<Widget> getChatBubbles(BuildContext context) {
+    final gameState = context.read<GameState>();
+    final gameComService = gameState.gameComService;
+
+    List<Widget> chatBubbles = [];
+
+    for (int localSeat = 1;
+        localSeat <= gameState.gameInfo.maxPlayers;
+        localSeat++) {
+      chatBubbles.add(
+        Consumer<GameChatNotifState>(
+          builder: (_, gcns, __) {
+            final bool toShowBubble = gcns.showBubble;
+            final seat = widget.gameState.getSeat(localSeat);
+
+            if (toShowBubble == true && seat.isMe == false) {
+              return Transform.translate(
+                offset: findPositionOfUser(seatNo: seat.localSeatPos),
+                child: PlayerChatBubble(gameComService, seat, gcns),
+              );
+            } else {
+              return const SizedBox.shrink();
+            }
+          },
+        ),
+      );
+    }
+
+    return chatBubbles;
   }
 
   List<Widget> getPlayers(BuildContext context) {

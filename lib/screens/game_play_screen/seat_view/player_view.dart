@@ -454,166 +454,155 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
             opacity = 0.70;
           }
         }
-        return Stack(
-          clipBehavior: Clip.none,
-          alignment: Alignment.center,
-          children: [
-            InkWell(
-              onTap: () {
-                if (widget.gameState.replayMode) {
-                  return;
-                }
-                this.onTap(context);
-              },
-              child: Stack(
-                clipBehavior: Clip.none,
-                alignment: Alignment.center,
-                children: [
-                  // Container(width: 100, height: 60, color: Colors.grey[900]),
-                  //SvgPicture.string(namePlateStr, width: 60, height: 50),
-                  // // main user body
 
-                  Opacity(
-                    opacity: opacity,
-                    child: Transform.scale(
-                      scale: scale,
-                      child: NamePlateWidget(
-                        widget.seat,
-                        globalKey: key,
-                        boardAttributes: boardAttributes,
-                      ),
-                    ),
-                  ),
+        return InkWell(
+          onTap: () {
+            if (widget.gameState.replayMode) {
+              return;
+            }
+            this.onTap(context);
+          },
+          child: Stack(
+            clipBehavior: Clip.none,
+            alignment: Alignment.center,
+            children: [
+              // Container(width: 100, height: 60, color: Colors.grey[900]),
+              //SvgPicture.string(namePlateStr, width: 60, height: 50),
+              // // main user body
 
-                  // result cards shown in player view at the time of result
-                  _buildDisplayCardsWidget(widget.seat, gameState.handState),
-
-                  // player action text
-                  Positioned(
-                    top: -5.ph,
-                    left: actionLeft,
-                    right: actionRight,
-                    child:
-                        ActionStatusWidget(widget.seat, widget.cardsAlignment),
-                  ),
-
-                  // player notes text
-                  Visibility(
-                    visible: widget.seat.player.hasNotes && !widget.seat.isMe,
-                    child: Transform.translate(
-                      offset: notesOffset,
-                      child: IconButton(
-                        icon: Icon(
-                          Icons.note,
-                          color: theme.accentColor,
-                          size: 10.dp,
-                        ),
-                        onPressed: () async {
-                          //await handleNotesPopup(context, widget.seat);
-                        },
-                      ),
-                    ),
-                  ),
-
-                  // player hole cards (tilted card on the bottom left)
-                  PlayerCardsWidget(
-                    boardAttributes,
-                    gameState,
+              Opacity(
+                opacity: opacity,
+                child: Transform.scale(
+                  scale: scale,
+                  child: NamePlateWidget(
                     widget.seat,
-                    this.widget.cardsAlignment,
-                    widget.seat.player?.noOfCardsVisible,
-                    showdown,
+                    globalKey: key,
+                    boardAttributes: boardAttributes,
                   ),
+                ),
+              ),
 
-                  // show dealer button, if user is a dealer
-                  isDealer
-                      ? DealerButtonWidget(
-                          widget.seat.seatPos,
-                          isMe,
-                          GameType.HOLDEM,
-                        )
-                      : shrinkedSizedBox,
+              // result cards shown in player view at the time of result
+              _buildDisplayCardsWidget(widget.seat, gameState.handState),
 
-                  // /* building the chip amount widget */
-                  animate
-                      ? _animatingChipAmount(chipAmountWidget)
-                      : chipAmountWidget,
+              // player action text
+              Positioned(
+                top: -5.ph,
+                left: actionLeft,
+                right: actionRight,
+                child: ActionStatusWidget(widget.seat, widget.cardsAlignment),
+              ),
 
-                  Consumer<SeatChangeNotifier>(builder: (_, scn, __) {
-                    return (gameState.hostSeatChangeInProgress ||
-                            gameState.playerSeatChangeInProgress)
-                        ? SeatNoWidget(widget.seat)
-                        : const SizedBox.shrink();
-                  }),
+              // player notes text
+              Visibility(
+                visible: widget.seat.player.hasNotes && !widget.seat.isMe,
+                child: Transform.translate(
+                  offset: notesOffset,
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.note,
+                      color: theme.accentColor,
+                      size: 10.dp,
+                    ),
+                    onPressed: () async {
+                      //await handleNotesPopup(context, widget.seat);
+                    },
+                  ),
+                ),
+              ),
 
-                  playerStatusIcons(),
-                  widget.seat.player.showMicOff
-                      ? Positioned(
-                          top: 0,
-                          right: -20,
-                          child: Container(
-                              width: 22,
-                              height: 22,
-                              color: Colors.transparent,
-                              child: Icon(
-                                Icons.mic_off,
-                                color: Colors.white70,
-                              )))
-                      : SizedBox(),
-                  widget.seat.player.showMicOn
-                      ? Positioned(
-                          top: 0,
-                          right: -20,
-                          child: Container(
-                            width: 22,
-                            height: 22,
-                            color: Colors.transparent,
-                            child: Icon(
-                              Icons.mic,
-                              color: Colors.white70,
+              // player hole cards (tilted card on the bottom left)
+              PlayerCardsWidget(
+                boardAttributes,
+                gameState,
+                widget.seat,
+                this.widget.cardsAlignment,
+                widget.seat.player?.noOfCardsVisible,
+                showdown,
+              ),
+
+              // show dealer button, if user is a dealer
+              isDealer
+                  ? DealerButtonWidget(
+                      widget.seat.seatPos,
+                      isMe,
+                      GameType.HOLDEM,
+                    )
+                  : shrinkedSizedBox,
+
+              // /* building the chip amount widget */
+              animate
+                  ? _animatingChipAmount(chipAmountWidget)
+                  : chipAmountWidget,
+
+              Consumer<SeatChangeNotifier>(builder: (_, scn, __) {
+                return (gameState.hostSeatChangeInProgress ||
+                        gameState.playerSeatChangeInProgress)
+                    ? SeatNoWidget(widget.seat)
+                    : const SizedBox.shrink();
+              }),
+
+              playerStatusIcons(),
+              widget.seat.player.showMicOff
+                  ? Positioned(
+                      top: 0,
+                      right: -20,
+                      child: Container(
+                        width: 22,
+                        height: 22,
+                        color: Colors.transparent,
+                        child: Icon(
+                          Icons.mic_off,
+                          color: Colors.white70,
+                        ),
+                      ),
+                    )
+                  : SizedBox(),
+              widget.seat.player.showMicOn
+                  ? Positioned(
+                      top: 0,
+                      right: -20,
+                      child: Container(
+                        width: 22,
+                        height: 22,
+                        color: Colors.transparent,
+                        child: Icon(
+                          Icons.mic,
+                          color: Colors.white70,
+                        ),
+                      ),
+                    )
+                  : SizedBox(),
+
+              showFirework
+                  ? Builder(
+                      builder: (_) {
+                        _gifAssetImage =
+                            AssetImage('assets/animations/fireworks2.gif');
+                        return Transform.scale(
+                          scale: fireworksScale,
+                          child: Transform.translate(
+                            offset: Offset(
+                              0.0,
+                              -20.0,
+                            ),
+                            child: Image(
+                              image: _gifAssetImage,
+                              height: fireworksContainer.height,
+                              width: fireworksContainer.width,
                             ),
                           ),
-                        )
-                      : SizedBox(),
-
-                  showFirework
-                      ? Builder(
-                          builder: (_) {
-                            _gifAssetImage =
-                                AssetImage('assets/animations/fireworks2.gif');
-                            return Transform.scale(
-                              scale: fireworksScale,
-                              child: Transform.translate(
-                                offset: Offset(
-                                  0.0,
-                                  -20.0,
-                                ),
-                                child: Image(
-                                  image: _gifAssetImage,
-                                  height: fireworksContainer.height,
-                                  width: fireworksContainer.width,
-                                ),
-                              ),
-                            );
-                          },
-                        )
-                      : Builder(
-                          builder: (_) {
-                            _gifAssetImage?.evict();
-                            return shrinkedSizedBox;
-                          },
-                        ),
-                ],
-              ),
-            ),
-            Visibility(
-              visible: !widget.seat.isMe,
-              child: PlayerChatBubble(
-                widget.gameContextObject,
-                widget.seat,
-              ),
-            ),
-          ],
+                        );
+                      },
+                    )
+                  : Builder(
+                      builder: (_) {
+                        _gifAssetImage?.evict();
+                        return shrinkedSizedBox;
+                      },
+                    ),
+            ],
+          ),
         );
       },
     );
