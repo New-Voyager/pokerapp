@@ -185,13 +185,13 @@ class _GameChatState extends State<GameChat> {
           style: AppDecorators.getHeadLine4Style(theme: theme),
         ));
         bubble.add(SizedBox(width: 10));
+        bubble.add(Text(
+          message.fromName.toString(),
+          style: AppDecorators.getSubtitle2Style(theme: theme)
+              .copyWith(color: theme.accentColor),
+          softWrap: true,
+        ));
       }
-      bubble.add(Text(
-        message.fromName.toString(),
-        style: AppDecorators.getSubtitle2Style(theme: theme)
-            .copyWith(color: theme.accentColor),
-        softWrap: true,
-      ));
     } else {
       if (text != null) {
         bubble.add(Text(
@@ -201,11 +201,11 @@ class _GameChatState extends State<GameChat> {
           softWrap: true,
         ));
         bubble.add(SizedBox(width: 10));
+        bubble.add(Text(
+          text,
+          style: AppDecorators.getHeadLine4Style(theme: theme),
+        ));
       }
-      bubble.add(Text(
-        text,
-        style: AppDecorators.getHeadLine4Style(theme: theme),
-      ));
     }
 
     return Align(

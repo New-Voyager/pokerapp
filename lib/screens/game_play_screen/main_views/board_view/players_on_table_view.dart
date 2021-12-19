@@ -83,6 +83,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
   int seatChangeToo;
 
   String animationAssetID;
+  List<PlayerChatBubble> chatBubbles = [];
 
   @override
   void initState() {
@@ -90,6 +91,30 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     widget.gameComService?.gameMessaging?.listen(onAnimation: this.onAnimation);
     animationHandlers();
     _seatChangeAnimationHandler();
+
+    widget.gameState.gameChatBubbleNotifyState.addListener(() {
+      log('ChatBubble: working on chat notification');
+      List<ChatMessage> messages =
+          widget.gameState.gameChatBubbleNotifyState.getMessages();
+      for (final message in messages) {
+        final seat = widget.gameState.getSeatByPlayer(message.fromPlayer);
+        if (seat != null) {
+          log('ChatBubble: seat ${message.fromPlayer} seat: ${seat.serverSeatPos} sent ${message.text}');
+          for (final chatBubble in chatBubbles) {
+            if (chatBubble.seatNo == seat.serverSeatPos) {
+              chatBubble.show(false);
+              Offset offset = findPositionOfUser(seatNo: seat.serverSeatPos);
+              if (offset != null) {
+                Offset loc = Offset(offset.dx + 20, offset.dy + 20);
+                chatBubble.show(true, offset: loc, message: message);
+              }
+            }
+          }
+        } else {
+          log('ChatBubble: seat ${message.fromPlayer} sent ${message.text}');
+        }
+      }
+    });
     // cacheSeatPositions();
     super.initState();
   }
@@ -395,18 +420,25 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     final gameState = context.read<GameState>();
     final gameComService = gameState.gameComService;
 
-    List<Widget> chatBubbles = [];
-
     for (int localSeat = 1;
         localSeat <= gameState.gameInfo.maxPlayers;
         localSeat++) {
+      final seat = widget.gameState.getSeat(localSeat);
+      chatBubbles.add(PlayerChatBubble(gameComService, seat));
+      /*
       chatBubbles.add(
         Consumer<GameChatNotifState>(
           builder: (_, gcns, __) {
             final bool toShowBubble = gcns.showBubble;
             final seat = widget.gameState.getSeat(localSeat);
 
-            if (toShowBubble == true && seat.isMe == false) {
+            if (toShowBubble == true) {
+              // && seat.isMe == false) {
+              log('ChatBubble: seat no: ${seat.serverSeatPos}');
+              final offset = findPositionOfUser(seatNo: seat.localSeatPos);
+              if (offset == null) {
+                return SizedBox.shrink();
+              }
               return Transform.translate(
                 offset: findPositionOfUser(seatNo: seat.localSeatPos),
                 child: PlayerChatBubble(gameComService, seat, gcns),
@@ -417,6 +449,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
           },
         ),
       );
+      */
     }
 
     return chatBubbles;
