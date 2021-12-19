@@ -220,6 +220,7 @@ class HandResultData {
   DateTime handEndedTime;
   double smallBlind;
   double bigBlind;
+  double tipsPaid;
   bool runItTwice;
   HandResultNew result;
   int myPlayerId = 0;
@@ -365,6 +366,11 @@ class HandResultData {
 
     ret.result = HandResultNew.fromJson(json['result']);
     ret.runItTwice = ret.result.runItTwice;
+
+    if (json['result']['tipsCollected'] != null) {
+      ret.tipsPaid =
+          double.parse(json['result']['tipsCollected'].toString()) / 100;
+    }
 
     return ret;
   }

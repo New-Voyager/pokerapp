@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lottie/lottie.dart';
+import 'package:pokerapp/models/game_play_models/business/game_chat_notfi_state.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
@@ -11,6 +12,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/host_seat_chang
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/board_view/player_chat_bubble.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/name_plate_view.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/player_view.dart';
 import 'package:pokerapp/services/audio/audio_service.dart';
@@ -81,6 +83,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
   int seatChangeToo;
 
   String animationAssetID;
+  List<PlayerChatBubble> chatBubbles = [];
 
   @override
   void initState() {
@@ -88,6 +91,30 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     widget.gameComService?.gameMessaging?.listen(onAnimation: this.onAnimation);
     animationHandlers();
     _seatChangeAnimationHandler();
+
+    widget.gameState.gameChatBubbleNotifyState.addListener(() {
+      log('ChatBubble: working on chat notification');
+      List<ChatMessage> messages =
+          widget.gameState.gameChatBubbleNotifyState.getMessages();
+      for (final message in messages) {
+        final seat = widget.gameState.getSeatByPlayer(message.fromPlayer);
+        if (seat != null) {
+          log('ChatBubble: seat ${message.fromPlayer} seat: ${seat.serverSeatPos} sent ${message.text}');
+          for (final chatBubble in chatBubbles) {
+            if (chatBubble.seatNo == seat.serverSeatPos) {
+              chatBubble.show(false);
+              Offset offset = findPositionOfUser(seatNo: seat.serverSeatPos);
+              if (offset != null) {
+                Offset loc = Offset(offset.dx + 20, offset.dy + 20);
+                chatBubble.show(true, offset: loc, message: message);
+              }
+            }
+          }
+        } else {
+          log('ChatBubble: seat ${message.fromPlayer} sent ${message.text}');
+        }
+      }
+    });
     // cacheSeatPositions();
     super.initState();
   }
@@ -272,7 +299,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
   /**
    * Returns screen position of a nameplate within the parent
    */
-  Offset findPositionOfUser({int seatNo}) {
+  Offset findPositionOfUser({@required int seatNo}) {
     final gameState = GameState.getState(context);
     /* if available in cache, get from there */
     final seat = gameState.getSeat(seatNo);
@@ -380,10 +407,27 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
                     }),
                   )
                 : SizedBox.shrink(),
+
+            // chat bubble
+            ...getChatBubbles(context),
           ],
         ),
       );
     });
+  }
+
+  List<Widget> getChatBubbles(BuildContext context) {
+    final gameState = context.read<GameState>();
+    final gameComService = gameState.gameComService;
+
+    for (int localSeat = 1;
+        localSeat <= gameState.gameInfo.maxPlayers;
+        localSeat++) {
+      final seat = widget.gameState.getSeat(localSeat);
+      chatBubbles.add(PlayerChatBubble(gameComService, seat));
+    }
+
+    return chatBubbles;
   }
 
   List<Widget> getPlayers(BuildContext context) {

@@ -9,6 +9,7 @@ import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/models/game/game_player_settings.dart';
 import 'package:pokerapp/models/game/game_settings.dart';
+import 'package:pokerapp/models/game_play_models/business/game_chat_notfi_state.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/marked_cards.dart';
@@ -95,6 +96,7 @@ class GameState {
   ListenableProvider<GameSettingsState> _gameSettingsProvider;
   ListenableProvider<ActionTimerState> _actionTimerStateProvider;
   ListenableProvider<SeatChangeNotifier> _seatChangeProvider;
+  ListenableProvider<GameChatNotifState> _chatNotifyProvider;
 
   StraddlePromptState _straddlePromptState;
   HoleCardsState _holeCardsState;
@@ -116,6 +118,8 @@ class GameState {
   GameSettingsState _gameSettingsState;
   ActionTimerState _actionTimerState;
   SeatChangeNotifier _seatChangeState;
+  GameChatNotifState _chatNotifState;
+  GameChatBubbleNotifyState _gameChatBubbleNotifyState;
 
   // For posting blind
   // bool postedBlind;
@@ -295,6 +299,8 @@ class GameState {
     this._rabbitState = RabbitState();
     this._seatsOnTableState = SeatsOnTableState();
     this._gameSettingsState = GameSettingsState();
+    this._chatNotifState = GameChatNotifState();
+    this._gameChatBubbleNotifyState = GameChatBubbleNotifyState();
 
     // this._waitlistProvider =
     //     ListenableProvider<WaitlistState>(create: (_) => WaitlistState());
@@ -355,6 +361,9 @@ class GameState {
 
     this._tappedSeatStateProvider =
         ListenableProvider<TappedSeatState>(create: (_) => _tappedSeatState);
+
+    this._chatNotifyProvider =
+        ListenableProvider<GameChatNotifState>(create: (_) => _chatNotifState);
 
     // load assets
     this.assets = new GameScreenAssets();
@@ -589,6 +598,11 @@ class GameState {
   GameSettings get gameSettings => this._gameSettings;
 
   GamePlayerSettings get playerSettings => this._playerSettings;
+
+  GameChatNotifState get gameChatNotifState => this._chatNotifState;
+
+  GameChatBubbleNotifyState get gameChatBubbleNotifyState =>
+      this._gameChatBubbleNotifyState;
 
   bool get isGameRunning {
     bool tableRunning =
@@ -960,6 +974,7 @@ class GameState {
       this._gameSettingsProvider,
       this._actionTimerStateProvider,
       this._seatChangeProvider,
+      this._chatNotifyProvider,
     ];
   }
 

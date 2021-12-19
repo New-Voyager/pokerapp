@@ -775,25 +775,28 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
   bool _isChatScreenVisible = false;
 
-  void _onChatMessage() {
+  void _onChatMessage(ChatMessage message) {
     if (_isChatScreenVisible) {
+      _gameState.gameChatNotifState.notifyNewMessage();
+
       // notify of new messages & rebuild the game message list
-      _providerContext.read<GameChatNotifState>().notifyNewMessage();
 
       /* if user is scrolled away, we need to notify */
       if (_gcsController.hasClients &&
           (_gcsController.offset > kScrollOffsetPosition)) {
-        _providerContext.read<GameChatNotifState>().addUnread();
+        _gameState.gameChatNotifState.addUnread();
       }
     } else {
-      _providerContext.read<GameChatNotifState>()?.addUnread();
+      _gameState.gameChatNotifState.addUnread();
     }
+
+    _gameState.gameChatBubbleNotifyState.addBubbleMessge(message);
   }
 
   void _initChatListeners(GameMessagingService gms) {
     gms.listen(
-      onText: (ChatMessage _) => _onChatMessage(),
-      onGiphy: (ChatMessage _) => _onChatMessage(),
+      onText: (ChatMessage message) => _onChatMessage(message),
+      onGiphy: (ChatMessage message) => _onChatMessage(message),
     );
 
     _gcsController.addListener(() {
