@@ -10,7 +10,7 @@ class ScreenAttributes {
   static void buildList() {
     allAttribs = [];
     List<dynamic> decodedJson = jsonDecode(iPhoneAttribs);
-    for(final json in decodedJson) {
+    for (final json in decodedJson) {
       final attribs = ScreenAttributeObject(json);
       allAttribs.add(attribs);
     }
@@ -19,7 +19,7 @@ class ScreenAttributes {
   static Map<String, dynamic> getScreenAttribs(
       String modelName, double diagnoalSize, Size screenSize) {
     ScreenAttributeObject screenAttributeObject = null;
-    for(final attribs in allAttribs) {
+    for (final attribs in allAttribs) {
       if (attribs.modelMatches(modelName)) {
         screenAttributeObject = attribs;
         break;
@@ -27,7 +27,7 @@ class ScreenAttributes {
     }
 
     if (screenAttributeObject == null) {
-      for(final attribs in allAttribs) {
+      for (final attribs in allAttribs) {
         if (attribs.screenSizeMatches(screenSize)) {
           screenAttributeObject = attribs;
           break;
@@ -36,7 +36,7 @@ class ScreenAttributes {
     }
 
     if (screenAttributeObject == null) {
-      for(final attribs in allAttribs) {
+      for (final attribs in allAttribs) {
         if (attribs.diagonalSizeMatches(diagnoalSize)) {
           screenAttributeObject = attribs;
           break;
@@ -45,7 +45,7 @@ class ScreenAttributes {
     }
 
     if (screenAttributeObject == null) {
-      for(final attribs in allAttribs) {
+      for (final attribs in allAttribs) {
         if (attribs.defaultAttribs ?? false) {
           screenAttributeObject = attribs;
           break;
@@ -76,11 +76,13 @@ class ScreenAttributes {
     if (attribsObject.base != null && attribsObject.base.isNotEmpty) {
       baseAttribs = _getBaseAttribs(attribsObject.base);
       ScreenAttributes.updateMap(baseAttribs, attribs);
+      attribs = baseAttribs;
     }
     return attribs;
   }
 
-  static void updateMap(Map<String, dynamic> defaultMap, Map<String, dynamic> updates) {
+  static void updateMap(
+      Map<String, dynamic> defaultMap, Map<String, dynamic> updates) {
     for (final key in defaultMap.keys) {
       final val = defaultMap[key];
       if (updates.containsKey(key)) {
@@ -91,6 +93,5 @@ class ScreenAttributes {
         }
       }
     }
-  }  
-
+  }
 }

@@ -278,7 +278,7 @@ String iPhoneAttribs = """
       {
         "base": "iPhone 8",
         "name": "iPhone 10",
-        "models": ["iPhone 10"],
+        "models": ["iPhone 10, iPhone 10S"],
         "screenSize": "375.0, 812.0",
         "size": 5.8,
         "safeArea": true,
@@ -340,6 +340,121 @@ String iPhoneAttribs = """
         "otherBetOptionButtonsSpreadRadius": 80,
         "footerViewHeightScale": 0.55,
         "holeCardViewOffset": "0, 30"
+      },
+      {
+        "base": "iPhone 10",
+        "name": "iPhone 10S Max",
+        "models": ["iPhone 10S Max"],
+        "screenSize": "375.0, 812.0",
+        "size": 6.5,
+        "board": {
+          "centerBoardScale": 1.2,
+          "centerViewScale": 1.05,
+          "tableScale": 1.2,
+          "seatMap": {
+            "bottomCenter": "0, 23",
+            "bottomLeft": "15, 20",
+            "bottomRight": "-15, 20",
+            "middleLeft": "-4, 70",
+            "middleRight": "4, 70",
+            "topLeft": "-4, 110",
+            "topRight": "4, 110",
+            "topCenter": "0, 80",
+            "topCenter1": "-55, 80",
+            "topCenter2": "55, 80"
+          },
+          "betAmountFac": {
+            "bottomCenter": "0, -1.0",
+            "topCenter": "0.20, 0.70",
+            "middleLeft": "0.2, 0.75",
+            "middleRight": "-0.20, 0.75",
+            "topRight": "-0.10, 0.70",
+            "topLeft": "0.30, 0.65",
+            "bottomLeft": "0.70, -0.8",
+            "bottomRight": "-0.60, -0.8",
+            "topCenter1": "0.20, 0.65",
+            "topCenter2": "-0.20, 0.65"
+          },
+          "centerPotScale": 0.80,
+          "centerPotUpdatesScale": 0.80,
+          "centerViewPos": "0, 25.0"
+        },
+        "holeCardDisplacement": {
+          "2": 33,
+          "4": 30,
+          "5": 27,
+          "default": 25
+        },
+        "holeCardDisplacementVisible": {
+          "2": 27,
+          "4": 15,
+          "5": 13,
+          "default": 25
+        },        
+        "holeCardScale": {
+          "2": 1.25,
+          "4": 1.15,
+          "5": 1.10,
+          "default": 1
+        },
+        "holeCardViewOffset": "0, 60"
+      },
+      {
+        "base": "iPhone 10",
+        "name": "iPhone 10R",
+        "models": ["iPhone 10R"],
+        "screenSize": "375.0, 812.0",
+        "size": 6.1,
+        "board": {
+          "centerViewScale": 1.05,
+          "tableScale": 1.2,
+          "seatMap": {
+            "bottomCenter": "0, 65",
+            "bottomLeft": "15, 55",
+            "bottomRight": "-15, 55",
+            "middleLeft": "-4, 80",
+            "middleRight": "4, 80",
+            "topLeft": "-4, 110",
+            "topRight": "4, 110",
+            "topCenter": "0, 60",
+            "topCenter1": "-55, 63",
+            "topCenter2": "55, 63"
+          },
+          "betAmountFac": {
+            "bottomCenter": "0, -1.0",
+            "topCenter": "0.20, 0.70",
+            "middleLeft": "-0.2, 0.65",
+            "middleRight": "0.10, 0.65",
+            "topRight": "-0.10, 0.70",
+            "topLeft": "0.30, 0.65",
+            "bottomLeft": "0.70, -0.8",
+            "bottomRight": "-0.60, -0.8",
+            "topCenter1": "0.20, 0.65",
+            "topCenter2": "-0.20, 0.65"
+          },
+          "centerPotScale": 0.80,
+          "centerPotUpdatesScale": 0.80,
+          "centerViewPos": "0, 20.0"
+        },
+         "holeCardDisplacement": {
+          "2": 35,
+          "4": 32,
+          "5": 27,
+          "default": 25
+        },
+        "holeCardDisplacementVisible": {
+          "2": 30,
+          "4": 15,
+          "5": 13,
+          "default": 25
+        },        
+        "holeCardScale": {
+          "2": 1.25,
+          "4": 1.20,
+          "5": 1.13,
+          "default": 1
+        },
+        "holeCardViewOffset": "0, 60"
       },
       {
         "base": "iPhone 8",
@@ -410,7 +525,70 @@ String iPhoneAttribs = """
         "footerViewHeightScale": 0.60,
         "holeCardViewOffset": "0, 30",
         "otherBetOptionButtonsSpreadRadius": 90
-      },            
+      },
+      {
+        "base": "iPhone 11",
+        "name": "iPhone 11 Pro",
+        "models": ["iPhone 11 Pro"],
+        "screenSize": "375.0, 812.0",
+        "size": 5.8,
+        "board": {
+          "backDropOffset": "0, -50",
+          "centerViewPos": "0, -10",
+          "centerDoubleBoardScale": 1.0,
+          "centerBoardScale": 1.3,
+          "tableBottomPos": 10,
+          "seatMap": {
+            "bottomCenter": "0, 30",
+            "bottomLeft": "15, 20",
+            "bottomRight": "-15, 20",
+            "middleLeft": "-4, 50",
+            "middleRight": "4, 50",
+            "topLeft": "-4, 80",
+            "topRight": "4, 80",
+            "topCenter": "0, 60",
+            "topCenter1": "-48, 60",
+            "topCenter2": "48, 60"
+          }
+        }
+      },
+      {
+        "base": "iPhone 11 Pro",
+        "name": "iPhone 11 Pro Max",
+        "models": ["iPhone 11 Pro Max"],
+        "screenSize": "375.0, 812.0",
+        "size": 5.8,
+        "board": {
+          "backDropOffset": "0, -50",
+          "centerViewPos": "0, 0",
+          "tableBottomPos": 10,
+           "seatMap": {
+            "bottomCenter": "0, 10",
+            "bottomLeft": "15, 0",
+            "bottomRight": "-15, 0",
+            "middleLeft": "-4, 40",
+            "middleRight": "4, 40",
+            "topLeft": "-4, 80",
+            "topRight": "4, 80",
+            "topCenter": "0, 70",
+            "topCenter1": "-48, 70",
+            "topCenter2": "48, 70"
+          }
+        }
+      },
+      {
+        "base": "iPhone 11",
+        "name": "iPhone 11 XS Max Global",
+        "models": ["iPhone 11 XS Max Global"],
+        "screenSize": "414.0, 896.0",
+        "size": 6.6,
+        "board": {
+          "centerBoardScale": 1.35
+        },
+        "seat": {
+          "scale": 0.90
+        }
+      },
       {
         "base": "iPhone 8",
         "name": "iPhone 12",
@@ -479,11 +657,75 @@ String iPhoneAttribs = """
       },
       {
         "base": "iPhone 12",
+        "name": "iPhone 12 mini",
+        "models": ["iPhone 12 mini"],
+        "screenSize": "375.0, 812.0",
+        "size": 5.4,
+        "board": {
+          "centerViewScale": 0.85,
+          "tableScale": 1.3,
+          "seatMap": {
+            "bottomCenter": "0, 30",
+            "bottomLeft": "15, 10",
+            "bottomRight": "-15, 10",
+            "middleLeft": "-5, 45",
+            "middleRight": "5, 45",
+            "topLeft": "2, 70",
+            "topRight": "2, 70",
+            "topCenter": "0, 60",
+            "topCenter1": "-40, 50",
+            "topCenter2": "45, 50"
+          },
+          "betAmountFac": {
+            "bottomCenter": "0, -1.0",
+            "topCenter": "0.20, 0.70",
+            "middleLeft": "0.30, 0.65",
+            "middleRight": "-0.10, 0.65",
+            "topRight": "-0.10, 0.70",
+            "topLeft": "0.30, 0.65",
+            "bottomLeft": "0.70, -0.8",
+            "bottomRight": "-0.60, -0.8",
+            "topCenter1": "0.20, 1.05",
+            "topCenter2": "-0.20, 1.05"
+          },
+          "centerPotScale": 0.85,
+          "centerPotUpdatesScale": 0.7
+        },
+        "holeCardDisplacement": {
+          "2": 33,
+          "4": 30,
+          "5": 23,
+          "default": 25
+        },
+        "holeCardDisplacementVisible": {
+          "2": 22,
+          "4": 15,
+          "5": 13,
+          "default": 25
+        },        
+        "holeCardScale": {
+          "2": 1.10,
+          "4": 1.00,
+          "5": 0.95,
+          "default": 1
+        },
+        "footerHeightViewScale": 0.55,
+        "holeCardViewOffset": "0, 25"
+      },
+      {
+        "base": "iPhone 12",
         "name": "iPhone 13",
         "model": "iPhone 13",
         "models": ["iPhone 13", "iPhone 13 Pro"],
         "screenSize": "390.0, 844.0",
         "size": 6.2
-      }      
+      },
+      {
+        "base": "iPhone 12 mini",
+        "name": "iPhone 13 mini",
+        "models": ["iPhone 13 mini"],
+        "screenSize": "390.0, 844.0",
+        "size": 5.4
+      }   
 ]
 """;
