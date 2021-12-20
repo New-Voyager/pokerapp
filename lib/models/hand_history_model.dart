@@ -89,8 +89,10 @@ class HandHistoryListModel extends ChangeNotifier {
       }
       item.noCards = int.parse(summary['noCards'].toString());
       item.handTime = DataFormatter.getTimeInHHMMFormat(
-          int.parse(hand['handTime'].toString()));
-      item.handEndedAt = DateTime.tryParse(hand['timeEnded']);
+          60 * int.parse(hand['handTime'].toString()));
+      if (hand["timeEnded"] != null) {
+        item.handEndedAt = DateTime.tryParse(hand['timeEnded']);
+      }
       item.authorized = hand['authorized'];
       dynamic boardCards = summary['boardCards'];
 
