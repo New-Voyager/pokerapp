@@ -49,8 +49,15 @@ class NewGameSettings2 extends StatelessWidget {
     @required List<GameType> subGameTypes,
     NewGameModel savedModel,
   }) async {
+    ConnectionDialog.show(context: context, loadingText: 'Please wait...');
+
     ClubHomePageModel clubHomePageModel =
-        await ClubsService.getClubHomePageData(clubCode);
+        await ClubsService.getClubHomePageData(
+      clubCode,
+    );
+
+    ConnectionDialog.dismiss(context: context);
+
     NewGameModelProvider gmp = await showDialog<NewGameModelProvider>(
       context: context,
       barrierDismissible: false,
