@@ -67,7 +67,7 @@ class HelpScreen extends StatelessWidget {
                                   AppDecorators.getHeadLine4Style(theme: theme),
                             ),
                             leading: Icon(
-                              Icons.request_page,
+                              Icons.comment_bank,
                               color: theme.secondaryColor,
                             ),
                             onTap: () {
@@ -85,7 +85,7 @@ class HelpScreen extends StatelessWidget {
                                   AppDecorators.getHeadLine4Style(theme: theme),
                             ),
                             leading: Icon(
-                              Icons.request_page,
+                              Icons.bug_report,
                               color: theme.secondaryColor,
                             ),
                             onTap: () {
@@ -103,7 +103,7 @@ class HelpScreen extends StatelessWidget {
                                   AppDecorators.getHeadLine4Style(theme: theme),
                             ),
                             leading: Icon(
-                              Icons.help_center,
+                              Icons.policy,
                               color: theme.secondaryColor,
                             ),
                             onTap: () {
@@ -131,7 +131,7 @@ class HelpScreen extends StatelessWidget {
                           CustomDivider(),
                           ListTile(
                             leading: Icon(
-                              Icons.copyright,
+                              Icons.attribution,
                               color: theme.secondaryColor,
                             ),
                             title: Text(
