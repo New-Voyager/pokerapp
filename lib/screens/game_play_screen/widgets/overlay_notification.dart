@@ -37,7 +37,7 @@ class ParentOverlayNotificationWidget extends StatelessWidget {
     return SlideDismissible(
       key: ValueKey("overlayNotification"),
       direction:
-          isDismissible ? DismissDirection.horizontal : DismissDirection.none,
+          isDismissible ? DismissDirection.vertical : DismissDirection.none,
       child: SafeArea(
         child: Card(
           color: appTheme.primaryColorWithDark(0.9),
