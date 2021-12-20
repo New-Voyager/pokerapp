@@ -793,6 +793,7 @@
     "handHistoryFilter": {
         "title": "Filters",
         "filteredSubTitle": "Filtered List",
+        "handNumLookup": "Hand number",
         "potSizeLabel": "Pot Size more than ",
         "myHeadsLabel": "My Headsup hands",
         "lostChipsLabel": "Lost chips more than",
