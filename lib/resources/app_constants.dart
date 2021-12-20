@@ -11,6 +11,13 @@ class AppConstants {
     "bank"
   ];
 
+  static const List<String> GIF_CATEGORIES_CLUB = const [
+    "Sad",
+    "Cry",
+    "Angry",
+    "Savage"
+  ];
+
   static const List<String> GIF_CATEGORIES = const [
     'all-in',
     'donkey',

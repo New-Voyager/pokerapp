@@ -9,7 +9,7 @@ class AppService {
   UserSettingsStore userSettings;
   SharedPreferences sharedPreferences;
 
-  void init() async {
+  Future<void> init() async {
     await HiveDatasource.getInstance.init();
     gameTemplates = GameTemplateStore();
     gameTemplates.open();

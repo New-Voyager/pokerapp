@@ -7,6 +7,7 @@ import 'package:pokerapp/models/club_members_model.dart';
 import 'package:pokerapp/models/club_message_model.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 // import 'package:pokerapp/screens/club_screen/messages_page_view/bottom_sheet/gif_drawer_sheet.dart';
@@ -99,7 +100,7 @@ class _MessagesPageViewState extends State<MessagesPageView>
         showPresets: false,
         onPresetTextSelect: (String pText) => {},
         onGifSelect: (String gifUrl) => _sendGif(gifUrl),
-        gifSuggestions: ["Sad", "Cry", "Angry", "Savage"],
+        gifSuggestions: AppConstants.GIF_CATEGORIES_CLUB,
       ),
     );
   }
