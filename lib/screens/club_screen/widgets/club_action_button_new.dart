@@ -41,7 +41,7 @@ class ClubActionButtonNew extends StatelessWidget {
           child: _actionIcon,
         ),
         Padding(
-          padding: EdgeInsets.all(5.0.pw),
+          padding: EdgeInsets.all(1.pw),
           child: Text(
             _actionName,
             style: AppDecorators.getSubtitle1Style(theme: theme),

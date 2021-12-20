@@ -221,8 +221,7 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                         subTitleText: _currentUser.name != null
                                             ? "(${_currentUser.name})"
                                             : "",
-                                        imagePath:
-                                            AppAssetsNew.statisticsImagePath,
+                                        icon: Icons.edit,
                                         index: 1,
                                         onTapFunction: () async {
                                           await _updateUserDetails(
@@ -239,8 +238,7 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                         subTitleText: _currentUser.email != null
                                             ? "(${_currentUser.email})"
                                             : "",
-                                        imagePath:
-                                            AppAssetsNew.customizeImagePath,
+                                        icon: Icons.email,
                                         index: 2,
                                         onTapFunction: () async {
                                           await _updateUserDetails(
@@ -264,8 +262,7 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                       // CustomDivider(),
                                       ListTileItem(
                                         text: _appScreenText['chooseTheme'],
-                                        imagePath:
-                                            AppAssetsNew.customizeImagePath,
+                                        icon: Icons.dashboard_customize,
                                         index: 4,
                                         onTapFunction: () {
                                           Navigator.of(context).pushNamed(
@@ -350,8 +347,7 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                       CustomDivider(),
                                       ListTileItem(
                                         text: _appScreenText['help'],
-                                        imagePath: AppAssetsNew
-                                            .bookmarkedHandsImagePath,
+                                        icon: Icons.help_center,
                                         index: 3,
                                         onTapFunction: () async {
                                           String version =
@@ -363,18 +359,17 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                         },
                                       ),
                                       CustomDivider(),
-                                      ListTileItem(
-                                        text: _appScreenText['tellFriend'],
-                                        imagePath:
-                                            AppAssetsNew.announcementImagePath,
-                                        index: 4,
-                                        onTapFunction: () {},
-                                      ),
-                                      AppDimensionsNew.getVerticalSizedBox(16),
+                                      // ListTileItem(
+                                      //   text: _appScreenText['tellFriend'],
+                                      //   imagePath:
+                                      //       AppAssetsNew.announcementImagePath,
+                                      //   index: 4,
+                                      //   onTapFunction: () {},
+                                      // ),
+                                      // AppDimensionsNew.getVerticalSizedBox(16),
                                       ListTileItem(
                                         text: _appScreenText['logout'],
-                                        imagePath:
-                                            AppAssetsNew.announcementImagePath,
+                                        icon: Icons.logout,
                                         index: 5,
                                         onTapFunction: () async {
                                           await AuthService.logout();
@@ -495,6 +490,7 @@ class ListTileItem extends StatelessWidget {
   final String text;
   final String subTitleText;
   final String imagePath;
+  final IconData icon;
   final int index;
   final int badgeCount;
   final Function onTapFunction;
@@ -502,6 +498,7 @@ class ListTileItem extends StatelessWidget {
       {Key key,
       this.text,
       this.subTitleText,
+      this.icon,
       this.imagePath,
       this.index,
       this.badgeCount,
@@ -532,6 +529,21 @@ class ListTileItem extends StatelessWidget {
         child: tileText,
       );
     }
+    Widget image;
+    if (this.icon != null) {
+      image = Icon(
+        this.icon,
+        size: 24,
+        color: list[index ?? 0],
+      );
+    } else {
+      image = SvgPicture.asset(
+        imagePath,
+        color: list[index ?? 0],
+        height: 24,
+        width: 24,
+      );
+    }
     return InkWell(
       onTap: onTapFunction,
       child: Container(
@@ -541,12 +553,7 @@ class ListTileItem extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SvgPicture.asset(
-              imagePath,
-              color: list[index ?? 0],
-              height: 24,
-              width: 24,
-            ),
+            image,
             //  Icon(Icons.bookmarks),
             AppDimensionsNew.getHorizontalSpace(16),
             Expanded(

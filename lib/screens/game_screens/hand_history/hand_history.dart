@@ -100,7 +100,8 @@ class _HandHistoryState extends State<HandHistoryListView>
     filteredHands = [];
     if (filterSelection == 'pot-greater') {
       for (final hand in _data.allHands) {
-        if (hand.totalPot != null && hand.totalPot >= filterValue) {
+        final filterValueInCents = filterValue * 100;
+        if (hand.totalPot != null && hand.totalPot >= filterValueInCents) {
           filteredHands.add(hand);
         }
       }
@@ -137,17 +138,26 @@ class _HandHistoryState extends State<HandHistoryListView>
     } else if (filterSelection == 'lost') {
       for (final hand in _data.allHands) {
         if (hand.playersReceived != null) {
+          final filterValueInCents = filterValue * 100;
+
           for (int playerId in hand.playersReceived.keys) {
             if (playerId == currentPlayer.playerId) {
               if (hand.playersReceived[playerId] < 0) {
                 final val = -hand.playersReceived[playerId];
-                if (val > filterValue) {
+                if (val > filterValueInCents) {
                   filteredHands.add(hand);
                   break;
                 }
               }
             }
           }
+        }
+      }
+    } else if (filterSelection == 'handnum') {
+      for (final hand in _data.allHands) {
+        if (hand.handNum == filterValue) {
+          filteredHands.add(hand);
+          break;
         }
       }
     }
@@ -185,6 +195,7 @@ class _HandHistoryState extends State<HandHistoryListView>
                               child: HandHistoryFilterWidget(
                                 winners: _getListOfWinners(),
                               ),
+                              height: 0.6,
                             );
                             if (ret == null) {
                               return;
