@@ -757,7 +757,7 @@ String iPhoneAttribs = """
       "centerViewScale": 1.20,
       "centerOffset": "15, 250",
       "centerViewPos": "0, -30",
-      "centerDoubleBoardScale": 1.2,
+      "centerDoubleBoardScale": 1.1,
       "centerBoardScale": 1.4,
       "boardScale": 1.2,
       "tableScale": 1.1,
@@ -767,16 +767,16 @@ String iPhoneAttribs = """
       "headerTopPos": -10,
       "backDropOffset": "0, -50",
       "seatMap": {
-        "bottomCenter": "0, 10",
-        "bottomLeft": "140, 0",
-        "bottomRight": "-140, 0",
+        "bottomCenter": "0, 5",
+        "bottomLeft": "140, -7",
+        "bottomRight": "-140, -7",
         "middleLeft": "50, 90",
         "middleRight": "-50, 90",
         "topLeft": "80, 170",
         "topRight": "-80, 170",
-        "topCenter": "0, 120",
-        "topCenter1": "-80, 120",
-        "topCenter2": "80, 120"
+        "topCenter": "0, 100",
+        "topCenter1": "-80, 115",
+        "topCenter2": "80, 115"
       },
       "betAmountFac": {
         "bottomCenter": "-0.25, -1.0",
@@ -807,19 +807,19 @@ String iPhoneAttribs = """
     "holeCardViewOffset": "0, 50",
     "holeCardScale": {
       "2": 1.60,
-      "4": 1.35,
+      "4": 1.55,
       "5": 1.50,
       "default": 1
     },
     "holeCardDisplacement": {
-      "2": 35,
-      "4": 50,
+      "2": 70,
+      "4": 60,
       "5": 50,
       "default": 20
     },
     "holeCardDisplacementVisible": {
-      "2": 50,
-      "4": 50,
+      "2": 70,
+      "4": 60,
       "5": 50,
       "default": 20
     }       
@@ -956,8 +956,10 @@ String iPhoneAttribs = """
     }
   },
   {
+    "base": "iPad Pro 11",
     "name": "iPad Pro 12 inch",
     "models": ["iPad Pro (12.9-inch) (5th generation)"],
+    "screenSize": "1024.0, 1366.0",
     "size": 12.9,
     "board": {
       "tableScale": 0.90,
@@ -993,20 +995,20 @@ String iPhoneAttribs = """
     "holeCardViewOffset": "0, 90",
     "holeCardScale": {
       "2": 1.60,
-      "4": 1.35,
+      "4": 1.55,
       "5": 1.50,
       "default": 1
     },
     "holeCardDisplacement": {
-      "2": 40,
-      "4": 50,
+      "2": 70,
+      "4": 60,
       "5": 50,
       "default": 20
     },
     "holeCardDisplacementVisible": {
-      "2": 60,
+      "2": 70,
       "4": 60,
-      "5": 60,
+      "5": 50,
       "default": 20
     },
     "betWidgetGap": 110,
@@ -1034,21 +1036,21 @@ String iPhoneAttribs = """
       "centerBoardScale": 1.4
     },
     "holeCardDisplacement": {
-      "2": 50,
+      "2": 60,
       "4": 50,
       "5": 40,
       "default": 50
     },
     "holeCardDisplacementVisible": {
-      "2": 50,
+      "2": 60,
       "4": 50,
       "5": 40,
       "default": 50
     },
     "holeCardScale": {
-      "2": 1.10,
-      "4": 1.15,
-      "5": 1.15,
+      "2": 1.30,
+      "4": 1.25,
+      "5": 1.20,
       "default": 1
     },
     "holeCardOffset": "0, 0",
@@ -1073,7 +1075,7 @@ String iPhoneAttribs = """
       "centerViewScale": 1.30,
       "centerViewPos": "0, 0.0",
       "seatMap": {
-        "bottomCenter": "0, -20",
+        "bottomCenter": "0, -30",
         "bottomLeft": "140, -20",
         "bottomRight": "-140, -20",
         "middleLeft": "50, 70",
@@ -1086,21 +1088,21 @@ String iPhoneAttribs = """
       }          
     },
     "holeCardDisplacement": {
-      "2": 50,
-      "4": 50,
-      "5": 40,
+      "2": 70,
+      "4": 60,
+      "5": 50,
       "default": 50
     },
     "holeCardDisplacementVisible": {
-      "2": 50,
-      "4": 50,
-      "5": 40,
+      "2": 70,
+      "4": 60,
+      "5": 50,
       "default": 50
     },        
     "holeCardScale": {
-      "2": 1.30,
-      "4": 1.25,
-      "5": 1.15,
+      "2": 1.5,
+      "4": 1.4,
+      "5": 1.35,
       "default": 1
     },
     "holeCardOffset": "0, 0",
