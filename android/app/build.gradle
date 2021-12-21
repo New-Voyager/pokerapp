@@ -41,6 +41,7 @@ android {
 
     lintOptions {
         disable 'InvalidPackage'
+        checkReleaseBuilds false
     }
 
     defaultConfig {
@@ -76,6 +77,12 @@ android {
             dimension "default"
             applicationId "com.voyagerent.pokerclub.dev"
         }
+
+        prod{
+            dimension "default"
+            applicationId "com.voyagerent.pokerclubapp"
+        }
+
 
         // flavorTest{
         //     dimension "default"

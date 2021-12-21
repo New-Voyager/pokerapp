@@ -3,21 +3,21 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>871571731709-6tcjc08pjqh98na3cj93lsctrbp25p5o.apps.googleusercontent.com</string>
+	<string>552282757054-97lm2eg7l600n97qfkhqv5ccsh28b9k3.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.871571731709-6tcjc08pjqh98na3cj93lsctrbp25p5o</string>
+	<string>com.googleusercontent.apps.552282757054-97lm2eg7l600n97qfkhqv5ccsh28b9k3</string>
 	<key>API_KEY</key>
-	<string>AIzaSyAEK4bqYEyRv2izW2e1OuIW8UbMAl9WrBw</string>
+	<string>AIzaSyDJuyVzy0Q-pN3LAyvfUnzAvEtDvoKlYU4</string>
 	<key>GCM_SENDER_ID</key>
-	<string>871571731709</string>
+	<string>552282757054</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.voyagerent.pokerclubtest</string>
+	<string>com.voyagerent.pokerclubapp</string>
 	<key>PROJECT_ID</key>
-	<string>pokerclub-d6e60</string>
+	<string>poker-club-app</string>
 	<key>STORAGE_BUCKET</key>
-	<string>pokerclub-d6e60.appspot.com</string>
+	<string>poker-club-app.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -29,6 +29,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:871571731709:ios:fe5a01b1c008238a28fa94</string>
+	<string>1:552282757054:ios:3769ade4a06500f994cbef</string>
 </dict>
 </plist>
