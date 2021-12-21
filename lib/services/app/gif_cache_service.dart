@@ -1,33 +1,35 @@
 import 'dart:io';
 
+import 'package:hive/hive.dart';
 import 'package:http/http.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pokerapp/services/app/tenor_service.dart';
+import 'package:pokerapp/services/data/box_type.dart';
+import 'package:pokerapp/services/data/hive_datasource_impl.dart';
 import 'package:pokerapp/services/tenor/src/model/tenor_result.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class GifCacheService {
   GifCacheService._();
 
-  static String _getSharedPrefKey(String category) => 'GIF CACHE: $category';
+  static String _getKey(String category) => 'GIF CACHE: $category';
 
   /* fetch if key exists do not fetch again, if not, fetch */
   static bool _needToFetch(
     String category,
-    SharedPreferences sharedPreferences,
+    Box cacheBox,
   ) =>
-      !sharedPreferences.containsKey(_getSharedPrefKey(category));
+      !cacheBox.containsKey(_getKey(category));
 
   /* use this method to keep a cache of the all the gifs from the categories array */
-  static void cacheGifCategories(
+  static Future<void> cacheGifCategories(
     List<String> categories, {
     int cacheAmount = 20,
   }) async {
-    final SharedPreferences sp = await SharedPreferences.getInstance();
+    final cacheBox = HiveDatasource.getInstance.getBox(BoxType.CACHE_GIF_BOX);
     Directory downloadsDirectory = await getApplicationDocumentsDirectory();
 
     for (String category in categories) {
-      if (_needToFetch(category, sp)) {
+      if (_needToFetch(category, cacheBox)) {
         List<TenorResult> gifs = await TenorService.getGifsWithSearch(
           category,
           limit: cacheAmount,
@@ -35,21 +37,43 @@ class GifCacheService {
         await _save(
           category,
           gifs,
-          sp,
+          cacheBox,
           downloadsDirectory,
         );
+      } else {
+        // we probably need to update the path
+        final rawGifs = cacheBox.get(_getKey(category));
+        final List<TenorResult> gifs =
+            rawGifs.map<TenorResult>((g) => TenorResult.fromJson(g)).toList();
+        final oldCachePath = gifs.first.cache;
+        if (oldCachePath == null) continue;
+        final oldDirPath =
+            oldCachePath.substring(0, oldCachePath.lastIndexOf("/"));
+        final newDirPath = downloadsDirectory.path;
+        print('oldDirPath: $oldDirPath');
+        print('newPath: $newDirPath');
+        if (oldDirPath != newDirPath) {
+          // update path
+          for (final gif in gifs) {
+            gif.cache = gif.cache.replaceFirst(oldDirPath, newDirPath);
+            print('NEW UPDATED PATH: ${gif.cache}');
+          }
+
+          // finally save
+          await cacheBox.put(
+            _getKey(category),
+            gifs.map<String>((result) => result.toJson()).toList(),
+          );
+        }
       }
     }
   }
 
   /* check in the storage, if exists, return else return null */
   static Future<List<TenorResult>> getFromCache(String category) async {
-    final SharedPreferences sharedPreferences =
-        await SharedPreferences.getInstance();
+    final cacheBox = HiveDatasource.getInstance.getBox(BoxType.CACHE_GIF_BOX);
 
-    List<String> cachedResponse = sharedPreferences.getStringList(
-      _getSharedPrefKey(category),
-    );
+    List<String> cachedResponse = cacheBox.get(_getKey(category));
 
     return cachedResponse
         ?.map<TenorResult>(
@@ -60,11 +84,12 @@ class GifCacheService {
   static Future<void> _save(
     String query,
     List<TenorResult> gifs,
-    SharedPreferences sharedPreferences,
+    Box cacheBox,
     Directory dir,
   ) async {
     /* download the preview gifs & store them in local storage */
     for (int i = 0; i < gifs.length; i++) {
+      print('downloading $i cache gif for $query');
       TenorResult gif = gifs[i];
 
       final String previewUrl = gif.media.tinygif.url;
@@ -79,12 +104,12 @@ class GifCacheService {
       gif.media.gif.url = previewUrl;
 
       /* replace the URL with the local file path */
-      gif.media.tinygif.url = downloadToFile;
+      gif.cache = downloadToFile;
     }
 
     /* finally put the list of gif into the shared preference */
-    sharedPreferences.setStringList(
-      _getSharedPrefKey(query),
+    await cacheBox.put(
+      _getKey(query),
       gifs.map<String>((result) => result.toJson()).toList(),
     );
   }

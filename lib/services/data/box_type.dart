@@ -6,6 +6,7 @@ enum BoxType {
   GAME_SETTINGS_BOX,
   GAME_HISTORY_BOX,
   GAME_TEMPLATE_BOX,
+  CACHE_GIF_BOX,
 }
 
 extension BoxTypeParsing on BoxType {
