@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:ui';
 
+import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/android_attributes.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/iphone_attributes.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/screen_attribute_object.dart';
 
@@ -9,7 +11,12 @@ class ScreenAttributes {
 
   static void buildList() {
     allAttribs = [];
-    List<dynamic> decodedJson = jsonDecode(iPhoneAttribs);
+    List<dynamic> decodedJson;
+    if (Platform.isAndroid) {
+      decodedJson = jsonDecode(androidAttribs);
+    } else {
+      decodedJson = jsonDecode(iPhoneAttribs);
+    }
     for (final json in decodedJson) {
       final attribs = ScreenAttributeObject(json);
       allAttribs.add(attribs);
