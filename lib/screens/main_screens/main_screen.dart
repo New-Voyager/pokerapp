@@ -234,6 +234,10 @@ class _MainScreenState extends State<MainScreen>
       ),
     );
 
+    if (appState.isProd) {
+      return scaffold;
+    }
+
     return FlavorBanner(
         child: scaffold,
         bannerConfig: BannerConfig(Flavor.DEV.value(), Colors.deepOrange));

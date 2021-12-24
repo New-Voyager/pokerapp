@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:pokerapp/flavor_config.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
@@ -12,7 +13,7 @@ class AppState extends ChangeNotifier {
   bool mockScreens = false;
   bool newGame = false;
   bool gameEnded = false;
-  String currentFlavor = '';
+  Flavor _currentFlavor;
   PendingApprovalsState buyinApprovals = PendingApprovalsState();
   ClubsUpdateState clubUpdateState = ClubsUpdateState();
 
@@ -67,5 +68,20 @@ class AppState extends ChangeNotifier {
     if (currentIndex == 0) {
       notifyListeners();
     }
+  }
+
+  set currentFlavor(Flavor flavor) {
+    _currentFlavor = flavor;
+  }
+
+  Flavor get currentFlavor {
+    return _currentFlavor;
+  }
+
+  bool get isProd {
+    if (_currentFlavor == Flavor.PROD) {
+      return true;
+    }
+    return false;
   }
 }

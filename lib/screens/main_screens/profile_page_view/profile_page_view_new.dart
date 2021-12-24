@@ -81,7 +81,7 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
 
         if (_currentUser != null) {
           id = _currentUser.uuid;
-          if (appState.currentFlavor == Flavor.DEV.toString()) {
+          if (appState.currentFlavor == Flavor.DEV) {
             id = id + '/${_currentUser.playerId}';
           }
         }
@@ -390,9 +390,9 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                           Container(
                               margin: EdgeInsets.symmetric(vertical: 8),
                               child: Text('id: ${id}')),
-                          Container(
-                              margin: EdgeInsets.symmetric(vertical: 8),
-                              child: Text('${versionNumber} ${releaseDate}')),
+                          // Container(
+                          //     margin: EdgeInsets.symmetric(vertical: 8),
+                          //     child: Text('${versionNumber} ${releaseDate}')),
                           AppDimensionsNew.getVerticalSizedBox(80.ph),
                         ],
                       ),

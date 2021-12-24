@@ -20,6 +20,16 @@
       ]
     },
     {
+      "name": "pokerapp-prod",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "args": [
+        "--flavor",
+        "prod"
+      ]
+    },    
+    {
       "name": "pokerapp-ios",
       "request": "launch",
       "txype": "dart",
