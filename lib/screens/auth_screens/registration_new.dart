@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_udid/flutter_udid.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/flavor_config.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/main_helper.dart';
 import 'package:pokerapp/models/auth_model.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
@@ -312,9 +313,7 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
 
   @override
   Widget build(BuildContext context) {
-    bool isDevMode =
-        FlavorConfig.of(context).flavorName == Flavor.DEV.toString();
-    isDevMode = true;
+    bool isDevMode = !appState.isProd;
     Widget devButtons = null;
     if (isDevMode) {
       devButtons = Column(

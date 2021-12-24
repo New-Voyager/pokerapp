@@ -41,13 +41,14 @@ android {
 
     lintOptions {
         disable 'InvalidPackage'
+        checkReleaseBuilds false
     }
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.voyagerent.pokerclub"
+        applicationId "com.voyagerent.pokerclubapp"
         minSdkVersion 23
-        targetSdkVersion 29
+        targetSdkVersion 30
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
@@ -76,6 +77,12 @@ android {
             dimension "default"
             applicationId "com.voyagerent.pokerclub.dev"
         }
+
+        prod{
+            dimension "default"
+            applicationId "com.voyagerent.pokerclubapp"
+        }
+
 
         // flavorTest{
         //     dimension "default"
