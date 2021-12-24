@@ -30,32 +30,33 @@ AppState appState = AppState();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  appState.currentFlavor = Flavor.DEV;
+  //appState.currentFlavor = Flavor.PROD;
+
   // Register all the models and services before the app starts
   if (Platform.isAndroid) {
     InAppPurchaseAndroidPlatformAddition.enablePendingPurchases();
   }
   await appService.init();
 
-  // var flavorApp = FlavorConfig(
-  //   appName: 'PokerDev',
-  //   flavorName: Flavor.DEV.toString(),
-  //   apiBaseUrl: 'https://demo.pokerclub.app',
-  //   child: MyApp(),
-  // );
+  FlavorConfig flavorApp;
+  if (appState.isProd) {
+    flavorApp = FlavorConfig(
+      appName: 'PokerDev',
+      flavorName: Flavor.PROD.toString(),
+      apiBaseUrl: 'https://api.pokerclub.app',
+      child: MyApp(),
+    );
+  } else {
+    flavorApp = FlavorConfig(
+      appName: 'PokerClubApp',
+      flavorName: Flavor.DEV.toString(),
+      apiBaseUrl: 'https://demo.pokerclub.app',
+      child: MyApp(),
+    );
+  }
 
-  var flavorApp = FlavorConfig(
-    appName: 'PokerClubApp',
-    flavorName: Flavor.DEV.toString(),
-    apiBaseUrl: 'https://demo.pokerclub.app', //'https://api.pokerclub.app', //'https://demo.pokerclub.app',
-    child: MyApp(),
-  );
-
-  // var flavorApp = FlavorConfig(
-  //   appName: 'PokerDev',
-  //   flavorName: Flavor.PROD.toString(),
-  //   apiBaseUrl: 'https://api.pokerclub.app',
-  //   child: MyApp(),
-  // );
   await AppConfig.init(flavorApp.apiBaseUrl);
   String apiUrl = AppConfig.apiUrl;
   log('$apiUrl');

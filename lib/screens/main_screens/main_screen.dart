@@ -70,7 +70,7 @@ class _MainScreenState extends State<MainScreen>
 
     /* cache all the category gifs */
     GifCacheService.cacheGifCategories(
-      AppConstants.GIF_CATEGORIES,
+      AppConstants.GIF_CATEGORIES + AppConstants.GIF_CATEGORIES_CLUB,
     );
     log('device name: ${DeviceInfo.name}');
     await playerState.open();
@@ -234,6 +234,10 @@ class _MainScreenState extends State<MainScreen>
         ],
       ),
     );
+
+    if (appState.isProd) {
+      return scaffold;
+    }
 
     return FlavorBanner(
         child: scaffold,

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/build_info.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
@@ -10,7 +9,6 @@ import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/screens/profile_screens/report_bug.dart';
 import 'package:pokerapp/screens/profile_screens/request_feature.dart';
-import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/utils.dart';
@@ -37,7 +35,6 @@ class HelpScreen extends StatelessWidget {
                 theme: theme,
                 context: context,
                 titleText: _appScreenText['appName'],
-                subTitleText: version,
               ),
               body: SingleChildScrollView(
                 physics: BouncingScrollPhysics(),
@@ -67,7 +64,7 @@ class HelpScreen extends StatelessWidget {
                                   AppDecorators.getHeadLine4Style(theme: theme),
                             ),
                             leading: Icon(
-                              Icons.request_page,
+                              Icons.comment_bank,
                               color: theme.secondaryColor,
                             ),
                             onTap: () {
@@ -85,7 +82,7 @@ class HelpScreen extends StatelessWidget {
                                   AppDecorators.getHeadLine4Style(theme: theme),
                             ),
                             leading: Icon(
-                              Icons.request_page,
+                              Icons.bug_report,
                               color: theme.secondaryColor,
                             ),
                             onTap: () {
@@ -103,7 +100,7 @@ class HelpScreen extends StatelessWidget {
                                   AppDecorators.getHeadLine4Style(theme: theme),
                             ),
                             leading: Icon(
-                              Icons.help_center,
+                              Icons.policy,
                               color: theme.secondaryColor,
                             ),
                             onTap: () {
@@ -131,7 +128,7 @@ class HelpScreen extends StatelessWidget {
                           CustomDivider(),
                           ListTile(
                             leading: Icon(
-                              Icons.copyright,
+                              Icons.attribution,
                               color: theme.secondaryColor,
                             ),
                             title: Text(
@@ -162,17 +159,20 @@ class HelpScreen extends StatelessWidget {
   List<Widget> getSystemInfo() {
     return [
       Container(
-          margin: EdgeInsets.symmetric(vertical: 8),
+          margin: EdgeInsets.symmetric(vertical: 4),
+          child: Text('App version: $versionNumber ($releaseDate)')),
+      Container(
+          margin: EdgeInsets.symmetric(vertical: 4),
           child: Text('Size: ${Screen.diagonalInches.toStringAsPrecision(2)}')),
       Container(
-          margin: EdgeInsets.symmetric(vertical: 8),
+          margin: EdgeInsets.symmetric(vertical: 4),
           child: Text('Screen Dimensions: ${Screen.size}')),
       Container(
-          margin: EdgeInsets.symmetric(vertical: 8),
+          margin: EdgeInsets.symmetric(vertical: 4),
           child: Text('model: ${DeviceInfo.model}')),
       Container(
-          margin: EdgeInsets.symmetric(vertical: 8),
-          child: Text('version: ${DeviceInfo.version}')),
+          margin: EdgeInsets.symmetric(vertical: 4),
+          child: Text('OS version: ${DeviceInfo.version}')),
       AppDimensionsNew.getVerticalSizedBox(80.ph),
     ];
   }

@@ -40,9 +40,9 @@ class GifListWidget extends StatelessWidget {
             final String url = gif.media.gif.url;
 
             /* the preview URL can be a local one: from cache */
-            final String previewUrl = gif.media.tinygif.url;
+            final String previewUrl = gif.cache ?? gif.media.tinygif.url;
 
-            final bool isLocal = !previewUrl.startsWith('https');
+            final bool isLocal = gif.cache != null;
 
             /* we use this dimension to show the placeholder */
             final Size gifSize = Size(

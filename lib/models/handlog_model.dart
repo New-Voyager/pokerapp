@@ -96,8 +96,8 @@ class ResultPlayerInfo {
     ret.cards = json['cards'].cast<int>();
     ret.playedUntil = json['playedUntil'];
     ret.received = 0;
-    if (json['received'] == null) {
-      ret.received = double.parse(json['received'].toString());
+    if (json['received'] != null) {
+      ret.received = double.parse(json['received'].toString()) / 100;
     }
     ret.name = json['name'];
     ret.balance = PlayerBalance.fromJson(json['balance']);
@@ -116,7 +116,7 @@ class ResultBoardWinner {
   factory ResultBoardWinner.fromJson(dynamic json) {
     ResultBoardWinner ret = ResultBoardWinner();
     ret.boardNo = json['boardNo'];
-    ret.amount = double.parse(json['amount'].toString());
+    ret.amount = double.parse(json['amount'].toString()) / 100;
     ret.hiRankText = '';
     if (json['hiRankText'] != null) {
       ret.hiRankText = json['hiRankText'];
@@ -220,6 +220,7 @@ class HandResultData {
   DateTime handEndedTime;
   double smallBlind;
   double bigBlind;
+  double tipsPaid;
   bool runItTwice;
   HandResultNew result;
   int myPlayerId = 0;
@@ -365,6 +366,11 @@ class HandResultData {
 
     ret.result = HandResultNew.fromJson(json['result']);
     ret.runItTwice = ret.result.runItTwice;
+
+    if (json['result']['tipsCollected'] != null) {
+      ret.tipsPaid =
+          double.parse(json['result']['tipsCollected'].toString()) / 100;
+    }
 
     return ret;
   }

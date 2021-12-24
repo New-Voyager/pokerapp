@@ -774,25 +774,28 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
   bool _isChatScreenVisible = false;
 
-  void _onChatMessage() {
+  void _onChatMessage(ChatMessage message) {
     if (_isChatScreenVisible) {
+      _gameState.gameChatNotifState.notifyNewMessage();
+
       // notify of new messages & rebuild the game message list
-      _providerContext.read<GameChatNotifState>().notifyNewMessage();
 
       /* if user is scrolled away, we need to notify */
       if (_gcsController.hasClients &&
           (_gcsController.offset > kScrollOffsetPosition)) {
-        _providerContext.read<GameChatNotifState>().addUnread();
+        _gameState.gameChatNotifState.addUnread();
       }
     } else {
-      _providerContext.read<GameChatNotifState>()?.addUnread();
+      _gameState.gameChatNotifState.addUnread();
     }
+
+    _gameState.gameChatBubbleNotifyState.addBubbleMessge(message);
   }
 
   void _initChatListeners(GameMessagingService gms) {
     gms.listen(
-      onText: (ChatMessage _) => _onChatMessage(),
-      onGiphy: (ChatMessage _) => _onChatMessage(),
+      onText: (ChatMessage message) => _onChatMessage(message),
+      onGiphy: (ChatMessage message) => _onChatMessage(message),
     );
 
     _gcsController.addListener(() {
@@ -942,59 +945,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       children: children,
     );
 
-    bool showBottom = this.widget.showBottom;
-
-    // Widget stack = Stack(
-    //   alignment: Alignment.topCenter,
-    //   clipBehavior: Clip.none,
-    //   children: [
-    //     // this.widget.showTop ? BackgroundView() : Container(),
-
-    //     /* main view */
-    //     Container(
-    //       decoration: BoxDecoration(
-    //         //border: Border.all(color: Colors.transparent),
-    //         color: Colors.green,
-    //       ),
-
-    //         clipBehavior: Clip.none,
-    //         height: boardDimensions.height,
-    //         width: Screen.width,
-    //         child: Column(
-    //           mainAxisAlignment: MainAxisAlignment.start,
-    //           mainAxisSize: MainAxisSize.min,
-    //           crossAxisAlignment: CrossAxisAlignment.stretch,
-    //           children: children,
-    //         )),
-
-    //     // footer view
-    //     showBottom
-    //         ? Align(
-    //             alignment: Alignment.bottomCenter,
-    //             child: Consumer<RedrawFooterSectionState>(
-    //               builder: (_, ___, __) {
-    //                 // log('RedrawFooter: building footer view');
-    //                 return FooterViewWidget(
-    //                   gameCode: widget.gameCode,
-    //                   gameContextObject: _gameContextObj,
-    //                   currentPlayer: _gameContextObj.gameState.currentPlayer,
-    //                   gameInfo: _gameInfoModel,
-    //                   toggleChatVisibility: _toggleChatVisibility,
-    //                 );
-    //               },
-    //             ),
-    //           )
-    //         : const SizedBox.shrink(),
-
-    //     /* chat window widget */
-    //     this.widget.showBottom ? _buildChatWindow() : Container(),
-
-    //     /* notification view */
-    //     this.widget.showBottom
-    //         ? Notifications.buildNotificationWidget()
-    //         : Container(),
-    //   ],
-    // );
     List<Widget> gameScreenChildren = [];
     if (widget.showTop) {
       gameScreenChildren.add(headerView);
@@ -1032,15 +982,10 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     );
 
     Stack allWidgets = Stack(children: [
-      // Container(width: Screen.width, height: Screen.height, color: Colors.red),
       column,
-      /* chat window widget */
-      this.widget.showBottom ? _buildChatWindow() : Container(),
 
-      /* notification view */
-      // this.widget.showBottom
-      //     ? Notifications.buildNotificationWidget()
-      //     : Container(),
+      /* chat window widget */
+      this.widget.showBottom ? _buildChatWindow() : const SizedBox.shrink(),
     ]);
     return allWidgets;
   }

@@ -170,6 +170,9 @@ class GameHistoryServiceImpl {
     if (_cachedHands[gameCode] != null) {
       return _cachedHands[gameCode];
     }
+    // full path
+    String handDataFileName = '$gameCode-hand.dat';
+    String handDataFilePath = '${_store.dataDir}/$handDataFileName';
     // check if available locally
     GameHistory gameHistory = _store.get(gameCode);
     if (gameHistory == null) {
@@ -180,15 +183,12 @@ class GameHistoryServiceImpl {
       if (history == null) {
         throw new Exception('Game $gameCode is not found in the server');
       }
-      String gameDataDir = '${_store.dataDir}/$gameCode';
-      await Directory(gameDataDir)
-        ..create(recursive: true);
+
       if (history.handDataLink != null) {
-        String handDataFile = '${gameDataDir}/hand.dat';
         // perform the download operation and return the file
         final File downloadedHandData = await _downloadGameHistory(
           history.handDataLink,
-          handDataFile,
+          handDataFilePath,
         );
 
         if (downloadedHandData == null) {
@@ -203,15 +203,14 @@ class GameHistoryServiceImpl {
         gameCode: gameCode,
         dateEnded: expireTime,
         expireAt: expireTime,
-        path: gameDataDir,
+        path: handDataFileName,
       );
       // save gameHistory to Hive
       await _store.put(history, gameHistory);
     }
 
     // decompress json file
-    String handDataFile = '${gameHistory.path}/hand.dat';
-    final bytes = File(handDataFile).readAsBytesSync();
+    final bytes = File(handDataFilePath).readAsBytesSync();
     final jsonStr = String.fromCharCodes(zlib.decode(bytes));
     //log(jsonStr);
     final json = jsonDecode(jsonStr);

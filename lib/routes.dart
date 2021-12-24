@@ -396,11 +396,8 @@ class Routes {
         var args = settings.arguments as dynamic;
         return _getPageRoute(
           routeName: settings.name,
-          viewToShow: HandLogView(
-            args['gameCode'],
-            args['handNum'],
-            clubCode: args['clubCode'],
-          ),
+          viewToShow: HandLogView(args['gameCode'], args['handNum'],
+              clubCode: args['clubCode'], club: args['club']),
         );
       case customize:
         return _getPageRoute(

@@ -13,6 +13,7 @@ class TenorResult extends Equatable {
   String created;
   String url;
   String itemurl;
+  String cache;
   TenorGif media;
   TenorResult({
     this.hasCaption = false,
@@ -24,6 +25,7 @@ class TenorResult extends Equatable {
     this.url,
     this.itemurl,
     this.media,
+    this.cache,
   });
 
   Map<String, dynamic> toMap() {
@@ -37,6 +39,7 @@ class TenorResult extends Equatable {
       'url': url,
       'itemurl': itemurl,
       'media': media?.toMap(),
+      'cache': cache,
     };
   }
 
@@ -65,6 +68,7 @@ class TenorResult extends Equatable {
       url: map['url'],
       itemurl: map['itemurl'],
       media: TenorGif.fromMap(media),
+      cache: map['cache'],
     );
   }
 
@@ -75,10 +79,20 @@ class TenorResult extends Equatable {
 
   @override
   String toString() {
-    return 'TenorResult(hasCaption: $hasCaption, hasaudio: $hasaudio, shares: $shares, id: $id, title: $title, created: $created, url: $url, itemurl: $itemurl, media: $media)';
+    return 'TenorResult(hasCaption: $hasCaption, hasaudio: $hasaudio, shares: $shares, id: $id, title: $title, created: $created, url: $url, itemurl: $itemurl, media: $media, cache: $cache)';
   }
 
   @override
-  List<Object> get props =>
-      [hasCaption, hasaudio, shares, id, title, created, url, itemurl, media];
+  List<Object> get props => [
+        hasCaption,
+        hasaudio,
+        shares,
+        id,
+        title,
+        created,
+        url,
+        itemurl,
+        media,
+        cache
+      ];
 }
