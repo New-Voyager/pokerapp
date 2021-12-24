@@ -25,7 +25,7 @@ class ScreenAttributes {
 
   static Map<String, dynamic> getScreenAttribs(
       String modelName, double diagnoalSize, Size screenSize) {
-    ScreenAttributeObject screenAttributeObject = null;
+          ScreenAttributeObject screenAttributeObject = null;
     for (final attribs in allAttribs) {
       if (attribs.modelMatches(modelName)) {
         screenAttributeObject = attribs;
