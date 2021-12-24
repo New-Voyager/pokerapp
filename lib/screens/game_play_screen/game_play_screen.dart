@@ -946,59 +946,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       children: children,
     );
 
-    bool showBottom = this.widget.showBottom;
-
-    // Widget stack = Stack(
-    //   alignment: Alignment.topCenter,
-    //   clipBehavior: Clip.none,
-    //   children: [
-    //     // this.widget.showTop ? BackgroundView() : Container(),
-
-    //     /* main view */
-    //     Container(
-    //       decoration: BoxDecoration(
-    //         //border: Border.all(color: Colors.transparent),
-    //         color: Colors.green,
-    //       ),
-
-    //         clipBehavior: Clip.none,
-    //         height: boardDimensions.height,
-    //         width: Screen.width,
-    //         child: Column(
-    //           mainAxisAlignment: MainAxisAlignment.start,
-    //           mainAxisSize: MainAxisSize.min,
-    //           crossAxisAlignment: CrossAxisAlignment.stretch,
-    //           children: children,
-    //         )),
-
-    //     // footer view
-    //     showBottom
-    //         ? Align(
-    //             alignment: Alignment.bottomCenter,
-    //             child: Consumer<RedrawFooterSectionState>(
-    //               builder: (_, ___, __) {
-    //                 // log('RedrawFooter: building footer view');
-    //                 return FooterViewWidget(
-    //                   gameCode: widget.gameCode,
-    //                   gameContextObject: _gameContextObj,
-    //                   currentPlayer: _gameContextObj.gameState.currentPlayer,
-    //                   gameInfo: _gameInfoModel,
-    //                   toggleChatVisibility: _toggleChatVisibility,
-    //                 );
-    //               },
-    //             ),
-    //           )
-    //         : const SizedBox.shrink(),
-
-    //     /* chat window widget */
-    //     this.widget.showBottom ? _buildChatWindow() : Container(),
-
-    //     /* notification view */
-    //     this.widget.showBottom
-    //         ? Notifications.buildNotificationWidget()
-    //         : Container(),
-    //   ],
-    // );
     List<Widget> gameScreenChildren = [];
     if (widget.showTop) {
       gameScreenChildren.add(headerView);

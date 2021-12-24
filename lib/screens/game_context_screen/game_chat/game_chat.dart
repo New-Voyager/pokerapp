@@ -379,50 +379,50 @@ class _GameChatState extends State<GameChat> {
   double _getGameChatHeight(bool isKeyboardVisible) {
     final height = MediaQuery.of(context).size.height;
 
-    if (expanded) {
-      return isKeyboardVisible ? height * 0.50 : height * 0.75;
+    if (isKeyboardVisible) {
+      return height * 0.25;
     } else {
-      return isKeyboardVisible ? height * 0.25 : height * 0.50;
+      return expanded ? height * 0.75 : height * 0.50;
     }
   }
 
   Widget _buildMainBody(AppTheme theme) {
     return KeyboardVisibilityBuilder(
-      child: Column(
-        children: [
-          /* top widgets, new message notifier & close button */
-          Stack(
-            children: [
-              /* new message notifier */
-              _buildNewMessageNotifier(theme),
-
-              /* close button */
-              Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    expanded ? Container() : _buildExpandButton(theme),
-                    SizedBox(
-                      width: 2.pw,
-                    ),
-                    _buildCloseButton(theme)
-                  ]),
-            ],
-          ),
-
-          /* main message area */
-          _buildMessageArea(theme),
-
-          /* user input widget */
-          _buildUserInputWidget(theme),
-        ],
-      ),
-      builder: (_, Widget child, bool isKeyboardVisible) {
+      builder: (_, __, bool isKeyboardVisible) {
         return AnimatedContainer(
           duration: const Duration(milliseconds: 300),
           decoration: AppDecorators.bgRadialGradient(theme),
           height: _getGameChatHeight(isKeyboardVisible),
-          child: child,
+          child: Column(
+            children: [
+              /* top widgets, new message notifier & close button */
+              Stack(
+                children: [
+                  /* new message notifier */
+                  _buildNewMessageNotifier(theme),
+
+                  /* close button */
+                  Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      expanded || isKeyboardVisible
+                          ? const SizedBox.shrink()
+                          : _buildExpandButton(theme),
+                      SizedBox(width: 2.pw),
+                      _buildCloseButton(theme)
+                    ],
+                  ),
+                ],
+              ),
+
+              /* main message area */
+              _buildMessageArea(theme),
+
+              /* user input widget */
+              _buildUserInputWidget(theme),
+            ],
+          ),
         );
       },
     );
