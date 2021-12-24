@@ -1036,15 +1036,10 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     );
 
     Stack allWidgets = Stack(children: [
-      // Container(width: Screen.width, height: Screen.height, color: Colors.red),
       column,
-      /* chat window widget */
-      this.widget.showBottom ? _buildChatWindow() : Container(),
 
-      /* notification view */
-      // this.widget.showBottom
-      //     ? Notifications.buildNotificationWidget()
-      //     : Container(),
+      /* chat window widget */
+      this.widget.showBottom ? _buildChatWindow() : const SizedBox.shrink(),
     ]);
     return allWidgets;
   }

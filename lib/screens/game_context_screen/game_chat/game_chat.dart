@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:developer' as dev;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -9,6 +10,7 @@ import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
+import 'package:pokerapp/screens/game_context_screen/game_chat/keyboard_visibility_builder.dart';
 
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/services/text_filtering/text_filtering.dart';
@@ -374,17 +376,18 @@ class _GameChatState extends State<GameChat> {
             : const SizedBox.shrink(),
       );
 
-  Widget _buildMainBody(AppTheme theme) {
-    double height = MediaQuery.of(context).size.height / 2;
+  double _getGameChatHeight(bool isKeyboardVisible) {
+    final height = MediaQuery.of(context).size.height;
+
     if (expanded) {
-      height = MediaQuery.of(context).size.height * 3 / 4;
+      return isKeyboardVisible ? height * 0.50 : height * 0.75;
+    } else {
+      return isKeyboardVisible ? height * 0.25 : height * 0.50;
     }
-    return Container(
-      decoration: AppDecorators.bgRadialGradient(theme),
-      // padding: EdgeInsets.only(
-      //   bottom: MediaQuery.of(context).viewInsets.bottom,
-      // ),
-      height: height,
+  }
+
+  Widget _buildMainBody(AppTheme theme) {
+    return KeyboardVisibilityBuilder(
       child: Column(
         children: [
           /* top widgets, new message notifier & close button */
@@ -414,6 +417,14 @@ class _GameChatState extends State<GameChat> {
           _buildUserInputWidget(theme),
         ],
       ),
+      builder: (_, Widget child, bool isKeyboardVisible) {
+        return AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          decoration: AppDecorators.bgRadialGradient(theme),
+          height: _getGameChatHeight(isKeyboardVisible),
+          child: child,
+        );
+      },
     );
   }
 
