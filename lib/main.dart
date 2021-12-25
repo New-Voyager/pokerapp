@@ -167,6 +167,7 @@ class _MyAppState extends State<MyApp> {
                 builder: (context, orientation, deviceType) {
                   // SizerUtil().init(constraints, orientation);
                   //SizerUtil().setScreenSize(constraints, orientation);
+                  final appTheme = context.read<AppTheme>();
                   return MaterialApp(
                     title: FlavorConfig.of(context).appName,
                     debugShowCheckedModeBanner: false,
@@ -175,6 +176,9 @@ class _MyAppState extends State<MyApp> {
                       colorScheme: ColorScheme.dark(),
                       visualDensity: VisualDensity.adaptivePlatformDensity,
                       fontFamily: AppAssetsNew.fontFamilyPoppins,
+                      textSelectionTheme: TextSelectionThemeData(
+                        cursorColor: appTheme.accentColor,
+                      ),
                     ),
                     onGenerateRoute: Routes.generateRoute,
                     initialRoute: Routes.initial,
