@@ -10,6 +10,7 @@ import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
+import 'package:pokerapp/widgets/switch_widget.dart';
 
 /* this dialog handles the timer, as well as the messages sent to the server, when on tapped / on dismissed */
 class CreditsSettings {
@@ -233,7 +234,7 @@ class _CreditDialogsWidgetState extends State<CreditDialogsWidget> {
             theme: widget.theme,
             keyboardType: TextInputType.numberWithOptions(decimal: true),
             maxLength: 9,
-            hintText: 'enter value',
+            hintText: 'Enter Value',
             onChanged: (val) {},
           ),
 
@@ -252,6 +253,10 @@ class _CreditDialogsWidgetState extends State<CreditDialogsWidget> {
           ),
           // sep
           SizedBox(height: 15.ph),
+          SwitchWidget(
+              label: "Follow-up ",
+              onChange: (v) {},
+              icon: IconData(0xe28e, fontFamily: 'MaterialIcons')),
 
           /* yes / no button */
           Center(
