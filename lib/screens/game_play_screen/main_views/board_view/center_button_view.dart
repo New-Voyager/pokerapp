@@ -111,7 +111,8 @@ class CenterButtonView extends StatelessWidget {
       if (!seatChange.seatChangeInProgress) {
         if (gameContext.isHost()) {
           log('is admin: ${gameContext.isAdmin()} isHost: ${gameContext.isHost()}');
-          return pauseButtons(context);
+          // return pauseButtons(context);
+          return Container();
         } else {
           return Center(
               child: Text(
