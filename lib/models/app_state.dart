@@ -17,14 +17,14 @@ class AppState extends ChangeNotifier {
 
   Map<SeatPos, Offset> _chipPotViewPos = Map<SeatPos, Offset>();
   Map<String, dynamic> screenAttribs;
-                          // try {
-                          //   ScreenAttributes.buildList();
-                          //   Size size = Size(390.0, 865.0);
-                          //   attribs = ScreenAttributes.getScreenAttribs('iPhone Something', 1.0, size);
-                          //   log('attribs length: ${attribs.length}');
-                          // } catch(err) {
-                          //   log('Error: ${err.toString()}');
-                          // }
+  // try {
+  //   ScreenAttributes.buildList();
+  //   Size size = Size(390.0, 865.0);
+  //   attribs = ScreenAttributes.getScreenAttribs('iPhone Something', 1.0, size);
+  //   log('attribs length: ${attribs.length}');
+  // } catch(err) {
+  //   log('Error: ${err.toString()}');
+  // }
   bool isPosAvailableFor(Seat seat) {
     return _chipPotViewPos.containsKey(seat.seatPos);
   }

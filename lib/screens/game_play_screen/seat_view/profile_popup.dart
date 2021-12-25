@@ -93,7 +93,7 @@ class _ProfilePopupState extends State<ProfilePopup> {
       );
 
   Widget getStickers() {
-    if (!widget.gameState.gameSettings.funAnimations) {
+    if (!(widget.gameState.gameSettings.funAnimations ?? true)) {
       return Container();
     }
     return Wrap(
