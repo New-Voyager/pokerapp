@@ -135,7 +135,8 @@ String androidAttribs() {
     "name": "pixel2",
     "models": ["pixel-xl", "pixel 2"],
     "screenSize": "411, 683",
-    "size": 5.5,
+    "diagonalMinSize": 5.3,
+    "diagonalMaxSize": 5.55,
     "board": {
       "centerViewScale": 0.85,
       "centerOffset": "15, 80",
