@@ -213,8 +213,9 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
       return;
     }
 
-    final dynamic result =
-        await Navigator.of(context).pushNamed(Routes.new_game_settings);
+    final dynamic result = await Navigator.of(context).pushNamed(
+      Routes.new_game_settings,
+    );
     if (result != null) {
       /* show game settings dialog */
       await NewGameSettings2.show(

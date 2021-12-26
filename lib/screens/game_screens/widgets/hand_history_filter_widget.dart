@@ -23,6 +23,7 @@ class _HandHistoryFilterWidgetState extends State<HandHistoryFilterWidget> {
   int winnerId = 0;
   TextEditingController _potSizeGreater = TextEditingController();
   TextEditingController _lostChips = TextEditingController();
+  TextEditingController _handNumber = TextEditingController();
 
   @override
   void initState() {
@@ -47,6 +48,37 @@ class _HandHistoryFilterWidgetState extends State<HandHistoryFilterWidget> {
         ),
 
 // Radio items
+        RadioListTile(
+          value: 5,
+          groupValue: groupValue,
+          title: Row(
+            children: [
+              Expanded(
+                flex: 6,
+                child: Text(_appTextScreen['handNumLookup']),
+              ),
+              Expanded(
+                flex: 4,
+                child: CardFormTextField(
+                  onTap: () {
+                    setState(() {
+                      groupValue = 5;
+                    });
+                  },
+                  controller: _handNumber,
+                  hintText: "1",
+                  theme: theme,
+                  keyboardType: TextInputType.number,
+                ),
+              ),
+            ],
+          ),
+          onChanged: (value) {
+            setState(() {
+              groupValue = 5;
+            });
+          },
+        ),
 
         RadioListTile(
           value: 1,
@@ -207,6 +239,12 @@ class _HandHistoryFilterWidgetState extends State<HandHistoryFilterWidget> {
                       valid = true;
                     }
                     valid = true;
+                  } else if (groupValue == 5) {
+                    ret['selection'] = 'handnum';
+                    ret['value'] = int.tryParse(_handNumber.text);
+                    if (ret['value'] != null && ret['value'] > 0) {
+                      valid = true;
+                    }
                   }
                   if (valid) {
                     Navigator.of(context).pop(ret);

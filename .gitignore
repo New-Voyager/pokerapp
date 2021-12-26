@@ -57,3 +57,9 @@ ios/build
 ios/build/Pods.build/
 ios/build/Runner.build/
 ios/build
+
+
+# files copied from devops repo
+android/app/src/prod/
+ios/config/prod/
+android/upload-keystore.jks

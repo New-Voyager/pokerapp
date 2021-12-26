@@ -1,8 +1,14 @@
 import 'dart:developer';
+import 'dart:async';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_chat_bubble/bubble_type.dart';
+import 'package:flutter_chat_bubble/chat_bubble.dart';
+import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_1.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/enums/game_type.dart';
+import 'package:pokerapp/models/game_play_models/business/game_chat_notfi_state.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
@@ -15,11 +21,14 @@ import 'package:pokerapp/resources/app_config.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/club_screen/set_credits_dialog.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/board_view/player_chat_bubble.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/nameplate_dialog.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/data/hive_models/player_state.dart';
+import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
+import 'package:pokerapp/widgets/attributed_gif_widget.dart';
 import 'package:pokerapp/widgets/blinking_widget.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/displaycards.dart';
@@ -74,6 +83,10 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
   AnimationController _lottieController;
   AssetImage _gifAssetImage;
 
+  Timer _messagePopupTimer;
+
+  double giphySize = 32.0;
+
   @override
   void initState() {
     super.initState();
@@ -100,6 +113,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
   void dispose() {
     super.dispose();
     _lottieController?.dispose();
+    _messagePopupTimer?.cancel();
   }
 
   onTap(BuildContext context) async {
@@ -414,6 +428,9 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
       },
       builder: (context, List<int> candidateData, rejectedData) {
         Offset notesOffset = Offset(0, 0);
+        final double namePlateWidth =
+            widget.boardAttributes.namePlateSize.width;
+        print('namePlateWidth: $namePlateWidth');
         SeatPos pos = widget.seat.seatPos ?? SeatPos.bottomLeft;
         double actionLeft;
         double actionRight;
@@ -423,12 +440,10 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
             pos == SeatPos.topCenter ||
             pos == SeatPos.topCenter1) {
           actionLeft = 0;
-          notesOffset =
-              Offset(-((widget.boardAttributes.namePlateSize.width / 1.5)), 0);
+          notesOffset = Offset(-((namePlateWidth / 1.5)), 0);
         } else {
           actionRight = 0;
-          notesOffset =
-              Offset(((widget.boardAttributes.namePlateSize.width / 2)), 0);
+          notesOffset = Offset(((namePlateWidth / 2)), 0);
         }
         Key key = widget.seat.key;
         double opacity = 1.0;
@@ -439,6 +454,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
             opacity = 0.70;
           }
         }
+
         return InkWell(
           onTap: () {
             if (widget.gameState.replayMode) {
@@ -453,6 +469,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
               // Container(width: 100, height: 60, color: Colors.grey[900]),
               //SvgPicture.string(namePlateStr, width: 60, height: 50),
               // // main user body
+
               Opacity(
                 opacity: opacity,
                 child: Transform.scale(
@@ -531,13 +548,15 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
                       top: 0,
                       right: -20,
                       child: Container(
-                          width: 22,
-                          height: 22,
-                          color: Colors.transparent,
-                          child: Icon(
-                            Icons.mic_off,
-                            color: Colors.white70,
-                          )))
+                        width: 22,
+                        height: 22,
+                        color: Colors.transparent,
+                        child: Icon(
+                          Icons.mic_off,
+                          color: Colors.white70,
+                        ),
+                      ),
+                    )
                   : SizedBox(),
               widget.seat.player.showMicOn
                   ? Positioned(

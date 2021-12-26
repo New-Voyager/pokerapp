@@ -11,11 +11,18 @@ class AppConstants {
     "bank"
   ];
 
+  static const List<String> GIF_CATEGORIES_CLUB = const [
+    "Sad",
+    "Cry",
+    "Angry",
+    "Savage"
+  ];
+
   static const List<String> GIF_CATEGORIES = const [
-    'All-in',
-    'Donkey',
-    'Fish',
-    'HAHA',
+    'all-in',
+    'donkey',
+    'funny',
+    'joy',
   ];
 
   static DateFormat CHAT_DATE_TIME_FORMAT = DateFormat("hh:mm a");

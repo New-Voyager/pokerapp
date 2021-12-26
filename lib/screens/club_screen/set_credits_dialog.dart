@@ -39,16 +39,23 @@ class SetCreditsDialog {
   }) async {
     CreditsSettings settings = CreditsSettings();
     final bool ret = await showDialog(
-        barrierDismissible: true,
+        barrierDismissible: false,
         context: context,
         builder: (_) {
           AppTheme theme = AppTheme.getTheme(context);
           return StatefulBuilder(builder: (context, setState) {
             return AlertDialog(
-                backgroundColor: Colors.transparent,
-                contentPadding: EdgeInsets.zero,
-                content: CreditDialogsWidget(
-                    theme, clubCode, playerUuid, credits, name, settings));
+              backgroundColor: Colors.transparent,
+              contentPadding: EdgeInsets.zero,
+              content: CreditDialogsWidget(
+                theme,
+                clubCode,
+                playerUuid,
+                credits,
+                name,
+                settings,
+              ),
+            );
           });
         });
     if (!settings.cancelled) {
@@ -81,8 +88,14 @@ class CreditDialogsWidget extends StatefulWidget {
   final String name;
   final CreditsSettings settings;
 
-  CreditDialogsWidget(this.theme, this.clubCode, this.playerUuid, this.credits,
-      this.name, this.settings);
+  CreditDialogsWidget(
+    this.theme,
+    this.clubCode,
+    this.playerUuid,
+    this.credits,
+    this.name,
+    this.settings,
+  );
 
   @override
   State<CreditDialogsWidget> createState() => _CreditDialogsWidgetState();
@@ -141,10 +154,12 @@ class _CreditDialogsWidgetState extends State<CreditDialogsWidget> {
     Widget creditsWidget = Container();
     if (loadingCredits) {
       creditsWidget = Container(
-          width: 24,
-          height: 24,
-          child: CircularProgressIndicator(
-              color: widget.theme.accentColorWithDark()));
+        width: 24,
+        height: 24,
+        child: CircularProgressIndicator(
+          color: widget.theme.accentColorWithDark(),
+        ),
+      );
     } else {
       Color color = Colors.green;
       if (credits < 0) {

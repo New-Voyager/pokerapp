@@ -89,3 +89,9 @@ flutter run --flavor prod -t lib/main_prod1.dart
 
 fastlane password
 xayb-jwdh-ixxh-yijp
+
+
+# release
+update the version in pubspec.yaml
+
+flutter build appbundle --flavor prod -t lib/main.dart

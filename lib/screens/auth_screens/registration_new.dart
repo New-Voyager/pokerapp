@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_udid/flutter_udid.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/flavor_config.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/main_helper.dart';
 import 'package:pokerapp/models/auth_model.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
@@ -208,9 +209,16 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
                   ConnectionDialog.show(
                       context: context,
                       loadingText: 'Logging in as bot $botName');
-                  // login with bot name
-                  Map<String, dynamic> resp =
-                      await AuthService.loginBot(botName);
+
+                  int playerId = int.tryParse(botName);
+                  Map<String, dynamic> resp;
+                  if (playerId != 0) {
+                    // login with player id
+                    resp = await AuthService.loginPlayer(playerId);
+                  } else {
+                    // login with bot name
+                    resp = await AuthService.loginBot(botName);
+                  }
 
                   if (resp['status']) {
                     // successful
@@ -305,9 +313,7 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
 
   @override
   Widget build(BuildContext context) {
-    bool isDevMode =
-        FlavorConfig.of(context).flavorName == Flavor.DEV.toString();
-    isDevMode = true;
+    bool isDevMode = !appState.isProd;
     Widget devButtons = null;
     if (isDevMode) {
       devButtons = Column(

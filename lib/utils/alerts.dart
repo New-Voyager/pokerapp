@@ -278,6 +278,7 @@ class Alerts {
   static dynamic showDailog({
     @required BuildContext context,
     @required Widget child,
+    double height = 0.5,
   }) async {
     return await showGeneralDialog(
       context: context,
@@ -290,7 +291,7 @@ class Alerts {
             child: Material(
               color: Colors.transparent,
               child: Container(
-                height: MediaQuery.of(context).size.height * 0.5,
+                height: MediaQuery.of(context).size.height * height,
                 margin: EdgeInsets.all(16),
                 padding: EdgeInsets.only(bottom: 24, top: 8, right: 8, left: 8),
                 // width: MediaQuery.of(context).size.width * 0.70,

@@ -461,9 +461,6 @@ class GamePlayScreenUtilMethods {
       ),
 
       /* for game chat notifications - unread messages, counts */
-      ListenableProvider<GameChatNotifState>(
-        create: (_) => GameChatNotifState(),
-      ),
     ]);
     //}
 

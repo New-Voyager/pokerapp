@@ -14,7 +14,7 @@ class StackChartView extends StatelessWidget {
         (value, element) => value.balance > element.balance ? value : element);
     return new charts.StaticNumericTickProviderSpec(
       <charts.TickSpec<num>>[
-        charts.TickSpec<num>(maxValue.balance),
+        charts.TickSpec<num>(maxValue.balance / 100),
         charts.TickSpec<num>(0),
       ],
     );
@@ -65,7 +65,7 @@ class StackChartView extends StatelessWidget {
         id: 'Stack',
         colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
         domainFn: (PlayerStack stack, _) => stack.handNum,
-        measureFn: (PlayerStack stack, _) => stack.balance,
+        measureFn: (PlayerStack stack, _) => stack.balance / 100,
         data: stack,
       )
     ];
