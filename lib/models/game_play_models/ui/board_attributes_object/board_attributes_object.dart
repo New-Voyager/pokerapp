@@ -121,7 +121,7 @@ class BoardAttributesJson {
     if (Platform.isAndroid) {
       // attribs = AndroidAttribs.getAttribs(DeviceInfo.model, screenSize);
       attribs = ScreenAttributes.getScreenAttribs(
-          DeviceInfo.model, screenSize, Size(0, 0));
+          DeviceInfo.model, screenSize, Screen.size);
     } else {
       // iphone
       // attribs = IPhoneAttribs.getIPhoneXS();

@@ -26,9 +26,10 @@ class AppService {
     try {
       final size = Screen.size;
       ScreenAttributes.buildList();
-      final attribs = ScreenAttributes.getScreenAttribs(DeviceInfo.model, Screen.diagonalInches, size);
+      final attribs = ScreenAttributes.getScreenAttribs(
+          DeviceInfo.model, Screen.diagonalInches, size);
       log('attribs length: ${attribs.length}');
-    } catch(err) {
+    } catch (err) {
       log('Error: ${err.toString()}');
     }
   }
@@ -43,6 +44,4 @@ class AppService {
     }
     userSettings = null;
   }
-
-
 }

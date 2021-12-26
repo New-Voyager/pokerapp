@@ -48,7 +48,7 @@ class ScreenAttributeObject {
     if (diagonalMinSize != null &&
         diagonalMaxSize != null &&
         size >= diagonalMinSize &&
-        size <= diagonalMaxSize) {
+        size < diagonalMaxSize) {
       return true;
     }
     return false;

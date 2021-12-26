@@ -13,7 +13,7 @@ class ScreenAttributes {
     allAttribs = [];
     List<dynamic> decodedJson;
     if (Platform.isAndroid) {
-      decodedJson = jsonDecode(androidAttribs);
+      decodedJson = jsonDecode(androidAttribs());
     } else {
       decodedJson = jsonDecode(iPhoneAttribs);
     }
@@ -23,9 +23,12 @@ class ScreenAttributes {
     }
   }
 
-  static Map<String, dynamic> getScreenAttribs(
+  static ScreenAttributeObject getScreenAttribsObject(
       String modelName, double diagnoalSize, Size screenSize) {
     ScreenAttributeObject screenAttributeObject = null;
+    modelName = modelName.toLowerCase();
+    screenSize = Size(screenSize.width.toInt().toDouble(),
+        screenSize.height.toInt().toDouble());
     for (final attribs in allAttribs) {
       if (attribs.modelMatches(modelName)) {
         screenAttributeObject = attribs;
@@ -59,6 +62,13 @@ class ScreenAttributes {
         }
       }
     }
+
+    return screenAttributeObject;
+  }
+
+  static Map<String, dynamic> getScreenAttribs(
+      String modelName, double diagnoalSize, Size screenSize) {
+    final screenAttributeObject = getScreenAttribsObject(modelName, diagnoalSize, screenSize);
     if (screenAttributeObject != null) {
       Map<String, dynamic> attribs = screenAttributeObject.getAttribs();
       Map<String, dynamic> baseAttribs = Map<String, dynamic>();
