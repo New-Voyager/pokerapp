@@ -267,39 +267,55 @@ class _GifWidgetState extends State<GifWidget> {
           ),
 
           // other gif suggestions
-          ...widget.gifSuggestions
-              .map(
-                (e) => GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      _currentSelectedTab = e;
-                      isFavouriteText = false;
-                      isFavouriteGif = false;
-                      getGiphies(e);
-                    });
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      e,
-                      style: _currentSelectedTab == e
-                          ? AppStylesNew.footerResultTextStyle2.copyWith(
-                              fontSize: 15.0,
-                              fontWeight: FontWeight.bold,
-                              color: AppColorsNew.yellowAccentColor,
-                            )
-                          : AppStylesNew.footerResultTextStyle2.copyWith(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15.0,
+          Expanded(
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.40),
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                physics: BouncingScrollPhysics(),
+                child: Row(
+                  children: widget.gifSuggestions
+                      .map<Widget>(
+                        (e) => GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _currentSelectedTab = e;
+                              isFavouriteText = false;
+                              isFavouriteGif = false;
+                              getGiphies(e);
+                            });
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              e,
+                              style: _currentSelectedTab == e
+                                  ? AppStylesNew.footerResultTextStyle2
+                                      .copyWith(
+                                      fontSize: 15.0,
+                                      fontWeight: FontWeight.bold,
+                                      color: AppColorsNew.yellowAccentColor,
+                                    )
+                                  : AppStylesNew.footerResultTextStyle2
+                                      .copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15.0,
+                                    ),
                             ),
-                    ),
-                  ),
+                          ),
+                        ),
+                      )
+                      .toList(),
                 ),
-              )
-              .toList(),
+              ),
+            ),
+          ),
 
           // seperator
-          const SizedBox(width: 10.0),
+          const SizedBox(width: 50.0),
         ],
       );
 
