@@ -343,20 +343,23 @@ String androidAttribs() {
   },
   {
     "name": "nexus7",
-    "base": "nexys5",
+    "base": "nexus5",
     "models": ["Nexus 7"],
     "screenSize": "600.0, 912.0",
-    "size": 7.3,
+    "diagonalMinSize": 7.0,
+    "diagonalMaxSize": 7.6,
     "board": {
 
       "centerViewScale": 1.0,
-      "centerViewPos": "15, 50",
+      "centerViewPos": "15, 80",
       "centerOffset": "15, 50",
       "centerPotScale": 0.90,
       "centerPotUpdatesScale": 0.90,
+      "centerDoubleBoardScale": 1.2,
+      "centerBoardScale": 1.5,
 
       "tableBottomPos": 20,
-      "tableScale": 1.0,
+      "tableScale": 1.2,
       "seatMap": {
         "bottomCenter": "0, 10",
         "bottomLeft": "45, 0",
@@ -366,8 +369,8 @@ String androidAttribs() {
         "topLeft": "10, 70",
         "topRight": "-10, 70",
         "topCenter": "0, 45",
-        "topCenter1": "-60, 45",
-        "topCenter2": "60, 45"
+        "topCenter1": "-80, 45",
+        "topCenter2": "80, 45"
       },
       "betAmountFac": {
         "bottomCenter": "-0.5, -0.80",
@@ -390,11 +393,24 @@ String androidAttribs() {
 
     "holeCardViewOffset": "0, 30",
     "holeCardScale": {
-      "2": 1.4,
-      "4": 1.2,
-      "5": 1.1,
+      "2": 3.0,
+      "4": 2.5,
+      "5": 2.5,
       "default": 1
     },
+    "holeCardDisplacement": {
+      "2": 55,
+      "4": 55,
+      "5": 55,
+      "default": 55
+    },
+    "holeCardDisplacementVisible": {
+      "2": 50,
+      "4": 45,
+      "5": 45,
+      "default": 45
+    },        
+
     "seat": {
         "scale": 1.1,
         "holeCardOffset": "0, 0",
@@ -507,7 +523,7 @@ String androidAttribs() {
   },
   {
     "base": "base-model",
-    "name": "moto g play",
+    "name": "motog",
     "models": ["moto g play (2021)"],
     "screenSize": "411, 890",
     "diagonalMinSize": 6.5,
@@ -522,7 +538,80 @@ String androidAttribs() {
       "boardScale": 0.90,
       "tableScale": 1.30
     }        
-  }
+  },
+      {
+        "name":"lenova10",
+        "base":"motog",
+        "models": ["lenova tb-x606f"],
+        "screenSize": "800.0, 1264.0",
+    "diagonalMinSize": 9.0,
+    "diagonalMaxSize": 13.0,
+        "board": {
+          "centerViewScale": 1.30,
+          "centerPotScale": 0.85,
+          "centerPotUpdatesScale": 0.70,
+          "centerRankScale": 0.85,
+          "centerOffset": "15, 220",
+          "centerViewPos": "15, 40",
+          "boardScale": 1.10,
+          "tableScale": 0.90,
+          "tableBottomPos": 40,
+          "seatMap": {
+            "bottomCenter": "0, -50",
+            "bottomLeft": "100, -70",
+            "bottomRight": "-100, -70",
+            "middleLeft": "50, 50",
+            "middleRight": "-50, 50",
+            "topLeft": "80, 170",
+            "topRight": "-80, 170",
+            "topCenter": "0, 130",
+            "topCenter1": "-80, 130",
+            "topCenter2": "80, 130"
+          },
+          "betAmountFac": {
+            "bottomCenter": "-0.25, -0.80",
+            "topCenter": "0.20, 1.0",
+            "middleLeft": "1.10, 0.0",
+            "middleRight": "-1.10, 0.0",
+            "topRight": "-0.55, 0.70",
+            "topLeft": "0.75, 0.70",
+            "bottomLeft": "0.70, -0.80",
+            "bottomRight": "-0.60, -0.80",
+            "topCenter1": "0.10, 1.0",
+            "topCenter2": "0.10, 1.0"
+          },
+          "betImageScale": 3.0,
+          "betSliderScale": 3.0
+        },
+
+        "betWidgetGap": 90,
+        "betButtonsOffset": "0, 90",
+        "betWidgetOffset": "0, 0",
+        "seat": {
+          "scale": 1.4,
+          "holeCardOffset": "0, 0",
+          "holeCardScale": 1.0
+        },
+        "holeCardScale": {
+          "2": 2.0,
+          "4": 2.0,
+          "5": 2.0,
+          "default": 1
+        },
+        "holeCardDisplacement": {
+          "2": 60,
+          "4": 60,
+          "5": 60,
+          "default": 60
+        },
+        "holeCardDisplacementVisible": {
+          "2": 60,
+          "4": 60,
+          "5": 60,
+          "default": 20
+        },
+        "footerActionScale": 1.4
+      }  
 ]
 """;
 }
