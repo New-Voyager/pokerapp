@@ -171,6 +171,23 @@ class _GameChatState extends State<GameChat> {
     );
   }
 
+  Widget _buildText(String text, AppTheme theme) {
+    return Text(
+      text,
+      style: AppDecorators.getHeadLine4Style(theme: theme),
+    );
+  }
+
+  Widget _buildName(String name, AppTheme theme) {
+    return Text(
+      name,
+      style: AppDecorators.getSubtitle2Style(theme: theme).copyWith(
+        color: theme.accentColor,
+      ),
+      softWrap: true,
+    );
+  }
+
   Widget _buildChatBubble(ChatMessage message, AppTheme theme) {
     bool isMe = myID == message.fromPlayer;
     String text = message.text;
@@ -182,31 +199,25 @@ class _GameChatState extends State<GameChat> {
 
     if (isMe) {
       if (text != null) {
-        bubble.add(Text(
-          text,
-          style: AppDecorators.getHeadLine4Style(theme: theme),
-        ));
-        bubble.add(SizedBox(width: 10));
-        bubble.add(Text(
-          message.fromName.toString(),
-          style: AppDecorators.getSubtitle2Style(theme: theme)
-              .copyWith(color: theme.accentColor),
-          softWrap: true,
-        ));
+        // text
+        bubble.add(_buildText(text, theme));
+
+        // seperation
+        bubble.add(const SizedBox(width: 10));
+
+        // name
+        bubble.add(_buildName(message.fromName, theme));
       }
     } else {
       if (text != null) {
-        bubble.add(Text(
-          message.fromName.toString(),
-          style: AppDecorators.getSubtitle2Style(theme: theme)
-              .copyWith(color: theme.accentColor),
-          softWrap: true,
-        ));
-        bubble.add(SizedBox(width: 10));
-        bubble.add(Text(
-          text,
-          style: AppDecorators.getHeadLine4Style(theme: theme),
-        ));
+        // name
+        bubble.add(_buildName(message.fromName, theme));
+
+        // seperation
+        bubble.add(const SizedBox(width: 10));
+
+        // text
+        bubble.add(_buildText(text, theme));
       }
     }
 
@@ -224,29 +235,26 @@ class _GameChatState extends State<GameChat> {
               ? AppDecorators.getChatMyMessageDecoration(theme)
               : AppDecorators.getChatOtherMessageDecoration(theme),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               /* name of player & time */
-              Row(children: bubble),
+              Wrap(
+                crossAxisAlignment: WrapCrossAlignment.center,
+                alignment: WrapAlignment.end,
+                children: bubble,
+              ),
 
               // sep
-              SizedBox(height: 2),
+              const SizedBox(height: 2),
 
-              // message / gif
+              // // message / gif
               message.text != null
-                  ? Container()
+                  ? const SizedBox.shrink()
                   : AttributedGifWidget(url: message.giphyLink),
-              // AppDimensionsNew.getVerticalSizedBox(4),
-              // Row(
-              //   mainAxisAlignment: MainAxisAlignment.end,
-              //   children: [
-              //     // time
-              //     Text(
-              //       "${AppConstants.CHAT_DATE_TIME_FORMAT.format(message.received.toLocal())}",
-              //       style: AppDecorators.getSubtitle3Style(theme: theme),
-              //     ),
-              //   ],
-              // )
+
+              message.text != null
+                  ? const SizedBox.shrink()
+                  : _buildName(message.fromName, theme),
             ],
           ),
         ),

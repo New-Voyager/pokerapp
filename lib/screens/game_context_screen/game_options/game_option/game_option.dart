@@ -188,29 +188,6 @@ class _GameOptionState extends State<GameOption> {
     _gamePlayerSettings = widget.gameState.playerSettings;
     gameSecondaryOptions = [];
     _fetchGameInfo().then((value) {
-      // if (_gameSettings.seatChangeAllowed) {
-      //   gameSecondaryOptions.add(
-      //     OptionItemModel(
-      //       title: _appScreenText['seatChange'],
-      //       image: "assets/images/casino.png",
-      //       name: _appScreenText['requestSeatChange'],
-      //       backGroundColor: Colors.redAccent,
-      //       onTap: (context) async {
-      //         await showModalBottomSheet(
-      //           context: context,
-      //           isScrollControlled: true,
-      //           builder: (ctx) {
-      //             return SeatChangeBottomSheet(
-      //               widget.gameState,
-      //               widget.gameCode,
-      //               widget.playerUuid,
-      //             );
-      //           },
-      //         );
-      //       },
-      //     ),
-      //   );
-      // }
       isFetching = false;
       setState(() {});
     });
@@ -1254,9 +1231,14 @@ class _GameOptionState extends State<GameOption> {
       return CircularProgressWidget();
     }
 
-    bool gameSettings = false;
-    bool playerSettings = false;
-    bool waitingList = false;
+    if (gameInfo == null) {
+      return Center(
+        child: const Text(
+          'Game Ended',
+          style: TextStyle(fontSize: 20.0),
+        ),
+      );
+    }
 
     // add children
     List<Widget> children = [];
@@ -1264,10 +1246,12 @@ class _GameOptionState extends State<GameOption> {
     int defaultIndex = 0;
     // ishost?, can change game settings
     if (isHost) {
-      tabs.add(Tab(
-        icon: Icon(Icons.settings),
-        text: "Game",
-      ));
+      tabs.add(
+        Tab(
+          icon: Icon(Icons.settings),
+          text: "Game",
+        ),
+      );
       children.add(
           // game settings to be shown here
           // 1. allow seat change player
