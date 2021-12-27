@@ -79,7 +79,6 @@ class AudioService {
     await getAudioBytes(fireworksSound);
     await getAudioBytes(betRaiseSound);
     await getAudioBytes(flopSound);
-    await getAudioBytes(flopSound);
     await getAudioBytes(clockTickingSound);
     if (Platform.isIOS) {
       // for iphone store the file in local
@@ -131,6 +130,7 @@ class AudioService {
     if (mute ?? false) {
       return;
     }
+
     //player.play(soundFile);
     if (_audioCache[soundFile] != null) {
       try {

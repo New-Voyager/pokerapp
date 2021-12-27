@@ -29,24 +29,27 @@ class GifCacheService {
 
     fgBox.values.forEach((data) => trs.add(TenorResult.fromJson(data)));
 
-    final oldCachePath = trs.first.cache;
-    final oldDirPath = oldCachePath.substring(0, oldCachePath.lastIndexOf("/"));
-    final newDirPath = downloadsDirectory.path;
-    print('oldDirPath: $oldDirPath');
-    print('newPath: $newDirPath');
+    if (trs.length > 0) {
+      final oldCachePath = trs.first.cache;
+      final oldDirPath =
+          oldCachePath.substring(0, oldCachePath.lastIndexOf("/"));
+      final newDirPath = downloadsDirectory.path;
+      print('oldDirPath: $oldDirPath');
+      print('newPath: $newDirPath');
 
-    final Map<String, String> updatedGifs = Map();
+      final Map<String, String> updatedGifs = Map();
 
-    if (oldDirPath != newDirPath) {
-      for (final gif in trs) {
-        gif.cache = gif.cache.replaceFirst(oldDirPath, newDirPath);
-        print('NEW UPDATED PATH: ${gif.cache}');
+      if (oldDirPath != newDirPath) {
+        for (final gif in trs) {
+          gif.cache = gif.cache.replaceFirst(oldDirPath, newDirPath);
+          print('NEW UPDATED PATH: ${gif.cache}');
 
-        updatedGifs[gif.id] = gif.toJson();
+          updatedGifs[gif.id] = gif.toJson();
+        }
+
+        // finally save
+        await fgBox.putAll(updatedGifs);
       }
-
-      // finally save
-      await fgBox.putAll(updatedGifs);
     }
   }
 
