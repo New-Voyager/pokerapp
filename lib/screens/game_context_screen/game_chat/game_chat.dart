@@ -186,7 +186,7 @@ class _GameChatState extends State<GameChat> {
           text,
           style: AppDecorators.getHeadLine4Style(theme: theme),
         ));
-        bubble.add(SizedBox(width: 10));
+        bubble.add(const SizedBox(width: 10));
         bubble.add(Text(
           message.fromName.toString(),
           style: AppDecorators.getSubtitle2Style(theme: theme)
@@ -202,7 +202,7 @@ class _GameChatState extends State<GameChat> {
               .copyWith(color: theme.accentColor),
           softWrap: true,
         ));
-        bubble.add(SizedBox(width: 10));
+        bubble.add(const SizedBox(width: 10));
         bubble.add(Text(
           text,
           style: AppDecorators.getHeadLine4Style(theme: theme),
@@ -224,29 +224,22 @@ class _GameChatState extends State<GameChat> {
               ? AppDecorators.getChatMyMessageDecoration(theme)
               : AppDecorators.getChatOtherMessageDecoration(theme),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+            // crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               /* name of player & time */
-              Row(children: bubble),
+              Wrap(
+                crossAxisAlignment: WrapCrossAlignment.center,
+                alignment: WrapAlignment.end,
+                children: bubble,
+              ),
 
               // sep
-              SizedBox(height: 2),
+              const SizedBox(height: 2),
 
               // message / gif
               message.text != null
-                  ? Container()
+                  ? const SizedBox.shrink()
                   : AttributedGifWidget(url: message.giphyLink),
-              // AppDimensionsNew.getVerticalSizedBox(4),
-              // Row(
-              //   mainAxisAlignment: MainAxisAlignment.end,
-              //   children: [
-              //     // time
-              //     Text(
-              //       "${AppConstants.CHAT_DATE_TIME_FORMAT.format(message.received.toLocal())}",
-              //       style: AppDecorators.getSubtitle3Style(theme: theme),
-              //     ),
-              //   ],
-              // )
             ],
           ),
         ),
