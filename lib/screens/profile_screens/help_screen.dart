@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/build_info.dart';
+import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/screen_attributes.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
@@ -157,6 +158,9 @@ class HelpScreen extends StatelessWidget {
   }
 
   List<Widget> getSystemInfo() {
+    final attribs = ScreenAttributes.getScreenAttribsObject(
+        DeviceInfo.model, Screen.diagonalInches, Screen.size);
+
     return [
       Container(
           margin: EdgeInsets.symmetric(vertical: 4),
@@ -165,11 +169,24 @@ class HelpScreen extends StatelessWidget {
           margin: EdgeInsets.symmetric(vertical: 4),
           child: Text('Size: ${Screen.diagonalInches.toStringAsPrecision(2)}')),
       Container(
-          margin: EdgeInsets.symmetric(vertical: 4),
+          margin: EdgeInsets.symmetric(vertical: 8),
+          child: Text(
+              'Screen Device Pixel Ratio: ${Screen.devicePixelRatio} PPI: ${160 * Screen.devicePixelRatio}')),
+      Container(
+          margin: EdgeInsets.symmetric(vertical: 8),
+          child: Text('Screen Physical Dimensions: ${Screen.physicalSize}')),
+      Container(
+          margin: EdgeInsets.symmetric(vertical: 8),
           child: Text('Screen Dimensions: ${Screen.size}')),
       Container(
           margin: EdgeInsets.symmetric(vertical: 4),
           child: Text('model: ${DeviceInfo.model}')),
+      Container(
+          margin: EdgeInsets.symmetric(vertical: 8),
+          child: Text('version: ${DeviceInfo.version}')),
+      Container(
+          margin: EdgeInsets.symmetric(vertical: 8),
+          child: Text('Attribs used: ${attribs.name}')),
       Container(
           margin: EdgeInsets.symmetric(vertical: 4),
           child: Text('OS version: ${DeviceInfo.version}')),

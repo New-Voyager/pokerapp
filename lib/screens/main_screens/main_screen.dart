@@ -64,6 +64,7 @@ class _MainScreenState extends State<MainScreen>
     // initialize device
     await DeviceInfo.init();
     Screen.init(context);
+    appService.initScreenAttribs();
 
     log('Device name: ${DeviceInfo.name} screen size: ${Screen.size} diagonal: ${Screen.diagonalInches}');
 

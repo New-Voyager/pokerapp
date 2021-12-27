@@ -14,6 +14,7 @@ import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/result_options_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/straddle_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/bet_widget.dart';
+import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/widgets/cards/hole_stack_card_view.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:provider/provider.dart';
@@ -48,8 +49,12 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
       Widget rankText;
       rankText = Consumer<MyState>(builder: (_, __, ___) {
         bool showHandStrength = gameState.playerLocalConfig.showHandRank;
-        if (!gameState.gameSettings.showHandRank) {
+        if (!(gameState.gameSettings.showHandRank ?? false)) {
           showHandStrength = false;
+        }
+
+        if (gameState.customizationMode || TestService.isTesting) {
+          showHandStrength = true;
         }
         if (showHandStrength) {
           return _getRankText(gameState, context, boardAttributes);

@@ -9,6 +9,7 @@ import 'package:pokerapp/main.dart';
 import 'package:pokerapp/main_helper.dart';
 import 'package:pokerapp/models/app_state.dart';
 import 'package:pokerapp/models/club_model.dart';
+import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/screen_attributes.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
@@ -435,6 +436,15 @@ class _ClubsPageViewState extends State<ClubsPageView>
                             builder: (ctx) => SearchClubBottomSheet(),
                           );
                           _fetchClubs();
+                          // Map<String, dynamic> attribs;
+                          // try {
+                          //   ScreenAttributes.buildList();
+                          //   Size size = Size(390.0, 865.0);
+                          //   attribs = ScreenAttributes.getScreenAttribs('iPhone Something', 1.0, size);
+                          //   log('attribs length: ${attribs.length}');
+                          // } catch(err) {
+                          //   log('Error: ${err.toString()}');
+                          // }
                         },
                         focusNode: focusNodes[0],
                         theme: theme,

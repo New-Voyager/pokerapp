@@ -9,6 +9,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_mappings.dart';
+import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/screen_attributes.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:tuple/tuple.dart';
 
@@ -118,11 +119,15 @@ class BoardAttributesJson {
   Map<String, dynamic> attribs;
   void init(double screenSize) {
     if (Platform.isAndroid) {
-      attribs = AndroidAttribs.getAttribs(DeviceInfo.model, screenSize);
+      // attribs = AndroidAttribs.getAttribs(DeviceInfo.model, screenSize);
+      attribs = ScreenAttributes.getScreenAttribs(
+          DeviceInfo.model, screenSize, Screen.size);
     } else {
       // iphone
       // attribs = IPhoneAttribs.getIPhoneXS();
-      attribs = IPhoneAttribs.getAttribs(DeviceInfo.model, screenSize);
+      // attribs = IPhoneAttribs.getAttribs(DeviceInfo.model, screenSize);
+      attribs = ScreenAttributes.getScreenAttribs(
+          DeviceInfo.model, screenSize, Size(0, 0));
     }
   }
 

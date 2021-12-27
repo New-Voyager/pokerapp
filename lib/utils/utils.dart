@@ -8,15 +8,20 @@ import 'package:ios_utsname_ext/extension.dart';
 
 class Screen {
   final Size _size;
-  Screen(this._size);
+  final double _devicePixelRatio;
+  Screen(this._size, this._devicePixelRatio);
 
   static Screen _screen;
   static void init(BuildContext c) {
-    final size = MediaQuery.of(c).size;
-    _screen = new Screen(size);
+    final query = MediaQuery.of(c);
+    _screen = new Screen(query.size, query.devicePixelRatio);
   }
 
   static double get _ppi => (Platform.isAndroid || Platform.isIOS) ? 150 : 96;
+
+  static double get devicePixelRatio {
+    return _screen._devicePixelRatio;
+  }
 
   static int get screenSize {
     int diagonalSize = diagonalInches.floor();
@@ -28,6 +33,11 @@ class Screen {
 
   static double get screenSizeInches {
     return double.parse(Screen.diagonalInches.toStringAsPrecision(2));
+  }
+
+  static Size get physicalSize {
+    return Size(_screen._size.width * _screen._devicePixelRatio,
+        _screen._size.height * _screen._devicePixelRatio);
   }
 
   // bool isLandscape() =>

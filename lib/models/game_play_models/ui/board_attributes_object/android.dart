@@ -195,8 +195,8 @@ class AndroidAttribs {
           "centerPotScale": 0.90,
           "centerPotUpdatesScale": 0.90,
           "centerRankScale": 0.80,
-          "boardScale": 0.90,
-          "tableScale": 1.0,
+          "boardScale": 1.20,
+          "tableScale": 1.20,
           "seatMap": {
             "bottomCenter": "0, 80",
             "bottomLeft": "15, 70",
