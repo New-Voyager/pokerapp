@@ -422,9 +422,9 @@ String androidAttribs() {
     "base": "pixel2",
     "name": "pixel3",
     "models": ["pixel 3"],
-    "screenSize": "392, 737",
+    "screenSize": "392, 735",
     "diagonalMinSize": 5.6,
-    "diagonalMaxSize": 5.6,
+    "diagonalMaxSize": 5.9,
     "board": {
       "centerOffset": "15, 95",
       "seatMap": {

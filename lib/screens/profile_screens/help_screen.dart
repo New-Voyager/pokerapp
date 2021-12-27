@@ -159,7 +159,7 @@ class HelpScreen extends StatelessWidget {
 
   List<Widget> getSystemInfo() {
     final attribs = ScreenAttributes.getScreenAttribsObject(
-          DeviceInfo.model, Screen.diagonalInches, Screen.size);
+        DeviceInfo.model, Screen.diagonalInches, Screen.size);
 
     return [
       Container(
@@ -175,11 +175,9 @@ class HelpScreen extends StatelessWidget {
       Container(
           margin: EdgeInsets.symmetric(vertical: 8),
           child: Text('Screen Physical Dimensions: ${Screen.physicalSize}')),
-
       Container(
           margin: EdgeInsets.symmetric(vertical: 8),
           child: Text('Screen Dimensions: ${Screen.size}')),
-
       Container(
           margin: EdgeInsets.symmetric(vertical: 4),
           child: Text('model: ${DeviceInfo.model}')),
