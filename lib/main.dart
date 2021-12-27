@@ -31,8 +31,8 @@ AppState appState = AppState();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  appState.currentFlavor = Flavor.DEV;
-  //appState.currentFlavor = Flavor.PROD;
+  //appState.currentFlavor = Flavor.DEV;
+  appState.currentFlavor = Flavor.PROD;
 
   // Register all the models and services before the app starts
   if (Platform.isAndroid) {
@@ -168,6 +168,7 @@ class _MyAppState extends State<MyApp> {
                 builder: (context, orientation, deviceType) {
                   // SizerUtil().init(constraints, orientation);
                   //SizerUtil().setScreenSize(constraints, orientation);
+                  final appTheme = context.read<AppTheme>();
                   return MaterialApp(
                     title: FlavorConfig.of(context).appName,
                     debugShowCheckedModeBanner: false,
@@ -176,6 +177,9 @@ class _MyAppState extends State<MyApp> {
                       colorScheme: ColorScheme.dark(),
                       visualDensity: VisualDensity.adaptivePlatformDensity,
                       fontFamily: AppAssetsNew.fontFamilyPoppins,
+                      textSelectionTheme: TextSelectionThemeData(
+                        cursorColor: appTheme.accentColor,
+                      ),
                     ),
                     onGenerateRoute: Routes.generateRoute,
                     initialRoute: Routes.initial,

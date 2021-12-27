@@ -876,11 +876,12 @@ class HandActionProtoService {
         }
         tableState.addFlopCards(2, cards);
         tableState.updateTwoBoardsNeeded(true);
+        await Future.delayed(Duration(milliseconds: 500));
         tableState.notifyAll();
-        await Future.delayed(Duration(seconds: 1));
       } else {
         tableState.updateTwoBoardsNeeded(false);
       }
+      AudioService.stopSound();
       playerCardRanks = message.flop.playerCardRanks;
     } else if (stage == 'turn') {
       _gameState.handState = HandState.TURN;
@@ -912,7 +913,6 @@ class HandActionProtoService {
       playerCardRanks = message.river.playerCardRanks;
       tableState.addTurnOrRiverCard(
           1, CardHelper.getCard(riverCard, colorCards: _gameState.colorCards));
-      AudioService.playFlop(mute: _gameState.playerLocalConfig.mute);
       tableState.notifyAll();
       await Future.delayed(Duration(seconds: 1));
       if (message.river.boards.length == 2) {
@@ -929,6 +929,8 @@ class HandActionProtoService {
         await Future.delayed(Duration(seconds: 1));
       }
     }
+    AudioService.stopSound();
+
     if (_close) return;
     updateRank(playerCardRanks);
   }

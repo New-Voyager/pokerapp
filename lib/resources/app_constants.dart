@@ -23,6 +23,14 @@ class AppConstants {
     'donkey',
     'funny',
     'joy',
+    'laugh',
+    'excited',
+    'bluff',
+    'suck',
+    'happy',
+    'dance',
+    'angry',
+    'mad',
   ];
 
   static DateFormat CHAT_DATE_TIME_FORMAT = DateFormat("hh:mm a");

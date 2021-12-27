@@ -20,6 +20,39 @@ class GifCacheService {
   ) =>
       !cacheBox.containsKey(_getKey(category));
 
+  static Future<void> _refreshPathForFavGifs() async {
+    Directory downloadsDirectory = await getApplicationDocumentsDirectory();
+
+    final fgBox = HiveDatasource.getInstance.getBox(BoxType.FAV_GIF_BOX);
+
+    List<TenorResult> trs = [];
+
+    fgBox.values.forEach((data) => trs.add(TenorResult.fromJson(data)));
+
+    if (trs.length > 0) {
+      final oldCachePath = trs.first.cache;
+      final oldDirPath =
+          oldCachePath.substring(0, oldCachePath.lastIndexOf("/"));
+      final newDirPath = downloadsDirectory.path;
+      print('oldDirPath: $oldDirPath');
+      print('newPath: $newDirPath');
+
+      final Map<String, String> updatedGifs = Map();
+
+      if (oldDirPath != newDirPath) {
+        for (final gif in trs) {
+          gif.cache = gif.cache.replaceFirst(oldDirPath, newDirPath);
+          print('NEW UPDATED PATH: ${gif.cache}');
+
+          updatedGifs[gif.id] = gif.toJson();
+        }
+
+        // finally save
+        await fgBox.putAll(updatedGifs);
+      }
+    }
+  }
+
   /* use this method to keep a cache of the all the gifs from the categories array */
   static Future<void> cacheGifCategories(
     List<String> categories, {
@@ -67,6 +100,8 @@ class GifCacheService {
         }
       }
     }
+
+    await _refreshPathForFavGifs();
   }
 
   /* check in the storage, if exists, return else return null */

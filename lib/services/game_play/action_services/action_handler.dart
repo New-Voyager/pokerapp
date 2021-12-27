@@ -273,7 +273,7 @@ class PlayerActionHandler {
     // log('NextAction: handle next action handState: ${_gameState.handState.toString()}'); // reset result in progress flag
     try {
       // stop game audio
-      // AudioService.stopSound();
+      //AudioService.stopSound();
       var actionChange = message.actionChange;
       int seatNo = actionChange.seatNo;
       //log('Hand Message: ::handleNextAction:: START seatNo: $seatNo');
@@ -351,6 +351,7 @@ class PlayerActionHandler {
       if (me == null) {
         return;
       }
+      AudioService.stopSound();
 
       final seatAction = message.seatAction;
       if (me.seatNo != seatAction.seatNo) {
@@ -529,8 +530,10 @@ class PlayerActionHandler {
         action.action == HandActions.RAISE ||
         action.action == HandActions.CALL) {
       AudioService.playBet(mute: _gameState.playerLocalConfig.mute);
+      await Future.delayed(Duration(milliseconds: 500));
     } else if (action.action == HandActions.FOLD) {
       AudioService.playFold(mute: _gameState.playerLocalConfig.mute);
+      await Future.delayed(Duration(milliseconds: 500));
       seat.player.playerFolded = true;
       seat.player.animatingFold = true;
       seat.notify();
@@ -540,6 +543,7 @@ class PlayerActionHandler {
       }
     } else if (action.action == HandActions.CHECK) {
       AudioService.playCheck(mute: _gameState.playerLocalConfig.mute);
+      await Future.delayed(Duration(milliseconds: 500));
     }
     seat.notify();
 
