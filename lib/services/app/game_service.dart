@@ -294,6 +294,7 @@ class GameService {
           buyIn
           profit
           rakePaid
+          externalId
         }
       }
   """;

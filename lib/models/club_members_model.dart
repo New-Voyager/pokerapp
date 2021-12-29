@@ -242,6 +242,8 @@ class MemberCreditHistory {
   double updatedCredits;
   double amount;
   DateTime updatedDate;
+  bool followup;
+  int transId;
 
   MemberCreditHistory();
 
@@ -256,6 +258,13 @@ class MemberCreditHistory {
         double.parse((json['updatedCredits'] ?? '0').toString());
     history.amount = double.parse((json['amount'] ?? '0').toString());
     history.updatedDate = DateTime.tryParse(json['updateDate'] ?? '');
+    history.followup = false;
+    if (json['followup'] != null) {
+      history.followup = json['followup'];
+    }
+    if (json['transId'] != null) {
+      history.transId = int.parse(json['transId'].toString());
+    }
     return history;
   }
 

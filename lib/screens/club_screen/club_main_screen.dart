@@ -18,6 +18,7 @@ import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/screens/main_screens/purchase_page_view/coin_update.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
 import 'package:pokerapp/services/test/mock_data.dart';
+import 'package:pokerapp/utils/formatter.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
@@ -114,7 +115,9 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew>
                             right: 20.pw,
                             child: Column(children: [
                               Text('Credits'),
-                              Text(clubModel.availableCredit.toString(),
+                              Text(
+                                  DataFormatter.chipsFormat(
+                                      clubModel.availableCredit),
                                   style: TextStyle(
                                       color: clubModel.availableCredit < 0
                                           ? Colors.redAccent

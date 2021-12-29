@@ -6,10 +6,13 @@ import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/services/app/club_interior_service.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
+import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
+import 'package:pokerapp/widgets/dialogs.dart';
+import 'package:pokerapp/widgets/switch_widget.dart';
 
 /* this dialog handles the timer, as well as the messages sent to the server, when on tapped / on dismissed */
 class CreditsSettings {
@@ -18,6 +21,8 @@ class CreditsSettings {
   bool setCredit;
   double credits;
   bool cancelled;
+  bool followup;
+  bool clearFollowups;
   String notes = '';
   CreditsSettings() {
     addCredit = false;
@@ -25,6 +30,8 @@ class CreditsSettings {
     setCredit = false;
     credits = 0;
     cancelled = false;
+    followup = false;
+    clearFollowups = false;
   }
 }
 
@@ -61,19 +68,24 @@ class SetCreditsDialog {
     if (!settings.cancelled) {
       log('credits: ${settings.credits} notes: ${settings.notes}');
       print(credits.toString());
+
+      if (settings.clearFollowups) {
+        await ClubInteriorService.clearAllFollowups(clubCode, playerUuid);
+      }
+
       if (settings.addCredit) {
         // add
-        await ClubInteriorService.addPlayerCredit(
-            clubCode, playerUuid, settings.credits.toDouble(), settings.notes);
+        await ClubInteriorService.addPlayerCredit(clubCode, playerUuid,
+            settings.credits.toDouble(), settings.notes, settings.followup);
       } else if (settings.deductCredit) {
         // deduct
-        await ClubInteriorService.deductPlayerCredit(
-            clubCode, playerUuid, settings.credits.toDouble(), settings.notes);
+        await ClubInteriorService.deductPlayerCredit(clubCode, playerUuid,
+            settings.credits.toDouble(), settings.notes, settings.followup);
       } else if (settings.setCredit) {
         // set
         // update credits
-        await ClubInteriorService.setPlayerCredit(
-            clubCode, playerUuid, settings.credits.toDouble(), settings.notes);
+        await ClubInteriorService.setPlayerCredit(clubCode, playerUuid,
+            settings.credits.toDouble(), settings.notes, settings.followup);
       }
     }
     return ret;
@@ -109,6 +121,9 @@ class _CreditDialogsWidgetState extends State<CreditDialogsWidget> {
   double credits = 0;
   bool loadingCredits = false;
   bool closed = false;
+  bool clearFollowups = false;
+  bool followup = false;
+
   @override
   void initState() {
     super.initState();
@@ -182,17 +197,17 @@ class _CreditDialogsWidgetState extends State<CreditDialogsWidget> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           // sep
-          SizedBox(height: 15.ph),
+          SizedBox(height: 5.ph),
           Text(widget.name,
-              style: AppDecorators.getHeadLine2Style(theme: widget.theme)),
-          SizedBox(height: 15.ph),
+              style: AppDecorators.getHeadLine4Style(theme: widget.theme)),
+          SizedBox(height: 5.ph),
           Row(children: [
             Text('Available Credits',
-                style: AppDecorators.getHeadLine3Style(theme: widget.theme)),
+                style: AppDecorators.getHeadLine5Style(theme: widget.theme)),
             SizedBox(width: 10),
             creditsWidget,
           ]),
-          SizedBox(height: 15.ph),
+          SizedBox(height: 5.ph),
           ToggleButtons(
             children: [
               Icon(Icons.add,
@@ -203,7 +218,7 @@ class _CreditDialogsWidgetState extends State<CreditDialogsWidget> {
                   size: 32,
                   color:
                       isSelected[1] ? Colors.black : widget.theme.accentColor),
-              Icon(Icons.assignment,
+              Icon(Icons.check,
                   size: 32,
                   color:
                       isSelected[2] ? Colors.black : widget.theme.accentColor),
@@ -224,10 +239,10 @@ class _CreditDialogsWidgetState extends State<CreditDialogsWidget> {
           Text(
             title,
             style: TextStyle(
-              fontSize: 16.dp,
+              fontSize: 10.dp,
             ),
           ),
-          SizedBox(height: 15.ph),
+          SizedBox(height: 5.ph),
           CardFormTextField(
             controller: creditsController,
             theme: widget.theme,
@@ -238,21 +253,49 @@ class _CreditDialogsWidgetState extends State<CreditDialogsWidget> {
           ),
 
           // sep
-          SizedBox(height: 15.ph),
+          SizedBox(height: 5.ph),
 
           CardFormTextField(
             controller: notesController,
             theme: widget.theme,
             keyboardType: TextInputType.text,
             hintText: 'Enter Notes',
-            maxLines: 2,
-            maxLength: 200,
+            maxLines: 1,
+            maxLength: 60,
             showCharacterCounter: true,
             onChanged: (val) {},
           ),
           // sep
-          SizedBox(height: 15.ph),
-
+          SizedBox(height: 5.ph),
+          SwitchWidget(
+            icon: Icons.flag,
+            label: 'Follow-up',
+            value: followup,
+            onChange: (bool v) {
+              followup = v;
+            },
+          ),
+          SwitchWidget(
+            label: 'Clear Follow-ups',
+            value: clearFollowups,
+            onChange: (bool v) async {
+              if (v) {
+                bool ret = await showPrompt(context, 'Follow-up',
+                    'Do you want to clear follow-ups from all entries?',
+                    positiveButtonText: 'Yes', negativeButtonText: 'No');
+                if (ret) {
+                  clearFollowups = true;
+                } else {
+                  clearFollowups = false;
+                  setState(() {});
+                }
+              } else {
+                clearFollowups = v;
+              }
+            },
+          ),
+          // sep
+          SizedBox(height: 5.ph),
           /* yes / no button */
           Center(
             child: Row(
@@ -273,7 +316,7 @@ class _CreditDialogsWidgetState extends State<CreditDialogsWidget> {
                 ),
 
                 /* divider */
-                SizedBox(width: 10.ph),
+                SizedBox(width: 5.ph),
 
                 /* true button */
                 RoundRectButton(
@@ -297,6 +340,8 @@ class _CreditDialogsWidgetState extends State<CreditDialogsWidget> {
                       // update credits
                       widget.settings.setCredit = true;
                     }
+                    widget.settings.followup = followup;
+                    widget.settings.clearFollowups = clearFollowups;
                     Navigator.pop(
                       context,
                       true,

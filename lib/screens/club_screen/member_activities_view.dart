@@ -87,10 +87,13 @@ class _ClubMemberActivitiesScreenState
           // remove activities that are within this date range
           activities = [];
           for (final activity in tipsActivities) {
-            final date = activity.lastPlayedDate.toLocal();
-            if (date.isAfter(start) && date.isBefore(end)) {
-              activities.add(activity);
-            }
+            activities.add(activity);
+            // final date = activity.lastPlayedDate.toLocal();
+
+            // log('Activities: start: ${start.toIso8601String()} end: ${end.toIso8601String()} activityDate: ${activity.');
+            // if (date.isAfter(start) && date.isBefore(end)) {
+            //   activities.add(activity);
+            // }
           }
         } else {
           includeLastPlayedDate = true;
@@ -122,12 +125,13 @@ class _ClubMemberActivitiesScreenState
         clubCode: widget.clubCode,
         club: widget.club,
         openMember: openMember,
+        onShare: onShare,
         activities: activities,
         includeTips: includeTips,
-        includeLastPlayedDate: includeLastPlayedDate,
+        includeShareButton: includeLastPlayedDate,
         theme: theme);
     headers = [];
-
+    headers.add('');
     headers.add('Name');
     headers.add('Credits');
     if (includeTips) {
@@ -139,7 +143,7 @@ class _ClubMemberActivitiesScreenState
     }
     if (includeLastPlayedDate) {
       headers.add('Contact');
-      headers.add('Last Active');
+      headers.add('Share');
     }
 
     loading = false;
@@ -352,11 +356,30 @@ class _ClubMemberActivitiesScreenState
 
   void _handleDownload() async {
     if (memberActivitiesForDownload.isEmpty) return;
-
-    final csv = MemberActivity.makeCsv(
-      headers: headers,
-      activities: memberActivitiesForDownload,
-    );
+    List<String> headers = [];
+    String csv;
+    if (filtered) {
+      headers.addAll([
+        "id",
+        "name",
+        "credits",
+        "tips",
+        "tb_perc",
+        "tb",
+        "buyin",
+        "profit"
+      ]);
+      csv = MemberActivity.makeActivitiesFilteredCsv(
+        headers: headers,
+        activities: memberActivitiesForDownload,
+      );
+    } else {
+      headers.addAll(["id", "name", "credits"]);
+      csv = MemberActivity.makeActivitiesCsv(
+        headers: headers,
+        activities: memberActivitiesForDownload,
+      );
+    }
 
     print(csv);
 
@@ -364,11 +387,15 @@ class _ClubMemberActivitiesScreenState
 
     final file = File('${tempDir.path}/Member Activities.csv');
     await file.writeAsString(csv);
-
+    DateTime now = DateTime.now();
+    String nowStr = DateFormat("dd-MMM-yyyy HH:MM").format(now);
+    String text =
+        'Activities of club ${widget.clubCode} recorded as of $nowStr';
     Share.shareFiles(
       [file.path],
       mimeTypes: ['text/csv'],
       subject: 'Member Activities',
+      text: text,
     );
   }
 
@@ -427,6 +454,11 @@ class _ClubMemberActivitiesScreenState
     return SizedBox(width: 16.0.ph, height: 16.0.ph);
   }
 
+  void onShare(String name, String playerUuid, double credits) async {
+    String text = '$name\n${DataFormatter.chipsFormat(credits)}';
+    Share.share(text);
+  }
+
   void openMember(String playerUuid) async {
     bool canOpen = false;
     if (widget.club.isOwner) {
@@ -440,18 +472,29 @@ class _ClubMemberActivitiesScreenState
       return;
     }
     log('clubCode: ${widget.clubCode} playerUuid: $playerUuid');
-    bool updated = await Navigator.pushNamed(
+
+    bool ret = await Navigator.pushNamed(
       context,
-      Routes.club_member_detail_view,
+      Routes.club_member_credit_detail_view,
       arguments: {
-        "clubCode": widget.clubCode,
-        "playerId": playerUuid,
-        "currentOwner": true,
+        'clubCode': widget.clubCode,
+        'playerId': playerUuid,
+        'owner': true,
+        'member': null, // widget.member,
       },
     ) as bool;
-    if (updated) {
-      await fetchData();
-    }
+    //   bool updated = await Navigator.pushNamed(
+    //     context,
+    //     Routes.club_member_detail_view,
+    //     arguments: {
+    //       "clubCode": widget.clubCode,
+    //       "playerId": playerUuid,
+    //       "currentOwner": true,
+    //     },
+    //   ) as bool;
+    //   if (updated) {
+    //     await fetchData();
+    //   }
   }
 }
 
@@ -460,16 +503,18 @@ class DataSource extends DataTableSource {
   String clubCode;
   ClubHomePageModel club;
   bool includeTips;
-  bool includeLastPlayedDate;
+  bool includeShareButton;
   AppTheme theme;
   Function openMember;
+  Function onShare;
   DataSource(
       {this.clubCode,
       this.club,
       this.activities,
       this.openMember,
+      this.onShare,
       this.includeTips = false,
-      this.includeLastPlayedDate = false,
+      this.includeShareButton = false,
       this.theme});
 
   @override
@@ -484,11 +529,17 @@ class DataSource extends DataTableSource {
       creditColor = Colors.greenAccent;
     }
 
+    if (activity.followup) {
+      cells.add(DataCell(Icon(Icons.flag, color: theme.accentColor)));
+    } else {
+      cells.add(DataCell(Container()));
+    }
+
     Color color = null;
     cells.add(
       DataCell(
           Container(
-            width: 50,
+            width: 80,
             child: Text(activity.name),
           ), onTap: () {
         openMember(activity.playerUuid);
@@ -496,7 +547,7 @@ class DataSource extends DataTableSource {
     );
     cells.add(DataCell(
         Container(
-          width: 100,
+          width: 50,
           child: Text(
             DataFormatter.chipsFormat(activity.credits),
             style: TextStyle(color: creditColor, fontWeight: FontWeight.bold),
@@ -534,25 +585,34 @@ class DataSource extends DataTableSource {
       );
     }
 
-    if (includeLastPlayedDate) {
+    if (includeShareButton) {
       cells.add(
         DataCell(Text(activity.contactInfo), onTap: () {
           openMember(activity.playerUuid);
         }),
       );
 
-      if (activity.lastPlayedDate != null) {
-        var lastPlayedDate = activity.lastPlayedDate.toLocal();
-        final diff = DateTime.now().difference(lastPlayedDate);
-        final ago = new DateTime.now().subtract(diff);
-        String agoText = timeago.format(ago).replaceAll("about", "");
-        agoText = agoText.replaceAll("minutes", "mins");
-        cells.add(
-          DataCell(Text(agoText), onTap: () {
-            openMember(activity.playerUuid);
-          }),
-        );
-      }
+      cells.add(
+        DataCell(Icon(Icons.share), onTap: () {
+          // share this data via share app
+          onShare(activity.name, activity.playerUuid, activity.credits);
+        }),
+      );
+      // if (activity.lastPlayedDate != null) {
+      //   var lastPlayedDate = activity.lastPlayedDate.toLocal();
+      //   final diff = DateTime.now().difference(lastPlayedDate);
+      //   final ago = new DateTime.now().subtract(diff);
+      //   String agoText = timeago.format(ago).replaceAll("about", "");
+      //   agoText = agoText.replaceAll("minutes", "mins");
+      //   if (agoText == "a moment ago") {
+      //     agoText = "a min ago";
+      //   }
+      //   cells.add(
+      //     DataCell(Text(agoText), onTap: () {
+      //       openMember(activity.playerUuid);
+      //     }),
+      //   );
+      // }
     }
     if (activity.credits < 0) {
       color = Color.fromRGBO(0x40, 0, 0, 100);

@@ -65,20 +65,32 @@ class ClubInteriorService {
   """;
 
   static String setCreditMutation = """
-      mutation sc(\$clubCode: String!, \$playerUuid: String!, \$notes: String \$amount: Float!) {
-        ret: setCredit(clubCode:\$clubCode playerUuid:\$playerUuid, amount:\$amount, notes: \$notes) 
+      mutation sc(\$clubCode: String!, \$playerUuid: String!, \$notes: String \$amount: Float! \$followup: Boolean) {
+        ret: setCredit(clubCode:\$clubCode playerUuid:\$playerUuid, amount:\$amount, notes: \$notes, followup: \$followup) 
       }
   """;
 
   static String addCreditMutation = """
-      mutation ac(\$clubCode: String!, \$playerUuid: String!, \$notes: String \$amount: Float!) {
-        ret: addCredit(clubCode:\$clubCode playerUuid:\$playerUuid, amount:\$amount, notes: \$notes) 
+      mutation ac(\$clubCode: String!, \$playerUuid: String!, \$notes: String \$amount: Float! \$followup: Boolean) {
+        ret: addCredit(clubCode:\$clubCode playerUuid:\$playerUuid, amount:\$amount, notes: \$notes, followup: \$followup) 
       }
   """;
 
   static String deductCreditMutation = """
-      mutation dc(\$clubCode: String!, \$playerUuid: String!, \$notes: String \$amount: Float!) {
-        ret: deductCredit(clubCode:\$clubCode playerUuid:\$playerUuid, amount:\$amount, notes: \$notes) 
+      mutation dc(\$clubCode: String!, \$playerUuid: String!, \$notes: String \$amount: Float! \$followup: Boolean) {
+        ret: deductCredit(clubCode:\$clubCode playerUuid:\$playerUuid, amount:\$amount, notes: \$notes, followup: \$followup) 
+      }
+  """;
+
+  static String clearFollowupMutation = """
+      mutation cf(\$clubCode: String!, \$playerUuid: String!, \$transId: Int!) {
+        ret: clearFollowup(clubCode:\$clubCode playerUuid:\$playerUuid, transId: \$transId)
+      }
+  """;
+
+  static String clearAllFollowupsMutation = """
+      mutation cf(\$clubCode: String!, \$playerUuid: String!) {
+        ret: clearAllFollowups(clubCode:\$clubCode playerUuid:\$playerUuid)
       }
   """;
 
@@ -121,6 +133,8 @@ class ClubInteriorService {
           updatedCredits
           amount
           updateDate
+          followup
+          transId
         }
       }
   """;
@@ -133,6 +147,8 @@ class ClubInteriorService {
             lastPlayedDate
             contactInfo
             availableCredit
+            followup
+            externalId
           }
         }
   """;
@@ -338,14 +354,15 @@ class ClubInteriorService {
     return history;
   }
 
-  static Future<String> setPlayerCredit(
-      String clubCode, String playerID, double amount, String notes) async {
+  static Future<String> setPlayerCredit(String clubCode, String playerID,
+      double amount, String notes, bool followup) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     Map<String, dynamic> variables = {
       "clubCode": clubCode,
       "playerUuid": playerID,
       "amount": amount,
-      "notes": notes
+      "notes": notes,
+      "followup": followup
     };
     QueryResult result = await _client.mutate(MutationOptions(
         document: gql(setCreditMutation), variables: variables));
@@ -412,14 +429,15 @@ class ClubInteriorService {
     return members;
   }
 
-  static Future<String> addPlayerCredit(
-      String clubCode, String playerID, double amount, String notes) async {
+  static Future<String> addPlayerCredit(String clubCode, String playerID,
+      double amount, String notes, bool followup) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     Map<String, dynamic> variables = {
       "clubCode": clubCode,
       "playerUuid": playerID,
       "amount": amount,
-      "notes": notes
+      "notes": notes,
+      "followup": followup,
     };
     QueryResult result = await _client.mutate(MutationOptions(
         document: gql(addCreditMutation), variables: variables));
@@ -432,17 +450,55 @@ class ClubInteriorService {
     return ret;
   }
 
-  static Future<String> deductPlayerCredit(
-      String clubCode, String playerID, double amount, String notes) async {
+  static Future<String> deductPlayerCredit(String clubCode, String playerID,
+      double amount, String notes, bool followup) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     Map<String, dynamic> variables = {
       "clubCode": clubCode,
       "playerUuid": playerID,
       "amount": amount,
-      "notes": notes
+      "notes": notes,
+      "followup": followup,
     };
     QueryResult result = await _client.mutate(MutationOptions(
         document: gql(deductCreditMutation), variables: variables));
+    if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
+    final ret = result.data['ret'].toString();
+    return ret;
+  }
+
+  static Future<String> clearFollowupFlag(
+      String clubCode, String playerID, int transId) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    Map<String, dynamic> variables = {
+      "clubCode": clubCode,
+      "playerUuid": playerID,
+      "transId": transId,
+    };
+    QueryResult result = await _client.mutate(MutationOptions(
+        document: gql(clearFollowupMutation), variables: variables));
+    if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
+    final ret = result.data['ret'].toString();
+    return ret;
+  }
+
+  static Future<String> clearAllFollowups(
+      String clubCode, String playerID) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    Map<String, dynamic> variables = {
+      "clubCode": clubCode,
+      "playerUuid": playerID,
+    };
+    QueryResult result = await _client.mutate(MutationOptions(
+        document: gql(clearAllFollowupsMutation), variables: variables));
     if (result.hasException) {
       if (result.exception.graphqlErrors.length > 0) {
         return null;

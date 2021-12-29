@@ -54,7 +54,7 @@ class CardFormTextField extends StatelessWidget {
       ),
       elevation: elevation,
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 10.pw, vertical: 5.ph),
+        padding: EdgeInsets.symmetric(horizontal: 5.pw, vertical: 1.ph),
         child: TextFormField(
           onTap: onTap,
           autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -69,7 +69,7 @@ class CardFormTextField extends StatelessWidget {
           keyboardType: keyboardType,
           style: TextStyle(
             color: theme.supportingColor,
-            fontSize: 12.dp,
+            fontSize: 10.dp,
           ),
           decoration: InputDecoration(
               hintText: hintText,

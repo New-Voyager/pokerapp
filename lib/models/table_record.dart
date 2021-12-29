@@ -1,3 +1,5 @@
+import 'package:pokerapp/utils/formatter.dart';
+
 class TableRecord {
   List<TableRecordRow> rows;
 
@@ -27,6 +29,17 @@ class TableRecord {
     ret = ret + ">";
     return ret;
   }
+
+  String toCsv() {
+    String ret = '';
+    // headers
+    ret = 'name,id,hands,buyin,profit,tips\n';
+    for (var i = 0; i < rows.length; i++) {
+      ret = ret + rows[i].toCsv() + '\n';
+    }
+    ret = ret + '\n';
+    return ret;
+  }
 }
 
 class TableRecordRow {
@@ -37,6 +50,7 @@ class TableRecordRow {
   double buyIn;
   double profit;
   double rakePaid;
+  String externalId;
 
   TableRecordRow.fromJson(Map<String, dynamic> data) {
     this.playerName = data['playerName'];
@@ -46,6 +60,19 @@ class TableRecordRow {
     this.buyIn = data['buyIn'].toDouble();
     this.profit = data['profit'].toDouble();
     this.rakePaid = data['rakePaid'].toDouble();
+    this.externalId = data['externalId'];
+  }
+
+  String toCsv() {
+    List<String> cols = [
+      playerName,
+      externalId,
+      handsPlayed.toString(),
+      DataFormatter.chipsFormat(buyIn),
+      DataFormatter.chipsFormat(profit),
+      DataFormatter.chipsFormat(rakePaid),
+    ];
+    return cols.join(',');
   }
 
   String toString() {

@@ -7,6 +7,8 @@ import 'package:intl/intl.dart';
 class MemberActivity {
   String name;
   String playerUuid;
+  String externalId;
+  bool followup;
   double credits;
   DateTime lastPlayedDate;
   String contactInfo;
@@ -43,6 +45,16 @@ class MemberActivity {
     if (json['availableCredit'] != null) {
       activity.credits = double.parse(json['availableCredit'].toString());
     }
+
+    if (json['externalId'] != null) {
+      activity.externalId = json['externalId'];
+    }
+
+    activity.followup = false;
+    if (json['followup'] != null) {
+      activity.followup = json['followup'];
+    }
+
     activity.lastPlayedDate = DateTime.parse(json['lastPlayedDate']).toLocal();
     activity.tips = double.parse((json['tips'] ?? 0).toString());
     activity.tipsBack = double.parse((json['tipsBack'] ?? 0).toString());
@@ -117,6 +129,43 @@ headers.add('Name');
 
     for (final a in activities) {
       csvList.add(headers.map((h) => _getValue(a, h)).toList());
+    }
+
+    final csvConverter = ListToCsvConverter();
+    return csvConverter.convert([headers, ...csvList]);
+  }
+
+  static String makeActivitiesCsv({
+    @required final List<String> headers,
+    @required final List<MemberActivity> activities,
+  }) {
+    final csvList = <List<dynamic>>[];
+
+    for (final a in activities) {
+      csvList.add([a.externalId, a.name, a.credits]);
+    }
+
+    final csvConverter = ListToCsvConverter();
+    return csvConverter.convert([headers, ...csvList]);
+  }
+
+  static String makeActivitiesFilteredCsv({
+    @required final List<String> headers,
+    @required final List<MemberActivity> activities,
+  }) {
+    final csvList = <List<dynamic>>[];
+
+    for (final a in activities) {
+      csvList.add([
+        a.externalId,
+        a.name,
+        a.credits,
+        a.tips,
+        a.tipsBack,
+        a.tipsBackAmount,
+        a.buyin,
+        a.profit
+      ]);
     }
 
     final csvConverter = ListToCsvConverter();

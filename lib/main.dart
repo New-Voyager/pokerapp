@@ -31,8 +31,8 @@ AppState appState = AppState();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  //appState.currentFlavor = Flavor.DEV;
-  appState.currentFlavor = Flavor.PROD;
+  appState.currentFlavor = Flavor.DEV;
+  //appState.currentFlavor = Flavor.PROD;
 
   // Register all the models and services before the app starts
   if (Platform.isAndroid) {
