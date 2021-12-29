@@ -131,6 +131,7 @@ class _CreditDialogsWidgetState extends State<CreditDialogsWidget> {
     isSelected.add(false);
     isSelected.add(false);
     isSelected.add(true);
+    credits = widget.credits;
     if (widget.credits == null) {
       loadingCredits = true;
       setState(() {});

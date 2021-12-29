@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:pokerapp/enums/game_type.dart';
+
 GameSettings gameSettingsInputFromJson(String str) =>
     GameSettings.fromJson(json.decode(str));
 
@@ -60,6 +62,7 @@ class GameSettings {
   List roeGames;
   List dealerChoiceGames;
   bool dealerChoiceOrbit;
+  BuyInApprovalLimit buyInApprovalLimit = BuyInApprovalLimit.BUYIN_CREDIT_LIMIT;
 
   factory GameSettings.fromJson(Map<String, dynamic> json) {
     final gameSettings = GameSettings(
