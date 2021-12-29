@@ -18,6 +18,7 @@ mutation updateInputs(\$gameCode :String!,\$inputSettings: GameSettingsUpdateInp
       ret:gameSettings(gameCode :\$gameCode){
         audioConfEnabled
         buyInApproval
+        buyInLimit
         runItTwiceAllowed
         allowRabbitHunt
         showHandRank

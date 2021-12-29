@@ -124,7 +124,9 @@ class StatusOptionsWidget extends StatelessWidget {
     gameState.buyInKeyboardShown = true;
 
     String header;
-    if (gameInfo.clubCode != null) {
+    if (gameInfo.clubCode != null &&
+        gameState.gameSettings.buyInApprovalLimit ==
+            BuyInApprovalLimit.BUYIN_CREDIT_LIMIT) {
       ConnectionDialog.show(
           context: context, loadingText: "Fetching available credits...");
 
@@ -132,11 +134,7 @@ class StatusOptionsWidget extends StatelessWidget {
           gameInfo.clubCode, gameState.mySeat.player.playerUuid.toString());
 
       ConnectionDialog.dismiss(context: context);
-
-      if (gameState.gameSettings.buyInApprovalLimit ==
-          BuyInApprovalLimit.BUYIN_CREDIT_LIMIT) {
-        header = "Available credits: " + DataFormatter.chipsFormat(credits);
-      }
+      header = "Available credits: " + DataFormatter.chipsFormat(credits);
     }
 
     String title =
@@ -157,7 +155,7 @@ class StatusOptionsWidget extends StatelessWidget {
       gameInfo.gameCode,
       value,
     );
-    if (!resp.approved) {
+    if (resp != null && !resp.approved) {
       if (resp.insufficientCredits) {
         String message =
             'Not enough credits available. Available credits: ${DataFormatter.chipsFormat(resp.availableCredits)}';
