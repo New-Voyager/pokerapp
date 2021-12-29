@@ -37,6 +37,7 @@ class NumericKeyboard2 extends StatelessWidget {
   final double min;
   final double max;
   final String title;
+  final String header;
   final double currValue;
   final bool decimalAllowed;
   final bool evenNumber;
@@ -45,6 +46,7 @@ class NumericKeyboard2 extends StatelessWidget {
   NumericKeyboard2({
     Key key,
     this.title,
+    this.header,
     this.min,
     this.max,
     this.currValue,
@@ -97,6 +99,13 @@ class NumericKeyboard2 extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  /* header */
+                  (header != null && header.trim().length != 0)
+                      ? _buildHeader(
+                          header: header,
+                        )
+                      : Container(),
+
                   /* title & close button */
                   _buildTitle(
                     title: title,
@@ -141,6 +150,18 @@ class NumericKeyboard2 extends StatelessWidget {
       title,
       style: TextStyle(
         fontSize: 16.dp,
+        color: Colors.white,
+      ),
+    );
+  }
+
+  Widget _buildHeader({
+    String header = '',
+  }) {
+    return Text(
+      header,
+      style: TextStyle(
+        fontSize: 14.dp,
         color: Colors.white,
       ),
     );
@@ -498,6 +519,7 @@ class NumericKeyboard2 extends StatelessWidget {
   static Future<double> show(
     BuildContext context, {
     String title = 'Title goes here',
+    String header = '',
     double min = 0,
     double max,
     double currentVal,
@@ -518,6 +540,7 @@ class NumericKeyboard2 extends StatelessWidget {
         alignment: Alignment.bottomCenter,
         child: NumericKeyboard2(
           title: title,
+          header: header,
           min: min,
           max: max,
           currValue: val,

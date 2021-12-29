@@ -1,5 +1,8 @@
 import 'dart:convert';
 
+import 'package:pokerapp/enums/game_type.dart';
+import 'package:pokerapp/models/game_play_models/business/game_resp.dart';
+
 GameSettings gameSettingsInputFromJson(String str) =>
     GameSettings.fromJson(json.decode(str));
 
@@ -60,6 +63,7 @@ class GameSettings {
   List roeGames;
   List dealerChoiceGames;
   bool dealerChoiceOrbit;
+  BuyInApprovalLimit buyInApprovalLimit = BuyInApprovalLimit.BUYIN_NO_LIMIT;
 
   factory GameSettings.fromJson(Map<String, dynamic> json) {
     final gameSettings = GameSettings(
@@ -90,6 +94,10 @@ class GameSettings {
       dealerChoiceGames: json["dealerChoiceGames"] ?? [],
       dealerChoiceOrbit: json["dealerChoiceOrbit"] ?? true,
     );
+    if (json["buyInLimit"] != null) {
+      gameSettings.buyInApprovalLimit =
+          BuyInApprovalLimitSerialization.fromJson(json["buyInLimit"]);
+    }
     return gameSettings;
   }
 

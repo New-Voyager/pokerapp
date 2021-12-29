@@ -23,6 +23,7 @@ import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
+import 'package:pokerapp/services/app/clubs_service.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/data/game_hive_store.dart';
 import 'package:pokerapp/services/data/game_log_store.dart';
@@ -546,12 +547,29 @@ class GamePlayScreenUtilMethods {
       return;
     }
 
+    String header;
+    if (gameInfo.clubCode != null) {
+      ConnectionDialog.show(
+          context: context, loadingText: "Fetching available credits...");
+
+      double credits = await ClubsService.getAvailableCredit(
+          gameInfo.clubCode, gameState.mySeat.player.playerUuid.toString());
+
+      ConnectionDialog.dismiss(context: context);
+
+      if (gameState.gameSettings.buyInApprovalLimit ==
+          BuyInApprovalLimit.BUYIN_CREDIT_LIMIT) {
+        header = "Available credits: " + DataFormatter.chipsFormat(credits);
+      }
+    }
+
     gameState.buyInKeyboardShown = true;
     String title =
         'Buy In (${DataFormatter.chipsFormat(gameInfo.buyInMin)} - ${DataFormatter.chipsFormat(gameInfo.buyInMax)})';
     /* use numeric keyboard to get buyin */
     double value = await NumericKeyboard2.show(
       context,
+      header: header,
       title: title,
       min: gameInfo.buyInMin.toDouble(),
       max: gameInfo.buyInMax.toDouble(),
