@@ -12,9 +12,10 @@ import 'package:pokerapp/screens/club_screen/set_credits_dialog.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/club_interior_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
+import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/widgets/buttons.dart';
-import 'package:pokerapp/widgets/custom_text_button.dart' as customButton;
+import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:share/share.dart';
 
 import '../../routes.dart';
@@ -37,7 +38,14 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
   AppTheme theme;
   List<MemberCreditHistory> history;
 
-  final List<String> headers = ['Date', 'Note', 'Type', 'Amount', 'Credits'];
+  final List<String> headers = [
+    '',
+    'Date',
+    'Note',
+    'Type',
+    'Amount',
+    'Credits'
+  ];
   bool loading;
   ClubMemberModel member;
   bool changed = false;
@@ -53,6 +61,8 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
 
   void fetchData() async {
     try {
+      loading = true;
+      setState(() {});
       member = await ClubInteriorService.getClubMemberDetail(
           widget.clubCode, widget.playerId);
       history = await ClubInteriorService.getCreditHistory(
@@ -62,10 +72,22 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
         items: history,
         theme: theme,
         onTap: openItem,
+        clearFlag: clearFlag,
       );
     } catch (err) {}
     loading = false;
     setState(() {});
+  }
+
+  void clearFlag(int transId) async {
+    bool ret = await showPrompt(
+        context, 'Clear', 'Do you want to clear follow-up flag?',
+        positiveButtonText: 'Yes', negativeButtonText: 'No');
+    if (ret) {
+      await ClubInteriorService.clearFollowupFlag(
+          widget.clubCode, widget.playerId, transId);
+      fetchData();
+    }
   }
 
   Future<void> openItem(String activity, String gameCode) async {
@@ -81,241 +103,6 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
       },
     );
   }
-
-  // Widget activities() {
-  //   return Expanded(
-  //     child: Container(
-  //       decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
-  //       child: ListView.builder(
-  //           physics: BouncingScrollPhysics(),
-  //           itemCount: history.length,
-  //           shrinkWrap: true,
-  //           itemBuilder: (context, index) {
-  //             final item = history[index];
-  //             Widget historyItem = Container();
-  //             if (item.updateType == 'GAME_RESULT') {
-  //               historyItem = Container(
-  //                 color: theme.fillInColor,
-  //                 child: Padding(
-  //                   padding: const EdgeInsets.all(8.0),
-  //                   child: Column(
-  //                     children: [
-  //                       Row(
-  //                           crossAxisAlignment: CrossAxisAlignment.start,
-  //                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //                           children: [
-  //                             Column(
-  //                               children: [
-  //                                 Text('Game Code',
-  //                                     style: AppStylesNew.gameCodeTextStyle),
-  //                                 Text(item.gameCode)
-  //                               ],
-  //                             ),
-  //                             Column(
-  //                               children: [
-  //                                 Text(
-  //                                   "Stack",
-  //                                   style: AppStylesNew.accentTextStyle
-  //                                       .copyWith(
-  //                                           fontSize: 12.dp,
-  //                                           fontWeight: FontWeight.bold),
-  //                                 ),
-  //                                 Text(
-  //                                   '${DataFormatter.chipsFormat(item.amount)}',
-  //                                   style: TextStyle(
-  //                                     color: item.amount < 0
-  //                                         ? Colors.redAccent
-  //                                         : Colors.greenAccent,
-  //                                     fontSize: 12.dp,
-  //                                     fontWeight: FontWeight.w400,
-  //                                   ),
-  //                                 ),
-  //                               ],
-  //                             ),
-  //                             Text(
-  //                                 '${DataFormatter.chipsFormat(item.updatedCredits)}',
-  //                                 style: TextStyle(
-  //                                   color: item.updatedCredits < 0
-  //                                       ? Colors.redAccent
-  //                                       : Colors.greenAccent,
-  //                                   fontSize: 12.dp,
-  //                                   fontWeight: FontWeight.w400,
-  //                                 ))
-  //                           ]),
-  //                       Align(
-  //                           alignment: Alignment.centerRight,
-  //                           child: Text(item.updatedDate.toLocal().toString())),
-  //                       Divider(color: Colors.white),
-  //                     ],
-  //                   ),
-  //                 ),
-  //               );
-  //             } else if (item.updateType == 'BUYIN') {
-  //               historyItem = Container(
-  //                 color: theme.fillInColor,
-  //                 child: Padding(
-  //                   padding: const EdgeInsets.all(8.0),
-  //                   child: Column(
-  //                     children: [
-  //                       Row(
-  //                           crossAxisAlignment: CrossAxisAlignment.start,
-  //                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //                           children: [
-  //                             Column(
-  //                               children: [
-  //                                 Text('Game Code',
-  //                                     style: AppStylesNew.gameCodeTextStyle),
-  //                                 Text(item.gameCode)
-  //                               ],
-  //                             ),
-  //                             Column(
-  //                               children: [
-  //                                 Text(
-  //                                   "Buyin",
-  //                                   style: AppStylesNew.buyinTextStyle.copyWith(
-  //                                       fontSize: 12.dp,
-  //                                       fontWeight: FontWeight.bold),
-  //                                 ),
-  //                                 Text(
-  //                                   '${DataFormatter.chipsFormat(item.amount)}',
-  //                                   style: TextStyle(
-  //                                     color: item.amount < 0
-  //                                         ? Colors.redAccent
-  //                                         : Colors.greenAccent,
-  //                                     fontSize: 12.dp,
-  //                                     fontWeight: FontWeight.w400,
-  //                                   ),
-  //                                 ),
-  //                               ],
-  //                             ),
-  //                             Text(
-  //                                 '${DataFormatter.chipsFormat(item.updatedCredits)}',
-  //                                 style: TextStyle(
-  //                                   color: item.updatedCredits < 0
-  //                                       ? Colors.redAccent
-  //                                       : Colors.greenAccent,
-  //                                   fontSize: 12.dp,
-  //                                   fontWeight: FontWeight.w400,
-  //                                 ))
-  //                           ]),
-  //                       Align(
-  //                           alignment: Alignment.centerRight,
-  //                           child: Text(DataFormatter.dateFormat(
-  //                               item.updatedDate.toLocal()))),
-  //                       Divider(color: Colors.white),
-  //                     ],
-  //                   ),
-  //                 ),
-  //               );
-  //             } else if (item.updateType == 'CHANGE') {
-  //               historyItem = Container(
-  //                 color: theme.fillInColor,
-  //                 child: Padding(
-  //                   padding: const EdgeInsets.all(8.0),
-  //                   child: Column(
-  //                     children: [
-  //                       Row(
-  //                           crossAxisAlignment: CrossAxisAlignment.start,
-  //                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //                           children: [
-  //                             Column(
-  //                               children: [
-  //                                 Text(item.notes),
-  //                               ],
-  //                             ),
-  //                             Text(
-  //                                 '${DataFormatter.chipsFormat(item.updatedCredits)}',
-  //                                 style: TextStyle(
-  //                                   color: item.updatedCredits < 0
-  //                                       ? Colors.redAccent
-  //                                       : Colors.greenAccent,
-  //                                   fontSize: 12.dp,
-  //                                   fontWeight: FontWeight.w400,
-  //                                 ))
-  //                           ]),
-  //                       SizedBox(
-  //                         height: 5.ph,
-  //                       ),
-  //                       Align(
-  //                         alignment: Alignment.centerRight,
-  //                         child: Text('Updated by ${item.adminName}',
-  //                             style: AppStylesNew.footerResultTextStyle3),
-  //                       ),
-  //                       Align(
-  //                           alignment: Alignment.centerRight,
-  //                           child: Text(DataFormatter.dateFormat(
-  //                               item.updatedDate.toLocal()))),
-  //                       Divider(color: Colors.white),
-  //                     ],
-  //                   ),
-  //                 ),
-  //               );
-  //             } else if (item.updateType == 'ADD' ||
-  //                 item.updateType == 'DEDUCT') {
-  //               bool add = item.updateType == 'ADD';
-  //               historyItem = Container(
-  //                 color: theme.fillInColor,
-  //                 child: Padding(
-  //                   padding: const EdgeInsets.all(8.0),
-  //                   child: Column(
-  //                     children: [
-  //                       Row(
-  //                           crossAxisAlignment: CrossAxisAlignment.start,
-  //                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //                           children: [
-  //                             Column(
-  //                               children: [
-  //                                 Text(item.notes),
-  //                               ],
-  //                             ),
-  //                             Column(
-  //                               children: [
-  //                                 Text(
-  //                                   item.updateType == 'ADD' ? 'Add' : 'Deduct',
-  //                                   style: AppStylesNew.buyinTextStyle.copyWith(
-  //                                       color: add
-  //                                           ? Colors.greenAccent
-  //                                           : Colors.redAccent,
-  //                                       fontSize: 12.dp,
-  //                                       fontWeight: FontWeight.bold),
-  //                                 ),
-  //                                 Text(
-  //                                   '${DataFormatter.chipsFormat(item.amount)}',
-  //                                   style: TextStyle(
-  //                                     color: !add
-  //                                         ? Colors.redAccent
-  //                                         : Colors.greenAccent,
-  //                                     fontSize: 12.dp,
-  //                                     fontWeight: FontWeight.w400,
-  //                                   ),
-  //                                 ),
-  //                               ],
-  //                             ),
-  //                             Text(
-  //                                 '${DataFormatter.chipsFormat(item.updatedCredits)}',
-  //                                 style: TextStyle(
-  //                                   color: item.updatedCredits < 0
-  //                                       ? Colors.redAccent
-  //                                       : Colors.greenAccent,
-  //                                   fontSize: 12.dp,
-  //                                   fontWeight: FontWeight.w400,
-  //                                 ))
-  //                           ]),
-  //                       Align(
-  //                           alignment: Alignment.centerRight,
-  //                           child: Text(DataFormatter.dateFormat(
-  //                               item.updatedDate.toLocal()))),
-  //                       Divider(color: Colors.white),
-  //                     ],
-  //                   ),
-  //                 ),
-  //               );
-  //             }
-  //             return historyItem;
-  //           }),
-  //     ),
-  //   );
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -414,7 +201,7 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
                 // main table
                 Expanded(
                   child: Padding(
-                    padding: EdgeInsets.symmetric(vertical: 5.0),
+                    padding: EdgeInsets.symmetric(vertical: 2.0),
                     child: activitiesTable(),
                   ),
                 ),
@@ -437,15 +224,14 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
     print(csv);
 
     final tempDir = await getTemporaryDirectory();
-
     final file = File('${tempDir.path}/Member Credit History.csv');
     await file.writeAsString(csv);
-
-    Share.shareFiles(
+    await Share.shareFiles(
       [file.path],
       mimeTypes: ['text/csv'],
       subject: 'Member Credit History',
     );
+    file.delete();
   }
 
   Widget buildBanner() {
@@ -534,8 +320,9 @@ class DataCreditSource extends DataTableSource {
   DateFormat format = DateFormat("dd MMM");
   AppTheme theme;
   Function onTap;
+  Function clearFlag;
 
-  DataCreditSource({this.items, this.theme, this.onTap}) {
+  DataCreditSource({this.items, this.theme, this.onTap, this.clearFlag}) {
     format.add_jm();
   }
 
@@ -579,6 +366,15 @@ class DataCreditSource extends DataTableSource {
     return DataRow.byIndex(
       index: index,
       cells: [
+        item.followup
+            ? DataCell(
+                Container(
+                    width: 10,
+                    child: Icon(Icons.flag, color: theme.accentColor)),
+                onTap: () async {
+                clearFlag(item.transId);
+              })
+            : DataCell(Container(width: 10)),
         DataCell(
           Container(
             width: 50.pw,

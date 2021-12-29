@@ -1,9 +1,10 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:pokerapp/main_helper.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/models/table_record.dart';
@@ -16,7 +17,6 @@ import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/hand_table_bar_chart_profit.dart';
-import 'package:provider/provider.dart';
 import 'package:share/share.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
@@ -423,9 +423,19 @@ class _TableResultScreenState extends State<TableResultScreen>
   downloadTable(String gameCode) async {
     Future.delayed(Duration(seconds: 1), () async {
       try {
-        final result = await GameService.downloadResult(gameCode);
-        String subject = '${_appScreenText['tableResultGame']}: $gameCode';
-        Share.share(result, subject: subject);
+        final result =
+            data.toCsv(); //await GameService.downloadResult(gameCode);
+        String subject = 'Game Result: $gameCode';
+
+        final tempDir = await getTemporaryDirectory();
+        final file = File('${tempDir.path}/$gameCode-result.csv');
+        await file.writeAsString(result);
+        await Share.shareFiles(
+          [file.path],
+          mimeTypes: ['text/csv'],
+          subject: subject,
+        );
+        file.delete();
       } catch (err) {
         log('Error: ${err.toString()}, ${err.stackTrace}');
       }
