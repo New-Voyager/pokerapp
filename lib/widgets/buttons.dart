@@ -429,11 +429,15 @@ class RotateImagesButton extends StatelessWidget {
   final bool split;
 
   Widget build(BuildContext context) {
+    Color buttonColor = theme.accentColor;
+    Color buttonBackGround = Colors.black;
+    Color buttonBorder = theme.accentColor;
+
     List<Widget> svgWidget = [];
 
     svgImages.forEach((element) {
-      svgWidget.add(SvgPicture.asset(element,
-          width: 16, height: 16, color: theme.primaryColorWithDark()));
+      svgWidget.add(
+          SvgPicture.asset(element, width: 24, height: 24, color: buttonColor));
     });
 
     Widget blinkWidget = BlinkWidget(
@@ -451,11 +455,10 @@ class RotateImagesButton extends StatelessWidget {
           Container(
             width: 40.0,
             height: 40.0,
-            padding: const EdgeInsets.all(6),
+            padding: EdgeInsets.all(2.pw),
             decoration: BoxDecoration(
-              color: theme.circleImageButtonBackgroundColor,
-              border: Border.all(
-                  color: theme.circleImageButtonBorderColor, width: 2.0),
+              color: buttonBackGround,
+              border: Border.all(color: buttonBorder, width: 2.0),
               borderRadius: BorderRadius.circular(20.0),
             ),
             child: Center(child: blinkWidget),
