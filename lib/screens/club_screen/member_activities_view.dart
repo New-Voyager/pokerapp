@@ -165,19 +165,24 @@ class _ClubMemberActivitiesScreenState
       );
     }
     List<DataColumn> columns = [];
+
     for (final header in headers) {
       columns.add(
         DataColumn(
           label: Center(
-            child: Text(header,
-                style: AppDecorators.getSubtitle1Style(theme: theme).copyWith(
-                  color: theme.accentColor,
-                )),
+            child: Text(
+              header,
+              style: AppDecorators.getSubtitle1Style(theme: theme).copyWith(
+                color: theme.accentColor,
+              ),
+            ),
           ),
         ),
       );
     }
+
     Widget filter = Container();
+
     if (unsettled) {
       filter = Text(
         'Unsettled',
@@ -213,8 +218,10 @@ class _ClubMemberActivitiesScreenState
           fontWeight: FontWeight.w600,
         ),
       );
+
       String startDate = DateFormat.yMMMd().format(start);
       String endDate = DateFormat.yMMMd().format(end);
+
       Widget subTitle = Text(
         '$startDate - $endDate',
         style: AppDecorators.getHeadLine4Style(theme: theme),
@@ -227,6 +234,7 @@ class _ClubMemberActivitiesScreenState
         ],
       );
     }
+
     return SafeArea(
       top: false,
       child: Container(
@@ -288,9 +296,14 @@ class _ClubMemberActivitiesScreenState
                       start = DateTime(range.start.year, range.start.month,
                               range.start.day, 0, 0, 0)
                           .toUtc();
-                      end = DateTime(range.end.year, range.end.month,
-                              range.end.day, 23, 59, 59)
-                          .toUtc();
+                      end = DateTime(
+                        range.end.year,
+                        range.end.month,
+                        range.end.day,
+                        23,
+                        59,
+                        59,
+                      ).toUtc();
                       log('start: ${start.toIso8601String()} end: ${end.toIso8601String()}');
                     }
                     loading = true;
@@ -317,7 +330,7 @@ class _ClubMemberActivitiesScreenState
               filter,
               const SizedBox(height: 20.0),
 
-// download button
+              // download button
               Align(
                   alignment: Alignment.topRight,
                   child: RoundRectButton(
@@ -337,14 +350,19 @@ class _ClubMemberActivitiesScreenState
               const SizedBox(height: 10.0),
 
               Expanded(
-                child: PaginatedDataTable(
-                  // header: Text('Member Activities'),
-                  columns: columns,
-                  showFirstLastButtons: true,
-                  arrowHeadColor: theme.accentColor,
-                  source: dts,
-                  rowsPerPage: 10,
-                  columnSpacing: 15,
+                child: Theme(
+                  data: Theme.of(context).copyWith(
+                    cardColor: theme.primaryColorWithDark(),
+                    dividerColor: theme.accentColor,
+                  ),
+                  child: PaginatedDataTable(
+                    columns: columns,
+                    showFirstLastButtons: true,
+                    arrowHeadColor: theme.accentColor,
+                    source: dts,
+                    rowsPerPage: 10,
+                    columnSpacing: 15,
+                  ),
                 ),
               ),
             ],
@@ -628,24 +646,11 @@ class DataSource extends DataTableSource {
       color: MaterialStateColor.resolveWith(
         (states) {
           if (index % 2 == 0) {
-            color = Colors.blueGrey[800];
+            color = theme.fillInColor;
           } else {
             color = Colors.black54;
           }
           return color;
-          if (theme != null) {
-            if (index % 2 == 0) {
-              return theme.primaryColorWithDark(0.1);
-            } else {
-              return theme.primaryColorWithLight(0.1);
-            }
-          }
-
-          if (index % 2 == 0) {
-            return Colors.blueGrey[600];
-          } else {
-            return Colors.grey[500];
-          }
         },
       ),
     );
