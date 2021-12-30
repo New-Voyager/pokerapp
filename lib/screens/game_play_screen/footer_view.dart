@@ -15,14 +15,15 @@ class FooterViewWidget extends StatelessWidget {
   final PlayerInfo currentPlayer;
   final GameInfoModel gameInfo;
   final Function(BuildContext) toggleChatVisibility;
+  final Function() onStartGame;
 
-  FooterViewWidget({
-    this.gameCode,
-    this.gameContextObject,
-    this.currentPlayer,
-    this.gameInfo,
-    this.toggleChatVisibility,
-  });
+  FooterViewWidget(
+      {this.gameCode,
+      this.gameContextObject,
+      this.currentPlayer,
+      this.gameInfo,
+      this.toggleChatVisibility,
+      this.onStartGame});
 
   @override
   Widget build(BuildContext context) {
@@ -43,14 +44,14 @@ class FooterViewWidget extends StatelessWidget {
           ),
         ),
         child: FooterView(
-          gameContext: gameContextObject,
-          gameCode: gameCode,
-          playerUuid: currentPlayer.uuid,
-          chatVisibilityChange: () {
-            this.toggleChatVisibility(context);
-          },
-          clubCode: gameInfo.clubCode,
-        ),
+            gameContext: gameContextObject,
+            gameCode: gameCode,
+            playerUuid: currentPlayer.uuid,
+            chatVisibilityChange: () {
+              this.toggleChatVisibility(context);
+            },
+            clubCode: gameInfo.clubCode,
+            onStartGame: onStartGame),
       ),
     );
   }

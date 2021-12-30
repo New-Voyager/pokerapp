@@ -4,18 +4,29 @@ import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
+import 'package:pokerapp/resources/new/app_assets_new.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/animating_widgets/my_last_action_animating_widget.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/board_view/center_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/status_options_buttons.dart';
+import 'package:pokerapp/services/app/game_service.dart';
+import 'package:pokerapp/services/game_play/graphql/seat_change_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
+import 'package:pokerapp/widgets/buttons.dart';
+import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import 'communication_view.dart';
@@ -34,14 +45,15 @@ class FooterView extends StatefulWidget {
   final String playerUuid;
   final Function chatVisibilityChange;
   final GameContextObject gameContext;
+  final Function onStartGame;
 
-  FooterView({
-    @required this.gameContext,
-    @required this.gameCode,
-    @required this.playerUuid,
-    @required this.chatVisibilityChange,
-    @required this.clubCode,
-  });
+  FooterView(
+      {@required this.gameContext,
+      @required this.gameCode,
+      @required this.playerUuid,
+      @required this.chatVisibilityChange,
+      @required this.clubCode,
+      @required this.onStartGame});
 
   @override
   _FooterViewState createState() => _FooterViewState();
@@ -59,6 +71,7 @@ class _FooterViewState extends State<FooterView>
 
   final Function eq = const ListEquality().equals;
   GameState _gameState;
+  AppTextScreen _appScreenText;
 
   bool _needsRebuilding(PlayerModel me) {
     bool cardsChanged = true;
@@ -107,6 +120,10 @@ class _FooterViewState extends State<FooterView>
   void _init() {
     // get the game card visibility state from local storage
     _gameState = GameState.getState(context);
+    var tableState = _gameState.tableState;
+    tableState.addListener(tableStateListener);
+    vnGameStatus.value = tableState.gameStatus;
+    vnTableStatus.value = tableState.tableStatus;
     bool visible = true;
     if (_gameState.customizationMode) {
       visible = true;
@@ -119,6 +136,12 @@ class _FooterViewState extends State<FooterView>
 
   void _dispose() {
     _gameState.myState.removeListener(onPlayersChanges);
+  }
+
+  void tableStateListener() {
+    vnGameStatus.value = _gameState.tableState.gameStatus;
+    vnTableStatus.value = _gameState.tableState.tableStatus;
+    vnShowCardShuffling.value = _gameState.tableState.showCardsShuffling;
   }
 
   /* hand analyse view builder */
@@ -315,6 +338,170 @@ class _FooterViewState extends State<FooterView>
     );
   }
 
+  final vnGameStatus = ValueNotifier<String>(null);
+  final vnTableStatus = ValueNotifier<String>(null);
+  final vnShowCardShuffling = ValueNotifier<bool>(false);
+
+  Widget _buildGamePauseOptions(
+    GameState gameState,
+    Offset centerViewButtonOffset,
+  ) {
+    // log('Center: center_view _buildGamePauseOptions');
+    final gameContext = Provider.of<GameContextObject>(context, listen: false);
+
+    return Transform.translate(
+      offset: centerViewButtonOffset,
+      child: Consumer2<SeatChangeNotifier, TableState>(
+        builder:
+            (_, SeatChangeNotifier seatChange, TableState tableState, __) =>
+                ValueListenableBuilder2<String, String>(
+          vnGameStatus,
+          vnTableStatus,
+          builder: (_, gameStatus, tableStatus, __) {
+            // log('Center: Rebuilding center view: Is game running: ${gameState.isGameRunning}');
+
+            if (tableState.gameStatus == AppConstants.GAME_PAUSED) {
+              if (!seatChange.seatChangeInProgress) {
+                if (gameContext.isHost()) {
+                  return pauseButtons(context);
+                }
+              }
+            }
+            return Container();
+          },
+        ),
+      ),
+    );
+  }
+
+  void _onResumePress(BuildContext context, gameCode) {
+    GameService.resumeGame(gameCode);
+
+    // redraw the top section
+    final gameState = GameState.getState(context);
+    gameState.redrawBoard();
+  }
+
+  Future<void> _onTerminatePress(BuildContext context) async {
+    final response = await showPrompt(
+        context, 'Terminate', "Do you want to terminate the game?",
+        positiveButtonText: 'Yes', negativeButtonText: 'No');
+    if (response != null && response == true) {
+      final gameState = GameState.getState(context);
+      log('Termininating game ${gameState.gameCode}');
+      await GameService.endGame(gameState.gameCode);
+      if (gameState.uiClosing) {
+        return;
+      }
+      if (appState != null) {
+        appState.setGameEnded(true);
+      }
+      if (!gameState.isGameRunning) {
+        gameState.refresh();
+      }
+    }
+  }
+
+  void _onRearrangeSeatsPress(context) async {
+    GameContextObject gameContextObject = Provider.of<GameContextObject>(
+      context,
+      listen: false,
+    );
+    final gameState = GameState.getState(context);
+
+    Alerts.showNotification(
+        titleText: _appScreenText['game'],
+        svgPath: AppAssetsNew.seatChangeImagePath,
+        subTitleText: _appScreenText['movePlayerDescription'],
+        duration: Duration(seconds: 30));
+
+    Provider.of<SeatChangeNotifier>(
+      context,
+      listen: false,
+    )
+      ..updateSeatChangeHost(gameContextObject.playerId)
+      ..updateSeatChangeInProgress(true);
+    await SeatChangeService.hostSeatChangeBegin(gameState.gameCode);
+    gameState.hostSeatChangeInProgress = true;
+
+    await gameState.refresh();
+    gameState.redrawFooter();
+    log('status: ${gameState.gameInfo.status} table status: ${gameState.gameInfo.tableStatus}');
+  }
+
+  Widget pauseButtons(BuildContext context) {
+    final gameContext = Provider.of<GameContextObject>(context, listen: false);
+    final gameState = GameState.getState(context);
+    log('is admin: ${gameContext.isAdmin()} isHost: ${gameContext.isHost()}');
+    final providerContext = context;
+    return Consumer<GameContextObject>(
+      builder: (context, gameContext, _) => gameContext.isAdmin()
+          ? Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 20.0,
+                vertical: 10.0,
+              ),
+              decoration: AppStylesNew.resumeBgDecoration,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(bottom: 8),
+                    child: Text(
+                      _appScreenText['gamePaused'],
+                      style: AppStylesNew.cardHeaderTextStyle,
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      // Resume Button
+                      IconAndTitleWidget(
+                        child: SvgPicture.asset(
+                          AppAssetsNew.resumeImagePath,
+                          height: 48.ph,
+                          width: 48.pw,
+                        ),
+                        onTap: () {
+                          _onResumePress(context, gameState.gameCode);
+                        },
+                        text: _appScreenText['resume'],
+                      ),
+
+                      // Rearrange Button
+                      IconAndTitleWidget(
+                        child: SvgPicture.asset(
+                          AppAssetsNew.seatChangeImagePath,
+                          height: 48.ph,
+                          width: 48.pw,
+                        ),
+                        onTap: () {
+                          _onRearrangeSeatsPress(providerContext);
+                        },
+                        text: _appScreenText['rearrange'],
+                      ),
+
+                      // Terminate Button
+                      IconAndTitleWidget(
+                        child: SvgPicture.asset(
+                          AppAssetsNew.terminateImagePath,
+                          height: 48.ph,
+                          width: 48.pw,
+                        ),
+                        onTap: () {
+                          _onTerminatePress(context);
+                        },
+                        text: _appScreenText['terminate'],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            )
+          : Container(),
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -331,6 +518,7 @@ class _FooterViewState extends State<FooterView>
   Widget build(BuildContext context) {
     final gameState = GameState.getState(context);
     final theme = AppTheme.getTheme(context);
+    _appScreenText = getAppTextScreen("centerButtonView");
     bool playerGame = false;
     if (gameState.gameInfo.clubCode == null ||
         gameState.gameInfo.clubCode == '') {
@@ -377,6 +565,35 @@ class _FooterViewState extends State<FooterView>
       /* my last action */
       children.add(_buildMyLastActionWidget(context));
     }
+
+    final bool isGamePausedOrWaiting = gameState.gameInfo.status ==
+            AppConstants.GAME_PAUSED ||
+        gameState.gameInfo.tableStatus == AppConstants.WAITING_TO_BE_STARTED;
+
+    final boardAttr = context.read<BoardAttributesObject>();
+
+    /* if the game is paused, show the options available during game pause */
+    // don't show start/pause buttons for bot script games
+    children.add(ValueListenableBuilder3<String, String, bool>(
+        vnGameStatus, vnTableStatus, vnShowCardShuffling,
+        builder: (_, gameStatus, tableStatus, showCardsShuffling, __) {
+      if (!gameState.isBotGame) {
+        if (isGamePausedOrWaiting || !gameState.isGameRunning) {
+          return Align(
+            alignment: Alignment.center,
+            child: Padding(
+              padding: const EdgeInsets.all(60.0),
+              child: _buildGamePauseOptions(
+                gameState,
+                boardAttr.centerButtonsPos,
+              ),
+            ),
+          );
+        }
+      }
+      return Container();
+    }));
+
     return Stack(children: [
       Container(
         width: double.infinity,

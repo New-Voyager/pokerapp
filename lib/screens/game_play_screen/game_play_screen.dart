@@ -966,12 +966,12 @@ class _GamePlayScreenState extends State<GamePlayScreen>
           builder: (_, ___, __) {
             log('RedrawFooter: building footer view');
             return FooterViewWidget(
-              gameCode: widget.gameCode,
-              gameContextObject: _gameContextObj,
-              currentPlayer: _gameContextObj.gameState.currentPlayer,
-              gameInfo: _gameInfoModel,
-              toggleChatVisibility: _toggleChatVisibility,
-            );
+                gameCode: widget.gameCode,
+                gameContextObject: _gameContextObj,
+                currentPlayer: _gameContextObj.gameState.currentPlayer,
+                gameInfo: _gameInfoModel,
+                toggleChatVisibility: _toggleChatVisibility,
+                onStartGame: startGame);
           },
         ),
       ));
