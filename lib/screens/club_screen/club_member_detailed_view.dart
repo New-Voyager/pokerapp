@@ -150,9 +150,9 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
 
       // boot
       CircleImageButton(
-        icon: Icons.eject_rounded,
+        icon: Icons.remove,
         theme: theme,
-        caption: _appScreenText['boot'],
+        caption: 'Remove', //_appScreenText['boot'],
         onTap: () async {
           await kickPlayerOut();
         },

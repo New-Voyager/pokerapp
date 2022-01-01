@@ -156,6 +156,15 @@ class NotificationHandler {
                 duration: Duration(seconds: 5),
               );
             }
+          } else if (changed == 'NEW_MEMBER') {
+            String playerUuid = json['playerUuid'];
+            if (playerUuid == playerState.playerUuid) {
+              Alerts.showNotification(
+                titleText: 'Membership',
+                subTitleText: 'You are approved to join ${clubCode}',
+                duration: Duration(seconds: 5),
+              );
+            }
           }
         }
       } catch (err) {
@@ -339,6 +348,8 @@ class NotificationHandler {
         handleSystemAnnouncement(json);
       } else if (type == 'BUYIN_REQUEST') {
         handleBuyinRequest(json);
+      } else if (type == 'CREDIT_UPDATE') {
+        handleCreditUpdate(json);
       }
     }
   }
@@ -537,6 +548,17 @@ class NotificationHandler {
     await Future.delayed(Duration(milliseconds: 500));
     appState.buyinApprovals.shake = false;
     appState.buyinApprovals.notify();
+  }
+
+  // handle messages when app is running foreground
+  Future<void> handleCreditUpdate(Map<String, dynamic> json) async {
+    String text = json['text'].toString();
+    String clubName = json['clubName'].toString();
+    // toggle pending approvals
+    Alerts.showNotification(
+        titleText: 'Credits: ${clubName}',
+        subTitleText: text,
+        duration: Duration(seconds: 5));
   }
 
   Future<void> handleNewGame(Map<String, dynamic> json) async {

@@ -7,6 +7,7 @@ enum MessageType {
   JOIN_CLUB,
   LEAVE_CLUB,
   KICKED_OUT,
+  NEW_GAME,
 }
 
 class SharedHandMsg {
@@ -89,6 +90,9 @@ class ClubMessageModel {
         break;
       case 'KICKED_OUT':
         this.messageType = MessageType.KICKED_OUT;
+        break;
+      case 'NEW_GAME':
+        this.messageType = MessageType.NEW_GAME;
         break;
       default:
         this.messageType = MessageType.TEXT;
