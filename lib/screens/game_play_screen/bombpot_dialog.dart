@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game/new_game_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
@@ -25,6 +26,14 @@ class BombPotDialog {
     isSelected.add(false);
     isSelected.add(true);
     isSelected.add(false);
+
+    List<bool> gameSelected = [];
+    gameSelected.add(false);
+    gameSelected.add(true);
+    gameSelected.add(false);
+    gameSelected.add(false);
+    gameSelected.add(false);
+
     int bombPotBet = 5;
     bool doubleBoardBombPot = true;
 
@@ -67,7 +76,7 @@ class BombPotDialog {
                   children: [
                     AppLabel(dialogTitle, theme),
                     // sep
-                    SizedBox(height: 15.ph),
+                    SizedBox(height: 10.ph),
                     ToggleButtons(
                       children: [
                         Container(
@@ -105,10 +114,7 @@ class BombPotDialog {
                       },
                     ),
                     // sep
-                    SizedBox(height: 15.ph),
-
-                    // double board or not
-
+                    SizedBox(height: 10.ph),
                     // bomb pot bet size
                     AppLabel('Bet Size', theme),
 
@@ -127,6 +133,63 @@ class BombPotDialog {
                         doubleBoardBombPot = value;
                       },
                     ),
+
+                    ToggleButtons(
+                      children: [
+                        Container(
+                            padding: EdgeInsets.all(5),
+                            child: Text('NLH',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: gameSelected[0]
+                                        ? Colors.black
+                                        : theme.accentColor))),
+                        Container(
+                            padding: EdgeInsets.all(5),
+                            child: Text('PLO',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: gameSelected[1]
+                                        ? Colors.black
+                                        : theme.accentColor))),
+                        Container(
+                            padding: EdgeInsets.all(5),
+                            child: Text('5 Card\nPLO',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: gameSelected[2]
+                                        ? Colors.black
+                                        : theme.accentColor))),
+                        Container(
+                            padding: EdgeInsets.all(5),
+                            child: Text('PLO\nHi-Lo',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: gameSelected[3]
+                                        ? Colors.black
+                                        : theme.accentColor))),
+                        Container(
+                            padding: EdgeInsets.all(5),
+                            child: Text('5 Card\nPLO Hi-Lo',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: gameSelected[4]
+                                        ? Colors.black
+                                        : theme.accentColor))),
+                      ],
+                      isSelected: gameSelected,
+                      selectedColor: Colors.black,
+                      fillColor: theme.accentColor,
+                      onPressed: (int index) {
+                        setState(() {
+                          for (int i = 0; i < gameSelected.length; i++) {
+                            gameSelected[i] = false;
+                          }
+                          gameSelected[index] = true;
+                        });
+                      },
+                    ),
+                    SizedBox(height: 10.ph),
 
                     /* yes / no button */
                     Center(
@@ -171,18 +234,33 @@ class BombPotDialog {
         });
     if (ret) {
       log('bomb pot: $ret');
+      GameType gameType = GameType.UNKNOWN;
+      if (gameSelected[0]) {
+        gameType = GameType.HOLDEM;
+      } else if (gameSelected[1]) {
+        gameType = GameType.PLO;
+      } else if (gameSelected[2]) {
+        gameType = GameType.PLO_HILO;
+      } else if (gameSelected[3]) {
+        gameType = GameType.FIVE_CARD_PLO;
+      } else if (gameSelected[4]) {
+        gameType = GameType.FIVE_CARD_PLO_HILO;
+      }
+
       if (isSelected[0]) {
         // off
         await GameSettingsService.updateBombPot(gameCode, enableBombPot: false);
       } else if (isSelected[1]) {
         // next hand
         await GameSettingsService.updateBombPot(gameCode,
+            gameType: gameType,
             bombPotNextHand: true,
             bombPotBet: bombPotBet,
             doubleBoardBombPot: doubleBoardBombPot);
       } else if (isSelected[2]) {
         // every hand
         await GameSettingsService.updateBombPot(gameCode,
+            gameType: gameType,
             enableBombPot: true,
             bombPotEveryHand: true,
             bombPotBet: bombPotBet,
