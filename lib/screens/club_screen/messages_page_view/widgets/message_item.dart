@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
@@ -8,6 +9,7 @@ import 'package:pokerapp/models/club_message_model.dart';
 import 'package:pokerapp/models/handlog_model.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/proto/enums.pbserver.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/chat_screen/utils.dart';
@@ -15,6 +17,7 @@ import 'package:pokerapp/screens/chat_screen/widgets/chat_time.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/chat_user_avatar.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_winners_view2.dart';
 import 'package:pokerapp/screens/util_screens/replay_hand_dialog/replay_hand_dialog.dart';
+import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/widgets/attributed_gif_widget.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/widgets/buttons.dart';
@@ -172,6 +175,97 @@ class MessageItem extends StatelessWidget {
     );
   }
 
+  Widget _buildNewGame(BuildContext context, bool isMe, AppTheme theme) {
+    final newGameData = jsonDecode(messageModel.text);
+    int gameTypeInt = newGameData['gameType'] ?? -1;
+    if (gameTypeInt == -1) {
+      return Container();
+    }
+
+    double sb = double.parse(newGameData['sb'].toString()) / 100;
+    double bb = double.parse(newGameData['bb'].toString()) / 100;
+
+    String gameStr = 'Unknown';
+    if (gameTypeInt == GameType.HOLDEM.value) {
+      gameStr = 'No Limit Holdem';
+    } else if (gameTypeInt == GameType.FIVE_CARD_PLO) {
+      gameStr = '5-Card PLO';
+    } else if (gameTypeInt == GameType.PLO) {
+      gameStr = 'PLO';
+    } else if (gameTypeInt == GameType.PLO_HILO) {
+      gameStr = 'PLO Hi-Lo';
+    } else if (gameTypeInt == GameType.FIVE_CARD_PLO_HILO) {
+      gameStr = '5-Card Hi-Lo PLO';
+    }
+
+    Color tileColor = theme.primaryColorWithDark(0.9);
+    String text = gameStr +
+        ' ' +
+        DataFormatter.chipsFormat(sb) +
+        '/' +
+        DataFormatter.chipsFormat(bb);
+
+    return Container(
+      padding: EdgeInsets.all(8),
+      margin: EdgeInsets.only(
+        right: isMe ? 0.0 : extraPadding,
+        left: isMe ? extraPadding : 0.0,
+      ),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(5.0),
+        color: isMe ? theme.fillInColor : theme.primaryColor,
+      ),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Flexible(
+                flex: 3,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    RichText(
+                      text: TextSpan(
+                        text: newGameData['name'],
+                        style: AppDecorators.getAccentTextStyle(theme: theme),
+                        children: [
+                          TextSpan(
+                            text: " is hosting a new game",
+                            style:
+                                AppDecorators.getSubtitle2Style(theme: theme),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Text(
+                      text,
+                      style: AppDecorators.getSubtitle1Style(theme: theme)
+                          .copyWith(color: theme.accentColor),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          Container(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                ChatTimeWidget(
+                  date: messageModel.messageTime,
+                  isSender: isMe,
+                )
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildSharedHand(BuildContext context, bool isMe, AppTheme theme) {
     final playerName = players[messageModel.sender ?? ''] ?? 'Somebody';
     log('player: ${messageModel.sender} isMe: $isMe name: $playerName ${messageModel.text}');
@@ -302,6 +396,8 @@ class MessageItem extends StatelessWidget {
     log('player: ${messageModel.sender} isMe: $isMe name: $playerName ${messageModel.text}');
     if (messageModel.messageType == MessageType.HAND) {
       return _buildSharedHand(context, isMe, theme);
+    } else if (messageModel.messageType == MessageType.NEW_GAME) {
+      return _buildNewGame(context, isMe, theme);
     }
 
     AppTextScreen _appScreenText = getAppTextScreen("global");

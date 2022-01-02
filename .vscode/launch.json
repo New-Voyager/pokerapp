@@ -20,6 +20,28 @@
       ]
     },
     {
+      "name": "pokerapp-emulator",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "deviceId": "emulator-5554",
+      "args": [
+        "--flavor",
+        "dev"
+      ]
+    },
+    {
+      "name": "pokerapp-motog",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "deviceId": "ZY22CSMKCQ",
+      "args": [
+        "--flavor",
+        "dev"
+      ]
+    },    
+    {
       "name": "pokerapp-prod",
       "request": "launch",
       "type": "dart",
