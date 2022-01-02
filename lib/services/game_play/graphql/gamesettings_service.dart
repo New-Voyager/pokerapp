@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/main_helper.dart';
 import 'package:pokerapp/models/game/game_player_settings.dart';
 import 'package:pokerapp/models/game/game_settings.dart';
@@ -110,7 +111,8 @@ query mySettings(\$gameCode:String!){
   }
 
   static Future<bool> updateBombPot(String gameCode,
-      {bool enableBombPot,
+      {GameType gameType,
+      bool enableBombPot,
       int bombPotBet,
       bool bombPotNextHand,
       bool bombPotEveryHand,
@@ -121,6 +123,10 @@ query mySettings(\$gameCode:String!){
       "inputSettings": {}
     };
     Map<String, dynamic> settings = {};
+    if (gameType != null) {
+      settings["bombPotGameType"] = gameType.toJson();
+    }
+
     if (enableBombPot != null) {
       settings["bombPotEnabled"] = enableBombPot;
     }
