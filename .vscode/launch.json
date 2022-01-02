@@ -20,6 +20,16 @@
       ]
     },
     {
+      "name": "pokerapp-web",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "args": [
+        "--flavor",
+        "dev"
+      ]
+    },    
+    {
       "name": "pokerapp-emulator",
       "request": "launch",
       "type": "dart",
@@ -54,7 +64,7 @@
     {
       "name": "pokerapp-ios",
       "request": "launch",
-      "txype": "dart",
+      "type": "dart",
       "program": "lib/main.dart",
       "args": [
       ]
