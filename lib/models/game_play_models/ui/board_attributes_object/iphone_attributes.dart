@@ -735,10 +735,81 @@ String iPhoneAttribs = """
   {
     "base": "iPhone 12",
     "name": "iPhone 13",
-    "model": "iPhone 13",
     "models": ["iPhone 13", "iPhone 13 Pro"],
     "screenSize": "390.0, 844.0",
     "size": 6.2
+  },
+  {
+    "base": "iPhone 12",
+    "name": "iPhone 12 Pro Max",
+    "models": ["iPhone 12 Pro Max", "iPhone 13 Pro Max"],
+    "screenSize": "428.0, 926.0",
+    "size": 6.8,
+    "board": {
+      "centerViewScale": 0.90,
+      "tableScale": 1.2,
+      "seatMap": {
+        "bottomCenter": "0, 20",
+        "bottomLeft": "15, 10",
+        "bottomRight": "-15, 10",
+        "middleLeft": "2, 35",
+        "middleRight": "2, 35",
+        "topLeft": "2, 75",
+        "topRight": "2, 75",
+        "topCenter": "0, 50",
+        "topCenter1": "-50, 50",
+        "topCenter2": "55, 50"
+      },
+      "betAmountFac": {
+        "bottomCenter": "0, -1.0",
+        "topCenter": "0.20, 0.70",
+        "middleLeft": "0.10, 0.65",
+        "middleRight": "0.00, 0.65",
+        "topRight": "-0.10, 0.70",
+        "topLeft": "0.30, 0.65",
+        "bottomLeft": "0.70, -0.8",
+        "bottomRight": "-0.60, -0.8",
+        "topCenter1": "0.20, 0.7",
+        "topCenter2": "-0.20, 0.7"
+      },
+      "tableBottomPos": 0,
+      "boardHeightAdjust": -75,
+      "centerPotScale": 0.75,
+      "centerPotUpdatesScale": 0.70,
+      "centerGap": 2,
+      "centerViewPos": "0, -10.0",
+      "betImageScale": 3.0
+
+    },
+    "otherBetOptionButtonsSpreadRadius": 90.0,
+    "betButtonsOffset": "0, 80",
+
+    "holeCardDisplacement": {
+      "2": 37,
+      "4": 33,
+      "5": 28,
+      "default": 20
+    },
+    "holeCardDisplacementVisible": {
+      "2": 30,
+      "4": 20,
+      "5": 20,
+      "default": 20
+    },        
+    "holeCardScale": {
+      "2": 1.40,
+      "4": 1.20,
+      "5": 1.15,
+      "default": 1
+    },
+    "seat": {
+      "scale": 1.0,
+      "holeCardOffset": "0, 0",
+      "holeCardScale": 1.0
+    },
+
+    "footerViewHeightScale": 0.55,
+    "holeCardViewOffset": "0, 40"
   },
   {
     "base": "iPhone 12 mini",
