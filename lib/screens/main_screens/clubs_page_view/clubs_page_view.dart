@@ -7,9 +7,7 @@ import 'package:onboarding_overlay/onboarding_overlay.dart';
 import 'package:pokerapp/exceptions/exceptions.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/main_helper.dart';
-import 'package:pokerapp/models/app_state.dart';
 import 'package:pokerapp/models/club_model.dart';
-import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/screen_attributes.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
@@ -209,9 +207,7 @@ class _ClubsPageViewState extends State<ClubsPageView>
     } else {
       _clubs = await ClubsService.getMyClubs();
     }
-    for (final club in _clubs) {
-      log('club: ${club.clubName} status: ${club.memberStatus}');
-    }
+
     if (mounted) setState(() {});
   }
 
@@ -231,6 +227,15 @@ class _ClubsPageViewState extends State<ClubsPageView>
 
   void listener() {
     _fetchClubs(withLoading: false);
+    final natsClient = Provider.of<Nats>(context, listen: false);
+    for (final club in _clubs) {
+      log('club: ${club.clubName} status: ${club.memberStatus}');
+      if (!appState.mockScreens &&
+          natsClient != null &&
+          natsClient.clientSub != null) {
+        natsClient.subscribeClubMessages(club.clubCode);
+      }
+    }
   }
 
   @override

@@ -180,19 +180,6 @@ class Nats {
         clubNotifications(message.string);
         _updateAppState(message.string);
       }
-
-      /*
-      log('message in club channel: ${message.string}');
-      dynamic json = jsonDecode(message.string);
-      String changed = json['changed'];
-      String clubCode = json['clubCode'];
-      final clubChangeState = _providerContext.read<ClubsUpdateState>();
-      clubChangeState.updatedClubCode = clubCode;
-      clubChangeState.notify();
-      if (changed == 'CLUB_CHAT') {
-        // club chat message
-      }
-      */
     });
   }
 

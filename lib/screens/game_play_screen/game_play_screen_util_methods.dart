@@ -548,7 +548,9 @@ class GamePlayScreenUtilMethods {
     }
 
     String header;
-    if (gameInfo.clubCode != null) {
+    if (gameInfo.clubCode != null &&
+        gameState.gameSettings.buyInApprovalLimit ==
+            BuyInApprovalLimit.BUYIN_CREDIT_LIMIT) {
       ConnectionDialog.show(
           context: context, loadingText: "Fetching available credits...");
 

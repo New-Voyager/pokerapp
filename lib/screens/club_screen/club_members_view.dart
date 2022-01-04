@@ -200,14 +200,77 @@ class _ClubMembersViewState extends State<ClubMembersView>
                                         crossAxisAlignment:
                                             CrossAxisAlignment.stretch,
                                         children: [
-                                          Text(
-                                            _all[index].name,
-                                            textAlign: TextAlign.left,
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 17,
-                                              fontWeight: FontWeight.w600,
-                                            ),
+                                          Stack(
+                                            children: [
+                                              Container(
+                                                margin: EdgeInsets.only(
+                                                    top: 8, bottom: 8),
+                                                child: Row(
+                                                  children: <Widget>[
+                                                    Text(
+                                                      _all[index].name,
+                                                      textAlign: TextAlign.left,
+                                                      style: (_all[index]
+                                                                  .isManager ||
+                                                              _all[index]
+                                                                  .isOwner)
+                                                          ? AppDecorators
+                                                                  .getAccentTextStyle(
+                                                                      theme:
+                                                                          theme)
+                                                              .copyWith(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .normal)
+                                                          : AppDecorators
+                                                              .getSubtitle1Style(
+                                                                  theme: theme),
+                                                    ),
+                                                    // !widget.viewAsOwner ||
+                                                    //         data.contactInfo == null ||
+                                                    //         data.contactInfo.isEmpty
+                                                    //     ? SizedBox.shrink()
+                                                    //     : Text(
+                                                    //         '    ' + '(${data.contactInfo})',
+                                                    //         textAlign: TextAlign.left,
+                                                    //         style: AppDecorators
+                                                    //             .getHeadLine5Style(
+                                                    //                 theme: theme),
+                                                    //       ),
+                                                  ],
+                                                ),
+                                              ),
+                                              Positioned(
+                                                top: 0,
+                                                right: 5,
+                                                child: Visibility(
+                                                  visible:
+                                                      (_all[index].isManager ||
+                                                          _all[index].isOwner),
+                                                  child: Container(
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                      horizontal: 8,
+                                                      vertical: 2,
+                                                    ),
+                                                    decoration: AppDecorators
+                                                            .tileDecoration(
+                                                                theme)
+                                                        .copyWith(),
+                                                    child: Text(
+                                                      (_all[index].isManager
+                                                          ? 'Manager'
+                                                          : _all[index].isOwner
+                                                              ? 'Owner'
+                                                              : ""),
+                                                      style: AppDecorators
+                                                          .getSubtitle2Style(
+                                                              theme: theme),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ],
                                       ),

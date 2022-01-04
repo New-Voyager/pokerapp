@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/screen_attributes.dart';
 import 'package:pokerapp/services/data/game_templates.dart';
+import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -12,6 +13,7 @@ class AppService {
   GameTemplateStore gameTemplates;
   UserSettingsStore userSettings;
   SharedPreferences sharedPreferences;
+  Nats natsClient;
 
   Future<void> init() async {
     await HiveDatasource.getInstance.init();

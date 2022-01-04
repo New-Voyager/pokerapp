@@ -85,6 +85,7 @@ class _MainScreenState extends State<MainScreen>
       );
       final natsClient = Provider.of<Nats>(context, listen: false);
       _nats = natsClient;
+      appService.natsClient = natsClient;
       log('main_screen :: _currentPlayer.channel : ${_currentPlayer.channel}');
       await natsClient.init(_currentPlayer.channel);
       log('\n\n*********** Player UUID: ${_currentPlayer.uuid} ***********\n\n');
