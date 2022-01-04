@@ -121,6 +121,8 @@ class GameContextObject extends ChangeNotifier {
             AudioConferenceStatus.CONNECTED;
         this.gameState.playerLocalConfig.inAudioConference = true;
         this.gameState.communicationState.notify();
+
+        gameState.playerLocalConfig.inCall = true;
         _joinedAudio = true;
         _joiningAudio = false;
       } catch (err) {

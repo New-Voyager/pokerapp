@@ -44,6 +44,7 @@ class FooterView extends StatefulWidget {
   final String clubCode;
   final String playerUuid;
   final Function chatVisibilityChange;
+  final Function joinAudioConference;
   final GameContextObject gameContext;
   final Function onStartGame;
 
@@ -52,6 +53,7 @@ class FooterView extends StatefulWidget {
       @required this.gameCode,
       @required this.playerUuid,
       @required this.chatVisibilityChange,
+      @required this.joinAudioConference,
       @required this.clubCode,
       @required this.onStartGame});
 
@@ -292,6 +294,7 @@ class _FooterViewState extends State<FooterView>
             builder: (_, __, ____, ___) {
           return CommunicationView(
             widget.chatVisibilityChange,
+            widget.joinAudioConference,
             widget.gameContext.gameComService.gameMessaging,
             widget.gameContext,
           );
