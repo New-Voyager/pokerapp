@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:data_table_2/paginated_data_table_2.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
@@ -41,10 +43,11 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
   final List<String> headers = [
     '',
     'Date',
-    'Note',
+    'Notes',
     'Type',
     'Amount',
-    'Credits'
+    'Credits',
+    'Updated By'
   ];
   bool loading;
   ClubMemberModel member;
@@ -179,31 +182,52 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
                           )
                   ],
                 ),
-
+                SizedBox(height: 15),
                 // download button
                 Align(
                     alignment: Alignment.topRight,
-                    child: RoundRectButton(
-                      theme: theme,
-                      icon: Icon(
-                        Icons.download,
-                        size: 24,
-                        color: theme.roundButton2TextColor,
-                      ),
-                      text: 'Download',
-                      onTap: () {
-                        if (history != null && !history.isEmpty) {
-                          _handleDownload();
-                        }
-                      },
-                    )),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Icon(
+                          Icons.download,
+                          color: theme.accentColor,
+                        ),
+                        InkWell(
+                          onTap: () async {
+                            if (history != null && !history.isEmpty) {
+                              _handleDownload();
+                            }
+                          },
+                          child: Text(
+                            'Download',
+                            style:
+                                AppDecorators.getAccentTextStyle(theme: theme)
+                                    .copyWith(fontWeight: FontWeight.normal),
+                          ),
+                        ),
+                      ],
+                    )
+                    // RoundRectButton(
+                    //   theme: theme,
+                    //   icon: Icon(
+                    //     Icons.download,
+                    //     size: 24,
+                    //     color: theme.roundButton2TextColor,
+                    //   ),
+                    //   text: 'Download',
+                    //   onTap: () {
+                    //     if (history != null && !history.isEmpty) {
+                    //       _handleDownload();
+                    //     }
+                    //   },
+                    // )
+
+                    ),
 
                 // main table
                 Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(vertical: 2.0),
-                    child: activitiesTable(),
-                  ),
+                  child: activitiesTable(),
                 ),
               ],
             ),
@@ -267,22 +291,34 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
       fontSize: 8.dp,
       fontWeight: FontWeight.normal,
     );
-
-    return PaginatedDataTable(
-      columnSpacing: 10.0,
-      rowsPerPage: 10,
-      onSelectAll: (b) {},
-      showFirstLastButtons: true,
-      arrowHeadColor: theme.accentColor,
-      columns: headers
-          .map<DataColumn>(
-            (header) => DataColumn(
-              label: Text(header, style: headingStyle),
-            ),
-          )
-          .toList(),
-      source: _dataTableSource,
-    );
+    List<DataColumn2> columns = [];
+    columns.add(DataColumn2(
+        label: Icon(Icons.flag, color: Colors.blueGrey), size: ColumnSize.S));
+    columns.add(DataColumn2(label: Text('Date'), size: ColumnSize.M));
+    columns.add(DataColumn2(label: Text('Type'), size: ColumnSize.M));
+    columns.add(
+        DataColumn2(label: Text('Amount'), numeric: true, size: ColumnSize.M));
+    columns.add(
+        DataColumn2(label: Text('Credits'), numeric: true, size: ColumnSize.M));
+    columns.add(DataColumn2(label: Text('Notes'), size: ColumnSize.L));
+    columns.add(DataColumn2(label: Text('Updated\nby'), size: ColumnSize.M));
+    return Theme(
+        data: Theme.of(context).copyWith(
+          cardColor: theme.primaryColorWithDark(),
+          dividerColor: theme.accentColor,
+        ),
+        child: PaginatedDataTable2(
+          columnSpacing: 10.0,
+          minWidth: 500,
+          fit: FlexFit.tight,
+          //rowsPerPage: 10,
+          autoRowsToHeight: true,
+          onSelectAll: (b) {},
+          showFirstLastButtons: true,
+          //arrowHeadColor: theme.accentColor,
+          columns: columns,
+          source: _dataTableSource,
+        ));
   }
 
   Widget bannerActionButton({IconData icon, String text, onPressed}) {
@@ -362,93 +398,101 @@ class DataCreditSource extends DataTableSource {
       amountColor = Colors.white;
       //typeColor = Colors.cyan;
     }
-
+    List<DataCell> cells = [
+      item.followup
+          ? DataCell(
+              Container(
+                  width: 10, child: Icon(Icons.flag, color: theme.accentColor)),
+              onTap: () async {
+              clearFlag(item.transId);
+            })
+          : DataCell(Container(width: 10)),
+      DataCell(
+        Text(
+          day,
+          textAlign: TextAlign.start,
+          style: AppDecorators.getSubtitle1Style(theme: theme)
+              .copyWith(fontSize: 8.dp),
+        ),
+        onTap: () async {
+          if (onTap != null) {
+            await onTap(item.updateType, item.gameCode);
+          }
+        },
+      ),
+      DataCell(
+        Text(
+          type,
+          style: AppDecorators.getSubtitle1Style(theme: theme)
+              .copyWith(color: typeColor),
+        ),
+        onTap: () async {
+          if (onTap != null) {
+            await onTap(item.updateType, item.gameCode);
+          }
+        },
+      ),
+      DataCell(
+        Container(
+            alignment: Alignment.center,
+            child: Text(
+              amount,
+              textAlign: TextAlign.right,
+              style: AppDecorators.getSubtitle1Style(theme: theme)
+                  .copyWith(color: amountColor, fontWeight: FontWeight.bold),
+            )),
+        onTap: () async {
+          if (onTap != null) {
+            await onTap(item.updateType, item.gameCode);
+          }
+        },
+      ),
+      DataCell(
+        Container(
+            alignment: Alignment.center,
+            child: Text(
+              DataFormatter.chipsFormat(item.updatedCredits),
+              textAlign: TextAlign.right,
+              style: AppDecorators.getSubtitle1Style(theme: theme),
+            )),
+        onTap: () async {
+          if (onTap != null) {
+            await onTap(item.updateType, item.gameCode);
+          }
+        },
+      ),
+      DataCell(
+        Container(
+          width: 100,
+          child: Text(
+            notes,
+            style: AppDecorators.getSubtitle1Style(theme: theme),
+          ),
+        ),
+        onTap: () async {
+          if (onTap != null) {
+            await onTap(item.updateType, item.gameCode);
+          }
+        },
+      ),
+      DataCell(
+        Container(
+            alignment: Alignment.center,
+            child: Text(
+              item.adminName,
+              textAlign: TextAlign.right,
+              style: AppDecorators.getSubtitle1Style(theme: theme),
+            )),
+        onTap: () async {
+          if (onTap != null) {
+            await onTap(item.updateType, item.gameCode);
+          }
+        },
+      ),
+    ];
     return DataRow.byIndex(
       index: index,
-      cells: [
-        item.followup
-            ? DataCell(
-                Container(
-                    width: 10,
-                    child: Icon(Icons.flag, color: theme.accentColor)),
-                onTap: () async {
-                clearFlag(item.transId);
-              })
-            : DataCell(Container(width: 10)),
-        DataCell(
-          Container(
-            width: 50.pw,
-            alignment: Alignment.center,
-            child: FittedBox(
-                child: Text(
-              day,
-              textAlign: TextAlign.start,
-              style: AppDecorators.getSubtitle1Style(theme: theme)
-                  .copyWith(fontSize: 8.dp),
-            )),
-          ),
-          onTap: () async {
-            if (onTap != null) {
-              await onTap(item.updateType, item.gameCode);
-            }
-          },
-        ),
-        DataCell(
-          Container(
-            width: 100,
-            child: Text(
-              notes,
-              style: AppDecorators.getSubtitle1Style(theme: theme),
-            ),
-          ),
-          onTap: () async {
-            if (onTap != null) {
-              await onTap(item.updateType, item.gameCode);
-            }
-          },
-        ),
-        DataCell(
-          Text(
-            type,
-            style: AppDecorators.getSubtitle1Style(theme: theme)
-                .copyWith(color: typeColor),
-          ),
-          onTap: () async {
-            if (onTap != null) {
-              await onTap(item.updateType, item.gameCode);
-            }
-          },
-        ),
-        DataCell(
-          Container(
-              alignment: Alignment.bottomRight,
-              child: Text(
-                amount,
-                textAlign: TextAlign.right,
-                style: AppDecorators.getSubtitle1Style(theme: theme)
-                    .copyWith(color: amountColor, fontWeight: FontWeight.bold),
-              )),
-          onTap: () async {
-            if (onTap != null) {
-              await onTap(item.updateType, item.gameCode);
-            }
-          },
-        ),
-        DataCell(
-          Container(
-              alignment: Alignment.bottomRight,
-              child: Text(
-                DataFormatter.chipsFormat(item.updatedCredits),
-                textAlign: TextAlign.right,
-                style: AppDecorators.getSubtitle1Style(theme: theme),
-              )),
-          onTap: () async {
-            if (onTap != null) {
-              await onTap(item.updateType, item.gameCode);
-            }
-          },
-        ),
-      ],
+      cells: cells,
       color:
           MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
         if (index % 2 == 0) {

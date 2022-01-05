@@ -125,7 +125,6 @@ class ClubInteriorService {
   static String creditHistoryQuery = """
       query ch(\$clubCode: String!, \$playerUuid: String!) {
         creditHistory(clubCode:\$clubCode, playerUuid:\$playerUuid) {
-          adminUuid
           adminName
           notes
           gameCode

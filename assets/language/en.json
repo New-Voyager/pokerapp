@@ -770,7 +770,8 @@
         "save": "Save",
         "notesSaved": "Notes saved",
         "availableDiamonds": "Available diamonds",
-        "playerWillBeRemovedAfterThisHand": "Player will be removed after this hand"
+        "playerWillBeRemovedAfterThisHand": "Player will be removed after this hand",
+        "playerWillBeInBreakAfterThisHand": "Player will be 'in break' after this hand"
     },
     "systemAnnouncement": {
         "title": "Announcements"

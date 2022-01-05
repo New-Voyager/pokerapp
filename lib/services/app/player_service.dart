@@ -263,6 +263,35 @@ class PlayerService {
     return result.data['ret'];
   }
 
+  static Future<bool> sitOutPlayer(String gameCode, String playerUuid) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    String _query = """
+    mutation (\$gameCode: String!, \$playerId: String!) {
+      ret : sitOut(gameCode: \$gameCode, playerUuid: \$playerId)
+    }
+  """;
+
+    Map<String, dynamic> variables = {
+      "gameCode": gameCode,
+      "playerId": playerUuid
+    };
+
+    QueryResult result = await _client.query(
+      QueryOptions(document: gql(_query), variables: variables),
+    );
+
+    if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
+
+    log("sitOut Result ${result.data}");
+
+    return result.data['ret'];
+  }
+
   static Future<void> updateLocation(LocationData position) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     Map<String, dynamic> variables = {

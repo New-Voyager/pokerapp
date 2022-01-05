@@ -332,21 +332,43 @@ class _ClubMemberActivitiesScreenState
 
               // download button
               Align(
-                  alignment: Alignment.topRight,
-                  child: RoundRectButton(
-                    theme: theme,
-                    icon: Icon(
+                alignment: Alignment.topRight,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Icon(
                       Icons.download,
-                      size: 24,
-                      color: theme.roundButton2TextColor,
+                      color: theme.accentColor,
                     ),
-                    text: 'Download',
-                    onTap: () {
-                      if (!memberActivitiesForDownload.isEmpty) {
-                        _handleDownload();
-                      }
-                    },
-                  )),
+                    InkWell(
+                      onTap: () async {
+                        if (!memberActivitiesForDownload.isEmpty) {
+                          _handleDownload();
+                        }
+                      },
+                      child: Text(
+                        'Download',
+                        style: AppDecorators.getAccentTextStyle(theme: theme)
+                            .copyWith(fontWeight: FontWeight.normal),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              // RoundRectButton(
+              //   theme: theme,
+              //   icon: Icon(
+              //     Icons.download,
+              //     size: 24,
+              //     color: theme.roundButton2TextColor,
+              //   ),
+              //   text: 'Download',
+              //   onTap: () {
+              //     if (!memberActivitiesForDownload.isEmpty) {
+              //       _handleDownload();
+              //     }
+              //   },
+              // )),
               const SizedBox(height: 10.0),
 
               Expanded(

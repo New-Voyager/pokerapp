@@ -249,7 +249,6 @@ class MemberCreditHistory {
 
   factory MemberCreditHistory.fromJson(dynamic json) {
     MemberCreditHistory history = MemberCreditHistory();
-    history.adminUuid = json['adminUuid'];
     history.adminName = json['adminName'];
     history.notes = json['notes'] ?? '';
     history.gameCode = json['gameCode'] ?? '';

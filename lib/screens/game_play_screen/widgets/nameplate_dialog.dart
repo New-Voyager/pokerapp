@@ -143,6 +143,37 @@ class _NamePlateDailogState extends State<NamePlateDailog> {
                             })),
                     SizedBox(width: 16.pw),
                     Visibility(
+                        visible: widget.gameState.currentPlayer.isAdmin(),
+                        child: CircleImageButton(
+                            theme: theme,
+                            svgAsset: 'assets/images/game/break.svg',
+                            caption: "Break\n",
+                            split: true,
+                            onTap: () async {
+                              final result = await showPrompt(context, "Kick",
+                                  "Do you want to sit out '${widget.seat.player.name}'?",
+                                  positiveButtonText: "Yes",
+                                  negativeButtonText: "No");
+                              if (result != null) {
+                                if (result == true) {
+                                  await PlayerService.sitOutPlayer(
+                                      widget.gameState.gameCode,
+                                      widget.seat.player.playerUuid);
+                                  if (widget.gameState.gameInfo.status ==
+                                      AppConstants.GAME_PAUSED) {
+                                    // player is removed from the game
+                                  } else {
+                                    Alerts.showNotification(
+                                        titleText: _appText[
+                                            'playerWillBeInBreakAfterThisHand'],
+                                        duration: Duration(seconds: 5));
+                                  }
+                                  Navigator.of(context).pop();
+                                }
+                              }
+                            })),
+                    SizedBox(width: 16.pw),
+                    Visibility(
                         visible: widget.gameState.currentPlayer.isHost(),
                         child: CircleImageButton(
                             theme: theme,
