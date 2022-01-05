@@ -377,13 +377,16 @@ class _ClubMemberActivitiesScreenState
                     cardColor: theme.primaryColorWithDark(),
                     dividerColor: theme.accentColor,
                   ),
-                  child: PaginatedDataTable(
-                    columns: columns,
-                    showFirstLastButtons: true,
-                    arrowHeadColor: theme.accentColor,
-                    source: dts,
-                    rowsPerPage: 10,
-                    columnSpacing: 15,
+                  child: Container(
+                    width: double.infinity,
+                    child: PaginatedDataTable(
+                      columns: columns,
+                      showFirstLastButtons: true,
+                      arrowHeadColor: theme.accentColor,
+                      source: dts,
+                      rowsPerPage: 10,
+                      columnSpacing: 15,
+                    ),
                   ),
                 ),
               ),
