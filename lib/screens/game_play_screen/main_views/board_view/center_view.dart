@@ -447,11 +447,15 @@ class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
     if (tableState.potChips != null && tableState.potChips.length > 1) {
       show = true;
     } else if (tableState.potChips != null && tableState.potChips.length == 1) {
-      if (tableState.potChips[0] != tableState.potChipsUpdates) {
+      if (tableState.potChipsUpdates != 0 &&
+          tableState.potChips[0] != tableState.potChipsUpdates) {
         show = true;
       }
     } else {
-      show = true;
+      if (tableState.potChipsUpdates != null &&
+          tableState.potChipsUpdates != 0) {
+        show = true;
+      }
     }
     if (show) {
       return 1;
@@ -471,11 +475,15 @@ class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
       child: ValueListenableBuilder<double>(
           valueListenable: vnPotChipsUpdates,
           builder: (_, potChipsUpdates, __) {
+            double opacity = _getOpacityForPotUpdatesView(
+              potChipsUpdates: potChipsUpdates,
+              gameState: gameState,
+            );
+            if (gameState.handState == HandState.RESULT) {
+              opacity = 0.0;
+            }
             return Opacity(
-                opacity: _getOpacityForPotUpdatesView(
-                  potChipsUpdates: potChipsUpdates,
-                  gameState: gameState,
-                ),
+                opacity: opacity,
                 child: Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 10.0,

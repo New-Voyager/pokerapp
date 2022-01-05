@@ -844,6 +844,7 @@ class HandActionProtoService {
     Map<int, String> playerCardRanks;
     // update the community cards
     if (stage == 'flop') {
+      tableState.updatePotChipUpdatesSilent(0);
       _gameState.handState = HandState.FLOP;
       // AudioService.playFlop(mute: _gameState.playerLocalConfig.mute);
       var board = message.flop.boards[0];
@@ -884,6 +885,7 @@ class HandActionProtoService {
       AudioService.stopSound();
       playerCardRanks = message.flop.playerCardRanks;
     } else if (stage == 'turn') {
+      tableState.updatePotChipUpdatesSilent(0);
       _gameState.handState = HandState.TURN;
       AudioService.playFlop(mute: _gameState.playerLocalConfig.mute);
       var board = message.turn.boards[0];
@@ -906,6 +908,7 @@ class HandActionProtoService {
         await Future.delayed(Duration(seconds: 1));
       }
     } else if (stage == 'river') {
+      tableState.updatePotChipUpdatesSilent(0);
       _gameState.handState = HandState.RIVER;
       AudioService.playFlop(mute: _gameState.playerLocalConfig.mute);
       var board = message.river.boards[0];
