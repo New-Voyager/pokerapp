@@ -479,7 +479,7 @@ class DataCreditSource extends DataTableSource {
         Container(
             alignment: Alignment.center,
             child: Text(
-              item.adminName,
+              item.adminName ?? "",
               textAlign: TextAlign.right,
               style: AppDecorators.getSubtitle1Style(theme: theme),
             )),
