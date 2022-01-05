@@ -188,13 +188,13 @@ class MessageItem extends StatelessWidget {
     String gameStr = 'Unknown';
     if (gameTypeInt == GameType.HOLDEM.value) {
       gameStr = 'No Limit Holdem';
-    } else if (gameTypeInt == GameType.FIVE_CARD_PLO) {
+    } else if (gameTypeInt == GameType.FIVE_CARD_PLO.value) {
       gameStr = '5-Card PLO';
-    } else if (gameTypeInt == GameType.PLO) {
+    } else if (gameTypeInt == GameType.PLO.value) {
       gameStr = 'PLO';
-    } else if (gameTypeInt == GameType.PLO_HILO) {
+    } else if (gameTypeInt == GameType.PLO_HILO.value) {
       gameStr = 'PLO Hi-Lo';
-    } else if (gameTypeInt == GameType.FIVE_CARD_PLO_HILO) {
+    } else if (gameTypeInt == GameType.FIVE_CARD_PLO_HILO.value) {
       gameStr = '5-Card Hi-Lo PLO';
     }
 
