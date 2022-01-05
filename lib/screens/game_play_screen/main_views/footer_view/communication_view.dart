@@ -16,16 +16,18 @@ import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/widgets/buttons.dart';
+import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:provider/provider.dart';
 import 'package:record/record.dart';
 
 class CommunicationView extends StatefulWidget {
   final Function chatVisibilityChange;
+  final Function joinAudioConference;
   final GameMessagingService chatService;
   final GameContextObject gameContextObject;
 
-  CommunicationView(
-      this.chatVisibilityChange, this.chatService, this.gameContextObject);
+  CommunicationView(this.chatVisibilityChange, this.joinAudioConference,
+      this.chatService, this.gameContextObject);
 
   @override
   _CommunicationViewState createState() => _CommunicationViewState();
@@ -115,9 +117,15 @@ class _CommunicationViewState extends State<CommunicationView> {
                   }
                 }
 
-                if (showVoiceText) {
+                if (showVoiceText && !gameState.audioConfEnabled) {
                   children.addAll(voiceTextWidgets(widget.chatService));
                 }
+
+                if (gameState.audioConfEnabled &&
+                    !gameState.playerLocalConfig.inCall) {
+                  children.addAll(joinAudioConferenceWidget());
+                }
+
                 if (!gameState.customizationMode &&
                     gameState.currentPlayer.isAdmin()) {
                   children.add(PendingApprovalsButton(
@@ -165,6 +173,26 @@ class _CommunicationViewState extends State<CommunicationView> {
           return stopRecording(false, dur);
         },
         recordCancel: () => stopRecording(true, 0),
+      ),
+    ];
+  }
+
+  joinAudioConferenceWidget() {
+    final theme = AppTheme.getTheme(context);
+    return <Widget>[
+      CircleImageButton(
+        svgAsset: "assets/images/game/join-conf.svg",
+        onTap: () async {
+          final response = await showPrompt(context, 'Audio Conference',
+              'Do you want to join the audio conference?',
+              positiveButtonText: "Yes", negativeButtonText: "No");
+          if (response != null && response == true) {
+            final gameState = GameState.getState(context);
+            gameState.playerLocalConfig.inCall = true;
+            widget.joinAudioConference();
+          }
+        },
+        theme: theme,
       ),
     ];
   }
@@ -341,6 +369,7 @@ class _CommunicationViewState extends State<CommunicationView> {
                                   gameState.playerLocalConfig
                                       .inAudioConference = false;
                                   widget.gameContextObject.leaveAudio();
+                                  gameState.playerLocalConfig.inCall = false;
                                   gameState.communicationState.notify();
                                 }),
 

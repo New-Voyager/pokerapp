@@ -49,6 +49,14 @@ class GameLocalConfig {
     _save();
   }
 
+  // Show rearrange button
+  bool _inCall = true;
+  get inCall => _inCall ?? true;
+  set inCall(bool value) {
+    _inCall = value;
+    _save();
+  }
+
   set gameSound(bool value) {
     _gameSound = value;
     _save();
@@ -124,7 +132,8 @@ class GameLocalConfig {
         'tapOrSwipeBetAction': this._tapOrSwipeBetAction,
         'showCheckFold': this._showCheckFold,
         'showHandRank': this._showHandRank,
-        'showRearrange': this._showRearrange
+        'showRearrange': this._showRearrange,
+        'inCall': this._inCall
       };
 
   GameLocalConfig.fromJson(Map<String, dynamic> json, this._gameHiveStore) {
@@ -139,5 +148,6 @@ class GameLocalConfig {
     this._showCheckFold = json['showCheckFold'];
     this._showHandRank = json['showHandRank'];
     this._showRearrange = json['showRearrange'];
+    this._inCall = json['inCall'];
   }
 }

@@ -969,6 +969,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
                 gameCode: widget.gameCode,
                 gameContextObject: _gameContextObj,
                 currentPlayer: _gameContextObj.gameState.currentPlayer,
+                joinAudioConference: joinAudioConference,
                 gameInfo: _gameInfoModel,
                 toggleChatVisibility: _toggleChatVisibility,
                 onStartGame: startGame);
@@ -1172,6 +1173,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
             return;
           }
           if (!_gameState.gameInfo.audioConfEnabled) {
+            return;
+          }
+          if (!_gameState.playerLocalConfig.inCall) {
             return;
           }
           OverlaySupportEntry notification;

@@ -15,6 +15,7 @@ class FooterViewWidget extends StatelessWidget {
   final PlayerInfo currentPlayer;
   final GameInfoModel gameInfo;
   final Function(BuildContext) toggleChatVisibility;
+  final Function joinAudioConference;
   final Function() onStartGame;
 
   FooterViewWidget(
@@ -23,6 +24,7 @@ class FooterViewWidget extends StatelessWidget {
       this.currentPlayer,
       this.gameInfo,
       this.toggleChatVisibility,
+      this.joinAudioConference,
       this.onStartGame});
 
   @override
@@ -50,6 +52,7 @@ class FooterViewWidget extends StatelessWidget {
             chatVisibilityChange: () {
               this.toggleChatVisibility(context);
             },
+            joinAudioConference: joinAudioConference,
             clubCode: gameInfo.clubCode,
             onStartGame: onStartGame),
       ),
