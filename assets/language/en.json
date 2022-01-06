@@ -463,8 +463,8 @@
         "systemAnnouncements": "Announcements",
         "attributions": "Attributions",
         "ABOUT": "About",
-        "requestFeature": "Request Feature",
-        "reportBug": "Report Bug",
+        "requestFeature": "Report Issue",
+        "reportBug": "Report Issue",
         "chooseTheme": "Choose Theme",
         "SAVE": "Save"
     },

@@ -16,6 +16,8 @@ class AttributedGifWidget extends StatelessWidget {
           children: [
             // image
             CachedNetworkImage(
+              width: 160,
+              height: 120,
               imageUrl: url,
               placeholder: (_, __) => Center(
                 child: Container(
@@ -25,7 +27,7 @@ class AttributedGifWidget extends StatelessWidget {
                   child: CircularProgressIndicator(),
                 ),
               ),
-              fit: BoxFit.cover,
+              fit: BoxFit.scaleDown,
             ),
 
             // attribution
@@ -35,7 +37,7 @@ class AttributedGifWidget extends StatelessWidget {
                 padding: EdgeInsets.all(5.0),
                 child: Image.asset(
                   AppAssets.tenorAttributionImage,
-                  width: 40.0,
+                  width: 20.0,
                 ),
               ),
             ),

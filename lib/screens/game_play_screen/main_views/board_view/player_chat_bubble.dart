@@ -100,7 +100,6 @@ class _PlayerChatBubbleState extends State<PlayerChatBubble> {
 
     Widget widget = InkWell(
       onTap: () {
-        print('i am here');
         if (zoomed) {
           showing = false;
           setState(() {});
@@ -108,7 +107,7 @@ class _PlayerChatBubbleState extends State<PlayerChatBubble> {
         }
         // extend time
         _messagePopupTimer.cancel();
-        _messagePopupTimer = Timer(Duration(seconds: 5), () {
+        _messagePopupTimer = Timer(Duration(seconds: 8), () {
           showing = false;
           setState(() {});
         });

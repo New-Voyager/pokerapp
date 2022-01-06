@@ -101,7 +101,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
     }
 
     focusNodes = List<FocusNode>.generate(
-      2,
+      3,
       (int i) => FocusNode(),
       growable: false,
     );
@@ -307,6 +307,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
 
     bool onboardHostButton = OnboardingService.showHostButton;
     bool onboardJoinButton = OnboardingService.showJoinButton;
+
     if (onboardHostButton) {
       onboardOptions[steps.length] = OnboardingType.HOST_BUTTON;
       steps.add(OnboardingStep(
@@ -358,6 +359,33 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
         ),
       );
     }
+
+    if (OnboardingService.showReportButton) {
+      onboardOptions[steps.length] = OnboardingType.REPORT_BUTTON;
+      steps.add(
+        OnboardingStep(
+          focusNode: focusNodes[2],
+          title: "Report",
+          bodyText: "Tap here to report bugs and features",
+          titleTextColor: Colors.white,
+          labelBoxPadding: const EdgeInsets.all(16.0),
+          labelBoxDecoration: BoxDecoration(
+            shape: BoxShape.rectangle,
+            borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+            color: appTheme.fillInColor,
+            border: Border.all(
+              color: appTheme.secondaryColor,
+              width: 1.0,
+              style: BorderStyle.solid,
+            ),
+          ),
+          arrowPosition: ArrowPosition.top,
+          hasArrow: true,
+          hasLabelBox: true,
+          fullscreen: true,
+        ),
+      );
+    }
     return steps;
   }
 
@@ -383,6 +411,9 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                 OnboardingService.showHostButton = false;
               } else if (onboardOptions[index] == OnboardingType.JOIN_BUTTON) {
                 OnboardingService.showJoinButton = false;
+              } else if (onboardOptions[index] ==
+                  OnboardingType.REPORT_BUTTON) {
+                OnboardingService.showReportButton = false;
               }
             },
             child: mainView);
@@ -425,6 +456,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                   ),
                   SizedBox(width: 8.pw),
                   CircleImageButton(
+                      focusNode: focusNodes[2],
                       height: 30,
                       width: 30,
                       imageWidth: 18,

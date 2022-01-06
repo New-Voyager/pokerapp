@@ -135,6 +135,7 @@ class CircleImageButton extends StatelessWidget {
   CircleImageButton({
     @required this.onTap,
     @required this.theme,
+    this.focusNode,
     this.height,
     this.width,
     this.imageHeight,
@@ -147,7 +148,7 @@ class CircleImageButton extends StatelessWidget {
     this.split = false,
     this.adaptive = true,
   });
-
+  final FocusNode focusNode;
   final bool adaptive;
   final String svgAsset;
   final String asset;
@@ -209,6 +210,7 @@ class CircleImageButton extends StatelessWidget {
     }
 
     return InkWell(
+      focusNode: focusNode,
       onTap: () {
         // play sound
         this.onTap();

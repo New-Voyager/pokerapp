@@ -17,12 +17,12 @@ class AppSettingsStore {
     _box = null;
   }
 
-  void save(String key, dynamic json) {
-    _box.put(key, json);
-  }
-
   dynamic getSetting(String key) {
     return _box.get(key);
+  }
+
+  dynamic putSetting(String key, dynamic value) {
+    return _box.put(key, value);
   }
 
   // this flag is used for showing refresh banner one time in the game screen

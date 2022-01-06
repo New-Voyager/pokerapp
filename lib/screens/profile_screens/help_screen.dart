@@ -60,24 +60,6 @@ class HelpScreen extends StatelessWidget {
                         children: [
                           ListTile(
                             title: Text(
-                              _appScreenText['requestFeature'],
-                              style:
-                                  AppDecorators.getHeadLine4Style(theme: theme),
-                            ),
-                            leading: Icon(
-                              Icons.comment_bank,
-                              color: theme.secondaryColor,
-                            ),
-                            onTap: () {
-                              Alerts.showDailog(
-                                context: context,
-                                child: RequestFeatureWidget(),
-                              );
-                            },
-                          ),
-                          CustomDivider(),
-                          ListTile(
-                            title: Text(
                               _appScreenText['reportBug'],
                               style:
                                   AppDecorators.getHeadLine4Style(theme: theme),

@@ -37,34 +37,6 @@ class _BugsFeaturesWidgetState extends State<BugsFeaturesWidget> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          RichText(
-            textAlign: TextAlign.center,
-            text: TextSpan(
-              children: [
-                TextSpan(
-                  style: AppDecorators.getHeadLine5Style(theme: theme)
-                      .copyWith(color: theme.accentColor),
-                  text: "Join our discord channel: ",
-                ),
-                TextSpan(
-                  style: AppDecorators.getHeadLine5Style(theme: theme).copyWith(
-                    color: Colors.blue.shade700,
-                  ),
-                  text: "https://discord.gg/AzHcCcFuA2",
-                  recognizer: TapGestureRecognizer()
-                    ..onTap = () async {
-                      final url = 'https://discord.gg/AzHcCcFuA2';
-                      if (await canLaunch(url)) {
-                        await launch(
-                          url,
-                          forceSafariVC: false,
-                        );
-                      }
-                    },
-                ),
-              ],
-            ),
-          ),
           Padding(
             padding: EdgeInsets.all(8),
             child: Text(
@@ -76,26 +48,26 @@ class _BugsFeaturesWidgetState extends State<BugsFeaturesWidget> {
           ),
           AppDimensionsNew.getVerticalSizedBox(8),
           ToggleButtons(
-            borderColor: Colors.black,
+            borderColor: theme.accentColor,
             constraints: BoxConstraints(
-                minWidth: (MediaQuery.of(context).size.width - 60) / 2),
+                minWidth: (MediaQuery.of(context).size.width - 120) / 2),
             fillColor: theme.accentColor,
             borderWidth: 2,
-            selectedBorderColor: Colors.black,
-            selectedColor: Colors.black,
-            borderRadius: BorderRadius.circular(0),
+            selectedBorderColor: theme.accentColor,
+            selectedColor: theme.primaryColorWithDark(0.5),
+            borderRadius: BorderRadius.circular(25),
             children: <Widget>[
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
-                  'Report Bug',
+                  'Bug',
                   style: TextStyle(fontSize: 16),
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
-                  'Request Feature',
+                  'Feature',
                   style: TextStyle(fontSize: 16),
                 ),
               ),
@@ -142,10 +114,38 @@ class _BugsFeaturesWidgetState extends State<BugsFeaturesWidget> {
           ),
           AppDimensionsNew.getVerticalSizedBox(16.0),
           Text(
-            "By submitting this report, you agree we can use the features and any rights in them in any way we would use.",
+            "By submitting this report, you agree we can use the features and any rights in them in any way we would like.",
             textAlign: TextAlign.center,
             style: AppDecorators.getHeadLine6Style(theme: theme)
                 .copyWith(color: theme.secondaryColor),
+          ),
+          RichText(
+            textAlign: TextAlign.center,
+            text: TextSpan(
+              children: [
+                TextSpan(
+                  style: AppDecorators.getHeadLine5Style(theme: theme)
+                      .copyWith(color: theme.accentColor),
+                  text: "Join our discord channel: ",
+                ),
+                TextSpan(
+                  style: AppDecorators.getHeadLine5Style(theme: theme).copyWith(
+                    color: Colors.blue.shade700,
+                  ),
+                  text: "https://discord.gg/AzHcCcFuA2",
+                  recognizer: TapGestureRecognizer()
+                    ..onTap = () async {
+                      final url = 'https://discord.gg/AzHcCcFuA2';
+                      if (await canLaunch(url)) {
+                        await launch(
+                          url,
+                          forceSafariVC: false,
+                        );
+                      }
+                    },
+                ),
+              ],
+            ),
           ),
         ],
       ),

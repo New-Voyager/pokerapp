@@ -5,12 +5,13 @@ enum OnboardingType {
   JOIN_BUTTON,
   SEARCH_CLUB_BUTTON,
   CREATE_CLUB_BUTTON,
+  REPORT_BUTTON
 }
 
 class OnboardingService {
   OnboardingService._();
   static bool get showHostButton {
-    bool ret = appService.sharedPreferences.getBool('livegames.hostbutton');
+    bool ret = appService.appSettings.getSetting('livegames.hostbutton');
     if (ret == null) {
       ret = true;
     }
@@ -18,11 +19,11 @@ class OnboardingService {
   }
 
   static set showHostButton(bool v) {
-    appService.sharedPreferences.setBool('livegames.hostbutton', v);
+    appService.appSettings.putSetting('livegames.hostbutton', v);
   }
 
   static bool get showJoinButton {
-    bool ret = appService.sharedPreferences.getBool('livegames.joinbutton');
+    bool ret = appService.appSettings.getSetting('livegames.joinbutton');
     if (ret == null) {
       ret = true;
     }
@@ -30,11 +31,11 @@ class OnboardingService {
   }
 
   static set showJoinButton(bool v) {
-    appService.sharedPreferences.setBool('livegames.joinbutton', v);
+    appService.appSettings.putSetting('livegames.joinbutton', v);
   }
 
   static bool get showSearchClubButton {
-    bool ret = appService.sharedPreferences.getBool('clubs.searchbutton');
+    bool ret = appService.appSettings.getSetting('clubs.searchbutton');
     if (ret == null) {
       ret = true;
     }
@@ -42,11 +43,11 @@ class OnboardingService {
   }
 
   static set showSearchClubButton(bool v) {
-    appService.sharedPreferences.setBool('clubs.searchbutton', v);
+    appService.appSettings.putSetting('clubs.searchbutton', v);
   }
 
   static bool get showCreateClubButton {
-    bool ret = appService.sharedPreferences.getBool('clubs.createbutton');
+    bool ret = appService.appSettings.getSetting('clubs.createbutton');
     if (ret == null) {
       ret = true;
     }
@@ -54,6 +55,18 @@ class OnboardingService {
   }
 
   static set showCreateClubButton(bool v) {
-    appService.sharedPreferences.setBool('clubs.createbutton', v);
+    appService.appSettings.putSetting('clubs.createbutton', v);
+  }
+
+  static bool get showReportButton {
+    bool ret = appService.appSettings.getSetting('app.reportbutton');
+    if (ret == null) {
+      ret = true;
+    }
+    return ret;
+  }
+
+  static set showReportButton(bool v) {
+    appService.appSettings.putSetting('app.reportbutton', v);
   }
 }

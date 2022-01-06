@@ -740,9 +740,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         appService.appSettings.showRefreshBanner = false;
         Alerts.showNotification(
             duration: Duration(seconds: 8),
-            titleText: 'Refresh',
+            titleText: 'Beta Issue',
             subTitleText:
-                'If there are issues with this screen or audio conference, go back from the game screen and return to this screen.');
+                "If you see any issues in this screen or in the audio conference, go back from this game screen and return to this screen. Most issues will be resolved. You will still be in the game and in the hand.");
       }
 
       if (appService.appSettings.showReportInfoDialog) {

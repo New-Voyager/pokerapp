@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:location/location.dart';
+import 'package:onboarding_overlay/onboarding_overlay.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/models/game/game_player_settings.dart';
@@ -120,6 +121,7 @@ class GameState {
   SeatChangeNotifier _seatChangeState;
   GameChatNotifState _chatNotifState;
   GameChatBubbleNotifyState _gameChatBubbleNotifyState;
+  final GlobalKey<OnboardingState> onboardingKey = GlobalKey<OnboardingState>();
 
   // For posting blind
   // bool postedBlind;
