@@ -81,6 +81,7 @@ dependencies:
   timer_count_down: ^2.2.0
   tuple: ^2.0.0
   upgrader: ^3.5.1
+  url_launcher: ^6.0.17
   uuid: ^3.0.4
   vibration: ^1.7.3
   wakelock: ^0.5.6

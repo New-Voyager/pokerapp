@@ -8,7 +8,7 @@ import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
-import 'package:pokerapp/screens/profile_screens/report_bug.dart';
+import 'package:pokerapp/screens/profile_screens/bug_features_dialog.dart';
 import 'package:pokerapp/screens/profile_screens/request_feature.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/alerts.dart';
@@ -89,7 +89,7 @@ class HelpScreen extends StatelessWidget {
                             onTap: () {
                               Alerts.showDailog(
                                 context: context,
-                                child: ReportBugWidget(),
+                                child: BugsFeaturesWidget(),
                               );
                             },
                           ),

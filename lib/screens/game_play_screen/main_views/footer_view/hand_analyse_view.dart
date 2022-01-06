@@ -22,8 +22,10 @@ import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/bottom_
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/bottom_sheets/last_hand_analyse_bottomsheet.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/bottom_sheets/player_stats_bottomsheet.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/bottom_sheets/table_result_bottomsheet.dart';
+import 'package:pokerapp/screens/profile_screens/bug_features_dialog.dart';
 import 'package:pokerapp/services/app/player_service.dart';
 import 'package:pokerapp/services/test/test_service.dart';
+import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:provider/provider.dart';
@@ -416,6 +418,40 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                   ],
                 ),
                 SizedBox(height: 10.pw),
+                // report issue
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    CircleImageButton(
+                        theme: theme,
+                        //caption: 'Info',
+                        icon: Icons.info,
+                        onTap: () {
+                          vnShowMenuItems.value = false;
+                          Alerts.showDailog(
+                            context: context,
+                            child: BugsFeaturesWidget(),
+                          );
+                        }),
+                    InkWell(
+                      onTap: () {
+                        vnShowMenuItems.value = false;
+                        Alerts.showDailog(
+                          context: context,
+                          child: BugsFeaturesWidget(),
+                        );
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Text("Report Issue",
+                            style:
+                                AppDecorators.getSubtitle1Style(theme: theme)),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 10.ph),
               ],
             ),
           ),
