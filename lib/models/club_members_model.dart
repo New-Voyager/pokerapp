@@ -17,6 +17,7 @@ class ClubMemberModel extends ChangeNotifier {
   String imageId;
   bool isOwner;
   bool isManager;
+  bool isMainOwner;
   String playerId;
   double availableCredit;
   String _contactInfo;
@@ -139,6 +140,11 @@ class ClubMemberModel extends ChangeNotifier {
     this.playerId = jsonData['playerId'];
     this.contactInfo = jsonData['contactInfo'];
     this._rake = 0;
+
+    this.isMainOwner = false;
+    if (jsonData['isMainOwner'] != null) {
+      this.isMainOwner = jsonData['isMainOwner'];
+    }
     if (jsonData['rakePaid'] != null) {
       this._rake = double.parse(jsonData['rakePaid'].toString());
     }
