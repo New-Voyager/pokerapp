@@ -135,6 +135,10 @@ class CircleImageButton extends StatelessWidget {
   CircleImageButton({
     @required this.onTap,
     @required this.theme,
+    this.height,
+    this.width,
+    this.imageHeight,
+    this.imageWidth,
     this.asset,
     this.svgAsset,
     this.icon,
@@ -153,6 +157,10 @@ class CircleImageButton extends StatelessWidget {
   final Function onTap;
   final bool disabled;
   final bool split;
+  final double height;
+  final double width;
+  final double imageHeight;
+  final double imageWidth;
 
   Widget build(BuildContext context) {
     Color buttonColor = theme.accentColor;
@@ -181,14 +189,14 @@ class CircleImageButton extends StatelessWidget {
     } else if (svgAsset != null) {
       image = SvgPicture.asset(
         svgAsset,
-        width: 24,
-        height: 24,
+        width: imageWidth ?? 24,
+        height: imageHeight ?? 24,
         color: buttonColor,
       );
     } else if (icon != null) {
       image = Icon(
         icon,
-        size: 24,
+        size: imageWidth ?? 24,
         color: buttonColor,
       );
     }
@@ -210,8 +218,8 @@ class CircleImageButton extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            width: 40,
-            height: 40,
+            width: width ?? 40,
+            height: height ?? 40,
             padding: EdgeInsets.all(2.pw),
             decoration: BoxDecoration(
               shape: BoxShape.circle,

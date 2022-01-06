@@ -37,4 +37,17 @@ class AppSettingsStore {
   set showRefreshBanner(bool v) {
     _box.put('gameSettings.refresh', v);
   }
+
+  // this flag is used for showing report info dialog one time in the game screen
+  bool get showReportInfoDialog {
+    bool ret = getSetting('gameSettings.reportInfo');
+    if (ret == null) {
+      return true;
+    }
+    return ret;
+  }
+
+  set showReportInfoDialog(bool v) {
+    _box.put('gameSettings.reportInfo', v);
+  }
 }
