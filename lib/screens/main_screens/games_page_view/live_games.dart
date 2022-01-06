@@ -150,7 +150,6 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
       updatedLiveGames = await GameService.getLiveGamesNew();
     }
 
-    print("__________________");
     bool refresh = true;
     if (refresh) {
       liveGames = updatedLiveGames;

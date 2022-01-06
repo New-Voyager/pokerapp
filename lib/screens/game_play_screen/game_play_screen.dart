@@ -735,6 +735,15 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         log('dartnats: adding to disconnectListeners');
         nats.disconnectListeners.add(this.onNatsDisconnect);
       });
+
+      if (appService.appSettings.showRefreshBanner) {
+        appService.appSettings.showRefreshBanner = false;
+        Alerts.showNotification(
+            duration: Duration(seconds: 8),
+            titleText: 'Refresh',
+            subTitleText:
+                'If there are issues with this screen or audio conference, go back from the game screen and return to this screen.');
+      }
     });
 
     _appScreenText = getAppTextScreen("gameScreen");

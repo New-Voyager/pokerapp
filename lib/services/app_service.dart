@@ -6,6 +6,7 @@ import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'data/app_settings.dart';
 import 'data/hive_datasource_impl.dart';
 import 'data/user_settings.dart';
 
@@ -13,6 +14,7 @@ class AppService {
   GameTemplateStore gameTemplates;
   UserSettingsStore userSettings;
   SharedPreferences sharedPreferences;
+  AppSettingsStore appSettings;
   Nats natsClient;
 
   Future<void> init() async {
@@ -22,6 +24,8 @@ class AppService {
     userSettings = UserSettingsStore();
     userSettings.open();
     sharedPreferences = await SharedPreferences.getInstance();
+    appSettings = AppSettingsStore();
+    appSettings.open();
   }
 
   void initScreenAttribs() {
@@ -45,5 +49,10 @@ class AppService {
       userSettings.close();
     }
     userSettings = null;
+
+    if (appSettings != null) {
+      appSettings.close();
+    }
+    appSettings = null;
   }
 }
