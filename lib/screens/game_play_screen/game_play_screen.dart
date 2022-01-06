@@ -744,12 +744,12 @@ class _GamePlayScreenState extends State<GamePlayScreen>
             subTitleText:
                 "If you see any issues in this screen or in the audio conference, go back from this game screen and return to this screen. Most issues will be resolved. You will still be in the game and in the hand.");
       }
-
+      appService.appSettings.showReportInfoDialog = true;
       if (appService.appSettings.showReportInfoDialog) {
         appService.appSettings.showReportInfoDialog = false;
 
         showErrorDialog(context, 'Report an issue?',
-            "If you face into any issues while using the app or have a feature idea for the app, please tap on the Report Issues option inside the hamburger menu to reach out to us.",
+            "If you run into any issues while using the app or want us to implement a feature, please tap the hamburger menu in the bottom left and tap Report Issue.",
             info: true);
       }
     });

@@ -7,7 +7,7 @@ import 'package:pokerapp/utils/alerts.dart';
 import 'buttons.dart';
 
 showErrorDialog(BuildContext context, String title, String error,
-    {bool info = false}) async {
+    {Widget child, bool info = false}) async {
   Color titleColor = Colors.red;
   if (info) {
     titleColor = Colors.white;
@@ -34,13 +34,15 @@ showErrorDialog(BuildContext context, String title, String error,
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Center(
-                    child: Text(
-                      title,
-                      style: AppDecorators.getHeadLine3Style(theme: theme)
-                          .copyWith(color: titleColor),
-                    ),
-                  ),
+                  child != null
+                      ? child
+                      : Center(
+                          child: Text(
+                            title,
+                            style: AppDecorators.getHeadLine3Style(theme: theme)
+                                .copyWith(color: titleColor),
+                          ),
+                        ),
                   // sep
                   SizedBox(height: 8.dp),
 
