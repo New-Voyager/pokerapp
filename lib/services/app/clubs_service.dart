@@ -564,14 +564,23 @@ class ClubsService {
     return res ?? false;
   }
 
-  static Future<String> promotePlayer(
-      String clubCode, String playerId, bool isManager) async {
+  static Future<String> promotePlayer(String clubCode, String playerId,
+      {bool isManager, bool isOwner}) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    Map<String, dynamic> update = {};
+    if (isManager != null) {
+      update['isManager'] = isManager;
+    }
+
+    if (isOwner != null) {
+      update['isOwner'] = isOwner;
+    }
 
     Map<String, dynamic> variables = {
       "clubCode": clubCode,
       "playerUuid": playerId,
-      "update": {"isManager": isManager}
+      "update": update,
     };
     final String query = """
       mutation updateClubMember(\$clubCode : String!, \$playerUuid: String! \$update: ClubMemberUpdateInput!){

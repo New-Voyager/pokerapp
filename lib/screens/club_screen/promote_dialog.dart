@@ -8,13 +8,13 @@ import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class PromoteDialog {
   /* method available to the outside */
-  static Future<bool> prompt({
+  static Future<int> prompt({
     @required BuildContext context,
     @required String clubCode,
     @required String playerUuid,
     @required String name,
   }) async {
-    final bool ret = await showDialog(
+    final int ret = await showDialog<int>(
         barrierDismissible: false,
         context: context,
         builder: (_) {
@@ -73,7 +73,7 @@ class _PromoteDialogWidgetState extends State<PromoteDialogWidget> {
 
   @override
   Widget build(BuildContext context) {
-    String title = 'Promote Member';
+    String title = 'Do you want to promote member?';
     return Container(
       // height: MediaQuery.of(context).size.height * 0.5,
       // margin: EdgeInsets.all(16),
@@ -91,15 +91,22 @@ class _PromoteDialogWidgetState extends State<PromoteDialogWidget> {
           Text(widget.name,
               style: AppDecorators.getHeadLine4Style(theme: widget.theme)),
           SizedBox(height: 5.ph),
-
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 10.dp,
+            ),
+          ),
+          SizedBox(height: 5.ph),
           SizedBox(height: 5.ph),
           ToggleButtons(
             children: [
-              Text('Manager',
+              Text('  Manager  ',
                   style: AppDecorators.getHeadLine5Style(theme: widget.theme)),
-              Text('Co-Owner',
+              Text('  Co-Owner  ',
                   style: AppDecorators.getHeadLine5Style(theme: widget.theme)),
             ],
+            borderRadius: BorderRadius.all(Radius.circular(20)),
             isSelected: isSelected,
             selectedColor: Colors.black,
             fillColor: widget.theme.accentColor,
@@ -113,13 +120,7 @@ class _PromoteDialogWidgetState extends State<PromoteDialogWidget> {
             },
           ),
           SizedBox(height: 15.ph),
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 10.dp,
-            ),
-          ),
-          SizedBox(height: 5.ph),
+
           /* yes / no button */
           Center(
             child: Row(
@@ -131,7 +132,7 @@ class _PromoteDialogWidgetState extends State<PromoteDialogWidget> {
                   onTap: () {
                     Navigator.pop(
                       context,
-                      false,
+                      0,
                     );
                   },
                   text: "Cancel",
@@ -146,13 +147,17 @@ class _PromoteDialogWidgetState extends State<PromoteDialogWidget> {
                   onTap: () {
                     if (isSelected[0]) {
                       // manager
+                      Navigator.pop(
+                        context,
+                        1,
+                      );
                     } else if (isSelected[1]) {
                       // co-owner
-                    } else if (isSelected[2]) {}
-                    Navigator.pop(
-                      context,
-                      true,
-                    );
+                      Navigator.pop(
+                        context,
+                        2,
+                      );
+                    }
                   },
                   text: "Promote",
                   theme: widget.theme,

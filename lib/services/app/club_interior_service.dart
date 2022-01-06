@@ -22,6 +22,7 @@ class ClubInteriorService {
           status
           isOwner
           isManager
+          isMainOwner
           joinedDate
           lastPlayedDate
           totalBuyins

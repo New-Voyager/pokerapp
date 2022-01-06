@@ -10,6 +10,7 @@ import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/app_icons.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
+import 'package:pokerapp/screens/club_screen/promote_dialog.dart';
 import 'package:pokerapp/screens/club_screen/set_tips_back_dialog.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/club_interior_service.dart';
@@ -159,7 +160,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
       ),
     ];
 
-    if (_data.isManager) {
+    if (_data.isManager || (!_data.isMainOwner && _data.isOwner)) {
       children.add(
           // demote
           CircleImageButton(
@@ -186,11 +187,16 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
   }
 
   void demoteManager() async {
-    await changeManagerStatus(false);
+    if (_data.isManager) {
+      // demote manager to player
+
+    }
+
+    await demotePlayer();
   }
 
   void promoteManager() async {
-    await changeManagerStatus(true);
+    await promotePlayer();
   }
 
   @override
@@ -201,6 +207,9 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
         memberRole = 'Manager';
       } else if (_data.isOwner) {
         memberRole = 'Owner';
+        if (!_data.isMainOwner) {
+          memberRole = 'Co-owner';
+        }
       } else {
         memberRole = 'Member';
       }
@@ -266,7 +275,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                                   textAlign: TextAlign.end,
                                   style: AppDecorators.getAccentTextStyle(
                                       theme: theme)),
-                              _data.isOwner
+                              _data.isMainOwner
                                   ? SizedBox.shrink()
                                   : Container(
                                       padding:
@@ -491,7 +500,46 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
     }
   }
 
-  Future<void> changeManagerStatus(bool promote) async {
+  Future<void> promotePlayer() async {
+    int choice = await PromoteDialog.prompt(
+        context: context,
+        clubCode: clubCode,
+        playerUuid: playerId,
+        name: _data.name);
+    if (choice != 0) {
+      ConnectionDialog.show(context: context, loadingText: "Updating...");
+      if (choice == 1) {
+        await ClubsService.promotePlayer(clubCode, playerId, isManager: true);
+      } else if (choice == 2) {
+        await ClubsService.promotePlayer(clubCode, playerId, isOwner: true);
+      }
+      ConnectionDialog.dismiss(
+        context: context,
+      );
+      _fetchData();
+    }
+  }
+
+  Future<void> demotePlayer() async {
+    String prompt = 'Do you want to demote the player?';
+    final response = await showPrompt(context, 'Manager', prompt,
+        positiveButtonText: 'Yes', negativeButtonText: 'No');
+    if (response != null && response == true) {
+      ConnectionDialog.show(context: context, loadingText: "Updating...");
+      final result = await ClubsService.promotePlayer(clubCode, playerId,
+          isManager: false, isOwner: false);
+      ConnectionDialog.dismiss(
+        context: context,
+      );
+      setState(() {});
+    } else {
+      Alerts.showNotification(
+          titleText: 'Manager',
+          subTitleText: 'Failed to update the status. Try again later.');
+    }
+  }
+
+  Future<void> changeManagerStatus2(bool promote) async {
     String prompt = 'Do you want to promote the player as Manager?';
     if (!promote) {
       prompt = 'Do you want to demote the player from Manager?';
@@ -500,8 +548,8 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
         positiveButtonText: 'Yes', negativeButtonText: 'No');
     if (response != null && response == true) {
       ConnectionDialog.show(context: context, loadingText: "Updating...");
-      final result =
-          await ClubsService.promotePlayer(clubCode, playerId, promote);
+      final result = await ClubsService.promotePlayer(clubCode, playerId,
+          isManager: promote);
       ConnectionDialog.dismiss(
         context: context,
       );
