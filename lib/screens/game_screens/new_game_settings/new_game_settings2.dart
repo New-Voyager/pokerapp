@@ -423,10 +423,36 @@ class NewGameSettings2 extends StatelessWidget {
                         },
                       ),
                       sepV20,
-
+                      RadioListWidget<String>(
+                        defaultValue: 'PLO',
+                        values: [
+                          'NLH',
+                          'PLO',
+                          'Hi-Lo',
+                          '5 Card',
+                          '5 Card Hi-Lo'
+                        ],
+                        onSelect: (String value) {
+                          if (value == 'NLH') {
+                            gmp.settings.bombPotGameType = GameType.HOLDEM;
+                          } else if (value == 'PLO') {
+                            gmp.settings.bombPotGameType = GameType.PLO;
+                          } else if (value == 'Hi-Lo') {
+                            gmp.settings.bombPotGameType = GameType.PLO_HILO;
+                          } else if (value == '5 Card') {
+                            gmp.settings.bombPotGameType =
+                                GameType.FIVE_CARD_PLO;
+                          } else if (value == '5 Card Hi-Lo') {
+                            gmp.settings.bombPotGameType =
+                                GameType.FIVE_CARD_PLO_HILO;
+                          }
+                        },
+                      ),
+                      sepV20,
                       SwitchWidget(
                         value: gmp.doubleBoardBombPot,
-                        label: _appScreenText['doubleBoardBombPot'],
+                        label:
+                            'Double Board', //_appScreenText['doubleBoardBombPot'],
                         onChange: (bool value) {
                           gmp.doubleBoardBombPot = value;
                         },
@@ -550,16 +576,26 @@ class NewGameSettings2 extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 _buildLabel('Choose Type', theme),
-                                RadioListWidget<GameType>(
-                                  defaultValue: GameType.PLO,
+                                RadioListWidget<String>(
+                                  defaultValue: 'PLO',
                                   values: [
-                                    GameType.PLO,
-                                    GameType.PLO_HILO,
-                                    GameType.FIVE_CARD_PLO,
-                                    GameType.FIVE_CARD_PLO_HILO
+                                    'PLO',
+                                    'Hi-Lo',
+                                    '5 Card',
+                                    '5 Card Hi-Lo'
                                   ],
-                                  onSelect: (GameType value) {
-                                    gmp.settings.gameType = value;
+                                  onSelect: (String value) {
+                                    if (value == 'PLO') {
+                                      gmp.settings.gameType = GameType.PLO;
+                                    } else if (value == 'Hi-Lo') {
+                                      gmp.settings.gameType = GameType.PLO_HILO;
+                                    } else if (value == '5 Card') {
+                                      gmp.settings.gameType =
+                                          GameType.FIVE_CARD_PLO;
+                                    } else if (value == '5 Card Hi-Lo') {
+                                      gmp.settings.gameType =
+                                          GameType.FIVE_CARD_PLO_HILO;
+                                    }
                                   },
                                 ),
                                 sepV20
@@ -881,7 +917,8 @@ class NewGameSettings2 extends StatelessWidget {
                         subtitle: Text(_appScreenText['chooseAdvanceConfig'],
                             style:
                                 AppDecorators.getHeadLine6Style(theme: theme)),
-                        title: Text(_appScreenText['advanceConfig'],
+                        title: Text(
+                            'More Settings', //_appScreenText['advanceConfig'],
                             style:
                                 AppDecorators.getHeadLine4Style(theme: theme)),
                         children: [
