@@ -531,7 +531,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
       ConnectionDialog.dismiss(
         context: context,
       );
-      setState(() {});
+      _fetchData();
     } else {
       Alerts.showNotification(
           titleText: 'Manager',
