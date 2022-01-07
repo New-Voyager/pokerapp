@@ -152,52 +152,52 @@ class _ChooseGameNewState extends State<ChooseGameNew>
                                 handleArrowClick(GameType.PLO, context),
                           ),
                         ),
-                        InkWell(
-                          splashColor: Colors.transparent,
-                          highlightColor: Colors.transparent,
-                          onTap: () => handleItemClick(GameType.PLO_HILO),
-                          child: GameTypeItem(
-                            clubCode: widget.clubCode,
-                            type: GameType.PLO_HILO,
-                            imagePath: AppAssetsNew.pathPLOHiLoTypeImage,
-                            isSelected: _selectedGameType == GameType.PLO_HILO,
-                            animValue: _animationController.value,
-                            onArrowClick: () =>
-                                handleArrowClick(GameType.PLO_HILO, context),
-                          ),
-                        ),
-                        InkWell(
-                          splashColor: Colors.transparent,
-                          highlightColor: Colors.transparent,
-                          onTap: () => handleItemClick(GameType.FIVE_CARD_PLO),
-                          child: GameTypeItem(
-                            clubCode: widget.clubCode,
-                            type: GameType.FIVE_CARD_PLO,
-                            imagePath: AppAssetsNew.pathFiveCardPLOTypeImage,
-                            isSelected:
-                                _selectedGameType == GameType.FIVE_CARD_PLO,
-                            animValue: _animationController.value,
-                            onArrowClick: () => handleArrowClick(
-                                GameType.FIVE_CARD_PLO, context),
-                          ),
-                        ),
-                        InkWell(
-                          splashColor: Colors.transparent,
-                          highlightColor: Colors.transparent,
-                          onTap: () =>
-                              handleItemClick(GameType.FIVE_CARD_PLO_HILO),
-                          child: GameTypeItem(
-                            clubCode: widget.clubCode,
-                            type: GameType.FIVE_CARD_PLO_HILO,
-                            imagePath:
-                                AppAssetsNew.pathFiveCardPLOHiLoTypeImage,
-                            isSelected: _selectedGameType ==
-                                GameType.FIVE_CARD_PLO_HILO,
-                            animValue: _animationController.value,
-                            onArrowClick: () => handleArrowClick(
-                                GameType.FIVE_CARD_PLO_HILO, context),
-                          ),
-                        ),
+                        // InkWell(
+                        //   splashColor: Colors.transparent,
+                        //   highlightColor: Colors.transparent,
+                        //   onTap: () => handleItemClick(GameType.PLO_HILO),
+                        //   child: GameTypeItem(
+                        //     clubCode: widget.clubCode,
+                        //     type: GameType.PLO_HILO,
+                        //     imagePath: AppAssetsNew.pathPLOHiLoTypeImage,
+                        //     isSelected: _selectedGameType == GameType.PLO_HILO,
+                        //     animValue: _animationController.value,
+                        //     onArrowClick: () =>
+                        //         handleArrowClick(GameType.PLO_HILO, context),
+                        //   ),
+                        // ),
+                        // InkWell(
+                        //   splashColor: Colors.transparent,
+                        //   highlightColor: Colors.transparent,
+                        //   onTap: () => handleItemClick(GameType.FIVE_CARD_PLO),
+                        //   child: GameTypeItem(
+                        //     clubCode: widget.clubCode,
+                        //     type: GameType.FIVE_CARD_PLO,
+                        //     imagePath: AppAssetsNew.pathFiveCardPLOTypeImage,
+                        //     isSelected:
+                        //         _selectedGameType == GameType.FIVE_CARD_PLO,
+                        //     animValue: _animationController.value,
+                        //     onArrowClick: () => handleArrowClick(
+                        //         GameType.FIVE_CARD_PLO, context),
+                        //   ),
+                        // ),
+                        // InkWell(
+                        //   splashColor: Colors.transparent,
+                        //   highlightColor: Colors.transparent,
+                        //   onTap: () =>
+                        //       handleItemClick(GameType.FIVE_CARD_PLO_HILO),
+                        //   child: GameTypeItem(
+                        //     clubCode: widget.clubCode,
+                        //     type: GameType.FIVE_CARD_PLO_HILO,
+                        //     imagePath:
+                        //         AppAssetsNew.pathFiveCardPLOHiLoTypeImage,
+                        //     isSelected: _selectedGameType ==
+                        //         GameType.FIVE_CARD_PLO_HILO,
+                        //     animValue: _animationController.value,
+                        //     onArrowClick: () => handleArrowClick(
+                        //         GameType.FIVE_CARD_PLO_HILO, context),
+                        //   ),
+                        // ),
                         InkWell(
                           splashColor: Colors.transparent,
                           highlightColor: Colors.transparent,

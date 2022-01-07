@@ -24,6 +24,7 @@ import 'package:pokerapp/widgets/card_form_text_field.dart';
 import 'package:pokerapp/widgets/child_widgets.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:pokerapp/widgets/heading_widget.dart';
+import 'package:pokerapp/widgets/multi_game_selection.dart';
 import 'package:pokerapp/widgets/radio_list_widget.dart';
 import 'package:pokerapp/widgets/switch_widget.dart';
 import 'package:pokerapp/widgets/text_input_widget.dart';
@@ -86,9 +87,13 @@ class NewGameSettings2 extends StatelessWidget {
     /* otherwise, start tha game */
     final NewGameModel gm = gmp.settings;
 
-    gm.gameType = mainGameType;
-    gm.roeGames = subGameTypes;
-    gm.dealerChoiceGames = subGameTypes;
+    if (mainGameType == GameType.HOLDEM) {
+      gm.gameType = mainGameType;
+    }
+
+    // gm.gameType = mainGameType;
+    // gm.roeGames = subGameTypes;
+    // gm.dealerChoiceGames = subGameTypes;
 
     String gameCode;
     try {
@@ -453,11 +458,11 @@ class NewGameSettings2 extends StatelessWidget {
 
         var playerCounts = [2, 4, 6, 8, 9];
 
-        if (mainGameType == GameType.ROE) {
-          gmp.roeGames = subGameTypes;
-        } else {
-          gmp.dealerChoiceGames = subGameTypes;
-        }
+        // if (mainGameType == GameType.ROE) {
+        //   gmp.roeGames = subGameTypes;
+        // } else {
+        //   gmp.dealerChoiceGames = subGameTypes;
+        // }
 
         if (((mainGameType == GameType.ROE ||
                         mainGameType == GameType.DEALER_CHOICE) &&
@@ -539,6 +544,56 @@ class NewGameSettings2 extends StatelessWidget {
 
                     //crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
+                      /* game types */
+                      (mainGameType == GameType.PLO)
+                          ? Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                _buildLabel('Choose Type', theme),
+                                RadioListWidget<GameType>(
+                                  defaultValue: GameType.PLO,
+                                  values: [
+                                    GameType.PLO,
+                                    GameType.PLO_HILO,
+                                    GameType.FIVE_CARD_PLO,
+                                    GameType.FIVE_CARD_PLO_HILO
+                                  ],
+                                  onSelect: (GameType value) {
+                                    gmp.settings.gameType = value;
+                                  },
+                                ),
+                                sepV20
+                              ],
+                            )
+                          : Container(),
+                      (mainGameType == GameType.ROE ||
+                              mainGameType == GameType.DEALER_CHOICE)
+                          ? Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                _buildLabel('Choose Games', theme),
+                                MultiGameSelection(
+                                  [
+                                    GameType.HOLDEM,
+                                    GameType.PLO,
+                                    GameType.PLO_HILO,
+                                    GameType.FIVE_CARD_PLO,
+                                    GameType.FIVE_CARD_PLO_HILO
+                                  ],
+                                  onSelect: (games) {
+                                    gmp.settings.roeGames.addAll(games);
+                                    gmp.settings.dealerChoiceGames
+                                        .addAll(games);
+                                  },
+                                  onRemove: (game) {
+                                    gmp.settings.roeGames.remove(game);
+                                    gmp.settings.dealerChoiceGames.remove(game);
+                                  },
+                                ),
+                                sepV20
+                              ],
+                            )
+                          : Container(),
                       /* players */
                       _buildLabel('PLAYERS', theme),
                       sepV8,
@@ -1119,5 +1174,16 @@ class NewGameSettings2 extends StatelessWidget {
       log(jsonEncode(gmp.settings.toJson()));
       await appService.gameTemplates.save(result, gmp.settings.toJson());
     }
+  }
+
+  Widget gameTypesList(AppTheme theme) {
+    return Container(
+      decoration: BoxDecoration(
+        color: theme.accentColor,
+        borderRadius: BorderRadius.circular(4),
+      ),
+      padding: EdgeInsets.all(8),
+      child: Center(child: Text("PLO")),
+    );
   }
 }

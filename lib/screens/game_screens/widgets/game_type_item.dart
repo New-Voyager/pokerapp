@@ -99,14 +99,14 @@ class GameTypeItem extends StatelessWidget {
                   ],
                 ),
               ),
-              Visibility(
-                child: IconButton(
-                  onPressed: onSettingsClick,
-                  icon: Icon(Icons.settings),
-                  color: theme.supportingColor,
-                ),
-                visible: type == GameType.ROE || type == GameType.DEALER_CHOICE,
-              ),
+              // Visibility(
+              //   child: IconButton(
+              //     onPressed: onSettingsClick,
+              //     icon: Icon(Icons.settings),
+              //     color: theme.supportingColor,
+              //   ),
+              //   visible: type == GameType.ROE || type == GameType.DEALER_CHOICE,
+              // ),
             ],
           ),
         ),
