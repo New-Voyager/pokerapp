@@ -883,6 +883,8 @@ class HandActionProtoService {
         tableState.updateTwoBoardsNeeded(false);
       }
       AudioService.stopSound();
+      _gameState.actionState.checkFoldSelected = false;
+      _gameState.actionState.notify();
       playerCardRanks = message.flop.playerCardRanks;
     } else if (stage == 'turn') {
       tableState.updatePotChipUpdatesSilent(0);
@@ -907,6 +909,8 @@ class HandActionProtoService {
         tableState.notifyAll();
         await Future.delayed(Duration(seconds: 1));
       }
+      _gameState.actionState.checkFoldSelected = false;
+      _gameState.actionState.notify();
     } else if (stage == 'river') {
       tableState.updatePotChipUpdatesSilent(0);
       _gameState.handState = HandState.RIVER;
@@ -931,6 +935,8 @@ class HandActionProtoService {
         tableState.notifyAll();
         await Future.delayed(Duration(seconds: 1));
       }
+      _gameState.actionState.checkFoldSelected = false;
+      _gameState.actionState.notify();
     }
     AudioService.stopSound();
 

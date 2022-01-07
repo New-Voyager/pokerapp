@@ -154,7 +154,7 @@ class BombPotDialog {
                                         : theme.accentColor))),
                         Container(
                             padding: EdgeInsets.all(5),
-                            child: Text('5 Card\nPLO',
+                            child: Text('PLO\nHi-Lo',
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                     color: gameSelected[2]
@@ -162,7 +162,7 @@ class BombPotDialog {
                                         : theme.accentColor))),
                         Container(
                             padding: EdgeInsets.all(5),
-                            child: Text('PLO\nHi-Lo',
+                            child: Text('5 Card\nPLO',
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                     color: gameSelected[3]

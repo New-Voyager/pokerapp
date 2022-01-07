@@ -19,13 +19,13 @@ class ActionStatusWidget extends StatelessWidget {
     * 1. The seat is empty - nothing to show
     * 2. The current user is to act - the current user is highlighted */
     if (seat.isOpen || seat.player.highlight) {
-      debugPrint(
-          'ActionStatusWidget: [${seat.seatPos}] seat open ${seat.isOpen} highlight: ${seat.player.highlight}');
+      // debugPrint(
+      //     'ActionStatusWidget: [${seat.seatPos}] seat open ${seat.isOpen} highlight: ${seat.player.highlight}');
       return shrinkedSizedBox;
     }
     if (seat.player != null && !seat.player.inhand) {
-      debugPrint(
-          'ActionStatusWidget: [${seat.seatPos}] seat.player.inhand: ${seat.player.inhand}');
+      // debugPrint(
+      //     'ActionStatusWidget: [${seat.seatPos}] seat.player.inhand: ${seat.player.inhand}');
       return shrinkedSizedBox;
     }
 
@@ -68,8 +68,8 @@ class ActionStatusWidget extends StatelessWidget {
       allin = false;
     }
 
-    debugPrint(
-        'ActionStatusWidget: [${seat.seatPos}] seat.player.name: ${seat.player.name} actionStr: ${actionStr} allin: $allin');
+    // debugPrint(
+    //     'ActionStatusWidget: [${seat.seatPos}] seat.player.name: ${seat.player.name} actionStr: ${actionStr} allin: $allin');
 
     // decide color from the status message
     // raise, bet -> red

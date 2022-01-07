@@ -430,7 +430,6 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
         Offset notesOffset = Offset(0, 0);
         final double namePlateWidth =
             widget.boardAttributes.namePlateSize.width;
-        print('namePlateWidth: $namePlateWidth');
         SeatPos pos = widget.seat.seatPos ?? SeatPos.bottomLeft;
         double actionLeft;
         double actionRight;
