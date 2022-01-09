@@ -384,6 +384,35 @@ class NewGameSettings2 extends StatelessWidget {
   }
 
   Widget _buildBombPotConfig(AppTheme theme, NewGameModelProvider gmp) {
+    GameType gameType = gmp.settings.gameType;
+    if (gmp.settings.gameType == GameType.ROE) {
+      if (gmp.settings.roeGames.length == 0) {
+        gameType = GameType.PLO;
+      } else {
+        gameType = gmp.settings.roeGames[0];
+      }
+    }
+    if (gmp.settings.gameType == GameType.DEALER_CHOICE) {
+      if (gmp.settings.dealerChoiceGames.length == 0) {
+        gameType = GameType.PLO;
+      } else {
+        gameType = gmp.settings.dealerChoiceGames[0];
+      }
+    }
+
+    String bombPotDefaultValue = 'PLO';
+    if (gameType == GameType.HOLDEM) {
+      bombPotDefaultValue = 'NLH';
+    } else if (gameType == GameType.PLO) {
+      bombPotDefaultValue = 'PLO';
+    } else if (gameType == GameType.FIVE_CARD_PLO) {
+      bombPotDefaultValue = '5 Card PLO';
+    } else if (gameType == GameType.PLO_HILO) {
+      bombPotDefaultValue = 'Hi-Lo';
+    } else if (gameType == GameType.FIVE_CARD_PLO_HILO) {
+      bombPotDefaultValue = '5 Card Hi-Lo';
+    }
+
     return DecoratedContainer(
       theme: theme,
       children: [
@@ -424,7 +453,7 @@ class NewGameSettings2 extends StatelessWidget {
                       ),
                       sepV20,
                       RadioListWidget<String>(
-                        defaultValue: 'PLO',
+                        defaultValue: bombPotDefaultValue,
                         values: [
                           'NLH',
                           'PLO',
@@ -489,13 +518,25 @@ class NewGameSettings2 extends StatelessWidget {
         // } else {
         //   gmp.dealerChoiceGames = subGameTypes;
         // }
-
-        if (((mainGameType == GameType.ROE ||
-                        mainGameType == GameType.DEALER_CHOICE) &&
-                    subGameTypes.contains(GameType.FIVE_CARD_PLO) ||
-                subGameTypes.contains(GameType.FIVE_CARD_PLO_HILO)) ||
-            mainGameType == GameType.FIVE_CARD_PLO ||
+        bool max8Players = false;
+        if (mainGameType == GameType.ROE) {
+          if (gmp.settings.roeGames.contains(GameType.FIVE_CARD_PLO) ||
+              gmp.settings.roeGames.contains(GameType.FIVE_CARD_PLO_HILO)) {
+            max8Players = true;
+          }
+        }
+        if (mainGameType == GameType.DEALER_CHOICE) {
+          if (gmp.settings.dealerChoiceGames.contains(GameType.FIVE_CARD_PLO) ||
+              gmp.settings.dealerChoiceGames
+                  .contains(GameType.FIVE_CARD_PLO_HILO)) {
+            max8Players = true;
+          }
+        }
+        if (mainGameType == GameType.FIVE_CARD_PLO ||
             mainGameType == GameType.FIVE_CARD_PLO_HILO) {
+          max8Players = true;
+        }
+        if (max8Players) {
           playerCounts = [2, 4, 6, 8];
           gmp.maxPlayers = 8;
         }
