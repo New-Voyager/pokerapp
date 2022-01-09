@@ -608,24 +608,19 @@ class NewGameSettings2 extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 _buildLabel('Choose Games', theme),
-                                MultiGameSelection(
-                                  [
-                                    GameType.HOLDEM,
-                                    GameType.PLO,
-                                    GameType.PLO_HILO,
-                                    GameType.FIVE_CARD_PLO,
-                                    GameType.FIVE_CARD_PLO_HILO
-                                  ],
-                                  onSelect: (games) {
-                                    gmp.settings.roeGames.addAll(games);
-                                    gmp.settings.dealerChoiceGames
-                                        .addAll(games);
-                                  },
-                                  onRemove: (game) {
-                                    gmp.settings.roeGames.remove(game);
-                                    gmp.settings.dealerChoiceGames.remove(game);
-                                  },
-                                ),
+                                MultiGameSelection([
+                                  GameType.HOLDEM,
+                                  GameType.PLO,
+                                  GameType.PLO_HILO,
+                                  GameType.FIVE_CARD_PLO,
+                                  GameType.FIVE_CARD_PLO_HILO
+                                ], onSelect: (games) {
+                                  gmp.settings.roeGames.addAll(games);
+                                  gmp.settings.dealerChoiceGames.addAll(games);
+                                }, onRemove: (game) {
+                                  gmp.settings.roeGames.remove(game);
+                                  gmp.settings.dealerChoiceGames.remove(game);
+                                }, existingChoices: subGameTypes),
                                 sepV20
                               ],
                             )

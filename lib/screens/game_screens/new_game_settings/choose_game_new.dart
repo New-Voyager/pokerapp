@@ -210,7 +210,6 @@ class _ChooseGameNewState extends State<ChooseGameNew>
                             animValue: _animationController.value,
                             onSettingsClick: () => handleSettingsClick(
                                 GameType.ROE, gamesRoe, theme),
-                            gamesList: gamesRoe,
                             onArrowClick: () =>
                                 handleArrowClick(GameType.ROE, context),
                           ),
@@ -230,7 +229,6 @@ class _ChooseGameNewState extends State<ChooseGameNew>
                                 GameType.DEALER_CHOICE,
                                 gamesDealerChoice,
                                 theme),
-                            gamesList: gamesDealerChoice,
                             onArrowClick: () => handleArrowClick(
                                 GameType.DEALER_CHOICE, context),
                           ),
