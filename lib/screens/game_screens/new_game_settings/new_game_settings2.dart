@@ -648,6 +648,50 @@ class NewGameSettings2 extends StatelessWidget {
                           ? Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    _buildLabel('Dealer Choice', theme),
+                                    Consumer<NewGameModelProvider>(
+                                      builder: (_, vnGmp, __) {
+                                        return ToggleButtons(
+                                          selectedColor: Colors.black,
+                                          borderRadius:
+                                              BorderRadius.circular(30.pw),
+                                          borderColor: theme.accentColor,
+                                          fillColor: theme.accentColor,
+                                          onPressed: (int index) {
+                                            if (index == 0) {
+                                              gmp.dealerChoiceOrbit = true;
+                                            } else {
+                                              gmp.dealerChoiceOrbit = false;
+                                            }
+                                          },
+                                          isSelected: [
+                                            gmp.dealerChoiceOrbit,
+                                            !gmp.dealerChoiceOrbit
+                                          ],
+                                          children: [
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 8.0),
+                                              child: Text('Orbit'),
+                                            ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 8.0),
+                                              child: Text('Every Hand'),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    ),
+                                  ],
+                                ),
+                                sepV20,
                                 _buildLabel('Choose Games', theme),
                                 MultiGameSelection([
                                   GameType.HOLDEM,

@@ -102,6 +102,7 @@ class NewGameModel {
   bool allowFunAnimations = true;
   ChipUnit chipUnit = ChipUnit.DOLLAR;
   BuyInApprovalLimit buyInApprovalLimit = BuyInApprovalLimit.BUYIN_NO_LIMIT;
+  bool dealerChoiceOrbit = true;
 
   /*
     bombPotEnabled: Boolean
@@ -161,6 +162,7 @@ class NewGameModel {
     this.allowFunAnimations,
     this.chipUnit,
     this.buyInApprovalLimit,
+    this.dealerChoiceOrbit,
   });
 
   NewGameModel.withDefault(String clubCode) {
@@ -227,6 +229,7 @@ class NewGameModel {
       buyInApprovalLimit =
           BuyInApprovalLimitSerialization.fromJson(json['buyInLimit']);
     }
+    dealerChoiceOrbit = json['dealerChoiceOrbit'];
   }
 
   Map<String, dynamic> toJson() {
@@ -282,6 +285,7 @@ class NewGameModel {
     data['buyInLimit'] = this.buyInApprovalLimit.toJson();
     data['buyInTimeout'] = this.buyInWaitTime;
     data['waitlistAllowed'] = this.waitList;
+    data['dealerChoiceOrbit'] = this.dealerChoiceOrbit;
     //data['allowFunAnimations'] = this.allowFunAnimations;
 
     if (this.breakTime == null) {
