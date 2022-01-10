@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
@@ -12,19 +14,21 @@ class RadioListWidget<T> extends StatelessWidget {
   final bool wrap;
 
   RadioListWidget({
+    Key key,
     @required this.values,
     @required this.onSelect,
     this.defaultValue,
     this.padding = 5,
     this.wrap = true,
-  });
+  }) : super(key: key);
 
   Widget _buildItem({
     AppTheme theme,
     T v,
   }) =>
-      Consumer<ValueNotifier<T>>(
-        builder: (_, vnCurrValue, __) => InkWell(
+      Consumer<ValueNotifier<T>>(builder: (_, vnCurrValue, __) {
+        log('vnCurrValue: ${vnCurrValue}, value: ${v}');
+        return InkWell(
           onTap: () {
             vnCurrValue.value = v;
             onSelect(v);
@@ -55,8 +59,8 @@ class RadioListWidget<T> extends StatelessWidget {
               ),
             ),
           ),
-        ),
-      );
+        );
+      });
 
   Widget _buildItems(AppTheme theme) {
     return SingleChildScrollView(
@@ -74,6 +78,7 @@ class RadioListWidget<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    log('values: ${values}, defaultValue: $defaultValue');
     final theme = AppTheme.getTheme(context);
     return ListenableProvider<ValueNotifier<T>>(
       create: (_) => ValueNotifier<T>(defaultValue),

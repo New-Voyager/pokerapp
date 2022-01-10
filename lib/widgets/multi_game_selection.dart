@@ -29,13 +29,13 @@ class _MultiGameSelectionState extends State<MultiGameSelection> {
     super.initState();
     if (widget.games.length <= widget.minimumGames) {
       list.addAll(widget.games);
-      widget.onSelect(widget.games);
+      //widget.onSelect(widget.games);
     } else if (widget.existingChoices != null) {
       list.addAll(widget.existingChoices);
-      widget.onSelect(widget.existingChoices);
+      //widget.onSelect(widget.existingChoices);
     } else {
       list.addAll([widget.games[0], widget.games[1]]);
-      widget.onSelect([widget.games[0], widget.games[1]]);
+      //widget.onSelect([widget.games[0], widget.games[1]]);
     }
   }
 
