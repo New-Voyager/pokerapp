@@ -87,7 +87,7 @@ class _ClubMembersViewState extends State<ClubMembersView>
           ),
           body: _isLoading
               ? CircularProgressWidget(
-                  text: _appScreenText['loadigMembers'],
+                  text: _appScreenText['loadingMembers'],
                 )
               : _clubHomePageModel.isOwner
                   ? Column(

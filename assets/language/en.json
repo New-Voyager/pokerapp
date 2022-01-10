@@ -276,7 +276,7 @@
         "DENY": "Deny",
         "owner": "Owner",
         "clubMembers": "Club Members",
-        "loadigMembers": "Loadig members"
+        "loadingMembers": "Loading members"
     },
     "clubMembersDetailsView": {
         "lastActive": "Last active",
