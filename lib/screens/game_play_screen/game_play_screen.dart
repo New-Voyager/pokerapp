@@ -591,7 +591,11 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       }
 
       log('Player ${me.name} switches seat to ${seat.serverSeatPos}');
-      await SeatChangeService.switchSeat(widget.gameCode, seat.serverSeatPos);
+      try {
+        await SeatChangeService.switchSeat(widget.gameCode, seat.serverSeatPos);
+      } catch (err) {
+        showErrorDialog(context, 'Switch Seat', 'Switching seat failed');
+      }
     } else {
       try {
         LocationUpdates locationUpdates;

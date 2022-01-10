@@ -14,7 +14,7 @@ class NewGameConstants {
 
   static const List<int> ACTION_TIMES = [10, 15, 20, 30, 45, 60];
   static const List<int> BUYIN_WAIT_TIMES = [60, 90, 120, 240, 300];
-  static const List<int> BOMB_POT_INTERVALS = [30, 45, 60, 90, 120];
+  static const List<int> BOMB_POT_INTERVALS = [15, 30, 45, 60, 90, 120];
   static const List<int> BOMB_POT_BET_SIZE = [2, 3, 4, 5, 10, 15, 20];
   static const List<int> BREAK_WAIT_TIMES = [3, 5, 10, 15, 30];
 
@@ -102,6 +102,7 @@ class NewGameModel {
   bool allowFunAnimations = true;
   ChipUnit chipUnit = ChipUnit.DOLLAR;
   BuyInApprovalLimit buyInApprovalLimit = BuyInApprovalLimit.BUYIN_NO_LIMIT;
+  bool dealerChoiceOrbit = true;
 
   /*
     bombPotEnabled: Boolean
@@ -114,7 +115,7 @@ class NewGameModel {
   bool doubleBoardBombPot = false;
   int bombPotInterval = 30;
   int bombPotBet = 5; // in big blinds
-
+  GameType bombPotGameType = GameType.UNKNOWN;
   List<GameType> roeGames = [];
   List<GameType> dealerChoiceGames = [];
 
@@ -161,6 +162,7 @@ class NewGameModel {
     this.allowFunAnimations,
     this.chipUnit,
     this.buyInApprovalLimit,
+    this.dealerChoiceOrbit,
   });
 
   NewGameModel.withDefault(String clubCode) {
@@ -227,6 +229,7 @@ class NewGameModel {
       buyInApprovalLimit =
           BuyInApprovalLimitSerialization.fromJson(json['buyInLimit']);
     }
+    dealerChoiceOrbit = json['dealerChoiceOrbit'];
   }
 
   Map<String, dynamic> toJson() {
@@ -265,6 +268,15 @@ class NewGameModel {
     data['bombPotBet'] = this.bombPotBet;
     data['doubleBoardBombPot'] = this.doubleBoardBombPot;
     data['bombPotInterval'] = this.bombPotInterval;
+    if (this.bombPotGameType == GameType.UNKNOWN) {
+      this.bombPotGameType = this.gameType;
+    }
+    if (this.bombPotGameType == GameType.DEALER_CHOICE) {
+      this.bombPotGameType = this.dealerChoiceGames[0];
+    } else if (this.bombPotGameType == GameType.ROE) {
+      this.bombPotGameType = this.roeGames[0];
+    }
+    data['bombPotGameType'] = this.bombPotGameType.toJson();
     data['seatChangeAllowed'] = this.seatChangeAllowed ?? false;
     data['breakAllowed'] = this.breakAllowed ?? true;
     data['showResult'] = this.showResult ?? true;
@@ -273,6 +285,7 @@ class NewGameModel {
     data['buyInLimit'] = this.buyInApprovalLimit.toJson();
     data['buyInTimeout'] = this.buyInWaitTime;
     data['waitlistAllowed'] = this.waitList;
+    data['dealerChoiceOrbit'] = this.dealerChoiceOrbit;
     //data['allowFunAnimations'] = this.allowFunAnimations;
 
     if (this.breakTime == null) {
