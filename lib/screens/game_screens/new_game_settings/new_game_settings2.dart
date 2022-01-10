@@ -24,6 +24,7 @@ import 'package:pokerapp/widgets/card_form_text_field.dart';
 import 'package:pokerapp/widgets/child_widgets.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:pokerapp/widgets/heading_widget.dart';
+import 'package:pokerapp/widgets/multi_game_selection.dart';
 import 'package:pokerapp/widgets/radio_list_widget.dart';
 import 'package:pokerapp/widgets/switch_widget.dart';
 import 'package:pokerapp/widgets/text_input_widget.dart';
@@ -33,9 +34,7 @@ import 'package:pokerapp/utils/adaptive_sizer.dart';
 import '../../../main_helper.dart';
 import '../../../routes.dart';
 
-class NewGameSettings2 extends StatelessWidget {
-  static AppTextScreen _appScreenText;
-
+class NewGameSettings2 extends StatefulWidget {
   static void _joinGame(BuildContext context, String gameCode) =>
       navigatorKey.currentState.pushNamed(
         Routes.game_play,
@@ -57,7 +56,6 @@ class NewGameSettings2 extends StatelessWidget {
     );
 
     ConnectionDialog.dismiss(context: context);
-
     NewGameModelProvider gmp = await showDialog<NewGameModelProvider>(
       context: context,
       barrierDismissible: false,
@@ -69,7 +67,6 @@ class NewGameSettings2 extends StatelessWidget {
         child: NewGameSettings2(
           clubHomePageModel,
           mainGameType,
-          subGameTypes,
           savedModel,
         ),
       ),
@@ -86,9 +83,13 @@ class NewGameSettings2 extends StatelessWidget {
     /* otherwise, start tha game */
     final NewGameModel gm = gmp.settings;
 
-    gm.gameType = mainGameType;
-    gm.roeGames = subGameTypes;
-    gm.dealerChoiceGames = subGameTypes;
+    if (mainGameType == GameType.HOLDEM) {
+      gm.gameType = mainGameType;
+    }
+
+    // gm.gameType = mainGameType;
+    // gm.roeGames = subGameTypes;
+    // gm.dealerChoiceGames = subGameTypes;
 
     String gameCode;
     try {
@@ -110,21 +111,57 @@ class NewGameSettings2 extends StatelessWidget {
     if (gameCode != null)
       _joinGame(context, gameCode);
     else
-      showErrorDialog(
-          context, _appScreenText['error'], _appScreenText['createGameFailed']);
+      showErrorDialog(context, 'Error', 'Creating game failed');
   }
 
   final ClubHomePageModel clubHomePageModel;
   final GameType mainGameType;
-  final List<GameType> subGameTypes;
   final NewGameModel savedModel;
 
   NewGameSettings2(
     this.clubHomePageModel,
     this.mainGameType,
-    this.subGameTypes,
     this.savedModel,
   );
+
+  static const sepV20 = const SizedBox(height: 20.0);
+  static const sepV8 = const SizedBox(height: 8.0);
+
+  static const sepH10 = const SizedBox(width: 10.0);
+
+  @override
+  State<NewGameSettings2> createState() => _NewGameSettings2State();
+}
+
+class _NewGameSettings2State extends State<NewGameSettings2> {
+  var playerCounts = [2, 4, 6, 8, 9];
+  AppTextScreen appScreenText;
+  NewGameModelProvider gameSettings;
+  bool loading = false;
+  @override
+  void initState() {
+    loading = true;
+    appScreenText = getAppTextScreen("newGameSettings2");
+    String clubCode = "";
+    if (widget.clubHomePageModel != null) {
+      clubCode = widget.clubHomePageModel.clubCode;
+    }
+    gameSettings = NewGameModelProvider(clubCode);
+    if (widget.mainGameType == GameType.DEALER_CHOICE) {
+      gameSettings.settings.dealerChoiceGames.addAll([
+        GameType.HOLDEM,
+        GameType.PLO,
+        GameType.PLO_HILO,
+        GameType.FIVE_CARD_PLO,
+        GameType.FIVE_CARD_PLO_HILO,
+      ]);
+    } else if (widget.mainGameType == GameType.ROE) {
+      gameSettings.settings.roeGames.addAll([GameType.HOLDEM, GameType.PLO]);
+    }
+    determinePlayerCounts(gameSettings);
+    loading = false;
+    super.initState();
+  }
 
   Widget _buildLabel(String label, AppTheme theme) => Padding(
         padding: const EdgeInsets.symmetric(vertical: 5.0),
@@ -174,18 +211,13 @@ class NewGameSettings2 extends StatelessWidget {
         child: child,
       );
 
-  static const sepV20 = const SizedBox(height: 20.0);
-  static const sepV8 = const SizedBox(height: 8.0);
-
-  static const sepH10 = const SizedBox(width: 10.0);
-
   Widget _buildBreakConfig(AppTheme theme, NewGameModelProvider gmp) {
     return DecoratedContainer(
       theme: theme,
       children: [
         SwitchWidget(
           value: gmp.breakAllowed,
-          label: _appScreenText['breakAllowed'],
+          label: appScreenText['breakAllowed'],
           onChange: (bool value) {
             gmp.breakAllowed = value;
           },
@@ -198,7 +230,7 @@ class NewGameSettings2 extends StatelessWidget {
                 ? const SizedBox.shrink()
                 : Column(
                     children: [
-                      _buildLabel(_appScreenText['maxBreakTime'], theme),
+                      _buildLabel(appScreenText['maxBreakTime'], theme),
                       RadioListWidget<int>(
                         defaultValue: gmp.breakTime,
                         values: NewGameConstants.BREAK_WAIT_TIMES,
@@ -234,8 +266,8 @@ class NewGameSettings2 extends StatelessWidget {
                           ? Colors.black
                           : theme.accentColor))));
 
-          if (clubHomePageModel != null &&
-              clubHomePageModel.trackMemberCredit) {
+          if (widget.clubHomePageModel != null &&
+              widget.clubHomePageModel.trackMemberCredit) {
             showCreditLimit = true;
             isSelected.add(gmp.buyInApprovalLimit ==
                 BuyInApprovalLimit.BUYIN_CREDIT_LIMIT);
@@ -313,7 +345,7 @@ class NewGameSettings2 extends StatelessWidget {
                     BuyInApprovalLimit.BUYIN_HOST_APPROVAL
                 ? Column(
                     children: [
-                      _buildLabel(_appScreenText['buyinMaxTime'], theme),
+                      _buildLabel(appScreenText['buyinMaxTime'], theme),
                       RadioListWidget<int>(
                         defaultValue: gmp.buyInWaitTime,
                         values: NewGameConstants.BUYIN_WAIT_TIMES,
@@ -379,12 +411,41 @@ class NewGameSettings2 extends StatelessWidget {
   }
 
   Widget _buildBombPotConfig(AppTheme theme, NewGameModelProvider gmp) {
+    GameType gameType = gmp.settings.gameType;
+    if (gmp.settings.gameType == GameType.ROE) {
+      if (gmp.settings.roeGames.length == 0) {
+        gameType = GameType.PLO;
+      } else {
+        gameType = gmp.settings.roeGames[0];
+      }
+    }
+    if (gmp.settings.gameType == GameType.DEALER_CHOICE) {
+      if (gmp.settings.dealerChoiceGames.length == 0) {
+        gameType = GameType.PLO;
+      } else {
+        gameType = gmp.settings.dealerChoiceGames[0];
+      }
+    }
+
+    String bombPotDefaultValue = 'PLO';
+    if (gameType == GameType.HOLDEM) {
+      bombPotDefaultValue = 'NLH';
+    } else if (gameType == GameType.PLO) {
+      bombPotDefaultValue = 'PLO';
+    } else if (gameType == GameType.FIVE_CARD_PLO) {
+      bombPotDefaultValue = '5 Card PLO';
+    } else if (gameType == GameType.PLO_HILO) {
+      bombPotDefaultValue = 'Hi-Lo';
+    } else if (gameType == GameType.FIVE_CARD_PLO_HILO) {
+      bombPotDefaultValue = '5 Card Hi-Lo';
+    }
+
     return DecoratedContainer(
       theme: theme,
       children: [
         SwitchWidget(
           value: gmp.bombPotEnabled,
-          label: _appScreenText['bombPotEnabled'],
+          label: appScreenText['bombPotEnabled'],
           onChange: (bool value) {
             gmp.bombPotEnabled = value;
           },
@@ -400,7 +461,7 @@ class NewGameSettings2 extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // bomb pot bet
-                      _buildLabel(_appScreenText['bombPotBet'], theme),
+                      _buildLabel(appScreenText['bombPotBet'], theme),
 
                       RadioListWidget<int>(
                         defaultValue: gmp.bombPotBet,
@@ -409,7 +470,7 @@ class NewGameSettings2 extends StatelessWidget {
                           gmp.bombPotBet = value;
                         },
                       ),
-                      _buildLabel(_appScreenText['bombPotInterval'], theme),
+                      _buildLabel(appScreenText['bombPotInterval'], theme),
                       RadioListWidget<int>(
                         defaultValue: gmp.bombPotInterval,
                         values: NewGameConstants.BOMB_POT_INTERVALS,
@@ -417,11 +478,37 @@ class NewGameSettings2 extends StatelessWidget {
                           gmp.bombPotInterval = value;
                         },
                       ),
-                      sepV20,
-
+                      NewGameSettings2.sepV20,
+                      RadioListWidget<String>(
+                        defaultValue: bombPotDefaultValue,
+                        values: [
+                          'NLH',
+                          'PLO',
+                          'Hi-Lo',
+                          '5 Card',
+                          '5 Card Hi-Lo'
+                        ],
+                        onSelect: (String value) {
+                          if (value == 'NLH') {
+                            gmp.settings.bombPotGameType = GameType.HOLDEM;
+                          } else if (value == 'PLO') {
+                            gmp.settings.bombPotGameType = GameType.PLO;
+                          } else if (value == 'Hi-Lo') {
+                            gmp.settings.bombPotGameType = GameType.PLO_HILO;
+                          } else if (value == '5 Card') {
+                            gmp.settings.bombPotGameType =
+                                GameType.FIVE_CARD_PLO;
+                          } else if (value == '5 Card Hi-Lo') {
+                            gmp.settings.bombPotGameType =
+                                GameType.FIVE_CARD_PLO_HILO;
+                          }
+                        },
+                      ),
+                      NewGameSettings2.sepV20,
                       SwitchWidget(
                         value: gmp.doubleBoardBombPot,
-                        label: _appScreenText['doubleBoardBombPot'],
+                        label:
+                            'Double Board', //_appScreenText['doubleBoardBombPot'],
                         onChange: (bool value) {
                           gmp.doubleBoardBombPot = value;
                         },
@@ -434,50 +521,61 @@ class NewGameSettings2 extends StatelessWidget {
     );
   }
 
+  void determinePlayerCounts(NewGameModelProvider gmp) {
+    bool max8Players = false;
+    playerCounts = [2, 4, 6, 8, 9];
+
+    if (widget.mainGameType == GameType.ROE) {
+      if (gmp.settings.roeGames.contains(GameType.FIVE_CARD_PLO) ||
+          gmp.settings.roeGames.contains(GameType.FIVE_CARD_PLO_HILO)) {
+        max8Players = true;
+      }
+    }
+    if (widget.mainGameType == GameType.DEALER_CHOICE) {
+      if (gmp.settings.dealerChoiceGames.contains(GameType.FIVE_CARD_PLO) ||
+          gmp.settings.dealerChoiceGames
+              .contains(GameType.FIVE_CARD_PLO_HILO)) {
+        max8Players = true;
+      }
+    }
+    if (gmp.gameType == GameType.FIVE_CARD_PLO ||
+        gmp.gameType == GameType.FIVE_CARD_PLO_HILO) {
+      max8Players = true;
+    }
+    if (max8Players) {
+      playerCounts = [2, 4, 6, 8];
+      if (gmp.maxPlayers == 9) {
+        gmp.maxPlayers = 8;
+      } else {
+        gmp.notifyListeners();
+      }
+    } else {
+      gmp.notifyListeners();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    _appScreenText = getAppTextScreen("newGameSettings2");
     final theme = AppTheme.getTheme(context);
-
-    String clubCode = "";
-    if (clubHomePageModel != null) {
-      clubCode = clubHomePageModel.clubCode;
+    log('NewGameSettings: build 1');
+    if (loading) {
+      return Container();
     }
-
     return ListenableProvider<NewGameModelProvider>(
-      create: (_) => NewGameModelProvider(clubCode),
+      create: (_) => gameSettings,
       builder: (BuildContext context, _) {
         final NewGameModelProvider gmp = context.read<NewGameModelProvider>();
-
-        gmp.gameType = mainGameType;
-
-        var playerCounts = [2, 4, 6, 8, 9];
-
-        if (mainGameType == GameType.ROE) {
-          gmp.roeGames = subGameTypes;
-        } else {
-          gmp.dealerChoiceGames = subGameTypes;
-        }
-
-        if (((mainGameType == GameType.ROE ||
-                        mainGameType == GameType.DEALER_CHOICE) &&
-                    subGameTypes.contains(GameType.FIVE_CARD_PLO) ||
-                subGameTypes.contains(GameType.FIVE_CARD_PLO_HILO)) ||
-            mainGameType == GameType.FIVE_CARD_PLO ||
-            mainGameType == GameType.FIVE_CARD_PLO_HILO) {
-          playerCounts = [2, 4, 6, 8];
-          gmp.maxPlayers = 8;
-        }
-
-        if (clubHomePageModel != null) {
-          gmp.settings.showResultOption = clubHomePageModel.showGameResult;
+        log('NewGameSettings: build 2');
+        if (widget.clubHomePageModel != null) {
+          gmp.settings.showResultOption =
+              widget.clubHomePageModel.showGameResult;
           if (!gmp.settings.showResultOption) {
             gmp.showResult = false;
           }
         }
 
         // Load default values if it is not from Saved Settings.
-        if (savedModel == null) {
+        if (widget.savedModel == null) {
           // Initializing values
           // Initial value for BigBlind
           gmp.bigBlind = 2.0;
@@ -488,574 +586,703 @@ class NewGameSettings2 extends StatelessWidget {
           gmp.rakeCap = 0;
           gmp.buyInWaitTime = 120;
         } else {
-          gmp.bigBlind = savedModel.bigBlind;
-          gmp.settings = savedModel;
+          gmp.bigBlind = widget.savedModel.bigBlind;
+          gmp.settings = widget.savedModel;
         }
         gmp.notify = true;
 
-        return Container(
-          decoration: AppDecorators.bgRadialGradient(theme).copyWith(
-            border: Border.all(
-              color: theme.secondaryColorWithDark(),
-              width: 2,
-            ),
-            borderRadius: BorderRadius.circular(10),
-          ),
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  CircleImageButton(
-                    onTap: () async {
-                      await onSaveSettings(context, theme, gmp);
-                    },
-                    icon: Icons.save,
-                    theme: theme,
-                  ),
-                  /* HEADING */
-                  Expanded(
-                    child: HeadingWidget(
-                      heading: _appScreenText['gameSettings'],
-                    ),
-                  ),
-                  CircleImageButton(
-                    onTap: () {
-                      gmp.cancelled = true;
-                      Navigator.pop(context, null);
-                    },
-                    theme: theme,
-                    icon: Icons.close,
-                  ),
-                ],
+        return Consumer<NewGameModelProvider>(builder: (_, __, ___) {
+          return Container(
+            decoration: AppDecorators.bgRadialGradient(theme).copyWith(
+              border: Border.all(
+                color: theme.secondaryColorWithDark(),
+                width: 2,
               ),
-              Expanded(
-                child: Scrollbar(
-                  thickness: 4,
-                  isAlwaysShown: true,
-                  child: ListView(
-                    shrinkWrap: true,
-
-                    //crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      /* players */
-                      _buildLabel('PLAYERS', theme),
-                      sepV8,
-                      RadioListWidget<int>(
-                        defaultValue: gmp.maxPlayers,
-                        values: playerCounts,
-                        onSelect: (int value) => gmp.maxPlayers = value,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    CircleImageButton(
+                      onTap: () async {
+                        await onSaveSettings(context, theme, gmp);
+                      },
+                      icon: Icons.save,
+                      theme: theme,
+                    ),
+                    /* HEADING */
+                    Expanded(
+                      child: HeadingWidget(
+                        heading: appScreenText['gameSettings'],
                       ),
+                    ),
+                    CircleImageButton(
+                      onTap: () {
+                        gmp.cancelled = true;
+                        Navigator.pop(context, null);
+                      },
+                      theme: theme,
+                      icon: Icons.close,
+                    ),
+                  ],
+                ),
+                Expanded(
+                  child: Scrollbar(
+                    thickness: 4,
+                    isAlwaysShown: true,
+                    child: ListView(
+                      shrinkWrap: true,
 
-                      /* chip unit */
-                      sepV20,
-                      Consumer<NewGameModelProvider>(builder: (_, vnGmp, __) {
-                        return Row(children: [
-                          Expanded(
-                            child: Text('Chip Unit'),
-                          ),
-                          Expanded(
-                              child: ToggleButtons(
-                            selectedColor: Colors.black,
-                            borderColor: theme.accentColor,
-                            fillColor: theme.accentColor,
-                            onPressed: (int index) {
-                              if (index == 0) {
-                                gmp.chipUnit = ChipUnit.DOLLAR;
-                              } else {
-                                gmp.chipUnit = ChipUnit.CENT;
-                              }
-                            },
-                            isSelected: [
-                              gmp.chipUnit == ChipUnit.DOLLAR,
-                              gmp.chipUnit == ChipUnit.CENT,
-                            ],
-                            children: [
-                              Text('1'),
-                              Text('.01'),
-                            ],
-                          ))
-                        ]);
-                      }),
-
-                      /* big blind & ante */
-                      sepV20,
-                      _buildLabel('Blind', theme),
-                      Consumer<NewGameModelProvider>(builder: (_, vnGmp, __) {
-                        double minValue = 2;
-                        double maxValue = 10000000;
-                        if (gmp.chipUnit == ChipUnit.CENT) {
-                          minValue = 0.1;
-                        }
-                        return Row(
-                          children: [
-                            /* big blind */
-                            Expanded(
-                              child: TextInputWidget(
-                                value: gmp.bigBlind,
-                                decimalAllowed: gmp.chipUnit == ChipUnit.CENT,
-                                label: _appScreenText['bigBlind'],
-                                minValue: minValue,
-                                maxValue: maxValue,
-                                evenNumber: true,
-                                title: _appScreenText['enterBigBlind'],
-                                onChange: (value) {
-                                  //gmp.blinds.bigBlind = value.toDouble();
-                                  gmp.bigBlind = value.toDouble();
-                                },
-                              ),
-                            ),
-
-                            // sep
-                            sepH10,
-
-                            /* ante */
-                            Expanded(
-                              child: TextInputWidget(
-                                value: gmp.ante,
-                                label: 'Ante',
-                                title:
-                                    'Enter ante (0-${DataFormatter.chipsFormat(gmp.bigBlind)})',
-                                decimalAllowed: gmp.chipUnit == ChipUnit.CENT,
-                                minValue: 0,
-                                maxValue: gmp.bigBlind,
-                                onChange: (value) {
-                                  gmp.ante = value.toDouble();
-                                },
-                              ),
-                            ),
-                          ],
-                        );
-                      }),
-
-                      /* buyin */
-                      sepV20,
-                      _buildLabel(_appScreenText['buyin'], theme),
-                      sepV8,
-                      DecoratedContainer(
-                        child: Column(children: [
-                          Row(
-                            children: [
-                              /* min */
-                              Expanded(
-                                child: TextInputWidget(
-                                  value: gmp.buyInMin.toDouble(),
-                                  small: true,
-                                  label: _appScreenText['min'],
-                                  trailing: _appScreenText['bb'],
-                                  title: _appScreenText['enterMinBuyin'],
-                                  minValue: 0,
-                                  maxValue: 1000,
-                                  onChange: (value) {
-                                    gmp.buyInMin = value.floor();
-
-                                    if (gmp.buyInMax <= value.floor()) {
-                                      Alerts.showNotification(
-                                          titleText: _appScreenText[
-                                              'buyInMoreThanMin'],
-                                          duration: Duration(seconds: 5));
+                      //crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        /* game types */
+                        (widget.mainGameType == GameType.PLO)
+                            ? Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  //_buildLabel('Choose Type', theme),
+                                  RadioListWidget<String>(
+                                    defaultValue: 'PLO',
+                                    values: [
+                                      'PLO',
+                                      'Hi-Lo',
+                                      '5 Card',
+                                      '5 Card Hi-Lo'
+                                    ],
+                                    onSelect: (String value) {
+                                      if (value == 'PLO') {
+                                        gmp.settings.gameType = GameType.PLO;
+                                      } else if (value == 'Hi-Lo') {
+                                        gmp.settings.gameType =
+                                            GameType.PLO_HILO;
+                                      } else if (value == '5 Card') {
+                                        gmp.settings.gameType =
+                                            GameType.FIVE_CARD_PLO;
+                                      } else if (value == '5 Card Hi-Lo') {
+                                        gmp.settings.gameType =
+                                            GameType.FIVE_CARD_PLO_HILO;
+                                      }
+                                      determinePlayerCounts(gmp);
+                                      //setState(() {});
+                                    },
+                                  ),
+                                  NewGameSettings2.sepV20
+                                ],
+                              )
+                            : Container(),
+                        (widget.mainGameType == GameType.ROE ||
+                                widget.mainGameType == GameType.DEALER_CHOICE)
+                            ? Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  widget.mainGameType == GameType.DEALER_CHOICE
+                                      ? Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            _buildLabel('Dealer Choice', theme),
+                                            Consumer<NewGameModelProvider>(
+                                              builder: (_, vnGmp, __) {
+                                                return ToggleButtons(
+                                                  selectedColor: Colors.black,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          30.pw),
+                                                  borderColor:
+                                                      theme.accentColor,
+                                                  fillColor: theme.accentColor,
+                                                  onPressed: (int index) {
+                                                    if (index == 0) {
+                                                      gmp.dealerChoiceOrbit =
+                                                          true;
+                                                    } else {
+                                                      gmp.dealerChoiceOrbit =
+                                                          false;
+                                                    }
+                                                  },
+                                                  isSelected: [
+                                                    gmp.dealerChoiceOrbit,
+                                                    !gmp.dealerChoiceOrbit
+                                                  ],
+                                                  children: [
+                                                    Padding(
+                                                      padding: const EdgeInsets
+                                                              .symmetric(
+                                                          horizontal: 4.0),
+                                                      child: Text('Orbit'),
+                                                    ),
+                                                    Padding(
+                                                      padding: const EdgeInsets
+                                                              .symmetric(
+                                                          horizontal: 4.0),
+                                                      child: Text('Button'),
+                                                    ),
+                                                  ],
+                                                );
+                                              },
+                                            ),
+                                          ],
+                                        )
+                                      : Container(),
+                                  NewGameSettings2.sepV20,
+                                  _buildLabel('Choose Games', theme),
+                                  MultiGameSelection([
+                                    GameType.HOLDEM,
+                                    GameType.PLO,
+                                    GameType.PLO_HILO,
+                                    GameType.FIVE_CARD_PLO,
+                                    GameType.FIVE_CARD_PLO_HILO
+                                  ], onSelect: (games) {
+                                    if (widget.mainGameType == GameType.ROE) {
+                                      gmp.settings.roeGames.addAll(games);
+                                    } else {
+                                      gmp.settings.dealerChoiceGames
+                                          .addAll(games);
                                     }
-                                  },
-                                ),
-                              ),
-
-                              // sep
-                              sepH10,
-
-                              /* max */
-                              Expanded(
-                                child: TextInputWidget(
-                                  value: gmp.buyInMax.toDouble(),
-                                  small: true,
-                                  label: _appScreenText['max'],
-                                  title: _appScreenText['enterMaxBuyin'],
-                                  trailing: _appScreenText['bb'],
-                                  minValue: 0,
-                                  maxValue: 1000,
-                                  onChange: (value) {
-                                    gmp.buyInMax = value.floor();
-                                    if (gmp.buyInMin >= value.floor()) {
-                                      Alerts.showNotification(
-                                          titleText: _appScreenText[
-                                              'buyinMaxBBGreater'],
-                                          duration: Duration(seconds: 5));
+                                    determinePlayerCounts(gmp);
+                                  }, onRemove: (game) {
+                                    if (widget.mainGameType == GameType.ROE) {
+                                      gmp.settings.roeGames.remove(game);
+                                    } else {
+                                      gmp.settings.dealerChoiceGames
+                                          .remove(game);
                                     }
+                                    determinePlayerCounts(gmp);
                                   },
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 4.ph),
-                          Consumer<NewGameModelProvider>(
-                              builder: (_, vnGmp, __) {
-                            return Text(
-                                ' (${DataFormatter.chipsFormat(gmp.buyInMin * gmp.bigBlind)} - ${DataFormatter.chipsFormat(gmp.buyInMax * gmp.bigBlind)}) ');
-                          }),
-                        ]),
-                        theme: theme,
-                      ),
+                                      existingChoices:
+                                          widget.mainGameType == GameType.ROE
+                                              ? gmp.settings.roeGames
+                                              : gmp.settings.dealerChoiceGames),
+                                  NewGameSettings2.sepV20
+                                ],
+                              )
+                            : Container(),
+                        /* players */
+                        _buildLabel('Players', theme),
+                        NewGameSettings2.sepV8,
+                        RadioListWidget<int>(
+                            key: UniqueKey(),
+                            defaultValue: gmp.maxPlayers,
+                            values: playerCounts,
+                            onSelect: (int value) {
+                              gmp.maxPlayers = value;
+                            }),
 
-                      /* tips */
-                      sepV20,
-                      _buildLabel(_appScreenText["tips"], theme),
-                      sepV8,
-                      DecoratedContainer(
-                        child: Consumer<NewGameModelProvider>(
-                            builder: (_, vnGmp, __) {
+                        /* chip unit */
+                        NewGameSettings2.sepV20,
+                        Consumer<NewGameModelProvider>(builder: (_, vnGmp, __) {
+                          return Row(children: [
+                            Expanded(
+                              child: Text('Chip Unit'),
+                            ),
+                            Expanded(
+                                child: ToggleButtons(
+                              selectedColor: Colors.black,
+                              borderColor: theme.accentColor,
+                              fillColor: theme.accentColor,
+                              onPressed: (int index) {
+                                if (index == 0) {
+                                  gmp.chipUnit = ChipUnit.DOLLAR;
+                                } else {
+                                  gmp.chipUnit = ChipUnit.CENT;
+                                }
+                              },
+                              isSelected: [
+                                gmp.chipUnit == ChipUnit.DOLLAR,
+                                gmp.chipUnit == ChipUnit.CENT,
+                              ],
+                              children: [
+                                Text('1'),
+                                Text('.01'),
+                              ],
+                            ))
+                          ]);
+                        }),
+
+                        /* big blind & ante */
+                        NewGameSettings2.sepV20,
+                        _buildLabel('Blind', theme),
+                        Consumer<NewGameModelProvider>(builder: (_, vnGmp, __) {
+                          double minValue = 2;
+                          double maxValue = 10000000;
+                          if (gmp.chipUnit == ChipUnit.CENT) {
+                            minValue = 0.1;
+                          }
                           return Row(
                             children: [
-                              /* min */
+                              /* big blind */
                               Expanded(
                                 child: TextInputWidget(
-                                  value: gmp.rakePercentage,
+                                  value: gmp.bigBlind,
                                   decimalAllowed: gmp.chipUnit == ChipUnit.CENT,
-                                  small: true,
-                                  trailing: '%',
-                                  title: _appScreenText["tipsPercent"],
-                                  minValue: 0,
-                                  maxValue: 50,
+                                  label: appScreenText['bigBlind'],
+                                  minValue: minValue,
+                                  maxValue: maxValue,
+                                  evenNumber: true,
+                                  title: appScreenText['enterBigBlind'],
                                   onChange: (value) {
-                                    gmp.rakePercentage = value;
+                                    //gmp.blinds.bigBlind = value.toDouble();
+                                    gmp.bigBlind = value.toDouble();
                                   },
                                 ),
                               ),
 
                               // sep
-                              sepH10,
+                              NewGameSettings2.sepH10,
 
-                              /* max */
+                              /* ante */
                               Expanded(
                                 child: TextInputWidget(
-                                  value: gmp.rakeCap,
+                                  value: gmp.ante,
+                                  label: 'Ante',
+                                  title:
+                                      'Enter ante (0-${DataFormatter.chipsFormat(gmp.bigBlind)})',
                                   decimalAllowed: gmp.chipUnit == ChipUnit.CENT,
-                                  small: true,
-                                  leading: _appScreenText['cap'],
-                                  title: _appScreenText['maxTips'],
                                   minValue: 0,
-                                  maxValue: -1,
+                                  maxValue: gmp.bigBlind,
                                   onChange: (value) {
-                                    gmp.rakeCap = value;
+                                    gmp.ante = value.toDouble();
                                   },
                                 ),
                               ),
                             ],
                           );
                         }),
-                        theme: theme,
-                      ),
 
-                      /* action time */
-                      sepV20,
-                      _buildLabel(_appScreenText['actionTime'], theme),
-                      sepV8,
-                      RadioListWidget<int>(
-                        defaultValue: gmp.actionTime,
-                        values: NewGameConstants.ACTION_TIMES,
-                        onSelect: (int value) {
-                          gmp.actionTime = value;
-                        },
-                      ),
+                        /* buyin */
+                        NewGameSettings2.sepV20,
+                        _buildLabel(appScreenText['buyin'], theme),
+                        NewGameSettings2.sepV8,
+                        DecoratedContainer(
+                          child: Column(children: [
+                            Row(
+                              children: [
+                                /* min */
+                                Expanded(
+                                  child: TextInputWidget(
+                                    value: gmp.buyInMin.toDouble(),
+                                    small: true,
+                                    label: appScreenText['min'],
+                                    trailing: appScreenText['bb'],
+                                    title: appScreenText['enterMinBuyin'],
+                                    minValue: 0,
+                                    maxValue: 1000,
+                                    onChange: (value) {
+                                      gmp.buyInMin = value.floor();
 
-                      /* game time */
-                      sepV20,
-                      _buildLabel(_appScreenText['gameTime'], theme),
-                      sepV8,
-                      RadioListWidget<int>(
-                        defaultValue: gmp.gameLengthInMins ~/ 60,
-                        values: NewGameConstants.GAME_LENGTH,
-                        onSelect: (int value) {
-                          gmp.gameLengthInMins = value * 60;
-                        },
-                      ),
+                                      if (gmp.buyInMax <= value.floor()) {
+                                        Alerts.showNotification(
+                                            titleText: appScreenText[
+                                                'buyInMoreThanMin'],
+                                            duration: Duration(seconds: 5));
+                                      }
+                                    },
+                                  ),
+                                ),
 
-                      /* sep */
-                      sepV20,
+                                // sep
+                                NewGameSettings2.sepH10,
 
-                      /* UTG straddle */
-                      _buildRadio(
-                        label: _appScreenText['utgStraddle'],
-                        value: gmp.straddleAllowed,
-                        onChange: (bool b) {
-                          gmp.straddleAllowed = b;
-                        },
-                        theme: theme,
-                      ),
-                      sepV20,
-                      _buildButtonStraddleConfig(theme, gmp),
-                      sepV20,
+                                /* max */
+                                Expanded(
+                                  child: TextInputWidget(
+                                    value: gmp.buyInMax.toDouble(),
+                                    small: true,
+                                    label: appScreenText['max'],
+                                    title: appScreenText['enterMaxBuyin'],
+                                    trailing: appScreenText['bb'],
+                                    minValue: 0,
+                                    maxValue: 1000,
+                                    onChange: (value) {
+                                      gmp.buyInMax = value.floor();
+                                      if (gmp.buyInMin >= value.floor()) {
+                                        Alerts.showNotification(
+                                            titleText: appScreenText[
+                                                'buyinMaxBBGreater'],
+                                            duration: Duration(seconds: 5));
+                                      }
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 4.ph),
+                            Consumer<NewGameModelProvider>(
+                                builder: (_, vnGmp, __) {
+                              return Text(
+                                  ' (${DataFormatter.chipsFormat(gmp.buyInMin * gmp.bigBlind)} - ${DataFormatter.chipsFormat(gmp.buyInMax * gmp.bigBlind)}) ');
+                            }),
+                          ]),
+                          theme: theme,
+                        ),
 
-                      /* allow run it twice */
-                      _buildRadio(
-                        label: _appScreenText['allowRunItTwice'],
-                        value: gmp.runItTwice,
-                        onChange: (bool b) {
-                          gmp.runItTwice = b;
-                        },
-                        theme: theme,
-                      ),
-                      /* sep */
-                      sepV20,
-                      /* allow audio conference */
-                      _buildRadio(
-                        label: _appScreenText['useAudioConf'],
-                        value: gmp.audioConference,
-                        onChange: (bool b) {
-                          gmp.audioConference = b;
-                        },
-                        theme: theme,
-                      ),
-                      /* sep */
-                      sepV20,
+                        /* tips */
+                        NewGameSettings2.sepV20,
+                        _buildLabel(appScreenText["tips"], theme),
+                        NewGameSettings2.sepV8,
+                        DecoratedContainer(
+                          child: Consumer<NewGameModelProvider>(
+                              builder: (_, vnGmp, __) {
+                            return Row(
+                              children: [
+                                /* min */
+                                Expanded(
+                                  child: TextInputWidget(
+                                    value: gmp.rakePercentage,
+                                    decimalAllowed:
+                                        gmp.chipUnit == ChipUnit.CENT,
+                                    small: true,
+                                    trailing: '%',
+                                    title: appScreenText["tipsPercent"],
+                                    minValue: 0,
+                                    maxValue: 50,
+                                    onChange: (value) {
+                                      gmp.rakePercentage = value;
+                                    },
+                                  ),
+                                ),
 
-                      /* Highhand Tracked */
-                      _buildRadio(
-                        label: _appScreenText['hhTracked'],
-                        value: gmp.highHandTracked,
-                        onChange: (bool b) {
-                          gmp.highHandTracked = b;
-                        },
-                        theme: theme,
-                      ),
-                      sepV20,
-                      _buildBuyinConfig(theme, gmp),
-                      sepV20,
-                      ExpansionTile(
-                        iconColor: theme.accentColor,
-                        collapsedIconColor: theme.accentColor,
-                        subtitle: Text(_appScreenText['chooseAdvanceConfig'],
-                            style:
-                                AppDecorators.getHeadLine6Style(theme: theme)),
-                        title: Text(_appScreenText['advanceConfig'],
-                            style:
-                                AppDecorators.getHeadLine4Style(theme: theme)),
-                        children: [
-                          _buildBreakConfig(theme, gmp),
-                          sepV20,
-                          _buildBombPotConfig(theme, gmp),
+                                // sep
+                                NewGameSettings2.sepH10,
 
-                          /* sep */
-                          sepV20,
-                          DecoratedContainer(
-                            theme: theme,
-                            children: [
-                              /* allow audio conference */
-                              // _buildRadio(
-                              //   label: _appScreenText['USEAGORAAUDIOCONFERENCE'],
-                              //   value: gmp.useAgora,
-                              //   onChange: (bool b) {
-                              //     gmp.useAgora = b;
-                              //   },
-                              //   theme: theme,
-                              // ),
+                                /* max */
+                                Expanded(
+                                  child: TextInputWidget(
+                                    value: gmp.rakeCap,
+                                    decimalAllowed:
+                                        gmp.chipUnit == ChipUnit.CENT,
+                                    small: true,
+                                    leading: appScreenText['cap'],
+                                    title: appScreenText['maxTips'],
+                                    minValue: 0,
+                                    maxValue: -1,
+                                    onChange: (value) {
+                                      gmp.rakeCap = value;
+                                    },
+                                  ),
+                                ),
+                              ],
+                            );
+                          }),
+                          theme: theme,
+                        ),
 
-                              /* bot games */
-                              _buildRadio(
-                                label: _appScreenText['botGame'],
-                                value: gmp.botGame,
-                                onChange: (bool b) {
-                                  gmp.botGame = b;
-                                },
-                                theme: theme,
-                              ),
-                              /* location check */
-                              _buildRadio(
-                                label: _appScreenText['locationCheck'],
-                                value: gmp.locationCheck,
-                                onChange: (bool b) {
-                                  gmp.locationCheck = b;
-                                },
-                                theme: theme,
-                              ),
+                        /* action time */
+                        NewGameSettings2.sepV20,
+                        _buildLabel(appScreenText['actionTime'], theme),
+                        NewGameSettings2.sepV8,
+                        RadioListWidget<int>(
+                          defaultValue: gmp.actionTime,
+                          values: NewGameConstants.ACTION_TIMES,
+                          onSelect: (int value) {
+                            gmp.actionTime = value;
+                          },
+                        ),
 
-                              /* ip check */
-                              _buildRadio(
-                                label: _appScreenText['ipCheck'],
-                                value: gmp.ipCheck,
-                                onChange: (bool b) {
-                                  gmp.ipCheck = b;
-                                },
-                                theme: theme,
-                              ),
+                        /* game time */
+                        NewGameSettings2.sepV20,
+                        _buildLabel(appScreenText['gameTime'], theme),
+                        NewGameSettings2.sepV8,
+                        RadioListWidget<int>(
+                          defaultValue: gmp.gameLengthInMins ~/ 60,
+                          values: NewGameConstants.GAME_LENGTH,
+                          onSelect: (int value) {
+                            gmp.gameLengthInMins = value * 60;
+                          },
+                        ),
 
-                              /* waitlist */
-                              _buildRadio(
-                                label: _appScreenText['waitlist'],
-                                value: gmp.waitList,
-                                onChange: (bool b) {
-                                  gmp.waitList = b;
-                                },
-                                theme: theme,
-                              ),
+                        /* sep */
+                        NewGameSettings2.sepV20,
 
-                              /* seat change allowed */
-                              _buildRadio(
-                                label: _appScreenText['seatChangeAllowed'],
-                                value: gmp.seatChangeAllowed,
-                                onChange: (bool b) {
-                                  gmp.seatChangeAllowed = b;
-                                },
-                                theme: theme,
-                              ),
+                        /* UTG straddle */
+                        _buildRadio(
+                          label: appScreenText['utgStraddle'],
+                          value: gmp.straddleAllowed,
+                          onChange: (bool b) {
+                            gmp.straddleAllowed = b;
+                          },
+                          theme: theme,
+                        ),
+                        NewGameSettings2.sepV20,
+                        _buildButtonStraddleConfig(theme, gmp),
+                        NewGameSettings2.sepV20,
 
-                              /* allow fun animations */
-                              _buildRadio(
-                                label: _appScreenText['allowFunAnimation'],
-                                theme: theme,
-                                value: gmp.allowFunAnimations,
-                                onChange: (bool b) {
-                                  gmp.allowFunAnimations = b;
-                                },
-                              ),
+                        /* allow run it twice */
+                        _buildRadio(
+                          label: appScreenText['allowRunItTwice'],
+                          value: gmp.runItTwice,
+                          onChange: (bool b) {
+                            gmp.runItTwice = b;
+                          },
+                          theme: theme,
+                        ),
+                        /* sep */
+                        NewGameSettings2.sepV20,
+                        /* allow audio conference */
+                        _buildRadio(
+                          label: appScreenText['useAudioConf'],
+                          value: gmp.audioConference,
+                          onChange: (bool b) {
+                            gmp.audioConference = b;
+                          },
+                          theme: theme,
+                        ),
+                        /* sep */
+                        NewGameSettings2.sepV20,
 
-                              /* allow run it twice */
-                              // _buildRadio(
-                              //   label: _appScreenText['muckLosingHand'],
-                              //   value: gmp.muckLosingHand,
-                              //   onChange: (bool b) {
-                              //     gmp.muckLosingHand = b;
-                              //   },
-                              //   theme: theme,
-                              // ),
+                        /* Highhand Tracked */
+                        _buildRadio(
+                          label: appScreenText['hhTracked'],
+                          value: gmp.highHandTracked,
+                          onChange: (bool b) {
+                            gmp.highHandTracked = b;
+                          },
+                          theme: theme,
+                        ),
+                        NewGameSettings2.sepV20,
+                        _buildBuyinConfig(theme, gmp),
+                        NewGameSettings2.sepV20,
+                        ExpansionTile(
+                          iconColor: theme.accentColor,
+                          collapsedIconColor: theme.accentColor,
+                          subtitle: Text(appScreenText['chooseAdvanceConfig'],
+                              style: AppDecorators.getHeadLine6Style(
+                                  theme: theme)),
+                          title: Text(
+                              'More Settings', //_appScreenText['advanceConfig'],
+                              style: AppDecorators.getHeadLine4Style(
+                                  theme: theme)),
+                          children: [
+                            _buildBreakConfig(theme, gmp),
+                            NewGameSettings2.sepV20,
+                            _buildBombPotConfig(theme, gmp),
 
-                              // /* show player buyin */
-                              // _buildRadio(
-                              //   label: _appScreenText['showPlayerBuyin'],
-                              //   value: gmp.showPlayerBuyin,
-                              //   onChange: (bool b) {
-                              //     gmp.showPlayerBuyin = b;
-                              //   },
-                              //   theme: theme,
-                              // ),
+                            /* sep */
+                            NewGameSettings2.sepV20,
+                            DecoratedContainer(
+                              theme: theme,
+                              children: [
+                                /* allow audio conference */
+                                // _buildRadio(
+                                //   label: _appScreenText['USEAGORAAUDIOCONFERENCE'],
+                                //   value: gmp.useAgora,
+                                //   onChange: (bool b) {
+                                //     gmp.useAgora = b;
+                                //   },
+                                //   theme: theme,
+                                // ),
 
-                              /* allow rabbit hunt */
-                              _buildRadio(
-                                label: _appScreenText['allowRabbitHunt'],
-                                value: gmp.allowRabbitHunt,
-                                onChange: (bool b) {
-                                  gmp.allowRabbitHunt = b;
-                                },
-                                theme: theme,
-                              ),
-
-                              /* show hand rank */
-                              _buildRadio(
-                                label: _appScreenText['showHandRank'],
-                                value: gmp.showHandRank,
-                                onChange: (bool b) {
-                                  gmp.showHandRank = b;
-                                },
-                                theme: theme,
-                              ),
-
-                              /* show table result */
-                              Visibility(
-                                visible: gmp.showResultOption,
-                                child: _buildRadio(
-                                  label: _appScreenText['showResult'],
-                                  value: gmp.showResult,
+                                /* bot games */
+                                _buildRadio(
+                                  label: appScreenText['botGame'],
+                                  value: gmp.botGame,
                                   onChange: (bool b) {
-                                    gmp.showResult = b;
+                                    gmp.botGame = b;
                                   },
                                   theme: theme,
                                 ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      sepV20,
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          _buildLabel(_appScreenText['serviceFee'], theme),
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              _buildLabel("10", theme),
-                              Image.asset(
-                                'assets/images/appcoin.png',
-                                height: 16.pw,
-                                width: 16.pw,
-                              ),
-                              _buildLabel("coins/hour", theme),
-                            ],
-                          ),
-                        ],
-                      ),
-                      sepV20,
+                                /* location check */
+                                _buildRadio(
+                                  label: appScreenText['locationCheck'],
+                                  value: gmp.locationCheck,
+                                  onChange: (bool b) {
+                                    gmp.locationCheck = b;
+                                  },
+                                  theme: theme,
+                                ),
 
-                      /* start button */
-                      /* sep */
-                      sepV20,
-                      sepV20,
-                      Column(
+                                /* ip check */
+                                _buildRadio(
+                                  label: appScreenText['ipCheck'],
+                                  value: gmp.ipCheck,
+                                  onChange: (bool b) {
+                                    gmp.ipCheck = b;
+                                  },
+                                  theme: theme,
+                                ),
 
-                          ///alignment: Alignment.center,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                                /* waitlist */
+                                _buildRadio(
+                                  label: appScreenText['waitlist'],
+                                  value: gmp.waitList,
+                                  onChange: (bool b) {
+                                    gmp.waitList = b;
+                                  },
+                                  theme: theme,
+                                ),
+
+                                /* seat change allowed */
+                                _buildRadio(
+                                  label: appScreenText['seatChangeAllowed'],
+                                  value: gmp.seatChangeAllowed,
+                                  onChange: (bool b) {
+                                    gmp.seatChangeAllowed = b;
+                                  },
+                                  theme: theme,
+                                ),
+
+                                /* allow fun animations */
+                                _buildRadio(
+                                  label: appScreenText['allowFunAnimation'],
+                                  theme: theme,
+                                  value: gmp.allowFunAnimations,
+                                  onChange: (bool b) {
+                                    gmp.allowFunAnimations = b;
+                                  },
+                                ),
+
+                                /* allow run it twice */
+                                // _buildRadio(
+                                //   label: _appScreenText['muckLosingHand'],
+                                //   value: gmp.muckLosingHand,
+                                //   onChange: (bool b) {
+                                //     gmp.muckLosingHand = b;
+                                //   },
+                                //   theme: theme,
+                                // ),
+
+                                // /* show player buyin */
+                                // _buildRadio(
+                                //   label: _appScreenText['showPlayerBuyin'],
+                                //   value: gmp.showPlayerBuyin,
+                                //   onChange: (bool b) {
+                                //     gmp.showPlayerBuyin = b;
+                                //   },
+                                //   theme: theme,
+                                // ),
+
+                                /* allow rabbit hunt */
+                                _buildRadio(
+                                  label: appScreenText['allowRabbitHunt'],
+                                  value: gmp.allowRabbitHunt,
+                                  onChange: (bool b) {
+                                    gmp.allowRabbitHunt = b;
+                                  },
+                                  theme: theme,
+                                ),
+
+                                /* show hand rank */
+                                _buildRadio(
+                                  label: appScreenText['showHandRank'],
+                                  value: gmp.showHandRank,
+                                  onChange: (bool b) {
+                                    gmp.showHandRank = b;
+                                  },
+                                  theme: theme,
+                                ),
+
+                                /* show table result */
+                                Visibility(
+                                  visible: gmp.showResultOption,
+                                  child: _buildRadio(
+                                    label: appScreenText['showResult'],
+                                    value: gmp.showResult,
+                                    onChange: (bool b) {
+                                      gmp.showResult = b;
+                                    },
+                                    theme: theme,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        NewGameSettings2.sepV20,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                                '*Audio Beta: This feature may or may not be available in future versions',
-                                style: AppDecorators.getHeadLine6Style(
-                                    theme: theme)),
-                            Text(
-                                '*High-hand: Tracks high hand occurred in the entire game',
-                                style: AppDecorators.getHeadLine6Style(
-                                    theme: theme)),
-                          ]),
-                    ],
+                            _buildLabel(appScreenText['serviceFee'], theme),
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                _buildLabel("10", theme),
+                                Image.asset(
+                                  'assets/images/appcoin.png',
+                                  height: 16.pw,
+                                  width: 16.pw,
+                                ),
+                                _buildLabel("coins/hour", theme),
+                              ],
+                            ),
+                          ],
+                        ),
+                        NewGameSettings2.sepV20,
+
+                        /* start button */
+                        /* sep */
+                        NewGameSettings2.sepV20,
+                        NewGameSettings2.sepV20,
+                        Column(
+
+                            ///alignment: Alignment.center,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                  '*Audio Beta: This feature may or may not be available in future versions',
+                                  style: AppDecorators.getHeadLine6Style(
+                                      theme: theme)),
+                              Text(
+                                  '*High-hand: Tracks high hand occurred in the entire game',
+                                  style: AppDecorators.getHeadLine6Style(
+                                      theme: theme)),
+                            ]),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              sepV20,
-              Row(
-                //alignment: Alignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // CircleImageButton(
-                  //   onTap: () {
-                  //     gmp.cancelled = true;
-                  //     Navigator.pop(context, null);
-                  //   },
-                  //   theme: theme,
-                  //   icon: Icons.close,
-                  // ),
-                  ButtonWidget(
-                    text: _appScreenText['start'],
-                    onTap: () {
-                      // if (gmp.blinds.bigBlind % 2 != 0) {
-                      //   Alerts.showNotification(
-                      //     titleText: _appScreenText['gameCreationFailed'],
-                      //     subTitleText: _appScreenText['checkBigBlind'],
-                      //     duration: Duration(seconds: 5),
-                      //   );
-                      //   return;
-                      // } else
-                      if (gmp.buyInMax < gmp.buyInMin) {
-                        Alerts.showNotification(
-                          titleText: _appScreenText['gameCreationFailed'],
-                          subTitleText: _appScreenText['checkBuyinRange'],
-                          duration: Duration(seconds: 5),
-                        );
-                        return;
-                      } else {
-                        Navigator.pop(context, gmp);
-                      }
-                    },
-                  ),
-                  // CircleImageButton(
-                  //   onTap: () async {
-                  //     await onSaveSettings(context, theme, gmp);
-                  //   },
-                  //   icon: Icons.save,
-                  //   theme: theme,
-                  // ),
-                ],
-              ),
-            ],
-          ),
-        );
+                NewGameSettings2.sepV20,
+                Row(
+                  //alignment: Alignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // CircleImageButton(
+                    //   onTap: () {
+                    //     gmp.cancelled = true;
+                    //     Navigator.pop(context, null);
+                    //   },
+                    //   theme: theme,
+                    //   icon: Icons.close,
+                    // ),
+                    ButtonWidget(
+                      text: appScreenText['start'],
+                      onTap: () {
+                        // if (gmp.blinds.bigBlind % 2 != 0) {
+                        //   Alerts.showNotification(
+                        //     titleText: _appScreenText['gameCreationFailed'],
+                        //     subTitleText: _appScreenText['checkBigBlind'],
+                        //     duration: Duration(seconds: 5),
+                        //   );
+                        //   return;
+                        // } else
+                        if (gmp.buyInMax < gmp.buyInMin) {
+                          Alerts.showNotification(
+                            titleText: appScreenText['gameCreationFailed'],
+                            subTitleText: appScreenText['checkBuyinRange'],
+                            duration: Duration(seconds: 5),
+                          );
+                          return;
+                        } else {
+                          Navigator.pop(context, gmp);
+                        }
+                      },
+                    ),
+                    // CircleImageButton(
+                    //   onTap: () async {
+                    //     await onSaveSettings(context, theme, gmp);
+                    //   },
+                    //   icon: Icons.save,
+                    //   theme: theme,
+                    // ),
+                  ],
+                ),
+              ],
+            ),
+          );
+        });
       },
     );
   }
@@ -1089,7 +1316,7 @@ class NewGameSettings2 extends StatelessWidget {
       builder: (context) => AlertDialog(
         backgroundColor: theme.fillInColor,
         title: Text(
-          _appScreenText['saveSettings'],
+          appScreenText['saveSettings'],
           style: AppDecorators.getHeadLine4Style(theme: theme),
         ),
         content: Column(
@@ -1099,11 +1326,11 @@ class NewGameSettings2 extends StatelessWidget {
               theme: theme,
               controller: _controller,
               maxLines: 1,
-              hintText: _appScreenText['enterText'],
+              hintText: appScreenText['enterText'],
             ),
             AppDimensionsNew.getVerticalSizedBox(12),
             RoundRectButton(
-              text: _appScreenText['save'],
+              text: appScreenText['save'],
               theme: theme,
               onTap: () {
                 if (_controller.text.isNotEmpty) {
@@ -1119,5 +1346,16 @@ class NewGameSettings2 extends StatelessWidget {
       log(jsonEncode(gmp.settings.toJson()));
       await appService.gameTemplates.save(result, gmp.settings.toJson());
     }
+  }
+
+  Widget gameTypesList(AppTheme theme) {
+    return Container(
+      decoration: BoxDecoration(
+        color: theme.accentColor,
+        borderRadius: BorderRadius.circular(4),
+      ),
+      padding: EdgeInsets.all(8),
+      child: Center(child: Text("PLO")),
+    );
   }
 }

@@ -398,6 +398,15 @@ class NewGameModelProvider extends ChangeNotifier {
     return settings.chipUnit;
   }
 
+  set dealerChoiceOrbit(bool value) {
+    settings.dealerChoiceOrbit = value;
+    notifyListeners();
+  }
+
+  get dealerChoiceOrbit {
+    return settings.dealerChoiceOrbit;
+  }
+
   set buyInApprovalLimit(BuyInApprovalLimit buyInLimit) {
     settings.buyInApprovalLimit = buyInLimit;
     notifyListeners();

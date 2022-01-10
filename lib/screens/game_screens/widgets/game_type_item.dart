@@ -44,7 +44,7 @@ class GameTypeItem extends StatelessWidget {
             onTap: onArrowClick,
             child: Container(
               //this heigth should match with the image height of GameImage
-              height: 80,
+              height: 50,
               child: Image.asset(
                 AppAssetsNew.pathArrowImage,
                 height: 32,
@@ -71,10 +71,10 @@ class GameTypeItem extends StatelessWidget {
           width: width - 32 - (isSelected ? (animValue * 64) : 0),
           child: Row(
             children: [
-              AppDimensionsNew.getVerticalSizedBox(80),
+              AppDimensionsNew.getVerticalSizedBox(50),
               Container(
-                height: 64,
-                width: 64,
+                height: 40,
+                width: 40,
                 child: Image.asset(
                   imagePath,
                   fit: BoxFit.contain,
@@ -99,14 +99,14 @@ class GameTypeItem extends StatelessWidget {
                   ],
                 ),
               ),
-              Visibility(
-                child: IconButton(
-                  onPressed: onSettingsClick,
-                  icon: Icon(Icons.settings),
-                  color: theme.supportingColor,
-                ),
-                visible: type == GameType.ROE || type == GameType.DEALER_CHOICE,
-              ),
+              // Visibility(
+              //   child: IconButton(
+              //     onPressed: onSettingsClick,
+              //     icon: Icon(Icons.settings),
+              //     color: theme.supportingColor,
+              //   ),
+              //   visible: type == GameType.ROE || type == GameType.DEALER_CHOICE,
+              // ),
             ],
           ),
         ),
