@@ -702,10 +702,7 @@ class BoardAttributesObject extends ChangeNotifier {
       widthOfBoard = MediaQuery.of(context).size.width;
       heightOfBoard = MediaQuery.of(context).size.height / 2.5;
     }
-    // NOTE: Hard coded
-    /* NOTE: THE IMAGE IS SET TO STRETCH TO THE ENTIRE HEIGHT OF THIS AVAILABLE CONTAINER,
-    THIS HEIGHT - 40 VARIABLE CAN BE CHANGED TO STRETCH IT FURTHER OR SQUEEZE IT*/
-    this._tableSize = Size(widthOfBoard + 50, heightOfBoard - 70);
+    this._tableSize = Size(widthOfBoard, heightOfBoard - 70);
     this._centerSize = Size(widthOfBoard - 30, this._tableSize.height - 70);
     double adjust = 0;
     adjust = this.boardHeightAdjust;
@@ -719,7 +716,7 @@ class BoardAttributesObject extends ChangeNotifier {
     return (Screen.height * footerViewScale);
   }
 
-  get tableSize => this._tableSize;
+  Size get tableSize => this._tableSize;
 
   double get lottieScale {
     return attribsObj.lottieScale;

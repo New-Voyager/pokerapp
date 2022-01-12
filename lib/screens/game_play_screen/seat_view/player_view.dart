@@ -297,19 +297,10 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final theme = AppTheme.getTheme(context);
-    // log('RedrawTop: PlayerView build ${widget.seat.serverSeatPos}:L${widget.seat.localSeatPos} pos: ${widget.seat.seatPos.toString()} player: ${widget.seat.player?.name}');
-    // widget.seat.key = GlobalKey(
-    //   debugLabel: 'Seat:${widget.seat.serverSeatPos}',
-    // ); //this.globalKey;
-
-    // log('potViewPos: Rebuilding Seat: ${widget.seat.serverSeatPos}');
-
-    // the player tapped to see the player profile
     final gameState = GameState.getState(context);
     bool openSeat = widget.seat.isOpen;
     bool isMe = widget.seat.isMe;
-    // log('SeatView: seat: ${widget.seat.serverSeatPos} isOpen: ${openSeat} player: ${widget.seat.player}');
-    bool showdown = widget.gameState.showdown;
+    bool showdown = widget.gameState?.showdown ?? false;
 
     // if open seat, just show open seat widget
     if (openSeat) {

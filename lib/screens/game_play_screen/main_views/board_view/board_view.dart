@@ -12,6 +12,7 @@ import 'package:pokerapp/screens/game_play_screen/main_views/animating_widgets/c
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/center_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/decorative_views/table_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/players_on_table_view.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/board_view/players_on_table_view_new.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/animating_widgets/stack_switch_seat_animating_widget.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:provider/provider.dart';
@@ -47,8 +48,9 @@ class BoardView extends StatelessWidget {
     var dimensions = boardAttributes.dimensions(context);
     var bottomPos = boardAttributes.tableBottomPos;
     var tableScale = boardAttributes.tableScale;
-    //bottomPos = -160;
-    /* finally the view */
+
+    final tableSize = boardAttributes.tableSize;
+
     return Stack(
       clipBehavior: Clip.antiAlias,
       alignment: Alignment.center,
@@ -63,16 +65,15 @@ class BoardView extends StatelessWidget {
         // ),
 
         Container(
-            width: double.infinity,
-            height: dimensions.height,
-            child: BackgroundView()),
+          width: double.infinity,
+          height: dimensions.height,
+          child: BackgroundView(),
+        ),
 
         Positioned(
-            bottom: bottomPos,
-            child: Transform.scale(
-                scale: tableScale,
-                child: TableView(
-                    width: dimensions.width, height: dimensions.height))),
+          bottom: bottomPos,
+          child: TableView(tableSize: tableSize),
+        ),
 
         /* center view */
         Positioned(
@@ -100,20 +101,32 @@ class BoardView extends StatelessWidget {
           ),
         ),
 
-        /* players */
-        Transform.translate(
-          offset: boardAttributes.playerOnTableOffset,
-          child: PlayersOnTableView(
-            gameComService: gameComService,
-            isBoardHorizontal:
-                boardAttributes.orientation == BoardOrientation.horizontal,
-            widthOfBoard: dimensions.width,
-            heightOfBoard: dimensions.height,
+        // new players view
+        Positioned(
+          bottom: bottomPos,
+          child: PlayersOnTableViewNew(
+            tableSize: tableSize,
             onUserTap: onUserTap,
-            maxPlayers: gameInfo.maxPlayers,
+            gameComService: gameComService,
             gameState: gameState,
+            maxPlayers: gameInfo.maxPlayers,
           ),
         ),
+
+        /* players */
+        // Transform.translate(
+        //   offset: boardAttributes.playerOnTableOffset,
+        //   child: PlayersOnTableView(
+        //     gameComService: gameComService,
+        //     isBoardHorizontal:
+        //         boardAttributes.orientation == BoardOrientation.horizontal,
+        //     widthOfBoard: dimensions.width,
+        //     heightOfBoard: dimensions.height,
+        //     onUserTap: onUserTap,
+        //     maxPlayers: gameInfo.maxPlayers,
+        //     gameState: gameState,
+        //   ),
+        // ),
 
         /* distributing card animation widgets */
         Align(
