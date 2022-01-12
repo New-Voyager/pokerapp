@@ -1,9 +1,12 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_udid/flutter_udid.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/flavor_config.dart';
 import 'package:pokerapp/main.dart';
@@ -27,6 +30,7 @@ import 'package:pokerapp/widgets/appname_logo.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
 import 'package:uuid/uuid.dart';
+import 'dart:developer';
 
 class RegistrationScreenNew extends StatefulWidget {
   const RegistrationScreenNew({Key key}) : super(key: key);
@@ -479,10 +483,65 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
                   ),
                 ),
 
+                Center(
+                  child: Text(
+                    "Login with",
+                    style: AppTextStyles.T2.copyWith(
+                      color: _appTheme.accentColor,
+                    ),
+                  ),
+                ),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        _handleSocialAuth("Google");
+                      },
+                      child: Container(
+                        alignment: Alignment.center,
+                        padding: EdgeInsets.only(top: 8),
+                        child: Text(
+                          "Google",
+                          style: AppTextStyles.T2.copyWith(
+                            decoration: TextDecoration.underline,
+                            color: _appTheme.accentColor,
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 30.pw),
+                    InkWell(
+                      onTap: () async {
+                        final result = await FacebookAuth.i
+                            .login(permissions: ["public_profile", "email"]);
+
+                        if (result.status == LoginStatus.success) {
+                          final requestData = await FacebookAuth.i
+                              .getUserData(fields: "email, name");
+                          print(requestData);
+                        }
+                      },
+                      child: Container(
+                        alignment: Alignment.center,
+                        padding: EdgeInsets.only(top: 8),
+                        child: Text(
+                          "Facebook",
+                          style: AppTextStyles.T2.copyWith(
+                            decoration: TextDecoration.underline,
+                            color: _appTheme.accentColor,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
                 /* ---- DEBUG REALM ---- */
 
                 // seperator
-                SizedBox(height: 100),
+                SizedBox(height: 50),
                 Visibility(
                   visible: isDevMode,
                   child: Padding(
@@ -580,6 +639,17 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
           duration: Duration(seconds: 5),
         );
       }
+    }
+  }
+
+  _handleSocialAuth(String provider) async {
+    switch (provider) {
+      case "Google":
+        var a = await GoogleSignIn().signIn();
+        final googleAuth = await a.authentication;
+        // print(n);
+        log(googleAuth.idToken);
+        break;
     }
   }
 }

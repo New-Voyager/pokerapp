@@ -60,5 +60,23 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.685888933608-hg0ci00a6d8rkijuo58q5ndg1tf98jcc</string>
+    			<string>fb1216107235172860</string>
+			</array>
+		</dict>
+	</array>
+	<key>FacebookAppID</key>
+	<string>1216107235172860</string>
+	<key>FacebookClientToken</key>
+	<string>298718ec06b7f9a39f7c647c451f23d1</string>
+	<key>FacebookDisplayName</key>
+	<string>Poker</string>
 </dict>
 </plist>
