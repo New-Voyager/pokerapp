@@ -37,7 +37,7 @@ class PlayersOnTableViewNew extends StatelessWidget {
 
     final List<Widget> players = [];
 
-    for (int seatNo = 1; seatNo < maxPlayers; seatNo++) {
+    for (int seatNo = 1; seatNo <= maxPlayers; seatNo++) {
       final seat = gameState.seatPlayer(seatNo, _findPlayerAtSeat(seatNo));
 
       final playerView = PlayerView(
@@ -56,9 +56,10 @@ class PlayersOnTableViewNew extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return Container(
       width: tableSize.width,
       height: tableSize.height,
+      // color: Colors.red.withOpacity(0.50),
       child: CustomMultiChildLayout(
         delegate: PlayerPlacementDelegate(),
         children: _getPlayers(context),
@@ -79,7 +80,7 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
 
       positionChild(
         SeatPos.topLeft,
-        Offset(cs.width / 4, cs.height / 8),
+        Offset(0.0, -cs.width / 10),
       );
     }
 
@@ -92,7 +93,7 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
 
       positionChild(
         SeatPos.topRight,
-        Offset(size.width - cs.width - cs.width / 4, cs.height / 8),
+        Offset(size.width - cs.width, -cs.width / 10),
       );
     }
 
@@ -118,7 +119,7 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
 
       positionChild(
         SeatPos.topCenter1,
-        Offset((size.width / 2) - cs.width / 2 - cs.width / 1.5, 0.0),
+        Offset((size.width / 2) - cs.width / 2 - cs.width / 2, -cs.width / 5),
       );
     }
 
@@ -131,7 +132,7 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
 
       positionChild(
         SeatPos.topCenter2,
-        Offset((size.width / 2) - cs.width / 2 + cs.width / 1.5, 0.0),
+        Offset((size.width / 2) - cs.width / 2 + cs.width / 2, -cs.width / 5),
       );
     }
 
@@ -144,7 +145,7 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
 
       positionChild(
         SeatPos.topCenter,
-        Offset((size.width / 2) - cs.width / 2, 0.0),
+        Offset((size.width / 2) - cs.width / 2, -cs.width / 5),
       );
     }
 
@@ -171,8 +172,8 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
       positionChild(
         SeatPos.bottomLeft,
         Offset(
-          (size.width / 2) - (cs.width / 2) - cs.width * 2,
-          size.height - cs.height * 1.5,
+          (size.width / 2) - (cs.width / 2) - cs.width * 1.4,
+          size.height - cs.height * 1.0,
         ),
       );
     }
@@ -186,7 +187,7 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
 
       positionChild(
         SeatPos.bottomCenter,
-        Offset((size.width / 2) - cs.width / 2, size.height - cs.height),
+        Offset((size.width / 2) - cs.width / 2, size.height - cs.width * 0.70),
       );
     }
 
@@ -200,8 +201,8 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
       positionChild(
         SeatPos.bottomRight,
         Offset(
-          (size.width / 2) - (cs.width / 2) + cs.width * 2,
-          size.height - cs.height * 1.5,
+          (size.width / 2) - (cs.width / 2) + cs.width * 1.4,
+          size.height - cs.height * 1.0,
         ),
       );
     }
