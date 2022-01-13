@@ -7,7 +7,8 @@ class BuyInResponse {
   bool insufficientCredits;
   bool appliedNextHand;
   bool applied;
-
+  bool waitingForApproval = false;
+  bool pendingRequest = false;
   BuyInResponse();
 
   factory BuyInResponse.fromJson(dynamic json) {
@@ -29,6 +30,12 @@ class BuyInResponse {
     }
     if (json['applied'] != null) {
       resp.applied = json['applied'];
+    }
+    if (json['pendingRequest'] != null) {
+      resp.pendingRequest = json['pendingRequest'];
+    }
+    if (json['waitingForApproval'] != null) {
+      resp.waitingForApproval = json['waitingForApproval'];
     }
 
     return resp;

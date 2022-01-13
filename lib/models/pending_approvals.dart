@@ -48,6 +48,7 @@ class PendingApproval {
   String clubCode;
   String clubName;
   String playerUuid;
+  String approvalType;
 
   static PendingApproval fromJson(dynamic data) {
     PendingApproval ret = new PendingApproval();
@@ -70,6 +71,7 @@ class PendingApproval {
     ret.clubName = data['clubName'].toString();
     ret.gameType = data['gameType'].toString();
     ret.playerUuid = data['playerUuid'].toString();
+    ret.approvalType = data['approvalType'].toString();
     return ret;
   }
 }

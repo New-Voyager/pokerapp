@@ -152,6 +152,19 @@ class _GameOptionState extends State<GameOption> {
           String message =
               'Not enough credits available. Available credits: ${DataFormatter.chipsFormat(ret.availableCredits)}';
           await showErrorDialog(context, 'Credits', message);
+        } else if (ret.pendingRequest) {
+          await showErrorDialog(context, 'Reload',
+              'There is a pending reload request. Cannot make another request.');
+        } else if (ret.waitingForApproval) {
+          await showErrorDialog(context, 'Reload',
+              'Your reload request is pending for host approval.');
+        }
+      } else {
+        if (ret.appliedNextHand) {
+          // show notification
+          Alerts.showNotification(
+              titleText: 'Reload',
+              subTitleText: 'Reload is approved. Applied in next hand.');
         }
       }
       Navigator.of(context).pop();

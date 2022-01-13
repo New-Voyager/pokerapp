@@ -144,7 +144,8 @@ class PlayerService {
         clubCode
         clubName
         gameType
-        playerUuid        
+        playerUuid
+        approvalType        
       } 
     }""";
 
@@ -204,6 +205,33 @@ class PlayerService {
     return result.data['ret'];
   }
 
+  static Future<bool> approveReloadRequest(
+      String gameCode, String playerUuid) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    String _query = """
+    mutation approveRequest(\$gameCode: String!, \$playerId: String!) {
+      ret: approveRequest(gameCode: \$gameCode, playerUuid: \$playerId, type: RELOAD_REQUEST, status:APPROVED)
+    }
+  """;
+
+    Map<String, dynamic> variables = {
+      "gameCode": gameCode,
+      "playerId": playerUuid
+    };
+
+    QueryResult result = await _client.query(
+      QueryOptions(document: gql(_query), variables: variables),
+    );
+
+    if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
+    return result.data['ret'];
+  }
+
   static Future<bool> declineBuyInRequest(
       String gameCode, String playerUuid) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
@@ -211,6 +239,36 @@ class PlayerService {
     String _query = """
     mutation denyRequest(\$gameCode: String!, \$playerId: String!) {
       ret : approveRequest(gameCode: \$gameCode, playerUuid: \$playerId, type: BUYIN_REQUEST, status:DENIED)
+    }
+  """;
+
+    Map<String, dynamic> variables = {
+      "gameCode": gameCode,
+      "playerId": playerUuid
+    };
+
+    QueryResult result = await _client.query(
+      QueryOptions(document: gql(_query), variables: variables),
+    );
+
+    if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
+
+    log("Result ${result.data}");
+
+    return result.data['ret'];
+  }
+
+  static Future<bool> declineReloadRequest(
+      String gameCode, String playerUuid) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    String _query = """
+    mutation denyRequest(\$gameCode: String!, \$playerId: String!) {
+      ret : approveRequest(gameCode: \$gameCode, playerUuid: \$playerId, type: RELOAD_REQUEST, status:DENIED)
     }
   """;
 

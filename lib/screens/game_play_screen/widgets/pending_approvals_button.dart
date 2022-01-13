@@ -208,7 +208,9 @@ class PendingApprovalsButton extends StatelessWidget {
                 style: AppDecorators.getHeadLine4Style(theme: theme),
                 children: [
                   TextSpan(
-                    text: " ${appTextScreen['requestBuyin']}",
+                    text: item.approvalType == 'RELOAD_REQUEST'
+                        ? 'reload'
+                        : " ${appTextScreen['requestBuyin']}",
                     style: AppDecorators.getSubtitleStyle(theme: theme),
                   ),
                   TextSpan(
@@ -254,10 +256,18 @@ class PendingApprovalsButton extends StatelessWidget {
             children: [
               ConfirmYesButton(
                   onTap: () async {
-                    final bool val = await PlayerService.approveBuyInRequest(
-                      item.gameCode,
-                      item.playerUuid,
-                    );
+                    bool val;
+                    if (item.approvalType == 'RELOAD_REQUEST') {
+                      val = await PlayerService.approveReloadRequest(
+                        item.gameCode,
+                        item.playerUuid,
+                      );
+                    } else {
+                      val = await PlayerService.approveBuyInRequest(
+                        item.gameCode,
+                        item.playerUuid,
+                      );
+                    }
                     if (val == null) {
                       log("Exception in approve request");
                     } else if (val) {
@@ -270,10 +280,18 @@ class PendingApprovalsButton extends StatelessWidget {
               SizedBox(width: 10.pw),
               ConfirmNoButton(
                   onTap: () async {
-                    final bool val = await PlayerService.declineBuyInRequest(
-                      item.gameCode,
-                      item.playerUuid,
-                    );
+                    bool val;
+                    if (item.approvalType == 'RELOAD_REQUEST') {
+                      val = await PlayerService.declineReloadRequest(
+                        item.gameCode,
+                        item.playerUuid,
+                      );
+                    } else {
+                      val = await PlayerService.declineBuyInRequest(
+                        item.gameCode,
+                        item.playerUuid,
+                      );
+                    }
                     if (val == null) {
                       log("Error occurred when declining request");
                     } else if (val) {
