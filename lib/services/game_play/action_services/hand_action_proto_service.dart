@@ -16,6 +16,7 @@ import 'package:pokerapp/models/player_info.dart' as pi;
 import 'package:pokerapp/proto/hand.pb.dart' as proto;
 import 'package:pokerapp/proto/handmessage.pb.dart' as proto;
 import 'package:pokerapp/resources/app_constants.dart';
+import 'package:pokerapp/screens/util_screens/dealer_choice_prompt.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/audio/audio_service.dart';
@@ -1144,10 +1145,8 @@ class HandActionProtoService {
       gameChoices.add(gameType);
     }
     final timeout = int.parse(dealerChoice['timeout'].toString());
-    GameType type = await showGameSelectorDialog(
-      listOfGameTypes: gameChoices,
-      timeLimit: Duration(seconds: timeout),
-    );
+    GameType type = await DealerChoicePrompt.prompt(
+        listOfGameTypes: gameChoices, timeLimit: Duration(seconds: timeout));
     log('selected game type: $type');
     if (type != GameType.UNKNOWN) {
       GameService.dealerChoice(_gameState.gameCode, type);

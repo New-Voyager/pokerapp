@@ -34,7 +34,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/host_seat_chang
 
 class TestService {
   static bool get isTesting {
-    return true;
+    return false;
   }
 
   static var _showResult = false;
@@ -611,8 +611,8 @@ class TestService {
         GameType.HOLDEM,
         GameType.PLO,
         GameType.PLO_HILO,
-        GameType.FIVE_CARD_PLO_HILO,
         GameType.FIVE_CARD_PLO,
+        GameType.FIVE_CARD_PLO_HILO,
       ],
       timeLimit: Duration(seconds: 10),
     );

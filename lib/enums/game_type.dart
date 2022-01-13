@@ -60,7 +60,7 @@ String gameTypeStr2(GameType type) {
   }
 }
 
-String gameTypeShortStr(GameType type) {
+String gameTypeShortStr2(GameType type) {
   AppTextScreen appTextScreen = getAppTextScreen("gameTypeShort");
 
   switch (type) {
@@ -80,6 +80,27 @@ String gameTypeShortStr(GameType type) {
       return appTextScreen["DEALERCHOICE"];
     default:
       return appTextScreen["UNKNOWN"];
+  }
+}
+
+String gameTypeShortStr(GameType type) {
+  switch (type) {
+    case GameType.HOLDEM:
+      return "NLH";
+    case GameType.PLO:
+      return "PLO";
+    case GameType.PLO_HILO:
+      return "Hi-Lo";
+    case GameType.FIVE_CARD_PLO:
+      return "5 Card PLO";
+    case GameType.FIVE_CARD_PLO_HILO:
+      return "5 Card Hi-Lo";
+    case GameType.ROE:
+      return "ROE";
+    case GameType.DEALER_CHOICE:
+      return "Dealer Choice";
+    default:
+      return "Unknown";
   }
 }
 
