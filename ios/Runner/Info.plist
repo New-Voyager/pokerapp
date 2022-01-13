@@ -60,6 +60,8 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+
+	<!--- SSO login creds for dev scheme -->
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -67,16 +69,17 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.googleusercontent.apps.685888933608-hg0ci00a6d8rkijuo58q5ndg1tf98jcc</string>
-    			<string>fb1216107235172860</string>
+				<string>com.googleusercontent.apps.76242661450-3vl21gt7t9cg84fpdpbvene2caktilch</string>
+    			<string>fb351083493152916</string>
 			</array>
 		</dict>
 	</array>
 	<key>FacebookAppID</key>
-	<string>1216107235172860</string>
+	<string>351083493152916</string>
 	<key>FacebookClientToken</key>
-	<string>298718ec06b7f9a39f7c647c451f23d1</string>
+	<string>4dcacafe6aba44e13f87a58c164ed4f6</string>
 	<key>FacebookDisplayName</key>
-	<string>Poker</string>
+	<string>PokerClubApp</string>
+
 </dict>
 </plist>
