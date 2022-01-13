@@ -147,6 +147,7 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
       clubCode = widget.clubHomePageModel.clubCode;
     }
     gameSettings = NewGameModelProvider(clubCode);
+    gameSettings.gameType = widget.mainGameType;
     if (widget.mainGameType == GameType.DEALER_CHOICE) {
       gameSettings.settings.dealerChoiceGames.addAll([
         GameType.HOLDEM,

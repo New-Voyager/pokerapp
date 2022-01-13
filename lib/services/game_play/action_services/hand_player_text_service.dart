@@ -6,6 +6,7 @@ import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/resources/app_constants.dart';
+import 'package:pokerapp/screens/util_screens/dealer_choice_prompt.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/data/game_log_store.dart';
@@ -105,10 +106,8 @@ class HandToPlayerTextService {
       gameChoices.add(gameType);
     }
     final timeout = int.parse(data['timeout'].toString());
-    GameType type = await showGameSelectorDialog(
-      listOfGameTypes: gameChoices,
-      timeLimit: Duration(seconds: timeout),
-    );
+    GameType type = await DealerChoicePrompt.prompt(
+        listOfGameTypes: gameChoices, timeLimit: Duration(seconds: timeout));
     log('selected game type: $type');
     if (type != GameType.UNKNOWN) {
       GameService.dealerChoice(_gameState.gameCode, type);

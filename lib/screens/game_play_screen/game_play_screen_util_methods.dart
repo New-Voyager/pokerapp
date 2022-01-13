@@ -145,6 +145,17 @@ class GamePlayScreenUtilMethods {
               color: Colors.white,
             ),
             backgroundColor: Colors.red,
+            label: 'Dealer Choice',
+            labelBackgroundColor: Colors.black,
+            onTap: () {
+              TestService.dealerChoicePrompt();
+            }),
+        SpeedDialChild(
+            child: Icon(
+              Icons.adb_rounded,
+              color: Colors.white,
+            ),
+            backgroundColor: Colors.red,
             label: 'Show Bet Widget',
             labelBackgroundColor: Colors.black,
             onTap: () {
