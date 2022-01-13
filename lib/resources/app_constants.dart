@@ -177,6 +177,7 @@ class AppConstants {
   static const String NEW_BUYIN = 'NEW_BUYIN';
   static const String BUYIN_DENIED = 'BUYIN_DENIED';
   static const String NEWUPDATE_NOT_PLAYING = 'NEWUPDATE_NOT_PLAYING';
+  static const String RELOAD_DENIED = 'RELOAD_DENIED';
 
   static const String IN_BREAK = 'IN_BREAK';
   static const String IN_QUEUE = 'IN_QUEUE';

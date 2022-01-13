@@ -27,7 +27,6 @@ class RadioListWidget<T> extends StatelessWidget {
     T v,
   }) =>
       Consumer<ValueNotifier<T>>(builder: (_, vnCurrValue, __) {
-        log('vnCurrValue: ${vnCurrValue}, value: ${v}');
         return InkWell(
           onTap: () {
             vnCurrValue.value = v;
@@ -78,7 +77,6 @@ class RadioListWidget<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    log('values: ${values}, defaultValue: $defaultValue');
     final theme = AppTheme.getTheme(context);
     return ListenableProvider<ValueNotifier<T>>(
       create: (_) => ValueNotifier<T>(defaultValue),

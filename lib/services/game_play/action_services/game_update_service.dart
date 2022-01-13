@@ -649,6 +649,30 @@ class GameUpdateService {
     }
   }
 
+  void handlePlayerReloadDenied({
+    @required var playerUpdate,
+  }) {
+    if (closed || _gameState.uiClosing) return;
+    final GameState gameState = GameState.getState(_context);
+    int seatNo = playerUpdate['seatNo'];
+    if (closed || _gameState.uiClosing) return;
+    final seat = gameState.getSeat(seatNo);
+    if (closed || _gameState.uiClosing) return;
+    bool isMe = false;
+
+    if (seat.player != null && seat.player.isMe) {
+      isMe = true;
+    }
+
+    if (isMe) {
+      if (closed || _gameState.uiClosing) return;
+      final myState = gameState.myState;
+      myState.notify();
+
+      showErrorDialog(_context, 'Reload', 'Reload request is denied');
+    }
+  }
+
   void handlePlayerTakeBreak({
     @required var playerUpdate,
   }) async {
@@ -878,6 +902,10 @@ class GameUpdateService {
         );
       case AppConstants.BUYIN_DENIED:
         return handlePlayerBuyinDenied(
+          playerUpdate: playerUpdate,
+        );
+      case AppConstants.RELOAD_DENIED:
+        return handlePlayerReloadDenied(
           playerUpdate: playerUpdate,
         );
 

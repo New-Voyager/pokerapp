@@ -857,7 +857,8 @@ class GameService {
         availableCredits
         insufficientCredits
         appliedNextHand
-        applied
+        waitingForApproval
+        pendingRequest
       }
     }
     """;
