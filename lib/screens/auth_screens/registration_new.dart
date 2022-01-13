@@ -29,8 +29,8 @@ import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/widgets/appname_logo.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:uuid/uuid.dart';
-import 'dart:developer';
 
 class RegistrationScreenNew extends StatefulWidget {
   const RegistrationScreenNew({Key key}) : super(key: key);
@@ -497,6 +497,23 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
                   children: [
                     InkWell(
                       onTap: () {
+                        _handleSocialAuth("Apple");
+                      },
+                      child: Container(
+                        alignment: Alignment.center,
+                        padding: EdgeInsets.only(top: 8),
+                        child: Text(
+                          "Apple",
+                          style: AppTextStyles.T2.copyWith(
+                            decoration: TextDecoration.underline,
+                            color: _appTheme.accentColor,
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 30.pw),
+                    InkWell(
+                      onTap: () {
                         _handleSocialAuth("Google");
                       },
                       child: Container(
@@ -514,14 +531,7 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
                     SizedBox(width: 30.pw),
                     InkWell(
                       onTap: () async {
-                        final result = await FacebookAuth.i
-                            .login(permissions: ["public_profile", "email"]);
-
-                        if (result.status == LoginStatus.success) {
-                          final requestData = await FacebookAuth.i
-                              .getUserData(fields: "email, name");
-                          print(requestData);
-                        }
+                        _handleSocialAuth("Facebook");
                       },
                       child: Container(
                         alignment: Alignment.center,
@@ -649,6 +659,26 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
         final googleAuth = await a.authentication;
         // print(n);
         log(googleAuth.idToken);
+        break;
+      case "Apple":
+        final credential = await SignInWithApple.getAppleIDCredential(
+          scopes: [
+            AppleIDAuthorizationScopes.email,
+            AppleIDAuthorizationScopes.fullName,
+          ],
+        );
+
+        print(credential);
+        break;
+      case "Facebook":
+        final result = await FacebookAuth.i
+            .login(permissions: ["public_profile", "email"]);
+
+        if (result.status == LoginStatus.success) {
+          final requestData =
+              await FacebookAuth.i.getUserData(fields: "email, name");
+          print(requestData);
+        }
         break;
     }
   }
