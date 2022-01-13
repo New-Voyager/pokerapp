@@ -570,7 +570,7 @@ class GameState {
   }
 
   bool get audioConfEnabled {
-    return this._gameInfo?.audioConfEnabled;
+    return this._gameInfo?.audioConfEnabled ?? false;
   }
 
   bool get useAgora {
