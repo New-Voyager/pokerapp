@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
-import 'package:pokerapp/resources/new/app_assets_new.dart';
-import 'package:pokerapp/widgets/button_widget.dart';
-import 'package:pokerapp/widgets/drawer/iconwidget.dart';
+import 'package:pokerapp/widgets/drawer/wudgets.dart';
+import 'package:pokerapp/widgets/radio_list_widget.dart';
 
 class Actions3Widget extends StatelessWidget {
   final AppTextScreen text;
@@ -18,36 +17,14 @@ class Actions3Widget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: Text(
-            text['showDown'],
-            style: AppDecorators.getHeadLine4Style(theme: theme),
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+          child: SubTitleText(text: "Showdown Speed", theme: theme),
         ),
-        Row(
-          children: [
-            // 3 buttons.
-            ButtonWithTextColumn(
-              onTapFunction: () {},
-              theme: theme,
-              text1: text['fast'],
-              text2: "3s",
-            ),
-            ButtonWithTextColumn(
-              onTapFunction: () {},
-              theme: theme,
-              text1: text['normal'],
-              text2: "5s",
-            ),
-            ButtonWithTextColumn(
-              onTapFunction: () {},
-              theme: theme,
-              text1: text['slow'],
-              text2: "10s",
-            ),
-          ],
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-        ),
+        Center(
+            child: RadioToggleButtonsWidget<String>(
+                defaultValue: 1,
+                values: ['Slow\n10s', 'Normal\n5s', 'Fast\n3s'],
+                onSelect: (int value) {})),
         SizedBox(
           height: 16,
         ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
-import 'package:pokerapp/widgets/drawer/iconwidget.dart';
+import 'package:pokerapp/widgets/drawer/wudgets.dart';
 
 class Actions1Widget extends StatelessWidget {
   final AppTextScreen text;
