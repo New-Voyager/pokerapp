@@ -13,16 +13,21 @@ class IconWidgetTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AppTheme theme = AppTheme.getTheme(context);
-    return ListTile(
-      contentPadding: EdgeInsets.zero,
-      leading: SvgPicture.asset(
-        svgIconPath,
-        width: 24,
-        height: 24,
-      ),
-      title: Text(
-        title,
-        style: AppDecorators.getHeadLine5Style(theme: theme),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        children: [
+          SvgPicture.asset(
+            svgIconPath,
+            width: 30,
+            height: 30,
+          ),
+          SizedBox(width: 16),
+          Text(
+            title,
+            style: AppDecorators.getHeadLine4Style(theme: theme),
+          ),
+        ],
       ),
     );
   }

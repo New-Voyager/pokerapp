@@ -7,6 +7,7 @@ import 'package:pokerapp/widgets/drawer/actions1.dart';
 import 'package:pokerapp/widgets/drawer/actions2.dart';
 import 'package:pokerapp/widgets/drawer/actions3.dart';
 import 'package:pokerapp/widgets/drawer/actions4.dart';
+import 'package:pokerapp/widgets/drawer/actions5.dart';
 
 class GamePlayScreenDrawer extends StatefulWidget {
   final GameState gameState;
@@ -58,6 +59,7 @@ class _GamePlayScreenDrawerState extends State<GamePlayScreenDrawer> {
             DividerWidget(theme: theme),
             Actions4Widget(text: _appScreenText),
             DividerWidget(theme: theme),
+            Actions5Widget(),
           ],
         ));
   }

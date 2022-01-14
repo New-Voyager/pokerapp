@@ -28,16 +28,19 @@ class Actions3Widget extends StatelessWidget {
           children: [
             // 3 buttons.
             ButtonWithTextColumn(
+              onTapFunction: () {},
               theme: theme,
               text1: text['fast'],
               text2: "3s",
             ),
             ButtonWithTextColumn(
+              onTapFunction: () {},
               theme: theme,
               text1: text['normal'],
               text2: "5s",
             ),
             ButtonWithTextColumn(
+              onTapFunction: () {},
               theme: theme,
               text1: text['slow'],
               text2: "10s",
@@ -59,34 +62,42 @@ class ButtonWithTextColumn extends StatelessWidget {
     @required this.theme,
     @required this.text1,
     @required this.text2,
+    @required this.onTapFunction,
   }) : super(key: key);
 
   final AppTheme theme;
   final String text1;
   final String text2;
+  final Function onTapFunction;
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () {},
-      //style attribute
-      style: ElevatedButton.styleFrom(
-        primary: theme.accentColorWithDark(),
-        onPrimary: theme.supportingColor,
-      ),
-
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            text1,
-            style: AppDecorators.getHeadLine5Style(theme: theme),
-          ),
-          Text(
-            text2,
-            style: AppDecorators.getSubtitle1Style(theme: theme),
-          ),
-        ],
+    return InkWell(
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          color: theme.accentColor,
+        ),
+        padding: EdgeInsets.symmetric(
+          horizontal: 16,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              text1,
+              style: AppDecorators.getSubtitle1Style(theme: theme),
+            ),
+            Text(
+              text2,
+              style: AppDecorators.getSubtitle1Style(
+                theme: theme,
+              ).copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
