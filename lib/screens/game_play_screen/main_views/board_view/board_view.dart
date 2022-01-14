@@ -51,11 +51,15 @@ class BoardView extends StatelessWidget {
 
     final tableSize = boardAttributes.tableSize;
 
-    // TODO: WE NEED A TABLE WIDTH FACTOR FROM OUTSIDE
+    // TODO: WE NEED TWO NEW VARIABLES FROM OUTSIDE
+    // TODO: 1. TABLE WIDTH FACTOR
+    // TODO: 2. IS LARGER SCREEN
     double tableWidthFactor = 1.0;
+    bool isLargerScreen = false;
     print(boardAttributes.screenDiagnolSize);
     if (boardAttributes.screenDiagnolSize > 7.0) {
       tableWidthFactor = 0.80;
+      isLargerScreen = true;
     }
 
     // this calculates the table size after drawing the table image
@@ -107,24 +111,10 @@ class BoardView extends StatelessWidget {
               gameComService: gameComService,
               gameState: gameState,
               maxPlayers: gameInfo.maxPlayers,
+              isLargerScreen: isLargerScreen,
             );
           },
         ),
-
-        /* players */
-        // Transform.translate(
-        //   offset: boardAttributes.playerOnTableOffset,
-        //   child: PlayersOnTableView(
-        //     gameComService: gameComService,
-        //     isBoardHorizontal:
-        //         boardAttributes.orientation == BoardOrientation.horizontal,
-        //     widthOfBoard: dimensions.width,
-        //     heightOfBoard: dimensions.height,
-        //     onUserTap: onUserTap,
-        //     maxPlayers: gameInfo.maxPlayers,
-        //     gameState: gameState,
-        //   ),
-        // ),
 
         /* distributing card animation widgets */
         Align(

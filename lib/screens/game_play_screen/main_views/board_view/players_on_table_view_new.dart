@@ -14,6 +14,7 @@ class PlayersOnTableViewNew extends StatelessWidget {
   final GameComService gameComService;
   final GameState gameState;
   final int maxPlayers;
+  final bool isLargerScreen;
 
   PlayersOnTableViewNew({
     @required this.tableSize,
@@ -21,6 +22,7 @@ class PlayersOnTableViewNew extends StatelessWidget {
     @required this.gameComService,
     @required this.gameState,
     @required this.maxPlayers,
+    this.isLargerScreen = false,
   });
 
   PlayerModel _findPlayerAtSeat(int seatNo) {
@@ -40,19 +42,16 @@ class PlayersOnTableViewNew extends StatelessWidget {
     for (int seatNo = 1; seatNo <= maxPlayers; seatNo++) {
       final seat = gameState.seatPlayer(seatNo, _findPlayerAtSeat(seatNo));
 
-      final playerView = PlayerView(
-        seat: seat,
-        onUserTap: onUserTap,
-        gameComService: gameComService,
-        boardAttributes: boa,
-        gameContextObject: gco,
+      final playerView = Transform.scale(
+        scale: isLargerScreen ? 1.3 : 1.0,
+        child: PlayerView(
+          seat: seat,
+          onUserTap: onUserTap,
+          gameComService: gameComService,
+          boardAttributes: boa,
+          gameContextObject: gco,
+        ),
       );
-
-      // final playerView = Container(
-      //   color: Colors.amber,
-      //   width: 100,
-      //   height: 76.0,
-      // );
 
       players.add(LayoutId(id: seat.seatPos, child: playerView));
     }
@@ -60,11 +59,31 @@ class PlayersOnTableViewNew extends StatelessWidget {
     return players;
   }
 
+  Size getPlayerOnTableSize() {
+    // If larger screen, then allow the multichild layout to spread a little
+    // If smaller screen devices, then squeeze the multichild layout
+    // Otherwise, do not change the factor of the tableSize
+
+    // in case of larger screens - let the multichild layout be placed extra 1.10 factor
+    if (isLargerScreen)
+      return Size(
+        tableSize.width * 1.10,
+        tableSize.height * 1.25,
+      );
+
+    // TODO: DO WE NEED A CASE FOR SMALLER SCREEN DEVICES?
+
+    // normal case
+    return tableSize;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final ts = getPlayerOnTableSize();
     return Container(
-      width: tableSize.width,
-      height: tableSize.height,
+      color: Colors.red.withOpacity(0.20),
+      width: ts.width,
+      height: ts.height,
       child: CustomMultiChildLayout(
         delegate: PlayerPlacementDelegate(),
         children: _getPlayers(context),
@@ -116,6 +135,7 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
     }
 
     // top center 1
+    // 1/3 rd from the left
     if (hasChild(SeatPos.topCenter1)) {
       final cs = layoutChild(
         SeatPos.topCenter1,
@@ -124,11 +144,12 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
 
       positionChild(
         SeatPos.topCenter1,
-        Offset((size.width / 2) - cs.width / 2 - cs.width / 2, -cs.width / 5),
+        Offset((size.width / 3) - cs.width / 2, -cs.width / 5),
       );
     }
 
     // top center 2
+    // 2/3 rd from the left
     if (hasChild(SeatPos.topCenter2)) {
       final cs = layoutChild(
         SeatPos.topCenter2,
@@ -137,7 +158,7 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
 
       positionChild(
         SeatPos.topCenter2,
-        Offset((size.width / 2) - cs.width / 2 + cs.width / 2, -cs.width / 5),
+        Offset(((2 * size.width) / 3) - cs.width / 2, -cs.width / 5),
       );
     }
 
@@ -168,6 +189,7 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
     }
 
     // bottom left
+    // 3/16 th from left -> 0   1/8   3/16   1/4    1/2 ...................... 1
     if (hasChild(SeatPos.bottomLeft)) {
       final cs = layoutChild(
         SeatPos.bottomLeft,
@@ -177,7 +199,7 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
       positionChild(
         SeatPos.bottomLeft,
         Offset(
-          (size.width / 2) - (cs.width / 2) - cs.width * 1.4,
+          (3 * size.width / 16) - (cs.width / 2),
           size.height - cs.height * 1.0,
         ),
       );
@@ -192,11 +214,12 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
 
       positionChild(
         SeatPos.bottomCenter,
-        Offset((size.width / 2) - cs.width / 2, size.height - cs.width * 0.70),
+        Offset((size.width / 2) - cs.width / 2, size.height - cs.height),
       );
     }
 
     // bottom right
+    // 13/16 th from left
     if (hasChild(SeatPos.bottomRight)) {
       final cs = layoutChild(
         SeatPos.bottomRight,
@@ -206,7 +229,7 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
       positionChild(
         SeatPos.bottomRight,
         Offset(
-          (size.width / 2) - (cs.width / 2) + cs.width * 1.4,
+          (13 * size.width / 16) - (cs.width / 2),
           size.height - cs.height * 1.0,
         ),
       );
