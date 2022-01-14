@@ -51,29 +51,27 @@ class BoardView extends StatelessWidget {
 
     final tableSize = boardAttributes.tableSize;
 
+    // TODO: WE NEED A TABLE WIDTH FACTOR FROM OUTSIDE
+    double tableWidthFactor = 1.0;
+    print(boardAttributes.screenDiagnolSize);
+    if (boardAttributes.screenDiagnolSize > 7.0) {
+      tableWidthFactor = 0.80;
+    }
+
+    // this calculates the table size after drawing the table image
+    gameState.calculateTableSizePostFrame();
+
     return Stack(
       clipBehavior: Clip.antiAlias,
       alignment: Alignment.center,
       children: [
-        // Container(
-        //   width: dimensions.width,
-        //   height: dimensions.height,
-        //   decoration: BoxDecoration(
-        //     border: Border.all(color: Colors.red, width: 3),
-        //     color: Colors.transparent,
-        //   ),
-        // ),
-
         Container(
           width: double.infinity,
           height: dimensions.height,
           child: BackgroundView(),
         ),
 
-        Positioned(
-          bottom: bottomPos,
-          child: TableView(tableSize: tableSize),
-        ),
+        TableView(tableWidthFactor: tableWidthFactor),
 
         /* center view */
         Positioned(
@@ -83,10 +81,6 @@ class BoardView extends StatelessWidget {
           height: boardAttributes.centerSize.height,
           child: Builder(
             builder: (context) {
-              // final cards = tableState.cards;
-              // final cardsOther = tableState.cardsOther;
-              // final pots = tableState.potChips;
-
               return Transform.scale(
                 scale: boardAttributes.centerViewCenterScale,
                 child: CenterView(
@@ -102,15 +96,19 @@ class BoardView extends StatelessWidget {
         ),
 
         // new players view
-        Positioned(
-          bottom: bottomPos,
-          child: PlayersOnTableViewNew(
-            tableSize: tableSize,
-            onUserTap: onUserTap,
-            gameComService: gameComService,
-            gameState: gameState,
-            maxPlayers: gameInfo.maxPlayers,
-          ),
+        ValueListenableBuilder(
+          valueListenable: gameState.tableSizeVn,
+          builder: (_, size, __) {
+            print('valuelistenablebuilder: $size');
+            if (size == null) return const SizedBox.shrink();
+            return PlayersOnTableViewNew(
+              tableSize: size,
+              onUserTap: onUserTap,
+              gameComService: gameComService,
+              gameState: gameState,
+              maxPlayers: gameInfo.maxPlayers,
+            );
+          },
         ),
 
         /* players */

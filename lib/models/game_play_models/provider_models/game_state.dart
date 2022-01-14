@@ -173,6 +173,25 @@ class GameState {
   // high-hand state
   dynamic highHand; // high-hand state
 
+  // table key - we need this to calculate the exact dimension of the table image
+  final GlobalKey tableKey = GlobalKey();
+
+  final ValueNotifier<Size> tableSizeVn = ValueNotifier<Size>(null);
+
+  void calculateTableSizePostFrame({bool force = false}) {
+    if (!force && tableSizeVn.value != null) return;
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      while (true) {
+        final box = tableKey.currentContext.findRenderObject() as RenderBox;
+        if (box.size.shortestSide != 0.0) {
+          tableSizeVn.value = box.size;
+          break;
+        }
+        await Future.delayed(const Duration(milliseconds: 10));
+      }
+    });
+  }
+
   // central board key
   GlobalKey boardKey;
 

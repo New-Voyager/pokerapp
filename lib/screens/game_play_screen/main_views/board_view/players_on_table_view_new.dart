@@ -65,7 +65,6 @@ class PlayersOnTableViewNew extends StatelessWidget {
     return Container(
       width: tableSize.width,
       height: tableSize.height,
-      // color: Colors.red.withOpacity(0.50),
       child: CustomMultiChildLayout(
         delegate: PlayerPlacementDelegate(),
         children: _getPlayers(context),
@@ -83,7 +82,6 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
         SeatPos.topLeft,
         BoxConstraints.loose(size),
       );
-      print('topLeft: cs: $cs');
 
       positionChild(
         SeatPos.topLeft,
