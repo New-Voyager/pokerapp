@@ -56,6 +56,7 @@ import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
+import 'package:pokerapp/widgets/drawer/game_play_drawer.dart';
 import 'package:provider/provider.dart';
 import 'package:wakelock/wakelock.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
@@ -138,6 +139,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   Nats _nats;
   NetworkConnectionDialog _dialog;
   BoardAttributesObject boardAttributes;
+
+  // instantiate a drawer controller
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   // Timer _timer;
 
@@ -915,7 +919,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         );
       } else {
         headerView = Container(
-            width: Screen.width, child: HeaderView(gameState: _gameState));
+            width: Screen.width,
+            child:
+                HeaderView(gameState: _gameState, scaffoldKey: _scaffoldKey));
       }
 
       children.addAll(
@@ -1085,6 +1091,10 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     final body = Consumer<AppTheme>(
       builder: (_, theme, __) {
         Widget mainBody = Scaffold(
+          endDrawer: Drawer(
+            child: GamePlayScreenDrawer(gameState: _gameState),
+          ),
+          key: _scaffoldKey,
           /* FIXME: THIS FLOATING ACTION BUTTON IS FOR SHOWING THE TESTS */
           floatingActionButton: GamePlayScreenUtilMethods.floatingActionButton(
             onReload: () {},

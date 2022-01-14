@@ -15,10 +15,12 @@ import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class HeaderView extends StatelessWidget {
   final GameState gameState;
+  final GlobalKey<ScaffoldState> scaffoldKey;
   AppTextScreen _appScreenText;
 
   HeaderView({
     @required this.gameState,
+    this.scaffoldKey,
   });
 
   String _getTitleText(HandInfoState his) {
@@ -83,7 +85,17 @@ class HeaderView extends StatelessWidget {
       return;
     }
     final gameContextObj = context.read<GameContextObject>();
-    showModalBottomSheet(
+
+    // Open drawer with game options with scaffoldkey
+    if (scaffoldKey != null) {
+      if (scaffoldKey.currentState.isEndDrawerOpen) {
+        scaffoldKey.currentState.openDrawer();
+      } else {
+        scaffoldKey.currentState.openEndDrawer();
+      }
+    }
+
+    /*  showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
@@ -99,11 +111,11 @@ class HeaderView extends StatelessWidget {
             gameContextObj: gameContextObj,
             gameState: GameState.getState(context)),
       ),
-    );
+    ); */
   }
 
   Widget _buildGameMenuNavButton(BuildContext context, AppTheme theme) {
-    IconData iconData = Icons.settings;
+    IconData iconData = Icons.menu;
     final gameState = GameState.getState(context);
     if (gameState.customizationMode) {
       iconData = Icons.edit_rounded;
