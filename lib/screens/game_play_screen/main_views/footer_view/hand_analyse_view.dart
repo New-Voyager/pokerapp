@@ -502,7 +502,9 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                 style: AppDecorators.getHeadLine4Style(theme: theme),
                 children: [
                   TextSpan(
-                    text: " ${_appScreenText['requestBuyin']}",
+                    text: item.approvalType == 'RELOAD_REQUEST'
+                        ? 'reload'
+                        : " ${_appScreenText['requestBuyin']}",
                     style: AppDecorators.getSubtitleStyle(theme: theme),
                   ),
                   TextSpan(
