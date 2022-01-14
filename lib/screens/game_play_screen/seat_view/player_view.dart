@@ -1,14 +1,8 @@
 import 'dart:developer';
 import 'dart:async';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_chat_bubble/bubble_type.dart';
-import 'package:flutter_chat_bubble/chat_bubble.dart';
-import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_1.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/enums/game_type.dart';
-import 'package:pokerapp/models/game_play_models/business/game_chat_notfi_state.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
@@ -72,6 +66,8 @@ class PlayerView extends StatefulWidget {
 }
 
 class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
+  GameState get gameState => widget.gameState;
+
   TableState _tableState;
 
   HandInfoState _handInfoState;
@@ -118,7 +114,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
       listen: false,
     );
 
-    if (widget.gameState.customizationMode) {
+    if (gameState.customizationMode) {
       return;
     }
 
@@ -127,8 +123,8 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
     }
     log('seat ${widget.seat.seatPos.toString()} is tapped');
     if (widget.seat.isOpen) {
-      final tableState = widget.gameState.tableState;
-      if (widget.gameState.myStatus == AppConstants.PLAYING &&
+      final tableState = gameState.tableState;
+      if (gameState.myStatus == AppConstants.PLAYING &&
           tableState.gameStatus == AppConstants.GAME_RUNNING) {
         log('Ignoring the open seat tap as the player is sitting and game is running');
         return;
@@ -148,7 +144,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
       //   return;
       // }
       final mySeat = gameState.mySeat;
-      if (!widget.gameState.currentPlayer.isAdmin()) {
+      if (!gameState.currentPlayer.isAdmin()) {
         if (mySeat == null) {
           return;
         }
@@ -225,7 +221,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
         try {
           limit = double.parse(_controller.text.toString());
           await GameService.setBuyinLimit(
-              gameCode: widget.gameState.gameCode,
+              gameCode: gameState.gameCode,
               playerUuid: seat.player.playerUuid,
               playerId: seat.player.playerId,
               limit: limit);
@@ -239,15 +235,15 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
 
   _handleHostButtonClick(BuildContext context) async {
     final result = await showPrompt(context, "Assign Host",
-        "Do you want to assign '${widget.gameState.currentPlayer.name}' as host?",
+        "Do you want to assign '${gameState.currentPlayer.name}' as host?",
         positiveButtonText: "Yes", negativeButtonText: "No");
     if (result != null) {
       if (result == true) {
         // setbuyin limit
         try {
           final result = await GameService.assignHost(
-            gameCode: widget.gameState.gameCode,
-            playerId: widget.gameState.currentPlayer.uuid,
+            gameCode: gameState.gameCode,
+            playerId: gameState.currentPlayer.uuid,
           );
           if (result != null && result == true) {
             Alerts.showNotification(titleText: "Assigned a new host.");
@@ -287,7 +283,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
           child: DisplayCardsWidget(
             isReplayHandsActor: isReplayHandsActor,
             seat: seat,
-            showdown: widget.gameState.showdown,
+            showdown: gameState.showdown,
           ),
         ),
       ),
@@ -297,10 +293,9 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final theme = AppTheme.getTheme(context);
-    final gameState = GameState.getState(context);
     bool openSeat = widget.seat.isOpen;
     bool isMe = widget.seat.isMe;
-    bool showdown = widget.gameState?.showdown ?? false;
+    bool showdown = gameState.showdown;
 
     // if open seat, just show open seat widget
     if (openSeat) {
@@ -446,7 +441,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
           scale: 0.80,
           child: InkWell(
             onTap: () {
-              if (widget.gameState.replayMode) {
+              if (gameState.replayMode) {
                 return;
               }
               this.onTap(context);

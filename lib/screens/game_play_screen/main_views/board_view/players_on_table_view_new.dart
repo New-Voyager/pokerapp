@@ -43,13 +43,14 @@ class PlayersOnTableViewNew extends StatelessWidget {
       final seat = gameState.seatPlayer(seatNo, _findPlayerAtSeat(seatNo));
 
       final playerView = Transform.scale(
-        scale: isLargerScreen ? 1.3 : 1.0,
+        scale: isLargerScreen ? 1.3 : 0.80,
         child: PlayerView(
           seat: seat,
           onUserTap: onUserTap,
           gameComService: gameComService,
           boardAttributes: boa,
           gameContextObject: gco,
+          gameState: gameState,
         ),
       );
 
@@ -74,14 +75,15 @@ class PlayersOnTableViewNew extends StatelessWidget {
     // TODO: DO WE NEED A CASE FOR SMALLER SCREEN DEVICES?
 
     // normal case
-    return tableSize;
+    return Size(tableSize.width, tableSize.height * 1.20);
   }
 
   @override
   Widget build(BuildContext context) {
     final ts = getPlayerOnTableSize();
     return Container(
-      color: Colors.red.withOpacity(0.20),
+      // color for debugging
+      // color: Colors.red.withOpacity(0.20),
       width: ts.width,
       height: ts.height,
       child: CustomMultiChildLayout(

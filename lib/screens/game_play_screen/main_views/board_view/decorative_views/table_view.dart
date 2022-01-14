@@ -19,7 +19,7 @@ class TableView extends StatelessWidget {
       // height is used as per the aspect ratio
       width: tableWidth,
       // color is used while debugging
-      color: Colors.amber,
+      // color: Colors.amber,
       child: Consumer<RedrawBoardSectionState>(
         builder: (_, __, ___) => AnimatedSwitcher(
           duration: animationDuration,
