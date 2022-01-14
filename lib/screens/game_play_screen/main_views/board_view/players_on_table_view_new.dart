@@ -48,6 +48,12 @@ class PlayersOnTableViewNew extends StatelessWidget {
         gameContextObject: gco,
       );
 
+      // final playerView = Container(
+      //   color: Colors.amber,
+      //   width: 100,
+      //   height: 76.0,
+      // );
+
       players.add(LayoutId(id: seat.seatPos, child: playerView));
     }
 
@@ -77,6 +83,7 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
         SeatPos.topLeft,
         BoxConstraints.loose(size),
       );
+      print('topLeft: cs: $cs');
 
       positionChild(
         SeatPos.topLeft,

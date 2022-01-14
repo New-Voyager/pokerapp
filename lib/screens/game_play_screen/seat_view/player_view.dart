@@ -294,7 +294,8 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildMainBody() {
+  @override
+  Widget build(BuildContext context) {
     final theme = AppTheme.getTheme(context);
     final gameState = GameState.getState(context);
     bool openSeat = widget.seat.isOpen;
@@ -317,6 +318,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
         seatChangeInProgress: gameState.hostSeatChangeInProgress,
         seatChangeSeat: seatChangeSeat,
       );
+
       List<Widget> children = [];
       if (widget.seat.dealer) {
         children.add(
@@ -459,13 +461,10 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
 
                 Opacity(
                   opacity: opacity,
-                  child: Transform.scale(
-                    scale: scale,
-                    child: NamePlateWidget(
-                      widget.seat,
-                      globalKey: key,
-                      boardAttributes: boardAttributes,
-                    ),
+                  child: NamePlateWidget(
+                    widget.seat,
+                    globalKey: key,
+                    boardAttributes: boardAttributes,
                   ),
                 ),
 
@@ -593,15 +592,6 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
           ),
         );
       },
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      // width: 70,
-      // height: 70,
-      child: _buildMainBody(),
     );
   }
 
