@@ -36,10 +36,28 @@ class IconWidgetTile extends StatelessWidget {
     } else if (this.icon != null) {
       icon = Icon(this.icon, size: 24, color: theme.accentColor);
     }
-    Widget tileText = TileText(text: title, theme: theme);
+
+    Widget child = Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        children: [
+          Container(
+              width: 36,
+              height: 36,
+              padding: EdgeInsets.all(2),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(color: theme.accentColor),
+              ),
+              child: icon),
+          SizedBox(width: 12),
+          TileText(text: title, theme: theme),
+        ],
+      ),
+    );
     if (this.badgeCount != null && this.badgeCount != 0) {
-      tileText = IconWithBadge(
-        child: tileText,
+      child = IconWithBadge(
+        child: child,
         count: this.badgeCount,
       );
     }
@@ -50,24 +68,7 @@ class IconWidgetTile extends StatelessWidget {
           this.onPressed();
         }
       },
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
-          children: [
-            Container(
-                width: 36,
-                height: 36,
-                padding: EdgeInsets.all(2),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(color: theme.accentColor),
-                ),
-                child: icon),
-            SizedBox(width: 12),
-            tileText,
-          ],
-        ),
-      ),
+      child: child,
     );
   }
 }

@@ -110,12 +110,12 @@ class HeaderView extends StatelessWidget {
         child:
             Consumer<PendingApprovalsState>(builder: (context, value, child) {
           log('PendingApprovalsState: rebuild approvals.length: ${value.approvalList.length}');
-          return Container(
-            alignment: Alignment.centerLeft,
-            padding: EdgeInsets.only(left: 16.pw),
-            child: InkWell(
-                child: IconWithBadge(
-                    count: value.approvalList.length,
+          return IconWithBadge(
+              count: value.approvalList.length,
+              child: Container(
+                alignment: Alignment.centerLeft,
+                padding: EdgeInsets.only(left: 16.pw),
+                child: InkWell(
                     child: Container(
                       width: 24.pw,
                       height: 24.pw,
@@ -133,13 +133,13 @@ class HeaderView extends StatelessWidget {
                         color: theme.secondaryColor,
                         size: 18,
                       )),
-                    )),
+                    ),
 
-                ///borderRadius: BorderRadius.circular(32.pw),
-                onTap: () {
-                  _onGameMenuNavButtonPress(context);
-                }),
-          );
+                    ///borderRadius: BorderRadius.circular(32.pw),
+                    onTap: () {
+                      _onGameMenuNavButtonPress(context);
+                    }),
+              ));
         }));
 
     // return Align(
