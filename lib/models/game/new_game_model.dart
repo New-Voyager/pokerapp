@@ -276,7 +276,7 @@ class NewGameModel {
     } else if (this.bombPotGameType == GameType.ROE) {
       this.bombPotGameType = this.roeGames[0];
     }
-  //  data['bombPotGameType'] = this.bombPotGameType.toJson();
+    //  data['bombPotGameType'] = this.bombPotGameType.toJson();
     data['seatChangeAllowed'] = this.seatChangeAllowed ?? false;
     data['breakAllowed'] = this.breakAllowed ?? true;
     data['showResult'] = this.showResult ?? true;

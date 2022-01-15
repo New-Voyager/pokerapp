@@ -165,6 +165,18 @@ class NotificationHandler {
                 duration: Duration(seconds: 5),
               );
             }
+          } else if (changed == 'BUYIN_REQUEST') {
+            // buyin request
+            String clubCode = json['clubCode'];
+            String gameCode = json['gameCode'];
+            String hostUuid = json['hostUuid'];
+
+            // if I am the host or club owner or club manager, then refresh pending updates
+            if (playerState.playerUuid == hostUuid ||
+                appState.isClubOwner(clubCode) ||
+                appState.isClubManager(clubCode)) {
+              appState.refreshPendingApprovals();
+            }
           }
         }
       } catch (err) {

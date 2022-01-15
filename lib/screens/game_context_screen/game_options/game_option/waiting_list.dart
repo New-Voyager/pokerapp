@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
@@ -88,11 +87,6 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
               height: height / 2,
               child: Scaffold(
                 backgroundColor: Colors.transparent,
-                // appBar: CustomAppBar(
-                //   theme: theme,
-                //   context: context,
-                //   titleText: _appScreenText['waitingList'],
-                // ),
                 body: Column(
                   mainAxisSize: MainAxisSize.max,
                   children: [
@@ -112,10 +106,18 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            _appScreenText['playersInTheList'],
-            style: AppDecorators.getSubtitle3Style(theme: theme),
-          ),
+          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            Text(
+              'Waiting List',
+              style: AppDecorators.getHeadLine3Style(theme: theme),
+            ),
+            CircleImageButton(
+                icon: Icons.close,
+                onTap: () {
+                  Navigator.of(context).pop();
+                },
+                theme: theme)
+          ]),
           AppDimensionsNew.getVerticalSizedBox(10),
           Expanded(
             child: Container(

@@ -4,6 +4,7 @@ import 'package:pokerapp/flavor_config.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
+import 'package:pokerapp/services/app/player_service.dart';
 
 import 'club_model.dart';
 
@@ -54,6 +55,15 @@ class AppState extends ChangeNotifier {
     return false;
   }
 
+  bool isClubManager(String clubCode) {
+    for (final club in myClubs) {
+      if (club.clubCode == clubCode) {
+        return club.isManager;
+      }
+    }
+    return false;
+  }
+
   void removeGameCode() {
     setCurrentScreenGameCode('');
   }
@@ -91,5 +101,13 @@ class AppState extends ChangeNotifier {
       return true;
     }
     return false;
+  }
+
+  void refreshPendingApprovals() {
+    PlayerService.getPendingApprovals().then((v) {
+      this.buyinApprovals.setPendingList(v);
+    }).onError((error, stackTrace) {
+      // ignore it
+    });
   }
 }

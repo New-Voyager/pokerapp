@@ -761,6 +761,12 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       }
     });
 
+    PlayerService.getPendingApprovals().then((v) {
+      appState.buyinApprovals.setPendingList(v);
+    }).onError((error, stackTrace) {
+      // ignore it
+    });
+
     _appScreenText = getAppTextScreen("gameScreen");
   }
 
@@ -1091,9 +1097,12 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     final body = Consumer<AppTheme>(
       builder: (_, theme, __) {
         Widget mainBody = Scaffold(
-          endDrawer: Drawer(
-            child: GamePlayScreenDrawer(gameState: _gameState),
-          ),
+          endDrawer: Consumer<PendingApprovalsState>(builder: (_, __, ___) {
+            log('PendingApprovalsState updated');
+            return Drawer(
+              child: GamePlayScreenDrawer(gameState: _gameState),
+            );
+          }),
           key: _scaffoldKey,
           /* FIXME: THIS FLOATING ACTION BUTTON IS FOR SHOWING THE TESTS */
           floatingActionButton: GamePlayScreenUtilMethods.floatingActionButton(

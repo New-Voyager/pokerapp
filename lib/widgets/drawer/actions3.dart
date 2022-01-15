@@ -1,17 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
-import 'package:pokerapp/widgets/drawer/wudgets.dart';
+import 'package:pokerapp/services/game_play/graphql/gamesettings_service.dart';
+import 'package:pokerapp/utils/alerts.dart';
+import 'package:pokerapp/widgets/drawer/widgets.dart';
 import 'package:pokerapp/widgets/radio_list_widget.dart';
 
 class Actions3Widget extends StatelessWidget {
   final AppTextScreen text;
-  const Actions3Widget({Key key, @required this.text}) : super(key: key);
+  final GameState gameState;
+
+  const Actions3Widget({Key key, @required this.text, @required this.gameState})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final theme = AppTheme.getTheme(context);
+    int defaultValue = 1;
+    if (gameState.gameSettings.resultPauseTime == 10) {
+      defaultValue = 0;
+    } else if (gameState.gameSettings.resultPauseTime == 5) {
+      defaultValue = 1;
+    } else if (gameState.gameSettings.resultPauseTime == 3) {
+      defaultValue = 2;
+    }
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -22,14 +36,31 @@ class Actions3Widget extends StatelessWidget {
         ),
         Center(
             child: RadioToggleButtonsWidget<String>(
-                defaultValue: 1,
+                defaultValue: defaultValue,
                 values: ['Slow\n10s', 'Normal\n5s', 'Fast\n3s'],
-                onSelect: (int value) {})),
+                onSelect: (int value) async {
+                  if (value == 0) {
+                    gameState.gameSettings.resultPauseTime = 10;
+                  } else if (value == 1) {
+                    gameState.gameSettings.resultPauseTime = 5;
+                  } else if (value == 2) {
+                    gameState.gameSettings.resultPauseTime = 3;
+                  }
+                  await updateGameSettings();
+                })),
         SizedBox(
-          height: 16,
+          height: 8,
         ),
       ],
     );
+  }
+
+  Future<void> updateGameSettings() async {
+    final res = await GameSettingsService.updateResultPauseTime(
+        gameState.gameCode, gameState.gameSettings.resultPauseTime);
+    if (res) {
+      Alerts.showNotification(titleText: "Settings updated!");
+    }
   }
 }
 
