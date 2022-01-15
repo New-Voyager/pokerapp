@@ -1,7 +1,5 @@
 import 'dart:convert';
 import 'dart:developer';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/main.dart';
@@ -23,6 +21,7 @@ import 'package:pokerapp/widgets/child_widgets.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:pokerapp/widgets/multi_game_selection.dart';
 import 'package:pokerapp/widgets/radio_list_widget.dart';
+import 'package:pokerapp/widgets/switch.dart';
 import 'package:pokerapp/widgets/switch_widget.dart';
 import 'package:pokerapp/widgets/text_input_widget.dart';
 import 'package:pokerapp/widgets/textfields.dart';
@@ -125,6 +124,7 @@ class NewGameSettings2 extends StatefulWidget {
 
   static const sepV20 = const SizedBox(height: 20.0);
   static const sepV8 = const SizedBox(height: 8.0);
+  static const sep12 = const SizedBox(height: 12.0);
 
   static const sepH10 = const SizedBox(width: 10.0);
 
@@ -163,13 +163,13 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
     super.initState();
   }
 
-  Widget _buildLabel(String label, AppTheme theme) => Padding(
-        padding: const EdgeInsets.symmetric(vertical: 5.0),
-        child: Text(
-          label,
-          style: AppDecorators.getHeadLine4Style(theme: theme),
-        ),
-      );
+  // Widget _buildLabel(String label, AppTheme theme) => Padding(
+  //       padding: const EdgeInsets.symmetric(vertical: 5.0),
+  //       child: Text(
+  //         label,
+  //         style: AppDecorators.getHeadLine4Style(theme: theme),
+  //       ),
+  //     );
 
   Widget _buildSeperator(AppTheme theme) => Container(
         color: theme.fillInColor,
@@ -188,7 +188,7 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           /* switch */
-          SwitchWidget(
+          SwitchWidget2(
             label: label,
             value: value,
             onChange: onChange,
@@ -212,10 +212,10 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
       );
 
   Widget _buildBreakConfig(AppTheme theme, NewGameModelProvider gmp) {
-    return DecoratedContainer(
+    return DecoratedContainer2(
       theme: theme,
       children: [
-        SwitchWidget(
+        SwitchWidget2(
           value: gmp.breakAllowed,
           label: appScreenText['breakAllowed'],
           onChange: (bool value) {
@@ -230,7 +230,8 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
                 ? const SizedBox.shrink()
                 : Column(
                     children: [
-                      _buildLabel(appScreenText['maxBreakTime'], theme),
+                      LabelText(
+                          label: appScreenText['maxBreakTime'], theme: theme),
                       RadioListWidget<int>(
                         defaultValue: gmp.breakTime,
                         values: NewGameConstants.BREAK_WAIT_TIMES,
@@ -257,6 +258,9 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
               .add(gmp.buyInApprovalLimit == BuyInApprovalLimit.BUYIN_NO_LIMIT);
 
           List<Widget> toggleButtons = [];
+          List<String> options = [];
+
+          int defaultValue = 0;
           toggleButtons.add(Container(
               padding: EdgeInsets.all(10),
               child: Text('No Limit',
@@ -266,9 +270,20 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
                           ? Colors.black
                           : theme.accentColor))));
 
+          if (gmp.buyInApprovalLimit == BuyInApprovalLimit.BUYIN_NO_LIMIT) {
+            defaultValue = options.length;
+          }
+          options.add('No Limit');
+
           if (widget.clubHomePageModel != null &&
               widget.clubHomePageModel.trackMemberCredit) {
             showCreditLimit = true;
+            if (gmp.buyInApprovalLimit ==
+                BuyInApprovalLimit.BUYIN_CREDIT_LIMIT) {
+              defaultValue = options.length;
+            }
+            options.add('Credit Limit');
+
             isSelected.add(gmp.buyInApprovalLimit ==
                 BuyInApprovalLimit.BUYIN_CREDIT_LIMIT);
             toggleButtons.add(Container(
@@ -289,6 +304,11 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
                               BuyInApprovalLimit.BUYIN_HOST_APPROVAL
                           ? Colors.black
                           : theme.accentColor))));
+          if (gmp.buyInApprovalLimit ==
+              BuyInApprovalLimit.BUYIN_HOST_APPROVAL) {
+            defaultValue = options.length;
+          }
+          options.add('Host Approval');
 
           isSelected.add(
               gmp.buyInApprovalLimit == BuyInApprovalLimit.BUYIN_HOST_APPROVAL);
@@ -297,18 +317,20 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildLabel('Buyin Limit', theme),
+              LabelText(label: 'Buyin Limit', theme: theme),
               Center(
                   child: FittedBox(
                 fit: BoxFit.fitWidth,
-                child: ToggleButtons(
-                  children: toggleButtons,
-                  isSelected: isSelected,
-                  borderColor: theme.accentColor,
-                  borderRadius: BorderRadius.all(Radius.circular(25)),
-                  selectedColor: Colors.black,
-                  fillColor: theme.accentColor,
-                  onPressed: (int index) {
+                child: RadioToggleButtonsWidget<String>(
+                  // children: toggleButtons,
+                  // isSelected: isSelected,
+                  // borderColor: theme.accentColor,
+                  // borderRadius: BorderRadius.all(Radius.circular(25)),
+                  // selectedColor: Colors.black,
+                  // fillColor: theme.accentColor,
+                  values: options,
+                  defaultValue: defaultValue,
+                  onSelect: (int index) {
                     if (index == 0) {
                       gmp.buyInApprovalLimit =
                           BuyInApprovalLimit.BUYIN_NO_LIMIT;
@@ -345,7 +367,8 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
                     BuyInApprovalLimit.BUYIN_HOST_APPROVAL
                 ? Column(
                     children: [
-                      _buildLabel(appScreenText['buyinMaxTime'], theme),
+                      LabelText(
+                          label: appScreenText['buyinMaxTime'], theme: theme),
                       RadioListWidget<int>(
                         defaultValue: gmp.buyInWaitTime,
                         values: NewGameConstants.BUYIN_WAIT_TIMES,
@@ -363,10 +386,10 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
   }
 
   Widget _buildButtonStraddleConfig(AppTheme theme, NewGameModelProvider gmp) {
-    return DecoratedContainer(
+    return DecoratedContainer2(
       theme: theme,
       children: [
-        SwitchWidget(
+        SwitchWidget2(
           value: gmp.buttonStraddle,
           label: 'Button Straddle', //_appScreenText['BUYINGAPPROVAL'],
           onChange: (bool value) {
@@ -379,31 +402,36 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
           builder: (_, vnGmp, __) => _buildAnimatedSwitcher(
             child: vnGmp.buttonStraddle == false
                 ? const SizedBox.shrink()
-                : Column(
-                    children: [
-                      Align(
-                          alignment: Alignment.topLeft,
-                          child: _buildLabel('Straddle Max Bet (x BB)', theme)),
-                      Text(
-                        vnGmp.buttonStraddleBetAmount.toString(),
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.w900),
-                      ),
-                      Slider(
-                        value: vnGmp.buttonStraddleBetAmount.toDouble(),
-                        //thumbColor: theme.accentColor,
-                        activeColor: theme.secondaryColor,
-                        inactiveColor: theme.primaryColorWithDark(),
-                        min: 2,
-                        max: 10,
-                        divisions: 8,
-                        label: vnGmp.buttonStraddleBetAmount.round().toString(),
-                        onChanged: (double value) {
-                          vnGmp.buttonStraddleBetAmount = value.toInt();
-                        },
-                      )
-                    ],
-                  ),
+                : Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Column(
+                      children: [
+                        Align(
+                            alignment: Alignment.topLeft,
+                            child: LabelText(
+                                label: 'Straddle Max Bet (x BB)',
+                                theme: theme)),
+                        Text(
+                          vnGmp.buttonStraddleBetAmount.toString(),
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.w900),
+                        ),
+                        Slider(
+                          value: vnGmp.buttonStraddleBetAmount.toDouble(),
+                          //thumbColor: theme.accentColor,
+                          activeColor: theme.secondaryColor,
+                          inactiveColor: theme.primaryColorWithDark(),
+                          min: 2,
+                          max: 10,
+                          divisions: 8,
+                          label:
+                              vnGmp.buttonStraddleBetAmount.round().toString(),
+                          onChanged: (double value) {
+                            vnGmp.buttonStraddleBetAmount = value.toInt();
+                          },
+                        )
+                      ],
+                    )),
           ),
         ),
       ],
@@ -440,10 +468,10 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
       bombPotDefaultValue = '5 Card Hi-Lo';
     }
 
-    return DecoratedContainer(
+    return DecoratedContainer2(
       theme: theme,
       children: [
-        SwitchWidget(
+        SwitchWidget2(
           value: gmp.bombPotEnabled,
           label: appScreenText['bombPotEnabled'],
           onChange: (bool value) {
@@ -461,7 +489,8 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // bomb pot bet
-                      _buildLabel(appScreenText['bombPotBet'], theme),
+                      LabelText(
+                          label: appScreenText['bombPotBet'], theme: theme),
 
                       RadioListWidget<int>(
                         defaultValue: gmp.bombPotBet,
@@ -470,7 +499,9 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
                           gmp.bombPotBet = value;
                         },
                       ),
-                      _buildLabel(appScreenText['bombPotInterval'], theme),
+                      LabelText(
+                          label: appScreenText['bombPotInterval'],
+                          theme: theme),
                       RadioListWidget<int>(
                         defaultValue: gmp.bombPotInterval,
                         values: NewGameConstants.BOMB_POT_INTERVALS,
@@ -478,9 +509,11 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
                           gmp.bombPotInterval = value;
                         },
                       ),
-                      NewGameSettings2.sepV20,
+                      NewGameSettings2.sepV8,
+                      LabelText(label: 'Game Type', theme: theme),
                       RadioListWidget<String>(
                         defaultValue: bombPotDefaultValue,
+                        wrap: true,
                         values: [
                           'NLH',
                           'PLO',
@@ -504,8 +537,8 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
                           }
                         },
                       ),
-                      NewGameSettings2.sepV20,
-                      SwitchWidget(
+                      NewGameSettings2.sepV8,
+                      SwitchWidget2(
                         value: gmp.doubleBoardBombPot,
                         label:
                             'Double Board', //_appScreenText['doubleBoardBombPot'],
@@ -593,13 +626,14 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
 
         return Consumer<NewGameModelProvider>(builder: (_, __, ___) {
           return Container(
-            decoration: AppDecorators.bgRadialGradient(theme).copyWith(
-              border: Border.all(
-                color: theme.secondaryColorWithDark(),
-                width: 2,
-              ),
-              borderRadius: BorderRadius.circular(10),
-            ),
+            // decoration: AppDecorators.bgRadialGradient(theme).copyWith(
+            //   border: Border.all(
+            //     color: theme.secondaryColorWithDark(),
+            //     width: 2,
+            //   ),
+            //   borderRadius: BorderRadius.circular(10),
+            // ),
+            decoration: BoxDecoration(color: theme.fillInColor),
             padding: const EdgeInsets.all(16),
             child: Column(
               children: [
@@ -683,7 +717,9 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
                                           children: [
-                                            _buildLabel('Dealer Choice', theme),
+                                            LabelText(
+                                                label: 'Dealer Choice',
+                                                theme: theme),
                                             Consumer<NewGameModelProvider>(
                                               builder: (_, vnGmp, __) {
                                                 return ToggleButtons(
@@ -728,7 +764,8 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
                                         )
                                       : Container(),
                                   NewGameSettings2.sepV20,
-                                  _buildLabel('Choose Games', theme),
+                                  LabelText(
+                                      label: 'Choose Games', theme: theme),
                                   MultiGameSelection([
                                     GameType.HOLDEM,
                                     GameType.PLO,
@@ -761,50 +798,60 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
                               )
                             : Container(),
                         /* players */
-                        _buildLabel('Players', theme),
-                        NewGameSettings2.sepV8,
-                        RadioListWidget<int>(
-                            key: UniqueKey(),
-                            defaultValue: gmp.maxPlayers,
-                            values: playerCounts,
-                            onSelect: (int value) {
-                              gmp.maxPlayers = value;
-                            }),
+                        NewGameSettings2.sep12,
+                        Row(children: [
+                          Expanded(
+                              flex: 3,
+                              child: LabelText(label: 'Players', theme: theme)),
+                          Expanded(
+                              flex: 7,
+                              child: RadioListWidget<int>(
+                                  key: UniqueKey(),
+                                  defaultValue: gmp.maxPlayers,
+                                  values: playerCounts,
+                                  onSelect: (int value) {
+                                    gmp.maxPlayers = value;
+                                  }))
+                        ]),
 
                         /* chip unit */
-                        NewGameSettings2.sepV20,
+                        NewGameSettings2.sep12,
                         Consumer<NewGameModelProvider>(builder: (_, vnGmp, __) {
-                          return Row(children: [
-                            Expanded(
-                              child: Text('Chip Unit'),
-                            ),
-                            Expanded(
-                                child: ToggleButtons(
-                              selectedColor: Colors.black,
-                              borderColor: theme.accentColor,
-                              fillColor: theme.accentColor,
-                              onPressed: (int index) {
-                                if (index == 0) {
-                                  gmp.chipUnit = ChipUnit.DOLLAR;
-                                } else {
-                                  gmp.chipUnit = ChipUnit.CENT;
-                                }
-                              },
-                              isSelected: [
-                                gmp.chipUnit == ChipUnit.DOLLAR,
-                                gmp.chipUnit == ChipUnit.CENT,
-                              ],
+                          return Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text('1'),
-                                Text('.01'),
-                              ],
-                            ))
-                          ]);
+                                Expanded(
+                                    flex: 3,
+                                    child: LabelText(
+                                        label: 'Chip Unit', theme: theme)),
+                                Expanded(
+                                    flex: 7,
+                                    child: Container(
+                                        child: Row(children: [
+                                      RadioToggleButtonsWidget<String>(
+                                        onSelect: (int index) {
+                                          if (index == 0) {
+                                            gmp.chipUnit = ChipUnit.DOLLAR;
+                                          } else {
+                                            gmp.chipUnit = ChipUnit.CENT;
+                                          }
+                                        },
+                                        defaultValue:
+                                            gmp.chipUnit == ChipUnit.DOLLAR
+                                                ? 0
+                                                : 1,
+                                        values: [
+                                          '1',
+                                          '.01',
+                                        ],
+                                      )
+                                    ])))
+                              ]);
                         }),
 
                         /* big blind & ante */
-                        NewGameSettings2.sepV20,
-                        _buildLabel('Blind', theme),
+                        NewGameSettings2.sepV8,
                         Consumer<NewGameModelProvider>(builder: (_, vnGmp, __) {
                           double minValue = 2;
                           double maxValue = 10000000;
@@ -813,12 +860,18 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
                           }
                           return Row(
                             children: [
-                              /* big blind */
                               Expanded(
+                                  flex: 3,
+                                  child: LabelText(
+                                      label: 'Big Blind', theme: theme)),
+                              /* big blind */
+
+                              Expanded(
+                                flex: 3,
                                 child: TextInputWidget(
                                   value: gmp.bigBlind,
                                   decimalAllowed: gmp.chipUnit == ChipUnit.CENT,
-                                  label: appScreenText['bigBlind'],
+                                  //label: 'BB', //appScreenText['bigBlind'],
                                   minValue: minValue,
                                   maxValue: maxValue,
                                   evenNumber: true,
@@ -829,173 +882,203 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
                                   },
                                 ),
                               ),
-
-                              // sep
-                              NewGameSettings2.sepH10,
-
-                              /* ante */
                               Expanded(
+                                flex: 4,
+                                child: SizedBox(width: 30),
+                              )
+                            ],
+                          );
+                        }),
+                        NewGameSettings2.sepV8,
+                        Consumer<NewGameModelProvider>(builder: (_, vnGmp, __) {
+                          double minValue = 2;
+                          double maxValue = 10000000;
+                          if (gmp.chipUnit == ChipUnit.CENT) {
+                            minValue = 0.1;
+                          }
+                          return Row(
+                            children: [
+                              Expanded(
+                                  flex: 3,
+                                  child:
+                                      LabelText(label: 'Ante', theme: theme)),
+                              /* big blind */
+                              Expanded(
+                                flex: 3,
                                 child: TextInputWidget(
                                   value: gmp.ante,
-                                  label: 'Ante',
-                                  title:
-                                      'Enter ante (0-${DataFormatter.chipsFormat(gmp.bigBlind)})',
                                   decimalAllowed: gmp.chipUnit == ChipUnit.CENT,
                                   minValue: 0,
                                   maxValue: gmp.bigBlind,
+                                  evenNumber: true,
+                                  title: 'Enter Ante',
                                   onChange: (value) {
+                                    //gmp.blinds.bigBlind = value.toDouble();
                                     gmp.ante = value.toDouble();
                                   },
                                 ),
                               ),
+                              Expanded(
+                                flex: 4,
+                                child: SizedBox(width: 30),
+                              )
                             ],
                           );
                         }),
-
                         /* buyin */
-                        NewGameSettings2.sepV20,
-                        _buildLabel(appScreenText['buyin'], theme),
                         NewGameSettings2.sepV8,
-                        DecoratedContainer(
-                          child: Column(children: [
-                            Row(
-                              children: [
-                                /* min */
-                                Expanded(
-                                  child: TextInputWidget(
-                                    value: gmp.buyInMin.toDouble(),
-                                    small: true,
-                                    label: appScreenText['min'],
-                                    trailing: appScreenText['bb'],
-                                    title: appScreenText['enterMinBuyin'],
-                                    minValue: 0,
-                                    maxValue: 1000,
-                                    onChange: (value) {
-                                      gmp.buyInMin = value.floor();
+                        Consumer<NewGameModelProvider>(builder: (_, vnGmp, __) {
+                          return Row(children: [
+                            Expanded(
+                                flex: 3,
+                                child: LabelText(
+                                    label:
+                                        'Buyin Range (xBB)', //appScreenText['buyin'],
+                                    theme: theme)),
+                            Expanded(
+                              flex: 3,
+                              child: TextInputWidget(
+                                value: gmp.buyInMin.toDouble(),
+                                small: true,
+                                //label: appScreenText['min'],
+                                trailing: '', //appScreenText['bb'],
+                                title: appScreenText['enterMinBuyin'],
+                                minValue: 0,
+                                maxValue: 2000,
+                                onChange: (value) {
+                                  gmp.buyInMin = value.floor();
 
-                                      if (gmp.buyInMax <= value.floor()) {
-                                        Alerts.showNotification(
-                                            titleText: appScreenText[
-                                                'buyInMoreThanMin'],
-                                            duration: Duration(seconds: 5));
-                                      }
-                                    },
-                                  ),
-                                ),
-
-                                // sep
-                                NewGameSettings2.sepH10,
-
-                                /* max */
-                                Expanded(
-                                  child: TextInputWidget(
-                                    value: gmp.buyInMax.toDouble(),
-                                    small: true,
-                                    label: appScreenText['max'],
-                                    title: appScreenText['enterMaxBuyin'],
-                                    trailing: appScreenText['bb'],
-                                    minValue: 0,
-                                    maxValue: 1000,
-                                    onChange: (value) {
-                                      gmp.buyInMax = value.floor();
-                                      if (gmp.buyInMin >= value.floor()) {
-                                        Alerts.showNotification(
-                                            titleText: appScreenText[
-                                                'buyinMaxBBGreater'],
-                                            duration: Duration(seconds: 5));
-                                      }
-                                    },
-                                  ),
-                                ),
-                              ],
+                                  if (gmp.buyInMax <= value.floor()) {
+                                    gmp.buyInMax = gmp.buyInMin + 10;
+                                  }
+                                },
+                              ),
                             ),
-                            SizedBox(height: 4.ph),
-                            Consumer<NewGameModelProvider>(
-                                builder: (_, vnGmp, __) {
-                              return Text(
-                                  ' (${DataFormatter.chipsFormat(gmp.buyInMin * gmp.bigBlind)} - ${DataFormatter.chipsFormat(gmp.buyInMax * gmp.bigBlind)}) ');
-                            }),
-                          ]),
-                          theme: theme,
-                        ),
-
+                            Text('-'),
+                            Expanded(
+                              flex: 3,
+                              child: TextInputWidget(
+                                key: UniqueKey(),
+                                value: gmp.buyInMax.toDouble(),
+                                small: true,
+                                title: appScreenText['enterMaxBuyin'],
+                                trailing: '', // appScreenText['bb'],
+                                minValue: gmp.buyInMin.toDouble() + 1,
+                                maxValue: 10 * gmp.buyInMin.toDouble(),
+                                onChange: (value) {
+                                  gmp.buyInMax = value.floor();
+                                  if (gmp.buyInMin >= value.floor()) {
+                                    Alerts.showNotification(
+                                        titleText:
+                                            'Max buyin should be more than min buyin',
+                                        duration: Duration(seconds: 5));
+                                  }
+                                },
+                              ),
+                            ),
+                            Expanded(flex: 1, child: SizedBox(width: 10)),
+                          ]);
+                        }),
+                        Consumer<NewGameModelProvider>(builder: (_, vnGmp, __) {
+                          return Row(children: [
+                            Expanded(
+                                flex: 3,
+                                child: LabelText(
+                                    label: '', //appScreenText['buyin'],
+                                    theme: theme)),
+                            Expanded(
+                              flex: 7,
+                              child: Text(
+                                '(${DataFormatter.chipsFormat(gmp.buyInMin * gmp.bigBlind)} - ${DataFormatter.chipsFormat(gmp.buyInMax * gmp.bigBlind)})',
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ]);
+                        }),
                         /* tips */
-                        NewGameSettings2.sepV20,
-                        _buildLabel(appScreenText["tips"], theme),
                         NewGameSettings2.sepV8,
-                        DecoratedContainer(
-                          child: Consumer<NewGameModelProvider>(
-                              builder: (_, vnGmp, __) {
-                            return Row(
-                              children: [
-                                /* min */
-                                Expanded(
-                                  child: TextInputWidget(
-                                    value: gmp.rakePercentage,
-                                    decimalAllowed:
-                                        gmp.chipUnit == ChipUnit.CENT,
-                                    small: true,
-                                    trailing: '%',
-                                    title: appScreenText["tipsPercent"],
-                                    minValue: 0,
-                                    maxValue: 50,
-                                    onChange: (value) {
-                                      gmp.rakePercentage = value;
-                                    },
-                                  ),
-                                ),
-
-                                // sep
-                                NewGameSettings2.sepH10,
-
-                                /* max */
-                                Expanded(
-                                  child: TextInputWidget(
-                                    value: gmp.rakeCap,
-                                    decimalAllowed:
-                                        gmp.chipUnit == ChipUnit.CENT,
-                                    small: true,
-                                    leading: appScreenText['cap'],
-                                    title: appScreenText['maxTips'],
-                                    minValue: 0,
-                                    maxValue: -1,
-                                    onChange: (value) {
-                                      gmp.rakeCap = value;
-                                    },
-                                  ),
-                                ),
-                              ],
-                            );
-                          }),
-                          theme: theme,
-                        ),
+                        Consumer<NewGameModelProvider>(builder: (_, vnGmp, __) {
+                          return Row(children: [
+                            Expanded(
+                                flex: 3,
+                                child: LabelText(label: 'Tips', theme: theme)),
+                            Expanded(
+                              flex: 3,
+                              child: TextInputWidget(
+                                value: gmp.rakePercentage,
+                                small: true,
+                                //label: appScreenText['min'],
+                                trailing: '%', //appScreenText['bb'],
+                                title: appScreenText["tipsPercent"],
+                                minValue: 0,
+                                maxValue: 50,
+                                onChange: (value) {
+                                  gmp.rakePercentage = value;
+                                },
+                              ),
+                            ),
+                            Text(' Cap: '),
+                            Expanded(
+                              flex: 3,
+                              child: TextInputWidget(
+                                key: UniqueKey(),
+                                value: gmp.rakeCap,
+                                small: true,
+                                title: appScreenText['maxTips'],
+                                trailing: '', // appScreenText['bb'],
+                                minValue: 0,
+                                maxValue: -1,
+                                onChange: (value) {
+                                  gmp.rakeCap = value;
+                                },
+                              ),
+                            ),
+                          ]);
+                        }),
 
                         /* action time */
-                        NewGameSettings2.sepV20,
-                        _buildLabel(appScreenText['actionTime'], theme),
                         NewGameSettings2.sepV8,
-                        RadioListWidget<int>(
-                          defaultValue: gmp.actionTime,
-                          values: NewGameConstants.ACTION_TIMES,
-                          onSelect: (int value) {
-                            gmp.actionTime = value;
-                          },
-                        ),
+                        Consumer<NewGameModelProvider>(builder: (_, vnGmp, __) {
+                          return Row(children: [
+                            Expanded(
+                                flex: 3,
+                                child: LabelText(
+                                    label: appScreenText['actionTime'],
+                                    theme: theme)),
+                            Expanded(
+                                flex: 7,
+                                child: RadioListWidget<int>(
+                                  defaultValue: gmp.actionTime,
+                                  values: NewGameConstants.ACTION_TIMES,
+                                  onSelect: (int value) {
+                                    gmp.actionTime = value;
+                                  },
+                                )),
+                          ]);
+                        }),
 
                         /* game time */
-                        NewGameSettings2.sepV20,
-                        _buildLabel(appScreenText['gameTime'], theme),
                         NewGameSettings2.sepV8,
-                        RadioListWidget<int>(
-                          defaultValue: gmp.gameLengthInMins ~/ 60,
-                          values: NewGameConstants.GAME_LENGTH,
-                          onSelect: (int value) {
-                            gmp.gameLengthInMins = value * 60;
-                          },
-                        ),
-
+                        Consumer<NewGameModelProvider>(builder: (_, vnGmp, __) {
+                          return Row(children: [
+                            Expanded(
+                                flex: 3,
+                                child: LabelText(
+                                    label: appScreenText['gameTime'],
+                                    theme: theme)),
+                            Expanded(
+                                flex: 7,
+                                child: RadioListWidget<int>(
+                                  defaultValue: gmp.gameLengthInMins ~/ 60,
+                                  values: NewGameConstants.GAME_LENGTH,
+                                  onSelect: (int value) {
+                                    gmp.gameLengthInMins = value;
+                                  },
+                                )),
+                          ]);
+                        }),
                         /* sep */
-                        NewGameSettings2.sepV20,
+                        NewGameSettings2.sepV8,
 
                         /* UTG straddle */
                         _buildRadio(
@@ -1006,9 +1089,9 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
                           },
                           theme: theme,
                         ),
-                        NewGameSettings2.sepV20,
+                        NewGameSettings2.sepV8,
                         _buildButtonStraddleConfig(theme, gmp),
-                        NewGameSettings2.sepV20,
+                        NewGameSettings2.sepV8,
 
                         /* allow run it twice */
                         _buildRadio(
@@ -1020,7 +1103,7 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
                           theme: theme,
                         ),
                         /* sep */
-                        NewGameSettings2.sepV20,
+                        NewGameSettings2.sepV8,
                         /* allow audio conference */
                         _buildRadio(
                           label: appScreenText['useAudioConf'],
@@ -1031,7 +1114,7 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
                           theme: theme,
                         ),
                         /* sep */
-                        NewGameSettings2.sepV20,
+                        NewGameSettings2.sepV8,
 
                         /* Highhand Tracked */
                         _buildRadio(
@@ -1042,9 +1125,8 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
                           },
                           theme: theme,
                         ),
-                        NewGameSettings2.sepV20,
+                        NewGameSettings2.sepV8,
                         _buildBuyinConfig(theme, gmp),
-                        NewGameSettings2.sepV20,
                         ExpansionTile(
                           iconColor: theme.accentColor,
                           collapsedIconColor: theme.accentColor,
@@ -1057,11 +1139,11 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
                                   theme: theme)),
                           children: [
                             _buildBreakConfig(theme, gmp),
-                            NewGameSettings2.sepV20,
+                            NewGameSettings2.sepV8,
                             _buildBombPotConfig(theme, gmp),
 
                             /* sep */
-                            NewGameSettings2.sepV20,
+                            NewGameSettings2.sepV8,
                             DecoratedContainer(
                               theme: theme,
                               children: [
@@ -1190,31 +1272,33 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
                             ),
                           ],
                         ),
-                        NewGameSettings2.sepV20,
+                        NewGameSettings2.sepV8,
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            _buildLabel(appScreenText['serviceFee'], theme),
+                            LabelText(
+                                label: appScreenText['serviceFee'],
+                                theme: theme),
                             Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                _buildLabel("10", theme),
+                                LabelText(label: "10", theme: theme),
                                 Image.asset(
                                   'assets/images/appcoin.png',
                                   height: 16.pw,
                                   width: 16.pw,
                                 ),
-                                _buildLabel("coins/hour", theme),
+                                LabelText(label: "coins/hour", theme: theme),
                               ],
                             ),
                           ],
                         ),
-                        NewGameSettings2.sepV20,
+                        NewGameSettings2.sep12,
 
                         /* start button */
                         /* sep */
-                        NewGameSettings2.sepV20,
-                        NewGameSettings2.sepV20,
+                        NewGameSettings2.sepV8,
+                        NewGameSettings2.sepV8,
                         Column(
 
                             ///alignment: Alignment.center,
@@ -1234,30 +1318,14 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
                     ),
                   ),
                 ),
-                NewGameSettings2.sepV20,
+                NewGameSettings2.sep12,
                 Row(
                   //alignment: Alignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // CircleImageButton(
-                    //   onTap: () {
-                    //     gmp.cancelled = true;
-                    //     Navigator.pop(context, null);
-                    //   },
-                    //   theme: theme,
-                    //   icon: Icons.close,
-                    // ),
                     ButtonWidget(
                       text: appScreenText['start'],
                       onTap: () {
-                        // if (gmp.blinds.bigBlind % 2 != 0) {
-                        //   Alerts.showNotification(
-                        //     titleText: _appScreenText['gameCreationFailed'],
-                        //     subTitleText: _appScreenText['checkBigBlind'],
-                        //     duration: Duration(seconds: 5),
-                        //   );
-                        //   return;
-                        // } else
                         if (gmp.buyInMax < gmp.buyInMin) {
                           Alerts.showNotification(
                             titleText: appScreenText['gameCreationFailed'],

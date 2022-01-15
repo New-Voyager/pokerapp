@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
+import 'package:pokerapp/widgets/texts.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
@@ -15,13 +16,15 @@ class RadioListWidget<T> extends StatelessWidget {
   final int padding;
   final bool border;
   final bool wrap;
+  final String label;
 
   RadioListWidget({
     Key key,
     @required this.values,
     @required this.onSelect,
     this.defaultValue,
-    this.padding = 5,
+    this.label = '',
+    this.padding = 3,
     this.wrap = true,
     this.border = false,
   }) : super(key: key);
@@ -88,19 +91,32 @@ class RadioListWidget<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = AppTheme.getTheme(context);
+    Widget choices = Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 5.0,
+        vertical: 5.0,
+      ),
+      decoration: BoxDecoration(
+        color: theme.primaryColorWithDark(),
+        borderRadius: BorderRadius.circular(5.0),
+      ),
+      child: _buildItems(theme),
+    );
+
+    Widget child = choices;
+    if (label != null && label.isNotEmpty) {
+      child = Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          LabelText(label: label, theme: theme),
+          SizedBox(width: 20),
+          choices,
+        ],
+      );
+    }
     return ListenableProvider<ValueNotifier<T>>(
       create: (_) => ValueNotifier<T>(defaultValue),
-      child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 16.0,
-          vertical: 15.0,
-        ),
-        decoration: BoxDecoration(
-          color: theme.primaryColorWithDark(),
-          borderRadius: BorderRadius.circular(5.0),
-        ),
-        child: _buildItems(theme),
-      ),
+      child: child,
     );
   }
 }
