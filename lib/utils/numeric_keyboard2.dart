@@ -64,7 +64,7 @@ class NumericKeyboard2 extends StatelessWidget {
     if (decimalAllowed) {
       valueStr = DataFormatter.chipsFormat(value);
     } else {
-      valueStr = value.floor().toString();
+      valueStr = DataFormatter.chipsFormat(value).toString();
     }
 
     return Container(
@@ -149,7 +149,7 @@ class NumericKeyboard2 extends StatelessWidget {
     return Text(
       title,
       style: TextStyle(
-        fontSize: 16.dp,
+        fontSize: 14.dp,
         color: Colors.white,
       ),
     );

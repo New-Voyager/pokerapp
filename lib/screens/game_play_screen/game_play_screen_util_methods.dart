@@ -597,6 +597,11 @@ class GamePlayScreenUtilMethods {
       gameInfo.gameCode,
       value,
     );
+    if (resp == null) {
+      String message = 'Buyin Failed. Retry again!';
+      showErrorDialog(context, 'Buyin', message);
+      return;
+    }
     if (!resp.approved) {
       if (resp.insufficientCredits) {
         String message =

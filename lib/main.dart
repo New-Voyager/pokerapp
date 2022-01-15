@@ -17,7 +17,6 @@ import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/services/app_service.dart';
 import 'package:pokerapp/services/connectivity_check/network_change_listener.dart';
 import 'package:pokerapp/services/nats/nats.dart';
-import 'package:pokerapp/utils/utils.dart';
 import 'package:provider/provider.dart';
 import 'main_helper.dart';
 import 'models/ui/app_text.dart';
@@ -31,8 +30,8 @@ AppState appState = AppState();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  //appState.currentFlavor = Flavor.DEV;
-  appState.currentFlavor = Flavor.PROD;
+  appState.currentFlavor = Flavor.DEV;
+  //appState.currentFlavor = Flavor.PROD;
 
   // Register all the models and services before the app starts
   if (Platform.isAndroid) {

@@ -126,11 +126,11 @@ class _CommunicationViewState extends State<CommunicationView> {
                   children.addAll(joinAudioConferenceWidget());
                 }
 
-                if (!gameState.customizationMode &&
-                    gameState.currentPlayer.isAdmin()) {
-                  children.add(PendingApprovalsButton(
-                      theme, gameState, gameContextObj, mounted));
-                }
+                // if (!gameState.customizationMode &&
+                //     gameState.currentPlayer.isAdmin()) {
+                //   children.add(PendingApprovalsButton(
+                //       theme, gameState, gameContextObj, mounted));
+                // }
                 children.add(SizedBox(height: boardAttributes.timerGap));
                 children.add(Consumer<ActionState>(builder: (_, __, ___) {
                   // show time widget if the player is acting

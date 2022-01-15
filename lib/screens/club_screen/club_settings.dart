@@ -19,11 +19,11 @@ import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/buttons.dart';
-import 'package:pokerapp/widgets/card_form_text_field.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/widgets/switch_widget.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:pokerapp/widgets/textfields.dart';
 
 class ClubSettingsScreen extends StatefulWidget {
   final ClubHomePageModel clubModel;

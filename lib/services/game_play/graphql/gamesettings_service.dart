@@ -110,6 +110,29 @@ query mySettings(\$gameCode:String!){
     return false;
   }
 
+  static Future<bool> updateResultPauseTime(
+      String gameCode, int resultPauseTime) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    Map<String, dynamic> variables = {
+      "gameCode": gameCode,
+      "inputSettings": {
+        "resultPauseTime": resultPauseTime,
+      }
+    };
+    QueryResult result = await _client.query(QueryOptions(
+        document: gql(updateGameSettingsQuery), variables: variables));
+
+    if (result.hasException) {
+      log("Exception : ${result.exception.toString()}");
+      return false;
+    }
+
+    if (result.data['ret'] ?? true) {
+      return true;
+    }
+    return false;
+  }
+
   static Future<bool> updateBombPot(String gameCode,
       {GameType gameType,
       bool enableBombPot,

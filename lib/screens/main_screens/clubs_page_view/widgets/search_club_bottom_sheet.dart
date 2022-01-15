@@ -6,7 +6,7 @@ import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/widgets/buttons.dart';
-import 'package:pokerapp/widgets/card_form_text_field.dart';
+import 'package:pokerapp/widgets/textfields.dart';
 import 'package:provider/provider.dart';
 import '../../../../services/app/club_interior_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';

@@ -9,6 +9,7 @@ class ClubModel {
   bool isPrivate;
   bool isOwner;
   String hostName;
+  bool isManager = false;
   String joinDate;
   bool isActive;
   bool hasJoined;
@@ -52,6 +53,9 @@ class ClubModel {
     this.isPrivate = jsonData['private'];
     this.isOwner = jsonData['isOwner'];
     this.memberStatus = jsonData['memberStatus'];
+    if (jsonData['isManager'] != null) {
+      this.isManager = jsonData['isManager'];
+    }
     this.hostName = jsonData['host'];
     if (jsonData['balance'] != null) {
       jsonData['balance'] = double.parse(jsonData['balance'].toString());

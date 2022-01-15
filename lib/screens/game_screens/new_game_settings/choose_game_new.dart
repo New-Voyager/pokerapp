@@ -14,11 +14,9 @@ import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/screens/game_screens/new_game_settings/new_game_settings2.dart';
 import 'package:pokerapp/screens/game_screens/widgets/game_type_item.dart';
-import 'package:pokerapp/services/data/box_type.dart';
-import 'package:pokerapp/services/data/hive_datasource_impl.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/widgets/buttons.dart';
-import 'package:pokerapp/widgets/heading_widget.dart';
+import 'package:pokerapp/widgets/texts.dart';
 import 'package:provider/provider.dart';
 
 import '../../../routes.dart';

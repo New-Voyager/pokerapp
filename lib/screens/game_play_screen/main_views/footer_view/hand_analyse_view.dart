@@ -476,7 +476,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
         child: showMenu
             ? child
             : CircleImageButton(
-                icon: Icons.menu,
+                icon: Icons.more_vert,
                 onTap: () => vnShowMenuItems.value = true,
                 theme: theme,
               ),

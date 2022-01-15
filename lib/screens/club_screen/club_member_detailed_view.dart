@@ -20,9 +20,8 @@ import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/widgets/buttons.dart';
-import 'package:pokerapp/widgets/card_form_text_field.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
-import 'package:pokerapp/widgets/switch_widget.dart';
+import 'package:pokerapp/widgets/textfields.dart';
 import 'package:provider/provider.dart';
 
 class ClubMembersDetailsView extends StatefulWidget {

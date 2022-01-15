@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/seat_change_model.dart';
@@ -8,10 +7,9 @@ import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
-import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
-import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/game_play/graphql/seat_change_service.dart';
-import 'package:pokerapp/widgets/switch_widget.dart';
+import 'package:pokerapp/widgets/buttons.dart';
+import 'package:pokerapp/widgets/switch.dart';
 import 'package:provider/provider.dart';
 
 class SeatChangeBottomSheet extends StatefulWidget {
@@ -73,15 +71,18 @@ class _SeatChangeBottomSheetState extends State<SeatChangeBottomSheet> {
         decoration: AppDecorators.bgRadialGradient(theme),
         height: height / 2,
         child: Scaffold(
-          // backgroundColor: Colors.transparent,
-          // appBar: CustomAppBar(
-          //   theme: theme,
-          //   context: context,
-          //   titleText: _appScreenText['seatChange'],
-          // ),
+          backgroundColor: Colors.transparent,
           body: Column(
             mainAxisSize: MainAxisSize.max,
             children: [
+              Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                CircleImageButton(
+                    icon: Icons.close,
+                    onTap: () {
+                      Navigator.of(context).pop();
+                    },
+                    theme: theme)
+              ]),
               isPlaying ? seatChangeButton(theme) : Container(),
               playersInList(theme)
             ],
@@ -100,9 +101,9 @@ class _SeatChangeBottomSheetState extends State<SeatChangeBottomSheet> {
         children: [
           Text(
             _appScreenText['playersInTheList'],
-            style: AppDecorators.getSubtitle3Style(theme: theme),
+            style: AppDecorators.getHeadLine4Style(theme: theme),
           ),
-          AppDimensionsNew.getVerticalSizedBox(10),
+          AppDimensionsNew.getVerticalSizedBox(5),
           Expanded(
             child: Container(
               decoration: AppDecorators.tileDecorationWithoutBorder(theme),
@@ -116,7 +117,7 @@ class _SeatChangeBottomSheetState extends State<SeatChangeBottomSheet> {
                     )
                   : Center(
                       child: Text(
-                        _appScreenText['noSeatChangeRequests'],
+                        'No requests',
                         style: AppDecorators.getSubtitle1Style(theme: theme),
                       ),
                     ),
@@ -152,7 +153,7 @@ class _SeatChangeBottomSheetState extends State<SeatChangeBottomSheet> {
       margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
       decoration: AppDecorators.tileDecorationWithoutBorder(theme),
-      child: SwitchWidget(
+      child: SwitchWidget2(
         label: _appScreenText['seatChange'],
         value: isSeatChange,
         onChange: (bool value) async {
@@ -172,37 +173,4 @@ class _SeatChangeBottomSheetState extends State<SeatChangeBottomSheet> {
       ),
     );
   }
-
-  // get header => Container(
-  //       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-  //       child: Stack(
-  //         children: [
-  //           Center(
-  //             child: GestureDetector(
-  //               onTap: () => Navigator.pop(context),
-  //               child: Row(
-  //                 children: [
-  //                   Icon(
-  //                     Icons.arrow_back_ios,
-  //                     color: AppColorsNew.appAccentColor,
-  //                     size: 20,
-  //                   ),
-  //                   Text(
-  //                     "Game",
-  //                     style: AppStylesNew.optionTitle,
-  //                   )
-  //                 ],
-  //               ),
-  //             ),
-  //           ),
-  //           Align(
-  //             alignment: Alignment.center,
-  //             child: Text(
-  //               "Seat Change",
-  //               style: AppStylesNew.optionTitleText,
-  //             ),
-  //           )
-  //         ],
-  //       ),
-  //     );
 }

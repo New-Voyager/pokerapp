@@ -8,8 +8,8 @@ import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
-import 'package:pokerapp/widgets/card_form_text_field.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
+import 'package:pokerapp/widgets/textfields.dart';
 
 class CreateClubDialog {
   static Future<String> prompt({

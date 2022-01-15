@@ -5,7 +5,7 @@ import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/widgets/buttons.dart';
-import 'package:pokerapp/widgets/card_form_text_field.dart';
+import 'package:pokerapp/widgets/textfields.dart';
 
 class HandHistoryFilterWidget extends StatefulWidget {
   final List<Winner> winners;

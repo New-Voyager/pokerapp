@@ -24,6 +24,7 @@ class TextInputWidget extends StatelessWidget {
   final double maxValue;
 
   TextInputWidget({
+    Key key,
     this.value,
     this.label,
     this.leading,
@@ -36,7 +37,7 @@ class TextInputWidget extends StatelessWidget {
     @required this.minValue,
     @required this.maxValue,
     @required this.onChange,
-  });
+  }) : super(key: key);
 
   Widget _buildLabelAndSep(AppTheme theme) => label == null
       ? kEmpty
@@ -48,7 +49,7 @@ class TextInputWidget extends StatelessWidget {
               label,
               style: TextStyle(
                 color: theme.supportingColor,
-                fontSize: 15.0,
+                fontSize: 12.0,
                 fontWeight: small ? FontWeight.w300 : labelFontWeight,
               ),
             ),
@@ -65,13 +66,13 @@ class TextInputWidget extends StatelessWidget {
 
   Widget _buildInputArea(AppTheme theme) {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 10.0),
+      margin: const EdgeInsets.symmetric(vertical: 5.0),
       padding: const EdgeInsets.only(bottom: 2.0),
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(
             width: 1.0,
-            color: theme.fillInColor,
+            color: theme.accentColor,
           ),
         ),
       ),
