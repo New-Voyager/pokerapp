@@ -806,5 +806,29 @@
     "notifications": {
         "newClubMember": "{playerName} is requesting for club membership {clubCode}",
         "newGame": "A new game is hosted by club {clubName}"
+    },
+    "drawerMenu": {
+        "gameCode": "Game Code",
+        "standup": "Standup",
+        "break": "Break",
+        "reload": "Reload",
+        "approvals": "Approvals",
+        "pause": "Pause",
+        "terminate": "Terminate",
+        "showDown": "Show Down",
+        "fast": "Fast",
+        "normal": "Normal",
+        "slow": "Slow",
+        "queue": "Queue",
+        "seatChange": "Seat Change",
+        "autoButtonStraddle": "Auto Button Straddle",
+        "autoUTGStraddle": "Auto UTG Straddle",
+        "runItTwice": "Run It Twice",
+        "checkFold": "Check/Fold",
+        "colorCards": "Color Cards",
+        "rearrangeOption": "Rearrange Option",
+        "animations": "Animations",
+        "vibration": "Vibration",
+        "chat": "Chat"
     }
 }

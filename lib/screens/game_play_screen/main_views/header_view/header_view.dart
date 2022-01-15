@@ -1,12 +1,16 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
+import 'package:pokerapp/models/pending_approvals.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/screens/game_context_screen/game_options/game_option_bottom_sheet.dart';
+import 'package:pokerapp/screens/game_play_screen/widgets/icon_with_badge.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/screens/main_screens/purchase_page_view/coin_update.dart';
 import 'package:pokerapp/utils/formatter.dart';
@@ -15,10 +19,12 @@ import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class HeaderView extends StatelessWidget {
   final GameState gameState;
+  final GlobalKey<ScaffoldState> scaffoldKey;
   AppTextScreen _appScreenText;
 
   HeaderView({
     @required this.gameState,
+    this.scaffoldKey,
   });
 
   String _getTitleText(HandInfoState his) {
@@ -82,61 +88,59 @@ class HeaderView extends StatelessWidget {
       // show backdrop options
       return;
     }
-    final gameContextObj = context.read<GameContextObject>();
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(32),
-          topRight: Radius.circular(32),
-        ),
-      ),
-      builder: (_) => ListenableProvider.value(
-        value: context.read<GameContextObject>(),
-        child: GameOptionsBottomSheet(
-            gameContextObj: gameContextObj,
-            gameState: GameState.getState(context)),
-      ),
-    );
+    // Open drawer with game options with scaffoldkey
+    if (scaffoldKey != null) {
+      if (scaffoldKey.currentState.isEndDrawerOpen) {
+        scaffoldKey.currentState.openDrawer();
+      } else {
+        scaffoldKey.currentState.openEndDrawer();
+      }
+    }
   }
 
   Widget _buildGameMenuNavButton(BuildContext context, AppTheme theme) {
-    IconData iconData = Icons.settings;
+    IconData iconData = Icons.menu;
     final gameState = GameState.getState(context);
     if (gameState.customizationMode) {
       iconData = Icons.edit_rounded;
     }
 
     return Transform.scale(
-      scale: 1.2,
-      child: Container(
-        alignment: Alignment.centerLeft,
-        padding: EdgeInsets.only(left: 16.pw),
-        child: InkWell(
-            child: Container(
-              width: 32.pw,
-              height: 32.pw,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: theme.secondaryColor,
-                  width: 2,
-                ),
-              ),
-              // padding: EdgeInsets.all(5),
-              child: Icon(
-                iconData,
-                color: theme.secondaryColor,
-              ),
-            ),
-            borderRadius: BorderRadius.circular(32.pw),
-            onTap: () {
-              _onGameMenuNavButtonPress(context);
-            }),
-      ),
-    );
+        scale: 1.2,
+        child:
+            Consumer<PendingApprovalsState>(builder: (context, value, child) {
+          log('PendingApprovalsState: rebuild approvals.length: ${value.approvalList.length}');
+          return IconWithBadge(
+              count: value.approvalList.length,
+              child: Container(
+                alignment: Alignment.centerLeft,
+                padding: EdgeInsets.only(left: 16.pw),
+                child: InkWell(
+                    child: Container(
+                      width: 24.pw,
+                      height: 24.pw,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: theme.secondaryColor,
+                          width: 2,
+                        ),
+                      ),
+                      // padding: EdgeInsets.all(5),
+                      child: Center(
+                          child: Icon(
+                        iconData,
+                        color: theme.secondaryColor,
+                        size: 18,
+                      )),
+                    ),
+
+                    ///borderRadius: BorderRadius.circular(32.pw),
+                    onTap: () {
+                      _onGameMenuNavButtonPress(context);
+                    }),
+              ));
+        }));
 
     // return Align(
     //   alignment: Alignment.centerRight,
