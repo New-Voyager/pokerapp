@@ -35,6 +35,35 @@ class DecoratedContainer extends StatelessWidget {
   }
 }
 
+class DecoratedContainer2 extends StatelessWidget {
+  final Widget child;
+  final List<Widget> children;
+  final AppTheme theme;
+
+  DecoratedContainer2({this.child, this.children, this.theme});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      // padding: const EdgeInsets.symmetric(
+      //   horizontal: 5.0,
+      //   vertical: 5.0,
+      // ),
+      decoration: BoxDecoration(
+        color: theme.fillInColor,
+        borderRadius: BorderRadius.circular(5.0),
+      ),
+      child: children != null
+          ? Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisSize: MainAxisSize.min,
+              children: children,
+            )
+          : child,
+    );
+  }
+}
+
 class AppLabel extends StatelessWidget {
   final String label;
   final AppTheme theme;

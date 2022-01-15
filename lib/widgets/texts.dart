@@ -96,3 +96,22 @@ class HeadingWidget extends StatelessWidget {
     );
   }
 }
+
+class LabelText extends StatelessWidget {
+  final String label;
+  final AppTheme theme;
+  final double padding;
+
+  LabelText({@required this.label, @required this.theme, this.padding = 5.0});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: padding),
+      child: Text(
+        label,
+        style: AppDecorators.getHeadLine5Style(theme: theme),
+      ),
+    );
+  }
+}
