@@ -3,7 +3,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/screens/game_context_screen/game_options/game_option/seat_change_bottom_sheet.dart';
 import 'package:pokerapp/screens/game_context_screen/game_options/game_option/waiting_list.dart';
-import 'package:pokerapp/widgets/drawer/widgets.dart';
+import 'package:pokerapp/widgets/list_tile.dart';
 
 class Actions4Widget extends StatelessWidget {
   final AppTextScreen text;

@@ -9,7 +9,7 @@ import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/services/game_play/graphql/seat_change_service.dart';
 import 'package:pokerapp/widgets/buttons.dart';
-import 'package:pokerapp/widgets/drawer/widgets.dart';
+import 'package:pokerapp/widgets/switch.dart';
 import 'package:provider/provider.dart';
 
 class SeatChangeBottomSheet extends StatefulWidget {

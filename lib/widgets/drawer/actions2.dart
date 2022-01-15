@@ -5,7 +5,7 @@ import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/screens/game_context_screen/game_options/game_option/pending_approvals.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
-import 'package:pokerapp/widgets/drawer/widgets.dart';
+import 'package:pokerapp/widgets/list_tile.dart';
 import 'package:provider/provider.dart';
 
 class Actions2Widget extends StatelessWidget {

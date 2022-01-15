@@ -12,7 +12,7 @@ import 'package:pokerapp/services/app/clubs_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/widgets/buttons.dart';
-import 'package:pokerapp/widgets/card_form_text_field.dart';
+import 'package:pokerapp/widgets/textfields.dart';
 import 'package:provider/provider.dart';
 
 class AnnouncementsView extends StatefulWidget {

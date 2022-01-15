@@ -5,8 +5,8 @@ import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/services/game_play/graphql/gamesettings_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
-import 'package:pokerapp/widgets/drawer/widgets.dart';
 import 'package:pokerapp/widgets/radio_list_widget.dart';
+import 'package:pokerapp/widgets/texts.dart';
 
 class Actions3Widget extends StatelessWidget {
   final AppTextScreen text;
