@@ -14,7 +14,8 @@ import 'package:pokerapp/screens/game_context_screen/game_chat/keyboard_visibili
 
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/services/text_filtering/text_filtering.dart';
-import 'package:pokerapp/utils/gif_widget.dart';
+import 'package:pokerapp/utils/favourite_texts_widget.dart';
+import 'package:pokerapp/utils/new_gif_widget.dart';
 import 'package:pokerapp/widgets/attributed_gif_widget.dart';
 import 'package:pokerapp/widgets/emoji_picker_widget.dart';
 import 'package:provider/provider.dart';
@@ -41,6 +42,7 @@ class _GameChatState extends State<GameChat> {
   ScrollController get _scrollController => widget.scrollController;
 
   final ValueNotifier<bool> _vnShowEmojiPicker = ValueNotifier(false);
+  final ValueNotifier<bool> _vnShowFavouriteMessages = ValueNotifier(false);
   final _textEditingController = TextEditingController();
   AppTextScreen _appScreenText;
   bool expanded = false;
@@ -74,6 +76,8 @@ class _GameChatState extends State<GameChat> {
     // open emoji picker
     _vnShowEmojiPicker.value = !_vnShowEmojiPicker.value;
 
+    _vnShowFavouriteMessages.value = false;
+
     // close keyboard
     if (_vnShowEmojiPicker.value) {
       FocusScope.of(context).unfocus();
@@ -96,13 +100,21 @@ class _GameChatState extends State<GameChat> {
     await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      builder: (_) => GifWidget(
-        showPresets: true,
+      builder: (_) => NewGifWidget(
         gifSuggestions: AppConstants.GIF_CATEGORIES,
-        onPresetTextSelect: (String pText) => chatService.sendText(pText),
         onGifSelect: (String gifUrl) => chatService.sendGiphy(gifUrl),
       ),
     );
+  }
+
+  void _onMessagesClick() async {
+    _vnShowFavouriteMessages.value = !_vnShowFavouriteMessages.value;
+    _vnShowEmojiPicker.value = false;
+
+    // close keyboard
+    if (_vnShowEmojiPicker.value) {
+      FocusScope.of(context).unfocus();
+    }
   }
 
   void _onSendClick() {
@@ -291,6 +303,9 @@ class _GameChatState extends State<GameChat> {
                   _vnShowEmojiPicker.value = false;
                 },
                 controller: _textEditingController,
+                onChanged: (value) {
+                  setState(() {});
+                },
                 style: AppDecorators.getSubtitle2Style(theme: theme),
                 textAlign: TextAlign.start,
                 textAlignVertical: TextAlignVertical.center,
@@ -330,6 +345,15 @@ class _GameChatState extends State<GameChat> {
               color: theme.accentColor,
             ),
           ),
+          SizedBox(width: 10.pw),
+          GestureDetector(
+            onTap: _onMessagesClick,
+            child: Icon(
+              Icons.list,
+              size: 25,
+              color: theme.accentColor,
+            ),
+          ),
 
           /* main text field */
           Expanded(
@@ -337,14 +361,22 @@ class _GameChatState extends State<GameChat> {
           ),
 
           /* send button */
-          GestureDetector(
-            onTap: _onSendClick,
-            child: Icon(
-              Icons.send_outlined,
-              color: theme.accentColor,
-              size: 25,
-            ),
-          ),
+          (_textEditingController.text.length != 0)
+              ? GestureDetector(
+                  onTap: _onSendClick,
+                  child: Icon(
+                    Icons.send_outlined,
+                    color: theme.accentColor,
+                    size: 25,
+                  ),
+                )
+              : GestureDetector(
+                  child: Icon(
+                    Icons.mic,
+                    color: theme.accentColor,
+                    size: 25,
+                  ),
+                ),
         ],
       ),
     );
@@ -453,6 +485,16 @@ class _GameChatState extends State<GameChat> {
                   onEmojiSelected: (String emoji) {
                     _textEditingController.text += emoji;
                   },
+                )
+              : const SizedBox.shrink(),
+        ),
+        /* emoji picker widget */
+        ValueListenableBuilder<bool>(
+          valueListenable: _vnShowFavouriteMessages,
+          builder: (_, bool showFavouriteMessages, __) => showFavouriteMessages
+              ? FavouriteTextWidget(
+                  onPresetTextSelect: (String pText) =>
+                      chatService.sendText(pText),
                 )
               : const SizedBox.shrink(),
         ),
