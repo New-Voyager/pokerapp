@@ -10,7 +10,7 @@ import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/numeric_keyboard2.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
-import 'package:pokerapp/widgets/drawer/widgets.dart';
+import 'package:pokerapp/widgets/list_tile.dart';
 
 class Actions1Widget extends StatelessWidget {
   final AppTextScreen text;

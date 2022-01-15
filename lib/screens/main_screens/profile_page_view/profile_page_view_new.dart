@@ -24,9 +24,9 @@ import 'package:pokerapp/services/data/hive_models/player_state.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/widgets/buttons.dart';
-import 'package:pokerapp/widgets/card_form_text_field.dart';
 import 'package:pokerapp/widgets/custom_divider.dart';
-import 'package:pokerapp/widgets/heading_widget.dart';
+import 'package:pokerapp/widgets/textfields.dart';
+import 'package:pokerapp/widgets/texts.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 

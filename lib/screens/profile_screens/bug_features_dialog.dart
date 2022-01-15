@@ -7,7 +7,7 @@ import 'package:pokerapp/services/app/help_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/widgets/buttons.dart';
-import 'package:pokerapp/widgets/card_form_text_field.dart';
+import 'package:pokerapp/widgets/textfields.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class BugsFeaturesWidget extends StatefulWidget {

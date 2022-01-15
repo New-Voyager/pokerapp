@@ -3,8 +3,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/services/game_play/graphql/gamesettings_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
-import 'package:pokerapp/widgets/drawer/widgets.dart';
-import 'package:pokerapp/widgets/switch_widget.dart';
+import 'package:pokerapp/widgets/switch.dart';
 
 class Actions5Widget extends StatefulWidget {
   final GameState gameState;

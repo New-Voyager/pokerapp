@@ -25,7 +25,7 @@ import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/widgets/appname_logo.dart';
 import 'package:pokerapp/widgets/buttons.dart';
-import 'package:pokerapp/widgets/card_form_text_field.dart';
+import 'package:pokerapp/widgets/textfields.dart';
 import 'package:uuid/uuid.dart';
 
 class RegistrationScreenNew extends StatefulWidget {
