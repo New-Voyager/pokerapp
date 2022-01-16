@@ -368,7 +368,9 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
                     builder: (_, child) => Transform.translate(
                       offset: animation.value,
                       child: Transform.scale(
-                          scale: boardAttributes.lottieScale, child: child),
+                        scale: boardAttributes.lottieScale,
+                        child: child,
+                      ),
                     ),
                   )
                 : SizedBox.shrink(),
@@ -380,11 +382,12 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
                       height: _lottieAnimationContainerSize,
                       width: _lottieAnimationContainerSize,
                       child: Transform.scale(
-                          scale: boardAttributes.lottieScale,
-                          child: Lottie.asset(
-                            'assets/animations/$animationAssetID.json',
-                            controller: _lottieController,
-                          )),
+                        scale: boardAttributes.lottieScale,
+                        child: Lottie.asset(
+                          'assets/animations/$animationAssetID.json',
+                          controller: _lottieController,
+                        ),
+                      ),
                     ),
                   )
                 : SizedBox.shrink(),
@@ -393,18 +396,11 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
                 ? Positioned(
                     left: seatChangeAnimation.value.dx,
                     top: seatChangeAnimation.value.dy,
-                    child: Consumer<BoardAttributesObject>(
-                        builder: (_, boardAttributes, __) {
-                      final seat = widget.gameState.getSeat(seatChangerPlayer);
-                      String playerName = seat.player?.name;
-                      int playerSeat = seat.player?.seatNo;
-                      // log('SeatChange: data: Animation seat: ${seat.serverSeatPos}, ${playerName}/$playerSeat');
-                      return NamePlateWidget(
-                        seat,
-                        globalKey: null,
-                        boardAttributes: boardAttributes,
-                      );
-                    }),
+                    child: NamePlateWidget(
+                      widget.gameState.getSeat(seatChangerPlayer),
+                      globalKey: null,
+                      boardAttributes: boardAttributes,
+                    ),
                   )
                 : SizedBox.shrink(),
 

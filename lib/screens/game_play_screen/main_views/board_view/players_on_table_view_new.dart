@@ -1,14 +1,31 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:lottie/lottie.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
+import 'package:pokerapp/resources/app_constants.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/board_view/player_chat_bubble.dart';
+import 'package:pokerapp/screens/game_play_screen/seat_view/name_plate_view.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/player_view.dart';
+import 'package:pokerapp/services/audio/audio_service.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
+import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:provider/provider.dart';
 
-class PlayersOnTableViewNew extends StatelessWidget {
+const double _lottieAnimationContainerSize = 120.0;
+const double _animatingAssetContainerSize = 40.0;
+
+// const Duration _durationWaitBeforeExplosion = const Duration(milliseconds: 10);
+const Duration _lottieAnimationDuration = const Duration(milliseconds: 5000);
+const Duration _animatingWidgetDuration = const Duration(milliseconds: 1000);
+
+class PlayersOnTableViewNew extends StatefulWidget {
   final Size tableSize;
   final Function(Seat seat) onUserTap;
   final GameComService gameComService;
@@ -25,36 +42,73 @@ class PlayersOnTableViewNew extends StatelessWidget {
     this.isLargerScreen = false,
   });
 
+  @override
+  State<PlayersOnTableViewNew> createState() => _PlayersOnTableViewNewState();
+}
+
+class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
+    with TickerProviderStateMixin {
+  BoardAttributesObject _boardAttributes;
+
+  // for animation
+  Animation<Offset> _animation;
+  AnimationController _animationController;
+
+  //seat change animation controller
+  Animation<Offset> _seatChangeAnimation;
+  AnimationController _seatChangeAnimationController;
+
+  // find positions of parent widget
+  GlobalKey _parentKey = GlobalKey();
+
+  // sender to receiver
+  bool isAnimating = false;
+  bool isSeatChanging = false;
+  AnimationController _lottieController;
+  bool _isLottieAnimating = false;
+  Offset _lottieAnimationPosition;
+  int index;
+
+  Offset seatChangeFrom, seatChangeTo;
+  SeatChangeNotifier hostSeatChange;
+  int seatChangerPlayer;
+  int seatChangeToo;
+
+  String animationAssetID;
+  List<PlayerChatBubble> chatBubbles = [];
+
+  // getters
+  GameState get _gameState => widget.gameState;
+
   PlayerModel _findPlayerAtSeat(int seatNo) {
-    for (final player in gameState.playersInGame)
+    for (final player in _gameState.playersInGame)
       if (player.seatNo == seatNo) return player;
 
     return null;
   }
 
   List<Widget> _getPlayers(BuildContext context) {
-    final gameState = context.read<GameState>();
     final boa = context.read<BoardAttributesObject>();
     final gco = context.read<GameContextObject>();
 
     final List<Widget> players = [];
 
-    for (int seatNo = 1; seatNo <= maxPlayers; seatNo++) {
-      final seat = gameState.seatPlayer(seatNo, _findPlayerAtSeat(seatNo));
+    for (int seatNo = 1; seatNo <= widget.maxPlayers; seatNo++) {
+      final seat = _gameState.seatPlayer(seatNo, _findPlayerAtSeat(seatNo));
       seat.serverSeatPos = seatNo;
 
       final playerView = Transform.scale(
-        scale: isLargerScreen ? 1.3 : 1.0,
+        scale: widget.isLargerScreen ? 1.3 : 1.0,
         child: ListenableProvider<Seat>(
           create: (_) => seat,
           builder: (_, __) => Consumer<Seat>(builder: (_, __, ___) {
             return PlayerView(
               seat: seat,
-              onUserTap: onUserTap,
-              gameComService: gameComService,
+              onUserTap: widget.onUserTap,
+              gameComService: widget.gameComService,
               boardAttributes: boa,
               gameContextObject: gco,
-              gameState: gameState,
+              gameState: _gameState,
             );
           }),
         ),
@@ -72,31 +126,337 @@ class PlayersOnTableViewNew extends StatelessWidget {
     // Otherwise, do not change the factor of the tableSize
 
     // in case of larger screens - let the multichild layout be placed extra 1.10 factor
-    if (isLargerScreen)
+    if (widget.isLargerScreen)
       return Size(
-        tableSize.width * 1.10,
-        tableSize.height * 1.25,
+        widget.tableSize.width * 1.10,
+        widget.tableSize.height * 1.25,
       );
 
     // TODO: DO WE NEED A CASE FOR SMALLER SCREEN DEVICES?
 
     // normal case
-    return Size(tableSize.width, tableSize.height * 1.70);
+    return Size(widget.tableSize.width, widget.tableSize.height * 1.70);
+  }
+
+  void _animationHandlers() {
+    _lottieController = AnimationController(
+      vsync: this,
+      duration: _lottieAnimationDuration,
+    );
+
+    _animationController = AnimationController(
+      vsync: this,
+      duration: _animatingWidgetDuration,
+    );
+
+    _lottieController.addListener(() {
+      /* after the lottie animation is completed reset everything */
+      if (_lottieController.isCompleted) {
+        setState(() {
+          _isLottieAnimating = false;
+        });
+
+        _lottieController.reset();
+      }
+    });
+
+    _animationController.addListener(() async {
+      if (_animationController.isCompleted) {
+        /* wait before the explosion */
+        // await Future.delayed(_durationWaitBeforeExplosion);
+
+        isAnimating = false;
+        _animationController.reset();
+
+        /* finally drive the lottie animation */
+        // play the audio
+        AudioService.playAnimationSound(animationAssetID);
+
+        setState(() {
+          _isLottieAnimating = true;
+        });
+        _lottieController.forward();
+      }
+    });
+  }
+
+  void _onAnimation(ChatMessage message) async {
+    Offset from;
+    Offset to;
+
+    if (message.fromSeat == null || message.toSeat == null) {
+      return;
+    }
+
+    if (!_gameState.playerLocalConfig.animations) {
+      // animation is disabled
+      return;
+    }
+    /*
+    * find position of to and from user
+    **/
+    final positions = findPositionOfFromAndToUser(
+      fromSeat: message.fromSeat,
+      toSeat: message.toSeat,
+    );
+
+    final Size playerWidgetSize = getPlayerWidgetSize(message.toSeat);
+
+    from = positions[0];
+    to = positions[1];
+
+    /* get the middle point for the animated to player */
+    final Offset toMod = Offset(
+      to.dx + (playerWidgetSize.width / 2) - _animatingAssetContainerSize / 2,
+      to.dy + (playerWidgetSize.height / 2) - _animatingAssetContainerSize / 2,
+    );
+
+    _animation = Tween<Offset>(
+      begin: from,
+      end: toMod,
+    ).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: Curves.easeOut,
+      ),
+    );
+
+    // set the lottie animation position
+    _lottieAnimationPosition = Offset(
+      to.dx + (playerWidgetSize.width / 2) - _lottieAnimationContainerSize / 2,
+      to.dy + (playerWidgetSize.height / 2) - _lottieAnimationContainerSize / 2,
+    );
+
+    setState(() {
+      animationAssetID = message.animationID;
+      isAnimating = true;
+    });
+
+    _animationController.forward();
+  }
+
+  Offset getPositionOffsetFromKey(GlobalKey key) {
+    if (key?.currentContext == null) return null;
+
+    final RenderBox renderBox = key.currentContext.findRenderObject();
+    return renderBox.localToGlobal(Offset.zero);
+  }
+
+  Size getPlayerWidgetSize(int seatNo) {
+    final seat = _gameState.getSeat(seatNo);
+    final RenderBox renderBox = seat.key.currentContext.findRenderObject();
+
+    return renderBox.size;
+  }
+
+  /**
+   * Returns screen position of a nameplate within the parent
+   */
+  Offset findPositionOfUser({@required int seatNo}) {
+    /* if available in cache, get from there */
+    final seat = _gameState.getSeat(seatNo);
+    if (seat == null) {
+      return Offset(0, 0);
+    }
+    if (seat.parentRelativePos != null) {
+      return seat.parentRelativePos;
+    }
+
+    final relativeSeatPos = getPositionOffsetFromKey(seat?.key);
+    if (relativeSeatPos == null) return null;
+
+    final RenderBox parentBox =
+        this._parentKey.currentContext.findRenderObject();
+    final Offset seatPos = parentBox.globalToLocal(relativeSeatPos);
+
+    /* we have the seatPos now, put in the cache */
+    seat.parentRelativePos = seatPos;
+    return seatPos;
+  }
+
+  List<Offset> findPositionOfFromAndToUser({
+    int fromSeat,
+    int toSeat,
+  }) {
+    return [
+      findPositionOfUser(seatNo: fromSeat),
+      findPositionOfUser(seatNo: toSeat),
+    ];
+  }
+
+  void _seatChangeAnimationHandler() {
+    final SeatChangeNotifier hostSeatChange = Provider.of<SeatChangeNotifier>(
+      context,
+      listen: false,
+    );
+
+    /* initialize the animation controller */
+    _seatChangeAnimationController = AnimationController(
+      vsync: this,
+      duration: AppConstants.seatChangeAnimationDuration,
+    );
+
+    /* TODO: CAN BE MADE EFFICIENT USING ANIMATION BUILDER */
+    /* refresh, when the animation plays */
+    _seatChangeAnimationController.addListener(() => setState(() {
+          if (_seatChangeAnimationController.isCompleted)
+            isSeatChanging = false;
+        }));
+
+    /* listen for changes in the host seat change model, to trigger seat change animation */
+    hostSeatChange.addListener(() {
+      final int fromSeatNo = hostSeatChange.fromSeatNo;
+      final int toSeatNo = hostSeatChange.toSeatNo;
+
+      if (fromSeatNo == null || toSeatNo == null) return;
+      if (fromSeatNo == 0 || toSeatNo == 0) return;
+
+      final positions = findPositionOfFromAndToUser(
+        fromSeat: fromSeatNo,
+        toSeat: toSeatNo,
+      );
+
+      seatChangerPlayer = hostSeatChange.fromSeatNo;
+      seatChangeToo = hostSeatChange.toSeatNo;
+
+      seatChangeFrom = positions[0];
+      seatChangeTo = positions[1];
+      if (seatChangeFrom == null || seatChangeTo == null) {
+        return;
+      }
+
+      _seatChangeAnimationController.reset();
+
+      _seatChangeAnimation = Tween<Offset>(
+        begin: seatChangeFrom,
+        end: seatChangeTo,
+      ).animate(_seatChangeAnimationController);
+
+      _seatChangeAnimationController.forward();
+
+      isSeatChanging = true;
+    });
+  }
+
+  void _gameChatBubbleNotifier() {
+    log('ChatBubble: working on chat notification');
+    List<ChatMessage> messages =
+        _gameState.gameChatBubbleNotifyState.getMessages();
+    for (final message in messages) {
+      final seat = _gameState.getSeatByPlayer(message.fromPlayer);
+      if (seat != null) {
+        log('ChatBubble: seat ${message.fromPlayer} seat: ${seat.serverSeatPos} sent ${message.text}');
+        for (final chatBubble in chatBubbles) {
+          if (chatBubble.seatNo == seat.serverSeatPos) {
+            chatBubble.show(false);
+            Offset offset = findPositionOfUser(seatNo: seat.serverSeatPos);
+            if (offset != null) {
+              Offset loc = Offset(offset.dx + 20, offset.dy + 20);
+              chatBubble.show(true, offset: loc, message: message);
+            }
+          }
+        }
+      } else {
+        log('ChatBubble: seat ${message.fromPlayer} sent ${message.text}');
+      }
+    }
+  }
+
+  void _init() {
+    _boardAttributes = context.read<BoardAttributesObject>();
+
+    widget.gameComService?.gameMessaging?.listen(
+      onAnimation: _onAnimation,
+    );
+    _animationHandlers();
+    _seatChangeAnimationHandler();
+    _gameState.gameChatBubbleNotifyState.addListener(_gameChatBubbleNotifier);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _init();
+  }
+
+  @override
+  void dispose() {
+    _lottieController?.dispose();
+    _animationController?.dispose();
+    _seatChangeAnimationController?.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final ts = getPlayerOnTableSize();
     Provider.of<SeatsOnTableState>(context, listen: true);
-    return Container(
-      // color for debugging
-      // color: Colors.red.withOpacity(0.20),
-      width: ts.width,
-      height: ts.height,
-      child: CustomMultiChildLayout(
-        delegate: PlayerPlacementDelegate(),
-        children: _getPlayers(context),
-      ),
+    return Stack(
+      key: _parentKey,
+      children: [
+        // positioning players
+        Container(
+          // color for debugging
+          // color: Colors.red.withOpacity(0.20),
+          width: ts.width,
+          height: ts.height,
+          child: CustomMultiChildLayout(
+            delegate: PlayerPlacementDelegate(),
+            children: _getPlayers(context),
+          ),
+        ),
+
+        // lottie animation while moving
+        isAnimating && _animation != null
+            ? AnimatedBuilder(
+                child: Container(
+                  height: _animatingAssetContainerSize,
+                  width: _animatingAssetContainerSize,
+                  child: SvgPicture.asset(
+                    'assets/animations/$animationAssetID.svg',
+                  ),
+                ),
+                animation: _animation,
+                builder: (_, child) => Transform.translate(
+                  offset: _animation.value,
+                  child: Transform.scale(
+                    scale: _boardAttributes.lottieScale,
+                    child: child,
+                  ),
+                ),
+              )
+            : SizedBox.shrink(),
+
+        // lottie animation finally showing on top of player
+        _isLottieAnimating
+            ? Transform.translate(
+                offset: _lottieAnimationPosition,
+                child: Container(
+                  height: _lottieAnimationContainerSize,
+                  width: _lottieAnimationContainerSize,
+                  child: Transform.scale(
+                    scale: _boardAttributes.lottieScale,
+                    child: Lottie.asset(
+                      'assets/animations/$animationAssetID.json',
+                      controller: _lottieController,
+                    ),
+                  ),
+                ),
+              )
+            : const SizedBox.shrink(),
+
+        isSeatChanging
+            ? Positioned(
+                left: _seatChangeAnimation.value.dx,
+                top: _seatChangeAnimation.value.dy,
+                child: NamePlateWidget(
+                  widget.gameState.getSeat(seatChangerPlayer),
+                  globalKey: null,
+                  boardAttributes: _boardAttributes,
+                ),
+              )
+            : SizedBox.shrink(),
+      ],
     );
   }
 }
