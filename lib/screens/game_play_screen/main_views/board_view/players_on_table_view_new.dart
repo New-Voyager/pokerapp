@@ -433,6 +433,17 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
     );
   }
 
+  List<Widget> _getChatBubbles() {
+    final gameComService = _gameState.gameComService;
+    final maxPlayers = _gameState.gameInfo.maxPlayers;
+    for (int localSeat = 1; localSeat <= maxPlayers; localSeat++) {
+      final seat = widget.gameState.getSeat(localSeat);
+      chatBubbles.add(PlayerChatBubble(gameComService, seat));
+    }
+
+    return chatBubbles;
+  }
+
   @override
   Widget build(BuildContext context) {
     final ts = getPlayerOnTableSize();
@@ -481,6 +492,9 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
                 : const SizedBox.shrink();
           },
         ),
+
+        // chat bubbles - for every players
+        ..._getChatBubbles(),
       ],
     );
   }
