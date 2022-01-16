@@ -693,7 +693,7 @@ class GameState {
   bool get isTableFull {
     for (int i = 1; i <= _gameInfo.maxPlayers; i++) {
       final seat = getSeat(i);
-      if (seat.player == null) {
+      if (seat?.player == null) {
         return false;
       }
     }
