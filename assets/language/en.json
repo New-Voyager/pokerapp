@@ -138,6 +138,8 @@
         "PLOHILO": "Pot Limit Omaha Hi-Lo",
         "FIVECARDPLO": "5 Card Pot Limit Omaha",
         "FIVECARDPLOHILO": "5 Card Pot Limit Omaha Hi-Lo",
+        "SIXCARDPLO": "6 Card Pot Limit Omaha",
+        "SIXCARDPLOHILO": "6 Card Pot Limit Omaha Hi-Lo",
         "ROE": "Round of Each",
         "DEALERCHOICE": "Dealer Choice",
         "UNKNOWN": "Unknown"
@@ -148,6 +150,8 @@
         "PLOHILO": "PLO Hi-Lo",
         "5CARDPLO": "5 card PLO",
         "5CARDPLOHILO": "5 card PLO Hi-Lo",
+        "6CARDPLO": "6 card PLO",
+        "6CARDPLOHILO": "6 card PLO Hi-Lo",
         "ROUNDOFEACH": "Round of Each",
         "DEALERCHOICE": "Dealer Choice",
         "UNKNOWN": "Unknown"

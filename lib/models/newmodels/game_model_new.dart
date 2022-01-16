@@ -66,39 +66,6 @@ class GameModelNew {
     return data;
   }
 
-  // Util methods
-  /* static String getGameTypeStr(String str) {
-    AppTextScreen _appTextScreen = getAppTextScreen("gameType");
-    String gameTypeStr = "";
-    switch (str) {
-      case 'HOLDEM':
-        gameTypeStr = _appTextScreen['HOLDEM'];
-        break;
-      case 'PLO':
-        gameTypeStr = _appTextScreen['PLO'];
-        break;
-      case 'PLO_HILO':
-        gameTypeStr = _appTextScreen['PLOHILO'];
-        break;
-      case 'FIVE_CARD_PLO':
-        gameTypeStr = _appTextScreen['FIVECARDPLO'];
-        break;
-      case 'FIVE_CARD_PLO_HILO':
-        gameTypeStr = _appTextScreen['FIVECARDPLOHILO'];
-        break;
-      case 'ROE':
-        gameTypeStr = _appTextScreen['ROE'];
-        break;
-      case 'DEALER_CHOICE':
-        gameTypeStr = _appTextScreen['DEALERCHOICE'];
-        break;
-      default:
-        gameTypeStr = _appTextScreen['defaultType'];
-    }
-    return gameTypeStr;
-  }
-
-   */
   static String getGameTypeImageAsset(String str) {
     switch (str) {
       case 'HOLDEM':
@@ -115,6 +82,12 @@ class GameModelNew {
         return AppAssetsNew.pathFiveCardPLOTypeImage;
         break;
       case 'FIVE_CARD_PLO_HILO':
+        return AppAssetsNew.pathFiveCardPLOHiLoTypeImage;
+        break;
+      case 'SIX_CARD_PLO':
+        return AppAssetsNew.pathFiveCardPLOTypeImage;
+        break;
+      case 'SIX_CARD_PLO_HILO':
         return AppAssetsNew.pathFiveCardPLOHiLoTypeImage;
         break;
       case 'ROE':
