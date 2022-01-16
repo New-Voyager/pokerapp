@@ -108,7 +108,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
     _messagePopupTimer?.cancel();
   }
 
-  onTap(BuildContext context) async {
+  void _onTap(BuildContext context) async {
     final seatChangeContext = Provider.of<SeatChangeNotifier>(
       context,
       listen: false,
@@ -129,6 +129,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
         log('Ignoring the open seat tap as the player is sitting and game is running');
         return;
       }
+      log('seat no: ${widget.seat.serverSeatPos}');
       // the player tapped to sit-in
       widget.onUserTap(widget.seat);
     } else {
@@ -444,7 +445,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
               if (gameState.replayMode) {
                 return;
               }
-              this.onTap(context);
+              _onTap(context);
             },
             child: Stack(
               clipBehavior: Clip.none,

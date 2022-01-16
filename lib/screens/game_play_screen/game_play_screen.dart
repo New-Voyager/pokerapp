@@ -569,7 +569,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   }
 
   Future _onJoinGame(Seat seat) async {
-    final gameState = GameState.getState(_providerContext);
+    final gameState = _gameState;
     final tableState = gameState.tableState;
     final me = gameState.me;
     /* ignore the open seat tap as the player is seated and game is running */

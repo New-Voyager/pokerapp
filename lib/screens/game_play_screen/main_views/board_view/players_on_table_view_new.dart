@@ -41,16 +41,22 @@ class PlayersOnTableViewNew extends StatelessWidget {
 
     for (int seatNo = 1; seatNo <= maxPlayers; seatNo++) {
       final seat = gameState.seatPlayer(seatNo, _findPlayerAtSeat(seatNo));
+      seat.serverSeatPos = seatNo;
 
       final playerView = Transform.scale(
         scale: isLargerScreen ? 1.3 : 0.80,
-        child: PlayerView(
-          seat: seat,
-          onUserTap: onUserTap,
-          gameComService: gameComService,
-          boardAttributes: boa,
-          gameContextObject: gco,
-          gameState: gameState,
+        child: ListenableProvider<Seat>(
+          create: (_) => seat,
+          builder: (_, __) => Consumer<Seat>(builder: (_, __, ___) {
+            return PlayerView(
+              seat: seat,
+              onUserTap: onUserTap,
+              gameComService: gameComService,
+              boardAttributes: boa,
+              gameContextObject: gco,
+              gameState: gameState,
+            );
+          }),
         ),
       );
 
@@ -81,6 +87,7 @@ class PlayersOnTableViewNew extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ts = getPlayerOnTableSize();
+    Provider.of<SeatsOnTableState>(context, listen: true);
     return Container(
       // color for debugging
       // color: Colors.red.withOpacity(0.20),
