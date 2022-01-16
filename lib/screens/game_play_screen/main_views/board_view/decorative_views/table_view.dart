@@ -23,9 +23,12 @@ class TableView extends StatelessWidget {
       child: Consumer<RedrawBoardSectionState>(
         builder: (_, __, ___) => AnimatedSwitcher(
           duration: animationDuration,
-          child: Image.asset(
-            "assets/images/table/redtable.png",
-            key: UniqueKey(),
+          child: Transform.scale(
+            scale: 1.10,
+            child: Image.asset(
+              "assets/images/table/redtable.png",
+              key: UniqueKey(),
+            ),
           ),
         ),
       ),

@@ -44,7 +44,7 @@ class PlayersOnTableViewNew extends StatelessWidget {
       seat.serverSeatPos = seatNo;
 
       final playerView = Transform.scale(
-        scale: isLargerScreen ? 1.3 : 0.80,
+        scale: isLargerScreen ? 1.3 : 1.0,
         child: ListenableProvider<Seat>(
           create: (_) => seat,
           builder: (_, __) => Consumer<Seat>(builder: (_, __, ___) {
@@ -81,7 +81,7 @@ class PlayersOnTableViewNew extends StatelessWidget {
     // TODO: DO WE NEED A CASE FOR SMALLER SCREEN DEVICES?
 
     // normal case
-    return Size(tableSize.width, tableSize.height * 1.20);
+    return Size(tableSize.width, tableSize.height * 1.70);
   }
 
   @override
@@ -113,7 +113,7 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
 
       positionChild(
         SeatPos.topLeft,
-        Offset(0.0, -cs.width / 10),
+        Offset(0.0, 0.0),
       );
     }
 
@@ -126,7 +126,7 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
 
       positionChild(
         SeatPos.topRight,
-        Offset(size.width - cs.width, -cs.width / 10),
+        Offset(size.width - cs.width, 0.0),
       );
     }
 
@@ -144,7 +144,7 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
     }
 
     // top center 1
-    // 1/3 rd from the left
+    // 3/8 th from the left
     if (hasChild(SeatPos.topCenter1)) {
       final cs = layoutChild(
         SeatPos.topCenter1,
@@ -153,12 +153,12 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
 
       positionChild(
         SeatPos.topCenter1,
-        Offset((size.width / 3) - cs.width / 2, -cs.width / 5),
+        Offset((3 * size.width / 8) - cs.width / 2, 0.0),
       );
     }
 
     // top center 2
-    // 2/3 rd from the left
+    // 5/8 th from the left
     if (hasChild(SeatPos.topCenter2)) {
       final cs = layoutChild(
         SeatPos.topCenter2,
@@ -167,7 +167,7 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
 
       positionChild(
         SeatPos.topCenter2,
-        Offset(((2 * size.width) / 3) - cs.width / 2, -cs.width / 5),
+        Offset((5 * size.width / 8) - cs.width / 2, 0.0),
       );
     }
 
@@ -180,7 +180,7 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
 
       positionChild(
         SeatPos.topCenter,
-        Offset((size.width / 2) - cs.width / 2, -cs.width / 5),
+        Offset((size.width / 2) - cs.width / 2, 0),
       );
     }
 
@@ -209,7 +209,7 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
         SeatPos.bottomLeft,
         Offset(
           (3 * size.width / 16) - (cs.width / 2),
-          size.height - cs.height * 1.0,
+          size.height - cs.height * 1.05,
         ),
       );
     }
@@ -223,7 +223,7 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
 
       positionChild(
         SeatPos.bottomCenter,
-        Offset((size.width / 2) - cs.width / 2, size.height - cs.height),
+        Offset((size.width / 2) - cs.width / 2, size.height - cs.height * 1.10),
       );
     }
 
@@ -239,7 +239,7 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
         SeatPos.bottomRight,
         Offset(
           (13 * size.width / 16) - (cs.width / 2),
-          size.height - cs.height * 1.0,
+          size.height - cs.height * 1.05,
         ),
       );
     }
