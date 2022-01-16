@@ -857,19 +857,14 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       );
 
   Widget _buildBoardView(Size boardDimensions, double boardScale) {
-    // log('RedrawTop: Rebuilding board view');
     return Container(
-      // key: UniqueKey(),
       width: boardDimensions.width,
       height: boardDimensions.height,
-      child: Transform.scale(
-        scale: boardScale,
-        child: BoardView(
-          gameComService: _gameContextObj?.gameComService,
-          gameInfo: _gameInfoModel,
-          onUserTap: _onJoinGame,
-          onStartGame: startGame,
-        ),
+      child: BoardView(
+        gameComService: _gameContextObj?.gameComService,
+        gameInfo: _gameInfoModel,
+        onUserTap: _onJoinGame,
+        onStartGame: startGame,
       ),
     );
   }
@@ -892,24 +887,11 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     }
   }
 
-  Widget _buildCoreBody(
-    BuildContext context,
-    BoardAttributesObject boardAttributes,
-  ) {
-    final width = MediaQuery.of(context).size.width;
-
-    final boardDimensions = boardAttributes.dimensions(context);
-    double boardScale = boardAttributes.boardScale;
-    final theme = AppTheme.getTheme(context);
-
-    List<Widget> children = [];
-
-    Widget headerView;
-    if (this.widget.showTop) {
-      if (_gameState.customizationMode) {
-        headerView = Align(
-          alignment: Alignment.centerLeft,
-          child: InkWell(
+  Widget _buildHeaderView(AppTheme theme) {
+    return _gameState.customizationMode
+        ? Align(
+            alignment: Alignment.centerLeft,
+            child: InkWell(
               borderRadius: BorderRadius.circular(32.pw),
               onTap: () => Navigator.of(context).pop(),
               child: Container(
@@ -921,105 +903,109 @@ class _GamePlayScreenState extends State<GamePlayScreen>
                   height: 32.ph,
                   fit: BoxFit.cover,
                 ),
-              )),
-        );
-      } else {
-        headerView = Container(
-            width: Screen.width,
-            child:
-                HeaderView(gameState: _gameState, scaffoldKey: _scaffoldKey));
-      }
-
-      children.addAll(
-        [
-          // main board view
-          Stack(
-            clipBehavior: Clip.antiAlias,
-            alignment: Alignment.topCenter,
-            children: [
-              this.widget.showTop && _gameState.customizationMode
-                  ? Positioned(
-                      top: 10.ph,
-                      left: width - 50.pw,
-                      child: CircleImageButton(
-                        onTap: () async {
-                          await Navigator.of(context)
-                              .pushNamed(Routes.select_table);
-                          await _gameState.assets.initialize();
-                          final redrawTop = _gameState.redrawBoardSectionState;
-                          redrawTop.notify();
-                          setState(() {});
-                        },
-                        theme: theme,
-                        icon: Icons.edit,
-                      ),
-                    )
-                  : Container(),
-
-              // board view
-              Positioned(
-                top: 0, //Screen.height / 2,
-                child: _buildBoardView(
-                  boardDimensions,
-                  boardScale,
-                ),
               ),
-            ],
+            ),
+          )
+        : Container(
+            width: Screen.width,
+            child: HeaderView(
+              gameState: _gameState,
+              scaffoldKey: _scaffoldKey,
+            ),
+          );
+  }
+
+  Widget _buildMainBoardView(AppTheme theme) {
+    final width = MediaQuery.of(context).size.width;
+    final boardDimensions = boardAttributes.dimensions(context);
+    double boardScale = boardAttributes.boardScale;
+
+    return Container(
+      clipBehavior: Clip.hardEdge,
+      decoration: BoxDecoration(),
+      height: boardDimensions.height,
+      width: Screen.width,
+      child: Stack(
+        clipBehavior: Clip.antiAlias,
+        alignment: Alignment.topCenter,
+        children: [
+          this.widget.showTop && _gameState.customizationMode
+              ? Positioned(
+                  top: 10.ph,
+                  left: width - 50.pw,
+                  child: CircleImageButton(
+                    onTap: () async {
+                      await Navigator.of(context)
+                          .pushNamed(Routes.select_table);
+                      await _gameState.assets.initialize();
+                      final redrawTop = _gameState.redrawBoardSectionState;
+                      redrawTop.notify();
+                      setState(() {});
+                    },
+                    theme: theme,
+                    icon: Icons.edit,
+                  ),
+                )
+              : Container(),
+
+          // board view
+          Positioned(
+            top: 0,
+            child: _buildBoardView(
+              boardDimensions,
+              boardScale,
+            ),
           ),
-
-          /* divider that divides the board view and the footer */
-          // Divider(color: AppColorsNew.dividerColor, thickness: 3),
         ],
-      );
-    }
-
-    Widget topView = Stack(
-      children: children,
+      ),
     );
+  }
 
-    List<Widget> gameScreenChildren = [];
-    if (widget.showTop) {
-      gameScreenChildren.add(headerView);
-      // top view
-      gameScreenChildren.add(
-        Container(
-          clipBehavior: Clip.none,
-          height: boardDimensions.height,
-          width: Screen.width,
-          child: topView,
-        ),
-      );
-    }
+  Widget _buildFooterView() {
+    return Consumer<RedrawFooterSectionState>(
+      builder: (_, ___, __) {
+        log('RedrawFooter: building footer view');
+        return FooterViewWidget(
+            gameCode: widget.gameCode,
+            gameContextObject: _gameContextObj,
+            currentPlayer: _gameContextObj.gameState.currentPlayer,
+            joinAudioConference: joinAudioConference,
+            gameInfo: _gameInfoModel,
+            toggleChatVisibility: _toggleChatVisibility,
+            onStartGame: startGame);
+      },
+    );
+  }
 
-    if (widget.showBottom) {
-      gameScreenChildren.add(Align(
-        alignment: Alignment.bottomCenter,
-        child: Consumer<RedrawFooterSectionState>(
-          builder: (_, ___, __) {
-            log('RedrawFooter: building footer view');
-            return FooterViewWidget(
-                gameCode: widget.gameCode,
-                gameContextObject: _gameContextObj,
-                currentPlayer: _gameContextObj.gameState.currentPlayer,
-                joinAudioConference: joinAudioConference,
-                gameInfo: _gameInfoModel,
-                toggleChatVisibility: _toggleChatVisibility,
-                onStartGame: startGame);
-          },
-        ),
-      ));
-    }
+  Widget _buildCoreBody(
+    BuildContext context,
+    BoardAttributesObject boardAttributes,
+  ) {
+    final theme = AppTheme.getTheme(context);
+    const kEmpty = const SizedBox.shrink();
+
     Widget column = Column(
       mainAxisAlignment: MainAxisAlignment.start,
-      children: gameScreenChildren,
+      children: [
+        // header
+        widget.showTop ? _buildHeaderView(theme) : kEmpty,
+
+        // board view
+        widget.showTop ? _buildMainBoardView(theme) : kEmpty,
+
+        // footerview
+        widget.showBottom ? _buildFooterView() : kEmpty,
+      ],
     );
 
-    Stack allWidgets = Stack(children: [
-      column,
+    Stack allWidgets = Stack(
+      children: [
+        column,
 
-      /* chat window widget */
-      this.widget.showBottom ? _buildChatWindow() : const SizedBox.shrink(),
-    ]);
+        /* chat window widget */
+        this.widget.showBottom ? _buildChatWindow() : const SizedBox.shrink(),
+      ],
+    );
     return allWidgets;
   }
 

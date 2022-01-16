@@ -1,17 +1,12 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
-import 'package:pokerapp/models/ui/app_text.dart';
-import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/animating_widgets/card_distribution_animating_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/center_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/decorative_views/table_view.dart';
-import 'package:pokerapp/screens/game_play_screen/main_views/board_view/players_on_table_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/players_on_table_view_new.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/animating_widgets/stack_switch_seat_animating_widget.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
@@ -24,7 +19,6 @@ class BoardView extends StatelessWidget {
   final GameInfoModel gameInfo;
   final Function(Seat seat) onUserTap;
   final Function() onStartGame;
-  AppTextScreen _appScreenText;
 
   BoardView({
     @required this.gameInfo,
@@ -37,19 +31,19 @@ class BoardView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    _appScreenText = getAppTextScreen("boardView");
+    // AppTextScreen _appScreenText = getAppTextScreen("boardView");
 
-    final theme = AppTheme.getTheme(context);
+    // final theme = AppTheme.getTheme(context);
     final gameState = GameState.getState(context);
     gameState.boardKey = boardViewKey;
     final boardAttributes = gameState.getBoardAttributes(context);
     final isBoardHorizontal =
         boardAttributes.orientation == BoardOrientation.horizontal;
     var dimensions = boardAttributes.dimensions(context);
-    var bottomPos = boardAttributes.tableBottomPos;
-    var tableScale = boardAttributes.tableScale;
+    // var bottomPos = boardAttributes.tableBottomPos;
+    // var tableScale = boardAttributes.tableScale;
 
-    final tableSize = boardAttributes.tableSize;
+    // final tableSize = boardAttributes.tableSize;
 
     // TODO: WE NEED TWO NEW VARIABLES FROM OUTSIDE
     // TODO: 1. TABLE WIDTH FACTOR
