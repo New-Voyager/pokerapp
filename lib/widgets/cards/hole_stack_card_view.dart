@@ -202,12 +202,22 @@ class HoleStackCardView extends StatelessWidget {
 
     // if need to show front card, do not procced to build the page curling effect
     if (isCardVisible) {
-      return _buildFannedCards(
-        context: context,
-        xOffset: evenNoDisplacement,
-        mid: mid,
-        markedCards: markedCards,
-        displacementValue: displacementValue,
+      return GestureDetector(
+        onHorizontalDragEnd: (e) {
+          log('onHorizontalDragEnd. ${e.velocity}');
+          int i = 1;
+          if (e.velocity.pixelsPerSecond.dx < 0) {
+            i = -1;
+          }
+          gameState.changeHoleCardOrder(inc: i);
+        },
+        child: _buildFannedCards(
+          context: context,
+          xOffset: evenNoDisplacement,
+          mid: mid,
+          markedCards: markedCards,
+          displacementValue: displacementValue,
+        ),
       );
     }
 

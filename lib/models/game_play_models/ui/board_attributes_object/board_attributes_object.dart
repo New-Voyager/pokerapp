@@ -302,6 +302,8 @@ class BoardAttributesJson {
         ret[noCardsStr] = double.parse(map[noCardsStr].toString());
       }
     }
+
+    ret['6'] = ret['5'];
     return ret;
   }
 
@@ -314,6 +316,7 @@ class BoardAttributesJson {
         ret[noCardsStr] = double.parse(map[noCardsStr].toString());
       }
     }
+    ret['6'] = ret['5'];
     return ret;
   }
 
@@ -791,6 +794,9 @@ class BoardAttributesObject extends ChangeNotifier {
       ret = _holeCardVisibleDisplacement[noOfCards.toString()];
     } else {
       ret = _holeCardDisplacement[noOfCards.toString()];
+    }
+    if (ret == null) {
+      return 20.0;
     }
     return ret;
   }

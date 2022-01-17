@@ -154,6 +154,8 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
         GameType.PLO_HILO,
         GameType.FIVE_CARD_PLO,
         GameType.FIVE_CARD_PLO_HILO,
+        // GameType.SIX_CARD_PLO,
+        // GameType.SIX_CARD_PLO_HILO,
       ]);
     } else if (widget.mainGameType == GameType.ROE) {
       gameSettings.settings.roeGames.addAll([GameType.HOLDEM, GameType.PLO]);
@@ -162,14 +164,6 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
     loading = false;
     super.initState();
   }
-
-  // Widget _buildLabel(String label, AppTheme theme) => Padding(
-  //       padding: const EdgeInsets.symmetric(vertical: 5.0),
-  //       child: Text(
-  //         label,
-  //         style: AppDecorators.getHeadLine4Style(theme: theme),
-  //       ),
-  //     );
 
   Widget _buildSeperator(AppTheme theme) => Container(
         color: theme.fillInColor,
@@ -519,7 +513,9 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
                           'PLO',
                           'Hi-Lo',
                           '5 Card',
-                          '5 Card Hi-Lo'
+                          '5 Card Hi-Lo',
+                          '6 Card',
+                          '6 Card Hi-Lo'
                         ],
                         onSelect: (String value) {
                           if (value == 'NLH') {
@@ -534,6 +530,12 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
                           } else if (value == '5 Card Hi-Lo') {
                             gmp.settings.bombPotGameType =
                                 GameType.FIVE_CARD_PLO_HILO;
+                          } else if (value == '6 Card') {
+                            gmp.settings.bombPotGameType =
+                                GameType.SIX_CARD_PLO;
+                          } else if (value == '6 Card Hi-Lo') {
+                            gmp.settings.bombPotGameType =
+                                GameType.SIX_CARD_PLO_HILO;
                           }
                         },
                       ),
@@ -555,36 +557,47 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
   }
 
   void determinePlayerCounts(NewGameModelProvider gmp) {
-    bool max8Players = false;
+    int maxPlayers = 9;
     playerCounts = [2, 4, 6, 8, 9];
 
     if (widget.mainGameType == GameType.ROE) {
       if (gmp.settings.roeGames.contains(GameType.FIVE_CARD_PLO) ||
           gmp.settings.roeGames.contains(GameType.FIVE_CARD_PLO_HILO)) {
-        max8Players = true;
+        maxPlayers = 8;
+      }
+      if (gmp.settings.roeGames.contains(GameType.SIX_CARD_PLO) ||
+          gmp.settings.roeGames.contains(GameType.SIX_CARD_PLO_HILO)) {
+        maxPlayers = 6;
       }
     }
     if (widget.mainGameType == GameType.DEALER_CHOICE) {
       if (gmp.settings.dealerChoiceGames.contains(GameType.FIVE_CARD_PLO) ||
           gmp.settings.dealerChoiceGames
               .contains(GameType.FIVE_CARD_PLO_HILO)) {
-        max8Players = true;
+        maxPlayers = 8;
+      }
+      if (gmp.settings.dealerChoiceGames.contains(GameType.SIX_CARD_PLO) ||
+          gmp.settings.dealerChoiceGames.contains(GameType.SIX_CARD_PLO_HILO)) {
+        maxPlayers = 6;
       }
     }
     if (gmp.gameType == GameType.FIVE_CARD_PLO ||
         gmp.gameType == GameType.FIVE_CARD_PLO_HILO) {
-      max8Players = true;
+      maxPlayers = 8;
     }
-    if (max8Players) {
+    if (gmp.gameType == GameType.SIX_CARD_PLO ||
+        gmp.gameType == GameType.SIX_CARD_PLO_HILO) {
+      maxPlayers = 6;
+    }
+    if (maxPlayers == 8) {
       playerCounts = [2, 4, 6, 8];
-      if (gmp.maxPlayers == 9) {
-        gmp.maxPlayers = 8;
-      } else {
-        gmp.notifyListeners();
-      }
-    } else {
-      gmp.notifyListeners();
     }
+    if (maxPlayers == 6) {
+      playerCounts = [2, 4, 6];
+    }
+
+    gmp.maxPlayers = maxPlayers;
+    gmp.notifyListeners();
   }
 
   @override
@@ -669,7 +682,7 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
                     isAlwaysShown: true,
                     child: ListView(
                       shrinkWrap: true,
-
+                      padding: EdgeInsets.only(right: 10),
                       //crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         /* game types */
@@ -680,11 +693,14 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
                                   //_buildLabel('Choose Type', theme),
                                   RadioListWidget<String>(
                                     defaultValue: 'PLO',
+                                    wrap: true,
                                     values: [
                                       'PLO',
                                       'Hi-Lo',
                                       '5 Card',
-                                      '5 Card Hi-Lo'
+                                      '5 Card Hi-Lo',
+                                      //'6 Card',
+                                      //'6 Card Hi-Lo',
                                     ],
                                     onSelect: (String value) {
                                       if (value == 'PLO') {
@@ -698,6 +714,12 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
                                       } else if (value == '5 Card Hi-Lo') {
                                         gmp.settings.gameType =
                                             GameType.FIVE_CARD_PLO_HILO;
+                                      } else if (value == '6 Card') {
+                                        gmp.settings.gameType =
+                                            GameType.SIX_CARD_PLO;
+                                      } else if (value == '6 Card Hi-Lo') {
+                                        gmp.settings.gameType =
+                                            GameType.SIX_CARD_PLO_HILO;
                                       }
                                       determinePlayerCounts(gmp);
                                       //setState(() {});
@@ -771,7 +793,9 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
                                     GameType.PLO,
                                     GameType.PLO_HILO,
                                     GameType.FIVE_CARD_PLO,
-                                    GameType.FIVE_CARD_PLO_HILO
+                                    GameType.FIVE_CARD_PLO_HILO,
+                                    // GameType.SIX_CARD_PLO,
+                                    // GameType.SIX_CARD_PLO_HILO,
                                   ], onSelect: (games) {
                                     if (widget.mainGameType == GameType.ROE) {
                                       gmp.settings.roeGames.addAll(games);

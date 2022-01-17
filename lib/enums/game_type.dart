@@ -7,10 +7,10 @@ enum GameType {
   PLO_HILO,
   FIVE_CARD_PLO,
   FIVE_CARD_PLO_HILO,
-  ROE,
-  DEALER_CHOICE,
   SIX_CARD_PLO,
   SIX_CARD_PLO_HILO,
+  ROE,
+  DEALER_CHOICE,
 }
 
 extension GameTypeSerialization on GameType {
