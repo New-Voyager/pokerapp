@@ -253,8 +253,8 @@ class NamePlateStackCardView extends StatelessWidget {
       CardObject card = cards[index];
       if (deactivated) {
         card.dim = true;
-        // log('Player cards: reveal ${card.cardType}: ${card.dim}');
       }
+
       Widget view = NamePlateCardView(
         card: card,
         cardBackBytes: null,
@@ -263,7 +263,10 @@ class NamePlateStackCardView extends StatelessWidget {
         highlightCards: highlightCards,
       );
       double top = 0;
-      if (index == 0 || index == 3) {
+      // if (index == 0 || index == 3) {
+      //   top = -20;
+      // }
+      if (card.highlight) {
         top = -20;
       }
 

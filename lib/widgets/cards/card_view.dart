@@ -108,7 +108,7 @@ class NamePlateCardView extends StatelessWidget {
                   color: this.card.color,
                   fontSize: 16.0,
                   fontWeight: FontWeight.w700,
-                  fontFamily: AppAssets.fontFamilyTrocchi,
+                  fontFamily: AppAssets.fontFamilyLato,
                 ),
               ),
               Image.asset(
@@ -118,27 +118,29 @@ class NamePlateCardView extends StatelessWidget {
                 color: this.card.color,
               )
             ])),
-        SizedBox(width: 5),
+        SizedBox(width: 1),
         Align(
             alignment: Alignment.bottomCenter,
             child: Text(
               this.card.label == 'T' ? '10' : this.card.label ?? 'X',
               style: TextStyle(
                 color: this.card.color,
-                fontSize: 18.0,
+                fontSize: 30.0,
                 fontWeight: FontWeight.w700,
-                fontFamily: AppAssets.fontFamilyLiterata,
+                fontFamily: AppAssets.fontFamilyLato,
               ),
               textAlign: TextAlign.center,
             ))
       ],
     );
 
+    double opacity = 1.0;
     Color color = Colors.white;
-    if (index == 0 || index == 3) {
+    if (card.highlight) {
       color = Colors.white;
     } else {
-      color = Colors.grey;
+      opacity = 0.30;
+      //color = Colors.grey[700];
     }
     // if (card.dim) {
     //   color = Colors.grey;
@@ -148,12 +150,31 @@ class NamePlateCardView extends StatelessWidget {
         color: color,
         borderRadius: BorderRadius.circular(3),
         border: Border.all(color: color, width: 2.0));
-    return Container(
-      width: 40,
-      height: 50,
+
+    // if (!card.highlight) {
+    //   fgDecoration = BoxDecoration(
+    //       color: Colors.grey,
+    //       borderRadius: BorderRadius.circular(3),
+    //       backgroundBlendMode: BlendMode.clear,
+    //       border: Border.all(color: Colors.grey, width: 2.0));
+    // }
+    Widget child = Container(
+      width: 42,
+      height: 60,
       decoration: fgDecoration,
       child: cardWidget, //Text('$index'),
     );
+    if (!card.highlight) {
+      return Container(
+        width: 42,
+        height: 60,
+        child: ColorFiltered(
+          colorFilter: ColorFilter.mode(Colors.grey[700], BlendMode.darken),
+          child: child,
+        ),
+      );
+    }
+    return child;
   }
 
   @override
