@@ -34,7 +34,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/host_seat_chang
 
 class TestService {
   static bool get isTesting {
-    return false;
+    return true;
   }
 
   static var _showResult = false;
@@ -616,6 +616,22 @@ class TestService {
       ],
       timeLimit: Duration(seconds: 10),
     );
+  }
+
+  static void showNamePlateHoleCards() async {
+    final gameState = GameState.getState(_context);
+    gameState.handState = HandState.RESULT;
+    gameState.showdown = true;
+    for (final seat in gameState.seats) {
+      if (seat.player == null) {
+        continue;
+      }
+      seat.player.winner = true;
+      seat.player.cards = [72, 84, 40, 100, 97];
+      seat.player.highlightCards = [72, 100];
+      seat.notify();
+      break;
+    }
   }
 
   static void fillBothBoardCards() {

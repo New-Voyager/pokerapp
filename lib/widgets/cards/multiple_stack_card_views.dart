@@ -2,9 +2,8 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
-import 'package:pokerapp/models/rabbit_state.dart';
 import 'package:pokerapp/utils/card_helper.dart';
-import 'package:web_socket_channel/status.dart';
+import 'package:pokerapp/widgets/cards/card_view.dart';
 
 class StackCardView extends StatelessWidget {
   final List<CardObject> cards;
@@ -233,39 +232,65 @@ class StackCardView03 extends StatelessWidget {
   }
 }
 
-// class RabbitCardView extends StatelessWidget {
-//   final RabbitState state;
-//   RabbitCardView({
-//     this.state,
-//   });
+class NamePlateStackCardView extends StatelessWidget {
+  final List<CardObject> cards;
+  final List<int> highlightCards;
+  final bool deactivated;
+  final bool horizontal;
 
-//   @override
-//   Widget build(BuildContext context) {
-//     List<Widget> cardViews = [];
-//     final cards = this.state.communityCards;
-//     final revealed = this.state.revealedCards;
-//     for (int i = 0; i < cards.length - 2 + revealed.length; i++) {
-//       CardObject card = CardHelper.getCard(cards[i]);
-//       card.cardType = CardType.HandLogOrHandHistoryCard;
-//       cardViews.add(card.widget);
-//       cardViews.add(SizedBox(width: 2.0));
-//     }
+  NamePlateStackCardView({
+    @required this.cards,
+    this.deactivated = false,
+    this.horizontal = true,
+    this.highlightCards = const [],
+  });
 
-//     log("Revealed data. : ${revealed.length}");
-//     for (int i = 0; i < 2 - revealed.length; i++) {
-//       CardObject card = CardHelper.getCard(0);
-//       card.cardType = CardType.HandLogOrHandHistoryCard;
-//       card.cardFace = CardFace.BACK;
-//       // Widget stackedWidget = Stack(children: [
-//       //   card.widget,
-//       //   Center(
-//       //     child: Icon(Icons.visibility, color: Colors.amber),
-//       //   ),
-//       // ]);
-//       cardViews.add(card.widget);
-//       cardViews.add(SizedBox(width: 2.0));
-//     }
+  List<Widget> _buildChildren() {
+    List<Widget> _children = [];
+    double x = 0;
+    double offset = 140 / 5;
+    for (int index = 0; index < cards.length; index++) {
+      CardObject card = cards[index];
+      if (deactivated) {
+        card.dim = true;
+        // log('Player cards: reveal ${card.cardType}: ${card.dim}');
+      }
+      Widget view = NamePlateCardView(
+        card: card,
+        cardBackBytes: null,
+        doubleBoard: card.doubleBoard,
+        index: _children.length,
+        highlightCards: highlightCards,
+      );
+      double top = 0;
+      if (index == 0 || index == 3) {
+        top = -20;
+      }
 
-//     return Row(mainAxisSize: MainAxisSize.min, children: cardViews);
-//   }
-// }
+      view = Positioned(left: x, top: top, child: view);
+      _children.add(view);
+      if (index == 0) {
+        x = x + offset;
+      } else {
+        x = x + offset;
+      }
+    }
+
+    return _children;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (cards == null || cards.isEmpty) return const SizedBox.shrink();
+    // return Row(
+    //   mainAxisSize: MainAxisSize.min,
+    //   mainAxisAlignment: MainAxisAlignment.center,
+    //   children: _buildChildren(),
+    // );
+    return Stack(
+      alignment: Alignment.topLeft,
+      clipBehavior: Clip.none,
+      children: _buildChildren(),
+    );
+  }
+}

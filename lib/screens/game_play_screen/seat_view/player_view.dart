@@ -275,21 +275,13 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
       }
     }
 
-    return Transform.scale(
-      scale: widget.boardAttributes.getMuckCardScale(seat.player.cards.length),
-      alignment: Alignment.bottomCenter,
-      child: Transform.translate(
-        // TODO: NEED TO VERIFY THIS FOR DIFF SCREEN SIZES
-        offset: Offset(0.0, 10.ph),
-        child: Container(
-          height: widget.boardAttributes.namePlateSize.height,
-          width: widget.boardAttributes.namePlateSize.width,
-          child: DisplayCardsWidget(
-            isReplayHandsActor: isReplayHandsActor,
-            seat: seat,
-            showdown: widget.gameState.showdown,
-          ),
-        ),
+    return Container(
+      // height: widget.boardAttributes.namePlateSize.height,
+      // width: widget.boardAttributes.namePlateSize.width,
+      child: DisplayCardsWidget(
+        isReplayHandsActor: isReplayHandsActor,
+        seat: seat,
+        showdown: widget.gameState.showdown,
       ),
     );
   }
