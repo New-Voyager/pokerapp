@@ -52,7 +52,7 @@ class GameInfoModel {
   double stack = null;
   double tipsPercentage = null;
   double tipsCap = null;
-  String sfuUrl = 'http://67.205.136.63:7000';
+  String sfuUrl = '';
 
   // nats channels
   String gameToPlayerChannel;
@@ -180,6 +180,8 @@ class GameInfoModel {
     this.agoraAppId = data['agoraAppId'];
     this.agoraToken = data['agoraToken'];
 
+    this.sfuUrl = data['sfuUrl'];
+
     if (data['allPlayers'] != null) {
       for (final playerData in data['allPlayers']) {
         final gamePlayer = GamePlayer(
@@ -274,6 +276,8 @@ class GameInfoModel {
       useAgora
       agoraToken
       agoraAppId
+
+      sfuUrl
     }
   } """;
 }
