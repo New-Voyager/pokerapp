@@ -125,7 +125,7 @@ class NamePlateCardView extends StatelessWidget {
               this.card.label == 'T' ? '10' : this.card.label ?? 'X',
               style: TextStyle(
                 color: this.card.color,
-                fontSize: 32.0,
+                fontSize: 18.0,
                 fontWeight: FontWeight.w700,
                 fontFamily: AppAssets.fontFamilyLiterata,
               ),
@@ -135,17 +135,22 @@ class NamePlateCardView extends StatelessWidget {
     );
 
     Color color = Colors.white;
-    if (card.dim) {
-      color = Colors.black45;
+    if (index == 0 || index == 3) {
+      color = Colors.white;
+    } else {
+      color = Colors.grey;
     }
+    // if (card.dim) {
+    //   color = Colors.grey;
+    // }
 
     BoxDecoration fgDecoration = BoxDecoration(
         color: color,
         borderRadius: BorderRadius.circular(3),
-        border: Border.all(color: Colors.white, width: 2.0));
+        border: Border.all(color: color, width: 2.0));
     return Container(
-      width: 50,
-      height: 65,
+      width: 40,
+      height: 50,
       decoration: fgDecoration,
       child: cardWidget, //Text('$index'),
     );

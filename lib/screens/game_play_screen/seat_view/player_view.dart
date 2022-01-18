@@ -275,7 +275,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
       }
     }
 
-    return Transform.scale(
+    Widget old = Transform.scale(
         scale:
             widget.boardAttributes.getMuckCardScale(seat.player.cards.length),
         alignment: Alignment.bottomCenter,
@@ -292,15 +292,16 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
             ),
           ),
         ));
-    // return Container(
-    //   // height: widget.boardAttributes.namePlateSize.height,
-    //   // width: widget.boardAttributes.namePlateSize.width,
-    //   child: DisplayCardsWidget(
-    //     isReplayHandsActor: isReplayHandsActor,
-    //     seat: seat,
-    //     showdown: widget.gameState.showdown,
-    //   ),
-    // );
+
+    return Container(
+      // height: widget.boardAttributes.namePlateSize.height,
+      // width: widget.boardAttributes.namePlateSize.width,
+      child: DisplayCardsWidget(
+        isReplayHandsActor: isReplayHandsActor,
+        seat: seat,
+        showdown: widget.gameState.showdown,
+      ),
+    );
   }
 
   @override

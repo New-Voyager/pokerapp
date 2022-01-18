@@ -248,7 +248,7 @@ class NamePlateStackCardView extends StatelessWidget {
   List<Widget> _buildChildren() {
     List<Widget> _children = [];
     double x = 0;
-    double offset = 140 / 5;
+    double offset = 100 / 5;
     for (int index = 0; index < cards.length; index++) {
       CardObject card = cards[index];
       if (deactivated) {
