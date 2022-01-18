@@ -618,6 +618,22 @@ class TestService {
     );
   }
 
+  static void showNamePlateHoleCards() async {
+    final gameState = GameState.getState(_context);
+    gameState.handState = HandState.RESULT;
+    gameState.showdown = true;
+    for (final seat in gameState.seats) {
+      if (seat.player == null) {
+        continue;
+      }
+      seat.player.winner = true;
+      seat.player.cards = [72, 84, 40, 100, 97];
+      seat.player.highlightCards = [72, 100];
+      seat.notify();
+      break;
+    }
+  }
+
   static void fillBothBoardCards() {
     final gameState = GameState.getState(_context);
     final TableState tableState = gameState.tableState;

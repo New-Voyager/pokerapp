@@ -98,14 +98,25 @@ class DisplayCardsWidget extends StatelessWidget {
       }
     }
     return Transform.translate(
-      offset: offset,
-      child: Transform.scale(
-        scale: scale,
-        child: StackCardView(
-          cards: _getCards(cards),
-        ),
-      ),
-    );
+        offset: offset,
+        child: Transform.scale(
+          scale: scale,
+          child: StackCardView(
+            cards: _getCards(cards),
+          ),
+        ));
+    // return Transform.translate(
+    //   offset: offset,
+    //   child: Transform.scale(
+    //     scale: scale,
+    //     child: ,
+    //   ),
+    // );
+    // return Container();
+    // return NamePlateStackCardView(
+    //   cards: _getCards(cards),
+    //   highlightCards: seat.player.highlightCards,
+    // );
   }
 
   @override
@@ -124,5 +135,13 @@ class DisplayCardsWidget extends StatelessWidget {
           ? _buildStackCardView(seatPlayerCards, context)
           : SizedBox.shrink(),
     );
+
+    return Container(
+        width: 140,
+        height: 50,
+        decoration:
+            BoxDecoration(border: Border.all(color: Colors.red, width: 2.0)),
+        //color: Colors.red,
+        child: _buildStackCardView(seatPlayerCards, context));
   }
 }

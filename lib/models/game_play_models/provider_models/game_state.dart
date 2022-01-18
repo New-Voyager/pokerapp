@@ -1140,11 +1140,12 @@ class GameState {
     return this._straddlePromptState;
   }
 
-  void changeHoleCardOrder() {
+  void changeHoleCardOrder({int inc = 1}) {
     int i = HoleCardOrder.values.indexOf(holecardOrder);
-    if (i == -1) {
+    i = i + inc;
+    if (i < 0) {
+      i = HoleCardOrder.values.length - 1;
     } else {
-      i++;
       if (i >= HoleCardOrder.values.toList().length) {
         i = 0;
       }

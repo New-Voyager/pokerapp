@@ -38,7 +38,7 @@ class CenterButtonView extends StatelessWidget {
 
   Future<void> _onTerminatePress(BuildContext context) async {
     final response = await showPrompt(
-        context, 'Terminate', "Do you want to terminate the game?",
+        context, 'End Game', "Do you want to end the game?",
         positiveButtonText: 'Yes', negativeButtonText: 'No');
     if (response != null && response == true) {
       final gameState = GameState.getState(context);

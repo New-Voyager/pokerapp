@@ -248,7 +248,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                       },
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Text("Game History",
+                        child: Text("Hand History",
                             style:
                                 AppDecorators.getSubtitle1Style(theme: theme)),
                       ),
@@ -318,7 +318,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                             child: Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: Text("Bomb pot",
+                              child: Text("Bomb Pot",
                                   style: AppDecorators.getSubtitle1Style(
                                       theme: theme)),
                             ),
@@ -410,7 +410,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                       },
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Text("Player stack",
+                        child: Text("Stack Stats",
                             style:
                                 AppDecorators.getSubtitle1Style(theme: theme)),
                       ),

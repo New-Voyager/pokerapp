@@ -76,3 +76,95 @@ class CardView extends StatelessWidget {
     );
   }
 }
+
+class NamePlateCardView extends StatelessWidget {
+  final CardObject card;
+  final Uint8List cardBackBytes;
+  final bool doubleBoard;
+  final int index;
+  final List<int> highlightCards;
+
+  NamePlateCardView(
+      {@required this.card,
+      @required this.cardBackBytes,
+      this.highlightCards,
+      this.doubleBoard = false,
+      this.index = 1});
+
+  Widget _buildCardUI(
+    TextStyle cardTextStyle,
+    TextStyle suitTextStyle,
+    BuildContext context,
+  ) {
+    String suitImage = CardHelper.getSuitImage(this.card.suit);
+    Widget cardWidget = Row(
+      children: [
+        Align(
+            alignment: Alignment.topLeft,
+            child: Column(children: [
+              Text(
+                this.card.label == 'T' ? '10' : this.card.label ?? 'X',
+                style: TextStyle(
+                  color: this.card.color,
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.w700,
+                  fontFamily: AppAssets.fontFamilyTrocchi,
+                ),
+              ),
+              Image.asset(
+                suitImage,
+                height: 18,
+                width: 18,
+                color: this.card.color,
+              )
+            ])),
+        SizedBox(width: 5),
+        Align(
+            alignment: Alignment.bottomCenter,
+            child: Text(
+              this.card.label == 'T' ? '10' : this.card.label ?? 'X',
+              style: TextStyle(
+                color: this.card.color,
+                fontSize: 32.0,
+                fontWeight: FontWeight.w700,
+                fontFamily: AppAssets.fontFamilyLiterata,
+              ),
+              textAlign: TextAlign.center,
+            ))
+      ],
+    );
+
+    Color color = Colors.white;
+    if (card.dim) {
+      color = Colors.black45;
+    }
+
+    BoxDecoration fgDecoration = BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(3),
+        border: Border.all(color: Colors.white, width: 2.0));
+    return Container(
+      width: 50,
+      height: 65,
+      decoration: fgDecoration,
+      child: cardWidget, //Text('$index'),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // return CardBuilderWidget(
+    //   card: card,
+    //   dim: card.dim,
+    //   backCardBytes: cardBackBytes,
+    //   highlight: card.highlight,
+    //   isCardVisible: true,
+    //   cardBuilder: _buildCardUI,
+    //   roundRadius: 2.5,
+    //   cardFace: card.cardFace,
+    //   doubleBoard: this.doubleBoard,
+    // );
+
+    return _buildCardUI(null, null, context);
+  }
+}

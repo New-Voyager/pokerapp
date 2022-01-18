@@ -260,15 +260,15 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
           alignment: Alignment.center,
           children: [
             cardsWidget,
-            Visibility(
-              visible: isHoleCardsVisibleVn.value,
-              child: Positioned(
-                bottom: 40,
-                left: 0,
-                right: 0,
-                child: shuffleButton,
-              ),
-            ),
+            // Visibility(
+            //   visible: isHoleCardsVisibleVn.value,
+            //   child: Positioned(
+            //     bottom: 40,
+            //     left: 0,
+            //     right: 0,
+            //     child: shuffleButton,
+            //   ),
+            // ),
           ],
         ),
       ),

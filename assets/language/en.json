@@ -688,7 +688,7 @@
         "waitingToBeStarted": "Waiting to be started",
         "resume": "Resume",
         "rearrange": "Rearrange",
-        "terminate": "Terminate",
+        "terminate": "End Game",
         "start": "Start"
     },
     "boardView": {
@@ -720,7 +720,7 @@
         "reload": "Reload",
         "stackIsGreaterThankMaxBuyIn": "Stack is greater than max buyin. Cannot reload!",
         "standup": "Standup",
-        "terminate": "Terminate",
+        "terminate": "End Game",
         "requestSeatChange": "Request seat change",
         "seatChange": "Seat Change",
         "waitingList": "Waiting List",
@@ -818,7 +818,7 @@
         "reload": "Reload",
         "approvals": "Approvals",
         "pause": "Pause",
-        "terminate": "Terminate",
+        "terminate": "End Game",
         "showDown": "Show Down",
         "fast": "Fast",
         "normal": "Normal",
