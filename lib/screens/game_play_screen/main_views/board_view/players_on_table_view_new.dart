@@ -78,6 +78,7 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
 
   // getters
   GameState get _gameState => widget.gameState;
+  int get _maxPlayers => widget.maxPlayers;
 
   PlayerModel _findPlayerAtSeat(int seatNo) {
     for (final player in _gameState.playersInGame)
@@ -89,12 +90,23 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
   List<Widget> _getPlayers(BuildContext context) {
     final boa = context.read<BoardAttributesObject>();
     final gco = context.read<GameContextObject>();
+    final mySeat = _gameState.me?.seatNo ?? -1;
+    log('mySeat: $mySeat');
 
     final List<Widget> players = [];
 
-    for (int seatNo = 1; seatNo <= widget.maxPlayers; seatNo++) {
-      final seat = _gameState.seatPlayer(seatNo, _findPlayerAtSeat(seatNo));
-      seat.serverSeatPos = seatNo;
+    int serverSeatNo = 1;
+
+    if (_gameState.hostSeatChangeInProgress == false && _gameState.me != null) {
+      serverSeatNo = _gameState.me.seatNo;
+    }
+
+    for (int localSeatNo = 1; localSeatNo <= _maxPlayers; localSeatNo++) {
+      final seat = _gameState.seatPlayer(
+        localSeatNo,
+        _findPlayerAtSeat(serverSeatNo),
+      );
+      seat.serverSeatPos = serverSeatNo;
 
       final playerView = Transform.scale(
         scale: widget.isLargerScreen ? 1.3 : 1.0,
@@ -114,6 +126,9 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
       );
 
       players.add(LayoutId(id: seat.seatPos, child: playerView));
+
+      serverSeatNo++;
+      if (serverSeatNo > _maxPlayers) serverSeatNo = 1;
     }
 
     return players;
@@ -435,8 +450,7 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
 
   List<Widget> _getChatBubbles() {
     final gameComService = _gameState.gameComService;
-    final maxPlayers = _gameState.gameInfo.maxPlayers;
-    for (int localSeat = 1; localSeat <= maxPlayers; localSeat++) {
+    for (int localSeat = 1; localSeat <= _maxPlayers; localSeat++) {
       final seat = widget.gameState.getSeat(localSeat);
       chatBubbles.add(PlayerChatBubble(gameComService, seat));
     }
