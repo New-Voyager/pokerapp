@@ -574,7 +574,7 @@ packages:
       name: flutter_ion
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.5.4"
+    version: "1.0.0"
   flutter_launcher_icons:
     dependency: "direct dev"
     description:
@@ -680,7 +680,7 @@ packages:
       name: flutter_webrtc
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.6.7"
+    version: "0.7.0"
   font_awesome_flutter:
     dependency: "direct main"
     description:
