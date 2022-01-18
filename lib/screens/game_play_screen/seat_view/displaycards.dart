@@ -81,22 +81,22 @@ class DisplayCardsWidget extends StatelessWidget {
 
   Widget _buildStackCardView(List<int> cards, context) {
     if (cards == null || cards.length == 0) {
-      return Container();
+      return const SizedBox.shrink();
     }
 
     if (seat.player.playerFolded && seat.player.revealCards.length == 0) {
-      return Container();
+      return const SizedBox.shrink();
     }
 
-    double scale = 1.0;
-    Offset offset = Offset(0, 0);
-    if (cards.length == 4 || cards.length == 5) {
-      offset = Offset(-18, 10);
-      if (cards.length == 5) {
-        scale = 0.85;
-        offset = Offset(-30, 10);
-      }
-    }
+    // double scale = 1.0;
+    // Offset offset = Offset(0, 0);
+    // if (cards.length == 4 || cards.length == 5) {
+    //   offset = Offset(-18, 10);
+    //   if (cards.length == 5) {
+    //     scale = 0.85;
+    //     offset = Offset(-30, 10);
+    //   }
+    // }
     // return Transform.translate(
     //     offset: offset,
     //     child: Transform.scale(
@@ -129,12 +129,9 @@ class DisplayCardsWidget extends StatelessWidget {
     //       : SizedBox.shrink(),
     // );
 
-    return Container(
-        width: 100,
-        height: 50,
-        decoration:
-            BoxDecoration(border: Border.all(color: Colors.red, width: 2.0)),
-        //color: Colors.red,
-        child: _buildStackCardView(seatPlayerCards, context));
+    return _buildStackCardView(
+      seatPlayerCards,
+      context,
+    );
   }
 }

@@ -246,9 +246,16 @@ class NamePlateStackCardView extends StatelessWidget {
   });
 
   List<Widget> _buildChildren() {
-    List<Widget> _children = [];
-    double x = 0;
-    double offset = 100 / 5;
+    double dx = 0;
+    double offset = 80 / cards.length;
+
+    List<Widget> _children = [
+      SizedBox(
+        width:
+            namePlateCardViewWidth * cards.length - offset * (cards.length - 1),
+      ),
+    ];
+
     for (int index = 0; index < cards.length; index++) {
       CardObject card = cards[index];
       if (deactivated) {
@@ -262,21 +269,17 @@ class NamePlateStackCardView extends StatelessWidget {
         index: _children.length,
         highlightCards: highlightCards,
       );
-      double top = 0;
-      // if (index == 0 || index == 3) {
-      //   top = -20;
-      // }
+
+      double dy = 0;
       if (card.highlight) {
-        top = -20;
+        dy = -20;
       }
 
-      view = Positioned(left: x, top: top, child: view);
+      view = Transform.translate(offset: Offset(dx, dy), child: view);
+
+      dx += offset;
+
       _children.add(view);
-      if (index == 0) {
-        x = x + offset;
-      } else {
-        x = x + offset;
-      }
     }
 
     return _children;
@@ -285,14 +288,8 @@ class NamePlateStackCardView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (cards == null || cards.isEmpty) return const SizedBox.shrink();
-    // return Row(
-    //   mainAxisSize: MainAxisSize.min,
-    //   mainAxisAlignment: MainAxisAlignment.center,
-    //   children: _buildChildren(),
-    // );
+
     return Stack(
-      alignment: Alignment.topLeft,
-      clipBehavior: Clip.none,
       children: _buildChildren(),
     );
   }
