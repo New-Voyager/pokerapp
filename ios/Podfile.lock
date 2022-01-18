@@ -85,8 +85,8 @@ PODS:
     - SAMKeychain
   - flutter_webrtc (0.2.2):
     - Flutter
-    - GoogleWebRTC (= 1.1.31999)
     - Libyuv (= 1703)
+    - WebRTC-SDK (= 92.4515.07)
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
   - FMDB/standard (2.7.5)
@@ -126,7 +126,6 @@ PODS:
     - GoogleUtilities/Logger
   - GoogleUtilities/UserDefaults (7.6.0):
     - GoogleUtilities/Logger
-  - GoogleWebRTC (1.1.31999)
   - image_picker (0.0.1):
     - Flutter
   - in_app_purchase_ios (0.0.1):
@@ -167,6 +166,7 @@ PODS:
     - Flutter
   - wakelock (0.0.1):
     - Flutter
+  - WebRTC-SDK (92.4515.07)
   - webview_flutter (0.0.1):
     - Flutter
 
@@ -214,12 +214,12 @@ SPEC REPOS:
     - GoogleAppMeasurement
     - GoogleDataTransport
     - GoogleUtilities
-    - GoogleWebRTC
     - Libyuv
     - nanopb
     - PromisesObjC
     - Reachability
     - SAMKeychain
+    - WebRTC-SDK
 
 EXTERNAL SOURCES:
   audio_session:
@@ -303,12 +303,11 @@ SPEC CHECKSUMS:
   flutter_fgbg: 31c0d1140a131daea2d342121808f6aa0dcd879d
   flutter_local_notifications: 0c0b1ae97e741e1521e4c1629a459d04b9aec743
   flutter_udid: 0848809dbed4c055175747ae6a45a8b4f6771e1c
-  flutter_webrtc: 39898454258b54ba51996850d5da8d5d53bf1524
+  flutter_webrtc: 6b71a1fc1d931a3dfe879e578ea10e2e6cd84f53
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   GoogleAppMeasurement: 2be61ce546ad074dbe4dd545f222ac6033bb1d9e
   GoogleDataTransport: 629c20a4d363167143f30ea78320d5a7eb8bd940
   GoogleUtilities: 684ee790a24f73ebb2d1d966e9711c203f2a4237
-  GoogleWebRTC: b39a78c4f5cc6b0323415b9233db03a2faa7b0f0
   image_picker: e06f7a68f000bd36f552c1847e33cda96ed31f1f
   in_app_purchase_ios: 18c65275991b8a28b2a47634a7797fb23d5d773e
   just_audio: baa7252489dbcf47a4c7cc9ca663e9661c99aafa
@@ -329,6 +328,7 @@ SPEC CHECKSUMS:
   vibration: b5a33e764c3f609a975b9dca73dce20fdde627dc
   video_player: 9cc823b1d9da7e8427ee591e8438bfbcde500e6e
   wakelock: d0fc7c864128eac40eba1617cb5264d9c940b46f
+  WebRTC-SDK: 540a44f2e30e89c75e331d5c4a372253ba668233
   webview_flutter: 3603125dfd3bcbc9d8d418c3f80aeecf331c068b
 
 PODFILE CHECKSUM: fc43df57c1e8d7f51df49022aa71f59bdca1e7da

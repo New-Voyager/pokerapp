@@ -100,6 +100,8 @@ class IonAudioConferenceService {
   final GameState gameState;
   Connector _connector;
   RTC _rtc;
+  JsonRPCSignal _signal;
+  Client _client;
   bool _inConference = false;
   bool _closed = false;
 
@@ -122,14 +124,24 @@ class IonAudioConferenceService {
         return;
       }
       _closed = false;
-      _connector = Connector(sfuUrl);
-      _rtc = new RTC(_connector);
-      _rtc.ontrack = onTrack;
-      _rtc.onspeaker = onSpeakers;
-      await _rtc.connect();
+      String sfuUrlTemp = "ws://192.168.0.111:7000/ws";
+      sfuUrlTemp = sfuUrl;
+      final signal = JsonRPCSignal(sfuUrlTemp);
+      _signal = signal;
+
+      // _connector = Connector(sfuUrl);
+      // _rtc = new RTC(_connector);
+      // _rtc.ontrack = onTrack;
+      // _rtc.onspeaker = onSpeakers;
+      //await _rtc.connect();
       if (_closed) return;
       String playerId = this.player.id.toString();
-      await _rtc.join(this.confRoom, playerId, JoinConfig());
+      Client client = await Client.create(
+          sid: this.confRoom, uid: playerId, signal: signal);
+      _client = client;
+      client.ontrack = onTrack;
+      client.onspeaker = onSpeakers;
+      //await _rtc.join(this.confRoom, playerId, JoinConfig());
       if (_closed) return;
       log('RTC: $playerId joined the conference');
       var localStream = await LocalStream.getUserMedia(
@@ -137,7 +149,8 @@ class IonAudioConferenceService {
       if (Platform.isIOS) {
         localStream.getTrack('audio').enableSpeakerphone(true);
       }
-      await _rtc.publish(localStream);
+      await client.publish(localStream);
+      //await _rtc.publish(localStream);
       if (_closed) return;
       log('RTC: name: $playerId  stream id ${localStream.stream.id}');
       Participant participant = Participant(stream: localStream, remote: false);
@@ -200,6 +213,16 @@ class IonAudioConferenceService {
       _connector.close();
     }
     _connector = null;
+
+    if (_client != null) {
+      _client.close();
+    }
+    _client = null;
+
+    if (_signal != null) {
+      _signal.close();
+    }
+    _signal = null;
   }
 
   onTrack(MediaStreamTrack track, RemoteStream remoteStream) {
