@@ -98,8 +98,8 @@ class IonAudioConferenceService {
   final PlayerInfo player;
   final GameMessagingService chatService;
   final GameState gameState;
-  IonBaseConnector _connector;
-  IonSDKSFU _rtc;
+  Connector _connector;
+  RTC _rtc;
   bool _inConference = false;
   bool _closed = false;
 
@@ -122,14 +122,14 @@ class IonAudioConferenceService {
         return;
       }
       _closed = false;
-      _connector = IonBaseConnector(sfuUrl);
-      _rtc = new IonSDKSFU(_connector);
+      _connector = Connector(sfuUrl);
+      _rtc = new RTC(_connector);
       _rtc.ontrack = onTrack;
       _rtc.onspeaker = onSpeakers;
       await _rtc.connect();
       if (_closed) return;
       String playerId = this.player.id.toString();
-      await _rtc.join(this.confRoom, playerId);
+      await _rtc.join(this.confRoom, playerId, JoinConfig());
       if (_closed) return;
       log('RTC: $playerId joined the conference');
       var localStream = await LocalStream.getUserMedia(
