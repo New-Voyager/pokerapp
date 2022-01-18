@@ -9,6 +9,8 @@ enum GameType {
   FIVE_CARD_PLO_HILO,
   ROE,
   DEALER_CHOICE,
+  SIX_CARD_PLO,
+  SIX_CARD_PLO_HILO,
 }
 
 extension GameTypeSerialization on GameType {
@@ -30,6 +32,10 @@ String gameTypeStr(GameType type) {
       return appTextScreen['FIVECARDPLO'];
     case GameType.FIVE_CARD_PLO_HILO:
       return appTextScreen['FIVECARDPLOHILO'];
+    case GameType.SIX_CARD_PLO:
+      return appTextScreen['SIXCARDPLO'];
+    case GameType.SIX_CARD_PLO_HILO:
+      return appTextScreen['SIXCARDPLOHILO'];
     case GameType.ROE:
       return appTextScreen['ROE'];
     case GameType.DEALER_CHOICE:
@@ -51,6 +57,10 @@ String gameTypeStr2(GameType type) {
       return '5 Card Pot Limit Omaha';
     case GameType.FIVE_CARD_PLO_HILO:
       return '5 Card Pot Limit Omaha Hi/Lo';
+    case GameType.SIX_CARD_PLO:
+      return '6 Card Pot Limit Omaha';
+    case GameType.SIX_CARD_PLO_HILO:
+      return '6 Card Pot Limit Omaha Hi/Lo';
     case GameType.ROE:
       return 'Round of Each';
     case GameType.DEALER_CHOICE:
@@ -74,6 +84,10 @@ String gameTypeShortStr2(GameType type) {
       return appTextScreen["5CARDPLO"];
     case GameType.FIVE_CARD_PLO_HILO:
       return appTextScreen["5CARDPLOHILO"];
+    case GameType.SIX_CARD_PLO:
+      return appTextScreen["6CARDPLO"];
+    case GameType.SIX_CARD_PLO_HILO:
+      return appTextScreen["6CARDPLOHILO"];
     case GameType.ROE:
       return appTextScreen["ROUNDOFEACH"];
     case GameType.DEALER_CHOICE:
@@ -95,6 +109,10 @@ String gameTypeShortStr(GameType type) {
       return "5 Card PLO";
     case GameType.FIVE_CARD_PLO_HILO:
       return "5 Card Hi-Lo";
+    case GameType.SIX_CARD_PLO:
+      return "6 Card PLO";
+    case GameType.SIX_CARD_PLO_HILO:
+      return "6 Card Hi-Lo";
     case GameType.ROE:
       return "ROE";
     case GameType.DEALER_CHOICE:
@@ -122,6 +140,8 @@ List<GameType> roeGameChoices() {
     GameType.PLO_HILO,
     GameType.FIVE_CARD_PLO,
     GameType.FIVE_CARD_PLO_HILO,
+    GameType.SIX_CARD_PLO,
+    GameType.SIX_CARD_PLO_HILO,
   ];
 }
 
@@ -132,6 +152,8 @@ List<GameType> gameChoices() {
     GameType.PLO_HILO,
     GameType.FIVE_CARD_PLO,
     GameType.FIVE_CARD_PLO_HILO,
+    GameType.SIX_CARD_PLO,
+    GameType.SIX_CARD_PLO_HILO,
     GameType.ROE,
     GameType.DEALER_CHOICE,
   ];
