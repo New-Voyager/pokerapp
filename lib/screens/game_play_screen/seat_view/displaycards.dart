@@ -97,6 +97,14 @@ class DisplayCardsWidget extends StatelessWidget {
         offset = Offset(-30, 10);
       }
     }
+    return Transform.translate(
+        offset: offset,
+        child: Transform.scale(
+          scale: scale,
+          child: StackCardView(
+            cards: _getCards(cards),
+          ),
+        ));
     // return Transform.translate(
     //   offset: offset,
     //   child: Transform.scale(
@@ -105,10 +113,10 @@ class DisplayCardsWidget extends StatelessWidget {
     //   ),
     // );
     // return Container();
-    return NamePlateStackCardView(
-      cards: _getCards(cards),
-      highlightCards: seat.player.highlightCards,
-    );
+    // return NamePlateStackCardView(
+    //   cards: _getCards(cards),
+    //   highlightCards: seat.player.highlightCards,
+    // );
   }
 
   @override
@@ -121,12 +129,13 @@ class DisplayCardsWidget extends StatelessWidget {
       //   seatPlayerCards = [];
       // }
     }
-    // return AnimatedSwitcher(
-    //   duration: AppConstants.fastAnimationDuration,
-    //   child: (seatPlayerCards != null && seatPlayerCards.isNotEmpty)
-    //       ? _buildStackCardView(seatPlayerCards, context)
-    //       : SizedBox.shrink(),
-    // );
+    return AnimatedSwitcher(
+      duration: AppConstants.fastAnimationDuration,
+      child: (seatPlayerCards != null && seatPlayerCards.isNotEmpty)
+          ? _buildStackCardView(seatPlayerCards, context)
+          : SizedBox.shrink(),
+    );
+
     return Container(
         width: 140,
         height: 50,
