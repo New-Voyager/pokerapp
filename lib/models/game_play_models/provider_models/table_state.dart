@@ -24,6 +24,9 @@ class TableState extends ChangeNotifier {
   String get whichWinner => _whichWinner;
   String _whichWinner;
 
+  bool _dealerChoicePrompt = false;
+  String _dealerChoicePromptPlayer = '';
+
   // This flag is used when processing query current state response
   // if we are in middle of hand result animation, wait for the next hand
   // to update the table
@@ -399,5 +402,21 @@ class TableState extends ChangeNotifier {
 
   int get flipSpeed {
     return this._flipSpeed;
+  }
+
+  bool get dealerChoicePrompt => this._dealerChoicePrompt;
+
+  String get dealerChoicePromptPlayer => this._dealerChoicePromptPlayer;
+
+  void updateDealerChoicePrompt(bool prompt, String player) {
+    _dealerChoicePrompt = false;
+    _dealerChoicePromptPlayer = '';
+    _showCardsShuffling = false;
+    if (prompt) {
+      _showCardsShuffling = true;
+      _dealerChoicePrompt = true;
+      _dealerChoicePromptPlayer = player;
+    }
+    notifyListeners();
   }
 }
