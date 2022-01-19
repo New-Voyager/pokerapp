@@ -5,6 +5,7 @@ import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:pokerapp/widgets/cards/card_builder_widget.dart';
+import 'package:pokerapp/widgets/cards/pulsating_card_container.dart';
 
 class CardView extends StatelessWidget {
   final CardObject card;
@@ -106,34 +107,36 @@ class NamePlateCardView extends StatelessWidget {
       children: [
         // card suit and label
         Expanded(
-          flex: 3,
+          flex: 1,
           child: Align(
             alignment: Alignment.topLeft,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  this.card.label == 'T' ? '10' : this.card.label ?? 'X',
-                  style: TextStyle(
-                    color: this.card.color,
-                    fontWeight: FontWeight.w700,
-                    fontFamily: AppAssets.fontFamilyLato,
+            child: FittedBox(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    this.card.label == 'T' ? '10' : this.card.label ?? 'X',
+                    style: TextStyle(
+                      color: this.card.color,
+                      fontWeight: FontWeight.w700,
+                      fontFamily: AppAssets.fontFamilyLato,
+                    ),
                   ),
-                ),
-                Image.asset(
-                  suitImage,
-                  height: 18,
-                  width: 18,
-                  color: this.card.color,
-                )
-              ],
+                  Image.asset(
+                    suitImage,
+                    height: 18,
+                    width: 18,
+                    color: this.card.color,
+                  )
+                ],
+              ),
             ),
           ),
         ),
 
         // card label
         Expanded(
-          flex: 3,
+          flex: 1,
           child: FittedBox(
             fit: BoxFit.fitWidth,
             child: Container(
@@ -141,7 +144,6 @@ class NamePlateCardView extends StatelessWidget {
                 this.card.label == 'T' ? '10' : this.card.label ?? 'X',
                 style: TextStyle(
                   height: 0.30,
-                  letterSpacing: 0.0,
                   color: this.card.color,
                   fontWeight: FontWeight.w700,
                   fontFamily: AppAssets.fontFamilyLato,
@@ -178,7 +180,14 @@ class NamePlateCardView extends StatelessWidget {
       width: namePlateCardViewWidth,
       height: namePlateCardViewHeight,
       decoration: fgDecoration,
-      child: cardWidget,
+      child: card.highlight
+          ? PulsatingCardContainer(
+              height: namePlateCardViewHeight,
+              width: namePlateCardViewWidth,
+              child: cardWidget,
+              color: Colors.green,
+            )
+          : cardWidget,
     );
 
     if (!card.highlight && !card.reveal) {

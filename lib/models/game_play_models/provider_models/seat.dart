@@ -46,6 +46,8 @@ class Seat extends ChangeNotifier {
   bool dealer;
   bool bb;
 
+  final ValueNotifier<bool> enLargeCardsVn = ValueNotifier(false);
+
   Seat(int localSeatPos, SeatPos uiPos, SeatPosAttribs attribs) {
     this._serverSeatPos = -1;
     this._localSeatPos = localSeatPos;
