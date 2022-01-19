@@ -1083,6 +1083,7 @@ class GameState {
       if (seat.player == null) {
         continue;
       }
+      seat.enLargeCardsVn.value = false;
       seat.player.action.animateAction = false;
       bool stickAction = true;
       if (newHand) {
