@@ -56,16 +56,16 @@ class PlayerView extends StatefulWidget {
   final GameContextObject gameContextObject;
   final GameState gameState;
 
-  PlayerView(
-      {Key key,
-      @required this.seat,
-      @required this.onUserTap,
-      @required this.gameComService,
-      @required this.boardAttributes,
-      @required this.gameContextObject,
-      this.cardsAlignment = Alignment.centerRight,
-      this.gameState})
-      : super(key: key);
+  PlayerView({
+    Key key,
+    @required this.seat,
+    @required this.onUserTap,
+    @required this.gameComService,
+    @required this.boardAttributes,
+    @required this.gameContextObject,
+    this.cardsAlignment = Alignment.centerRight,
+    this.gameState,
+  }) : super(key: key);
 
   @override
   _PlayerViewState createState() => _PlayerViewState();
@@ -112,7 +112,15 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
     _messagePopupTimer?.cancel();
   }
 
-  onTap(BuildContext context) async {
+  void onTap(BuildContext context) async {
+    if (widget.gameState.handState == HandState.RESULT &&
+        widget.seat.player.winner == true) {
+      final enlargeVn = widget.seat.enLargeCardsVn;
+
+      enlargeVn.value = !enlargeVn.value;
+      return;
+    }
+
     final seatChangeContext = Provider.of<SeatChangeNotifier>(
       context,
       listen: false,

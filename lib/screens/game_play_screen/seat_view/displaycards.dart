@@ -96,9 +96,20 @@ class DisplayCardsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _buildStackCardView(
-      seat.player.cards,
-      context,
+    return ValueListenableBuilder(
+      valueListenable: seat.enLargeCardsVn,
+      child: _buildStackCardView(
+        seat.player.cards,
+        context,
+      ),
+      builder: (context, enLarge, child) {
+        return AnimatedScale(
+          scale: enLarge ? 1.5 : 1.0,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+          child: child,
+        );
+      },
     );
   }
 }

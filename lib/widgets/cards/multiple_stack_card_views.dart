@@ -243,67 +243,77 @@ class NamePlateStackCardView extends StatelessWidget {
     this.horizontal = true,
   });
 
-  List<Widget> _buildChildren() {
-    double dx = 0;
-    double offset = 100 / cards.length;
-
-    List<Widget> _children = [
-      SizedBox(
-        width:
-            namePlateCardViewWidth * cards.length - offset * (cards.length - 1),
-      ),
-    ];
-
-    for (int index = 0; index < cards.length; index++) {
-      CardObject card = cards[index];
-      if (deactivated) {
-        card.dim = true;
-      }
-
-      double addOffset = offset;
-      Widget view;
-
-      if (card.cardFace == CardFace.BACK) {
-        final cardBackImage =
-            Image.asset('assets/images/card_back/set2/Asset 8.png');
-
-        view = Container(
-            width: namePlateCardViewWidth,
-            height: namePlateCardViewHeight,
-            child: ClipRRect(
-              borderRadius: BorderRadius.all(Radius.circular(5)),
-              child: cardBackImage,
-            ));
-        addOffset -= 5;
-      } else {
-        view = NamePlateCardView(
-          card: card,
-          cardBackBytes: null,
-          doubleBoard: card.doubleBoard,
-          index: _children.length,
+  List<Widget> _getChildren({
+    @required int mid,
+    @required double displacementValue,
+  }) {
+    List<Widget> children = List.generate(
+      cards.length,
+      (i) {
+        final offsetInX = -(i - mid) * displacementValue -
+            (cards.length % 2 == 0 ? displacementValue / 2 : 0.0);
+        return Transform.translate(
+          offset: Offset(offsetInX, 0),
+          child: _buildChild(i),
         );
-      }
+      },
+    );
 
-      double dy = 0;
-      if (card.highlight) {
-        dy = -20;
-      }
+    return children.reversed.toList();
+  }
 
-      view = Transform.translate(offset: Offset(dx, dy), child: view);
+  Widget _buildChild(int index) {
+    CardObject card = cards[index];
 
-      dx += addOffset;
-      _children.add(view);
+    if (deactivated) card.dim = true;
+
+    Widget view;
+
+    if (card.cardFace == CardFace.BACK) {
+      final cardBackImage = Image.asset(
+        'assets/images/card_back/set2/Asset 8.png',
+      );
+      view = Container(
+        width: namePlateCardViewWidth,
+        height: namePlateCardViewHeight,
+        child: ClipRRect(
+          borderRadius: BorderRadius.all(Radius.circular(5)),
+          child: cardBackImage,
+        ),
+      );
+    } else {
+      view = NamePlateCardView(
+        card: card,
+        cardBackBytes: null,
+        doubleBoard: card.doubleBoard,
+        index: index,
+      );
     }
 
-    return _children;
+    double dy = 0;
+    if (card.highlight) dy = -20;
+
+    return Transform.translate(offset: Offset(0.0, dy), child: view);
+  }
+
+  double _getScale() {
+    if (cards.length == 5) return 0.90;
+    if (cards.length == 6) return 0.80;
+
+    return 1.0;
   }
 
   @override
   Widget build(BuildContext context) {
     if (cards == null || cards.isEmpty) return const SizedBox.shrink();
 
-    return Stack(
-      children: _buildChildren(),
+    final int mid = cards.length ~/ 2;
+
+    return Transform.scale(
+      scale: _getScale(),
+      child: Stack(
+        children: _getChildren(mid: mid, displacementValue: 18.0),
+      ),
     );
   }
 }
