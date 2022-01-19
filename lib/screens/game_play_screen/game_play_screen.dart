@@ -31,11 +31,7 @@ import 'package:pokerapp/screens/game_context_screen/game_chat/game_chat.dart';
 import 'package:pokerapp/screens/game_play_screen/footer_view.dart';
 import 'package:pokerapp/screens/game_play_screen/game_play_screen_util_methods.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/board_view.dart';
-import 'package:pokerapp/screens/game_play_screen/main_views/board_view/decorative_views/background_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/header_view/header_view.dart';
-import 'package:pokerapp/screens/game_play_screen/main_views/which_winner_widget.dart';
-import 'package:pokerapp/screens/game_play_screen/notifications/notifications.dart';
-import 'package:pokerapp/screens/game_play_screen/widgets/icon_with_badge.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/app/player_service.dart';
@@ -66,7 +62,6 @@ import '../../routes.dart';
 import '../../services/test/test_service.dart';
 import 'game_play_screen_util_methods.dart';
 import 'location_updates.dart';
-import 'widgets/pending_approvals_button.dart';
 
 // FIXME: THIS NEEDS TO BE CHANGED AS PER DEVICE CONFIG
 const kScrollOffsetPosition = 40.0;
@@ -755,9 +750,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       if (appService.appSettings.showReportInfoDialog) {
         appService.appSettings.showReportInfoDialog = false;
 
-        showErrorDialog(context, 'Report an issue?',
-            "If you run into any issues while using the app or want us to implement a feature, please tap the hamburger menu on the bottom left and tap Report Issue.",
-            info: true);
+        // showErrorDialog(context, 'Report an issue?',
+        //     "If you run into any issues while using the app or want us to implement a feature, please tap the hamburger menu on the bottom left and tap Report Issue.",
+        //     info: true);
       }
     });
 
