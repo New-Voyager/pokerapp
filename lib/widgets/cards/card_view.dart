@@ -154,7 +154,15 @@ class NamePlateCardView extends StatelessWidget {
       ],
     );
 
+    double opacity = 1.0;
     Color color = Colors.white;
+    if (card.highlight) {
+      color = Colors.white;
+    } else {
+      opacity = 0.30;
+      //color = Colors.grey[700];
+    }
+
     BoxDecoration fgDecoration = BoxDecoration(
       color: color,
       borderRadius: BorderRadius.circular(3),
@@ -173,7 +181,7 @@ class NamePlateCardView extends StatelessWidget {
       child: cardWidget,
     );
 
-    if (!card.highlight) {
+    if (!card.highlight && !card.reveal) {
       return ColorFiltered(
         colorFilter: ColorFilter.mode(Colors.grey, BlendMode.modulate),
         child: child,

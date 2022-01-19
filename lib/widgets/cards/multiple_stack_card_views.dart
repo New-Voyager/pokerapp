@@ -292,7 +292,6 @@ class NamePlateStackCardView extends StatelessWidget {
       view = Transform.translate(offset: Offset(dx, dy), child: view);
 
       dx += addOffset;
-
       _children.add(view);
     }
 

@@ -289,6 +289,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
               isReplayHandsActor: isReplayHandsActor,
               seat: seat,
               showdown: widget.gameState.showdown,
+              colorCards: widget.gameState.playerLocalConfig.colorCards,
             ),
           ),
         ));
@@ -300,6 +301,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
         isReplayHandsActor: isReplayHandsActor,
         seat: seat,
         showdown: widget.gameState.showdown,
+        colorCards: widget.gameState.playerLocalConfig.colorCards,
       ),
     );
   }
