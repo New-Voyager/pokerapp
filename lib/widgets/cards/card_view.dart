@@ -183,9 +183,9 @@ class NamePlateCardView extends StatelessWidget {
       child: cardWidget,
     );
 
-    if (!card.highlight) {
+    if (!card.highlight && !card.reveal) {
       return ColorFiltered(
-        colorFilter: ColorFilter.mode(Colors.grey[700], BlendMode.modulate),
+        colorFilter: ColorFilter.mode(Colors.grey, BlendMode.modulate),
         child: child,
       );
     }

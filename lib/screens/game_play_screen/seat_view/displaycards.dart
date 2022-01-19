@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
-import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/widgets/cards/multiple_stack_card_views.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 
@@ -11,11 +10,13 @@ class DisplayCardsWidget extends StatelessWidget {
   final Seat seat;
   final bool showdown;
   final bool isReplayHandsActor;
+  final bool colorCards;
 
   DisplayCardsWidget({
     @required this.seat,
     @required this.showdown,
     this.isReplayHandsActor = false,
+    this.colorCards = false,
   });
 
   List<CardObject> _getCards(List<int> cards) {
@@ -34,7 +35,8 @@ class DisplayCardsWidget extends StatelessWidget {
 
     List<CardObject> cardObjects = [];
     for (int cardNum in cards) {
-      CardObject card = CardHelper.getCard(cardNum);
+      CardObject card =
+          CardHelper.getCard(cardNum, colorCards: this.colorCards);
       card.cardType = CardType.PlayerCard;
       card.dim = true;
 
