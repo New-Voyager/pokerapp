@@ -10,13 +10,71 @@ import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/milliseconds_counter.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
+import 'package:pokerapp/widgets/switch.dart';
 
-class DealerChoicePrompt extends StatelessWidget {
+class DealerChoiceSelection {
+  GameType gameType;
+  bool doubleBoard = false;
+}
+
+class DealerChoicePrompt extends StatefulWidget {
   final List<GameType> listOfGameTypes;
   final Duration duration;
   final Function onSelect;
 
   DealerChoicePrompt(this.listOfGameTypes, this.duration, this.onSelect);
+
+  @override
+  State<DealerChoicePrompt> createState() => _DealerChoicePromptState();
+
+  static Future<DealerChoiceSelection> prompt({
+    @required List<GameType> listOfGameTypes,
+    @required Duration timeLimit,
+  }) async {
+    int sec = timeLimit.inSeconds;
+    bool dismissed = false;
+    DealerChoiceSelection result = await showDialog<DealerChoiceSelection>(
+      context: navigatorKey.currentContext,
+      barrierDismissible: false,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: AppColorsNew.newDialogBgColor.withAlpha(100),
+          content: StatefulBuilder(
+            builder: (context, localState) {
+              Future.delayed(
+                  Duration(milliseconds: timeLimit.inSeconds * 1000 + 250), () {
+                if (!dismissed) {
+                  dismissed = true;
+                  int random = math.Random().nextInt(listOfGameTypes.length);
+                  Navigator.of(context).pop(listOfGameTypes[random]);
+                }
+              });
+
+              return DealerChoicePrompt(listOfGameTypes, timeLimit,
+                  (GameType gameType, bool doubleBoard) {
+                DealerChoiceSelection ret = DealerChoiceSelection();
+                ret.doubleBoard = doubleBoard;
+                ret.gameType = gameType;
+                dismissed = true;
+                Navigator.of(context).pop(ret);
+              });
+            },
+          ),
+        );
+      },
+    );
+    if (result == null) {
+      result = DealerChoiceSelection();
+      result.gameType = GameType.HOLDEM;
+      result.doubleBoard = false;
+    }
+
+    return result;
+  }
+}
+
+class _DealerChoicePromptState extends State<DealerChoicePrompt> {
+  bool doubleBoard = false;
 
   String printDuration(Duration duration) {
     if (duration.inSeconds <= 0) {
@@ -51,27 +109,35 @@ class DealerChoicePrompt extends StatelessWidget {
               ),
             ),
           ),
+          SwitchWidget2(
+              label: 'Double board',
+              value: doubleBoard,
+              onChange: (v) {
+                doubleBoard = v;
+              }),
           Container(
             width: MediaQuery.of(context).size.width * 0.7,
             //height: MediaQuery.of(context).size.height*0.4,
             child: Wrap(
               alignment: WrapAlignment.spaceAround,
-              children: List.generate(listOfGameTypes.length, (index) {
+              children: List.generate(widget.listOfGameTypes.length, (index) {
                 return ElevatedButton.icon(
                   style:
                       ElevatedButton.styleFrom(primary: appTheme.primaryColor),
                   onPressed: () {
-                    if (this.onSelect != null) {
-                      this.onSelect(listOfGameTypes[index]);
+                    if (this.widget.onSelect != null) {
+                      this
+                          .widget
+                          .onSelect(widget.listOfGameTypes[index], doubleBoard);
                     }
                   },
                   icon: Image.asset(
                       GameModelNew.getGameTypeImageAssetFromEnum(
-                          listOfGameTypes[index]),
+                          widget.listOfGameTypes[index]),
                       width: 24,
                       height: 24),
                   label: Text(
-                    "${gameTypeShortStr(listOfGameTypes[index])}",
+                    "${gameTypeShortStr(widget.listOfGameTypes[index])}",
                     //textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 10.dp,
@@ -91,10 +157,13 @@ class DealerChoicePrompt extends StatelessWidget {
           ElevatedButton(
             style: ElevatedButton.styleFrom(primary: appTheme.primaryColor),
             onPressed: () {
-              if (this.onSelect != null) {
-                int random = math.Random().nextInt(listOfGameTypes.length);
-                if (this.onSelect != null) {
-                  this.onSelect(listOfGameTypes[random]);
+              if (this.widget.onSelect != null) {
+                int random =
+                    math.Random().nextInt(widget.listOfGameTypes.length);
+                if (this.widget.onSelect != null) {
+                  this
+                      .widget
+                      .onSelect(widget.listOfGameTypes[random], doubleBoard);
                 }
               }
             },
@@ -112,7 +181,7 @@ class DealerChoicePrompt extends StatelessWidget {
           ),
           CountdownMs(
               key: UniqueKey(),
-              totalSeconds: this.duration.inSeconds,
+              totalSeconds: this.widget.duration.inSeconds,
               currentSeconds: 0,
               build: (_, time) {
                 int remainingTime = time ~/ 1000;
@@ -128,42 +197,5 @@ class DealerChoicePrompt extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  static Future<GameType> prompt({
-    @required List<GameType> listOfGameTypes,
-    @required Duration timeLimit,
-  }) async {
-    int sec = timeLimit.inSeconds;
-    bool dismissed = false;
-    final GameType result = await showDialog(
-      context: navigatorKey.currentContext,
-      barrierDismissible: false,
-      builder: (context) {
-        return AlertDialog(
-          backgroundColor: AppColorsNew.newDialogBgColor.withAlpha(100),
-          content: StatefulBuilder(
-            builder: (context, localState) {
-              Future.delayed(
-                  Duration(milliseconds: timeLimit.inSeconds * 1000 + 250), () {
-                if (!dismissed) {
-                  dismissed = true;
-                  int random = math.Random().nextInt(listOfGameTypes.length);
-                  Navigator.of(context).pop(listOfGameTypes[random]);
-                }
-              });
-
-              return DealerChoicePrompt(listOfGameTypes, timeLimit,
-                  (GameType gameType) {
-                dismissed = true;
-                Navigator.of(context).pop(gameType);
-              });
-            },
-          ),
-        );
-      },
-    );
-    log('GameType: ${result.toJson()}');
-    return result ?? GameType.HOLDEM;
   }
 }

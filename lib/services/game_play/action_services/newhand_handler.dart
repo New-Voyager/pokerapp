@@ -219,6 +219,7 @@ class NewHandHandler {
     gameState.handInProgress = true;
     gameState.actionState.reset();
     gameState.actionState.notify();
+    gameState.tableState.updateDealerChoicePrompt(false, '');
     ////log('Hand Message: ::handleNewHand:: START');
     AudioService.playNewHand(mute: gameState.playerLocalConfig.mute);
     if (gameState.uiClosing) return;
