@@ -397,12 +397,14 @@ class GameTypeChip extends StatelessWidget {
       label: Text(
         '${gameTypeShortStr(gameType)}',
         style: selected
-            ? AppDecorators.getHeadLine4Style(theme: theme)
+            ? AppDecorators.getHeadLine6Style(theme: theme)
                 .copyWith(color: theme.primaryColorWithDark())
-            : AppDecorators.getHeadLine4Style(theme: theme)
+            : AppDecorators.getHeadLine6Style(theme: theme)
                 .copyWith(color: theme.secondaryColor),
       ),
-      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: EdgeInsets.all(4),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(20))),
       selected: selected,
       selectedColor: theme.secondaryColor,
       backgroundColor: theme.fillInColor,

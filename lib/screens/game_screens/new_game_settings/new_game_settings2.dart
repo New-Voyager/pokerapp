@@ -648,7 +648,8 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
             //   ),
             //   borderRadius: BorderRadius.circular(10),
             // ),
-            decoration: BoxDecoration(color: theme.fillInColor),
+            decoration:
+                BoxDecoration(color: theme.secondaryColorWithDark(0.35)),
             padding: const EdgeInsets.all(16),
             child: Column(
               children: [
@@ -701,8 +702,8 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
                                       'Hi-Lo',
                                       '5 Card',
                                       '5 Card Hi-Lo',
-                                      //'6 Card',
-                                      //'6 Card Hi-Lo',
+                                      '6 Card',
+                                      '6 Card Hi-Lo',
                                     ],
                                     onSelect: (String value) {
                                       if (value == 'PLO') {
@@ -756,48 +757,12 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
                                                     onSelect: (value) {
                                                       if (value == 1) {
                                                         gmp.dealerChoiceOrbit =
-                                                            true;
+                                                            false;
                                                       } else {
                                                         gmp.dealerChoiceOrbit =
-                                                            false;
+                                                            true;
                                                       }
                                                     });
-                                                // return ToggleButtons(
-                                                //   selectedColor: Colors.black,
-                                                //   borderRadius:
-                                                //       BorderRadius.circular(
-                                                //           30.pw),
-                                                //   borderColor:
-                                                //       theme.accentColor,
-                                                //   fillColor: theme.accentColor,
-                                                //   onPressed: (int index) {
-                                                //     if (index == 0) {
-                                                //       gmp.dealerChoiceOrbit =
-                                                //           true;
-                                                //     } else {
-                                                //       gmp.dealerChoiceOrbit =
-                                                //           false;
-                                                //     }
-                                                //   },
-                                                //   isSelected: [
-                                                //     gmp.dealerChoiceOrbit,
-                                                //     !gmp.dealerChoiceOrbit
-                                                //   ],
-                                                //   children: [
-                                                //     Padding(
-                                                //       padding: const EdgeInsets
-                                                //               .symmetric(
-                                                //           horizontal: 4.0),
-                                                //       child: Text('Orbit'),
-                                                //     ),
-                                                //     Padding(
-                                                //       padding: const EdgeInsets
-                                                //               .symmetric(
-                                                //           horizontal: 4.0),
-                                                //       child: Text('Button'),
-                                                //     ),
-                                                //   ],
-                                                // );
                                               },
                                             ),
                                           ],
