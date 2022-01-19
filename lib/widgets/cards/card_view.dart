@@ -87,12 +87,10 @@ class NamePlateCardView extends StatelessWidget {
   final Uint8List cardBackBytes;
   final bool doubleBoard;
   final int index;
-  final List<int> highlightCards;
 
   NamePlateCardView({
     @required this.card,
     @required this.cardBackBytes,
-    this.highlightCards,
     this.doubleBoard = false,
     this.index = 1,
   });
@@ -108,7 +106,7 @@ class NamePlateCardView extends StatelessWidget {
       children: [
         // card suit and label
         Expanded(
-          flex: 2,
+          flex: 3,
           child: Align(
             alignment: Alignment.topLeft,
             child: Column(
@@ -195,18 +193,6 @@ class NamePlateCardView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // return CardBuilderWidget(
-    //   card: card,
-    //   dim: card.dim,
-    //   backCardBytes: cardBackBytes,
-    //   highlight: card.highlight,
-    //   isCardVisible: true,
-    //   cardBuilder: _buildCardUI,
-    //   roundRadius: 2.5,
-    //   cardFace: card.cardFace,
-    //   doubleBoard: this.doubleBoard,
-    // );
-
     return _buildCardUI(null, null, context);
   }
 }

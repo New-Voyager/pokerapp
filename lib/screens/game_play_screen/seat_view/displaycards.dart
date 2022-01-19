@@ -89,50 +89,15 @@ class DisplayCardsWidget extends StatelessWidget {
     if (seat.player.playerFolded && seat.player.revealCards.length == 0) {
       return const SizedBox.shrink();
     }
-
-    // double scale = 1.0;
-    // Offset offset = Offset(0, 0);
-    // if (cards.length == 4 || cards.length == 5) {
-    //   offset = Offset(-18, 10);
-    //   if (cards.length == 5) {
-    //     scale = 0.85;
-    //     offset = Offset(-30, 10);
-    //   }
-    // }
-    // return Transform.translate(
-    //     offset: offset,
-    //     child: Transform.scale(
-    //       scale: scale,
-    //       child: StackCardView(
-    //         cards: _getCards(cards),
-    //       ),
-    //     ));
-
     return NamePlateStackCardView(
       cards: _getCards(cards),
-      highlightCards: seat.player.highlightCards,
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    List<int> seatPlayerCards = seat.player.cards;
-    if (seat.player.revealCards.isEmpty) {
-      // player didn't reveal the cards
-      // if this is not showdown, don't show the cards
-      // if (!showdown) {
-      //   seatPlayerCards = [];
-      // }
-    }
-    // return AnimatedSwitcher(
-    //   duration: AppConstants.fastAnimationDuration,
-    //   child: (seatPlayerCards != null && seatPlayerCards.isNotEmpty)
-    //       ? _buildStackCardView(seatPlayerCards, context)
-    //       : SizedBox.shrink(),
-    // );
-
     return _buildStackCardView(
-      seatPlayerCards,
+      seat.player.cards,
       context,
     );
   }
