@@ -124,9 +124,7 @@ class IonAudioConferenceService {
         return;
       }
       _closed = false;
-      String sfuUrlTemp = "ws://192.168.0.111:7000/ws";
-      sfuUrlTemp = sfuUrl;
-      final signal = JsonRPCSignal(sfuUrlTemp);
+      final signal = JsonRPCSignal(sfuUrl);
       _signal = signal;
 
       // _connector = Connector(sfuUrl);
