@@ -637,6 +637,8 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
         }
         gmp.notify = true;
 
+        List<String> orbitChoices = ["Orbit", "Button"];
+
         return Consumer<NewGameModelProvider>(builder: (_, __, ___) {
           return Container(
             // decoration: AppDecorators.bgRadialGradient(theme).copyWith(
@@ -744,42 +746,58 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
                                                 theme: theme),
                                             Consumer<NewGameModelProvider>(
                                               builder: (_, vnGmp, __) {
-                                                return ToggleButtons(
-                                                  selectedColor: Colors.black,
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          30.pw),
-                                                  borderColor:
-                                                      theme.accentColor,
-                                                  fillColor: theme.accentColor,
-                                                  onPressed: (int index) {
-                                                    if (index == 0) {
-                                                      gmp.dealerChoiceOrbit =
-                                                          true;
-                                                    } else {
-                                                      gmp.dealerChoiceOrbit =
-                                                          false;
-                                                    }
-                                                  },
-                                                  isSelected: [
-                                                    gmp.dealerChoiceOrbit,
-                                                    !gmp.dealerChoiceOrbit
-                                                  ],
-                                                  children: [
-                                                    Padding(
-                                                      padding: const EdgeInsets
-                                                              .symmetric(
-                                                          horizontal: 4.0),
-                                                      child: Text('Orbit'),
-                                                    ),
-                                                    Padding(
-                                                      padding: const EdgeInsets
-                                                              .symmetric(
-                                                          horizontal: 4.0),
-                                                      child: Text('Button'),
-                                                    ),
-                                                  ],
-                                                );
+                                                return RadioToggleButtonsWidget<
+                                                        String>(
+                                                    values: orbitChoices,
+                                                    defaultValue:
+                                                        gmp.dealerChoiceOrbit
+                                                            ? 0
+                                                            : 1,
+                                                    onSelect: (value) {
+                                                      if (value == 1) {
+                                                        gmp.dealerChoiceOrbit =
+                                                            true;
+                                                      } else {
+                                                        gmp.dealerChoiceOrbit =
+                                                            false;
+                                                      }
+                                                    });
+                                                // return ToggleButtons(
+                                                //   selectedColor: Colors.black,
+                                                //   borderRadius:
+                                                //       BorderRadius.circular(
+                                                //           30.pw),
+                                                //   borderColor:
+                                                //       theme.accentColor,
+                                                //   fillColor: theme.accentColor,
+                                                //   onPressed: (int index) {
+                                                //     if (index == 0) {
+                                                //       gmp.dealerChoiceOrbit =
+                                                //           true;
+                                                //     } else {
+                                                //       gmp.dealerChoiceOrbit =
+                                                //           false;
+                                                //     }
+                                                //   },
+                                                //   isSelected: [
+                                                //     gmp.dealerChoiceOrbit,
+                                                //     !gmp.dealerChoiceOrbit
+                                                //   ],
+                                                //   children: [
+                                                //     Padding(
+                                                //       padding: const EdgeInsets
+                                                //               .symmetric(
+                                                //           horizontal: 4.0),
+                                                //       child: Text('Orbit'),
+                                                //     ),
+                                                //     Padding(
+                                                //       padding: const EdgeInsets
+                                                //               .symmetric(
+                                                //           horizontal: 4.0),
+                                                //       child: Text('Button'),
+                                                //     ),
+                                                //   ],
+                                                // );
                                               },
                                             ),
                                           ],

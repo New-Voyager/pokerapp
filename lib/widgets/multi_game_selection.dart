@@ -2,7 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/enums/game_type.dart';
+import 'package:pokerapp/models/newmodels/game_model_new.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/screens/game_screens/new_game_settings/choose_game_new.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class MultiGameSelection extends StatefulWidget {
   final List<GameType> games;
@@ -65,6 +69,46 @@ class _MultiGameSelectionState extends State<MultiGameSelection> {
     return Wrap(
       spacing: 4,
       children: gameTypeChips,
+    );
+  }
+}
+
+class GameTypeSelectionWidget extends StatelessWidget {
+  final List<GameType> listOfGameTypes;
+  final AppTheme theme;
+  final Function onSelect;
+
+  GameTypeSelectionWidget(
+      {@required this.listOfGameTypes,
+      @required this.theme,
+      @required this.onSelect});
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      alignment: WrapAlignment.spaceAround,
+      children: List.generate(listOfGameTypes.length, (index) {
+        return ElevatedButton.icon(
+          style: ElevatedButton.styleFrom(primary: theme.primaryColor),
+          onPressed: () {
+            if (this.onSelect != null) {
+              this.onSelect(listOfGameTypes[index]);
+            }
+          },
+          icon: Image.asset(
+              GameModelNew.getGameTypeImageAssetFromEnum(
+                  listOfGameTypes[index]),
+              width: 24,
+              height: 24),
+          label: Text(
+            "${gameTypeShortStr(listOfGameTypes[index])}",
+            //textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 10.dp,
+              color: AppColorsNew.newGreenButtonColor,
+            ),
+          ),
+        );
+      }),
     );
   }
 }

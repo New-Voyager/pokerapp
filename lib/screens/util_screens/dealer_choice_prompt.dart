@@ -6,10 +6,8 @@ import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/main_helper.dart';
 import 'package:pokerapp/models/newmodels/game_model_new.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
-import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
-import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/milliseconds_counter.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
@@ -81,60 +79,7 @@ class DealerChoicePrompt extends StatelessWidget {
                     ),
                   ),
                 );
-              }
-
-                  //   return Material(
-                  //     color: Colors.transparent,
-                  //     child: InkWell(
-                  //       onTap: () {
-                  //         //dismissed = true;
-                  //         //Navigator.of(context).pop(listOfGameTypes[index]);
-                  //         if (this.onSelect != null) {
-                  //           this.onSelect(listOfGameTypes[index]);
-                  //         }
-                  //       },
-                  //       borderRadius: BorderRadius.circular(32.pw),
-                  //       child: Container(
-                  //         margin:
-                  //             EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  //         width: 40,
-                  //         child: Column(
-                  //           crossAxisAlignment: CrossAxisAlignment.center,
-                  //           children: [
-                  //             Container(
-                  //               padding: EdgeInsets.all(8),
-                  //               decoration: BoxDecoration(
-                  //                 shape: BoxShape.circle,
-                  //                 boxShadow: [
-                  //                   BoxShadow(
-                  //                       color: AppColorsNew.newGreenButtonColor,
-                  //                       spreadRadius: 2,
-                  //                       blurRadius: 1,
-                  //                       offset: Offset(1, 0)),
-                  //                 ],
-                  //                 color: AppColorsNew.darkGreenShadeColor,
-                  //               ),
-                  //               child: Image.asset(
-                  //                 GameModelNew.getGameTypeImageAssetFromEnum(
-                  //                     listOfGameTypes[index]),
-                  //                 height: 32,
-                  //               ),
-                  //             ),
-                  //             Text(
-                  //               "${gameTypeShortStr(listOfGameTypes[index])}",
-                  //               textAlign: TextAlign.center,
-                  //               style: TextStyle(
-                  //                 fontSize: 10.dp,
-                  //                 color: AppColorsNew.newGreenButtonColor,
-                  //               ),
-                  //             ),
-                  //           ],
-                  //         ),
-                  //       ),
-                  //     ),
-                  //   );
-                  // },
-                  ),
+              }),
             ),
           ),
           Divider(
@@ -189,14 +134,12 @@ class DealerChoicePrompt extends StatelessWidget {
     @required List<GameType> listOfGameTypes,
     @required Duration timeLimit,
   }) async {
-    log("LENGTH : ${listOfGameTypes.length}");
     int sec = timeLimit.inSeconds;
     bool dismissed = false;
     final GameType result = await showDialog(
       context: navigatorKey.currentContext,
       barrierDismissible: false,
       builder: (context) {
-        AppTheme theme = AppTheme.getTheme(context);
         return AlertDialog(
           backgroundColor: AppColorsNew.newDialogBgColor.withAlpha(100),
           content: StatefulBuilder(

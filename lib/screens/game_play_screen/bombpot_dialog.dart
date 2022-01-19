@@ -10,8 +10,11 @@ import 'package:pokerapp/services/game_play/graphql/gamesettings_service.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/widgets/child_widgets.dart';
+import 'package:pokerapp/widgets/multi_game_selection.dart';
 import 'package:pokerapp/widgets/radio_list_widget.dart';
+import 'package:pokerapp/widgets/switch.dart';
 import 'package:pokerapp/widgets/switch_widget.dart';
+import 'package:pokerapp/widgets/texts.dart';
 
 /* this dialog handles the timer, as well as the messages sent to the server, when on tapped / on dismissed */
 class BombPotDialog {
@@ -36,6 +39,7 @@ class BombPotDialog {
 
     int bombPotBet = 5;
     bool doubleBoardBombPot = true;
+    int selectedGameType = 1; // PLO
 
     final bool ret = await showDialog(
         barrierDismissible: false,
@@ -49,16 +53,33 @@ class BombPotDialog {
             String dialogTitle = 'Run Bomb Pot';
 
             String title = '';
+            int selectedIndex = 1;
             if (isSelected[0]) {
               title = 'Next Hand';
+              selectedIndex = 0;
             }
             if (isSelected[1]) {
               title = 'Every Hand';
+              selectedIndex = 1;
             }
             if (isSelected[2]) {
               title = 'Stop';
+              selectedIndex = 2;
             }
 
+            List<String> bombPotSelection = [
+              "Off",
+              "Next Hand",
+              "Every Hand",
+            ];
+
+            List<String> gameTypes = [
+              "NLH",
+              "PLO",
+              "Hi-Lo",
+              "5 Card PLO",
+              "5 Card Hi-Lo",
+            ];
             return AlertDialog(
               backgroundColor: Colors.transparent,
               contentPadding: EdgeInsets.zero,
@@ -77,118 +98,55 @@ class BombPotDialog {
                     AppLabel(dialogTitle, theme),
                     // sep
                     SizedBox(height: 10.ph),
-                    ToggleButtons(
-                      children: [
-                        Container(
-                            padding: EdgeInsets.all(5),
-                            child: Text('Off',
-                                style: TextStyle(
-                                    color: isSelected[0]
-                                        ? Colors.black
-                                        : theme.accentColor))),
-                        Container(
-                            padding: EdgeInsets.all(5),
-                            child: Text('Next Hand',
-                                style: TextStyle(
-                                    color: isSelected[1]
-                                        ? Colors.black
-                                        : theme.accentColor))),
-                        Container(
-                            padding: EdgeInsets.all(5),
-                            child: Text('Every Hand',
-                                style: TextStyle(
-                                    color: isSelected[2]
-                                        ? Colors.black
-                                        : theme.accentColor))),
-                      ],
-                      isSelected: isSelected,
-                      selectedColor: Colors.black,
-                      fillColor: theme.accentColor,
-                      onPressed: (int index) {
-                        setState(() {
+                    RadioToggleButtonsWidget<String>(
+                        values: bombPotSelection,
+                        onSelect: (value) {
                           for (int i = 0; i < isSelected.length; i++) {
                             isSelected[i] = false;
                           }
-                          isSelected[index] = true;
-                        });
-                      },
-                    ),
+                          isSelected[value] = true;
+                        },
+                        defaultValue: selectedIndex),
                     // sep
-                    SizedBox(height: 10.ph),
+                    SizedBox(height: 8.ph),
+
                     // bomb pot bet size
-                    AppLabel('Bet Size', theme),
-
-                    RadioListWidget<int>(
-                      defaultValue: bombPotBet,
-                      values: NewGameConstants.BOMB_POT_BET_SIZE,
-                      onSelect: (int value) {
-                        bombPotBet = value;
-                      },
-                    ),
-
-                    SwitchWidget(
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          LabelText(label: 'Bet Size', theme: theme),
+                          RadioListWidget<int>(
+                            defaultValue: bombPotBet,
+                            values: NewGameConstants.BOMB_POT_BET_SIZE,
+                            onSelect: (int value) {
+                              bombPotBet = value;
+                            },
+                          )
+                        ]),
+                    SizedBox(height: 8.ph),
+                    SwitchWidget2(
                       value: doubleBoardBombPot,
                       label: 'Double Board',
                       onChange: (bool value) {
                         doubleBoardBombPot = value;
                       },
                     ),
+                    SizedBox(height: 8.ph),
+                    RadioToggleButtonsWidget<String>(
+                        values: gameTypes,
+                        onSelect: (value) {
+                          selectedGameType = value;
+                        },
+                        defaultValue: selectedGameType),
 
-                    ToggleButtons(
-                      children: [
-                        Container(
-                            padding: EdgeInsets.all(5),
-                            child: Text('NLH',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    color: gameSelected[0]
-                                        ? Colors.black
-                                        : theme.accentColor))),
-                        Container(
-                            padding: EdgeInsets.all(5),
-                            child: Text('PLO',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    color: gameSelected[1]
-                                        ? Colors.black
-                                        : theme.accentColor))),
-                        Container(
-                            padding: EdgeInsets.all(5),
-                            child: Text('PLO\nHi-Lo',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    color: gameSelected[2]
-                                        ? Colors.black
-                                        : theme.accentColor))),
-                        Container(
-                            padding: EdgeInsets.all(5),
-                            child: Text('5 Card\nPLO',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    color: gameSelected[3]
-                                        ? Colors.black
-                                        : theme.accentColor))),
-                        Container(
-                            padding: EdgeInsets.all(5),
-                            child: Text('5 Card\nPLO Hi-Lo',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    color: gameSelected[4]
-                                        ? Colors.black
-                                        : theme.accentColor))),
-                      ],
-                      isSelected: gameSelected,
-                      selectedColor: Colors.black,
-                      fillColor: theme.accentColor,
-                      onPressed: (int index) {
-                        setState(() {
-                          for (int i = 0; i < gameSelected.length; i++) {
-                            gameSelected[i] = false;
-                          }
-                          gameSelected[index] = true;
-                        });
-                      },
-                    ),
+                    // GameTypeSelectionWidget(listOfGameTypes: [
+                    //   GameType.HOLDEM,
+                    //   GameType.PLO,
+                    //   GameType.PLO_HILO,
+                    //   GameType.FIVE_CARD_PLO,
+                    //   GameType.FIVE_CARD_PLO_HILO,
+                    // ], theme: theme, onSelect: () {}),
+
                     SizedBox(height: 10.ph),
 
                     /* yes / no button */
@@ -235,15 +193,15 @@ class BombPotDialog {
     if (ret) {
       log('bomb pot: $ret');
       GameType gameType = GameType.UNKNOWN;
-      if (gameSelected[0]) {
+      if (selectedGameType == 0) {
         gameType = GameType.HOLDEM;
-      } else if (gameSelected[1]) {
+      } else if (selectedGameType == 1) {
         gameType = GameType.PLO;
-      } else if (gameSelected[2]) {
+      } else if (selectedGameType == 2) {
         gameType = GameType.PLO_HILO;
-      } else if (gameSelected[3]) {
+      } else if (selectedGameType == 3) {
         gameType = GameType.FIVE_CARD_PLO;
-      } else if (gameSelected[4]) {
+      } else if (selectedGameType == 4) {
         gameType = GameType.FIVE_CARD_PLO_HILO;
       }
 
