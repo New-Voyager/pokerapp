@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:overlay_support/overlay_support.dart';
+import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/enums/player_status.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
@@ -173,6 +174,11 @@ class GameUpdateService {
           break;
         case AppConstants.DEALER_CHOICE_PROMPT:
           return handleDealerChoicePrompt(
+            data: data,
+          );
+          break;
+        case AppConstants.DEALER_CHOICE_GAME:
+          return handleDealerChoiceGame(
             data: data,
           );
           break;
@@ -1063,6 +1069,25 @@ class GameUpdateService {
       await waitForHandToFinish();
       _gameState.tableState.updateDealerChoicePrompt(true, player.name);
     }
+  }
+
+  void handleDealerChoiceGame({
+    var data,
+  }) async {
+    final playerId = data['playerId'];
+    final gameTypeStr = data['gameType'];
+    final doubleBoard = data['doubleBoard'] ?? false;
+    final gameType = GameTypeSerialization.fromJson(gameTypeStr);
+    log('playerId: ${playerId} gameType: ${gameType} doubleBoard: $doubleBoard');
+    String subTitle = '${gameTypeStr2(gameType)}';
+    if (doubleBoard) {
+      subTitle = subTitle + ' DB';
+    }
+    Alerts.showNotification(
+        titleText: "Dealer Choice",
+        svgPath: 'assets/images/casino.svg',
+        subTitleText: subTitle,
+        duration: Duration(seconds: 3));
   }
 
   void handleReserveSeat({

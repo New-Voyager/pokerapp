@@ -1145,11 +1145,12 @@ class HandActionProtoService {
       gameChoices.add(gameType);
     }
     final timeout = int.parse(dealerChoice['timeout'].toString());
-    GameType type = await DealerChoicePrompt.prompt(
+    DealerChoiceSelection selection = await DealerChoicePrompt.prompt(
         listOfGameTypes: gameChoices, timeLimit: Duration(seconds: timeout));
-    log('selected game type: $type');
-    if (type != GameType.UNKNOWN) {
-      GameService.dealerChoice(_gameState.gameCode, type);
+    log('selected game type: ${selection.gameType}');
+    if (selection.gameType != GameType.UNKNOWN) {
+      GameService.dealerChoice(
+          _gameState.gameCode, selection.gameType, selection.doubleBoard);
     }
   }
 }
