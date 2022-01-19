@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
-import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/widgets/cards/multiple_stack_card_views.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 
@@ -81,42 +80,34 @@ class DisplayCardsWidget extends StatelessWidget {
 
   Widget _buildStackCardView(List<int> cards, context) {
     if (cards == null || cards.length == 0) {
-      return Container();
+      return const SizedBox.shrink();
     }
 
     if (seat.player.playerFolded && seat.player.revealCards.length == 0) {
-      return Container();
+      return const SizedBox.shrink();
     }
 
-    double scale = 1.0;
-    Offset offset = Offset(0, 0);
-    if (cards.length == 4 || cards.length == 5) {
-      offset = Offset(-18, 10);
-      if (cards.length == 5) {
-        scale = 0.85;
-        offset = Offset(-30, 10);
-      }
-    }
-    return Transform.translate(
-        offset: offset,
-        child: Transform.scale(
-          scale: scale,
-          child: StackCardView(
-            cards: _getCards(cards),
-          ),
-        ));
+    // double scale = 1.0;
+    // Offset offset = Offset(0, 0);
+    // if (cards.length == 4 || cards.length == 5) {
+    //   offset = Offset(-18, 10);
+    //   if (cards.length == 5) {
+    //     scale = 0.85;
+    //     offset = Offset(-30, 10);
+    //   }
+    // }
     // return Transform.translate(
-    //   offset: offset,
-    //   child: Transform.scale(
-    //     scale: scale,
-    //     child: ,
-    //   ),
-    // );
-    // return Container();
-    // return NamePlateStackCardView(
-    //   cards: _getCards(cards),
-    //   highlightCards: seat.player.highlightCards,
-    // );
+    //     offset: offset,
+    //     child: Transform.scale(
+    //       scale: scale,
+    //       child: StackCardView(
+    //         cards: _getCards(cards),
+    //       ),
+    //     ));
+
+    return NamePlateStackCardView(
+      cards: _getCards(cards),
+    );
   }
 
   @override
@@ -129,19 +120,16 @@ class DisplayCardsWidget extends StatelessWidget {
       //   seatPlayerCards = [];
       // }
     }
-    return AnimatedSwitcher(
-      duration: AppConstants.fastAnimationDuration,
-      child: (seatPlayerCards != null && seatPlayerCards.isNotEmpty)
-          ? _buildStackCardView(seatPlayerCards, context)
-          : SizedBox.shrink(),
-    );
+    // return AnimatedSwitcher(
+    //   duration: AppConstants.fastAnimationDuration,
+    //   child: (seatPlayerCards != null && seatPlayerCards.isNotEmpty)
+    //       ? _buildStackCardView(seatPlayerCards, context)
+    //       : SizedBox.shrink(),
+    // );
 
-    return Container(
-        width: 140,
-        height: 50,
-        decoration:
-            BoxDecoration(border: Border.all(color: Colors.red, width: 2.0)),
-        //color: Colors.red,
-        child: _buildStackCardView(seatPlayerCards, context));
+    return _buildStackCardView(
+      seatPlayerCards,
+      context,
+    );
   }
 }

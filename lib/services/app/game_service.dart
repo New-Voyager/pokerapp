@@ -730,6 +730,8 @@ class GameService {
       }
     }
 
+    if (result.data == null) return null;
+
     final jsonResponse = result.data['gameInfo'];
     // JsonEncoder encoder = new JsonEncoder.withIndent('  ');
     // String prettyprint = encoder.convert(jsonResponse);

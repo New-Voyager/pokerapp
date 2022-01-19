@@ -234,7 +234,6 @@ class StackCardView03 extends StatelessWidget {
 
 class NamePlateStackCardView extends StatelessWidget {
   final List<CardObject> cards;
-  final List<int> highlightCards;
   final bool deactivated;
   final bool horizontal;
 
@@ -242,38 +241,59 @@ class NamePlateStackCardView extends StatelessWidget {
     @required this.cards,
     this.deactivated = false,
     this.horizontal = true,
-    this.highlightCards = const [],
   });
 
   List<Widget> _buildChildren() {
-    List<Widget> _children = [];
-    double x = 0;
-    double offset = 140 / 5;
+    double dx = 0;
+    double offset = 100 / cards.length;
+
+    List<Widget> _children = [
+      SizedBox(
+        width:
+            namePlateCardViewWidth * cards.length - offset * (cards.length - 1),
+      ),
+    ];
+
     for (int index = 0; index < cards.length; index++) {
       CardObject card = cards[index];
       if (deactivated) {
         card.dim = true;
-        // log('Player cards: reveal ${card.cardType}: ${card.dim}');
-      }
-      Widget view = NamePlateCardView(
-        card: card,
-        cardBackBytes: null,
-        doubleBoard: card.doubleBoard,
-        index: _children.length,
-        highlightCards: highlightCards,
-      );
-      double top = 0;
-      if (index == 0 || index == 3) {
-        top = -20;
       }
 
-      view = Positioned(left: x, top: top, child: view);
-      _children.add(view);
-      if (index == 0) {
-        x = x + offset;
+      double addOffset = offset;
+      Widget view;
+
+      if (card.cardFace == CardFace.BACK) {
+        final cardBackImage =
+            Image.asset('assets/images/card_back/set2/Asset 8.png');
+
+        view = Container(
+            width: namePlateCardViewWidth,
+            height: namePlateCardViewHeight,
+            child: ClipRRect(
+              borderRadius: BorderRadius.all(Radius.circular(5)),
+              child: cardBackImage,
+            ));
+        addOffset -= 5;
       } else {
-        x = x + offset;
+        view = NamePlateCardView(
+          card: card,
+          cardBackBytes: null,
+          doubleBoard: card.doubleBoard,
+          index: _children.length,
+        );
       }
+
+      double dy = 0;
+      if (card.highlight) {
+        dy = -20;
+      }
+
+      view = Transform.translate(offset: Offset(dx, dy), child: view);
+
+      dx += addOffset;
+
+      _children.add(view);
     }
 
     return _children;
@@ -282,14 +302,8 @@ class NamePlateStackCardView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (cards == null || cards.isEmpty) return const SizedBox.shrink();
-    // return Row(
-    //   mainAxisSize: MainAxisSize.min,
-    //   mainAxisAlignment: MainAxisAlignment.center,
-    //   children: _buildChildren(),
-    // );
+
     return Stack(
-      alignment: Alignment.topLeft,
-      clipBehavior: Clip.none,
       children: _buildChildren(),
     );
   }
