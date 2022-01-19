@@ -606,7 +606,7 @@ class TestService {
   }
 
   static void dealerChoicePrompt() async {
-    GameType type = await DealerChoicePrompt.prompt(
+    DealerChoiceSelection selection = await DealerChoicePrompt.prompt(
       listOfGameTypes: [
         GameType.HOLDEM,
         GameType.PLO,
@@ -616,6 +616,7 @@ class TestService {
       ],
       timeLimit: Duration(seconds: 10),
     );
+    log('Dealer choice: ${selection.gameType} doubleBoard: ${selection.doubleBoard}');
   }
 
   static void showNamePlateHoleCards() async {

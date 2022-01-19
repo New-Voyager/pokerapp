@@ -375,10 +375,11 @@ class GameService {
     """;
 
   static String dealerChoiceQuery = """
-    mutation dealerChoice(\$gameCode: String!, \$gameType: GameType!) {
+    mutation dealerChoice(\$gameCode: String!, \$gameType: GameType! \$doubleBoard: Boolean) {
       ret: dealerChoice(
         gameCode: \$gameCode
         gameType: \$gameType
+        doubleBoard: \$doubleBoard
       )
     }
     """;
@@ -1104,11 +1105,13 @@ class GameService {
   static Future<bool> dealerChoice(
     String gameCode,
     GameType gameType,
+    bool doubleBoard,
   ) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     Map<String, dynamic> variables = {
       "gameCode": gameCode,
-      "gameType": gameType.toString().replaceAll('GameType.', '')
+      "gameType": gameType.toString().replaceAll('GameType.', ''),
+      "doubleBoard": doubleBoard,
     };
     QueryResult result = await _client.mutate(
       MutationOptions(

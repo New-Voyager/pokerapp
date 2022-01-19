@@ -154,8 +154,8 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
         GameType.PLO_HILO,
         GameType.FIVE_CARD_PLO,
         GameType.FIVE_CARD_PLO_HILO,
-        // GameType.SIX_CARD_PLO,
-        // GameType.SIX_CARD_PLO_HILO,
+        GameType.SIX_CARD_PLO,
+        GameType.SIX_CARD_PLO_HILO,
       ]);
     } else if (widget.mainGameType == GameType.ROE) {
       gameSettings.settings.roeGames.addAll([GameType.HOLDEM, GameType.PLO]);
@@ -777,8 +777,8 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
                                     GameType.PLO_HILO,
                                     GameType.FIVE_CARD_PLO,
                                     GameType.FIVE_CARD_PLO_HILO,
-                                    // GameType.SIX_CARD_PLO,
-                                    // GameType.SIX_CARD_PLO_HILO,
+                                    GameType.SIX_CARD_PLO,
+                                    GameType.SIX_CARD_PLO_HILO,
                                   ], onSelect: (games) {
                                     if (widget.mainGameType == GameType.ROE) {
                                       gmp.settings.roeGames.addAll(games);

@@ -236,6 +236,8 @@ class AppConstants {
   static const String PLAYER_CONNECTIVITY_RESTORED =
       'PLAYER_CONNECTIVITY_RESTORED';
   static const String EXTEND_ACTION_TIMER = 'EXTEND_ACTION_TIMER';
+  static const String DEALER_CHOICE_PROMPT = 'DEALER_CHOICE_PROMPT';
+  static const String DEALER_CHOICE_GAME = 'DEALER_CHOICE_GAME';
 
   static const String PREFLOP = 'PREFLOP';
   static const String FLOP = 'FLOP';

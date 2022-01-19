@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:overlay_support/overlay_support.dart';
+import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/enums/player_status.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
@@ -168,6 +169,16 @@ class GameUpdateService {
           );
         case AppConstants.WAITLIST_SEATING:
           return handleWaitlistSeating(
+            data: data,
+          );
+          break;
+        case AppConstants.DEALER_CHOICE_PROMPT:
+          return handleDealerChoicePrompt(
+            data: data,
+          );
+          break;
+        case AppConstants.DEALER_CHOICE_GAME:
+          return handleDealerChoiceGame(
             data: data,
           );
           break;
@@ -1038,21 +1049,6 @@ class GameUpdateService {
   }) async {
     log('waitlist seating message received');
     if (closed || _gameState.uiClosing) return;
-    // final waitlistState = _gameState.getWaitlistState(_context);
-    // waitlistState.fromJson(data);
-    // waitlistState.notify();
-    // final playerName = data['waitlistPlayerName'];
-    // String message =
-    //     '$playerName ${_appScreenText['isInvitedToTakeTheOpenSeat']}';
-
-    // showOverlayNotification(
-    //   (context) => OverlayNotificationWidget(
-    //     title: '${_appScreenText['Waitlist']}',
-    //     subTitle: message,
-    //   ),
-    //   duration: Duration(seconds: 10),
-    // );
-
     // {"type":"WAITLIST_SEATING","gameCode":"cgpckqqe","gameType":"HOLDEM","smallBlind":1,"bigBlind":2,"title":"HOLDEM 100/200","clubName":"club1","waitlistPlayerId":1178,"expTime":"2021-12-09T10:28:33.122Z","requestId":"9a0abef6-7add-4563-8209-575020a3b067"}"
     if (data['waitlistPlayerId'] != null) {
       final playerId = int.parse(data['waitlistPlayerId'].toString());
@@ -1061,6 +1057,37 @@ class GameUpdateService {
         _gameState.refresh(rebuildSeats: true);
       }
     }
+  }
+
+  void handleDealerChoicePrompt({
+    var data,
+  }) async {
+    final playerId = data['playerId'];
+    final player = _gameState.getPlayerById(playerId);
+    if (player != null) {
+      log('${player.name} is choosing the next game');
+      await waitForHandToFinish();
+      _gameState.tableState.updateDealerChoicePrompt(true, player.name);
+    }
+  }
+
+  void handleDealerChoiceGame({
+    var data,
+  }) async {
+    final playerId = data['playerId'];
+    final gameTypeStr = data['gameType'];
+    final doubleBoard = data['doubleBoard'] ?? false;
+    final gameType = GameTypeSerialization.fromJson(gameTypeStr);
+    log('playerId: ${playerId} gameType: ${gameType} doubleBoard: $doubleBoard');
+    String subTitle = '${gameTypeStr2(gameType)}';
+    if (doubleBoard) {
+      subTitle = subTitle + ' DB';
+    }
+    Alerts.showNotification(
+        titleText: "Dealer Choice",
+        svgPath: 'assets/images/casino.svg',
+        subTitleText: subTitle,
+        duration: Duration(seconds: 3));
   }
 
   void handleReserveSeat({
@@ -1358,10 +1385,10 @@ class GameUpdateService {
 
   void waitForHandToFinish() async {
     if (_gameState.handInProgress) {
-      int maxRetries = 10;
+      int maxRetries = 100;
       // if we are in middle of the hand, don't close it yet
       while (_gameState.handInProgress) {
-        await Future.delayed(Duration(milliseconds: 1000));
+        await Future.delayed(Duration(milliseconds: 100));
         maxRetries--;
 
         if (maxRetries == 0) {
