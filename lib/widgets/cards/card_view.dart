@@ -87,12 +87,10 @@ class NamePlateCardView extends StatelessWidget {
   final Uint8List cardBackBytes;
   final bool doubleBoard;
   final int index;
-  final List<int> highlightCards;
 
   NamePlateCardView({
     @required this.card,
     @required this.cardBackBytes,
-    this.highlightCards,
     this.doubleBoard = false,
     this.index = 1,
   });
@@ -108,7 +106,7 @@ class NamePlateCardView extends StatelessWidget {
       children: [
         // card suit and label
         Expanded(
-          flex: 2,
+          flex: 3,
           child: Align(
             alignment: Alignment.topLeft,
             child: Column(
@@ -156,15 +154,7 @@ class NamePlateCardView extends StatelessWidget {
       ],
     );
 
-    double opacity = 1.0;
     Color color = Colors.white;
-    if (card.highlight) {
-      color = Colors.white;
-    } else {
-      opacity = 0.30;
-      //color = Colors.grey[700];
-    }
-
     BoxDecoration fgDecoration = BoxDecoration(
       color: color,
       borderRadius: BorderRadius.circular(3),
@@ -185,7 +175,7 @@ class NamePlateCardView extends StatelessWidget {
 
     if (!card.highlight) {
       return ColorFiltered(
-        colorFilter: ColorFilter.mode(Colors.grey[700], BlendMode.modulate),
+        colorFilter: ColorFilter.mode(Colors.grey, BlendMode.modulate),
         child: child,
       );
     }
@@ -195,18 +185,6 @@ class NamePlateCardView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // return CardBuilderWidget(
-    //   card: card,
-    //   dim: card.dim,
-    //   backCardBytes: cardBackBytes,
-    //   highlight: card.highlight,
-    //   isCardVisible: true,
-    //   cardBuilder: _buildCardUI,
-    //   roundRadius: 2.5,
-    //   cardFace: card.cardFace,
-    //   doubleBoard: this.doubleBoard,
-    // );
-
     return _buildCardUI(null, null, context);
   }
 }

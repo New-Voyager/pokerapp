@@ -626,9 +626,18 @@ class TestService {
       if (seat.player == null) {
         continue;
       }
-      seat.player.winner = true;
-      seat.player.cards = [72, 84, 40, 100, 97];
-      seat.player.highlightCards = [72, 100];
+      if (seat.serverSeatPos == 1) {
+        seat.player.winner = true;
+        seat.player.cards = [72, 84, 40, 100, 97];
+        seat.player.highlightCards = [72, 100];
+      } else if (seat.serverSeatPos == 4) {
+        seat.player.cards = [120, 130, 136, 162, 180];
+      } else if (seat.serverSeatPos == 5) {
+        seat.player.cards = [120, 130, 136, 162, 180];
+        seat.player.muckLosingHand = true;
+      } else {
+        seat.player.playerFolded = true;
+      }
       seat.notify();
       //break;
     }
