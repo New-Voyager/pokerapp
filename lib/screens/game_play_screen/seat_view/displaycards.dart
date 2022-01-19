@@ -104,7 +104,7 @@ class DisplayCardsWidget extends StatelessWidget {
       ),
       builder: (context, enLarge, child) {
         return AnimatedScale(
-          scale: enLarge ? 1.3 : 1.0,
+          scale: enLarge ? 1.5 : 1.0,
           duration: const Duration(milliseconds: 300),
           curve: Curves.easeInOut,
           child: child,
