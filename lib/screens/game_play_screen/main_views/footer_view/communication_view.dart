@@ -343,18 +343,17 @@ class _CommunicationViewState extends State<CommunicationView> {
                                 onClick: () {
                                   // handle on mute tap
                                   if (!gameState.communicationState.muted) {
-                                    widget.gameContextObject
-                                        .ionAudioConferenceService
-                                        .mute();
-                                    gameState.playerLocalConfig.muteAudioConf =
-                                        true;
+                                    // widget.gameContextObject
+                                    //     .ionAudioConferenceService
+                                    //     .mute();
+                                    widget.gameContextObject.audioConf.muteMe();
                                     gameState.communicationState.muted = true;
                                   } else {
-                                    widget.gameContextObject
-                                        .ionAudioConferenceService
-                                        .unmute();
-                                    gameState.playerLocalConfig.muteAudioConf =
-                                        false;
+                                    // widget.gameContextObject
+                                    //     .ionAudioConferenceService
+                                    //     .unmute();
+                                    widget.gameContextObject.audioConf
+                                        .unmuteMe();
                                     gameState.communicationState.muted = false;
                                   }
                                 }),
@@ -389,15 +388,19 @@ class _CommunicationViewState extends State<CommunicationView> {
                                 onClick: () {
                                   // handle on mute all
                                   if (!gameState.communicationState.mutedAll) {
-                                    widget.gameContextObject
-                                        .ionAudioConferenceService
-                                        .muteAll();
+                                    // widget.gameContextObject
+                                    //     .ionAudioConferenceService
+                                    //     .muteAll();
+                                    widget.gameContextObject.audioConf
+                                        .muteOthers();
                                     gameState.communicationState.mutedAll =
                                         true;
                                   } else {
-                                    widget.gameContextObject
-                                        .ionAudioConferenceService
-                                        .unmuteAll();
+                                    // widget.gameContextObject
+                                    //     .ionAudioConferenceService
+                                    //     .unmuteAll();
+                                    widget.gameContextObject.audioConf
+                                        .unmuteOthers();
                                     gameState.communicationState.mutedAll =
                                         false;
                                   }

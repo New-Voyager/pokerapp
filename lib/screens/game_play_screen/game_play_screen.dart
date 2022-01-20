@@ -442,10 +442,11 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       _locationUpdates.stop();
       _locationUpdates = null;
     }
-    if (_gameContextObj != null &&
-        _gameContextObj.ionAudioConferenceService != null) {
-      _gameContextObj.ionAudioConferenceService.leave();
-    }
+    leaveAudioConference();
+    // if (_gameContextObj != null &&
+    //     _gameContextObj.ionAudioConferenceService != null) {
+    //   _gameContextObj.ionAudioConferenceService.leave();
+    // }
 
     if (_binding != null) {
       _binding.removeObserver(this);
@@ -1266,10 +1267,10 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         final player = seat.player;
         seat.player.streamId = info.streamId;
         log('AudioConf: PlayerInfo: name: ${player.name} streamId: ${player.streamId} namePlateId: ${player.namePlateId}');
-        if (_gameContextObj.ionAudioConferenceService != null) {
-          _gameContextObj.ionAudioConferenceService
-              .updatePlayerId(info.streamId, player.playerId);
-        }
+//         if (_gameContextObj.ionAudioConferenceService != null) {
+//           _gameContextObj.ionAudioConferenceService
+//               .updatePlayerId(info.streamId, player.playerId);
+//         }
         if (player.namePlateId != info.namePlateId) {
           player.streamId = info.streamId;
           player.namePlateId = info.namePlateId;

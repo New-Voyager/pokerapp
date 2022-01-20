@@ -367,6 +367,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.1"
+  dart_webrtc:
+    dependency: transitive
+    description:
+      name: dart_webrtc
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.3"
   data_connection_checker:
     dependency: "direct main"
     description:
@@ -409,13 +416,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.3"
-  events2:
-    dependency: transitive
-    description:
-      name: events2
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.0"
   fake_async:
     dependency: transitive
     description:
@@ -568,13 +568,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.5"
-  flutter_ion:
-    dependency: "direct main"
-    description:
-      name: flutter_ion
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.0"
   flutter_launcher_icons:
     dependency: "direct dev"
     description:
@@ -680,7 +673,7 @@ packages:
       name: flutter_webrtc
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.7.0"
+    version: "0.8.1"
   font_awesome_flutter:
     dependency: "direct main"
     description:
@@ -709,13 +702,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.1"
-  googleapis_auth:
-    dependency: transitive
-    description:
-      name: googleapis_auth
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.1.0"
   gql:
     dependency: transitive
     description:
@@ -786,13 +772,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.0"
-  grpc:
-    dependency: transitive
-    description:
-      name: grpc
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "3.0.2"
   hive:
     dependency: "direct main"
     description:
@@ -835,13 +814,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.13.3"
-  http2:
-    dependency: transitive
-    description:
-      name: http2
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.0"
   http_multi_server:
     dependency: transitive
     description:
@@ -975,6 +947,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.4.2"
+  livekit_client:
+    dependency: "direct main"
+    description:
+      name: livekit_client
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.5.6"
   location:
     dependency: "direct main"
     description:
@@ -1219,7 +1198,7 @@ packages:
       name: protobuf
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.0"
+    version: "2.0.1"
   provider:
     dependency: "direct main"
     description:
@@ -1283,13 +1262,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.26.0"
-  sdp_transform:
-    dependency: transitive
-    description:
-      name: sdp_transform
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.3.2"
   share:
     dependency: "direct main"
     description:
@@ -1743,6 +1715,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.0"
+  webrtc_interface:
+    dependency: transitive
+    description:
+      name: webrtc_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1"
   webview_flutter:
     dependency: transitive
     description:
