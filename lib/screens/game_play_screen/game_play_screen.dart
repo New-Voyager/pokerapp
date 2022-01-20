@@ -1271,7 +1271,15 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 //           _gameContextObj.ionAudioConferenceService
 //               .updatePlayerId(info.streamId, player.playerId);
 //         }
-        if (player.namePlateId != info.namePlateId) {
+        // if (player.namePlateId != info.namePlateId) {
+        // final player = seat.player;
+        // log('RTC: PlayerInfo: name: ${player.name} streamId: ${player.streamId} namePlateId: ${player.namePlateId}');
+        // if (_gameContextObj.ionAudioConferenceService != null) {
+        //   _gameContextObj.ionAudioConferenceService
+        //       .updatePlayerId(player.streamId, player.playerId);
+        // }
+        if (player.streamId != info.streamId ||
+            player.namePlateId != info.namePlateId) {
           player.streamId = info.streamId;
           player.namePlateId = info.namePlateId;
           seat.notify();
