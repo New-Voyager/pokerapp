@@ -3,11 +3,11 @@
 * RIVER / TURN CARD ANIMATIONS & DISPLAY
 *
 * */
-import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/widgets/cards/community_cards_view/custom_flip_card.dart';
+import 'package:pokerapp/widgets/flip_cards/flip_card.dart';
 
 class TurnOrRiverCommunityCards extends StatefulWidget {
   final List<Widget> riverOrTurnCards;

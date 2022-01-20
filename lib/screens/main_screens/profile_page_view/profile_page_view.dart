@@ -38,7 +38,6 @@ class _ProfilePageViewState extends State<ProfilePageView>
   @override
   Widget build(BuildContext context) {
     _appScreenText = getAppTextScreen("profilePageView");
-
     return Container(
       color: AppColorsNew.screenBackgroundColor,
       child: Column(

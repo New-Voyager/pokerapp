@@ -1,11 +1,11 @@
 import 'dart:typed_data';
 
-import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/widgets/cards/card_builder_widget.dart';
+import 'package:pokerapp/widgets/flip_cards/flip_card.dart';
 
 class CustomFlipCard extends StatelessWidget {
   final Function onFlipDone;
