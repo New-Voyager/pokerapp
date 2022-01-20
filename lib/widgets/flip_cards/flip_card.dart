@@ -117,7 +117,7 @@ class FlipCardState extends State<FlipCard>
     _frontRotation = TweenSequence(
       [
         TweenSequenceItem<double>(
-          tween: Tween(begin: 0.0, end: pi / 2)
+          tween: Tween(begin: pi, end: pi / 2)
               .chain(CurveTween(curve: Curves.easeIn)),
           weight: 50.0,
         ),
@@ -131,7 +131,7 @@ class FlipCardState extends State<FlipCard>
     _backRotation = TweenSequence(
       [
         TweenSequenceItem<double>(
-          tween: ConstantTween<double>(pi / 2),
+          tween: ConstantTween<double>(-pi / 2),
           weight: 50.0,
         ),
         TweenSequenceItem<double>(
