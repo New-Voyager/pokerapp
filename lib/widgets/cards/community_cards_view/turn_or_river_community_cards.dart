@@ -8,12 +8,15 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/widgets/cards/community_cards_view/custom_flip_card.dart';
+import 'package:provider/provider.dart';
 
 class TurnOrRiverCommunityCards extends StatefulWidget {
   final List<Widget> riverOrTurnCards;
+  final bool twoBoards;
   TurnOrRiverCommunityCards({
     Key key,
     @required this.riverOrTurnCards,
+    this.twoBoards,
   }) : super(key: key);
 
   @override
@@ -24,6 +27,8 @@ class TurnOrRiverCommunityCards extends StatefulWidget {
 class _TurnOrRiverCommunityCardsState extends State<TurnOrRiverCommunityCards> {
   GlobalKey<FlipCardState> _globalFlipKey = GlobalKey<FlipCardState>();
 
+  BoardAttributesObject _boa;
+
   void onFlipDone(bool _) {
     setState(() => _isFlipDone = true);
   }
@@ -31,8 +36,9 @@ class _TurnOrRiverCommunityCardsState extends State<TurnOrRiverCommunityCards> {
   bool _isFlipDone;
 
   double getDifferenceBetween(int idx1, idx2) {
-    return CommunityCardAttribute.getOffsetPosition(idx1).dx -
-        CommunityCardAttribute.getOffsetPosition(idx2).dx;
+    return (CommunityCardAttribute.getOffsetPosition(idx1).dx -
+            CommunityCardAttribute.getOffsetPosition(idx2).dx) *
+        (widget.twoBoards ? _boa.doubleBoardScale : 1.0);
   }
 
   Widget _buildFlipCardWidget() {
@@ -44,12 +50,16 @@ class _TurnOrRiverCommunityCardsState extends State<TurnOrRiverCommunityCards> {
       globalKey: _globalFlipKey,
       cardWidget: widget.riverOrTurnCards.last,
       cardBackBytes: cardBackBytes,
+      twoBoards: widget.twoBoards,
+      doubleBoardScale: _boa.doubleBoardScale,
     );
   }
 
   @override
   void initState() {
     super.initState();
+
+    _boa = Provider.of<BoardAttributesObject>(context, listen: false);
 
     _isFlipDone = false;
 
