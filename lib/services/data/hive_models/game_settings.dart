@@ -101,6 +101,13 @@ class GameLocalConfig {
     _save();
   }
 
+  bool _muteAudioConf = false;
+  bool get muteAudioConf => _muteAudioConf;
+  set muteAudioConf(bool value) {
+    _muteAudioConf = value;
+    _save();
+  }
+
   bool get tapOrSwipeBetAction {
     if (_tapOrSwipeBetAction == null) {
       return true;
@@ -133,7 +140,8 @@ class GameLocalConfig {
         'showCheckFold': this._showCheckFold,
         'showHandRank': this._showHandRank,
         'showRearrange': this._showRearrange,
-        'inCall': this._inCall
+        'inCall': this._inCall,
+        "muteAudioConf": this._muteAudioConf,
       };
 
   GameLocalConfig.fromJson(Map<String, dynamic> json, this._gameHiveStore) {
@@ -149,5 +157,6 @@ class GameLocalConfig {
     this._showHandRank = json['showHandRank'];
     this._showRearrange = json['showRearrange'];
     this._inCall = json['inCall'];
+    this._muteAudioConf = json['muteAudioConf'];
   }
 }
