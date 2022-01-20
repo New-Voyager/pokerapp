@@ -116,6 +116,8 @@ class GameContextObject extends ChangeNotifier {
         }
         _joiningAudio = true;
         this.initializeAudioConf();
+        gameState.communicationState.muted =
+            this.gameState.playerLocalConfig.muteAudioConf;
         await this.ionAudioConferenceService.join();
         gameState.communicationState.audioConferenceStatus =
             AudioConferenceStatus.CONNECTED;

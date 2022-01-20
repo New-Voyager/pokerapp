@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/rabbit_state.dart';
 import 'package:pokerapp/services/nats/message.dart';
 import 'package:pokerapp/services/nats/nats.dart';
@@ -20,6 +21,7 @@ class GameMessagingService {
   PlayerInfo currentPlayer;
   List<ChatMessage> messages = [];
   List<String> playedAudio = [];
+  GameState gameState;
 
   GameMessagingService(
     this.currentPlayer,
@@ -178,7 +180,7 @@ class GameMessagingService {
     } else if (json['method'] == 'PUBLISH') {
       // another player is publishing his/her information
       final playerInfo = GamePlayerInfo.fromJson(json);
-      log('RTC: Player: ${playerInfo.playerId} streamId: ${playerInfo.streamId}');
+      log('AudioConf: Player: ${playerInfo.playerId} streamId: ${playerInfo.streamId}');
       if (this.onPlayerInfo != null) {
         this.onPlayerInfo(playerInfo);
       }
@@ -199,6 +201,7 @@ class GameMessagingService {
         'method': 'PUBLISH',
         'streamId': playerInfo.streamId,
         'namePlateId': playerInfo.namePlateId,
+        'muted': this.gameState.playerLocalConfig.mute,
         'sent': DateTime.now().toUtc().toIso8601String(),
       });
       this.nats.clientPub.pubString(this.chatChannel, body);
@@ -422,12 +425,14 @@ class GamePlayerInfo {
   String namePlateId;
   String streamId;
   int playerId;
+  bool muted = false;
   GamePlayerInfo();
   factory GamePlayerInfo.fromJson(dynamic json) {
     GamePlayerInfo info = GamePlayerInfo();
     info.namePlateId = json['namePlateId'];
     info.streamId = json['streamId'];
     info.playerId = int.parse(json['playerID'].toString());
+    info.muted = json['muted'] ?? false;
     return info;
   }
 }

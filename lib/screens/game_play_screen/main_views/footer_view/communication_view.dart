@@ -22,12 +22,11 @@ import 'package:record/record.dart';
 
 class CommunicationView extends StatefulWidget {
   final Function chatVisibilityChange;
-  final Function joinAudioConference;
   final GameMessagingService chatService;
   final GameContextObject gameContextObject;
 
-  CommunicationView(this.chatVisibilityChange, this.joinAudioConference,
-      this.chatService, this.gameContextObject);
+  CommunicationView(
+      this.chatVisibilityChange, this.chatService, this.gameContextObject);
 
   @override
   _CommunicationViewState createState() => _CommunicationViewState();
@@ -189,7 +188,7 @@ class _CommunicationViewState extends State<CommunicationView> {
           if (response != null && response == true) {
             final gameState = GameState.getState(context);
             gameState.playerLocalConfig.inCall = true;
-            widget.joinAudioConference();
+            gameState.audioConfState.joinConf();
           }
         },
         theme: theme,
@@ -347,11 +346,15 @@ class _CommunicationViewState extends State<CommunicationView> {
                                     widget.gameContextObject
                                         .ionAudioConferenceService
                                         .mute();
+                                    gameState.playerLocalConfig.muteAudioConf =
+                                        true;
                                     gameState.communicationState.muted = true;
                                   } else {
                                     widget.gameContextObject
                                         .ionAudioConferenceService
                                         .unmute();
+                                    gameState.playerLocalConfig.muteAudioConf =
+                                        false;
                                     gameState.communicationState.muted = false;
                                   }
                                 }),
@@ -368,7 +371,8 @@ class _CommunicationViewState extends State<CommunicationView> {
                                   // handle on hangup
                                   gameState.playerLocalConfig
                                       .inAudioConference = false;
-                                  widget.gameContextObject.leaveAudio();
+                                  gameState.audioConfState.leaveConf();
+                                  //widget.gameContextObject.leaveAudio();
                                   gameState.playerLocalConfig.inCall = false;
                                   gameState.communicationState.notify();
                                 }),
@@ -420,7 +424,7 @@ class _CommunicationViewState extends State<CommunicationView> {
   }
 
   Widget audioConferenceMic(GameState gameState, AppTheme theme) {
-    log('AUDIOCONF: Mic is rebuilding');
+    //log('AUDIOCONF: Mic is rebuilding');
     Color iconColor = Colors.grey;
     Widget mic;
     CommunicationState state = gameState.communicationState;

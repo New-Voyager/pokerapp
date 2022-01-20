@@ -506,10 +506,26 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         // start listening for changes in markedCards value
         markedCards.addListener(onMarkingCards);
       }
-      // else {
-      //   markedCards.clear();
-      //   markedCards.removeListener(onMarkingCards);
-      // }
+    });
+
+    _gameState.audioConfState.addListener(() async {
+      if (_gameState.audioConfState.join) {
+        joinAudioConference().then((value) {
+          if (mounted) {
+            _gameState.audioConfState.joinedConf();
+          }
+        }).onError((error, stackTrace) {
+          // do nothing
+        });
+      } else if (_gameState.audioConfState.leave) {
+        leaveAudioConference().then((value) {
+          if (mounted) {
+            _gameState.audioConfState.leftConf();
+          }
+        }).onError((error, stackTrace) {
+          // do nothing
+        });
+      }
     });
   }
 
@@ -996,7 +1012,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
                 gameCode: widget.gameCode,
                 gameContextObject: _gameContextObj,
                 currentPlayer: _gameContextObj.gameState.currentPlayer,
-                joinAudioConference: joinAudioConference,
                 gameInfo: _gameInfoModel,
                 toggleChatVisibility: _toggleChatVisibility,
                 onStartGame: startGame);
@@ -1189,14 +1204,14 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     super.didChangeAppLifecycleState(state);
   }
 
-  leaveAudioConference() {
+  Future<void> leaveAudioConference() async {
     if (_gameState != null) {
       _voiceTextPlayer?.pause();
       _gameContextObj.leaveAudio();
     }
   }
 
-  void joinAudioConference() async {
+  Future<void> joinAudioConference() async {
     if (TestService.isTesting || _gameState.customizationMode) {
       return;
     }
@@ -1215,14 +1230,16 @@ class _GamePlayScreenState extends State<GamePlayScreen>
           OverlaySupportEntry notification;
           try {
             notification = Alerts.showNotification(
-                titleText: _appScreenText['audioTitle'],
-                subTitleText: _appScreenText['joiningAudio'],
-                leadingIcon: Icons.mic_sharp);
+              titleText: _appScreenText['audioTitle'],
+              subTitleText: _appScreenText['joiningAudio'],
+              leadingIcon: Icons.mic_sharp,
+            );
 
             await _gameContextObj.joinAudio(context);
+            _gameState.gameMessageService.sendMyInfo();
             // ui is still running
             // send stream id
-            log('RTC: Requesting information about the other players');
+            log('AudioConf: 1 Requesting information about the other players');
             _gameState.gameMessageService.requestPlayerInfo();
             notification.dismiss();
             notification = Alerts.showNotification(
@@ -1247,13 +1264,13 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       final seat = _gameState.getSeatByPlayer(info.playerId);
       if (seat != null && seat.player != null) {
         final player = seat.player;
-        log('RTC: PlayerInfo: name: ${player.name} streamId: ${player.streamId} namePlateId: ${player.namePlateId}');
+        seat.player.streamId = info.streamId;
+        log('AudioConf: PlayerInfo: name: ${player.name} streamId: ${player.streamId} namePlateId: ${player.namePlateId}');
         if (_gameContextObj.ionAudioConferenceService != null) {
           _gameContextObj.ionAudioConferenceService
-              .updatePlayerId(player.streamId, player.playerId);
+              .updatePlayerId(info.streamId, player.playerId);
         }
-        if (player.streamId != info.streamId ||
-            player.namePlateId != info.namePlateId) {
+        if (player.namePlateId != info.namePlateId) {
           player.streamId = info.streamId;
           player.namePlateId = info.namePlateId;
           seat.notify();
@@ -1267,9 +1284,17 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     if (_gameState.me == null) {
       return null;
     }
-    playerInfo.streamId = _gameState.me.streamId;
+    //playerInfo.streamId = _gameState.me.streamId;
     playerInfo.playerId = _gameState.me.playerId;
     playerInfo.namePlateId = _gameState.me.namePlateId;
+    playerInfo.streamId = '';
+    if (_gameContextObj.ionAudioConferenceService != null) {
+      final me = _gameContextObj.ionAudioConferenceService.me();
+      if (me != null) {
+        playerInfo.streamId = me.streamId;
+        log('AudioConf: me: ${me.playerId} name: ${_gameState.me.name} streamId: ${me.streamId}');
+      }
+    }
     return playerInfo;
   }
 }
