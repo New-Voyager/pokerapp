@@ -74,28 +74,8 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
     }
   }
 
-  Widget _buildChild(String text, Color color) {
-    return Container(
-      alignment: Alignment.center,
-      height: 200,
-      width: 140,
-      child: Text(text),
-      color: color,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: UniqueKey(),
-      body: Center(
-        child: FlipCard(
-          front: _buildChild('Front', Colors.red),
-          back: _buildChild('Back', Colors.green),
-        ),
-      ),
-    );
-
     return Consumer<AppTheme>(
       builder: (_, theme, __) {
         String id = '';
