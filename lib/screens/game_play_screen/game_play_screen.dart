@@ -442,10 +442,11 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       _locationUpdates.stop();
       _locationUpdates = null;
     }
-    if (_gameContextObj != null &&
-        _gameContextObj.ionAudioConferenceService != null) {
-      _gameContextObj.ionAudioConferenceService.leave();
-    }
+    leaveAudioConference();
+    // if (_gameContextObj != null &&
+    //     _gameContextObj.ionAudioConferenceService != null) {
+    //   _gameContextObj.ionAudioConferenceService.leave();
+    // }
 
     if (_binding != null) {
       _binding.removeObserver(this);
@@ -1246,12 +1247,12 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       // update seat to change the name plate
       final seat = _gameState.getSeatByPlayer(info.playerId);
       if (seat != null && seat.player != null) {
-        final player = seat.player;
-        log('RTC: PlayerInfo: name: ${player.name} streamId: ${player.streamId} namePlateId: ${player.namePlateId}');
-        if (_gameContextObj.ionAudioConferenceService != null) {
-          _gameContextObj.ionAudioConferenceService
-              .updatePlayerId(player.streamId, player.playerId);
-        }
+        // final player = seat.player;
+        // log('RTC: PlayerInfo: name: ${player.name} streamId: ${player.streamId} namePlateId: ${player.namePlateId}');
+        // if (_gameContextObj.ionAudioConferenceService != null) {
+        //   _gameContextObj.ionAudioConferenceService
+        //       .updatePlayerId(player.streamId, player.playerId);
+        // }
         if (player.streamId != info.streamId ||
             player.namePlateId != info.namePlateId) {
           player.streamId = info.streamId;

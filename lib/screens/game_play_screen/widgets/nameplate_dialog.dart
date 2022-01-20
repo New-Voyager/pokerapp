@@ -63,10 +63,10 @@ class _NamePlateDailogState extends State<NamePlateDailog> {
   Widget build(BuildContext context) {
     final theme = AppTheme.getTheme(context);
     bool playerMuted = false;
-    if (widget.gameContextObject.ionAudioConferenceService != null) {
-      playerMuted = widget.gameContextObject.ionAudioConferenceService
-          .isPlayerMuted(widget.seat.player.streamId);
-    }
+    // if (widget.gameContextObject.ionAudioConferenceService != null) {
+    //   playerMuted = widget.gameContextObject.ionAudioConferenceService
+    //       .isPlayerMuted(widget.seat.player.streamId);
+    // }
     bool showCreditLimit = false;
     final gameState = widget.gameState;
     if (gameState.clubInfo != null) {
@@ -189,8 +189,8 @@ class _NamePlateDailogState extends State<NamePlateDailog> {
                             false, // widget.gameState.currentPlayer.isAdmin(),
                         child: CircleImageButton(
                           onTap: () {
-                            widget.gameContextObject.ionAudioConferenceService
-                                .muteUnmutePlayer(widget.seat.player.streamId);
+                            // widget.gameContextObject.ionAudioConferenceService
+                            //     .muteUnmutePlayer(widget.seat.player.streamId);
                             setState(() {});
                           },
                           icon: playerMuted

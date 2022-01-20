@@ -54,6 +54,9 @@ class GameInfoModel {
   double tipsCap = null;
   String sfuUrl = '';
 
+  String livekitUrl = '';
+  String livekitToken = '';
+
   // nats channels
   String gameToPlayerChannel;
   String playerToHandChannel;
@@ -181,6 +184,8 @@ class GameInfoModel {
     this.agoraToken = data['agoraToken'];
 
     this.sfuUrl = data['sfuUrl'];
+    this.livekitUrl = data['livekitUrl'];
+    this.livekitToken = data['livekitToken'];
 
     if (data['allPlayers'] != null) {
       for (final playerData in data['allPlayers']) {
@@ -278,6 +283,9 @@ class GameInfoModel {
       agoraAppId
 
       sfuUrl
+
+      livekitUrl
+      livekitToken
     }
   } """;
 }

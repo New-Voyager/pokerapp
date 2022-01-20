@@ -9,6 +9,7 @@ import 'package:pokerapp/services/game_play/action_services/hand_action_proto_se
 import 'package:pokerapp/services/game_play/action_services/hand_player_text_service.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/ion/ion.dart';
+import 'package:pokerapp/services/livekit/livekit.dart';
 import 'package:pokerapp/services/nats/message.dart';
 
 import 'game_state.dart';
@@ -30,7 +31,8 @@ class GameContextObject extends ChangeNotifier {
   EncryptionService encryptionService;
   LivenessSender livenessSender;
   HandToPlayerTextService handToPlayerTextService;
-  IonAudioConferenceService ionAudioConferenceService;
+  //IonAudioConferenceService ionAudioConferenceService;
+  LivekitAudioConference audioConf;
 
   GameContextObject({
     @required String gameCode,
@@ -56,14 +58,25 @@ class GameContextObject extends ChangeNotifier {
   }
 
   void initializeAudioConf() {
-    if (this.ionAudioConferenceService != null) {
+    // if (this.ionAudioConferenceService != null) {
+    //   return;
+    // }
+    // this.ionAudioConferenceService = IonAudioConferenceService(
+    //     gameState,
+    //     gameComService.chat,
+    //     gameState.gameInfo.sfuUrl,
+    //     gameState.gameInfo.gameCode,
+    //     this._currentPlayer);
+
+    if (this.audioConf != null) {
       return;
     }
-    this.ionAudioConferenceService = IonAudioConferenceService(
+    this.audioConf = LivekitAudioConference(
         gameState,
-        gameComService.chat,
-        gameState.gameInfo.sfuUrl,
         gameState.gameInfo.gameCode,
+        gameComService.chat,
+        gameState.gameInfo.livekitUrl,
+        gameState.gameInfo.livekitToken,
         this._currentPlayer);
   }
 
@@ -96,7 +109,8 @@ class GameContextObject extends ChangeNotifier {
 
   @override
   void dispose() {
-    this.ionAudioConferenceService?.close();
+    //this.ionAudioConferenceService?.close();
+    this.audioConf.leave();
     handToPlayerTextService?.close();
     gameUpdateService?.close();
     gameComService?.dispose();
@@ -116,7 +130,8 @@ class GameContextObject extends ChangeNotifier {
         }
         _joiningAudio = true;
         this.initializeAudioConf();
-        await this.ionAudioConferenceService.join();
+        //await this.ionAudioConferenceService.join();
+        await this.audioConf.join();
         gameState.communicationState.audioConferenceStatus =
             AudioConferenceStatus.CONNECTED;
         this.gameState.playerLocalConfig.inAudioConference = true;
@@ -140,8 +155,11 @@ class GameContextObject extends ChangeNotifier {
       return;
     }
     if (gameState != null) {
-      if (this.ionAudioConferenceService != null) {
-        this.ionAudioConferenceService.leave();
+      // if (this.ionAudioConferenceService != null) {
+      //   this.ionAudioConferenceService.leave();
+      // }
+      if (this.audioConf != null) {
+        this.audioConf.leave();
       }
       gameState.communicationState.audioConferenceStatus =
           AudioConferenceStatus.LEFT;
