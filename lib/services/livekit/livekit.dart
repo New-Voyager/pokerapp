@@ -26,6 +26,7 @@ class LivekitAudioConference extends Disposable {
       token,
     );
     await _room.localParticipant.setMicrophoneEnabled(true);
+    unmuteMe();
     _listener = _room.createListener();
     _listener.listen((p0) {
       onEvent(p0);

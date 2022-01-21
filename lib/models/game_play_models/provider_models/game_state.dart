@@ -123,6 +123,7 @@ class GameState {
   AudioConfState _audioConfState;
   GameChatBubbleNotifyState _gameChatBubbleNotifyState;
   final GlobalKey<OnboardingState> onboardingKey = GlobalKey<OnboardingState>();
+  final Map<int, GamePlayerInfo> players = Map<int, GamePlayerInfo>();
 
   // For posting blind
   // bool postedBlind;
