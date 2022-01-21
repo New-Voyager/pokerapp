@@ -76,15 +76,6 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: ElevatedButton(
-            onPressed: () {
-              NumericKeyboard2.show(context);
-            },
-            child: Text('Press Me')),
-      ),
-    );
     return Consumer<AppTheme>(
       builder: (_, theme, __) {
         String id = '';

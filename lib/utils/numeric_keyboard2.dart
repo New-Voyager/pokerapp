@@ -61,26 +61,26 @@ class NumericKeyboard2 extends StatelessWidget {
     }
 
     final parentSize = MediaQuery.of(context).size;
-    final maxWidth = 500.0;
+    final maxWidth = 450.0;
 
-    final parentBorderStyle = BorderSide(
-      color: appTheme.accentColor,
-      width: 2.0,
-    );
+    final borderRadius = Radius.circular(10.0);
     return Container(
       decoration: BoxDecoration(
+        borderRadius: BorderRadius.only(
+          topLeft: borderRadius,
+          topRight: borderRadius,
+        ),
         gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomRight,
+          begin: Alignment.bottomLeft,
+          end: Alignment.topCenter,
           colors: [
-            Colors.grey[900],
             Colors.grey[850],
+            Colors.black,
           ],
         ),
-        border: Border(
-          top: parentBorderStyle,
-          right: parentBorderStyle,
-          left: parentBorderStyle,
+        border: Border.all(
+          color: appTheme.accentColor,
+          width: 2.0,
         ),
       ),
       height: minOf(parentSize.width * 0.90, maxWidth * 0.90),
@@ -397,7 +397,7 @@ class NumericKeyboard2 extends StatelessWidget {
                 : null,
             decoration: BoxDecoration(
               shape: BoxShape.rectangle,
-              borderRadius: BorderRadius.circular(isDoneButton ? 10.0 : 0.0),
+              borderRadius: BorderRadius.circular(isDoneButton ? 10.0 : 5.0),
               border: color == Colors.transparent
                   ? null
                   : Border.all(
@@ -406,11 +406,13 @@ class NumericKeyboard2 extends StatelessWidget {
                     ),
               color: color,
               gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomRight,
+                begin: Alignment.bottomCenter,
+                end: Alignment.topRight,
                 colors: [
-                  Colors.grey[850],
-                  Colors.grey[800],
+                  appTheme.accentColorWithDark(0.15),
+                  appTheme.accentColorWithDark(),
+                  appTheme.accentColor,
+                  appTheme.accentColorWithLight(),
                 ],
               ),
             ),
