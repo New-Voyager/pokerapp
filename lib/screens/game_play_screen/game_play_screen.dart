@@ -169,7 +169,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       debugPrint('fetching game data: ${widget.gameCode}');
       gameInfo = widget.gameInfoModel ??
           await GameService.getGameInfo(widget.gameCode);
+      debugPrint('fetching game data: ${widget.gameCode} done');
       this._currentPlayer = await PlayerService.getMyInfo(widget.gameCode);
+      debugPrint('getting current player: ${widget.gameCode} done');
     }
 
     // mark the isMe field
@@ -186,13 +188,14 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     if (widget.customizationService != null) {
     } else if (TestService.isTesting) {
     } else {
-      debugPrint('fetching game data: ${widget.gameCode}');
+      debugPrint('fetching club data: ${widget.gameCode}');
       try {
         clubInfo = await ClubsService.getClubInfoForGame(clubCode);
         return clubInfo;
       } catch (e) {
         // we can still run the game
       }
+      debugPrint('fetching club data: ${widget.gameCode} done');
     }
     return clubInfo;
   }
@@ -217,9 +220,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       log('host seat change: $_hostSeatChangeSeats');
       _hostSeatChangeInProgress = true;
     }
-
     if (_initiated == true) return _gameInfoModel;
 
+    log('establishing game communication service');
     _gameComService = GameComService(
       currentPlayer: this._currentPlayer,
       gameToPlayerChannel: _gameInfoModel.gameToPlayerChannel,
@@ -247,6 +250,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       await _gameComService.init(natsClient);
       await encryptionService.init();
     }
+    log('game communication service is established');
 
     final livenessSender = LivenessSender(
       _gameInfoModel.gameID,
@@ -270,6 +274,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         _gameComService.gameMessaging.onPlayerInfo = this.onPlayerInfo;
         _gameComService.gameMessaging.getMyInfo = this.getPlayerInfo;
       }
+      log('initializing game state');
 
       await _gameState.initialize(
         gameCode: _gameInfoModel.gameCode,
@@ -284,9 +289,11 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         await _gameState.refreshPlayerSettings();
         await _gameState.refreshNotes();
       }
+      log('initializing game state done');
     }
 
     // _audioPlayer = AudioPlayer();
+    log('establishing audio conference');
 
     if (TestService.isTesting || widget.customizationService != null) {
       // testing code goes here
@@ -318,7 +325,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         if (_gameInfoModel.playersInSeats[i].playerUuid ==
             _currentPlayer.uuid) {
           // send my information
-          _gameState.gameMessageService.sendMyInfo();
           _gameState.gameMessageService.requestPlayerInfo();
 
           // this.initPlayingTimer();
@@ -340,6 +346,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         onRabbitHunt: this._onRabbitHunt,
       );
     }
+    log('establishing audio conference done');
 
     _initiated = true;
 
@@ -352,20 +359,29 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     if (!TestService.isTesting && widget.customizationService == null) {
       _initChatListeners(_gameComService.gameMessaging);
     }
+    // send my information
+    //_gameState.gameMessageService.sendMyInfo();
 
     if (_gameInfoModel?.audioConfEnabled ?? false) {
+      log('joining audio conference');
+
       // initialize agora
       // agora = Agora(
       //     gameCode: widget.gameCode,
       //     uuid: this._currentPlayer.uuid,
       //     playerId: this._currentPlayer.id);
+      // if current player is host/admin then put the player in audio chat
+      if (_currentPlayer.isAdmin()) {
+        // join the audio conference
+        //await joinAudioConference();
+      }
 
       // if the current player is in the table, then join audio
       for (int i = 0; i < _gameInfoModel.playersInSeats.length; i++) {
         if (_gameInfoModel.playersInSeats[i].playerUuid ==
             _currentPlayer.uuid) {
           // send my information
-          _gameState.gameMessageService.sendMyInfo();
+          //_gameState.gameMessageService.sendMyInfo();
           _gameState.gameMessageService.requestPlayerInfo();
           // request other player info
           // player is in the table
@@ -373,8 +389,13 @@ class _GamePlayScreenState extends State<GamePlayScreen>
           break;
         }
       }
+      log('joining audio conference done');
     } else {}
-
+    Future.delayed(Duration(seconds: 3), () {
+      log('publishing my information');
+      _gameState.gameMessageService.sendMyInfo();
+      log('publishing my information done');
+    });
     return _gameInfoModel;
   }
 
@@ -1242,35 +1263,40 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   }
 
   void onPlayerInfo(GamePlayerInfo info) {
-    final player = _gameState.getPlayerById(info.playerId);
-    if (player != null) {
-      // update seat to change the name plate
-      final seat = _gameState.getSeatByPlayer(info.playerId);
-      if (seat != null && seat.player != null) {
-        // final player = seat.player;
-        // log('RTC: PlayerInfo: name: ${player.name} streamId: ${player.streamId} namePlateId: ${player.namePlateId}');
-        // if (_gameContextObj.ionAudioConferenceService != null) {
-        //   _gameContextObj.ionAudioConferenceService
-        //       .updatePlayerId(player.streamId, player.playerId);
-        // }
-        if (player.streamId != info.streamId ||
-            player.namePlateId != info.namePlateId) {
-          player.streamId = info.streamId;
-          player.namePlateId = info.namePlateId;
-          seat.notify();
-        }
-      }
-    }
+    log('player: ${info.name} has joined the game');
+    // story player information
+    _gameState.players[info.playerId] = info;
+
+    //final player = _gameState.getPlayerById(info.playerId);
+    // if (player != null) {
+    // update seat to change the name plate
+    // final seat = _gameState.getSeatByPlayer(info.playerId);
+    // if (seat != null && seat.player != null) {
+    //   // final player = seat.player;
+    //   // log('RTC: PlayerInfo: name: ${player.name} streamId: ${player.streamId} namePlateId: ${player.namePlateId}');
+    //   // if (_gameContextObj.ionAudioConferenceService != null) {
+    //   //   _gameContextObj.ionAudioConferenceService
+    //   //       .updatePlayerId(player.streamId, player.playerId);
+    //   // }
+    //   if (player.streamId != info.streamId ||
+    //       player.namePlateId != info.namePlateId) {
+    //     player.streamId = info.streamId;
+    //     player.namePlateId = info.namePlateId;
+    //     seat.notify();
+    //   }
+    // }
+    //}
   }
 
   GamePlayerInfo getPlayerInfo() {
     GamePlayerInfo playerInfo = GamePlayerInfo();
-    if (_gameState.me == null) {
-      return null;
+    playerInfo.playerId = _currentPlayer.id;
+    playerInfo.name = _currentPlayer.name;
+    playerInfo.uuid = _currentPlayer.uuid;
+    if (_gameState.me != null) {
+      playerInfo.streamId = _gameState.me.streamId;
+      playerInfo.namePlateId = _gameState.me.namePlateId;
     }
-    playerInfo.streamId = _gameState.me.streamId;
-    playerInfo.playerId = _gameState.me.playerId;
-    playerInfo.namePlateId = _gameState.me.namePlateId;
     return playerInfo;
   }
 }

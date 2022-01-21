@@ -197,7 +197,7 @@ class GameMessagingService {
         'name': this.currentPlayer.name,
         'type': 'PLAYER_INFO',
         'method': 'PUBLISH',
-        'streamId': playerInfo.streamId,
+        'streamId': playerInfo.streamId ?? '',
         'namePlateId': playerInfo.namePlateId,
         'sent': DateTime.now().toUtc().toIso8601String(),
       });
@@ -422,12 +422,16 @@ class GamePlayerInfo {
   String namePlateId;
   String streamId;
   int playerId;
+  String uuid;
+  String name;
   GamePlayerInfo();
   factory GamePlayerInfo.fromJson(dynamic json) {
     GamePlayerInfo info = GamePlayerInfo();
-    info.namePlateId = json['namePlateId'];
-    info.streamId = json['streamId'];
+    info.namePlateId = json['namePlateId'] ?? "0";
+    info.streamId = json['streamId'] ?? '';
     info.playerId = int.parse(json['playerID'].toString());
+    info.uuid = json['uuid'] ?? '';
+    info.name = json['name'] ?? '';
     return info;
   }
 }
