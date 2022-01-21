@@ -347,6 +347,8 @@ class _CommunicationViewState extends State<CommunicationView> {
                                     //     .ionAudioConferenceService
                                     //     .mute();
                                     widget.gameContextObject.audioConf.muteMe();
+                                    gameState.playerLocalConfig.muteAudioConf =
+                                        true;
                                     gameState.communicationState.muted = true;
                                   } else {
                                     // widget.gameContextObject
@@ -354,6 +356,8 @@ class _CommunicationViewState extends State<CommunicationView> {
                                     //     .unmute();
                                     widget.gameContextObject.audioConf
                                         .unmuteMe();
+                                    gameState.playerLocalConfig.muteAudioConf =
+                                        false;
                                     gameState.communicationState.muted = false;
                                   }
                                 }),

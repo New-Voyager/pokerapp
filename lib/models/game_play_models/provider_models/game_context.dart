@@ -128,6 +128,7 @@ class GameContextObject extends ChangeNotifier {
         if (_joiningAudio || _joinedAudio) {
           return;
         }
+        initializeAudioConf();
         _joiningAudio = true;
         //await this.ionAudioConferenceService.join();
         await this.audioConf.join();
