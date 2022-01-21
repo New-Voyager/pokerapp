@@ -26,7 +26,13 @@ class LivekitAudioConference extends Disposable {
       token,
     );
     await _room.localParticipant.setMicrophoneEnabled(true);
-    unmuteMe();
+    if (gameState.playerLocalConfig.muteAudioConf) {
+      Future.delayed(Duration(seconds: 1), () {
+        muteMe();
+      });
+    } else {
+      await unmuteMe();
+    }
     _listener = _room.createListener();
     _listener.listen((p0) {
       onEvent(p0);
@@ -110,7 +116,7 @@ class LivekitAudioConference extends Disposable {
     }
   }
 
-  void muteMe() {
+  void muteMe() async {
     if (_room == null) {
       return;
     }
@@ -122,7 +128,7 @@ class LivekitAudioConference extends Disposable {
     log('LiveKit: I am muted');
   }
 
-  void unmuteMe() {
+  void unmuteMe() async {
     if (_room == null) {
       return;
     }

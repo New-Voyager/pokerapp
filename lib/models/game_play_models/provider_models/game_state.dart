@@ -120,6 +120,7 @@ class GameState {
   ActionTimerState _actionTimerState;
   SeatChangeNotifier _seatChangeState;
   GameChatNotifState _chatNotifState;
+  AudioConfState _audioConfState;
   GameChatBubbleNotifyState _gameChatBubbleNotifyState;
   final GlobalKey<OnboardingState> onboardingKey = GlobalKey<OnboardingState>();
   final Map<int, GamePlayerInfo> players = Map<int, GamePlayerInfo>();
@@ -266,6 +267,7 @@ class GameState {
     this._gameMessagingService = Provider<GameMessagingService>(
       create: (_) => _gameMessageService,
     );
+    _gameMessageService.gameState = this;
 
     this._handInfo = HandInfoState();
     this._handInfo.update(
@@ -304,6 +306,7 @@ class GameState {
     this._gameSettingsState = GameSettingsState();
     this._chatNotifState = GameChatNotifState();
     this._gameChatBubbleNotifyState = GameChatBubbleNotifyState();
+    this._audioConfState = AudioConfState();
 
     // this._waitlistProvider =
     //     ListenableProvider<WaitlistState>(create: (_) => WaitlistState());
@@ -538,6 +541,8 @@ class GameState {
   HandChangeState get handChangeState => this._handChangeState;
 
   HandResultState get handResultState => this._handResultState;
+
+  AudioConfState get audioConfState => this._audioConfState;
 
   ListenableProvider<HandChangeState> get handChangeStateProvider =>
       this._handChangeStateProvider;
@@ -1658,5 +1663,35 @@ class SeatsOnTableState extends ChangeNotifier {
 class GameSettingsState extends ChangeNotifier {
   void notify() {
     notifyListeners();
+  }
+}
+
+class AudioConfState extends ChangeNotifier {
+  bool join = false;
+  bool leave = false;
+  bool joined = false;
+  bool left = false;
+  void joinConf() {
+    join = true;
+    notifyListeners();
+  }
+
+  void leaveConf() {
+    leave = true;
+    notifyListeners();
+  }
+
+  void joinedConf() {
+    join = false;
+    joined = true;
+    left = false;
+    leave = false;
+  }
+
+  void leftConf() {
+    join = false;
+    joined = true;
+    left = false;
+    leave = false;
   }
 }
