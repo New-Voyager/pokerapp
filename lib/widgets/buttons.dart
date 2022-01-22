@@ -251,6 +251,116 @@ class CircleImageButton extends StatelessWidget {
   }
 }
 
+class DummyCircleImageButton extends StatelessWidget {
+  DummyCircleImageButton({
+    @required this.theme,
+    this.focusNode,
+    this.height,
+    this.width,
+    this.imageHeight,
+    this.imageWidth,
+    this.asset,
+    this.svgAsset,
+    this.icon,
+    this.caption,
+    this.disabled = false,
+    this.split = false,
+    this.adaptive = true,
+  });
+  final FocusNode focusNode;
+  final bool adaptive;
+  final String svgAsset;
+  final String asset;
+  final IconData icon;
+  final String caption;
+  final AppTheme theme;
+  final bool disabled;
+  final bool split;
+  final double height;
+  final double width;
+  final double imageHeight;
+  final double imageWidth;
+
+  Widget build(BuildContext context) {
+    Color buttonColor = theme.accentColor;
+    Color buttonBackGround = Colors.black;
+    Color buttonBorder = theme.accentColor;
+
+    // Color buttonColor = Color(0xffC99200);
+    // Color buttonBackGround = Colors.black;
+    // Color buttonBorder = Color(0xffC99200);
+
+    // List<BoxShadow> shadow = [
+    //     BoxShadow(
+    //       color: buttonBackGround,
+    //       blurRadius: 1,
+    //       spreadRadius: 1,
+    //       offset: Offset(1, 0),
+    //     )
+    //   ];
+
+    Widget image = Container();
+    if (asset != null) {
+      image = ColorFiltered(
+        child: Image.asset(asset),
+        colorFilter: ColorFilter.mode(buttonColor, BlendMode.srcATop),
+      );
+    } else if (svgAsset != null) {
+      image = SvgPicture.asset(
+        svgAsset,
+        width: imageWidth ?? 24,
+        height: imageHeight ?? 24,
+        color: buttonColor,
+      );
+    } else if (icon != null) {
+      image = Icon(
+        icon,
+        size: imageWidth ?? 24,
+        color: buttonColor,
+      );
+    }
+    TextStyle textStyle = TextStyle(
+      fontSize: 12.dp,
+      color: Colors.white, //theme.circleImageButtonBorderColor,
+    );
+    if (theme.circleImageButtonTextStyle != null) {
+      textStyle = textStyle.merge(theme.circleImageButtonTextStyle);
+    }
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: width ?? 40,
+          height: height ?? 40,
+          padding: EdgeInsets.all(2.pw),
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: buttonBackGround,
+            // boxShadow: shadow,
+            border: Border.all(
+              color: buttonBorder,
+              width: 2.0,
+            ),
+            //borderRadius: BorderRadius.circular(20.pw),
+          ),
+          child: Center(child: image),
+        ),
+        (caption != null)
+            ? Padding(
+                padding: EdgeInsets.only(top: 8.pw),
+                child: Text(
+                  caption,
+                  style: textStyle,
+                  textAlign: TextAlign.center,
+                ),
+              )
+            : Container(),
+      ],
+    );
+  }
+}
+
 class CircleImageButtonOld extends StatelessWidget {
   CircleImageButtonOld({
     @required this.onTap,

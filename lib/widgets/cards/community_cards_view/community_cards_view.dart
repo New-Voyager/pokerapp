@@ -89,18 +89,23 @@ class CommunityCardsView extends StatelessWidget {
     return communityCards.toList();
   }
 
-  Widget buildSingleBoardCards(int boardNo, List<CardObject> boardCards,
-      {bool dimBoard = false}) {
+  Widget buildSingleBoardCards(
+    int boardNo,
+    List<CardObject> boardCards, {
+    bool dimBoard = false,
+  }) {
     /* we only need to show animation for the following 3 cases */
     if (boardCards?.length == 3)
       return FlopCommunityCards(
         flopCards: getCommunityCards(boardCards, dimBoard: dimBoard),
+        twoBoards: twoBoardsNeeded ?? false,
       );
 
     if (boardCards?.length == 4 || boardCards?.length == 5)
       return TurnOrRiverCommunityCards(
         key: ValueKey('$boardNo-${boardCards.length}'),
         riverOrTurnCards: getCommunityCards(boardCards, dimBoard: dimBoard),
+        twoBoards: twoBoardsNeeded ?? false,
       );
 
     /* default case - this is done to bake our data for animating in the future */
