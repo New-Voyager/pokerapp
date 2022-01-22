@@ -9,14 +9,21 @@ import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:pokerapp/widgets/switch.dart';
 import 'package:pokerapp/widgets/text_input_widget.dart';
 
+class ReloadOptions {
+  bool autoReload = false;
+  double reloadAmount = null;
+  double stackBelowAmount = null;
+  double stackReloadTo = null;
+}
+
 class ReloadDialog {
-  static Future<List> prompt({
+  static Future<ReloadOptions> prompt({
     @required BuildContext context,
     double reloadMax,
     double reloadMin,
     bool decimalAllowed,
   }) async {
-    List ret = await showDialog(
+    final ret = await showDialog<ReloadOptions>(
         barrierDismissible: true,
         context: context,
         builder: (_) {
@@ -158,8 +165,12 @@ class _ReloadDialogWidgetState extends State<ReloadDialogWidget> {
                         await showErrorDialog(
                             context, 'Error', 'Enter a valid amount');
                       } else {
-                        Navigator.pop(context,
-                            [amount, autoReload, belowAmt, reloadToAmt]);
+                        ReloadOptions options = ReloadOptions();
+                        options.autoReload = autoReload;
+                        options.reloadAmount = amount;
+                        options.stackBelowAmount = belowAmt;
+                        options.stackReloadTo = reloadToAmt;
+                        Navigator.pop(context, options);
                       }
                     },
                     text: "OK",

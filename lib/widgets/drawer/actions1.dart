@@ -57,11 +57,23 @@ class Actions1Widget extends StatelessWidget {
       double reloadMax = gameState.gameInfo.buyInMax - me.stack;
       int reloadMin = 1;
       /* use numeric keyboard to get reload value */
-      List reloadReturn = await ReloadDialog.prompt(
+      ReloadOptions reloadReturn = await ReloadDialog.prompt(
           context: context,
           reloadMax: reloadMax.toDouble(),
           reloadMin: reloadMin.toDouble(),
           decimalAllowed: gameState.gameInfo.chipUnit == ChipUnit.CENT);
+
+      if (reloadReturn.reloadAmount != null) {
+        // reload now
+      }
+
+      if (reloadReturn.autoReload != null) {
+        // set auto reload
+        if (reloadReturn.autoReload) {
+        } else {
+          // set auto reload off
+        }
+      }
 
       // double value = await NumericKeyboard2.show(
       //   context,
