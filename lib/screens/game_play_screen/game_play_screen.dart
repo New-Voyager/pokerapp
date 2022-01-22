@@ -868,26 +868,28 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     });
   }
 
-  Widget _buildChatWindow() => Consumer<ValueNotifier<bool>>(
-        builder: (context, vnChatVisibility, __) {
-          _isChatScreenVisible = vnChatVisibility.value;
-          return AnimatedSwitcher(
-            duration: const Duration(milliseconds: 200),
-            child: vnChatVisibility.value
-                ? Align(
-                    alignment: Alignment.bottomCenter,
-                    child: GameChat(
-                      scrollController: _gcsController,
-                      chatService: _gameContextObj.gameComService.gameMessaging,
-                      onChatVisibilityChange: () => _toggleChatVisibility(
-                        context,
-                      ),
+  Widget _buildChatWindow() {
+    return Consumer<ValueNotifier<bool>>(
+      builder: (context, vnChatVisibility, __) {
+        _isChatScreenVisible = vnChatVisibility.value;
+        return AnimatedSwitcher(
+          duration: const Duration(milliseconds: 200),
+          child: vnChatVisibility.value
+              ? Align(
+                  alignment: Alignment.bottomCenter,
+                  child: GameChat(
+                    scrollController: _gcsController,
+                    chatService: _gameContextObj.gameComService.gameMessaging,
+                    onChatVisibilityChange: () => _toggleChatVisibility(
+                      context,
                     ),
-                  )
-                : const SizedBox.shrink(),
-          );
-        },
-      );
+                  ),
+                )
+              : const SizedBox.shrink(),
+        );
+      },
+    );
+  }
 
   Widget _buildBoardView(Size boardDimensions, double boardScale) {
     // log('RedrawTop: Rebuilding board view');

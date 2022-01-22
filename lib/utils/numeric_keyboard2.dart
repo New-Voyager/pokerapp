@@ -263,7 +263,7 @@ class NumericKeyboard2 extends StatelessWidget {
 
         /* done button */
         _buildButton(
-          value: 'Done',
+          value: 'OK',
           textSize: 18.0,
           isDoneButton: true,
         ),
