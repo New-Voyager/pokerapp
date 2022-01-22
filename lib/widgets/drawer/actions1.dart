@@ -11,6 +11,7 @@ import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/numeric_keyboard2.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:pokerapp/widgets/list_tile.dart';
+import 'package:pokerapp/widgets/reload_dialog.dart';
 
 class Actions1Widget extends StatelessWidget {
   final AppTextScreen text;
@@ -56,16 +57,27 @@ class Actions1Widget extends StatelessWidget {
       double reloadMax = gameState.gameInfo.buyInMax - me.stack;
       int reloadMin = 1;
       /* use numeric keyboard to get reload value */
-      double value = await NumericKeyboard2.show(
-        context,
-        title:
-            'Reload (${DataFormatter.chipsFormat(reloadMin.toDouble())} - ${DataFormatter.chipsFormat(reloadMax)})',
-        min: reloadMin.toDouble(),
-        max: reloadMax.toDouble(),
-        decimalAllowed: gameState.gameInfo.chipUnit == ChipUnit.CENT,
-      );
+      List reloadReturn = await ReloadDialog.prompt(
+          context: context,
+          reloadMax: reloadMax.toDouble(),
+          reloadMin: reloadMin.toDouble(),
+          decimalAllowed: gameState.gameInfo.chipUnit == ChipUnit.CENT);
 
-      if (value == null) return;
+      // double value = await NumericKeyboard2.show(
+      //   context,
+      //   title:
+      //       'Reload (${DataFormatter.chipsFormat(reloadMin.toDouble())} - ${DataFormatter.chipsFormat(reloadMax)})',
+      //   min: reloadMin.toDouble(),
+      //   max: reloadMax.toDouble(),
+      //   decimalAllowed: gameState.gameInfo.chipUnit == ChipUnit.CENT,
+      // );
+
+      if (reloadReturn == null) return;
+
+      double value = reloadReturn[0];
+      bool autoReload = reloadReturn[1];
+      double belowAmt = reloadReturn[2];
+      double reloadToAmt = reloadReturn[3];
 
       final ret = await GameService.reload(gameState.gameCode, value.toInt());
       if (!ret.approved) {
