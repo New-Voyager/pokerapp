@@ -58,6 +58,10 @@ void main() async {
 
   await AppConfig.init(flavorApp.apiBaseUrl);
   String apiUrl = AppConfig.apiUrl;
+
+  if (!appState.isProd) {
+    AppConfig.apiUrl = 'https://demo.pokerclub.app';
+  }
   log('$apiUrl');
   await graphQLConfiguration.init();
   runApp(
