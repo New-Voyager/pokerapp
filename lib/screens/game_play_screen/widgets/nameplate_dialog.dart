@@ -89,9 +89,13 @@ class _NamePlateDailogState extends State<NamePlateDailog> {
                 children: [
                   Align(
                       alignment: Alignment.center,
-                      child: Text(
-                        "${widget.seat.player.name}",
-                        style: AppDecorators.getHeadLine1Style(theme: theme),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 53.0),
+                        child: Text(
+                          "${widget.seat.player.name}",
+                          style: AppDecorators.getHeadLine2Style(theme: theme),
+                          textAlign: TextAlign.center,
+                        ),
                       )),
                   Align(
                     alignment: Alignment.centerRight,
@@ -118,6 +122,10 @@ class _NamePlateDailogState extends State<NamePlateDailog> {
                             icon: Icons.remove,
                             caption: "Kick\n",
                             split: true,
+                            captionTextStyle: TextStyle(
+                              fontSize: 10.dp,
+                              color: Colors.white,
+                            ),
                             onTap: () async {
                               final result = await showPrompt(context, "Kick",
                                   "Do you want to remove '${widget.seat.player.name}' from the game?",
@@ -141,13 +149,19 @@ class _NamePlateDailogState extends State<NamePlateDailog> {
                                 }
                               }
                             })),
-                    SizedBox(width: 16.pw),
+                    widget.gameState.currentPlayer.isAdmin()
+                        ? SizedBox(width: 16.pw)
+                        : SizedBox.shrink(),
                     Visibility(
                         visible: widget.gameState.currentPlayer.isAdmin(),
                         child: CircleImageButton(
                             theme: theme,
                             svgAsset: 'assets/images/game/break.svg',
                             caption: "Break\n",
+                            captionTextStyle: TextStyle(
+                              fontSize: 10.dp,
+                              color: Colors.white,
+                            ),
                             split: true,
                             onTap: () async {
                               final result = await showPrompt(context, "Kick",
@@ -172,7 +186,9 @@ class _NamePlateDailogState extends State<NamePlateDailog> {
                                 }
                               }
                             })),
-                    SizedBox(width: 16.pw),
+                    widget.gameState.currentPlayer.isHost()
+                        ? SizedBox(width: 16.pw)
+                        : SizedBox.shrink(),
                     Visibility(
                         visible: widget.gameState.currentPlayer.isHost(),
                         child: CircleImageButton(
@@ -180,10 +196,17 @@ class _NamePlateDailogState extends State<NamePlateDailog> {
                             icon: Icons.verified_user,
                             caption: 'Assign\nHost',
                             split: true,
+                            captionTextStyle: TextStyle(
+                              fontSize: 10.dp,
+                              color: Colors.white,
+                            ),
                             onTap: () {
                               Navigator.of(context).pop({"type": "host"});
                             })),
-                    SizedBox(width: 16.pw),
+                    (widget.gameState.gameInfo.audioConfEnabled != null &&
+                            widget.gameState.gameInfo.audioConfEnabled)
+                        ? SizedBox(width: 16.pw)
+                        : SizedBox.shrink(),
                     Visibility(
                         visible: widget.gameState.gameInfo.audioConfEnabled ??
                             false, // widget.gameState.currentPlayer.isAdmin(),
@@ -200,7 +223,9 @@ class _NamePlateDailogState extends State<NamePlateDailog> {
                           caption: playerMuted ? 'Unmute\n' : 'Mute\n',
                           split: true,
                         )),
-                    SizedBox(width: 16.pw),
+                    showCreditLimit
+                        ? SizedBox(width: 16.pw)
+                        : SizedBox.shrink(),
                     // Visibility(
                     //   visible: widget.gameState.currentPlayer.isAdmin(),
                     //   child: CircleImageButton(
@@ -236,7 +261,8 @@ class _NamePlateDailogState extends State<NamePlateDailog> {
             visible: widget.gameState.gameSettings.funAnimations ?? true,
             child: Container(
               padding: EdgeInsets.all(16),
-              margin: EdgeInsets.symmetric(vertical: 8),
+              margin: EdgeInsets.all(8),
+              width: double.infinity,
               decoration: AppDecorators.tileDecorationWithoutBorder(theme),
               child: ProfilePopup(
                 seat: widget.seat,
