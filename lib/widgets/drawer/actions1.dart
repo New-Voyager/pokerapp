@@ -46,71 +46,90 @@ class Actions1Widget extends StatelessWidget {
   }
 
   void onReload(BuildContext context) async {
+    final me = gameState.me;
+    double reloadMax = gameState.gameInfo.buyInMax - me.stack;
+    int reloadMin = 1;
+    /* use numeric keyboard to get reload value */
+    double value = await NumericKeyboard2.show(
+      context,
+      title:
+          'Reload (${DataFormatter.chipsFormat(reloadMin.toDouble())} - ${DataFormatter.chipsFormat(reloadMax)})',
+      min: reloadMin.toDouble(),
+      max: reloadMax.toDouble(),
+      decimalAllowed: gameState.gameInfo.chipUnit == ChipUnit.CENT,
+    );
+    if (value == null) return;
+    final ret = await GameService.reload(gameState.gameCode, value);
+    if (!ret.approved) {
+      if (ret.insufficientCredits) {
+        String message =
+            'Not enough credits available. Available credits: ${DataFormatter.chipsFormat(ret.availableCredits)}';
+        await showErrorDialog(context, 'Credits', message);
+      } else if (ret.pendingRequest) {
+        await showErrorDialog(context, 'Reload',
+            'There is a pending reload request. Cannot make another request.');
+      } else if (ret.waitingForApproval) {
+        await showErrorDialog(context, 'Reload',
+            'Your reload request is pending for host approval.');
+      }
+    } else {
+      if (ret.appliedNextHand) {
+        // show notification
+        Alerts.showNotification(
+            titleText: 'Reload',
+            subTitleText: 'Reload is approved. Applied in next hand.');
+      }
+    }
+  }
+
+  void onAutoReload(BuildContext context) async {
     // get current player's stack
     final me = gameState.me;
     if (me != null) {
-      if (me.stack >= gameState.gameInfo.buyInMax) {
-        showAlertDialog(
-            context, "Reload", 'Chips in Stack are more than buyin max');
-        return;
+      double reloadThreshold = gameState.playerSettings.reloadThreshold;
+      if (reloadThreshold == null) {
+        reloadThreshold = (gameState.gameInfo.buyInMax ~/ 2).toDouble();
       }
-      double reloadMax = gameState.gameInfo.buyInMax - me.stack;
-      int reloadMin = 1;
+      double reloadTo = gameState.playerSettings.reloadTo;
+      if (reloadTo == null) {
+        reloadTo = gameState.gameInfo.buyInMax;
+      }
       /* use numeric keyboard to get reload value */
       ReloadOptions reloadReturn = await ReloadDialog.prompt(
           context: context,
-          reloadMax: reloadMax.toDouble(),
-          reloadMin: reloadMin.toDouble(),
+          autoReload: gameState.playerSettings.autoReload ?? false,
+          reloadThreshold: reloadThreshold,
+          reloadTo: reloadTo,
+          reloadMax: gameState.gameInfo.buyInMax,
           decimalAllowed: gameState.gameInfo.chipUnit == ChipUnit.CENT);
-
-      if (reloadReturn.reloadAmount != null) {
-        // reload now
+      if (reloadReturn == null) {
+        return;
       }
-
       if (reloadReturn.autoReload != null) {
         // set auto reload
         if (reloadReturn.autoReload) {
+          log('reload threshold: ${reloadReturn.stackBelowAmount}, reload to: ${reloadReturn.stackReloadTo}');
+          final ret = await GameService.autoReload(gameState.gameCode,
+              reloadReturn.stackBelowAmount, reloadReturn.stackReloadTo);
+          if (ret) {
+            Alerts.showNotification(
+                titleText: 'Auto Reload',
+                subTitleText: 'Auto Reload is turned on');
+          }
         } else {
           // set auto reload off
+          final ret = await GameService.autoReloadOff(gameState.gameCode);
+          if (ret) {
+            Alerts.showNotification(
+                titleText: 'Auto Reload',
+                subTitleText: 'Auto Reload is turned off');
+          }
         }
-      }
-
-      // double value = await NumericKeyboard2.show(
-      //   context,
-      //   title:
-      //       'Reload (${DataFormatter.chipsFormat(reloadMin.toDouble())} - ${DataFormatter.chipsFormat(reloadMax)})',
-      //   min: reloadMin.toDouble(),
-      //   max: reloadMax.toDouble(),
-      //   decimalAllowed: gameState.gameInfo.chipUnit == ChipUnit.CENT,
-      // );
-
-      if (reloadReturn == null) return;
-
-      double value = reloadReturn[0];
-      bool autoReload = reloadReturn[1];
-      double belowAmt = reloadReturn[2];
-      double reloadToAmt = reloadReturn[3];
-
-      final ret = await GameService.reload(gameState.gameCode, value.toInt());
-      if (!ret.approved) {
-        if (ret.insufficientCredits) {
-          String message =
-              'Not enough credits available. Available credits: ${DataFormatter.chipsFormat(ret.availableCredits)}';
-          await showErrorDialog(context, 'Credits', message);
-        } else if (ret.pendingRequest) {
-          await showErrorDialog(context, 'Reload',
-              'There is a pending reload request. Cannot make another request.');
-        } else if (ret.waitingForApproval) {
-          await showErrorDialog(context, 'Reload',
-              'Your reload request is pending for host approval.');
-        }
-      } else {
-        if (ret.appliedNextHand) {
-          // show notification
-          Alerts.showNotification(
-              titleText: 'Reload',
-              subTitleText: 'Reload is approved. Applied in next hand.');
-        }
+        // update player settings
+        gameState
+            .refreshPlayerSettings()
+            .then((value) {})
+            .onError((error, stackTrace) => null);
       }
     }
   }
@@ -146,6 +165,14 @@ class Actions1Widget extends StatelessWidget {
           onPressed: () async {
             Navigator.pop(context);
             this.onReload(context);
+          },
+        ),
+        IconWidgetTile(
+          icon: Icons.refresh,
+          title: 'Auto Reload',
+          onPressed: () async {
+            Navigator.pop(context);
+            this.onAutoReload(context);
           },
         ),
       ],

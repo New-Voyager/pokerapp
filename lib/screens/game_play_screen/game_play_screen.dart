@@ -1231,7 +1231,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   Future<void> leaveAudioConference() async {
     if (_gameState != null) {
       _voiceTextPlayer?.pause();
-      _gameContextObj.leaveAudio();
+      _gameContextObj?.leaveAudio();
     }
   }
 

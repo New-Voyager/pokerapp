@@ -201,8 +201,8 @@ class NumericKeyboard2 extends StatelessWidget {
 
     if (min <= v && v <= max) return Navigator.pop(context, v);
 
-    await showErrorDialog(
-        context, 'Range Error', 'Enter a value within the range $min-$max');
+    await showErrorDialog(context, 'Range Error',
+        'Enter a value within the range ${DataFormatter.chipsFormat(min)}-${DataFormatter.chipsFormat(max)}');
 
     /* else show error */
     errorNotifier.value = true;

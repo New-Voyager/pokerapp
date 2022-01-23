@@ -146,7 +146,7 @@ class _GameOptionState extends State<GameOption> {
 
       if (value == null) return;
 
-      final ret = await GameService.reload(gameCode, value.toInt());
+      final ret = await GameService.reload(gameCode, value);
       if (!ret.approved) {
         if (ret.insufficientCredits) {
           String message =
@@ -789,7 +789,7 @@ class _GameOptionState extends State<GameOption> {
                 widget.gameState.gameMessageService.sendMyInfo();
               });
             } else {
-              widget.gameContextObject.leaveAudio();
+              widget.gameContextObject?.leaveAudio();
             }
 
             widget.gameState.communicationState.notify();

@@ -5,13 +5,11 @@ import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/widgets/buttons.dart';
-import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:pokerapp/widgets/switch.dart';
 import 'package:pokerapp/widgets/text_input_widget.dart';
 
 class ReloadOptions {
   bool autoReload = false;
-  double reloadAmount = null;
   double stackBelowAmount = null;
   double stackReloadTo = null;
 }
@@ -19,6 +17,9 @@ class ReloadOptions {
 class ReloadDialog {
   static Future<ReloadOptions> prompt({
     @required BuildContext context,
+    bool autoReload,
+    double reloadThreshold,
+    double reloadTo,
     double reloadMax,
     double reloadMin,
     bool decimalAllowed,
@@ -34,8 +35,10 @@ class ReloadDialog {
               contentPadding: EdgeInsets.zero,
               content: ReloadDialogWidget(
                 theme,
+                autoReload,
+                reloadThreshold,
+                reloadTo,
                 reloadMax,
-                reloadMin,
                 decimalAllowed,
               ),
             );
@@ -48,12 +51,17 @@ class ReloadDialog {
 
 class ReloadDialogWidget extends StatefulWidget {
   final AppTheme theme;
-  final double reloadMax, reloadMin;
+  final double reloadMax;
   final bool decimalAllowed;
+  final bool autoReload;
+  final double reloadThreshold;
+  final double reloadTo;
   ReloadDialogWidget(
     this.theme,
+    this.autoReload,
+    this.reloadThreshold,
+    this.reloadTo,
     this.reloadMax,
-    this.reloadMin,
     this.decimalAllowed,
   );
 
@@ -62,12 +70,14 @@ class ReloadDialogWidget extends StatefulWidget {
 }
 
 class _ReloadDialogWidgetState extends State<ReloadDialogWidget> {
-  double amount = 0.0;
   bool autoReload = false;
   double belowAmt, reloadToAmt;
 
   @override
   void initState() {
+    belowAmt = widget.reloadThreshold;
+    reloadToAmt = widget.reloadTo;
+    autoReload = widget.autoReload;
     super.initState();
   }
 
@@ -84,22 +94,6 @@ class _ReloadDialogWidgetState extends State<ReloadDialogWidget> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text("Reload"),
-            SizedBox(height: 10.ph),
-            Row(children: [
-              Text("Amount"),
-              SizedBox(width: 20.pw),
-              Expanded(
-                child: TextInputWidget(
-                  maxValue: widget.reloadMax,
-                  minValue: widget.reloadMin,
-                  value: amount,
-                  decimalAllowed: widget.decimalAllowed,
-                  onChange: (double value) {
-                    amount = value;
-                  },
-                ),
-              ),
-            ]),
             SizedBox(height: 10.ph),
             SwitchWidget2(
               label: "Auto Reload",
@@ -122,11 +116,12 @@ class _ReloadDialogWidgetState extends State<ReloadDialogWidget> {
                               width: 100,
                               child: TextInputWidget(
                                 maxValue: widget.reloadMax,
-                                minValue: widget.reloadMin,
-                                value: widget.reloadMin,
+                                minValue: 1,
+                                value: belowAmt,
                                 decimalAllowed: widget.decimalAllowed,
                                 onChange: (double value) {
                                   belowAmt = value;
+                                  setState(() {});
                                 },
                               ),
                             ),
@@ -135,13 +130,14 @@ class _ReloadDialogWidgetState extends State<ReloadDialogWidget> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           mainAxisSize: MainAxisSize.max,
                           children: [
-                            Text("Reload to"),
+                            SizedBox(width: 30),
+                            Text("reload to"),
                             SizedBox(
                               width: 100,
                               child: TextInputWidget(
                                 maxValue: widget.reloadMax,
-                                minValue: widget.reloadMin,
-                                value: widget.reloadMin,
+                                minValue: belowAmt,
+                                value: reloadToAmt,
                                 decimalAllowed: widget.decimalAllowed,
                                 onChange: (double value) {
                                   reloadToAmt = value;
@@ -161,17 +157,11 @@ class _ReloadDialogWidgetState extends State<ReloadDialogWidget> {
                   /* ok button */
                   RoundRectButton(
                     onTap: () async {
-                      if (!autoReload && amount == 0.0) {
-                        await showErrorDialog(
-                            context, 'Error', 'Enter a valid amount');
-                      } else {
-                        ReloadOptions options = ReloadOptions();
-                        options.autoReload = autoReload;
-                        options.reloadAmount = amount;
-                        options.stackBelowAmount = belowAmt;
-                        options.stackReloadTo = reloadToAmt;
-                        Navigator.pop(context, options);
-                      }
+                      ReloadOptions options = ReloadOptions();
+                      options.autoReload = autoReload;
+                      options.stackBelowAmount = belowAmt;
+                      options.stackReloadTo = reloadToAmt;
+                      Navigator.pop(context, options);
                     },
                     text: "OK",
                     theme: widget.theme,

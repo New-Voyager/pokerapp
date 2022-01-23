@@ -110,7 +110,7 @@ class GameContextObject extends ChangeNotifier {
   @override
   void dispose() {
     //this.ionAudioConferenceService?.close();
-    this.audioConf.leave();
+    this.audioConf?.leave();
     handToPlayerTextService?.close();
     gameUpdateService?.close();
     gameComService?.dispose();
@@ -161,7 +161,7 @@ class GameContextObject extends ChangeNotifier {
       //   this.ionAudioConferenceService.leave();
       // }
       if (this.audioConf != null) {
-        this.audioConf.leave();
+        this.audioConf?.leave();
       }
       gameState.communicationState.audioConferenceStatus =
           AudioConferenceStatus.LEFT;
