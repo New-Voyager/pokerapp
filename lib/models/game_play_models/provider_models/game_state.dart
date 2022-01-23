@@ -675,6 +675,9 @@ class GameState {
     this._playerSettings.buttonStraddleBet = settings.buttonStraddleBet;
     this._playerSettings.muckLosingHand = settings.muckLosingHand;
     this._playerSettings.runItTwiceEnabled = settings.runItTwiceEnabled;
+    this._playerSettings.autoReload = settings.autoReload;
+    this._playerSettings.reloadThreshold = settings.reloadThreshold;
+    this._playerSettings.reloadTo = settings.reloadTo;
   }
 
   bool get isTableFull {

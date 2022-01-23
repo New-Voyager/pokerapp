@@ -55,7 +55,7 @@ class NewHandHandler {
     if (didILeaveTheGame()) {
       // leave the conference
       try {
-        this.gameContext.leaveAudio();
+        this.gameContext?.leaveAudio();
       } catch (err) {}
     }
   }

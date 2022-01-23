@@ -1081,7 +1081,7 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
                                   defaultValue: gmp.gameLengthInMins ~/ 60,
                                   values: NewGameConstants.GAME_LENGTH,
                                   onSelect: (int value) {
-                                    gmp.gameLengthInMins = value;
+                                    gmp.gameLengthInMins = value * 60;
                                   },
                                 )),
                           ]);
