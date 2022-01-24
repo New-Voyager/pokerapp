@@ -118,10 +118,11 @@ class _Actions5WidgetState extends State<Actions5Widget> {
     ]);
 
     children.add(SwitchWidget2(
-      label: text['rearrangeOption'],
+      label: 'Show Hand Strength',
+      value: widget.gameState.playerLocalConfig.showHandRank,
       onChange: (val) {
         // setting the value saves it to local storage too
-        widget.gameState.playerLocalConfig.showRearrange = val;
+        widget.gameState.playerLocalConfig.showHandRank = val;
         setState(() {});
       },
     ));

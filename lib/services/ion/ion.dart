@@ -2,13 +2,14 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:flutter_ion/flutter_ion.dart';
+//import 'package:flutter_ion/flutter_ion.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 
+/*
 class Participant {
   // name, player id, playerUuid are initialized later
   String name = '';
@@ -22,10 +23,7 @@ class Participant {
   LocalStream localStream;
   bool me = false;
   bool remote;
-
-  String get streamId => remote
-      ? (stream as RemoteStream).stream.id
-      : (stream as LocalStream).stream.id;
+  String streamId = '';
 
   MediaStream get mediaStream =>
       remote ? (stream as RemoteStream).stream : (stream as LocalStream).stream;
@@ -39,7 +37,13 @@ class Participant {
     this.isTalking = false,
     this.isSelfMute = false,
     this.remote = false,
-  });
+  }) {
+    if (this.stream != null) {
+      streamId = remote
+          ? (stream as RemoteStream).stream.id
+          : (stream as LocalStream).stream.id;
+    }
+  }
 
   Future<void> initialize() async {}
 
@@ -60,6 +64,10 @@ class Participant {
   }
 
   void mute() async {
+    if (stream == null) {
+      return;
+    }
+
     if (remote) {
       log('RTC: $name [${this.streamId}] is muted');
       (stream as RemoteStream).mute?.call('audio');
@@ -76,6 +84,10 @@ class Participant {
   }
 
   void unmute() async {
+    if (stream == null) {
+      return;
+    }
+
     if (remote) {
       log('RTC: $name [${this.streamId}] is unmuted');
       (stream as RemoteStream).unmute?.call('audio');
@@ -98,23 +110,53 @@ class IonAudioConferenceService {
   final PlayerInfo player;
   final GameMessagingService chatService;
   final GameState gameState;
+  String localStreamId = '';
   Connector _connector;
   RTC _rtc;
   JsonRPCSignal _signal;
   Client _client;
   bool _inConference = false;
   bool _closed = false;
+  LocalStream localStream;
 
   List<Participant> participants = [];
   IonAudioConferenceService(this.gameState, this.chatService, this.sfuUrl,
       this.confRoom, this.player);
 
   void updatePlayerId(String streamId, int playerId) {
-    log('RTC: Update stream $streamId playerId: $playerId');
+    log('AudioConf: Update stream $streamId playerId: $playerId');
+
+    bool foundStream = false;
+    // remove existing participant with the same player id
+    for (int i = 0; i < participants.length; i++) {
+      if (participants[i].playerId == playerId) {
+        if (participants[i].streamId == streamId) {
+          foundStream = true;
+        } else {
+          participants.removeAt(i);
+        }
+      }
+    }
+
+    if (foundStream) {
+      return;
+    }
+
+    bool found = false;
     for (final participant in participants) {
       if (participant.streamId == streamId) {
         participant.playerId = playerId;
+        found = true;
+        break;
       }
+    }
+
+    if (!found) {
+      Participant participant = Participant(stream: null, remote: true);
+      participant.playerId = playerId;
+      participant.name = 'unknown';
+      participant.streamId = streamId;
+      participants.add(participant);
     }
   }
 
@@ -142,25 +184,45 @@ class IonAudioConferenceService {
       //await _rtc.join(this.confRoom, playerId, JoinConfig());
       if (_closed) return;
       log('RTC: $playerId joined the conference');
-      var localStream = await LocalStream.getUserMedia(
-          constraints: Constraints(audio: true, video: false));
+      var constraints = Constraints.defaults;
+      constraints.video = false;
+      constraints.simulcast = true;
+      var localStream = await LocalStream.getUserMedia(constraints: constraints);
+      // var localStream = await LocalStream.getUserMedia(
+      //     constraints: Constraints(audio: true, video: false));
       if (Platform.isIOS) {
         localStream.getTrack('audio').enableSpeakerphone(true);
       }
       await client.publish(localStream);
       //await _rtc.publish(localStream);
       if (_closed) return;
-      log('RTC: name: $playerId  stream id ${localStream.stream.id}');
+      localStreamId = localStream.stream.id;
+      log('AudioConf: playerId: $playerId  stream id ${localStream.stream.id}');
+
+      // remove existing me
+      for (int i = 0; i < participants.length; i++) {
+        if (participants[i].playerId == playerId) {
+          participants.removeAt(i);
+          break;
+        }
+      }
       Participant participant = Participant(stream: localStream, remote: false);
       participant.playerId = this.player.id;
       participant.name = this.player.name;
       participant.playerUuid = this.player.uuid;
       participants.add(participant);
+      this.localStream = localStream;
+
       if (gameState.me != null) {
         gameState.me.streamId = localStream.stream.id;
       }
-      log('RTC: name: $playerId  ${localStream.stream.id} in the conference');
+      log('AudioConf: Join name: $playerId  ${localStream.stream.id} in the conference');
       _inConference = true;
+      // if (gameState.communicationState.muted) {
+      //   mute();
+      // } else {
+      //   unmute();
+      // }
     } catch (err) {
       close();
       throw err;
@@ -226,15 +288,29 @@ class IonAudioConferenceService {
   onTrack(MediaStreamTrack track, RemoteStream remoteStream) {
     // on new track
     if (track.kind == 'audio') {
-      log('RTC: ontrack: remote stream => ${remoteStream.id} stream id: ${remoteStream.stream.id} ownerTag: ${remoteStream.stream.ownerTag}');
+      log('AudioConf: ontrack: remote stream => ${remoteStream.id} stream id: ${remoteStream.stream.id} ownerTag: ${remoteStream.stream.ownerTag}');
       final newParticipant = Participant(stream: remoteStream, remote: true)
         ..initialize();
-      participants.add(newParticipant);
+
+      bool found = false;
+      for (int i = 0; i < participants.length; i++) {
+        if (participants[i].streamId == remoteStream.id) {
+          log('AudioConf: ontrack: Found remote stream => ${remoteStream.id} stream id: ${remoteStream.stream.id} ownerTag: ${remoteStream.stream.ownerTag}');
+          participants[i].stream = remoteStream;
+          participants[i].remote = true;
+          found = true;
+          break;
+        }
+      }
+      if (!found) {
+        log('AudioConf: ontrack: Not Found remote stream => ${remoteStream.id} stream id: ${remoteStream.stream.id} ownerTag: ${remoteStream.stream.ownerTag}');
+        participants.add(newParticipant);
+      }
     }
   }
 
   void onSpeakers(Map<String, dynamic> data) {
-    log('RTC: onSpeakers ${jsonEncode(data)}');
+    //log('AudioConf: onSpeakers ${jsonEncode(data)}');
     String method = '';
     if (data.containsKey("method")) {
       method = data["method"];
@@ -242,9 +318,12 @@ class IonAudioConferenceService {
     if (method == 'audioLevels' && data.containsKey("params")) {
       List<Seat> speakers = [];
       for (final streamId in data["params"]) {
-        for (final seat in gameState.seats) {
-          if (seat.player != null) {
-            if (seat.player.streamId == streamId) {
+        Participant participant = getParticipantByStreamId(streamId);
+        if (participant != null) {
+          //log('AudioConf: onSpeakers ${participant.playerId} ${participant.name}');
+          if (participant.playerId != null) {
+            final seat = gameState.getSeatByPlayer(participant.playerId);
+            if (seat != null) {
               speakers.add(seat);
             }
           }
@@ -269,12 +348,12 @@ class IonAudioConferenceService {
         if (!speaking) {
           // not a speaker
           if (seat.player.talking) {
-            log('RTC: ${seat.player.name} stopped talking');
+            log('AudioConf: ${seat.player.name} stopped talking');
             stoppedTalking.add(seat);
           }
         } else {
           // speaking
-          log('RTC: ${seat.player.name} is talking');
+          log('AudioConf: ${seat.player.name} is talking');
           if (!seat.player.talking) {
             talking.add(seat);
           }
@@ -299,7 +378,8 @@ class IonAudioConferenceService {
   Participant me() {
     Participant meObject;
     for (final participant in participants) {
-      if (participant.playerId == this.player.id) {
+      if (participant.playerId == this.player.id &&
+          participant.streamId == this.localStreamId) {
         meObject = participant;
         break;
       }
@@ -366,8 +446,14 @@ class IonAudioConferenceService {
     // if the current player is in the conference, mute
     if (_inConference) {
       final me = this.me();
-      if (me != null && !me.isMuted) {
-        me.mute();
+      if (me != null) {
+        if (this.localStream != null) {
+          var track = localStream.getTrack('audio');
+          if (track != null) {
+            track.setMicrophoneMute(true);
+          }
+        }
+        //me.mute();
       }
     }
   }
@@ -376,9 +462,16 @@ class IonAudioConferenceService {
     // if the current player is in the conference, mute
     if (_inConference) {
       final me = this.me();
-      if (me != null && me.isMuted) {
-        me.unmute();
+      if (me != null) {
+        if (this.localStream != null) {
+          var track = localStream.getTrack('audio');
+          if (track != null) {
+            track.setMicrophoneMute(false);
+          }
+        }
+        //me.unmute();
       }
     }
   }
 }
+*/

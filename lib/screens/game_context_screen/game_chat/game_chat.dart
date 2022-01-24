@@ -422,7 +422,7 @@ class _GameChatState extends State<GameChat> {
     if (isKeyboardVisible) {
       return height * 0.25;
     } else {
-      return expanded ? height * 0.75 : height * 0.50;
+      return expanded ? height * 0.75 : height * 0.30;
     }
   }
 

@@ -2,9 +2,9 @@ import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:just_audio/just_audio.dart' as just_audio;
 
 const String clickSound = 'assets/sound_effects/button_press.mp3';
 const String betRaiseSound = 'assets/sound_effects/bet_call1.mp3';
@@ -20,27 +20,15 @@ const String applauseSound = 'assets/sound_effects/applause.mp3';
 const String fireworksSound = 'assets/animations/fireworks.mp3';
 const String clockTickingSound = 'assets/sound_effects/clock_ticking.mp3';
 
-// const String clickSound = 'button_press.mp3';
-// const String betRaiseSound = 'bet_call1.mp3';
-// const String allInSound = 'allin.mp3';
-// const String foldSound = 'fold.mp3';
-// const String checkSound = 'check.mp3';
-// const String dealSound = 'deal.mp3';
-// const String newHandSound = 'new_hand.mp3';
-// const String playerTurnSound = 'player_turn.mp3';
-// const String flopSound = 'flop.mp3';
-// const String turnRiverSound = 'river.mp3';
-// const String applauseSound = 'applause.mp3';
-// const String fireworksSound = 'fireworks.mp3';
-// const String clockTickingSound = 'clock_ticking.mp3';
-
 class AudioService {
-  static AudioPlayer audioPlayer;
+  static just_audio.AudioPlayer justAudioPlayer;
+  static just_audio.ConcatenatingAudioSource _concatenatingAudioSource;
+
   // add it to your class as a static member
   // static AudioCache player = AudioCache(prefix: 'assets/sound_effects/');
 
   static final Map<String, Uri> _audioFileCache = Map<String, Uri>();
-  static final Map<String, Uint8List> _audioCache = Map<String, Uint8List>();
+  // static final Map<String, Uint8List> _audioCache = Map<String, Uint8List>();
   static bool play = true;
   AudioService._();
 
@@ -53,96 +41,55 @@ class AudioService {
   }
 
   static stopSound() {
-    if (audioPlayer != null) {
-      try {
-        if (audioPlayer.state == PlayerState.PLAYING) {
-          audioPlayer.stop();
-        }
-      } catch (err) {
-        // ignore the error
-      }
-    }
+    // DO NOTHING
   }
 
   static Future<void> init() async {
-    if (audioPlayer == null) {
-      audioPlayer = new AudioPlayer();
+    if (justAudioPlayer == null) {
+      justAudioPlayer = just_audio.AudioPlayer(handleInterruptions: true);
     }
 
     // load sounds to memory
-    await getAudioBytes(clickSound);
-    await getAudioBytes(checkSound);
-    await getAudioBytes(playerTurnSound);
-    await getAudioBytes(foldSound);
-    await getAudioBytes(dealSound);
-    await getAudioBytes(applauseSound);
-    await getAudioBytes(fireworksSound);
-    await getAudioBytes(betRaiseSound);
-    await getAudioBytes(flopSound);
-    await getAudioBytes(clockTickingSound);
-    if (Platform.isIOS) {
-      // for iphone store the file in local
-
-    }
+    await getAudioUri(clickSound);
+    await getAudioUri(checkSound);
+    await getAudioUri(playerTurnSound);
+    await getAudioUri(foldSound);
+    await getAudioUri(dealSound);
+    await getAudioUri(applauseSound);
+    await getAudioUri(fireworksSound);
+    await getAudioUri(betRaiseSound);
+    await getAudioUri(flopSound);
+    await getAudioUri(clockTickingSound);
   }
 
-  static Future<Uint8List> getAudioBytes(String assetFile) async {
-    if (_audioCache[assetFile] == null) {
-      log('Loading file $assetFile');
-      try {
-        final data = (await rootBundle.load(assetFile)).buffer.asUint8List();
-        _audioCache[assetFile] = data;
-
-        if (Platform.isIOS) {
-          // store it locally
-          // create a temporary file on the device to be read by the native side
-          final file =
-              File('${(await getTemporaryDirectory()).path}/$assetFile');
-          await file.create(recursive: true);
-          await file.writeAsBytes(data.buffer.asUint8List());
-          _audioFileCache[assetFile] = file.uri;
-        }
-      } catch (err) {
-        log('File loading failed. ${err.toString()}');
-        _audioCache[assetFile] = Uint8List(0);
-      }
+  static Future<void> getAudioUri(String soundFile) async {
+    log('Loading file $soundFile');
+    try {
+      final data = (await rootBundle.load(soundFile)).buffer.asUint8List();
+      final file = File('${(await getTemporaryDirectory()).path}/$soundFile');
+      await file.create(recursive: true);
+      await file.writeAsBytes(data.buffer.asUint8List());
+      _audioFileCache[soundFile] = file.uri;
+    } catch (err) {
+      log('File loading failed. ${err.toString()}');
     }
-    return _audioCache[assetFile];
   }
 
   static playClickSound() {
     log('Playing click sound');
     playSound(clickSound);
-    // if (_audioCache[clickSound] != null) {
-    //   try {
-    //     audioPlayer.playBytes(_audioCache[clickSound]);
-    //   } catch (err) {
-    //     log('Could not play sound. Error: ${err.toString()}');
-    //   }
-    // }
   }
 
-  static playSound(String soundFile, {bool mute}) {
-    if (!play) {
-      return;
-    }
-    //log('Playing click sound');
-    if (mute ?? false) {
-      return;
-    }
+  static playSound(String soundFile, {bool mute = false}) async {
+    if (!play) return;
+    if (mute) return;
+    if (!_audioFileCache.containsKey(soundFile)) return;
 
-    //player.play(soundFile);
-    if (_audioCache[soundFile] != null) {
-      try {
-        if (Platform.isAndroid) {
-          audioPlayer.playBytes(_audioCache[soundFile]);
-        } else {
-          audioPlayer.play(_audioFileCache[soundFile].toString(),
-              isLocal: true);
-        }
-      } catch (err) {
-        log('Could not play sound. Error: ${err.toString()}');
-      }
+    try {
+      await justAudioPlayer.setAsset(soundFile);
+      justAudioPlayer.play();
+    } catch (err) {
+      log('Could not play sound. Error: ${err.toString()}');
     }
   }
 
@@ -188,9 +135,7 @@ class AudioService {
 
   static playAnimationSound(String animationId, {bool mute}) async {
     final animationSound = 'assets/animations/$animationId.mp3';
-    final audioBytes = await getAudioBytes(animationSound);
-    if (audioBytes != null) {
-      playSound(animationSound, mute: mute);
-    }
+    await getAudioUri(animationSound);
+    playSound(animationSound, mute: mute);
   }
 }

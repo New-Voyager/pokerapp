@@ -42,14 +42,14 @@ void main() async {
   FlavorConfig flavorApp;
   if (appState.isProd) {
     flavorApp = FlavorConfig(
-      appName: 'PokerDev',
+      appName: 'PokerClubApp',
       flavorName: Flavor.PROD.toString(),
       apiBaseUrl: 'https://api.pokerclub.app',
       child: MyApp(),
     );
   } else {
     flavorApp = FlavorConfig(
-      appName: 'PokerClubApp',
+      appName: 'PokerClubDev',
       flavorName: Flavor.DEV.toString(),
       apiBaseUrl: 'https://demo.pokerclub.app',
       child: MyApp(),
@@ -58,6 +58,10 @@ void main() async {
 
   await AppConfig.init(flavorApp.apiBaseUrl);
   String apiUrl = AppConfig.apiUrl;
+
+  if (!appState.isProd) {
+    AppConfig.apiUrl = 'https://demo.pokerclub.app';
+  }
   log('$apiUrl');
   await graphQLConfiguration.init();
   runApp(
