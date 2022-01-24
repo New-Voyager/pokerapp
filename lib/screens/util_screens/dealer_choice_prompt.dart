@@ -11,6 +11,7 @@ import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/milliseconds_counter.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
+import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/switch.dart';
 
 class DealerChoiceSelection {
@@ -47,7 +48,7 @@ class DealerChoicePrompt extends StatefulWidget {
                 if (!dismissed) {
                   dismissed = true;
                   int random = math.Random().nextInt(listOfGameTypes.length);
-                  Navigator.of(context).pop(listOfGameTypes[random]);
+                  Navigator.of(context).pop();
                 }
               });
 
@@ -66,7 +67,7 @@ class DealerChoicePrompt extends StatefulWidget {
     );
     if (result == null) {
       result = DealerChoiceSelection();
-      result.gameType = GameType.HOLDEM;
+      result.gameType = listOfGameTypes[0];
       result.doubleBoard = false;
     }
 
@@ -84,10 +85,32 @@ class _DealerChoicePromptState extends State<DealerChoicePrompt> {
     return "${duration.inSeconds}";
   }
 
+  double minOf(double a, double b) {
+    return a > b ? b : a;
+  }
+
   @override
   Widget build(BuildContext context) {
     final appTheme = AppTheme.getTheme(context);
+    final parentSize = Screen.size;
+    final maxWidth = 520.0;
+
+    List<String> gameTypes = [
+      'NLH',
+      'NLH DB',
+      '4 Card PLO',
+      '4 Card PLO DB',
+      '5 Card PLO',
+      '5 Card PLO DB',
+      '6 Card PLO',
+      '6 Card PLO DB',
+      '4 Card\nHi-Lo',
+      '5 Card\nHi-Lo',
+      '6 Card\nHi-Lo',
+    ];
     return Container(
+      //height: minOf(parentSize.width * 0.90, maxWidth * 0.90),
+      width: minOf(parentSize.width, maxWidth),
       //decoration: AppStylesNew.BgGreenRadialGradient,
       decoration: BoxDecoration(
         color: appTheme.primaryColorWithDark(),
@@ -97,9 +120,9 @@ class _DealerChoicePromptState extends State<DealerChoicePrompt> {
         ),
         borderRadius: BorderRadius.all(Radius.circular(10)),
       ),
-      padding: EdgeInsets.symmetric(
-        horizontal: 8.pw,
-      ),
+      // padding: EdgeInsets.symmetric(
+      //   horizontal: 8.pw,
+      // ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -110,21 +133,23 @@ class _DealerChoicePromptState extends State<DealerChoicePrompt> {
               style: AppDecorators.getAccentTextStyle(theme: appTheme),
             ),
           ),
-          SwitchWidget2(
-              label: 'Double board',
-              value: doubleBoard,
-              onChange: (v) {
-                doubleBoard = v;
-              }),
+          // SwitchWidget2(
+          //     label: 'Double board',
+          //     value: doubleBoard,
+          //     onChange: (v) {
+          //       doubleBoard = v;
+          //     }),
           Flexible(
             child: Container(
-                width: MediaQuery.of(context).size.width * 0.7,
+                width: minOf(parentSize.width,
+                    maxWidth), //MediaQuery.of(context).size.width * 0.7,
                 // height: MediaQuery.of(context).size.height * 0.4,
                 margin: EdgeInsets.only(
                   top: 8.ph,
                 ),
+                padding: EdgeInsets.symmetric(horizontal: 8),
                 child: GridView.builder(
-                  itemCount: widget.listOfGameTypes.length,
+                  itemCount: gameTypes.length,
                   shrinkWrap: true,
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
@@ -132,24 +157,57 @@ class _DealerChoicePromptState extends State<DealerChoicePrompt> {
                       crossAxisSpacing: 8,
                       mainAxisSpacing: 4),
                   itemBuilder: (BuildContext context, int index) {
-                    return ElevatedButton.icon(
+                    return ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         primary: appTheme.primaryColor,
                         alignment: Alignment.centerLeft,
                       ),
                       onPressed: () {
                         if (this.widget.onSelect != null) {
-                          this.widget.onSelect(
-                              widget.listOfGameTypes[index], doubleBoard);
+                          GameType gameType = GameType.UNKNOWN;
+                          bool doubleBoard = false;
+                          String chosenGame = gameTypes[index];
+                          if (chosenGame == 'NLH') {
+                            gameType = GameType.HOLDEM;
+                          } else if (chosenGame == 'NLH DB') {
+                            gameType = GameType.HOLDEM;
+                            doubleBoard = true;
+                          } else if (chosenGame == '4 Card PLO') {
+                            gameType = GameType.PLO;
+                          } else if (chosenGame == '4 Card PLO DB') {
+                            gameType = GameType.PLO;
+                            doubleBoard = true;
+                          } else if (chosenGame == '5 Card PLO') {
+                            gameType = GameType.FIVE_CARD_PLO;
+                          } else if (chosenGame == '5 Card PLO DB') {
+                            gameType = GameType.FIVE_CARD_PLO;
+                            doubleBoard = true;
+                          } else if (chosenGame == '6 Card PLO') {
+                            gameType = GameType.SIX_CARD_PLO;
+                          } else if (chosenGame == '6 Card PLO DB') {
+                            gameType = GameType.SIX_CARD_PLO;
+                            doubleBoard = true;
+                          } else if (chosenGame == '4 Card Hi-Lo') {
+                            gameType = GameType.PLO_HILO;
+                          } else if (chosenGame == '5 Card Hi-Lo') {
+                            gameType = GameType.FIVE_CARD_PLO_HILO;
+                          } else if (chosenGame == '6 Card Hi-Lo') {
+                            gameType = GameType.SIX_CARD_PLO_HILO;
+                          }
+
+                          this.widget.onSelect(gameType, doubleBoard);
+                          // this.widget.onSelect(
+                          //     widget.listOfGameTypes[index], doubleBoard);
                         }
                       },
-                      icon: Image.asset(
-                          GameModelNew.getGameTypeImageAssetFromEnum(
-                              widget.listOfGameTypes[index]),
-                          width: 24,
-                          height: 24),
-                      label: Text(
-                        "${gameTypeShortStr(widget.listOfGameTypes[index])}",
+                      // icon: Image.asset(
+                      //     GameModelNew.getGameTypeImageAssetFromEnum(
+                      //         widget.listOfGameTypes[index]),
+                      //     width: 24,
+                      //     height: 24),
+                      child: Text(
+                        //"${gameTypeShortStr(widget.listOfGameTypes[index])}",
+                        gameTypes[index],
                         //textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 10.dp,

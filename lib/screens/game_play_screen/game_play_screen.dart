@@ -771,10 +771,12 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
     init().then((v) {
       Future.delayed(Duration(seconds: 1), () async {
-        _queryCurrentHandIfNeeded();
-        final nats = context.read<Nats>();
-        log('dartnats: adding to disconnectListeners');
-        nats.disconnectListeners.add(this.onNatsDisconnect);
+        if (!TestService.isTesting) {
+          _queryCurrentHandIfNeeded();
+          final nats = context.read<Nats>();
+          log('dartnats: adding to disconnectListeners');
+          nats.disconnectListeners.add(this.onNatsDisconnect);
+        }
       });
 
       if (appService.appSettings.showRefreshBanner) {
