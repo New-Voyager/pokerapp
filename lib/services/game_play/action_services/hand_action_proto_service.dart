@@ -645,7 +645,7 @@ class HandActionProtoService {
     _gameState.cardDistributionState.seatNo = null;
     _gameState.handState = HandState.DEAL;
     _gameState.myState.notify();
-    AudioService.stopSound();
+    // AudioService.stopSound();
     //log('Hand Message: ::handleDeal:: END');
   }
 
@@ -945,7 +945,7 @@ class HandActionProtoService {
     }
 
     await Future.delayed(Duration(seconds: 1));
-    AudioService.stopSound();
+    // AudioService.stopSound();
 
     if (_close) return;
     updateRank(playerCardRanks);

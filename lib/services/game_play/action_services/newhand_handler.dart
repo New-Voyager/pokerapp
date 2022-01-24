@@ -427,6 +427,6 @@ class NewHandHandler {
       //log('Hand Message: ::handleDealStarted:: END');
     }
 
-    AudioService.stopSound();
+    // AudioService.stopSound();
   }
 }
