@@ -130,7 +130,9 @@ class AudioService {
   }
 
   static playClockTicking({bool mute}) {
-    playSound(clockTickingSound, mute: mute);
+    // tick sound is disabled for now
+    return;
+    //playSound(clockTickingSound, mute: mute);
   }
 
   static playAnimationSound(String animationId, {bool mute}) async {
