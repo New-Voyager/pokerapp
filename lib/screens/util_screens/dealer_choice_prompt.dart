@@ -41,6 +41,7 @@ class DealerChoicePrompt extends StatefulWidget {
       builder: (context) {
         return AlertDialog(
           backgroundColor: AppColorsNew.newDialogBgColor.withAlpha(100),
+          insetPadding: EdgeInsets.zero,
           content: StatefulBuilder(
             builder: (context, localState) {
               Future.delayed(
@@ -93,7 +94,7 @@ class _DealerChoicePromptState extends State<DealerChoicePrompt> {
   Widget build(BuildContext context) {
     final appTheme = AppTheme.getTheme(context);
     final parentSize = Screen.size;
-    final maxWidth = 520.0;
+    final maxWidth = 400.0;
 
     List<String> gameTypes = [
       'NLH',
@@ -104,9 +105,9 @@ class _DealerChoicePromptState extends State<DealerChoicePrompt> {
       '5 Card PLO DB',
       '6 Card PLO',
       '6 Card PLO DB',
-      '4 Card\nHi-Lo',
-      '5 Card\nHi-Lo',
-      '6 Card\nHi-Lo',
+      '4 Card Hi-Lo',
+      '5 Card Hi-Lo',
+      '6 Card Hi-Lo',
     ];
     return Container(
       //height: minOf(parentSize.width * 0.90, maxWidth * 0.90),
@@ -141,26 +142,24 @@ class _DealerChoicePromptState extends State<DealerChoicePrompt> {
           //     }),
           Flexible(
             child: Container(
-                width: minOf(parentSize.width,
-                    maxWidth), //MediaQuery.of(context).size.width * 0.7,
-                // height: MediaQuery.of(context).size.height * 0.4,
                 margin: EdgeInsets.only(
                   top: 8.ph,
                 ),
-                padding: EdgeInsets.symmetric(horizontal: 8),
+                padding: EdgeInsets.symmetric(horizontal: 16),
                 child: GridView.builder(
                   itemCount: gameTypes.length,
                   shrinkWrap: true,
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
-                      childAspectRatio: 3,
+                      childAspectRatio: 5,
                       crossAxisSpacing: 8,
-                      mainAxisSpacing: 4),
+                      mainAxisSpacing: 8),
                   itemBuilder: (BuildContext context, int index) {
                     return ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         primary: appTheme.primaryColor,
                         alignment: Alignment.centerLeft,
+                        padding: EdgeInsets.all(4),
                       ),
                       onPressed: () {
                         if (this.widget.onSelect != null) {
