@@ -24,7 +24,7 @@ class NumDiamondWidget extends StatelessWidget {
                 //Text('You have '),
                 Text(
                   '${playerState.diamonds}',
-                  style: AppDecorators.getHeadLine3Style(theme: theme)
+                  style: AppDecorators.getHeadLine4Style(theme: theme)
                       .copyWith(color: theme.accentColor),
                 ),
               ],
