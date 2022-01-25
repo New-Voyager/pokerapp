@@ -151,7 +151,7 @@ class _DealerChoicePromptState extends State<DealerChoicePrompt> {
                   shrinkWrap: true,
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
-                      childAspectRatio: 3,
+                      childAspectRatio: 5,
                       crossAxisSpacing: 8,
                       mainAxisSpacing: 8),
                   itemBuilder: (BuildContext context, int index) {
@@ -159,7 +159,7 @@ class _DealerChoicePromptState extends State<DealerChoicePrompt> {
                       style: ElevatedButton.styleFrom(
                         primary: appTheme.primaryColor,
                         alignment: Alignment.centerLeft,
-                        padding: EdgeInsets.all(8),
+                        padding: EdgeInsets.all(4),
                       ),
                       onPressed: () {
                         if (this.widget.onSelect != null) {
