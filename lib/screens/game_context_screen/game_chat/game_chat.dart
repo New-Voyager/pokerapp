@@ -25,11 +25,9 @@ import 'package:pokerapp/utils/adaptive_sizer.dart';
 class GameChat extends StatefulWidget {
   final ScrollController scrollController;
   final GameMessagingService chatService;
-  final Function onChatVisibilityChange;
 
   GameChat({
     @required this.chatService,
-    @required this.onChatVisibilityChange,
     @required this.scrollController,
   });
 
@@ -152,7 +150,9 @@ class _GameChatState extends State<GameChat> {
           ),
         ),
         borderRadius: BorderRadius.circular(24.pw),
-        onTap: widget.onChatVisibilityChange,
+        onTap: () {
+          Navigator.pop(context);
+        },
       ),
     );
   }
@@ -471,34 +471,39 @@ class _GameChatState extends State<GameChat> {
   @override
   Widget build(BuildContext context) {
     final theme = AppTheme.getTheme(context);
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        /* main bottom sheet, that has all the chat functionality */
-        _buildMainBody(theme),
+    return SafeArea(
+      child: Material(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            /* main bottom sheet, that has all the chat functionality */
+            _buildMainBody(theme),
 
-        /* emoji picker widget */
-        ValueListenableBuilder<bool>(
-          valueListenable: _vnShowEmojiPicker,
-          builder: (_, bool showPicker, __) => showPicker
-              ? EmojiPicker(
-                  onEmojiSelected: (String emoji) {
-                    _textEditingController.text += emoji;
-                  },
-                )
-              : const SizedBox.shrink(),
+            /* emoji picker widget */
+            ValueListenableBuilder<bool>(
+              valueListenable: _vnShowEmojiPicker,
+              builder: (_, bool showPicker, __) => showPicker
+                  ? EmojiPicker(
+                      onEmojiSelected: (String emoji) {
+                        _textEditingController.text += emoji;
+                      },
+                    )
+                  : const SizedBox.shrink(),
+            ),
+            /* emoji picker widget */
+            ValueListenableBuilder<bool>(
+              valueListenable: _vnShowFavouriteMessages,
+              builder: (_, bool showFavouriteMessages, __) =>
+                  showFavouriteMessages
+                      ? FavouriteTextWidget(
+                          onPresetTextSelect: (String pText) =>
+                              chatService.sendText(pText),
+                        )
+                      : const SizedBox.shrink(),
+            ),
+          ],
         ),
-        /* emoji picker widget */
-        ValueListenableBuilder<bool>(
-          valueListenable: _vnShowFavouriteMessages,
-          builder: (_, bool showFavouriteMessages, __) => showFavouriteMessages
-              ? FavouriteTextWidget(
-                  onPresetTextSelect: (String pText) =>
-                      chatService.sendText(pText),
-                )
-              : const SizedBox.shrink(),
-        ),
-      ],
+      ),
     );
   }
 }
