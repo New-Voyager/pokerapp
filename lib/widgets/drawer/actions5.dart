@@ -83,6 +83,16 @@ class _Actions5WidgetState extends State<Actions5Widget> {
         },
       ),
       SwitchWidget2(
+        label: 'Sounds',
+        value: widget.gameState.playerLocalConfig.gameSound,
+        onChange: (val) {
+          // setting the value saves it to local storage too
+          widget.gameState.playerLocalConfig.gameSound = val;
+          if (closed) return;
+          setState(() {});
+        },
+      ),
+      SwitchWidget2(
         label: text['vibration'],
         value: widget.gameState.playerLocalConfig.vibration,
         onChange: (val) {

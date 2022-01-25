@@ -117,8 +117,8 @@ class _ProfilePopupState extends State<ProfilePopup> {
                   // );
                 },
                 child: Container(
-                  height: 56.ph,
-                  width: 56.pw,
+                  height: 50.ph,
+                  width: 50.pw,
                   decoration: BoxDecoration(
                     color: Colors.transparent,
                     boxShadow: [
@@ -130,7 +130,7 @@ class _ProfilePopupState extends State<ProfilePopup> {
                     ],
                     shape: BoxShape.circle,
                   ),
-                  padding: const EdgeInsets.all(8),
+                  padding: const EdgeInsets.all(12),
                   margin: const EdgeInsets.all(5),
                   child: SvgPicture.asset(
                     animationObject.assetSvg,

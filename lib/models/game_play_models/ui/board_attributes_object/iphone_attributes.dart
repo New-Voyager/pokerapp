@@ -278,7 +278,7 @@ String iPhoneAttribs = """
   {
     "base": "iPhone 8",
     "name": "iPhone 10",
-    "models": ["iPhone 10, iPhone 10S"],
+    "models": ["iPhone 10, iPhone 10S, iPhone Xs,  iPhone XR"],
     "screenSize": "375.0, 812.0",
     "size": 5.8,
     "safeArea": true,
@@ -291,11 +291,11 @@ String iPhoneAttribs = """
         "bottomRight": "-15, 20",
         "middleLeft": "-8, 50",
         "middleRight": "8, 50",
-        "topLeft": "-4, 100",
-        "topRight": "4, 100",
-        "topCenter": "0, 90",
-        "topCenter1": "-48, 65",
-        "topCenter2": "48, 65"
+        "topLeft": "-4, 85",
+        "topRight": "4, 85",
+        "topCenter": "0, 70",
+        "topCenter1": "-48, 70",
+        "topCenter2": "48, 70"
       },
       "betAmountFac": {
         "bottomCenter": "0, -1.0",

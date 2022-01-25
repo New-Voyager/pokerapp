@@ -144,6 +144,7 @@ class CircleImageButton extends StatelessWidget {
     this.svgAsset,
     this.icon,
     this.caption,
+    this.captionTextStyle,
     this.disabled = false,
     this.split = false,
     this.adaptive = true,
@@ -154,6 +155,7 @@ class CircleImageButton extends StatelessWidget {
   final String asset;
   final IconData icon;
   final String caption;
+  final TextStyle captionTextStyle;
   final AppTheme theme;
   final Function onTap;
   final bool disabled;
@@ -205,7 +207,9 @@ class CircleImageButton extends StatelessWidget {
       fontSize: 12.dp,
       color: Colors.white, //theme.circleImageButtonBorderColor,
     );
-    if (theme.circleImageButtonTextStyle != null) {
+    if (captionTextStyle != null) {
+      textStyle = captionTextStyle;
+    } else if (theme.circleImageButtonTextStyle != null) {
       textStyle = textStyle.merge(theme.circleImageButtonTextStyle);
     }
 
