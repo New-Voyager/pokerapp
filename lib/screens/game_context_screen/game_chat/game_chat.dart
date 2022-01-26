@@ -9,7 +9,6 @@ import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
-import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/screens/game_context_screen/game_chat/keyboard_visibility_builder.dart';
 
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
@@ -18,6 +17,7 @@ import 'package:pokerapp/utils/favourite_texts_widget.dart';
 import 'package:pokerapp/utils/new_gif_widget.dart';
 import 'package:pokerapp/widgets/attributed_gif_widget.dart';
 import 'package:pokerapp/widgets/emoji_picker_widget.dart';
+import 'package:pokerapp/widgets/user_input_widget.dart';
 import 'package:provider/provider.dart';
 
 import 'package:pokerapp/utils/adaptive_sizer.dart';
@@ -44,7 +44,6 @@ class _GameChatState extends State<GameChat> {
   final ValueNotifier<bool> _vnShowEmojiPicker = ValueNotifier(false);
   final ValueNotifier<bool> _vnShowFavouriteMessages = ValueNotifier(false);
   final _textEditingController = TextEditingController();
-  AppTextScreen _appScreenText;
   bool expanded = false;
 
   int myID = -1;
@@ -55,8 +54,6 @@ class _GameChatState extends State<GameChat> {
 
   @override
   void initState() {
-    _appScreenText = getAppTextScreen("gameChat");
-
     super.initState();
 
     // mark all the messages as read post frame building
@@ -290,98 +287,6 @@ class _GameChatState extends State<GameChat> {
         ),
       );
 
-  Widget _buildTextField(AppTheme theme) => Container(
-        decoration: AppDecorators.tileDecorationWithoutBorder(theme),
-        margin: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-        padding: EdgeInsets.all(10.0),
-        child: Row(
-          children: [
-            // text field
-            Expanded(
-              child: TextField(
-                onTap: () {
-                  _vnShowEmojiPicker.value = false;
-                },
-                controller: _textEditingController,
-                onChanged: (value) {
-                  setState(() {});
-                },
-                style: AppDecorators.getSubtitle2Style(theme: theme),
-                textAlign: TextAlign.start,
-                textAlignVertical: TextAlignVertical.center,
-                decoration: InputDecoration(
-                  contentPadding: EdgeInsets.zero,
-                  isDense: true,
-                  border: InputBorder.none,
-                  hintText: _appScreenText['typeAMessage'],
-                ),
-              ),
-            ),
-
-            // emoji button
-            GestureDetector(
-              onTap: _onEmojiClick,
-              child: Icon(
-                Icons.emoji_emotions_outlined,
-                size: 25,
-                color: theme.accentColor,
-              ),
-            ),
-          ],
-        ),
-      );
-
-  Widget _buildUserInputWidget(AppTheme theme) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-      child: Row(
-        children: [
-          /* gif drawer button */
-          GestureDetector(
-            onTap: _onGifClick,
-            child: Icon(
-              Icons.add_circle_outline,
-              size: 25,
-              color: theme.accentColor,
-            ),
-          ),
-          SizedBox(width: 10.pw),
-          GestureDetector(
-            onTap: _onMessagesClick,
-            child: Icon(
-              Icons.list,
-              size: 25,
-              color: theme.accentColor,
-            ),
-          ),
-
-          /* main text field */
-          Expanded(
-            child: _buildTextField(theme),
-          ),
-
-          /* send button */
-          (_textEditingController.text.length != 0)
-              ? GestureDetector(
-                  onTap: _onSendClick,
-                  child: Icon(
-                    Icons.send_outlined,
-                    color: theme.accentColor,
-                    size: 25,
-                  ),
-                )
-              : GestureDetector(
-                  child: Icon(
-                    Icons.mic,
-                    color: theme.accentColor,
-                    size: 25,
-                  ),
-                ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildNewMessageNotifier(AppTheme theme) =>
       Consumer<GameChatNotifState>(
         builder: (_, gcns, __) => gcns.hasUnreadMessages
@@ -460,7 +365,13 @@ class _GameChatState extends State<GameChat> {
               _buildMessageArea(theme),
 
               /* user input widget */
-              _buildUserInputWidget(theme),
+              UserInputWidget(
+                editingController: _textEditingController,
+                onGifClick: _onGifClick,
+                onMessagesClick: _onMessagesClick,
+                onSendClick: _onSendClick,
+                onEmojiClick: _onEmojiClick,
+              ),
             ],
           ),
         );
@@ -488,7 +399,7 @@ class _GameChatState extends State<GameChat> {
                 )
               : const SizedBox.shrink(),
         ),
-        /* emoji picker widget */
+        /* fav message widget */
         ValueListenableBuilder<bool>(
           valueListenable: _vnShowFavouriteMessages,
           builder: (_, bool showFavouriteMessages, __) => showFavouriteMessages

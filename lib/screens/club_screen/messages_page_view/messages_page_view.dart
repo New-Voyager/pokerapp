@@ -17,8 +17,11 @@ import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/services/app/club_interior_service.dart';
 import 'package:pokerapp/services/app/club_message_service.dart';
 import 'package:pokerapp/services/text_filtering/text_filtering.dart';
+import 'package:pokerapp/utils/favourite_texts_widget.dart';
 import 'package:pokerapp/utils/gif_widget.dart';
+import 'package:pokerapp/utils/new_gif_widget.dart';
 import 'package:pokerapp/widgets/emoji_picker_widget.dart';
+import 'package:pokerapp/widgets/user_input_widget.dart';
 import 'package:provider/provider.dart';
 
 import '../../../routes.dart';
@@ -44,6 +47,7 @@ class _MessagesPageViewState extends State<MessagesPageView>
   String get routeName => Routes.message_page;
 
   final ValueNotifier<bool> _vnShowEmojiPicker = ValueNotifier(false);
+  final ValueNotifier<bool> _vnShowFavouriteMessages = ValueNotifier(false);
   final TextEditingController _textController = TextEditingController();
   List<ClubMessageModel> messages = [];
   AppTextScreen _appScreenText;
@@ -53,11 +57,27 @@ class _MessagesPageViewState extends State<MessagesPageView>
 
   void _onEmojiSelectTap() {
     _vnShowEmojiPicker.value = !_vnShowEmojiPicker.value;
+    _vnShowFavouriteMessages.value = false;
 
     // close keyboard
     if (_vnShowEmojiPicker.value) {
       FocusScope.of(context).unfocus();
     }
+  }
+
+  void _onPresetMessageClick() async {
+    _vnShowFavouriteMessages.value = !_vnShowFavouriteMessages.value;
+    _vnShowEmojiPicker.value = false;
+
+    // close keyboard
+    if (_vnShowEmojiPicker.value) {
+      FocusScope.of(context).unfocus();
+    }
+  }
+
+  void _sendPreset(String text) {
+    _textController.text = text;
+    _sendMessage();
   }
 
   void _sendMessage() {
@@ -86,23 +106,26 @@ class _MessagesPageViewState extends State<MessagesPageView>
     ClubMessageService.sendMessage(_model);
   }
 
-  void _openGifDrawer(AppTheme theme) async {
-    // String gifUrl = await showModalBottomSheet<String>(
-    //   context: navigatorKey.currentContext,
-    //   backgroundColor: theme.fillInColor,
-    //   builder: (_) => GifDrawerSheet(),
-    // );
-
+  void _openGifDrawer() async {
     await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      builder: (_) => GifWidget(
-        showPresets: false,
-        onPresetTextSelect: (String pText) => {},
+      builder: (_) => NewGifWidget(
+        gifSuggestions: AppConstants.GIF_CATEGORIES,
         onGifSelect: (String gifUrl) => _sendGif(gifUrl),
-        gifSuggestions: AppConstants.GIF_CATEGORIES_CLUB,
       ),
     );
+
+    // await showModalBottomSheet(
+    //   context: context,
+    //   isScrollControlled: true,
+    //   builder: (_) => GifWidget(
+    //     showPresets: false,
+    //     onPresetTextSelect: (String pText) => {},
+    //     onGifSelect: (String gifUrl) => _sendGif(gifUrl),
+    //     gifSuggestions: AppConstants.GIF_CATEGORIES_CLUB,
+    //   ),
+    // );
   }
 
   _fetchMembers() async {
@@ -198,15 +221,23 @@ class _MessagesPageViewState extends State<MessagesPageView>
                 // chat text field
                 widget.isSharedHandsOnly
                     ? const SizedBox.shrink()
-                    : ChatTextField(
-                        icon: FontAwesomeIcons.icons,
-                        appScreenText: _appScreenText,
-                        onGifSelectTap: () => _openGifDrawer(theme),
-                        textEditingController: _textController,
-                        onSend: _sendMessage,
-                        onEmojiSelectTap: _onEmojiSelectTap,
-                        onTap: _onTap,
+                    : UserInputWidget(
+                        onGifClick: _openGifDrawer,
+                        onMessagesClick: _onPresetMessageClick,
+                        onSendClick: _sendMessage,
+                        onEmojiClick: _onEmojiSelectTap,
+                        editingController: _textController,
                       ),
+
+                // : ChatTextField(
+                //     icon: FontAwesomeIcons.icons,
+                //     appScreenText: _appScreenText,
+                //     onGifSelectTap: () => _openGifDrawer(theme),
+                //     textEditingController: _textController,
+                //     onSend: _sendMessage,
+                //     onEmojiSelectTap: _onEmojiSelectTap,
+                //     onTap: _onTap,
+                //   ),
 
                 // emoji picker
                 ValueListenableBuilder<bool>(
@@ -218,6 +249,17 @@ class _MessagesPageViewState extends State<MessagesPageView>
                           },
                         )
                       : const SizedBox.shrink(),
+                ),
+
+                // fav texts
+                ValueListenableBuilder<bool>(
+                  valueListenable: _vnShowFavouriteMessages,
+                  builder: (_, bool showFavouriteMessages, __) =>
+                      showFavouriteMessages
+                          ? FavouriteTextWidget(
+                              onPresetTextSelect: _sendPreset,
+                            )
+                          : const SizedBox.shrink(),
                 ),
               ],
             ),
