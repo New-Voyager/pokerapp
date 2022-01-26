@@ -88,7 +88,8 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
   @override
   void initState() {
     // todo: commented onAnimation
-    widget.gameComService?.gameMessaging?.listen(onAnimation: this.onAnimation);
+    widget.gameComService?.gameMessaging
+        ?.listen(onAnimation: this.queueAnimation);
     animationHandlers();
     _seatChangeAnimationHandler();
 
@@ -202,6 +203,11 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
         });
 
         _lottieController.reset();
+
+        animationQueue.removeAt(0);
+        if (animationQueue.length != 0) {
+          onAnimation(animationQueue[0]);
+        }
       }
     });
 
@@ -223,6 +229,15 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
         _lottieController.forward();
       }
     });
+  }
+
+  List<ChatMessage> animationQueue = [];
+
+  void queueAnimation(ChatMessage message) async {
+    animationQueue.add(message);
+    if (!isLottieAnimationAnimating && animationQueue.length == 1) {
+      onAnimation(message);
+    }
   }
 
   void onAnimation(ChatMessage message) async {
