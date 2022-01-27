@@ -597,6 +597,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   }
 
   void _showGameChat(BuildContext context) {
+    this._gameState.chatScreenVisible = true;
     showGeneralDialog(
       barrierLabel: "Chat",
       barrierDismissible: true,
@@ -617,7 +618,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
           ),
         ),
       ),
-    ).then((val) {});
+    ).then((val) {
+      this._gameState.chatScreenVisible = false;
+    });
   }
 
   Future _onJoinGame(Seat seat) async {
@@ -859,18 +862,15 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   bool _isChatScreenVisible = false;
 
   void _onChatMessage(ChatMessage message) {
-    if (message.fromPlayer == this._gameState.currentPlayer.id) {
-      return;
-    }
-
-    if (_isChatScreenVisible) {
+    if (this._gameState.chatScreenVisible) {
       _gameState.gameChatNotifState.notifyNewMessage();
-
       // notify of new messages & rebuild the game message list
       /* if user is scrolled away, we need to notify */
       if (_gcsController.hasClients &&
           (_gcsController.offset > kScrollOffsetPosition)) {
-        _gameState.gameChatNotifState.addUnread();
+        if (message.fromPlayer != this._gameState.currentPlayer.id) {
+          _gameState.gameChatNotifState.addUnread();
+        }
       }
     } else {
       _gameState.gameChatNotifState.addUnread();
