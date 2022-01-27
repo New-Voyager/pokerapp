@@ -31,11 +31,7 @@ import 'package:pokerapp/screens/game_context_screen/game_chat/game_chat.dart';
 import 'package:pokerapp/screens/game_play_screen/footer_view.dart';
 import 'package:pokerapp/screens/game_play_screen/game_play_screen_util_methods.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/board_view.dart';
-import 'package:pokerapp/screens/game_play_screen/main_views/board_view/decorative_views/background_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/header_view/header_view.dart';
-import 'package:pokerapp/screens/game_play_screen/main_views/which_winner_widget.dart';
-import 'package:pokerapp/screens/game_play_screen/notifications/notifications.dart';
-import 'package:pokerapp/screens/game_play_screen/widgets/icon_with_badge.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/app/player_service.dart';
@@ -66,7 +62,6 @@ import '../../routes.dart';
 import '../../services/test/test_service.dart';
 import 'game_play_screen_util_methods.dart';
 import 'location_updates.dart';
-import 'widgets/pending_approvals_button.dart';
 
 // FIXME: THIS NEEDS TO BE CHANGED AS PER DEVICE CONFIG
 const kScrollOffsetPosition = 40.0;
@@ -174,7 +169,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       debugPrint('fetching game data: ${widget.gameCode}');
       gameInfo = widget.gameInfoModel ??
           await GameService.getGameInfo(widget.gameCode);
+      debugPrint('fetching game data: ${widget.gameCode} done');
       this._currentPlayer = await PlayerService.getMyInfo(widget.gameCode);
+      debugPrint('getting current player: ${widget.gameCode} done');
     }
 
     // mark the isMe field
@@ -191,13 +188,14 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     if (widget.customizationService != null) {
     } else if (TestService.isTesting) {
     } else {
-      debugPrint('fetching game data: ${widget.gameCode}');
+      debugPrint('fetching club data: ${widget.gameCode}');
       try {
         clubInfo = await ClubsService.getClubInfoForGame(clubCode);
         return clubInfo;
       } catch (e) {
         // we can still run the game
       }
+      debugPrint('fetching club data: ${widget.gameCode} done');
     }
     return clubInfo;
   }
@@ -222,9 +220,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       log('host seat change: $_hostSeatChangeSeats');
       _hostSeatChangeInProgress = true;
     }
-
     if (_initiated == true) return _gameInfoModel;
 
+    log('establishing game communication service');
     _gameComService = GameComService(
       currentPlayer: this._currentPlayer,
       gameToPlayerChannel: _gameInfoModel.gameToPlayerChannel,
@@ -252,6 +250,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       await _gameComService.init(natsClient);
       await encryptionService.init();
     }
+    log('game communication service is established');
 
     final livenessSender = LivenessSender(
       _gameInfoModel.gameID,
@@ -275,6 +274,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         _gameComService.gameMessaging.onPlayerInfo = this.onPlayerInfo;
         _gameComService.gameMessaging.getMyInfo = this.getPlayerInfo;
       }
+      log('initializing game state');
 
       await _gameState.initialize(
         gameCode: _gameInfoModel.gameCode,
@@ -289,9 +289,11 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         await _gameState.refreshPlayerSettings();
         await _gameState.refreshNotes();
       }
+      log('initializing game state done');
     }
 
     // _audioPlayer = AudioPlayer();
+    log('establishing audio conference');
 
     if (TestService.isTesting || widget.customizationService != null) {
       // testing code goes here
@@ -323,7 +325,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         if (_gameInfoModel.playersInSeats[i].playerUuid ==
             _currentPlayer.uuid) {
           // send my information
-          _gameState.gameMessageService.sendMyInfo();
           _gameState.gameMessageService.requestPlayerInfo();
 
           // this.initPlayingTimer();
@@ -345,6 +346,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         onRabbitHunt: this._onRabbitHunt,
       );
     }
+    log('establishing audio conference done');
 
     _initiated = true;
 
@@ -357,20 +359,29 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     if (!TestService.isTesting && widget.customizationService == null) {
       _initChatListeners(_gameComService.gameMessaging);
     }
+    // send my information
+    //_gameState.gameMessageService.sendMyInfo();
 
     if (_gameInfoModel?.audioConfEnabled ?? false) {
+      log('joining audio conference');
+
       // initialize agora
       // agora = Agora(
       //     gameCode: widget.gameCode,
       //     uuid: this._currentPlayer.uuid,
       //     playerId: this._currentPlayer.id);
+      // if current player is host/admin then put the player in audio chat
+      if (_currentPlayer.isAdmin()) {
+        // join the audio conference
+        //await joinAudioConference();
+      }
 
       // if the current player is in the table, then join audio
       for (int i = 0; i < _gameInfoModel.playersInSeats.length; i++) {
         if (_gameInfoModel.playersInSeats[i].playerUuid ==
             _currentPlayer.uuid) {
           // send my information
-          _gameState.gameMessageService.sendMyInfo();
+          //_gameState.gameMessageService.sendMyInfo();
           _gameState.gameMessageService.requestPlayerInfo();
           // request other player info
           // player is in the table
@@ -378,8 +389,13 @@ class _GamePlayScreenState extends State<GamePlayScreen>
           break;
         }
       }
+      log('joining audio conference done');
     } else {}
-
+    Future.delayed(Duration(seconds: 3), () {
+      log('publishing my information');
+      _gameState.gameMessageService.sendMyInfo();
+      log('publishing my information done');
+    });
     return _gameInfoModel;
   }
 
@@ -447,10 +463,11 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       _locationUpdates.stop();
       _locationUpdates = null;
     }
-    if (_gameContextObj != null &&
-        _gameContextObj.ionAudioConferenceService != null) {
-      _gameContextObj.ionAudioConferenceService.leave();
-    }
+    leaveAudioConference();
+    // if (_gameContextObj != null &&
+    //     _gameContextObj.ionAudioConferenceService != null) {
+    //   _gameContextObj.ionAudioConferenceService.leave();
+    // }
 
     if (_binding != null) {
       _binding.removeObserver(this);
@@ -511,10 +528,26 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         // start listening for changes in markedCards value
         markedCards.addListener(onMarkingCards);
       }
-      // else {
-      //   markedCards.clear();
-      //   markedCards.removeListener(onMarkingCards);
-      // }
+    });
+
+    _gameState.audioConfState.addListener(() async {
+      if (_gameState.audioConfState.join) {
+        joinAudioConference().then((value) {
+          if (mounted) {
+            _gameState.audioConfState.joinedConf();
+          }
+        }).onError((error, stackTrace) {
+          // do nothing
+        });
+      } else if (_gameState.audioConfState.leave) {
+        leaveAudioConference().then((value) {
+          if (mounted) {
+            _gameState.audioConfState.leftConf();
+          }
+        }).onError((error, stackTrace) {
+          // do nothing
+        });
+      }
     });
   }
 
@@ -738,10 +771,12 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
     init().then((v) {
       Future.delayed(Duration(seconds: 1), () async {
-        _queryCurrentHandIfNeeded();
-        final nats = context.read<Nats>();
-        log('dartnats: adding to disconnectListeners');
-        nats.disconnectListeners.add(this.onNatsDisconnect);
+        if (!TestService.isTesting) {
+          _queryCurrentHandIfNeeded();
+          final nats = context.read<Nats>();
+          log('dartnats: adding to disconnectListeners');
+          nats.disconnectListeners.add(this.onNatsDisconnect);
+        }
       });
 
       if (appService.appSettings.showRefreshBanner) {
@@ -755,9 +790,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       if (appService.appSettings.showReportInfoDialog) {
         appService.appSettings.showReportInfoDialog = false;
 
-        showErrorDialog(context, 'Report an issue?',
-            "If you run into any issues while using the app or want us to implement a feature, please tap the hamburger menu on the bottom left and tap Report Issue.",
-            info: true);
+        // showErrorDialog(context, 'Report an issue?',
+        //     "If you run into any issues while using the app or want us to implement a feature, please tap the hamburger menu on the bottom left and tap Report Issue.",
+        //     info: true);
       }
     });
 
@@ -835,26 +870,28 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     });
   }
 
-  Widget _buildChatWindow() => Consumer<ValueNotifier<bool>>(
-        builder: (context, vnChatVisibility, __) {
-          _isChatScreenVisible = vnChatVisibility.value;
-          return AnimatedSwitcher(
-            duration: const Duration(milliseconds: 200),
-            child: vnChatVisibility.value
-                ? Align(
-                    alignment: Alignment.bottomCenter,
-                    child: GameChat(
-                      scrollController: _gcsController,
-                      chatService: _gameContextObj.gameComService.gameMessaging,
-                      onChatVisibilityChange: () => _toggleChatVisibility(
-                        context,
-                      ),
+  Widget _buildChatWindow() {
+    return Consumer<ValueNotifier<bool>>(
+      builder: (context, vnChatVisibility, __) {
+        _isChatScreenVisible = vnChatVisibility.value;
+        return AnimatedSwitcher(
+          duration: const Duration(milliseconds: 200),
+          child: vnChatVisibility.value
+              ? Align(
+                  alignment: Alignment.bottomCenter,
+                  child: GameChat(
+                    scrollController: _gcsController,
+                    chatService: _gameContextObj.gameComService.gameMessaging,
+                    onChatVisibilityChange: () => _toggleChatVisibility(
+                      context,
                     ),
-                  )
-                : const SizedBox.shrink(),
-          );
-        },
-      );
+                  ),
+                )
+              : const SizedBox.shrink(),
+        );
+      },
+    );
+  }
 
   Widget _buildBoardView(Size boardDimensions, double boardScale) {
     return Container(
@@ -969,7 +1006,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
             gameCode: widget.gameCode,
             gameContextObject: _gameContextObj,
             currentPlayer: _gameContextObj.gameState.currentPlayer,
-            joinAudioConference: joinAudioConference,
             gameInfo: _gameInfoModel,
             toggleChatVisibility: _toggleChatVisibility,
             onStartGame: startGame);
@@ -984,6 +1020,23 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     final theme = AppTheme.getTheme(context);
     const kEmpty = const SizedBox.shrink();
 
+    // if (widget.showBottom) {
+    //   gameScreenChildren.add(Align(
+    //     alignment: Alignment.bottomCenter,
+    //     child: Consumer<RedrawFooterSectionState>(
+    //       builder: (_, ___, __) {
+    //         log('RedrawFooter: building footer view');
+    //         return FooterViewWidget(
+    //             gameCode: widget.gameCode,
+    //             gameContextObject: _gameContextObj,
+    //             currentPlayer: _gameContextObj.gameState.currentPlayer,
+    //             gameInfo: _gameInfoModel,
+    //             toggleChatVisibility: _toggleChatVisibility,
+    //             onStartGame: startGame);
+    //       },
+    //     ),
+    //   ));
+    //}
     Widget column = Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
@@ -1180,14 +1233,14 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     super.didChangeAppLifecycleState(state);
   }
 
-  leaveAudioConference() {
+  Future<void> leaveAudioConference() async {
     if (_gameState != null) {
       _voiceTextPlayer?.pause();
-      _gameContextObj.leaveAudio();
+      _gameContextObj?.leaveAudio();
     }
   }
 
-  void joinAudioConference() async {
+  Future<void> joinAudioConference() async {
     if (TestService.isTesting || _gameState.customizationMode) {
       return;
     }
@@ -1206,14 +1259,16 @@ class _GamePlayScreenState extends State<GamePlayScreen>
           OverlaySupportEntry notification;
           try {
             notification = Alerts.showNotification(
-                titleText: _appScreenText['audioTitle'],
-                subTitleText: _appScreenText['joiningAudio'],
-                leadingIcon: Icons.mic_sharp);
+              titleText: _appScreenText['audioTitle'],
+              subTitleText: _appScreenText['joiningAudio'],
+              leadingIcon: Icons.mic_sharp,
+            );
 
             await _gameContextObj.joinAudio(context);
+            _gameState.gameMessageService.sendMyInfo();
             // ui is still running
             // send stream id
-            log('RTC: Requesting information about the other players');
+            log('AudioConf: 1 Requesting information about the other players');
             _gameState.gameMessageService.requestPlayerInfo();
             notification.dismiss();
             notification = Alerts.showNotification(
@@ -1232,35 +1287,20 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   }
 
   void onPlayerInfo(GamePlayerInfo info) {
-    final player = _gameState.getPlayerById(info.playerId);
-    if (player != null) {
-      // update seat to change the name plate
-      final seat = _gameState.getSeatByPlayer(info.playerId);
-      if (seat != null && seat.player != null) {
-        final player = seat.player;
-        log('RTC: PlayerInfo: name: ${player.name} streamId: ${player.streamId} namePlateId: ${player.namePlateId}');
-        if (_gameContextObj.ionAudioConferenceService != null) {
-          _gameContextObj.ionAudioConferenceService
-              .updatePlayerId(player.streamId, player.playerId);
-        }
-        if (player.streamId != info.streamId ||
-            player.namePlateId != info.namePlateId) {
-          player.streamId = info.streamId;
-          player.namePlateId = info.namePlateId;
-          seat.notify();
-        }
-      }
-    }
+    log('player: ${info.name} has joined the game');
+    // story player information
+    _gameState.players[info.playerId] = info;
   }
 
   GamePlayerInfo getPlayerInfo() {
     GamePlayerInfo playerInfo = GamePlayerInfo();
-    if (_gameState.me == null) {
-      return null;
+    playerInfo.playerId = _currentPlayer.id;
+    playerInfo.name = _currentPlayer.name;
+    playerInfo.uuid = _currentPlayer.uuid;
+    if (_gameState.me != null) {
+      playerInfo.streamId = _gameState.me.streamId;
+      playerInfo.namePlateId = _gameState.me.namePlateId;
     }
-    playerInfo.streamId = _gameState.me.streamId;
-    playerInfo.playerId = _gameState.me.playerId;
-    playerInfo.namePlateId = _gameState.me.namePlateId;
     return playerInfo;
   }
 }

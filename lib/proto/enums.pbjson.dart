@@ -47,12 +47,14 @@ const GameType$json = const {
     const {'1': 'PLO_HILO', '2': 3},
     const {'1': 'FIVE_CARD_PLO', '2': 4},
     const {'1': 'FIVE_CARD_PLO_HILO', '2': 5},
+    const {'1': 'SIX_CARD_PLO', '2': 6},
+    const {'1': 'SIX_CARD_PLO_HILO', '2': 7},
   ],
 };
 
 /// Descriptor for `GameType`. Decode as a `google.protobuf.EnumDescriptorProto`.
 final $typed_data.Uint8List gameTypeDescriptor = $convert.base64Decode(
-    'CghHYW1lVHlwZRILCgdVTktOT1dOEAASCgoGSE9MREVNEAESBwoDUExPEAISDAoIUExPX0hJTE8QAxIRCg1GSVZFX0NBUkRfUExPEAQSFgoSRklWRV9DQVJEX1BMT19ISUxPEAU=');
+    'CghHYW1lVHlwZRILCgdVTktOT1dOEAASCgoGSE9MREVNEAESBwoDUExPEAISDAoIUExPX0hJTE8QAxIRCg1GSVZFX0NBUkRfUExPEAQSFgoSRklWRV9DQVJEX1BMT19ISUxPEAUSEAoMU0lYX0NBUkRfUExPEAYSFQoRU0lYX0NBUkRfUExPX0hJTE8QBw==');
 @$core.Deprecated('Use gameStatusDescriptor instead')
 const GameStatus$json = const {
   '1': 'GameStatus',

@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
-import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/widgets/cards/multiple_stack_card_views.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 
@@ -11,11 +10,13 @@ class DisplayCardsWidget extends StatelessWidget {
   final Seat seat;
   final bool showdown;
   final bool isReplayHandsActor;
+  final bool colorCards;
 
   DisplayCardsWidget({
     @required this.seat,
     @required this.showdown,
     this.isReplayHandsActor = false,
+    this.colorCards = false,
   });
 
   List<CardObject> _getCards(List<int> cards) {
@@ -34,7 +35,8 @@ class DisplayCardsWidget extends StatelessWidget {
 
     List<CardObject> cardObjects = [];
     for (int cardNum in cards) {
-      CardObject card = CardHelper.getCard(cardNum);
+      CardObject card =
+          CardHelper.getCard(cardNum, colorCards: this.colorCards);
       card.cardType = CardType.PlayerCard;
       card.dim = true;
 
@@ -81,48 +83,33 @@ class DisplayCardsWidget extends StatelessWidget {
 
   Widget _buildStackCardView(List<int> cards, context) {
     if (cards == null || cards.length == 0) {
-      return Container();
+      return const SizedBox.shrink();
     }
 
     if (seat.player.playerFolded && seat.player.revealCards.length == 0) {
-      return Container();
+      return const SizedBox.shrink();
     }
-
-    double scale = 1.0;
-    Offset offset = Offset(0, 0);
-    if (cards.length == 4 || cards.length == 5) {
-      offset = Offset(-18, 10);
-      if (cards.length == 5) {
-        scale = 0.85;
-        offset = Offset(-30, 10);
-      }
-    }
-    return Transform.translate(
-      offset: offset,
-      child: Transform.scale(
-        scale: scale,
-        child: StackCardView(
-          cards: _getCards(cards),
-        ),
-      ),
+    return NamePlateStackCardView(
+      cards: _getCards(cards),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    List<int> seatPlayerCards = seat.player.cards;
-    if (seat.player.revealCards.isEmpty) {
-      // player didn't reveal the cards
-      // if this is not showdown, don't show the cards
-      // if (!showdown) {
-      //   seatPlayerCards = [];
-      // }
-    }
-    return AnimatedSwitcher(
-      duration: AppConstants.fastAnimationDuration,
-      child: (seatPlayerCards != null && seatPlayerCards.isNotEmpty)
-          ? _buildStackCardView(seatPlayerCards, context)
-          : SizedBox.shrink(),
+    return ValueListenableBuilder(
+      valueListenable: seat.enLargeCardsVn,
+      child: _buildStackCardView(
+        seat.player.cards,
+        context,
+      ),
+      builder: (context, enLarge, child) {
+        return AnimatedScale(
+          scale: enLarge ? 1.5 : 1.0,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+          child: child,
+        );
+      },
     );
   }
 }

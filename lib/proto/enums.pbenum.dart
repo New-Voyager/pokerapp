@@ -160,6 +160,16 @@ class GameType extends $pb.ProtobufEnum {
       const $core.bool.fromEnvironment('protobuf.omit_enum_names')
           ? ''
           : 'FIVE_CARD_PLO_HILO');
+  static const GameType SIX_CARD_PLO = GameType._(
+      6,
+      const $core.bool.fromEnvironment('protobuf.omit_enum_names')
+          ? ''
+          : 'SIX_CARD_PLO');
+  static const GameType SIX_CARD_PLO_HILO = GameType._(
+      7,
+      const $core.bool.fromEnvironment('protobuf.omit_enum_names')
+          ? ''
+          : 'SIX_CARD_PLO_HILO');
 
   static const $core.List<GameType> values = <GameType>[
     UNKNOWN,
@@ -168,6 +178,8 @@ class GameType extends $pb.ProtobufEnum {
     PLO_HILO,
     FIVE_CARD_PLO,
     FIVE_CARD_PLO_HILO,
+    SIX_CARD_PLO,
+    SIX_CARD_PLO_HILO,
   ];
 
   static final $core.Map<$core.int, GameType> _byValue =

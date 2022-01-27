@@ -50,16 +50,16 @@ class PlayerView extends StatefulWidget {
   final GameContextObject gameContextObject;
   final GameState gameState;
 
-  PlayerView(
-      {Key key,
-      @required this.seat,
-      @required this.onUserTap,
-      @required this.gameComService,
-      @required this.boardAttributes,
-      @required this.gameContextObject,
-      this.cardsAlignment = Alignment.centerRight,
-      this.gameState})
-      : super(key: key);
+  PlayerView({
+    Key key,
+    @required this.seat,
+    @required this.onUserTap,
+    @required this.gameComService,
+    @required this.boardAttributes,
+    @required this.gameContextObject,
+    this.cardsAlignment = Alignment.centerRight,
+    this.gameState,
+  }) : super(key: key);
 
   @override
   _PlayerViewState createState() => _PlayerViewState();
@@ -109,6 +109,14 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
   }
 
   void _onTap(BuildContext context) async {
+    if (widget.gameState.handState == HandState.RESULT &&
+        widget.seat.player.winner == true) {
+      final enlargeVn = widget.seat.enLargeCardsVn;
+
+      enlargeVn.value = !enlargeVn.value;
+      return;
+    }
+
     final seatChangeContext = Provider.of<SeatChangeNotifier>(
       context,
       listen: false,
@@ -272,21 +280,33 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
       }
     }
 
-    return Transform.scale(
-      scale: widget.boardAttributes.getMuckCardScale(seat.player.cards.length),
-      alignment: Alignment.bottomCenter,
-      child: Transform.translate(
-        // TODO: NEED TO VERIFY THIS FOR DIFF SCREEN SIZES
-        offset: Offset(0.0, 10.ph),
-        child: Container(
-          height: widget.boardAttributes.namePlateSize.height,
-          width: widget.boardAttributes.namePlateSize.width,
-          child: DisplayCardsWidget(
-            isReplayHandsActor: isReplayHandsActor,
-            seat: seat,
-            showdown: gameState.showdown,
-          ),
-        ),
+//     Widget old = Transform.scale(
+//         scale:
+//             widget.boardAttributes.getMuckCardScale(seat.player.cards.length),
+//         alignment: Alignment.bottomCenter,
+//         child: Transform.translate(
+//           // TODO: NEED TO VERIFY THIS FOR DIFF SCREEN SIZES
+//           offset: Offset(0.0, 10.ph),
+//           child: Container(
+//             height: widget.boardAttributes.namePlateSize.height,
+//             width: widget.boardAttributes.namePlateSize.width,
+//             child: DisplayCardsWidget(
+//               isReplayHandsActor: isReplayHandsActor,
+//               seat: seat,
+//               showdown: widget.gameState.showdown,
+//               colorCards: widget.gameState.playerLocalConfig.colorCards,
+//             ),
+//           ),
+//         ));
+
+    return Container(
+      // height: widget.boardAttributes.namePlateSize.height,
+      // width: widget.boardAttributes.namePlateSize.width,
+      child: DisplayCardsWidget(
+        isReplayHandsActor: isReplayHandsActor,
+        seat: seat,
+        showdown: widget.gameState.showdown,
+        colorCards: widget.gameState.playerLocalConfig.colorCards,
       ),
     );
   }

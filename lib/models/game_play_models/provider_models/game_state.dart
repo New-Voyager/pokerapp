@@ -120,8 +120,10 @@ class GameState {
   ActionTimerState _actionTimerState;
   SeatChangeNotifier _seatChangeState;
   GameChatNotifState _chatNotifState;
+  AudioConfState _audioConfState;
   GameChatBubbleNotifyState _gameChatBubbleNotifyState;
   final GlobalKey<OnboardingState> onboardingKey = GlobalKey<OnboardingState>();
+  final Map<int, GamePlayerInfo> players = Map<int, GamePlayerInfo>();
 
   // For posting blind
   // bool postedBlind;
@@ -284,6 +286,7 @@ class GameState {
     this._gameMessagingService = Provider<GameMessagingService>(
       create: (_) => _gameMessageService,
     );
+    _gameMessageService.gameState = this;
 
     this._handInfo = HandInfoState();
     this._handInfo.update(
@@ -322,6 +325,7 @@ class GameState {
     this._gameSettingsState = GameSettingsState();
     this._chatNotifState = GameChatNotifState();
     this._gameChatBubbleNotifyState = GameChatBubbleNotifyState();
+    this._audioConfState = AudioConfState();
 
     // this._waitlistProvider =
     //     ListenableProvider<WaitlistState>(create: (_) => WaitlistState());
@@ -557,6 +561,8 @@ class GameState {
 
   HandResultState get handResultState => this._handResultState;
 
+  AudioConfState get audioConfState => this._audioConfState;
+
   ListenableProvider<HandChangeState> get handChangeStateProvider =>
       this._handChangeStateProvider;
 
@@ -688,6 +694,9 @@ class GameState {
     this._playerSettings.buttonStraddleBet = settings.buttonStraddleBet;
     this._playerSettings.muckLosingHand = settings.muckLosingHand;
     this._playerSettings.runItTwiceEnabled = settings.runItTwiceEnabled;
+    this._playerSettings.autoReload = settings.autoReload;
+    this._playerSettings.reloadThreshold = settings.reloadThreshold;
+    this._playerSettings.reloadTo = settings.reloadTo;
   }
 
   bool get isTableFull {
@@ -1102,6 +1111,7 @@ class GameState {
       if (seat.player == null) {
         continue;
       }
+      seat.enLargeCardsVn.value = false;
       seat.player.action.animateAction = false;
       bool stickAction = true;
       if (newHand) {
@@ -1159,11 +1169,12 @@ class GameState {
     return this._straddlePromptState;
   }
 
-  void changeHoleCardOrder() {
+  void changeHoleCardOrder({int inc = 1}) {
     int i = HoleCardOrder.values.indexOf(holecardOrder);
-    if (i == -1) {
+    i = i + inc;
+    if (i < 0) {
+      i = HoleCardOrder.values.length - 1;
     } else {
-      i++;
       if (i >= HoleCardOrder.values.toList().length) {
         i = 0;
       }
@@ -1674,5 +1685,35 @@ class SeatsOnTableState extends ChangeNotifier {
 class GameSettingsState extends ChangeNotifier {
   void notify() {
     notifyListeners();
+  }
+}
+
+class AudioConfState extends ChangeNotifier {
+  bool join = false;
+  bool leave = false;
+  bool joined = false;
+  bool left = false;
+  void joinConf() {
+    join = true;
+    notifyListeners();
+  }
+
+  void leaveConf() {
+    leave = true;
+    notifyListeners();
+  }
+
+  void joinedConf() {
+    join = false;
+    joined = true;
+    left = false;
+    leave = false;
+  }
+
+  void leftConf() {
+    join = false;
+    joined = true;
+    left = false;
+    leave = false;
   }
 }

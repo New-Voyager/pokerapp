@@ -146,7 +146,7 @@ class _GameOptionState extends State<GameOption> {
 
       if (value == null) return;
 
-      final ret = await GameService.reload(gameCode, value.toInt());
+      final ret = await GameService.reload(gameCode, value);
       if (!ret.approved) {
         if (ret.insufficientCredits) {
           String message =
@@ -319,7 +319,7 @@ class _GameOptionState extends State<GameOption> {
           icon: Icons.cancel,
           onTap: () async {
             final response = await showPrompt(
-                context, 'Terminate', "Do you want to terminate the game?",
+                context, 'End Game', "Do you want to end the game?",
                 positiveButtonText: 'Yes', negativeButtonText: 'No');
             if (response != null && response == true) {
               this.onEndGame();
@@ -789,7 +789,7 @@ class _GameOptionState extends State<GameOption> {
                 widget.gameState.gameMessageService.sendMyInfo();
               });
             } else {
-              widget.gameContextObject.leaveAudio();
+              widget.gameContextObject?.leaveAudio();
             }
 
             widget.gameState.communicationState.notify();

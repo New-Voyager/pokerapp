@@ -72,6 +72,10 @@ class AppConfig {
     return _apiUrl;
   }
 
+  static set apiUrl(String v) {
+    _apiUrl = v;
+  }
+
   static String get deviceId {
     return _deviceId;
   }

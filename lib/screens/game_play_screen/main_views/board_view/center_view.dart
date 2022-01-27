@@ -60,17 +60,26 @@ class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
     Widget child,
     double scale = 1.0,
     Offset offset = Offset.zero,
-  }) =>
-      Align(
-        alignment: Alignment.center,
-        child: Transform.translate(
-          offset: offset,
-          child: Transform.scale(
-            scale: scale * 1.2,
-            child: child,
-          ),
+  }) {
+    return Align(
+      alignment: Alignment.center,
+      child: Transform.translate(
+        offset: offset,
+        child: Transform.scale(
+          scale: scale * 1.2,
+          child: child,
         ),
-      );
+      ),
+    );
+  }
+
+  Widget _dealerChoicePrompt() {
+    return Align(
+      alignment: Alignment.center,
+      child:
+          Text('${tableState.dealerChoicePromptPlayer} is choosing next game'),
+    );
+  }
 
   Widget centerTextWidget(
     String text,
@@ -268,18 +277,20 @@ class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
       List<Widget> children = [];
       if (showCardsShuffling) {
         bool showBombAnimation = (gameState?.handInfo?.bombPot) ?? false;
-
         if (gameState.gameSettings.bombPotEveryHand ?? false) {
           showBombAnimation = false;
         }
-
-        children.add(showBombAnimation
-            ? _bombPotAnimation()
-            : _positionAnimationShuffleCardView(
-                offset: boardAttributes.centerViewCardShufflePosition,
-                scale: boardAttributes.centerViewCenterScale,
-                child: AnimatingShuffleCardView(),
-              ));
+        if (showBombAnimation) {
+          children.add(_bombPotAnimation());
+        } else if (tableState.dealerChoicePrompt) {
+          children.add(_dealerChoicePrompt());
+        } else {
+          children.add(_positionAnimationShuffleCardView(
+            offset: boardAttributes.centerViewCardShufflePosition,
+            scale: boardAttributes.centerViewCenterScale,
+            child: AnimatingShuffleCardView(),
+          ));
+        }
       }
       children.add(_mainBuild(
         context,

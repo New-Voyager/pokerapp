@@ -375,10 +375,11 @@ class GameService {
     """;
 
   static String dealerChoiceQuery = """
-    mutation dealerChoice(\$gameCode: String!, \$gameType: GameType!) {
+    mutation dealerChoice(\$gameCode: String!, \$gameType: GameType! \$doubleBoard: Boolean) {
       ret: dealerChoice(
         gameCode: \$gameCode
         gameType: \$gameType
+        doubleBoard: \$doubleBoard
       )
     }
     """;
@@ -730,6 +731,8 @@ class GameService {
       }
     }
 
+    if (result.data == null) return null;
+
     final jsonResponse = result.data['gameInfo'];
     // JsonEncoder encoder = new JsonEncoder.withIndent('  ');
     // String prettyprint = encoder.convert(jsonResponse);
@@ -845,7 +848,7 @@ class GameService {
   }
 
   /* the following method facilitates buying chips */
-  static Future<BuyInResponse> reload(String gameCode, int amount) async {
+  static Future<BuyInResponse> reload(String gameCode, double amount) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
 
     String _mutation = """mutation (\$gameCode: String!, \$amount: Float!)  {
@@ -879,6 +882,64 @@ class GameService {
     final resp = result.data['reload'];
     final ret = BuyInResponse.fromJson(resp);
     return ret;
+  }
+
+  /* the following method facilitates buying chips */
+  static Future<bool> autoReload(
+      String gameCode, double lowThreshold, double reloadTo) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    String _mutation =
+        """mutation(\$gameCode: String!, \$lowThreshold: Float!, \$reloadTo: Float!) {
+        status: autoReload(
+          gameCode: \$gameCode
+          reloadThreshold: \$lowThreshold
+          reloadTo: \$reloadTo
+        )
+      }
+    """;
+    Map<String, dynamic> variables = {
+      "gameCode": gameCode,
+      "lowThreshold": lowThreshold,
+      "reloadTo": reloadTo
+    };
+
+    QueryResult result = await _client.mutate(
+      MutationOptions(document: gql(_mutation), variables: variables),
+    );
+
+    if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
+    final resp = result.data['status'] ?? false;
+    return resp;
+  }
+
+  /* the following method facilitates buying chips */
+  static Future<bool> autoReloadOff(String gameCode) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    String _mutation = """mutation(\$gameCode: String!) {
+        status: autoReloadOff(gameCode: \$gameCode)
+      }
+    """;
+    Map<String, dynamic> variables = {
+      "gameCode": gameCode,
+    };
+
+    QueryResult result = await _client.mutate(
+      MutationOptions(document: gql(_mutation), variables: variables),
+    );
+
+    if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
+    final resp = result.data['status'] ?? false;
+    return resp;
   }
 
   static Future<String> configureClubGame(
@@ -1102,11 +1163,13 @@ class GameService {
   static Future<bool> dealerChoice(
     String gameCode,
     GameType gameType,
+    bool doubleBoard,
   ) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     Map<String, dynamic> variables = {
       "gameCode": gameCode,
-      "gameType": gameType.toString().replaceAll('GameType.', '')
+      "gameType": gameType.toString().replaceAll('GameType.', ''),
+      "doubleBoard": doubleBoard,
     };
     QueryResult result = await _client.mutate(
       MutationOptions(

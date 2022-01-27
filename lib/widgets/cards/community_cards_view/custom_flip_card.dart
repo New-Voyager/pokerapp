@@ -12,18 +12,26 @@ class CustomFlipCard extends StatelessWidget {
   final GlobalKey<FlipCardState> globalKey;
   final Widget cardWidget;
   final Uint8List cardBackBytes;
+  final bool twoBoards;
+  final double doubleBoardScale;
 
   CustomFlipCard({
     @required this.onFlipDone,
     @required this.globalKey,
     @required this.cardWidget,
     @required this.cardBackBytes,
+    this.twoBoards,
+    this.doubleBoardScale = 1.0,
   });
 
-  double _getScale(context) => CardBuilderWidget.getCardRatioFromCardType(
-        CardType.CommunityCard,
-        context,
-      );
+  double _getScale(context) {
+    if (twoBoards) return doubleBoardScale;
+
+    return CardBuilderWidget.getCardRatioFromCardType(
+      CardType.CommunityCard,
+      context,
+    );
+  }
 
   @override
   Widget build(BuildContext context) => FlipCard(

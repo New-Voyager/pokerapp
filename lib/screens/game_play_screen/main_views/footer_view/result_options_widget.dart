@@ -76,7 +76,7 @@ class ResultOptionsWidget extends StatelessWidget {
         }
 
         bool _showRabbit = false;
-        if (isRabbitHuntAllowed && !gameState.handInfo.doubleBoard) {
+        if ((isRabbitHuntAllowed ?? false) && !gameState.handInfo.doubleBoard) {
           // if the hand hasn't ended in showdown, don't show the rabbit
           if (gameState.wonat == HandStatus.FLOP ||
               gameState.wonat == HandStatus.TURN) {

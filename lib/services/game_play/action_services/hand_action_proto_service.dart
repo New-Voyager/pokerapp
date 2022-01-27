@@ -645,7 +645,7 @@ class HandActionProtoService {
     _gameState.cardDistributionState.seatNo = null;
     _gameState.handState = HandState.DEAL;
     _gameState.myState.notify();
-    AudioService.stopSound();
+    // AudioService.stopSound();
     //log('Hand Message: ::handleDeal:: END');
   }
 
@@ -845,6 +845,12 @@ class HandActionProtoService {
     Map<int, String> playerCardRanks;
     // update the community cards
     if (stage == 'flop') {
+      if (message.flop.boards.length >= 2) {
+        tableState.updateTwoBoardsNeeded(true);
+      } else {
+        tableState.updateTwoBoardsNeeded(false);
+      }
+
       tableState.updatePotChipUpdatesSilent(0);
       _gameState.handState = HandState.FLOP;
       // AudioService.playFlop(mute: _gameState.playerLocalConfig.mute);
@@ -859,10 +865,7 @@ class HandActionProtoService {
         );
         cards.add(c);
       }
-      AudioService.playFlop(mute: _gameState.playerLocalConfig.mute);
       tableState.addFlopCards(1, cards);
-      tableState.notifyAll();
-      await Future.delayed(Duration(seconds: 1));
 
       if (message.flop.boards.length >= 2) {
         cards = [];
@@ -877,27 +880,24 @@ class HandActionProtoService {
           cards.add(c);
         }
         tableState.addFlopCards(2, cards);
-        tableState.updateTwoBoardsNeeded(true);
-        await Future.delayed(Duration(milliseconds: 500));
-        tableState.notifyAll();
-      } else {
-        tableState.updateTwoBoardsNeeded(false);
       }
-      AudioService.stopSound();
+
+      AudioService.playFlop(mute: _gameState.playerLocalConfig.mute);
+      tableState.notifyAll();
+
       _gameState.actionState.checkFoldSelected = false;
       _gameState.actionState.notify();
       playerCardRanks = message.flop.playerCardRanks;
     } else if (stage == 'turn') {
       tableState.updatePotChipUpdatesSilent(0);
       _gameState.handState = HandState.TURN;
-      AudioService.playFlop(mute: _gameState.playerLocalConfig.mute);
       var board = message.turn.boards[0];
       var turnCard = board.cards[3];
       playerCardRanks = message.turn.playerCardRanks;
       tableState.addTurnOrRiverCard(
-          1, CardHelper.getCard(turnCard, colorCards: _gameState.colorCards));
-      tableState.notifyAll();
-      await Future.delayed(Duration(seconds: 1));
+        1,
+        CardHelper.getCard(turnCard, colorCards: _gameState.colorCards),
+      );
       if (message.turn.boards.length == 2) {
         board = message.turn.boards[1];
         if (!tableState.twoBoardsNeeded) {
@@ -905,24 +905,26 @@ class HandActionProtoService {
         }
         turnCard = board.cards[3];
         tableState.addTurnOrRiverCard(
-            2, CardHelper.getCard(turnCard, colorCards: _gameState.colorCards));
-        AudioService.playFlop(mute: _gameState.playerLocalConfig.mute);
-        tableState.notifyAll();
-        await Future.delayed(Duration(seconds: 1));
+          2,
+          CardHelper.getCard(turnCard, colorCards: _gameState.colorCards),
+        );
       }
+
+      AudioService.playFlop(mute: _gameState.playerLocalConfig.mute);
+      tableState.notifyAll();
+
       _gameState.actionState.checkFoldSelected = false;
       _gameState.actionState.notify();
     } else if (stage == 'river') {
       tableState.updatePotChipUpdatesSilent(0);
       _gameState.handState = HandState.RIVER;
-      AudioService.playFlop(mute: _gameState.playerLocalConfig.mute);
       var board = message.river.boards[0];
       var riverCard = board.cards[4];
       playerCardRanks = message.river.playerCardRanks;
       tableState.addTurnOrRiverCard(
-          1, CardHelper.getCard(riverCard, colorCards: _gameState.colorCards));
-      tableState.notifyAll();
-      await Future.delayed(Duration(seconds: 1));
+        1,
+        CardHelper.getCard(riverCard, colorCards: _gameState.colorCards),
+      );
       if (message.river.boards.length == 2) {
         board = message.river.boards[1];
         if (!tableState.twoBoardsNeeded) {
@@ -930,16 +932,20 @@ class HandActionProtoService {
           // flop the cards here (run it twice)
         }
         riverCard = board.cards[4];
-        tableState.addTurnOrRiverCard(2,
-            CardHelper.getCard(riverCard, colorCards: _gameState.colorCards));
-        AudioService.playFlop(mute: _gameState.playerLocalConfig.mute);
-        tableState.notifyAll();
-        await Future.delayed(Duration(seconds: 1));
+        tableState.addTurnOrRiverCard(
+          2,
+          CardHelper.getCard(riverCard, colorCards: _gameState.colorCards),
+        );
       }
+      AudioService.playFlop(mute: _gameState.playerLocalConfig.mute);
+      tableState.notifyAll();
+
       _gameState.actionState.checkFoldSelected = false;
       _gameState.actionState.notify();
     }
-    AudioService.stopSound();
+
+    await Future.delayed(Duration(seconds: 1));
+    // AudioService.stopSound();
 
     if (_close) return;
     updateRank(playerCardRanks);
@@ -1145,11 +1151,12 @@ class HandActionProtoService {
       gameChoices.add(gameType);
     }
     final timeout = int.parse(dealerChoice['timeout'].toString());
-    GameType type = await DealerChoicePrompt.prompt(
+    DealerChoiceSelection selection = await DealerChoicePrompt.prompt(
         listOfGameTypes: gameChoices, timeLimit: Duration(seconds: timeout));
-    log('selected game type: $type');
-    if (type != GameType.UNKNOWN) {
-      GameService.dealerChoice(_gameState.gameCode, type);
+    log('selected game type: ${selection.gameType}');
+    if (selection.gameType != GameType.UNKNOWN) {
+      GameService.dealerChoice(
+          _gameState.gameCode, selection.gameType, selection.doubleBoard);
     }
   }
 }

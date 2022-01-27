@@ -44,7 +44,6 @@ class FooterView extends StatefulWidget {
   final String clubCode;
   final String playerUuid;
   final Function chatVisibilityChange;
-  final Function joinAudioConference;
   final GameContextObject gameContext;
   final Function onStartGame;
 
@@ -53,7 +52,6 @@ class FooterView extends StatefulWidget {
       @required this.gameCode,
       @required this.playerUuid,
       @required this.chatVisibilityChange,
-      @required this.joinAudioConference,
       @required this.clubCode,
       @required this.onStartGame});
 
@@ -294,7 +292,6 @@ class _FooterViewState extends State<FooterView>
             builder: (_, __, ____, ___) {
           return CommunicationView(
             widget.chatVisibilityChange,
-            widget.joinAudioConference,
             widget.gameContext.gameComService.gameMessaging,
             widget.gameContext,
           );
@@ -387,7 +384,7 @@ class _FooterViewState extends State<FooterView>
 
   Future<void> _onTerminatePress(BuildContext context) async {
     final response = await showPrompt(
-        context, 'Terminate', "Do you want to terminate the game?",
+        context, 'End Game', "Do you want to end the game?",
         positiveButtonText: 'Yes', negativeButtonText: 'No');
     if (response != null && response == true) {
       final gameState = GameState.getState(context);

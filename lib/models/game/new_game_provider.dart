@@ -23,31 +23,6 @@ class NewGameModelProvider extends ChangeNotifier {
     settings = NewGameModel.withDefault(clubCode);
     settings.clubCode = clubCode;
     settings.chipUnit = ChipUnit.DOLLAR;
-    // NewGameConstants.ACTION_TIMES.forEach((key, value) {
-    //   actionTimes.add(value);
-    // });
-
-    // NewGameConstants.GAME_LENGTH.forEach((key, value) {
-    //   gameLengths.add(value);
-    // });
-    //
-    // NewGameConstants.SUPPORTED_GAMES.forEach((key, value) {
-    //   gameTypes.add(value);
-    // });
-    // roeSelectedGames.addAll([
-    //   GameType.HOLDEM,
-    //   GameType.PLO,
-    // ]);
-    // settings.roeGames = roeSelectedGames;
-    //
-    // dealerSelectedGames.addAll([
-    //   GameType.HOLDEM,
-    //   GameType.PLO,
-    //   GameType.PLO_HILO,
-    //   GameType.FIVE_CARD_PLO,
-    //   GameType.FIVE_CARD_PLO_HILO,
-    // ]);
-    // settings.dealerChoiceGames = dealerSelectedGames;
   }
 
   get selectedReward {
@@ -93,58 +68,11 @@ class NewGameModelProvider extends ChangeNotifier {
     settings.dealerChoiceGames = games;
   }
 
-  // set gameType(int index) {
-  //   if (index == -1) {
-  //   } else {
-  //     String selectedValue = gameTypes[index];
-  //     for (MapEntry e in NewGameConstants.SUPPORTED_GAMES.entries) {
-  //       if (e.value == selectedValue) {
-  //         settings.gameType = e.key;
-  //         break;
-  //       }
-  //     }
-  //   }
-  //   notifyListeners();
-  // }
-
-  // get selectedGameType {
-  //   return gameTypes
-  //       .indexOf(NewGameConstants.SUPPORTED_GAMES[settings.gameType]);
-  // }
-  //
-  // set selectedGameType(int index) {
-  //   if (index == -1) {
-  //   } else {
-  //     String selectedValue = gameTypes[index];
-  //     for (MapEntry e in NewGameConstants.SUPPORTED_GAMES.entries) {
-  //       if (e.value == selectedValue) {
-  //         settings.gameType = e.key;
-  //         break;
-  //       }
-  //     }
-  //   }
-  //   notifyListeners();
-  // }
-
-  // String get selectedGameTypeText {
-  //   int index =
-  //       gameTypes.indexOf(NewGameConstants.SUPPORTED_GAMES[settings.gameType]);
-  //   if (index != -1) {
-  //     return gameTypes[index];
-  //   }
-  //   return "";
-  // }
-
   int get gameLengthInMins => settings.gameLength;
   set gameLengthInMins(value) {
     settings.gameLength = value;
     notifyListeners();
   }
-  // set gameLengthInHrs(value) {
-  //   settings.gameLength = value * 60;
-  //   log('settings.gameLength: ${settings.gameLength}, inHrs: ${settings.gameLength / 60}');
-  //   notifyListeners();
-  // }
 
   bool get buyInApproval => settings.buyInApproval ?? false;
   set buyInApproval(value) {

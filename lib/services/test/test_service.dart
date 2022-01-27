@@ -606,7 +606,7 @@ class TestService {
   }
 
   static void dealerChoicePrompt() async {
-    GameType type = await DealerChoicePrompt.prompt(
+    DealerChoiceSelection selection = await DealerChoicePrompt.prompt(
       listOfGameTypes: [
         GameType.HOLDEM,
         GameType.PLO,
@@ -616,6 +616,39 @@ class TestService {
       ],
       timeLimit: Duration(seconds: 10),
     );
+    log('Dealer choice: ${selection.gameType} doubleBoard: ${selection.doubleBoard}');
+  }
+
+  static void showNamePlateHoleCards() async {
+    final gameState = GameState.getState(_context);
+    gameState.handState = HandState.RESULT;
+    gameState.showdown = true;
+    for (final seat in gameState.seats) {
+      if (seat.player == null) {
+        continue;
+      }
+      if (seat.serverSeatPos == 1) {
+        seat.player.winner = true;
+        seat.player.cards = [72, 84];
+        seat.player.highlightCards = [72, 100];
+      } else if (seat.serverSeatPos == 4) {
+        seat.player.cards = [120, 130, 136, 162, 180];
+        seat.player.highlightCards = [130, 163, 180];
+        seat.player.winner = true;
+      } else if (seat.serverSeatPos == 5) {
+        seat.player.cards = [120, 130, 162, 180];
+        seat.player.highlightCards = [162];
+        seat.player.winner = true;
+      } else if (seat.serverSeatPos == 7) {
+        seat.player.cards = [120, 130, 162, 180, 136, 72];
+        seat.player.highlightCards = [130, 163, 180];
+        seat.player.winner = true;
+      } else {
+        seat.player.playerFolded = true;
+      }
+      seat.notify();
+      //break;
+    }
   }
 
   static void fillBothBoardCards() {

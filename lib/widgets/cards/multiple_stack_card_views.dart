@@ -2,9 +2,8 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
-import 'package:pokerapp/models/rabbit_state.dart';
 import 'package:pokerapp/utils/card_helper.dart';
-import 'package:web_socket_channel/status.dart';
+import 'package:pokerapp/widgets/cards/card_view.dart';
 
 class StackCardView extends StatelessWidget {
   final List<CardObject> cards;
@@ -233,39 +232,88 @@ class StackCardView03 extends StatelessWidget {
   }
 }
 
-// class RabbitCardView extends StatelessWidget {
-//   final RabbitState state;
-//   RabbitCardView({
-//     this.state,
-//   });
+class NamePlateStackCardView extends StatelessWidget {
+  final List<CardObject> cards;
+  final bool deactivated;
+  final bool horizontal;
 
-//   @override
-//   Widget build(BuildContext context) {
-//     List<Widget> cardViews = [];
-//     final cards = this.state.communityCards;
-//     final revealed = this.state.revealedCards;
-//     for (int i = 0; i < cards.length - 2 + revealed.length; i++) {
-//       CardObject card = CardHelper.getCard(cards[i]);
-//       card.cardType = CardType.HandLogOrHandHistoryCard;
-//       cardViews.add(card.widget);
-//       cardViews.add(SizedBox(width: 2.0));
-//     }
+  NamePlateStackCardView({
+    @required this.cards,
+    this.deactivated = false,
+    this.horizontal = true,
+  });
 
-//     log("Revealed data. : ${revealed.length}");
-//     for (int i = 0; i < 2 - revealed.length; i++) {
-//       CardObject card = CardHelper.getCard(0);
-//       card.cardType = CardType.HandLogOrHandHistoryCard;
-//       card.cardFace = CardFace.BACK;
-//       // Widget stackedWidget = Stack(children: [
-//       //   card.widget,
-//       //   Center(
-//       //     child: Icon(Icons.visibility, color: Colors.amber),
-//       //   ),
-//       // ]);
-//       cardViews.add(card.widget);
-//       cardViews.add(SizedBox(width: 2.0));
-//     }
+  List<Widget> _getChildren({
+    @required int mid,
+    @required double displacementValue,
+  }) {
+    List<Widget> children = List.generate(
+      cards.length,
+      (i) {
+        final offsetInX = -(i - mid) * displacementValue -
+            (cards.length % 2 == 0 ? displacementValue / 2 : 0.0);
+        return Transform.translate(
+          offset: Offset(offsetInX, 0),
+          child: _buildChild(i),
+        );
+      },
+    );
 
-//     return Row(mainAxisSize: MainAxisSize.min, children: cardViews);
-//   }
-// }
+    return children.reversed.toList();
+  }
+
+  Widget _buildChild(int index) {
+    CardObject card = cards[index];
+
+    if (deactivated) card.dim = true;
+
+    Widget view;
+
+    if (card.cardFace == CardFace.BACK) {
+      final cardBackImage = Image.asset(
+        'assets/images/card_back/set2/Asset 8.png',
+      );
+      view = Container(
+        width: namePlateCardViewWidth,
+        height: namePlateCardViewHeight,
+        child: ClipRRect(
+          borderRadius: BorderRadius.all(Radius.circular(5)),
+          child: cardBackImage,
+        ),
+      );
+    } else {
+      view = NamePlateCardView(
+        card: card,
+        cardBackBytes: null,
+        doubleBoard: card.doubleBoard,
+        index: index,
+      );
+    }
+
+    double dy = 0;
+    if (card.highlight) dy = -20;
+
+    return Transform.translate(offset: Offset(0.0, dy), child: view);
+  }
+
+  double _getScale() {
+    if (cards.length == 5) return 0.90;
+    if (cards.length == 6) return 0.80;
+
+    return 1.0;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (cards == null || cards.isEmpty) return const SizedBox.shrink();
+
+    final int mid = cards.length ~/ 2;
+
+    return Transform.scale(
+      scale: _getScale(),
+      child: Stack(
+        children: _getChildren(mid: mid, displacementValue: 18.0),
+      ),
+    );
+  }
+}

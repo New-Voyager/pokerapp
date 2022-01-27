@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'dart:io';
 import 'dart:math' as math;
 
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
@@ -47,8 +48,6 @@ class HandAnalyseView extends StatefulWidget {
 }
 
 class _HandAnalyseViewState extends State<HandAnalyseView> {
-  final ValueNotifier<bool> vnShowMenuItems = ValueNotifier<bool>(false);
-
   Timer _timer;
   AppTextScreen _appScreenText;
 
@@ -172,316 +171,256 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
     return _buildMenuWidget();
   }
 
-  Widget _buildMenuButtons(AppTheme theme) {
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.35,
-      color: theme.primaryColorWithDark(0.5),
-      padding: EdgeInsets.symmetric(horizontal: 5.ph),
-      child: RawScrollbar(
-        thumbColor: theme.accentColor,
-        thickness: 5,
-        radius: Radius.circular(20.0),
-        isAlwaysShown: true,
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // menu close button
-                CircleImageButton(
-                  theme: theme,
-                  //caption: 'Close',
-                  icon: Icons.close,
-                  onTap: () {
-                    vnShowMenuItems.value = false;
-                  },
-                ),
-                SizedBox(height: 10.pw),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    CircleImageButton(
-                      theme: theme,
-                      //caption: 'Prev',
-                      svgAsset:
-                          'assets/images/game/lasthand.svg', //AppAssetsNew.lastHandPath,
-                      onTap: () {
-                        vnShowMenuItems.value = false;
-                        onClickViewHand(context);
-                      },
-                    ),
-                    InkWell(
-                      onTap: () {
-                        vnShowMenuItems.value = false;
-                        onClickViewHand(context);
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Text("Last Hand",
-                            style:
-                                AppDecorators.getSubtitle1Style(theme: theme)),
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 10.pw),
-
-                // game history
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    CircleImageButton(
-                        theme: theme,
-                        //caption: 'History',
-                        svgAsset: 'assets/images/game/handhistory.svg',
-                        onTap: () {
-                          vnShowMenuItems.value = false;
-                          onClickViewHandAnalysis(context);
-                        }),
-                    InkWell(
-                      onTap: () {
-                        vnShowMenuItems.value = false;
-                        onClickViewHandAnalysis(context);
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Text("Game History",
-                            style:
-                                AppDecorators.getSubtitle1Style(theme: theme)),
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 10.pw),
-
-                // High hand track
-                widget.gameState.gameInfo.highHandTracked ?? false
-                    ? Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          CircleImageButton(
-                              theme: theme,
-                              //caption: 'HH',
-                              svgAsset: 'assets/images/game/highhand.svg',
-                              onTap: () {
-                                vnShowMenuItems.value = false;
-                                onClickHighHand(context);
-                              }),
-                          InkWell(
-                            onTap: () {
-                              vnShowMenuItems.value = false;
-                              onClickHighHand(context);
-                            },
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: Text("High Hand",
-                                  style: AppDecorators.getSubtitle1Style(
-                                      theme: theme)),
-                            ),
-                          ),
-                        ],
-                      )
-                    : SizedBox.shrink(),
-                SizedBox(width: 10.pw),
-
-                // bomb pot
-                !widget.gameState.currentPlayer.isHost()
-                    ? Container()
-                    : Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          CircleImageButton(
-                              theme: theme,
-                              svgAsset:
-                                  'assets/images/game/bomb1.svg', //AppAssetsNew.lastHandPath,
-                              onTap: () async {
-                                vnShowMenuItems.value = false;
-                                await BombPotDialog.prompt(
-                                    context: context,
-                                    gameCode: widget.gameState.gameCode,
-                                    gameState: widget.gameState);
-                              }),
-                          InkWell(
-                            onTap: () async {
-                              vnShowMenuItems.value = false;
-                              await BombPotDialog.prompt(
-                                  context: context,
-                                  gameCode: widget.gameState.gameCode,
-                                  gameState: widget.gameState);
-                            },
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: Text("Bomb pot",
-                                  style: AppDecorators.getSubtitle1Style(
-                                      theme: theme)),
-                            ),
-                          ),
-                        ],
-                      ),
-                SizedBox(width: 10.pw),
-                SizedBox(height: 10.ph),
-
-                // game info
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    CircleImageButton(
-                        theme: theme,
-                        //caption: 'Info',
-                        icon: Icons.info,
-                        onTap: () {
-                          vnShowMenuItems.value = false;
-                          onGameInfoBottomSheet(context);
-                        }),
-                    InkWell(
-                      onTap: () {
-                        vnShowMenuItems.value = false;
-                        onGameInfoBottomSheet(context);
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Text("Game Info",
-                            style:
-                                AppDecorators.getSubtitle1Style(theme: theme)),
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 10.ph),
-
-                widget.gameState.gameSettings.showResult ?? false
-                    ?
-                    // result table
-                    Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          CircleImageButton(
-                              theme: theme,
-                              //caption: 'Result',
-                              svgAsset: AppAssetsNew.tableResultPath,
-                              onTap: () {
-                                vnShowMenuItems.value = false;
-                                onTableBottomSheet(context);
-                              }),
-                          InkWell(
-                            onTap: () {
-                              vnShowMenuItems.value = false;
-                              onTableBottomSheet(context);
-                            },
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: Text("Result",
-                                  style: AppDecorators.getSubtitle1Style(
-                                      theme: theme)),
-                            ),
-                          ),
-                        ],
-                      )
-                    : SizedBox.shrink(),
-                SizedBox(height: 10.ph),
-
-                // player stack
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    CircleImageButton(
-                        theme: theme,
-                        //caption: 'Stats',
-                        svgAsset: AppAssetsNew.playerStatsPath,
-                        onTap: () {
-                          vnShowMenuItems.value = false;
-                          onPlayerStatsBottomSheet(context);
-                        }),
-                    InkWell(
-                      onTap: () {
-                        vnShowMenuItems.value = false;
-                        onPlayerStatsBottomSheet(context);
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Text("Player stack",
-                            style:
-                                AppDecorators.getSubtitle1Style(theme: theme)),
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 10.pw),
-                // report issue
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    CircleImageButton(
-                        theme: theme,
-                        //caption: 'Info',
-                        icon: Icons.info,
-                        onTap: () {
-                          vnShowMenuItems.value = false;
-                          Alerts.showDailog(
-                            context: context,
-                            child: BugsFeaturesWidget(),
-                          );
-                        }),
-                    InkWell(
-                      onTap: () {
-                        vnShowMenuItems.value = false;
-                        Alerts.showDailog(
-                          context: context,
-                          child: BugsFeaturesWidget(),
-                        );
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Text("Report Issue",
-                            style:
-                                AppDecorators.getSubtitle1Style(theme: theme)),
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 10.ph),
-              ],
+  List<Widget> getMenuItems(AppTheme theme) {
+    return [
+      Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          CircleImageButton(
+            theme: theme,
+            //caption: 'Prev',
+            svgAsset:
+                'assets/images/game/lasthand.svg', //AppAssetsNew.lastHandPath,
+            onTap: () {
+              onClickViewHand(context);
+            },
+          ),
+          InkWell(
+            onTap: () {
+              onClickViewHand(context);
+            },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Text("Last Hand",
+                  style: AppDecorators.getSubtitle1Style(theme: theme)),
             ),
           ),
-        ),
+        ],
       ),
-    );
+      // game history
+      Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          CircleImageButton(
+              theme: theme,
+              //caption: 'History',
+              svgAsset: 'assets/images/game/handhistory.svg',
+              onTap: () {
+                onClickViewHandAnalysis(context);
+              }),
+          InkWell(
+            onTap: () {
+              onClickViewHandAnalysis(context);
+            },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Text("Hand History",
+                  style: AppDecorators.getSubtitle1Style(theme: theme)),
+            ),
+          ),
+        ],
+      ),
+
+      // High hand track
+      widget.gameState.gameInfo.highHandTracked ?? false
+          ? Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                CircleImageButton(
+                    theme: theme,
+                    //caption: 'HH',
+                    svgAsset: 'assets/images/game/highhand.svg',
+                    onTap: () {
+                      onClickHighHand(context);
+                    }),
+                InkWell(
+                  onTap: () {
+                    onClickHighHand(context);
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Text("High Hand",
+                        style: AppDecorators.getSubtitle1Style(theme: theme)),
+                  ),
+                ),
+              ],
+            )
+          : SizedBox.shrink(),
+
+      // bomb pot
+      !widget.gameState.currentPlayer.isHost()
+          ? SizedBox.shrink()
+          : Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                CircleImageButton(
+                    theme: theme,
+                    svgAsset:
+                        'assets/images/game/bomb1.svg', //AppAssetsNew.lastHandPath,
+                    onTap: () async {
+                      await BombPotDialog.prompt(
+                          context: context,
+                          gameCode: widget.gameState.gameCode,
+                          gameState: widget.gameState);
+                    }),
+                InkWell(
+                  onTap: () async {
+                    await BombPotDialog.prompt(
+                        context: context,
+                        gameCode: widget.gameState.gameCode,
+                        gameState: widget.gameState);
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Text("Bomb Pot",
+                        style: AppDecorators.getSubtitle1Style(theme: theme)),
+                  ),
+                ),
+              ],
+            ),
+
+      // game info
+      Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          CircleImageButton(
+              theme: theme,
+              //caption: 'Info',
+              icon: Icons.info,
+              onTap: () {
+                onGameInfoBottomSheet(context);
+              }),
+          InkWell(
+            onTap: () {
+              onGameInfoBottomSheet(context);
+            },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Text("Game Info",
+                  style: AppDecorators.getSubtitle1Style(theme: theme)),
+            ),
+          ),
+        ],
+      ),
+
+      widget.gameState.gameSettings.showResult ?? false
+          ?
+          // result table
+          Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                CircleImageButton(
+                    theme: theme,
+                    //caption: 'Result',
+                    svgAsset: AppAssetsNew.tableResultPath,
+                    onTap: () {
+                      onTableBottomSheet(context);
+                    }),
+                InkWell(
+                  onTap: () {
+                    onTableBottomSheet(context);
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Text("Result",
+                        style: AppDecorators.getSubtitle1Style(theme: theme)),
+                  ),
+                ),
+              ],
+            )
+          : SizedBox.shrink(),
+
+      // player stack
+      Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          CircleImageButton(
+              theme: theme,
+              //caption: 'Stats',
+              svgAsset: AppAssetsNew.playerStatsPath,
+              onTap: () {
+                onPlayerStatsBottomSheet(context);
+              }),
+          InkWell(
+            onTap: () {
+              onPlayerStatsBottomSheet(context);
+            },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Text("Stack Stats",
+                  style: AppDecorators.getSubtitle1Style(theme: theme)),
+            ),
+          ),
+        ],
+      ),
+
+      // report issue
+      Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          CircleImageButton(
+              theme: theme,
+              //caption: 'Info',
+              icon: Icons.info,
+              onTap: () {
+                Alerts.showDailog(
+                  context: context,
+                  child: BugsFeaturesWidget(),
+                );
+              }),
+          InkWell(
+            onTap: () {
+              Alerts.showDailog(
+                context: context,
+                child: BugsFeaturesWidget(),
+              );
+            },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Text("Report Issue",
+                  style: AppDecorators.getSubtitle1Style(theme: theme)),
+            ),
+          ),
+        ],
+      ),
+    ];
   }
 
   Widget _buildMenuWidget() {
     AppTheme theme = AppTheme.getTheme(context);
 
-    return ValueListenableBuilder(
-      valueListenable: vnShowMenuItems,
-      child: _buildMenuButtons(theme),
-      builder: (_, showMenu, child) => AnimatedSwitcher(
-        duration: AppConstants.fastestAnimationDuration,
-        transitionBuilder: (child, animation) => SizeTransition(
-          axis: Axis.horizontal,
-          sizeFactor: animation,
-          child: child,
-        ),
-        child: showMenu
-            ? child
-            : CircleImageButton(
-                icon: Icons.more_vert,
-                onTap: () => vnShowMenuItems.value = true,
-                theme: theme,
-              ),
+    List<Widget> menuItems = getMenuItems(theme);
+
+    menuItems.removeWhere(
+        (element) => (element.toString() == SizedBox.shrink().toString()));
+
+    return DropdownButtonHideUnderline(
+        child: DropdownButton2(
+      customButton: DummyCircleImageButton(
+        icon: Icons.more_vert,
+        theme: theme,
       ),
-    );
+      customItemsHeight: 8,
+      items: menuItems
+          .map(
+            (item) => DropdownMenuItem<Widget>(
+              value: Container(),
+              child: item,
+            ),
+          )
+          .toList(),
+      itemPadding: const EdgeInsets.only(left: 16, right: 16),
+      onChanged: (value) {},
+      dropdownWidth: 200,
+    ));
   }
 
   Widget pendingApprovalsItem(AppTheme theme, PendingApproval item) {

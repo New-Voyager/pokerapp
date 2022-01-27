@@ -55,7 +55,7 @@ class NewHandHandler {
     if (didILeaveTheGame()) {
       // leave the conference
       try {
-        this.gameContext.leaveAudio();
+        this.gameContext?.leaveAudio();
       } catch (err) {}
     }
   }
@@ -219,6 +219,7 @@ class NewHandHandler {
     gameState.handInProgress = true;
     gameState.actionState.reset();
     gameState.actionState.notify();
+    gameState.tableState.updateDealerChoicePrompt(false, '');
     ////log('Hand Message: ::handleNewHand:: START');
     AudioService.playNewHand(mute: gameState.playerLocalConfig.mute);
     if (gameState.uiClosing) return;
@@ -426,6 +427,6 @@ class NewHandHandler {
       //log('Hand Message: ::handleDealStarted:: END');
     }
 
-    AudioService.stopSound();
+    // AudioService.stopSound();
   }
 }

@@ -58,6 +58,9 @@ query mySettings(\$gameCode:String!){
     bombPotEnabled
     muckLosingHand
     runItTwiceEnabled
+    autoReload
+    reloadThreshold
+    reloadTo
   }
 }
   """;
