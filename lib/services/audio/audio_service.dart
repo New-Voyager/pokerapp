@@ -82,7 +82,7 @@ class AudioService {
 
   static playSound(String soundFile, {bool mute = false}) async {
     if (!play) return;
-    if (mute) return;
+    if (mute ?? false) return;
     if (!_audioFileCache.containsKey(soundFile)) return;
 
     try {
