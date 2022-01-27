@@ -59,6 +59,7 @@ class ClubBannerViewNew extends StatelessWidget {
             : DecorationImage(
                 image: CachedNetworkImageProvider(
                   clubModel.picUrl,
+                  cacheManager: ImageCacheManager.instance,
                 ),
                 fit: BoxFit.cover,
               ));

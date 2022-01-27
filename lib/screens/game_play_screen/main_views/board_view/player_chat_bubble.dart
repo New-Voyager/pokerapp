@@ -11,6 +11,7 @@ import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/boar
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
+import 'package:pokerapp/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 class PlayerChatBubble extends StatefulWidget {
@@ -145,6 +146,7 @@ class _PlayerChatBubbleState extends State<PlayerChatBubble> {
                       height: giphySize,
                       child: CachedNetworkImage(
                         imageUrl: chatMessage.giphyLink,
+                        cacheManager: ImageCacheManager.instance,
                         placeholder: (_, __) => Center(
                           child: Container(
                             padding: EdgeInsets.all(5.0),
