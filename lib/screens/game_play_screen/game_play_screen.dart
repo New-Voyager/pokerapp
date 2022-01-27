@@ -596,9 +596,28 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     }
   }
 
-  void _toggleChatVisibility(BuildContext context) {
-    final chatVisibilityNotifier = context.read<ValueNotifier<bool>>();
-    chatVisibilityNotifier.value = !chatVisibilityNotifier.value;
+  void _showGameChat(BuildContext context) {
+    showGeneralDialog(
+      barrierLabel: "Chat",
+      barrierDismissible: true,
+      barrierColor: Colors.black.withOpacity(0.10),
+      context: context,
+      pageBuilder: (context, _, __) => MultiProvider(
+        providers: [
+          ChangeNotifierProvider<GameContextObject>.value(
+              value: _gameContextObj),
+          ChangeNotifierProvider<GameChatNotifState>.value(
+              value: _gameState.gameChatNotifState),
+        ],
+        child: Align(
+          alignment: Alignment.bottomCenter,
+          child: GameChat(
+            scrollController: _gcsController,
+            chatService: _gameContextObj.gameComService.gameMessaging,
+          ),
+        ),
+      ),
+    ).then((val) {});
   }
 
   Future _onJoinGame(Seat seat) async {
@@ -840,11 +859,14 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   bool _isChatScreenVisible = false;
 
   void _onChatMessage(ChatMessage message) {
+    if (message.fromPlayer == this._gameState.currentPlayer.id) {
+      return;
+    }
+
     if (_isChatScreenVisible) {
       _gameState.gameChatNotifState.notifyNewMessage();
 
       // notify of new messages & rebuild the game message list
-
       /* if user is scrolled away, we need to notify */
       if (_gcsController.hasClients &&
           (_gcsController.offset > kScrollOffsetPosition)) {
@@ -870,28 +892,51 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     });
   }
 
-  Widget _buildChatWindow() {
-    return Consumer<ValueNotifier<bool>>(
-      builder: (context, vnChatVisibility, __) {
-        _isChatScreenVisible = vnChatVisibility.value;
-        return AnimatedSwitcher(
-          duration: const Duration(milliseconds: 200),
-          child: vnChatVisibility.value
-              ? Align(
-                  alignment: Alignment.bottomCenter,
-                  child: GameChat(
-                    scrollController: _gcsController,
-                    chatService: _gameContextObj.gameComService.gameMessaging,
-                    onChatVisibilityChange: () => _toggleChatVisibility(
-                      context,
-                    ),
-                  ),
-                )
-              : const SizedBox.shrink(),
-        );
-      },
-    );
-  }
+//<<<<<<< HEAD
+  // Widget _buildChatWindow() => Consumer<ValueNotifier<bool>>(
+  //       builder: (context, vnChatVisibility, __) {
+  //         _isChatScreenVisible = vnChatVisibility.value;
+  //         return AnimatedSwitcher(
+  //           duration: const Duration(milliseconds: 200),
+  //           child: vnChatVisibility.value
+  //               ? Align(
+  //                   alignment: Alignment.bottomCenter,
+  //                   child: GameChat(
+  //                     scrollController: _gcsController,
+  //                     chatService: _gameContextObj.gameComService.gameMessaging,
+  //                     onChatVisibilityChange: () => _toggleChatVisibility(
+  //                       context,
+  //                     ),
+  //                   ),
+  //                 )
+  //               : const SizedBox.shrink(),
+  //         );
+  //       },
+  //     );
+// =======
+//   Widget _buildChatWindow() {
+//     return Consumer<ValueNotifier<bool>>(
+//       builder: (context, vnChatVisibility, __) {
+//         _isChatScreenVisible = vnChatVisibility.value;
+//         return AnimatedSwitcher(
+//           duration: const Duration(milliseconds: 200),
+//           child: vnChatVisibility.value
+//               ? Align(
+//                   alignment: Alignment.bottomCenter,
+//                   child: GameChat(
+//                     scrollController: _gcsController,
+//                     chatService: _gameContextObj.gameComService.gameMessaging,
+//                     onChatVisibilityChange: () => _toggleChatVisibility(
+//                       context,
+//                     ),
+//                   ),
+//                 )
+//               : const SizedBox.shrink(),
+//         );
+//       },
+//     );
+//   }
+// >>>>>>> master
 
   Widget _buildBoardView(Size boardDimensions, double boardScale) {
     // log('RedrawTop: Rebuilding board view');
@@ -1039,7 +1084,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
                 gameContextObject: _gameContextObj,
                 currentPlayer: _gameContextObj.gameState.currentPlayer,
                 gameInfo: _gameInfoModel,
-                toggleChatVisibility: _toggleChatVisibility,
+                toggleChatVisibility: _showGameChat,
                 onStartGame: startGame);
           },
         ),
@@ -1054,7 +1099,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       column,
 
       /* chat window widget */
-      this.widget.showBottom ? _buildChatWindow() : const SizedBox.shrink(),
+      // this.widget.showBottom ? _buildChatWindow() : const SizedBox.shrink(),
     ]);
     return allWidgets;
   }
