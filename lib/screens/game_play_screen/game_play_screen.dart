@@ -859,11 +859,14 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   bool _isChatScreenVisible = false;
 
   void _onChatMessage(ChatMessage message) {
+    if (message.fromPlayer == this._gameState.currentPlayer.id) {
+      return;
+    }
+
     if (_isChatScreenVisible) {
       _gameState.gameChatNotifState.notifyNewMessage();
 
       // notify of new messages & rebuild the game message list
-
       /* if user is scrolled away, we need to notify */
       if (_gcsController.hasClients &&
           (_gcsController.offset > kScrollOffsetPosition)) {
