@@ -15,7 +15,7 @@ class UserInputWidget extends StatelessWidget {
   // final _textVn = ValueNotifier<String>('');
 
   UserInputWidget({
-    this.allowGif = false,
+    this.allowGif = true,
     @required this.onGifClick,
     @required this.onMessagesClick,
     @required this.onSendClick,
