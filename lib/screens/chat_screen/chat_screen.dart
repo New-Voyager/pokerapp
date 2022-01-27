@@ -12,8 +12,11 @@ import 'package:pokerapp/screens/chat_screen/widgets/chat_list_widget.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
 import 'package:pokerapp/services/text_filtering/text_filtering.dart';
+import 'package:pokerapp/utils/favourite_texts_widget.dart';
 import 'package:pokerapp/utils/gif_widget.dart';
+import 'package:pokerapp/utils/new_gif_widget.dart';
 import 'package:pokerapp/widgets/emoji_picker_widget.dart';
+import 'package:pokerapp/widgets/user_input_widget.dart';
 import 'package:provider/provider.dart';
 
 import '../../routes.dart';
@@ -42,6 +45,7 @@ class _ChatScreenState extends State<ChatScreen> with RouteAwareAnalytics {
   String get routeName => Routes.chatScreen;
 
   final ValueNotifier<bool> _vnShowEmojiPicker = ValueNotifier(false);
+  final ValueNotifier<bool> _vnShowFavouriteMessages = ValueNotifier(false);
   final TextEditingController _textController = TextEditingController();
   List<MessagesFromMember> messages = [];
   AppTextScreen _appScreenText;
@@ -120,12 +124,13 @@ class _ChatScreenState extends State<ChatScreen> with RouteAwareAnalytics {
         ),
 
         // player typing field
-        ChatTextField(
-          icon: Icons.emoji_emotions_outlined,
-          appScreenText: _appScreenText,
-          onEmojiSelectTap: _onEmojiTap,
-          textEditingController: _textController,
-          onSend: _onSendClicked,
+        UserInputWidget(
+          allowGif: false,
+          onGifClick: () {},
+          onMessagesClick: _onPresetMessageClick,
+          onSendClick: _onSendClicked,
+          onEmojiClick: _onEmojiTap,
+          editingController: _textController,
         ),
 
         // emoji picker
@@ -139,8 +144,26 @@ class _ChatScreenState extends State<ChatScreen> with RouteAwareAnalytics {
                 )
               : const SizedBox.shrink(),
         ),
+
+        // fav texts
+        ValueListenableBuilder<bool>(
+          valueListenable: _vnShowFavouriteMessages,
+          builder: (_, bool showFavouriteMessages, __) => showFavouriteMessages
+              ? FavouriteTextWidget(onPresetTextSelect: _sendPreset)
+              : const SizedBox.shrink(),
+        ),
       ],
     );
+  }
+
+  void _onPresetMessageClick() async {
+    _vnShowFavouriteMessages.value = !_vnShowFavouriteMessages.value;
+    _vnShowEmojiPicker.value = false;
+
+    // close keyboard
+    if (_vnShowEmojiPicker.value) {
+      FocusScope.of(context).unfocus();
+    }
   }
 
   Future<List<MessagesFromMember>> _fetchData() async {
@@ -184,6 +207,11 @@ class _ChatScreenState extends State<ChatScreen> with RouteAwareAnalytics {
       chats.add(chat);
     }
     return chats;
+  }
+
+  void _sendPreset(String text) {
+    _textController.text = text;
+    _onSendClicked();
   }
 
   void _onSendClicked() async {

@@ -11,11 +11,15 @@ import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/widgets/cards/community_cards_view/custom_flip_card.dart';
+import 'package:provider/provider.dart';
 
 class FlopCommunityCards extends StatefulWidget {
   final List<Widget> flopCards;
+  final bool twoBoards;
+
   FlopCommunityCards({
     @required this.flopCards,
+    this.twoBoards = false,
   });
 
   @override
@@ -24,6 +28,8 @@ class FlopCommunityCards extends StatefulWidget {
 
 class _FlopCommunityCardsState extends State<FlopCommunityCards> {
   GlobalKey<FlipCardState> _globalFlipKey = GlobalKey<FlipCardState>();
+
+  BoardAttributesObject _boa;
 
   bool _isFlipDone;
   bool _isAnimationCompleted;
@@ -35,6 +41,8 @@ class _FlopCommunityCardsState extends State<FlopCommunityCards> {
   @override
   void initState() {
     super.initState();
+
+    _boa = Provider.of<BoardAttributesObject>(context, listen: false);
 
     _isFlipDone = false;
     _isAnimationCompleted = false;
@@ -55,8 +63,9 @@ class _FlopCommunityCardsState extends State<FlopCommunityCards> {
   }
 
   double getDifferenceBetween(int idx1, idx2) {
-    return CommunityCardAttribute.getOffsetPosition(idx1).dx -
-        CommunityCardAttribute.getOffsetPosition(idx2).dx;
+    return (CommunityCardAttribute.getOffsetPosition(idx1).dx -
+            CommunityCardAttribute.getOffsetPosition(idx2).dx) *
+        (widget.twoBoards ? _boa.doubleBoardScale : 1.0);
   }
 
   Widget _buildFlipCardWidget() {
@@ -64,8 +73,7 @@ class _FlopCommunityCardsState extends State<FlopCommunityCards> {
     final cardBackBytes = gameState.assets.getHoleCardBack();
     return Transform.translate(
       offset: Offset(
-        CommunityCardAttribute.getOffsetPosition(2).dx -
-            CommunityCardAttribute.getOffsetPosition(0).dx,
+        getDifferenceBetween(2, 0),
         0.0,
       ),
       child: CustomFlipCard(
@@ -73,6 +81,8 @@ class _FlopCommunityCardsState extends State<FlopCommunityCards> {
         onFlipDone: onFlipDone,
         globalKey: _globalFlipKey,
         cardWidget: widget.flopCards.last,
+        twoBoards: widget.twoBoards,
+        doubleBoardScale: _boa.doubleBoardScale,
       ),
     );
   }

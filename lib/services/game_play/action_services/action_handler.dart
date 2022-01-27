@@ -351,7 +351,7 @@ class PlayerActionHandler {
       if (me == null) {
         return;
       }
-      AudioService.stopSound();
+      // AudioService.stopSound();
 
       final seatAction = message.seatAction;
       if (me.seatNo != seatAction.seatNo) {

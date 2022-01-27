@@ -464,7 +464,7 @@ class GameUpdateService {
             seat.player.isMe &&
             _gameContextObj != null) {
           try {
-            _gameContextObj.leaveAudio();
+            _gameContextObj?.leaveAudio();
           } catch (err) {}
         }
       }

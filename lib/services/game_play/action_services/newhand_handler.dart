@@ -55,7 +55,7 @@ class NewHandHandler {
     if (didILeaveTheGame()) {
       // leave the conference
       try {
-        this.gameContext.leaveAudio();
+        this.gameContext?.leaveAudio();
       } catch (err) {}
     }
   }
@@ -427,6 +427,6 @@ class NewHandHandler {
       //log('Hand Message: ::handleDealStarted:: END');
     }
 
-    AudioService.stopSound();
+    // AudioService.stopSound();
   }
 }

@@ -1,6 +1,9 @@
 import 'dart:core';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
@@ -10,28 +13,12 @@ import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'formatter.dart';
 
 const BACKSPACE_BTN = 'bksp';
-const sizedBox20 = const SizedBox(
-  height: 20,
-);
-
-const sizedBox10 = const SizedBox(
-  height: 10,
-);
-
-const sizedBox16 = const SizedBox(
-  height: 16,
-);
-
-const sizedBox8 = const SizedBox(
-  height: 8,
-);
-
-const sizedBox4 = const SizedBox(
-  height: 4,
-);
-const sizedBox2 = const SizedBox(
-  height: 2,
-);
+const sizedBox20 = const SizedBox(height: 20);
+const sizedBox10 = const SizedBox(height: 10);
+const sizedBox16 = const SizedBox(height: 16);
+const sizedBox8 = const SizedBox(height: 8);
+const sizedBox4 = const SizedBox(height: 4);
+const sizedBox2 = const SizedBox(height: 2);
 
 class NumericKeyboard2 extends StatelessWidget {
   final double min;
@@ -41,6 +28,7 @@ class NumericKeyboard2 extends StatelessWidget {
   final double currValue;
   final bool decimalAllowed;
   final bool evenNumber;
+  final AppTheme appTheme;
   bool firstKey = true;
 
   NumericKeyboard2({
@@ -52,7 +40,12 @@ class NumericKeyboard2 extends StatelessWidget {
     this.currValue,
     this.decimalAllowed = true,
     this.evenNumber = false,
+    this.appTheme,
   }) : super(key: key);
+
+  double minOf(double a, double b) {
+    return a > b ? b : a;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,16 +60,31 @@ class NumericKeyboard2 extends StatelessWidget {
       valueStr = DataFormatter.chipsFormat(value).toString();
     }
 
+    final parentSize = MediaQuery.of(context).size;
+    final maxWidth = 450.0;
+
+    final borderRadius = Radius.circular(10.0);
     return Container(
       decoration: BoxDecoration(
-        border: Border(
-          top: BorderSide(
-            color: AppColorsNew.newBorderColor,
-            width: 2.ph,
-          ),
+        borderRadius: BorderRadius.only(
+          topLeft: borderRadius,
+          topRight: borderRadius,
+        ),
+        gradient: LinearGradient(
+          begin: Alignment.bottomLeft,
+          end: Alignment.topCenter,
+          colors: [
+            Colors.grey[850],
+            Colors.black,
+          ],
+        ),
+        border: Border.all(
+          color: appTheme.accentColor,
+          width: 2.0,
         ),
       ),
-      height: MediaQuery.of(context).size.height * 0.50,
+      height: minOf(parentSize.width * 0.90, maxWidth * 0.90),
+      width: minOf(parentSize.width, maxWidth),
       child: MultiProvider(
         providers: [
           /* this provider holds the input value as string */
@@ -90,7 +98,7 @@ class NumericKeyboard2 extends StatelessWidget {
           ),
         ],
         builder: (context, __) => Scaffold(
-          backgroundColor: AppColorsNew.widgetBackgroundColor,
+          backgroundColor: Colors.transparent,
           body: SafeArea(
             top: false,
             child: Padding(
@@ -111,21 +119,18 @@ class NumericKeyboard2 extends StatelessWidget {
                     title: title,
                   ),
 
-                  /* separator */
-                  sizedBox20,
-
                   /* amount */
                   Consumer2<ValueNotifier<String>, ValueNotifier<bool>>(
                     builder: (_, vnValue, vnError, __) => _buildAmountWidget(
                       vnValue: vnValue,
                       error: vnError.value,
-                      onCloseTab: () => Navigator.pop(context),
-                      onDoneTab: () => _onDone(
-                        context,
-                        vnValue.value,
-                        min,
-                        max,
-                      ),
+                      //   onCloseTab: () => Navigator.pop(context),
+                      //   onDoneTab: () => _onDone(
+                      //     context,
+                      //     vnValue.value,
+                      //     min,
+                      //     max,
+                      //   ),
                     ),
                   ),
 
@@ -196,6 +201,9 @@ class NumericKeyboard2 extends StatelessWidget {
 
     if (min <= v && v <= max) return Navigator.pop(context, v);
 
+    await showErrorDialog(context, 'Range Error',
+        'Enter a value within the range ${DataFormatter.chipsFormat(min)}-${DataFormatter.chipsFormat(max)}');
+
     /* else show error */
     errorNotifier.value = true;
   }
@@ -203,13 +211,14 @@ class NumericKeyboard2 extends StatelessWidget {
   Widget _buildAmountWidget({
     ValueNotifier<String> vnValue,
     bool error,
-    Function onDoneTab,
-    Function onCloseTab,
+    // Function onDoneTab,
+    // Function onCloseTab,
   }) {
     return Row(
       children: [
         /* bet amount */
         Expanded(
+          flex: 2,
           child: Container(
             padding: const EdgeInsets.only(bottom: 5.0),
             decoration: BoxDecoration(
@@ -226,6 +235,9 @@ class NumericKeyboard2 extends StatelessWidget {
                 Expanded(
                   child: Text(
                     vnValue.value.toString(),
+                    overflow: TextOverflow.fade,
+                    softWrap: false,
+                    maxLines: 1,
                     style: TextStyle(
                       color: AppColorsNew.newTextColor,
                       fontSize: 18.dp,
@@ -250,52 +262,58 @@ class NumericKeyboard2 extends StatelessWidget {
         ),
 
         /* separator */
-        SizedBox(width: 25.pw),
+        SizedBox(width: 10),
 
         /* done button */
-        InkResponse(
-          focusColor: Colors.transparent,
-          highlightColor: Colors.transparent,
-          splashColor: Colors.transparent,
-          hoverColor: Colors.transparent,
-          onTap: onDoneTab,
-          child: Container(
-            padding: const EdgeInsets.all(5.0),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.green,
-            ),
-            child: Icon(
-              Icons.check_rounded,
-              size: 25.pw,
-              color: Colors.white,
-            ),
-          ),
+        _buildButton(
+          value: 'OK',
+          textSize: 18.0,
+          isDoneButton: true,
         ),
+
+        // InkResponse(
+        //   focusColor: Colors.transparent,
+        //   highlightColor: Colors.transparent,
+        //   splashColor: Colors.transparent,
+        //   hoverColor: Colors.transparent,
+        //   onTap: onDoneTab,
+        //   child: Container(
+        //     padding: const EdgeInsets.all(5.0),
+        //     decoration: BoxDecoration(
+        //       shape: BoxShape.circle,
+        //       color: Colors.green,
+        //     ),
+        //     child: Icon(
+        //       Icons.check_rounded,
+        //       size: 25.pw,
+        //       color: Colors.white,
+        //     ),
+        //   ),
+        // ),
 
         /* separator */
-        const SizedBox(width: 15.0),
+        // const SizedBox(width: 15.0),
 
-        /* close button */
-        InkResponse(
-          focusColor: Colors.transparent,
-          highlightColor: Colors.transparent,
-          splashColor: Colors.transparent,
-          hoverColor: Colors.transparent,
-          onTap: onCloseTab,
-          child: Container(
-            padding: const EdgeInsets.all(5.0),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.red,
-            ),
-            child: Icon(
-              Icons.close_rounded,
-              size: 25.pw,
-              color: Colors.white,
-            ),
-          ),
-        ),
+        // /* close button */
+        // InkResponse(
+        //   focusColor: Colors.transparent,
+        //   highlightColor: Colors.transparent,
+        //   splashColor: Colors.transparent,
+        //   hoverColor: Colors.transparent,
+        //   onTap: onCloseTab,
+        //   child: Container(
+        //     padding: const EdgeInsets.all(5.0),
+        //     decoration: BoxDecoration(
+        //       shape: BoxShape.circle,
+        //       color: Colors.red,
+        //     ),
+        //     child: Icon(
+        //       Icons.close_rounded,
+        //       size: 25.pw,
+        //       color: Colors.white,
+        //     ),
+        //   ),
+        // ),
       ],
     );
   }
@@ -352,95 +370,102 @@ class NumericKeyboard2 extends StatelessWidget {
   Widget _buildButton({
     String value,
     int flex = 1,
-    double textSize = 28,
+    double textSize = 23,
+    bool isDoneButton = false,
   }) {
     Color color = Colors.blue;
-    Color splashColor = Colors.blue[800];
     IconData icon;
-    color = AppColorsNew.newBorderColor;
-    splashColor = AppColorsNew.newGreenRadialStartColor;
+
     if (value == BACKSPACE_BTN) {
       color = Colors.blueGrey;
-      //splashColor = Colors.blue[800];
       icon = Icons.backspace_rounded;
     }
 
     if (value == '') {
       color = Colors.transparent;
-      splashColor = Colors.transparent;
     }
 
     if (value == '.' && decimalAllowed) {
       color = Colors.grey;
-      splashColor = Colors.white70;
     }
+
     return Expanded(
       flex: flex,
       child: Builder(
-        builder: (context) => Container(
-          margin: const EdgeInsets.all(5.0),
-          decoration: BoxDecoration(
-            shape: BoxShape.rectangle,
-            borderRadius: BorderRadius.circular(16),
-            color: color,
-            // border: Border.all(
-            //   color: AppColorsNew.appAccentColor,
-            //   width: 2.0,
-            // ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.10),
-                blurRadius: 10.0,
-                spreadRadius: 2.0,
-              ),
-            ],
-          ),
-          child: InkResponse(
-            focusColor: Colors.transparent,
-            highlightColor: Colors.transparent,
-            splashColor: splashColor, //Colors.transparent,
-            hoverColor: Colors.transparent,
-            onTap: () {
-              /* depending upon value, decide */
-
-              final ValueNotifier<String> vnValue =
-                  Provider.of<ValueNotifier<String>>(
-                context,
-                listen: false,
-              );
-
-              _decideAction(
-                vnValue,
-                value,
-                context,
-              );
-            },
-            child: Center(
-              child: icon != null
-                  ? Icon(
-                      icon,
-                      color: Colors.white,
-                    )
-                  : Text(
-                      value,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: textSize,
-                      ),
+        builder: (context) {
+          return Container(
+            margin: const EdgeInsets.all(3.0),
+            padding: isDoneButton
+                ? const EdgeInsets.symmetric(vertical: 10.0)
+                : null,
+            decoration: BoxDecoration(
+              shape: BoxShape.rectangle,
+              borderRadius: BorderRadius.circular(isDoneButton ? 10.0 : 5.0),
+              border: color == Colors.transparent
+                  ? null
+                  : Border.all(
+                      color: appTheme.accentColor,
+                      width: 1.0,
                     ),
+              color: color,
+              gradient: LinearGradient(
+                begin: Alignment.bottomCenter,
+                end: Alignment.topRight,
+                colors: [
+                  appTheme.accentColorWithDark(0.15),
+                  appTheme.accentColorWithDark(),
+                  appTheme.accentColor,
+                  appTheme.accentColorWithLight(),
+                ],
+              ),
             ),
-          ),
-        ),
+            child: InkResponse(
+              focusColor: Colors.transparent,
+              highlightColor: Colors.transparent,
+              splashColor: Colors.transparent,
+              hoverColor: Colors.transparent,
+              onTap: () {
+                if (isDoneButton) {
+                  final valueVn = context.read<ValueNotifier<String>>();
+                  return _onDone(context, valueVn.value, min, max);
+                }
+                /* depending upon value, decide */
+
+                final ValueNotifier<String> vnValue =
+                    Provider.of<ValueNotifier<String>>(
+                  context,
+                  listen: false,
+                );
+
+                _decideAction(
+                  vnValue,
+                  value,
+                  context,
+                );
+              },
+              child: Center(
+                child: icon != null
+                    ? Icon(
+                        icon,
+                        color: Colors.white,
+                      )
+                    : Text(
+                        value,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: textSize,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }
 
   Widget _buildKeyboard() {
-    int screenSize = Screen.diagonalInches.floor();
-    double textSize = 28.dp;
-    if (screenSize <= 6) {
-      textSize = 16.dp;
-    }
     return Expanded(
       child: Column(
         children: [
@@ -450,7 +475,6 @@ class NumericKeyboard2 extends StatelessWidget {
               children: [
                 _buildButton(
                   value: '7',
-                  textSize: textSize,
                 ),
                 _buildButton(
                   value: '8',
@@ -529,7 +553,9 @@ class NumericKeyboard2 extends StatelessWidget {
     if (currentVal == null) {
       currentVal = 0;
     }
+    final appTheme = Provider.of<AppTheme>(context, listen: false);
     final val = currentVal;
+
     return showGeneralDialog(
       barrierLabel: "Numeric Keyboard",
       barrierDismissible: true,
@@ -546,6 +572,7 @@ class NumericKeyboard2 extends StatelessWidget {
           currValue: val,
           decimalAllowed: decimalAllowed,
           evenNumber: evenNumber,
+          appTheme: appTheme,
         ),
       ),
       transitionBuilder: (context, anim1, _, child) => SlideTransition(

@@ -92,7 +92,7 @@ class NewGameModel {
   bool showPlayerBuyin = false;
   bool audioConference = false;
   bool allowRabbitHunt = true;
-  bool showHandRank = false;
+  bool showHandRank = true;
   bool useAgora = false;
   bool breakAllowed = true;
   bool showResultOption = true;

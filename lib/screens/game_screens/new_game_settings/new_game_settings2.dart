@@ -1019,6 +1019,7 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
                                 title: appScreenText["tipsPercent"],
                                 minValue: 0,
                                 maxValue: 50,
+                                decimalAllowed: gmp.chipUnit == ChipUnit.CENT,
                                 onChange: (value) {
                                   gmp.rakePercentage = value;
                                 },
@@ -1031,6 +1032,7 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
                                 key: UniqueKey(),
                                 value: gmp.rakeCap,
                                 small: true,
+                                decimalAllowed: gmp.chipUnit == ChipUnit.CENT,
                                 title: appScreenText['maxTips'],
                                 trailing: '', // appScreenText['bb'],
                                 minValue: 0,
@@ -1079,7 +1081,7 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
                                   defaultValue: gmp.gameLengthInMins ~/ 60,
                                   values: NewGameConstants.GAME_LENGTH,
                                   onSelect: (int value) {
-                                    gmp.gameLengthInMins = value;
+                                    gmp.gameLengthInMins = value * 60;
                                   },
                                 )),
                           ]);

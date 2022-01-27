@@ -63,3 +63,5 @@ ios/build
 android/app/src/prod/
 ios/config/prod/
 android/upload-keystore.jks
+
+/out
