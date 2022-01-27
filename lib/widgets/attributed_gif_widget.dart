@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/resources/app_assets.dart';
+import 'package:pokerapp/utils/utils.dart';
 
 class AttributedGifWidget extends StatelessWidget {
   final String url;
@@ -16,6 +17,7 @@ class AttributedGifWidget extends StatelessWidget {
           children: [
             // image
             CachedNetworkImage(
+              cacheManager: ImageCacheManager.instance,
               width: 160,
               height: 120,
               imageUrl: url,

@@ -19,6 +19,7 @@ import 'package:pokerapp/services/data/asset_hive_store.dart';
 import 'package:pokerapp/services/data/box_type.dart';
 import 'package:pokerapp/services/data/hive_datasource_impl.dart';
 import 'package:pokerapp/services/game_play/customization_service.dart';
+import 'package:pokerapp/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 class CardSelectorScreen extends StatefulWidget {
@@ -209,6 +210,7 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
                       : CachedNetworkImage(
                           imageUrl: _cardFaceAssets[index].previewLink,
                           fit: BoxFit.fill,
+                          cacheManager: ImageCacheManager.instance,
                         ),
                   Visibility(
                     visible: isSelected,
@@ -303,6 +305,7 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
                         )
                       : CachedNetworkImage(
                           imageUrl: _cardBackAssets[index].previewLink,
+                          cacheManager: ImageCacheManager.instance,
                         ),
                   Visibility(
                     visible: isSelected,

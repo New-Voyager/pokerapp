@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/tenor/src/model/tenor_result.dart';
+import 'package:pokerapp/utils/utils.dart';
 
 class GifListWidget extends StatelessWidget {
   final List<TenorResult> gifs;
@@ -21,7 +22,7 @@ class GifListWidget extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => gifs.isEmpty
+  Widget build(BuildContext context) => gifs?.isEmpty ?? true
       ? Center(child: Text('No Gifs'))
       : StaggeredGridView.countBuilder(
           itemCount: gifs.length,
@@ -58,6 +59,7 @@ class GifListWidget extends StatelessWidget {
                   ? Image.file(File(previewUrl))
                   : CachedNetworkImage(
                       imageUrl: previewUrl,
+                      cacheManager: ImageCacheManager.instance,
                       progressIndicatorBuilder: (
                         context,
                         url,

@@ -10,6 +10,7 @@ import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/formatter.dart';
+import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:provider/provider.dart';
 
@@ -26,6 +27,7 @@ class LiveGameItem extends StatelessWidget {
       clubImage = DecorationImage(
         image: CachedNetworkImageProvider(
           game.clubPicUrl,
+          cacheManager: ImageCacheManager.instance,
         ),
         fit: BoxFit.cover,
       );
