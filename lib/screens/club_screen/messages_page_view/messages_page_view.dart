@@ -18,14 +18,12 @@ import 'package:pokerapp/services/app/club_interior_service.dart';
 import 'package:pokerapp/services/app/club_message_service.dart';
 import 'package:pokerapp/services/text_filtering/text_filtering.dart';
 import 'package:pokerapp/utils/favourite_texts_widget.dart';
-import 'package:pokerapp/utils/gif_widget.dart';
 import 'package:pokerapp/utils/new_gif_widget.dart';
 import 'package:pokerapp/widgets/emoji_picker_widget.dart';
 import 'package:pokerapp/widgets/user_input_widget.dart';
 import 'package:provider/provider.dart';
 
 import '../../../routes.dart';
-import '../../chat_screen/widgets/chat_text_field.dart';
 import 'club_chat_model.dart';
 
 class MessagesPageView extends StatefulWidget {

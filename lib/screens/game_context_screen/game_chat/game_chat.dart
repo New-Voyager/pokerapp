@@ -366,6 +366,7 @@ class _GameChatState extends State<GameChat> {
 
               /* user input widget */
               UserInputWidget(
+                allowGameTexts: true,
                 editingController: _textEditingController,
                 onGifClick: _onGifClick,
                 onMessagesClick: _onMessagesClick,
