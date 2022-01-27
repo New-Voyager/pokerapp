@@ -383,37 +383,40 @@ class _GameChatState extends State<GameChat> {
   @override
   Widget build(BuildContext context) {
     final theme = AppTheme.getTheme(context);
-    return SafeArea(
-      child: Material(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            /* main bottom sheet, that has all the chat functionality */
-            _buildMainBody(theme),
+    return Container(
+      margin: MediaQuery.of(context).viewInsets,
+      child: SafeArea(
+        child: Material(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              /* main bottom sheet, that has all the chat functionality */
+              _buildMainBody(theme),
 
-            /* emoji picker widget */
-            ValueListenableBuilder<bool>(
-              valueListenable: _vnShowEmojiPicker,
-              builder: (_, bool showPicker, __) => showPicker
-                  ? EmojiPicker(
-                      onEmojiSelected: (String emoji) {
-                        _textEditingController.text += emoji;
-                      },
-                    )
-                  : const SizedBox.shrink(),
-            ),
-            /* emoji picker widget */
-            ValueListenableBuilder<bool>(
-              valueListenable: _vnShowFavouriteMessages,
-              builder: (_, bool showFavouriteMessages, __) =>
-                  showFavouriteMessages
-                      ? FavouriteTextWidget(
-                          onPresetTextSelect: (String pText) =>
-                              chatService.sendText(pText),
-                        )
-                      : const SizedBox.shrink(),
-            ),
-          ],
+              /* emoji picker widget */
+              ValueListenableBuilder<bool>(
+                valueListenable: _vnShowEmojiPicker,
+                builder: (_, bool showPicker, __) => showPicker
+                    ? EmojiPicker(
+                        onEmojiSelected: (String emoji) {
+                          _textEditingController.text += emoji;
+                        },
+                      )
+                    : const SizedBox.shrink(),
+              ),
+              /* emoji picker widget */
+              ValueListenableBuilder<bool>(
+                valueListenable: _vnShowFavouriteMessages,
+                builder: (_, bool showFavouriteMessages, __) =>
+                    showFavouriteMessages
+                        ? FavouriteTextWidget(
+                            onPresetTextSelect: (String pText) =>
+                                chatService.sendText(pText),
+                          )
+                        : const SizedBox.shrink(),
+              ),
+            ],
+          ),
         ),
       ),
     );

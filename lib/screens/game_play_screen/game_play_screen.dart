@@ -596,9 +596,10 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     }
   }
 
-  void _showGameChat(BuildContext context) {
-    this._gameState.chatScreenVisible = true;
-    showGeneralDialog(
+  void _showGameChat(BuildContext context) async {
+    _gameState.chatScreenVisible = true;
+
+    await showGeneralDialog(
       barrierLabel: "Chat",
       barrierDismissible: true,
       barrierColor: Colors.black.withOpacity(0.10),
@@ -618,9 +619,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
           ),
         ),
       ),
-    ).then((val) {
-      this._gameState.chatScreenVisible = false;
-    });
+    );
+
+    _gameState.chatScreenVisible = false;
   }
 
   Future _onJoinGame(Seat seat) async {
