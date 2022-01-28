@@ -250,7 +250,8 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
                                       } else {
                                         tablePreviewWidget = CachedNetworkImage(
                                           imageUrl: previewLink,
-                                          cacheManager: ImageCacheManager.instance,
+                                          cacheManager:
+                                              ImageCacheManager.instance,
                                         );
                                       }
                                       return InkResponse(
@@ -361,7 +362,8 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
                                         );
                                       } else {
                                         backPreviewWidget = CachedNetworkImage(
-                                          cacheManager: ImageCacheManager.instance,
+                                          cacheManager:
+                                              ImageCacheManager.instance,
                                           imageUrl: _backDropAssets[index]
                                               .previewLink,
                                         );

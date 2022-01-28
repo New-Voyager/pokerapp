@@ -10,6 +10,8 @@ enum MemberListOptions {
   UNSETTLED,
   INACTIVE,
   MANAGERS,
+  LEADERS,
+  MYREFERALS,
 }
 
 class ClubInteriorService {
@@ -23,6 +25,7 @@ class ClubInteriorService {
           isOwner
           isManager
           isMainOwner
+          isLeader
           joinedDate
           lastPlayedDate
           totalBuyins
@@ -34,6 +37,8 @@ class ClubInteriorService {
           totalGames
           availableCredit
           tipsBack
+          leaderName
+          leaderUuid
         }
       }""";
 
@@ -258,6 +263,42 @@ class ClubInteriorService {
     Map<String, dynamic> variables = {
       "clubCode": data.clubCode,
       "playerUuid": data.playerId,
+      "update": update,
+    };
+    QueryResult result = await _client.mutate(MutationOptions(
+        document: gql(updateClubMemberMutation), variables: variables));
+    if (result.hasException) return false;
+    return true;
+  }
+
+  static Future<bool> setAsLeader(
+      String clubCode, String playerId, bool isLeader) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    Map<String, dynamic> update = {
+      "isLeader": isLeader,
+    };
+    Map<String, dynamic> variables = {
+      "clubCode": clubCode,
+      "playerUuid": playerId,
+      "update": update,
+    };
+    QueryResult result = await _client.mutate(MutationOptions(
+        document: gql(updateClubMemberMutation), variables: variables));
+    if (result.hasException) return false;
+    return true;
+  }
+
+  static Future<bool> setLeader(
+      String clubCode, String playerId, String leaderId) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    Map<String, dynamic> update = {
+      "leaderUuid": leaderId,
+    };
+    Map<String, dynamic> variables = {
+      "clubCode": clubCode,
+      "playerUuid": playerId,
       "update": update,
     };
     QueryResult result = await _client.mutate(MutationOptions(

@@ -13,42 +13,31 @@ import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/services/app/club_interior_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/widgets/buttons.dart';
+import 'package:pokerapp/widgets/label.dart';
 import 'package:provider/provider.dart';
 
 class ClubMembersListView extends StatefulWidget {
-  List<ClubMemberModel> _membersList;
+  final List<ClubMemberModel> allMembers;
+  final List<ClubMemberModel> _membersList;
   final String clubCode;
   final ClubHomePageModel club;
   final Function fetchData;
   final bool viewAsOwner;
   final MemberListOptions option;
   final AppTextScreen appScreenText;
+  final bool chooseMember;
+  final Function onChooseMember;
+  final bool showLabels;
 
   ClubMembersListView(this.club, this.clubCode, this._membersList, this.option,
-      this.viewAsOwner, this.appScreenText, this.fetchData);
+      this.viewAsOwner, this.appScreenText, this.fetchData,
+      {this.chooseMember = false,
+      this.onChooseMember = null,
+      this.allMembers,
+      this.showLabels = false});
 
   @override
   _ClubMembersListViewState createState() => _ClubMembersListViewState();
-
-  Future<void> _fetchData() async {
-    log('Club member list');
-    if (this.option == MemberListOptions.ALL) {
-      _membersList = await ClubInteriorService.getClubMembers(
-          clubCode, MemberListOptions.ALL);
-    } else if (this.option == MemberListOptions.INACTIVE) {
-      _membersList = await ClubInteriorService.getClubMembers(
-          clubCode, MemberListOptions.INACTIVE);
-    } else if (this.option == MemberListOptions.MANAGERS) {
-      _membersList = await ClubInteriorService.getClubMembers(
-          clubCode, MemberListOptions.MANAGERS);
-    } else if (this.option == MemberListOptions.UNSETTLED) {
-      _membersList = await ClubInteriorService.getClubMembers(
-          clubCode, MemberListOptions.UNSETTLED);
-    }
-    for (final member in _membersList) {
-      log('_fetchData in ClubMemberListView member: ${member.name} status: ${member.status.toString()}');
-    }
-  }
 }
 
 class _ClubMembersListViewState extends State<ClubMembersListView> {
@@ -142,6 +131,9 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
                 children: [
                   InkWell(
                     onTap: () async {
+                      if (!widget.viewAsOwner) {
+                        return;
+                      }
                       bool updated = await Navigator.pushNamed(
                         context,
                         Routes.club_member_detail_view,
@@ -151,6 +143,7 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
                           "currentOwner": true,
                           "club": widget.club,
                           "member": data,
+                          "allMembers": widget.allMembers,
                         },
                       ) as bool;
                       if (updated) {
@@ -204,47 +197,10 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
                                               : AppDecorators.getSubtitle1Style(
                                                   theme: theme),
                                         ),
-                                        // !widget.viewAsOwner ||
-                                        //         data.contactInfo == null ||
-                                        //         data.contactInfo.isEmpty
-                                        //     ? SizedBox.shrink()
-                                        //     : Text(
-                                        //         '    ' + '(${data.contactInfo})',
-                                        //         textAlign: TextAlign.left,
-                                        //         style: AppDecorators
-                                        //             .getHeadLine5Style(
-                                        //                 theme: theme),
-                                        //       ),
                                       ],
                                     ),
                                   ),
-                                  Positioned(
-                                    top: 0,
-                                    right: 5,
-                                    child: Visibility(
-                                      visible: (data.isManager || data.isOwner),
-                                      child: Container(
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: 8,
-                                          vertical: 2,
-                                        ),
-                                        decoration:
-                                            AppDecorators.tileDecoration(theme)
-                                                .copyWith(),
-                                        child: Text(
-                                          (data.isManager
-                                              ? widget.appScreenText['manager']
-                                              : data.isOwner
-                                                  ? widget
-                                                      .appScreenText['owner']
-                                                  : ""),
-                                          style:
-                                              AppDecorators.getSubtitle2Style(
-                                                  theme: theme),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
+                                  getTitle(theme, data),
                                 ],
                               ),
                               Visibility(
@@ -272,7 +228,8 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
                                   child: Row(
                                     children: [
                                       Text(
-                                        widget.appScreenText['pendingApproval'],
+                                        'Pending Approval',
+                                        //widget.appScreenText['pendingApproval'],
                                         textAlign: TextAlign.left,
                                         style: AppDecorators.getSubtitle3Style(
                                             theme: theme),
@@ -285,8 +242,9 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
                           ),
                         ),
                         Visibility(
-                          visible: ((data.status != ClubMemberStatus.PENDING) &&
-                              (widget.viewAsOwner ?? false)),
+                          visible: (!(widget.chooseMember ?? false)) &&
+                              ((data.status != ClubMemberStatus.PENDING) &&
+                                  (widget.viewAsOwner ?? false)),
                           child: Container(
                             padding: EdgeInsets.only(right: 8),
                             child: Icon(
@@ -360,6 +318,47 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
             return AppDimensionsNew.getVerticalSizedBox(8);
           },
         ),
+      ),
+    );
+  }
+
+  Widget getTitle(AppTheme theme, ClubMemberModel member) {
+    if (!widget.showLabels) {
+      return Container();
+    }
+
+    if (widget.chooseMember ?? false) {
+      return Container();
+    }
+    bool isVisible = (member.isManager ?? false) ||
+        (member.isOwner ?? false) ||
+        (member.isLeader ?? false);
+    String titleText = '';
+    List<Widget> labels = [];
+    if (member.isManager ?? false) {
+      titleText = 'Manager';
+      labels.add(SizedBox(width: 5));
+      labels.add(Label(titleText, theme));
+    }
+    if (member.isOwner ?? false) {
+      titleText = 'Owner';
+      labels.add(SizedBox(width: 5));
+      labels.add(Label(titleText, theme));
+    }
+    if (member.isLeader ?? false) {
+      titleText = 'Leader';
+      if (widget.viewAsOwner) {
+        labels.add(SizedBox(width: 5));
+        labels.add(Label(titleText, theme));
+      }
+    }
+
+    return Positioned(
+      top: 10,
+      right: 20,
+      child: Visibility(
+        visible: isVisible,
+        child: Row(children: labels),
       ),
     );
   }

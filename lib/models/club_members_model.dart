@@ -18,6 +18,7 @@ class ClubMemberModel extends ChangeNotifier {
   bool isOwner;
   bool isManager;
   bool isMainOwner;
+  bool isLeader;
   String playerId;
   double availableCredit;
   String _contactInfo;
@@ -33,6 +34,8 @@ class ClubMemberModel extends ChangeNotifier {
   int _totalGames;
   bool edited = false;
   bool refreshCredits = false;
+  String leaderName;
+  String leaderUuid;
 
   ClubMemberModel();
 
@@ -108,6 +111,9 @@ class ClubMemberModel extends ChangeNotifier {
     data._contactInfo = copyValue._contactInfo;
     data._notes = copyValue._notes;
     data._tipsBack = copyValue._tipsBack;
+    data.isLeader = copyValue.isLeader;
+    data.leaderName = copyValue.leaderName;
+    data.leaderUuid = copyValue.leaderUuid;
     return data;
   }
 
@@ -145,11 +151,17 @@ class ClubMemberModel extends ChangeNotifier {
     if (jsonData['isMainOwner'] != null) {
       this.isMainOwner = jsonData['isMainOwner'];
     }
+    this.isLeader = false;
+    if (jsonData['isLeader'] != null) {
+      this.isLeader = jsonData['isLeader'];
+    }
     if (jsonData['rakePaid'] != null) {
       this._rake = double.parse(jsonData['rakePaid'].toString());
     }
     this._tipsBack = int.parse((jsonData['tipsBack'] ?? 0).toString());
     this.imageUrl = jsonData['imageUrl'];
+    this.leaderName = jsonData['leaderName'];
+    this.leaderUuid = jsonData['leaderUuid'];
 
     if (jsonData['totalGames'] != null) {
       this._totalGames = int.parse(jsonData['totalGames'].toString());

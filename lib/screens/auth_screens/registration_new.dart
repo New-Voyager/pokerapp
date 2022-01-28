@@ -212,7 +212,7 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
 
                   int playerId = int.tryParse(botName);
                   Map<String, dynamic> resp;
-                  if (playerId != 0) {
+                  if (playerId != null && playerId != 0) {
                     // login with player id
                     resp = await AuthService.loginPlayer(playerId);
                   } else {

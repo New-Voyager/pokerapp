@@ -295,17 +295,25 @@ class Routes {
 
       case club_member_detail_view:
         Map<String, dynamic> args = settings.arguments as Map<String, dynamic>;
+        ClubHomePageModel club = args["club"];
         String clubCode = args["clubCode"];
         String playerId = args["playerId"];
         bool isCurrentOwner = args["currentOwner"] as bool;
         final ClubMemberModel member = args["member"];
+        final allMembers = args["allMembers"];
         return _getPageRoute(
           routeName: settings.name,
           viewToShow: ChangeNotifierProvider<ClubMemberModel>(
             create: (_) => member,
             builder: (BuildContext context, _) => Consumer<ClubMemberModel>(
               builder: (_, ClubMemberModel data, __) => ClubMembersDetailsView(
-                  clubCode, playerId, isCurrentOwner, member),
+                club,
+                clubCode,
+                playerId,
+                isCurrentOwner,
+                member,
+                allMembers: allMembers,
+              ),
             ),
           ),
         );

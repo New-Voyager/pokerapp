@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/main_helper.dart';
+import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/models/club_members_model.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
@@ -19,19 +20,27 @@ import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
+import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
+import 'package:pokerapp/widgets/switch.dart';
 import 'package:pokerapp/widgets/textfields.dart';
+import 'package:pokerapp/widgets/texts.dart';
 import 'package:provider/provider.dart';
 
+import 'club_members_list_view.dart';
+
 class ClubMembersDetailsView extends StatefulWidget {
+  final ClubHomePageModel club;
   final String clubCode;
   final String playerId;
   final ClubMemberModel member;
   final bool isClubOwner; // current session is owner?
+  final List<ClubMemberModel> allMembers;
 
   ClubMembersDetailsView(
-      this.clubCode, this.playerId, this.isClubOwner, this.member);
+      this.club, this.clubCode, this.playerId, this.isClubOwner, this.member,
+      {this.allMembers});
 
   @override
   _ClubMembersDetailsView createState() =>
@@ -214,8 +223,78 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
       }
     }
 
-    return Consumer<AppTheme>(
-      builder: (_, theme, __) => Container(
+    return Consumer<AppTheme>(builder: (_, theme, __) {
+      if (!loadingDone) {
+        return Container(
+            decoration: AppDecorators.bgRadialGradient(theme),
+            child: Scaffold(
+                backgroundColor: Colors.transparent,
+                appBar: CustomAppBar(
+                  theme: theme,
+                  context: context,
+                  titleText: "",
+                  onBackHandle: () {
+                    goBack(context);
+                  },
+                ),
+                body: CircularProgressWidget()));
+      }
+      List<Widget> children = [];
+      if (creditTracking) {
+        children.addAll([
+          Divider(
+            color: theme.supportingColor,
+          ),
+          ListTile(
+            leading: Icon(Icons.credit_card, color: theme.secondaryColor),
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "Credits",
+                  style: AppDecorators.getHeadLine4Style(theme: theme),
+                ),
+                SizedBox(width: 30.pw),
+                Text(
+                  DataFormatter.chipsFormat(_data.availableCredit),
+                  style: AppDecorators.getHeadLine3Style(theme: theme).copyWith(
+                      color: _data.availableCredit < 0
+                          ? Colors.redAccent
+                          : Colors.greenAccent),
+                ),
+              ],
+            ),
+            trailing: Icon(Icons.arrow_forward_ios, color: theme.accentColor),
+            onTap: () async {
+              bool ret = await Navigator.pushNamed(
+                context,
+                Routes.club_member_credit_detail_view,
+                arguments: {
+                  'clubCode': widget.clubCode,
+                  'playerId': widget.playerId,
+                  'owner': true,
+                  'member': widget.member,
+                },
+              ) as bool;
+              if (widget.member != null && widget.member.refreshCredits) {
+                _fetchData();
+              }
+            },
+          ),
+          tipsBack(theme),
+          Divider(
+            color: theme.supportingColor,
+          ),
+        ]);
+      }
+      children.add(detailTile(theme));
+      children.add(
+        Divider(
+          color: theme.supportingColor,
+        ),
+      );
+
+      return Container(
         decoration: AppDecorators.bgRadialGradient(theme),
         child: Scaffold(
           backgroundColor: Colors.transparent,
@@ -290,78 +369,23 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                             ],
                           ),
                         ),
-                        //           Divider(
-                        //             color: theme.supportingColor,
-                        //           ),
-                        // SwitchWidget(
-                        //   icon: Icons.verified_user,
-                        //   value: true,
-                        //   label: 'Auto Buyin Approval',
-                        //   onChange: (bool newValue) => setState(() {
-                        //   }),
-                        //   // useSpacer: false,
-                        // ),
                         Divider(
                           color: theme.supportingColor,
                         ),
-                        !creditTracking
-                            ? Container()
-                            : ListTile(
-                                leading: Icon(Icons.credit_card,
-                                    color: theme.secondaryColor),
-                                title: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      "Credits",
-                                      style: AppDecorators.getHeadLine4Style(
-                                          theme: theme),
-                                    ),
-                                    SizedBox(width: 30.pw),
-                                    Text(
-                                      DataFormatter.chipsFormat(
-                                          _data.availableCredit),
-                                      style: AppDecorators.getHeadLine3Style(
-                                              theme: theme)
-                                          .copyWith(
-                                              color: _data.availableCredit < 0
-                                                  ? Colors.redAccent
-                                                  : Colors.greenAccent),
-                                    ),
-                                  ],
-                                ),
-                                trailing: Icon(Icons.arrow_forward_ios,
-                                    color: theme.accentColor),
-                                onTap: () async {
-                                  bool ret = await Navigator.pushNamed(
-                                    context,
-                                    Routes.club_member_credit_detail_view,
-                                    arguments: {
-                                      'clubCode': widget.clubCode,
-                                      'playerId': widget.playerId,
-                                      'owner': true,
-                                      'member': widget.member,
-                                    },
-                                  ) as bool;
-                                  if (widget.member != null &&
-                                      widget.member.refreshCredits) {
-                                    _fetchData();
-                                  }
-                                },
-                              ),
-                        !creditTracking
-                            ? Container()
-                            : Divider(
-                                color: theme.supportingColor,
-                              ),
-                        detailTile(theme),
+                        // set leader flag
+                        SwitchWidget2(
+                            label: 'Leader',
+                            value: _data.isLeader,
+                            onChange: (val) async {
+                              await ClubInteriorService.setAsLeader(
+                                  widget.club.clubCode, _data.playerId, val);
+                              _data.isLeader = val;
+                              setState(() {});
+                            }),
+                        ...children,
+                        referredByRow(theme),
                         Divider(
                           color: theme.supportingColor,
-                        ),
-                        !creditTracking ? Container() : tipsBack(theme),
-                        Divider(
-                          color: theme.fillInColor,
                         ),
                         contactInfo(theme),
                         Divider(
@@ -401,8 +425,8 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                   ),
                 ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   Widget tipsBack(AppTheme theme) {
@@ -586,6 +610,66 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
             : theme.negativeOrErrorColor;
   }
 
+  Widget referredByRow(AppTheme theme) {
+    return Row(
+      children: [
+        Expanded(
+          flex: 1,
+          child: Icon(
+            AppIcons.user,
+            color: Colors.blue,
+          ),
+        ),
+        Expanded(
+          flex: 6,
+          child: Padding(
+            padding: EdgeInsets.only(left: 5),
+            child: Text(
+              'Referred By',
+              textAlign: TextAlign.left,
+              style: AppDecorators.getHeadLine4Style(theme: theme),
+            ),
+          ),
+        ),
+        Expanded(
+          flex: 3,
+          child: InkWell(
+            onTap: () async {
+              List<ClubMemberModel> leaders = [];
+              for (final member in widget.allMembers) {
+                if (member.isLeader) {
+                  leaders.add(member);
+                }
+              }
+              // assign another player
+              log('assign a player');
+              final ret = await ChooseMemberDialog.prompt(
+                  context: context, club: widget.club, membersList: leaders);
+              if (ret != null) {
+                await ClubInteriorService.setLeader(
+                    widget.club.clubCode, _data.playerId, ret.playerUuid);
+              }
+            },
+            child: Padding(
+              padding: EdgeInsets.only(left: 5),
+              child: Row(children: [
+                Text(
+                  _data.leaderName ?? '',
+                  textAlign: TextAlign.center,
+                  style: AppDecorators.getHeadLine4Style(theme: theme),
+                ),
+                SizedBox(
+                  width: 10,
+                ),
+                Icon(Icons.search, color: theme.accentColor)
+              ]),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget detailTile(AppTheme theme) {
     //list view
     return Container(
@@ -750,5 +834,89 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
         ],
       ),
     );
+  }
+}
+
+class ChosenMember {
+  String playerName;
+  String playerUuid;
+}
+
+class ChooseMemberDialog {
+  static Future<ChosenMember> prompt({
+    @required BuildContext context,
+    @required ClubHomePageModel club,
+    @required List<ClubMemberModel> membersList,
+  }) async {
+    final ret = await showDialog<ChosenMember>(
+        barrierDismissible: true,
+        context: context,
+        builder: (_) {
+          AppTheme theme = AppTheme.getTheme(context);
+          return StatefulBuilder(builder: (context, setState) {
+            return AlertDialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                  side: BorderSide(
+                    color: theme.accentColor,
+                  ),
+                ),
+                backgroundColor: theme.fillInColor,
+                title: Center(
+                    child: SubTitleText(text: 'Choose Leader', theme: theme)),
+                content: Container(
+                  width: Screen.width - 30,
+                  height: Screen.height * 1 / 3,
+                  child: ListView.separated(
+                    physics: BouncingScrollPhysics(),
+                    itemCount: membersList.length,
+                    itemBuilder: (context, index) {
+                      return InkWell(
+                        onTap: () {
+                          // choose the member
+                          ChosenMember ret = ChosenMember();
+                          ret.playerName = membersList[index].name;
+                          ret.playerUuid = membersList[index].playerId;
+                          Navigator.of(context).pop(ret);
+                        },
+                        child: Container(
+                            margin: EdgeInsets.only(bottom: 8, top: 4),
+                            child: Row(
+                              children: [
+                                Container(
+                                  margin: EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                  ),
+                                  child: CircleAvatar(
+                                    radius: 20,
+                                    backgroundColor:
+                                        theme.supportingColor.withAlpha(100),
+                                    child: ClipOval(
+                                      child: membersList[index].imageUrl == null
+                                          ? Icon(AppIcons.user,
+                                              color: theme.fillInColor)
+                                          : Image.network(
+                                              membersList[index].imageUrl,
+                                            ),
+                                    ),
+                                  ),
+                                ),
+                                Text(
+                                  membersList[index].name,
+                                  textAlign: TextAlign.left,
+                                ),
+                              ],
+                            )),
+                      );
+                    },
+                    separatorBuilder: (context, index) {
+                      return Divider(thickness: 2);
+                    },
+                  ),
+                ));
+          });
+        });
+
+    return ret;
   }
 }
