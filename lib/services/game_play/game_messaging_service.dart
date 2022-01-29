@@ -5,6 +5,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart
 import 'package:pokerapp/models/rabbit_state.dart';
 import 'package:pokerapp/services/nats/message.dart';
 import 'package:pokerapp/services/nats/nats.dart';
+import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
 import 'dart:developer';
@@ -227,6 +228,7 @@ class GameMessagingService {
 
       messages.clear();
       messages.addAll(receivedMessages);
+      gameState.gameChatNotifState.notifyNewMessage();
     }
   }
 
