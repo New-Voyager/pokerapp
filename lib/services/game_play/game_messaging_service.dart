@@ -11,6 +11,17 @@ import 'dart:developer';
 import 'package:pokerapp/models/player_info.dart';
 
 const MAX_CHAT_BUFSIZE = 20;
+const kTestMessageType = 'TEST';
+const kTextMessageType = 'TEXT';
+const kRequestMessageMessageType = 'REQUEST_MESSAGE';
+const kReceivedMessageMessageType = 'RECEIVED_MESSAGE';
+const kAudioMessageType = 'AUDIO';
+const kGiphyMessageType = 'GIPHY';
+const kAnimationMessageType = 'ANIMATION';
+const kCardsMessageType = 'CARDS';
+const kRabbitMessageType = 'RABBIT';
+const kPlayerInfoMessageType = 'PLAYER_INFO';
+const kAudioConfMessageType = 'AUDIOCONF';
 
 // GameChat class wraps communication between NATS and games chat widget.
 class GameMessagingService {
@@ -96,9 +107,10 @@ class GameMessagingService {
 
   void handleMessage(Message natsMsg) {
     final ChatMessage message = ChatMessage.fromMessage(natsMsg.string);
+    if (message == null) return;
 
     // handle messages
-    if (message.type == 'TEXT' || message.type == 'GIPHY') {
+    if (message.type == kTextMessageType || message.type == kGiphyMessageType) {
       if (this.messages.length > MAX_CHAT_BUFSIZE) {
         this.messages.removeAt(0);
       }
@@ -112,14 +124,14 @@ class GameMessagingService {
         }
       }
 
-      if (message.type == 'TEXT') {
+      if (message.type == kTextMessageType) {
         if (this.onText != null) {
           this.messages.add(message);
           this.onText(message);
         }
       }
 
-      if (message.type == 'AUDIO') {
+      if (message.type == kAudioMessageType) {
         if (this.onAudio != null) {
           if (playedAudio.indexOf(message.messageId) == -1) {
             playedAudio.add(message.messageId);
@@ -131,40 +143,73 @@ class GameMessagingService {
         }
       }
 
-      if (message.type == 'GIPHY') {
+      if (message.type == kGiphyMessageType) {
         if (this.onGiphy != null) {
           this.messages.add(message);
           this.onGiphy(message);
         }
       }
 
-      if (message.type == 'ANIMATION') {
+      if (message.type == kAnimationMessageType) {
         if (this.onAnimation != null) {
           this.onAnimation(message);
         }
       }
 
-      if (message.type == 'CARDS') {
+      if (message.type == kCardsMessageType) {
         if (this.onCards != null) {
           this.onCards(message);
         }
       }
 
-      if (message.type == 'RABBIT') {
+      if (message.type == kRabbitMessageType) {
         if (this.onRabbitHunt != null) {
           this.onRabbitHunt(message);
         }
       }
 
       // audio conf message
-      if (message.type == 'AUDIOCONF' && this.onAudioConfMessage != null) {
+      if (message.type == kAudioConfMessageType &&
+          this.onAudioConfMessage != null) {
         this.onAudioConfMessage(message.data);
       }
 
       // audio conf message
-      if (message.type == 'PLAYER_INFO') {
+      if (message.type == kPlayerInfoMessageType) {
         this._onPlayerInfo(message.data);
       }
+
+      // req for message
+      if (message.type == kRequestMessageMessageType) {
+        _messageRequested();
+      }
+
+      if (message.type == kReceivedMessageMessageType) {
+        _requestedMessagesReceived(message);
+      }
+    }
+  }
+
+  void _messageRequested() {
+    /// I have no messages to share
+    if (messages.length == 0) return;
+
+    /// I have some messages, procced to share
+    List<String> rawMessages = messages.map((m) => m.toJson()).toList();
+
+    _sendChatMessages(rawMessages);
+  }
+
+  /// fills the `messages` array in this class with the new messages,
+  /// if the received message length is more
+  void _requestedMessagesReceived(ChatMessage chatMessage) {
+    if (chatMessage.messageCount > messages.length) {
+      List rawMessage = jsonDecode(chatMessage.data);
+      List<ChatMessage> receivedMessages =
+          rawMessage.map<ChatMessage>((d) => ChatMessage.fromJson(d)).toList();
+
+      messages.clear();
+      messages.addAll(receivedMessages);
     }
   }
 
@@ -185,6 +230,27 @@ class GameMessagingService {
         this.onPlayerInfo(playerInfo);
       }
     }
+  }
+
+  void _sendChatMessages(List<String> rawMessages) {
+    dynamic body = jsonEncode({
+      'id': uuid.v1(),
+      'type': kReceivedMessageMessageType,
+      'data': rawMessages,
+      'count': rawMessages.length,
+      'sent': DateTime.now().toUtc().toIso8601String(),
+    });
+
+    this.nats.clientPub.pubString(this.chatChannel, body);
+  }
+
+  void askForChatMessages() {
+    dynamic body = jsonEncode({
+      'id': uuid.v1(),
+      'type': kRequestMessageMessageType,
+      'sent': DateTime.now().toUtc().toIso8601String(),
+    });
+    this.nats.clientPub.pubString(this.chatChannel, body);
   }
 
   void sendMyInfo() {
@@ -214,7 +280,7 @@ class GameMessagingService {
       'playerID': this.currentPlayer.id,
       'name': this.currentPlayer.name,
       'text': text,
-      'type': 'TEXT',
+      'type': kTextMessageType,
       'sent': DateTime.now().toUtc().toIso8601String(),
     });
     this.nats.clientPub.pubString(this.chatChannel, body);
@@ -230,7 +296,7 @@ class GameMessagingService {
       'boardCards': rs.communityCards,
       'revealedCards': rs.revealedCards,
       'handNo': rs.handNo,
-      'type': 'RABBIT',
+      'type': kRabbitMessageType,
       'sent': DateTime.now().toUtc().toIso8601String(),
     });
     this.nats.clientPub.pubString(this.chatChannel, body);
@@ -243,7 +309,7 @@ class GameMessagingService {
       'name': this.currentPlayer.name,
       'audio': base64Encode(audio),
       'duration': duration,
-      'type': 'AUDIO',
+      'type': kAudioMessageType,
       'sent': DateTime.now().toUtc().toIso8601String(),
     });
     this.nats.clientPub.pubString(this.chatChannel, body);
@@ -255,7 +321,7 @@ class GameMessagingService {
       'playerID': this.currentPlayer.id,
       'name': this.currentPlayer.name,
       'link': giphyLink,
-      'type': 'GIPHY',
+      'type': kGiphyMessageType,
       'sent': DateTime.now().toUtc().toIso8601String(),
     });
     this.nats.clientPub.pubString(this.chatChannel, body);
@@ -268,7 +334,7 @@ class GameMessagingService {
       'name': this.currentPlayer.name,
       'to': toSeat,
       'animation': animation,
-      'type': 'ANIMATION',
+      'type': kAnimationMessageType,
       'sent': DateTime.now().toUtc().toIso8601String(),
     });
     this.nats.clientPub.pubString(this.chatChannel, body);
@@ -285,7 +351,7 @@ class GameMessagingService {
       'playerID': this.currentPlayer.id,
       'name': this.currentPlayer.name,
       'cards': cards,
-      'type': 'CARDS',
+      'type': kCardsMessageType,
       'sent': DateTime.now().toUtc().toIso8601String(),
       'text': currentHandNum,
     });
@@ -301,7 +367,7 @@ class GameMessagingService {
       'playerUuid': this.currentPlayer.uuid,
       'streamId': streamId,
       'method': 'PUBLISH',
-      'type': 'AUDIOCONF',
+      'type': kAudioConfMessageType,
       'sent': DateTime.now().toUtc().toIso8601String(),
     });
     this.nats.clientPub.pubString(this.chatChannel, body);
@@ -311,7 +377,7 @@ class GameMessagingService {
     dynamic body = jsonEncode({
       'id': uuid.v1(),
       'method': 'REQUEST',
-      'type': 'PLAYER_INFO',
+      'type': kPlayerInfoMessageType,
       'sent': DateTime.now().toUtc().toIso8601String(),
     });
     this.nats.clientPub.pubString(this.chatChannel, body);
@@ -321,7 +387,7 @@ class GameMessagingService {
     dynamic body = jsonEncode({
       'id': uuid.v1(),
       'method': 'REQUEST_STREAM_ID',
-      'type': 'AUDIOCONF',
+      'type': kAudioConfMessageType,
       'sent': DateTime.now().toUtc().toIso8601String(),
     });
     this.nats.clientPub.pubString(this.chatChannel, body);
@@ -347,11 +413,44 @@ class ChatMessage {
   List<int> cards;
   String fromName;
   String data;
+  int messageCount;
 
   int handNo;
   List<int> playerCards;
   List<int> boardCards;
   List<int> revealedCards;
+
+  ChatMessage();
+
+  factory ChatMessage.fromJson(String json) {
+    ChatMessage message = new ChatMessage();
+    final data = jsonDecode(json);
+
+    message.messageId = data['messageId'];
+    message.fromName = data['fromName'];
+    message.fromPlayer = data['fromPlayer'];
+    message.received = DateTime.parse(data['received']);
+    message.type = data['type'];
+    message.text = data['text'];
+    message.giphyLink = data['giphyLink'];
+
+    return message;
+  }
+
+  String toJson() {
+    final dataMap = {
+      'messageId': messageId,
+      'fromName': fromName,
+      'fromPlayer': fromPlayer,
+      'received': received.toIso8601String(),
+      'type': type,
+    };
+
+    if (text != null) dataMap['text'] = text;
+    if (giphyLink != null) dataMap['giphyLink'] = giphyLink;
+
+    return jsonEncode(dataMap);
+  }
 
   static ChatMessage fromMessage(String data) {
     List<int> _getCardsFrom(var cards) =>
@@ -362,7 +461,7 @@ class ChatMessage {
       String type = message['type'].toString();
 
       ChatMessage msg = new ChatMessage();
-      msg.type = 'TEST';
+      msg.type = kTestMessageType;
       msg.type = type;
       msg.data = data;
 
@@ -370,38 +469,39 @@ class ChatMessage {
         msg.fromName = message['name'].toString();
       }
 
-      if (msg.type == 'TEXT') {
+      if (msg.type == kTextMessageType) {
         msg.text = message['text'].toString();
-      } else if (msg.type == 'AUDIO') {
+      } else if (msg.type == kAudioMessageType) {
         if (message['audio'] != null) {
           msg.audio = base64Decode(message['audio'].toString());
           msg.duration = message['duration'] ?? 0;
         } else {
           return null;
         }
-      } else if (msg.type == 'GIPHY') {
+      } else if (msg.type == kGiphyMessageType) {
         msg.giphyLink = message['link'];
-      } else if (msg.type == 'ANIMATION') {
+      } else if (msg.type == kAnimationMessageType) {
         msg.animationID = message['animation'];
-      } else if (msg.type == 'CARDS') {
+      } else if (msg.type == kCardsMessageType) {
         // log('RevealCards: ${data}');
         msg.text = message['text'].toString();
         msg.seatNo = message['seatNo'] == null
             ? -1
             : int.parse(message['seatNo'].toString());
         msg.cards = _getCardsFrom(message['cards']);
-      } else if (msg.type == 'RABBIT') {
+      } else if (msg.type == kRabbitMessageType) {
         msg.playerCards = _getCardsFrom(message['playerCards']);
         msg.boardCards = _getCardsFrom(message['boardCards']);
         msg.revealedCards = _getCardsFrom(message['revealedCards']);
         msg.handNo = int.parse(message['handNo'].toString());
-      }
-
-      if (msg.type == 'ANIMATION') {
+      } else if (msg.type == kAnimationMessageType) {
         msg.fromSeat = int.parse(
             message['from'] == null ? '0' : message['from'].toString());
         msg.toSeat =
             int.parse(message['to'] == null ? '0' : message['to'].toString());
+      } else if (msg.type == kReceivedMessageMessageType) {
+        msg.data = jsonEncode(message['data']);
+        msg.messageCount = message['count'];
       } else {
         msg.fromPlayer = int.parse(
             message['playerID'] == null ? '0' : message['playerID'].toString());

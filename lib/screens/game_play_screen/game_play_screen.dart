@@ -289,6 +289,10 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         await _gameState.refreshPlayerSettings();
         await _gameState.refreshNotes();
       }
+
+      // ask for game messages
+      _gameComService.gameMessaging.askForChatMessages();
+
       log('initializing game state done');
     }
 
