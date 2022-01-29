@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
@@ -11,6 +12,7 @@ import 'dart:developer';
 import 'package:pokerapp/models/player_info.dart';
 
 const MAX_CHAT_BUFSIZE = 20;
+const kWaitBeforeStopMessageCollection = const Duration(seconds: 1);
 const kTestMessageType = 'TEST';
 const kTextMessageType = 'TEXT';
 const kRequestMessageMessageType = 'REQUEST_MESSAGE';
@@ -181,7 +183,7 @@ class GameMessagingService {
 
       // req for message
       if (message.type == kRequestMessageMessageType) {
-        _messageRequested();
+        _messageRequested(message);
       }
 
       if (message.type == kReceivedMessageMessageType) {
@@ -190,8 +192,23 @@ class GameMessagingService {
     }
   }
 
-  void _messageRequested() {
-    /// I have no messages to share
+  void _sendChatMessages(List<String> rawMessages) {
+    dynamic body = jsonEncode({
+      'id': uuid.v1(),
+      'type': kReceivedMessageMessageType,
+      'data': rawMessages,
+      'count': rawMessages.length,
+      'sent': DateTime.now().toUtc().toIso8601String(),
+    });
+
+    this.nats.clientPub.pubString(this.chatChannel, body);
+  }
+
+  void _messageRequested(ChatMessage message) {
+    /// If the message request is NOT from me, do not bother
+    if (message.fromPlayer != currentPlayer.id) return;
+
+    /// I have no messages to share - this should never happen
     if (messages.length == 0) return;
 
     /// I have some messages, procced to share
@@ -213,6 +230,63 @@ class GameMessagingService {
     }
   }
 
+  void _askForChatMessages(int fromPlayer) {
+    dynamic body = jsonEncode({
+      'id': uuid.v1(),
+      'playerID': fromPlayer,
+      'type': kRequestMessageMessageType,
+      'sent': DateTime.now().toUtc().toIso8601String(),
+    });
+    this.nats.clientPub.pubString(this.chatChannel, body);
+  }
+
+  /// playerId, noChatMessages Map
+  final Map<int, int> _playerWithMaxMessages = {};
+  bool _isCollecting = false;
+
+  /// this function waits for 1 second to collect all player's max message count
+  /// then proccesses it
+  void _handleCollection() async {
+    await Future.delayed(kWaitBeforeStopMessageCollection);
+
+    int playerId = -1;
+    int maxx = -1;
+
+    for (final d in _playerWithMaxMessages.entries) {
+      if (maxx < d.value) {
+        maxx = d.value;
+        playerId = d.key;
+      }
+    }
+
+    /// ofcourse, `playerId` should never be -1 here
+    if (playerId == -1) return;
+
+    _askForChatMessages(playerId);
+
+    _isCollecting = false;
+  }
+
+  void _handleChatMessagesRequest(String json) {
+    /// I have messages, I do not need to participant in message collection
+    if (messages.isNotEmpty) return;
+
+    final data = jsonDecode(json);
+    final int noChatMessages = data['noChatMessages'] as int;
+    final int playerId = data['playerID'] as int;
+
+    /// if the player has no chat messages, he can't help
+    /// `noChatMessages` referes to Number of Chat Messages, it's not a `boolean`
+    if (noChatMessages == 0) return;
+
+    _playerWithMaxMessages[playerId] = noChatMessages;
+
+    if (_isCollecting == false) {
+      _isCollecting = true;
+      _handleCollection();
+    }
+  }
+
   void close() {
     this.active = false;
   }
@@ -225,32 +299,11 @@ class GameMessagingService {
     } else if (json['method'] == 'PUBLISH') {
       // another player is publishing his/her information
       final playerInfo = GamePlayerInfo.fromJson(json);
-      log('AudioConf: Player: ${playerInfo.playerId} streamId: ${playerInfo.streamId}');
+      _handleChatMessagesRequest(message);
       if (this.onPlayerInfo != null) {
         this.onPlayerInfo(playerInfo);
       }
     }
-  }
-
-  void _sendChatMessages(List<String> rawMessages) {
-    dynamic body = jsonEncode({
-      'id': uuid.v1(),
-      'type': kReceivedMessageMessageType,
-      'data': rawMessages,
-      'count': rawMessages.length,
-      'sent': DateTime.now().toUtc().toIso8601String(),
-    });
-
-    this.nats.clientPub.pubString(this.chatChannel, body);
-  }
-
-  void askForChatMessages() {
-    dynamic body = jsonEncode({
-      'id': uuid.v1(),
-      'type': kRequestMessageMessageType,
-      'sent': DateTime.now().toUtc().toIso8601String(),
-    });
-    this.nats.clientPub.pubString(this.chatChannel, body);
   }
 
   void sendMyInfo() {
@@ -263,12 +316,13 @@ class GameMessagingService {
         'id': uuid.v1(),
         'playerID': this.currentPlayer.id,
         'name': this.currentPlayer.name,
-        'type': 'PLAYER_INFO',
+        'type': kPlayerInfoMessageType,
         'method': 'PUBLISH',
         'streamId': playerInfo.streamId ?? '',
         'namePlateId': playerInfo.namePlateId,
         'muted': this.gameState.playerLocalConfig.mute,
         'sent': DateTime.now().toUtc().toIso8601String(),
+        'noChatMessages': messages.length,
       });
       this.nats.clientPub.pubString(this.chatChannel, body);
     }
@@ -359,19 +413,19 @@ class GameMessagingService {
     this.nats.clientPub.pubString(this.chatChannel, body);
   }
 
-  void sendAudioConfResponse(String streamId) {
-    dynamic body = jsonEncode({
-      'id': uuid.v1(),
-      'playerID': this.currentPlayer.id,
-      'name': this.currentPlayer.name,
-      'playerUuid': this.currentPlayer.uuid,
-      'streamId': streamId,
-      'method': 'PUBLISH',
-      'type': kAudioConfMessageType,
-      'sent': DateTime.now().toUtc().toIso8601String(),
-    });
-    this.nats.clientPub.pubString(this.chatChannel, body);
-  }
+  // void sendAudioConfResponse(String streamId) {
+  //   dynamic body = jsonEncode({
+  //     'id': uuid.v1(),
+  //     'playerID': this.currentPlayer.id,
+  //     'name': this.currentPlayer.name,
+  //     'playerUuid': this.currentPlayer.uuid,
+  //     'streamId': streamId,
+  //     'method': 'PUBLISH',
+  //     'type': kAudioConfMessageType,
+  //     'sent': DateTime.now().toUtc().toIso8601String(),
+  //   });
+  //   this.nats.clientPub.pubString(this.chatChannel, body);
+  // }
 
   void requestPlayerInfo() {
     dynamic body = jsonEncode({
@@ -383,15 +437,15 @@ class GameMessagingService {
     this.nats.clientPub.pubString(this.chatChannel, body);
   }
 
-  void sendAudioConfRequest() {
-    dynamic body = jsonEncode({
-      'id': uuid.v1(),
-      'method': 'REQUEST_STREAM_ID',
-      'type': kAudioConfMessageType,
-      'sent': DateTime.now().toUtc().toIso8601String(),
-    });
-    this.nats.clientPub.pubString(this.chatChannel, body);
-  }
+  // void sendAudioConfRequest() {
+  //   dynamic body = jsonEncode({
+  //     'id': uuid.v1(),
+  //     'method': 'REQUEST_STREAM_ID',
+  //     'type': kAudioConfMessageType,
+  //     'sent': DateTime.now().toUtc().toIso8601String(),
+  //   });
+  //   this.nats.clientPub.pubString(this.chatChannel, body);
+  // }
 }
 
 class ChatMessage {

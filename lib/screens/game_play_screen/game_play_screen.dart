@@ -291,7 +291,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       }
 
       // ask for game messages
-      _gameComService.gameMessaging.askForChatMessages();
+      // tdo: reqplayerinfo
+      // _gameComService.gameMessaging.askForChatMessages();
+      _gameComService.gameMessaging.requestPlayerInfo();
 
       log('initializing game state done');
     }
@@ -329,7 +331,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         if (_gameInfoModel.playersInSeats[i].playerUuid ==
             _currentPlayer.uuid) {
           // send my information
-          _gameState.gameMessageService.requestPlayerInfo();
+          // _gameState.gameMessageService.requestPlayerInfo();
 
           // this.initPlayingTimer();
           // player is in the table
@@ -386,7 +388,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
             _currentPlayer.uuid) {
           // send my information
           //_gameState.gameMessageService.sendMyInfo();
-          _gameState.gameMessageService.requestPlayerInfo();
+          // _gameState.gameMessageService.requestPlayerInfo();
           // request other player info
           // player is in the table
           joinAudioConference();
@@ -698,8 +700,8 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         );
 
         // player joined the game (send player info)
-        _gameState.gameMessageService.sendMyInfo();
-        _gameState.gameMessageService.requestPlayerInfo();
+        // _gameState.gameMessageService.sendMyInfo();
+        // _gameState.gameMessageService.requestPlayerInfo();
 
         if (_gameState.gameInfo.gpsCheck || _gameState.gameInfo.ipCheck) {
           _locationUpdates = locationUpdates;
@@ -1316,7 +1318,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
             // ui is still running
             // send stream id
             log('AudioConf: 1 Requesting information about the other players');
-            _gameState.gameMessageService.requestPlayerInfo();
+            // _gameState.gameMessageService.requestPlayerInfo();
             notification.dismiss();
             notification = Alerts.showNotification(
                 titleText: _appScreenText['audioTitle'],
