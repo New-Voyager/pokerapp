@@ -12,6 +12,7 @@ import 'package:pokerapp/screens/club_screen/high_hand_analysis_screen/dialogs/r
 import 'package:pokerapp/screens/game_screens/highhand_log/grouped_list_view.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/hand_service.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/widgets/button_widget.dart';
 import 'package:pokerapp/widgets/buttons.dart';
@@ -19,6 +20,7 @@ import 'package:pokerapp/widgets/child_widgets.dart';
 import 'package:pokerapp/widgets/radio_list_widget.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:jiffy/src/enums/units.dart';
+import 'package:pokerapp/widgets/texts.dart';
 import 'package:provider/provider.dart';
 
 class HighHandAnalysisScreen extends StatefulWidget {
@@ -29,7 +31,8 @@ class HighHandAnalysisScreen extends StatefulWidget {
   State<HighHandAnalysisScreen> createState() => _HighHandAnalysisScreenState();
 }
 
-class _HighHandAnalysisScreenState extends State<HighHandAnalysisScreen> {
+class _HighHandAnalysisScreenState extends State<HighHandAnalysisScreen>
+    with SingleTickerProviderStateMixin {
   final ValueNotifier<List<int>> _selectedCards = ValueNotifier<List<int>>([]);
   bool searching = false;
   List<HighHandWinner> result = [];
@@ -48,6 +51,9 @@ class _HighHandAnalysisScreenState extends State<HighHandAnalysisScreen> {
   );
   DateTime _toDate = DateTime.now();
   DateTimeRange _dateTimeRange;
+  AnimationController filterExpandController;
+  Animation<double> filterExpandAnimation;
+  bool isFilterExpanded = true;
 
   @override
   void dispose() {
@@ -91,6 +97,18 @@ class _HighHandAnalysisScreenState extends State<HighHandAnalysisScreen> {
     selectedGames.addAll(gameTypes);
     // loading = true;
     // fetchData();
+
+    initAnimations();
+  }
+
+  void initAnimations() {
+    filterExpandController =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 500));
+    filterExpandAnimation = CurvedAnimation(
+      parent: filterExpandController,
+      curve: Curves.fastOutSlowIn,
+    );
+    filterExpandController.forward();
   }
 
   void fetchData() async {
@@ -163,6 +181,8 @@ class _HighHandAnalysisScreenState extends State<HighHandAnalysisScreen> {
       // }).toList();
 
       result = highHandWinners;
+      isFilterExpanded = false;
+      filterExpandController.reverse();
     } catch (err) {
       log('error: ${err.toString()}, ${err.stackTrace}');
     }
@@ -231,13 +251,38 @@ class _HighHandAnalysisScreenState extends State<HighHandAnalysisScreen> {
           child: ListView(
             //     // crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              ...rankSelectionWidget(theme),
-              ...dateSelectionFilter(theme),
-              ...groupFilter(theme),
-              Center(child: AppLabel('Game Types', theme)),
-              GameTypeSelection(this.selectedGames),
-              SizedBox(height: 20),
-              Center(child: searchButton(theme)),
+              SizedBox(height: 8),
+              SizeTransition(
+                axisAlignment: 1.0,
+                sizeFactor: filterExpandAnimation,
+                child: filterWidget(theme),
+              ),
+              SizedBox(height: 8),
+              Stack(
+                children: [
+                  Center(child: searchButton(theme)),
+                  (!isFilterExpanded)
+                      ? Positioned(
+                          right: 8,
+                          top: 4,
+                          child: IconButton(
+                            constraints: BoxConstraints(),
+                            padding: EdgeInsets.all(0),
+                            onPressed: () {
+                              setState(() {
+                                isFilterExpanded = true;
+                              });
+                              filterExpandController.forward();
+                            },
+                            icon: Icon(
+                              Icons.filter_alt_outlined,
+                              color: theme.accentColor,
+                            ),
+                          ),
+                        )
+                      : SizedBox.shrink(),
+                ],
+              ),
               SizedBox(height: 20),
               Divider(height: 3, thickness: 3, color: theme.accentColor),
               SizedBox(height: 10),
@@ -249,26 +294,50 @@ class _HighHandAnalysisScreenState extends State<HighHandAnalysisScreen> {
     );
   }
 
+  Widget filterWidget(theme) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Column(children: [
+        ...rankSelectionWidget(theme),
+        SizedBox(
+          height: 16.pw,
+        ),
+        ...dateSelectionFilter(theme),
+        SizedBox(
+          height: 16.pw,
+        ),
+        ...groupFilter(theme),
+        ...gameTypesSelectionWidget(theme),
+      ]),
+    );
+  }
+
   List<Widget> rankSelectionWidget(AppTheme theme) {
     return [
-      Center(child: AppLabel('Minimum Rank', theme)),
-      SizedBox(
-        height: 8,
-      ),
-      Center(
-          child: RadioListWidget<String>(
-              defaultValue: 'Full House',
-              values: ['Full House', 'Four Of Kind', 'Straight Flush'],
-              onSelect: (String value) {
-                if (value == 'Full House') {
-                  minRank = 322;
-                } else if (value == 'Four Of Kind') {
-                  minRank = 166;
-                } else if (value == 'Straight Flush') {
-                  minRank = 10;
-                }
-                log('value: ${value}');
-              })),
+      Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Expanded(
+            flex: 3, child: LabelText(label: 'Minimum Rank', theme: theme)),
+        SizedBox(
+          width: 8.pw,
+        ),
+        Expanded(
+          flex: 7,
+          child: RadioToggleButtonsWidget<String>(
+            defaultValue: 0,
+            values: ['Full House', 'Four Of Kind', 'Straight Flush'],
+            onSelect: (int value) {
+              if (value == 0) {
+                minRank = 322;
+              } else if (value == 1) {
+                minRank = 166;
+              } else if (value == 2) {
+                minRank = 10;
+              }
+              log('value: ${value}');
+            },
+          ),
+        ),
+      ]),
     ];
   }
 
@@ -278,72 +347,104 @@ class _HighHandAnalysisScreenState extends State<HighHandAnalysisScreen> {
     String endDateStr = DateFormat('dd MMM').format(date);
 
     return [
-      Center(child: AppLabel('Date Range', theme)),
-      SizedBox(
-        height: 8,
-      ),
-      Center(
-          child: RadioListWidget<String>(
-              defaultValue: 'Today',
-              values: [
-                'Today',
-                'Yesterday',
-                'This Week',
-                'Custom',
-                // 'Last Week',
-                // 'Last Month'
-              ],
-              onSelect: (String value) async {
-                final now = DateTime.now();
-                if (value == 'Today') {
-                  startDate = DateTime(now.year, now.month, now.day, 0, 0, 0);
-                  endDate = startDate.add(Duration(days: 1));
-                  setState(() {});
-                } else if (value == 'Yesterday') {
-                  startDate = now.subtract(Duration(days: 1));
-                  startDate = DateTime(
-                      startDate.year, startDate.month, startDate.day, 0, 0, 0);
-                  endDate = startDate.add(Duration(days: 1));
-                  setState(() {});
-                } else if (value == 'This Week') {
-                  startDate = now.subtract(Duration(days: now.weekday));
-                  startDate = DateTime(
-                      startDate.year, startDate.month, startDate.day, 0, 0, 0);
-                  endDate = startDate.add(Duration(days: 7));
-                  setState(() {});
-                } else if (value == 'Last Week') {
-                  endDate = DateTime(now.year, now.month, now.day, 0, 0, 0);
-                  endDate = endDate.subtract(Duration(days: endDate.weekday));
-                  startDate = DateTime.parse(Jiffy(endDate.toIso8601String())
-                      .subtract(weeks: 1)
-                      .format('yyyy-MM-dd'));
-                  setState(() {});
-                } else if (value == 'This Month') {
-                  startDate = DateTime(now.year, now.month, 1, 0, 0, 0);
-                  endDate = DateTime.parse(Jiffy()
-                      .startOf(Units.MONTH)
-                      .add(months: 1)
-                      .format('yyyy-MM-dd'));
-                  setState(() {});
-                } else if (value == 'Last Month') {
-                  endDate = DateTime(now.year, now.month, 1, 0, 0, 0);
-                  startDate = DateTime.parse(Jiffy(startDate.toIso8601String())
-                      .subtract(months: 1)
-                      .format('yyyy-MM-dd'));
-                  setState(() {});
-                } else if (value == 'Custom') {
-                  await _handleDateRangePicker(context, theme);
-                  startDate = _dateTimeRange.start;
-                  endDate = _dateTimeRange.end.add(Duration(days: 1));
-                  setState(() {});
-                }
+      Column(
+        children: [
+          Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Expanded(
+                flex: 3, child: LabelText(label: 'Date Range', theme: theme)),
+            SizedBox(
+              width: 8.pw,
+            ),
+            Expanded(
+              flex: 7,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  RadioToggleButtonsWidget<String>(
+                    defaultValue: 0,
+                    values: [
+                      'Today',
+                      'Yesterday',
+                      'This Week',
+                      'Custom',
+                      // 'Last Week',
+                      // 'Last Month'
+                    ],
+                    onSelect: (int value) async {
+                      final now = DateTime.now();
+                      if (value == 0) {
+                        startDate =
+                            DateTime(now.year, now.month, now.day, 0, 0, 0);
+                        endDate = startDate.add(Duration(days: 1));
+                        setState(() {});
+                      } else if (value == 1) {
+                        startDate = now.subtract(Duration(days: 1));
+                        startDate = DateTime(startDate.year, startDate.month,
+                            startDate.day, 0, 0, 0);
+                        endDate = startDate.add(Duration(days: 1));
+                        setState(() {});
+                      } else if (value == 2) {
+                        startDate = now.subtract(Duration(days: now.weekday));
+                        startDate = DateTime(startDate.year, startDate.month,
+                            startDate.day, 0, 0, 0);
+                        endDate = startDate.add(Duration(days: 7));
+                        setState(() {});
+                      } else if (value == 'Last Week') {
+                        endDate =
+                            DateTime(now.year, now.month, now.day, 0, 0, 0);
+                        endDate =
+                            endDate.subtract(Duration(days: endDate.weekday));
+                        startDate = DateTime.parse(
+                            Jiffy(endDate.toIso8601String())
+                                .subtract(weeks: 1)
+                                .format('yyyy-MM-dd'));
+                        setState(() {});
+                      } else if (value == 'This Month') {
+                        startDate = DateTime(now.year, now.month, 1, 0, 0, 0);
+                        endDate = DateTime.parse(Jiffy()
+                            .startOf(Units.MONTH)
+                            .add(months: 1)
+                            .format('yyyy-MM-dd'));
+                        setState(() {});
+                      } else if (value == 'Last Month') {
+                        endDate = DateTime(now.year, now.month, 1, 0, 0, 0);
+                        startDate = DateTime.parse(
+                            Jiffy(startDate.toIso8601String())
+                                .subtract(months: 1)
+                                .format('yyyy-MM-dd'));
+                        setState(() {});
+                      } else if (value == 3) {
+                        await _handleDateRangePicker(context, theme);
+                        startDate = _dateTimeRange.start;
+                        endDate = _dateTimeRange.end.add(Duration(days: 1));
+                        setState(() {});
+                      }
 
-                log('Start Date: ${startDate.toIso8601String()}  End Date: ${endDate.toIso8601String()}');
-              })),
-      Column(children: [
-        Center(child: Text('Selected Dates')),
-        Center(child: Text('${startDateStr} - ${endDateStr}')),
-      ]),
+                      log('Start Date: ${startDate.toIso8601String()}  End Date: ${endDate.toIso8601String()}');
+                    },
+                  ),
+                  SizedBox(
+                    height: 8.ph,
+                  ),
+                ],
+              ),
+            ),
+          ]),
+          Row(crossAxisAlignment: CrossAxisAlignment.start,
+              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Center(child: Text('Selected Dates')),
+                SizedBox(
+                  width: 8.pw,
+                ),
+                Expanded(
+                  child: Text((startDateStr != endDateStr)
+                      ? '${startDateStr} - ${endDateStr}'
+                      : '$startDateStr'),
+                ),
+              ]),
+        ],
+      ),
     ];
   }
 
@@ -373,26 +474,48 @@ class _HighHandAnalysisScreenState extends State<HighHandAnalysisScreen> {
 
   List<Widget> groupFilter(AppTheme theme) {
     return [
-      Center(child: AppLabel('Group', theme)),
-      SizedBox(
-        height: 8,
+      Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Expanded(flex: 3, child: LabelText(label: 'Group', theme: theme)),
+        SizedBox(
+          width: 8.pw,
+        ),
+        Expanded(
+          flex: 7,
+          child: RadioToggleButtonsWidget<String>(
+            defaultValue: 0,
+            values: [
+              // '30 mins',
+              'Hourly',
+              'Daily',
+            ],
+            onSelect: (int value) {
+              log('value: ${value}');
+              if (value == 0) {
+                groupType = HHGroupType.HOURLY;
+              } else if (value == 1) {
+                groupType = HHGroupType.DAILY;
+              }
+            },
+          ),
+        ),
+      ]),
+    ];
+  }
+
+  List<Widget> gameTypesSelectionWidget(theme) {
+    return [
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+              flex: 3,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 15.0),
+                child: LabelText(label: 'Game Types', theme: theme),
+              )),
+          Expanded(flex: 7, child: GameTypeSelection(this.selectedGames)),
+        ],
       ),
-      Center(
-          child: RadioListWidget<String>(
-              defaultValue: 'Hourly',
-              values: [
-                // '30 mins',
-                'Hourly',
-                'Daily',
-              ],
-              onSelect: (String value) {
-                log('value: ${value}');
-                if (value == 'Hourly') {
-                  groupType = HHGroupType.HOURLY;
-                } else if (value == 'Daily') {
-                  groupType = HHGroupType.DAILY;
-                }
-              })),
     ];
   }
 
