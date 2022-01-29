@@ -494,14 +494,16 @@ class ChatMessage {
         msg.boardCards = _getCardsFrom(message['boardCards']);
         msg.revealedCards = _getCardsFrom(message['revealedCards']);
         msg.handNo = int.parse(message['handNo'].toString());
-      } else if (msg.type == kAnimationMessageType) {
+      } else if (msg.type == kReceivedMessageMessageType) {
+        msg.data = jsonEncode(message['data']);
+        msg.messageCount = message['count'];
+      }
+
+      if (msg.type == kAnimationMessageType) {
         msg.fromSeat = int.parse(
             message['from'] == null ? '0' : message['from'].toString());
         msg.toSeat =
             int.parse(message['to'] == null ? '0' : message['to'].toString());
-      } else if (msg.type == kReceivedMessageMessageType) {
-        msg.data = jsonEncode(message['data']);
-        msg.messageCount = message['count'];
       } else {
         msg.fromPlayer = int.parse(
             message['playerID'] == null ? '0' : message['playerID'].toString());
