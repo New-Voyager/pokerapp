@@ -54,6 +54,9 @@ class _HighHandAnalysisScreenState extends State<HighHandAnalysisScreen>
   AnimationController filterExpandController;
   Animation<double> filterExpandAnimation;
   bool isFilterExpanded = true;
+  int _selectedMinimumRankIndex = 0;
+  int _selectedGroupIndex = 0;
+  int _selectedDateRangeIndex = 0;
 
   @override
   void dispose() {
@@ -323,9 +326,10 @@ class _HighHandAnalysisScreenState extends State<HighHandAnalysisScreen>
         Expanded(
           flex: 7,
           child: RadioToggleButtonsWidget<String>(
-            defaultValue: 0,
+            defaultValue: _selectedMinimumRankIndex,
             values: ['Full House', 'Four Of Kind', 'Straight Flush'],
             onSelect: (int value) {
+              _selectedMinimumRankIndex = value;
               if (value == 0) {
                 minRank = 322;
               } else if (value == 1) {
@@ -361,7 +365,7 @@ class _HighHandAnalysisScreenState extends State<HighHandAnalysisScreen>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   RadioToggleButtonsWidget<String>(
-                    defaultValue: 0,
+                    defaultValue: _selectedDateRangeIndex,
                     values: [
                       'Today',
                       'Yesterday',
@@ -372,6 +376,7 @@ class _HighHandAnalysisScreenState extends State<HighHandAnalysisScreen>
                     ],
                     onSelect: (int value) async {
                       final now = DateTime.now();
+                      _selectedDateRangeIndex = value;
                       if (value == 0) {
                         startDate =
                             DateTime(now.year, now.month, now.day, 0, 0, 0);
@@ -482,7 +487,7 @@ class _HighHandAnalysisScreenState extends State<HighHandAnalysisScreen>
         Expanded(
           flex: 7,
           child: RadioToggleButtonsWidget<String>(
-            defaultValue: 0,
+            defaultValue: _selectedGroupIndex,
             values: [
               // '30 mins',
               'Hourly',
@@ -490,6 +495,7 @@ class _HighHandAnalysisScreenState extends State<HighHandAnalysisScreen>
             ],
             onSelect: (int value) {
               log('value: ${value}');
+              _selectedGroupIndex = value;
               if (value == 0) {
                 groupType = HHGroupType.HOURLY;
               } else if (value == 1) {
