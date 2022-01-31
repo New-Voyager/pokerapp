@@ -34,14 +34,18 @@ class PlayerHoleCardView extends StatelessWidget {
       cardAsset,
       /* visible marker */
       Positioned(
-        top: 50,
-        left: 5,
+        top: marked ? 50 : 55,
+        left: marked ? 5 : 10,
         child: marked
             ? Icon(
                 Icons.visibility,
                 color: Colors.green,
               )
-            : const SizedBox.shrink(),
+            : Icon(
+                Icons.visibility,
+                color: Colors.grey,
+                size: 14,
+              ),
       ),
 
       /* tap widget */
