@@ -12,6 +12,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/host_seat_chang
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/board_view/lottie_animation.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/player_chat_bubble.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/name_plate_view.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/player_view.dart';
@@ -21,12 +22,7 @@ import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:provider/provider.dart';
 
-const double _lottieAnimationContainerSize = 120.0;
-const double _animatingAssetContainerSize = 40.0;
-
 // const Duration _durationWaitBeforeExplosion = const Duration(milliseconds: 10);
-const Duration _lottieAnimationDuration = const Duration(milliseconds: 5000);
-const Duration _animatingWidgetDuration = const Duration(milliseconds: 500);
 
 // PlayersOnTableView encapsulates the players sitting on the table.
 // This view uses Stack layout to place the UserView on top of the table.
@@ -70,11 +66,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
   double offset = 0;
 
   // sender to receiver
-  bool isAnimating = false;
   bool isSeatChanging = false;
-  AnimationController _lottieController;
-  bool isLottieAnimationAnimating = false;
-  Offset lottieAnimationPosition;
   int index;
 
   Offset seatChangeFrom, seatChangeTo;
@@ -84,12 +76,12 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
 
   String animationAssetID;
   List<PlayerChatBubble> chatBubbles = [];
+  List<LottieAnimation> animations = [];
 
   @override
   void initState() {
     // todo: commented onAnimation
     widget.gameComService?.gameMessaging?.listen(onAnimation: this.onAnimation);
-    animationHandlers();
     _seatChangeAnimationHandler();
 
     widget.gameState.gameChatBubbleNotifyState.addListener(() {
@@ -177,107 +169,22 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
 
   @override
   void dispose() {
-    _lottieController?.dispose();
-    animationController?.dispose();
     seatChangeAnimationController?.dispose();
     super.dispose();
   }
 
-  animationHandlers() {
-    _lottieController = AnimationController(
-      vsync: this,
-      duration: _lottieAnimationDuration,
-    );
-
-    animationController = AnimationController(
-      vsync: this,
-      duration: _animatingWidgetDuration,
-    );
-
-    _lottieController.addListener(() {
-      /* after the lottie animation is completed reset everything */
-      if (_lottieController.isCompleted) {
-        setState(() {
-          isLottieAnimationAnimating = false;
-        });
-
-        _lottieController.reset();
-      }
-    });
-
-    animationController.addListener(() async {
-      if (animationController.isCompleted) {
-        /* wait before the explosion */
-        // await Future.delayed(_durationWaitBeforeExplosion);
-
-        isAnimating = false;
-        animationController.reset();
-
-        /* finally drive the lottie animation */
-        // play the audio
-        AudioService.playAnimationSound(animationAssetID);
-
-        setState(() {
-          isLottieAnimationAnimating = true;
-        });
-        _lottieController.forward();
-      }
-    });
+  void onAnimationComplete(int index) {
+    animations.removeAt(index);
   }
 
   void onAnimation(ChatMessage message) async {
-    Offset from;
-    Offset to;
-
-    if (message.fromSeat == null || message.toSeat == null) {
-      return;
-    }
-
-    if (!widget.gameState.playerLocalConfig.animations) {
-      // animation is disabled
-      return;
-    }
-    /*
-    * find position of to and from user
-    **/
-    final positions = findPositionOfFromAndToUser(
-      fromSeat: message.fromSeat,
-      toSeat: message.toSeat,
-    );
-
-    final Size playerWidgetSize = getPlayerWidgetSize(message.toSeat);
-
-    from = positions[0];
-    to = positions[1];
-
-    /* get the middle point for the animated to player */
-    final Offset toMod = Offset(
-      to.dx + (playerWidgetSize.width / 2) - _animatingAssetContainerSize / 2,
-      to.dy + (playerWidgetSize.height / 2) - _animatingAssetContainerSize / 2,
-    );
-
-    animation = Tween<Offset>(
-      begin: from,
-      end: toMod,
-    ).animate(
-      CurvedAnimation(
-        parent: animationController,
-        curve: Curves.easeOut,
-      ),
-    );
-
-    // set the lottie animation position
-    lottieAnimationPosition = Offset(
-      to.dx + (playerWidgetSize.width / 2) - _lottieAnimationContainerSize / 2,
-      to.dy + (playerWidgetSize.height / 2) - _lottieAnimationContainerSize / 2,
-    );
-
-    setState(() {
-      animationAssetID = message.animationID;
-      isAnimating = true;
-    });
-
-    animationController.forward();
+    LottieAnimation lottieAnimation = LottieAnimation(
+        parentKey: _parentKey,
+        gameState: widget.gameState,
+        message: message,
+        onComplete: onAnimationComplete);
+    animations.add(lottieAnimation);
+    setState(() {});
   }
 
   Offset getPositionOffsetFromKey(GlobalKey key) {
@@ -355,39 +262,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
 
             ...getPlayers(context),
 
-            isAnimating && animation != null
-                ? AnimatedBuilder(
-                    child: Container(
-                      height: _animatingAssetContainerSize,
-                      width: _animatingAssetContainerSize,
-                      child: SvgPicture.asset(
-                        'assets/animations/$animationAssetID.svg',
-                      ),
-                    ),
-                    animation: animation,
-                    builder: (_, child) => Transform.translate(
-                      offset: animation.value,
-                      child: Transform.scale(
-                          scale: boardAttributes.lottieScale, child: child),
-                    ),
-                  )
-                : SizedBox.shrink(),
-
-            isLottieAnimationAnimating
-                ? Transform.translate(
-                    offset: lottieAnimationPosition,
-                    child: Container(
-                      height: _lottieAnimationContainerSize,
-                      width: _lottieAnimationContainerSize,
-                      child: Transform.scale(
-                          scale: boardAttributes.lottieScale,
-                          child: Lottie.asset(
-                            'assets/animations/$animationAssetID.json',
-                            controller: _lottieController,
-                          )),
-                    ),
-                  )
-                : SizedBox.shrink(),
+            ...animations,
 
             isSeatChanging
                 ? Positioned(
