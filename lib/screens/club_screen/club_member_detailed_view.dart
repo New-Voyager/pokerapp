@@ -686,6 +686,19 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
     );
   }
 
+  DateTime findFirstDateOfTheWeek(DateTime dateTime) {
+    return dateTime.subtract(Duration(days: dateTime.weekday - 1));
+  }
+
+  /// Find last date of the week which contains provided date.
+  DateTime findLastDateOfTheWeek(DateTime dateTime) {
+    DateTime ret =
+        dateTime.add(Duration(days: DateTime.daysPerWeek - dateTime.weekday));
+
+    ret = DateTime(ret.year, ret.month, ret.day, 23, 59, 59);
+    return ret;
+  }
+
   Widget myNetwork(AppTheme theme) {
     if (!_data.isAgent) {
       return Container();
@@ -694,39 +707,22 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
       children: [
         Expanded(
           flex: 6,
-          child: Padding(
-            padding: EdgeInsets.only(left: 5),
-            child: Text(
-              'Assigned Players',
-              textAlign: TextAlign.left,
-              style: AppDecorators.getHeadLine4Style(theme: theme),
-            ),
-          ),
-        ),
-        Expanded(
-          flex: 4,
-          child: InkWell(
-            onTap: () async {
-              List<ClubMemberModel> myMembers = [];
-              for (final member in widget.allMembers) {
-                if (member.agentUuid == _data.playerId) {
-                  myMembers.add(member);
-                }
-              }
-              // assign another player
-              final ret = await ChooseMemberDialog.prompt(
-                  context: context,
-                  club: widget.club,
-                  membersList: myMembers,
-                  title: 'Network');
-              if (ret != null) {}
-            },
-            child: Padding(
-              padding: EdgeInsets.only(left: 5),
-              child:
-                  Row(children: [Icon(Icons.search, color: theme.accentColor)]),
-            ),
-          ),
+          child: RoundRectButton(
+              onTap: () async {
+                log('Query activities');
+                String agentId = _data.playerId;
+                DateTime now = DateTime.now();
+                DateTime nowAdjust = DateTime(now.year, now.month, now.day);
+                DateTime start = findFirstDateOfTheWeek(nowAdjust).toUtc();
+                DateTime end = findLastDateOfTheWeek(nowAdjust).toUtc();
+
+                final memberActivities =
+                    await ClubInteriorService.getAgentPlayerActivities(
+                        clubCode, agentId, start, end);
+                log('Query activities successful');
+              },
+              text: 'Query This Week',
+              theme: theme),
         ),
       ],
     );

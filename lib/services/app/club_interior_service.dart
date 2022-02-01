@@ -165,7 +165,6 @@ class ClubInteriorService {
             playerId
             playerUuid
             tipsBack
-            tipsBack
             tips
             availableCredit
             lastPlayedDate
@@ -175,6 +174,23 @@ class ClubInteriorService {
           }
         }
     """;
+
+  static String agentPlayersFilterQuery = """
+      query activities(\$clubCode: String! \$agentId: String! \$from: DateTime! \$end: DateTime!) {
+        activities: agentPlayersActivity(clubCode: \$clubCode, agentId: \$agentId, startDate:\$from, endDate: \$end) {
+          playerId
+          playerName
+          playerUuid
+          tips
+          profit
+          buyIn
+          lastPlayedDate
+          availableCredit
+          gamesPlayed
+          handsPlayed
+        }
+      }
+  """;
   static Future<List<ClubMemberModel>> getMembers(String clubCode) async {
     return getClubMembers(clubCode, MemberListOptions.ALL);
   }
@@ -463,6 +479,29 @@ class ClubInteriorService {
     if (result.hasException) return [];
 
     final jsonResponse = result.data['clubMembers'];
+
+    final members = jsonResponse
+        .map<MemberActivity>((var item) => MemberActivity.fromJson(item))
+        .toList();
+    return members;
+  }
+
+  static Future<List<MemberActivity>> getAgentPlayerActivities(
+      String clubCode, String agentId, DateTime start, DateTime end) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    Map<String, dynamic> variables = {
+      "clubCode": clubCode,
+      "agentId": agentId,
+      "from": start.toIso8601String(),
+      "end": end.toIso8601String(),
+    };
+
+    QueryResult result = await _client.query(QueryOptions(
+        document: gql(agentPlayersFilterQuery), variables: variables));
+
+    if (result.hasException) return [];
+
+    final jsonResponse = result.data['activities'];
 
     final members = jsonResponse
         .map<MemberActivity>((var item) => MemberActivity.fromJson(item))
