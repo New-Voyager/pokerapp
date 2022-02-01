@@ -25,7 +25,6 @@ class ClubInteriorService {
           isOwner
           isManager
           isMainOwner
-          isLeader
           joinedDate
           lastPlayedDate
           totalBuyins
@@ -37,8 +36,6 @@ class ClubInteriorService {
           totalGames
           availableCredit
           tipsBack
-          leaderName
-          leaderUuid
         }
       }""";
 
