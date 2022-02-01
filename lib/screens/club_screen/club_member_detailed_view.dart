@@ -48,7 +48,7 @@ class ClubMembersDetailsView extends StatefulWidget {
 }
 
 class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
-    with RouteAwareAnalytics {
+    with RouteAwareAnalytics, SingleTickerProviderStateMixin {
   @override
   String get routeName => Routes.club_member_detail_view;
   bool loadingDone = false;
@@ -64,6 +64,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
   TextEditingController _notesEditingController;
   bool updated = false;
   bool closed = false;
+  TabController _tabController;
   _ClubMembersDetailsView(this.clubCode, this.playerId, this.isClubOwner);
 
   AppTextScreen _appScreenText;
@@ -107,6 +108,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
   void initState() {
     super.initState();
     _appScreenText = getAppTextScreen("clubMembersDetailsView");
+    _tabController = TabController(length: 2, vsync: this);
 
     _fetchData();
   }
@@ -282,17 +284,8 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
             },
           ),
           tipsBack(theme),
-          Divider(
-            color: theme.supportingColor,
-          ),
         ]);
       }
-      children.add(detailTile(theme));
-      children.add(
-        Divider(
-          color: theme.supportingColor,
-        ),
-      );
 
       return Container(
         decoration: AppDecorators.bgRadialGradient(theme),
@@ -378,42 +371,43 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                         myNetwork(theme),
                         SizedBox(height: 10),
                         referredByRow(theme),
+                        SizedBox(height: 10),
+                        playersUnderRow(theme),
+                        ...children,
                         Divider(
                           color: theme.supportingColor,
                         ),
-                        ...children,
-                        contactInfo(theme),
-                        Divider(
-                          color: theme.fillInColor,
-                        ),
-                        // notes view
-                        Container(
-                          padding: EdgeInsets.all(5),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Expanded(
-                                flex: 1,
-                                child: Icon(
-                                  Icons.note,
-                                  color: theme.secondaryColor,
-                                ),
-                              ),
-                              Expanded(
-                                flex: 8,
-                                child: Padding(
-                                  padding: EdgeInsets.only(left: 5),
-                                  child: CardFormTextField(
-                                    theme: theme,
-                                    controller: _notesEditingController,
-                                    hintText: _appScreenText['insertNotesHere'],
-                                    maxLines: 5,
+                        Column(
+                          children: [
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: TabBar(
+                                controller: _tabController,
+                                indicatorColor: theme.accentColor,
+                                isScrollable: true,
+                                tabs: [
+                                  Tab(
+                                    text: "Info",
                                   ),
-                                ),
+                                  Tab(
+                                    text: "Stats",
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
+                            ),
+                            Container(
+                              height: 300,
+                              padding: EdgeInsets.only(top: 16.ph),
+                              child: TabBarView(
+                                controller: _tabController,
+                                physics: NeverScrollableScrollPhysics(),
+                                children: [
+                                  contactInfo(theme),
+                                  detailTile(theme),
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -463,31 +457,64 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
   }
 
   Widget contactInfo(AppTheme theme) {
-    return // contact info
-        Container(
-      padding: EdgeInsets.all(5),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Expanded(
-            flex: 1,
-            child: Icon(Icons.phone, color: theme.secondaryColor),
-          ),
-          Expanded(
-            flex: 8,
-            child: Padding(
-              padding: EdgeInsets.only(left: 5),
-              child: CardFormTextField(
-                theme: theme,
-                controller: _contactEditingController,
-                hintText: _appScreenText['mobileNumber'],
-                maxLines: 1,
+    return Column(children: [
+      Container(
+        padding: EdgeInsets.all(5),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              flex: 1,
+              child: Icon(Icons.phone, color: theme.secondaryColor),
+            ),
+            Expanded(
+              flex: 8,
+              child: Padding(
+                padding: EdgeInsets.only(left: 5),
+                child: CardFormTextField(
+                  theme: theme,
+                  controller: _contactEditingController,
+                  hintText: _appScreenText['mobileNumber'],
+                  maxLines: 1,
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-    );
+      Divider(
+        color: theme.fillInColor,
+      ),
+      // notes view
+      Container(
+        padding: EdgeInsets.all(5),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Expanded(
+              flex: 1,
+              child: Icon(
+                Icons.note,
+                color: theme.secondaryColor,
+              ),
+            ),
+            Expanded(
+              flex: 8,
+              child: Padding(
+                padding: EdgeInsets.only(left: 5),
+                child: CardFormTextField(
+                  theme: theme,
+                  controller: _notesEditingController,
+                  hintText: _appScreenText['insertNotesHere'],
+                  maxLines: 5,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    ]);
   }
 
   Future<void> kickPlayerOut() async {
@@ -683,6 +710,51 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
           ),
         ),
       ],
+    );
+  }
+
+  Widget playersUnderRow(AppTheme theme) {
+    return InkWell(
+      onTap: () async {
+        await Navigator.pushNamed(
+          context,
+          Routes.club_member_players_under_view,
+          arguments: {
+            'clubCode': widget.clubCode,
+            'playerId': widget.playerId,
+            'owner': true,
+            'member': widget.member,
+          },
+        );
+      },
+      child: Row(
+        children: [
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.only(left: 5),
+              child: Text(
+                'Players Under (count)',
+                textAlign: TextAlign.left,
+                style: AppDecorators.getHeadLine4Style(theme: theme),
+              ),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(left: 5),
+            child: Row(children: [
+              Text(
+                _data.agentName ?? '',
+                textAlign: TextAlign.center,
+                style: AppDecorators.getHeadLine4Style(theme: theme),
+              ),
+              SizedBox(
+                width: 10,
+              ),
+              Icon(Icons.navigate_next, color: theme.accentColor)
+            ]),
+          ),
+        ],
+      ),
     );
   }
 
