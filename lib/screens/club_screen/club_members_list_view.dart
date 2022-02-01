@@ -332,7 +332,7 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
     }
     bool isVisible = (member.isManager ?? false) ||
         (member.isOwner ?? false) ||
-        (member.isLeader ?? false);
+        (member.isAgent ?? false);
     String titleText = '';
     List<Widget> labels = [];
     if (member.isManager ?? false) {
@@ -345,8 +345,8 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
       labels.add(SizedBox(width: 5));
       labels.add(Label(titleText, theme));
     }
-    if (member.isLeader ?? false) {
-      titleText = 'Leader';
+    if (member.isAgent ?? false) {
+      titleText = 'Agent';
       if (widget.viewAsOwner) {
         labels.add(SizedBox(width: 5));
         labels.add(Label(titleText, theme));

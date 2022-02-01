@@ -373,20 +373,15 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                           color: theme.supportingColor,
                         ),
                         // set leader flag
-                        SwitchWidget2(
-                            label: 'Leader',
-                            value: _data.isLeader,
-                            onChange: (val) async {
-                              await ClubInteriorService.setAsLeader(
-                                  widget.club.clubCode, _data.playerId, val);
-                              _data.isLeader = val;
-                              setState(() {});
-                            }),
-                        ...children,
+                        leaderRow(theme),
+                        SizedBox(height: 10),
+                        myNetwork(theme),
+                        SizedBox(height: 10),
                         referredByRow(theme),
                         Divider(
                           color: theme.supportingColor,
                         ),
+                        ...children,
                         contactInfo(theme),
                         Divider(
                           color: theme.fillInColor,
@@ -610,22 +605,44 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
             : theme.negativeOrErrorColor;
   }
 
-  Widget referredByRow(AppTheme theme) {
+  Widget leaderRow(AppTheme theme) {
     return Row(
       children: [
         Expanded(
-          flex: 1,
-          child: Icon(
-            AppIcons.user,
-            color: Colors.blue,
+          flex: 4,
+          child: Padding(
+            padding: EdgeInsets.only(left: 5),
+            child: Text(
+              'Agent',
+              textAlign: TextAlign.left,
+              style: AppDecorators.getHeadLine4Style(theme: theme),
+            ),
           ),
         ),
+        Expanded(
+            flex: 6,
+            child: SwitchWidget2(
+                label: '',
+                value: _data.isAgent,
+                onChange: (val) async {
+                  await ClubInteriorService.setAsAgent(
+                      widget.club.clubCode, _data.playerId, val);
+                  _data.isAgent = val;
+                  setState(() {});
+                })),
+      ],
+    );
+  }
+
+  Widget referredByRow(AppTheme theme) {
+    return Row(
+      children: [
         Expanded(
           flex: 6,
           child: Padding(
             padding: EdgeInsets.only(left: 5),
             child: Text(
-              'Referred By',
+              'Assigned Under Leader',
               textAlign: TextAlign.left,
               style: AppDecorators.getHeadLine4Style(theme: theme),
             ),
@@ -637,16 +654,15 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
             onTap: () async {
               List<ClubMemberModel> leaders = [];
               for (final member in widget.allMembers) {
-                if (member.isLeader) {
+                if (member.isAgent) {
                   leaders.add(member);
                 }
               }
               // assign another player
-              log('assign a player');
               final ret = await ChooseMemberDialog.prompt(
                   context: context, club: widget.club, membersList: leaders);
               if (ret != null) {
-                await ClubInteriorService.setLeader(
+                await ClubInteriorService.setAgent(
                     widget.club.clubCode, _data.playerId, ret.playerUuid);
               }
             },
@@ -654,7 +670,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
               padding: EdgeInsets.only(left: 5),
               child: Row(children: [
                 Text(
-                  _data.leaderName ?? '',
+                  _data.agentName ?? '',
                   textAlign: TextAlign.center,
                   style: AppDecorators.getHeadLine4Style(theme: theme),
                 ),
@@ -663,6 +679,52 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                 ),
                 Icon(Icons.search, color: theme.accentColor)
               ]),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget myNetwork(AppTheme theme) {
+    if (!_data.isAgent) {
+      return Container();
+    }
+    return Row(
+      children: [
+        Expanded(
+          flex: 6,
+          child: Padding(
+            padding: EdgeInsets.only(left: 5),
+            child: Text(
+              'Assigned Players',
+              textAlign: TextAlign.left,
+              style: AppDecorators.getHeadLine4Style(theme: theme),
+            ),
+          ),
+        ),
+        Expanded(
+          flex: 4,
+          child: InkWell(
+            onTap: () async {
+              List<ClubMemberModel> myMembers = [];
+              for (final member in widget.allMembers) {
+                if (member.agentUuid == _data.playerId) {
+                  myMembers.add(member);
+                }
+              }
+              // assign another player
+              final ret = await ChooseMemberDialog.prompt(
+                  context: context,
+                  club: widget.club,
+                  membersList: myMembers,
+                  title: 'Network');
+              if (ret != null) {}
+            },
+            child: Padding(
+              padding: EdgeInsets.only(left: 5),
+              child:
+                  Row(children: [Icon(Icons.search, color: theme.accentColor)]),
             ),
           ),
         ),
@@ -847,6 +909,7 @@ class ChooseMemberDialog {
     @required BuildContext context,
     @required ClubHomePageModel club,
     @required List<ClubMemberModel> membersList,
+    String title = 'Choose Leader',
   }) async {
     final ret = await showDialog<ChosenMember>(
         barrierDismissible: true,
@@ -862,8 +925,7 @@ class ChooseMemberDialog {
                   ),
                 ),
                 backgroundColor: theme.fillInColor,
-                title: Center(
-                    child: SubTitleText(text: 'Choose Leader', theme: theme)),
+                title: Center(child: SubTitleText(text: title, theme: theme)),
                 content: Container(
                   width: Screen.width - 30,
                   height: Screen.height * 1 / 3,

@@ -59,11 +59,11 @@ class _ClubMembersViewState extends State<ClubMembersView>
     _leaders = [];
     final currentUser = AuthService.get();
     for (final member in _all) {
-      if (member.isLeader) {
+      if (member.isAgent) {
         _leaders.add(member);
       }
 
-      if (member.leaderUuid != null && member.leaderUuid == currentUser.uuid) {
+      if (member.agentUuid != null && member.agentUuid == currentUser.uuid) {
         // my referral
         _myReferrals.add(member);
       }
@@ -118,13 +118,13 @@ class _ClubMembersViewState extends State<ClubMembersView>
   }
 
   Widget getTitle(AppTheme theme, ClubMemberModel member) {
-    bool isVisible = member.isManager || member.isOwner || member.isLeader;
+    bool isVisible = member.isManager || member.isOwner || member.isAgent;
     String titleText = '';
     if (member.isManager) {
       titleText = 'Manager';
     } else if (member.isOwner) {
       titleText = 'Owner';
-    } else if (member.isLeader) {
+    } else if (member.isAgent) {
       return Container();
       //titleText = 'Leader';
     }

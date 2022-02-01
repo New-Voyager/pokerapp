@@ -25,7 +25,7 @@ class ClubInteriorService {
           isOwner
           isManager
           isMainOwner
-          isLeader
+          isAgent
           joinedDate
           lastPlayedDate
           totalBuyins
@@ -37,8 +37,8 @@ class ClubInteriorService {
           totalGames
           availableCredit
           tipsBack
-          leaderName
-          leaderUuid
+          agentName
+          agentUuid
         }
       }""";
 
@@ -271,12 +271,12 @@ class ClubInteriorService {
     return true;
   }
 
-  static Future<bool> setAsLeader(
-      String clubCode, String playerId, bool isLeader) async {
+  static Future<bool> setAsAgent(
+      String clubCode, String playerId, bool isAgent) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
 
     Map<String, dynamic> update = {
-      "isLeader": isLeader,
+      "isAgent": isAgent,
     };
     Map<String, dynamic> variables = {
       "clubCode": clubCode,
@@ -289,12 +289,12 @@ class ClubInteriorService {
     return true;
   }
 
-  static Future<bool> setLeader(
+  static Future<bool> setAgent(
       String clubCode, String playerId, String leaderId) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
 
     Map<String, dynamic> update = {
-      "leaderUuid": leaderId,
+      "agentUuid": leaderId,
     };
     Map<String, dynamic> variables = {
       "clubCode": clubCode,
