@@ -254,7 +254,7 @@ class ChipAmountAnimatingWidget extends StatelessWidget {
 }
 
 const int startDelay = 200;
-const int noOfCoins = 6;
+const int noOfCoins = 3;
 
 class WinnerChipAnimation extends StatelessWidget {
   final Offset begin;
@@ -267,7 +267,7 @@ class WinnerChipAnimation extends StatelessWidget {
     this.winningAmount = 100.0,
   });
 
-  Widget _coin() {
+  Widget _coin1() {
     return Container(
       height: 25.0,
       width: 25.0,
@@ -278,6 +278,16 @@ class WinnerChipAnimation extends StatelessWidget {
           color: Colors.red,
           width: 3.0,
         ),
+      ),
+    );
+  }
+
+  Widget _coin() {
+    return Container(
+      height: 24.0,
+      width: 24.0,
+      child: SvgPicture.asset(
+        'assets/images/betchips/green.svg',
       ),
     );
   }
@@ -306,7 +316,7 @@ class WinnerChipAnimation extends StatelessWidget {
     return TweenAnimationBuilder(
       curve: Curves.easeOut,
       tween: Tween<double>(begin: 0, end: 1),
-      duration: const Duration(milliseconds: 2000),
+      duration: const Duration(milliseconds: 1000),
       child: Text(
         '+ $winningAmount',
         style: TextStyle(
