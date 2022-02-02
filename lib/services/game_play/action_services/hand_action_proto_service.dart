@@ -649,6 +649,56 @@ class HandActionProtoService {
     //log('Hand Message: ::handleDeal:: END');
   }
 
+  Future<void> _handleCardDistribution(int noCards) async {
+    final players = _gameState.playersInGame;
+    List<int> seatNos = players.map((p) => p.seatNo).toList();
+    seatNos.sort();
+
+    /* distribute cards to the players */
+    /* this for loop will distribute cards one by one to all the players */
+    //for (int i = 0; i < handInfo.noCards; i++) {
+    /* for distributing the ith card, go through all the players, and give them */
+    for (int seatNo in seatNos) {
+      if (_close) return;
+      final seat = _gameState.getSeat(seatNo);
+      if (seat.player != null) {
+        seat.player.noOfCardsVisible = 0;
+      }
+      if (seat.player == null ||
+          seat.player.stack == 0 ||
+          !seat.player.inhand ||
+          seat.player.status != AppConstants.PLAYING) {
+        continue;
+      }
+
+      // start the animation
+      _gameState.cardDistributionState.seatNo = seatNo;
+      if (_close) return;
+
+      // wait for the animation to finish
+      await Future.delayed(AppConstants.cardDistributionAnimationDuration);
+      if (_close) return;
+
+      // log('CardDistribution: seatNo: $seatNo');
+      final playerInSeat = _gameState.getSeat(seatNo);
+      if (playerInSeat != null &&
+          playerInSeat.player != null &&
+          playerInSeat.player.inhand) {
+        playerInSeat.player.noOfCardsVisible = noCards;
+        playerInSeat.notify();
+      }
+    }
+
+    /* card distribution ends, put the value to NULL */
+    _gameState.cardDistributionState.seatNo = null;
+
+    // tableState.updateTableStatusSilent(null);
+    if (_gameState.uiClosing) return;
+
+    _gameState.setPlayerNoCards(noCards);
+    _gameState.notifyAllSeats();
+  }
+
   Future<void> handleDealStarted({
     bool fromGameReplay = false,
     int testNo = 2, // works only if in testing mode
@@ -686,58 +736,13 @@ class HandActionProtoService {
 
       if (_close) return;
 
-      final players = _gameState.playersInGame;
-      List<int> seatNos = players.map((p) => p.seatNo).toList();
-      seatNos.sort();
-
-      if (_close) return;
-
       final handInfo = _gameState.handInfo;
 
       if (_close) return;
 
       if (handInfo.noCards == 0) handInfo.update(noCards: testNo);
 
-      /* distribute cards to the players */
-      /* this for loop will distribute cards one by one to all the players */
-      //for (int i = 0; i < handInfo.noCards; i++) {
-      /* for distributing the ith card, go through all the players, and give them */
-      for (int seatNo in seatNos) {
-        if (_close) return;
-        final seat = _gameState.getSeat(seatNo);
-        if (seat.player != null) {
-          seat.player.noOfCardsVisible = 0;
-        }
-        if (seat.player == null ||
-            seat.player.stack == 0 ||
-            !seat.player.inhand ||
-            seat.player.status != AppConstants.PLAYING) {
-          continue;
-        }
-
-        // start the animation
-        _gameState.cardDistributionState.seatNo = seatNo;
-        if (_close) return;
-
-        // wait for the animation to finish
-        await Future.delayed(AppConstants.cardDistributionAnimationDuration);
-        if (_close) return;
-
-        // log('CardDistribution: seatNo: $seatNo');
-        final playerInSeat = _gameState.getSeat(seatNo);
-        if (playerInSeat != null &&
-            playerInSeat.player != null &&
-            playerInSeat.player.inhand) {
-          playerInSeat.player.noOfCardsVisible = handInfo.noCards;
-          playerInSeat.notify();
-        }
-      }
-      /* card distribution ends, put the value to NULL */
-      _gameState.cardDistributionState.seatNo = null;
-      // tableState.updateTableStatusSilent(null);
-      if (_gameState.uiClosing) return;
-      _gameState.setPlayerNoCards(handInfo.noCards);
-      _gameState.notifyAllSeats();
+      _handleCardDistribution(handInfo.noCards);
     } finally {
       //log('Hand Message: ::handleDealStarted:: END');
     }

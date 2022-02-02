@@ -268,7 +268,7 @@ class GameState {
     this._gameMessagingService = Provider<GameMessagingService>(
       create: (_) => _gameMessageService,
     );
-    _gameMessageService.gameState = this;
+    _gameMessageService?.gameState = this;
 
     this._handInfo = HandInfoState();
     this._handInfo.update(
