@@ -783,11 +783,6 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
           Padding(
             padding: EdgeInsets.only(left: 5),
             child: Row(children: [
-              Text(
-                _data.agentName ?? '',
-                textAlign: TextAlign.center,
-                style: AppDecorators.getHeadLine4Style(theme: theme),
-              ),
               SizedBox(
                 width: 10,
               ),
