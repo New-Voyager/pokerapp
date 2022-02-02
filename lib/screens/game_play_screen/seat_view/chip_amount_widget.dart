@@ -10,6 +10,7 @@ import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:provider/provider.dart';
@@ -226,6 +227,7 @@ class ChipAmountAnimatingWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final gameState = GameState.getState(context);
     final seat = gameState.getSeat(seatPos);
+    final appTheme = context.read<AppTheme>();
 
     Offset end = appState.getPosForSeat(seat);
     Offset begin = seat.betWidgetPos;
@@ -244,7 +246,9 @@ class ChipAmountAnimatingWidget extends StatelessWidget {
     return NewChipAnimation(
       begin: begin,
       end: end,
+      appTheme: appTheme,
       isWinningAnimation: isWinningAnimation,
+      winningAmount: seat.player.action.amount,
     );
   }
 }
@@ -257,8 +261,10 @@ class NewChipAnimation extends StatelessWidget {
   final Offset end;
   final double winningAmount;
   final bool isWinningAnimation;
+  final AppTheme appTheme;
 
   NewChipAnimation({
+    @required this.appTheme,
     @required this.begin,
     @required this.end,
     this.winningAmount = 100.0,
@@ -302,14 +308,14 @@ class NewChipAnimation extends StatelessWidget {
       tween: Tween<double>(begin: 0, end: 1),
       duration: const Duration(seconds: 3, milliseconds: 500),
       child: BorderedText(
-        strokeColor: Colors.black,
+        strokeColor: appTheme.primaryColorWithDark(),
         strokeWidth: 6.0,
         child: Text(
           '+ ${DataFormatter.chipsFormat(winningAmount)}',
           style: TextStyle(
-            color: Colors.amber, // todo: this should be theme color
+            color: appTheme.accentColor,
             fontSize: 18.0,
-            fontWeight: FontWeight.w900,
+            fontWeight: FontWeight.w600,
           ),
         ),
       ),
