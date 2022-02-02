@@ -146,12 +146,12 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
                           "allMembers": widget.allMembers,
                         },
                       ) as bool;
-                      if (updated) {
-                        if (widget.fetchData != null) {
-                          await widget.fetchData();
-                        }
-                        setState(() {});
-                      }
+                      // if (updated ?? false) {
+                      //   if (widget.fetchData != null) {
+                      //     await widget.fetchData();
+                      //   }
+                      //   setState(() {});
+                      // }
                     },
                     child: Row(
                       children: <Widget>[
@@ -211,7 +211,7 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
                                   child: Row(
                                     children: <Widget>[
                                       Text(
-                                        data.lastPlayedDate,
+                                        data.lastPlayedDateStr,
                                         textAlign: TextAlign.left,
                                         style: AppDecorators.getSubtitle3Style(
                                             theme: theme),

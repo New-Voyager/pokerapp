@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/main_helper.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/models/club_members_model.dart';
@@ -60,21 +61,41 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
   String oldPhoneText;
   String oldNotes;
   int oldTipsBack;
+  String oldDisplayName;
   TextEditingController _contactEditingController;
+  TextEditingController _nameEditingController;
   TextEditingController _notesEditingController;
   bool updated = false;
   bool closed = false;
   TabController _tabController;
+  List<ClubMemberModel> playersUnderMe = [];
   _ClubMembersDetailsView(this.clubCode, this.playerId, this.isClubOwner);
 
   AppTextScreen _appScreenText;
 
   _fetchData() async {
-    _data = await ClubInteriorService.getClubMemberDetail(clubCode, playerId);
+    //_data = await ClubInteriorService.getClubMemberDetail(clubCode, playerId);
+    final clubMembers = await appState.cacheService.getMembers(clubCode);
+    for (final member in clubMembers) {
+      if (member.playerId == playerId) {
+        _data = member;
+        break;
+      }
+    }
+
+    if (_data.isAgent) {
+      for (final member in clubMembers) {
+        if (member.agentUuid == playerId) {
+          playersUnderMe.add(member);
+        }
+      }
+    }
+
     oldPhoneText = _data.contactInfo;
     oldNotes = _data.notes;
     oldTipsBack = _data.tipsBack;
     loadingDone = true;
+    oldDisplayName = _data.displayName;
 
     if (closed) {
       return;
@@ -92,6 +113,8 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
       _contactEditingController =
           TextEditingController(text: _data.contactInfo);
       _notesEditingController = TextEditingController(text: _data.notes);
+      _nameEditingController = TextEditingController(text: _data.displayName);
+
       _notesEditingController.addListener(() {
         _data.notes = _notesEditingController.text;
         _data.edited = true;
@@ -99,6 +122,10 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
       _contactEditingController.addListener(() {
         _data.edited = true;
         _data.contactInfo = _contactEditingController.text;
+      });
+      _nameEditingController.addListener(() {
+        _data.edited = true;
+        _data.displayName = _nameEditingController.text;
       });
     }
     setState(() {});
@@ -123,12 +150,14 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
     if (this._data != null && this._data.edited) {
       if (oldPhoneText != _data.contactInfo ||
           oldNotes != _data.notes ||
-          oldTipsBack != _data.tipsBack) {
+          oldTipsBack != _data.tipsBack ||
+          oldDisplayName != _data.displayName) {
         ConnectionDialog.show(
             context: context, loadingText: "Updating player information...");
         try {
           // save the data
           await ClubInteriorService.updateClubMember(this._data);
+          await appState.cacheService.getMembers(clubCode, update: true);
           updated = true;
         } catch (err) {}
         ConnectionDialog.dismiss(
@@ -136,7 +165,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
         );
       }
     }
-    Navigator.of(context).pop(updated);
+    Navigator.of(context).pop();
   }
 
   List<Widget> getMemberButtons(AppTheme theme) {
@@ -337,7 +366,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                                 child: Text(
                                   _appScreenText['lastActive'] +
                                       ' ' +
-                                      _data.lastPlayedDate,
+                                      _data.lastPlayedDateStr,
                                   style: AppDecorators.getSubtitle3Style(
                                       theme: theme),
                                 ),
@@ -465,6 +494,31 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
           children: [
             Expanded(
               flex: 1,
+              child: Icon(Icons.account_box, color: theme.secondaryColor),
+            ),
+            Expanded(
+              flex: 8,
+              child: Padding(
+                padding: EdgeInsets.only(left: 5),
+                child: CardFormTextField(
+                  theme: theme,
+                  controller: _nameEditingController,
+                  hintText: 'Player name',
+                  maxLines: 1,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+
+      Container(
+        padding: EdgeInsets.all(5),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              flex: 1,
               child: Icon(Icons.phone, color: theme.secondaryColor),
             ),
             Expanded(
@@ -482,9 +536,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
           ],
         ),
       ),
-      Divider(
-        color: theme.fillInColor,
-      ),
+
       // notes view
       Container(
         padding: EdgeInsets.all(5),

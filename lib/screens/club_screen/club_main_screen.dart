@@ -154,7 +154,9 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew>
     if (appState != null && appState.mockScreens) {
       clubData = await MockData.getClubHomePageData(widget.clubCode);
     } else {
-      clubData = await ClubsService.getClubHomePageData(widget.clubCode);
+      //clubData = await ClubsService.getClubHomePageData(widget.clubCode);
+      clubData =
+          await appState.cacheService.getClubHomePageData(widget.clubCode);
     }
     if (clubData.isManager || clubData.isOwner) {
       clubData.clubCoins = await ClubsService.getClubCoins(widget.clubCode);

@@ -21,6 +21,7 @@ class ClubInteriorService {
           name
           playerId
           contactInfo
+          displayName
           status
           isOwner
           isManager
@@ -275,6 +276,7 @@ class ClubInteriorService {
       "notes": data.notes,
       "autoBuyinApproval": data.autoBuyInApproval,
       "tipsBack": data.tipsBack,
+      "displayName": data.displayName,
     };
     Map<String, dynamic> variables = {
       "clubCode": data.clubCode,

@@ -99,16 +99,13 @@ class _MainScreenState extends State<MainScreen>
       _nats.playerNotifications = notificationHandler.playerNotifications;
       _nats.clubNotifications = notificationHandler.clubNotifications;
 
-      final clubs = await ClubsService.getMyClubs();
+      // cache app data
+      await appState.cacheData();
+      final clubs = await appState.cacheService.getMyClubs();
       for (final club in clubs) {
         _nats.subscribeClubMessages(club.clubCode);
       }
       appState.myClubs = clubs;
-
-      // TODO: WHY DO WE NEEDED THE DELAY?
-      // Future.delayed(Duration(milliseconds: 100), () async {
-      //   await natsClient.init(_currentPlayer.channel);
-      // });
     }
     assetLoader.load();
 
