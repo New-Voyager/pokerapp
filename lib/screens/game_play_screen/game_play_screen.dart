@@ -401,7 +401,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     } else {}
     Future.delayed(Duration(seconds: 3), () {
       log('publishing my information');
-      _gameState.gameMessageService.sendMyInfo();
+      _gameState.gameMessageService?.sendMyInfo();
       log('publishing my information done');
     });
     return _gameInfoModel;

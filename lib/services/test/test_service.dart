@@ -138,12 +138,8 @@ class TestService {
   }
 
   static showCardDistribution() async {
-    final _gameState = GameState.getState(_context);
-    for (int i = 1; i <= 9; i++) {
-      _gameState.cardDistributionState.seatNo = i;
-      await Future.delayed(const Duration(milliseconds: 300));
-      _gameState.cardDistributionState.seatNo = null;
-    }
+    final gameState = GameState.getState(_context);
+    HandActionProtoService.cardDistribution(gameState, 4);
   }
 
   static showRank() async {
@@ -238,7 +234,7 @@ class TestService {
         //_currentPlayer = PlayerInfo.fromJson(jsonData["currentPlayer"]);
       }
       // 2 4 6 8 9
-      var maxPlayers = 9;
+      var maxPlayers = 4;
       if (jsonData["gameInfo"] != null) {
         // todo: debug remove: change the max Players in a game here
         _gameInfo = GameInfoModel.fromJson(

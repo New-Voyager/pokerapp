@@ -87,7 +87,6 @@ class GameState {
 
   ListenableProvider<RedrawFooterSectionState>
       _redrawFooterSectionStateProvider;
-  ListenableProvider<CardDistributionState> _cardDistribProvider;
   ListenableProvider<HandChangeState> _handChangeStateProvider;
   ListenableProvider<HandResultState> _handResultStateProvider;
   ListenableProvider<HoleCardsState> _holeCardsProvider;
@@ -109,7 +108,6 @@ class GameState {
 
   ActionState _actionState;
   MarkedCards _markedCardsState;
-  CardDistributionState _cardDistribState;
   ServerConnectionState _connectionState;
   HandChangeState _handChangeState;
   HandResultState _handResultState;
@@ -262,7 +260,6 @@ class GameState {
     _actionState = ActionState();
     _actionTimerState = ActionTimerState();
     _markedCardsState = MarkedCards();
-    _cardDistribState = CardDistributionState();
     _gameMessageService = gameMessagingService;
 
     this._gameMessagingService = Provider<GameMessagingService>(
@@ -292,8 +289,6 @@ class GameState {
     /* provider for holding the marked cards */
     this._markedCardsProvider =
         ListenableProvider<MarkedCards>(create: (_) => _markedCardsState);
-    this._cardDistribProvider = ListenableProvider<CardDistributionState>(
-        create: (_) => _cardDistribState);
 
     this._tappedSeatState = TappedSeatState();
     this._connectionState = ServerConnectionState();
@@ -454,6 +449,9 @@ class GameState {
         _communicationState.showTextChat = playerLocalConfig.showChat;
       }
     }
+
+    // init card distribution variables
+    _initializeCardDistributionMap();
   }
 
   void close() {
@@ -536,8 +534,6 @@ class GameState {
   }
 
   MarkedCards get markedCardsState => this._markedCardsState;
-
-  CardDistributionState get cardDistributionState => this._cardDistribState;
 
   HandChangeState get handChangeState => this._handChangeState;
 
@@ -862,7 +858,6 @@ class GameState {
     this.showdown = false;
     handState = HandState.UNKNOWN;
     this.wonat = HandStatus.HandStatus_UNKNOWN;
-    _cardDistribState._distributeToSeatNo = null;
     _markedCardsState.clear();
     for (final player in _playersInGame) {
       player.reset();
@@ -978,7 +973,6 @@ class GameState {
       this._redrawBackdropSectionStateProvider,
       this._redrawNameplateSectionStateProvider,
       this._redrawFooterSectionStateProvider,
-      this._cardDistribProvider,
       this._handChangeStateProvider,
       this._handResultStateProvider,
       this._rabbitStateProvider,
@@ -1346,6 +1340,31 @@ class GameState {
       }
     }
   }
+
+  // card distribution logic
+
+  /// seat no, value notifier mapping
+  final Map<int, ValueNotifier<bool>> _cardDistributionMap = {};
+  Map<int, ValueNotifier<bool>> get cardDistributionMap => _cardDistributionMap;
+
+  void _initializeCardDistributionMap() {
+    for (int seat = 1; seat <= 9; seat++) {
+      _cardDistributionMap[seat] = ValueNotifier(false);
+    }
+  }
+
+  void _updateCardDistribution(int forSeat, bool value) {
+    assert(1 <= forSeat && forSeat <= 9);
+    _cardDistributionMap[forSeat].value = value;
+  }
+
+  void startCardDistributionFor(int seatNo) {
+    _updateCardDistribution(seatNo, true);
+  }
+
+  void stopCardDistributionFor(int seatNo) {
+    _updateCardDistribution(seatNo, false);
+  }
 }
 
 class TappedSeatState extends ChangeNotifier {
@@ -1624,17 +1643,6 @@ class RedrawFooterSectionState extends ChangeNotifier {
   void notify() {
     notifyListeners();
   }
-}
-
-class CardDistributionState extends ChangeNotifier {
-  int _distributeToSeatNo;
-
-  set seatNo(int seatNo) {
-    _distributeToSeatNo = seatNo;
-    notifyListeners();
-  }
-
-  int get seatNo => _distributeToSeatNo;
 }
 
 class HandChangeState extends ChangeNotifier {
