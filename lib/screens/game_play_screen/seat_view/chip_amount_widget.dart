@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:after_layout/after_layout.dart';
+import 'package:bordered_text/bordered_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
@@ -231,24 +232,19 @@ class ChipAmountAnimatingWidget extends StatelessWidget {
 
     print('ChipAmountAnimatingWidget: end:$end begin:$begin');
 
-    if (reverse ?? false) {
-      return WinnerChipAnimation(
-        begin: end,
-        end: begin,
-      );
+    bool isWinningAnimation = reverse ?? false;
+
+    if (isWinningAnimation) {
+      // swap end, begin
+      var tmp = end;
+      end = begin;
+      begin = tmp;
     }
 
-    return TweenAnimationBuilder(
-      child: child,
-      tween: Tween<Offset>(
-        begin: begin,
-        end: end,
-      ),
-      duration: AppConstants.chipMovingAnimationDuration,
-      builder: (_, offset, child) => Transform.translate(
-        offset: offset,
-        child: child,
-      ),
+    return NewChipAnimation(
+      begin: begin,
+      end: end,
+      isWinningAnimation: isWinningAnimation,
     );
   }
 }
@@ -256,43 +252,30 @@ class ChipAmountAnimatingWidget extends StatelessWidget {
 const int startDelay = 200;
 const int noOfCoins = 3;
 
-class WinnerChipAnimation extends StatelessWidget {
+class NewChipAnimation extends StatelessWidget {
   final Offset begin;
   final Offset end;
   final double winningAmount;
+  final bool isWinningAnimation;
 
-  WinnerChipAnimation({
+  NewChipAnimation({
     @required this.begin,
     @required this.end,
     this.winningAmount = 100.0,
+    this.isWinningAnimation = false,
   });
 
-  Widget _coin1() {
-    return Container(
-      height: 25.0,
-      width: 25.0,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: Colors.yellow,
-        border: Border.all(
-          color: Colors.red,
-          width: 3.0,
-        ),
-      ),
-    );
-  }
-
   Widget _coin() {
-    return Container(
-      height: 24.0,
-      width: 24.0,
-      child: SvgPicture.asset(
-        'assets/images/betchips/green.svg',
-      ),
+    return SizedBox.square(
+      dimension: 18.0,
+      child: SvgPicture.asset('assets/images/betchips/green.svg'),
     );
   }
 
   Widget _tweenAnimator(int idx) {
+    final ms = AppConstants.chipMovingAnimationDuration.inMilliseconds;
+    final duration = ms + (startDelay * idx);
+
     return TweenAnimationBuilder(
       key: ValueKey(idx),
       curve: Curves.easeInOutQuad,
@@ -301,27 +284,33 @@ class WinnerChipAnimation extends StatelessWidget {
         begin: begin,
         end: end,
       ),
-      duration: Duration(
-        milliseconds: AppConstants.chipMovingAnimationDuration.inMilliseconds +
-            (startDelay * idx),
-      ),
-      builder: (_, offset, child) => Transform.translate(
-        offset: offset,
-        child: child,
+      duration: Duration(milliseconds: duration),
+      builder: (_, Offset offset, child) => AnimatedOpacity(
+        duration: const Duration(milliseconds: 250),
+        opacity: offset.dy == end.dy ? 0.0 : 1.0,
+        child: Transform.translate(
+          offset: offset,
+          child: child,
+        ),
       ),
     );
   }
 
   Widget _winningAmountAnimation() {
     return TweenAnimationBuilder(
-      curve: Curves.easeOut,
+      curve: Curves.easeInOut,
       tween: Tween<double>(begin: 0, end: 1),
-      duration: const Duration(milliseconds: 1000),
-      child: Text(
-        '+ $winningAmount',
-        style: TextStyle(
-          color: Colors.amber,
-          fontSize: 50.0,
+      duration: const Duration(seconds: 3, milliseconds: 500),
+      child: BorderedText(
+        strokeColor: Colors.black,
+        strokeWidth: 6.0,
+        child: Text(
+          '+ ${DataFormatter.chipsFormat(winningAmount)}',
+          style: TextStyle(
+            color: Colors.amber, // todo: this should be theme color
+            fontSize: 18.0,
+            fontWeight: FontWeight.w900,
+          ),
         ),
       ),
       builder: (_, v, child) => Opacity(
@@ -346,7 +335,9 @@ class WinnerChipAnimation extends StatelessWidget {
             .toList(),
 
         // winning amount
-        _winningAmountAnimation(),
+        isWinningAnimation
+            ? _winningAmountAnimation()
+            : const SizedBox.shrink(),
       ],
     );
   }

@@ -81,7 +81,7 @@ class AppConstants {
   );
 
   static const Duration chipMovingAnimationDuration = const Duration(
-    milliseconds: 400,
+    milliseconds: 250,
   );
 
   static const Duration communityCardAnimationDuration = const Duration(
