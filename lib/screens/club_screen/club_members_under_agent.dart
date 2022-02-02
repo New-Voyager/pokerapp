@@ -4,8 +4,11 @@ import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
+import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/widgets/buttons.dart';
+import 'package:pokerapp/widgets/radio_list_widget.dart';
 import 'package:pokerapp/widgets/switch.dart';
+import 'package:pokerapp/widgets/texts.dart';
 
 class ClubMembersUnderAgent extends StatefulWidget {
   final ClubMemberModel member;
@@ -27,6 +30,16 @@ class _ClubMembersUnderAgentState extends State<ClubMembersUnderAgent>
 
   bool playersEditMode = false;
   TextEditingController searchTextController = TextEditingController();
+
+  int report_player_width = 2;
+  int report_hands_width = 2;
+  int report_tips_width = 2;
+  int report_buyin_width = 2;
+  int report_profit_width = 2;
+
+  int _selectedReportDateRangeIndex = 0;
+
+  DateTimeRange _dateTimeRange;
 
   @override
   void initState() {
@@ -228,8 +241,219 @@ class _ClubMembersUnderAgentState extends State<ClubMembersUnderAgent>
   }
 
   Widget reportTab(AppTheme theme) {
-    return Container();
+    return SingleChildScrollView(
+      physics: BouncingScrollPhysics(),
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.of(context).size.height,
+        ),
+        child: Column(
+          children: [
+            Padding(
+              padding: EdgeInsets.only(top: 16.ph, left: 16.pw, right: 16.pw),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  RadioToggleButtonsWidget<String>(
+                    defaultValue: _selectedReportDateRangeIndex,
+                    values: [
+                      'This Week',
+                      'Last Week',
+                      'This Month',
+                      'Last Month',
+                      'Custom',
+                      // 'Last Week',
+                      // 'Last Month'
+                    ],
+                    onSelect: (int value) async {
+                      final now = DateTime.now();
+                      _selectedReportDateRangeIndex = value;
+                      if (value == 0) {
+                        setState(() {});
+                      } else if (value == 1) {
+                        setState(() {});
+                      } else if (value == 2) {
+                        setState(() {});
+                      } else if (value == 3) {
+                        setState(() {});
+                      } else if (value == 4) {
+                        await _handleDateRangePicker(context, theme);
+
+                        setState(() {});
+                      }
+                    },
+                  ),
+                  SizedBox(height: 16.pw),
+                  Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Expanded(
+                        flex: 4,
+                        child: LabelText(label: 'Minimum Rank', theme: theme)),
+                    SizedBox(
+                      width: 8.pw,
+                    ),
+                    Expanded(
+                        flex: 5,
+                        child: LabelText(label: '340.30', theme: theme)),
+                  ]),
+                  Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Expanded(
+                        flex: 4,
+                        child: LabelText(label: 'Credit back %', theme: theme)),
+                    SizedBox(
+                      width: 8.pw,
+                    ),
+                    Expanded(
+                        flex: 5,
+                        child: Row(
+                          children: [
+                            LabelText(label: '30', theme: theme),
+                            SizedBox(width: 32.pw),
+                            RoundRectButton(
+                                text: "Change", onTap: () {}, theme: theme),
+                          ],
+                        )),
+                  ]),
+                  Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Expanded(
+                        flex: 4,
+                        child: LabelText(label: 'Credit back', theme: theme)),
+                    SizedBox(
+                      width: 8.pw,
+                    ),
+                    Expanded(
+                        flex: 5,
+                        child: LabelText(label: '100.60', theme: theme)),
+                  ]),
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 16.ph,
+            ),
+            Expanded(
+              child: ListView.separated(
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: 20,
+                itemBuilder: (context, index) {
+                  // index 0 draws the header
+                  if (index == 0) return _buildTableHeader(theme);
+
+                  return Container(
+                    margin: EdgeInsets.symmetric(horizontal: 10.0.pw),
+                    height: 50.0.ph,
+                    child: Row(
+                      children: [
+                        _buildTableContentChild(
+                          flex: report_player_width,
+                          data: "Young",
+                          theme: theme,
+                        ),
+                        _buildTableContentChild(
+                          flex: report_hands_width,
+                          data: "124",
+                          theme: theme,
+                        ),
+                        _buildTableContentChild(
+                          flex: report_tips_width,
+                          data: "65.30",
+                          theme: theme,
+                        ),
+                        _buildTableContentChild(
+                          flex: report_buyin_width,
+                          data: "1345.20",
+                          theme: theme,
+                        ),
+                        _buildTableContentChild(
+                          flex: report_profit_width,
+                          data: "-543.23",
+                          theme: theme,
+                        ),
+                      ],
+                    ),
+                  );
+                },
+                separatorBuilder: (context, index) {
+                  if (index == 0)
+                    return Container();
+                  else
+                    return Divider(color: Color(0xff707070));
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
+
+  Widget _buildTableContentChild({
+    int flex = 1,
+    var data,
+    AppTheme theme,
+  }) =>
+      Expanded(
+        flex: flex,
+        child: Center(
+          child: FittedBox(
+            fit: BoxFit.fitWidth,
+            child: Text(
+              data is double ? DataFormatter.chipsFormat(data) : data,
+              style: TextStyle(
+                color: data is double
+                    ? data > 0
+                        ? theme.secondaryColor
+                        : theme.negativeOrErrorColor
+                    : theme.supportingColor,
+              ),
+            ),
+          ),
+        ),
+      );
+
+  Widget _buildHeaderChild({int flex = 1, String text = 'Player'}) => Expanded(
+        flex: flex,
+        child: Center(
+          child: text.isEmpty
+              ? Container()
+              : FittedBox(
+                  fit: BoxFit.fitWidth,
+                  child: Text(
+                    text,
+                    style: TextStyle(color: Color(0xffef9712)),
+                  ),
+                ),
+        ),
+      );
+
+  Widget _buildTableHeader(AppTheme theme) => Container(
+        height: 70.0.ph,
+        margin: EdgeInsets.all(10.pw),
+        color: theme.fillInColor,
+        child: Row(
+          children: [
+            _buildHeaderChild(
+              flex: report_player_width,
+              text: 'Player',
+            ),
+            _buildHeaderChild(
+              flex: report_hands_width,
+              text: '#Hands',
+            ),
+            _buildHeaderChild(
+              flex: report_tips_width,
+              text: 'Tips',
+            ),
+            _buildHeaderChild(
+              flex: report_buyin_width,
+              text: 'Buyin',
+            ),
+            _buildHeaderChild(
+              flex: report_profit_width,
+              text: 'Profit',
+            ),
+          ],
+        ),
+      );
 
   void goBack(BuildContext context) {
     Navigator.pop(context);
@@ -238,6 +462,30 @@ class _ClubMembersUnderAgentState extends State<ClubMembersUnderAgent>
   void exitPlayersEditMode() {
     playersEditMode = false;
     searchTextController.text = "";
+  }
+
+  _handleDateRangePicker(BuildContext context, AppTheme theme) async {
+    final dateRange = await showDateRangePicker(
+      initialDateRange: _dateTimeRange,
+      context: context,
+      firstDate: DateTime.now().subtract(Duration(days: 3650)),
+      lastDate: DateTime.now(),
+      builder: (BuildContext context, Widget child) {
+        return Theme(
+          data: ThemeData.light().copyWith(
+            primaryColor: theme.primaryColor,
+            accentColor: theme.accentColor,
+            colorScheme: ColorScheme.light(primary: theme.primaryColor),
+            buttonTheme: ButtonThemeData(textTheme: ButtonTextTheme.primary),
+          ),
+          child: child,
+        );
+      },
+    );
+
+    if (dateRange != null) {
+      _dateTimeRange = dateRange;
+    }
   }
 }
 
