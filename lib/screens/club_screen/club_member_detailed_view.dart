@@ -397,10 +397,10 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                         // set leader flag
                         leaderRow(theme),
                         SizedBox(height: 10),
-                        myNetwork(theme),
-                        SizedBox(height: 10),
-                        referredByRow(theme),
-                        SizedBox(height: 10),
+                        //myNetwork(theme),
+                        //SizedBox(height: 10),
+                        //referredByRow(theme),
+                        //SizedBox(height: 10),
                         playersUnderRow(theme),
                         ...children,
                         Divider(
@@ -717,17 +717,6 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
     return Row(
       children: [
         Expanded(
-          flex: 6,
-          child: Padding(
-            padding: EdgeInsets.only(left: 5),
-            child: Text(
-              'Assigned Under Leader',
-              textAlign: TextAlign.left,
-              style: AppDecorators.getHeadLine4Style(theme: theme),
-            ),
-          ),
-        ),
-        Expanded(
           flex: 3,
           child: InkWell(
             onTap: () async {
@@ -785,7 +774,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
             child: Padding(
               padding: EdgeInsets.only(left: 5),
               child: Text(
-                'Players Under (count)',
+                'Players Under (${playersUnderMe.length})',
                 textAlign: TextAlign.left,
                 style: AppDecorators.getHeadLine4Style(theme: theme),
               ),
