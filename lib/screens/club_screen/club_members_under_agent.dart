@@ -4,6 +4,8 @@ import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
+import 'package:pokerapp/widgets/buttons.dart';
+import 'package:pokerapp/widgets/switch.dart';
 
 class ClubMembersUnderAgent extends StatefulWidget {
   final ClubMemberModel member;
@@ -19,7 +21,13 @@ class _ClubMembersUnderAgentState extends State<ClubMembersUnderAgent>
   AppTheme theme;
   TabController _tabController;
   int _selectedTabIndex = 0;
-  List<Player> players = [];
+  List<Player> allPlayers = [];
+  List<Player> selectedPlayers = [];
+  List<Player> searchPlayers = [];
+
+  bool playersEditMode = false;
+  TextEditingController searchTextController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -27,7 +35,18 @@ class _ClubMembersUnderAgentState extends State<ClubMembersUnderAgent>
     _tabController = TabController(length: 2, vsync: this);
     _tabController.addListener(() {
       setState(() {
+        exitPlayersEditMode();
         _selectedTabIndex = _tabController.index;
+      });
+    });
+
+    searchTextController.addListener(() {
+      String searchText = searchTextController.text.trim();
+      setState(() {
+        searchPlayers = allPlayers
+            .where((element) =>
+                (element.name.toLowerCase().contains(searchText.toLowerCase())))
+            .toList();
       });
     });
 
@@ -35,9 +54,13 @@ class _ClubMembersUnderAgentState extends State<ClubMembersUnderAgent>
   }
 
   populateDummyPlayers() {
-    players.add(Player(id: 0, name: "Young"));
-    players.add(Player(id: 0, name: "Raja"));
-    players.add(Player(id: 0, name: "Bill"));
+    allPlayers.add(Player(id: 1, name: "Young"));
+    allPlayers.add(Player(id: 2, name: "Raja"));
+    allPlayers.add(Player(id: 3, name: "Bill"));
+    allPlayers.add(Player(id: 4, name: "Sheldon"));
+    allPlayers.add(Player(id: 5, name: "Raj"));
+
+    searchPlayers = allPlayers;
   }
 
   @override
@@ -56,6 +79,7 @@ class _ClubMembersUnderAgentState extends State<ClubMembersUnderAgent>
         ),
         body: SafeArea(
           child: Column(
+            mainAxisSize: MainAxisSize.max,
             children: [
               Align(
                 alignment: Alignment.centerLeft,
@@ -73,10 +97,7 @@ class _ClubMembersUnderAgentState extends State<ClubMembersUnderAgent>
                   ],
                 ),
               ),
-              Container(
-                height: 300,
-                padding: EdgeInsets.only(top: 16.ph),
-                color: Colors.transparent,
+              Expanded(
                 child: TabBarView(
                   controller: _tabController,
                   physics: NeverScrollableScrollPhysics(),
@@ -89,12 +110,16 @@ class _ClubMembersUnderAgentState extends State<ClubMembersUnderAgent>
             ],
           ),
         ),
-        floatingActionButton: (_selectedTabIndex == 0)
+        floatingActionButton: (_selectedTabIndex == 0 && !playersEditMode)
             ? FloatingActionButton(
                 backgroundColor: theme.accentColor,
-                onPressed: () async {},
+                onPressed: () async {
+                  setState(() {
+                    playersEditMode = true;
+                  });
+                },
                 child: Icon(
-                  Icons.add,
+                  Icons.edit,
                   color: theme.primaryColorWithDark(),
                 ),
               )
@@ -104,47 +129,102 @@ class _ClubMembersUnderAgentState extends State<ClubMembersUnderAgent>
   }
 
   Widget playersTab(AppTheme theme) {
-    return ListView.builder(
-        padding: EdgeInsets.symmetric(horizontal: 8.pw),
-        itemCount: players.length,
-        itemBuilder: (context, index) {
-          Player player = players[index];
-          return Container(
-            margin: EdgeInsets.only(
-              bottom: 10.ph,
-            ),
-            child: Row(
-              children: [
-                Expanded(child: Text(player.name)),
-                InkWell(
-                  onTap: () {
-                    setState(() {
-                      players.removeAt(index);
-                    });
-                  },
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Container(
-                        height: 25.ph,
-                        width: 25.pw,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15.pw),
-                          color: Colors.grey.shade200,
-                        ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          playersEditMode
+              ? Padding(
+                  padding: EdgeInsets.only(top: 16.ph),
+                  child: TextField(
+                    controller: searchTextController,
+                    style: AppDecorators.getSubtitle1Style(theme: theme),
+                    decoration: InputDecoration(
+                      hintText: 'Search',
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5.0),
+                          borderSide: BorderSide(color: theme.accentColor)),
+                      focusedBorder: new OutlineInputBorder(
+                        borderRadius: new BorderRadius.circular(10.0),
+                        borderSide: BorderSide(color: theme.accentColor),
                       ),
-                      Icon(
-                        Icons.remove,
-                        color: Colors.red,
-                        size: 20,
-                      ),
-                    ],
+                      prefixIcon: Icon(Icons.search, color: theme.accentColor),
+                    ),
                   ),
-                ),
-              ],
-            ),
-          );
-        });
+                )
+              : SizedBox.shrink(),
+          SizedBox(height: 16.ph),
+          Expanded(
+            child: ListView.builder(
+                itemCount: (!playersEditMode)
+                    ? selectedPlayers.length
+                    : searchPlayers.length,
+                shrinkWrap: false,
+                itemBuilder: (context, index) {
+                  Player player = (!playersEditMode)
+                      ? selectedPlayers[index]
+                      : searchPlayers[index];
+                  return Container(
+                    margin: EdgeInsets.only(
+                      bottom: 10.ph,
+                    ),
+                    child: SwitchWidget2(
+                      value: player.selected,
+                      onChange: (bool b) {
+                        Player selectedPlayer = allPlayers
+                            .firstWhere((element) => (element.id == player.id));
+                        selectedPlayer.selected = b;
+                      },
+                      label: player.name,
+                      visibleSwitch: playersEditMode,
+                    ),
+                  );
+                }),
+          ),
+          playersEditMode
+              ? Column(
+                  children: [
+                    Divider(
+                      color: Colors.white,
+                      height: 30,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        RoundRectButton(
+                          onTap: () async {
+                            selectedPlayers = [];
+                            selectedPlayers.addAll(allPlayers
+                                .where((element) => (element.selected)));
+                            setState(() {
+                              exitPlayersEditMode();
+                            });
+                          },
+                          text: 'Apply', //_appScreenText['hostGame'],
+                          theme: theme,
+                        ),
+                        SizedBox(width: 60.pw),
+                        RoundRectButton(
+                          onTap: () async {
+                            setState(() {
+                              exitPlayersEditMode();
+                            });
+                          },
+                          text: 'Cancel', //_appScreenText['hostGame'],
+                          theme: theme,
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 30.ph,
+                    ),
+                  ],
+                )
+              : SizedBox.shrink(),
+        ],
+      ),
+    );
   }
 
   Widget reportTab(AppTheme theme) {
@@ -154,11 +234,17 @@ class _ClubMembersUnderAgentState extends State<ClubMembersUnderAgent>
   void goBack(BuildContext context) {
     Navigator.pop(context);
   }
+
+  void exitPlayersEditMode() {
+    playersEditMode = false;
+    searchTextController.text = "";
+  }
 }
 
 class Player {
   int id;
   String name;
+  bool selected;
 
-  Player({@required this.id, @required this.name});
+  Player({@required this.id, @required this.name, this.selected = false});
 }
