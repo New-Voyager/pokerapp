@@ -397,11 +397,9 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                         // set leader flag
                         leaderRow(theme),
                         SizedBox(height: 10),
-                        myNetwork(theme),
-                        SizedBox(height: 10),
-                        referredByRow(theme),
-                        SizedBox(height: 10),
-                        playersUnderRow(theme),
+                        Visibility(
+                            visible: _data.isAgent,
+                            child: playersUnderRow(theme)),
                         ...children,
                         Divider(
                           color: theme.supportingColor,
@@ -454,7 +452,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            "Tips Back",
+            "Fee Credits %",
             style: AppDecorators.getHeadLine4Style(theme: theme),
           ),
           SizedBox(width: 30.pw),
@@ -717,17 +715,6 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
     return Row(
       children: [
         Expanded(
-          flex: 6,
-          child: Padding(
-            padding: EdgeInsets.only(left: 5),
-            child: Text(
-              'Assigned Under Leader',
-              textAlign: TextAlign.left,
-              style: AppDecorators.getHeadLine4Style(theme: theme),
-            ),
-          ),
-        ),
-        Expanded(
           flex: 3,
           child: InkWell(
             onTap: () async {
@@ -785,7 +772,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
             child: Padding(
               padding: EdgeInsets.only(left: 5),
               child: Text(
-                'Players Under (count)',
+                'Players Under (${playersUnderMe.length})',
                 textAlign: TextAlign.left,
                 style: AppDecorators.getHeadLine4Style(theme: theme),
               ),
@@ -794,11 +781,6 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
           Padding(
             padding: EdgeInsets.only(left: 5),
             child: Row(children: [
-              Text(
-                _data.agentName ?? '',
-                textAlign: TextAlign.center,
-                style: AppDecorators.getHeadLine4Style(theme: theme),
-              ),
               SizedBox(
                 width: 10,
               ),
