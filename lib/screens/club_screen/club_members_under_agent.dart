@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/club_members_model.dart';
 import 'package:pokerapp/models/member_activity_model.dart';
@@ -42,6 +44,7 @@ class _ClubMembersUnderAgentState extends State<ClubMembersUnderAgent>
 
   List<ClubMemberModel> allPlayers = [];
   bool loading = true;
+  bool playersLoading = false;
 
   bool playersEditMode = false;
   TextEditingController searchTextController = TextEditingController();
@@ -294,6 +297,9 @@ class _ClubMembersUnderAgentState extends State<ClubMembersUnderAgent>
   }
 
   Widget playersTab(AppTheme theme) {
+    if (playersLoading) {
+      return CircularProgressWidget(text: 'Loading...');
+    }
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: Column(
@@ -362,6 +368,10 @@ class _ClubMembersUnderAgentState extends State<ClubMembersUnderAgent>
                               }
                             }
 
+                            setState(() {
+                              playersLoading = true;
+                            });
+
                             for (final member in newlyAddedPlayers) {
                               await ClubInteriorService.setAgent(
                                   member.clubCode,
@@ -415,6 +425,7 @@ class _ClubMembersUnderAgentState extends State<ClubMembersUnderAgent>
 
   void exitPlayersEditMode() {
     playersEditMode = false;
+    playersLoading = false;
     searchTextController.text = "";
   }
 }
@@ -454,10 +465,10 @@ class _ReportTabState extends State<ReportTab> {
     setState(() {});
 
     // this week
-    DateTime now = DateTime.now();
-    DateTime nowAdjust = DateTime(now.year, now.month, now.day);
-    DateTime start = findFirstDateOfTheWeek(nowAdjust).toUtc();
-    DateTime end = findLastDateOfTheWeek(nowAdjust).toUtc();
+    // DateTime now = DateTime.now();
+    // DateTime nowAdjust = DateTime(now.year, now.month, now.day);
+    // DateTime start = findFirstDateOfTheWeek(nowAdjust).toUtc();
+    // DateTime end = findLastDateOfTheWeek(nowAdjust).toUtc();
 
     // last week
     // this month
@@ -466,7 +477,10 @@ class _ReportTabState extends State<ReportTab> {
 
     // load here
     final activities = await ClubInteriorService.getAgentPlayerActivities(
-        widget.clubCode, widget.agentId, start, end);
+        widget.clubCode,
+        widget.agentId,
+        _dateTimeRange.start,
+        _dateTimeRange.end);
     memberActivities = [];
     Map<String, MemberActivity> activityMap = {};
     for (final activity in activities) {
@@ -488,15 +502,35 @@ class _ReportTabState extends State<ReportTab> {
     setState(() {});
   }
 
+  void initDates() {
+    var now = DateTime.now();
+    var startDate = now.subtract(Duration(days: now.weekday));
+    startDate =
+        DateTime(startDate.year, startDate.month, startDate.day, 0, 0, 0);
+    var endDate = DateTime(now.year, now.month, now.day, 0, 0, 0);
+    _dateTimeRange = DateTimeRange(start: startDate, end: endDate);
+  }
+
   @override
   void initState() {
     super.initState();
+
+    initDates();
     fetchData();
   }
 
   @override
   Widget build(BuildContext context) {
     AppTheme theme = AppTheme.getTheme(context);
+
+    final now = DateTime.now();
+
+    String startDateStr = DateFormat('dd MMM').format(_dateTimeRange.start);
+    String endDateStr = DateFormat('dd MMM').format(_dateTimeRange.end);
+    if (_dateTimeRange.start.year != now.year) {
+      startDateStr = DateFormat('dd MMM yyyy').format(_dateTimeRange.start);
+      endDateStr = DateFormat('dd MMM yyyy').format(_dateTimeRange.end);
+    }
 
     if (loading) {
       return CircularProgressWidget(text: 'Loading...');
@@ -526,22 +560,59 @@ class _ReportTabState extends State<ReportTab> {
                       // 'Last Month'
                     ],
                     onSelect: (int value) async {
-                      final now = DateTime.now();
                       _selectedReportDateRangeIndex = value;
                       if (value == 0) {
+                        var startDate =
+                            now.subtract(Duration(days: now.weekday - 1));
+                        startDate = DateTime(startDate.year, startDate.month,
+                            startDate.day, 0, 0, 0);
+                        var endDate =
+                            DateTime(now.year, now.month, now.day, 0, 0, 0);
+                        _dateTimeRange =
+                            DateTimeRange(start: startDate, end: endDate);
                         setState(() {});
                       } else if (value == 1) {
+                        var startDate = now
+                            .subtract(Duration(days: now.weekday))
+                            .subtract(Duration(days: 7));
+                        startDate = DateTime(startDate.year, startDate.month,
+                            startDate.day, 0, 0, 0);
+                        var endDate = startDate.add(Duration(days: 7));
+                        _dateTimeRange =
+                            DateTimeRange(start: startDate, end: endDate);
                         setState(() {});
                       } else if (value == 2) {
+                        var startDate =
+                            now.subtract(Duration(days: now.day - 1));
+                        startDate = DateTime(startDate.year, startDate.month,
+                            startDate.day, 0, 0, 0);
+                        var endDate =
+                            startDate.add(Duration(days: now.day - 1));
+                        _dateTimeRange =
+                            DateTimeRange(start: startDate, end: endDate);
                         setState(() {});
                       } else if (value == 3) {
+                        var startDate =
+                            DateTime(now.year, now.month - 2, 1, 0, 0, 0);
+                        var endDate =
+                            DateTime(now.year, now.month - 1, 0, 0, 0, 0);
+                        _dateTimeRange =
+                            DateTimeRange(start: startDate, end: endDate);
                         setState(() {});
                       } else if (value == 4) {
                         await _handleDateRangePicker(context, theme);
 
                         setState(() {});
                       }
+
+                      fetchData();
                     },
+                  ),
+                  // Text("Selected Date Range: $_dateTimeRange"),
+                  Center(
+                    child: Text(((startDateStr != endDateStr)
+                        ? '${startDateStr} - ${endDateStr}'
+                        : '$startDateStr')),
                   ),
                   SizedBox(height: 16.pw),
                   Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -713,27 +784,89 @@ class _ReportTabState extends State<ReportTab> {
   }
 
   _handleDateRangePicker(BuildContext context, AppTheme theme) async {
-    final dateRange = await showDateRangePicker(
-      initialDateRange: _dateTimeRange,
+    var startDate = await datePicker(
+      minimumDate: DateTime.now().subtract(Duration(days: 90)),
+      maximumDate: DateTime.now(),
+      initialDate: DateTime.now().subtract(Duration(days: 7)),
+      theme: theme,
+      title: "Start Date",
+    );
+
+    if (startDate != null) {
+      var endDate = await datePicker(
+        minimumDate: startDate,
+        maximumDate: DateTime.now(),
+        initialDate: DateTime.now().subtract(Duration(minutes: 1)),
+        theme: theme,
+        title: "End Date",
+      );
+
+      _dateTimeRange = DateTimeRange(
+          start: startDate, end: (endDate != null) ? endDate : DateTime.now());
+    } else {
+      _dateTimeRange = DateTimeRange(
+          start: DateTime.now().subtract(Duration(days: 7)),
+          end: DateTime.now());
+    }
+  }
+
+  datePicker(
+      {@required DateTime minimumDate,
+      @required DateTime maximumDate,
+      @required DateTime initialDate,
+      @required String title,
+      @required AppTheme theme}) async {
+    return await showCupertinoModalPopup(
       context: context,
-      firstDate: DateTime.now().subtract(Duration(days: 3650)),
-      lastDate: DateTime.now(),
-      builder: (BuildContext context, Widget child) {
-        return Theme(
-          data: ThemeData.light().copyWith(
-            primaryColor: theme.primaryColor,
-            accentColor: theme.accentColor,
-            colorScheme: ColorScheme.light(primary: theme.primaryColor),
-            buttonTheme: ButtonThemeData(textTheme: ButtonTextTheme.primary),
+      builder: (BuildContext context) {
+        var selectedDate = initialDate;
+        return Material(
+          child: CupertinoTheme(
+            data: CupertinoThemeData(
+              brightness: Brightness.dark,
+            ),
+            child: Container(
+              decoration: AppDecorators.bgRadialGradient(theme).copyWith(
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: theme.accentColor, width: 3),
+              ),
+              padding: EdgeInsets.all(8.pw),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    title,
+                    style: AppDecorators.getHeadLine2Style(
+                      theme: theme,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 250,
+                    child: CupertinoDatePicker(
+                        mode: CupertinoDatePickerMode.date,
+                        initialDateTime: initialDate,
+                        maximumDate: maximumDate,
+                        minimumDate: minimumDate,
+                        onDateTimeChanged: (val) {
+                          setState(() {
+                            selectedDate = val;
+                          });
+                        }),
+                  ),
+                  RoundRectButton(
+                      onTap: () {
+                        Navigator.of(context).pop(selectedDate);
+                      },
+                      text: "OK",
+                      theme: theme),
+                  SizedBox(height: MediaQuery.of(context).padding.bottom),
+                ],
+              ),
+            ),
           ),
-          child: child,
         );
       },
     );
-
-    if (dateRange != null) {
-      _dateTimeRange = dateRange;
-    }
   }
 
   Widget _buildHeaderChild({int flex = 1, String text = 'Player'}) => Expanded(
