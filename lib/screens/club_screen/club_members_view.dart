@@ -181,7 +181,7 @@ class _ClubMembersViewState extends State<ClubMembersView>
         text: _appScreenText['managers'],
       ),
       Tab(
-        text: 'Leaders',
+        text: 'Agents',
       ),
     ];
     if (_myReferrals.length > 0) {
