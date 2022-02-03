@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/club_members_model.dart';
 import 'package:pokerapp/models/member_activity_model.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
-import 'package:pokerapp/resources/app_text_styles.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/club_screen/set_tips_back_dialog.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
@@ -490,15 +490,35 @@ class _ReportTabState extends State<ReportTab> {
     setState(() {});
   }
 
+  void initDates() {
+    var now = DateTime.now();
+    var startDate = now.subtract(Duration(days: now.weekday));
+    startDate =
+        DateTime(startDate.year, startDate.month, startDate.day, 0, 0, 0);
+    var endDate = DateTime(now.year, now.month, now.day, 0, 0, 0);
+    _dateTimeRange = DateTimeRange(start: startDate, end: endDate);
+  }
+
   @override
   void initState() {
     super.initState();
+
+    initDates();
     fetchData();
   }
 
   @override
   Widget build(BuildContext context) {
     AppTheme theme = AppTheme.getTheme(context);
+
+    final now = DateTime.now();
+
+    String startDateStr = DateFormat('dd MMM').format(_dateTimeRange.start);
+    String endDateStr = DateFormat('dd MMM').format(_dateTimeRange.end);
+    if (_dateTimeRange.start.year != now.year) {
+      startDateStr = DateFormat('dd MMM yyyy').format(_dateTimeRange.start);
+      endDateStr = DateFormat('dd MMM yyyy').format(_dateTimeRange.end);
+    }
 
     if (loading) {
       return CircularProgressWidget(text: 'Loading...');
@@ -528,15 +548,44 @@ class _ReportTabState extends State<ReportTab> {
                       // 'Last Month'
                     ],
                     onSelect: (int value) async {
-                      final now = DateTime.now();
                       _selectedReportDateRangeIndex = value;
                       if (value == 0) {
+                        var startDate =
+                            now.subtract(Duration(days: now.weekday - 1));
+                        startDate = DateTime(startDate.year, startDate.month,
+                            startDate.day, 0, 0, 0);
+                        var endDate =
+                            DateTime(now.year, now.month, now.day, 0, 0, 0);
+                        _dateTimeRange =
+                            DateTimeRange(start: startDate, end: endDate);
                         setState(() {});
                       } else if (value == 1) {
+                        var startDate = now
+                            .subtract(Duration(days: now.weekday))
+                            .subtract(Duration(days: 7));
+                        startDate = DateTime(startDate.year, startDate.month,
+                            startDate.day, 0, 0, 0);
+                        var endDate = startDate.add(Duration(days: 7));
+                        _dateTimeRange =
+                            DateTimeRange(start: startDate, end: endDate);
                         setState(() {});
                       } else if (value == 2) {
+                        var startDate =
+                            now.subtract(Duration(days: now.day - 1));
+                        startDate = DateTime(startDate.year, startDate.month,
+                            startDate.day, 0, 0, 0);
+                        var endDate =
+                            startDate.add(Duration(days: now.day - 1));
+                        _dateTimeRange =
+                            DateTimeRange(start: startDate, end: endDate);
                         setState(() {});
                       } else if (value == 3) {
+                        var startDate =
+                            DateTime(now.year, now.month - 2, 1, 0, 0, 0);
+                        var endDate =
+                            DateTime(now.year, now.month - 1, 0, 0, 0, 0);
+                        _dateTimeRange =
+                            DateTimeRange(start: startDate, end: endDate);
                         setState(() {});
                       } else if (value == 4) {
                         await _handleDateRangePicker(context, theme);
@@ -544,6 +593,12 @@ class _ReportTabState extends State<ReportTab> {
                         setState(() {});
                       }
                     },
+                  ),
+                  // Text("Selected Date Range: $_dateTimeRange"),
+                  Center(
+                    child: Text(((startDateStr != endDateStr)
+                        ? '${startDateStr} - ${endDateStr}'
+                        : '$startDateStr')),
                   ),
                   SizedBox(height: 16.pw),
                   Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
