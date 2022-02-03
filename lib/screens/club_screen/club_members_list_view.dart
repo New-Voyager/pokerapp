@@ -146,12 +146,12 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
                           "allMembers": widget.allMembers,
                         },
                       ) as bool;
-                      if (updated) {
-                        if (widget.fetchData != null) {
-                          await widget.fetchData();
-                        }
-                        setState(() {});
-                      }
+                      // if (updated ?? false) {
+                      //   if (widget.fetchData != null) {
+                      //     await widget.fetchData();
+                      //   }
+                      //   setState(() {});
+                      // }
                     },
                     child: Row(
                       children: <Widget>[
@@ -211,7 +211,7 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
                                   child: Row(
                                     children: <Widget>[
                                       Text(
-                                        data.lastPlayedDate,
+                                        data.lastPlayedDateStr,
                                         textAlign: TextAlign.left,
                                         style: AppDecorators.getSubtitle3Style(
                                             theme: theme),
@@ -332,7 +332,7 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
     }
     bool isVisible = (member.isManager ?? false) ||
         (member.isOwner ?? false) ||
-        (member.isLeader ?? false);
+        (member.isAgent ?? false);
     String titleText = '';
     List<Widget> labels = [];
     if (member.isManager ?? false) {
@@ -345,8 +345,8 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
       labels.add(SizedBox(width: 5));
       labels.add(Label(titleText, theme));
     }
-    if (member.isLeader ?? false) {
-      titleText = 'Leader';
+    if (member.isAgent ?? false) {
+      titleText = 'Agent';
       if (widget.viewAsOwner) {
         labels.add(SizedBox(width: 5));
         labels.add(Label(titleText, theme));

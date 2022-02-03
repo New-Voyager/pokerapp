@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/models/club_members_model.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
@@ -49,28 +50,31 @@ class _ClubMembersViewState extends State<ClubMembersView>
 
   _fetchData() async {
     log('Club member list');
-    _all = await ClubInteriorService.getClubMembers(
-        _clubHomePageModel.clubCode, MemberListOptions.ALL);
-    log('Club member list: $_all');
-    _inactive = await ClubInteriorService.getClubMembers(
-        _clubHomePageModel.clubCode, MemberListOptions.INACTIVE);
-    _managers = await ClubInteriorService.getClubMembers(
-        _clubHomePageModel.clubCode, MemberListOptions.MANAGERS);
-    _leaders = [];
+    _all = await appState.cacheService.getMembers(_clubHomePageModel.clubCode);
+    final now = DateTime.now();
     final currentUser = AuthService.get();
+
     for (final member in _all) {
-      if (member.isLeader) {
-        _leaders.add(member);
+      if (member.isManager) {
+        _managers.add(member);
       }
 
-      if (member.leaderUuid != null && member.leaderUuid == currentUser.uuid) {
+      if (member.lastPlayedDate != null) {
+        final diff = now.difference(member.lastPlayedDate);
+        if (diff.inDays >= 60) {
+          _inactive.add(member);
+        }
+      }
+
+      if (member.isAgent) {
+        _leaders.add(member);
+      }
+      if (member.agentUuid != null && member.agentUuid == currentUser.uuid) {
         // my referral
         _myReferrals.add(member);
       }
     }
-
-    // _unsettled = await ClubInteriorService.getClubMembers(
-    //     _clubHomePageModel.clubCode, MemberListOptions.UNSETTLED);
+    log('Club member list: $_all');
     if (mounted)
       setState(() {
         _isLoading = false;
@@ -118,13 +122,13 @@ class _ClubMembersViewState extends State<ClubMembersView>
   }
 
   Widget getTitle(AppTheme theme, ClubMemberModel member) {
-    bool isVisible = member.isManager || member.isOwner || member.isLeader;
+    bool isVisible = member.isManager || member.isOwner || member.isAgent;
     String titleText = '';
     if (member.isManager) {
       titleText = 'Manager';
     } else if (member.isOwner) {
       titleText = 'Owner';
-    } else if (member.isLeader) {
+    } else if (member.isAgent) {
       return Container();
       //titleText = 'Leader';
     }

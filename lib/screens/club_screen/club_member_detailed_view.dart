@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/main_helper.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/models/club_members_model.dart';
@@ -48,7 +49,7 @@ class ClubMembersDetailsView extends StatefulWidget {
 }
 
 class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
-    with RouteAwareAnalytics {
+    with RouteAwareAnalytics, SingleTickerProviderStateMixin {
   @override
   String get routeName => Routes.club_member_detail_view;
   bool loadingDone = false;
@@ -60,20 +61,42 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
   String oldPhoneText;
   String oldNotes;
   int oldTipsBack;
+  String oldDisplayName;
   TextEditingController _contactEditingController;
+  TextEditingController _nameEditingController;
   TextEditingController _notesEditingController;
   bool updated = false;
   bool closed = false;
+  TabController _tabController;
+  List<ClubMemberModel> playersUnderMe = [];
   _ClubMembersDetailsView(this.clubCode, this.playerId, this.isClubOwner);
 
   AppTextScreen _appScreenText;
 
   _fetchData() async {
-    _data = await ClubInteriorService.getClubMemberDetail(clubCode, playerId);
+    playersUnderMe = [];
+    //_data = await ClubInteriorService.getClubMemberDetail(clubCode, playerId);
+    final clubMembers = await appState.cacheService.getMembers(clubCode);
+    for (final member in clubMembers) {
+      if (member.playerId == playerId) {
+        _data = member;
+        break;
+      }
+    }
+
+    if (_data.isAgent) {
+      for (final member in clubMembers) {
+        if (member.agentUuid == playerId) {
+          playersUnderMe.add(member);
+        }
+      }
+    }
+
     oldPhoneText = _data.contactInfo;
     oldNotes = _data.notes;
     oldTipsBack = _data.tipsBack;
     loadingDone = true;
+    oldDisplayName = _data.displayName;
 
     if (closed) {
       return;
@@ -91,6 +114,8 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
       _contactEditingController =
           TextEditingController(text: _data.contactInfo);
       _notesEditingController = TextEditingController(text: _data.notes);
+      _nameEditingController = TextEditingController(text: _data.displayName);
+
       _notesEditingController.addListener(() {
         _data.notes = _notesEditingController.text;
         _data.edited = true;
@@ -98,6 +123,10 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
       _contactEditingController.addListener(() {
         _data.edited = true;
         _data.contactInfo = _contactEditingController.text;
+      });
+      _nameEditingController.addListener(() {
+        _data.edited = true;
+        _data.displayName = _nameEditingController.text;
       });
     }
     setState(() {});
@@ -107,6 +136,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
   void initState() {
     super.initState();
     _appScreenText = getAppTextScreen("clubMembersDetailsView");
+    _tabController = TabController(length: 2, vsync: this);
 
     _fetchData();
   }
@@ -121,12 +151,14 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
     if (this._data != null && this._data.edited) {
       if (oldPhoneText != _data.contactInfo ||
           oldNotes != _data.notes ||
-          oldTipsBack != _data.tipsBack) {
+          oldTipsBack != _data.tipsBack ||
+          oldDisplayName != _data.displayName) {
         ConnectionDialog.show(
             context: context, loadingText: "Updating player information...");
         try {
           // save the data
           await ClubInteriorService.updateClubMember(this._data);
+          await appState.cacheService.getMembers(clubCode, update: true);
           updated = true;
         } catch (err) {}
         ConnectionDialog.dismiss(
@@ -134,7 +166,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
         );
       }
     }
-    Navigator.of(context).pop(updated);
+    Navigator.of(context).pop();
   }
 
   List<Widget> getMemberButtons(AppTheme theme) {
@@ -282,17 +314,8 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
             },
           ),
           tipsBack(theme),
-          Divider(
-            color: theme.supportingColor,
-          ),
         ]);
       }
-      children.add(detailTile(theme));
-      children.add(
-        Divider(
-          color: theme.supportingColor,
-        ),
-      );
 
       return Container(
         decoration: AppDecorators.bgRadialGradient(theme),
@@ -344,7 +367,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                                 child: Text(
                                   _appScreenText['lastActive'] +
                                       ' ' +
-                                      _data.lastPlayedDate,
+                                      _data.lastPlayedDateStr,
                                   style: AppDecorators.getSubtitle3Style(
                                       theme: theme),
                                 ),
@@ -373,52 +396,46 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                           color: theme.supportingColor,
                         ),
                         // set leader flag
-                        SwitchWidget2(
-                            label: 'Leader',
-                            value: _data.isLeader,
-                            onChange: (val) async {
-                              await ClubInteriorService.setAsLeader(
-                                  widget.club.clubCode, _data.playerId, val);
-                              _data.isLeader = val;
-                              setState(() {});
-                            }),
+                        leaderRow(theme),
+                        SizedBox(height: 10),
+                        Visibility(
+                            visible: _data.isAgent,
+                            child: playersUnderRow(theme)),
                         ...children,
-                        referredByRow(theme),
                         Divider(
                           color: theme.supportingColor,
                         ),
-                        contactInfo(theme),
-                        Divider(
-                          color: theme.fillInColor,
-                        ),
-                        // notes view
-                        Container(
-                          padding: EdgeInsets.all(5),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Expanded(
-                                flex: 1,
-                                child: Icon(
-                                  Icons.note,
-                                  color: theme.secondaryColor,
-                                ),
-                              ),
-                              Expanded(
-                                flex: 8,
-                                child: Padding(
-                                  padding: EdgeInsets.only(left: 5),
-                                  child: CardFormTextField(
-                                    theme: theme,
-                                    controller: _notesEditingController,
-                                    hintText: _appScreenText['insertNotesHere'],
-                                    maxLines: 5,
+                        Column(
+                          children: [
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: TabBar(
+                                controller: _tabController,
+                                indicatorColor: theme.accentColor,
+                                isScrollable: true,
+                                tabs: [
+                                  Tab(
+                                    text: "Info",
                                   ),
-                                ),
+                                  Tab(
+                                    text: "Stats",
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
+                            ),
+                            Container(
+                              height: 300,
+                              padding: EdgeInsets.only(top: 16.ph),
+                              child: TabBarView(
+                                controller: _tabController,
+                                physics: NeverScrollableScrollPhysics(),
+                                children: [
+                                  contactInfo(theme),
+                                  detailTile(theme),
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -436,7 +453,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            "Tips Back",
+            "Fee Credits %",
             style: AppDecorators.getHeadLine4Style(theme: theme),
           ),
           SizedBox(width: 30.pw),
@@ -468,31 +485,87 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
   }
 
   Widget contactInfo(AppTheme theme) {
-    return // contact info
-        Container(
-      padding: EdgeInsets.all(5),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Expanded(
-            flex: 1,
-            child: Icon(Icons.phone, color: theme.secondaryColor),
-          ),
-          Expanded(
-            flex: 8,
-            child: Padding(
-              padding: EdgeInsets.only(left: 5),
-              child: CardFormTextField(
-                theme: theme,
-                controller: _contactEditingController,
-                hintText: _appScreenText['mobileNumber'],
-                maxLines: 1,
+    return Column(children: [
+      Container(
+        padding: EdgeInsets.all(5),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              flex: 1,
+              child: Icon(Icons.account_box, color: theme.secondaryColor),
+            ),
+            Expanded(
+              flex: 8,
+              child: Padding(
+                padding: EdgeInsets.only(left: 5),
+                child: CardFormTextField(
+                  theme: theme,
+                  controller: _nameEditingController,
+                  hintText: 'Player name',
+                  maxLines: 1,
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-    );
+
+      Container(
+        padding: EdgeInsets.all(5),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              flex: 1,
+              child: Icon(Icons.phone, color: theme.secondaryColor),
+            ),
+            Expanded(
+              flex: 8,
+              child: Padding(
+                padding: EdgeInsets.only(left: 5),
+                child: CardFormTextField(
+                  theme: theme,
+                  controller: _contactEditingController,
+                  hintText: _appScreenText['mobileNumber'],
+                  maxLines: 1,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+
+      // notes view
+      Container(
+        padding: EdgeInsets.all(5),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Expanded(
+              flex: 1,
+              child: Icon(
+                Icons.note,
+                color: theme.secondaryColor,
+              ),
+            ),
+            Expanded(
+              flex: 8,
+              child: Padding(
+                padding: EdgeInsets.only(left: 5),
+                child: CardFormTextField(
+                  theme: theme,
+                  controller: _notesEditingController,
+                  hintText: _appScreenText['insertNotesHere'],
+                  maxLines: 5,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    ]);
   }
 
   Future<void> kickPlayerOut() async {
@@ -610,43 +683,53 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
             : theme.negativeOrErrorColor;
   }
 
-  Widget referredByRow(AppTheme theme) {
+  Widget leaderRow(AppTheme theme) {
     return Row(
       children: [
         Expanded(
-          flex: 1,
-          child: Icon(
-            AppIcons.user,
-            color: Colors.blue,
-          ),
-        ),
-        Expanded(
-          flex: 6,
+          flex: 4,
           child: Padding(
             padding: EdgeInsets.only(left: 5),
             child: Text(
-              'Referred By',
+              'Agent',
               textAlign: TextAlign.left,
               style: AppDecorators.getHeadLine4Style(theme: theme),
             ),
           ),
         ),
         Expanded(
+            flex: 6,
+            child: SwitchWidget2(
+                label: '',
+                value: _data.isAgent,
+                onChange: (val) async {
+                  await ClubInteriorService.setAsAgent(
+                      widget.club.clubCode, _data.playerId, val);
+                  _data.isAgent = val;
+                  setState(() {});
+                })),
+      ],
+    );
+  }
+
+  Widget referredByRow(AppTheme theme) {
+    return Row(
+      children: [
+        Expanded(
           flex: 3,
           child: InkWell(
             onTap: () async {
               List<ClubMemberModel> leaders = [];
               for (final member in widget.allMembers) {
-                if (member.isLeader) {
+                if (member.isAgent) {
                   leaders.add(member);
                 }
               }
               // assign another player
-              log('assign a player');
               final ret = await ChooseMemberDialog.prompt(
                   context: context, club: widget.club, membersList: leaders);
               if (ret != null) {
-                await ClubInteriorService.setLeader(
+                await ClubInteriorService.setAgent(
                     widget.club.clubCode, _data.playerId, ret.playerUuid);
               }
             },
@@ -654,7 +737,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
               padding: EdgeInsets.only(left: 5),
               child: Row(children: [
                 Text(
-                  _data.leaderName ?? '',
+                  _data.agentName ?? '',
                   textAlign: TextAlign.center,
                   style: AppDecorators.getHeadLine4Style(theme: theme),
                 ),
@@ -665,6 +748,76 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
               ]),
             ),
           ),
+        ),
+      ],
+    );
+  }
+
+  Widget playersUnderRow(AppTheme theme) {
+    return InkWell(
+      onTap: () async {
+        await Navigator.pushNamed(
+          context,
+          Routes.club_member_players_under_view,
+          arguments: {
+            'clubCode': widget.clubCode,
+            'playerId': widget.playerId,
+            'owner': true,
+            'member': widget.member,
+          },
+        );
+        _fetchData();
+      },
+      child: Row(
+        children: [
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.only(left: 5),
+              child: Text(
+                'Players Under (${playersUnderMe.length})',
+                textAlign: TextAlign.left,
+                style: AppDecorators.getHeadLine4Style(theme: theme),
+              ),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(left: 5),
+            child: Row(children: [
+              SizedBox(
+                width: 10,
+              ),
+              Icon(Icons.navigate_next, color: theme.accentColor)
+            ]),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget myNetwork(AppTheme theme) {
+    if (!_data.isAgent) {
+      return Container();
+    }
+    return Row(
+      children: [
+        Expanded(
+          flex: 6,
+          child: RoundRectButton(
+              onTap: () async {
+                log('Query activities');
+                String agentId = _data.playerId;
+                DateTime now = DateTime.now();
+                DateTime nowAdjust = DateTime(now.year, now.month, now.day);
+                DateTime start = findFirstDateOfTheWeek(nowAdjust).toUtc();
+                DateTime end = findLastDateOfTheWeek(nowAdjust).toUtc();
+
+                final memberActivities =
+                    await ClubInteriorService.getAgentPlayerActivities(
+                        clubCode, agentId, start, end);
+                log('Query activities successful');
+              },
+              text: 'Query This Week',
+              theme: theme),
         ),
       ],
     );
@@ -847,6 +1000,7 @@ class ChooseMemberDialog {
     @required BuildContext context,
     @required ClubHomePageModel club,
     @required List<ClubMemberModel> membersList,
+    String title = 'Choose Leader',
   }) async {
     final ret = await showDialog<ChosenMember>(
         barrierDismissible: true,
@@ -862,8 +1016,7 @@ class ChooseMemberDialog {
                   ),
                 ),
                 backgroundColor: theme.fillInColor,
-                title: Center(
-                    child: SubTitleText(text: 'Choose Leader', theme: theme)),
+                title: Center(child: SubTitleText(text: title, theme: theme)),
                 content: Container(
                   width: Screen.width - 30,
                   height: Screen.height * 1 / 3,

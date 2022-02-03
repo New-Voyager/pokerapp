@@ -42,7 +42,8 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew>
   String get routeName => Routes.club_main;
   void refreshClubMainScreen() {
     //  log('refresh club main screen');
-    setState(() {});
+    fetchData(update: true);
+    //setState(() {});
   }
 
   @override
@@ -148,13 +149,15 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew>
         ],
       );
 
-  Future<ClubHomePageModel> fetchData() async {
+  Future<ClubHomePageModel> fetchData({bool update = false}) async {
     // if the current user is manager or club owner, get club coins
     var clubData;
     if (appState != null && appState.mockScreens) {
       clubData = await MockData.getClubHomePageData(widget.clubCode);
     } else {
-      clubData = await ClubsService.getClubHomePageData(widget.clubCode);
+      //clubData = await ClubsService.getClubHomePageData(widget.clubCode);
+      clubData = await appState.cacheService
+          .getClubHomePageData(widget.clubCode, update: update);
     }
     if (clubData.isManager || clubData.isOwner) {
       clubData.clubCoins = await ClubsService.getClubCoins(widget.clubCode);

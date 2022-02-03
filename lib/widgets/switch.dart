@@ -12,6 +12,7 @@ class SwitchWidget2 extends StatelessWidget {
   final String activeText;
   final String inactiveText;
   final IconData icon;
+  final bool visibleSwitch;
   /* ui variables */
   // final bool useSpacer;
 
@@ -25,6 +26,7 @@ class SwitchWidget2 extends StatelessWidget {
     this.disabled = false,
     this.activeText = 'On',
     this.inactiveText = 'Off',
+    this.visibleSwitch = true,
   }) : super(key: key == null ? UniqueKey() : key);
 
   @override
@@ -55,37 +57,41 @@ class SwitchWidget2 extends StatelessWidget {
             // useSpacer ? const Spacer() : const SizedBox(width: 20.0),
             const SizedBox(width: 10.0),
 
-            /* switch */
-            Consumer<ValueNotifier<bool>>(
-              builder: (_, vnValue, __) => FlutterSwitch(
-                //width: activeText != 'On' ? 100 : 70.0,
-                width: 50,
-                height: 25,
-                disabled: disabled,
-                activeTextColor: theme.supportingColor,
-                inactiveTextColor: theme.supportingColor.withAlpha(100),
-                activeSwitchBorder: Border.all(
-                  color: theme.accentColor,
-                  width: 2.0,
-                ),
-                inactiveSwitchBorder: Border.all(
-                  color: theme.supportingColor.withAlpha(100),
-                  width: 2.0,
-                ),
-                activeColor: theme.fillInColor,
-                activeToggleColor: theme.accentColor,
-                inactiveColor: theme.fillInColor,
-                inactiveToggleColor: theme.supportingColor.withAlpha(100),
-                //showOnOff: true,
-                activeText: activeText,
-                inactiveText: inactiveText,
-                value: vnValue.value ?? false,
-                onToggle: (bool newValue) {
-                  vnValue.value = newValue;
-                  onChange(newValue);
-                },
-              ),
-            )
+            visibleSwitch
+                ?
+
+                /* switch */
+                Consumer<ValueNotifier<bool>>(
+                    builder: (_, vnValue, __) => FlutterSwitch(
+                      //width: activeText != 'On' ? 100 : 70.0,
+                      width: 50,
+                      height: 25,
+                      disabled: disabled,
+                      activeTextColor: theme.supportingColor,
+                      inactiveTextColor: theme.supportingColor.withAlpha(100),
+                      activeSwitchBorder: Border.all(
+                        color: theme.accentColor,
+                        width: 2.0,
+                      ),
+                      inactiveSwitchBorder: Border.all(
+                        color: theme.supportingColor.withAlpha(100),
+                        width: 2.0,
+                      ),
+                      activeColor: theme.fillInColor,
+                      activeToggleColor: theme.accentColor,
+                      inactiveColor: theme.fillInColor,
+                      inactiveToggleColor: theme.supportingColor.withAlpha(100),
+                      //showOnOff: true,
+                      activeText: activeText,
+                      inactiveText: inactiveText,
+                      value: vnValue.value ?? false,
+                      onToggle: (bool newValue) {
+                        vnValue.value = newValue;
+                        onChange(newValue);
+                      },
+                    ),
+                  )
+                : SizedBox.shrink(),
           ],
         ),
       ),
