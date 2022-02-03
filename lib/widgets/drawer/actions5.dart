@@ -128,6 +128,20 @@ class _Actions5WidgetState extends State<Actions5Widget> {
     ]);
 
     children.add(SwitchWidget2(
+      label: 'Muck Losing Hand',
+      value: widget.gameState.playerSettings.muckLosingHand,
+      onChange: (val) async {
+        // setting the value saves it to local storage too
+        widget.gameState.playerSettings.muckLosingHand = val;
+        if (closed) return;
+        setState(() {});
+        await updateGamePlayerSettings();
+        if (closed) return;
+        setState(() {});
+      },
+    ));
+
+    children.add(SwitchWidget2(
       label: 'Show Hand Strength',
       value: widget.gameState.playerLocalConfig.showHandRank,
       onChange: (val) {

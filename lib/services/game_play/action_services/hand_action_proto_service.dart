@@ -654,7 +654,7 @@ class HandActionProtoService {
   }
 
   /// distribute cards for this particular `seatNo` `totalCards` no of times
-  static void _handleAnimationForSingleSeat(
+  static Future<void> _handleAnimationForSingleSeat(
     int seatNo,
     int totalCards,
     GameState gameState,
@@ -676,15 +676,23 @@ class HandActionProtoService {
   ) async {
     final allSeats = gameState.playersInGame.map<int>((p) => p.seatNo).toList();
     allSeats.shuffle();
-
+    log('Dealing');
+    AudioService.playDealSound(mute: gameState.playerLocalConfig.mute);
+    List<Future<void>> futures = [];
     for (final seatNo in allSeats) {
-      _handleAnimationForSingleSeat(seatNo, noCards, gameState);
+      final animation =
+          _handleAnimationForSingleSeat(seatNo, noCards, gameState);
+      futures.add(animation);
 
       // delay a bit
       await Future.delayed(
         AppConstants.cardDistributionWaitBetweenPlayersDuration,
       );
     }
+    log('Dealing done');
+    Future.wait(futures).then((value) {
+      AudioService.stopDeal();
+    });
   }
 
   Future<void> handleDealStarted({
