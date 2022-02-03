@@ -456,10 +456,10 @@ class _ReportTabState extends State<ReportTab> {
     setState(() {});
 
     // this week
-    DateTime now = DateTime.now();
-    DateTime nowAdjust = DateTime(now.year, now.month, now.day);
-    DateTime start = findFirstDateOfTheWeek(nowAdjust).toUtc();
-    DateTime end = findLastDateOfTheWeek(nowAdjust).toUtc();
+    // DateTime now = DateTime.now();
+    // DateTime nowAdjust = DateTime(now.year, now.month, now.day);
+    // DateTime start = findFirstDateOfTheWeek(nowAdjust).toUtc();
+    // DateTime end = findLastDateOfTheWeek(nowAdjust).toUtc();
 
     // last week
     // this month
@@ -468,7 +468,10 @@ class _ReportTabState extends State<ReportTab> {
 
     // load here
     final activities = await ClubInteriorService.getAgentPlayerActivities(
-        widget.clubCode, widget.agentId, start, end);
+        widget.clubCode,
+        widget.agentId,
+        _dateTimeRange.start,
+        _dateTimeRange.end);
     memberActivities = [];
     Map<String, MemberActivity> activityMap = {};
     for (final activity in activities) {
@@ -592,6 +595,8 @@ class _ReportTabState extends State<ReportTab> {
 
                         setState(() {});
                       }
+
+                      fetchData();
                     },
                   ),
                   // Text("Selected Date Range: $_dateTimeRange"),
