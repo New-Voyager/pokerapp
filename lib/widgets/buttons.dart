@@ -47,7 +47,23 @@ class RoundRectButton extends StatelessWidget {
               color: theme.roundedButtonBorderColor ??
                   theme.roundedButtonBackgroundColor,
               width: 1.pw),
-          color: theme.roundedButtonBackgroundColor,
+          // color: theme.roundedButtonBackgroundColor,
+          gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                theme.accentColorWithDark(0.1),
+                theme.accentColor,
+                theme.accentColorWithDark(0.1),
+                theme.accentColorWithDark(0.1),
+                //theme.accentColor,
+              ],
+              stops: [
+                0,
+                0.5,
+                0.8,
+                0.5
+              ]),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
