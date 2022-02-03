@@ -1,9 +1,11 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/club_members_model.dart';
 import 'package:pokerapp/models/member_activity_model.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
+import 'package:pokerapp/resources/app_text_styles.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/club_screen/set_tips_back_dialog.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
@@ -713,27 +715,89 @@ class _ReportTabState extends State<ReportTab> {
   }
 
   _handleDateRangePicker(BuildContext context, AppTheme theme) async {
-    final dateRange = await showDateRangePicker(
-      initialDateRange: _dateTimeRange,
+    var startDate = await datePicker(
+      minimumDate: DateTime.now().subtract(Duration(days: 90)),
+      maximumDate: DateTime.now(),
+      initialDate: DateTime.now().subtract(Duration(days: 7)),
+      theme: theme,
+      title: "Start Date",
+    );
+
+    if (startDate != null) {
+      var endDate = await datePicker(
+        minimumDate: startDate,
+        maximumDate: DateTime.now(),
+        initialDate: DateTime.now().subtract(Duration(minutes: 1)),
+        theme: theme,
+        title: "End Date",
+      );
+
+      _dateTimeRange = DateTimeRange(
+          start: startDate, end: (endDate != null) ? endDate : DateTime.now());
+    } else {
+      _dateTimeRange = DateTimeRange(
+          start: DateTime.now().subtract(Duration(days: 7)),
+          end: DateTime.now());
+    }
+  }
+
+  datePicker(
+      {@required DateTime minimumDate,
+      @required DateTime maximumDate,
+      @required DateTime initialDate,
+      @required String title,
+      @required AppTheme theme}) async {
+    return await showCupertinoModalPopup(
       context: context,
-      firstDate: DateTime.now().subtract(Duration(days: 3650)),
-      lastDate: DateTime.now(),
-      builder: (BuildContext context, Widget child) {
-        return Theme(
-          data: ThemeData.light().copyWith(
-            primaryColor: theme.primaryColor,
-            accentColor: theme.accentColor,
-            colorScheme: ColorScheme.light(primary: theme.primaryColor),
-            buttonTheme: ButtonThemeData(textTheme: ButtonTextTheme.primary),
+      builder: (BuildContext context) {
+        var selectedDate = initialDate;
+        return Material(
+          child: CupertinoTheme(
+            data: CupertinoThemeData(
+              brightness: Brightness.dark,
+            ),
+            child: Container(
+              decoration: AppDecorators.bgRadialGradient(theme).copyWith(
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: theme.accentColor, width: 3),
+              ),
+              padding: EdgeInsets.all(8.pw),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    title,
+                    style: AppDecorators.getHeadLine2Style(
+                      theme: theme,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 250,
+                    child: CupertinoDatePicker(
+                        mode: CupertinoDatePickerMode.date,
+                        initialDateTime: initialDate,
+                        maximumDate: maximumDate,
+                        minimumDate: minimumDate,
+                        onDateTimeChanged: (val) {
+                          setState(() {
+                            selectedDate = val;
+                          });
+                        }),
+                  ),
+                  RoundRectButton(
+                      onTap: () {
+                        Navigator.of(context).pop(selectedDate);
+                      },
+                      text: "OK",
+                      theme: theme),
+                  SizedBox(height: MediaQuery.of(context).padding.bottom),
+                ],
+              ),
+            ),
           ),
-          child: child,
         );
       },
     );
-
-    if (dateRange != null) {
-      _dateTimeRange = dateRange;
-    }
   }
 
   Widget _buildHeaderChild({int flex = 1, String text = 'Player'}) => Expanded(
