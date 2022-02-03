@@ -82,6 +82,7 @@ class AppState extends ChangeNotifier {
     if (currentIndex == 0) {
       notifyListeners();
     }
+    clubUpdateState.notify();
   }
 
   setGameEnded(bool value) {
@@ -89,6 +90,7 @@ class AppState extends ChangeNotifier {
     if (currentIndex == 0) {
       notifyListeners();
     }
+    clubUpdateState.notify();
   }
 
   set currentFlavor(Flavor flavor) {

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -12,7 +14,6 @@ import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/club_interior_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/formatter.dart';
-import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/radio_list_widget.dart';
 import 'package:pokerapp/widgets/switch.dart';
@@ -60,16 +61,14 @@ class _ClubMembersUnderAgentState extends State<ClubMembersUnderAgent>
       }
     }
 
-    if (widget.member.isAgent) {
-      for (final member in clubMembers) {
-        if (member.agentUuid == widget.member.playerId) {
-          playersUnderMe.add(member);
+    for (final member in clubMembers) {
+      if (member.agentUuid == widget.member.playerId) {
+        playersUnderMe.add(member);
+        allPlayers.add(member);
+      } else {
+        if (member.agentUuid == null || member.agentUuid == '') {
+          playersUnderNoAgents.add(member);
           allPlayers.add(member);
-        } else {
-          if (member.agentUuid == null || member.agentUuid == '') {
-            playersUnderNoAgents.add(member);
-            allPlayers.add(member);
-          }
         }
       }
     }
@@ -551,10 +550,10 @@ class _ReportTabState extends State<ReportTab> {
                   RadioToggleButtonsWidget<String>(
                     defaultValue: _selectedReportDateRangeIndex,
                     values: [
-                      'This Week',
-                      'Last Week',
-                      'This Month',
-                      'Last Month',
+                      'This\nWeek',
+                      'Last\nWeek',
+                      'This\nMonth',
+                      'Last\nMonth',
                       'Custom',
                       // 'Last Week',
                       // 'Last Month'
@@ -784,10 +783,11 @@ class _ReportTabState extends State<ReportTab> {
   }
 
   _handleDateRangePicker(BuildContext context, AppTheme theme) async {
+    DateTime now = DateTime.now();
     var startDate = await datePicker(
-      minimumDate: DateTime.now().subtract(Duration(days: 90)),
-      maximumDate: DateTime.now(),
-      initialDate: DateTime.now().subtract(Duration(days: 7)),
+      minimumDate: now.subtract(Duration(days: 90)),
+      maximumDate: now,
+      initialDate: now.subtract(Duration(days: 7)),
       theme: theme,
       title: "Start Date",
     );
@@ -795,8 +795,8 @@ class _ReportTabState extends State<ReportTab> {
     if (startDate != null) {
       var endDate = await datePicker(
         minimumDate: startDate,
-        maximumDate: DateTime.now(),
-        initialDate: DateTime.now().subtract(Duration(minutes: 1)),
+        maximumDate: now,
+        initialDate: now.subtract(Duration(minutes: 1)),
         theme: theme,
         title: "End Date",
       );
@@ -816,6 +816,7 @@ class _ReportTabState extends State<ReportTab> {
       @required DateTime initialDate,
       @required String title,
       @required AppTheme theme}) async {
+    log('minimum date: ${minimumDate.toIso8601String()} maximum date: ${maximumDate.toIso8601String()}');
     return await showCupertinoModalPopup(
       context: context,
       builder: (BuildContext context) {
@@ -845,6 +846,7 @@ class _ReportTabState extends State<ReportTab> {
                     child: CupertinoDatePicker(
                         mode: CupertinoDatePickerMode.date,
                         initialDateTime: initialDate,
+                        minimumYear: 1,
                         maximumDate: maximumDate,
                         minimumDate: minimumDate,
                         onDateTimeChanged: (val) {
