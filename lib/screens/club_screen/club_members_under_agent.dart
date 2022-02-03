@@ -465,8 +465,19 @@ class _ReportTabState extends State<ReportTab> {
     // custom date
 
     // load here
-    memberActivities = await ClubInteriorService.getAgentPlayerActivities(
+    final activities = await ClubInteriorService.getAgentPlayerActivities(
         widget.clubCode, widget.agentId, start, end);
+    memberActivities = [];
+    Map<String, MemberActivity> activityMap = {};
+    for (final activity in activities) {
+      if (activityMap[activity.playerUuid] == null) {
+        activityMap[activity.playerUuid] = activity;
+      }
+    }
+    for (final activity in activityMap.values) {
+      memberActivities.add(activity);
+    }
+
     totalFees = 0;
     for (final member in memberActivities) {
       totalFees += member.tips;
@@ -615,11 +626,11 @@ class _ReportTabState extends State<ReportTab> {
             Expanded(
               child: ListView.separated(
                 physics: NeverScrollableScrollPhysics(),
-                itemCount: memberActivities.length,
+                itemCount: memberActivities.length + 1,
                 itemBuilder: (context, index) {
                   // index 0 draws the header
                   if (index == 0) return _buildTableHeader(theme);
-                  final memberActivity = memberActivities[index];
+                  final memberActivity = memberActivities[index - 1];
                   return Container(
                     margin: EdgeInsets.symmetric(horizontal: 10.0.pw),
                     height: 50.0.ph,
