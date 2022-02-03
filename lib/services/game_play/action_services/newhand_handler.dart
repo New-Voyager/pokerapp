@@ -13,6 +13,7 @@ import 'package:pokerapp/proto/handmessage.pb.dart' as proto;
 import 'package:pokerapp/proto/enums.pb.dart' as proto;
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/services/audio/audio_service.dart';
+import 'package:pokerapp/services/game_play/action_services/hand_action_proto_service.dart';
 
 class NewHandHandler {
   proto.NewHand newHand;
@@ -380,53 +381,17 @@ class NewHandHandler {
         await Future.delayed(AppConstants.bombPotTotalWaitDuration); // wait
       } else {
         await Future.delayed(
-            AppConstants.cardShufflingTotalWaitDuration); // wait
+          AppConstants.cardShufflingTotalWaitDuration,
+        ); // wait
       }
+
+      await HandActionProtoService.cardDistribution(
+        gameState,
+        gameState.handInfo.noCards,
+      );
+      // stop showing shuffle cards, after animation is done
       tableState.updateCardShufflingAnimation(false);
-      /* end card shuffling animation */
-
-      if (gameState.uiClosing) return;
-
-      List<int> seatNos = gameState.playersInGame.map((p) => p.seatNo).toList();
-      seatNos.sort();
-
-      if (gameState.uiClosing) return;
-
-      final handInfo = gameState.handInfo;
-
-      if (gameState.uiClosing) return;
-
-      /* distribute cards to the players */
-      /* this for loop will distribute cards one by one to all the players */
-      //for (int i = 0; i < handInfo.noCards; i++) {
-      /* for distributing the ith card, go through all the players, and give them */
-      for (int seatNo in seatNos) {
-        if (gameState.uiClosing) return;
-        final seat = gameState.getSeat(seatNo);
-        if (seat.player == null || !seat.player.inhand) {
-          continue;
-        }
-
-        // start the animation
-        // log('CardDistribution: seatNo: $seatNo');
-        gameState.cardDistributionState.seatNo = seatNo;
-        if (gameState.uiClosing) return;
-
-        // wait for the animation to finish
-        await Future.delayed(AppConstants.cardDistributionAnimationDuration);
-        if (gameState.uiClosing) return;
-        seat.player.noOfCardsVisible = handInfo.noCards;
-        seat.notify();
-      }
-
-      /* card distribution ends, put the value to NULL */
-      gameState.cardDistributionState.seatNo = null;
-      if (gameState.uiClosing) return;
-      gameState.notifyAllSeats();
-    } finally {
-      //log('Hand Message: ::handleDealStarted:: END');
-    }
-
-    // AudioService.stopSound();
+      // AudioService.stopSound();
+    } catch (e) {}
   }
 }

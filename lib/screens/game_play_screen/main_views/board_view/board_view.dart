@@ -68,11 +68,15 @@ class BoardView extends StatelessWidget {
             child: BackgroundView()),
 
         Positioned(
-            bottom: bottomPos,
-            child: Transform.scale(
-                scale: tableScale,
-                child: TableView(
-                    width: dimensions.width, height: dimensions.height))),
+          bottom: bottomPos,
+          child: Transform.scale(
+            scale: tableScale,
+            child: TableView(
+              width: dimensions.width,
+              height: dimensions.height,
+            ),
+          ),
+        ),
 
         /* center view */
         Positioned(
@@ -118,9 +122,9 @@ class BoardView extends StatelessWidget {
         /* distributing card animation widgets */
         Align(
           alignment: Alignment.center,
-          child: Transform.translate(
-            offset: boardAttributes.centerViewCardShufflePosition,
-            child: CardDistributionAnimatingWidget(),
+          child: MultipleCardDistributionAnimatingWidget(
+            gameState,
+            key: Key('card-distribution-widget'),
           ),
         ),
 

@@ -72,8 +72,13 @@ class AppConstants {
     milliseconds: 150,
   );
 
+  static const Duration cardDistributionWaitBetweenPlayersDuration =
+      const Duration(
+    milliseconds: 80,
+  );
+
   static const Duration cardDistributionAnimationDuration = const Duration(
-    milliseconds: 150,
+    milliseconds: 350,
   );
 
   static const Duration buildWaitDuration = const Duration(
@@ -81,7 +86,7 @@ class AppConstants {
   );
 
   static const Duration chipMovingAnimationDuration = const Duration(
-    milliseconds: 400,
+    milliseconds: 250,
   );
 
   static const Duration communityCardAnimationDuration = const Duration(

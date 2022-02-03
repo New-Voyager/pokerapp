@@ -6,18 +6,50 @@ import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:provider/provider.dart';
 
-Map<int, Offset> _finalPositionCache = Map();
+// Map<int, Offset> _finalPositionCache = Map();
+
+class MultipleCardDistributionAnimatingWidget extends StatelessWidget {
+  final GameState _gameState;
+
+  const MultipleCardDistributionAnimatingWidget(
+    this._gameState, {
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      alignment: Alignment.center,
+      children: _gameState.cardDistributionMap.entries.map<Widget>((e) {
+        return CardDistributionAnimatingWidget(
+          key: ValueKey(e.key),
+          forSeatNo: e.key,
+          showDistributionVn: e.value,
+        );
+      }).toList(),
+    );
+  }
+}
 
 class CardDistributionAnimatingWidget extends StatelessWidget {
-  final GlobalKey _globalKey = GlobalKey();
+  final int forSeatNo;
+  final ValueNotifier<bool> showDistributionVn;
+
+  CardDistributionAnimatingWidget({
+    Key key,
+    @required this.forSeatNo,
+    @required this.showDistributionVn,
+  }) : super(key: key);
+
+  final _globalKey = GlobalKey();
 
   Widget _buildCardBack(BuildContext context) {
     final GameState gameState = GameState.getState(context);
     final cardBackImage = Image.memory(gameState.assets.getHoleCardBack());
-    return Container(
+
+    return SizedBox(
       height: AppDimensions.cardHeight,
       width: AppDimensions.cardWidth,
-      decoration: BoxDecoration(),
       child: cardBackImage,
     );
   }
@@ -34,10 +66,10 @@ class CardDistributionAnimatingWidget extends StatelessWidget {
     BuildContext context,
     int seatNo,
   ) {
-    if (_finalPositionCache.containsKey(seatNo)) {
-      // log('final position from cache');
-      return _finalPositionCache[seatNo];
-    }
+    // if (_finalPositionCache.containsKey(seatNo)) {
+    //   // log('final position from cache');
+    //   return _finalPositionCache[seatNo];
+    // }
 
     final gameState = GameState.getState(context);
     final seat = gameState.getSeat(seatNo);
@@ -52,51 +84,60 @@ class CardDistributionAnimatingWidget extends StatelessWidget {
       _getPositionOffsetFromKey(seat.key),
     );
 
-    return _finalPositionCache[seatNo] = Offset(
-      offset.dx,
-      offset.dy + 50,
+    return Offset(offset.dx, offset.dy + 50);
+  }
+
+  Widget _animatingWidget(BuildContext context) {
+    final Offset finalOffset = _getFinalPosition(
+      context,
+      forSeatNo,
+    );
+
+    return TweenAnimationBuilder<Offset>(
+      key: UniqueKey(),
+      child: _buildCardBack(context),
+      curve: Curves.easeInOut,
+      tween: Tween<Offset>(
+        begin: Offset(0, 0),
+        end: finalOffset,
+      ),
+      duration: AppConstants.cardDistributionAnimationDuration,
+      builder: (_, Offset offset, Widget child) {
+        double offsetPercentageDone = (offset.dy / finalOffset.dy);
+        double scale = 1.2 + offsetPercentageDone * (0.50 - 1.2);
+        return Transform.translate(
+          offset: offset,
+          child: Transform.scale(
+            scale: scale,
+            child: Opacity(
+              opacity: offsetPercentageDone > 0.99 ? 0.0 : 1.0,
+              child: child,
+            ),
+          ),
+        );
+      },
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<CardDistributionState>(
+    return ValueListenableBuilder<bool>(
+      valueListenable: showDistributionVn,
       key: _globalKey,
-      builder: (_, model, __) {
-        if (model.seatNo == null) return SizedBox.shrink();
+      builder: (_, showDistribution, __) {
+        return showDistribution
+            ? _animatingWidget(context)
+            : const SizedBox.shrink();
 
-        final Offset finalOffset = _getFinalPosition(
-          context,
-          model.seatNo,
-        );
-        // log('CardDistribution seatNo: ${model.seatNo} offset: ${finalOffset}');
-
-        return TweenAnimationBuilder<Offset>(
-          key: ValueKey(model.seatNo),
-          child: _buildCardBack(context),
-          curve: Curves.easeOut,
-          tween: Tween<Offset>(
-            begin: Offset(0, 0),
-            end: finalOffset,
-          ),
-          duration: AppConstants.cardDistributionAnimationDuration,
-          builder: (_, Offset offset, Widget child) {
-            double offsetPercentageDone = (offset.dy / finalOffset.dy);
-
-            double scale = 1.5 + offsetPercentageDone * (0.50 - 1.5);
-
-            return Transform.translate(
-              offset: offset,
-              child: Transform.scale(
-                scale: scale,
-                child: Opacity(
-                  opacity: offsetPercentageDone > 0.99 ? 0.0 : 1.0,
-                  child: child,
-                ),
-              ),
-            );
-          },
-        );
+        // return AnimatedSwitcher(
+        //   switchInCurve: Curves.linear,
+        //   switchOutCurve: Curves.linear,
+        //   duration: const Duration(microseconds: 1),
+        //   reverseDuration: const Duration(microseconds: 1),
+        //   child: showDistribution
+        //       ? _animatingWidget(context)
+        //       : const SizedBox.shrink(),
+        // );
       },
     );
   }

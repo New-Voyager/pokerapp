@@ -1,9 +1,8 @@
-import 'dart:developer';
+import 'dart:math';
 
 import 'package:after_layout/after_layout.dart';
+import 'package:bordered_text/bordered_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/main.dart';
@@ -11,9 +10,9 @@ import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
-import 'package:pokerapp/screens/game_play_screen/seat_view/player_view.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
@@ -228,29 +227,124 @@ class ChipAmountAnimatingWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final gameState = GameState.getState(context);
     final seat = gameState.getSeat(seatPos);
+    final appTheme = context.read<AppTheme>();
 
     Offset end = appState.getPosForSeat(seat);
     Offset begin = seat.betWidgetPos;
 
     print('ChipAmountAnimatingWidget: end:$end begin:$begin');
 
-    if (reverse ?? false) {
-      Offset swap = end;
+    bool isWinningAnimation = reverse ?? false;
+
+    if (isWinningAnimation) {
+      // swap end, begin
+      var tmp = end;
       end = begin;
-      begin = swap;
+      begin = tmp;
     }
 
+    return NewChipAnimation(
+      begin: begin,
+      end: end,
+      appTheme: appTheme,
+      isWinningAnimation: isWinningAnimation,
+      winningAmount: seat.player.action.amount,
+    );
+  }
+}
+
+const int startDelay = 200;
+const int noOfCoins = 3;
+
+class NewChipAnimation extends StatelessWidget {
+  final Offset begin;
+  final Offset end;
+  final double winningAmount;
+  final bool isWinningAnimation;
+  final AppTheme appTheme;
+
+  NewChipAnimation({
+    @required this.appTheme,
+    @required this.begin,
+    @required this.end,
+    this.winningAmount = 100.0,
+    this.isWinningAnimation = false,
+  });
+
+  Widget _coin() {
+    return SizedBox.square(
+      dimension: 18.0,
+      child: SvgPicture.asset('assets/images/betchips/green.svg'),
+    );
+  }
+
+  Widget _tweenAnimator(int idx) {
+    final ms = AppConstants.chipMovingAnimationDuration.inMilliseconds;
+    final duration = ms + (startDelay * idx);
+
     return TweenAnimationBuilder(
-      child: child,
+      key: ValueKey(idx),
+      curve: Curves.easeInOutQuad,
+      child: _coin(),
       tween: Tween<Offset>(
         begin: begin,
         end: end,
       ),
-      duration: AppConstants.chipMovingAnimationDuration,
-      builder: (_, offset, child) => Transform.translate(
-        offset: offset,
-        child: child,
+      duration: Duration(milliseconds: duration),
+      builder: (_, Offset offset, child) => AnimatedOpacity(
+        duration: const Duration(milliseconds: 250),
+        opacity: offset.dy == end.dy ? 0.0 : 1.0,
+        child: Transform.translate(
+          offset: offset,
+          child: child,
+        ),
       ),
+    );
+  }
+
+  Widget _winningAmountAnimation() {
+    return TweenAnimationBuilder(
+      curve: Curves.easeInOut,
+      tween: Tween<double>(begin: 0, end: 1),
+      duration: const Duration(seconds: 3, milliseconds: 500),
+      child: BorderedText(
+        strokeColor: appTheme.primaryColorWithDark(),
+        strokeWidth: 6.0,
+        child: Text(
+          '+ ${DataFormatter.chipsFormat(winningAmount)}',
+          style: TextStyle(
+            color: appTheme.accentColor,
+            fontSize: 18.0,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+      builder: (_, v, child) => Opacity(
+        opacity: 1 - v,
+        child: Transform.translate(
+          offset: Offset(0.0, -v * 40),
+          child: child,
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      alignment: Alignment.topCenter,
+      children: [
+        // coins animation
+        ...List.generate(noOfCoins, (i) => i + 1)
+            .reversed
+            .map<Widget>((i) => _tweenAnimator(i))
+            .toList(),
+
+        // winning amount
+        isWinningAnimation
+            ? _winningAmountAnimation()
+            : const SizedBox.shrink(),
+      ],
     );
   }
 }

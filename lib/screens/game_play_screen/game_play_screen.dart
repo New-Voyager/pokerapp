@@ -157,12 +157,13 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       }
     } else if (TestService.isTesting) {
       try {
-        debugPrint('Loading game from test data');
+        log('Loading game from test data');
         // load test data
         await TestService.load();
         gameInfo = TestService.gameInfo;
         this._currentPlayer = TestService.currentPlayer;
       } catch (e, s) {
+        log('game_play_screen: _fetchGameInfo: $e');
         return null;
       }
     } else {
@@ -187,6 +188,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
     if (widget.customizationService != null) {
     } else if (TestService.isTesting) {
+      return clubInfo;
     } else {
       debugPrint('fetching club data: ${widget.gameCode}');
       try {
@@ -293,7 +295,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       // ask for game messages
       // tdo: reqplayerinfo
       // _gameComService.gameMessaging.askForChatMessages();
-      _gameComService.gameMessaging.requestPlayerInfo();
+      _gameComService.gameMessaging?.requestPlayerInfo();
 
       log('initializing game state done');
     }
@@ -399,7 +401,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     } else {}
     Future.delayed(Duration(seconds: 3), () {
       log('publishing my information');
-      _gameState.gameMessageService.sendMyInfo();
+      _gameState.gameMessageService?.sendMyInfo();
       log('publishing my information done');
     });
     return _gameInfoModel;
