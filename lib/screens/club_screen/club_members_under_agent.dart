@@ -44,6 +44,7 @@ class _ClubMembersUnderAgentState extends State<ClubMembersUnderAgent>
 
   List<ClubMemberModel> allPlayers = [];
   bool loading = true;
+  bool playersLoading = false;
 
   bool playersEditMode = false;
   TextEditingController searchTextController = TextEditingController();
@@ -296,6 +297,9 @@ class _ClubMembersUnderAgentState extends State<ClubMembersUnderAgent>
   }
 
   Widget playersTab(AppTheme theme) {
+    if (playersLoading) {
+      return CircularProgressWidget(text: 'Loading...');
+    }
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: Column(
@@ -364,6 +368,10 @@ class _ClubMembersUnderAgentState extends State<ClubMembersUnderAgent>
                               }
                             }
 
+                            setState(() {
+                              playersLoading = true;
+                            });
+
                             for (final member in newlyAddedPlayers) {
                               await ClubInteriorService.setAgent(
                                   member.clubCode,
@@ -417,6 +425,7 @@ class _ClubMembersUnderAgentState extends State<ClubMembersUnderAgent>
 
   void exitPlayersEditMode() {
     playersEditMode = false;
+    playersLoading = false;
     searchTextController.text = "";
   }
 }
