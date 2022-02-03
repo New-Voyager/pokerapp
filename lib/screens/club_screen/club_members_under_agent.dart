@@ -5,6 +5,7 @@ import 'package:pokerapp/models/member_activity_model.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
+import 'package:pokerapp/screens/club_screen/set_tips_back_dialog.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/club_interior_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
@@ -143,7 +144,8 @@ class _ClubMembersUnderAgentState extends State<ClubMembersUnderAgent>
                   physics: NeverScrollableScrollPhysics(),
                   children: [
                     playersTab(theme),
-                    ReportTab(widget.member.clubCode, widget.member.playerId),
+                    ReportTab(widget.member, widget.member.clubCode,
+                        widget.member.playerId),
                   ],
                 ),
               ),
@@ -420,8 +422,9 @@ class _ClubMembersUnderAgentState extends State<ClubMembersUnderAgent>
 class ReportTab extends StatefulWidget {
   final String clubCode;
   final String agentId;
+  final ClubMemberModel member;
 
-  ReportTab(this.clubCode, this.agentId);
+  ReportTab(this.member, this.clubCode, this.agentId);
 
   @override
   State<ReportTab> createState() => _ReportTabState();
@@ -468,6 +471,7 @@ class _ReportTabState extends State<ReportTab> {
     for (final member in memberActivities) {
       totalFees += member.tips;
     }
+    agentFeeBackPercent = (widget.member.agentFeeBack ?? 0).toDouble();
     agentFeeBackAmount = totalFees * agentFeeBackPercent / 100;
     loading = false;
     setState(() {});
@@ -561,7 +565,30 @@ class _ReportTabState extends State<ReportTab> {
                                 theme: theme),
                             SizedBox(width: 32.pw),
                             RoundRectButton(
-                                text: "Change", onTap: () {}, theme: theme),
+                                text: "Change",
+                                onTap: () async {
+                                  int value = await SetTipsBackDialog.prompt(
+                                      context: context,
+                                      clubCode: widget.clubCode,
+                                      playerUuid: widget.agentId,
+                                      tipsBack: agentFeeBackAmount.toInt());
+                                  if (value != null) {
+                                    if (value <= 100) {
+                                      agentFeeBackPercent = value.toDouble();
+                                      await ClubInteriorService
+                                          .updateClubMemberByParam(
+                                        widget.clubCode,
+                                        widget.agentId,
+                                        agentFeeBack:
+                                            agentFeeBackPercent.toInt(),
+                                      );
+                                      widget.member.agentFeeBack =
+                                          agentFeeBackPercent.toInt();
+                                      fetchData();
+                                    }
+                                  }
+                                },
+                                theme: theme),
                           ],
                         )),
                   ]),

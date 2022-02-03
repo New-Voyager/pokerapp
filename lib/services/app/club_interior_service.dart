@@ -40,6 +40,7 @@ class ClubInteriorService {
           tipsBack
           agentName
           agentUuid
+          agentFeeBack
         }
       }""";
 
@@ -314,6 +315,27 @@ class ClubInteriorService {
     Map<String, dynamic> update = {
       "agentUuid": leaderId,
     };
+    Map<String, dynamic> variables = {
+      "clubCode": clubCode,
+      "playerUuid": playerId,
+      "update": update,
+    };
+    QueryResult result = await _client.mutate(MutationOptions(
+        document: gql(updateClubMemberMutation), variables: variables));
+    if (result.hasException) return false;
+    return true;
+  }
+
+  static Future<bool> updateClubMemberByParam(String clubCode, String playerId,
+      {int agentFeeBack}) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    Map<String, dynamic> update = {};
+
+    if (agentFeeBack != null) {
+      update['agentFeeBack'] = agentFeeBack;
+    }
+
     Map<String, dynamic> variables = {
       "clubCode": clubCode,
       "playerUuid": playerId,

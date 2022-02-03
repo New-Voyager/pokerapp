@@ -38,6 +38,7 @@ class ClubMemberModel extends ChangeNotifier {
   bool refreshCredits = false;
   String agentName;
   String agentUuid;
+  int agentFeeBack;
 
   ClubMemberModel();
 
@@ -118,6 +119,7 @@ class ClubMemberModel extends ChangeNotifier {
     data.agentName = copyValue.agentName;
     data.agentUuid = copyValue.agentUuid;
     data.displayName = copyValue.displayName;
+    data.agentFeeBack = copyValue.agentFeeBack;
     return data;
   }
 
@@ -197,6 +199,10 @@ class ClubMemberModel extends ChangeNotifier {
         double.parse((jsonData['availableCredit'] ?? '0').toString());
     if (jsonData['displayName'] != null) {
       this.displayName = jsonData['displayName'].toString();
+    }
+    this.agentFeeBack = 0;
+    if (jsonData['agentFeeBack'] != null) {
+      this.agentFeeBack = int.parse(jsonData['agentFeeBack'].toString());
     }
     this.edited = false;
   }
