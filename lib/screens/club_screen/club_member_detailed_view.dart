@@ -74,6 +74,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
   AppTextScreen _appScreenText;
 
   _fetchData() async {
+    playersUnderMe = [];
     //_data = await ClubInteriorService.getClubMemberDetail(clubCode, playerId);
     final clubMembers = await appState.cacheService.getMembers(clubCode);
     for (final member in clubMembers) {
@@ -765,6 +766,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
             'member': widget.member,
           },
         );
+        _fetchData();
       },
       child: Row(
         children: [
@@ -790,19 +792,6 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
         ],
       ),
     );
-  }
-
-  DateTime findFirstDateOfTheWeek(DateTime dateTime) {
-    return dateTime.subtract(Duration(days: dateTime.weekday - 1));
-  }
-
-  /// Find last date of the week which contains provided date.
-  DateTime findLastDateOfTheWeek(DateTime dateTime) {
-    DateTime ret =
-        dateTime.add(Duration(days: DateTime.daysPerWeek - dateTime.weekday));
-
-    ret = DateTime(ret.year, ret.month, ret.day, 23, 59, 59);
-    return ret;
   }
 
   Widget myNetwork(AppTheme theme) {

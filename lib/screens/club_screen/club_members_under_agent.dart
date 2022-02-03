@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/club_members_model.dart';
+import 'package:pokerapp/models/member_activity_model.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
+import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/club_interior_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/formatter.dart';
+import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/radio_list_widget.dart';
 import 'package:pokerapp/widgets/switch.dart';
@@ -41,16 +44,6 @@ class _ClubMembersUnderAgentState extends State<ClubMembersUnderAgent>
 
   bool playersEditMode = false;
   TextEditingController searchTextController = TextEditingController();
-
-  int report_player_width = 2;
-  int report_hands_width = 2;
-  int report_tips_width = 2;
-  int report_buyin_width = 2;
-  int report_profit_width = 2;
-
-  int _selectedReportDateRangeIndex = 0;
-
-  DateTimeRange _dateTimeRange;
 
   void initialize() async {
     final clubMembers =
@@ -150,7 +143,7 @@ class _ClubMembersUnderAgentState extends State<ClubMembersUnderAgent>
                   physics: NeverScrollableScrollPhysics(),
                   children: [
                     playersTab(theme),
-                    reportTab(theme),
+                    ReportTab(widget.member.clubCode, widget.member.playerId),
                   ],
                 ),
               ),
@@ -198,12 +191,40 @@ class _ClubMembersUnderAgentState extends State<ClubMembersUnderAgent>
     if (searchPlayers.length > 0) {
       players = searchPlayers;
     }
+
+    final Map<String, bool> underMePlayer = {};
+    for (final player in players) {
+      bool underMe = false;
+      for (final memberUnderMe in playersUnderMe) {
+        if (memberUnderMe.playerId == player.playerId) {
+          underMe = true;
+          break;
+        }
+      }
+      if (underMe) {
+        underMePlayer[player.playerId] = true;
+      }
+    }
+    List<ClubMemberModel> playersSorted = [];
+    Map<String, bool> addedToList = {};
+    for (final player in players) {
+      if (underMePlayer[player.playerId] ?? false) {
+        playersSorted.add(player);
+        addedToList[player.playerId] = true;
+      }
+    }
+    for (final player in players) {
+      if (!(addedToList[player.playerId] ?? false)) {
+        playersSorted.add(player);
+      }
+    }
+
     return Expanded(
       child: ListView.builder(
-          itemCount: players.length,
+          itemCount: playersSorted.length,
           shrinkWrap: false,
           itemBuilder: (context, index) {
-            ClubMemberModel member = players[index];
+            ClubMemberModel member = playersSorted[index];
             bool underMe = false;
             for (final memberUnderMe in playersUnderMe) {
               if (memberUnderMe.playerId == member.playerId) {
@@ -311,10 +332,6 @@ class _ClubMembersUnderAgentState extends State<ClubMembersUnderAgent>
                       children: [
                         RoundRectButton(
                           onTap: () async {
-                            // selectedPlayers = [];
-                            // selectedPlayers.addAll(allPlayers
-                            //     .where((element) => (element.selected)));
-
                             List<ClubMemberModel> newlyAddedPlayers = [];
                             List<ClubMemberModel> removedExistingPlayers = [];
                             for (final member in addedPlayers) {
@@ -390,7 +407,85 @@ class _ClubMembersUnderAgentState extends State<ClubMembersUnderAgent>
     );
   }
 
-  Widget reportTab(AppTheme theme) {
+  void goBack(BuildContext context) {
+    Navigator.pop(context);
+  }
+
+  void exitPlayersEditMode() {
+    playersEditMode = false;
+    searchTextController.text = "";
+  }
+}
+
+class ReportTab extends StatefulWidget {
+  final String clubCode;
+  final String agentId;
+
+  ReportTab(this.clubCode, this.agentId);
+
+  @override
+  State<ReportTab> createState() => _ReportTabState();
+}
+
+class _ReportTabState extends State<ReportTab> {
+  final int report_player_width = 2;
+
+  final int report_hands_width = 2;
+
+  final int report_tips_width = 2;
+
+  final int report_buyin_width = 2;
+
+  final int report_profit_width = 2;
+
+  int _selectedReportDateRangeIndex = 0;
+  bool loading = true;
+  DateTimeRange _dateTimeRange;
+  int dateSelection = 1;
+  double totalFees = 0;
+  double agentFeeBackPercent = 30;
+  double agentFeeBackAmount = 0;
+  List<MemberActivity> memberActivities = [];
+  void fetchData() async {
+    loading = true;
+    setState(() {});
+
+    // this week
+    DateTime now = DateTime.now();
+    DateTime nowAdjust = DateTime(now.year, now.month, now.day);
+    DateTime start = findFirstDateOfTheWeek(nowAdjust).toUtc();
+    DateTime end = findLastDateOfTheWeek(nowAdjust).toUtc();
+
+    // last week
+    // this month
+    // last month
+    // custom date
+
+    // load here
+    memberActivities = await ClubInteriorService.getAgentPlayerActivities(
+        widget.clubCode, widget.agentId, start, end);
+    totalFees = 0;
+    for (final member in memberActivities) {
+      totalFees += member.tips;
+    }
+    agentFeeBackAmount = totalFees * agentFeeBackPercent / 100;
+    loading = false;
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    AppTheme theme = AppTheme.getTheme(context);
+
+    if (loading) {
+      return CircularProgressWidget(text: 'Loading...');
+    }
     return SingleChildScrollView(
       physics: BouncingScrollPhysics(),
       child: ConstrainedBox(
@@ -437,18 +532,21 @@ class _ClubMembersUnderAgentState extends State<ClubMembersUnderAgent>
                   Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
                     Expanded(
                         flex: 4,
-                        child: LabelText(label: 'Minimum Rank', theme: theme)),
+                        child: LabelText(label: 'Total Fees', theme: theme)),
                     SizedBox(
                       width: 8.pw,
                     ),
                     Expanded(
                         flex: 5,
-                        child: LabelText(label: '340.30', theme: theme)),
+                        child: LabelText(
+                            label: DataFormatter.chipsFormat(totalFees),
+                            theme: theme)),
                   ]),
                   Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
                     Expanded(
                         flex: 4,
-                        child: LabelText(label: 'Credit back %', theme: theme)),
+                        child:
+                            LabelText(label: 'Agent Fee Back %', theme: theme)),
                     SizedBox(
                       width: 8.pw,
                     ),
@@ -456,7 +554,11 @@ class _ClubMembersUnderAgentState extends State<ClubMembersUnderAgent>
                         flex: 5,
                         child: Row(
                           children: [
-                            LabelText(label: '30', theme: theme),
+                            LabelText(
+                                label: DataFormatter.chipsFormat(
+                                        agentFeeBackPercent) +
+                                    '%',
+                                theme: theme),
                             SizedBox(width: 32.pw),
                             RoundRectButton(
                                 text: "Change", onTap: () {}, theme: theme),
@@ -466,13 +568,16 @@ class _ClubMembersUnderAgentState extends State<ClubMembersUnderAgent>
                   Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
                     Expanded(
                         flex: 4,
-                        child: LabelText(label: 'Credit back', theme: theme)),
+                        child: LabelText(label: 'Fee Back', theme: theme)),
                     SizedBox(
                       width: 8.pw,
                     ),
                     Expanded(
                         flex: 5,
-                        child: LabelText(label: '100.60', theme: theme)),
+                        child: LabelText(
+                            label:
+                                DataFormatter.chipsFormat(agentFeeBackAmount),
+                            theme: theme)),
                   ]),
                 ],
               ),
@@ -483,11 +588,11 @@ class _ClubMembersUnderAgentState extends State<ClubMembersUnderAgent>
             Expanded(
               child: ListView.separated(
                 physics: NeverScrollableScrollPhysics(),
-                itemCount: 20,
+                itemCount: memberActivities.length,
                 itemBuilder: (context, index) {
                   // index 0 draws the header
                   if (index == 0) return _buildTableHeader(theme);
-
+                  final memberActivity = memberActivities[index];
                   return Container(
                     margin: EdgeInsets.symmetric(horizontal: 10.0.pw),
                     height: 50.0.ph,
@@ -495,27 +600,28 @@ class _ClubMembersUnderAgentState extends State<ClubMembersUnderAgent>
                       children: [
                         _buildTableContentChild(
                           flex: report_player_width,
-                          data: "Young",
+                          data: memberActivity.name,
                           theme: theme,
                         ),
                         _buildTableContentChild(
                           flex: report_hands_width,
-                          data: "124",
+                          data: memberActivity.handsPlayed,
                           theme: theme,
                         ),
                         _buildTableContentChild(
                           flex: report_tips_width,
-                          data: "65.30",
+                          data: DataFormatter.chipsFormat(memberActivity.tips),
                           theme: theme,
                         ),
                         _buildTableContentChild(
                           flex: report_buyin_width,
-                          data: "1345.20",
+                          data: DataFormatter.chipsFormat(memberActivity.buyin),
                           theme: theme,
                         ),
                         _buildTableContentChild(
                           flex: report_profit_width,
-                          data: "-543.23",
+                          data:
+                              DataFormatter.chipsFormat(memberActivity.profit),
                           theme: theme,
                         ),
                       ],
@@ -536,82 +642,36 @@ class _ClubMembersUnderAgentState extends State<ClubMembersUnderAgent>
     );
   }
 
-  Widget _buildTableContentChild({
-    int flex = 1,
-    var data,
-    AppTheme theme,
-  }) =>
-      Expanded(
-        flex: flex,
-        child: Center(
-          child: FittedBox(
-            fit: BoxFit.fitWidth,
-            child: Text(
-              data is double ? DataFormatter.chipsFormat(data) : data,
-              style: TextStyle(
-                color: data is double
-                    ? data > 0
-                        ? theme.secondaryColor
-                        : theme.negativeOrErrorColor
-                    : theme.supportingColor,
-              ),
-            ),
+  Widget _buildTableHeader(AppTheme theme) {
+    return Container(
+      height: 70.0.ph,
+      margin: EdgeInsets.all(10.pw),
+      color: theme.fillInColor,
+      child: Row(
+        children: [
+          _buildHeaderChild(
+            flex: report_player_width,
+            text: 'Player',
           ),
-        ),
-      );
-
-  Widget _buildHeaderChild({int flex = 1, String text = 'Player'}) => Expanded(
-        flex: flex,
-        child: Center(
-          child: text.isEmpty
-              ? Container()
-              : FittedBox(
-                  fit: BoxFit.fitWidth,
-                  child: Text(
-                    text,
-                    style: TextStyle(color: Color(0xffef9712)),
-                  ),
-                ),
-        ),
-      );
-
-  Widget _buildTableHeader(AppTheme theme) => Container(
-        height: 70.0.ph,
-        margin: EdgeInsets.all(10.pw),
-        color: theme.fillInColor,
-        child: Row(
-          children: [
-            _buildHeaderChild(
-              flex: report_player_width,
-              text: 'Player',
-            ),
-            _buildHeaderChild(
-              flex: report_hands_width,
-              text: '#Hands',
-            ),
-            _buildHeaderChild(
-              flex: report_tips_width,
-              text: 'Tips',
-            ),
-            _buildHeaderChild(
-              flex: report_buyin_width,
-              text: 'Buyin',
-            ),
-            _buildHeaderChild(
-              flex: report_profit_width,
-              text: 'Profit',
-            ),
-          ],
-        ),
-      );
-
-  void goBack(BuildContext context) {
-    Navigator.pop(context);
-  }
-
-  void exitPlayersEditMode() {
-    playersEditMode = false;
-    searchTextController.text = "";
+          _buildHeaderChild(
+            flex: report_hands_width,
+            text: '#Hands',
+          ),
+          _buildHeaderChild(
+            flex: report_tips_width,
+            text: 'Fees',
+          ),
+          _buildHeaderChild(
+            flex: report_buyin_width,
+            text: 'Buyin',
+          ),
+          _buildHeaderChild(
+            flex: report_profit_width,
+            text: 'Profit',
+          ),
+        ],
+      ),
+    );
   }
 
   _handleDateRangePicker(BuildContext context, AppTheme theme) async {
@@ -636,5 +696,50 @@ class _ClubMembersUnderAgentState extends State<ClubMembersUnderAgent>
     if (dateRange != null) {
       _dateTimeRange = dateRange;
     }
+  }
+
+  Widget _buildHeaderChild({int flex = 1, String text = 'Player'}) => Expanded(
+        flex: flex,
+        child: Center(
+          child: text.isEmpty
+              ? Container()
+              : FittedBox(
+                  fit: BoxFit.fitWidth,
+                  child: Text(
+                    text,
+                    style: TextStyle(color: Color(0xffef9712)),
+                  ),
+                ),
+        ),
+      );
+
+  Widget _buildTableContentChild({
+    int flex = 1,
+    var data,
+    AppTheme theme,
+  }) {
+    if (data is int) {
+      data = data.toDouble();
+    }
+    return Expanded(
+      flex: flex,
+      child: Center(
+        child: FittedBox(
+          fit: BoxFit.fitWidth,
+          child: Text(
+            (data is double || data is int)
+                ? DataFormatter.chipsFormat(data)
+                : data,
+            style: TextStyle(
+              color: data is double
+                  ? data > 0
+                      ? theme.secondaryColor
+                      : theme.negativeOrErrorColor
+                  : theme.supportingColor,
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

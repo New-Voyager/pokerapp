@@ -165,7 +165,7 @@ class ClubMemberModel extends ChangeNotifier {
     this._tipsBack = int.parse((jsonData['tipsBack'] ?? 0).toString());
     this.imageUrl = jsonData['imageUrl'];
     this.agentName = jsonData['agentName'];
-    this.agentUuid = jsonData['leaderUuid'];
+    this.agentUuid = jsonData['agentUuid'];
 
     if (jsonData['totalGames'] != null) {
       this._totalGames = int.parse(jsonData['totalGames'].toString());

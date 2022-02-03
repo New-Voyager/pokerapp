@@ -362,3 +362,16 @@ class HelperUtils {
     }
   }
 }
+
+DateTime findFirstDateOfTheWeek(DateTime dateTime) {
+  return dateTime.subtract(Duration(days: dateTime.weekday - 1));
+}
+
+/// Find last date of the week which contains provided date.
+DateTime findLastDateOfTheWeek(DateTime dateTime) {
+  DateTime ret =
+      dateTime.add(Duration(days: DateTime.daysPerWeek - dateTime.weekday));
+
+  ret = DateTime(ret.year, ret.month, ret.day, 23, 59, 59);
+  return ret;
+}
