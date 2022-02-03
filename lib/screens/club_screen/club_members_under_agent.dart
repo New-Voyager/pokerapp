@@ -560,8 +560,7 @@ class _ReportTabState extends State<ReportTab> {
                   Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
                     Expanded(
                         flex: 4,
-                        child:
-                            LabelText(label: 'Agent Fee Back %', theme: theme)),
+                        child: LabelText(label: 'Fee Credits %', theme: theme)),
                     SizedBox(
                       width: 8.pw,
                     ),
@@ -582,7 +581,8 @@ class _ReportTabState extends State<ReportTab> {
                                       context: context,
                                       clubCode: widget.clubCode,
                                       playerUuid: widget.agentId,
-                                      tipsBack: agentFeeBackAmount.toInt());
+                                      title: 'Agent Fee Credits',
+                                      tipsBack: agentFeeBackPercent.toInt());
                                   if (value != null) {
                                     if (value <= 100) {
                                       agentFeeBackPercent = value.toDouble();
@@ -606,7 +606,7 @@ class _ReportTabState extends State<ReportTab> {
                   Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
                     Expanded(
                         flex: 4,
-                        child: LabelText(label: 'Fee Back', theme: theme)),
+                        child: LabelText(label: 'Fee Credits', theme: theme)),
                     SizedBox(
                       width: 8.pw,
                     ),

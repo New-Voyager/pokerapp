@@ -222,7 +222,7 @@ class NewHandHandler {
     gameState.actionState.notify();
     gameState.tableState.updateDealerChoicePrompt(false, '');
     ////log('Hand Message: ::handleNewHand:: START');
-    AudioService.playNewHand(mute: gameState.playerLocalConfig.mute);
+    //AudioService.playNewHand(mute: gameState.playerLocalConfig.mute);
     if (gameState.uiClosing) return;
 
     gameState.clear();
