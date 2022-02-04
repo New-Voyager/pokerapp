@@ -53,16 +53,20 @@ class RoundRectButton extends StatelessWidget {
               end: Alignment.bottomCenter,
               colors: [
                 theme.accentColorWithDark(0.1),
+                theme.accentColorWithLight(0.2),
                 theme.accentColor,
                 theme.accentColorWithDark(0.1),
-                theme.accentColorWithDark(0.1),
-                //theme.accentColor,
+                theme.accentColorWithDark(0.2),
+                theme.accentColor,
               ],
               stops: [
                 0,
+                0.3,
                 0.5,
-                0.8,
-                0.5
+                0.7,
+                0.9,
+                1.0
+                //0.3
               ]),
         ),
         child: Row(
