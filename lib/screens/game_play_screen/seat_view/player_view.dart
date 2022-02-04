@@ -7,6 +7,7 @@ import 'package:flutter_chat_bubble/bubble_type.dart';
 import 'package:flutter_chat_bubble/chat_bubble.dart';
 import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_1.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:lottie/lottie.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game_play_models/business/game_chat_notfi_state.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
@@ -385,6 +386,11 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
       showFirework = true;
     }
 
+    bool showWinnerLottie = false;
+    if (widget.seat.player != null && widget.seat.player.winner) {
+      showWinnerLottie = true;
+    }
+
     bool highlight = false;
     double scale = 1.0;
     if (widget.seat.player != null) {
@@ -525,6 +531,21 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
                   ),
                 ),
               ),
+
+              // !showWinnerLottie
+              //     ? Container()
+              //     : Lottie.asset('assets/animations/winner.json'),
+
+              Visibility(
+                  visible: showWinnerLottie,
+                  child: Transform.scale(
+                      scale: 2.5,
+                      child: SizedBox.square(
+                          dimension: 80,
+                          child: Lottie.asset(
+                            'assets/animations/winner.json',
+                            repeat: false,
+                          )))),
 
               // player hole cards (tilted card on the bottom left)
               PlayerCardsWidget(

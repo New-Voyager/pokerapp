@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
@@ -379,10 +380,10 @@ class _ClubMemberActivitiesScreenState
                   ),
                   child: Container(
                     width: double.infinity,
-                    child: PaginatedDataTable(
+                    child: PaginatedDataTable2(
                       columns: columns,
                       showFirstLastButtons: true,
-                      arrowHeadColor: theme.accentColor,
+                      //arrowHeadColor: theme.accentColor,
                       source: dts,
                       rowsPerPage: 10,
                       columnSpacing: 15,
@@ -575,7 +576,8 @@ class DataSource extends DataTableSource {
     if (activity.followup) {
       cells.add(DataCell(Icon(Icons.flag, color: theme.accentColor)));
     } else {
-      cells.add(DataCell(Container()));
+      cells.add(
+          DataCell(Container(width: 10, height: 10, color: theme.accentColor)));
     }
 
     Color color = null;

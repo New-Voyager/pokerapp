@@ -111,11 +111,12 @@ class NamePlateWidget extends StatelessWidget {
     bool highlight = seat.player?.highlight ?? false;
     highlight = false;
     if (winner) {
-      shadow = BoxShadow(
-        color: Colors.lightGreen,
-        blurRadius: 50.0,
-        spreadRadius: 20.0,
-      );
+      shadow = null;
+      // shadow = BoxShadow(
+      //   color: Colors.lightGreen,
+      //   blurRadius: 50.0,
+      //   spreadRadius: 20.0,
+      // );
     } else if (highlight) {
       shadow = BoxShadow(
         color: Colors.grey.withOpacity(0.9),
