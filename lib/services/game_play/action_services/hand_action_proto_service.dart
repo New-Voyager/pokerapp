@@ -823,7 +823,7 @@ class HandActionProtoService {
 
     // show the move coin to pot animation, after that update the pot
     await _gameState.animateSeatActions();
-    await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(Duration(milliseconds: 500));
     _gameState.resetSeatActions();
     // update the pot
 
@@ -1071,6 +1071,8 @@ class HandActionProtoService {
     }
 
     if (_close) return;
+    await _gameState.animateSeatActions();
+    await Future.delayed(Duration(milliseconds: 500));
     _gameState.resetSeatActions();
     _gameState.lastHandNum = result.handNum;
 
@@ -1095,6 +1097,7 @@ class HandActionProtoService {
         context: _context,
         replay: false,
       );
+
       await resultHandler.show();
     } catch (err) {
       log('==== CRITICAL ====: Exception thrown at updatePotBeforeResultStatic. Error: ${err.toString()}');

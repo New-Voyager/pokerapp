@@ -1111,7 +1111,9 @@ class GameState {
       if (seat.player == null) {
         continue;
       }
-      seat.player.action.animateAction = true;
+      if (seat.player.action != null && seat.player.action.amount > 0) {
+        seat.player.action.animateAction = true;
+      }
       seat.notify();
     }
   }

@@ -405,6 +405,7 @@ class PlayerActedState {
     if (amountStr != null) {
       double amount = double.parse(amountStr.toString());
       _amount = amount;
+      animateAction = true;
     }
   }
 
@@ -461,6 +462,7 @@ class PlayerActedState {
   void reset({bool stickAction}) {
     amount = 0.0;
     _animate = false;
+    animateAction = false;
     winner = false;
     _sb = false;
     _bb = false;
