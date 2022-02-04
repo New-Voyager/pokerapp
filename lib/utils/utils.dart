@@ -3,8 +3,25 @@ import 'dart:math';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:ios_utsname_ext/extension.dart';
+
+const _cacheStalePeriod = const Duration(days: 1);
+const _maxCacheObjects = 50;
+
+class ImageCacheManager {
+  static const _key = 'app-image-cache-key';
+  static CacheManager instance = CacheManager(
+    Config(
+      _key,
+      stalePeriod: _cacheStalePeriod,
+      maxNrOfCacheObjects: _maxCacheObjects,
+      repo: JsonCacheInfoRepository(databaseName: _key),
+      fileService: HttpFileService(),
+    ),
+  );
+}
 
 class Screen {
   final Size _size;
@@ -344,4 +361,17 @@ class HelperUtils {
       return clubName.toUpperCase();
     }
   }
+}
+
+DateTime findFirstDateOfTheWeek(DateTime dateTime) {
+  return dateTime.subtract(Duration(days: dateTime.weekday - 1));
+}
+
+/// Find last date of the week which contains provided date.
+DateTime findLastDateOfTheWeek(DateTime dateTime) {
+  DateTime ret =
+      dateTime.add(Duration(days: DateTime.daysPerWeek - dateTime.weekday));
+
+  ret = DateTime(ret.year, ret.month, ret.day, 23, 59, 59);
+  return ret;
 }

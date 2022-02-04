@@ -47,7 +47,23 @@ class RoundRectButton extends StatelessWidget {
               color: theme.roundedButtonBorderColor ??
                   theme.roundedButtonBackgroundColor,
               width: 1.pw),
-          color: theme.roundedButtonBackgroundColor,
+          // color: theme.roundedButtonBackgroundColor,
+          gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                theme.accentColorWithDark(0.1),
+                theme.accentColor,
+                theme.accentColorWithDark(0.1),
+                theme.accentColorWithDark(0.1),
+                //theme.accentColor,
+              ],
+              stops: [
+                0,
+                0.5,
+                0.8,
+                0.5
+              ]),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -213,45 +229,62 @@ class CircleImageButton extends StatelessWidget {
       textStyle = textStyle.merge(theme.circleImageButtonTextStyle);
     }
 
-    return InkWell(
-      focusNode: focusNode,
-      onTap: () {
-        // play sound
-        this.onTap();
-      },
-      borderRadius: BorderRadius.circular(20),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: width ?? 40,
-            height: height ?? 40,
-            padding: EdgeInsets.all(2.pw),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: buttonBackGround,
-              // boxShadow: shadow,
-              border: Border.all(
-                color: buttonBorder,
-                width: 2.0,
-              ),
-              //borderRadius: BorderRadius.circular(20.pw),
-            ),
-            child: Center(child: image),
-          ),
-          (caption != null)
-              ? Padding(
-                  padding: EdgeInsets.only(top: 8.pw),
-                  child: Text(
-                    caption,
-                    style: textStyle,
-                    textAlign: TextAlign.center,
-                  ),
-                )
-              : Container(),
-        ],
-      ),
-    );
+    // return InkWell(
+    //   focusNode: focusNode,
+    //   onTap: () {
+    //     // play sound
+    //     this.onTap();
+    //   },
+    //   borderRadius: BorderRadius.circular(20),
+    //   child: Column(
+    //     mainAxisSize: MainAxisSize.min,
+    //     children: [
+    //       Container(
+    //         width: width ?? 40,
+    //         height: height ?? 40,
+    //         padding: EdgeInsets.all(2.pw),
+    //         decoration: BoxDecoration(
+    //           shape: BoxShape.circle,
+    //           color: buttonBackGround,
+    //           // boxShadow: shadow,
+    //           border: Border.all(
+    //             color: buttonBorder,
+    //             width: 2.0,
+    //           ),
+    //           //borderRadius: BorderRadius.circular(20.pw),
+    //         ),
+    //         child: Center(child: image),
+    //       ),
+    //       (caption != null)
+    //           ? Padding(
+    //               padding: EdgeInsets.only(top: 8.pw),
+    //               child: Text(
+    //                 caption,
+    //                 style: textStyle,
+    //                 textAlign: TextAlign.center,
+    //               ),
+    //             )
+    //           : Container(),
+    //     ],
+    //   ),
+    // );
+
+    return OutlineGradientButton(
+        child: SizedBox(width: 40, height: 40, child: Center(child: image)),
+        gradient: LinearGradient(
+          colors: [theme.accentColor, theme.accentColorWithDark(0.25)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomCenter,
+          // begin: Alignment(-1, -1),
+          // end: Alignment(2, 2),
+        ),
+        strokeWidth: 3,
+        backgroundColor: Colors.black,
+        padding: EdgeInsets.zero,
+        radius: Radius.circular(24),
+        onTap: () {
+          this.onTap();
+        });
   }
 }
 
@@ -331,128 +364,51 @@ class DummyCircleImageButton extends StatelessWidget {
       textStyle = textStyle.merge(theme.circleImageButtonTextStyle);
     }
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          width: width ?? 40,
-          height: height ?? 40,
-          padding: EdgeInsets.all(2.pw),
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: buttonBackGround,
-            // boxShadow: shadow,
-            border: Border.all(
-              color: buttonBorder,
-              width: 2.0,
-            ),
-            //borderRadius: BorderRadius.circular(20.pw),
-          ),
-          child: Center(child: image),
-        ),
-        (caption != null)
-            ? Padding(
-                padding: EdgeInsets.only(top: 8.pw),
-                child: Text(
-                  caption,
-                  style: textStyle,
-                  textAlign: TextAlign.center,
-                ),
-              )
-            : Container(),
-      ],
-    );
-  }
-}
-
-class CircleImageButtonOld extends StatelessWidget {
-  CircleImageButtonOld({
-    @required this.onTap,
-    @required this.theme,
-    this.asset,
-    this.svgAsset,
-    this.icon,
-    this.caption,
-    this.disabled = false,
-    this.split = false,
-    this.adaptive = true,
-  });
-
-  final bool adaptive;
-  final String svgAsset;
-  final String asset;
-  final IconData icon;
-  final String caption;
-  final AppTheme theme;
-  final Function onTap;
-  final bool disabled;
-  final bool split;
-
-  Widget build(BuildContext context) {
-    Widget image = Container();
-    if (asset != null) {
-      image = ColorFiltered(
-        child: Image.asset(asset),
-        colorFilter: ColorFilter.mode(
-            theme.circleImageButtonImageColor, BlendMode.srcATop),
-      );
-    } else if (svgAsset != null) {
-      image = SvgPicture.asset(
-        svgAsset,
-        color: theme.circleImageButtonImageColor,
-      );
-    } else if (icon != null) {
-      image = Icon(
-        icon,
-        size: 24.pw,
-        color: theme.circleImageButtonImageColor,
-      );
-    }
-    TextStyle textStyle = TextStyle(
-      fontSize: 12.dp,
-      color: Colors.white, //theme.circleImageButtonBorderColor,
-    );
-    if (theme.circleImageButtonTextStyle != null) {
-      textStyle = textStyle.merge(theme.circleImageButtonTextStyle);
-    }
-
-    return InkWell(
-      onTap: () {
-        // play sound
-        this.onTap();
-      },
-      borderRadius: BorderRadius.circular(20),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 40.pw,
-            height: 40.pw,
-            padding: EdgeInsets.all(2.pw),
-            decoration: BoxDecoration(
-              color: theme.circleImageButtonBackgroundColor,
-              border: Border.all(
-                color: theme.circleImageButtonBorderColor ??
-                    theme.circleImageButtonBackgroundColor,
-                width: 2.0,
-              ),
-              borderRadius: BorderRadius.circular(20.pw),
-            ),
-            child: Center(child: image),
-          ),
-          (caption != null)
-              ? Padding(
-                  padding: EdgeInsets.only(top: 8.pw),
-                  child: Text(
-                    caption,
-                    style: textStyle,
-                    textAlign: TextAlign.center,
-                  ),
-                )
-              : Container(),
-        ],
+    return OutlineGradientButton(
+      child: SizedBox(width: 40, height: 40, child: Center(child: image)),
+      gradient: LinearGradient(
+        colors: [theme.accentColor, theme.accentColorWithDark(0.25)],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomCenter,
+        // begin: Alignment(-1, -1),
+        // end: Alignment(2, 2),
       ),
+      strokeWidth: 3,
+      backgroundColor: Colors.black,
+      padding: EdgeInsets.zero,
+      radius: Radius.circular(24),
     );
+    // return Column(
+    //   mainAxisSize: MainAxisSize.min,
+    //   children: [
+    //     Container(
+    //       width: width ?? 40,
+    //       height: height ?? 40,
+    //       padding: EdgeInsets.all(2.pw),
+    //       decoration: BoxDecoration(
+    //         shape: BoxShape.circle,
+    //         color: buttonBackGround,
+    //         // boxShadow: shadow,
+    //         border: Border.all(
+    //           color: buttonBorder,
+    //           width: 2.0,
+    //         ),
+    //         //borderRadius: BorderRadius.circular(20.pw),
+    //       ),
+    //       child: Center(child: image),
+    //     ),
+    //     (caption != null)
+    //         ? Padding(
+    //             padding: EdgeInsets.only(top: 8.pw),
+    //             child: Text(
+    //               caption,
+    //               style: textStyle,
+    //               textAlign: TextAlign.center,
+    //             ),
+    //           )
+    //         : Container(),
+    //   ],
+    // );
   }
 }
 
@@ -768,4 +724,145 @@ class IconAndTitleWidget extends StatelessWidget {
       ],
     );
   }
+}
+
+class OutlineGradientButton extends StatelessWidget {
+  final Widget child;
+  final double strokeWidth;
+  final Radius radius;
+  final Corners corners;
+  final Gradient gradient;
+  final EdgeInsets padding;
+  final Color backgroundColor;
+  final double elevation;
+  final bool inkWell;
+  final GestureTapCallback onTap;
+  final GestureTapCallback onDoubleTap;
+  final GestureLongPressCallback onLongPress;
+  final GestureTapDownCallback onTapDown;
+  final GestureTapCancelCallback onTapCancel;
+  final ValueChanged<bool> onHighlightChanged;
+  final ValueChanged<bool> onHover;
+  final ValueChanged<bool> onFocusChange;
+
+  OutlineGradientButton({
+    Key key,
+    @required this.child,
+    @required this.strokeWidth,
+    @required this.gradient,
+    this.corners,
+    this.radius,
+    this.padding = const EdgeInsets.all(8),
+    this.backgroundColor = Colors.transparent,
+    this.elevation = 0,
+    this.inkWell = false,
+    this.onTap,
+    this.onDoubleTap,
+    this.onLongPress,
+    this.onTapDown,
+    this.onTapCancel,
+    this.onHighlightChanged,
+    this.onHover,
+    this.onFocusChange,
+  })  : assert(strokeWidth > 0),
+        assert(padding.isNonNegative),
+        assert(elevation >= 0),
+        assert(radius == null || corners == null,
+            'Cannot provide both a radius and corners.'),
+        super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final BorderRadius br = corners != null
+        ? _fromCorners(corners, strokeWidth)
+        : _fromRadius(radius ?? Radius.zero, strokeWidth);
+    return Material(
+      color: backgroundColor,
+      elevation: elevation,
+      borderRadius: br,
+      child: InkWell(
+        borderRadius: br,
+        highlightColor:
+            inkWell ? Theme.of(context).highlightColor : Colors.transparent,
+        splashColor:
+            inkWell ? Theme.of(context).splashColor : Colors.transparent,
+        onTap: onTap,
+        onLongPress: onLongPress,
+        onDoubleTap: onDoubleTap,
+        onTapDown: onTapDown,
+        onTapCancel: onTapCancel,
+        onHighlightChanged: onHighlightChanged,
+        onHover: onHover,
+        onFocusChange: onFocusChange,
+        child: CustomPaint(
+          painter: _Painter(gradient, radius, strokeWidth, corners),
+          child: Padding(padding: padding, child: child),
+        ),
+      ),
+    );
+  }
+
+  static BorderRadius _fromCorners(Corners corners, double strokeWidth) {
+    return BorderRadius.only(
+      topLeft: Radius.elliptical(
+          corners.topLeft.x + strokeWidth, corners.topLeft.y + strokeWidth),
+      topRight: Radius.elliptical(
+          corners.topRight.x + strokeWidth, corners.topRight.y + strokeWidth),
+      bottomLeft: Radius.elliptical(corners.bottomLeft.x + strokeWidth,
+          corners.bottomLeft.y + strokeWidth),
+      bottomRight: Radius.elliptical(corners.bottomRight.x + strokeWidth,
+          corners.bottomRight.y + strokeWidth),
+    );
+  }
+
+  static BorderRadius _fromRadius(Radius radius, double strokeWidth) {
+    return BorderRadius.all(
+        Radius.elliptical(radius.x + strokeWidth, radius.y + strokeWidth));
+  }
+}
+
+class _Painter extends CustomPainter {
+  final Gradient gradient;
+  final Radius radius;
+  final double strokeWidth;
+  final Corners corners;
+
+  _Painter(this.gradient, this.radius, this.strokeWidth, this.corners);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final Rect rect = Rect.fromLTWH(strokeWidth / 2, strokeWidth / 2,
+        size.width - strokeWidth, size.height - strokeWidth);
+    final RRect rRect = corners != null
+        ? RRect.fromRectAndCorners(
+            rect,
+            topLeft: corners.topLeft,
+            topRight: corners.topRight,
+            bottomLeft: corners.bottomLeft,
+            bottomRight: corners.bottomRight,
+          )
+        : RRect.fromRectAndRadius(rect, radius ?? Radius.zero);
+    final Paint _paint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = strokeWidth
+      ..shader = gradient.createShader(rect);
+    canvas.drawRRect(rRect, _paint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => oldDelegate != this;
+}
+
+class Corners {
+  final Radius topLeft;
+  final Radius topRight;
+  final Radius bottomLeft;
+  final Radius bottomRight;
+
+  const Corners({
+    this.topLeft = Radius.zero,
+    this.topRight = Radius.zero,
+    this.bottomLeft = Radius.zero,
+    this.bottomRight = Radius.zero,
+  });
 }

@@ -113,9 +113,9 @@ class BoardView extends StatelessWidget {
         /* distributing card animation widgets */
         Align(
           alignment: Alignment.center,
-          child: Transform.translate(
-            offset: boardAttributes.centerViewCardShufflePosition,
-            child: CardDistributionAnimatingWidget(),
+          child: MultipleCardDistributionAnimatingWidget(
+            gameState,
+            key: Key('card-distribution-widget'),
           ),
         ),
 

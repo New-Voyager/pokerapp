@@ -11,13 +11,16 @@ class ClubMemberModel extends ChangeNotifier {
   bool creditTracking = false;
   String clubCode;
   String name;
+  String displayName;
   DateTime joinedDate;
-  String lastPlayedDate;
+  DateTime lastPlayedDate;
+  String lastPlayedDateStr;
   ClubMemberStatus status;
   String imageId;
   bool isOwner;
   bool isManager;
   bool isMainOwner;
+  bool isAgent;
   String playerId;
   double availableCredit;
   String _contactInfo;
@@ -33,6 +36,9 @@ class ClubMemberModel extends ChangeNotifier {
   int _totalGames;
   bool edited = false;
   bool refreshCredits = false;
+  String agentName;
+  String agentUuid;
+  int agentFeeBack;
 
   ClubMemberModel();
 
@@ -97,6 +103,7 @@ class ClubMemberModel extends ChangeNotifier {
     data.joinedDate = copyValue.joinedDate;
     data.status = copyValue.status;
     data.lastPlayedDate = copyValue.lastPlayedDate;
+    data.lastPlayedDateStr = copyValue.lastPlayedDateStr;
     data._creditLimit = copyValue._creditLimit;
     data._totalGames = copyValue._totalGames;
     data._totalWinnings = copyValue._totalWinnings;
@@ -108,6 +115,11 @@ class ClubMemberModel extends ChangeNotifier {
     data._contactInfo = copyValue._contactInfo;
     data._notes = copyValue._notes;
     data._tipsBack = copyValue._tipsBack;
+    data.isAgent = copyValue.isAgent;
+    data.agentName = copyValue.agentName;
+    data.agentUuid = copyValue.agentUuid;
+    data.displayName = copyValue.displayName;
+    data.agentFeeBack = copyValue.agentFeeBack;
     return data;
   }
 
@@ -115,7 +127,7 @@ class ClubMemberModel extends ChangeNotifier {
     this.name = jsonData['name'];
     this.joinedDate = DateTime.parse(jsonData['joinedDate']);
     this.status = _getPlayerStatus(jsonData['status']);
-    this.lastPlayedDate = "";
+    this.lastPlayedDateStr = "";
     this._creditLimit = 0;
     this._totalGames = 0;
     this._totalWinnings = 0;
@@ -129,7 +141,7 @@ class ClubMemberModel extends ChangeNotifier {
         lastPlayedDate = lastPlayedDate.toLocal();
         final diff = DateTime.now().difference(lastPlayedDate);
         final ago = new DateTime.now().subtract(diff);
-        this.lastPlayedDate = timeago.format(ago);
+        this.lastPlayedDateStr = timeago.format(ago);
       }
       //convertDate(jsonData["lastPlayedDate"]);
     }
@@ -145,11 +157,17 @@ class ClubMemberModel extends ChangeNotifier {
     if (jsonData['isMainOwner'] != null) {
       this.isMainOwner = jsonData['isMainOwner'];
     }
+    this.isAgent = false;
+    if (jsonData['isAgent'] != null) {
+      this.isAgent = jsonData['isAgent'];
+    }
     if (jsonData['rakePaid'] != null) {
       this._rake = double.parse(jsonData['rakePaid'].toString());
     }
     this._tipsBack = int.parse((jsonData['tipsBack'] ?? 0).toString());
     this.imageUrl = jsonData['imageUrl'];
+    this.agentName = jsonData['agentName'];
+    this.agentUuid = jsonData['agentUuid'];
 
     if (jsonData['totalGames'] != null) {
       this._totalGames = int.parse(jsonData['totalGames'].toString());
@@ -179,6 +197,13 @@ class ClubMemberModel extends ChangeNotifier {
     }
     this.availableCredit =
         double.parse((jsonData['availableCredit'] ?? '0').toString());
+    if (jsonData['displayName'] != null) {
+      this.displayName = jsonData['displayName'].toString();
+    }
+    this.agentFeeBack = 0;
+    if (jsonData['agentFeeBack'] != null) {
+      this.agentFeeBack = int.parse(jsonData['agentFeeBack'].toString());
+    }
     this.edited = false;
   }
 
@@ -188,11 +213,11 @@ class ClubMemberModel extends ChangeNotifier {
       DateTime now = DateTime.now();
       Duration diff = now.difference(playedDate);
       if (diff.inDays == 0) {
-        this.lastPlayedDate = 'Today';
+        this.lastPlayedDateStr = 'Today';
       } else if (diff.inDays == 1) {
-        this.lastPlayedDate = 'Yesterday';
+        this.lastPlayedDateStr = 'Yesterday';
       } else if (diff.inDays < 7) {
-        this.lastPlayedDate = '${diff.inDays} days ago';
+        this.lastPlayedDateStr = '${diff.inDays} days ago';
       } else if (diff.inDays < 30) {
         int weeks = diff.inDays ~/ 7;
         if (diff.inDays % 7 > 0) {
@@ -202,7 +227,7 @@ class ClubMemberModel extends ChangeNotifier {
         if (weeks == 1) {
           weekStr = "week";
         }
-        this.lastPlayedDate = '$weeks $weekStr ago';
+        this.lastPlayedDateStr = '$weeks $weekStr ago';
       } else if (diff.inDays < 365) {
         int months = diff.inDays ~/ 30;
         if (diff.inDays % 30 > 0) {
@@ -212,14 +237,14 @@ class ClubMemberModel extends ChangeNotifier {
         if (months == 1) {
           monthStr = "month";
         }
-        this.lastPlayedDate = '$months $monthStr ago';
+        this.lastPlayedDateStr = '$months $monthStr ago';
       } else {
         int years = diff.inDays ~/ 365;
         String yearStr = "years";
         if (years == 1) {
           yearStr = "year";
         }
-        this.lastPlayedDate = '$years $yearStr ago';
+        this.lastPlayedDateStr = '$years $yearStr ago';
       }
     }
   }

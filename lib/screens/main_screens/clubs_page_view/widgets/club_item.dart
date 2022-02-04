@@ -62,7 +62,10 @@ class ClubItemView extends StatelessWidget {
               image: club.picUrl == null || club.picUrl.isEmpty
                   ? null
                   : DecorationImage(
-                      image: CachedNetworkImageProvider(club.picUrl),
+                      image: CachedNetworkImageProvider(
+                        club.picUrl,
+                        cacheManager: ImageCacheManager.instance,
+                      ),
                       fit: BoxFit.cover,
                     )),
           alignment: Alignment.center,

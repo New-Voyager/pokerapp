@@ -5,6 +5,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
 import 'package:pokerapp/services/app/player_service.dart';
+import 'package:pokerapp/services/caching/cache.dart';
 
 import 'club_model.dart';
 
@@ -17,6 +18,8 @@ class AppState extends ChangeNotifier {
   Flavor _currentFlavor;
   PendingApprovalsState buyinApprovals = PendingApprovalsState();
   ClubsUpdateState clubUpdateState = ClubsUpdateState();
+
+  CacheService cacheService = CacheService();
 
   Map<SeatPos, Offset> _chipPotViewPos = Map<SeatPos, Offset>();
   Map<String, dynamic> screenAttribs;
@@ -79,6 +82,7 @@ class AppState extends ChangeNotifier {
     if (currentIndex == 0) {
       notifyListeners();
     }
+    clubUpdateState.notify();
   }
 
   setGameEnded(bool value) {
@@ -86,6 +90,7 @@ class AppState extends ChangeNotifier {
     if (currentIndex == 0) {
       notifyListeners();
     }
+    clubUpdateState.notify();
   }
 
   set currentFlavor(Flavor flavor) {
@@ -109,5 +114,13 @@ class AppState extends ChangeNotifier {
     }).onError((error, stackTrace) {
       // ignore it
     });
+  }
+
+  Future<void> cacheData() async {
+    final myClubs = await cacheService.getMyClubs();
+    for (final club in myClubs) {
+      await cacheService.getClubHomePageData(club.clubCode, update: true);
+      await cacheService.getMembers(club.clubCode, update: true);
+    }
   }
 }

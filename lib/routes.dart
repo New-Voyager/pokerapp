@@ -7,6 +7,7 @@ import 'package:pokerapp/screens/auth_screens/registration_new.dart';
 import 'package:pokerapp/screens/club_screen/announcements_view.dart';
 import 'package:pokerapp/screens/club_screen/bookmarked_hands.dart';
 import 'package:pokerapp/screens/club_screen/botscripts.dart';
+import 'package:pokerapp/screens/club_screen/club_members_under_agent.dart';
 import 'package:pokerapp/screens/club_screen/high_hand_analysis_screen/high_hand_analysis_screen.dart';
 import 'package:pokerapp/screens/club_screen/member_activities_view.dart';
 import 'package:pokerapp/screens/club_screen/member_credit_history.dart';
@@ -79,6 +80,8 @@ class Routes {
   static const String rewards_list_screen = '/rewards_list_screen';
   // ClubMembersDetailsView  -- provider, arguments
   static const String club_member_detail_view = '/club_member_detail_view';
+  static const String club_member_players_under_view =
+      '/club_member_players_under_view';
   // ClubMembersCreditDetailsView  -- provider, arguments
   static const String club_member_credit_detail_view =
       '/club_member_credit_detail_view';
@@ -295,19 +298,45 @@ class Routes {
 
       case club_member_detail_view:
         Map<String, dynamic> args = settings.arguments as Map<String, dynamic>;
+        ClubHomePageModel club = args["club"];
         String clubCode = args["clubCode"];
         String playerId = args["playerId"];
         bool isCurrentOwner = args["currentOwner"] as bool;
         final ClubMemberModel member = args["member"];
+        final allMembers = args["allMembers"];
+        // return _getPageRoute(
+        //   routeName: settings.name,
+        //   viewToShow: ChangeNotifierProvider<ClubMemberModel>(
+        //     create: (_) => member,
+        //     builder: (BuildContext context, _) => Consumer<ClubMemberModel>(
+        //       builder: (_, ClubMemberModel data, __) => ClubMembersDetailsView(
+        //         club,
+        //         clubCode,
+        //         playerId,
+        //         isCurrentOwner,
+        //         member,
+        //         allMembers: allMembers,
+        //       ),
+        //     ),
+        //   ),
+        // );
         return _getPageRoute(
           routeName: settings.name,
-          viewToShow: ChangeNotifierProvider<ClubMemberModel>(
-            create: (_) => member,
-            builder: (BuildContext context, _) => Consumer<ClubMemberModel>(
-              builder: (_, ClubMemberModel data, __) => ClubMembersDetailsView(
-                  clubCode, playerId, isCurrentOwner, member),
-            ),
+          viewToShow: ClubMembersDetailsView(
+            club,
+            clubCode,
+            playerId,
+            isCurrentOwner,
+            member,
+            allMembers: allMembers,
           ),
+        );
+      case club_member_players_under_view:
+        Map<String, dynamic> args = settings.arguments as Map<String, dynamic>;
+        final member = args["member"];
+        return _getPageRoute(
+          routeName: settings.name,
+          viewToShow: ClubMembersUnderAgent(member),
         );
 
       case club_member_credit_detail_view:

@@ -157,12 +157,25 @@ class Nats {
     final String changed = data['changed'];
 
     if (type == 'CLUB_UPDATED') {
-      if (changed == 'NEW_GAME') {
-        // a new game has started in any of the club, set to refresh the live games screen
-        appState.setNewGame(true);
-      } else if (changed == 'GAME_ENDED') {
-        // a game in the club is ended, refresh the live games, as well as the game record
-        appState.setGameEnded(true);
+      final clubCode = data['clubCode'];
+
+      if (changed == 'NEW_MEMBER') {
+        Future.delayed(Duration(seconds: 3), () {
+          appState.cacheService.getMembers(clubCode, update: true);
+        });
+      } else {
+        // update club home page model
+        appState.cacheService
+            .getClubHomePageData(clubCode, update: true)
+            .then((value) {
+          if (changed == 'NEW_GAME') {
+            // a new game has started in any of the club, set to refresh the live games screen
+            appState.setNewGame(true);
+          } else if (changed == 'GAME_ENDED') {
+            // a game in the club is ended, refresh the live games, as well as the game record
+            appState.setGameEnded(true);
+          }
+        }).onError((error, stackTrace) {});
       }
     }
   }

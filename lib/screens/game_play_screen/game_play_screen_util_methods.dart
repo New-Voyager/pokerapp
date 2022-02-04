@@ -146,10 +146,10 @@ class GamePlayScreenUtilMethods {
               color: Colors.white,
             ),
             backgroundColor: Colors.red,
-            label: 'Nameplate Hole Cards',
+            label: 'Card distribution',
             labelBackgroundColor: Colors.black,
             onTap: () {
-              TestService.showNamePlateHoleCards();
+              TestService.showCardDistribution();
             }),
         SpeedDialChild(
             child: Icon(

@@ -2,7 +2,9 @@ import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/main_helper.dart';
+import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/models/club_members_model.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
@@ -19,19 +21,27 @@ import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
+import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
+import 'package:pokerapp/widgets/switch.dart';
 import 'package:pokerapp/widgets/textfields.dart';
+import 'package:pokerapp/widgets/texts.dart';
 import 'package:provider/provider.dart';
 
+import 'club_members_list_view.dart';
+
 class ClubMembersDetailsView extends StatefulWidget {
+  final ClubHomePageModel club;
   final String clubCode;
   final String playerId;
   final ClubMemberModel member;
   final bool isClubOwner; // current session is owner?
+  final List<ClubMemberModel> allMembers;
 
   ClubMembersDetailsView(
-      this.clubCode, this.playerId, this.isClubOwner, this.member);
+      this.club, this.clubCode, this.playerId, this.isClubOwner, this.member,
+      {this.allMembers});
 
   @override
   _ClubMembersDetailsView createState() =>
@@ -39,7 +49,7 @@ class ClubMembersDetailsView extends StatefulWidget {
 }
 
 class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
-    with RouteAwareAnalytics {
+    with RouteAwareAnalytics, SingleTickerProviderStateMixin {
   @override
   String get routeName => Routes.club_member_detail_view;
   bool loadingDone = false;
@@ -51,20 +61,42 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
   String oldPhoneText;
   String oldNotes;
   int oldTipsBack;
+  String oldDisplayName;
   TextEditingController _contactEditingController;
+  TextEditingController _nameEditingController;
   TextEditingController _notesEditingController;
   bool updated = false;
   bool closed = false;
+  TabController _tabController;
+  List<ClubMemberModel> playersUnderMe = [];
   _ClubMembersDetailsView(this.clubCode, this.playerId, this.isClubOwner);
 
   AppTextScreen _appScreenText;
 
   _fetchData() async {
-    _data = await ClubInteriorService.getClubMemberDetail(clubCode, playerId);
+    playersUnderMe = [];
+    //_data = await ClubInteriorService.getClubMemberDetail(clubCode, playerId);
+    final clubMembers = await appState.cacheService.getMembers(clubCode);
+    for (final member in clubMembers) {
+      if (member.playerId == playerId) {
+        _data = member;
+        break;
+      }
+    }
+
+    if (_data.isAgent) {
+      for (final member in clubMembers) {
+        if (member.agentUuid == playerId) {
+          playersUnderMe.add(member);
+        }
+      }
+    }
+
     oldPhoneText = _data.contactInfo;
     oldNotes = _data.notes;
     oldTipsBack = _data.tipsBack;
     loadingDone = true;
+    oldDisplayName = _data.displayName;
 
     if (closed) {
       return;
@@ -82,6 +114,8 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
       _contactEditingController =
           TextEditingController(text: _data.contactInfo);
       _notesEditingController = TextEditingController(text: _data.notes);
+      _nameEditingController = TextEditingController(text: _data.displayName);
+
       _notesEditingController.addListener(() {
         _data.notes = _notesEditingController.text;
         _data.edited = true;
@@ -89,6 +123,10 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
       _contactEditingController.addListener(() {
         _data.edited = true;
         _data.contactInfo = _contactEditingController.text;
+      });
+      _nameEditingController.addListener(() {
+        _data.edited = true;
+        _data.displayName = _nameEditingController.text;
       });
     }
     setState(() {});
@@ -98,6 +136,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
   void initState() {
     super.initState();
     _appScreenText = getAppTextScreen("clubMembersDetailsView");
+    _tabController = TabController(length: 2, vsync: this);
 
     _fetchData();
   }
@@ -112,12 +151,14 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
     if (this._data != null && this._data.edited) {
       if (oldPhoneText != _data.contactInfo ||
           oldNotes != _data.notes ||
-          oldTipsBack != _data.tipsBack) {
+          oldTipsBack != _data.tipsBack ||
+          oldDisplayName != _data.displayName) {
         ConnectionDialog.show(
             context: context, loadingText: "Updating player information...");
         try {
           // save the data
           await ClubInteriorService.updateClubMember(this._data);
+          await appState.cacheService.getMembers(clubCode, update: true);
           updated = true;
         } catch (err) {}
         ConnectionDialog.dismiss(
@@ -125,7 +166,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
         );
       }
     }
-    Navigator.of(context).pop(updated);
+    Navigator.of(context).pop();
   }
 
   List<Widget> getMemberButtons(AppTheme theme) {
@@ -214,8 +255,69 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
       }
     }
 
-    return Consumer<AppTheme>(
-      builder: (_, theme, __) => Container(
+    return Consumer<AppTheme>(builder: (_, theme, __) {
+      if (!loadingDone) {
+        return Container(
+            decoration: AppDecorators.bgRadialGradient(theme),
+            child: Scaffold(
+                backgroundColor: Colors.transparent,
+                appBar: CustomAppBar(
+                  theme: theme,
+                  context: context,
+                  titleText: "",
+                  onBackHandle: () {
+                    goBack(context);
+                  },
+                ),
+                body: CircularProgressWidget()));
+      }
+      List<Widget> children = [];
+      if (creditTracking) {
+        children.addAll([
+          Divider(
+            color: theme.supportingColor,
+          ),
+          ListTile(
+            leading: Icon(Icons.credit_card, color: theme.secondaryColor),
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "Credits",
+                  style: AppDecorators.getHeadLine4Style(theme: theme),
+                ),
+                SizedBox(width: 30.pw),
+                Text(
+                  DataFormatter.chipsFormat(_data.availableCredit),
+                  style: AppDecorators.getHeadLine3Style(theme: theme).copyWith(
+                      color: _data.availableCredit < 0
+                          ? Colors.redAccent
+                          : Colors.greenAccent),
+                ),
+              ],
+            ),
+            trailing: Icon(Icons.arrow_forward_ios, color: theme.accentColor),
+            onTap: () async {
+              bool ret = await Navigator.pushNamed(
+                context,
+                Routes.club_member_credit_detail_view,
+                arguments: {
+                  'clubCode': widget.clubCode,
+                  'playerId': widget.playerId,
+                  'owner': true,
+                  'member': widget.member,
+                },
+              ) as bool;
+              if (widget.member != null && widget.member.refreshCredits) {
+                _fetchData();
+              }
+            },
+          ),
+          tipsBack(theme),
+        ]);
+      }
+
+      return Container(
         decoration: AppDecorators.bgRadialGradient(theme),
         child: Scaffold(
           backgroundColor: Colors.transparent,
@@ -265,7 +367,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                                 child: Text(
                                   _appScreenText['lastActive'] +
                                       ' ' +
-                                      _data.lastPlayedDate,
+                                      _data.lastPlayedDateStr,
                                   style: AppDecorators.getSubtitle3Style(
                                       theme: theme),
                                 ),
@@ -290,119 +392,58 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                             ],
                           ),
                         ),
-                        //           Divider(
-                        //             color: theme.supportingColor,
-                        //           ),
-                        // SwitchWidget(
-                        //   icon: Icons.verified_user,
-                        //   value: true,
-                        //   label: 'Auto Buyin Approval',
-                        //   onChange: (bool newValue) => setState(() {
-                        //   }),
-                        //   // useSpacer: false,
-                        // ),
                         Divider(
                           color: theme.supportingColor,
                         ),
-                        !creditTracking
-                            ? Container()
-                            : ListTile(
-                                leading: Icon(Icons.credit_card,
-                                    color: theme.secondaryColor),
-                                title: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      "Credits",
-                                      style: AppDecorators.getHeadLine4Style(
-                                          theme: theme),
-                                    ),
-                                    SizedBox(width: 30.pw),
-                                    Text(
-                                      DataFormatter.chipsFormat(
-                                          _data.availableCredit),
-                                      style: AppDecorators.getHeadLine3Style(
-                                              theme: theme)
-                                          .copyWith(
-                                              color: _data.availableCredit < 0
-                                                  ? Colors.redAccent
-                                                  : Colors.greenAccent),
-                                    ),
-                                  ],
-                                ),
-                                trailing: Icon(Icons.arrow_forward_ios,
-                                    color: theme.accentColor),
-                                onTap: () async {
-                                  bool ret = await Navigator.pushNamed(
-                                    context,
-                                    Routes.club_member_credit_detail_view,
-                                    arguments: {
-                                      'clubCode': widget.clubCode,
-                                      'playerId': widget.playerId,
-                                      'owner': true,
-                                      'member': widget.member,
-                                    },
-                                  ) as bool;
-                                  if (widget.member != null &&
-                                      widget.member.refreshCredits) {
-                                    _fetchData();
-                                  }
-                                },
-                              ),
-                        !creditTracking
-                            ? Container()
-                            : Divider(
-                                color: theme.supportingColor,
-                              ),
-                        detailTile(theme),
+                        // set leader flag
+                        leaderRow(theme),
+                        SizedBox(height: 10),
+                        Visibility(
+                            visible: _data.isAgent,
+                            child: playersUnderRow(theme)),
+                        ...children,
                         Divider(
                           color: theme.supportingColor,
                         ),
-                        !creditTracking ? Container() : tipsBack(theme),
-                        Divider(
-                          color: theme.fillInColor,
-                        ),
-                        contactInfo(theme),
-                        Divider(
-                          color: theme.fillInColor,
-                        ),
-                        // notes view
-                        Container(
-                          padding: EdgeInsets.all(5),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Expanded(
-                                flex: 1,
-                                child: Icon(
-                                  Icons.note,
-                                  color: theme.secondaryColor,
-                                ),
-                              ),
-                              Expanded(
-                                flex: 8,
-                                child: Padding(
-                                  padding: EdgeInsets.only(left: 5),
-                                  child: CardFormTextField(
-                                    theme: theme,
-                                    controller: _notesEditingController,
-                                    hintText: _appScreenText['insertNotesHere'],
-                                    maxLines: 5,
+                        Column(
+                          children: [
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: TabBar(
+                                controller: _tabController,
+                                indicatorColor: theme.accentColor,
+                                isScrollable: true,
+                                tabs: [
+                                  Tab(
+                                    text: "Info",
                                   ),
-                                ),
+                                  Tab(
+                                    text: "Stats",
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
+                            ),
+                            Container(
+                              height: 300,
+                              padding: EdgeInsets.only(top: 16.ph),
+                              child: TabBarView(
+                                controller: _tabController,
+                                physics: NeverScrollableScrollPhysics(),
+                                children: [
+                                  contactInfo(theme),
+                                  detailTile(theme),
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
                   ),
                 ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   Widget tipsBack(AppTheme theme) {
@@ -412,7 +453,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            "Tips Back",
+            "Fee Credits %",
             style: AppDecorators.getHeadLine4Style(theme: theme),
           ),
           SizedBox(width: 30.pw),
@@ -444,31 +485,87 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
   }
 
   Widget contactInfo(AppTheme theme) {
-    return // contact info
-        Container(
-      padding: EdgeInsets.all(5),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Expanded(
-            flex: 1,
-            child: Icon(Icons.phone, color: theme.secondaryColor),
-          ),
-          Expanded(
-            flex: 8,
-            child: Padding(
-              padding: EdgeInsets.only(left: 5),
-              child: CardFormTextField(
-                theme: theme,
-                controller: _contactEditingController,
-                hintText: _appScreenText['mobileNumber'],
-                maxLines: 1,
+    return Column(children: [
+      Container(
+        padding: EdgeInsets.all(5),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              flex: 1,
+              child: Icon(Icons.account_box, color: theme.secondaryColor),
+            ),
+            Expanded(
+              flex: 8,
+              child: Padding(
+                padding: EdgeInsets.only(left: 5),
+                child: CardFormTextField(
+                  theme: theme,
+                  controller: _nameEditingController,
+                  hintText: 'Player name',
+                  maxLines: 1,
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-    );
+
+      Container(
+        padding: EdgeInsets.all(5),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              flex: 1,
+              child: Icon(Icons.phone, color: theme.secondaryColor),
+            ),
+            Expanded(
+              flex: 8,
+              child: Padding(
+                padding: EdgeInsets.only(left: 5),
+                child: CardFormTextField(
+                  theme: theme,
+                  controller: _contactEditingController,
+                  hintText: _appScreenText['mobileNumber'],
+                  maxLines: 1,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+
+      // notes view
+      Container(
+        padding: EdgeInsets.all(5),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Expanded(
+              flex: 1,
+              child: Icon(
+                Icons.note,
+                color: theme.secondaryColor,
+              ),
+            ),
+            Expanded(
+              flex: 8,
+              child: Padding(
+                padding: EdgeInsets.only(left: 5),
+                child: CardFormTextField(
+                  theme: theme,
+                  controller: _notesEditingController,
+                  hintText: _appScreenText['insertNotesHere'],
+                  maxLines: 5,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    ]);
   }
 
   Future<void> kickPlayerOut() async {
@@ -584,6 +681,146 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
         : number > 0
             ? theme.secondaryColor
             : theme.negativeOrErrorColor;
+  }
+
+  Widget leaderRow(AppTheme theme) {
+    return Row(
+      children: [
+        Expanded(
+          flex: 4,
+          child: Padding(
+            padding: EdgeInsets.only(left: 5),
+            child: Text(
+              'Agent',
+              textAlign: TextAlign.left,
+              style: AppDecorators.getHeadLine4Style(theme: theme),
+            ),
+          ),
+        ),
+        Expanded(
+            flex: 6,
+            child: SwitchWidget2(
+                label: '',
+                value: _data.isAgent,
+                onChange: (val) async {
+                  await ClubInteriorService.setAsAgent(
+                      widget.club.clubCode, _data.playerId, val);
+                  _data.isAgent = val;
+                  setState(() {});
+                })),
+      ],
+    );
+  }
+
+  Widget referredByRow(AppTheme theme) {
+    return Row(
+      children: [
+        Expanded(
+          flex: 3,
+          child: InkWell(
+            onTap: () async {
+              List<ClubMemberModel> leaders = [];
+              for (final member in widget.allMembers) {
+                if (member.isAgent) {
+                  leaders.add(member);
+                }
+              }
+              // assign another player
+              final ret = await ChooseMemberDialog.prompt(
+                  context: context, club: widget.club, membersList: leaders);
+              if (ret != null) {
+                await ClubInteriorService.setAgent(
+                    widget.club.clubCode, _data.playerId, ret.playerUuid);
+              }
+            },
+            child: Padding(
+              padding: EdgeInsets.only(left: 5),
+              child: Row(children: [
+                Text(
+                  _data.agentName ?? '',
+                  textAlign: TextAlign.center,
+                  style: AppDecorators.getHeadLine4Style(theme: theme),
+                ),
+                SizedBox(
+                  width: 10,
+                ),
+                Icon(Icons.search, color: theme.accentColor)
+              ]),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget playersUnderRow(AppTheme theme) {
+    return InkWell(
+      onTap: () async {
+        await Navigator.pushNamed(
+          context,
+          Routes.club_member_players_under_view,
+          arguments: {
+            'clubCode': widget.clubCode,
+            'playerId': widget.playerId,
+            'owner': true,
+            'member': widget.member,
+          },
+        );
+        _fetchData();
+      },
+      child: Row(
+        children: [
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.only(left: 5),
+              child: Text(
+                'Players Under (${playersUnderMe.length})',
+                textAlign: TextAlign.left,
+                style: AppDecorators.getHeadLine4Style(theme: theme),
+              ),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(left: 5),
+            child: Row(children: [
+              SizedBox(
+                width: 10,
+              ),
+              Icon(Icons.navigate_next, color: theme.accentColor)
+            ]),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget myNetwork(AppTheme theme) {
+    if (!_data.isAgent) {
+      return Container();
+    }
+    return Row(
+      children: [
+        Expanded(
+          flex: 6,
+          child: RoundRectButton(
+              onTap: () async {
+                log('Query activities');
+                String agentId = _data.playerId;
+                DateTime now = DateTime.now();
+                DateTime nowAdjust = DateTime(now.year, now.month, now.day);
+                DateTime start = findFirstDateOfTheWeek(nowAdjust).toUtc();
+                DateTime end = findLastDateOfTheWeek(nowAdjust).toUtc();
+
+                final memberActivities =
+                    await ClubInteriorService.getAgentPlayerActivities(
+                        clubCode, agentId, start, end);
+                log('Query activities successful');
+              },
+              text: 'Query This Week',
+              theme: theme),
+        ),
+      ],
+    );
   }
 
   Widget detailTile(AppTheme theme) {
@@ -750,5 +987,89 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
         ],
       ),
     );
+  }
+}
+
+class ChosenMember {
+  String playerName;
+  String playerUuid;
+}
+
+class ChooseMemberDialog {
+  static Future<ChosenMember> prompt({
+    @required BuildContext context,
+    @required ClubHomePageModel club,
+    @required List<ClubMemberModel> membersList,
+    String title = 'Choose Leader',
+  }) async {
+    final ret = await showDialog<ChosenMember>(
+        barrierDismissible: true,
+        context: context,
+        builder: (_) {
+          AppTheme theme = AppTheme.getTheme(context);
+          return StatefulBuilder(builder: (context, setState) {
+            return AlertDialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                  side: BorderSide(
+                    color: theme.accentColor,
+                  ),
+                ),
+                backgroundColor: theme.fillInColor,
+                title: Center(child: SubTitleText(text: title, theme: theme)),
+                content: Container(
+                  width: Screen.width - 30,
+                  height: Screen.height * 1 / 3,
+                  child: ListView.separated(
+                    physics: BouncingScrollPhysics(),
+                    itemCount: membersList.length,
+                    itemBuilder: (context, index) {
+                      return InkWell(
+                        onTap: () {
+                          // choose the member
+                          ChosenMember ret = ChosenMember();
+                          ret.playerName = membersList[index].name;
+                          ret.playerUuid = membersList[index].playerId;
+                          Navigator.of(context).pop(ret);
+                        },
+                        child: Container(
+                            margin: EdgeInsets.only(bottom: 8, top: 4),
+                            child: Row(
+                              children: [
+                                Container(
+                                  margin: EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                  ),
+                                  child: CircleAvatar(
+                                    radius: 20,
+                                    backgroundColor:
+                                        theme.supportingColor.withAlpha(100),
+                                    child: ClipOval(
+                                      child: membersList[index].imageUrl == null
+                                          ? Icon(AppIcons.user,
+                                              color: theme.fillInColor)
+                                          : Image.network(
+                                              membersList[index].imageUrl,
+                                            ),
+                                    ),
+                                  ),
+                                ),
+                                Text(
+                                  membersList[index].name,
+                                  textAlign: TextAlign.left,
+                                ),
+                              ],
+                            )),
+                      );
+                    },
+                    separatorBuilder: (context, index) {
+                      return Divider(thickness: 2);
+                    },
+                  ),
+                ));
+          });
+        });
+
+    return ret;
   }
 }

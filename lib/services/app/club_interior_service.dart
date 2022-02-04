@@ -10,6 +10,8 @@ enum MemberListOptions {
   UNSETTLED,
   INACTIVE,
   MANAGERS,
+  LEADERS,
+  MYREFERALS,
 }
 
 class ClubInteriorService {
@@ -19,10 +21,12 @@ class ClubInteriorService {
           name
           playerId
           contactInfo
+          displayName
           status
           isOwner
           isManager
           isMainOwner
+          isAgent
           joinedDate
           lastPlayedDate
           totalBuyins
@@ -34,6 +38,9 @@ class ClubInteriorService {
           totalGames
           availableCredit
           tipsBack
+          agentName
+          agentUuid
+          agentFeeBack
         }
       }""";
 
@@ -160,7 +167,6 @@ class ClubInteriorService {
             playerId
             playerUuid
             tipsBack
-            tipsBack
             tips
             availableCredit
             lastPlayedDate
@@ -170,6 +176,23 @@ class ClubInteriorService {
           }
         }
     """;
+
+  static String agentPlayersFilterQuery = """
+      query activities(\$clubCode: String! \$agentId: String! \$from: DateTime! \$end: DateTime!) {
+        activities: agentPlayersActivity(clubCode: \$clubCode, agentId: \$agentId, startDate:\$from, endDate: \$end) {
+          playerId
+          playerName
+          playerUuid
+          tips
+          profit
+          buyIn
+          lastPlayedDate
+          availableCredit
+          gamesPlayed
+          handsPlayed
+        }
+      }
+  """;
   static Future<List<ClubMemberModel>> getMembers(String clubCode) async {
     return getClubMembers(clubCode, MemberListOptions.ALL);
   }
@@ -254,10 +277,68 @@ class ClubInteriorService {
       "notes": data.notes,
       "autoBuyinApproval": data.autoBuyInApproval,
       "tipsBack": data.tipsBack,
+      "displayName": data.displayName,
     };
     Map<String, dynamic> variables = {
       "clubCode": data.clubCode,
       "playerUuid": data.playerId,
+      "update": update,
+    };
+    QueryResult result = await _client.mutate(MutationOptions(
+        document: gql(updateClubMemberMutation), variables: variables));
+    if (result.hasException) return false;
+    return true;
+  }
+
+  static Future<bool> setAsAgent(
+      String clubCode, String playerId, bool isAgent) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    Map<String, dynamic> update = {
+      "isAgent": isAgent,
+    };
+    Map<String, dynamic> variables = {
+      "clubCode": clubCode,
+      "playerUuid": playerId,
+      "update": update,
+    };
+    QueryResult result = await _client.mutate(MutationOptions(
+        document: gql(updateClubMemberMutation), variables: variables));
+    if (result.hasException) return false;
+    return true;
+  }
+
+  static Future<bool> setAgent(
+      String clubCode, String playerId, String leaderId) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    Map<String, dynamic> update = {
+      "agentUuid": leaderId,
+    };
+    Map<String, dynamic> variables = {
+      "clubCode": clubCode,
+      "playerUuid": playerId,
+      "update": update,
+    };
+    QueryResult result = await _client.mutate(MutationOptions(
+        document: gql(updateClubMemberMutation), variables: variables));
+    if (result.hasException) return false;
+    return true;
+  }
+
+  static Future<bool> updateClubMemberByParam(String clubCode, String playerId,
+      {int agentFeeBack}) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    Map<String, dynamic> update = {};
+
+    if (agentFeeBack != null) {
+      update['agentFeeBack'] = agentFeeBack;
+    }
+
+    Map<String, dynamic> variables = {
+      "clubCode": clubCode,
+      "playerUuid": playerId,
       "update": update,
     };
     QueryResult result = await _client.mutate(MutationOptions(
@@ -422,6 +503,29 @@ class ClubInteriorService {
     if (result.hasException) return [];
 
     final jsonResponse = result.data['clubMembers'];
+
+    final members = jsonResponse
+        .map<MemberActivity>((var item) => MemberActivity.fromJson(item))
+        .toList();
+    return members;
+  }
+
+  static Future<List<MemberActivity>> getAgentPlayerActivities(
+      String clubCode, String agentId, DateTime start, DateTime end) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    Map<String, dynamic> variables = {
+      "clubCode": clubCode,
+      "agentId": agentId,
+      "from": start.toIso8601String(),
+      "end": end.toIso8601String(),
+    };
+
+    QueryResult result = await _client.query(QueryOptions(
+        document: gql(agentPlayersFilterQuery), variables: variables));
+
+    if (result.hasException) return [];
+
+    final jsonResponse = result.data['activities'];
 
     final members = jsonResponse
         .map<MemberActivity>((var item) => MemberActivity.fromJson(item))

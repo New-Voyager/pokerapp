@@ -12,6 +12,7 @@ import 'package:pokerapp/services/app/tenor_service.dart';
 import 'package:pokerapp/services/tenor/src/model/tenor_result.dart';
 
 import 'package:pokerapp/utils/gif_category_model.dart';
+import 'package:pokerapp/utils/utils.dart';
 
 class NewGifWidget extends StatefulWidget {
   final List<String> gifSuggestions;
@@ -138,35 +139,34 @@ class _NewGifWidgetState extends State<NewGifWidget> {
         child: Stack(
           children: [
             CachedNetworkImage(
-              imageUrl: category.gif.media.gif.url,
+              cacheManager: ImageCacheManager.instance,
+              imageUrl: category.gif.media.tinygif.url,
               fit: BoxFit.cover,
               height: double.infinity,
-              progressIndicatorBuilder: (
-                context,
-                url,
-                downloadProgress,
-              ) =>
-                  AspectRatio(
-                aspectRatio: category.gif.media.gif.dims[0].toDouble() /
-                    category.gif.media.gif.dims[1].toDouble(),
-                child: Container(
-                  width: double.infinity,
-                  height: double.infinity,
-                  color: CupertinoColors.inactiveGray,
-                ),
-              ),
+              progressIndicatorBuilder: (_, __, ___) {
+                final dims = category.gif.media.gif.dims;
+                return AspectRatio(
+                  aspectRatio: dims[0].toDouble() / dims[1].toDouble(),
+                  child: Container(
+                    width: double.infinity,
+                    height: double.infinity,
+                    color: CupertinoColors.inactiveGray,
+                  ),
+                );
+              },
             ),
             Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                    colors: [
-                      const Color(0x00000000),
-                      const Color(0xFF000000),
-                    ],
-                    begin: const FractionalOffset(0.5, 0.0),
-                    end: const FractionalOffset(0.5, 1.0),
-                    stops: [0.7, 1.0],
-                    tileMode: TileMode.clamp),
+                  colors: [
+                    const Color(0x00000000),
+                    const Color(0xFF000000),
+                  ],
+                  begin: const FractionalOffset(0.5, 0.0),
+                  end: const FractionalOffset(0.5, 1.0),
+                  stops: [0.7, 1.0],
+                  tileMode: TileMode.clamp,
+                ),
               ),
             ),
             Positioned(

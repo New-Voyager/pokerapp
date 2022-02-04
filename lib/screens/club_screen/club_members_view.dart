@@ -1,15 +1,16 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/models/club_members_model.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
-import 'package:pokerapp/resources/new/app_colors_new.dart';
-import 'package:pokerapp/resources/app_icons.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
+import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/services/app/club_interior_service.dart';
+import 'package:pokerapp/widgets/label.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../main_helper.dart';
@@ -36,6 +37,9 @@ class _ClubMembersViewState extends State<ClubMembersView>
   List<ClubMemberModel> _all = [];
   List<ClubMemberModel> _inactive = [];
   List<ClubMemberModel> _managers = [];
+  List<ClubMemberModel> _leaders = [];
+  List<ClubMemberModel> _myReferrals = [];
+
   //List<ClubMemberModel> _unsettled = [];
 
   bool _isLoading = true;
@@ -46,15 +50,31 @@ class _ClubMembersViewState extends State<ClubMembersView>
 
   _fetchData() async {
     log('Club member list');
-    _all = await ClubInteriorService.getClubMembers(
-        _clubHomePageModel.clubCode, MemberListOptions.ALL);
+    _all = await appState.cacheService.getMembers(_clubHomePageModel.clubCode);
+    final now = DateTime.now();
+    final currentUser = AuthService.get();
+
+    for (final member in _all) {
+      if (member.isManager) {
+        _managers.add(member);
+      }
+
+      if (member.lastPlayedDate != null) {
+        final diff = now.difference(member.lastPlayedDate);
+        if (diff.inDays >= 60) {
+          _inactive.add(member);
+        }
+      }
+
+      if (member.isAgent) {
+        _leaders.add(member);
+      }
+      if (member.agentUuid != null && member.agentUuid == currentUser.uuid) {
+        // my referral
+        _myReferrals.add(member);
+      }
+    }
     log('Club member list: $_all');
-    _inactive = await ClubInteriorService.getClubMembers(
-        _clubHomePageModel.clubCode, MemberListOptions.INACTIVE);
-    _managers = await ClubInteriorService.getClubMembers(
-        _clubHomePageModel.clubCode, MemberListOptions.MANAGERS);
-    // _unsettled = await ClubInteriorService.getClubMembers(
-    //     _clubHomePageModel.clubCode, MemberListOptions.UNSETTLED);
     if (mounted)
       setState(() {
         _isLoading = false;
@@ -64,8 +84,6 @@ class _ClubMembersViewState extends State<ClubMembersView>
   @override
   void initState() {
     _appScreenText = getAppTextScreen("clubMembersView");
-
-    _controller = new TabController(length: 3, vsync: this);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _fetchData();
     });
@@ -74,8 +92,20 @@ class _ClubMembersViewState extends State<ClubMembersView>
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<AppTheme>(
-      builder: (_, theme, __) => Container(
+    return Consumer<AppTheme>(builder: (_, theme, __) {
+      Widget body = Container();
+      if (_isLoading) {
+        body = CircularProgressWidget(
+          text: _appScreenText['loadingMembers'],
+        );
+      } else {
+        if (_clubHomePageModel.isOwner) {
+          body = getOwnerBody(theme);
+        } else {
+          body = getPlayerBody(theme);
+        }
+      }
+      return Container(
         decoration: AppDecorators.bgRadialGradient(theme),
         child: Scaffold(
           backgroundColor: Colors.transparent,
@@ -85,211 +115,201 @@ class _ClubMembersViewState extends State<ClubMembersView>
             titleText: _appScreenText['clubMembers'],
             subTitleText: _clubHomePageModel.clubName,
           ),
-          body: _isLoading
-              ? CircularProgressWidget(
-                  text: _appScreenText['loadingMembers'],
-                )
-              : _clubHomePageModel.isOwner
-                  ? Column(
-                      children: [
-                        Container(
-                          alignment: Alignment.topCenter,
-                          child: TabBar(
-                            physics: const BouncingScrollPhysics(),
-                            controller: _controller,
-                            labelColor: theme.secondaryColorWithLight(),
-                            indicatorColor: theme.accentColor,
-                            indicatorSize: TabBarIndicatorSize.label,
-                            unselectedLabelColor:
-                                theme.secondaryColorWithDark(0.2),
-                            isScrollable: true,
-                            tabs: [
-                              Tab(
-                                text: _appScreenText['all'],
-                              ),
-                              // Tab(
-                              //   text: 'Unsettled',
-                              // ),
-                              Tab(
-                                text: _appScreenText['managers'],
-                              ),
-                              Tab(
-                                text: _appScreenText['inactive'],
-                              ),
-                            ],
-                          ),
-                        ),
-                        Expanded(
-                          child: TabBarView(
-                            physics: BouncingScrollPhysics(),
-                            controller: _controller,
-                            children: <Widget>[
-                              ClubMembersListView(
-                                  this._clubHomePageModel,
-                                  this._clubHomePageModel.clubCode,
-                                  _all,
-                                  MemberListOptions.ALL,
-                                  _clubHomePageModel.isOwner,
-                                  _appScreenText,
-                                  _fetchData),
-                              // ClubMembersListView(
-                              //   this._clubHomePageModel.clubCode,
-                              //   _unsettled,
-                              //   MemberListOptions.UNSETTLED,
-                              //   _clubHomePageModel.isOwner,
-                              // ),
-                              ClubMembersListView(
-                                this._clubHomePageModel,
-                                this._clubHomePageModel.clubCode,
-                                _managers,
-                                MemberListOptions.MANAGERS,
-                                _clubHomePageModel.isOwner,
-                                _appScreenText,
-                                _fetchData,
-                              ),
-                              ClubMembersListView(
-                                this._clubHomePageModel,
-                                this._clubHomePageModel.clubCode,
-                                _inactive,
-                                MemberListOptions.INACTIVE,
-                                _clubHomePageModel.isOwner,
-                                _appScreenText,
-                                _fetchData,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    )
-                  : Container(
-                      color: AppColorsNew.screenBackgroundColor,
-                      child: Container(
-                        margin: EdgeInsets.all(15),
-                        child: ListView.separated(
-                          itemCount: _all.length,
-                          itemBuilder: (context, index) {
-                            return Container(
-                              margin: EdgeInsets.all(10),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Expanded(
-                                    flex: 2,
-                                    child: CircleAvatar(
-                                      radius: 30,
-                                      backgroundColor: theme.fillInColor,
-                                      child: ClipOval(
-                                        child: _all[index].imageUrl == null
-                                            ? Icon(
-                                                AppIcons.user,
-                                                color: theme.supportingColor,
-                                              )
-                                            : Image.network(
-                                                _all[index].imageUrl,
-                                              ),
-                                      ),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    flex: 8,
-                                    child: Container(
-                                      margin: EdgeInsets.all(5),
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.stretch,
-                                        children: [
-                                          Stack(
-                                            children: [
-                                              Container(
-                                                margin: EdgeInsets.only(
-                                                    top: 8, bottom: 8),
-                                                child: Row(
-                                                  children: <Widget>[
-                                                    Text(
-                                                      _all[index].name,
-                                                      textAlign: TextAlign.left,
-                                                      style: (_all[index]
-                                                                  .isManager ||
-                                                              _all[index]
-                                                                  .isOwner)
-                                                          ? AppDecorators
-                                                                  .getAccentTextStyle(
-                                                                      theme:
-                                                                          theme)
-                                                              .copyWith(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .normal)
-                                                          : AppDecorators
-                                                              .getSubtitle1Style(
-                                                                  theme: theme),
-                                                    ),
-                                                    // !widget.viewAsOwner ||
-                                                    //         data.contactInfo == null ||
-                                                    //         data.contactInfo.isEmpty
-                                                    //     ? SizedBox.shrink()
-                                                    //     : Text(
-                                                    //         '    ' + '(${data.contactInfo})',
-                                                    //         textAlign: TextAlign.left,
-                                                    //         style: AppDecorators
-                                                    //             .getHeadLine5Style(
-                                                    //                 theme: theme),
-                                                    //       ),
-                                                  ],
-                                                ),
-                                              ),
-                                              Positioned(
-                                                top: 0,
-                                                right: 5,
-                                                child: Visibility(
-                                                  visible:
-                                                      (_all[index].isManager ||
-                                                          _all[index].isOwner),
-                                                  child: Container(
-                                                    padding:
-                                                        EdgeInsets.symmetric(
-                                                      horizontal: 8,
-                                                      vertical: 2,
-                                                    ),
-                                                    decoration: AppDecorators
-                                                            .tileDecoration(
-                                                                theme)
-                                                        .copyWith(),
-                                                    child: Text(
-                                                      (_all[index].isManager
-                                                          ? 'Manager'
-                                                          : _all[index].isOwner
-                                                              ? 'Owner'
-                                                              : ""),
-                                                      style: AppDecorators
-                                                          .getSubtitle2Style(
-                                                              theme: theme),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                          separatorBuilder: (context, index) {
-                            return Divider(
-                              color: AppColorsNew.listViewDividerColor,
-                            );
-                          },
-                        ),
-                      ),
-                    ),
+          body: body,
         ),
+      );
+    });
+  }
+
+  Widget getTitle(AppTheme theme, ClubMemberModel member) {
+    bool isVisible = member.isManager || member.isOwner || member.isAgent;
+    String titleText = '';
+    if (member.isManager) {
+      titleText = 'Manager';
+    } else if (member.isOwner) {
+      titleText = 'Owner';
+    } else if (member.isAgent) {
+      return Container();
+      //titleText = 'Leader';
+    }
+    return Positioned(
+      top: 0,
+      right: 5,
+      child: Visibility(visible: isVisible, child: Label(titleText, theme)),
+    );
+  }
+
+  Widget getOwnerBody(AppTheme theme) {
+    List<Widget> tabViews = [
+      ClubMembersListView(
+        this._clubHomePageModel,
+        this._clubHomePageModel.clubCode,
+        _all,
+        MemberListOptions.ALL,
+        _clubHomePageModel.isOwner,
+        _appScreenText,
+        _fetchData,
+        allMembers: _all,
+        showLabels: true,
       ),
+      ClubMembersListView(
+        this._clubHomePageModel,
+        this._clubHomePageModel.clubCode,
+        _managers,
+        MemberListOptions.LEADERS,
+        _clubHomePageModel.isOwner,
+        _appScreenText,
+        _fetchData,
+        allMembers: _all,
+      ),
+      ClubMembersListView(
+        this._clubHomePageModel,
+        this._clubHomePageModel.clubCode,
+        _leaders,
+        MemberListOptions.MANAGERS,
+        _clubHomePageModel.isOwner,
+        _appScreenText,
+        _fetchData,
+        allMembers: _all,
+      ),
+    ];
+    List<Tab> tabs = [
+      Tab(
+        text: _appScreenText['all'],
+      ),
+      Tab(
+        text: _appScreenText['managers'],
+      ),
+      Tab(
+        text: 'Agents',
+      ),
+    ];
+    if (_myReferrals.length > 0) {
+      tabs.add(
+        Tab(
+          text: 'Referrals',
+        ),
+      );
+      tabViews.add(
+        ClubMembersListView(
+          this._clubHomePageModel,
+          this._clubHomePageModel.clubCode,
+          _myReferrals,
+          MemberListOptions.MYREFERALS,
+          _clubHomePageModel.isOwner,
+          _appScreenText,
+          _fetchData,
+          allMembers: _all,
+        ),
+      );
+    }
+    tabs.add(
+      Tab(
+        text: _appScreenText['inactive'],
+      ),
+    );
+    tabViews.add(
+      ClubMembersListView(
+        this._clubHomePageModel,
+        this._clubHomePageModel.clubCode,
+        _inactive,
+        MemberListOptions.INACTIVE,
+        _clubHomePageModel.isOwner,
+        _appScreenText,
+        _fetchData,
+        allMembers: _all,
+      ),
+    );
+
+    _controller = new TabController(length: tabViews.length, vsync: this);
+    return Column(
+      children: [
+        Container(
+          alignment: Alignment.topCenter,
+          child: TabBar(
+            physics: const BouncingScrollPhysics(),
+            controller: _controller,
+            labelColor: theme.secondaryColorWithLight(),
+            indicatorColor: theme.accentColor,
+            indicatorSize: TabBarIndicatorSize.label,
+            unselectedLabelColor: theme.secondaryColorWithDark(0.2),
+            isScrollable: true,
+            tabs: tabs,
+          ),
+        ),
+        Expanded(
+          child: TabBarView(
+            physics: BouncingScrollPhysics(),
+            controller: _controller,
+            children: tabViews,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget getPlayerBody(AppTheme theme) {
+    List<Widget> tabViews = [
+      ClubMembersListView(
+        this._clubHomePageModel,
+        this._clubHomePageModel.clubCode,
+        _all,
+        MemberListOptions.ALL,
+        _clubHomePageModel.isOwner,
+        _appScreenText,
+        _fetchData,
+        allMembers: _all,
+        showLabels: true,
+      ),
+    ];
+    List<Tab> tabs = [
+      Tab(
+        text: _appScreenText['all'],
+      ),
+    ];
+    if (_myReferrals.length > 0) {
+      tabs.add(
+        Tab(
+          text: 'Referrals',
+        ),
+      );
+      tabViews.add(
+        ClubMembersListView(
+          this._clubHomePageModel,
+          this._clubHomePageModel.clubCode,
+          _myReferrals,
+          MemberListOptions.MYREFERALS,
+          _clubHomePageModel.isOwner,
+          _appScreenText,
+          _fetchData,
+          allMembers: _all,
+        ),
+      );
+    }
+    _controller = new TabController(length: tabViews.length, vsync: this);
+    return Column(
+      children: [
+        Container(
+          alignment: Alignment.topCenter,
+          child: TabBar(
+            physics: const BouncingScrollPhysics(),
+            controller: _controller,
+            labelColor: theme.secondaryColorWithLight(),
+            indicatorColor: theme.accentColor,
+            indicatorSize: TabBarIndicatorSize.label,
+            unselectedLabelColor: theme.secondaryColorWithDark(0.2),
+            isScrollable: true,
+            tabs: tabs,
+          ),
+        ),
+        Expanded(
+          child: TabBarView(
+            physics: BouncingScrollPhysics(),
+            controller: _controller,
+            children: tabViews,
+          ),
+        ),
+      ],
     );
   }
 }

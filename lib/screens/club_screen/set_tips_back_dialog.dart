@@ -15,6 +15,7 @@ class SetTipsBackDialog {
     @required String clubCode,
     @required String playerUuid,
     @required int tipsBack,
+    String title,
   }) async {
     final theme = AppTheme.getTheme(context);
     String notes;
@@ -43,7 +44,7 @@ class SetTipsBackDialog {
                 // sep
                 SizedBox(height: 15.ph),
                 Text(
-                  'Set Tips Back',
+                  title != null ? title : 'Set Fee Credits',
                   style: TextStyle(
                     fontSize: 16.dp,
                   ),
@@ -54,7 +55,7 @@ class SetTipsBackDialog {
                   theme: theme,
                   keyboardType: TextInputType.number,
                   maxLength: 9,
-                  hintText: 'Set tips back',
+                  hintText: title != null ? title : 'Set Fee Credits',
                   onChanged: (val) {},
                 ),
 

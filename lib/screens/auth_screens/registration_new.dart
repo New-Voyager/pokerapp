@@ -212,7 +212,7 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
 
                   int playerId = int.tryParse(botName);
                   Map<String, dynamic> resp;
-                  if (playerId != 0) {
+                  if (playerId != null && playerId != 0) {
                     // login with player id
                     resp = await AuthService.loginPlayer(playerId);
                   } else {
@@ -392,57 +392,57 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
                         // sep
                         AppDimensionsNew.getVerticalSizedBox(16),
 
-                        // name
-                        _buildTextFormField(
-                          appTheme: appTheme,
-                          labelText: _appScreenText['yourName'],
-                          keyboardType: TextInputType.name,
-                          controller: _nameCtrl,
-                          validator: (value) {
-                            if (value.length > 30) {
-                              return _appScreenText['displayNameValidLength'];
-                            }
-                            return null;
-                          },
-                          hintText: _appScreenText['optional'],
-                          onInfoIconPress: () {
-                            toast(
-                              _appScreenText['yourNameHint'],
-                              duration: Duration(seconds: 4),
-                            );
-                          },
-                        ),
+                        // // name
+                        // _buildTextFormField(
+                        //   appTheme: appTheme,
+                        //   labelText: _appScreenText['yourName'],
+                        //   keyboardType: TextInputType.name,
+                        //   controller: _nameCtrl,
+                        //   validator: (value) {
+                        //     if (value.length > 30) {
+                        //       return _appScreenText['displayNameValidLength'];
+                        //     }
+                        //     return null;
+                        //   },
+                        //   hintText: _appScreenText['optional'],
+                        //   onInfoIconPress: () {
+                        //     toast(
+                        //       _appScreenText['yourNameHint'],
+                        //       duration: Duration(seconds: 4),
+                        //     );
+                        //   },
+                        // ),
 
-                        // sep
-                        AppDimensionsNew.getVerticalSizedBox(16),
+                        // // sep
+                        // AppDimensionsNew.getVerticalSizedBox(16),
 
-                        // Recover Email
-                        _buildTextFormField(
-                          appTheme: appTheme,
-                          labelText: _appScreenText['recoveryEmail'],
-                          keyboardType: TextInputType.emailAddress,
-                          controller: _emailCtrl,
-                          validator: (value) {
-                            if (value.length > 50) {
-                              return _appScreenText['invalidEmail'];
-                            } else if (value.isNotEmpty) {
-                              // RegExp for email validation
-                              if (!RegExp(
-                                      r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
-                                  .hasMatch(value)) {
-                                return _appScreenText['invalidEmail'];
-                              }
-                            }
-                            return null;
-                          },
-                          hintText: _appScreenText['optional'],
-                          onInfoIconPress: () {
-                            toast(
-                              _appScreenText['recoveryEmailHint'],
-                              duration: Duration(seconds: 5),
-                            );
-                          },
-                        ),
+                        // // Recover Email
+                        // _buildTextFormField(
+                        //   appTheme: appTheme,
+                        //   labelText: _appScreenText['recoveryEmail'],
+                        //   keyboardType: TextInputType.emailAddress,
+                        //   controller: _emailCtrl,
+                        //   validator: (value) {
+                        //     if (value.length > 50) {
+                        //       return _appScreenText['invalidEmail'];
+                        //     } else if (value.isNotEmpty) {
+                        //       // RegExp for email validation
+                        //       if (!RegExp(
+                        //               r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
+                        //           .hasMatch(value)) {
+                        //         return _appScreenText['invalidEmail'];
+                        //       }
+                        //     }
+                        //     return null;
+                        //   },
+                        //   hintText: _appScreenText['optional'],
+                        //   onInfoIconPress: () {
+                        //     toast(
+                        //       _appScreenText['recoveryEmailHint'],
+                        //       duration: Duration(seconds: 5),
+                        //     );
+                        //   },
+                        // ),
 
                         // sep
                         AppDimensionsNew.getVerticalSizedBox(16),

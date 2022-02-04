@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:just_audio/just_audio.dart' as just_audio;
 
@@ -12,6 +13,10 @@ const String allInSound = 'assets/sound_effects/allin.mp3';
 const String foldSound = 'assets/sound_effects/fold.mp3';
 const String checkSound = 'assets/sound_effects/check.mp3';
 const String dealSound = 'assets/sound_effects/deal.mp3';
+const String pitch1Sound = 'assets/sound_effects/pitch1.mp3';
+const String pitch2Sound = 'assets/sound_effects/pitch2.mp3';
+const String pitch3Sound = 'assets/sound_effects/pitch3.mp3';
+const String pitch4Sound = 'assets/sound_effects/pitch4.mp3';
 const String newHandSound = 'assets/sound_effects/new_hand.mp3';
 const String playerTurnSound = 'assets/sound_effects/player_turn.mp3';
 const String flopSound = 'assets/sound_effects/flop.mp3';
@@ -22,6 +27,7 @@ const String clockTickingSound = 'assets/sound_effects/clock_ticking.mp3';
 
 class AudioService {
   static just_audio.AudioPlayer justAudioPlayer;
+  static just_audio.AudioPlayer dealAudioPlayer;
   static just_audio.ConcatenatingAudioSource _concatenatingAudioSource;
 
   // add it to your class as a static member
@@ -47,6 +53,9 @@ class AudioService {
   static Future<void> init() async {
     if (justAudioPlayer == null) {
       justAudioPlayer = just_audio.AudioPlayer(handleInterruptions: true);
+    }
+    if (dealAudioPlayer == null) {
+      dealAudioPlayer = just_audio.AudioPlayer(handleInterruptions: true);
     }
 
     // load sounds to memory
@@ -82,8 +91,8 @@ class AudioService {
 
   static playSound(String soundFile, {bool mute = false}) async {
     if (!play) return;
-    if (mute) return;
-    if (!_audioFileCache.containsKey(soundFile)) return;
+    if (mute ?? false) return;
+    //if (!_audioFileCache.containsKey(soundFile)) return;
 
     try {
       await justAudioPlayer.setAsset(soundFile);
@@ -91,6 +100,23 @@ class AudioService {
     } catch (err) {
       log('Could not play sound. Error: ${err.toString()}');
     }
+  }
+
+  static playDealSound({bool mute = false}) async {
+    if (!play) return;
+    if (mute ?? false) return;
+    //if (!_audioFileCache.containsKey(soundFile)) return;
+
+    try {
+      await dealAudioPlayer.setAsset(dealSound);
+      dealAudioPlayer.play();
+    } catch (err) {
+      log('Could not play sound. Error: ${err.toString()}');
+    }
+  }
+
+  static stopDeal() async {
+    await dealAudioPlayer.stop();
   }
 
   static playCheck({bool mute}) {
@@ -105,12 +131,24 @@ class AudioService {
     playSound(betRaiseSound, mute: mute);
   }
 
-  static playDeal({bool mute}) {
+  static playDeal({bool mute}) async {
     playSound(dealSound, mute: mute);
   }
 
-  static playNewHand({bool mute}) {
-    playSound(newHandSound, mute: mute);
+  static playPitch1({bool mute}) async {
+    playSound(pitch1Sound, mute: mute);
+  }
+
+  static playPitch2({bool mute}) async {
+    playSound(pitch2Sound, mute: mute);
+  }
+
+  static playPitch3({bool mute}) async {
+    playSound(pitch3Sound, mute: mute);
+  }
+
+  static playPitch4({bool mute}) {
+    playSound(pitch4Sound, mute: mute);
   }
 
   static playYourAction({bool mute}) {

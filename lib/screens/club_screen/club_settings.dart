@@ -110,29 +110,31 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
                                   clipBehavior: Clip.hardEdge,
                                   padding: EdgeInsets.all(4),
                                   decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      border: Border.all(
-                                        width: _clubModel.picUrl.isEmpty
-                                            ? 3.pw
-                                            : 0,
-                                        color: theme.secondaryColor,
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      width:
+                                          _clubModel.picUrl.isEmpty ? 3.pw : 0,
+                                      color: theme.secondaryColor,
+                                    ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: theme.primaryColor,
+                                        blurRadius: 1.pw,
+                                        spreadRadius: 1.pw,
+                                        offset: Offset(1.pw, 4.pw),
                                       ),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: theme.primaryColor,
-                                          blurRadius: 1.pw,
-                                          spreadRadius: 1.pw,
-                                          offset: Offset(1.pw, 4.pw),
-                                        ),
-                                      ],
-                                      image: _clubModel.picUrl.isEmpty
-                                          ? null
-                                          : DecorationImage(
-                                              image: CachedNetworkImageProvider(
-                                                _clubModel.picUrl,
-                                              ),
-                                              fit: BoxFit.cover,
-                                            )),
+                                    ],
+                                    image: _clubModel.picUrl.isEmpty
+                                        ? null
+                                        : DecorationImage(
+                                            image: CachedNetworkImageProvider(
+                                              _clubModel.picUrl,
+                                              cacheManager:
+                                                  ImageCacheManager.instance,
+                                            ),
+                                            fit: BoxFit.cover,
+                                          ),
+                                  ),
                                   alignment: Alignment.center,
                                   child: _clubModel.picUrl.isEmpty
                                       ? Text(

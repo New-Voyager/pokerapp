@@ -1,96 +1,98 @@
-import 'package:flutter/material.dart';
-import 'package:pokerapp/models/ui/app_text.dart';
-import 'package:pokerapp/models/ui/app_theme.dart';
-import 'package:pokerapp/resources/app_decorators.dart';
-import 'package:provider/provider.dart';
+/// THIS FILE IS REPLACED BY `UserInputWidget` WIDGET
 
-class ChatTextField extends StatelessWidget {
-  final TextEditingController textEditingController;
-  final IconData icon;
-  final Function onTap;
-  final Function onSend;
-  final Function onEmojiSelectTap;
-  final Function onGifSelectTap;
-  final AppTextScreen appScreenText;
+// import 'package:flutter/material.dart';
+// import 'package:pokerapp/models/ui/app_text.dart';
+// import 'package:pokerapp/models/ui/app_theme.dart';
+// import 'package:pokerapp/resources/app_decorators.dart';
+// import 'package:provider/provider.dart';
 
-  const ChatTextField({
-    Key key,
-    this.appScreenText,
-    this.textEditingController,
-    this.icon,
-    this.onTap,
-    this.onSend,
-    this.onEmojiSelectTap,
-    this.onGifSelectTap,
-  }) : super(key: key);
+// class ChatTextField extends StatelessWidget {
+//   final TextEditingController textEditingController;
+//   final IconData icon;
+//   final Function onTap;
+//   final Function onSend;
+//   final Function onEmojiSelectTap;
+//   final Function onGifSelectTap;
+//   final AppTextScreen appScreenText;
 
-  @override
-  Widget build(BuildContext context) {
-    return Consumer<AppTheme>(
-      builder: (_, theme, __) => Container(
-        color: theme.fillInColor,
-        child: Row(
-          children: [
-            // gif button
-            onGifSelectTap == null
-                ? const SizedBox.shrink()
-                : _buildTextFieldIcon(
-                    icon: icon,
-                    onPressed: onGifSelectTap,
-                    color: theme.secondaryColorWithDark(),
-                  ),
-            // emoji button
-            onEmojiSelectTap == null
-                ? const SizedBox.shrink()
-                : _buildTextFieldIcon(
-                    padding: false,
-                    icon: Icons.emoji_emotions,
-                    onPressed: onEmojiSelectTap,
-                    color: theme.secondaryColorWithDark(),
-                  ),
+//   const ChatTextField({
+//     Key key,
+//     this.appScreenText,
+//     this.textEditingController,
+//     this.icon,
+//     this.onTap,
+//     this.onSend,
+//     this.onEmojiSelectTap,
+//     this.onGifSelectTap,
+//   }) : super(key: key);
 
-            Expanded(
-              child: TextFormField(
-                keyboardType: TextInputType.visiblePassword,
-                controller: textEditingController,
-                onTap: onTap,
-                style: TextStyle(color: Colors.white),
-                // minLines: 1,
-                // maxLines: 3,
-                // textInputAction: TextInputAction.newline,
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  hintText: appScreenText['enterMessage'],
-                  hintStyle: AppDecorators.getSubtitle3Style(theme: theme),
-                ),
-              ),
-            ),
+//   @override
+//   Widget build(BuildContext context) {
+//     return Consumer<AppTheme>(
+//       builder: (_, theme, __) => Container(
+//         color: theme.fillInColor,
+//         child: Row(
+//           children: [
+//             // gif button
+//             onGifSelectTap == null
+//                 ? const SizedBox.shrink()
+//                 : _buildTextFieldIcon(
+//                     icon: icon,
+//                     onPressed: onGifSelectTap,
+//                     color: theme.secondaryColorWithDark(),
+//                   ),
+//             // emoji button
+//             onEmojiSelectTap == null
+//                 ? const SizedBox.shrink()
+//                 : _buildTextFieldIcon(
+//                     padding: false,
+//                     icon: Icons.emoji_emotions,
+//                     onPressed: onEmojiSelectTap,
+//                     color: theme.secondaryColorWithDark(),
+//                   ),
 
-            // send button
-            _buildTextFieldIcon(
-              icon: Icons.send,
-              onPressed: onSend,
-              color: theme.accentColor,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+//             Expanded(
+//               child: TextFormField(
+//                 keyboardType: TextInputType.visiblePassword,
+//                 controller: textEditingController,
+//                 onTap: onTap,
+//                 style: TextStyle(color: Colors.white),
+//                 // minLines: 1,
+//                 // maxLines: 3,
+//                 // textInputAction: TextInputAction.newline,
+//                 decoration: InputDecoration(
+//                   border: InputBorder.none,
+//                   hintText: appScreenText['enterMessage'],
+//                   hintStyle: AppDecorators.getSubtitle3Style(theme: theme),
+//                 ),
+//               ),
+//             ),
 
-  Widget _buildTextFieldIcon(
-      {IconData icon, Color color, Function onPressed, bool padding = true}) {
-    return Container(
-      child: Padding(
-        padding: padding
-            ? const EdgeInsets.only(left: 5)
-            : const EdgeInsets.all(0.0),
-        child: IconButton(
-          icon: Icon(icon),
-          color: color,
-          onPressed: onPressed,
-        ),
-      ),
-    );
-  }
-}
+//             // send button
+//             _buildTextFieldIcon(
+//               icon: Icons.send,
+//               onPressed: onSend,
+//               color: theme.accentColor,
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+
+//   Widget _buildTextFieldIcon(
+//       {IconData icon, Color color, Function onPressed, bool padding = true}) {
+//     return Container(
+//       child: Padding(
+//         padding: padding
+//             ? const EdgeInsets.only(left: 5)
+//             : const EdgeInsets.all(0.0),
+//         child: IconButton(
+//           icon: Icon(icon),
+//           color: color,
+//           onPressed: onPressed,
+//         ),
+//       ),
+//     );
+//   }
+// }

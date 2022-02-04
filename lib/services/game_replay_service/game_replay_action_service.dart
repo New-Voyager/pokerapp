@@ -224,51 +224,7 @@ class GameReplayActionService {
     AudioService.playDeal();
 
     if (_close) return;
-    final handInfo = gameState.handInfo;
-    handInfo.update(noCards: action.noCards);
-
-    if (_close) return;
-
-    /* show card shuffling*/
-    final tableState = gameState.tableState;
-    tableState.updateCardShufflingAnimation(true);
-    await Future.delayed(AppConstants.cardShufflingTotalWaitDuration); // wait
-    tableState.updateCardShufflingAnimation(false);
-    /* end card shuffling animation */
-
-    /* finding the current Player */
-    final playerID = gameState.currentPlayerId;
-    PlayerModel currPlayer;
-
-    for (final player in gameState.playersInGame) {
-      if (player.playerId == playerID) {
-        currPlayer = player;
-        currPlayer.cards = action.myCards;
-        break;
-      }
-    }
-
-    final noCards = action.noCards;
-    final List<int> seatNos = action.seatNos;
-    final int mySeatNo = seatNos.first; // fixme: we would need this
-
-    /* distribute cards to the players */
-    /* this for loop will distribute cards one by one to all the players */
-    /* for distributing the ith card, go through all the players, and give them */
-    for (int seatNo in seatNos) {
-      int localSeatNo = ((seatNo - mySeatNo) % 9) + 1;
-
-      if (_close) return;
-
-      // start the animation
-      gameState.cardDistributionState.seatNo = localSeatNo;
-      // wait for the animation to finish
-      await Future.delayed(AppConstants.cardDistributionAnimationDuration);
-
-      final seat = gameState.getSeat(seatNo);
-      seat.player.noOfCardsVisible = noCards;
-      seat.notify();
-    }
+    HandActionProtoService.cardDistribution(gameState, action.noCards);
   }
 
   Future<void> takeAction(
