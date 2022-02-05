@@ -13,6 +13,7 @@ import 'package:pokerapp/screens/club_screen/set_tips_back_dialog.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/club_interior_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
+import 'package:pokerapp/utils/date_range_picker.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/radio_list_widget.dart';
@@ -784,29 +785,41 @@ class _ReportTabState extends State<ReportTab> {
 
   _handleDateRangePicker(BuildContext context, AppTheme theme) async {
     DateTime now = DateTime.now();
-    var startDate = await datePicker(
-      minimumDate: now.subtract(Duration(days: 90)),
-      maximumDate: now,
-      initialDate: now.subtract(Duration(days: 7)),
-      theme: theme,
-      title: "Start Date",
-    );
+    // var startDate = await datePicker(
+    //   minimumDate: now.subtract(Duration(days: 90)),
+    //   maximumDate: now,
+    //   initialDate: now.subtract(Duration(days: 7)),
+    //   theme: theme,
+    //   title: "Start Date",
+    // );
 
-    if (startDate != null) {
-      var endDate = await datePicker(
-        minimumDate: startDate,
+    // if (startDate != null) {
+    //   var endDate = await datePicker(
+    //     minimumDate: startDate,
+    //     maximumDate: now,
+    //     initialDate: now.subtract(Duration(minutes: 1)),
+    //     theme: theme,
+    //     title: "End Date",
+    //   );
+
+    //   _dateTimeRange = DateTimeRange(
+    //       start: startDate, end: (endDate != null) ? endDate : DateTime.now());
+    // } else {
+    //   _dateTimeRange = DateTimeRange(
+    //       start: DateTime.now().subtract(Duration(days: 7)),
+    //       end: DateTime.now());
+    // }
+
+    var newDateRange = await DateRangePicker.show(context,
+        minimumDate: now.subtract(Duration(days: 90)),
         maximumDate: now,
-        initialDate: now.subtract(Duration(minutes: 1)),
-        theme: theme,
-        title: "End Date",
-      );
+        initialDate: now.subtract(Duration(days: 7)),
+        title: "Custom",
+        theme: theme);
 
-      _dateTimeRange = DateTimeRange(
-          start: startDate, end: (endDate != null) ? endDate : DateTime.now());
-    } else {
-      _dateTimeRange = DateTimeRange(
-          start: DateTime.now().subtract(Duration(days: 7)),
-          end: DateTime.now());
+    if (newDateRange != null) {
+      _dateTimeRange = newDateRange;
+      setState(() {});
     }
   }
 
