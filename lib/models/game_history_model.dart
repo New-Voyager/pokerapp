@@ -28,6 +28,9 @@ class GameHistoryModel {
   double stack;
   double buyIn;
 
+  List<GameType> dealerChoiceGames;
+  List<GameType> roeGames;
+
   GameHistoryModel.fromJson(var jsonData) {
     clubCode = jsonData['clubCode'];
     clubName = jsonData['clubName'];
@@ -42,14 +45,27 @@ class GameHistoryModel {
     gameTypeStr = jsonData["gameType"];
     gameCode = jsonData["gameCode"];
     startedBy = jsonData["startedBy"];
+
+    if (jsonData["startedAt"] != null) {
+      startedAt = DateTime.parse(jsonData["startedAt"].toString());
+    }
+
     if (jsonData["endedAt"] != null) {
       endedAt = DateTime.parse(jsonData["endedAt"].toString());
     }
-    runTimeStr = jsonData["runTimeStr"];
-    if (runTimeStr == null) {
-      runTimeStr = "";
+    if (startedAt != null && endedAt != null) {
+      runTime = endedAt.difference(startedAt).inSeconds ~/ 60;
+      if (runTime == 0) {
+        runTime = 1;
+      }
+      runTimeStr = DataFormatter.getTimeInHHMMFormatInMin(runTime);
+    } else {
+      runTimeStr = jsonData["runTimeStr"];
+      if (runTimeStr == null) {
+        runTimeStr = "";
+      }
+      runTime = jsonData["runTime"];
     }
-    runTime = jsonData["runTime"];
     if (jsonData["handsPlayed"] != null) {
       handsPlayed = int.parse(jsonData["handsPlayed"].toString());
     } else {
@@ -60,6 +76,12 @@ class GameHistoryModel {
     }
     if (handsPlayed >= 1) {
       sessionTime = int.parse(jsonData["sessionTime"].toString());
+      int sessionTimeInMins = sessionTime ~/ 60;
+      if (sessionTimeInMins == 0 && sessionTime > 0) {
+        sessionTime = 1;
+      } else {
+        sessionTime = sessionTimeInMins;
+      }
       if (jsonData["sessionTimeStr"] != null) {
         sessionTimeStr = jsonData["sessionTimeStr"].toString();
       }
@@ -76,6 +98,19 @@ class GameHistoryModel {
     if (jsonData["gameNum"] != null) {
       gameNum = int.parse(jsonData["gameNum"].toString());
     }
+    dealerChoiceGames = [];
+    if (jsonData['dealerChoiceGames'] != null) {
+      for (var game in jsonData['dealerChoiceGames']) {
+        dealerChoiceGames.add(GameTypeSerialization.fromJson(game));
+      }
+    }
+
+    roeGames = [];
+    if (jsonData['roeGames'] != null) {
+      for (var game in jsonData['roeGames']) {
+        roeGames.add(GameTypeSerialization.fromJson(game));
+      }
+    }
   }
 
   // String get GameType {
@@ -88,6 +123,12 @@ class GameHistoryModel {
   String get StartedAt => DataFormatter.dateFormat(this.startedAt);
 
   String get Blinds => '$smallBlind/$bigBlind';
+
+  String get dealerChoiceGameStr {
+    List<String> games =
+        dealerChoiceGames.map((e) => gameTypeShortStr(e)).toList();
+    return games.join(', ');
+  }
 
   // String get ShortGameType {
   //   if (gameTypeStr == 'HOLDEM') {

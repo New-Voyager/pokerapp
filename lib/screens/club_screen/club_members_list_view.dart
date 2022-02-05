@@ -238,6 +238,26 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
                                   ),
                                 ),
                               ),
+                              Visibility(
+                                visible:
+                                    data.status == ClubMemberStatus.PENDING &&
+                                        data.requestMessage != null &&
+                                        data.requestMessage.isNotEmpty,
+                                child: Padding(
+                                  padding: EdgeInsets.only(top: 5, bottom: 5),
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        data.requestMessage,
+                                        //widget.appScreenText['pendingApproval'],
+                                        textAlign: TextAlign.left,
+                                        style: AppDecorators.getHeadLine5Style(
+                                            theme: theme),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
                             ],
                           ),
                         ),

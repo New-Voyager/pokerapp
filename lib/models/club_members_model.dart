@@ -39,6 +39,7 @@ class ClubMemberModel extends ChangeNotifier {
   String agentName;
   String agentUuid;
   int agentFeeBack;
+  String requestMessage;
 
   ClubMemberModel();
 
@@ -120,6 +121,7 @@ class ClubMemberModel extends ChangeNotifier {
     data.agentUuid = copyValue.agentUuid;
     data.displayName = copyValue.displayName;
     data.agentFeeBack = copyValue.agentFeeBack;
+    data.requestMessage = copyValue.requestMessage;
     return data;
   }
 
@@ -203,6 +205,11 @@ class ClubMemberModel extends ChangeNotifier {
     this.agentFeeBack = 0;
     if (jsonData['agentFeeBack'] != null) {
       this.agentFeeBack = int.parse(jsonData['agentFeeBack'].toString());
+    }
+
+    this.requestMessage = '';
+    if (jsonData['requestMessage'] != null) {
+      this.requestMessage = jsonData['requestMessage'].toString();
     }
     this.edited = false;
   }

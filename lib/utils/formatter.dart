@@ -94,7 +94,7 @@ class DataFormatter {
       return "0 Sec";
     }
     double mins = timeInMins.toDouble();
-    if (mins > 0 && mins <= 1) {
+    if (mins >= 0 && mins <= 1) {
       return "${mins.toStringAsFixed(0)} min";
     }
     if (mins > 1 && mins < 60) {

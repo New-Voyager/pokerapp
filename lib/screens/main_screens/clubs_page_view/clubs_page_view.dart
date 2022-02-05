@@ -46,6 +46,7 @@ class _ClubsPageViewState extends State<ClubsPageView>
 
   List<ClubModel> _clubs;
   AppTextScreen _appScreenText;
+  final TextEditingController _messageController = TextEditingController();
 
   void _toggleLoading() {
     if (mounted)

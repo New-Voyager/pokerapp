@@ -41,6 +41,7 @@ class ClubInteriorService {
           agentName
           agentUuid
           agentFeeBack
+          requestMessage
         }
       }""";
 
@@ -62,6 +63,8 @@ class ClubInteriorService {
               smallBlind
               bigBlind
               balance
+              dealerChoiceGames
+              roeGames
             }
           }    
     """;
@@ -113,8 +116,8 @@ class ClubInteriorService {
   """;
 
   static String joinClubQuery = """
-    mutation (\$clubCode: String!) {
-        status: joinClub(clubCode: \$clubCode)
+    mutation (\$clubCode: String! \$message: String) {
+        status: joinClub(clubCode: \$clubCode, requestMessage:\$message)
     }
   """;
 
@@ -364,9 +367,9 @@ class ClubInteriorService {
         .toList();
   }
 
-  static Future<String> joinClub(String clubCode) async {
+  static Future<String> joinClub(String clubCode, String text) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
-    Map<String, dynamic> variables = {"clubCode": clubCode};
+    Map<String, dynamic> variables = {"clubCode": clubCode, "message": text};
     QueryResult result = await _client.mutate(
         MutationOptions(document: gql(joinClubQuery), variables: variables));
     if (result.hasException) {

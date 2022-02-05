@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/models/search_club_model.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
+import 'package:pokerapp/resources/app_text_styles.dart';
+import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/widgets/buttons.dart';
+import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:pokerapp/widgets/textfields.dart';
 import 'package:provider/provider.dart';
 import '../../../../services/app/club_interior_service.dart';
@@ -24,7 +28,7 @@ class _SearchClubBottomSheetState extends State<SearchClubBottomSheet> {
   SearchClub searchClub;
   bool _showLoading = false;
   AppTextScreen _appScreenText;
-
+  TextEditingController _messageController = TextEditingController();
   @override
   void initState() {
     _appScreenText = getAppTextScreen("searchClubBottomSheet");
@@ -38,8 +42,75 @@ class _SearchClubBottomSheetState extends State<SearchClubBottomSheet> {
       });
   }
 
+  Widget _buildTextFormField({
+    TextInputType keyboardType,
+    @required TextEditingController controller,
+    @required void validator(String _),
+    @required String hintText,
+    @required void onInfoIconPress(),
+    @required String labelText,
+    @required AppTheme appTheme,
+  }) {
+    return TextFormField(
+      keyboardType: keyboardType,
+      controller: controller,
+      validator: validator,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
+      decoration: InputDecoration(
+        /* border */
+        border: AppDecorators.getBorderStyle(
+          radius: 32.0,
+          color: appTheme.primaryColorWithDark(),
+        ),
+        errorBorder: AppDecorators.getBorderStyle(
+          radius: 32.0,
+          color: appTheme.negativeOrErrorColor,
+        ),
+        focusedBorder: AppDecorators.getBorderStyle(
+          radius: 32.0,
+          color: appTheme.accentColorWithDark(),
+        ),
+        suffixIcon: IconButton(
+          icon: Icon(
+            Icons.info,
+            color: appTheme.supportingColorWithDark(0.50),
+          ),
+          onPressed: onInfoIconPress,
+        ),
+
+        /* hint & label texts */
+        hintText: hintText,
+        hintStyle: AppTextStyles.T3.copyWith(
+          color: appTheme.supportingColorWithDark(0.60),
+        ),
+        labelText: labelText,
+        labelStyle: AppTextStyles.T0.copyWith(
+          color: appTheme.accentColor,
+        ),
+
+        /* other */
+        contentPadding: EdgeInsets.symmetric(
+          vertical: 16,
+          horizontal: 16,
+        ),
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+        filled: true,
+        fillColor: appTheme.fillInColor,
+        alignLabelWithHint: true,
+      ),
+    );
+  }
+
   void onJoin(BuildContext context) async {
-    await ClubInteriorService.joinClub(searchClubCode);
+    // note must not be empty
+    String text = _messageController.text.trim();
+    if (text.isEmpty) {
+      showErrorDialog(context, 'Error', 'Note must be specified');
+
+      return;
+    }
+
+    await ClubInteriorService.joinClub(searchClubCode, text);
     final natsClient = Provider.of<Nats>(context, listen: false);
     natsClient.subscribeClubMessages(searchClubCode);
 
@@ -185,6 +256,29 @@ class _SearchClubBottomSheetState extends State<SearchClubBottomSheet> {
                                             style:
                                                 AppDecorators.getHeadLine4Style(
                                                     theme: theme),
+                                          ),
+                                          separator15,
+                                          _buildTextFormField(
+                                            appTheme: theme,
+                                            labelText: 'Note',
+                                            keyboardType: TextInputType.name,
+                                            controller: _messageController,
+                                            validator: (value) {
+                                              if (value.isEmpty) {
+                                                return 'Note must not be empty';
+                                              }
+                                              if (value.length > 50) {
+                                                return 'Note must be less than 50 characters';
+                                              }
+                                              return null;
+                                            },
+                                            hintText: 'Enter note to club host',
+                                            onInfoIconPress: () {
+                                              toast(
+                                                'Note is required',
+                                                duration: Duration(seconds: 3),
+                                              );
+                                            },
                                           ),
                                           separator15,
                                           Center(
