@@ -175,7 +175,8 @@ class ClubInteriorService {
             lastPlayedDate
             buyIn
             profit
-            gamesPlayed            
+            gamesPlayed           
+            handsPlayed 
           }
         }
     """;

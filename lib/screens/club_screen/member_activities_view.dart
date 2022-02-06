@@ -74,9 +74,12 @@ class _ClubMemberActivitiesScreenState
 
       includeTips = true;
       // final activities = MemberActivity.getMockData();
+
+      DateTime start = _dateTimeRange.start.toUtc();
+      DateTime end = _dateTimeRange.end.add(Duration(days: 1)).toUtc();
       final tipsActivities =
           await ClubInteriorService.getMemberActivityDateFilter(
-              widget.clubCode, _dateTimeRange.start, _dateTimeRange.end);
+              widget.clubCode, start, end);
 
       // remove activities that are within this date range
       activities = [];
@@ -113,6 +116,8 @@ class _ClubMemberActivitiesScreenState
     headers.add('Fees');
     headers.add('Fee\nCredits%');
     headers.add('Fee\nCredits');
+    headers.add('#Games');
+    headers.add('#Hands');
     headers.add('Buyin');
     headers.add('Profit');
 
@@ -458,8 +463,18 @@ class _ClubMemberActivitiesScreenState
     if (memberActivitiesForDownload.isEmpty) return;
     List<String> headers = [];
     String csv;
-    headers.addAll(
-        ["id", "name", "credits", "tips", "tb_perc", "tb", "buyin", "profit"]);
+    headers.addAll([
+      "id",
+      "name",
+      "credits",
+      "fees",
+      "fee_perc",
+      "fee_credits",
+      "games_played",
+      "hands_played",
+      "buyin",
+      "profit"
+    ]);
     csv = MemberActivity.makeActivitiesFilteredCsv(
       headers: headers,
       activities: memberActivitiesForDownload,
@@ -620,8 +635,8 @@ class DataSource extends DataTableSource {
         Icon(Icons.flag, color: theme.accentColor),
       ));
     } else {
-      cells.add(
-          DataCell(Container(width: 10, height: 10, color: theme.accentColor)));
+      cells.add(DataCell(
+          Container(width: 10, height: 10, color: Colors.transparent)));
     }
 
     cells.add(
@@ -636,7 +651,7 @@ class DataSource extends DataTableSource {
         Center(
           child: Text(
             DataFormatter.chipsFormat(activity.credits),
-            style: TextStyle(color: creditColor, fontWeight: FontWeight.bold),
+            style: TextStyle(color: creditColor, fontSize: 12),
             textAlign: TextAlign.right,
           ),
         ), onTap: () {
@@ -665,6 +680,19 @@ class DataSource extends DataTableSource {
           onTap: () {
         openMember(activity.playerUuid);
       }));
+      cells.add(
+        DataCell(Center(child: Text(activity.gamesPlayed.toString())),
+            onTap: () {
+          openMember(activity.playerUuid);
+        }),
+      );
+      cells.add(
+        DataCell(Center(child: Text(activity.handsPlayed.toString())),
+            onTap: () {
+          openMember(activity.playerUuid);
+        }),
+      );
+
       cells.add(
         DataCell(Center(child: Text(DataFormatter.chipsFormat(activity.buyin))),
             onTap: () {
