@@ -208,9 +208,6 @@ class NewHandHandler {
         break;
       }
     }
-    // if (newPlayerInTable) {
-    //   await gameState.refreshNotes();
-    // }
   }
 
   Future<void> handle() async {

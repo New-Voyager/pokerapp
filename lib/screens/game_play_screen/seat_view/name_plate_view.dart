@@ -410,6 +410,7 @@ class NamePlateWidget extends StatelessWidget {
 
     if (seat.player.reloadAnimation == true)
       return StackReloadAnimatingWidget(
+        seat: seat,
         stackReloadState: seat.player.stackReloadState,
         stackTextBuilder: _buildStackTextWidget,
       );

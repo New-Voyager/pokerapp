@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/utils/formatter.dart';
 
 class StackReloadAnimatingWidget extends StatefulWidget {
   final StackReloadState stackReloadState;
+  final Seat seat;
   final Function(double stack) stackTextBuilder;
 
   StackReloadAnimatingWidget({
+    @required this.seat,
     @required this.stackReloadState,
     @required this.stackTextBuilder,
   });
@@ -63,25 +66,29 @@ class _StackReloadAnimatingWidgetState
 
           // load amount animation
           TweenAnimationBuilder(
-            curve: Curves.easeOut,
-            tween: Tween<double>(
-              begin: 0,
-              end: 1,
-            ),
-            duration: const Duration(milliseconds: 1500),
-            child: Transform.scale(
-              scale: 4.0,
-              child: _buildLoadedAmountText(srs.reloadAmount),
-            ),
-            builder: (_, v, child) => Opacity(
-              opacity: 1 - v,
-              child: Transform.translate(
-                // TODO: THE OFFSET NEEDS TO BE CHECKED FOR OTHER SEATS
-                offset: Offset(50.0, -v * 40),
-                child: child,
+              curve: Curves.easeOut,
+              tween: Tween<double>(
+                begin: 0,
+                end: 1,
               ),
-            ),
-          ),
+              duration: const Duration(milliseconds: 600),
+              child: Transform.scale(
+                scale: 4.0,
+                child: _buildLoadedAmountText(srs.reloadAmount),
+              ),
+              builder: (_, v, child) {
+                if (v == 1) {
+                  widget.seat.player?.stackReloadState = null;
+                }
+                return Opacity(
+                  opacity: 1 - v,
+                  child: Transform.translate(
+                    // TODO: THE OFFSET NEEDS TO BE CHECKED FOR OTHER SEATS
+                    offset: Offset(50.0, -v * 40),
+                    child: child,
+                  ),
+                );
+              }),
         ],
       );
 }
