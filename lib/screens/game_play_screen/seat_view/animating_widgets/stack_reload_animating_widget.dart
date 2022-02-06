@@ -71,7 +71,7 @@ class _StackReloadAnimatingWidgetState
                 begin: 0,
                 end: 1,
               ),
-              duration: const Duration(milliseconds: 600),
+              duration: const Duration(milliseconds: 1500),
               child: Transform.scale(
                 scale: 4.0,
                 child: _buildLoadedAmountText(srs.reloadAmount),
@@ -79,6 +79,9 @@ class _StackReloadAnimatingWidgetState
               builder: (_, v, child) {
                 if (v == 1) {
                   widget.seat.player?.stackReloadState = null;
+                  Future.delayed(Duration(milliseconds: 200), () {
+                    widget.seat.notify();
+                  });
                 }
                 return Opacity(
                   opacity: 1 - v,
