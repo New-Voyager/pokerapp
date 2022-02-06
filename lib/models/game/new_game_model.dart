@@ -84,7 +84,7 @@ class NewGameModel {
   bool runItTwice = true;
   bool seatChangeAllowed = true;
   bool waitList = true;
-  bool botGame = true;
+  bool botGame = false;
   bool highHandTracked = false;
   int buyInWaitTime;
   Rewards rewards;
