@@ -9,7 +9,8 @@ import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
-import 'package:pokerapp/widgets/switch_widget.dart';
+import 'package:pokerapp/widgets/radio_list_widget.dart';
+import 'package:pokerapp/widgets/switch.dart';
 import 'package:pokerapp/widgets/textfields.dart';
 
 /* this dialog handles the timer, as well as the messages sent to the server, when on tapped / on dismissed */
@@ -17,6 +18,7 @@ class CreditsSettings {
   bool addCredit;
   bool deductCredit;
   bool setCredit;
+  bool feeCredit;
   double credits;
   bool cancelled;
   bool followup;
@@ -26,6 +28,7 @@ class CreditsSettings {
     addCredit = false;
     deductCredit = false;
     setCredit = false;
+    feeCredit = false;
     credits = 0;
     cancelled = false;
     followup = false;
@@ -41,6 +44,8 @@ class SetCreditsDialog {
     @required String playerUuid,
     @required double credits,
     @required String name,
+    double tipCreditsAmount = 0,
+    bool tipCredits = false,
   }) async {
     CreditsSettings settings = CreditsSettings();
     final bool ret = await showDialog(
@@ -59,6 +64,8 @@ class SetCreditsDialog {
                 credits,
                 name,
                 settings,
+                tipCreditsAmount,
+                tipCredits,
               ),
             );
           });
@@ -84,6 +91,11 @@ class SetCreditsDialog {
         // update credits
         await ClubInteriorService.setPlayerCredit(clubCode, playerUuid,
             settings.credits.toDouble(), settings.notes, settings.followup);
+      } else if (settings.feeCredit) {
+        // fee
+        // update credits
+        await ClubInteriorService.feePlayerCredit(clubCode, playerUuid,
+            settings.credits.toDouble(), settings.notes, settings.followup);
       }
     }
     return ret;
@@ -97,6 +109,8 @@ class CreditDialogsWidget extends StatefulWidget {
   final double credits;
   final String name;
   final CreditsSettings settings;
+  final bool tipCredits;
+  final double tipCreditsAmount;
 
   CreditDialogsWidget(
     this.theme,
@@ -105,6 +119,8 @@ class CreditDialogsWidget extends StatefulWidget {
     this.credits,
     this.name,
     this.settings,
+    this.tipCreditsAmount,
+    this.tipCredits,
   );
 
   @override
@@ -115,21 +131,27 @@ class _CreditDialogsWidgetState extends State<CreditDialogsWidget> {
   TextEditingController creditsController = TextEditingController();
   TextEditingController notesController = TextEditingController();
   String notes;
-  List<bool> isSelected = [];
   double credits = 0;
   bool loadingCredits = false;
   bool closed = false;
   bool clearFollowups = false;
   bool followup = false;
+  int selectedIndex = 3;
 
   @override
   void initState() {
     super.initState();
     creditsController.text = '';
-    isSelected.add(false);
-    isSelected.add(false);
-    isSelected.add(true);
+    if (widget.tipCredits) {
+      selectedIndex = 2;
+    } else {
+      selectedIndex = 3;
+    }
     credits = widget.credits;
+    if (widget.tipCredits && widget.tipCreditsAmount > 0) {
+      creditsController.text =
+          DataFormatter.chipsFormat(widget.tipCreditsAmount);
+    }
     if (widget.credits == null) {
       loadingCredits = true;
       setState(() {});
@@ -155,16 +177,6 @@ class _CreditDialogsWidgetState extends State<CreditDialogsWidget> {
 
   @override
   Widget build(BuildContext context) {
-    String title = 'Set Credits';
-    if (isSelected[0]) {
-      title = 'Add Credits';
-    }
-    if (isSelected[1]) {
-      title = 'Deduct Credits';
-    }
-    if (isSelected[2]) {
-      title = 'Set Credits';
-    }
     Widget creditsWidget = Container();
     if (loadingCredits) {
       creditsWidget = Container(
@@ -182,6 +194,25 @@ class _CreditDialogsWidgetState extends State<CreditDialogsWidget> {
       creditsWidget = Text(DataFormatter.chipsFormat(credits),
           style: AppDecorators.getHeadLine3Style(theme: widget.theme)
               .copyWith(color: color));
+    }
+    final values = ['Add', 'Deduct', 'Fee', 'Set'];
+    String title;
+    String subTitle;
+    if (selectedIndex == 0) {
+      title = 'Add Credits';
+      subTitle = '(will be added to current credits)';
+    }
+    if (selectedIndex == 1) {
+      title = 'Deduct Credits';
+      subTitle = '(will be deducted from current credits)';
+    }
+    if (selectedIndex == 2) {
+      title = 'Fee Credits';
+      subTitle = '(will be added to current credits)';
+    }
+    if (selectedIndex == 3) {
+      title = 'Set Credits';
+      subTitle = '(will be set as current credits)';
     }
     return Container(
       // height: MediaQuery.of(context).size.height * 0.5,
@@ -207,40 +238,24 @@ class _CreditDialogsWidgetState extends State<CreditDialogsWidget> {
             creditsWidget,
           ]),
           SizedBox(height: 5.ph),
-          ToggleButtons(
-            children: [
-              Icon(Icons.add,
-                  size: 32,
-                  color:
-                      isSelected[0] ? Colors.black : widget.theme.accentColor),
-              Icon(Icons.remove,
-                  size: 32,
-                  color:
-                      isSelected[1] ? Colors.black : widget.theme.accentColor),
-              Icon(Icons.check,
-                  size: 32,
-                  color:
-                      isSelected[2] ? Colors.black : widget.theme.accentColor),
-            ],
-            isSelected: isSelected,
-            selectedColor: Colors.black,
-            fillColor: widget.theme.accentColor,
-            onPressed: (int index) {
-              setState(() {
-                for (int i = 0; i < isSelected.length; i++) {
-                  isSelected[i] = false;
-                }
-                isSelected[index] = true;
-              });
-            },
-          ),
+          RadioToggleButtonsWidget<String>(
+              values: values,
+              defaultValue: selectedIndex,
+              onSelect: (int selected) {
+                selectedIndex = selected;
+
+                setState(() {});
+              }),
           SizedBox(height: 15.ph),
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 10.dp,
+
+          Column(children: [
+            Text(
+              title,
+              style: AppDecorators.getAccentTextStyle(theme: widget.theme),
             ),
-          ),
+            Text(subTitle,
+                style: AppDecorators.getHeadLine6Style(theme: widget.theme)),
+          ]),
           SizedBox(height: 5.ph),
           CardFormTextField(
             controller: creditsController,
@@ -266,7 +281,7 @@ class _CreditDialogsWidgetState extends State<CreditDialogsWidget> {
           ),
           // sep
           SizedBox(height: 5.ph),
-          SwitchWidget(
+          SwitchWidget2(
             icon: Icons.flag,
             label: 'Follow-up',
             value: followup,
@@ -274,7 +289,7 @@ class _CreditDialogsWidgetState extends State<CreditDialogsWidget> {
               followup = v;
             },
           ),
-          SwitchWidget(
+          SwitchWidget2(
             label: 'Clear Follow-ups',
             value: clearFollowups,
             onChange: (bool v) async {
@@ -327,15 +342,18 @@ class _CreditDialogsWidgetState extends State<CreditDialogsWidget> {
                     widget.settings.notes = notesController.text;
 
                     widget.settings.credits = credits;
-                    if (isSelected[0]) {
+                    if (selectedIndex == 0) {
                       // add
                       widget.settings.addCredit = true;
                       widget.settings.credits = credits;
-                    } else if (isSelected[1]) {
+                    } else if (selectedIndex == 1) {
                       // deduct
                       widget.settings.deductCredit = true;
-                    } else if (isSelected[2]) {
+                    } else if (selectedIndex == 2) {
                       // set
+                      // update credits
+                      widget.settings.feeCredit = true;
+                    } else if (selectedIndex == 3) {
                       // update credits
                       widget.settings.setCredit = true;
                     }
