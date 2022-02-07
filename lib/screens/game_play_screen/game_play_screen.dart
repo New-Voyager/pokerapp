@@ -624,6 +624,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
           child: GameChat(
             scrollController: _gcsController,
             chatService: _gameContextObj.gameComService.gameMessaging,
+            gameState: _gameState,
           ),
         ),
       ),
