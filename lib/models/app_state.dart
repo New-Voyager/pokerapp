@@ -4,9 +4,11 @@ import 'package:pokerapp/flavor_config.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
+import 'package:pokerapp/services/app/appcoin_service.dart';
 import 'package:pokerapp/services/app/player_service.dart';
 import 'package:pokerapp/services/caching/cache.dart';
 
+import 'app_coin.dart';
 import 'club_model.dart';
 
 class AppState extends ChangeNotifier {
@@ -20,7 +22,7 @@ class AppState extends ChangeNotifier {
   ClubsUpdateState clubUpdateState = ClubsUpdateState();
 
   CacheService cacheService = CacheService();
-
+  List<IapAppCoinProduct> enabledProducts = [];
   Map<SeatPos, Offset> _chipPotViewPos = Map<SeatPos, Offset>();
   Map<String, dynamic> screenAttribs;
   // try {
@@ -122,5 +124,6 @@ class AppState extends ChangeNotifier {
       await cacheService.getClubHomePageData(club.clubCode, update: true);
       await cacheService.getMembers(club.clubCode, update: true);
     }
+    enabledProducts = await AppCoinService.availableProducts();
   }
 }

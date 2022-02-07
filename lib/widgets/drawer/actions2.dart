@@ -4,6 +4,7 @@ import 'package:pokerapp/models/pending_approvals.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/screens/game_context_screen/game_options/game_option/pending_approvals.dart';
 import 'package:pokerapp/services/app/game_service.dart';
+import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:pokerapp/widgets/list_tile.dart';
 import 'package:provider/provider.dart';
@@ -14,7 +15,14 @@ class Actions2Widget extends StatelessWidget {
   const Actions2Widget({Key key, @required this.text, @required this.gameState})
       : super(key: key);
 
-  void onPause() {}
+  void onPause() {
+    Alerts.showNotification(
+        titleText: 'Pause',
+        leadingIcon: Icons.pause_circle_outline,
+        subTitleText: 'Game will be paused next hand');
+    GameService.pauseGame(gameState.gameCode);
+  }
+
   void onTerminate(BuildContext context) async {
     final response = await showPrompt(
         context, 'End Game', "Do you want to end the game?",

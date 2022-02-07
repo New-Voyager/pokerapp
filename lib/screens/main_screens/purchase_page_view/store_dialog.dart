@@ -6,8 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:in_app_purchase_android/in_app_purchase_android.dart';
+import 'package:pokerapp/main.dart';
 
 import 'package:pokerapp/models/app_coin.dart';
+import 'package:pokerapp/models/app_state.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_config.dart';
@@ -30,7 +32,7 @@ const bool _kAutoConsume = true;
 const String _kConsumableId = 'chips';
 
 class StoreDialog extends StatefulWidget {
-  AppTheme theme;
+  final AppTheme theme;
   StoreDialog({Key key, this.theme}) : super(key: key);
 
   @override
@@ -93,7 +95,7 @@ class _StoreDialogState extends State<StoreDialog> {
     // }
     log('Project App ID: $projectAppID appVersion: $appVersion platformVersion: $platformVersion');
 
-    _enabledProducts = await AppCoinService.availableProducts();
+    _enabledProducts = appState.enabledProducts;
     final bool isAvailable = await _connection.isAvailable();
     log("isConnectionAvailable = $isAvailable");
     if (!isAvailable) {

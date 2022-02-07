@@ -4,11 +4,13 @@ import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
+import 'package:pokerapp/screens/main_screens/purchase_page_view/store_dialog.dart';
 import 'package:pokerapp/widgets/drawer/actions1.dart';
 import 'package:pokerapp/widgets/drawer/actions2.dart';
 import 'package:pokerapp/widgets/drawer/actions3.dart';
 import 'package:pokerapp/widgets/drawer/actions4.dart';
 import 'package:pokerapp/widgets/drawer/actions5.dart';
+import 'package:pokerapp/widgets/list_tile.dart';
 
 class GamePlayScreenDrawer extends StatefulWidget {
   final GameState gameState;
@@ -33,6 +35,16 @@ class _GamePlayScreenDrawerState extends State<GamePlayScreenDrawer> {
 
     List<Widget> children = [];
 
+    children.add(
+      IconWidgetTile(
+        icon: Icons.shopping_cart,
+        title: 'Store',
+        onPressed: () async {
+          Navigator.of(context).pop();
+          StoreDialog.show(context, theme);
+        },
+      ),
+    );
     if (widget.gameState.isPlaying) {
       children.addAll([
         // playing

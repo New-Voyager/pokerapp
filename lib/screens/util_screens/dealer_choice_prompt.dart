@@ -113,20 +113,20 @@ class _DealerChoicePromptState extends State<DealerChoicePrompt> {
     for (final availableGameType in widget.listOfGameTypes) {
       if (availableGameType == GameType.HOLDEM) {
         gameTypes.add('NLH');
-        gameTypes.add('NLH DB');        
+        gameTypes.add('NLH DB');
       } else if (availableGameType == GameType.PLO) {
         gameTypes.add('4 Card PLO');
-        gameTypes.add('4 Card PLO DB');        
+        gameTypes.add('4 Card PLO DB');
       } else if (availableGameType == GameType.PLO_HILO) {
         gameTypes.add('4 Card Hi-Lo');
       } else if (availableGameType == GameType.FIVE_CARD_PLO) {
         gameTypes.add('5 Card PLO');
-        gameTypes.add('5 Card PLO DB');        
+        gameTypes.add('5 Card PLO DB');
       } else if (availableGameType == GameType.FIVE_CARD_PLO_HILO) {
         gameTypes.add('5 Card Hi-Lo');
       } else if (availableGameType == GameType.SIX_CARD_PLO) {
         gameTypes.add('6 Card PLO');
-        gameTypes.add('6 Card PLO DB');        
+        gameTypes.add('6 Card PLO DB');
       } else if (availableGameType == GameType.SIX_CARD_PLO_HILO) {
         gameTypes.add('6 Card Hi-Lo');
       }
