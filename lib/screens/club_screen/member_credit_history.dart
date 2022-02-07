@@ -15,9 +15,11 @@ import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/club_interior_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/alerts.dart';
+import 'package:pokerapp/utils/date_range_picker.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
+import 'package:pokerapp/widgets/radio_list_widget.dart';
 import 'package:share/share.dart';
 
 import '../../routes.dart';
@@ -53,13 +55,25 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
   ClubMemberModel member;
   bool changed = false;
   DataTableSource _dataTableSource;
+  int _selectedDateRangeIndex;
+  DateTimeRange _dateTimeRange;
 
   @override
   void initState() {
     super.initState();
     theme = AppTheme.getTheme(context);
     loading = true;
+    initDates();
     fetchData();
+  }
+
+  void initDates() {
+    var now = DateTime.now();
+    var startDate = now.subtract(Duration(days: now.weekday));
+    startDate =
+        DateTime(startDate.year, startDate.month, startDate.day, 0, 0, 0);
+    var endDate = DateTime(now.year, now.month, now.day, 0, 0, 0);
+    _dateTimeRange = DateTimeRange(start: startDate, end: endDate);
   }
 
   void fetchData() async {
@@ -121,6 +135,14 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
         ),
       );
     }
+
+    String startDateStr = DateFormat('dd MMM').format(_dateTimeRange.start);
+    String endDateStr = DateFormat('dd MMM').format(_dateTimeRange.end);
+    if (_dateTimeRange.start.year != DateTime.now().year) {
+      startDateStr = DateFormat('dd MMM yyyy').format(_dateTimeRange.start);
+      endDateStr = DateFormat('dd MMM yyyy').format(_dateTimeRange.end);
+    }
+
     return Container(
       decoration: AppDecorators.bgRadialGradient(theme),
       child: Scaffold(
@@ -131,104 +153,133 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
           titleText: member.name,
         ),
         body: SafeArea(
-          child: Container(
-            padding: EdgeInsets.all(16.0.pw),
+          child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 // header
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "Credits",
-                      style: TextStyle(
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    Text(
-                      DataFormatter.chipsFormat(member.availableCredit),
-                      style: AppDecorators.getHeadLine3Style(theme: theme)
-                          .copyWith(
-                              color: member.availableCredit < 0
-                                  ? Colors.redAccent
-                                  : Colors.greenAccent),
-                    ),
-                    !widget.owner
-                        ? SizedBox.shrink()
-                        : RoundRectButton(
-                            theme: theme,
-                            text: 'Change',
-                            onTap: () async {
-                              bool ret = await SetCreditsDialog.prompt(
-                                  context: context,
-                                  clubCode: widget.clubCode,
-                                  playerUuid: widget.playerId,
-                                  name: member.name,
-                                  credits: member.availableCredit.toDouble());
-
-                              if (ret) {
-                                changed = true;
-                                if (widget.member != null) {
-                                  widget.member.refreshCredits = true;
-                                }
-                                if (member != null) {
-                                  member.refreshCredits = true;
-                                }
-                                fetchData();
-                              }
-                            },
-                          )
-                  ],
-                ),
-                SizedBox(height: 15),
-                // download button
-                Align(
-                    alignment: Alignment.topRight,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Icon(
-                          Icons.download,
-                          color: theme.accentColor,
-                        ),
-                        InkWell(
-                          onTap: () async {
-                            if (history != null && !history.isEmpty) {
-                              _handleDownload();
-                            }
-                          },
-                          child: Text(
-                            'Download',
-                            style:
-                                AppDecorators.getAccentTextStyle(theme: theme)
-                                    .copyWith(fontWeight: FontWeight.normal),
+                Padding(
+                  padding: EdgeInsets.all(16.0.pw),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Credits",
+                            style: TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
-                        ),
-                      ],
-                    )
-                    // RoundRectButton(
-                    //   theme: theme,
-                    //   icon: Icon(
-                    //     Icons.download,
-                    //     size: 24,
-                    //     color: theme.roundButton2TextColor,
-                    //   ),
-                    //   text: 'Download',
-                    //   onTap: () {
-                    //     if (history != null && !history.isEmpty) {
-                    //       _handleDownload();
-                    //     }
-                    //   },
-                    // )
+                          Row(
+                            children: [
+                              Text(
+                                DataFormatter.chipsFormat(
+                                    member.availableCredit),
+                                style: AppDecorators.getHeadLine3Style(
+                                        theme: theme)
+                                    .copyWith(
+                                        color: member.availableCredit < 0
+                                            ? Colors.redAccent
+                                            : Colors.greenAccent),
+                              ),
+                              !widget.owner
+                                  ? SizedBox.shrink()
+                                  : RoundRectButton(
+                                      theme: theme,
+                                      text: 'Change',
+                                      onTap: () async {
+                                        bool ret =
+                                            await SetCreditsDialog.prompt(
+                                                context: context,
+                                                clubCode: widget.clubCode,
+                                                playerUuid: widget.playerId,
+                                                name: member.name,
+                                                credits: member.availableCredit
+                                                    .toDouble());
 
-                    ),
+                                        if (ret) {
+                                          changed = true;
+                                          if (widget.member != null) {
+                                            widget.member.refreshCredits = true;
+                                          }
+                                          if (member != null) {
+                                            member.refreshCredits = true;
+                                          }
+                                          fetchData();
+                                        }
+                                      },
+                                    )
+                            ],
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 15),
+                      dateRangeFilter(),
+                      SizedBox(height: 15),
+                      Center(
+                        child: Text(((startDateStr != endDateStr)
+                            ? '${startDateStr} - ${endDateStr}'
+                            : '$startDateStr')),
+                      ),
+                      SizedBox(height: 15.0),
+                      // download button
+                      Align(
+                          alignment: Alignment.topRight,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Container(
+                                padding: EdgeInsets.all(3),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15.0),
+                                  color: theme.accentColor,
+                                ),
+                                child: Icon(
+                                  Icons.download,
+                                  color: theme.primaryColor,
+                                ),
+                              ),
+                              SizedBox(width: 6.0),
+                              InkWell(
+                                onTap: () async {
+                                  if (history != null && !history.isEmpty) {
+                                    _handleDownload();
+                                  }
+                                },
+                                child: Text(
+                                  'Download',
+                                  style: AppDecorators.getAccentTextStyle(
+                                          theme: theme)
+                                      .copyWith(fontWeight: FontWeight.normal),
+                                ),
+                              ),
+                            ],
+                          )
+                          // RoundRectButton(
+                          //   theme: theme,
+                          //   icon: Icon(
+                          //     Icons.download,
+                          //     size: 24,
+                          //     color: theme.roundButton2TextColor,
+                          //   ),
+                          //   text: 'Download',
+                          //   onTap: () {
+                          //     if (history != null && !history.isEmpty) {
+                          //       _handleDownload();
+                          //     }
+                          //   },
+                          // )
+
+                          ),
+                    ],
+                  ),
+                ),
 
                 // main table
-                Expanded(
-                  child: activitiesTable(),
-                ),
+                activitiesTable(),
               ],
             ),
           ),
@@ -292,8 +343,7 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
       fontWeight: FontWeight.normal,
     );
     List<DataColumn2> columns = [];
-    columns.add(DataColumn2(
-        label: Icon(Icons.flag, color: Colors.blueGrey), size: ColumnSize.S));
+    columns.add(DataColumn2(label: Text('')));
     columns.add(DataColumn2(label: Text('Date'), size: ColumnSize.M));
     columns.add(DataColumn2(label: Text('Type'), size: ColumnSize.M));
     columns.add(
@@ -302,23 +352,90 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
         DataColumn2(label: Text('Credits'), numeric: true, size: ColumnSize.M));
     columns.add(DataColumn2(label: Text('Notes'), size: ColumnSize.L));
     columns.add(DataColumn2(label: Text('Updated\nby'), size: ColumnSize.M));
-    return Theme(
-        data: Theme.of(context).copyWith(
-          cardColor: theme.primaryColorWithDark(),
-          dividerColor: theme.accentColor,
+    return Column(
+      children: [
+        SizedBox(
+          height: 8,
         ),
-        child: PaginatedDataTable2(
-          columnSpacing: 10.0,
-          minWidth: 500,
-          fit: FlexFit.tight,
-          //rowsPerPage: 10,
-          autoRowsToHeight: true,
-          onSelectAll: (b) {},
-          showFirstLastButtons: true,
-          //arrowHeadColor: theme.accentColor,
-          columns: columns,
-          source: _dataTableSource,
-        ));
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              height: 10,
+              width: 10,
+              decoration: BoxDecoration(
+                color: Colors.yellow,
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            SizedBox(
+              width: 8,
+            ),
+            Text('Buyin'),
+            SizedBox(
+              width: 8,
+            ),
+            Container(
+              height: 10,
+              width: 10,
+              decoration: BoxDecoration(
+                color: Colors.blue,
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            SizedBox(
+              width: 8,
+            ),
+            Text('Adjust'),
+            SizedBox(
+              width: 8,
+            ),
+            Container(
+              height: 10,
+              width: 10,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            SizedBox(
+              width: 8,
+            ),
+            Text('Free Credits'),
+            SizedBox(
+              width: 8,
+            ),
+            Container(
+              height: 10,
+              width: 10,
+              decoration: BoxDecoration(
+                color: Colors.green,
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            SizedBox(
+              width: 8,
+            ),
+            Text('Result'),
+          ],
+        ),
+        Theme(
+            data: Theme.of(context).copyWith(
+              cardColor: theme.primaryColorWithDark(),
+              dividerColor: theme.accentColor,
+            ),
+            child: PaginatedDataTable(
+              columnSpacing: 10.0,
+              showFirstLastButtons: true,
+              arrowHeadColor: theme.accentColor,
+              columns: columns,
+              source: _dataTableSource,
+              horizontalMargin: 6.0,
+              rowsPerPage: 10,
+            )),
+      ],
+    );
   }
 
   Widget bannerActionButton({IconData icon, String text, onPressed}) {
@@ -343,6 +460,69 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
           style: TextStyle(fontSize: 16.pw, color: Colors.white),
         ),
       ],
+    );
+  }
+
+  Widget dateRangeFilter() {
+    var now = DateTime.now();
+
+    return RadioToggleButtonsWidget<String>(
+      defaultValue: _selectedDateRangeIndex,
+      values: [
+        'This\nWeek',
+        'Last\nWeek',
+        'This\nMonth',
+        'Last\nMonth',
+        'Custom',
+        // 'Last Week',
+        // 'Last Month'
+      ],
+      onSelect: (int value) async {
+        _selectedDateRangeIndex = value;
+        if (value == 0) {
+          var startDate = now.subtract(Duration(days: now.weekday - 1));
+          startDate =
+              DateTime(startDate.year, startDate.month, startDate.day, 0, 0, 0);
+          var endDate = DateTime(now.year, now.month, now.day, 0, 0, 0);
+          _dateTimeRange = DateTimeRange(start: startDate, end: endDate);
+          setState(() {});
+        } else if (value == 1) {
+          var startDate = now
+              .subtract(Duration(days: now.weekday))
+              .subtract(Duration(days: 7));
+          startDate =
+              DateTime(startDate.year, startDate.month, startDate.day, 0, 0, 0);
+          var endDate = startDate.add(Duration(days: 7));
+          _dateTimeRange = DateTimeRange(start: startDate, end: endDate);
+          setState(() {});
+        } else if (value == 2) {
+          var startDate = now.subtract(Duration(days: now.day - 1));
+          startDate =
+              DateTime(startDate.year, startDate.month, startDate.day, 0, 0, 0);
+          var endDate = startDate.add(Duration(days: now.day - 1));
+          _dateTimeRange = DateTimeRange(start: startDate, end: endDate);
+          setState(() {});
+        } else if (value == 3) {
+          var startDate = DateTime(now.year, now.month - 2, 1, 0, 0, 0);
+          var endDate = DateTime(now.year, now.month - 1, 0, 0, 0, 0);
+          _dateTimeRange = DateTimeRange(start: startDate, end: endDate);
+          setState(() {});
+        } else if (value == 4) {
+          var newDateRange = await DateRangePicker.show(context,
+              minimumDate: now.subtract(Duration(days: 90)),
+              maximumDate: now,
+              initialDate: now.subtract(Duration(days: 7)),
+              title: "Custom",
+              theme: theme);
+          if (newDateRange != null) {
+            _dateTimeRange = newDateRange;
+            setState(() {});
+          }
+          setState(() {});
+        }
+
+        fetchData();
+      },
     );
   }
 
@@ -380,22 +560,22 @@ class DataCreditSource extends DataTableSource {
     }
     if (item.updateType == 'BUYIN') {
       type = 'Buyin';
-      typeColor = Colors.redAccent;
+      typeColor = Colors.yellow;
       notes = '${item.gameCode}';
     }
     if (item.updateType == 'GAME_RESULT') {
       type = 'Result';
-      typeColor = Colors.yellowAccent;
+      typeColor = Colors.white;
       notes = '${item.gameCode}';
     }
     if (item.updateType == 'ADD' || item.updateType == 'DEDUCT') {
       type = 'Adjust';
-      typeColor = Colors.lightBlue;
+      typeColor = Colors.blue;
     }
 
     if (item.updateType == 'CHANGE') {
       type = 'Set';
-      amountColor = Colors.white;
+      amountColor = Colors.blue;
       //typeColor = Colors.cyan;
     }
     List<DataCell> cells = [
@@ -421,10 +601,21 @@ class DataCreditSource extends DataTableSource {
         },
       ),
       DataCell(
-        Text(
-          type,
-          style: AppDecorators.getSubtitle1Style(theme: theme)
-              .copyWith(color: typeColor),
+        // Text(
+        //   type,
+        //   style: AppDecorators.getSubtitle1Style(theme: theme)
+        //       .copyWith(color: typeColor),
+        // ),
+        Center(
+          child: Container(
+            width: 10,
+            height: 10,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(
+                  10,
+                ),
+                color: typeColor),
+          ),
         ),
         onTap: () async {
           if (onTap != null) {
@@ -496,7 +687,7 @@ class DataCreditSource extends DataTableSource {
       color:
           MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
         if (index % 2 == 0) {
-          return Colors.blueGrey[800];
+          return theme.primaryColor;
         } else {
           return Colors.black54;
         }
