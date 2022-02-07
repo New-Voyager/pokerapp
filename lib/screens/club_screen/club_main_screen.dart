@@ -16,6 +16,7 @@ import 'package:pokerapp/screens/club_screen/widgets/club_banner_new.dart';
 import 'package:pokerapp/screens/club_screen/widgets/club_live_games_view.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/screens/main_screens/purchase_page_view/coin_update.dart';
+import 'package:pokerapp/screens/main_screens/purchase_page_view/store_dialog.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
 import 'package:pokerapp/services/test/mock_data.dart';
 import 'package:pokerapp/utils/formatter.dart';
@@ -94,10 +95,15 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew>
                         : Positioned(
                             top: 5.ph,
                             right: 10.pw,
-                            child: Transform.scale(
-                                scale: 1.2,
-                                child:
-                                    CoinWidget(clubModel.clubCoins, 0, false))),
+                            child: InkWell(
+                              onTap: () {
+                                StoreDialog.show(context, theme);
+                              },
+                              child: Transform.scale(
+                                  scale: 1.2,
+                                  child: CoinWidget(
+                                      clubModel.clubCoins, 0, false)),
+                            )),
 
                     // banner
                     Transform.translate(

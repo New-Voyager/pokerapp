@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pokerapp/models/game_play_models/business/game_chat_notfi_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_constants.dart';
@@ -25,10 +26,12 @@ import 'package:pokerapp/utils/adaptive_sizer.dart';
 class GameChat extends StatefulWidget {
   final ScrollController scrollController;
   final GameMessagingService chatService;
+  final GameState gameState;
 
   GameChat({
     @required this.chatService,
     @required this.scrollController,
+    @required this.gameState,
   });
 
   @override
@@ -57,6 +60,12 @@ class _GameChatState extends State<GameChat> {
     // mark all the messages as read post frame building
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       context.read<GameChatNotifState>().readAll();
+    });
+
+    _textEditingController.text = widget.gameState.chatTextBoxText;
+
+    _textEditingController.addListener(() {
+      widget.gameState.chatTextBoxText = _textEditingController.text;
     });
 
     _init();

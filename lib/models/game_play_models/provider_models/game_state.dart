@@ -207,6 +207,7 @@ class GameState {
   MyPlayerNotes playersWithNotes;
 
   bool chatScreenVisible = false;
+  String chatTextBoxText = "";
 
   Future<void> initialize({
     String gameCode,
