@@ -392,7 +392,11 @@ class DataCreditSource extends DataTableSource {
       type = 'Adjust';
       typeColor = Colors.lightBlue;
     }
-
+    if (item.updateType == 'FEE_CREDIT') {
+      type = 'Fee Credit';
+      typeColor = Colors.greenAccent;
+      notes = '${item.gameCode}';
+    }
     if (item.updateType == 'CHANGE') {
       type = 'Set';
       amountColor = Colors.white;

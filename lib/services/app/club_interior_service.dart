@@ -93,6 +93,12 @@ class ClubInteriorService {
       }
   """;
 
+  static String feeCreditMutation = """
+      mutation fc(\$clubCode: String!, \$playerUuid: String!, \$notes: String \$amount: Float! \$followup: Boolean) {
+        ret: feeCredit(clubCode:\$clubCode playerUuid:\$playerUuid, amount:\$amount, notes: \$notes, followup: \$followup) 
+      }
+  """;
+
   static String clearFollowupMutation = """
       mutation cf(\$clubCode: String!, \$playerUuid: String!, \$transId: Int!) {
         ret: clearFollowup(clubCode:\$clubCode playerUuid:\$playerUuid, transId: \$transId)
@@ -570,6 +576,27 @@ class ClubInteriorService {
     };
     QueryResult result = await _client.mutate(MutationOptions(
         document: gql(deductCreditMutation), variables: variables));
+    if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
+    final ret = result.data['ret'].toString();
+    return ret;
+  }
+
+  static Future<String> feePlayerCredit(String clubCode, String playerID,
+      double amount, String notes, bool followup) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    Map<String, dynamic> variables = {
+      "clubCode": clubCode,
+      "playerUuid": playerID,
+      "amount": amount,
+      "notes": notes,
+      "followup": followup,
+    };
+    QueryResult result = await _client.mutate(MutationOptions(
+        document: gql(feeCreditMutation), variables: variables));
     if (result.hasException) {
       if (result.exception.graphqlErrors.length > 0) {
         return null;

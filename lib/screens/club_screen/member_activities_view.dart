@@ -11,12 +11,14 @@ import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
+import 'package:pokerapp/screens/club_screen/set_credits_dialog.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/club_interior_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/date_range_picker.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/widgets/radio_list_widget.dart';
+import 'package:pokerapp/widgets/texts.dart';
 import 'package:share/share.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -48,6 +50,7 @@ class _ClubMemberActivitiesScreenState
   bool daterange = false;
   int _selectedDateRangeIndex;
   DateTimeRange _dateTimeRange;
+  List<MemberActivity> activities = [];
 
   @override
   void initState() {
@@ -61,7 +64,6 @@ class _ClubMemberActivitiesScreenState
   void fetchData() async {
     bool includeTips = false;
     bool includeLastPlayedDate = false;
-    List<MemberActivity> activities = [];
     try {
       if (allActivities == null) {
         allActivities =
@@ -101,14 +103,17 @@ class _ClubMemberActivitiesScreenState
     }
 
     dts = DataSource(
+        context: context,
         clubCode: widget.clubCode,
         club: widget.club,
         openMember: openMember,
         onShare: onShare,
+        openCreditHistory: openCreditHistory,
         activities: activities,
         includeTips: true,
         includeShareButton: false,
-        theme: theme);
+        theme: theme,
+        refresh: fetchData);
     headers = [];
     headers.add('');
     headers.add('Name');
@@ -231,6 +236,11 @@ class _ClubMemberActivitiesScreenState
       endDateStr = DateFormat('dd MMM yyyy').format(_dateTimeRange.end);
     }
 
+    double totalMemberFees = 0;
+    for (final activity in activities) {
+      totalMemberFees += activity.tips;
+    }
+
     return SafeArea(
       top: false,
       child: Container(
@@ -238,44 +248,13 @@ class _ClubMemberActivitiesScreenState
         child: Scaffold(
           backgroundColor: Colors.transparent,
           appBar: CustomAppBar(
-            titleText: "Member Activities",
+            titleText: "Players Report",
             theme: theme,
-            // actionsList: [
-            // IconButton(
-            //     onPressed: () {
-            //       if (!memberActivitiesForDownload.isEmpty) {
-            //         _handleDownload();
-            //       }
-            //     },
-            //     icon: Icon(Icons.download)),
-            // ],
           ),
           body: SingleChildScrollView(
             child: Column(
               children: [
                 filter,
-                // Align(
-                //   alignment: Alignment.topRight,
-                //   child: Row(
-                //     mainAxisAlignment: MainAxisAlignment.end,
-                //     children: [
-                //       Icon(
-                //         Icons.download,
-                //         color: theme.accentColor,
-                //       ),
-                //       InkWell(
-                //         onTap: () async {
-
-                //         },
-                //         child: Text(
-                //           'Download',
-                //           style: AppDecorators.getAccentTextStyle(theme: theme)
-                //               .copyWith(fontWeight: FontWeight.normal),
-                //         ),
-                //       ),
-                //     ],
-                //   ),
-                // ),
                 const SizedBox(height: 16.0),
                 dateRangeFilter(),
                 const SizedBox(height: 16.0),
@@ -284,7 +263,15 @@ class _ClubMemberActivitiesScreenState
                       ? '${startDateStr} - ${endDateStr}'
                       : '$startDateStr')),
                 ),
-                const SizedBox(height: 16.0),
+                Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: Row(children: [
+                    LabelText(label: 'Total Player Fees:  ', theme: theme),
+                    LabelText(
+                        label: DataFormatter.chipsFormat(totalMemberFees),
+                        theme: theme),
+                  ]),
+                ),
                 Align(
                   alignment: Alignment.topRight,
                   child: Row(
@@ -317,26 +304,7 @@ class _ClubMemberActivitiesScreenState
                     ],
                   ),
                 ),
-
                 const SizedBox(height: 16.0),
-
-                // download button
-
-                // RoundRectButton(
-                //   theme: theme,
-                //   icon: Icon(
-                //     Icons.download,
-                //     size: 24,
-                //     color: theme.roundButton2TextColor,
-                //   ),
-                //   text: 'Download',
-                //   onTap: () {
-                //     if (!memberActivitiesForDownload.isEmpty) {
-                //       _handleDownload();
-                //     }
-                //   },
-                // )),
-
                 Theme(
                   data: Theme.of(context).copyWith(
                     cardColor: theme.primaryColorWithDark(),
@@ -421,32 +389,7 @@ class _ClubMemberActivitiesScreenState
 
   _handleDateRangePicker(BuildContext context, AppTheme theme) async {
     DateTime now = DateTime.now();
-    // var startDate = await CustomCupertinoDatePicker.showPicker(
-    //   context,
-    //   minimumDate: now.subtract(Duration(days: 90)),
-    //   maximumDate: now,
-    //   initialDate: now.subtract(Duration(days: 7)),
-    //   theme: theme,
-    //   title: "Start Date",
-    // );
 
-    // if (startDate != null) {
-    //   var endDate = await CustomCupertinoDatePicker.showPicker(
-    //     context,
-    //     minimumDate: startDate,
-    //     maximumDate: now,
-    //     initialDate: now.subtract(Duration(minutes: 1)),
-    //     theme: theme,
-    //     title: "End Date",
-    //   );
-
-    //   _dateTimeRange = DateTimeRange(
-    //       start: startDate, end: (endDate != null) ? endDate : DateTime.now());
-    // } else {
-    //   _dateTimeRange = DateTimeRange(
-    //       start: DateTime.now().subtract(Duration(days: 7)),
-    //       end: DateTime.now());
-    // }
     var newDateRange = await DateRangePicker.show(context,
         minimumDate: now.subtract(Duration(days: 90)),
         maximumDate: now,
@@ -484,7 +427,7 @@ class _ClubMemberActivitiesScreenState
 
     final tempDir = await getTemporaryDirectory();
 
-    final file = File('${tempDir.path}/Member Activities.csv');
+    final file = File('${tempDir.path}/Players Report.csv');
     await file.writeAsString(csv);
     DateTime now = DateTime.now();
     String nowStr = DateFormat("dd-MMM-yyyy HH:MM").format(now);
@@ -493,7 +436,7 @@ class _ClubMemberActivitiesScreenState
     Share.shareFiles(
       [file.path],
       mimeTypes: ['text/csv'],
-      subject: 'Member Activities',
+      subject: 'Players Report',
       text: text,
     );
   }
@@ -514,7 +457,7 @@ class _ClubMemberActivitiesScreenState
           ],
         ),
         Text(
-          'Member Activities',
+          'Players Report',
           style: TextStyle(
             fontSize: 20.0.pw,
             fontWeight: FontWeight.bold,
@@ -574,6 +517,32 @@ class _ClubMemberActivitiesScreenState
 
     bool ret = await Navigator.pushNamed(
       context,
+      Routes.club_member_detail_view,
+      arguments: {
+        'clubCode': widget.clubCode,
+        'playerId': playerUuid,
+        'owner': true,
+        'member': null, // widget.member,
+      },
+    ) as bool;
+  }
+
+  void openCreditHistory(String playerUuid) async {
+    bool canOpen = false;
+    if (widget.club.isOwner) {
+      canOpen = true;
+    } else {
+      if (widget.club.isManager && widget.club.role.canUpdateCredits) {
+        canOpen = true;
+      }
+    }
+    if (!canOpen) {
+      return;
+    }
+    log('clubCode: ${widget.clubCode} playerUuid: $playerUuid');
+
+    bool ret = await Navigator.pushNamed(
+      context,
       Routes.club_member_credit_detail_view,
       arguments: {
         'clubCode': widget.clubCode,
@@ -582,18 +551,6 @@ class _ClubMemberActivitiesScreenState
         'member': null, // widget.member,
       },
     ) as bool;
-    //   bool updated = await Navigator.pushNamed(
-    //     context,
-    //     Routes.club_member_detail_view,
-    //     arguments: {
-    //       "clubCode": widget.clubCode,
-    //       "playerId": playerUuid,
-    //       "currentOwner": true,
-    //     },
-    //   ) as bool;
-    //   if (updated) {
-    //     await fetchData();
-    //   }
   }
 }
 
@@ -605,16 +562,22 @@ class DataSource extends DataTableSource {
   bool includeShareButton;
   AppTheme theme;
   Function openMember;
+  Function openCreditHistory;
   Function onShare;
+  Function refresh;
+  BuildContext context;
   DataSource(
-      {this.clubCode,
+      {this.context,
+      this.clubCode,
       this.club,
       this.activities,
       this.openMember,
+      this.openCreditHistory,
       this.onShare,
       this.includeTips = false,
       this.includeShareButton = false,
-      this.theme});
+      this.theme,
+      this.refresh});
 
   @override
   DataRow getRow(int index) {
@@ -655,7 +618,10 @@ class DataSource extends DataTableSource {
             textAlign: TextAlign.right,
           ),
         ), onTap: () {
-      openMember(activity.playerUuid);
+      if (openCreditHistory != null) {
+        openCreditHistory(activity.playerUuid);
+      }
+      //openMember(activity.playerUuid);
     }));
 
     if (includeTips) {
@@ -674,12 +640,41 @@ class DataSource extends DataTableSource {
           openMember(activity.playerUuid);
         }),
       );
-      cells.add(DataCell(
-          Center(
-              child: Text(DataFormatter.chipsFormat(activity.tipsBackAmount))),
-          onTap: () {
-        openMember(activity.playerUuid);
-      }));
+
+      if (activity.tipsBackAmount > 0) {
+        cells.add(DataCell(
+            Center(
+                child: Column(children: [
+              Text(DataFormatter.chipsFormat(activity.tipsBackAmount)),
+              SizedBox(height: 3),
+              Icon(Icons.payment, size: 12),
+            ])), onTap: () async {
+          // open credit dialog from here
+          bool ret = await SetCreditsDialog.prompt(
+              context: context,
+              clubCode: clubCode,
+              playerUuid: activity.playerUuid,
+              credits: activity.credits,
+              tipCredits: true,
+              tipCreditsAmount: activity.tipsBackAmount,
+              name: '');
+          if (ret) {
+            if (this.refresh != null) {
+              // refresh the list
+              this.refresh();
+            }
+          }
+          //openMember(activity.playerUuid);
+        }));
+      } else {
+        cells.add(DataCell(
+            Center(
+                child:
+                    Text(DataFormatter.chipsFormat(activity.tipsBackAmount))),
+            onTap: () {
+          openMember(activity.playerUuid);
+        }));
+      }
       cells.add(
         DataCell(Center(child: Text(activity.gamesPlayed.toString())),
             onTap: () {

@@ -298,7 +298,7 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
                               //     theme: theme),
                               _buildRadio(
                                   value: _clubModel.role.viewMemberActivities,
-                                  label: 'Can View Member Activities',
+                                  label: 'Can View Players Report',
                                   onChange: (v) async {
                                     updated = true;
                                     _clubModel.role.viewMemberActivities = v;

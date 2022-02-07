@@ -122,7 +122,7 @@ class ClubActionsNew extends StatelessWidget {
     return ClubActionButtonNew(
         this._clubHomePageModel,
         ClubActions.MEMBER_ACTIVITIES,
-        'Member Activities',
+        'Players Report',
         SvgPicture.asset('assets/images/game/memberactivities.svg',
             color: theme.accentColor));
   }
