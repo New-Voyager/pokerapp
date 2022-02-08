@@ -120,6 +120,7 @@ class AppState extends ChangeNotifier {
 
   Future<void> cacheData() async {
     final myClubs = await cacheService.getMyClubs();
+    await cacheService.getPlayerLiveGames();
     for (final club in myClubs) {
       await cacheService.getClubHomePageData(club.clubCode, update: true);
       await cacheService.getMembers(club.clubCode, update: true);

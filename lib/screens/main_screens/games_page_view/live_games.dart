@@ -138,7 +138,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
   //   }
   // }
 
-  _fetchLiveGames() async {
+  _fetchLiveGames({bool update = false}) async {
     if (TestService.isTesting) {
       return;
     }
@@ -148,7 +148,8 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
     if (appState != null && appState.mockScreens) {
       updatedLiveGames = await MockData.getLiveGames();
     } else {
-      updatedLiveGames = await GameService.getLiveGamesNew();
+      updatedLiveGames =
+          await appState.cacheService.getPlayerLiveGames(update: update);
     }
 
     bool refresh = true;
@@ -289,7 +290,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
     if (currentIndex != 0) return;
     if (appState.newGame || appState.gameEnded) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        _fetchLiveGames();
+        _fetchLiveGames(update: true);
         appState.setNewGame(false);
         if (appState.gameEnded) {
           _fetchPlayedGames();

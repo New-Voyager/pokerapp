@@ -1,13 +1,16 @@
 import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/models/club_members_model.dart';
 import 'package:pokerapp/models/club_model.dart';
+import 'package:pokerapp/models/newmodels/game_model_new.dart';
 import 'package:pokerapp/services/app/club_interior_service.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
+import 'package:pokerapp/services/app/game_service.dart';
 
 class CacheService {
   Map<String, List<ClubMemberModel>> clubMembersMap =
       Map<String, List<ClubMemberModel>>();
   List<ClubModel> myClubs;
+  List<GameModelNew> liveGames;
   Map<String, ClubHomePageModel> clubDetailsMap =
       Map<String, ClubHomePageModel>();
   /** 
@@ -49,5 +52,15 @@ class CacheService {
       myClubs = await ClubsService.getMyClubs();
     }
     return myClubs;
+  }
+
+  Future<List<GameModelNew>> getPlayerLiveGames({bool update = false}) async {
+    if (liveGames == null) {
+      update = true;
+    }
+    if (update) {
+      liveGames = await GameService.getLiveGamesNew();
+    }
+    return liveGames;
   }
 }
