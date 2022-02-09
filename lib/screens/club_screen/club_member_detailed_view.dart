@@ -399,6 +399,11 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                         leaderRow(theme),
                         SizedBox(height: 10),
                         Visibility(
+                          visible: _data.isAgent,
+                          child: leaderAllowReportRow(theme),
+                        ),
+                        SizedBox(height: 10),
+                        Visibility(
                             visible: _data.isAgent,
                             child: playersUnderRow(theme)),
                         ...children,
@@ -687,7 +692,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
     return Row(
       children: [
         Expanded(
-          flex: 4,
+          flex: 6,
           child: Padding(
             padding: EdgeInsets.only(left: 5),
             child: Text(
@@ -698,7 +703,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
           ),
         ),
         Expanded(
-            flex: 6,
+            flex: 4,
             child: SwitchWidget2(
                 label: '',
                 value: _data.isAgent,
@@ -708,6 +713,28 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                   _data.isAgent = val;
                   setState(() {});
                 })),
+      ],
+    );
+  }
+
+  Widget leaderAllowReportRow(AppTheme theme) {
+    return Row(
+      children: [
+        Expanded(
+          flex: 6,
+          child: Padding(
+            padding: EdgeInsets.only(left: 5),
+            child: Text(
+              'Allow to view report',
+              textAlign: TextAlign.left,
+              style: AppDecorators.getHeadLine4Style(theme: theme),
+            ),
+          ),
+        ),
+        Expanded(
+            flex: 4,
+            child: SwitchWidget2(
+                label: '', value: _data.isAgent, onChange: (val) async {})),
       ],
     );
   }
@@ -762,7 +789,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
           arguments: {
             'clubCode': widget.clubCode,
             'playerId': widget.playerId,
-            'owner': true,
+            'isOwner': true,
             'member': widget.member,
           },
         );

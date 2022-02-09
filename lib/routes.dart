@@ -318,9 +318,13 @@ class Routes {
       case club_member_players_under_view:
         Map<String, dynamic> args = settings.arguments as Map<String, dynamic>;
         final member = args["member"];
+        final isOwner = args["isOwner"];
         return _getPageRoute(
           routeName: settings.name,
-          viewToShow: ClubMembersUnderAgent(member),
+          viewToShow: ClubMembersUnderAgent(
+            member,
+            isOwner: isOwner,
+          ),
         );
 
       case club_member_credit_detail_view:

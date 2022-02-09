@@ -22,8 +22,10 @@ import 'package:pokerapp/widgets/texts.dart';
 
 class ClubMembersUnderAgent extends StatefulWidget {
   final ClubMemberModel member;
+  final isOwner;
 
-  ClubMembersUnderAgent(this.member, {Key key}) : super(key: key);
+  ClubMembersUnderAgent(this.member, {Key key, this.isOwner = false})
+      : super(key: key);
 
   @override
   State<ClubMembersUnderAgent> createState() => _ClubMembersUnderAgentState();
@@ -51,6 +53,8 @@ class _ClubMembersUnderAgentState extends State<ClubMembersUnderAgent>
   bool playersEditMode = false;
   TextEditingController searchTextController = TextEditingController();
 
+  bool allowToViewReport = true;
+
   void initialize() async {
     final clubMembers =
         await appState.cacheService.getMembers(widget.member.clubCode);
@@ -75,7 +79,8 @@ class _ClubMembersUnderAgentState extends State<ClubMembersUnderAgent>
     }
 
     theme = AppTheme.getTheme(context);
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController =
+        TabController(length: allowToViewReport ? 2 : 1, vsync: this);
     _tabController.addListener(() {
       setState(() {
         exitPlayersEditMode();
@@ -106,9 +111,31 @@ class _ClubMembersUnderAgentState extends State<ClubMembersUnderAgent>
   @override
   Widget build(BuildContext context) {
     if (loading) {
-      return CircularProgressIndicator();
+      return Scaffold(body: Center(child: CircularProgressIndicator()));
     }
     final theme = AppTheme.getTheme(context);
+
+    List<Widget> tabs = [];
+    tabs.add(
+      Tab(
+        text: "Players",
+      ),
+    );
+
+    List<Widget> tabViewChildrens = [];
+    tabViewChildrens.add(
+      playersTab(theme),
+    );
+    if (allowToViewReport) {
+      tabs.add(
+        Tab(
+          text: "Report",
+        ),
+      );
+
+      tabViewChildrens.add(ReportTab(widget.member, widget.member.clubCode,
+          widget.member.playerId, widget.isOwner));
+    }
     return Container(
       decoration: AppDecorators.bgRadialGradient(theme),
       child: Scaffold(
@@ -131,44 +158,34 @@ class _ClubMembersUnderAgentState extends State<ClubMembersUnderAgent>
                   controller: _tabController,
                   indicatorColor: theme.accentColor,
                   isScrollable: true,
-                  tabs: [
-                    Tab(
-                      text: "Players",
-                    ),
-                    Tab(
-                      text: "Report",
-                    ),
-                  ],
+                  tabs: tabs,
                 ),
               ),
               Expanded(
                 child: TabBarView(
                   controller: _tabController,
                   physics: NeverScrollableScrollPhysics(),
-                  children: [
-                    playersTab(theme),
-                    ReportTab(widget.member, widget.member.clubCode,
-                        widget.member.playerId),
-                  ],
+                  children: tabViewChildrens,
                 ),
               ),
             ],
           ),
         ),
-        floatingActionButton: (_selectedTabIndex == 0 && !playersEditMode)
-            ? FloatingActionButton(
-                backgroundColor: theme.accentColor,
-                onPressed: () async {
-                  setState(() {
-                    playersEditMode = true;
-                  });
-                },
-                child: Icon(
-                  Icons.edit,
-                  color: theme.primaryColorWithDark(),
-                ),
-              )
-            : null,
+        floatingActionButton:
+            (_selectedTabIndex == 0 && !playersEditMode && widget.isOwner)
+                ? FloatingActionButton(
+                    backgroundColor: theme.accentColor,
+                    onPressed: () async {
+                      setState(() {
+                        playersEditMode = true;
+                      });
+                    },
+                    child: Icon(
+                      Icons.edit,
+                      color: theme.primaryColorWithDark(),
+                    ),
+                  )
+                : null,
       ),
     );
   }
@@ -434,8 +451,9 @@ class ReportTab extends StatefulWidget {
   final String clubCode;
   final String agentId;
   final ClubMemberModel member;
+  final bool isOwner;
 
-  ReportTab(this.member, this.clubCode, this.agentId);
+  ReportTab(this.member, this.clubCode, this.agentId, this.isOwner);
 
   @override
   State<ReportTab> createState() => _ReportTabState();
@@ -645,32 +663,37 @@ class _ReportTabState extends State<ReportTab> {
                                     '%',
                                 theme: theme),
                             SizedBox(width: 32.pw),
-                            RoundRectButton(
-                                text: "Change",
-                                onTap: () async {
-                                  int value = await SetTipsBackDialog.prompt(
-                                      context: context,
-                                      clubCode: widget.clubCode,
-                                      playerUuid: widget.agentId,
-                                      title: 'Agent Fee Credits',
-                                      tipsBack: agentFeeBackPercent.toInt());
-                                  if (value != null) {
-                                    if (value <= 100) {
-                                      agentFeeBackPercent = value.toDouble();
-                                      await ClubInteriorService
-                                          .updateClubMemberByParam(
-                                        widget.clubCode,
-                                        widget.agentId,
-                                        agentFeeBack:
-                                            agentFeeBackPercent.toInt(),
-                                      );
-                                      widget.member.agentFeeBack =
-                                          agentFeeBackPercent.toInt();
-                                      fetchData();
-                                    }
-                                  }
-                                },
-                                theme: theme),
+                            (widget.isOwner)
+                                ? RoundRectButton(
+                                    text: "Change",
+                                    onTap: () async {
+                                      int value =
+                                          await SetTipsBackDialog.prompt(
+                                              context: context,
+                                              clubCode: widget.clubCode,
+                                              playerUuid: widget.agentId,
+                                              title: 'Agent Fee Credits',
+                                              tipsBack:
+                                                  agentFeeBackPercent.toInt());
+                                      if (value != null) {
+                                        if (value <= 100) {
+                                          agentFeeBackPercent =
+                                              value.toDouble();
+                                          await ClubInteriorService
+                                              .updateClubMemberByParam(
+                                            widget.clubCode,
+                                            widget.agentId,
+                                            agentFeeBack:
+                                                agentFeeBackPercent.toInt(),
+                                          );
+                                          widget.member.agentFeeBack =
+                                              agentFeeBackPercent.toInt();
+                                          fetchData();
+                                        }
+                                      }
+                                    },
+                                    theme: theme)
+                                : SizedBox.shrink(),
                           ],
                         )),
                   ]),

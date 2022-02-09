@@ -6,7 +6,6 @@ import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/screens/club_screen/widgets/club_action_button_new.dart';
-import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:provider/provider.dart';
 
 class ClubActionsNew extends StatelessWidget {
@@ -127,6 +126,15 @@ class ClubActionsNew extends StatelessWidget {
             color: theme.accentColor));
   }
 
+  ClubActionButtonNew getAgentsPageWidget(AppTheme theme) {
+    return ClubActionButtonNew(
+        this._clubHomePageModel,
+        ClubActions.AGENTS,
+        'Agents',
+        SvgPicture.asset('assets/images/game/memberactivities.svg',
+            color: theme.accentColor));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<AppTheme>(builder: (_, theme, __) {
@@ -216,6 +224,10 @@ class ClubActionsNew extends StatelessWidget {
     //     color: theme.accentColor,
     //   ),
     // ));
+
+    // if (_clubHomePageModel.isAgent) {
+    buttons.add(getAgentsPageWidget(theme));
+    // }
 
     List<Widget> rows = [];
     List<Widget> rowChildren = [];

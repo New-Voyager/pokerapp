@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/club_actions.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_config.dart';
@@ -64,7 +65,7 @@ class ClubActionButtonNew extends StatelessWidget {
     return Consumer<ClubHomePageModel>(
         builder: (_, ClubHomePageModel clubModel, __) {
       return GestureDetector(
-        onTap: () {
+        onTap: () async {
           switch (_action) {
             case ClubActions.GAME_HISTORY:
               return Navigator.pushNamed(context, Routes.game_history,
@@ -173,6 +174,24 @@ class ClubActionButtonNew extends StatelessWidget {
                   'sharedHands': true,
                 },
               );
+              break;
+            case ClubActions.AGENTS:
+              final currentPlayer = AuthService.get();
+              final clubMembers =
+                  await appState.cacheService.getMembers(clubModel.clubCode);
+
+              var agent = clubMembers.firstWhere(
+                  (member) => member.playerId == currentPlayer.uuid,
+                  orElse: () => null);
+
+              if (agent != null) {
+                Navigator.pushNamed(
+                  context,
+                  Routes.club_member_players_under_view,
+                  arguments: {'member': agent, 'isOwner': agent.isOwner},
+                );
+              }
+              break;
           }
         },
         child: card,
