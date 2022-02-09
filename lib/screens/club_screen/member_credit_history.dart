@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/club_members_model.dart';
 import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
@@ -209,6 +210,12 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
                                             member.refreshCredits = true;
                                           }
                                           fetchData();
+
+                                          appState.cacheService
+                                                  .refreshClubMembers =
+                                              widget.clubCode;
+                                          await appState.cacheService
+                                              .getMembers(widget.clubCode);
                                         }
                                       },
                                     )
@@ -402,7 +409,7 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
             SizedBox(
               width: 8,
             ),
-            Text('Free Credits'),
+            Text('Fee Credits'),
             SizedBox(
               width: 8,
             ),
@@ -565,7 +572,7 @@ class DataCreditSource extends DataTableSource {
     }
     if (item.updateType == 'GAME_RESULT') {
       type = 'Result';
-      typeColor = Colors.white;
+      typeColor = Colors.greenAccent;
       notes = '${item.gameCode}';
     }
     if (item.updateType == 'ADD' || item.updateType == 'DEDUCT') {
@@ -574,7 +581,7 @@ class DataCreditSource extends DataTableSource {
     }
     if (item.updateType == 'FEE_CREDIT') {
       type = 'Fee Credit';
-      typeColor = Colors.greenAccent;
+      typeColor = Colors.white;
       notes = '${item.gameCode}';
     }
     if (item.updateType == 'CHANGE') {

@@ -44,7 +44,7 @@ class ClubActionButtonNew extends StatelessWidget {
           padding: EdgeInsets.all(1.pw),
           child: Text(
             _actionName,
-            style: AppDecorators.getSubtitle1Style(theme: theme),
+            style: AppDecorators.getHeadLine5Style(theme: theme),
             textAlign: TextAlign.center,
           ),
         ),

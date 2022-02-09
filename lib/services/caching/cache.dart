@@ -10,13 +10,19 @@ class CacheService {
   List<ClubModel> myClubs;
   Map<String, ClubHomePageModel> clubDetailsMap =
       Map<String, ClubHomePageModel>();
+  String refreshClub = '';
+  String refreshClubMembers = '';
+
   /** 
    * Return club members from the cache. If update is set to true, fetch from server, cache it.
    */
   Future<List<ClubMemberModel>> getMembers(String clubCode,
       {bool update = false}) async {
-    if (clubMembersMap[clubCode] == null) {
+    if (clubMembersMap[clubCode] == null || clubCode == refreshClubMembers) {
       update = true;
+    }
+    if (clubCode == refreshClubMembers) {
+      refreshClubMembers = '';
     }
     if (update) {
       final clubMembers = await ClubInteriorService.getClubMembers(
@@ -31,8 +37,11 @@ class CacheService {
    */
   Future<ClubHomePageModel> getClubHomePageData(String clubCode,
       {bool update = false}) async {
-    if (clubDetailsMap[clubCode] == null) {
+    if (clubDetailsMap[clubCode] == null || clubCode == refreshClub) {
       update = true;
+    }
+    if (clubCode == refreshClub) {
+      refreshClubMembers = '';
     }
     if (update) {
       final clubHomePage = await ClubsService.getClubHomePageData(clubCode);
@@ -48,6 +57,14 @@ class CacheService {
     if (update) {
       myClubs = await ClubsService.getMyClubs();
     }
+    // List<ClubModel> clubs = [];
+    // for (final club in myClubs) {
+    //   if (club.clubName == 'Common Interests') {
+    //     clubs.add(club);
+    //     break;
+    //   }
+    // }
+    // myClubs = clubs;
     return myClubs;
   }
 }
