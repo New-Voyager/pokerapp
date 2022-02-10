@@ -463,20 +463,7 @@ class _ReportTabState extends State<ReportTab> {
   void fetchData() async {
     loading = true;
     setState(() {});
-
-    // this week
-    // DateTime now = DateTime.now();
-    // DateTime nowAdjust = DateTime(now.year, now.month, now.day);
-    // DateTime start = findFirstDateOfTheWeek(nowAdjust).toUtc();
-    // DateTime end = findLastDateOfTheWeek(nowAdjust).toUtc();
-
-    // last week
-    // this month
-    // last month
-    // custom date
-
-    // load here
-    final activities = await ClubInteriorService.getAgentPlayerActivities(
+    final activities = await appState.cacheService.getAgentPlayerActivities(
         widget.clubCode,
         widget.agentId,
         _dateTimeRange.start,
