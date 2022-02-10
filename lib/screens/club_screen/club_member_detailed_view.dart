@@ -15,6 +15,7 @@ import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/club_screen/promote_dialog.dart';
 import 'package:pokerapp/screens/club_screen/set_tips_back_dialog.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
+import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/services/app/club_interior_service.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
@@ -62,6 +63,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
   String oldNotes;
   int oldTipsBack;
   String oldDisplayName;
+  bool isMe = false;
   TextEditingController _contactEditingController;
   TextEditingController _nameEditingController;
   TextEditingController _notesEditingController;
@@ -73,8 +75,16 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
 
   AppTextScreen _appScreenText;
 
+  @override
+  setState(Function fn) {
+    if (mounted) {
+      super.setState(fn);
+    }
+  }
+
   _fetchData() async {
     playersUnderMe = [];
+    final meModel = AuthService.get();
     //_data = await ClubInteriorService.getClubMemberDetail(clubCode, playerId);
     final clubMembers = await appState.cacheService.getMembers(clubCode);
     for (final member in clubMembers) {
@@ -82,6 +92,10 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
         _data = member;
         break;
       }
+    }
+
+    if (playerId == meModel.uuid) {
+      isMe = true;
     }
 
     if (_data.isAgent) {
@@ -156,20 +170,26 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
         ConnectionDialog.show(
             context: context, loadingText: "Updating player information...");
         try {
+          this._data.clubCode = clubCode;
           // save the data
           await ClubInteriorService.updateClubMember(this._data);
           await appState.cacheService.getMembers(clubCode, update: true);
           updated = true;
-        } catch (err) {}
+        } catch (err) {
+          log('Error caught when updating membership');
+        }
         ConnectionDialog.dismiss(
           context: context,
         );
       }
     }
-    Navigator.of(context).pop();
+    Navigator.of(context).pop(updated);
   }
 
   List<Widget> getMemberButtons(AppTheme theme) {
+    if (isMe) {
+      return [];
+    }
     List<Widget> children = [
       //message
       CircleImageButton(
@@ -591,6 +611,8 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
         Alerts.showNotification(
             titleText: 'Kick Player',
             subTitleText: 'Player is removed from the club.');
+        // refresh cached data
+        appState.cacheService.refreshClubMembers = clubCode;
         Navigator.of(context).pop(updated);
       } else {
         Alerts.showNotification(
@@ -617,6 +639,11 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
       ConnectionDialog.dismiss(
         context: context,
       );
+
+      // refresh cached data
+      appState.cacheService.refreshClubMembers = clubCode;
+      appState.cacheService.refreshClub = clubCode;
+
       _fetchData();
     }
   }
@@ -629,10 +656,11 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
       ConnectionDialog.show(context: context, loadingText: "Updating...");
       final result = await ClubsService.promotePlayer(clubCode, playerId,
           isManager: false, isOwner: false);
+      appState.cacheService.refreshClubMembers = clubCode;
+      await _fetchData();
       ConnectionDialog.dismiss(
         context: context,
       );
-      _fetchData();
     } else {
       Alerts.showNotification(
           titleText: 'Manager',

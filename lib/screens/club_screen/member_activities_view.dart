@@ -5,6 +5,7 @@ import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/models/member_activity_model.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
@@ -525,6 +526,10 @@ class _ClubMemberActivitiesScreenState
         'member': null, // widget.member,
       },
     ) as bool;
+
+    if (ret) {
+      fetchData();
+    }
   }
 
   void openCreditHistory(String playerUuid) async {
@@ -551,6 +556,9 @@ class _ClubMemberActivitiesScreenState
         'member': null, // widget.member,
       },
     ) as bool;
+    appState.cacheService.refreshClubMembers = widget.clubCode;
+    await appState.cacheService.getMembers(widget.clubCode);
+    fetchData();
   }
 }
 

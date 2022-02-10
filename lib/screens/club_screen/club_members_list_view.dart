@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/club_member_status.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/models/club_members_model.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
@@ -42,6 +43,16 @@ class ClubMembersListView extends StatefulWidget {
 
 class _ClubMembersListViewState extends State<ClubMembersListView> {
   TextEditingController searchTextController = TextEditingController();
+  List<ClubMemberModel> memberList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget._membersList != null) {
+      memberList.addAll(widget._membersList);
+    }
+  }
+
   Color getBalanceColor(double number, AppTheme theme) {
     if (number == null) {
       return Colors.white;
@@ -63,7 +74,7 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
       log('member: ${member.name} status: ${member.status.toString()}');
     }
     List<ClubMemberModel> _filteredList;
-    _filteredList = widget._membersList;
+    _filteredList = memberList;
     _filteredList.sort((a, b) {
       return b.name.toLowerCase().compareTo(a.name.toLowerCase());
     });
@@ -146,6 +157,36 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
                           "allMembers": widget.allMembers,
                         },
                       ) as bool;
+                      await appState.cacheService
+                          .getClubHomePageData(data.clubCode);
+                      final allMembers =
+                          await appState.cacheService.getMembers(data.clubCode);
+
+                      memberList = [];
+                      DateTime now = DateTime.now();
+                      for (final member in allMembers) {
+                        if (widget.option == MemberListOptions.MANAGERS) {
+                          if (member.isManager) {
+                            memberList.add(member);
+                          }
+                        } else if (widget.option == MemberListOptions.LEADERS) {
+                          if (member.isAgent) {
+                            memberList.add(member);
+                          }
+                        } else if (widget.option ==
+                            MemberListOptions.INACTIVE) {
+                          if (member.lastPlayedDate != null) {
+                            final diff = now.difference(member.lastPlayedDate);
+                            if (diff.inDays >= 60) {
+                              memberList.add(member);
+                            }
+                          }
+                        } else {
+                          memberList.add(member);
+                        }
+                      }
+
+                      setState(() {});
                       // if (updated ?? false) {
                       //   if (widget.fetchData != null) {
                       //     await widget.fetchData();
