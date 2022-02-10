@@ -18,6 +18,8 @@ import 'package:pokerapp/screens/game_play_screen/widgets/milliseconds_counter.d
 import 'package:pokerapp/services/audio/audio_service.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/widgets/nameplate.dart';
+import 'package:pokerapp/widgets/text_widgets/name_plate/name_plate_name_text.dart';
+import 'package:pokerapp/widgets/text_widgets/name_plate/name_plate_stack_text.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
@@ -295,37 +297,30 @@ class NamePlateWidget extends StatelessWidget {
                     padding: nameplate != null
                         ? EdgeInsets.fromLTRB(
                             double.parse(
-                                nameplate.meta.padding.split(",")[0].trim()),
+                              nameplate.meta.padding.split(",")[0].trim(),
+                            ),
                             double.parse(
-                                nameplate.meta.padding.split(",")[1].trim()),
+                              nameplate.meta.padding.split(",")[1].trim(),
+                            ),
                             double.parse(
-                                nameplate.meta.padding.split(",")[2].trim()),
+                              nameplate.meta.padding.split(",")[2].trim(),
+                            ),
                             double.parse(
-                                nameplate.meta.padding.split(",")[3].trim()),
+                              nameplate.meta.padding.split(",")[3].trim(),
+                            ),
                           )
                         : null, //EdgeInsets.all(3),
                     //padding: EdgeInsets.all(2),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
                       children: [
                         //SizedBox(height: 2),
                         // player name
-                        playerName == null || playerName == ''
-                            ? Container()
-                            : FittedBox(
-                                fit: BoxFit.fitWidth,
-                                child: Text(
-                                  playerName,
-                                  style: AppDecorators.getSubtitle4Style(
-                                          theme: theme)
-                                      .copyWith(
-                                    fontWeight: FontWeight.normal,
-                                    fontSize: 12.dp,
-                                  ),
-                                  //fontSize: nameplate.meta.nameTextSize),
-                                ),
-                              ),
+                        Expanded(
+                          child: playerName == null || playerName == ''
+                              ? const SizedBox.shrink()
+                              : NamePlateNameText(playerName),
+                        ),
 
                         // divider
                         Transform.scale(
@@ -334,11 +329,13 @@ class NamePlateWidget extends StatelessWidget {
                         ),
 
                         // bottom widget - to show stack, sit back time, etc.
-                        Align(
-                          alignment: Alignment.topRight,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 5),
-                            child: FittedBox(
+                        Expanded(
+                          child: Align(
+                            alignment: Alignment.centerRight,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 5,
+                              ),
                               child: bottomWidget(context, theme),
                             ),
                           ),
@@ -402,11 +399,8 @@ class NamePlateWidget extends StatelessWidget {
 
   Widget stack(BuildContext context, AppTheme theme) {
     Widget _buildStackTextWidget(double stack) => FittedBox(
-            child: Text(
-          DataFormatter.chipsFormat(stack),
-          style: AppDecorators.getSubtitle4Style(theme: theme)
-              .copyWith(fontSize: 12.dp), //nameplate.meta.nameTextSize),
-        ));
+          child: NamePlateStackText(stack),
+        );
 
     if (seat.player.reloadAnimation == true)
       return StackReloadAnimatingWidget(
