@@ -24,12 +24,10 @@ import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
-import 'package:pokerapp/widgets/switch.dart';
+import 'package:pokerapp/widgets/menu_list_tile.dart';
 import 'package:pokerapp/widgets/textfields.dart';
 import 'package:pokerapp/widgets/texts.dart';
 import 'package:provider/provider.dart';
-
-import 'club_members_list_view.dart';
 
 class ClubMembersDetailsView extends StatefulWidget {
   final ClubHomePageModel club;
@@ -397,15 +395,19 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                         ),
                         // set leader flag
                         leaderRow(theme),
-                        SizedBox(height: 10),
                         Visibility(
                           visible: _data.isAgent,
-                          child: leaderAllowReportRow(theme),
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 10),
+                            child: leaderAllowReportRow(theme),
+                          ),
                         ),
-                        SizedBox(height: 10),
                         Visibility(
                             visible: _data.isAgent,
-                            child: playersUnderRow(theme)),
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 10),
+                              child: playersUnderRow(theme),
+                            )),
                         ...children,
                         Divider(
                           color: theme.supportingColor,
@@ -689,53 +691,29 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
   }
 
   Widget leaderRow(AppTheme theme) {
-    return Row(
-      children: [
-        Expanded(
-          flex: 6,
-          child: Padding(
-            padding: EdgeInsets.only(left: 5),
-            child: Text(
-              'Agent',
-              textAlign: TextAlign.left,
-              style: AppDecorators.getHeadLine4Style(theme: theme),
-            ),
-          ),
-        ),
-        Expanded(
-            flex: 4,
-            child: SwitchWidget2(
-                label: '',
-                value: _data.isAgent,
-                onChange: (val) async {
-                  await ClubInteriorService.setAsAgent(
-                      widget.club.clubCode, _data.playerId, val);
-                  _data.isAgent = val;
-                  setState(() {});
-                })),
-      ],
+    return MenuListTile(
+      title: "Agent",
+      onPressed: () {},
+      padding: EdgeInsets.only(left: 5),
+      switchable: true,
+      switchValue: _data.isAgent,
+      onSwitchChanged: (val) async {
+        await ClubInteriorService.setAsAgent(
+            widget.club.clubCode, _data.playerId, val);
+        _data.isAgent = val;
+        setState(() {});
+      },
     );
   }
 
   Widget leaderAllowReportRow(AppTheme theme) {
-    return Row(
-      children: [
-        Expanded(
-          flex: 6,
-          child: Padding(
-            padding: EdgeInsets.only(left: 5),
-            child: Text(
-              'Allow to view report',
-              textAlign: TextAlign.left,
-              style: AppDecorators.getHeadLine4Style(theme: theme),
-            ),
-          ),
-        ),
-        Expanded(
-            flex: 4,
-            child: SwitchWidget2(
-                label: '', value: _data.isAgent, onChange: (val) async {})),
-      ],
+    return MenuListTile(
+      title: "Allow to view report",
+      onPressed: () {},
+      padding: EdgeInsets.only(left: 5),
+      switchable: true,
+      switchValue: false,
+      onSwitchChanged: (val) {},
     );
   }
 
@@ -781,8 +759,10 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
   }
 
   Widget playersUnderRow(AppTheme theme) {
-    return InkWell(
-      onTap: () async {
+    return MenuListTile(
+      title: "Players Under (${playersUnderMe.length})",
+      navIcon: true,
+      onPressed: () async {
         await Navigator.pushNamed(
           context,
           Routes.club_member_players_under_view,
@@ -793,31 +773,8 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
             'member': widget.member,
           },
         );
-        _fetchData();
       },
-      child: Row(
-        children: [
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.only(left: 5),
-              child: Text(
-                'Players Under (${playersUnderMe.length})',
-                textAlign: TextAlign.left,
-                style: AppDecorators.getHeadLine4Style(theme: theme),
-              ),
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(left: 5),
-            child: Row(children: [
-              SizedBox(
-                width: 10,
-              ),
-              Icon(Icons.navigate_next, color: theme.accentColor)
-            ]),
-          ),
-        ],
-      ),
+      padding: EdgeInsets.only(left: 5),
     );
   }
 

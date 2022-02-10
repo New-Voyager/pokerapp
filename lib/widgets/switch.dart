@@ -46,12 +46,14 @@ class SwitchWidget2 extends StatelessWidget {
           children: [
             ...iconChildren,
             /* label */
-            Expanded(
-              child: Text(
-                label,
-                style: AppDecorators.getHeadLine5Style(theme: theme),
-              ),
-            ),
+            (label != "")
+                ? Expanded(
+                    child: Text(
+                      label,
+                      style: AppDecorators.getHeadLine5Style(theme: theme),
+                    ),
+                  )
+                : SizedBox.shrink(),
 
             /* spacer */
             // useSpacer ? const Spacer() : const SizedBox(width: 20.0),

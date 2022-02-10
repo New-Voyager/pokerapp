@@ -3,7 +3,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/screens/game_context_screen/game_options/game_option/seat_change_bottom_sheet.dart';
 import 'package:pokerapp/screens/game_context_screen/game_options/game_option/waiting_list.dart';
-import 'package:pokerapp/widgets/list_tile.dart';
+import 'package:pokerapp/widgets/menu_list_tile.dart';
 
 class Actions4Widget extends StatelessWidget {
   final AppTextScreen text;
@@ -38,20 +38,22 @@ class Actions4Widget extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        IconWidgetTile(
+        MenuListTile(
           icon: Icons.queue,
+          padding: EdgeInsets.all(8),
           title: text["queue"],
-          onPressed: () async {
+          onPressed: () {
             // open waiting list screen
             Navigator.of(context).pop();
             onOpenQueue(context);
           },
         ),
         gameState.isPlaying
-            ? IconWidgetTile(
+            ? MenuListTile(
                 svgIconPath: 'assets/images/seat.svg',
+                padding: EdgeInsets.all(8),
                 title: text['seatChange'],
-                onPressed: () async {
+                onPressed: () {
                   // open waiting list screen
                   Navigator.of(context).pop();
                   onSeatChange(context);

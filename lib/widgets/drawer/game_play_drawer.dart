@@ -10,7 +10,7 @@ import 'package:pokerapp/widgets/drawer/actions2.dart';
 import 'package:pokerapp/widgets/drawer/actions3.dart';
 import 'package:pokerapp/widgets/drawer/actions4.dart';
 import 'package:pokerapp/widgets/drawer/actions5.dart';
-import 'package:pokerapp/widgets/list_tile.dart';
+import 'package:pokerapp/widgets/menu_list_tile.dart';
 
 class GamePlayScreenDrawer extends StatefulWidget {
   final GameState gameState;
@@ -36,10 +36,11 @@ class _GamePlayScreenDrawerState extends State<GamePlayScreenDrawer> {
     List<Widget> children = [];
 
     children.add(
-      IconWidgetTile(
+      MenuListTile(
         icon: Icons.shopping_cart,
+        padding: EdgeInsets.all(8),
         title: 'Store',
-        onPressed: () async {
+        onPressed: () {
           Navigator.of(context).pop();
           StoreDialog.show(context, theme);
         },

@@ -32,14 +32,16 @@ class WrapText extends StatelessWidget {
 class TileText extends StatelessWidget {
   final String text;
   final AppTheme theme;
-  const TileText({Key key, @required this.text, @required this.theme})
+  final TextStyle style;
+  const TileText(
+      {Key key, @required this.text, @required this.theme, this.style})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Text(
       text,
-      style: AppDecorators.getHeadLine5Style(theme: theme),
+      style: style ?? AppDecorators.getHeadLine5Style(theme: theme),
     );
   }
 }

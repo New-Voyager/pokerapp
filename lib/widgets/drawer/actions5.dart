@@ -3,7 +3,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/services/game_play/graphql/gamesettings_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
-import 'package:pokerapp/widgets/switch.dart';
+import 'package:pokerapp/widgets/menu_list_tile.dart';
 
 class Actions5Widget extends StatefulWidget {
   final GameState gameState;
@@ -33,16 +33,18 @@ class _Actions5WidgetState extends State<Actions5Widget> {
   Widget build(BuildContext context) {
     List<Widget> children = [];
     if (widget.gameState.gameInfo.utgStraddleAllowed) {
-      children.add(SwitchWidget2(
-        label: text['autoUTGStraddle'],
-        onChange: (val) {},
+      children.add(MenuListTile(
+        switchable: true,
+        title: text['autoUTGStraddle'],
+        onSwitchChanged: (val) {},
       ));
     }
     children.addAll([
-      SwitchWidget2(
-        label: text['runItTwice'],
-        value: widget.gameState.playerSettings.runItTwiceEnabled,
-        onChange: (val) async {
+      MenuListTile(
+        title: text['runItTwice'],
+        switchable: true,
+        switchValue: widget.gameState.playerSettings.runItTwiceEnabled,
+        onSwitchChanged: (val) async {
           widget.gameState.playerSettings.runItTwiceEnabled = val;
           // updte the server
           await updateGamePlayerSettings();
@@ -50,20 +52,22 @@ class _Actions5WidgetState extends State<Actions5Widget> {
           setState(() {});
         },
       ),
-      SwitchWidget2(
-        label: text['checkFold'],
-        value: widget.gameState.playerLocalConfig.showCheckFold,
-        onChange: (val) {
+      MenuListTile(
+        title: text['checkFold'],
+        switchValue: widget.gameState.playerLocalConfig.showCheckFold,
+        switchable: true,
+        onSwitchChanged: (val) {
           // setting the value saves it to local storage too
           widget.gameState.playerLocalConfig.showCheckFold = val;
           if (closed) return;
           setState(() {});
         },
       ),
-      SwitchWidget2(
-        label: text['colorCards'],
-        value: widget.gameState.playerLocalConfig.colorCards,
-        onChange: (val) {
+      MenuListTile(
+        switchable: true,
+        title: text['colorCards'],
+        switchValue: widget.gameState.playerLocalConfig.colorCards,
+        onSwitchChanged: (val) {
           widget.gameState.playerLocalConfig.colorCards = val;
           if (closed) return;
           setState(() {});
@@ -72,50 +76,55 @@ class _Actions5WidgetState extends State<Actions5Widget> {
           widget.gameState.redrawFooter();
         },
       ),
-      SwitchWidget2(
-        label: text['animations'],
-        value: widget.gameState.playerLocalConfig.animations,
-        onChange: (val) {
+      MenuListTile(
+        switchable: true,
+        title: text['animations'],
+        switchValue: widget.gameState.playerLocalConfig.animations,
+        onSwitchChanged: (val) {
           // setting the value saves it to local storage too
           widget.gameState.playerLocalConfig.animations = val;
           if (closed) return;
           setState(() {});
         },
       ),
-      SwitchWidget2(
-        label: 'Sounds',
-        value: widget.gameState.playerLocalConfig.gameSound,
-        onChange: (val) {
+      MenuListTile(
+        switchable: true,
+        title: 'Sounds',
+        switchValue: widget.gameState.playerLocalConfig.gameSound,
+        onSwitchChanged: (val) {
           // setting the value saves it to local storage too
           widget.gameState.playerLocalConfig.gameSound = val;
           if (closed) return;
           setState(() {});
         },
       ),
-      SwitchWidget2(
-        label: text['vibration'],
-        value: widget.gameState.playerLocalConfig.vibration,
-        onChange: (val) {
+      MenuListTile(
+        switchable: true,
+        title: text['vibration'],
+        switchValue: widget.gameState.playerLocalConfig.vibration,
+        onSwitchChanged: (val) {
           widget.gameState.playerLocalConfig.vibration = val;
           if (closed) return;
           setState(() {});
           widget.gameState.communicationState.notify();
         },
       ),
-      SwitchWidget2(
-        label: text['chat'],
-        value: widget.gameState.playerLocalConfig.showChat,
-        onChange: (val) {
+      MenuListTile(
+        switchable: true,
+        title: text['chat'],
+        switchValue: widget.gameState.playerLocalConfig.showChat,
+        onSwitchChanged: (val) {
           // setting the value saves it to local storage too
           widget.gameState.playerLocalConfig.showChat = val;
           if (closed) return;
           setState(() {});
         },
       ),
-      SwitchWidget2(
-        label: 'Participate in Bomb Pot',
-        value: widget.gameState.playerSettings.bombPotEnabled,
-        onChange: (val) async {
+      MenuListTile(
+        switchable: true,
+        title: 'Participate in Bomb Pot',
+        switchValue: widget.gameState.playerSettings.bombPotEnabled,
+        onSwitchChanged: (val) async {
           // setting the value saves it to local storage too
           widget.gameState.playerSettings.bombPotEnabled = val;
           if (closed) return;
@@ -127,10 +136,11 @@ class _Actions5WidgetState extends State<Actions5Widget> {
       ),
     ]);
 
-    children.add(SwitchWidget2(
-      label: 'Muck Losing Hand',
-      value: widget.gameState.playerSettings.muckLosingHand,
-      onChange: (val) async {
+    children.add(MenuListTile(
+      switchable: true,
+      title: 'Muck Losing Hand',
+      switchValue: widget.gameState.playerSettings.muckLosingHand,
+      onSwitchChanged: (val) async {
         // setting the value saves it to local storage too
         widget.gameState.playerSettings.muckLosingHand = val;
         if (closed) return;
@@ -141,10 +151,11 @@ class _Actions5WidgetState extends State<Actions5Widget> {
       },
     ));
 
-    children.add(SwitchWidget2(
-      label: 'Show Hand Strength',
-      value: widget.gameState.playerLocalConfig.showHandRank,
-      onChange: (val) {
+    children.add(MenuListTile(
+      switchable: true,
+      title: 'Show Hand Strength',
+      switchValue: widget.gameState.playerLocalConfig.showHandRank,
+      onSwitchChanged: (val) {
         // setting the value saves it to local storage too
         widget.gameState.playerLocalConfig.showHandRank = val;
         setState(() {});
