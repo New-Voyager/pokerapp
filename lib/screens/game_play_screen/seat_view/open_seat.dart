@@ -77,7 +77,7 @@ class _OpenSeatState extends State<OpenSeat> {
 
   Widget openSeatWidget(
       AppTheme theme, List<BoxShadow> shadow, bool seatChangeInProgress) {
-    String text = 'Open';
+    // String text = 'Open';
 
     // we show an icon if seat is reserved
     // if (widget.seat.reserved) {

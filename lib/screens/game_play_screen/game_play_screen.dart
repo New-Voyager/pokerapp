@@ -1017,9 +1017,12 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         );
       } else {
         headerView = Container(
-            width: Screen.width,
-            child:
-                HeaderView(gameState: _gameState, scaffoldKey: _scaffoldKey));
+          width: Screen.width,
+          child: HeaderView(
+            gameState: _gameState,
+            scaffoldKey: _scaffoldKey,
+          ),
+        );
       }
 
       children.addAll(
