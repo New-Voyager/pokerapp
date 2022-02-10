@@ -509,7 +509,8 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     }
 
     return Transform.translate(
-        offset: offset,
-        child: Align(alignment: seatAttribs.alignment, child: userView));
+      offset: offset,
+      child: Align(alignment: seatAttribs.alignment, child: userView),
+    );
   }
 }

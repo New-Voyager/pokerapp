@@ -14,6 +14,8 @@ import 'package:pokerapp/screens/game_play_screen/widgets/icon_with_badge.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/screens/main_screens/purchase_page_view/coin_update.dart';
 import 'package:pokerapp/utils/formatter.dart';
+import 'package:pokerapp/widgets/text_widgets/header/header_game_code_text.dart';
+import 'package:pokerapp/widgets/text_widgets/header/header_title_text.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
@@ -39,7 +41,7 @@ class HeaderView extends StatelessWidget {
     return '';
   }
 
-  Widget _buildMainContent(AppTheme theme) {
+  Widget _buildMainContent() {
     return Consumer<HandInfoState>(
       builder: (_, his, __) {
         String titleText = "";
@@ -52,29 +54,15 @@ class HeaderView extends StatelessWidget {
         return Column(
           children: [
             /* title text */
-            RichText(
-              text: TextSpan(
-                text: titleText,
-                style: AppDecorators.getHeadLine4Style(theme: theme),
-              ),
-            ),
+            // game type and bet coins
+            HeaderTitleText(titleText),
 
-            /* hand number */
-            RichText(
-              text: TextSpan(
-                text: his.handNum == 0 ? 'Code: ' : _appScreenText['hand'],
-                style: AppDecorators.getHeadLine4Style(theme: theme).copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
-                children: [
-                  TextSpan(
-                    text: his.handNum == 0
-                        ? '${gameState.gameInfo.gameCode}'
-                        : " #${his.handNum}",
-                    style: AppDecorators.getAccentTextStyle(theme: theme),
-                  )
-                ],
-              ),
+            // game code
+            HeaderGameCodeText(
+              his.handNum == 0 ? 'Code: ' : _appScreenText['hand'],
+              his.handNum == 0
+                  ? '${gameState.gameInfo.gameCode}'
+                  : ' #${his.handNum}',
             ),
           ],
         );
@@ -106,41 +94,46 @@ class HeaderView extends StatelessWidget {
     }
 
     return Transform.scale(
-        scale: 1.2,
-        child:
-            Consumer<PendingApprovalsState>(builder: (context, value, child) {
+      scale: 1.2,
+      child: Consumer<PendingApprovalsState>(
+        builder: (context, value, child) {
           log('PendingApprovalsState: rebuild approvals.length: ${value.approvalList.length}');
           return IconWithBadge(
-              count: value.approvalList.length,
-              child: Container(
-                alignment: Alignment.centerLeft,
-                padding: EdgeInsets.only(left: 16.pw),
-                child: InkWell(
-                    child: Container(
-                      width: 24.pw,
-                      height: 24.pw,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: theme.secondaryColor,
-                          width: 2,
-                        ),
-                      ),
-                      // padding: EdgeInsets.all(5),
-                      child: Center(
-                          child: Icon(
-                        iconData,
-                        color: theme.secondaryColor,
-                        size: 18,
-                      )),
+            count: value.approvalList.length,
+            child: Container(
+              alignment: Alignment.centerLeft,
+              margin: EdgeInsets.only(right: 16.pw),
+              child: InkWell(
+                child: Container(
+                  width: 24.pw,
+                  height: 24.pw,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: theme.secondaryColor,
+                      width: 2,
                     ),
+                  ),
+                  // padding: EdgeInsets.all(5),
+                  child: Center(
+                    child: Icon(
+                      iconData,
+                      color: theme.secondaryColor,
+                      size: 18,
+                    ),
+                  ),
+                ),
 
-                    ///borderRadius: BorderRadius.circular(32.pw),
-                    onTap: () {
-                      _onGameMenuNavButtonPress(context);
-                    }),
-              ));
-        }));
+                ///borderRadius: BorderRadius.circular(32.pw),
+                onTap: () {
+                  _onGameMenuNavButtonPress(context);
+                },
+              ),
+            ),
+          );
+        },
+      ),
+    );
 
     // return Align(
     //   alignment: Alignment.centerRight,
@@ -176,27 +169,46 @@ class HeaderView extends StatelessWidget {
           color: theme.primaryColorWithDark().withOpacity(0.8),
           padding: EdgeInsets.symmetric(vertical: 8),
           child: Container(
-            margin: const EdgeInsets.only(right: 16, top: 8, bottom: 8),
-            child: Stack(
-              alignment: Alignment.center,
+            // margin: const EdgeInsets.only(right: 16, top: 8, bottom: 8),
+            child: Row(
               children: [
-                /* main content */
-                _buildMainContent(theme),
+                // back button
+                BackArrowWidget(),
 
-                /* back button */
-                Positioned(top: 5.ph, left: 5.ph, child: BackArrowWidget()),
+                // center title
+                Expanded(child: _buildMainContent()),
 
-                /* game menu */
-                Positioned(
-                    right: 10.pw,
-                    top: 5.ph,
-                    child: Consumer<HandInfoState>(builder: (_, his, __) {
-                      return Visibility(
-                          child: _buildGameMenuNavButton(context, theme),
-                          visible: !gameState.ended);
-                    })),
+                // game menu
+                Consumer<HandInfoState>(
+                  builder: (_, his, __) {
+                    return Visibility(
+                      child: _buildGameMenuNavButton(context, theme),
+                      visible: !gameState.ended,
+                    );
+                  },
+                ),
               ],
             ),
+            // child: Stack(
+            //   alignment: Alignment.center,
+            //   children: [
+            //     /* main content */
+            //     _buildMainContent(theme),
+
+            //     /* back button */
+            //     Positioned(top: 5.ph, left: 5.ph, child: BackArrowWidget()),
+
+            //     /* game menu */
+            //     Positioned(
+            //         right: 10.pw,
+            //         top: 5.ph,
+            //         child: Consumer<HandInfoState>(builder: (_, his, __) {
+            //           return Visibility(
+            //               child: _buildGameMenuNavButton(context, theme),
+            //               visible: !gameState.ended);
+            //         })),
+            //   ],
+            // ),
           ),
         );
       },

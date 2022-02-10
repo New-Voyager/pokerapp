@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:pokerapp/widgets/text_widgets/name_plate/open_seat_text.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
@@ -36,66 +37,71 @@ class OpenSeat extends StatefulWidget {
 class _OpenSeatState extends State<OpenSeat> {
   bool dragEnter = false;
 
-  Widget _openSeat(AppTheme theme) {
-    if (widget.seatChangeInProgress && widget.seatChangeSeat) {
-      log('RedrawFooter: open seat ${widget.seatChangeInProgress}');
-      return Padding(
-        padding: const EdgeInsets.all(5),
-        child: DefaultTextStyle(
-            style: TextStyle(
-              fontSize: 10.dp,
-              color: Colors.yellowAccent,
-              shadows: [
-                Shadow(
-                  blurRadius: 7.0,
-                  color: Colors.white,
-                  offset: Offset(0, 0),
-                ),
-              ],
-            ),
-            child: AnimatedTextKit(repeatForever: true, animatedTexts: [
-              FlickerAnimatedText('Open', speed: Duration(milliseconds: 500))
-            ])),
-      );
-    }
+  // Widget _openSeat(AppTheme theme) {
+  //   if (widget.seatChangeInProgress && widget.seatChangeSeat) {
+  //     log('RedrawFooter: open seat ${widget.seatChangeInProgress}');
+  //     return Padding(
+  //       padding: const EdgeInsets.all(5),
+  //       child: DefaultTextStyle(
+  //           style: TextStyle(
+  //             fontSize: 10.dp,
+  //             color: Colors.yellowAccent,
+  //             shadows: [
+  //               Shadow(
+  //                 blurRadius: 7.0,
+  //                 color: Colors.white,
+  //                 offset: Offset(0, 0),
+  //               ),
+  //             ],
+  //           ),
+  //           child: AnimatedTextKit(repeatForever: true, animatedTexts: [
+  //             FlickerAnimatedText('Open', speed: Duration(milliseconds: 500))
+  //           ])),
+  //     );
+  //   }
 
-    return Padding(
-      padding: const EdgeInsets.all(5),
-      child: FittedBox(
-        child:
-            // AnimatedTextKit(repeatForever: true, animatedTexts: [
-            //       FlickerAnimatedText('Open', speed: Duration(milliseconds: 2000))
-            //     ]),
-            Text(
-          'Open',
-          style: AppDecorators.getSubtitle1Style(theme: theme),
-        ),
-      ),
-    );
-  }
+  //   return Padding(
+  //     padding: const EdgeInsets.all(5),
+  //     child: FittedBox(
+  //       child:
+  //           // AnimatedTextKit(repeatForever: true, animatedTexts: [
+  //           //       FlickerAnimatedText('Open', speed: Duration(milliseconds: 2000))
+  //           //     ]),
+  //           Text(
+  //         'Open',
+  //         style: AppDecorators.getSubtitle1Style(theme: theme),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget openSeatWidget(
       AppTheme theme, List<BoxShadow> shadow, bool seatChangeInProgress) {
-    String text = 'Open';
-    if (widget.seat.reserved) {
-      text = 'Reserved';
-    }
+    // String text = 'Open';
+
+    // we show an icon if seat is reserved
+    // if (widget.seat.reserved) {
+    //   text = 'Reserved';
+    // }
 
     Widget openSeat = Container(
       key: UniqueKey(),
       width: 45.0,
       height: 45.0,
-      child: Center(
-          child: widget.seat.reserved
-              ? SvgPicture.asset('assets/images/game/lock.svg',
-                  color: theme.accentColor)
-              : Text(text)),
+      alignment: Alignment.center,
+      child: widget.seat.reserved
+          ? SvgPicture.asset(
+              'assets/images/game/lock.svg',
+              color: theme.accentColor,
+            )
+          : OpenSeatText(),
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: theme.primaryColorWithDark(),
         boxShadow: shadow,
       ),
     );
+
     if (!seatChangeInProgress) {
       // openSeat = Shimmer.fromColors(
       //       baseColor: Colors.white.withOpacity(0.80),
@@ -104,18 +110,20 @@ class _OpenSeatState extends State<OpenSeat> {
       //       child: openSeat, //_openSeat(theme),
       //     );
     }
+
     return InkWell(
-        splashColor: theme.secondaryColor,
-        borderRadius: BorderRadius.circular(16),
-        onTap: () {
-          if (widget.seat.reserved) {
-            return;
-          }
-          log('Pressed ${widget.seat.seatPos.toString()}');
-          AudioService.playClickSound();
-          this.widget.onUserTap(widget.seat);
-        },
-        child: openSeat);
+      splashColor: theme.secondaryColor,
+      borderRadius: BorderRadius.circular(16),
+      onTap: () {
+        if (widget.seat.reserved) {
+          return;
+        }
+        log('Pressed ${widget.seat.seatPos.toString()}');
+        AudioService.playClickSound();
+        this.widget.onUserTap(widget.seat);
+      },
+      child: openSeat,
+    );
   }
 
   @override

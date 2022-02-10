@@ -65,28 +65,25 @@ class BackArrowWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = AppTheme.getTheme(context);
-    return Transform.scale(
-      scale: 1,
-      child: Container(
-        alignment: Alignment.centerLeft,
-        padding: EdgeInsets.only(left: 16.pw),
-        child: InkWell(
-            child: SvgPicture.asset(
-              'assets/images/backarrow.svg',
-              color: theme.secondaryColor,
-              width: 32.pw,
-              height: 32.pw,
-              fit: BoxFit.contain,
-            ),
-            borderRadius: BorderRadius.circular(32.pw),
-            onTap: () {
-              if (onBackHandle != null) {
-                onBackHandle();
-              } else {
-                Navigator.of(context).pop();
-              }
-            }),
-      ),
+    return Container(
+      alignment: Alignment.centerLeft,
+      padding: EdgeInsets.only(left: 16.pw),
+      child: InkWell(
+          child: SvgPicture.asset(
+            'assets/images/backarrow.svg',
+            color: theme.secondaryColor,
+            width: 32.pw,
+            height: 32.pw,
+            fit: BoxFit.contain,
+          ),
+          borderRadius: BorderRadius.circular(32.pw),
+          onTap: () {
+            if (onBackHandle != null) {
+              onBackHandle();
+            } else {
+              Navigator.of(context).pop();
+            }
+          }),
     );
   }
 }
