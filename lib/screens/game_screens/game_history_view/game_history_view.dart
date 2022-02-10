@@ -66,7 +66,13 @@ class _GameHistoryViewState extends State<GameHistoryView>
   }
 
   Widget gameHistoryItem(BuildContext context, int index) {
-    final item = this._prevGames[index];
+    if (index == 0) {
+      return Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+        SizedBox(height: 20),
+        Center(child: Text('Tap a game to get details')),
+      ]);
+    }
+    final item = this._prevGames[index - 1];
     return GestureDetector(
         onTap: () {
           GameHistoryDetailModel model =
@@ -81,7 +87,7 @@ class _GameHistoryViewState extends State<GameHistoryView>
             },
           );
         },
-        child: GameHistoryItemNew(game: _prevGames[index]));
+        child: GameHistoryItemNew(game: item));
   }
 
   Widget body(AppTheme theme) {
@@ -93,13 +99,16 @@ class _GameHistoryViewState extends State<GameHistoryView>
         ),
       );
     }
+    if (_prevGames.length == 0) {
+      return Center(child: Text('No games played'));
+    }
 
     // build game history list
     return ListView.separated(
       physics: BouncingScrollPhysics(),
       shrinkWrap: true,
       itemBuilder: gameHistoryItem,
-      itemCount: _prevGames.length,
+      itemCount: _prevGames.length + 1,
       separatorBuilder: (_, __) => const SizedBox(height: 10.0),
     );
   }

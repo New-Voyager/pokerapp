@@ -762,7 +762,13 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
         Expanded(
             flex: 4,
             child: SwitchWidget2(
-                label: '', value: _data.isAgent, onChange: (val) async {})),
+                label: '',
+                value: _data.canViewAgentReport,
+                onChange: (val) async {
+                  await ClubInteriorService.setCanViewAgentReport(
+                      widget.club.clubCode, _data.playerId, val);
+                  _data.canViewAgentReport = val;
+                })),
       ],
     );
   }

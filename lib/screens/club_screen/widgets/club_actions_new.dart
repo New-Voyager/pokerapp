@@ -225,9 +225,9 @@ class ClubActionsNew extends StatelessWidget {
     //   ),
     // ));
 
-    // if (_clubHomePageModel.isAgent) {
-    buttons.add(getAgentsPageWidget(theme));
-    // }
+    if (_clubHomePageModel.isAgent) {
+      buttons.add(getAgentsPageWidget(theme));
+    }
 
     List<Widget> rows = [];
     List<Widget> rowChildren = [];

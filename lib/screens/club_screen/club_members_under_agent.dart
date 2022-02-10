@@ -53,7 +53,7 @@ class _ClubMembersUnderAgentState extends State<ClubMembersUnderAgent>
   bool playersEditMode = false;
   TextEditingController searchTextController = TextEditingController();
 
-  bool allowToViewReport = true;
+  bool allowToViewReport = false;
 
   void initialize() async {
     final clubMembers =
@@ -63,6 +63,14 @@ class _ClubMembersUnderAgentState extends State<ClubMembersUnderAgent>
       if (member.playerId == widget.member.playerId) {
         agent = member;
         break;
+      }
+    }
+
+    if (agent.isOwner) {
+      allowToViewReport = true;
+    } else {
+      if (agent.canViewAgentReport) {
+        allowToViewReport = true;
       }
     }
 

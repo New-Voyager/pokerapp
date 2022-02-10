@@ -274,7 +274,7 @@ class CircleImageButton extends StatelessWidget {
     // );
 
     return OutlineGradientButton(
-        child: SizedBox(width: 40, height: 40, child: Center(child: image)),
+        child: SizedBox(width: 32, height: 32, child: Center(child: image)),
         gradient: LinearGradient(
           colors: [
             theme.accentColorWithLight(0.2),

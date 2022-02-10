@@ -59,12 +59,21 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew>
     routeObserver.subscribe(this, ModalRoute.of(context));
   }
 
+  @override
+  void setState(Function fn) {
+    if (mounted) {
+      super.setState(fn);
+    }
+  }
+
   void listener() {
     if (!mounted) return;
 
     final state = context.read<ClubsUpdateState>();
     if (state.updatedClubCode == widget.clubCode) {
-      setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     }
   }
 
