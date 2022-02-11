@@ -22,6 +22,7 @@ import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/animating_widgets/my_last_action_animating_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/center_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/status_options_buttons.dart';
+import 'package:pokerapp/screens/game_play_screen/widgets/help_text.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/game_play/graphql/seat_change_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
@@ -564,6 +565,20 @@ class _FooterViewState extends State<FooterView>
 
       /* my last action */
       children.add(_buildMyLastActionWidget(context));
+      children.add(
+        Align(
+            alignment: Alignment.topCenter,
+            child: HelpText(
+              show: appService.appSettings.showBetTip,
+              text:
+                  'Tap the cards to flip or \nUse finger gesture to peek the cards',
+              theme: theme,
+              onTap: () {
+                // store this information, and don't show this again
+                appService.appSettings.showBetTip = false;
+              },
+            )),
+      );
     }
 
     final bool isGamePausedOrWaiting = gameState.gameInfo.status ==
