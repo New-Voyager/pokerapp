@@ -4,8 +4,10 @@ import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:provider/provider.dart';
 
+import 'buttons.dart';
+
 abstract class GameScreenCustomizationDialog {
-  Future<CustomizationAsset> show(
+  static Future<CustomizationAsset> show(
     BuildContext context, {
     CustomizationAsset currentSelection,
   }) {
@@ -50,10 +52,14 @@ class CustomizationAsset extends ChangeNotifier {
 class _AssetWidget extends StatelessWidget {
   final String asset;
   final bool isSelected;
+  final bool isWide;
+  final ValueChanged<String> onChanged;
 
   const _AssetWidget({
     @required this.asset,
     this.isSelected = false,
+    this.isWide = false,
+    this.onChanged,
     Key key,
   }) : super(key: key);
 
@@ -61,12 +67,20 @@ class _AssetWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = context.read<AppTheme>();
 
-    return Container(
-      decoration: AppDecorators.tileDecoration(theme),
-      child: ClipRRect(
+    return InkWell(
+      onTap: () => onChanged?.call(asset),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 250),
+        margin: const EdgeInsets.symmetric(horizontal: 4.0),
+        decoration: isSelected
+            ? AppDecorators.accentBorderDecoration(theme)
+            : AppDecorators.accentNoBorderDecoration(theme),
+        height: 100.0,
+        width: isWide ? 200.0 : 100.0,
+        padding: const EdgeInsets.all(8.0),
         child: Image.asset(
           asset,
-          fit: BoxFit.cover,
+          fit: BoxFit.contain,
         ),
       ),
     );
@@ -77,11 +91,15 @@ class _CustomizationSelectionWidget extends StatelessWidget {
   final String heading;
   final String currentSelected;
   final List<String> assets;
+  final ValueChanged<String> onChanged;
+  final bool isWide;
 
   _CustomizationSelectionWidget({
     @required this.heading,
     @required this.currentSelected,
     @required this.assets,
+    @required this.onChanged,
+    this.isWide = false,
   });
 
   @override
@@ -91,14 +109,20 @@ class _CustomizationSelectionWidget extends StatelessWidget {
         // heading
         Text(heading),
 
+        // sep
+        const SizedBox(height: 8.0),
+
         // show selectables
         SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
           scrollDirection: Axis.horizontal,
           child: Row(
             children: assets
                 .map<Widget>((asset) => _AssetWidget(
                       asset: asset,
                       isSelected: currentSelected == asset,
+                      onChanged: onChanged,
+                      isWide: isWide,
                     ))
                 .toList(),
           ),
@@ -116,10 +140,26 @@ class _CustomizationWidget extends StatelessWidget {
     this.currentSelection,
   }) : super(key: key);
 
+  void _onClose(BuildContext context) {
+    Navigator.pop(context);
+  }
+
+  void _onConfirm(BuildContext context) {
+    Navigator.pop(context, currentSelection);
+  }
+
   @override
   Widget build(BuildContext context) {
+    final theme = context.read<AppTheme>();
+
     return Dialog(
-      child: AnimatedBuilder(
+      child: Container(
+        padding: const EdgeInsets.all(12.0),
+        decoration: AppDecorators.bgRadialGradient(theme).copyWith(
+          border: Border.all(color: theme.accentColor, width: 1),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: AnimatedBuilder(
           animation: currentSelection,
           builder: (_, __) {
             return Column(
@@ -128,8 +168,9 @@ class _CustomizationWidget extends StatelessWidget {
                 // heading
                 Text(
                   'Game Screen Customization',
+                  textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: Colors.black,
+                    color: Colors.white70,
                     fontSize: 24.0,
                     fontWeight: FontWeight.w800,
                   ),
@@ -143,44 +184,62 @@ class _CustomizationWidget extends StatelessWidget {
                   heading: 'Backdrop',
                   currentSelected: currentSelection.backdrop,
                   assets: AppAssets.backdrops,
+                  onChanged: (String backdrop) {
+                    currentSelection.backdrop = backdrop;
+                  },
                 ),
 
                 // sep
-                const SizedBox(height: 15),
+                const SizedBox(height: 10),
 
                 // table
                 _CustomizationSelectionWidget(
                   heading: 'Table',
                   currentSelected: currentSelection.table,
                   assets: AppAssets.tables,
+                  onChanged: (String table) {
+                    currentSelection.table = table;
+                  },
+                  isWide: true,
                 ),
 
                 // sep
-                const SizedBox(height: 15),
+                const SizedBox(height: 10),
 
                 // card back
                 _CustomizationSelectionWidget(
                   heading: 'Card Back',
                   currentSelected: currentSelection.cardBack,
                   assets: AppAssets.cards,
+                  onChanged: (String cardBack) {
+                    currentSelection.cardBack = cardBack;
+                  },
                 ),
+
+                // sep
+                const SizedBox(height: 20),
 
                 // close & confirm buttons
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    TextButton(
-                      onPressed: () {},
-                      child: Text('Close'),
+                    RoundRectButton(
+                      onTap: () => _onClose(context),
+                      text: 'Close',
+                      theme: theme,
                     ),
-                    TextButton(
-                      onPressed: () {},
-                      child: Text('Confirm'),
+                    RoundRectButton(
+                      onTap: () => _onConfirm(context),
+                      text: 'Confirm',
+                      theme: theme,
                     ),
                   ],
                 ),
               ],
             );
-          }),
+          },
+        ),
+      ),
     );
   }
 }
