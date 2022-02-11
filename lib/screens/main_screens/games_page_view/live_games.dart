@@ -207,8 +207,6 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
   }
 
   Future<void> hostGame() async {
-    GameScreenCustomizationDialog.show(context);
-    return;
     // if the player does not have enough coins
     // don't host the game
     if (AppConfig.availableCoins < 10) {
