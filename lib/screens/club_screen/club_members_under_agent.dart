@@ -66,7 +66,7 @@ class _ClubMembersUnderAgentState extends State<ClubMembersUnderAgent>
       }
     }
 
-    if (agent.isOwner) {
+    if (widget.isOwner) {
       allowToViewReport = true;
     } else {
       if (agent.canViewAgentReport) {

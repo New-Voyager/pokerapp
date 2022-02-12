@@ -823,7 +823,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
           arguments: {
             'clubCode': widget.clubCode,
             'playerId': widget.playerId,
-            'isOwner': true,
+            'isOwner': isClubOwner,
             'member': widget.member,
           },
         );

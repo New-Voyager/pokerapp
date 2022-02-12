@@ -151,7 +151,7 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
                         arguments: {
                           "clubCode": data.clubCode,
                           "playerId": data.playerId,
-                          "currentOwner": true,
+                          "currentOwner": widget.viewAsOwner,
                           "club": widget.club,
                           "member": data,
                           "allMembers": widget.allMembers,

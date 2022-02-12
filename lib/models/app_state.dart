@@ -95,6 +95,10 @@ class AppState extends ChangeNotifier {
     clubUpdateState.notify();
   }
 
+  void clubUpdated() {
+    clubUpdateState.notify();
+  }
+
   set currentFlavor(Flavor flavor) {
     _currentFlavor = flavor;
   }

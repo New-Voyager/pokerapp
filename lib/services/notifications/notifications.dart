@@ -146,6 +146,9 @@ class NotificationHandler {
                 subTitleText: text,
                 duration: Duration(seconds: 5),
               );
+              Future.delayed(Duration(seconds: 1), () {
+                appState.cacheService.getMembers(clubCode, update: true);
+              });
             }
           } else if (changed == 'PROMOTED') {
             String playerUuid = json['playerUuid'];
@@ -155,6 +158,12 @@ class NotificationHandler {
                 subTitleText: 'You are promoted as manager at club ${clubCode}',
                 duration: Duration(seconds: 5),
               );
+              Future.delayed(Duration(seconds: 1), () async {
+                await appState.cacheService.getMembers(clubCode, update: true);
+                await appState.cacheService.getClubHomePageData(clubCode);
+                await appState.cacheService.getMyClubs(update: true);
+                appState.clubUpdated();
+              });
             }
           } else if (changed == 'NEW_MEMBER') {
             String playerUuid = json['playerUuid'];
@@ -164,7 +173,16 @@ class NotificationHandler {
                 subTitleText: 'You are approved to join ${clubCode}',
                 duration: Duration(seconds: 5),
               );
+              Future.delayed(Duration(seconds: 1), () async {
+                await appState.cacheService.getClubHomePageData(clubCode);
+                await appState.cacheService.getMyClubs(update: true);
+                appState.clubUpdated();
+              });
             }
+            Future.delayed(Duration(seconds: 1), () async {
+              await appState.cacheService.getMembers(clubCode, update: true);
+              appState.clubUpdated();
+            });
           } else if (changed == 'BUYIN_REQUEST') {
             // buyin request
             String clubCode = json['clubCode'];
@@ -177,6 +195,15 @@ class NotificationHandler {
                 appState.isClubManager(clubCode)) {
               appState.refreshPendingApprovals();
             }
+          } else if (changed == 'MEMBER_UPDATED') {
+            String playerUuid = json['playerUuid'];
+            Future.delayed(Duration(seconds: 1), () async {
+              await appState.cacheService.getClubHomePageData(clubCode);
+              await appState.cacheService.getMyClubs(update: true);
+              await appState.cacheService
+                  .getMembers(clubCode, updatePlayerUuid: playerUuid);
+              appState.clubUpdated();
+            });
           }
         }
       } catch (err) {

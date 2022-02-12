@@ -18,6 +18,7 @@ import 'package:pokerapp/services/app/club_interior_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/date_range_picker.dart';
 import 'package:pokerapp/utils/formatter.dart';
+import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/radio_list_widget.dart';
 import 'package:pokerapp/widgets/texts.dart';
 import 'package:share/share.dart';
@@ -133,7 +134,8 @@ class _ClubMemberActivitiesScreenState
 
   void initDates() {
     var now = DateTime.now();
-    var startDate = now.subtract(Duration(days: now.weekday));
+    var startDate = findFirstDateOfTheWeek(
+        now); //now.subtract(Duration(days: now.weekday));
     startDate =
         DateTime(startDate.year, startDate.month, startDate.day, 0, 0, 0);
     var endDate = DateTime(now.year, now.month, now.day, 0, 0, 0);
@@ -350,31 +352,29 @@ class _ClubMemberActivitiesScreenState
       onSelect: (int value) async {
         _selectedDateRangeIndex = value;
         if (value == 0) {
-          var startDate = now.subtract(Duration(days: now.weekday - 1));
+          var startDate = findFirstDateOfTheWeek(now);
           startDate =
               DateTime(startDate.year, startDate.month, startDate.day, 0, 0, 0);
           var endDate = DateTime(now.year, now.month, now.day, 0, 0, 0);
           _dateTimeRange = DateTimeRange(start: startDate, end: endDate);
           setState(() {});
         } else if (value == 1) {
-          var startDate = now
-              .subtract(Duration(days: now.weekday))
-              .subtract(Duration(days: 7));
+          var startDate =
+              findFirstDateOfTheWeek(now).subtract(Duration(days: 7));
           startDate =
               DateTime(startDate.year, startDate.month, startDate.day, 0, 0, 0);
-          var endDate = startDate.add(Duration(days: 7));
+          var endDate = startDate.add(Duration(days: 6));
           _dateTimeRange = DateTimeRange(start: startDate, end: endDate);
           setState(() {});
         } else if (value == 2) {
           var startDate = now.subtract(Duration(days: now.day - 1));
-          startDate =
-              DateTime(startDate.year, startDate.month, startDate.day, 0, 0, 0);
+          startDate = DateTime(startDate.year, startDate.month, 1, 0, 0, 0);
           var endDate = startDate.add(Duration(days: now.day - 1));
           _dateTimeRange = DateTimeRange(start: startDate, end: endDate);
           setState(() {});
         } else if (value == 3) {
-          var startDate = DateTime(now.year, now.month - 2, 1, 0, 0, 0);
-          var endDate = DateTime(now.year, now.month - 1, 0, 0, 0, 0);
+          var startDate = DateTime(now.year, now.month - 1, 1, 0, 0, 0);
+          var endDate = DateTime(now.year, now.month, 0, 0, 0, 0);
           _dateTimeRange = DateTimeRange(start: startDate, end: endDate);
           setState(() {});
         } else if (value == 4) {

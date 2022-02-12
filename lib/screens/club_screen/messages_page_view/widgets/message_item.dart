@@ -4,12 +4,12 @@ import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/auth_model.dart';
 import 'package:pokerapp/models/club_message_model.dart';
 import 'package:pokerapp/models/handlog_model.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
-import 'package:pokerapp/proto/enums.pbserver.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/chat_screen/utils.dart';
@@ -185,18 +185,7 @@ class MessageItem extends StatelessWidget {
     double sb = double.parse(newGameData['sb'].toString()) / 100;
     double bb = double.parse(newGameData['bb'].toString()) / 100;
 
-    String gameStr = 'Unknown';
-    if (gameTypeInt == GameType.HOLDEM.value) {
-      gameStr = 'No Limit Holdem';
-    } else if (gameTypeInt == GameType.FIVE_CARD_PLO.value) {
-      gameStr = '5-Card PLO';
-    } else if (gameTypeInt == GameType.PLO.value) {
-      gameStr = 'PLO';
-    } else if (gameTypeInt == GameType.PLO_HILO.value) {
-      gameStr = 'PLO Hi-Lo';
-    } else if (gameTypeInt == GameType.FIVE_CARD_PLO_HILO.value) {
-      gameStr = '5-Card Hi-Lo PLO';
-    }
+    String gameStr = gameTypeStr2(GameType.values[gameTypeInt]);
 
     Color tileColor = theme.primaryColorWithDark(0.9);
     String text = gameStr +

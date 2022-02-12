@@ -7,9 +7,11 @@ import 'package:http/http.dart' as http;
 import 'package:pokerapp/main_helper.dart';
 
 import 'package:pokerapp/models/auth_model.dart';
+import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/screen_attributes.dart';
 import 'package:pokerapp/models/user_update_input.dart';
 import 'package:pokerapp/resources/app_config.dart';
 import 'package:pokerapp/resources/app_constants.dart';
+import 'package:pokerapp/utils/utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
@@ -136,10 +138,17 @@ class AuthService {
     Map<String, String> header = {
       'Content-type': 'application/json',
     };
+    final attribs = ScreenAttributes.getScreenAttribsObject(
+        DeviceInfo.model, Screen.diagonalInches, Screen.size);
 
     Map<String, String> payload = {
       "device-id": deviceId,
       "screen-name": screenName,
+      "device-model": DeviceInfo.model,
+      "device-os": DeviceInfo.version,
+      "attribs-used": attribs?.name,
+      "physcial-dimension": Screen.physicalSize.toString(),
+      "screen-dimension": Screen.size.toString(),
     };
     if (recoveryEmail != null) {
       payload["email"] = recoveryEmail;

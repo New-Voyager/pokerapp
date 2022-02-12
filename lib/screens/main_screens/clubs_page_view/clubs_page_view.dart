@@ -228,14 +228,16 @@ class _ClubsPageViewState extends State<ClubsPageView>
   Timer _refreshTimer;
 
   void listener() {
-    _fetchClubs(withLoading: false);
-    final natsClient = Provider.of<Nats>(context, listen: false);
-    for (final club in _clubs) {
-      log('club: ${club.clubName} status: ${club.memberStatus}');
-      if (!appState.mockScreens &&
-          natsClient != null &&
-          natsClient.clientSub != null) {
-        natsClient.subscribeClubMessages(club.clubCode);
+    if (mounted) {
+      _fetchClubs(withLoading: false);
+      final natsClient = Provider.of<Nats>(context, listen: false);
+      for (final club in _clubs) {
+        log('club: ${club.clubName} status: ${club.memberStatus}');
+        if (!appState.mockScreens &&
+            natsClient != null &&
+            natsClient.clientSub != null) {
+          natsClient.subscribeClubMessages(club.clubCode);
+        }
       }
     }
   }

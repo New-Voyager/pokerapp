@@ -212,14 +212,14 @@ class CircleImageButton extends StatelessWidget {
     } else if (svgAsset != null) {
       image = SvgPicture.asset(
         svgAsset,
-        width: imageWidth ?? 24,
-        height: imageHeight ?? 24,
+        width: imageWidth ?? 18,
+        height: imageHeight ?? 18,
         color: buttonColor,
       );
     } else if (icon != null) {
       image = Icon(
         icon,
-        size: imageWidth ?? 24,
+        size: imageWidth ?? 18,
         color: buttonColor,
       );
     }
@@ -232,46 +232,6 @@ class CircleImageButton extends StatelessWidget {
     } else if (theme.circleImageButtonTextStyle != null) {
       textStyle = textStyle.merge(theme.circleImageButtonTextStyle);
     }
-
-    // return InkWell(
-    //   focusNode: focusNode,
-    //   onTap: () {
-    //     // play sound
-    //     this.onTap();
-    //   },
-    //   borderRadius: BorderRadius.circular(20),
-    //   child: Column(
-    //     mainAxisSize: MainAxisSize.min,
-    //     children: [
-    //       Container(
-    //         width: width ?? 40,
-    //         height: height ?? 40,
-    //         padding: EdgeInsets.all(2.pw),
-    //         decoration: BoxDecoration(
-    //           shape: BoxShape.circle,
-    //           color: buttonBackGround,
-    //           // boxShadow: shadow,
-    //           border: Border.all(
-    //             color: buttonBorder,
-    //             width: 2.0,
-    //           ),
-    //           //borderRadius: BorderRadius.circular(20.pw),
-    //         ),
-    //         child: Center(child: image),
-    //       ),
-    //       (caption != null)
-    //           ? Padding(
-    //               padding: EdgeInsets.only(top: 8.pw),
-    //               child: Text(
-    //                 caption,
-    //                 style: textStyle,
-    //                 textAlign: TextAlign.center,
-    //               ),
-    //             )
-    //           : Container(),
-    //     ],
-    //   ),
-    // );
 
     return OutlineGradientButton(
         child: SizedBox(width: 32, height: 32, child: Center(child: image)),
@@ -367,14 +327,14 @@ class DummyCircleImageButton extends StatelessWidget {
     } else if (svgAsset != null) {
       image = SvgPicture.asset(
         svgAsset,
-        width: imageWidth ?? 24,
-        height: imageHeight ?? 24,
+        width: imageWidth ?? 18,
+        height: imageHeight ?? 18,
         color: buttonColor,
       );
     } else if (icon != null) {
       image = Icon(
         icon,
-        size: imageWidth ?? 24,
+        size: imageWidth ?? 18,
         color: buttonColor,
       );
     }
@@ -387,7 +347,7 @@ class DummyCircleImageButton extends StatelessWidget {
     }
 
     return OutlineGradientButton(
-      child: SizedBox(width: 40, height: 40, child: Center(child: image)),
+      child: SizedBox(width: 32, height: 32, child: Center(child: image)),
       gradient: LinearGradient(
         colors: [theme.accentColor, theme.accentColorWithDark(0.25)],
         begin: Alignment.topLeft,
