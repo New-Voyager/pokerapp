@@ -1,3 +1,4 @@
+import 'package:pokerapp/enums/approval_type.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/rewards_model.dart';
 
@@ -14,10 +15,18 @@ class NewGameConstants {
 
   static const List<int> ACTION_TIMES = [10, 15, 20, 30, 45, 60];
   static const List<int> BUYIN_WAIT_TIMES = [60, 90, 120, 240, 300];
-  static const List<int> BOMB_POT_INTERVALS = [15, 30, 45, 60, 90, 120];
-  static const List<int> BOMB_POT_BET_SIZE = [2, 3, 4, 5, 10, 15, 20];
+  static const List<int> BOMB_POT_INTERVALS = [15, 30, 45, 60];
+  static const List<int> BOMB_POT_BET_SIZE = [2, 3, 4, 5, 10];
   static const List<int> BREAK_WAIT_TIMES = [3, 5, 10, 15, 30];
-
+  static const List<String> BOMB_POT_GAME_TYPES = [
+    'NLH',
+    'PLO',
+    'Hi-Lo',
+    '5 Card PLO',
+    '5 Card\nHi-Lo',
+    '6 Card PLO',
+    '6 Card\nHi-Lo'
+  ];
   static const List<String> BUYIN_LIMIT_CHOICES = [
     'No Limit',
     'Credit Limit'
@@ -84,7 +93,7 @@ class NewGameModel {
   bool runItTwice = true;
   bool seatChangeAllowed = true;
   bool waitList = true;
-  bool botGame = true;
+  bool botGame = false;
   bool highHandTracked = false;
   int buyInWaitTime;
   Rewards rewards;
@@ -116,6 +125,9 @@ class NewGameModel {
   int bombPotInterval = 30;
   int bombPotBet = 5; // in big blinds
   GameType bombPotGameType = GameType.UNKNOWN;
+  int bombPotHandInterval = 11;
+  BombPotIntervalType bombPotIntervalType = BombPotIntervalType.TIME_INTERVAL;
+
   List<GameType> roeGames = [];
   List<GameType> dealerChoiceGames = [];
 
@@ -210,6 +222,14 @@ class NewGameModel {
     bombPotBet = json['bombPotBet'] ?? 5;
     doubleBoardBombPot = json['doubleBoardBombPot'] ?? false;
     bombPotInterval = json['bombPotInterval'] ?? 30;
+    bombPotHandInterval = json['bombPotHandInterval'] ?? 11;
+    bombPotIntervalType =
+        BombPotIntervalTypeSerialization.fromJson(json['bombPotIntervalType']);
+    bombPotGameType = GameType.UNKNOWN;
+    if (json['bombPotGameType'] != null) {
+      bombPotGameType = GameTypeSerialization.fromJson(json['bombPotGameType']);
+    }
+
     seatChangeAllowed = json['seatChangeAllowed'] ?? false;
     breakTime = json['breakLength'] ?? 5;
     breakAllowed = json['breakAllowed'] ?? true;
@@ -276,7 +296,10 @@ class NewGameModel {
     } else if (this.bombPotGameType == GameType.ROE) {
       this.bombPotGameType = this.roeGames[0];
     }
-    //  data['bombPotGameType'] = this.bombPotGameType.toJson();
+    data['bombPotGameType'] = this.bombPotGameType.toJson();
+    data['bombPotHandInterval'] = this.bombPotHandInterval;
+    data['bombPotIntervalType'] = this.bombPotIntervalType.toJson();
+
     data['seatChangeAllowed'] = this.seatChangeAllowed ?? false;
     data['breakAllowed'] = this.breakAllowed ?? true;
     data['showResult'] = this.showResult ?? true;

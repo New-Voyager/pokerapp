@@ -304,22 +304,6 @@ class Routes {
         bool isCurrentOwner = args["currentOwner"] as bool;
         final ClubMemberModel member = args["member"];
         final allMembers = args["allMembers"];
-        // return _getPageRoute(
-        //   routeName: settings.name,
-        //   viewToShow: ChangeNotifierProvider<ClubMemberModel>(
-        //     create: (_) => member,
-        //     builder: (BuildContext context, _) => Consumer<ClubMemberModel>(
-        //       builder: (_, ClubMemberModel data, __) => ClubMembersDetailsView(
-        //         club,
-        //         clubCode,
-        //         playerId,
-        //         isCurrentOwner,
-        //         member,
-        //         allMembers: allMembers,
-        //       ),
-        //     ),
-        //   ),
-        // );
         return _getPageRoute(
           routeName: settings.name,
           viewToShow: ClubMembersDetailsView(
@@ -334,9 +318,13 @@ class Routes {
       case club_member_players_under_view:
         Map<String, dynamic> args = settings.arguments as Map<String, dynamic>;
         final member = args["member"];
+        final isOwner = args["isOwner"];
         return _getPageRoute(
           routeName: settings.name,
-          viewToShow: ClubMembersUnderAgent(member),
+          viewToShow: ClubMembersUnderAgent(
+            member,
+            isOwner: isOwner,
+          ),
         );
 
       case club_member_credit_detail_view:

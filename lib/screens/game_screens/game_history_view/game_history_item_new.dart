@@ -173,6 +173,28 @@ class GameHistoryItemNew extends StatelessWidget {
                               ),
                             ],
                           ),
+                          Visibility(
+                            visible: game.dealerChoiceGames.length > 0,
+                            child: Row(
+                              children: [
+                                Expanded(
+                                    flex: 2,
+                                    child: Text(
+                                      "Games",
+                                      style: AppDecorators.getSubtitle1Style(
+                                          theme: theme),
+                                    )),
+                                Expanded(
+                                  flex: 3,
+                                  child: Text(
+                                    game.dealerChoiceGameStr,
+                                    style: AppDecorators.getSubtitle2Style(
+                                        theme: theme),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
                         ],
                       ),
                     ),

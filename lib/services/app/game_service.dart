@@ -428,6 +428,8 @@ class GameService {
           stack
           buyIn
           balance
+          dealerChoiceGames
+          roeGames
         }
       }
     """;

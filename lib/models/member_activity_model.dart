@@ -63,7 +63,7 @@ class MemberActivity {
         double.parse((json['tipsBackAmount'] ?? 0).toString());
     if (activity.tips > 0 && activity.tipsBack > 0) {
       activity.tipsBackAmount =
-          (((activity.tips * activity.tipsBack) / 100.0).floor()).toDouble();
+          (((activity.tips * activity.tipsBack) / 100.0)).toDouble();
     }
     activity.profit = double.parse((json['profit'] ?? 0).toString());
     activity.buyin = double.parse((json['buyIn'] ?? 0).toString());
@@ -165,6 +165,8 @@ headers.add('Name');
         a.tips,
         a.tipsBack,
         a.tipsBackAmount,
+        a.gamesPlayed,
+        a.handsPlayed,
         a.buyin,
         a.profit
       ]);

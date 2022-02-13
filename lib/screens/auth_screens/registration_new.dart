@@ -23,6 +23,7 @@ import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
+import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/appname_logo.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/textfields.dart';
@@ -341,6 +342,8 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
       );
     }
     final appTheme = AppTheme.getTheme(context);
+    Screen.init(context);
+
     return Container(
       decoration: AppDecorators.bgImage(_appTheme),
       child: SafeArea(
@@ -416,33 +419,33 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
                         // // sep
                         // AppDimensionsNew.getVerticalSizedBox(16),
 
-                        // // Recover Email
-                        // _buildTextFormField(
-                        //   appTheme: appTheme,
-                        //   labelText: _appScreenText['recoveryEmail'],
-                        //   keyboardType: TextInputType.emailAddress,
-                        //   controller: _emailCtrl,
-                        //   validator: (value) {
-                        //     if (value.length > 50) {
-                        //       return _appScreenText['invalidEmail'];
-                        //     } else if (value.isNotEmpty) {
-                        //       // RegExp for email validation
-                        //       if (!RegExp(
-                        //               r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
-                        //           .hasMatch(value)) {
-                        //         return _appScreenText['invalidEmail'];
-                        //       }
-                        //     }
-                        //     return null;
-                        //   },
-                        //   hintText: _appScreenText['optional'],
-                        //   onInfoIconPress: () {
-                        //     toast(
-                        //       _appScreenText['recoveryEmailHint'],
-                        //       duration: Duration(seconds: 5),
-                        //     );
-                        //   },
-                        // ),
+                        // Recover Email
+                        _buildTextFormField(
+                          appTheme: appTheme,
+                          labelText: _appScreenText['recoveryEmail'],
+                          keyboardType: TextInputType.emailAddress,
+                          controller: _emailCtrl,
+                          validator: (value) {
+                            if (value.length > 50) {
+                              return _appScreenText['invalidEmail'];
+                            } else if (value.isNotEmpty) {
+                              // RegExp for email validation
+                              if (!RegExp(
+                                      r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
+                                  .hasMatch(value)) {
+                                return _appScreenText['invalidEmail'];
+                              }
+                            }
+                            return null;
+                          },
+                          hintText: _appScreenText['optional'],
+                          onInfoIconPress: () {
+                            toast(
+                              _appScreenText['recoveryEmailHint'],
+                              duration: Duration(seconds: 5),
+                            );
+                          },
+                        ),
 
                         // sep
                         AppDimensionsNew.getVerticalSizedBox(16),
@@ -532,6 +535,7 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
 
       ConnectionDialog.show(
           context: context, loadingText: _appScreenText['registering']);
+      //deviceId = 'b75b78a1032fd10f';
       final resp = await AuthService.signup(
         deviceId: deviceId,
         screenName: _screenNameCtrl.text.trim(),

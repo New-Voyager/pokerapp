@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:flutter_switch/flutter_switch.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
-import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/icon_with_badge.dart';
 import 'package:pokerapp/services/audio/audio_service.dart';
 import 'package:pokerapp/widgets/texts.dart';
-import 'package:provider/provider.dart';
 
 class IconWidgetTile extends StatelessWidget {
   final String svgIconPath;

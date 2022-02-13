@@ -624,6 +624,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
           child: GameChat(
             scrollController: _gcsController,
             chatService: _gameContextObj.gameComService.gameMessaging,
+            gameState: _gameState,
           ),
         ),
       ),
@@ -979,31 +980,32 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   }
 
   Widget _buildHeaderView(AppTheme theme) {
-    return _gameState.customizationMode
-        ? Align(
-            alignment: Alignment.centerLeft,
-            child: InkWell(
-              borderRadius: BorderRadius.circular(32.pw),
-              onTap: () => Navigator.of(context).pop(),
-              child: Container(
-                decoration: AppDecorators.bgRadialGradient(theme),
-                child: SvgPicture.asset(
-                  'assets/images/backarrow.svg',
-                  color: AppColorsNew.newGreenButtonColor,
-                  width: 32.pw,
-                  height: 32.ph,
-                  fit: BoxFit.cover,
-                ),
+    if (_gameState.customizationMode) {
+      return Align(
+        alignment: Alignment.centerLeft,
+        child: InkWell(
+            borderRadius: BorderRadius.circular(32.pw),
+            onTap: () => Navigator.of(context).pop(),
+            child: Container(
+              decoration: AppDecorators.bgRadialGradient(theme),
+              child: SvgPicture.asset(
+                'assets/images/backarrow.svg',
+                color: AppColorsNew.newGreenButtonColor,
+                width: 32.pw,
+                height: 32.ph,
+                fit: BoxFit.cover,
               ),
-            ),
-          )
-        : Container(
-            width: Screen.width,
-            child: HeaderView(
-              gameState: _gameState,
-              scaffoldKey: _scaffoldKey,
-            ),
-          );
+            )),
+      );
+    } else {
+      return Container(
+        width: Screen.width,
+        child: HeaderView(
+          gameState: _gameState,
+          scaffoldKey: _scaffoldKey,
+        ),
+      );
+    }
   }
 
   Widget _buildMainBoardView(AppTheme theme) {

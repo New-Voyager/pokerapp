@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_type.dart';
+import 'package:pokerapp/main_helper.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
@@ -48,6 +49,11 @@ class Actions1Widget extends StatelessWidget {
   void onReload(BuildContext context) async {
     final me = gameState.me;
     double reloadMax = gameState.gameInfo.buyInMax - me.stack;
+    if (reloadMax <= 0) {
+      showErrorDialog(navigatorKey.currentContext, 'Error',
+          'Stack is more than max buyin. You can not reload');
+      return;
+    }
     int reloadMin = 1;
     /* use numeric keyboard to get reload value */
     double value = await NumericKeyboard2.show(
@@ -153,7 +159,7 @@ class Actions1Widget extends StatelessWidget {
         ),
         IconWidgetTile(
           svgIconPath: 'assets/images/game/break.svg',
-          title: text['break'],
+          title: 'Sit Out',
           onPressed: () async {
             Navigator.pop(context);
             this.onBreak();

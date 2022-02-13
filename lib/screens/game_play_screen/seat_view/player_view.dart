@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:lottie/lottie.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
@@ -373,6 +374,11 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
       showFirework = true;
     }
 
+    bool showWinnerLottie = false;
+    if (widget.seat.player != null && widget.seat.player.winner) {
+      showWinnerLottie = true;
+    }
+
     bool highlight = false;
     double scale = 1.0;
     if (widget.seat.player != null) {
@@ -513,6 +519,21 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
                   ),
                 ),
 
+                // !showWinnerLottie
+                //     ? Container()
+                //     : Lottie.asset('assets/animations/winner.json'),
+
+                Visibility(
+                    visible: showWinnerLottie,
+                    child: Transform.scale(
+                        scale: 2.5,
+                        child: SizedBox.square(
+                            dimension: 80,
+                            child: Lottie.asset(
+                              'assets/animations/winner.json',
+                              repeat: false,
+                            )))),
+
                 // player hole cards (tilted card on the bottom left)
                 PlayerCardsWidget(
                   boardAttributes,
@@ -557,8 +578,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
                             Icons.mic_off,
                             color: Colors.white70,
                           ),
-                        ),
-                      )
+                        ))
                     : SizedBox(),
                 widget.seat.player.showMicOn
                     ? Positioned(

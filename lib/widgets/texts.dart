@@ -71,14 +71,14 @@ class HeadingWidget extends StatelessWidget {
     final theme = AppTheme.getTheme(context);
     return Padding(
       padding: EdgeInsets.symmetric(
-        horizontal: 10.0.pw,
+        horizontal: 5.0.pw,
         vertical: 20.0.ph,
       ),
       child: Text(
         heading.toUpperCase(),
         textAlign: TextAlign.center,
         style: TextStyle(
-            fontSize: 16.0.dp,
+            fontSize: 12.0.dp,
             color: theme.supportingColor,
             fontWeight: FontWeight.w900,
             shadows: [

@@ -21,6 +21,7 @@ class ClubMemberModel extends ChangeNotifier {
   bool isManager;
   bool isMainOwner;
   bool isAgent;
+  bool canViewAgentReport;
   String playerId;
   double availableCredit;
   String _contactInfo;
@@ -39,6 +40,7 @@ class ClubMemberModel extends ChangeNotifier {
   String agentName;
   String agentUuid;
   int agentFeeBack;
+  String requestMessage;
 
   ClubMemberModel();
 
@@ -111,6 +113,7 @@ class ClubMemberModel extends ChangeNotifier {
     data.autoBuyInApproval = copyValue.autoBuyInApproval;
     data.isOwner = copyValue.isOwner;
     data.isManager = copyValue.isManager;
+    data.isAgent = copyValue.isAgent;
     data._rake = copyValue._rake;
     data._contactInfo = copyValue._contactInfo;
     data._notes = copyValue._notes;
@@ -120,10 +123,13 @@ class ClubMemberModel extends ChangeNotifier {
     data.agentUuid = copyValue.agentUuid;
     data.displayName = copyValue.displayName;
     data.agentFeeBack = copyValue.agentFeeBack;
+    data.requestMessage = copyValue.requestMessage;
+    data.canViewAgentReport = copyValue.canViewAgentReport;
     return data;
   }
 
-  ClubMemberModel.fromJson(var jsonData) {
+  ClubMemberModel.fromJson(String clubCode, var jsonData) {
+    this.clubCode = clubCode;
     this.name = jsonData['name'];
     this.joinedDate = DateTime.parse(jsonData['joinedDate']);
     this.status = _getPlayerStatus(jsonData['status']);
@@ -160,6 +166,9 @@ class ClubMemberModel extends ChangeNotifier {
     this.isAgent = false;
     if (jsonData['isAgent'] != null) {
       this.isAgent = jsonData['isAgent'];
+    }
+    if (jsonData['canViewAgentReport'] != null) {
+      this.canViewAgentReport = jsonData['canViewAgentReport'];
     }
     if (jsonData['rakePaid'] != null) {
       this._rake = double.parse(jsonData['rakePaid'].toString());
@@ -203,6 +212,11 @@ class ClubMemberModel extends ChangeNotifier {
     this.agentFeeBack = 0;
     if (jsonData['agentFeeBack'] != null) {
       this.agentFeeBack = int.parse(jsonData['agentFeeBack'].toString());
+    }
+
+    this.requestMessage = '';
+    if (jsonData['requestMessage'] != null) {
+      this.requestMessage = jsonData['requestMessage'].toString();
     }
     this.edited = false;
   }

@@ -38,6 +38,30 @@ class AppSettingsStore {
     _box.put('gameSettings.refresh', v);
   }
 
+  bool get showHoleCardTip {
+    bool ret = getSetting('gameSettings.showHoleCardTip');
+    if (ret == null) {
+      return true;
+    }
+    return ret;
+  }
+
+  set showHoleCardTip(bool v) {
+    _box.put('gameSettings.showHoleCardTip', v);
+  }
+
+  bool get showBetTip {
+    bool ret = getSetting('gameSettings.showBetTip');
+    if (ret == null) {
+      return true;
+    }
+    return ret;
+  }
+
+  set showBetTip(bool v) {
+    _box.put('gameSettings.showBetTip', v);
+  }
+
   // this flag is used for showing report info dialog one time in the game screen
   bool get showReportInfoDialog {
     bool ret = getSetting('gameSettings.reportInfo');

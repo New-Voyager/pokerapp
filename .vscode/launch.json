@@ -1,74 +1,74 @@
-{
-  // Use IntelliSense to learn about possible attributes.
-  // Hover to view descriptions of existing attributes.
-  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-  "version": "0.2.0",
-  "configurations": [
-    {
-      "name": "Dart: Attach to Process",
-      "type": "dart",
-      "request": "attach"
-    },
-    {
-      "name": "pokerapp",
-      "request": "launch",
-      "type": "dart",
-      "program": "lib/main.dart",
-      "args": [
-        "--flavor",
-        "dev"
-      ]
-    },
-    {
-      "name": "pokerapp-emulator",
-      "request": "launch",
-      "type": "dart",
-      "program": "lib/main.dart",
-      "deviceId": "emulator-5554",
-      "args": [
-        "--flavor",
-        "dev"
-      ]
-    },
-    {
-      "name": "pokerapp-motog",
-      "request": "launch",
-      "type": "dart",
-      "program": "lib/main.dart",
-      "deviceId": "ZY22CSMKCQ",
-      "args": [
-        "--flavor",
-        "dev"
-      ]
-    },    
-    {
-      "name": "pokerapp-prod",
-      "request": "launch",
-      "type": "dart",
-      "program": "lib/main.dart",
-      "args": [
-        "--flavor",
-        "prod"
-      ]
-    },    
-    {
-      "name": "pokerapp-ios",
-      "request": "launch",
-      "txype": "dart",
-      "program": "lib/main.dart",
-      "args": [
-      ]
-    },    
-    {
-      "name": "pokerapp-10inch-dev",
-      "request": "launch",
-      "type": "dart",
-      "deviceId": "HA18R0HZ",
-      "program": "lib/main.dart",
-      "args": [
-        "--flavor",
-        "dev"
-      ]
-    }    
-  ]
-}
+// {
+//   // Use IntelliSense to learn about possible attributes.
+//   // Hover to view descriptions of existing attributes.
+//   // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+//   "version": "0.2.0",
+//   "configurations": [
+//     {
+//       "name": "Dart: Attach to Process",
+//       "type": "dart",
+//       "request": "attach"
+//     },
+//     {
+//       "name": "pokerapp",
+//       "request": "launch",
+//       "type": "dart",
+//       "program": "lib/main.dart",
+//       "args": [
+//         "--flavor",
+//         "dev"
+//       ]
+//     },
+//     {
+//       "name": "pokerapp-emulator",
+//       "request": "launch",
+//       "type": "dart",
+//       "program": "lib/main.dart",
+//       "deviceId": "emulator-5554",
+//       "args": [
+//         "--flavor",
+//         "dev"
+//       ]
+//     },
+//     {
+//       "name": "pokerapp-motog",
+//       "request": "launch",
+//       "type": "dart",
+//       "program": "lib/main.dart",
+//       "deviceId": "ZY22CSMKCQ",
+//       "args": [
+//         "--flavor",
+//         "dev"
+//       ]
+//     },    
+//     {
+//       "name": "pokerapp-prod",
+//       "request": "launch",
+//       "type": "dart",
+//       "program": "lib/main.dart",
+//       "args": [
+//         "--flavor",
+//         "prod"
+//       ]
+//     },    
+//     {
+//       "name": "pokerapp-ios",
+//       "request": "launch",
+//       "txype": "dart",
+//       "program": "lib/main.dart",
+//       "args": [
+//       ]
+//     },    
+//     {
+//       "name": "pokerapp-10inch-dev",
+//       "request": "launch",
+//       "type": "dart",
+//       "deviceId": "HA18R0HZ",
+//       "program": "lib/main.dart",
+//       "args": [
+//         "--flavor",
+//         "dev"
+//       ]
+//     }    
+//   ]
+// }

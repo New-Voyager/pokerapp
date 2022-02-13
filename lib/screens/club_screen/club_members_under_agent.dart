@@ -13,7 +13,9 @@ import 'package:pokerapp/screens/club_screen/set_tips_back_dialog.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/club_interior_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
+import 'package:pokerapp/utils/date_range_picker.dart';
 import 'package:pokerapp/utils/formatter.dart';
+import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/radio_list_widget.dart';
 import 'package:pokerapp/widgets/switch.dart';
@@ -21,8 +23,10 @@ import 'package:pokerapp/widgets/texts.dart';
 
 class ClubMembersUnderAgent extends StatefulWidget {
   final ClubMemberModel member;
+  final isOwner;
 
-  ClubMembersUnderAgent(this.member, {Key key}) : super(key: key);
+  ClubMembersUnderAgent(this.member, {Key key, this.isOwner = false})
+      : super(key: key);
 
   @override
   State<ClubMembersUnderAgent> createState() => _ClubMembersUnderAgentState();
@@ -50,6 +54,8 @@ class _ClubMembersUnderAgentState extends State<ClubMembersUnderAgent>
   bool playersEditMode = false;
   TextEditingController searchTextController = TextEditingController();
 
+  bool allowToViewReport = false;
+
   void initialize() async {
     final clubMembers =
         await appState.cacheService.getMembers(widget.member.clubCode);
@@ -58,6 +64,14 @@ class _ClubMembersUnderAgentState extends State<ClubMembersUnderAgent>
       if (member.playerId == widget.member.playerId) {
         agent = member;
         break;
+      }
+    }
+
+    if (widget.isOwner) {
+      allowToViewReport = true;
+    } else {
+      if (agent.canViewAgentReport) {
+        allowToViewReport = true;
       }
     }
 
@@ -74,7 +88,8 @@ class _ClubMembersUnderAgentState extends State<ClubMembersUnderAgent>
     }
 
     theme = AppTheme.getTheme(context);
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController =
+        TabController(length: allowToViewReport ? 2 : 1, vsync: this);
     _tabController.addListener(() {
       setState(() {
         exitPlayersEditMode();
@@ -105,9 +120,31 @@ class _ClubMembersUnderAgentState extends State<ClubMembersUnderAgent>
   @override
   Widget build(BuildContext context) {
     if (loading) {
-      return CircularProgressIndicator();
+      return Scaffold(body: Center(child: CircularProgressIndicator()));
     }
     final theme = AppTheme.getTheme(context);
+
+    List<Widget> tabs = [];
+    tabs.add(
+      Tab(
+        text: "Players",
+      ),
+    );
+
+    List<Widget> tabViewChildrens = [];
+    tabViewChildrens.add(
+      playersTab(theme),
+    );
+    if (allowToViewReport) {
+      tabs.add(
+        Tab(
+          text: "Report",
+        ),
+      );
+
+      tabViewChildrens.add(ReportTab(widget.member, widget.member.clubCode,
+          widget.member.playerId, widget.isOwner));
+    }
     return Container(
       decoration: AppDecorators.bgRadialGradient(theme),
       child: Scaffold(
@@ -130,44 +167,34 @@ class _ClubMembersUnderAgentState extends State<ClubMembersUnderAgent>
                   controller: _tabController,
                   indicatorColor: theme.accentColor,
                   isScrollable: true,
-                  tabs: [
-                    Tab(
-                      text: "Players",
-                    ),
-                    Tab(
-                      text: "Report",
-                    ),
-                  ],
+                  tabs: tabs,
                 ),
               ),
               Expanded(
                 child: TabBarView(
                   controller: _tabController,
                   physics: NeverScrollableScrollPhysics(),
-                  children: [
-                    playersTab(theme),
-                    ReportTab(widget.member, widget.member.clubCode,
-                        widget.member.playerId),
-                  ],
+                  children: tabViewChildrens,
                 ),
               ),
             ],
           ),
         ),
-        floatingActionButton: (_selectedTabIndex == 0 && !playersEditMode)
-            ? FloatingActionButton(
-                backgroundColor: theme.accentColor,
-                onPressed: () async {
-                  setState(() {
-                    playersEditMode = true;
-                  });
-                },
-                child: Icon(
-                  Icons.edit,
-                  color: theme.primaryColorWithDark(),
-                ),
-              )
-            : null,
+        floatingActionButton:
+            (_selectedTabIndex == 0 && !playersEditMode && widget.isOwner)
+                ? FloatingActionButton(
+                    backgroundColor: theme.accentColor,
+                    onPressed: () async {
+                      setState(() {
+                        playersEditMode = true;
+                      });
+                    },
+                    child: Icon(
+                      Icons.edit,
+                      color: theme.primaryColorWithDark(),
+                    ),
+                  )
+                : null,
       ),
     );
   }
@@ -433,8 +460,9 @@ class ReportTab extends StatefulWidget {
   final String clubCode;
   final String agentId;
   final ClubMemberModel member;
+  final bool isOwner;
 
-  ReportTab(this.member, this.clubCode, this.agentId);
+  ReportTab(this.member, this.clubCode, this.agentId, this.isOwner);
 
   @override
   State<ReportTab> createState() => _ReportTabState();
@@ -462,20 +490,7 @@ class _ReportTabState extends State<ReportTab> {
   void fetchData() async {
     loading = true;
     setState(() {});
-
-    // this week
-    // DateTime now = DateTime.now();
-    // DateTime nowAdjust = DateTime(now.year, now.month, now.day);
-    // DateTime start = findFirstDateOfTheWeek(nowAdjust).toUtc();
-    // DateTime end = findLastDateOfTheWeek(nowAdjust).toUtc();
-
-    // last week
-    // this month
-    // last month
-    // custom date
-
-    // load here
-    final activities = await ClubInteriorService.getAgentPlayerActivities(
+    final activities = await appState.cacheService.getAgentPlayerActivities(
         widget.clubCode,
         widget.agentId,
         _dateTimeRange.start,
@@ -503,7 +518,7 @@ class _ReportTabState extends State<ReportTab> {
 
   void initDates() {
     var now = DateTime.now();
-    var startDate = now.subtract(Duration(days: now.weekday));
+    var startDate = findFirstDateOfTheWeek(now);
     startDate =
         DateTime(startDate.year, startDate.month, startDate.day, 0, 0, 0);
     var endDate = DateTime(now.year, now.month, now.day, 0, 0, 0);
@@ -561,8 +576,7 @@ class _ReportTabState extends State<ReportTab> {
                     onSelect: (int value) async {
                       _selectedReportDateRangeIndex = value;
                       if (value == 0) {
-                        var startDate =
-                            now.subtract(Duration(days: now.weekday - 1));
+                        var startDate = findFirstDateOfTheWeek(now);
                         startDate = DateTime(startDate.year, startDate.month,
                             startDate.day, 0, 0, 0);
                         var endDate =
@@ -571,20 +585,19 @@ class _ReportTabState extends State<ReportTab> {
                             DateTimeRange(start: startDate, end: endDate);
                         setState(() {});
                       } else if (value == 1) {
-                        var startDate = now
-                            .subtract(Duration(days: now.weekday))
+                        var startDate = findFirstDateOfTheWeek(now)
                             .subtract(Duration(days: 7));
                         startDate = DateTime(startDate.year, startDate.month,
                             startDate.day, 0, 0, 0);
-                        var endDate = startDate.add(Duration(days: 7));
+                        var endDate = startDate.add(Duration(days: 6));
                         _dateTimeRange =
                             DateTimeRange(start: startDate, end: endDate);
                         setState(() {});
                       } else if (value == 2) {
                         var startDate =
                             now.subtract(Duration(days: now.day - 1));
-                        startDate = DateTime(startDate.year, startDate.month,
-                            startDate.day, 0, 0, 0);
+                        startDate = DateTime(
+                            startDate.year, startDate.month, 1, 0, 0, 0);
                         var endDate =
                             startDate.add(Duration(days: now.day - 1));
                         _dateTimeRange =
@@ -592,9 +605,8 @@ class _ReportTabState extends State<ReportTab> {
                         setState(() {});
                       } else if (value == 3) {
                         var startDate =
-                            DateTime(now.year, now.month - 2, 1, 0, 0, 0);
-                        var endDate =
-                            DateTime(now.year, now.month - 1, 0, 0, 0, 0);
+                            DateTime(now.year, now.month - 1, 1, 0, 0, 0);
+                        var endDate = DateTime(now.year, now.month, 0, 0, 0, 0);
                         _dateTimeRange =
                             DateTimeRange(start: startDate, end: endDate);
                         setState(() {});
@@ -644,32 +656,37 @@ class _ReportTabState extends State<ReportTab> {
                                     '%',
                                 theme: theme),
                             SizedBox(width: 32.pw),
-                            RoundRectButton(
-                                text: "Change",
-                                onTap: () async {
-                                  int value = await SetTipsBackDialog.prompt(
-                                      context: context,
-                                      clubCode: widget.clubCode,
-                                      playerUuid: widget.agentId,
-                                      title: 'Agent Fee Credits',
-                                      tipsBack: agentFeeBackPercent.toInt());
-                                  if (value != null) {
-                                    if (value <= 100) {
-                                      agentFeeBackPercent = value.toDouble();
-                                      await ClubInteriorService
-                                          .updateClubMemberByParam(
-                                        widget.clubCode,
-                                        widget.agentId,
-                                        agentFeeBack:
-                                            agentFeeBackPercent.toInt(),
-                                      );
-                                      widget.member.agentFeeBack =
-                                          agentFeeBackPercent.toInt();
-                                      fetchData();
-                                    }
-                                  }
-                                },
-                                theme: theme),
+                            (widget.isOwner)
+                                ? RoundRectButton(
+                                    text: "Change",
+                                    onTap: () async {
+                                      int value =
+                                          await SetTipsBackDialog.prompt(
+                                              context: context,
+                                              clubCode: widget.clubCode,
+                                              playerUuid: widget.agentId,
+                                              title: 'Agent Fee Credits',
+                                              tipsBack:
+                                                  agentFeeBackPercent.toInt());
+                                      if (value != null) {
+                                        if (value <= 100) {
+                                          agentFeeBackPercent =
+                                              value.toDouble();
+                                          await ClubInteriorService
+                                              .updateClubMemberByParam(
+                                            widget.clubCode,
+                                            widget.agentId,
+                                            agentFeeBack:
+                                                agentFeeBackPercent.toInt(),
+                                          );
+                                          widget.member.agentFeeBack =
+                                              agentFeeBackPercent.toInt();
+                                          fetchData();
+                                        }
+                                      }
+                                    },
+                                    theme: theme)
+                                : SizedBox.shrink(),
                           ],
                         )),
                   ]),
@@ -784,29 +801,41 @@ class _ReportTabState extends State<ReportTab> {
 
   _handleDateRangePicker(BuildContext context, AppTheme theme) async {
     DateTime now = DateTime.now();
-    var startDate = await datePicker(
-      minimumDate: now.subtract(Duration(days: 90)),
-      maximumDate: now,
-      initialDate: now.subtract(Duration(days: 7)),
-      theme: theme,
-      title: "Start Date",
-    );
+    // var startDate = await datePicker(
+    //   minimumDate: now.subtract(Duration(days: 90)),
+    //   maximumDate: now,
+    //   initialDate: now.subtract(Duration(days: 7)),
+    //   theme: theme,
+    //   title: "Start Date",
+    // );
 
-    if (startDate != null) {
-      var endDate = await datePicker(
-        minimumDate: startDate,
+    // if (startDate != null) {
+    //   var endDate = await datePicker(
+    //     minimumDate: startDate,
+    //     maximumDate: now,
+    //     initialDate: now.subtract(Duration(minutes: 1)),
+    //     theme: theme,
+    //     title: "End Date",
+    //   );
+
+    //   _dateTimeRange = DateTimeRange(
+    //       start: startDate, end: (endDate != null) ? endDate : DateTime.now());
+    // } else {
+    //   _dateTimeRange = DateTimeRange(
+    //       start: DateTime.now().subtract(Duration(days: 7)),
+    //       end: DateTime.now());
+    // }
+
+    var newDateRange = await DateRangePicker.show(context,
+        minimumDate: now.subtract(Duration(days: 90)),
         maximumDate: now,
-        initialDate: now.subtract(Duration(minutes: 1)),
-        theme: theme,
-        title: "End Date",
-      );
+        initialDate: now.subtract(Duration(days: 7)),
+        title: "Custom",
+        theme: theme);
 
-      _dateTimeRange = DateTimeRange(
-          start: startDate, end: (endDate != null) ? endDate : DateTime.now());
-    } else {
-      _dateTimeRange = DateTimeRange(
-          start: DateTime.now().subtract(Duration(days: 7)),
-          end: DateTime.now());
+    if (newDateRange != null) {
+      _dateTimeRange = newDateRange;
+      setState(() {});
     }
   }
 

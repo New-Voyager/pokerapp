@@ -27,6 +27,7 @@ class ClubInteriorService {
           isManager
           isMainOwner
           isAgent
+          canViewAgentReport
           joinedDate
           lastPlayedDate
           totalBuyins
@@ -41,6 +42,7 @@ class ClubInteriorService {
           agentName
           agentUuid
           agentFeeBack
+          requestMessage
         }
       }""";
 
@@ -62,6 +64,8 @@ class ClubInteriorService {
               smallBlind
               bigBlind
               balance
+              dealerChoiceGames
+              roeGames
             }
           }    
     """;
@@ -90,6 +94,12 @@ class ClubInteriorService {
       }
   """;
 
+  static String feeCreditMutation = """
+      mutation fc(\$clubCode: String!, \$playerUuid: String!, \$notes: String \$amount: Float! \$followup: Boolean) {
+        ret: feeCredit(clubCode:\$clubCode playerUuid:\$playerUuid, amount:\$amount, notes: \$notes, followup: \$followup) 
+      }
+  """;
+
   static String clearFollowupMutation = """
       mutation cf(\$clubCode: String!, \$playerUuid: String!, \$transId: Int!) {
         ret: clearFollowup(clubCode:\$clubCode playerUuid:\$playerUuid, transId: \$transId)
@@ -113,8 +123,8 @@ class ClubInteriorService {
   """;
 
   static String joinClubQuery = """
-    mutation (\$clubCode: String!) {
-        status: joinClub(clubCode: \$clubCode)
+    mutation (\$clubCode: String! \$message: String) {
+        status: joinClub(clubCode: \$clubCode, requestMessage:\$message)
     }
   """;
 
@@ -172,7 +182,8 @@ class ClubInteriorService {
             lastPlayedDate
             buyIn
             profit
-            gamesPlayed            
+            gamesPlayed           
+            handsPlayed 
           }
         }
     """;
@@ -229,7 +240,7 @@ class ClubInteriorService {
 
     return jsonResponse
         .map<ClubMemberModel>(
-            (var memberItem) => ClubMemberModel.fromJson(memberItem))
+            (var memberItem) => ClubMemberModel.fromJson(clubCode, memberItem))
         .toList();
   }
 
@@ -308,6 +319,24 @@ class ClubInteriorService {
     return true;
   }
 
+  static Future<bool> setCanViewAgentReport(
+      String clubCode, String playerId, bool allow) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    Map<String, dynamic> update = {
+      "canViewAgentReport": allow,
+    };
+    Map<String, dynamic> variables = {
+      "clubCode": clubCode,
+      "playerUuid": playerId,
+      "update": update,
+    };
+    QueryResult result = await _client.mutate(MutationOptions(
+        document: gql(updateClubMemberMutation), variables: variables));
+    if (result.hasException) return false;
+    return true;
+  }
+
   static Future<bool> setAgent(
       String clubCode, String playerId, String leaderId) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
@@ -364,9 +393,9 @@ class ClubInteriorService {
         .toList();
   }
 
-  static Future<String> joinClub(String clubCode) async {
+  static Future<String> joinClub(String clubCode, String text) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
-    Map<String, dynamic> variables = {"clubCode": clubCode};
+    Map<String, dynamic> variables = {"clubCode": clubCode, "message": text};
     QueryResult result = await _client.mutate(
         MutationOptions(document: gql(joinClubQuery), variables: variables));
     if (result.hasException) {
@@ -566,6 +595,27 @@ class ClubInteriorService {
     };
     QueryResult result = await _client.mutate(MutationOptions(
         document: gql(deductCreditMutation), variables: variables));
+    if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
+    final ret = result.data['ret'].toString();
+    return ret;
+  }
+
+  static Future<String> feePlayerCredit(String clubCode, String playerID,
+      double amount, String notes, bool followup) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    Map<String, dynamic> variables = {
+      "clubCode": clubCode,
+      "playerUuid": playerID,
+      "amount": amount,
+      "notes": notes,
+      "followup": followup,
+    };
+    QueryResult result = await _client.mutate(MutationOptions(
+        document: gql(feeCreditMutation), variables: variables));
     if (result.hasException) {
       if (result.exception.graphqlErrors.length > 0) {
         return null;

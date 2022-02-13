@@ -53,16 +53,20 @@ class RoundRectButton extends StatelessWidget {
               end: Alignment.bottomCenter,
               colors: [
                 theme.accentColorWithDark(0.1),
+                theme.accentColorWithLight(0.2),
                 theme.accentColor,
                 theme.accentColorWithDark(0.1),
-                theme.accentColorWithDark(0.1),
-                //theme.accentColor,
+                theme.accentColorWithDark(0.2),
+                theme.accentColor,
               ],
               stops: [
                 0,
+                0.3,
                 0.5,
-                0.8,
-                0.5
+                0.7,
+                0.9,
+                1.0
+                //0.3
               ]),
         ),
         child: Row(
@@ -208,14 +212,14 @@ class CircleImageButton extends StatelessWidget {
     } else if (svgAsset != null) {
       image = SvgPicture.asset(
         svgAsset,
-        width: imageWidth ?? 24,
-        height: imageHeight ?? 24,
+        width: imageWidth ?? 18,
+        height: imageHeight ?? 18,
         color: buttonColor,
       );
     } else if (icon != null) {
       image = Icon(
         icon,
-        size: imageWidth ?? 24,
+        size: imageWidth ?? 18,
         color: buttonColor,
       );
     }
@@ -229,51 +233,29 @@ class CircleImageButton extends StatelessWidget {
       textStyle = textStyle.merge(theme.circleImageButtonTextStyle);
     }
 
-    // return InkWell(
-    //   focusNode: focusNode,
-    //   onTap: () {
-    //     // play sound
-    //     this.onTap();
-    //   },
-    //   borderRadius: BorderRadius.circular(20),
-    //   child: Column(
-    //     mainAxisSize: MainAxisSize.min,
-    //     children: [
-    //       Container(
-    //         width: width ?? 40,
-    //         height: height ?? 40,
-    //         padding: EdgeInsets.all(2.pw),
-    //         decoration: BoxDecoration(
-    //           shape: BoxShape.circle,
-    //           color: buttonBackGround,
-    //           // boxShadow: shadow,
-    //           border: Border.all(
-    //             color: buttonBorder,
-    //             width: 2.0,
-    //           ),
-    //           //borderRadius: BorderRadius.circular(20.pw),
-    //         ),
-    //         child: Center(child: image),
-    //       ),
-    //       (caption != null)
-    //           ? Padding(
-    //               padding: EdgeInsets.only(top: 8.pw),
-    //               child: Text(
-    //                 caption,
-    //                 style: textStyle,
-    //                 textAlign: TextAlign.center,
-    //               ),
-    //             )
-    //           : Container(),
-    //     ],
-    //   ),
-    // );
-
     return OutlineGradientButton(
-        child: SizedBox(width: 40, height: 40, child: Center(child: image)),
+        child: SizedBox(width: 32, height: 32, child: Center(child: image)),
         gradient: LinearGradient(
-          colors: [theme.accentColor, theme.accentColorWithDark(0.25)],
-          begin: Alignment.topLeft,
+          colors: [
+            theme.accentColorWithLight(0.2),
+            theme.accentColorWithLight(0.1),
+            theme.accentColor,
+            theme.accentColor,
+            //           theme.accentColorWithDark(0.1),
+            theme.accentColorWithDark(0.1),
+            theme.accentColorWithDark(0.2),
+            //theme.accentColor,
+          ],
+          stops: [
+            0,
+            0.2,
+            0.5,
+            0.8,
+            0.9,
+            1.0,
+            //0.3
+          ],
+          begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           // begin: Alignment(-1, -1),
           // end: Alignment(2, 2),
@@ -345,14 +327,14 @@ class DummyCircleImageButton extends StatelessWidget {
     } else if (svgAsset != null) {
       image = SvgPicture.asset(
         svgAsset,
-        width: imageWidth ?? 24,
-        height: imageHeight ?? 24,
+        width: imageWidth ?? 18,
+        height: imageHeight ?? 18,
         color: buttonColor,
       );
     } else if (icon != null) {
       image = Icon(
         icon,
-        size: imageWidth ?? 24,
+        size: imageWidth ?? 18,
         color: buttonColor,
       );
     }
@@ -365,7 +347,7 @@ class DummyCircleImageButton extends StatelessWidget {
     }
 
     return OutlineGradientButton(
-      child: SizedBox(width: 40, height: 40, child: Center(child: image)),
+      child: SizedBox(width: 32, height: 32, child: Center(child: image)),
       gradient: LinearGradient(
         colors: [theme.accentColor, theme.accentColorWithDark(0.25)],
         begin: Alignment.topLeft,
