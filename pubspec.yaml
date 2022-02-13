@@ -91,6 +91,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   flutter_rounded_date_picker: 2.0.2
+  flutter_xlider: 3.4.0
 
 dev_dependencies:
   build_test: ^2.1.3

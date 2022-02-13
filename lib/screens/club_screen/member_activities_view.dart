@@ -40,7 +40,6 @@ class _ClubMemberActivitiesScreenState
   AppTheme theme;
   List<String> headers = [];
   final List<MemberActivity> memberActivitiesForDownload = [];
-  List<MemberActivity> allActivities;
   bool loading;
   bool changed = false;
   DataSource dts;
@@ -64,21 +63,7 @@ class _ClubMemberActivitiesScreenState
   }
 
   void fetchData() async {
-    bool includeTips = false;
-    bool includeLastPlayedDate = false;
     try {
-      if (allActivities == null) {
-        allActivities =
-            await ClubInteriorService.getMemberActivity(widget.clubCode);
-
-        // sort by last played date
-        allActivities
-            .sort((a, b) => b.lastPlayedDate.compareTo(a.lastPlayedDate));
-      }
-
-      includeTips = true;
-      // final activities = MemberActivity.getMockData();
-
       DateTime start = _dateTimeRange.start.toUtc();
       DateTime end = _dateTimeRange.end.add(Duration(days: 1)).toUtc();
       final tipsActivities =
@@ -89,12 +74,6 @@ class _ClubMemberActivitiesScreenState
       activities = [];
       for (final activity in tipsActivities) {
         activities.add(activity);
-        // final date = activity.lastPlayedDate.toLocal();
-
-        // log('Activities: start: ${start.toIso8601String()} end: ${end.toIso8601String()} activityDate: ${activity.');
-        // if (date.isAfter(start) && date.isBefore(end)) {
-        //   activities.add(activity);
-        // }
       }
     } catch (err) {
       failed = true;
@@ -319,7 +298,7 @@ class _ClubMemberActivitiesScreenState
                       columns: columns,
                       horizontalMargin: 6.0,
                       showFirstLastButtons: true,
-                      arrowHeadColor: theme.accentColor,
+                      //arrowHeadColor: theme.accentColor,
                       source: dts,
                       rowsPerPage: 10,
                       columnSpacing: 10,
@@ -364,21 +343,24 @@ class _ClubMemberActivitiesScreenState
               DateTime(startDate.year, startDate.month, startDate.day, 0, 0, 0);
           var endDate = startDate.add(Duration(days: 6));
           _dateTimeRange = DateTimeRange(start: startDate, end: endDate);
+          await fetchData();
           setState(() {});
         } else if (value == 2) {
           var startDate = now.subtract(Duration(days: now.day - 1));
           startDate = DateTime(startDate.year, startDate.month, 1, 0, 0, 0);
           var endDate = startDate.add(Duration(days: now.day - 1));
           _dateTimeRange = DateTimeRange(start: startDate, end: endDate);
+          await fetchData();
           setState(() {});
         } else if (value == 3) {
           var startDate = DateTime(now.year, now.month - 1, 1, 0, 0, 0);
           var endDate = DateTime(now.year, now.month, 0, 0, 0, 0);
           _dateTimeRange = DateTimeRange(start: startDate, end: endDate);
+          await fetchData();
           setState(() {});
         } else if (value == 4) {
           await _handleDateRangePicker(context, theme);
-
+          await fetchData();
           setState(() {});
         }
 
@@ -587,7 +569,7 @@ class DataSource extends DataTableSource {
       this.refresh});
 
   @override
-  DataRow getRow(int index) {
+  DataRow2 getRow(int index) {
     MemberActivity activity = activities[index];
     List<DataCell> cells = [];
 
@@ -747,7 +729,7 @@ class DataSource extends DataTableSource {
       color = Colors.grey[700];
     }
 
-    return DataRow.byIndex(
+    return DataRow2.byIndex(
       index: index,
       cells: cells,
       color: MaterialStateColor.resolveWith(

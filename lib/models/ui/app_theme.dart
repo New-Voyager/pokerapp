@@ -80,6 +80,9 @@ class AppTheme extends ChangeNotifier {
   Color accentColorWithLight([double l = 0.10]) =>
       _lighten(_themeData.style.accentColor, l);
 
+  Color blackColorWithLight([double l = 0.10]) => _lighten(Colors.black, l);
+  Color blackColorWithDark([double l = 0.10]) => _darken(Colors.black, l);
+
   // color that is used for filling inside text fields, or cards views
   Color get fillInColor => _themeData.style.fillInColor;
 
