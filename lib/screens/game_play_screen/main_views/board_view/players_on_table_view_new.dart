@@ -461,6 +461,7 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
   @override
   Widget build(BuildContext context) {
     final ts = getPlayerOnTableSize();
+    log('Table: final table size: $ts');
     Provider.of<SeatsOnTableState>(context, listen: true);
     return Stack(
       key: _parentKey,
@@ -468,11 +469,13 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
         // positioning players
         Container(
           // color for debugging
-          // color: Colors.red.withOpacity(0.20),
-          width: ts.width,
-          height: ts.height,
+          decoration:
+              BoxDecoration(border: Border.all(color: Colors.red, width: 3)),
+          //color: Colors.red.withOpacity(0.20),
+          width: double.infinity,
+          height: double.infinity,
           child: CustomMultiChildLayout(
-            delegate: PlayerPlacementDelegate(),
+            delegate: PlayerPlacementDelegate(widget.tableSize),
             children: _getPlayers(context),
           ),
         ),
@@ -515,8 +518,15 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
 }
 
 class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
+  final Size tableOrigSize;
+
+  PlayerPlacementDelegate(this.tableOrigSize);
+
   @override
   void performLayout(Size size) {
+    // calculate the table position on the parent
+    Offset tableStart = Offset(0.0, (size.height - tableOrigSize.height) / 2);
+    log('Table tableStart: $tableStart');
     // top left
     if (hasChild(SeatPos.topLeft)) {
       final cs = layoutChild(
@@ -526,7 +536,7 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
 
       positionChild(
         SeatPos.topLeft,
-        Offset(0.0, 0.0),
+        Offset(0.0, tableStart.dy + 10),
       );
     }
 
@@ -539,7 +549,7 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
 
       positionChild(
         SeatPos.topRight,
-        Offset(size.width - cs.width, 0.0),
+        Offset(size.width - cs.width, tableStart.dy + 10),
       );
     }
 
@@ -549,10 +559,11 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
         SeatPos.middleLeft,
         BoxConstraints.loose(size),
       );
+      final dy = tableStart.dy + tableOrigSize.height / 2;
 
       positionChild(
         SeatPos.middleLeft,
-        Offset(0.0, size.height / 2 - cs.height / 1.5),
+        Offset(0.0, dy), // size.height / 2 - cs.height / 1.5),
       );
     }
 
@@ -566,7 +577,7 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
 
       positionChild(
         SeatPos.topCenter1,
-        Offset((3 * size.width / 8) - cs.width / 2, 0.0),
+        Offset((3 * size.width / 8) - cs.width / 2, tableStart.dy),
       );
     }
 
@@ -580,7 +591,7 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
 
       positionChild(
         SeatPos.topCenter2,
-        Offset((5 * size.width / 8) - cs.width / 2, 0.0),
+        Offset((5 * size.width / 8) - cs.width / 2, tableStart.dy),
       );
     }
 
@@ -593,7 +604,7 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
 
       positionChild(
         SeatPos.topCenter,
-        Offset((size.width / 2) - cs.width / 2, 0),
+        Offset((size.width / 2) - cs.width / 2, tableStart.dy),
       );
     }
 
@@ -603,11 +614,12 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
         SeatPos.middleRight,
         BoxConstraints.loose(size),
       );
-
+      final dy = tableStart.dy + tableOrigSize.height / 2;
       positionChild(
-        SeatPos.middleRight,
-        Offset(size.width - cs.width, size.height / 2 - cs.height / 1.5),
-      );
+          SeatPos.middleRight,
+          Offset(
+              size.width - cs.width, dy) //size.height / 2 - cs.height / 1.5),
+          );
     }
 
     // bottom left
@@ -633,10 +645,12 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
         SeatPos.bottomCenter,
         BoxConstraints.loose(size),
       );
-
+      final x = (size.width / 2) - cs.width / 2;
+      final y = tableStart.dy + tableOrigSize.height; // * 1.10;
+      log('Table bottom parent size: $size, table size: $tableOrigSize center: x: $x, y: $y');
       positionChild(
         SeatPos.bottomCenter,
-        Offset((size.width / 2) - cs.width / 2, size.height - cs.height * 1.10),
+        Offset(x, y),
       );
     }
 

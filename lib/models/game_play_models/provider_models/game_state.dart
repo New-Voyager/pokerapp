@@ -186,8 +186,10 @@ class GameState {
           tableSizeVn.value = box.size;
           break;
         }
-        await Future.delayed(const Duration(milliseconds: 10));
+        await Future.delayed(const Duration(milliseconds: 50));
       }
+
+      log('Table: table size: ${tableSizeVn.value}');
     });
   }
 

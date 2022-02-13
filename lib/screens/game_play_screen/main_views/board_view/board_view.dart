@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
@@ -69,7 +71,15 @@ class BoardView extends StatelessWidget {
           child: BackgroundView(),
         ),
 
-        TableView(tableWidthFactor: tableWidthFactor),
+        Container(
+          width: double.infinity,
+          height: double.infinity,
+          decoration:
+              BoxDecoration(border: Border.all(color: Colors.yellow, width: 5)),
+        ),
+
+        Positioned(
+            bottom: 0, child: TableView(tableWidthFactor: tableWidthFactor)),
 
         /* center view */
         Positioned(
@@ -97,15 +107,19 @@ class BoardView extends StatelessWidget {
         ValueListenableBuilder(
           valueListenable: gameState.tableSizeVn,
           builder: (_, size, __) {
-            print('valuelistenablebuilder: $size');
+            log('Table size is adjused to $size');
             if (size == null) return const SizedBox.shrink();
-            return PlayersOnTableViewNew(
-              tableSize: size,
-              onUserTap: onUserTap,
-              gameComService: gameComService,
-              gameState: gameState,
-              maxPlayers: gameInfo.maxPlayers,
-              isLargerScreen: isLargerScreen,
+            return Container(
+              width: double.infinity,
+              height: double.infinity,
+              child: PlayersOnTableViewNew(
+                tableSize: size,
+                onUserTap: onUserTap,
+                gameComService: gameComService,
+                gameState: gameState,
+                maxPlayers: gameInfo.maxPlayers,
+                isLargerScreen: isLargerScreen,
+              ),
             );
           },
         ),

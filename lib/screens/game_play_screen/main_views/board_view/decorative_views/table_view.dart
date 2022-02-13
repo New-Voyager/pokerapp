@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:provider/provider.dart';
@@ -14,6 +16,8 @@ class TableView extends StatelessWidget {
     final animationDuration = const Duration(milliseconds: 250);
     final gameState = GameState.getState(context);
 
+    log('Table width: ${tableWidth} height: ');
+
     return Container(
       key: gameState.tableKey,
       // height is used as per the aspect ratio
@@ -24,10 +28,15 @@ class TableView extends StatelessWidget {
         builder: (_, __, ___) => AnimatedSwitcher(
           duration: animationDuration,
           child: Transform.scale(
-            scale: 1.10,
-            child: Image.asset(
-              "assets/images/table/redtable.png",
-              key: UniqueKey(),
+            scale: 1,
+            child: Container(
+              // color for debugging
+              decoration: BoxDecoration(
+                  border: Border.all(color: Colors.green, width: 3)),
+              child: Image.asset(
+                "assets/images/table/redtable.png",
+                key: UniqueKey(),
+              ),
             ),
           ),
         ),
