@@ -134,8 +134,7 @@ class _ClubMemberActivitiesScreenState
 
   void initDates() {
     var now = DateTime.now();
-    var startDate = findFirstDateOfTheWeek(
-        now); //now.subtract(Duration(days: now.weekday));
+    var startDate = findFirstDateOfTheWeek(now);
     startDate =
         DateTime(startDate.year, startDate.month, startDate.day, 0, 0, 0);
     var endDate = DateTime(now.year, now.month, now.day, 0, 0, 0);
