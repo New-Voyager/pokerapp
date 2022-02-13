@@ -225,6 +225,10 @@ class NewGameModel {
     bombPotHandInterval = json['bombPotHandInterval'] ?? 11;
     bombPotIntervalType =
         BombPotIntervalTypeSerialization.fromJson(json['bombPotIntervalType']);
+    bombPotGameType = GameType.UNKNOWN;
+    if (json['bombPotGameType'] != null) {
+      bombPotGameType = GameTypeSerialization.fromJson(json['bombPotGameType']);
+    }
 
     seatChangeAllowed = json['seatChangeAllowed'] ?? false;
     breakTime = json['breakLength'] ?? 5;
