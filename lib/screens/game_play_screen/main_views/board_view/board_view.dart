@@ -54,7 +54,7 @@ class BoardView extends StatelessWidget {
     bool isLargerScreen = false;
     print(boardAttributes.screenDiagnolSize);
     if (boardAttributes.screenDiagnolSize > 7.0) {
-      tableWidthFactor = 0.80;
+      tableWidthFactor = 0.75;
       isLargerScreen = true;
     }
 

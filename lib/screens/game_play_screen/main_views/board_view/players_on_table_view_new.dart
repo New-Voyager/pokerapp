@@ -475,7 +475,8 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
           width: double.infinity,
           height: double.infinity,
           child: CustomMultiChildLayout(
-            delegate: PlayerPlacementDelegate(widget.tableSize),
+            delegate: PlayerPlacementDelegate(
+                widget.tableSize, widget.isLargerScreen),
             children: _getPlayers(context),
           ),
         ),
@@ -519,16 +520,22 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
 
 class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
   final Size tableOrigSize;
-
-  PlayerPlacementDelegate(this.tableOrigSize);
+  final bool isLargerScreen;
+  PlayerPlacementDelegate(this.tableOrigSize, this.isLargerScreen);
 
   @override
   void performLayout(Size size) {
     // calculate the table position on the parent
-    Offset tableStart = Offset(0.0, (size.height - tableOrigSize.height - 104));
+    double horizontalSpace = (size.width - tableOrigSize.width);
+    double left = 0;
+    if (horizontalSpace > 0) {
+      left = horizontalSpace / 2;
+    }
+    Offset tableStart =
+        Offset(left, (size.height - tableOrigSize.height - 104));
 
     double magicNumber = 42;
-    log('Table parent size: $size table size: $tableOrigSize');
+    log('Table parent size: $size table size: $tableOrigSize isLargerScreen: $isLargerScreen horizontalSpace: $horizontalSpace');
     // top left
     if (hasChild(SeatPos.topLeft)) {
       final cs = layoutChild(
@@ -538,7 +545,7 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
 
       positionChild(
         SeatPos.topLeft,
-        Offset(0.0, tableStart.dy + 10),
+        Offset(left, tableStart.dy + 10),
       );
     }
 
@@ -549,9 +556,13 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
         BoxConstraints.loose(size),
       );
 
+      // positionChild(
+      //   SeatPos.topRight,
+      //   Offset(size.width - cs.width, tableStart.dy + 10),
+      // );
       positionChild(
         SeatPos.topRight,
-        Offset(size.width - cs.width, tableStart.dy + 10),
+        Offset((size.width - left - 100), tableStart.dy + 10),
       );
     }
 
