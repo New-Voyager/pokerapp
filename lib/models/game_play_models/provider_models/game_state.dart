@@ -182,7 +182,11 @@ class GameState {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       while (true) {
         final box = tableKey.currentContext.findRenderObject() as RenderBox;
-        if (box.size.shortestSide != 0.0) {
+        // if (box.size.shortestSide != 0.0) {
+        //   tableSizeVn.value = box.size;
+        //   break;
+        // }
+        if (box.size.width >= 100.0) {
           tableSizeVn.value = box.size;
           break;
         }

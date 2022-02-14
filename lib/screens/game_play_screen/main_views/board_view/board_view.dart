@@ -78,8 +78,12 @@ class BoardView extends StatelessWidget {
               BoxDecoration(border: Border.all(color: Colors.yellow, width: 5)),
         ),
 
+        // 42 is a magic number
+        // it is nameplate height - approximate height of table base and table edge
+        // 76 - 24 (table base height - (table edge height)
         Positioned(
-            bottom: 0, child: TableView(tableWidthFactor: tableWidthFactor)),
+            bottom: 42 /* magic number */,
+            child: TableView(tableWidthFactor: tableWidthFactor)),
 
         /* center view */
         Positioned(

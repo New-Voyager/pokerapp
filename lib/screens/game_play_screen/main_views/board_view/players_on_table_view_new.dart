@@ -525,8 +525,10 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
   @override
   void performLayout(Size size) {
     // calculate the table position on the parent
-    Offset tableStart = Offset(0.0, (size.height - tableOrigSize.height) / 2);
-    log('Table tableStart: $tableStart');
+    Offset tableStart = Offset(0.0, (size.height - tableOrigSize.height - 104));
+
+    double magicNumber = 42;
+    log('Table parent size: $size table size: $tableOrigSize');
     // top left
     if (hasChild(SeatPos.topLeft)) {
       final cs = layoutChild(
@@ -559,7 +561,7 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
         SeatPos.middleLeft,
         BoxConstraints.loose(size),
       );
-      final dy = tableStart.dy + tableOrigSize.height / 2;
+      final dy = tableStart.dy + (tableOrigSize.height / 2) + magicNumber / 2;
 
       positionChild(
         SeatPos.middleLeft,
@@ -614,7 +616,7 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
         SeatPos.middleRight,
         BoxConstraints.loose(size),
       );
-      final dy = tableStart.dy + tableOrigSize.height / 2;
+      final dy = tableStart.dy + (tableOrigSize.height / 2) + magicNumber / 2;
       positionChild(
           SeatPos.middleRight,
           Offset(
@@ -646,7 +648,8 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
         BoxConstraints.loose(size),
       );
       final x = (size.width / 2) - cs.width / 2;
-      final y = tableStart.dy + tableOrigSize.height; // * 1.10;
+      final y =
+          size.height - 76; // tableStart.dy + tableOrigSize.height; // * 1.10;
       log('Table bottom parent size: $size, table size: $tableOrigSize center: x: $x, y: $y');
       positionChild(
         SeatPos.bottomCenter,
