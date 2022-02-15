@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:provider/provider.dart';
@@ -23,8 +24,13 @@ class TableView extends StatelessWidget {
         child: Consumer<RedrawBoardSectionState>(
           builder: (_, __, ___) => AnimatedSwitcher(
             duration: const Duration(milliseconds: 250),
-            child: Image.memory(
-              gameState.assets.getBoard(),
+            // child: Image.memory(
+            //   gameState.assets.getBoard(),
+            //   key: UniqueKey(),
+            //   fit: BoxFit.fill,
+            // ),
+            child: Image.asset(
+              appService.appSettings.tableAsset,
               key: UniqueKey(),
               fit: BoxFit.fill,
             ),
