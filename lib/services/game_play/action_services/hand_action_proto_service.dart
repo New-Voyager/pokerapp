@@ -591,7 +591,7 @@ class HandActionProtoService {
     //log('Hand Message: ::handleDeal:: START');
 
     // play the deal sound effect
-    AudioService.playDeal(mute: _gameState.playerLocalConfig.mute);
+    //AudioService.playDeal(mute: _gameState.playerLocalConfig.mute);
 
     final dealCards = message.dealCards;
     int mySeatNo = dealCards.seatNo;
@@ -665,6 +665,8 @@ class HandActionProtoService {
   ) async {
     for (int c = 1; c <= totalCards; c++) {
       gameState.startCardDistributionFor(seatNo);
+      // log('${DateTime.now().toIso8601String()} Playing deal sound');
+      // await AudioService.playDealSound(mute: gameState.playerLocalConfig.mute);
       await Future.delayed(AppConstants.cardDistributionAnimationDuration);
       gameState.stopCardDistributionFor(seatNo);
 
@@ -680,23 +682,24 @@ class HandActionProtoService {
   ) async {
     final allSeats = gameState.playersInGame.map<int>((p) => p.seatNo).toList();
     allSeats.shuffle();
-    log('Dealing');
+    log('Dealing ${DateTime.now().toIso8601String()}');
     AudioService.playDealSound(mute: gameState.playerLocalConfig.mute);
     List<Future<void>> futures = [];
+    final now = DateTime.now();
     for (final seatNo in allSeats) {
       final animation =
           _handleAnimationForSingleSeat(seatNo, noCards, gameState);
       futures.add(animation);
-
       // delay a bit
       await Future.delayed(
         AppConstants.cardDistributionWaitBetweenPlayersDuration,
       );
     }
-    log('Dealing done');
-    Future.wait(futures).then((value) {
-      AudioService.stopDeal();
-    });
+    await Future.wait(futures);
+    log('Dealing done ${DateTime.now().toIso8601String()} ms: ${DateTime.now().difference(now).inMilliseconds}');
+    // Future.wait(futures).then((value) {
+    //   AudioService.stopDeal();
+    // });
   }
 
   Future<void> handleDealStarted({
@@ -722,7 +725,7 @@ class HandActionProtoService {
       /* show card shuffling*/
       if (_gameState.handInfo.bombPot) {
         tableState.updateCardShufflingAnimation(true);
-        AudioService.playDeal(mute: _gameState.playerLocalConfig.mute);
+        //AudioService.playDeal(mute: _gameState.playerLocalConfig.mute);
         await Future.delayed(AppConstants.bombPotTotalWaitDuration); // wait
       } else {
         // play the deal sound effect
