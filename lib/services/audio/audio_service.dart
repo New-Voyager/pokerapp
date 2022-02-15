@@ -20,14 +20,14 @@ const String pitch4Sound = 'assets/sound_effects/pitch4.mp3';
 const String newHandSound = 'assets/sound_effects/new_hand.mp3';
 const String playerTurnSound = 'assets/sound_effects/player_turn.mp3';
 const String flopSound = 'assets/sound_effects/flop.mp3';
-const String turnRiverSound = 'assets/sound_effects/river.mp3';
+const String turnRiverSound = 'assets/sound_effects/flop.mp3';
 const String applauseSound = 'assets/sound_effects/applause.mp3';
 const String fireworksSound = 'assets/animations/fireworks.mp3';
 const String clockTickingSound = 'assets/sound_effects/clock_ticking.mp3';
 
 class AudioService {
   static just_audio.AudioPlayer justAudioPlayer;
-  static just_audio.AudioPlayer dealAudioPlayer;
+  //static just_audio.AudioPlayer dealAudioPlayer;
   static just_audio.ConcatenatingAudioSource _concatenatingAudioSource;
 
   // add it to your class as a static member
@@ -54,9 +54,9 @@ class AudioService {
     if (justAudioPlayer == null) {
       justAudioPlayer = just_audio.AudioPlayer(handleInterruptions: true);
     }
-    if (dealAudioPlayer == null) {
-      dealAudioPlayer = just_audio.AudioPlayer(handleInterruptions: true);
-    }
+    // if (dealAudioPlayer == null) {
+    //   dealAudioPlayer = just_audio.AudioPlayer(handleInterruptions: true);
+    // }
 
     // load sounds to memory
     await getAudioUri(clickSound);
@@ -89,34 +89,37 @@ class AudioService {
     playSound(clickSound);
   }
 
-  static playSound(String soundFile, {bool mute = false}) async {
+  static Future<void> playSound(String soundFile, {bool mute = false}) async {
     if (!play) return;
     if (mute ?? false) return;
     //if (!_audioFileCache.containsKey(soundFile)) return;
 
     try {
       await justAudioPlayer.setAsset(soundFile);
-      justAudioPlayer.play();
+      await justAudioPlayer.play();
     } catch (err) {
       log('Could not play sound. Error: ${err.toString()}');
     }
   }
 
-  static playDealSound({bool mute = false}) async {
+  static Future<void> playDealSound2(int n, {bool mute = false}) async {
+    for (int i = 0; i < n; i++) {
+      log('Dealing Playing deal sound 2');
+      await playDealSound(mute: mute);
+    }
+    return;
+  }
+
+  static Future<void> playDealSound({bool mute = false}) async {
     if (!play) return;
     if (mute ?? false) return;
     //if (!_audioFileCache.containsKey(soundFile)) return;
 
     try {
-      await dealAudioPlayer.setAsset(dealSound);
-      dealAudioPlayer.play();
+      return playSound(dealSound, mute: mute);
     } catch (err) {
       log('Could not play sound. Error: ${err.toString()}');
     }
-  }
-
-  static stopDeal() async {
-    await dealAudioPlayer.stop();
   }
 
   static playCheck({bool mute}) {

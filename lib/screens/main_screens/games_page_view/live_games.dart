@@ -29,6 +29,7 @@ import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
+import 'package:pokerapp/widgets/game_screen_customization_dialog.dart';
 import 'package:pokerapp/widgets/textfields.dart';
 import 'package:pokerapp/widgets/texts.dart';
 import 'package:provider/provider.dart';
