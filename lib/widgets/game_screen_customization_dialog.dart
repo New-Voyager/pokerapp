@@ -53,12 +53,14 @@ class _AssetWidget extends StatelessWidget {
   final String asset;
   final bool isSelected;
   final bool isWide;
+  final double width;
   final ValueChanged<String> onChanged;
 
   const _AssetWidget({
     @required this.asset,
     this.isSelected = false,
     this.isWide = false,
+    this.width = 0,
     this.onChanged,
     Key key,
   }) : super(key: key);
@@ -66,7 +68,13 @@ class _AssetWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = context.read<AppTheme>();
-
+    double width = this.width;
+    if (width == 0) {
+      width = 100;
+      if (isWide) {
+        width = 200;
+      }
+    }
     return InkWell(
       onTap: () => onChanged?.call(asset),
       child: AnimatedContainer(
@@ -76,7 +84,7 @@ class _AssetWidget extends StatelessWidget {
             ? AppDecorators.accentBorderDecoration(theme)
             : AppDecorators.accentNoBorderDecoration(theme),
         height: 100.0,
-        width: isWide ? 200.0 : 100.0,
+        width: isWide ? 150.0 : 100.0,
         padding: const EdgeInsets.all(8.0),
         child: Image.asset(
           asset,
@@ -167,17 +175,17 @@ class _CustomizationWidget extends StatelessWidget {
               children: [
                 // heading
                 Text(
-                  'Game Screen Customization',
+                  'Customize',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.white70,
-                    fontSize: 24.0,
+                    fontSize: 18.0,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
 
                 // sep
-                const SizedBox(height: 20),
+                const SizedBox(height: 10),
 
                 // back drop
                 _CustomizationSelectionWidget(

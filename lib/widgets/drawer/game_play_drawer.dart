@@ -10,6 +10,7 @@ import 'package:pokerapp/widgets/drawer/actions2.dart';
 import 'package:pokerapp/widgets/drawer/actions3.dart';
 import 'package:pokerapp/widgets/drawer/actions4.dart';
 import 'package:pokerapp/widgets/drawer/actions5.dart';
+import 'package:pokerapp/widgets/game_screen_customization_dialog.dart';
 import 'package:pokerapp/widgets/list_tile.dart';
 
 class GamePlayScreenDrawer extends StatefulWidget {
@@ -45,6 +46,17 @@ class _GamePlayScreenDrawerState extends State<GamePlayScreenDrawer> {
         },
       ),
     );
+    children.add(
+      IconWidgetTile(
+        svgIconPath: 'assets/images/customize.svg',
+        title: 'Customize',
+        onPressed: () async {
+          Navigator.of(context).pop();
+          GameScreenCustomizationDialog.show(context);
+        },
+      ),
+    );
+
     if (widget.gameState.isPlaying) {
       children.addAll([
         // playing

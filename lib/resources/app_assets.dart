@@ -56,9 +56,9 @@ class AppAssets {
   // assets/images/table/redtable.png
   static const String _table = 'assets/images/table';
   static const List<String> tables = [
-    '$_table/darkgreen.png',
-    '$_table/night sky table.png',
     '$_table/redtable.png',
+    '$_table/rustic table.png',
+    '$_table/darkgreen.png',
   ];
 
   // backdrop
