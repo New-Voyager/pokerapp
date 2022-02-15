@@ -352,11 +352,13 @@ class PlayerActionHandler {
         return;
       }
       // AudioService.stopSound();
-
+      _gameState.currentActionId = '';
       final seatAction = message.seatAction;
       if (me.seatNo != seatAction.seatNo) {
         return;
       }
+
+      _gameState.currentActionId = seatAction.actionId;
 
       // log('YourAction: raiseAmount: ${seatAction.raiseAmount} seatInSoFar: ${seatAction.seatInSoFar}');
       /* play an sound effect alerting the user */

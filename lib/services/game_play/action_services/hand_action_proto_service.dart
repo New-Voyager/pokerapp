@@ -251,6 +251,7 @@ class HandActionProtoService {
         seatNo: seatNo,
         action: actionEnum,
         timedOut: isTimedout,
+        actionId: _gameState.currentActionId,
       ),
     );
     if (amount != null) {
@@ -301,8 +302,11 @@ class HandActionProtoService {
       try {
         final messageItem = proto.HandMessageItem(
           messageType: 'EXTEND_ACTION_TIMER',
-          extendTimer:
-              proto.ExtendTimer(seatNo: _gameState.me.seatNo, extendBySec: 15),
+          extendTimer: proto.ExtendTimer(
+            seatNo: _gameState.me.seatNo,
+            extendBySec: 15,
+            actionId: _gameState.currentActionId,
+          ),
         );
         int msgId = MessageId.incrementAndGet(_gameState.gameCode);
         String messageId = msgId.toString();
