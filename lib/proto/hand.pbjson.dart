@@ -89,12 +89,13 @@ const HandAction$json = const {
     const {'1': 'action_time', '3': 5, '4': 1, '5': 13, '10': 'actionTime'},
     const {'1': 'stack', '3': 6, '4': 1, '5': 1, '10': 'stack'},
     const {'1': 'pot_updates', '3': 7, '4': 1, '5': 1, '10': 'potUpdates'},
+    const {'1': 'action_id', '3': 8, '4': 1, '5': 9, '10': 'actionId'},
   ],
 };
 
 /// Descriptor for `HandAction`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List handActionDescriptor = $convert.base64Decode(
-    'CgpIYW5kQWN0aW9uEhcKB3NlYXRfbm8YASABKA1SBnNlYXRObxIkCgZhY3Rpb24YAiABKA4yDC5nYW1lLkFDVElPTlIGYWN0aW9uEhYKBmFtb3VudBgDIAEoAVIGYW1vdW50EhsKCXRpbWVkX291dBgEIAEoCFIIdGltZWRPdXQSHwoLYWN0aW9uX3RpbWUYBSABKA1SCmFjdGlvblRpbWUSFAoFc3RhY2sYBiABKAFSBXN0YWNrEh8KC3BvdF91cGRhdGVzGAcgASgBUgpwb3RVcGRhdGVz');
+    'CgpIYW5kQWN0aW9uEhcKB3NlYXRfbm8YASABKA1SBnNlYXRObxIkCgZhY3Rpb24YAiABKA4yDC5nYW1lLkFDVElPTlIGYWN0aW9uEhYKBmFtb3VudBgDIAEoAVIGYW1vdW50EhsKCXRpbWVkX291dBgEIAEoCFIIdGltZWRPdXQSHwoLYWN0aW9uX3RpbWUYBSABKA1SCmFjdGlvblRpbWUSFAoFc3RhY2sYBiABKAFSBXN0YWNrEh8KC3BvdF91cGRhdGVzGAcgASgBUgpwb3RVcGRhdGVzEhsKCWFjdGlvbl9pZBgIIAEoCVIIYWN0aW9uSWQ=');
 @$core.Deprecated('Use handActionLogDescriptor instead')
 const HandActionLog$json = const {
   '1': 'HandActionLog',
@@ -130,24 +131,26 @@ const ExtendTimer$json = const {
     const {'1': 'seat_no', '3': 1, '4': 1, '5': 13, '10': 'seatNo'},
     const {'1': 'extend_by_sec', '3': 2, '4': 1, '5': 13, '10': 'extendBySec'},
     const {'1': 'remaining_sec', '3': 3, '4': 1, '5': 13, '10': 'remainingSec'},
+    const {'1': 'action_id', '3': 4, '4': 1, '5': 9, '10': 'actionId'},
   ],
 };
 
 /// Descriptor for `ExtendTimer`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List extendTimerDescriptor = $convert.base64Decode(
-    'CgtFeHRlbmRUaW1lchIXCgdzZWF0X25vGAEgASgNUgZzZWF0Tm8SIgoNZXh0ZW5kX2J5X3NlYxgCIAEoDVILZXh0ZW5kQnlTZWMSIwoNcmVtYWluaW5nX3NlYxgDIAEoDVIMcmVtYWluaW5nU2Vj');
+    'CgtFeHRlbmRUaW1lchIXCgdzZWF0X25vGAEgASgNUgZzZWF0Tm8SIgoNZXh0ZW5kX2J5X3NlYxgCIAEoDVILZXh0ZW5kQnlTZWMSIwoNcmVtYWluaW5nX3NlYxgDIAEoDVIMcmVtYWluaW5nU2VjEhsKCWFjdGlvbl9pZBgEIAEoCVIIYWN0aW9uSWQ=');
 @$core.Deprecated('Use resetTimerDescriptor instead')
 const ResetTimer$json = const {
   '1': 'ResetTimer',
   '2': const [
     const {'1': 'seat_no', '3': 1, '4': 1, '5': 13, '10': 'seatNo'},
     const {'1': 'remaining_sec', '3': 2, '4': 1, '5': 13, '10': 'remainingSec'},
+    const {'1': 'action_id', '3': 3, '4': 1, '5': 9, '10': 'actionId'},
   ],
 };
 
 /// Descriptor for `ResetTimer`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List resetTimerDescriptor = $convert.base64Decode(
-    'CgpSZXNldFRpbWVyEhcKB3NlYXRfbm8YASABKA1SBnNlYXRObxIjCg1yZW1haW5pbmdfc2VjGAIgASgNUgxyZW1haW5pbmdTZWM=');
+    'CgpSZXNldFRpbWVyEhcKB3NlYXRfbm8YASABKA1SBnNlYXRObxIjCg1yZW1haW5pbmdfc2VjGAIgASgNUgxyZW1haW5pbmdTZWMSGwoJYWN0aW9uX2lkGAMgASgJUghhY3Rpb25JZA==');
 @$core.Deprecated('Use betRaiseOptionDescriptor instead')
 const BetRaiseOption$json = const {
   '1': 'BetRaiseOption',
@@ -222,12 +225,13 @@ const NextSeatAction$json = const {
       '10': 'secondsTillTimesout'
     },
     const {'1': 'seatInSoFar', '3': 14, '4': 1, '5': 1, '10': 'seatInSoFar'},
+    const {'1': 'actionId', '3': 15, '4': 1, '5': 9, '10': 'actionId'},
   ],
 };
 
 /// Descriptor for `NextSeatAction`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List nextSeatActionDescriptor = $convert.base64Decode(
-    'Cg5OZXh0U2VhdEFjdGlvbhIXCgdzZWF0X25vGAEgASgNUgZzZWF0Tm8SOQoRYXZhaWxhYmxlX2FjdGlvbnMYAiADKA4yDC5nYW1lLkFDVElPTlIQYXZhaWxhYmxlQWN0aW9ucxImCg5zdHJhZGRsZUFtb3VudBgDIAEoAVIOc3RyYWRkbGVBbW91bnQSHgoKY2FsbEFtb3VudBgEIAEoAVIKY2FsbEFtb3VudBIgCgtyYWlzZUFtb3VudBgFIAEoAVILcmFpc2VBbW91bnQSIgoMbWluQmV0QW1vdW50GAYgASgBUgxtaW5CZXRBbW91bnQSIgoMbWF4QmV0QW1vdW50GAcgASgBUgxtYXhCZXRBbW91bnQSJgoObWluUmFpc2VBbW91bnQYCCABKAFSDm1pblJhaXNlQW1vdW50EiYKDm1heFJhaXNlQW1vdW50GAkgASgBUg5tYXhSYWlzZUFtb3VudBIgCgthbGxJbkFtb3VudBgKIAEoAVILYWxsSW5BbW91bnQSNAoKYmV0T3B0aW9ucxgLIAMoCzIULmdhbWUuQmV0UmFpc2VPcHRpb25SCmJldE9wdGlvbnMSKgoQYWN0aW9uVGltZXNvdXRBdBgMIAEoA1IQYWN0aW9uVGltZXNvdXRBdBIwChNzZWNvbmRzVGlsbFRpbWVzb3V0GA0gASgNUhNzZWNvbmRzVGlsbFRpbWVzb3V0EiAKC3NlYXRJblNvRmFyGA4gASgBUgtzZWF0SW5Tb0Zhcg==');
+    'Cg5OZXh0U2VhdEFjdGlvbhIXCgdzZWF0X25vGAEgASgNUgZzZWF0Tm8SOQoRYXZhaWxhYmxlX2FjdGlvbnMYAiADKA4yDC5nYW1lLkFDVElPTlIQYXZhaWxhYmxlQWN0aW9ucxImCg5zdHJhZGRsZUFtb3VudBgDIAEoAVIOc3RyYWRkbGVBbW91bnQSHgoKY2FsbEFtb3VudBgEIAEoAVIKY2FsbEFtb3VudBIgCgtyYWlzZUFtb3VudBgFIAEoAVILcmFpc2VBbW91bnQSIgoMbWluQmV0QW1vdW50GAYgASgBUgxtaW5CZXRBbW91bnQSIgoMbWF4QmV0QW1vdW50GAcgASgBUgxtYXhCZXRBbW91bnQSJgoObWluUmFpc2VBbW91bnQYCCABKAFSDm1pblJhaXNlQW1vdW50EiYKDm1heFJhaXNlQW1vdW50GAkgASgBUg5tYXhSYWlzZUFtb3VudBIgCgthbGxJbkFtb3VudBgKIAEoAVILYWxsSW5BbW91bnQSNAoKYmV0T3B0aW9ucxgLIAMoCzIULmdhbWUuQmV0UmFpc2VPcHRpb25SCmJldE9wdGlvbnMSKgoQYWN0aW9uVGltZXNvdXRBdBgMIAEoA1IQYWN0aW9uVGltZXNvdXRBdBIwChNzZWNvbmRzVGlsbFRpbWVzb3V0GA0gASgNUhNzZWNvbmRzVGlsbFRpbWVzb3V0EiAKC3NlYXRJblNvRmFyGA4gASgBUgtzZWF0SW5Tb0ZhchIaCghhY3Rpb25JZBgPIAEoCVIIYWN0aW9uSWQ=');
 @$core.Deprecated('Use playerInSeatStateDescriptor instead')
 const PlayerInSeatState$json = const {
   '1': 'PlayerInSeatState',

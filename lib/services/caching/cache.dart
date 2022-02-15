@@ -27,7 +27,7 @@ class CacheService {
    * Return club members from the cache. If update is set to true, fetch from server, cache it.
    */
   Future<List<ClubMemberModel>> getMembers(String clubCode,
-      {bool update = false}) async {
+      {bool update = false, String updatePlayerUuid = ''}) async {
     if (clubMembersMap[clubCode] == null || clubCode == refreshClubMembers) {
       update = true;
     }
@@ -38,6 +38,20 @@ class CacheService {
       final clubMembers = await ClubInteriorService.getClubMembers(
           clubCode, MemberListOptions.ALL);
       clubMembersMap[clubCode] = clubMembers;
+    } else if (!updatePlayerUuid.isEmpty) {
+      final updatedClubMembers = await ClubInteriorService.getClubMembers(
+          clubCode, MemberListOptions.ALL);
+      ClubMemberModel updatedMember = updatedClubMembers.firstWhere(
+          (member) => member.playerId == updatePlayerUuid,
+          orElse: () => null);
+      if (updatedMember != null) {
+        clubMembersMap[clubCode] = clubMembersMap[clubCode].map((member) {
+          if (member.playerId == updatePlayerUuid) {
+            return updatedMember;
+          }
+          return member;
+        }).toList();
+      }
     }
     return clubMembersMap[clubCode];
   }
