@@ -69,6 +69,11 @@ class HandAction extends $pb.GeneratedMessage {
             ? ''
             : 'potUpdates',
         $pb.PbFieldType.OD)
+    ..aOS(
+        8,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'actionId')
     ..hasRequiredFields = false;
 
   HandAction._() : super();
@@ -80,6 +85,7 @@ class HandAction extends $pb.GeneratedMessage {
     $core.int? actionTime,
     $core.double? stack,
     $core.double? potUpdates,
+    $core.String? actionId,
   }) {
     final _result = create();
     if (seatNo != null) {
@@ -102,6 +108,9 @@ class HandAction extends $pb.GeneratedMessage {
     }
     if (potUpdates != null) {
       _result.potUpdates = potUpdates;
+    }
+    if (actionId != null) {
+      _result.actionId = actionId;
     }
     return _result;
   }
@@ -214,6 +223,18 @@ class HandAction extends $pb.GeneratedMessage {
   $core.bool hasPotUpdates() => $_has(6);
   @$pb.TagNumber(7)
   void clearPotUpdates() => clearField(7);
+
+  @$pb.TagNumber(8)
+  $core.String get actionId => $_getSZ(7);
+  @$pb.TagNumber(8)
+  set actionId($core.String v) {
+    $_setString(7, v);
+  }
+
+  @$pb.TagNumber(8)
+  $core.bool hasActionId() => $_has(7);
+  @$pb.TagNumber(8)
+  void clearActionId() => clearField(8);
 }
 
 class HandActionLog extends $pb.GeneratedMessage {
@@ -353,6 +374,11 @@ class ExtendTimer extends $pb.GeneratedMessage {
             ? ''
             : 'remainingSec',
         $pb.PbFieldType.OU3)
+    ..aOS(
+        4,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'actionId')
     ..hasRequiredFields = false;
 
   ExtendTimer._() : super();
@@ -360,6 +386,7 @@ class ExtendTimer extends $pb.GeneratedMessage {
     $core.int? seatNo,
     $core.int? extendBySec,
     $core.int? remainingSec,
+    $core.String? actionId,
   }) {
     final _result = create();
     if (seatNo != null) {
@@ -370,6 +397,9 @@ class ExtendTimer extends $pb.GeneratedMessage {
     }
     if (remainingSec != null) {
       _result.remainingSec = remainingSec;
+    }
+    if (actionId != null) {
+      _result.actionId = actionId;
     }
     return _result;
   }
@@ -434,6 +464,18 @@ class ExtendTimer extends $pb.GeneratedMessage {
   $core.bool hasRemainingSec() => $_has(2);
   @$pb.TagNumber(3)
   void clearRemainingSec() => clearField(3);
+
+  @$pb.TagNumber(4)
+  $core.String get actionId => $_getSZ(3);
+  @$pb.TagNumber(4)
+  set actionId($core.String v) {
+    $_setString(3, v);
+  }
+
+  @$pb.TagNumber(4)
+  $core.bool hasActionId() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearActionId() => clearField(4);
 }
 
 class ResetTimer extends $pb.GeneratedMessage {
@@ -458,12 +500,18 @@ class ResetTimer extends $pb.GeneratedMessage {
             ? ''
             : 'remainingSec',
         $pb.PbFieldType.OU3)
+    ..aOS(
+        3,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'actionId')
     ..hasRequiredFields = false;
 
   ResetTimer._() : super();
   factory ResetTimer({
     $core.int? seatNo,
     $core.int? remainingSec,
+    $core.String? actionId,
   }) {
     final _result = create();
     if (seatNo != null) {
@@ -471,6 +519,9 @@ class ResetTimer extends $pb.GeneratedMessage {
     }
     if (remainingSec != null) {
       _result.remainingSec = remainingSec;
+    }
+    if (actionId != null) {
+      _result.actionId = actionId;
     }
     return _result;
   }
@@ -523,6 +574,18 @@ class ResetTimer extends $pb.GeneratedMessage {
   $core.bool hasRemainingSec() => $_has(1);
   @$pb.TagNumber(2)
   void clearRemainingSec() => clearField(2);
+
+  @$pb.TagNumber(3)
+  $core.String get actionId => $_getSZ(2);
+  @$pb.TagNumber(3)
+  set actionId($core.String v) {
+    $_setString(2, v);
+  }
+
+  @$pb.TagNumber(3)
+  $core.bool hasActionId() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearActionId() => clearField(3);
 }
 
 class BetRaiseOption extends $pb.GeneratedMessage {
@@ -722,6 +785,12 @@ class NextSeatAction extends $pb.GeneratedMessage {
             : 'seatInSoFar',
         $pb.PbFieldType.OD,
         protoName: 'seatInSoFar')
+    ..aOS(
+        15,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'actionId',
+        protoName: 'actionId')
     ..hasRequiredFields = false;
 
   NextSeatAction._() : super();
@@ -740,6 +809,7 @@ class NextSeatAction extends $pb.GeneratedMessage {
     $fixnum.Int64? actionTimesoutAt,
     $core.int? secondsTillTimesout,
     $core.double? seatInSoFar,
+    $core.String? actionId,
   }) {
     final _result = create();
     if (seatNo != null) {
@@ -783,6 +853,9 @@ class NextSeatAction extends $pb.GeneratedMessage {
     }
     if (seatInSoFar != null) {
       _result.seatInSoFar = seatInSoFar;
+    }
+    if (actionId != null) {
+      _result.actionId = actionId;
     }
     return _result;
   }
@@ -962,6 +1035,18 @@ class NextSeatAction extends $pb.GeneratedMessage {
   $core.bool hasSeatInSoFar() => $_has(13);
   @$pb.TagNumber(14)
   void clearSeatInSoFar() => clearField(14);
+
+  @$pb.TagNumber(15)
+  $core.String get actionId => $_getSZ(14);
+  @$pb.TagNumber(15)
+  set actionId($core.String v) {
+    $_setString(14, v);
+  }
+
+  @$pb.TagNumber(15)
+  $core.bool hasActionId() => $_has(14);
+  @$pb.TagNumber(15)
+  void clearActionId() => clearField(15);
 }
 
 class PlayerInSeatState extends $pb.GeneratedMessage {

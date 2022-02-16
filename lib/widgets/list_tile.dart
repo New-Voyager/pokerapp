@@ -27,21 +27,21 @@ class IconWidgetTile extends StatelessWidget {
     if (this.svgIconPath != null) {
       icon = SvgPicture.asset(
         svgIconPath,
-        width: 24,
-        height: 24,
+        width: 20,
+        height: 20,
         color: theme.accentColor,
       );
     } else if (this.icon != null) {
-      icon = Icon(this.icon, size: 24, color: theme.accentColor);
+      icon = Icon(this.icon, size: 20, color: theme.accentColor);
     }
 
     Widget child = Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(4.0),
       child: Row(
         children: [
           Container(
-              width: 36,
-              height: 36,
+              width: 30,
+              height: 30,
               padding: EdgeInsets.all(2),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,

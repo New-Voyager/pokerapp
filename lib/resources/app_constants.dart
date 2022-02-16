@@ -57,7 +57,7 @@ class AppConstants {
   static const Duration timebankUpdateDuration = const Duration(minutes: 15);
 
   static const Duration cardShufflingTotalWaitDuration = const Duration(
-    milliseconds: 800,
+    milliseconds: 300,
   );
 
   static const Duration bombPotTotalWaitDuration = const Duration(

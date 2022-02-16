@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:provider/provider.dart';
 
@@ -13,20 +14,21 @@ class TableView extends StatelessWidget {
     final tableWidth = MediaQuery.of(context).size.width * tableWidthFactor;
     final animationDuration = const Duration(milliseconds: 250);
     final gameState = GameState.getState(context);
-
-    return Container(
-      key: gameState.tableKey,
-      // height is used as per the aspect ratio
-      width: tableWidth,
-      // color is used while debugging
-      // color: Colors.amber,
-      child: Consumer<RedrawBoardSectionState>(
-        builder: (_, __, ___) => AnimatedSwitcher(
-          duration: animationDuration,
-          child: Transform.scale(
-            scale: 1.10,
+    return Center(
+      child: Container(
+        width: tableWidth,
+        height: tableWidth,
+        clipBehavior: Clip.none,
+        child: Consumer<RedrawBoardSectionState>(
+          builder: (_, __, ___) => AnimatedSwitcher(
+            duration: const Duration(milliseconds: 250),
+            // child: Image.memory(
+            //   gameState.assets.getBoard(),
+            //   key: UniqueKey(),
+            //   fit: BoxFit.fill,
+            // ),
             child: Image.asset(
-              "assets/images/table/redtable.png",
+              appService.appSettings.tableAsset,
               key: UniqueKey(),
             ),
           ),

@@ -228,6 +228,9 @@ class GameState {
   bool chatScreenVisible = false;
   String chatTextBoxText = "";
 
+  // next action id
+  String currentActionId;
+
   Future<void> initialize({
     String gameCode,
     @required GameInfoModel gameInfo,

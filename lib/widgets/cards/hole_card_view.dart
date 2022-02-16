@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
@@ -165,7 +166,8 @@ class HoleCardWidget extends StatelessWidget {
     if (this.backCardBytes != null) {
       cardBackImage = Image.memory(this.backCardBytes);
     } else {
-      cardBackImage = Image.asset('assets/images/card_back/set2/Asset 8.png');
+      // cardBackImage = Image.asset('assets/images/card_back/set2/Asset 8.png');
+      cardBackImage = Image.asset(appService.appSettings.cardBackAsset);
     }
 
     return ClipRRect(

@@ -370,7 +370,7 @@ class NewHandHandler {
       if (gameState.uiClosing) return;
 
       // play the deal sound effect
-      AudioService.playDeal(mute: gameState.playerLocalConfig.mute);
+      // AudioService.playDeal(mute: gameState.playerLocalConfig.mute);
 
       /* show card shuffling*/
       tableState.updateCardShufflingAnimation(true);
