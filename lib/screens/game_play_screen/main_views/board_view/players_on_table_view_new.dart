@@ -111,23 +111,20 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
       seat.serverSeatPos = serverSeatNo;
 
       // scale: widget.isLargerScreen ? 1.3 : 1.0,
-      final playerView = Transform.scale(
-        scale: widget.isLargerScreen ? 1.3 : 1.0,
-        child: ListenableProvider<Seat>(
-          create: (_) => seat,
-          builder: (_, __) => Consumer<Seat>(builder: (_, __, ___) {
-            return DebugBorderWidget(
-              child: PlayerView(
-                seat: seat,
-                onUserTap: widget.onUserTap,
-                gameComService: widget.gameComService,
-                boardAttributes: boa,
-                gameContextObject: gco,
-                gameState: _gameState,
-              ),
-            );
-          }),
-        ),
+      final playerView = ListenableProvider<Seat>(
+        create: (_) => seat,
+        builder: (_, __) => Consumer<Seat>(builder: (_, __, ___) {
+          return DebugBorderWidget(
+            child: PlayerView(
+              seat: seat,
+              onUserTap: widget.onUserTap,
+              gameComService: widget.gameComService,
+              boardAttributes: boa,
+              gameContextObject: gco,
+              gameState: _gameState,
+            ),
+          );
+        }),
       );
 
       players.add(LayoutId(id: seat.seatPos, child: playerView));
@@ -388,6 +385,11 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
   void initState() {
     super.initState();
     _init();
+    if (widget.isLargerScreen) {
+      NamePlateWidgetParent.setWidth(100);
+    } else {
+      NamePlateWidgetParent.setWidth(80);
+    }
   }
 
   @override
@@ -465,22 +467,23 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
 
   @override
   Widget build(BuildContext context) {
+    final namePlateWidgetSize = NamePlateWidgetParent.namePlateSize;
+
     final ts = Size(
-      widget.tableSize.width * 1.1,
-      widget.tableSize.height,
+      widget.tableSize.width,
+      widget.tableSize.height + namePlateWidgetSize.height * 1.5,
     );
 
     Provider.of<SeatsOnTableState>(context, listen: true);
 
-    final namePlateWidgetSize = NamePlateWidgetParent.namePlateSize;
-
     return Stack(
+      alignment: Alignment.center,
       key: _parentKey,
       children: [
         // positioning players
         SizedBox(
           width: ts.width,
-          height: ts.height + namePlateWidgetSize.height * 1.5,
+          height: ts.height,
           child: CustomMultiChildLayout(
             delegate: PlayerPlacementDelegate(widget.isLargerScreen),
             children: _getPlayers(context),
@@ -540,7 +543,7 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
 
       positionChild(
         SeatPos.topLeft,
-        Offset(0.0, -3 * cs.height / 4),
+        Offset(0.0, 0.0),
       );
     }
 
@@ -553,7 +556,7 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
 
       positionChild(
         SeatPos.topRight,
-        Offset(size.width - cs.width, -3 * cs.height / 4),
+        Offset(size.width - cs.width, 0.0),
       );
     }
 
@@ -580,10 +583,7 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
 
       positionChild(
         SeatPos.topCenter1,
-        Offset(
-          (3 * size.width / 8) - cs.width / 2,
-          isLarger ? -cs.height : -3 * cs.height / 4,
-        ),
+        Offset((3 * size.width / 8) - cs.width / 2, 0.0),
       );
     }
 
@@ -597,10 +597,7 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
 
       positionChild(
         SeatPos.topCenter2,
-        Offset(
-          (5 * size.width / 8) - cs.width / 2,
-          isLarger ? -cs.height : -3 * cs.height / 4,
-        ),
+        Offset((5 * size.width / 8) - cs.width / 2, 0.0),
       );
     }
 
@@ -613,10 +610,7 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
 
       positionChild(
         SeatPos.topCenter,
-        Offset(
-          (size.width / 2) - cs.width / 2,
-          0.0,
-        ),
+        Offset((size.width / 2) - cs.width / 2, 0.0),
       );
     }
 
@@ -645,7 +639,7 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
         SeatPos.bottomLeft,
         Offset(
           (3 * size.width / 16) - (cs.width / 2),
-          size.height - cs.height / 2,
+          size.height - cs.height,
         ),
       );
     }
@@ -675,7 +669,7 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
         SeatPos.bottomRight,
         Offset(
           (13 * size.width / 16) - (cs.width / 2),
-          size.height - cs.height / 2,
+          size.height - cs.height,
         ),
       );
     }
