@@ -50,6 +50,12 @@ class PlayerActionHandler {
     }
   }
 
+  void extendTime(int timeoutMilli) {
+    if (_actionTimer != null) {
+      _actionTimer.extend(timeoutMilli);
+    }
+  }
+
   Future<void> handleQueryCurrentHand(proto.HandMessageItem message) async {
     final currentHandState = message.currentHandState;
     // log('Current hand state: $currentHandState');
@@ -588,6 +594,10 @@ class PlayActionTimer {
       _timer.cancel();
       _timer = null;
     }
+  }
+
+  void extend(int extendMilli) {
+    _timeout += extendMilli;
   }
 
   void start(int timeoutMilli, Function onFinished) {

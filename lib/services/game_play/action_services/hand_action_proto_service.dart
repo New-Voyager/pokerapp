@@ -274,7 +274,10 @@ class HandActionProtoService {
   extendTime(int playerId, int seatNo, int handNum, int time) {
     final messageItem = proto.HandMessageItem(
       messageType: 'EXTEND_ACTION_TIMER',
-      extendTimer: proto.ExtendTimer(seatNo: seatNo, extendBySec: time),
+      extendTimer: proto.ExtendTimer(
+          seatNo: seatNo,
+          extendBySec: time,
+          actionId: _gameState.currentActionId),
     );
     int msgId = MessageId.incrementAndGet(_gameState.gameCode);
     String messageId = msgId.toString();
@@ -288,6 +291,9 @@ class HandActionProtoService {
         messages: [messageItem]);
     final binMessage = handMessage.writeToBuffer();
     this._gameComService.sendProtoPlayerToHandChannel(binMessage);
+
+    // extend the time in play action timer
+    _actionHandler.extendTime((3 + time) * 1000);
   }
 
   extendTimerOnReconnect() async {
