@@ -16,6 +16,7 @@ import 'package:pokerapp/screens/game_play_screen/seat_view/player_view.dart';
 import 'package:pokerapp/services/audio/audio_service.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
+import 'package:pokerapp/utils/name_plate_widget_parent.dart';
 import 'package:pokerapp/widgets/debug_border_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -138,23 +139,23 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
     return players;
   }
 
-  Size getPlayerOnTableSize() {
-    // If larger screen, then allow the multichild layout to spread a little
-    // If smaller screen devices, then squeeze the multichild layout
-    // Otherwise, do not change the factor of the tableSize
+  // Size getPlayerOnTableSize() {
+  //   // If larger screen, then allow the multichild layout to spread a little
+  //   // If smaller screen devices, then squeeze the multichild layout
+  //   // Otherwise, do not change the factor of the tableSize
 
-    // in case of larger screens - let the multichild layout be placed extra 1.10 factor
-    if (widget.isLargerScreen)
-      return Size(
-        widget.tableSize.width,
-        widget.tableSize.height,
-      );
+  //   // in case of larger screens - let the multichild layout be placed extra 1.10 factor
+  //   if (widget.isLargerScreen)
+  //     return Size(
+  //       widget.tableSize.width,
+  //       widget.tableSize.height,
+  //     );
 
-    // TODO: DO WE NEED A CASE FOR SMALLER SCREEN DEVICES?
+  //   // TODO: DO WE NEED A CASE FOR SMALLER SCREEN DEVICES?
 
-    // normal case
-    return Size(widget.tableSize.width, widget.tableSize.height);
-  }
+  //   // normal case
+  //   return Size(widget.tableSize.width, widget.tableSize.height);
+  // }
 
   void _animationHandlers() {
     _lottieController = AnimationController(
@@ -470,13 +471,16 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
     );
 
     Provider.of<SeatsOnTableState>(context, listen: true);
+
+    final namePlateWidgetSize = NamePlateWidgetParent.namePlateSize;
+
     return Stack(
       key: _parentKey,
       children: [
         // positioning players
         SizedBox(
           width: ts.width,
-          height: ts.height,
+          height: ts.height + namePlateWidgetSize.height * 1.5,
           child: CustomMultiChildLayout(
             delegate: PlayerPlacementDelegate(widget.isLargerScreen),
             children: _getPlayers(context),
@@ -611,7 +615,7 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
         SeatPos.topCenter,
         Offset(
           (size.width / 2) - cs.width / 2,
-          isLarger ? -cs.height : -3 * cs.height / 4,
+          0.0,
         ),
       );
     }
@@ -655,7 +659,7 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
 
       positionChild(
         SeatPos.bottomCenter,
-        Offset((size.width / 2) - cs.width / 2, size.height - cs.height / 2),
+        Offset((size.width / 2) - cs.width / 2, size.height - cs.height),
       );
     }
 

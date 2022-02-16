@@ -48,7 +48,7 @@ void main() async {
     flavorApp = FlavorConfig(
       appName: 'PokerClubApp',
       flavorName: Flavor.PROD.toString(),
-      apiBaseUrl: 'https://api.pokerclub.app',
+      apiBaseUrl: 'https://demo.pokerclub.app',
       child: MyApp(),
     );
   } else {

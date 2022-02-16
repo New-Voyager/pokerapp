@@ -15,6 +15,7 @@ import 'package:pokerapp/screens/game_play_screen/game_play_screen_util_methods.
 import 'package:pokerapp/screens/game_play_screen/seat_view/animating_widgets/stack_reload_animating_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/milliseconds_counter.dart';
 import 'package:pokerapp/services/audio/audio_service.dart';
+import 'package:pokerapp/utils/name_plate_widget_parent.dart';
 import 'package:pokerapp/widgets/nameplate.dart';
 import 'package:pokerapp/widgets/text_widgets/name_plate/name_plate_name_text.dart';
 import 'package:pokerapp/widgets/text_widgets/name_plate/name_plate_stack_text.dart';
@@ -196,7 +197,7 @@ class NamePlateWidget extends StatelessWidget {
       playerNamePlate = nameplate.svg;
       playerProgress = nameplate.path;
     }
-    double scale = 0.95;
+    // double scale = 0.95;
 
     Size containerSize = Size(200, 120);
     Size progressRatio = Size(1.0, 1.0);
@@ -238,7 +239,7 @@ class NamePlateWidget extends StatelessWidget {
                 size: containerSize,
                 progressPath: playerProgress,
                 progressRatio: progressRatio,
-                scale: scale,
+                scale: 1.0,
               );
             },
           );
@@ -252,7 +253,7 @@ class NamePlateWidget extends StatelessWidget {
         size: containerSize,
         progressPath: playerProgress,
         progressRatio: progressRatio,
-        scale: scale,
+        scale: 1.0,
       );
     }
     String playerName = '';
@@ -292,8 +293,7 @@ class NamePlateWidget extends StatelessWidget {
                           nameplate.meta.padding.split(",")[3].trim(),
                         ),
                       )
-                    : null, //EdgeInsets.all(3),
-                //padding: EdgeInsets.all(2),
+                    : null,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -324,23 +324,13 @@ class NamePlateWidget extends StatelessWidget {
       ],
     );
 
-    // log('SeatView: Nameplate build ${seat.serverSeatPos}:L${seat.localSeatPos} pos: ${seat.seatPos.toString()} player: ${seat.player?.name} highlight: ${seat.player?.highlight}');
-
     plateWidget = namePlate;
     Widget ret = Opacity(
       opacity: childWhenDragging ? 0.50 : 1.0,
-      child: Container(
-        width: 100,
-        height: 76,
-        //width: boardAttributes.namePlateSize.width,
-        //height: boardAttributes.namePlateSize.height,
-        padding: const EdgeInsets.symmetric(
-          vertical: 5.0,
-        ),
-        decoration: BoxDecoration(
-          boxShadow: shadow,
-        ),
+      child: NamePlateWidgetParent.build(
         child: plateWidget,
+        decoration: BoxDecoration(boxShadow: shadow),
+        padding: const EdgeInsets.symmetric(vertical: 5.0),
       ),
     );
     return ret;

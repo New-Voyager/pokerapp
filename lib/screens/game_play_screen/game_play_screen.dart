@@ -49,6 +49,7 @@ import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
+import 'package:pokerapp/utils/name_plate_widget_parent.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
@@ -781,6 +782,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   @override
   void initState() {
     super.initState();
+
+    // THIS FUNCTION WOULD BE CALLED WHILE INITIALIZING THE APP
+    NamePlateWidgetParent.setWidth(80);
 
     boardAttributes = BoardAttributesObject(
       screenSize: Screen.diagonalInches,

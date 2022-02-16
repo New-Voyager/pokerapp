@@ -337,6 +337,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
       );
 
       List<Widget> children = [];
+
       if (widget.seat.dealer) {
         children.add(
           // dealer button
@@ -348,14 +349,18 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
         );
       }
       children.add(openSeatWidget);
+
       children.add(
-        Consumer<SeatChangeNotifier>(builder: (_, scn, __) {
-          return (gameState.hostSeatChangeInProgress ||
-                  gameState.playerSeatChangeInProgress)
-              ? SeatNoWidget(widget.seat)
-              : const SizedBox.shrink();
-        }),
+        Consumer<SeatChangeNotifier>(
+          builder: (_, scn, __) {
+            return (gameState.hostSeatChangeInProgress ||
+                    gameState.playerSeatChangeInProgress)
+                ? SeatNoWidget(widget.seat)
+                : const SizedBox.shrink();
+          },
+        ),
       );
+
       return Stack(alignment: Alignment.center, children: children);
     }
 
@@ -464,167 +469,162 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
           }
         }
 
-        return Transform.scale(
-          scale: 0.80,
-          child: InkWell(
-            onTap: () {
-              if (gameState.replayMode) {
-                return;
-              }
-              _onTap(context);
-            },
-            child: Stack(
-              clipBehavior: Clip.none,
-              alignment: Alignment.center,
-              children: [
-                // Container(width: 100, height: 60, color: Colors.grey[900]),
-                //SvgPicture.string(namePlateStr, width: 60, height: 50),
-                // // main user body
+        return InkWell(
+          onTap: () {
+            if (gameState.replayMode) {
+              return;
+            }
+            _onTap(context);
+          },
+          child: Stack(
+            clipBehavior: Clip.none,
+            alignment: Alignment.center,
+            children: [
+              
+              // main body
+              Opacity(
+                opacity: opacity,
+                child: NamePlateWidget(
+                  widget.seat,
+                  globalKey: key,
+                  boardAttributes: boardAttributes,
+                ),
+              ),
 
-                Opacity(
-                  opacity: opacity,
-                  child: NamePlateWidget(
-                    widget.seat,
-                    globalKey: key,
-                    boardAttributes: boardAttributes,
+              // result cards shown in player view at the time of result
+              _buildDisplayCardsWidget(widget.seat, gameState.handState),
+
+              // player action text
+              Positioned(
+                top: -5.ph,
+                left: actionLeft,
+                right: actionRight,
+                child: ActionStatusWidget(widget.seat, widget.cardsAlignment),
+              ),
+
+              // player notes text
+              Visibility(
+                visible: widget.seat.player.hasNotes && !widget.seat.isMe,
+                child: Transform.translate(
+                  offset: notesOffset,
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.note,
+                      color: theme.accentColor,
+                      size: 10.dp,
+                    ),
+                    onPressed: () async {
+                      //await handleNotesPopup(context, widget.seat);
+                    },
                   ),
                 ),
+              ),
 
-                // result cards shown in player view at the time of result
-                _buildDisplayCardsWidget(widget.seat, gameState.handState),
+              // !showWinnerLottie
+              //     ? Container()
+              //     : Lottie.asset('assets/animations/winner.json'),
 
-                // player action text
-                Positioned(
-                  top: -5.ph,
-                  left: actionLeft,
-                  right: actionRight,
-                  child: ActionStatusWidget(widget.seat, widget.cardsAlignment),
-                ),
+              Visibility(
+                  visible: showWinnerLottie,
+                  child: Transform.scale(
+                      scale: 2.5,
+                      child: SizedBox.square(
+                          dimension: 80,
+                          child: Lottie.asset(
+                            'assets/animations/winner.json',
+                            repeat: false,
+                          )))),
 
-                // player notes text
-                Visibility(
-                  visible: widget.seat.player.hasNotes && !widget.seat.isMe,
-                  child: Transform.translate(
-                    offset: notesOffset,
-                    child: IconButton(
-                      icon: Icon(
-                        Icons.note,
-                        color: theme.accentColor,
-                        size: 10.dp,
+              // player hole cards (tilted card on the bottom left)
+              PlayerCardsWidget(
+                boardAttributes,
+                gameState,
+                widget.seat,
+                this.widget.cardsAlignment,
+                widget.seat.player?.noOfCardsVisible,
+                showdown,
+              ),
+
+              // show dealer button, if user is a dealer
+              isDealer
+                  ? DealerButtonWidget(
+                      widget.seat.seatPos,
+                      isMe,
+                      GameType.HOLDEM,
+                    )
+                  : shrinkedSizedBox,
+
+              // /* building the chip amount widget */
+              animate
+                  ? _animatingChipAmount(chipAmountWidget)
+                  : chipAmountWidget,
+
+              Consumer<SeatChangeNotifier>(builder: (_, scn, __) {
+                return (gameState.hostSeatChangeInProgress ||
+                        gameState.playerSeatChangeInProgress)
+                    ? SeatNoWidget(widget.seat)
+                    : const SizedBox.shrink();
+              }),
+
+              playerStatusIcons(),
+              widget.seat.player.showMicOff
+                  ? Positioned(
+                      top: 0,
+                      right: -20,
+                      child: Container(
+                        width: 22,
+                        height: 22,
+                        color: Colors.transparent,
+                        child: Icon(
+                          Icons.mic_off,
+                          color: Colors.white70,
+                        ),
+                      ))
+                  : SizedBox(),
+              widget.seat.player.showMicOn
+                  ? Positioned(
+                      top: 0,
+                      right: -20,
+                      child: Container(
+                        width: 22,
+                        height: 22,
+                        color: Colors.transparent,
+                        child: Icon(
+                          Icons.mic,
+                          color: Colors.white70,
+                        ),
                       ),
-                      onPressed: () async {
-                        //await handleNotesPopup(context, widget.seat);
+                    )
+                  : SizedBox(),
+
+              showFirework
+                  ? Builder(
+                      builder: (_) {
+                        _gifAssetImage =
+                            AssetImage('assets/animations/fireworks2.gif');
+                        return Transform.scale(
+                          scale: fireworksScale,
+                          child: Transform.translate(
+                            offset: Offset(
+                              0.0,
+                              -20.0,
+                            ),
+                            child: Image(
+                              image: _gifAssetImage,
+                              height: fireworksContainer.height,
+                              width: fireworksContainer.width,
+                            ),
+                          ),
+                        );
+                      },
+                    )
+                  : Builder(
+                      builder: (_) {
+                        _gifAssetImage?.evict();
+                        return shrinkedSizedBox;
                       },
                     ),
-                  ),
-                ),
-
-                // !showWinnerLottie
-                //     ? Container()
-                //     : Lottie.asset('assets/animations/winner.json'),
-
-                Visibility(
-                    visible: showWinnerLottie,
-                    child: Transform.scale(
-                        scale: 2.5,
-                        child: SizedBox.square(
-                            dimension: 80,
-                            child: Lottie.asset(
-                              'assets/animations/winner.json',
-                              repeat: false,
-                            )))),
-
-                // player hole cards (tilted card on the bottom left)
-                PlayerCardsWidget(
-                  boardAttributes,
-                  gameState,
-                  widget.seat,
-                  this.widget.cardsAlignment,
-                  widget.seat.player?.noOfCardsVisible,
-                  showdown,
-                ),
-
-                // show dealer button, if user is a dealer
-                isDealer
-                    ? DealerButtonWidget(
-                        widget.seat.seatPos,
-                        isMe,
-                        GameType.HOLDEM,
-                      )
-                    : shrinkedSizedBox,
-
-                // /* building the chip amount widget */
-                animate
-                    ? _animatingChipAmount(chipAmountWidget)
-                    : chipAmountWidget,
-
-                Consumer<SeatChangeNotifier>(builder: (_, scn, __) {
-                  return (gameState.hostSeatChangeInProgress ||
-                          gameState.playerSeatChangeInProgress)
-                      ? SeatNoWidget(widget.seat)
-                      : const SizedBox.shrink();
-                }),
-
-                playerStatusIcons(),
-                widget.seat.player.showMicOff
-                    ? Positioned(
-                        top: 0,
-                        right: -20,
-                        child: Container(
-                          width: 22,
-                          height: 22,
-                          color: Colors.transparent,
-                          child: Icon(
-                            Icons.mic_off,
-                            color: Colors.white70,
-                          ),
-                        ))
-                    : SizedBox(),
-                widget.seat.player.showMicOn
-                    ? Positioned(
-                        top: 0,
-                        right: -20,
-                        child: Container(
-                          width: 22,
-                          height: 22,
-                          color: Colors.transparent,
-                          child: Icon(
-                            Icons.mic,
-                            color: Colors.white70,
-                          ),
-                        ),
-                      )
-                    : SizedBox(),
-
-                showFirework
-                    ? Builder(
-                        builder: (_) {
-                          _gifAssetImage =
-                              AssetImage('assets/animations/fireworks2.gif');
-                          return Transform.scale(
-                            scale: fireworksScale,
-                            child: Transform.translate(
-                              offset: Offset(
-                                0.0,
-                                -20.0,
-                              ),
-                              child: Image(
-                                image: _gifAssetImage,
-                                height: fireworksContainer.height,
-                                width: fireworksContainer.width,
-                              ),
-                            ),
-                          );
-                        },
-                      )
-                    : Builder(
-                        builder: (_) {
-                          _gifAssetImage?.evict();
-                          return shrinkedSizedBox;
-                        },
-                      ),
-              ],
-            ),
+            ],
           ),
         );
       },
