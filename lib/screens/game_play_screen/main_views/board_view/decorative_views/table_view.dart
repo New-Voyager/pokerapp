@@ -14,23 +14,20 @@ class TableView extends StatelessWidget {
     final tableWidth = MediaQuery.of(context).size.width * tableWidthFactor;
     final animationDuration = const Duration(milliseconds: 250);
     final gameState = GameState.getState(context);
-    return Center(
-      child: Container(
-        width: tableWidth,
-        height: tableWidth,
-        clipBehavior: Clip.none,
-        child: Consumer<RedrawBoardSectionState>(
-          builder: (_, __, ___) => AnimatedSwitcher(
-            duration: const Duration(milliseconds: 250),
-            // child: Image.memory(
-            //   gameState.assets.getBoard(),
-            //   key: UniqueKey(),
-            //   fit: BoxFit.fill,
-            // ),
-            child: Image.asset(
-              appService.appSettings.tableAsset,
-              key: UniqueKey(),
-            ),
+    return Container(
+      key: gameState.tableKey,
+      width: tableWidth,
+      child: Consumer<RedrawBoardSectionState>(
+        builder: (_, __, ___) => AnimatedSwitcher(
+          duration: const Duration(milliseconds: 250),
+          // child: Image.memory(
+          //   gameState.assets.getBoard(),
+          //   key: UniqueKey(),
+          //   fit: BoxFit.fill,
+          // ),
+          child: Image.asset(
+            appService.appSettings.tableAsset,
+            key: UniqueKey(),
           ),
         ),
       ),
