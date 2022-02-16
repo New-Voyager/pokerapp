@@ -16,6 +16,7 @@ import 'package:pokerapp/screens/game_play_screen/seat_view/player_view.dart';
 import 'package:pokerapp/services/audio/audio_service.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
+import 'package:pokerapp/widgets/debug_border_widget.dart';
 import 'package:provider/provider.dart';
 
 const double _lottieAnimationContainerSize = 120.0;
@@ -108,18 +109,21 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
       );
       seat.serverSeatPos = serverSeatNo;
 
+      // scale: widget.isLargerScreen ? 1.3 : 1.0,
       final playerView = Transform.scale(
         scale: widget.isLargerScreen ? 1.3 : 1.0,
         child: ListenableProvider<Seat>(
           create: (_) => seat,
           builder: (_, __) => Consumer<Seat>(builder: (_, __, ___) {
-            return PlayerView(
-              seat: seat,
-              onUserTap: widget.onUserTap,
-              gameComService: widget.gameComService,
-              boardAttributes: boa,
-              gameContextObject: gco,
-              gameState: _gameState,
+            return DebugBorderWidget(
+              child: PlayerView(
+                seat: seat,
+                onUserTap: widget.onUserTap,
+                gameComService: widget.gameComService,
+                boardAttributes: boa,
+                gameContextObject: gco,
+                gameState: _gameState,
+              ),
             );
           }),
         ),
@@ -142,14 +146,14 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
     // in case of larger screens - let the multichild layout be placed extra 1.10 factor
     if (widget.isLargerScreen)
       return Size(
-        widget.tableSize.width * 1.10,
-        widget.tableSize.height * 1.25,
+        widget.tableSize.width,
+        widget.tableSize.height,
       );
 
     // TODO: DO WE NEED A CASE FOR SMALLER SCREEN DEVICES?
 
     // normal case
-    return Size(widget.tableSize.width, widget.tableSize.height * 1.70);
+    return Size(widget.tableSize.width, widget.tableSize.height);
   }
 
   void _animationHandlers() {
@@ -460,19 +464,21 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
 
   @override
   Widget build(BuildContext context) {
-    final ts = getPlayerOnTableSize();
+    final ts = Size(
+      widget.tableSize.width * 1.1,
+      widget.tableSize.height,
+    );
+
     Provider.of<SeatsOnTableState>(context, listen: true);
     return Stack(
       key: _parentKey,
       children: [
         // positioning players
-        Container(
-          // color for debugging
-          // color: Colors.red.withOpacity(0.20),
+        SizedBox(
           width: ts.width,
           height: ts.height,
           child: CustomMultiChildLayout(
-            delegate: PlayerPlacementDelegate(),
+            delegate: PlayerPlacementDelegate(widget.isLargerScreen),
             children: _getPlayers(context),
           ),
         ),
@@ -515,6 +521,10 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
 }
 
 class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
+  final bool isLarger;
+
+  PlayerPlacementDelegate(this.isLarger);
+
   @override
   void performLayout(Size size) {
     // top left
@@ -526,7 +536,7 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
 
       positionChild(
         SeatPos.topLeft,
-        Offset(0.0, 0.0),
+        Offset(0.0, -3 * cs.height / 4),
       );
     }
 
@@ -539,7 +549,7 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
 
       positionChild(
         SeatPos.topRight,
-        Offset(size.width - cs.width, 0.0),
+        Offset(size.width - cs.width, -3 * cs.height / 4),
       );
     }
 
@@ -566,7 +576,10 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
 
       positionChild(
         SeatPos.topCenter1,
-        Offset((3 * size.width / 8) - cs.width / 2, 0.0),
+        Offset(
+          (3 * size.width / 8) - cs.width / 2,
+          isLarger ? -cs.height : -3 * cs.height / 4,
+        ),
       );
     }
 
@@ -580,7 +593,10 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
 
       positionChild(
         SeatPos.topCenter2,
-        Offset((5 * size.width / 8) - cs.width / 2, 0.0),
+        Offset(
+          (5 * size.width / 8) - cs.width / 2,
+          isLarger ? -cs.height : -3 * cs.height / 4,
+        ),
       );
     }
 
@@ -593,7 +609,10 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
 
       positionChild(
         SeatPos.topCenter,
-        Offset((size.width / 2) - cs.width / 2, 0),
+        Offset(
+          (size.width / 2) - cs.width / 2,
+          isLarger ? -cs.height : -3 * cs.height / 4,
+        ),
       );
     }
 
@@ -622,7 +641,7 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
         SeatPos.bottomLeft,
         Offset(
           (3 * size.width / 16) - (cs.width / 2),
-          size.height - cs.height * 1.05,
+          size.height - cs.height / 2,
         ),
       );
     }
@@ -636,7 +655,7 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
 
       positionChild(
         SeatPos.bottomCenter,
-        Offset((size.width / 2) - cs.width / 2, size.height - cs.height * 1.10),
+        Offset((size.width / 2) - cs.width / 2, size.height - cs.height / 2),
       );
     }
 
@@ -652,7 +671,7 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
         SeatPos.bottomRight,
         Offset(
           (13 * size.width / 16) - (cs.width / 2),
-          size.height - cs.height * 1.05,
+          size.height - cs.height / 2,
         ),
       );
     }
