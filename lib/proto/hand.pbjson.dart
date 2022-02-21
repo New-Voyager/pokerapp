@@ -226,12 +226,13 @@ const NextSeatAction$json = const {
     },
     const {'1': 'seatInSoFar', '3': 14, '4': 1, '5': 1, '10': 'seatInSoFar'},
     const {'1': 'actionId', '3': 15, '4': 1, '5': 9, '10': 'actionId'},
+    const {'1': 'potAmount', '3': 16, '4': 1, '5': 1, '10': 'potAmount'},
   ],
 };
 
 /// Descriptor for `NextSeatAction`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List nextSeatActionDescriptor = $convert.base64Decode(
-    'Cg5OZXh0U2VhdEFjdGlvbhIXCgdzZWF0X25vGAEgASgNUgZzZWF0Tm8SOQoRYXZhaWxhYmxlX2FjdGlvbnMYAiADKA4yDC5nYW1lLkFDVElPTlIQYXZhaWxhYmxlQWN0aW9ucxImCg5zdHJhZGRsZUFtb3VudBgDIAEoAVIOc3RyYWRkbGVBbW91bnQSHgoKY2FsbEFtb3VudBgEIAEoAVIKY2FsbEFtb3VudBIgCgtyYWlzZUFtb3VudBgFIAEoAVILcmFpc2VBbW91bnQSIgoMbWluQmV0QW1vdW50GAYgASgBUgxtaW5CZXRBbW91bnQSIgoMbWF4QmV0QW1vdW50GAcgASgBUgxtYXhCZXRBbW91bnQSJgoObWluUmFpc2VBbW91bnQYCCABKAFSDm1pblJhaXNlQW1vdW50EiYKDm1heFJhaXNlQW1vdW50GAkgASgBUg5tYXhSYWlzZUFtb3VudBIgCgthbGxJbkFtb3VudBgKIAEoAVILYWxsSW5BbW91bnQSNAoKYmV0T3B0aW9ucxgLIAMoCzIULmdhbWUuQmV0UmFpc2VPcHRpb25SCmJldE9wdGlvbnMSKgoQYWN0aW9uVGltZXNvdXRBdBgMIAEoA1IQYWN0aW9uVGltZXNvdXRBdBIwChNzZWNvbmRzVGlsbFRpbWVzb3V0GA0gASgNUhNzZWNvbmRzVGlsbFRpbWVzb3V0EiAKC3NlYXRJblNvRmFyGA4gASgBUgtzZWF0SW5Tb0ZhchIaCghhY3Rpb25JZBgPIAEoCVIIYWN0aW9uSWQ=');
+    'Cg5OZXh0U2VhdEFjdGlvbhIXCgdzZWF0X25vGAEgASgNUgZzZWF0Tm8SOQoRYXZhaWxhYmxlX2FjdGlvbnMYAiADKA4yDC5nYW1lLkFDVElPTlIQYXZhaWxhYmxlQWN0aW9ucxImCg5zdHJhZGRsZUFtb3VudBgDIAEoAVIOc3RyYWRkbGVBbW91bnQSHgoKY2FsbEFtb3VudBgEIAEoAVIKY2FsbEFtb3VudBIgCgtyYWlzZUFtb3VudBgFIAEoAVILcmFpc2VBbW91bnQSIgoMbWluQmV0QW1vdW50GAYgASgBUgxtaW5CZXRBbW91bnQSIgoMbWF4QmV0QW1vdW50GAcgASgBUgxtYXhCZXRBbW91bnQSJgoObWluUmFpc2VBbW91bnQYCCABKAFSDm1pblJhaXNlQW1vdW50EiYKDm1heFJhaXNlQW1vdW50GAkgASgBUg5tYXhSYWlzZUFtb3VudBIgCgthbGxJbkFtb3VudBgKIAEoAVILYWxsSW5BbW91bnQSNAoKYmV0T3B0aW9ucxgLIAMoCzIULmdhbWUuQmV0UmFpc2VPcHRpb25SCmJldE9wdGlvbnMSKgoQYWN0aW9uVGltZXNvdXRBdBgMIAEoA1IQYWN0aW9uVGltZXNvdXRBdBIwChNzZWNvbmRzVGlsbFRpbWVzb3V0GA0gASgNUhNzZWNvbmRzVGlsbFRpbWVzb3V0EiAKC3NlYXRJblNvRmFyGA4gASgBUgtzZWF0SW5Tb0ZhchIaCghhY3Rpb25JZBgPIAEoCVIIYWN0aW9uSWQSHAoJcG90QW1vdW50GBAgASgBUglwb3RBbW91bnQ=');
 @$core.Deprecated('Use playerInSeatStateDescriptor instead')
 const PlayerInSeatState$json = const {
   '1': 'PlayerInSeatState',

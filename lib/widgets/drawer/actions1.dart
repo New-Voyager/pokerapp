@@ -5,13 +5,12 @@ import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/main_helper.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
-import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/numeric_keyboard2.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
-import 'package:pokerapp/widgets/list_tile.dart';
+import 'package:pokerapp/widgets/menu_list_tile.dart';
 import 'package:pokerapp/widgets/reload_dialog.dart';
 
 class Actions1Widget extends StatelessWidget {
@@ -145,8 +144,9 @@ class Actions1Widget extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        IconWidgetTile(
+        MenuListTile(
           icon: Icons.exit_to_app,
+          padding: EdgeInsets.all(8),
           title: text['standup'],
           onPressed: () async {
             bool ret = await showPrompt(context, 'Standup',
@@ -157,26 +157,29 @@ class Actions1Widget extends StatelessWidget {
             }
           },
         ),
-        IconWidgetTile(
+        MenuListTile(
           svgIconPath: 'assets/images/game/break.svg',
+          padding: EdgeInsets.all(8),
           title: 'Sit Out',
-          onPressed: () async {
+          onPressed: () {
             Navigator.pop(context);
             this.onBreak();
           },
         ),
-        IconWidgetTile(
+        MenuListTile(
           icon: Icons.refresh,
+          padding: EdgeInsets.all(8),
           title: text['reload'],
-          onPressed: () async {
+          onPressed: () {
             Navigator.pop(context);
             this.onReload(context);
           },
         ),
-        IconWidgetTile(
+        MenuListTile(
           icon: Icons.refresh,
+          padding: EdgeInsets.all(8),
           title: 'Auto Reload',
-          onPressed: () async {
+          onPressed: () {
             Navigator.pop(context);
             this.onAutoReload(context);
           },

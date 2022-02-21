@@ -6,7 +6,7 @@ import 'package:pokerapp/screens/game_context_screen/game_options/game_option/pe
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
-import 'package:pokerapp/widgets/list_tile.dart';
+import 'package:pokerapp/widgets/menu_list_tile.dart';
 import 'package:provider/provider.dart';
 
 class Actions2Widget extends StatelessWidget {
@@ -52,30 +52,33 @@ class Actions2Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     List<Widget> children = [];
     children.add(Consumer<PendingApprovalsState>(builder: (_, value, ___) {
-      return IconWidgetTile(
-        badgeCount: value.approvalList.length,
+      return MenuListTile(
         icon: Icons.task_alt,
+        padding: EdgeInsets.all(8),
         title: text["approvals"],
         onPressed: () {
           Navigator.of(context).pop();
           onApprovals(context);
         },
+        badgeCount: value.approvalList.length,
       );
     }));
 
     if (gameState.isGameRunning) {
-      children.add(IconWidgetTile(
+      children.add(MenuListTile(
         icon: Icons.pause,
-        title: text['pause'],
+        padding: EdgeInsets.all(8),
+        title: text["pause"],
         onPressed: () {
           onPause();
           Navigator.of(context).pop();
         },
       ));
     }
-    children.add(IconWidgetTile(
+    children.add(MenuListTile(
       icon: Icons.close,
-      title: text['terminate'],
+      padding: EdgeInsets.all(8),
+      title: text["terminate"],
       onPressed: () async {
         await onTerminate(context);
         Navigator.of(context).pop();
