@@ -5,6 +5,7 @@ import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/models/member_activity_model.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
@@ -17,6 +18,7 @@ import 'package:pokerapp/services/app/club_interior_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/date_range_picker.dart';
 import 'package:pokerapp/utils/formatter.dart';
+import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/radio_list_widget.dart';
 import 'package:pokerapp/widgets/texts.dart';
 import 'package:share/share.dart';
@@ -38,7 +40,6 @@ class _ClubMemberActivitiesScreenState
   AppTheme theme;
   List<String> headers = [];
   final List<MemberActivity> memberActivitiesForDownload = [];
-  List<MemberActivity> allActivities;
   bool loading;
   bool changed = false;
   DataSource dts;
@@ -62,21 +63,7 @@ class _ClubMemberActivitiesScreenState
   }
 
   void fetchData() async {
-    bool includeTips = false;
-    bool includeLastPlayedDate = false;
     try {
-      if (allActivities == null) {
-        allActivities =
-            await ClubInteriorService.getMemberActivity(widget.clubCode);
-
-        // sort by last played date
-        allActivities
-            .sort((a, b) => b.lastPlayedDate.compareTo(a.lastPlayedDate));
-      }
-
-      includeTips = true;
-      // final activities = MemberActivity.getMockData();
-
       DateTime start = _dateTimeRange.start.toUtc();
       DateTime end = _dateTimeRange.end.add(Duration(days: 1)).toUtc();
       final tipsActivities =
@@ -87,12 +74,6 @@ class _ClubMemberActivitiesScreenState
       activities = [];
       for (final activity in tipsActivities) {
         activities.add(activity);
-        // final date = activity.lastPlayedDate.toLocal();
-
-        // log('Activities: start: ${start.toIso8601String()} end: ${end.toIso8601String()} activityDate: ${activity.');
-        // if (date.isAfter(start) && date.isBefore(end)) {
-        //   activities.add(activity);
-        // }
       }
     } catch (err) {
       failed = true;
@@ -132,7 +113,7 @@ class _ClubMemberActivitiesScreenState
 
   void initDates() {
     var now = DateTime.now();
-    var startDate = now.subtract(Duration(days: now.weekday));
+    var startDate = findFirstDateOfTheWeek(now);
     startDate =
         DateTime(startDate.year, startDate.month, startDate.day, 0, 0, 0);
     var endDate = DateTime(now.year, now.month, now.day, 0, 0, 0);
@@ -317,7 +298,7 @@ class _ClubMemberActivitiesScreenState
                       columns: columns,
                       horizontalMargin: 6.0,
                       showFirstLastButtons: true,
-                      arrowHeadColor: theme.accentColor,
+                      //arrowHeadColor: theme.accentColor,
                       source: dts,
                       rowsPerPage: 10,
                       columnSpacing: 10,
@@ -349,36 +330,37 @@ class _ClubMemberActivitiesScreenState
       onSelect: (int value) async {
         _selectedDateRangeIndex = value;
         if (value == 0) {
-          var startDate = now.subtract(Duration(days: now.weekday - 1));
+          var startDate = findFirstDateOfTheWeek(now);
           startDate =
               DateTime(startDate.year, startDate.month, startDate.day, 0, 0, 0);
           var endDate = DateTime(now.year, now.month, now.day, 0, 0, 0);
           _dateTimeRange = DateTimeRange(start: startDate, end: endDate);
           setState(() {});
         } else if (value == 1) {
-          var startDate = now
-              .subtract(Duration(days: now.weekday))
-              .subtract(Duration(days: 7));
+          var startDate =
+              findFirstDateOfTheWeek(now).subtract(Duration(days: 7));
           startDate =
               DateTime(startDate.year, startDate.month, startDate.day, 0, 0, 0);
-          var endDate = startDate.add(Duration(days: 7));
+          var endDate = startDate.add(Duration(days: 6));
           _dateTimeRange = DateTimeRange(start: startDate, end: endDate);
+          await fetchData();
           setState(() {});
         } else if (value == 2) {
           var startDate = now.subtract(Duration(days: now.day - 1));
-          startDate =
-              DateTime(startDate.year, startDate.month, startDate.day, 0, 0, 0);
+          startDate = DateTime(startDate.year, startDate.month, 1, 0, 0, 0);
           var endDate = startDate.add(Duration(days: now.day - 1));
           _dateTimeRange = DateTimeRange(start: startDate, end: endDate);
+          await fetchData();
           setState(() {});
         } else if (value == 3) {
-          var startDate = DateTime(now.year, now.month - 2, 1, 0, 0, 0);
-          var endDate = DateTime(now.year, now.month - 1, 0, 0, 0, 0);
+          var startDate = DateTime(now.year, now.month - 1, 1, 0, 0, 0);
+          var endDate = DateTime(now.year, now.month, 0, 0, 0, 0);
           _dateTimeRange = DateTimeRange(start: startDate, end: endDate);
+          await fetchData();
           setState(() {});
         } else if (value == 4) {
           await _handleDateRangePicker(context, theme);
-
+          await fetchData();
           setState(() {});
         }
 
@@ -525,6 +507,10 @@ class _ClubMemberActivitiesScreenState
         'member': null, // widget.member,
       },
     ) as bool;
+
+    if (ret) {
+      fetchData();
+    }
   }
 
   void openCreditHistory(String playerUuid) async {
@@ -551,6 +537,9 @@ class _ClubMemberActivitiesScreenState
         'member': null, // widget.member,
       },
     ) as bool;
+    appState.cacheService.refreshClubMembers = widget.clubCode;
+    await appState.cacheService.getMembers(widget.clubCode);
+    fetchData();
   }
 }
 
@@ -580,7 +569,7 @@ class DataSource extends DataTableSource {
       this.refresh});
 
   @override
-  DataRow getRow(int index) {
+  DataRow2 getRow(int index) {
     MemberActivity activity = activities[index];
     List<DataCell> cells = [];
 
@@ -740,7 +729,7 @@ class DataSource extends DataTableSource {
       color = Colors.grey[700];
     }
 
-    return DataRow.byIndex(
+    return DataRow2.byIndex(
       index: index,
       cells: cells,
       color: MaterialStateColor.resolveWith(

@@ -27,6 +27,24 @@ class AppDecorators {
         ),
       );
 
+  static BoxDecoration accentNoBorderDecoration(AppTheme theme) =>
+      BoxDecoration(
+        color: theme.primaryColor,
+        borderRadius: BorderRadius.circular(8),
+      );
+
+  static BoxDecoration accentBorderDecoration1(AppTheme theme) => BoxDecoration(
+        border: Border.all(color: theme.accentColor, width: 3),
+        borderRadius: BorderRadius.circular(8),
+        color: theme.accentColorWithDark(0.20),
+      );
+
+  static BoxDecoration accentBorderDecoration(AppTheme theme) => BoxDecoration(
+        border: Border.all(color: theme.accentColor, width: 3),
+        borderRadius: BorderRadius.circular(8),
+        color: Colors.transparent,
+      );
+
   static BoxDecoration tileDecoration(AppTheme theme) => BoxDecoration(
         border: Border.all(color: theme.accentColor, width: 1),
         color: theme.fillInColor,
@@ -93,7 +111,7 @@ class AppDecorators {
   static TextStyle getHeadLine5Style({@required AppTheme theme}) {
     return TextStyle(
       color: theme.supportingColor,
-      fontSize: 10.dp,
+      fontSize: 9.dp,
     );
   }
 

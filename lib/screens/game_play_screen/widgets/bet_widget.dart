@@ -5,11 +5,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/enums/game_type.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/player_action.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/screens/game_play_screen/widgets/help_text.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/jumping_text_widget.dart';
 import 'package:pokerapp/services/data/box_type.dart';
 import 'package:pokerapp/services/data/hive_datasource_impl.dart';
@@ -278,11 +280,11 @@ class BetWidget extends StatelessWidget {
         ),
         // bet text
         Text('BET', style: TextStyle(fontSize: 12.dp)),
-        _showTip()
-            ? Transform.translate(
-                offset: Offset(100.pw, 0.ph),
-                child: JumpingTextWidget(text: 'Tap\nto\nbet', jumpHeight: 5))
-            : Container(),
+        // _showTip()
+        //     ? Transform.translate(
+        //         offset: Offset(100.pw, 0.ph),
+        //         child: JumpingTextWidget(text: 'Tap\nto\nbet', jumpHeight: 5))
+        //     : Container(),
       ],
     );
     final Widget betChipWidget = GestureDetector(
@@ -481,7 +483,16 @@ class BetWidget extends StatelessWidget {
                     scale: 1.0,
                     child: StackCardView(cards: _getCards(playerCards))),
               ),
-
+              Align(
+                  alignment: Alignment.bottomCenter,
+                  child: HelpText(
+                      show: appService.appSettings.showBetTip,
+                      text: 'Tap BET button to confirm the bet amount',
+                      theme: AppTheme.getTheme(context),
+                      onTap: () {
+                        // don't show this again
+                        appService.appSettings.showBetTip = false;
+                      })),
               /* progress drag to bet */
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,

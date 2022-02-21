@@ -29,6 +29,7 @@ import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
+import 'package:pokerapp/widgets/game_screen_customization_dialog.dart';
 import 'package:pokerapp/widgets/textfields.dart';
 import 'package:pokerapp/widgets/texts.dart';
 import 'package:provider/provider.dart';
@@ -434,27 +435,10 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                 horizontal: 16,
               ),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  RoundRectButton(
-                    onTap: () async {
-                      await hostGame();
-                    },
-                    text: _appScreenText["host"],
-                    theme: appTheme,
-                    focusNode: focusNodes[0],
-                  ),
                   Expanded(
                       child: HeadingWidget(heading: _appScreenText['appName'])),
-                  RoundRectButton(
-                    onTap: () async {
-                      await joinGame(appTheme);
-                    },
-                    theme: appTheme,
-                    text: _appScreenText['join'],
-                    focusNode: focusNodes[1],
-                  ),
-                  SizedBox(width: 8.pw),
                   CircleImageButton(
                       focusNode: focusNodes[2],
                       height: 30,
@@ -470,6 +454,28 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                       }),
                 ],
               ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                RoundRectButton(
+                  onTap: () async {
+                    await hostGame();
+                  },
+                  text: _appScreenText["host"],
+                  theme: appTheme,
+                  focusNode: focusNodes[0],
+                ),
+                RoundRectButton(
+                  onTap: () async {
+                    await joinGame(appTheme);
+                  },
+                  theme: appTheme,
+                  text: _appScreenText['join'],
+                  focusNode: focusNodes[1],
+                ),
+                // SizedBox(width: 8.pw),
+              ],
             ),
 
             TabBar(

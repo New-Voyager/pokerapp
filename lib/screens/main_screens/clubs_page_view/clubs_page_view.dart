@@ -146,7 +146,7 @@ class _ClubsPageViewState extends State<ClubsPageView>
       final natsClient = Provider.of<Nats>(context, listen: false);
       _toggleLoading();
       natsClient.subscribeClubMessages(clubCode);
-      _fetchClubs();
+      _fetchClubs(withLoading: true);
       _toggleLoading();
     }
   }
@@ -193,20 +193,21 @@ class _ClubsPageViewState extends State<ClubsPageView>
           duration: Duration(seconds: 2));
       final natsClient = Provider.of<Nats>(context, listen: false);
       natsClient.subscribeClubMessages(clubCode);
-      _fetchClubs();
+      _fetchClubs(withLoading: true);
     } else {
       Alerts.showSnackBar(ctx, _appScreenText['unknownError']);
     }
     _toggleLoading();
   }
 
-  Future<void> _fillClubs() async {
+  Future<void> _fillClubs({bool withLoading = false}) async {
     //var appState = Provider.of<AppState>(context, listen: false);
 
     if (appState != null && appState.mockScreens) {
       _clubs = await MockData.getClubs();
     } else {
-      _clubs = await ClubsService.getMyClubs();
+      _clubs = await appState.cacheService.getMyClubs(update: withLoading);
+      //_clubs = await ClubsService.getMyClubs();
     }
 
     if (mounted) setState(() {});
@@ -220,21 +221,23 @@ class _ClubsPageViewState extends State<ClubsPageView>
 
     _toggleLoading();
 
-    await _fillClubs();
+    await _fillClubs(withLoading: withLoading);
     _toggleLoading();
   }
 
   Timer _refreshTimer;
 
   void listener() {
-    _fetchClubs(withLoading: false);
-    final natsClient = Provider.of<Nats>(context, listen: false);
-    for (final club in _clubs) {
-      log('club: ${club.clubName} status: ${club.memberStatus}');
-      if (!appState.mockScreens &&
-          natsClient != null &&
-          natsClient.clientSub != null) {
-        natsClient.subscribeClubMessages(club.clubCode);
+    if (mounted) {
+      _fetchClubs(withLoading: false);
+      final natsClient = Provider.of<Nats>(context, listen: false);
+      for (final club in _clubs) {
+        log('club: ${club.clubName} status: ${club.memberStatus}');
+        if (!appState.mockScreens &&
+            natsClient != null &&
+            natsClient.clientSub != null) {
+          natsClient.subscribeClubMessages(club.clubCode);
+        }
       }
     }
   }
@@ -441,7 +444,7 @@ class _ClubsPageViewState extends State<ClubsPageView>
                             isScrollControlled: true,
                             builder: (ctx) => SearchClubBottomSheet(),
                           );
-                          _fetchClubs();
+                          _fetchClubs(withLoading: true);
                           // Map<String, dynamic> attribs;
                           // try {
                           //   ScreenAttributes.buildList();

@@ -251,6 +251,7 @@ class HandActionProtoService {
         seatNo: seatNo,
         action: actionEnum,
         timedOut: isTimedout,
+        actionId: _gameState.currentActionId,
       ),
     );
     if (amount != null) {
@@ -273,7 +274,10 @@ class HandActionProtoService {
   extendTime(int playerId, int seatNo, int handNum, int time) {
     final messageItem = proto.HandMessageItem(
       messageType: 'EXTEND_ACTION_TIMER',
-      extendTimer: proto.ExtendTimer(seatNo: seatNo, extendBySec: time),
+      extendTimer: proto.ExtendTimer(
+          seatNo: seatNo,
+          extendBySec: time,
+          actionId: _gameState.currentActionId),
     );
     int msgId = MessageId.incrementAndGet(_gameState.gameCode);
     String messageId = msgId.toString();
@@ -287,6 +291,9 @@ class HandActionProtoService {
         messages: [messageItem]);
     final binMessage = handMessage.writeToBuffer();
     this._gameComService.sendProtoPlayerToHandChannel(binMessage);
+
+    // extend the time in play action timer
+    _actionHandler.extendTime((3 + time) * 1000);
   }
 
   extendTimerOnReconnect() async {
@@ -301,8 +308,11 @@ class HandActionProtoService {
       try {
         final messageItem = proto.HandMessageItem(
           messageType: 'EXTEND_ACTION_TIMER',
-          extendTimer:
-              proto.ExtendTimer(seatNo: _gameState.me.seatNo, extendBySec: 15),
+          extendTimer: proto.ExtendTimer(
+            seatNo: _gameState.me.seatNo,
+            extendBySec: 15,
+            actionId: _gameState.currentActionId,
+          ),
         );
         int msgId = MessageId.incrementAndGet(_gameState.gameCode);
         String messageId = msgId.toString();
@@ -587,7 +597,7 @@ class HandActionProtoService {
     //log('Hand Message: ::handleDeal:: START');
 
     // play the deal sound effect
-    AudioService.playDeal(mute: _gameState.playerLocalConfig.mute);
+    //AudioService.playDeal(mute: _gameState.playerLocalConfig.mute);
 
     final dealCards = message.dealCards;
     int mySeatNo = dealCards.seatNo;
@@ -661,6 +671,8 @@ class HandActionProtoService {
   ) async {
     for (int c = 1; c <= totalCards; c++) {
       gameState.startCardDistributionFor(seatNo);
+      // log('${DateTime.now().toIso8601String()} Playing deal sound');
+      // await AudioService.playDealSound(mute: gameState.playerLocalConfig.mute);
       await Future.delayed(AppConstants.cardDistributionAnimationDuration);
       gameState.stopCardDistributionFor(seatNo);
 
@@ -676,23 +688,24 @@ class HandActionProtoService {
   ) async {
     final allSeats = gameState.playersInGame.map<int>((p) => p.seatNo).toList();
     allSeats.shuffle();
-    log('Dealing');
+    log('Dealing ${DateTime.now().toIso8601String()}');
     AudioService.playDealSound(mute: gameState.playerLocalConfig.mute);
     List<Future<void>> futures = [];
+    final now = DateTime.now();
     for (final seatNo in allSeats) {
       final animation =
           _handleAnimationForSingleSeat(seatNo, noCards, gameState);
       futures.add(animation);
-
       // delay a bit
       await Future.delayed(
         AppConstants.cardDistributionWaitBetweenPlayersDuration,
       );
     }
-    log('Dealing done');
-    Future.wait(futures).then((value) {
-      AudioService.stopDeal();
-    });
+    await Future.wait(futures);
+    log('Dealing done ${DateTime.now().toIso8601String()} ms: ${DateTime.now().difference(now).inMilliseconds}');
+    // Future.wait(futures).then((value) {
+    //   AudioService.stopDeal();
+    // });
   }
 
   Future<void> handleDealStarted({
@@ -718,7 +731,7 @@ class HandActionProtoService {
       /* show card shuffling*/
       if (_gameState.handInfo.bombPot) {
         tableState.updateCardShufflingAnimation(true);
-        AudioService.playDeal(mute: _gameState.playerLocalConfig.mute);
+        //AudioService.playDeal(mute: _gameState.playerLocalConfig.mute);
         await Future.delayed(AppConstants.bombPotTotalWaitDuration); // wait
       } else {
         // play the deal sound effect

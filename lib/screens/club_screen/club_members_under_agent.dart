@@ -15,6 +15,7 @@ import 'package:pokerapp/services/app/club_interior_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/date_range_picker.dart';
 import 'package:pokerapp/utils/formatter.dart';
+import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/radio_list_widget.dart';
 import 'package:pokerapp/widgets/switch.dart';
@@ -53,7 +54,7 @@ class _ClubMembersUnderAgentState extends State<ClubMembersUnderAgent>
   bool playersEditMode = false;
   TextEditingController searchTextController = TextEditingController();
 
-  bool allowToViewReport = true;
+  bool allowToViewReport = false;
 
   void initialize() async {
     final clubMembers =
@@ -63,6 +64,14 @@ class _ClubMembersUnderAgentState extends State<ClubMembersUnderAgent>
       if (member.playerId == widget.member.playerId) {
         agent = member;
         break;
+      }
+    }
+
+    if (widget.isOwner) {
+      allowToViewReport = true;
+    } else {
+      if (agent.canViewAgentReport) {
+        allowToViewReport = true;
       }
     }
 
@@ -481,20 +490,7 @@ class _ReportTabState extends State<ReportTab> {
   void fetchData() async {
     loading = true;
     setState(() {});
-
-    // this week
-    // DateTime now = DateTime.now();
-    // DateTime nowAdjust = DateTime(now.year, now.month, now.day);
-    // DateTime start = findFirstDateOfTheWeek(nowAdjust).toUtc();
-    // DateTime end = findLastDateOfTheWeek(nowAdjust).toUtc();
-
-    // last week
-    // this month
-    // last month
-    // custom date
-
-    // load here
-    final activities = await ClubInteriorService.getAgentPlayerActivities(
+    final activities = await appState.cacheService.getAgentPlayerActivities(
         widget.clubCode,
         widget.agentId,
         _dateTimeRange.start,
@@ -522,7 +518,7 @@ class _ReportTabState extends State<ReportTab> {
 
   void initDates() {
     var now = DateTime.now();
-    var startDate = now.subtract(Duration(days: now.weekday));
+    var startDate = findFirstDateOfTheWeek(now);
     startDate =
         DateTime(startDate.year, startDate.month, startDate.day, 0, 0, 0);
     var endDate = DateTime(now.year, now.month, now.day, 0, 0, 0);
@@ -580,8 +576,7 @@ class _ReportTabState extends State<ReportTab> {
                     onSelect: (int value) async {
                       _selectedReportDateRangeIndex = value;
                       if (value == 0) {
-                        var startDate =
-                            now.subtract(Duration(days: now.weekday - 1));
+                        var startDate = findFirstDateOfTheWeek(now);
                         startDate = DateTime(startDate.year, startDate.month,
                             startDate.day, 0, 0, 0);
                         var endDate =
@@ -590,20 +585,19 @@ class _ReportTabState extends State<ReportTab> {
                             DateTimeRange(start: startDate, end: endDate);
                         setState(() {});
                       } else if (value == 1) {
-                        var startDate = now
-                            .subtract(Duration(days: now.weekday))
+                        var startDate = findFirstDateOfTheWeek(now)
                             .subtract(Duration(days: 7));
                         startDate = DateTime(startDate.year, startDate.month,
                             startDate.day, 0, 0, 0);
-                        var endDate = startDate.add(Duration(days: 7));
+                        var endDate = startDate.add(Duration(days: 6));
                         _dateTimeRange =
                             DateTimeRange(start: startDate, end: endDate);
                         setState(() {});
                       } else if (value == 2) {
                         var startDate =
                             now.subtract(Duration(days: now.day - 1));
-                        startDate = DateTime(startDate.year, startDate.month,
-                            startDate.day, 0, 0, 0);
+                        startDate = DateTime(
+                            startDate.year, startDate.month, 1, 0, 0, 0);
                         var endDate =
                             startDate.add(Duration(days: now.day - 1));
                         _dateTimeRange =
@@ -611,9 +605,8 @@ class _ReportTabState extends State<ReportTab> {
                         setState(() {});
                       } else if (value == 3) {
                         var startDate =
-                            DateTime(now.year, now.month - 2, 1, 0, 0, 0);
-                        var endDate =
-                            DateTime(now.year, now.month - 1, 0, 0, 0, 0);
+                            DateTime(now.year, now.month - 1, 1, 0, 0, 0);
+                        var endDate = DateTime(now.year, now.month, 0, 0, 0, 0);
                         _dateTimeRange =
                             DateTimeRange(start: startDate, end: endDate);
                         setState(() {});

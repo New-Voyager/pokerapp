@@ -27,6 +27,7 @@ class ClubInteriorService {
           isManager
           isMainOwner
           isAgent
+          canViewAgentReport
           joinedDate
           lastPlayedDate
           totalBuyins
@@ -239,7 +240,7 @@ class ClubInteriorService {
 
     return jsonResponse
         .map<ClubMemberModel>(
-            (var memberItem) => ClubMemberModel.fromJson(memberItem))
+            (var memberItem) => ClubMemberModel.fromJson(clubCode, memberItem))
         .toList();
   }
 
@@ -306,6 +307,24 @@ class ClubInteriorService {
 
     Map<String, dynamic> update = {
       "isAgent": isAgent,
+    };
+    Map<String, dynamic> variables = {
+      "clubCode": clubCode,
+      "playerUuid": playerId,
+      "update": update,
+    };
+    QueryResult result = await _client.mutate(MutationOptions(
+        document: gql(updateClubMemberMutation), variables: variables));
+    if (result.hasException) return false;
+    return true;
+  }
+
+  static Future<bool> setCanViewAgentReport(
+      String clubCode, String playerId, bool allow) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    Map<String, dynamic> update = {
+      "canViewAgentReport": allow,
     };
     Map<String, dynamic> variables = {
       "clubCode": clubCode,

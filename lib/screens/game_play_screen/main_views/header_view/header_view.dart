@@ -1,18 +1,13 @@
 import 'dart:developer';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_type.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
-import 'package:pokerapp/resources/app_decorators.dart';
-import 'package:pokerapp/screens/game_context_screen/game_options/game_option_bottom_sheet.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/icon_with_badge.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
-import 'package:pokerapp/screens/main_screens/purchase_page_view/coin_update.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/widgets/text_widgets/header/header_game_code_text.dart';
 import 'package:pokerapp/widgets/text_widgets/header/header_title_text.dart';

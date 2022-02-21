@@ -50,7 +50,8 @@ class GameScreenAssets {
   }
 
   Uint8List getHoleCardBack() {
-    return holeCardBackBytes;
+    return appService.appSettings.holeCardBackBytes;
+//    return holeCardBackBytes;
   }
 
   Uint8List getHoleCard(int card, {bool color = false}) {

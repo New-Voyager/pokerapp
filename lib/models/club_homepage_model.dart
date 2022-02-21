@@ -38,6 +38,8 @@ class ClubHomePageModel extends ChangeNotifier {
         status
         isOwner
         isManager
+        isAgent
+        canViewAgentReport
         pendingMemberCount
         hostUnreadMessageCount
         unreadMessageCount
@@ -82,6 +84,8 @@ class ClubHomePageModel extends ChangeNotifier {
   List<GameModelNew> liveGames;
   bool isManager;
   bool isOwner;
+  bool isAgent;
+  bool canViewAgentReport;
   ClubWeeklyActivityModel weeklyActivity;
   int pendingMemberCount;
   int hostUnreadMessageCount;
@@ -111,6 +115,8 @@ class ClubHomePageModel extends ChangeNotifier {
     this.clubCode = clubCode;
     this.isManager = member['isManager'];
     this.isOwner = member['isOwner'];
+    this.isAgent = member['isAgent'] ?? false;
+    this.canViewAgentReport = member['canViewAgentReport'] ?? false;
     this.playerBalance = double.parse(member['myBalance'].toString());
     this.liveGames = data['liveGames']
         .map<GameModelNew>((game) => GameModelNew.fromJson(game))

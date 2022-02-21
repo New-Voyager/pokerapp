@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:pokerapp/enums/approval_type.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game/new_game_model.dart';
 import 'package:pokerapp/models/rewards_model.dart';
@@ -126,6 +127,39 @@ class NewGameModelProvider extends ChangeNotifier {
   set bombPotInterval(value) {
     settings.bombPotInterval = value;
     notifyListeners();
+  }
+
+  int get bombPotHandInterval => settings.bombPotHandInterval ?? 11;
+  set bombPotHandInterval(value) {
+    log('bombPotHandInterval: $bombPotHandInterval');
+    settings.bombPotHandInterval = value;
+    notifyListeners();
+  }
+
+  BombPotIntervalType get bombPotIntervalType =>
+      settings.bombPotIntervalType ?? BombPotIntervalType.TIME_INTERVAL;
+  set bombPotIntervalType(value) {
+    settings.bombPotIntervalType = value;
+    notifyListeners();
+  }
+
+  int get selectedBombPotGameType {
+    if (settings.bombPotGameType == GameType.HOLDEM) {
+      return 0;
+    } else if (settings.bombPotGameType == GameType.PLO) {
+      return 1;
+    } else if (settings.bombPotGameType == GameType.PLO_HILO) {
+      return 2;
+    } else if (settings.bombPotGameType == GameType.FIVE_CARD_PLO) {
+      return 3;
+    } else if (settings.bombPotGameType == GameType.FIVE_CARD_PLO_HILO) {
+      return 4;
+    } else if (settings.bombPotGameType == GameType.SIX_CARD_PLO) {
+      return 5;
+    } else if (settings.bombPotGameType == GameType.SIX_CARD_PLO_HILO) {
+      return 6;
+    }
+    return 0;
   }
 
   int get actionTime => settings.actionTime;

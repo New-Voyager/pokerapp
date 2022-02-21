@@ -8,6 +8,7 @@ import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/flavor_config.dart';
 import 'package:pokerapp/models/app_state.dart';
+import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/screen_attributes.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/models/ui/app_theme_data.dart';
@@ -17,6 +18,7 @@ import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/services/app_service.dart';
 import 'package:pokerapp/services/connectivity_check/network_change_listener.dart';
 import 'package:pokerapp/services/nats/nats.dart';
+import 'package:pokerapp/utils/utils.dart';
 import 'package:provider/provider.dart';
 import 'main_helper.dart';
 import 'models/ui/app_text.dart';
@@ -37,6 +39,8 @@ void main() async {
   if (Platform.isAndroid) {
     InAppPurchaseAndroidPlatformAddition.enablePendingPurchases();
   }
+  await DeviceInfo.init();
+
   await appService.init();
 
   FlavorConfig flavorApp;
@@ -96,6 +100,7 @@ class _MyAppState extends State<MyApp> {
     try {
       await initAppText('en');
       _firebaseApp = await _initialization(context);
+      ScreenAttributes.buildList();
     } catch (e) {
       log('$e');
       _error = true;

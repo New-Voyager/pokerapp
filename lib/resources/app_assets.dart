@@ -47,4 +47,49 @@ class AppAssets {
 
   static const String filter = 'assets/images/filter.svg';
   static const String filterRemove = 'assets/images/remove_filter.svg';
+
+  // customization assets
+
+  // table
+  // assets/images/table/darkgreen.png
+  // assets/images/table/night sky table.png
+  // assets/images/table/redtable.png
+  static const String _table = 'assets/images/table';
+  static const List<String> tables = [
+    '$_table/redtable.png',
+    '$_table/rustic table.png',
+    '$_table/darkgreen.png',
+  ];
+
+  // backdrop
+  // assets/images/backgrounds/bar_bookshelf_light.jpg
+  // assets/images/backgrounds/night sky.png
+  // assets/images/backgrounds/western saloon.png
+  static const String _backdrop = 'assets/images/backgrounds';
+  static const List<String> backdrops = [
+    '$_backdrop/bar_bookshelf_light.jpg',
+    '$_backdrop/night sky.png',
+    '$_backdrop/western saloon.png',
+  ];
+
+  // card back
+  // assets/images/card_back/set2/Asset 1.png
+  // assets/images/card_back/set2/Asset 2.png
+  // assets/images/card_back/set2/Asset 3.png
+  // assets/images/card_back/set2/Asset 4.png
+  // assets/images/card_back/set2/Asset 5.png
+  // assets/images/card_back/set2/Asset 6.png
+  // assets/images/card_back/set2/Asset 7.png
+  // assets/images/card_back/set2/Asset 8.png
+  static const String _card = 'assets/images/card_back/set2';
+  static const List<String> cards = [
+    '$_card/Asset 1.png',
+    '$_card/Asset 2.png',
+    '$_card/Asset 3.png',
+    '$_card/Asset 4.png',
+    '$_card/Asset 5.png',
+    '$_card/Asset 6.png',
+    '$_card/Asset 7.png',
+    '$_card/Asset 8.png',
+  ];
 }

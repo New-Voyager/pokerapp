@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:pokerapp/enums/approval_type.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
@@ -21,6 +22,7 @@ import 'package:pokerapp/widgets/child_widgets.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:pokerapp/widgets/multi_game_selection.dart';
 import 'package:pokerapp/widgets/radio_list_widget.dart';
+import 'package:pokerapp/widgets/slider.dart';
 import 'package:pokerapp/widgets/switch.dart';
 import 'package:pokerapp/widgets/switch_widget.dart';
 import 'package:pokerapp/widgets/text_input_widget.dart';
@@ -28,6 +30,7 @@ import 'package:pokerapp/widgets/textfields.dart';
 import 'package:pokerapp/widgets/texts.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
+import 'package:flutter_xlider/flutter_xlider.dart';
 
 import '../../../main_helper.dart';
 import '../../../routes.dart';
@@ -482,58 +485,157 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // bomb pot bet
-                      LabelText(
-                          label: appScreenText['bombPotBet'], theme: theme),
-
-                      RadioListWidget<int>(
-                        defaultValue: gmp.bombPotBet,
-                        values: NewGameConstants.BOMB_POT_BET_SIZE,
-                        onSelect: (int value) {
-                          gmp.bombPotBet = value;
-                        },
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            LabelText(label: 'Interval', theme: theme),
+                            RadioToggleButtonsWidget<String>(
+                              defaultValue: gmp.bombPotIntervalType ==
+                                      BombPotIntervalType.TIME_INTERVAL
+                                  ? 0
+                                  : 1,
+                              values: ['Time', 'Hands'],
+                              onSelect: (val) {
+                                gmp.bombPotIntervalType = val == 0
+                                    ? BombPotIntervalType.TIME_INTERVAL
+                                    : BombPotIntervalType.EVERY_X_HANDS;
+                              },
+                            )
+                          ]),
+                      Visibility(
+                        visible: gmp.bombPotIntervalType ==
+                            BombPotIntervalType.TIME_INTERVAL,
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              LabelText(
+                                  label: appScreenText['bombPotInterval'],
+                                  theme: theme),
+                              RadioListWidget<int>(
+                                defaultValue: gmp.bombPotInterval,
+                                values: NewGameConstants.BOMB_POT_INTERVALS,
+                                onSelect: (int value) {
+                                  gmp.bombPotInterval = value;
+                                },
+                              )
+                            ]),
                       ),
-                      LabelText(
-                          label: appScreenText['bombPotInterval'],
-                          theme: theme),
-                      RadioListWidget<int>(
-                        defaultValue: gmp.bombPotInterval,
-                        values: NewGameConstants.BOMB_POT_INTERVALS,
-                        onSelect: (int value) {
-                          gmp.bombPotInterval = value;
-                        },
+                      Visibility(
+                        visible: gmp.bombPotIntervalType ==
+                            BombPotIntervalType.EVERY_X_HANDS,
+                        child: Column(children: [
+                          Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                LabelText(
+                                    label:
+                                        'Bomb Pot: In every ${gmp.bombPotHandInterval} hands',
+                                    theme: theme),
+                              ]),
+                          PokerSlider(
+                            theme: theme,
+                            defaultValue: gmp.bombPotHandInterval,
+                            min: 1,
+                            max: 100,
+                            onDragCompleted: (val) {
+                              gmp.bombPotHandInterval = val;
+                            },
+                            onDragging: (val) {
+                              gmp.bombPotHandInterval = val;
+                            },
+                          ),
+                          // FlutterSlider(
+                          //   handlerHeight: 20,
+                          //   handler: FlutterSliderHandler(
+                          //       child: Container(
+                          //           decoration: BoxDecoration(
+                          //               shape: BoxShape.circle,
+                          //               gradient: LinearGradient(
+                          //                   // colors: [
+                          //                   //   Colors.black38,
+                          //                   //   Colors.black87,
+                          //                   //   Colors.black,
+                          //                   // ],
+                          //                   colors: [
+                          //                     theme.accentColorWithDark(0.1),
+                          //                     theme.accentColorWithDark(0.2),
+                          //                     theme.accentColor,
+                          //                   ],
+                          //                   begin: Alignment.topLeft,
+                          //                   end: Alignment.bottomRight)))),
+                          //   tooltip: FlutterSliderTooltip(
+                          //     disabled: true,
+                          //   ),
+                          //   values: [gmp.bombPotHandInterval.toDouble()],
+                          //   trackBar: FlutterSliderTrackBar(
+                          //     activeTrackBarHeight: 8,
+                          //     inactiveTrackBarHeight: 8,
+                          //     inactiveTrackBar: BoxDecoration(
+                          //       borderRadius: BorderRadius.circular(20),
+                          //       border: Border.all(
+                          //           width: 1, color: theme.accentColor),
+                          //     ),
+                          //     activeTrackBar: BoxDecoration(
+                          //         borderRadius: BorderRadius.circular(20),
+                          //         color: theme.accentColor,
+                          //         border: Border.all(
+                          //             width: 1, color: theme.accentColor)),
+                          //   ),
+                          //   max: 100,
+                          //   min: 1,
+                          //   onDragCompleted: (val, val1, val2) {
+                          //     gmp.bombPotHandInterval = val1.toInt();
+                          //     //setState(() {});
+                          //   },
+                          //   onDragging: (handlerIndex, lowerValue, upperValue) {
+                          //     gmp.bombPotHandInterval = lowerValue.toInt();
+                          //     //setState(() {});
+                          //   },
+                          // )
+                        ]),
                       ),
                       NewGameSettings2.sepV8,
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            // bomb pot bet
+                            LabelText(
+                                label: appScreenText['bombPotBet'],
+                                theme: theme),
+
+                            RadioListWidget<int>(
+                              defaultValue: gmp.bombPotBet,
+                              values: NewGameConstants.BOMB_POT_BET_SIZE,
+                              onSelect: (int value) {
+                                gmp.bombPotBet = value;
+                              },
+                            )
+                          ]),
+                      NewGameSettings2.sepV8,
                       LabelText(label: 'Game Type', theme: theme),
-                      RadioListWidget<String>(
-                        defaultValue: bombPotDefaultValue,
-                        wrap: true,
-                        values: [
-                          'NLH',
-                          'PLO',
-                          'Hi-Lo',
-                          '5 Card',
-                          '5 Card Hi-Lo',
-                          '6 Card',
-                          '6 Card Hi-Lo'
-                        ],
-                        onSelect: (String value) {
+                      RadioToggleButtonsWidget<String>(
+                        defaultValue: gmp.selectedBombPotGameType,
+                        //wrap: true,
+                        values: NewGameConstants.BOMB_POT_GAME_TYPES,
+                        onSelect: (val) {
+                          String value =
+                              NewGameConstants.BOMB_POT_GAME_TYPES[val];
                           if (value == 'NLH') {
                             gmp.settings.bombPotGameType = GameType.HOLDEM;
                           } else if (value == 'PLO') {
                             gmp.settings.bombPotGameType = GameType.PLO;
                           } else if (value == 'Hi-Lo') {
                             gmp.settings.bombPotGameType = GameType.PLO_HILO;
-                          } else if (value == '5 Card') {
+                          } else if (value == '5 Card PLO') {
                             gmp.settings.bombPotGameType =
                                 GameType.FIVE_CARD_PLO;
-                          } else if (value == '5 Card Hi-Lo') {
+                          } else if (value == '5 Card\nHi-Lo') {
                             gmp.settings.bombPotGameType =
                                 GameType.FIVE_CARD_PLO_HILO;
                           } else if (value == '6 Card') {
                             gmp.settings.bombPotGameType =
                                 GameType.SIX_CARD_PLO;
-                          } else if (value == '6 Card Hi-Lo') {
+                          } else if (value == '6 Card\nHi-Lo') {
                             gmp.settings.bombPotGameType =
                                 GameType.SIX_CARD_PLO_HILO;
                           }

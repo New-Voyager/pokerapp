@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:flutter_switch/flutter_switch.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
-import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/icon_with_badge.dart';
 import 'package:pokerapp/services/audio/audio_service.dart';
 import 'package:pokerapp/widgets/texts.dart';
-import 'package:provider/provider.dart';
 
 class IconWidgetTile extends StatelessWidget {
   final String svgIconPath;
@@ -30,21 +27,21 @@ class IconWidgetTile extends StatelessWidget {
     if (this.svgIconPath != null) {
       icon = SvgPicture.asset(
         svgIconPath,
-        width: 24,
-        height: 24,
+        width: 20,
+        height: 20,
         color: theme.accentColor,
       );
     } else if (this.icon != null) {
-      icon = Icon(this.icon, size: 24, color: theme.accentColor);
+      icon = Icon(this.icon, size: 20, color: theme.accentColor);
     }
 
     Widget child = Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(4.0),
       child: Row(
         children: [
           Container(
-              width: 36,
-              height: 36,
+              width: 30,
+              height: 30,
               padding: EdgeInsets.all(2),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,

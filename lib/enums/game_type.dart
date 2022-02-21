@@ -52,15 +52,15 @@ String gameTypeStr2(GameType type) {
     case GameType.PLO:
       return 'Pot Limit Omaha';
     case GameType.PLO_HILO:
-      return 'Pot Limit Omaha Hi/Lo';
+      return 'Pot Limit Omaha Hi-Lo';
     case GameType.FIVE_CARD_PLO:
-      return '5 Card Pot Limit Omaha';
+      return '5 Card PLO';
     case GameType.FIVE_CARD_PLO_HILO:
-      return '5 Card Pot Limit Omaha Hi/Lo';
+      return '5 Card PLO Hi-Lo';
     case GameType.SIX_CARD_PLO:
-      return '6 Card Pot Limit Omaha';
+      return '6 Card PLO';
     case GameType.SIX_CARD_PLO_HILO:
-      return '6 Card Pot Limit Omaha Hi/Lo';
+      return '6 Card PLO Hi-Lo';
     case GameType.ROE:
       return 'Round of Each';
     case GameType.DEALER_CHOICE:

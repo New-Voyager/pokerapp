@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
@@ -11,6 +12,8 @@ import 'package:pokerapp/widgets/drawer/actions3.dart';
 import 'package:pokerapp/widgets/drawer/actions4.dart';
 import 'package:pokerapp/widgets/drawer/actions5.dart';
 import 'package:pokerapp/widgets/menu_list_tile.dart';
+import 'package:pokerapp/widgets/game_screen_customization_dialog.dart';
+import 'package:pokerapp/widgets/list_tile.dart';
 
 class GamePlayScreenDrawer extends StatefulWidget {
   final GameState gameState;
@@ -46,6 +49,33 @@ class _GamePlayScreenDrawerState extends State<GamePlayScreenDrawer> {
         },
       ),
     );
+    children.add(
+      IconWidgetTile(
+        svgIconPath: 'assets/images/customize.svg',
+        title: 'Customize',
+        onPressed: () async {
+          Navigator.of(context).pop();
+          CustomizationAsset currentSelection = CustomizationAsset(
+              appService.appSettings.tableAsset,
+              appService.appSettings.backdropAsset,
+              appService.appSettings.cardBackAsset);
+
+          final changedSelection = await GameScreenCustomizationDialog.show(
+              context,
+              currentSelection: currentSelection);
+          if (changedSelection != null) {
+            appService.appSettings.tableAsset = changedSelection.table;
+            appService.appSettings.backdropAsset = changedSelection.backdrop;
+            appService.appSettings.cardBackAsset = changedSelection.cardBack;
+            await appService.appSettings.loadCardBack();
+            widget.gameState.redrawFooter();
+            widget.gameState.redrawBoard();
+            widget.gameState.getBackdropSectionState().notify();
+          }
+        },
+      ),
+    );
+
     if (widget.gameState.isPlaying) {
       children.addAll([
         // playing

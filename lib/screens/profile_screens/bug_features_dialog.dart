@@ -7,6 +7,7 @@ import 'package:pokerapp/services/app/help_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/widgets/buttons.dart';
+import 'package:pokerapp/widgets/radio_list_widget.dart';
 import 'package:pokerapp/widgets/textfields.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -47,39 +48,15 @@ class _BugsFeaturesWidgetState extends State<BugsFeaturesWidget> {
             ),
           ),
           AppDimensionsNew.getVerticalSizedBox(8),
-          ToggleButtons(
-            borderColor: theme.accentColor,
-            constraints: BoxConstraints(
-                minWidth: (MediaQuery.of(context).size.width - 120) / 2),
-            fillColor: theme.accentColor,
-            borderWidth: 2,
-            selectedBorderColor: theme.accentColor,
-            selectedColor: theme.primaryColorWithDark(0.5),
-            borderRadius: BorderRadius.circular(25),
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  'Bug',
-                  style: TextStyle(fontSize: 16),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  'Feature',
-                  style: TextStyle(fontSize: 16),
-                ),
-              ),
-            ],
-            onPressed: (int index) {
+          RadioToggleButtonsWidget<String>(
+            values: ['Bug', 'Feature'],
+            defaultValue: isSelected[0] ? 0 : 1,
+            onSelect: (int val) {
               setState(() {
-                for (int i = 0; i < isSelected.length; i++) {
-                  isSelected[i] = i == index;
-                }
+                isSelected[0] = val == 0;
+                isSelected[1] = val == 1;
               });
             },
-            isSelected: isSelected,
           ),
           AppDimensionsNew.getVerticalSizedBox(16),
           CardFormTextField(
