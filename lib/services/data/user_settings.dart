@@ -24,6 +24,7 @@ class UserSettingsStore {
 
   static const String KEY_LAST_GAME = "last-game";
   static const String KEY_COLOR_CARDS = "color-cards";
+  static const String KEY_BETTING_OPTIONS = "betting-options";
 
   UserSettingsStore();
 
@@ -160,6 +161,24 @@ class UserSettingsStore {
       // ignore the error
     }
     return false;
+  }
+
+  Future<void> setBettingOptions(String bettingOptions) async {
+    try {
+      await _box.put(KEY_BETTING_OPTIONS, bettingOptions);
+    } catch (e) {
+      // ignore the error
+    }
+  }
+
+  String getBettingOptions() {
+    try {
+      String bettingOptions = _box.get(KEY_BETTING_OPTIONS);
+      return bettingOptions;
+    } catch (e) {
+      // ignore the error
+    }
+    return "";
   }
 
   Future<void> setLastGame(String gameCode) async {

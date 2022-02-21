@@ -134,7 +134,8 @@ class PokerDialogBox extends StatelessWidget {
               (title != null)
                   ? Text(
                       title,
-                      style: AppDecorators.getHeadLine2Style(theme: theme),
+                      style: AppDecorators.getHeadLine2Style(theme: theme)
+                          .copyWith(fontSize: 24),
                     )
                   : SizedBox.shrink(),
               content ?? optionsButtonDialogWidget,

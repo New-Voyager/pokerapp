@@ -821,8 +821,8 @@ class BetAmountButton extends StatelessWidget {
     final button = Container(
       // duration: AppConstants.fastAnimationDuration,
       // curve: Curves.bounceInOut,
-      height: 12.ph,
-      width: 40.pw,
+      height: 30.ph,
+      width: 50.pw,
       margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
       padding: const EdgeInsets.all(2.0),
       decoration: BoxDecoration(

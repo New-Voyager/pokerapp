@@ -41,6 +41,14 @@ class GameLocalConfig {
     appService.userSettings.setColorCards(_colorCards);
   }
 
+  // Betting options
+  String _bettingOptions = appService.userSettings.getBettingOptions();
+  get bettingOptions => _bettingOptions;
+  set bettingOptions(String value) {
+    _bettingOptions = value;
+    appService.userSettings.setBettingOptions(_bettingOptions);
+  }
+
   // Show rearrange button
   bool _showRearrange = true;
   get showRearrange => _showRearrange ?? true;
