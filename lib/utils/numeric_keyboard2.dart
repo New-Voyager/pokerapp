@@ -118,7 +118,6 @@ class NumericKeyboard2 extends StatelessWidget {
                   _buildTitle(
                     title: title,
                   ),
-
                   /* amount */
                   Consumer2<ValueNotifier<String>, ValueNotifier<bool>>(
                     builder: (_, vnValue, vnError, __) => _buildAmountWidget(
@@ -179,6 +178,9 @@ class NumericKeyboard2 extends StatelessWidget {
     double max,
   ) async {
     bool decimalPresent = value.indexOf('.') != -1;
+    if (value == "") {
+      return;
+    }
     double v = double.parse(value);
     final errorNotifier = Provider.of<ValueNotifier<bool>>(
       context,
@@ -246,7 +248,7 @@ class NumericKeyboard2 extends StatelessWidget {
                 ),
 
                 /* clear text button */
-                InkResponse(
+                InkWell(
                   onTap: () {
                     vnValue.value = '';
                   },
@@ -542,7 +544,7 @@ class NumericKeyboard2 extends StatelessWidget {
   /* this method shows the keyboard, and returns numeric data */
   static Future<double> show(
     BuildContext context, {
-    String title = 'Title goes here',
+    String title = '',
     String header = '',
     double min = 0,
     double max,

@@ -42,7 +42,6 @@ class _GamePlayScreenDrawerState extends State<GamePlayScreenDrawer> {
     children.add(
       MenuListTile(
         icon: Icons.shopping_cart,
-        padding: EdgeInsets.all(8),
         title: 'Store',
         onPressed: () {
           Navigator.of(context).pop();
@@ -52,7 +51,6 @@ class _GamePlayScreenDrawerState extends State<GamePlayScreenDrawer> {
     );
     children.add(
       MenuListTile(
-        padding: EdgeInsets.all(8),
         svgIconPath: 'assets/images/customize.svg',
         title: 'Customize',
         onPressed: () async {
@@ -79,10 +77,9 @@ class _GamePlayScreenDrawerState extends State<GamePlayScreenDrawer> {
     );
     children.add(
       MenuListTile(
-        padding: EdgeInsets.all(8),
         // svgIconPath: 'assets/images/customize.svg',
         icon: Icons.edit,
-        title: 'Customize Betting Options',
+        title: 'Betting Options',
         onPressed: () {
           Navigator.of(context).pop();
           PokerDialogBox.show(context,

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
+import 'package:pokerapp/services/data/user_settings.dart';
 import 'package:pokerapp/utils/numeric_keyboard2.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'dart:convert';
@@ -15,42 +17,11 @@ class BetConfigWidget extends StatefulWidget {
 }
 
 class _BetConfigWidgetState extends State<BetConfigWidget> {
-  List<String> preflopOptions = [];
-  List<String> postflopOptions = [];
-  List<String> raiseOptions = [];
-
+  BettingOptions bettingOptions = BettingOptions();
   @override
   void initState() {
     super.initState();
-    var bettingOptionsString =
-        widget.gameState.playerLocalConfig.bettingOptions;
-    print(bettingOptionsString);
-    print("ldsfsjfbhsdfj");
-    if (bettingOptionsString != null && bettingOptionsString != "") {
-      var bettingOptions = json.decode(bettingOptionsString);
-
-      bettingOptions['preflop'].forEach((element) {
-        preflopOptions.add(element.toString());
-      });
-      bettingOptions['postflop'].forEach((element) {
-        postflopOptions.add(element);
-      });
-      bettingOptions['raise'].forEach((element) {
-        raiseOptions.add(element);
-      });
-    } else {
-      preflopOptions.add("2");
-      preflopOptions.add("3");
-      preflopOptions.add("5");
-
-      postflopOptions.add("30");
-      postflopOptions.add("50");
-      postflopOptions.add("100");
-
-      raiseOptions.add("2");
-      raiseOptions.add("3");
-      raiseOptions.add("5");
-    }
+    bettingOptions = appService.userSettings.getBettingOptions();
   }
 
   @override
@@ -78,13 +49,13 @@ class _BetConfigWidgetState extends State<BetConfigWidget> {
               BetAmountButton(
                 onTap: () async {
                   String value =
-                      await onCutomizeButtonPressed(preflopOptions[0]);
+                      await onCutomizeButtonPressed(bettingOptions.preFlop[0]);
                   setState(() {
-                    preflopOptions[0] = value;
+                    bettingOptions.preFlop[0] = int.parse(value);
                   });
                 },
                 theme: theme,
-                text: "${preflopOptions[0]}BB",
+                text: "${bettingOptions.preFlop[0]}BB",
               ),
               SizedBox(
                 width: 20,
@@ -92,13 +63,13 @@ class _BetConfigWidgetState extends State<BetConfigWidget> {
               BetAmountButton(
                 onTap: () async {
                   String value =
-                      await onCutomizeButtonPressed(preflopOptions[1]);
+                      await onCutomizeButtonPressed(bettingOptions.preFlop[1]);
                   setState(() {
-                    preflopOptions[1] = value;
+                    bettingOptions.preFlop[1] = int.parse(value);
                   });
                 },
                 theme: theme,
-                text: "${preflopOptions[1]}BB",
+                text: "${bettingOptions.preFlop[1]}BB",
               ),
               SizedBox(
                 width: 20,
@@ -106,13 +77,13 @@ class _BetConfigWidgetState extends State<BetConfigWidget> {
               BetAmountButton(
                 onTap: () async {
                   String value =
-                      await onCutomizeButtonPressed(preflopOptions[2]);
+                      await onCutomizeButtonPressed(bettingOptions.preFlop[2]);
                   setState(() {
-                    preflopOptions[2] = value;
+                    bettingOptions.preFlop[2] = int.parse(value);
                   });
                 },
                 theme: theme,
-                text: "${preflopOptions[2]}BB",
+                text: "${bettingOptions.preFlop[2]}BB",
               )
             ],
           ),
@@ -132,13 +103,13 @@ class _BetConfigWidgetState extends State<BetConfigWidget> {
               BetAmountButton(
                 onTap: () async {
                   String value =
-                      await onCutomizeButtonPressed(postflopOptions[0]);
+                      await onCutomizeButtonPressed(bettingOptions.postFlop[0]);
                   setState(() {
-                    postflopOptions[0] = value;
+                    bettingOptions.postFlop[0] = int.parse(value);
                   });
                 },
                 theme: theme,
-                text: "${postflopOptions[0]}%",
+                text: "${bettingOptions.postFlop[0]}%",
               ),
               SizedBox(
                 width: 20,
@@ -146,13 +117,13 @@ class _BetConfigWidgetState extends State<BetConfigWidget> {
               BetAmountButton(
                 onTap: () async {
                   String value =
-                      await onCutomizeButtonPressed(postflopOptions[1]);
+                      await onCutomizeButtonPressed(bettingOptions.postFlop[1]);
                   setState(() {
-                    postflopOptions[1] = value;
+                    bettingOptions.postFlop[1] = int.parse(value);
                   });
                 },
                 theme: theme,
-                text: "${postflopOptions[1]}%",
+                text: "${bettingOptions.postFlop[1]}%",
               ),
               SizedBox(
                 width: 20,
@@ -160,13 +131,13 @@ class _BetConfigWidgetState extends State<BetConfigWidget> {
               BetAmountButton(
                 onTap: () async {
                   String value =
-                      await onCutomizeButtonPressed(postflopOptions[2]);
+                      await onCutomizeButtonPressed(bettingOptions.postFlop[2]);
                   setState(() {
-                    postflopOptions[2] = value;
+                    bettingOptions.postFlop[2] = int.parse(value);
                   });
                 },
                 theme: theme,
-                text: "${postflopOptions[2]}%",
+                text: "${bettingOptions.postFlop[2]}%",
               )
             ],
           ),
@@ -185,39 +156,42 @@ class _BetConfigWidgetState extends State<BetConfigWidget> {
             children: [
               BetAmountButton(
                 onTap: () async {
-                  String value = await onCutomizeButtonPressed(raiseOptions[0]);
+                  String value =
+                      await onCutomizeButtonPressed(bettingOptions.raise[0]);
                   setState(() {
-                    raiseOptions[0] = value;
+                    bettingOptions.raise[0] = int.parse(value);
                   });
                 },
                 theme: theme,
-                text: "${raiseOptions[0]} x",
+                text: "${bettingOptions.raise[0]} x",
               ),
               SizedBox(
                 width: 20,
               ),
               BetAmountButton(
                 onTap: () async {
-                  String value = await onCutomizeButtonPressed(raiseOptions[1]);
+                  String value =
+                      await onCutomizeButtonPressed(bettingOptions.raise[1]);
                   setState(() {
-                    raiseOptions[1] = value;
+                    bettingOptions.raise[1] = int.parse(value);
                   });
                 },
                 theme: theme,
-                text: "${raiseOptions[1]} x",
+                text: "${bettingOptions.raise[1]} x",
               ),
               SizedBox(
                 width: 20,
               ),
               BetAmountButton(
                 onTap: () async {
-                  String value = await onCutomizeButtonPressed(raiseOptions[2]);
+                  String value =
+                      await onCutomizeButtonPressed(bettingOptions.raise[2]);
                   setState(() {
-                    raiseOptions[2] = value;
+                    bettingOptions.raise[2] = int.parse(value);
                   });
                 },
                 theme: theme,
-                text: "${raiseOptions[2]} x",
+                text: "${bettingOptions.raise[2]} x",
               )
             ],
           ),
@@ -229,14 +203,9 @@ class _BetConfigWidgetState extends State<BetConfigWidget> {
             children: [
               RoundRectButton(
                 text: "Ok",
-                onTap: () {
-                  var bettingOptions = {
-                    'preflop': preflopOptions,
-                    'postflop': postflopOptions,
-                    'raise': raiseOptions
-                  };
-                  widget.gameState.playerLocalConfig.bettingOptions =
-                      json.encode(bettingOptions);
+                onTap: () async {
+                  await appService.userSettings
+                      .setBettingOptions(bettingOptions);
 
                   Navigator.pop(context);
                 },
@@ -260,7 +229,9 @@ class _BetConfigWidgetState extends State<BetConfigWidget> {
   }
 
   Future<String> onCutomizeButtonPressed(var currentValue) async {
-    double value = await NumericKeyboard2.show(context, decimalAllowed: false);
+    double currentVal = currentValue.toDouble();
+    double value = await NumericKeyboard2.show(context,
+        decimalAllowed: false, currentVal: currentVal);
     if (value != null) {
       return value.toInt().toString();
     }

@@ -735,16 +735,16 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
   }
 
   Widget leaderAllowReportRow(AppTheme theme) {
-    return  MenuListTile(
+    return MenuListTile(
       title: "Allow to view report",
       onPressed: () {},
       padding: EdgeInsets.only(left: 5),
       switchable: true,
       switchValue: false,
-      onSwitchChanged: (val)  async {
-                  await ClubInteriorService.setCanViewAgentReport(
-                      widget.club.clubCode, _data.playerId, val);
-                  _data.canViewAgentReport = val;
+      onSwitchChanged: (val) async {
+        await ClubInteriorService.setCanViewAgentReport(
+            widget.club.clubCode, _data.playerId, val);
+        _data.canViewAgentReport = val;
       },
     );
   }

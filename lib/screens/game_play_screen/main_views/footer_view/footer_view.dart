@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/main.dart';
@@ -37,8 +36,6 @@ import 'hole_cards_view_and_footer_action_view.dart';
 import 'seat_change_confirm_widget.dart';
 import 'package:collection/collection.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
-
-import 'time_bank.dart';
 
 class FooterView extends StatefulWidget {
   final String gameCode;

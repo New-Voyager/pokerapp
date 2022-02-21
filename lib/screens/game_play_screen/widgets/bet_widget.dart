@@ -8,6 +8,7 @@ import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/player_action.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
@@ -23,7 +24,6 @@ import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/cards/multiple_stack_card_views.dart';
 import 'package:provider/provider.dart';
-import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 
 class BetWidget extends StatelessWidget {
   final Function onSubmitCallBack;
@@ -31,8 +31,12 @@ class BetWidget extends StatelessWidget {
   final int remainingTime;
   final List<int> playerCards;
   final BoardAttributesObject boardAttributesObject;
+  final GameState gameState;
+  final Seat seat;
 
   BetWidget({
+    @required this.seat,
+    @required this.gameState,
     @required this.action,
     @required this.playerCards,
     @required this.boardAttributesObject,
@@ -572,7 +576,7 @@ class BetWidget extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: 5.ph),
-                    betAmountList(valueNotifierVal, appTheme),
+                    betAmountList(context, valueNotifierVal, appTheme),
                   ]),
             ),
             /* OLD UI button row for other bet options */
@@ -659,7 +663,109 @@ class BetWidget extends StatelessWidget {
     );
   }
 
-  Widget betAmountList(ValueNotifier<double> vnValue, AppTheme theme) {
+  Widget betAmountList(
+      BuildContext context, ValueNotifier<double> vnValue, AppTheme theme) {
+    List<BetAmountButton> buttons = [];
+    buttons.add(BetAmountButton(
+      onTap: () async {
+        double min = action.minRaiseAmount.toDouble();
+        double max = action.maxRaiseAmount.toDouble();
+
+        final double res = await NumericKeyboard2.show(
+          context,
+          title: 'Enter your bet',
+          min: min,
+          max: max,
+        );
+
+        if (res != null) vnValue.value = res;
+      },
+      theme: theme,
+      isKeyboard: true,
+      text: '',
+    ));
+
+    final bettingOptions = appService.userSettings.getBettingOptions();
+    final preflop = bettingOptions.preFlop;
+    final postflop = bettingOptions.postFlop;
+    final raise = bettingOptions.raise;
+
+    if (action.raiseAmount == 0) {
+      if (gameState.handState == HandState.PREFLOP) {
+        for (int i = 0; i < preflop.length; i++) {
+          final amount = preflop[i].toDouble() * gameState.handInfo.bigBlind;
+          if (amount > gameState.handInfo.bigBlind &&
+              amount <= action.maxRaiseAmount) {
+            buttons.add(BetAmountButton(
+              onTap: () {
+                vnValue.value = amount;
+              },
+              theme: theme,
+              isKeyboard: false,
+              text: '${preflop[i]}BB',
+            ));
+          }
+        }
+      } else {
+        for (int i = 0; i < postflop.length; i++) {
+          double amount = (postflop[i] * action.potAmount) / 100;
+          if (gameState.gameInfo.chipUnit == ChipUnit.DOLLAR) {
+            amount = amount.toInt().toDouble();
+          }
+
+          if (amount > gameState.handInfo.bigBlind &&
+              amount <= action.maxRaiseAmount) {
+            buttons.add(BetAmountButton(
+              onTap: () {
+                vnValue.value = amount;
+              },
+              theme: theme,
+              isKeyboard: false,
+              text: '${postflop[i]}%',
+            ));
+          }
+        }
+      }
+    } else {
+      // a player raised
+      for (int i = 0; i < raise.length; i++) {
+        final amount = (raise[i] * action.raiseAmount) + action.seatInSoFar;
+        if (amount > gameState.handInfo.bigBlind &&
+            amount <= action.maxRaiseAmount) {
+          buttons.add(BetAmountButton(
+            onTap: () {
+              vnValue.value = amount;
+            },
+            theme: theme,
+            isKeyboard: false,
+            text: '${raise[i]}X',
+          ));
+        }
+      }
+    }
+
+    if (action.ploPotAmount != 0) {
+      buttons.add(BetAmountButton(
+        onTap: () {
+          vnValue.value = action.ploPotAmount;
+        },
+        theme: theme,
+        isKeyboard: false,
+        text: 'POT',
+      ));
+    }
+
+    if (action.allInAmount != 0) {
+      buttons.add(BetAmountButton(
+        onTap: () {
+          vnValue.value = action.allInAmount;
+        },
+        theme: theme,
+        isKeyboard: false,
+        text: 'ALL-IN',
+      ));
+    }
+
     return Container(
       height: 40,
       child: ListView.builder(
@@ -667,6 +773,7 @@ class BetWidget extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         shrinkWrap: true,
         itemBuilder: (context, index) {
+          return buttons[index];
           if (index == 0) {
             // show keyboard
             return BetAmountButton(
@@ -700,7 +807,7 @@ class BetWidget extends StatelessWidget {
             //option: action.options[index - 1],
           );
         },
-        itemCount: action.options.length + 1,
+        itemCount: buttons.length, //action.options.length + 1,
       ),
     );
   }

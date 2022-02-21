@@ -50,7 +50,10 @@ class PlayerAction {
   double _maxRaiseAmount;
   double _callAmount = 0;
   double _allInAmount = 0;
-
+  double _raiseAmount = 0;
+  double _potAmount = 0;
+  double _seatInSoFar = 0;
+  double _ploPotAmount = 0;
   List<Option> _options;
 
   PlayerAction();
@@ -94,7 +97,8 @@ class PlayerAction {
     playerAction._options = seatAction['betOptions']
         ?.map<Option>((var data) => Option.fromJson(data))
         ?.toList();
-
+    playerAction._raiseAmount = seatAction['raiseAmount'] ?? 0;
+    playerAction._potAmount = seatAction['potAmount'] ?? 0;
     playerAction._actions = [];
     seatAction['availableActions']
         .map<String>((s) => s.toString())
@@ -127,10 +131,29 @@ class PlayerAction {
     yourAction._maxRaiseAmount = seatAction.maxRaiseAmount;
     yourAction._callAmount = seatAction.callAmount;
     yourAction._allInAmount = seatAction.allInAmount;
+    yourAction._raiseAmount = seatAction.raiseAmount;
+    yourAction._seatInSoFar = seatAction.seatInSoFar;
+    yourAction._ploPotAmount = 0;
+    yourAction._potAmount = seatAction.potAmount;
+
+    if (yourAction._raiseAmount == yourAction._callAmount) {
+      yourAction._raiseAmount = 0;
+    }
+
     yourAction._options = [];
     for (final option in seatAction.betOptions) {
       Option betOption = Option(amount: option.amount, text: option.text);
+      if (option.text == '100%') {
+        //ourAction._potAmount = option.amount;
+      }
+      if (option.text == 'Pot') {
+        yourAction._ploPotAmount = option.amount;
+      }
+
       yourAction._options.add(betOption);
+    }
+    if (yourAction._potAmount == 0) {
+      yourAction._potAmount = seatAction.maxRaiseAmount;
     }
     yourAction._actions = [];
     for (final availableAction in seatAction.availableActions) {
@@ -159,6 +182,10 @@ class PlayerAction {
   double get callAmount => _callAmount;
   double get allInAmount => _allInAmount;
   int get seatNo => _seatNo;
+  double get raiseAmount => _raiseAmount;
+  double get potAmount => _potAmount;
+  double get seatInSoFar => _seatInSoFar;
+  double get ploPotAmount => _ploPotAmount;
 
   void sort() {
     List<AvailableAction> sortedActions = [];

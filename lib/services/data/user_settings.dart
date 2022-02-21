@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:hive/hive.dart';
@@ -163,22 +164,22 @@ class UserSettingsStore {
     return false;
   }
 
-  Future<void> setBettingOptions(String bettingOptions) async {
+  Future<void> setBettingOptions(BettingOptions options) async {
     try {
-      await _box.put(KEY_BETTING_OPTIONS, bettingOptions);
+      await _box.put(KEY_BETTING_OPTIONS, options.toJson());
     } catch (e) {
       // ignore the error
     }
   }
 
-  String getBettingOptions() {
+  BettingOptions getBettingOptions() {
     try {
-      String bettingOptions = _box.get(KEY_BETTING_OPTIONS);
-      return bettingOptions;
+      String jsonStr = _box.get(KEY_BETTING_OPTIONS);
+      return BettingOptions.fromJson(jsonStr);
     } catch (e) {
       // ignore the error
     }
-    return "";
+    return BettingOptions();
   }
 
   Future<void> setLastGame(String gameCode) async {
@@ -200,5 +201,41 @@ class UserSettingsStore {
       // ignore the error
     }
     return '';
+  }
+}
+
+class BettingOptions {
+  List<int> preFlop = [2, 3, 5];
+  List<int> postFlop = [30, 50, 100];
+  List<int> raise = [2, 3, 5];
+  BettingOptions();
+
+  factory BettingOptions.fromJson(String jsonStr) {
+    BettingOptions options = BettingOptions();
+    if (jsonStr != null && jsonStr != "") {
+      options.preFlop = [];
+      options.postFlop = [];
+      options.raise = [];
+      var bettingOptions = json.decode(jsonStr);
+
+      bettingOptions['preflop'].forEach((element) {
+        options.preFlop.add(element);
+      });
+      bettingOptions['postflop'].forEach((element) {
+        options.postFlop.add(element);
+      });
+      bettingOptions['raise'].forEach((element) {
+        options.raise.add(element);
+      });
+    }
+    return options;
+  }
+
+  String toJson() {
+    return json.encode({
+      'preflop': preFlop,
+      'postflop': postFlop,
+      'raise': raise,
+    });
   }
 }

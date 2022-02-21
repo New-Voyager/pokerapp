@@ -43,17 +43,17 @@ class MenuListTile extends StatelessWidget {
     if (this.svgIconPath != null) {
       iconWidget = SvgPicture.asset(
         svgIconPath,
-        width: 24,
-        height: 24,
+        width: 18,
+        height: 18,
         color: theme.accentColor,
       );
     } else if (this.icon != null) {
-      iconWidget = Icon(this.icon, size: 24, color: theme.accentColor);
+      iconWidget = Icon(this.icon, size: 18, color: theme.accentColor);
     }
 
     iconWidget = Container(
-        width: 36,
-        height: 36,
+        width: 24,
+        height: 24,
         padding: EdgeInsets.all(2),
         margin: EdgeInsets.only(right: 6),
         decoration: BoxDecoration(
@@ -115,7 +115,7 @@ class MenuListTile extends StatelessWidget {
         }
       },
       child: Padding(
-        padding: padding ?? EdgeInsets.zero,
+        padding: padding ?? EdgeInsets.all(4),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [prefixWidget, suffixWidget],

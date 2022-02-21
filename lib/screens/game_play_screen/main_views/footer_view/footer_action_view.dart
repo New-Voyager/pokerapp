@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/player_action.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_constants.dart';
@@ -485,6 +486,8 @@ class _FooterActionViewState extends State<FooterActionView> {
   }
 
   Widget _buildBetWidget(
+    GameState gameState,
+    Seat mySeat,
     List<int> playerCards,
     PlayerAction playerAction,
     int remainingTime, {
@@ -502,6 +505,8 @@ class _FooterActionViewState extends State<FooterActionView> {
           ? shrinkedBox
           : _showOptions
               ? BetWidget(
+                  gameState: gameState,
+                  seat: mySeat,
                   action: playerAction,
                   playerCards: playerCards,
                   onSubmitCallBack: _betOrRaise,
@@ -550,6 +555,8 @@ class _FooterActionViewState extends State<FooterActionView> {
                       child: Transform.scale(
                         scale: boardAttributes.footerActionScale,
                         child: _buildBetWidget(
+                          gameState,
+                          gameState.mySeat,
                           me.cards,
                           actionState.action,
                           30,

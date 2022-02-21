@@ -66,7 +66,7 @@ class SwitchWidget2 extends StatelessWidget {
                 Consumer<ValueNotifier<bool>>(
                     builder: (_, vnValue, __) => FlutterSwitch(
                       //width: activeText != 'On' ? 100 : 70.0,
-                      width: 50,
+                      width: 45,
                       height: 25,
                       disabled: disabled,
                       activeTextColor: theme.supportingColor,
