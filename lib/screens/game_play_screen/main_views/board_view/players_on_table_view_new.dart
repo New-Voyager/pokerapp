@@ -17,6 +17,7 @@ import 'package:pokerapp/services/audio/audio_service.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/utils/name_plate_widget_parent.dart';
+import 'package:pokerapp/utils/sizing_utils/sizing_utils.dart';
 import 'package:pokerapp/widgets/debug_border_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -385,6 +386,7 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
   void initState() {
     super.initState();
     _init();
+    // TODO: THIS FUNCTION WOULD BE CALLED WHILE INITIALIZING THE APP
     if (widget.isLargerScreen) {
       NamePlateWidgetParent.setWidth(100);
     } else {
@@ -467,13 +469,7 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
 
   @override
   Widget build(BuildContext context) {
-    final namePlateWidgetSize = NamePlateWidgetParent.namePlateSize;
-
-    final ts = Size(
-      widget.tableSize.width,
-      widget.tableSize.height + namePlateWidgetSize.height * 1.5,
-    );
-
+    final ts = SizingUtils.getPlayersOnTableSize(widget.tableSize);
     Provider.of<SeatsOnTableState>(context, listen: true);
 
     return Stack(
@@ -485,7 +481,7 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
           width: ts.width,
           height: ts.height,
           child: CustomMultiChildLayout(
-            delegate: PlayerPlacementDelegate(widget.isLargerScreen),
+            delegate: PlayerPlacementDelegate(isLarger: widget.isLargerScreen),
             children: _getPlayers(context),
           ),
         ),
@@ -530,7 +526,7 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
 class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
   final bool isLarger;
 
-  PlayerPlacementDelegate(this.isLarger);
+  PlayerPlacementDelegate({@required this.isLarger});
 
   @override
   void performLayout(Size size) {

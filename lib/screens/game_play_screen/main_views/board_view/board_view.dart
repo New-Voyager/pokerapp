@@ -11,6 +11,7 @@ import 'package:pokerapp/screens/game_play_screen/main_views/board_view/players_
 import 'package:pokerapp/screens/game_play_screen/seat_view/animating_widgets/stack_switch_seat_animating_widget.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/utils/name_plate_widget_parent.dart';
+import 'package:pokerapp/utils/sizing_utils/sizing_utils.dart';
 import 'package:pokerapp/widgets/debug_border_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -30,6 +31,17 @@ class BoardView extends StatelessWidget {
   });
 
   final GlobalKey boardViewKey = GlobalKey();
+
+  Size _getCenterViewSize({@required Size tableSize}) {
+    final namePlateSize = NamePlateWidgetParent.namePlateSize;
+
+    final ts = SizingUtils.getPlayersOnTableSize(tableSize);
+
+    final height = ts.height - namePlateSize.height * 2;
+    final width = ts.width - namePlateSize.width * 2;
+
+    return Size(width, height);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,16 +90,16 @@ class BoardView extends StatelessWidget {
             child: TableView(tableWidthFactor: tableWidthFactor),
           ),
 
-          /* center view */
-          Positioned(
-            top: boardAttributes.centerOffset.dy,
-            left: boardAttributes.centerOffset.dx,
-            width: boardAttributes.centerSize.width,
-            height: boardAttributes.centerSize.height,
-            child: Builder(
-              builder: (context) {
-                return Transform.scale(
-                  scale: boardAttributes.centerViewCenterScale,
+          /* new center view */
+          ValueListenableBuilder(
+            valueListenable: gameState.tableSizeVn,
+            builder: (_, tableSize, __) {
+              if (tableSize == null) return const SizedBox.shrink();
+
+              return DebugBorderWidget(
+                color: Colors.lime,
+                child: SizedBox.fromSize(
+                  size: _getCenterViewSize(tableSize: tableSize),
                   child: CenterView(
                     tableState: context.read<TableState>(),
                     gameCode: gameInfo.gameCode,
@@ -95,16 +107,15 @@ class BoardView extends StatelessWidget {
                     isBoardHorizontal: isBoardHorizontal,
                     onStartGame: onStartGame,
                   ),
-                );
-              },
-            ),
+                ),
+              );
+            },
           ),
 
           // new players view
           ValueListenableBuilder(
             valueListenable: gameState.tableSizeVn,
             builder: (_, size, __) {
-              print('valuelistenablebuilder: $size');
               if (size == null) return const SizedBox.shrink();
               return DebugBorderWidget(
                 color: Colors.amber,
