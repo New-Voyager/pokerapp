@@ -263,6 +263,8 @@ class BetWidget extends StatelessWidget {
     Widget betImage;
     final double s = 32.pw;
 
+    double height = s * boardAttributes.betImageScale;
+
     betImage = Image.memory(
       imageBytes,
       height: s,
@@ -293,11 +295,12 @@ class BetWidget extends StatelessWidget {
         onSubmitCallBack?.call(vnBetAmount.value);
       },
       child: Container(
-        height: s * boardAttributes.betImageScale,
+        height: height,
         width: s * boardAttributes.betImageScale,
         child: betChipImage,
       ),
     );
+    return betChipWidget;
 
     final bool isBetByTapActive = true;
     //gameState.playerLocalConfig.tapOrSwipeBetAction;
@@ -465,140 +468,120 @@ class BetWidget extends StatelessWidget {
 
     final bool isCentsGame = gameState.gameInfo.chipUnit == ChipUnit.CENT;
 
-    return Stack(children: [
-      ListenableProvider<ValueNotifier<double>>(
-        create: (_) => ValueNotifier<double>(
-          action.minRaiseAmount.toDouble(),
-        ),
-        builder: (BuildContext context, _) {
-          final valueNotifierVal = context.read<ValueNotifier<double>>();
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SizedBox(height: betWidgetGap),
-              // cards
-              FittedBox(
-                fit: BoxFit.fitWidth,
-                child: Transform.scale(
-                    scale: 1.0,
-                    child: StackCardView(cards: _getCards(playerCards))),
-              ),
-              Align(
-                  alignment: Alignment.bottomCenter,
-                  child: HelpText(
-                      show: appService.appSettings.showBetTip,
-                      text: 'Tap BET button to confirm the bet amount',
-                      theme: AppTheme.getTheme(context),
-                      onTap: () {
-                        // don't show this again
-                        appService.appSettings.showBetTip = false;
-                      })),
-              /* progress drag to bet */
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CircleImageButton2(
-                    theme: appTheme,
-                    icon: Icons.remove,
+    return ListenableProvider<ValueNotifier<double>>(
+      create: (_) => ValueNotifier<double>(
+        action.minRaiseAmount.toDouble(),
+      ),
+      builder: (BuildContext context, _) {
+        final valueNotifierVal = context.read<ValueNotifier<double>>();
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(height: betWidgetGap),
+            // cards
+            FittedBox(
+              fit: BoxFit.fitWidth,
+              child: Transform.scale(
+                  scale: 1.0,
+                  child: StackCardView(cards: _getCards(playerCards))),
+            ),
+            Align(
+                alignment: Alignment.bottomCenter,
+                child: HelpText(
+                    show: appService.appSettings.showBetTip,
+                    text: 'Tap BET button to confirm the bet amount',
+                    theme: AppTheme.getTheme(context),
                     onTap: () {
-                      double value = valueNotifierVal.value;
-                      if (isCentsGame) {
-                        value -= 0.01;
-                      } else {
-                        value--;
-                      }
-                      if (value < action.minRaiseAmount) {
-                        value = action.minRaiseAmount.toDouble();
-                      }
-                      valueNotifierVal.value = value;
-                    },
-                  ),
-                  _buildBetSeekBar(betSliderWidth, appTheme, gameState),
-                  CircleImageButton2(
-                    theme: appTheme,
-                    icon: Icons.add,
-                    onTap: () {
-                      double value = valueNotifierVal.value;
-                      if (isCentsGame) {
-                        value += 0.01;
-                      } else {
-                        value++;
-                      }
-                      if (value > action.maxRaiseAmount) {
-                        value = action.maxRaiseAmount.toDouble();
-                      }
-                      valueNotifierVal.value = value;
-                    },
-                  ),
-                ],
-              ),
+                      // don't show this again
+                      appService.appSettings.showBetTip = false;
+                    })),
 
-              /* OLD UI button row for other bet options */
-              // Transform.scale(
-              //   alignment: Alignment.topCenter,
-              //   scale: 0.90,
-              //   child: Container(
-              //     alignment: Alignment.center,
-              //     width: width / 1.5,
-              //     height: 40.ph,
-              //     child: betAmountList(valueNotifierVal, appTheme),
-              //   ),
-              // ),
-              // SizedBox(height: 5.ph),
+            Container(
+              // decoration: BoxDecoration(
+              //     border: Border.all(color: Colors.red, width: 2)),
 
-              /* bet amount */
-              ValueListenableBuilder<double>(
-                valueListenable: valueNotifierVal,
-                builder: (_, double betAmount, __) => Text(
-                  DataFormatter.chipsFormat(betAmount),
-                  style: TextStyle(
-                    fontSize: 12.dp,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.yellowAccent,
-                  ),
-                ),
-              ),
-              Transform.translate(
-                  offset: offset,
-                  child: Stack(
-                    alignment: Alignment.topCenter,
-                    children: [
-                      // this widget reserves space for onTap Listeners when inside Stack
-                      Container(
-                        width: double.infinity,
-                        height: boardAttributes.footerHeight,
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    /* progress drag to bet */
+                    Container(
                         // decoration: BoxDecoration(
-                        //   border: Border.all(color: Colors.cyan),
-                        //   //color: Colors.cyan,
-                        // )
-                      ),
+                        //     border: Border.all(color: Colors.green, width: 2)),
 
-                      // other bet buttons
-                      ..._buildOtherBetOptions(
-                        context: context,
-                        isLargerDisplay: isLargerDisplay,
-                        valueNotifierVal: valueNotifierVal,
-                        appTheme: appTheme,
-                      ),
+                        child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CircleImageButton2(
+                          theme: appTheme,
+                          icon: Icons.remove,
+                          onTap: () {
+                            double value = valueNotifierVal.value;
+                            if (isCentsGame) {
+                              value -= 0.01;
+                            } else {
+                              value--;
+                            }
+                            if (value < action.minRaiseAmount) {
+                              value = action.minRaiseAmount.toDouble();
+                            }
+                            valueNotifierVal.value = value;
+                          },
+                        ),
+                        _buildBetSeekBar(betSliderWidth, appTheme, gameState),
+                        CircleImageButton2(
+                          theme: appTheme,
+                          icon: Icons.add,
+                          onTap: () {
+                            double value = valueNotifierVal.value;
+                            if (isCentsGame) {
+                              value += 0.01;
+                            } else {
+                              value++;
+                            }
+                            if (value > action.maxRaiseAmount) {
+                              value = action.maxRaiseAmount.toDouble();
+                            }
+                            valueNotifierVal.value = value;
+                          },
+                        ),
+                      ],
+                    )),
 
-                      /* bet button */
-                      Container(
-                        margin: EdgeInsets.symmetric(vertical: 50),
-                        child: _buildBetButton(
-                          context,
-                          isLargerDisplay,
-                          valueNotifierVal,
-                          appTheme,
+                    /* bet amount */
+                    ValueListenableBuilder<double>(
+                      valueListenable: valueNotifierVal,
+                      builder: (_, double betAmount, __) => Text(
+                        DataFormatter.chipsFormat(betAmount),
+                        style: TextStyle(
+                          fontSize: 12.dp,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.yellowAccent,
                         ),
                       ),
-                    ],
-                  )),
-              //SizedBox(height: 10.ph),
-            ],
-          );
-        },
-      ),
-    ]);
+                    ),
+                    Container(
+                      // decoration: BoxDecoration(
+                      //     border: Border.all(color: Colors.blue, width: 2)),
+                      //margin: EdgeInsets.symmetric(vertical: 50),
+                      child: _buildBetButton(
+                        context,
+                        isLargerDisplay,
+                        valueNotifierVal,
+                        appTheme,
+                      ),
+                    ),
+                    SizedBox(height: 5.ph),
+                    betAmountList(valueNotifierVal, appTheme),
+                  ]),
+            ),
+            /* OLD UI button row for other bet options */
+
+            SizedBox(height: 5.ph),
+          ],
+        );
+      },
+    );
   }
 
   Widget _buildBetAmountChild({
@@ -677,6 +660,52 @@ class BetWidget extends StatelessWidget {
   }
 
   Widget betAmountList(ValueNotifier<double> vnValue, AppTheme theme) {
+    return Container(
+      height: 40,
+      child: ListView.builder(
+        physics: BouncingScrollPhysics(),
+        scrollDirection: Axis.horizontal,
+        shrinkWrap: true,
+        itemBuilder: (context, index) {
+          if (index == 0) {
+            // show keyboard
+            return BetAmountButton(
+              onTap: () async {
+                double min = action.minRaiseAmount.toDouble();
+                double max = action.maxRaiseAmount.toDouble();
+
+                final double res = await NumericKeyboard2.show(
+                  context,
+                  title: 'Enter your bet',
+                  min: min,
+                  max: max,
+                );
+
+                if (res != null) vnValue.value = res;
+              },
+              theme: theme,
+              isKeyboard: true,
+              text: '',
+            );
+          }
+
+          final option = action.options[index - 1];
+
+          return BetAmountButton(
+            onTap: () {
+              vnValue.value = option.amount.toDouble();
+            },
+            theme: theme,
+            text: action.options[index - 1].text,
+            //option: action.options[index - 1],
+          );
+        },
+        itemCount: action.options.length + 1,
+      ),
+    );
+  }
+
+  Widget betAmountList2(ValueNotifier<double> vnValue, AppTheme theme) {
     return Container(
       height: 40,
       child: ListView.builder(

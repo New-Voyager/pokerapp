@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
-import 'package:pokerapp/models/ui/app_theme_styles.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
@@ -302,22 +301,6 @@ class DummyCircleImageButton extends StatelessWidget {
 
   Widget build(BuildContext context) {
     Color buttonColor = theme.accentColor;
-    Color buttonBackGround = Colors.black;
-    Color buttonBorder = theme.accentColor;
-
-    // Color buttonColor = Color(0xffC99200);
-    // Color buttonBackGround = Colors.black;
-    // Color buttonBorder = Color(0xffC99200);
-
-    // List<BoxShadow> shadow = [
-    //     BoxShadow(
-    //       color: buttonBackGround,
-    //       blurRadius: 1,
-    //       spreadRadius: 1,
-    //       offset: Offset(1, 0),
-    //     )
-    //   ];
-
     Widget image = Container();
     if (asset != null) {
       image = ColorFiltered(
@@ -360,37 +343,6 @@ class DummyCircleImageButton extends StatelessWidget {
       padding: EdgeInsets.zero,
       radius: Radius.circular(24),
     );
-    // return Column(
-    //   mainAxisSize: MainAxisSize.min,
-    //   children: [
-    //     Container(
-    //       width: width ?? 40,
-    //       height: height ?? 40,
-    //       padding: EdgeInsets.all(2.pw),
-    //       decoration: BoxDecoration(
-    //         shape: BoxShape.circle,
-    //         color: buttonBackGround,
-    //         // boxShadow: shadow,
-    //         border: Border.all(
-    //           color: buttonBorder,
-    //           width: 2.0,
-    //         ),
-    //         //borderRadius: BorderRadius.circular(20.pw),
-    //       ),
-    //       child: Center(child: image),
-    //     ),
-    //     (caption != null)
-    //         ? Padding(
-    //             padding: EdgeInsets.only(top: 8.pw),
-    //             child: Text(
-    //               caption,
-    //               style: textStyle,
-    //               textAlign: TextAlign.center,
-    //             ),
-    //           )
-    //         : Container(),
-    //   ],
-    // );
   }
 }
 
@@ -847,4 +799,65 @@ class Corners {
     this.bottomLeft = Radius.zero,
     this.bottomRight = Radius.zero,
   });
+}
+
+class BetAmountButton extends StatelessWidget {
+  final AppTheme theme;
+  final String text;
+  final Function onTap;
+  final bool isKeyboard;
+  const BetAmountButton(
+      {Key key,
+      @required this.theme,
+      this.text = '',
+      this.isKeyboard = false,
+      @required this.onTap})
+      : super(key: key);
+
+  Widget build(BuildContext context) {
+    TextStyle btnTextStyle = AppDecorators.getHeadLine4Style(theme: theme)
+        .copyWith(color: theme.supportingColor);
+    Color btnColor = theme.primaryColorWithLight(0.2);
+    final button = Container(
+      // duration: AppConstants.fastAnimationDuration,
+      // curve: Curves.bounceInOut,
+      height: 12.ph,
+      width: 40.pw,
+      margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+      padding: const EdgeInsets.all(2.0),
+      decoration: BoxDecoration(
+        //color: btnColor,
+        shape: BoxShape.rectangle,
+        border: Border.all(
+          color: btnColor,
+          width: 2.0,
+        ),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Center(
+        child: FittedBox(
+          fit: BoxFit.fitHeight,
+          child: isKeyboard
+              ? Icon(
+                  Icons.keyboard,
+                  color: Colors.white,
+                )
+              : Text(
+                  text.toUpperCase(),
+                  textAlign: TextAlign.center,
+                  style: btnTextStyle.copyWith(
+                    fontSize: 10.dp,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
+                ),
+        ),
+      ),
+    );
+
+    return InkWell(
+      onTap: onTap,
+      child: button,
+    );
+  }
 }
