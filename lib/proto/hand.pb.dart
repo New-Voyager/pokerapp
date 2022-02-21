@@ -791,6 +791,13 @@ class NextSeatAction extends $pb.GeneratedMessage {
             ? ''
             : 'actionId',
         protoName: 'actionId')
+    ..a<$core.double>(
+        16,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'potAmount',
+        $pb.PbFieldType.OD,
+        protoName: 'potAmount')
     ..hasRequiredFields = false;
 
   NextSeatAction._() : super();
@@ -810,6 +817,7 @@ class NextSeatAction extends $pb.GeneratedMessage {
     $core.int? secondsTillTimesout,
     $core.double? seatInSoFar,
     $core.String? actionId,
+    $core.double? potAmount,
   }) {
     final _result = create();
     if (seatNo != null) {
@@ -856,6 +864,9 @@ class NextSeatAction extends $pb.GeneratedMessage {
     }
     if (actionId != null) {
       _result.actionId = actionId;
+    }
+    if (potAmount != null) {
+      _result.potAmount = potAmount;
     }
     return _result;
   }
@@ -1047,6 +1058,18 @@ class NextSeatAction extends $pb.GeneratedMessage {
   $core.bool hasActionId() => $_has(14);
   @$pb.TagNumber(15)
   void clearActionId() => clearField(15);
+
+  @$pb.TagNumber(16)
+  $core.double get potAmount => $_getN(15);
+  @$pb.TagNumber(16)
+  set potAmount($core.double v) {
+    $_setDouble(15, v);
+  }
+
+  @$pb.TagNumber(16)
+  $core.bool hasPotAmount() => $_has(15);
+  @$pb.TagNumber(16)
+  void clearPotAmount() => clearField(16);
 }
 
 class PlayerInSeatState extends $pb.GeneratedMessage {
