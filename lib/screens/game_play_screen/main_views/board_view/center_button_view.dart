@@ -18,6 +18,7 @@ import 'package:pokerapp/services/game_play/graphql/seat_change_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/widgets/buttons.dart';
+import 'package:pokerapp/widgets/debug_border_widget.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:provider/provider.dart';
 
@@ -142,7 +143,7 @@ class CenterButtonView extends StatelessWidget {
           debugLog(gameState.gameCode, 'Showing start/terminate buttons');
           return newGameButtons(context);
         } else {
-          return Container();
+          return const SizedBox.shrink();
         }
       } else {
         // other players are waiting for the game to be started
@@ -243,47 +244,43 @@ class CenterButtonView extends StatelessWidget {
         return SizedBox.shrink();
       }
 
-      // if this is not bot game and the player count is less than 2
-      // don't allow the player to start the game
-      final gameState = GameState.getState(context);
-      // if (!gameState.botGame && gameState.playersInSeatsCount <= 1) {
-      //   return SizedBox.shrink();
-      // }
-
       return Center(
-        child: Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 20.0,
-            vertical: 10.0,
-          ),
-          decoration: AppStylesNew.resumeBgDecoration,
-          child: Wrap(
-            crossAxisAlignment: WrapCrossAlignment.center,
-            alignment: WrapAlignment.center,
-            spacing: 16,
-            children: [
-              IconAndTitleWidget(
-                child: SvgPicture.asset(
-                  AppAssetsNew.resumeImagePath,
-                  height: 48.ph,
-                  width: 48.pw,
+        child: DebugBorderWidget(
+          color: Colors.blue,
+          child: Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 20.0,
+              vertical: 10.0,
+            ),
+            decoration: AppStylesNew.resumeBgDecoration,
+            child: Wrap(
+              crossAxisAlignment: WrapCrossAlignment.center,
+              alignment: WrapAlignment.center,
+              spacing: 16,
+              children: [
+                IconAndTitleWidget(
+                  child: SvgPicture.asset(
+                    AppAssetsNew.resumeImagePath,
+                    height: 48.ph,
+                    width: 48.pw,
+                  ),
+                  onTap: () {
+                    // log('Center: Starting the game ${gameState.gameCode}');
+                    this.onStartGame();
+                  },
+                  text: _appScreenText['start'],
                 ),
-                onTap: () {
-                  // log('Center: Starting the game ${gameState.gameCode}');
-                  this.onStartGame();
-                },
-                text: _appScreenText['start'],
-              ),
-              IconAndTitleWidget(
-                child: SvgPicture.asset(
-                  AppAssetsNew.terminateImagePath,
-                  height: 48.ph,
-                  width: 48.pw,
+                IconAndTitleWidget(
+                  child: SvgPicture.asset(
+                    AppAssetsNew.terminateImagePath,
+                    height: 48.ph,
+                    width: 48.pw,
+                  ),
+                  onTap: () => _onTerminatePress(context),
+                  text: _appScreenText['terminate'],
                 ),
-                onTap: () => _onTerminatePress(context),
-                text: _appScreenText['terminate'],
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       );

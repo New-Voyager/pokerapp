@@ -90,6 +90,26 @@ class BoardView extends StatelessWidget {
             child: TableView(tableWidthFactor: tableWidthFactor),
           ),
 
+          // new players view
+          ValueListenableBuilder(
+            valueListenable: gameState.tableSizeVn,
+            builder: (_, size, __) {
+              if (size == null) return const SizedBox.shrink();
+              return DebugBorderWidget(
+                color: Colors.amber,
+                child: PlayersOnTableViewNew(
+                  tableSize: size,
+                  onUserTap: onUserTap,
+                  gameComService: gameComService,
+                  gameState: gameState,
+                  maxPlayers: gameInfo.maxPlayers,
+                  isLargerScreen: isLargerScreen,
+                ),
+              );
+            },
+          ),
+
+
           /* new center view */
           ValueListenableBuilder(
             valueListenable: gameState.tableSizeVn,
@@ -112,24 +132,6 @@ class BoardView extends StatelessWidget {
             },
           ),
 
-          // new players view
-          ValueListenableBuilder(
-            valueListenable: gameState.tableSizeVn,
-            builder: (_, size, __) {
-              if (size == null) return const SizedBox.shrink();
-              return DebugBorderWidget(
-                color: Colors.amber,
-                child: PlayersOnTableViewNew(
-                  tableSize: size,
-                  onUserTap: onUserTap,
-                  gameComService: gameComService,
-                  gameState: gameState,
-                  maxPlayers: gameInfo.maxPlayers,
-                  isLargerScreen: isLargerScreen,
-                ),
-              );
-            },
-          ),
 
           /* distributing card animation widgets */
           Align(
