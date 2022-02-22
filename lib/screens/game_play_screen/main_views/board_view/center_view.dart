@@ -23,6 +23,7 @@ import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/widgets/cards/animations/animating_shuffle_card_view.dart';
 import 'package:pokerapp/widgets/cards/community_cards_view/community_cards_view.dart';
+import 'package:pokerapp/widgets/debug_border_widget.dart';
 import 'package:provider/provider.dart';
 import "dart:math" show pi;
 
@@ -32,8 +33,11 @@ class CenterView extends StatefulWidget {
   final bool isBoardHorizontal;
   final bool isHost;
   final String gameCode;
-
+  final Rect rect;
+  final GameState gameState;
   CenterView({
+    @required this.gameState,
+    @required this.rect,
     @required this.tableState,
     @required this.gameCode,
     @required this.isHost,
@@ -166,7 +170,8 @@ class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
       final gameState = GameState.getState(context);
       final boardAttributes = gameState.getBoardAttributes(context);
       // get pot view position and store in board attributes
-      if (boardAttributes.potKey != null) {
+      if (boardAttributes.potKey != null &&
+          boardAttributes.potKey.currentContext != null) {
         final RenderBox potViewBox =
             boardAttributes.potKey.currentContext.findRenderObject();
         boardAttributes.potGlobalPos = potViewBox.localToGlobal(Offset(0, 0));
@@ -311,48 +316,85 @@ class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
     Widget pots = potsStack;
 
     final theme = AppTheme.getTheme(context);
+    // ratio
+    // pot:community cards:pot updates
+    // 1:4:1
+    final potRatio = 1.2;
+    final communityCardsRatio = 4;
+    final potUpdatesRatio = 1.2;
+    final total = potRatio + communityCardsRatio + potUpdatesRatio;
+    final double potsHeight = (potRatio * widget.rect.height) / total;
+    final double potUpdatesHeight =
+        (potUpdatesRatio * widget.rect.height) / total;
+    final double communityCardsHeight =
+        (communityCardsRatio * widget.rect.height) / total;
+    widget.gameState.communityCardsHeight = communityCardsHeight;
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        pots,
-
-        /* community cards view */
+    //widget.rect.height - (potsHeight + potUpdatesHeight + 20);
+    Widget communityCardsView = /* community cards view */
         ValueListenableBuilder<int>(
-          valueListenable: vnCommunityCardsRefresh,
-          builder: (_, __, ___) {
-            return ValueListenableBuilder3<List<CardObject>, List<CardObject>,
-                bool>(
-              vnCards,
-              vnCardOthers,
-              vnTwoBoardsNeeded,
-              builder: (_, cards, cardsOther, twoBoardsNeeded, __) {
-                final gameState = GameState.getState(context);
-                final tableState = gameState.tableState;
+      valueListenable: vnCommunityCardsRefresh,
+      builder: (_, __, ___) {
+        return ValueListenableBuilder3<List<CardObject>, List<CardObject>,
+            bool>(
+          vnCards,
+          vnCardOthers,
+          vnTwoBoardsNeeded,
+          builder: (_, cards, cardsOther, twoBoardsNeeded, __) {
+            final gameState = GameState.getState(context);
+            final tableState = gameState.tableState;
 
-                /// we use a transform matrix to give the table center view contents a 3d perspective look
-                return Transform(
-                  transform: Matrix4.identity()
-                    ..setEntry(3, 2, 0.005)
-                    ..rotateX(-20 * pi / 180),
-                  alignment: FractionalOffset.center,
-                  child: CommunityCardsView(
-                    cards: tableState.cards,
-                    cardsOther: tableState.cardsOther,
-                    twoBoardsNeeded: tableState.twoBoardsNeeded,
-                    horizontal: true,
-                  ),
-                );
-              },
+            /// we use a transform matrix to give the table center view contents a 3d perspective look
+            return Transform(
+              transform: Matrix4.identity()
+                ..setEntry(3, 2, 0.005)
+                ..rotateX(-20 * pi / 180),
+              alignment: FractionalOffset.center,
+              child: CommunityCardsView(
+                height: gameState.communityCardsHeight,
+                cards: tableState.cards,
+                cardsOther: tableState.cardsOther,
+                twoBoardsNeeded: tableState.twoBoardsNeeded,
+                horizontal: true,
+              ),
             );
           },
-        ),
-        Stack(
-          alignment: Alignment.topCenter,
-          children: [RankWidget(theme, vnRankStr), potUpdatesView()],
-        )
-      ],
+        );
+      },
+    );
+    Widget potUpdates = Stack(
+      alignment: Alignment.topCenter,
+      children: [RankWidget(theme, vnRankStr), potUpdatesView()],
+    );
+    List<Widget> children = [
+      pots,
+    ];
+    children = [
+      DebugBorderWidget(
+        color: Colors.yellow,
+        child:
+            Container(height: potsHeight, width: double.infinity, child: pots),
+      ),
+      DebugBorderWidget(
+        color: Colors.green,
+        child: Container(
+            height: communityCardsHeight,
+            width: double.infinity,
+            child: communityCardsView),
+      ),
+      DebugBorderWidget(
+        color: Colors.transparent,
+        child: Container(
+            height: potUpdatesHeight,
+            width: double.infinity,
+            child: potUpdates),
+      ),
+    ];
+    return Column(
+      //mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: children,
     );
   }
 
@@ -365,6 +407,7 @@ class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
         final List<Widget> pots = [];
 
         final List<double> cleanedPotChips = potChips ?? [];
+        //final List<double> cleanedPotChips = [10, 303.40];
         bool rebuildSeats = false;
         for (int i = 0; i < cleanedPotChips.length; i++) {
           if (cleanedPotChips[i] == null) cleanedPotChips[i] = 0;
@@ -443,38 +486,74 @@ class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
         if (gameState.handState == HandState.RESULT) {
           opacity = 0.0;
         }
+        String potUpdatesText = '0';
+        if (potChipsUpdates != null) {
+          potUpdatesText =
+              DataFormatter.chipsFormat(potChipsUpdates?.toDouble());
+        }
         return Opacity(
             opacity: opacity,
             child: Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 10.0,
-                vertical: 5.0,
-              ),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20.0),
-                color: Colors.black,
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  SvgPicture.asset(
-                    'assets/icons/potpokerchips.svg',
-                    color: Colors.yellow,
-                    width: 24.pw,
-                    height: 24.pw,
-                    fit: BoxFit.cover,
-                  ),
-                  SizedBox(width: 10),
-                  Text(
-                    '${DataFormatter.chipsFormat(potChipsUpdates?.toDouble())}',
-                    style: AppStylesNew.itemInfoTextStyleHeavy.copyWith(
-                      fontSize: 13.dp,
-                      fontWeight: FontWeight.w400,
+                width: 80,
+                // padding: const EdgeInsets.symmetric(
+                //   horizontal: 10.0,
+                //   vertical: 5.0,
+                // ),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20.0),
+                  color: Colors.black,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          SvgPicture.asset(
+                            'assets/icons/potpokerchips.svg',
+                            color: Colors.yellow,
+                            width: 18.pw,
+                            height: 18.pw,
+                            fit: BoxFit.cover,
+                          ),
+                          SizedBox(width: 2),
+                          Flexible(
+                            child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Text(
+                                potUpdatesText,
+                                maxLines: 1,
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            ));
+                  ],
+                )
+
+                // Row(
+                //   mainAxisSize: MainAxisSize.min,
+                //   children: [
+                //     SvgPicture.asset(
+                //       'assets/icons/potpokerchips.svg',
+                //       color: Colors.yellow,
+                //       width: 24.pw,
+                //       height: 24.pw,
+                //       fit: BoxFit.cover,
+                //     ),
+                //     SizedBox(width: 10),
+                //     Text(
+                //       '${DataFormatter.chipsFormat(potChipsUpdates?.toDouble())}',
+                //       style: AppStylesNew.itemInfoTextStyleHeavy.copyWith(
+                //         fontSize: 13.dp,
+                //         fontWeight: FontWeight.w400,
+                //       ),
+                //     ),
+                //   ],
+                // ),
+                ));
       },
     );
   }

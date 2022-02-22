@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
@@ -12,18 +14,22 @@ import 'package:pokerapp/screens/game_play_screen/seat_view/animating_widgets/st
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/utils/name_plate_widget_parent.dart';
 import 'package:pokerapp/utils/sizing_utils/sizing_utils.dart';
+import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/debug_border_widget.dart';
 import 'package:provider/provider.dart';
+import 'package:tuple/tuple.dart';
 
 import 'decorative_views/background_view.dart';
 
 class BoardView extends StatelessWidget {
   final GameComService gameComService;
   final GameInfoModel gameInfo;
+  final GameState gameState;
   final Function(Seat seat) onUserTap;
   final Function() onStartGame;
 
   BoardView({
+    @required this.gameState,
     @required this.gameInfo,
     @required this.onUserTap,
     @required this.onStartGame,
@@ -36,11 +42,55 @@ class BoardView extends StatelessWidget {
     final namePlateSize = NamePlateWidgetParent.namePlateSize;
 
     final ts = SizingUtils.getPlayersOnTableSize(tableSize);
+    final left = this.gameState.playerOnTableOffset.dx + namePlateSize.width;
+    final top = this.gameState.playerOnTableOffset.dy + namePlateSize.height;
+    final right = ts.width - namePlateSize.width;
+    final bottom = ts.height - namePlateSize.height;
 
-    final height = ts.height - namePlateSize.height * 2;
-    final width = ts.width - namePlateSize.width * 2;
+    final height = (ts.height - namePlateSize.height * 2) - 30;
+    final width = (ts.width - namePlateSize.width * 2) - 20;
 
     return Size(width, height);
+  }
+
+  Tuple2<Offset, Size> _getCenterViewRect({@required Size tableSize}) {
+    final namePlateSize = NamePlateWidgetParent.namePlateSize;
+
+    final ts = SizingUtils.getPlayersOnTableSize(tableSize);
+    final left = this.gameState.playerOnTableOffset.dx + namePlateSize.width;
+    final top = this.gameState.playerOnTableOffset.dy + namePlateSize.height;
+    final right =
+        (this.gameState.playerOnTableSize.width - (2 * namePlateSize.width));
+    final bottom =
+        this.gameState.playerOnTableSize.height - 2 * namePlateSize.height;
+    // hack here
+    double deflateSize = 10;
+    if (Screen.isLargeScreen) {
+      deflateSize = 40;
+    }
+    final rect = Rect.fromLTRB(left, top, right, bottom).deflate(deflateSize);
+    final ret = Rect.fromLTRB(rect.left, rect.top, rect.right, rect.bottom);
+    log('CenterView: rect: $ret this.gameState.playerOnTableSize: ${this.gameState.playerOnTableSize}');
+    return Tuple2<Offset, Size>(
+      Offset(rect.left, rect.top - deflateSize),
+      rect.size,
+    );
+  }
+
+  Rect _getCenterViewRect2({@required Size tableSize}) {
+    final namePlateSize = NamePlateWidgetParent.namePlateSize;
+
+    final ts = SizingUtils.getPlayersOnTableSize(tableSize);
+    final left = this.gameState.playerOnTableOffset.dx + namePlateSize.width;
+    final top = this.gameState.playerOnTableOffset.dy + namePlateSize.height;
+    final right =
+        (this.gameState.playerOnTableSize.width - namePlateSize.width);
+    final bottom =
+        this.gameState.playerOnTableSize.height - 2 * namePlateSize.height;
+    final rect = Rect.fromLTRB(left, top, right, bottom).deflate(10);
+    final ret = Rect.fromLTRB(rect.left, rect.top, rect.right, rect.bottom);
+    log('CenterView: rect: $ret this.gameState.playerOnTableSize: ${this.gameState.playerOnTableSize}');
+    return ret;
   }
 
   @override
@@ -49,7 +99,7 @@ class BoardView extends StatelessWidget {
 
     // final theme = AppTheme.getTheme(context);
     final gameState = GameState.getState(context);
-    gameState.boardKey = boardViewKey;
+    //gameState.boardKey = boardViewKey;
     final boardAttributes = gameState.getBoardAttributes(context);
     final isBoardHorizontal =
         boardAttributes.orientation == BoardOrientation.horizontal;
@@ -62,7 +112,7 @@ class BoardView extends StatelessWidget {
     // TODO: WE NEED TWO NEW VARIABLES FROM OUTSIDE
     // TODO: 1. TABLE WIDTH FACTOR
     // TODO: 2. IS LARGER SCREEN
-    double tableWidthFactor = 1.0;
+    double tableWidthFactor = 1.3;
     bool isLargerScreen = false;
     print(boardAttributes.screenDiagnolSize);
     if (boardAttributes.screenDiagnolSize > 7.0) {
@@ -72,8 +122,10 @@ class BoardView extends StatelessWidget {
 
     // this calculates the table size after drawing the table image
     gameState.calculateTableSizePostFrame();
+    gameState.calculatePlayerOnTablePostFrame();
 
     return DebugBorderWidget(
+      key: gameState.boardKey,
       color: Colors.white,
       child: Stack(
         clipBehavior: Clip.antiAlias,
@@ -98,6 +150,7 @@ class BoardView extends StatelessWidget {
               return DebugBorderWidget(
                 color: Colors.amber,
                 child: PlayersOnTableViewNew(
+                  key: gameState.playerOnTableKey,
                   tableSize: size,
                   onUserTap: onUserTap,
                   gameComService: gameComService,
@@ -109,29 +162,50 @@ class BoardView extends StatelessWidget {
             },
           ),
 
-
           /* new center view */
           ValueListenableBuilder(
-            valueListenable: gameState.tableSizeVn,
+            valueListenable: gameState.playerOnTableSizeVn,
             builder: (_, tableSize, __) {
               if (tableSize == null) return const SizedBox.shrink();
 
-              return DebugBorderWidget(
-                color: Colors.lime,
-                child: SizedBox.fromSize(
-                  size: _getCenterViewSize(tableSize: tableSize),
-                  child: CenterView(
-                    tableState: context.read<TableState>(),
-                    gameCode: gameInfo.gameCode,
-                    isHost: gameInfo.isHost,
-                    isBoardHorizontal: isBoardHorizontal,
-                    onStartGame: onStartGame,
-                  ),
-                ),
-              );
+              // return DebugBorderWidget(
+              //   color: Colors.lime,
+              //   child: SizedBox.fromSize(
+              //     size: _getCenterViewSize(tableSize: tableSize),
+              //     child: CenterView(
+              //       tableState: context.read<TableState>(),
+              //       gameCode: gameInfo.gameCode,
+              //       isHost: gameInfo.isHost,
+              //       isBoardHorizontal: isBoardHorizontal,
+              //       onStartGame: onStartGame,
+              //     ),
+              //   ),
+              // );
+              final tuple = _getCenterViewRect(tableSize: tableSize);
+              gameState.communityCardsWidth = tuple.item2.width;
+              return Positioned(
+                  top: tuple.item1.dy,
+                  left: tuple.item1.dx,
+                  child: DebugBorderWidget(
+                    color: Colors.blue,
+                    child: SizedBox.fromSize(
+                      size: Size(tuple.item2.width, tuple.item2.height),
+                      // right: rect.right,
+                      // bottom: rect.bottom,
+                      child: CenterView(
+                        gameState: gameState,
+                        rect: Rect.fromLTWH(tuple.item1.dx, tuple.item1.dy,
+                            tuple.item2.width, tuple.item2.height),
+                        tableState: context.read<TableState>(),
+                        gameCode: gameInfo.gameCode,
+                        isHost: gameInfo.isHost,
+                        isBoardHorizontal: isBoardHorizontal,
+                        onStartGame: onStartGame,
+                      ),
+                    ),
+                  ));
             },
           ),
-
 
           /* distributing card animation widgets */
           Align(

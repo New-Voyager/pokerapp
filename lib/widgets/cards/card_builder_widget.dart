@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
@@ -50,12 +51,17 @@ class CardBuilderWidget extends StatelessWidget {
       case CardType.CommunityCard:
         /* if we have a card type of community cards, then we must be on the 
           game screen, thus we can safely call BoardAttributesObject */
-        final bao = context.read<BoardAttributesObject>();
-        if (doubleBoard) {
-          return bao.centerDoubleBoardScale;
-        } else {
-          return bao.centerBoardScale;
-        }
+        // final bao = context.read<BoardAttributesObject>();
+        // if (doubleBoard) {
+        //   return bao.centerDoubleBoardScale;
+        // } else {
+        //   return bao.centerBoardScale;
+        // }
+
+        final gameState = GameState.getState(context);
+        final size = gameState.communityCardSingleCardSize;
+        var ratio = size.height / size.width;
+        return ratio;
         break;
       //return 1.2 * bao.boardScale;
 

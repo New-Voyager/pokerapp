@@ -15,8 +15,10 @@ class CommunityCardsView extends StatelessWidget {
   final List<CardObject> cardsOther;
   final bool twoBoardsNeeded;
   final bool horizontal;
+  final double height;
   CommunityCardsView({
     @required this.cards,
+    @required this.height,
     this.cardsOther,
     this.twoBoardsNeeded,
     this.horizontal = true,

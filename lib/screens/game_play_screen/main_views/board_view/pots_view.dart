@@ -48,39 +48,68 @@ class PotsView extends StatelessWidget {
         child: Stack(
           children: [
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 10.0),
-              height: 30,
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: highlight ? Colors.white : Colors.transparent,
+                padding: EdgeInsets.symmetric(horizontal: 10.0),
+                height: 30,
+                width: 70,
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: highlight ? Colors.white : Colors.transparent,
+                  ),
+                  borderRadius: BorderRadius.circular(10.0),
+                  // color: this.transparent ? Colors.transparent : Colors.black26,
+                  color: Colors.black,
                 ),
-                borderRadius: BorderRadius.circular(10.0),
-                // color: this.transparent ? Colors.transparent : Colors.black26,
-                color: Colors.black,
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  // chip image
-                  Align(
-                    key: uiKey,
-                    alignment: Alignment.centerLeft,
-                    child: SvgPicture.asset("assets/images/chip.svg",
-                        width: 16.pw, height: 16.pw, color: chipColor),
-                  ),
-
-                  // pot amount text
-                  Padding(
-                    padding: const EdgeInsets.only(left: 5.0),
-                    child: Text(
-                      potText,
-                      style: potTextStyle,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          SvgPicture.asset("assets/images/chip.svg",
+                              width: 12, height: 12, color: chipColor),
+                          SizedBox(width: 2),
+                          Flexible(
+                            child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Text(
+                                potText == '' ? '0' : potText,
+                                style: potTextStyle,
+                                maxLines: 1,
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            )
+                  ],
+                )
+
+                //   child: Expanded(
+                //       child: Row(
+                //     mainAxisSize: MainAxisSize.min,
+                //     crossAxisAlignment: CrossAxisAlignment.center,
+                //     children: [
+                //       // chip image
+                //       // FittedBox(
+                //       //   key: uiKey,
+                //       //   alignment: Alignment.centerLeft,
+                //       //   child: SvgPicture.asset("assets/images/chip.svg",
+                //       //       width: 16.pw, height: 16.pw, color: chipColor),
+                //       // ),
+
+                //       // pot amount text
+
+                //       Flexible(
+                //           child: FittedBox(
+                //               fit: BoxFit.scaleDown,
+                //               child: Text(
+                //                 potText,
+                //                 style: potTextStyle,
+                //               ))),
+                //     ],
+                //   )),
+                )
           ],
         ),
       ),

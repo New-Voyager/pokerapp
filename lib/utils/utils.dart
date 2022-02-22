@@ -34,6 +34,10 @@ class Screen {
     _screen = new Screen(query.size, query.devicePixelRatio);
   }
 
+  static bool get isLargeScreen {
+    return Screen.screenSizeInches > 7;
+  }
+
   static double get _ppi => (Platform.isAndroid || Platform.isIOS) ? 150 : 96;
 
   static double get devicePixelRatio {

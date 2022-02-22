@@ -957,6 +957,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       width: boardDimensions.width,
       height: boardDimensions.height,
       child: BoardView(
+        gameState: _gameState,
         gameComService: _gameContextObj?.gameComService,
         gameInfo: _gameInfoModel,
         onUserTap: _onJoinGame,

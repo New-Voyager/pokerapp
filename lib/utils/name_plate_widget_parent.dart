@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 /// width: 100
 /// height: 80
 /// aspect ratio: 5/4 = 1.25
-const _aspectRatio = 1.25;
+const _aspectRatio = 1.50;
 
 abstract class NamePlateWidgetParent {
   /// this will be the default width, if setWidth is never called

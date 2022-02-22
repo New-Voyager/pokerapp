@@ -174,8 +174,24 @@ class GameState {
 
   // table key - we need this to calculate the exact dimension of the table image
   final GlobalKey tableKey = GlobalKey();
+  final GlobalKey playerOnTableKey = GlobalKey();
+  final GlobalKey boardKey = GlobalKey();
+  Offset _playerOnTableOffset = Offset(0, 0);
+  Size _playerOnTableSize = Size(0, 0);
+  double communityCardsHeight = 0;
+  double communityCardsWidth = 0;
 
   final ValueNotifier<Size> tableSizeVn = ValueNotifier<Size>(null);
+  final ValueNotifier<Size> playerOnTableSizeVn = ValueNotifier<Size>(null);
+
+  Size get communityCardSingleCardSize {
+    double singleCardWidth = (communityCardsWidth) / 5;
+    double height = communityCardsHeight - 20;
+    if (Screen.isLargeScreen) {
+      height = communityCardsHeight;
+    }
+    return Size(singleCardWidth, height);
+  }
 
   void calculateTableSizePostFrame({bool force = false}) {
     if (!force && tableSizeVn.value != null) return;
@@ -191,8 +207,36 @@ class GameState {
     });
   }
 
+  void calculatePlayerOnTablePostFrame({bool force = false}) {
+    if (!force && playerOnTableSizeVn.value != null) return;
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      while (true) {
+        if (playerOnTableKey.currentContext == null) {
+          await Future.delayed(const Duration(milliseconds: 10));
+          continue;
+        }
+        final box =
+            playerOnTableKey.currentContext.findRenderObject() as RenderBox;
+        if (box.size.shortestSide != 0.0) {
+          playerOnTableSizeVn.value = box.size;
+          Offset startPos = box.localToGlobal(Offset(0, 0));
+
+          final box1 = boardKey.currentContext.findRenderObject() as RenderBox;
+          _playerOnTableOffset = box1.globalToLocal(startPos);
+          _playerOnTableSize = box1.size;
+          log('CenterView: Player on table offset: $_playerOnTableOffset');
+          break;
+        }
+        await Future.delayed(const Duration(milliseconds: 10));
+      }
+    });
+  }
+
+  Offset get playerOnTableOffset => _playerOnTableOffset;
+  Size get playerOnTableSize => _playerOnTableSize;
+
   // central board key
-  GlobalKey boardKey;
+  //GlobalKey boardKey;
 
   // tracks whether buyin keyboard is shown or not
   bool buyInKeyboardShown = false;
@@ -920,6 +964,13 @@ class GameState {
     bool listen: false,
   }) {
     return Provider.of<BoardAttributesObject>(context, listen: listen);
+  }
+
+  bool get isLargeScreen {
+    if (Screen.diagonalInches >= 7.0) {
+      return true;
+    }
+    return false;
   }
 
   Seat getSeat(int seatNo) {

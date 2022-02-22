@@ -37,13 +37,14 @@ class PlayersOnTableViewNew extends StatefulWidget {
   final bool isLargerScreen;
 
   PlayersOnTableViewNew({
+    Key key,
     @required this.tableSize,
     @required this.onUserTap,
     @required this.gameComService,
     @required this.gameState,
     @required this.maxPlayers,
     this.isLargerScreen = false,
-  });
+  }) : super(key: key);
 
   @override
   State<PlayersOnTableViewNew> createState() => _PlayersOnTableViewNewState();
@@ -579,7 +580,7 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
 
       positionChild(
         SeatPos.topCenter1,
-        Offset((3 * size.width / 8) - cs.width / 2, 0.0),
+        Offset((3 * size.width / 8) - cs.width / 2, -15.0),
       );
     }
 
@@ -593,7 +594,7 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
 
       positionChild(
         SeatPos.topCenter2,
-        Offset((5 * size.width / 8) - cs.width / 2, 0.0),
+        Offset((5 * size.width / 8) - cs.width / 2, -15.0),
       );
     }
 
