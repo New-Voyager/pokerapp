@@ -59,8 +59,12 @@ class BoardView extends StatelessWidget {
     final ts = SizingUtils.getPlayersOnTableSize(tableSize);
     final left = this.gameState.playerOnTableOffset.dx + namePlateSize.width;
     final top = this.gameState.playerOnTableOffset.dy + namePlateSize.height;
-    final right =
-        (this.gameState.playerOnTableSize.width - (2 * namePlateSize.width));
+    double right =
+        (this.gameState.playerOnTableSize.width - namePlateSize.width);
+    if (Screen.isLargeScreen) {
+      right =
+          (this.gameState.playerOnTableSize.width - (2 * namePlateSize.width));
+    }
     final bottom =
         this.gameState.playerOnTableSize.height - 2 * namePlateSize.height;
     // hack here
