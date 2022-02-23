@@ -20,6 +20,7 @@ import 'package:pokerapp/utils/date_range_picker.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/buttons.dart';
+import 'package:pokerapp/widgets/credits.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:pokerapp/widgets/radio_list_widget.dart';
 import 'package:share/share.dart';
@@ -177,16 +178,9 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
                           ),
                           Row(
                             children: [
-                              Text(
-                                DataFormatter.chipsFormat(
-                                    member.availableCredit),
-                                style: AppDecorators.getHeadLine3Style(
-                                        theme: theme)
-                                    .copyWith(
-                                        color: member.availableCredit < 0
-                                            ? Colors.redAccent
-                                            : Colors.greenAccent),
-                              ),
+                              CreditsWidget(
+                                  theme: theme,
+                                  credits: member.availableCredit),
                               !widget.owner
                                   ? SizedBox.shrink()
                                   : RoundRectButton(
@@ -657,11 +651,11 @@ class DataCreditSource extends DataTableSource {
       DataCell(
         Container(
             alignment: Alignment.center,
-            child: Text(
-              DataFormatter.chipsFormat(item.updatedCredits),
-              textAlign: TextAlign.right,
-              style: AppDecorators.getSubtitle1Style(theme: theme),
-            )),
+            child: FittedBox(
+                child: CreditsWidget(
+              credits: item.updatedCredits,
+              theme: theme,
+            ))),
         onTap: () async {
           if (onTap != null) {
             await onTap(item.updateType, item.gameCode);

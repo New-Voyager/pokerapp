@@ -125,6 +125,7 @@ class ClubMemberModel extends ChangeNotifier {
     data.agentFeeBack = copyValue.agentFeeBack;
     data.requestMessage = copyValue.requestMessage;
     data.canViewAgentReport = copyValue.canViewAgentReport;
+    data.availableCredit = copyValue.availableCredit;
     return data;
   }
 
