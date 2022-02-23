@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
@@ -14,10 +13,10 @@ import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/result_options_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/straddle_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/bet_widget.dart';
-import 'package:pokerapp/screens/game_play_screen/widgets/help_text.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/widgets/cards/hole_stack_card_view.dart';
 import 'package:pokerapp/utils/card_helper.dart';
+import 'package:pokerapp/widgets/debug_border_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
@@ -91,6 +90,7 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
                   MarkedCards>(
                 builder: (_, __, ___, ____, markedCards, _____) {
                   // log('Holecard view: rebuild');
+                  // return Container();
                   return _buildHoleCardView(context);
                 },
               ),
@@ -119,12 +119,15 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
 
   Widget _buildFooterActionView(
       BuildContext context, GameContextObject gco, ActionState actionState) {
-    return FooterActionView(
-      gameContext: gco,
-      isBetWidgetVisible: (bool isBetWidgetVisible) {
-        _showDarkBackgroundVn.value = isBetWidgetVisible;
-      },
-      actionState: actionState,
+    return DebugBorderWidget(
+      color: Colors.amber,
+      child: FooterActionView(
+        gameContext: gco,
+        isBetWidgetVisible: (bool isBetWidgetVisible) {
+          _showDarkBackgroundVn.value = isBetWidgetVisible;
+        },
+        actionState: actionState,
+      ),
     );
   }
 
@@ -188,12 +191,15 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
       return SizedBox.shrink();
     }
 
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-      child: Text(
-        me.rankText,
-        style: AppDecorators.getHeadLine5Style(theme: theme).copyWith(
-          fontSize: ba.selfRankTextSize,
+    return DebugBorderWidget(
+      color: Colors.amber,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+        child: Text(
+          me.rankText,
+          style: AppDecorators.getHeadLine5Style(theme: theme).copyWith(
+            fontSize: ba.selfRankTextSize,
+          ),
         ),
       ),
     );
@@ -258,20 +264,22 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
 
           gameState.holeCardsState.notify();
         },
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            cardsWidget,
-            // Visibility(
-            //   visible: isHoleCardsVisibleVn.value,
-            //   child: Positioned(
-            //     bottom: 40,
-            //     left: 0,
-            //     right: 0,
-            //     child: shuffleButton,
-            //   ),
-            // ),
-          ],
+        child: DebugBorderWidget(
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              cardsWidget,
+              // Visibility(
+              //   visible: isHoleCardsVisibleVn.value,
+              //   child: Positioned(
+              //     bottom: 40,
+              //     left: 0,
+              //     right: 0,
+              //     child: shuffleButton,
+              //   ),
+              // ),
+            ],
+          ),
         ),
       ),
     );

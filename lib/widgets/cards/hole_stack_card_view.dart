@@ -10,6 +10,7 @@ import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/widgets/cards/card_builder_widget.dart';
 import 'package:pokerapp/widgets/cards/player_hole_card_view.dart';
+import 'package:pokerapp/widgets/debug_border_widget.dart';
 import 'package:pokerapp/widgets/page_curl/page_curl.dart';
 import 'package:provider/provider.dart';
 
@@ -52,16 +53,18 @@ class HoleStackCardView extends StatelessWidget {
         final card = Transform.translate(
           offset: Offset(offsetInX, 0),
           child: Builder(
-            builder: (context) => PlayerHoleCardView(
-              marked: markedCards.isMarked(cards[i]),
-              onMarkTapCallback: () {
-                final gameState = GameState.getState(context);
-                markedCards.mark(
-                    cards[i], gameState.handState == HandState.RESULT);
-              },
-              card: cards[i],
-              dim: deactivated,
-              isCardVisible: isCardVisible,
+            builder: (context) => DebugBorderWidget(
+              child: PlayerHoleCardView(
+                marked: markedCards.isMarked(cards[i]),
+                onMarkTapCallback: () {
+                  final gameState = GameState.getState(context);
+                  markedCards.mark(
+                      cards[i], gameState.handState == HandState.RESULT);
+                },
+                card: cards[i],
+                dim: deactivated,
+                isCardVisible: isCardVisible,
+              ),
             ),
           ),
         );

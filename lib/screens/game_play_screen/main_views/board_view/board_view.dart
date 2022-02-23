@@ -109,7 +109,6 @@ class BoardView extends StatelessWidget {
             },
           ),
 
-
           /* new center view */
           ValueListenableBuilder(
             valueListenable: gameState.tableSizeVn,
@@ -131,7 +130,6 @@ class BoardView extends StatelessWidget {
               );
             },
           ),
-
 
           /* distributing card animation widgets */
           Align(

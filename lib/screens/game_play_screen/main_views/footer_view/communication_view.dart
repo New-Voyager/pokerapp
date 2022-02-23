@@ -16,6 +16,7 @@ import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/widgets/buttons.dart';
+import 'package:pokerapp/widgets/debug_border_widget.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:provider/provider.dart';
 import 'package:record/record.dart';
@@ -85,13 +86,15 @@ class _CommunicationViewState extends State<CommunicationView> {
                         showBadge: gcns.hasUnreadMessages,
                         position: BadgePosition.topEnd(top: 0, end: 0),
                         badgeContent: Text(gcns.count.toString()),
-                        child: CircleImageButton(
-                          onTap: () {
-                            log('on chat clicked');
-                            widget.chatVisibilityChange();
-                          },
-                          theme: theme,
-                          svgAsset: chat,
+                        child: DebugBorderWidget(
+                          child: CircleImageButton(
+                            onTap: () {
+                              log('on chat clicked');
+                              widget.chatVisibilityChange();
+                            },
+                            theme: theme,
+                            svgAsset: chat,
+                          ),
                         ),
                       ),
                     ),
@@ -111,7 +114,8 @@ class _CommunicationViewState extends State<CommunicationView> {
                     gameState.playerLocalConfig.inAudioConference) {
                   if (communicationState.audioConferenceStatus ==
                       AudioConferenceStatus.CONNECTED) {
-                    children.add(audioConferenceWidget(gameState, theme));
+                    children.add(DebugBorderWidget(
+                        child: audioConferenceWidget(gameState, theme)));
                     showVoiceText = false;
                   }
                 }
@@ -135,7 +139,7 @@ class _CommunicationViewState extends State<CommunicationView> {
                   // show time widget if the player is acting
                   final gameState = GameState.getState(context);
                   if (gameState.actionState.show || TestService.isTesting) {
-                    return TimeBankWidget(gameState);
+                    return DebugBorderWidget(child: TimeBankWidget(gameState));
                   } else {
                     return Container();
                   }
@@ -166,12 +170,14 @@ class _CommunicationViewState extends State<CommunicationView> {
 
   voiceTextWidgets(GameMessagingService chatService) {
     return <Widget>[
-      VoiceTextWidget(
-        recordStart: () => record(),
-        recordStop: (int dur) {
-          return stopRecording(false, dur);
-        },
-        recordCancel: () => stopRecording(true, 0),
+      DebugBorderWidget(
+        child: VoiceTextWidget(
+          recordStart: () => record(),
+          recordStop: (int dur) {
+            return stopRecording(false, dur);
+          },
+          recordCancel: () => stopRecording(true, 0),
+        ),
       ),
     ];
   }
@@ -179,19 +185,21 @@ class _CommunicationViewState extends State<CommunicationView> {
   joinAudioConferenceWidget() {
     final theme = AppTheme.getTheme(context);
     return <Widget>[
-      CircleImageButton(
-        svgAsset: "assets/images/game/join-conf.svg",
-        onTap: () async {
-          final response = await showPrompt(context, 'Audio Conference',
-              'Do you want to join the audio conference?',
-              positiveButtonText: "Yes", negativeButtonText: "No");
-          if (response != null && response == true) {
-            final gameState = GameState.getState(context);
-            gameState.playerLocalConfig.inCall = true;
-            gameState.audioConfState.joinConf();
-          }
-        },
-        theme: theme,
+      DebugBorderWidget(
+        child: CircleImageButton(
+          svgAsset: "assets/images/game/join-conf.svg",
+          onTap: () async {
+            final response = await showPrompt(context, 'Audio Conference',
+                'Do you want to join the audio conference?',
+                positiveButtonText: "Yes", negativeButtonText: "No");
+            if (response != null && response == true) {
+              final gameState = GameState.getState(context);
+              gameState.playerLocalConfig.inCall = true;
+              gameState.audioConfState.joinConf();
+            }
+          },
+          theme: theme,
+        ),
       ),
     ];
   }
