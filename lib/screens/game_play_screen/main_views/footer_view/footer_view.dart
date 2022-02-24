@@ -165,6 +165,7 @@ class _FooterViewState extends State<FooterView>
   /* straddle prompt builder / footer action view builder / hole card view builder */
   Widget _buildMainView(GameState gameState) {
     final width = MediaQuery.of(context).size.width;
+    gameState.holeCardsViewWidth = MediaQuery.of(context).size.width - 80;
     return Consumer<MyState>(
       builder: (
         BuildContext _,
@@ -205,7 +206,7 @@ class _FooterViewState extends State<FooterView>
           return Center(
             child: DebugBorderWidget(
               child: Container(
-                width: MediaQuery.of(context).size.width - 80,
+                width: gameState.holeCardsViewWidth,
                 child: HoleCardsViewAndFooterActionView(
                   playerModel: mee,
                   isHoleCardsVisibleVn: isHoleCardsVisibleVn,

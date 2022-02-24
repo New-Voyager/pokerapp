@@ -563,9 +563,7 @@ class _FooterActionViewState extends State<FooterActionView> {
                           boardAttributes: boardAttributes,
                         ),
                       )),
-
-                  /* bottom row */
-                  Transform.scale(
+                  /* bottom row */ Transform.scale(
                     scale: boardAttributes.footerActionScale,
                     alignment: Alignment.bottomCenter,
                     child: Container(

@@ -73,19 +73,19 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
           gameState.customizationMode
               ? BetIconButton(displayBetText: false)
               : Container(),
-          gameState.customizationMode || showHandRank
-              ? Align(
-                  alignment: Alignment.topCenter,
-                  child: rankText,
-                )
-              : Container(),
+          // gameState.customizationMode || showHandRank
+          //     ? Align(
+          //         alignment: Alignment.topCenter,
+          //         child: rankText,
+          //       )
+          //     : Container(),
 
           // hole card view & rank Text
           Transform.translate(
             offset: offset,
             child: Transform.scale(
               alignment: Alignment.topCenter,
-              scale: scale,
+              scale: 1,
               child: Consumer4<StraddlePromptState, HoleCardsState, MyState,
                   MarkedCards>(
                 builder: (_, __, ___, ____, markedCards, _____) {
@@ -252,7 +252,7 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
     }
 
     return Transform.translate(
-      offset: boardAttributes.holeCardOffset,
+      offset: Offset(0, 0),
       child: GestureDetector(
         onTap: () {
           isHoleCardsVisibleVn.value = !isHoleCardsVisibleVn.value;
