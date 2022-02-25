@@ -21,6 +21,7 @@ import 'package:pokerapp/screens/game_screens/new_game_settings/new_game_setting
 import 'package:pokerapp/screens/main_screens/games_page_view/widgets/live_games_item.dart';
 import 'package:pokerapp/screens/profile_screens/bug_features_dialog.dart';
 import 'package:pokerapp/services/app/game_service.dart';
+import 'package:pokerapp/services/data/hive_models/player_state.dart';
 import 'package:pokerapp/services/onboarding.dart';
 import 'package:pokerapp/services/test/mock_data.dart';
 import 'package:pokerapp/services/test/test_service.dart';
@@ -43,7 +44,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
   final GlobalKey<OnboardingState> onboardingKey = GlobalKey<OnboardingState>();
   bool _isLoading = true;
   bool _isPlayedGamesLoading = true;
-  List<GameModelNew> liveGames = [];
+  List<GameModel> liveGames = [];
   List<GameHistoryModel> playedGames = [];
   bool closed = false;
   TabController _tabController;
@@ -85,17 +86,17 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
 
     if (appState != null) {
       appState.addListener(() async {
-        final int currentIndex = appState.currentIndex;
+        //final int currentIndex = appState.currentIndex;
         if (appState.newGame || appState.gameEnded) {
-          if (currentIndex == 0) {
-            if (_tabController.index == 0) {
-              await _fetchLiveGames();
-            } else if (_tabController.index == 1) {
-              await _fetchPlayedGames();
-            }
-          }
+          await _fetchLiveGames();
+          await _fetchPlayedGames();
           appState.setNewGame(false);
           appState.setGameEnded(false);
+          // if (currentIndex == 0) {
+          //   if (_tabController.index == 0) {
+          //   } else if (_tabController.index == 1) {
+          //   }
+          // }
         }
       });
     }
@@ -149,6 +150,23 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
       updatedLiveGames = await MockData.getLiveGames();
     } else {
       updatedLiveGames = await GameService.getLiveGamesNew();
+
+      // get friends games
+      final gameCodes = playerState.getFriendsGameCodes();
+      if (gameCodes.length > 0) {
+        for (final gameCode in gameCodes) {
+          final game = await GameService.getGameInfo(gameCode);
+          if (game == null) {
+            // game probaly ended
+            playerState.removeFriendsGameCodes(gameCode);
+            showErrorDialog(context, 'Not Found', 'Game is not found');
+          } else {
+            // add the game to the list
+            GameModel gameModel = GameModel.fromGameInfo(game);
+            updatedLiveGames.add(gameModel);
+          }
+        }
+      }
     }
 
     bool refresh = true;
@@ -191,7 +209,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
     final jsonResult = json.decode(data);
     log('${jsonResult}');
     for (var item in jsonResult['liveGames']) {
-      liveGames.add(GameModelNew.fromJson(item));
+      liveGames.add(GameModel.fromJson(item));
     }
     log("Size : ${liveGames.length}");
     if (closed) {
@@ -276,8 +294,15 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
       // Check game exists or not
       final gameInfo = await GameService.getGameInfo(gameCode);
       if (gameInfo == null) {
-        Alerts.showNotification(titleText: _appScreenText['gameNotFound']);
+        // Alerts.showNotification(titleText: _appScreenText['gameNotFound']);
       } else {
+        if (gameInfo.clubCode == null || gameInfo.clubCode.isEmpty) {
+          // we joined this game, save the game code
+          playerState.addFriendsGameCodes(gameCode);
+          // add the game to the list
+          GameModel gameModel = GameModel.fromGameInfo(gameInfo);
+          liveGames.add(gameModel);
+        }
         Navigator.of(context).pushNamed(Routes.game_play, arguments: result);
       }
     }
@@ -290,9 +315,11 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
     if (appState.newGame || appState.gameEnded) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _fetchLiveGames();
+        _fetchPlayedGames();
         appState.setNewGame(false);
+        appState.setGameEnded(false);
         if (appState.gameEnded) {
-          _fetchPlayedGames();
+          //_fetchPlayedGames();
           appState.setGameEnded(false);
         }
       });
@@ -556,10 +583,23 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                                     return LiveGameItem(
                                       game: liveGames[index],
                                       onTapFunction: () async {
-                                        await Navigator.of(context).pushNamed(
-                                          Routes.game_play,
-                                          arguments: liveGames[index].gameCode,
-                                        );
+                                        // get game info again to see whether the game is still active
+                                        final gameInfo =
+                                            await GameService.getGameInfo(
+                                                liveGames[index].gameCode);
+                                        if (gameInfo == null) {
+                                          // game ended
+                                          playerState.removeFriendsGameCodes(
+                                              liveGames[index].gameCode);
+                                          // refresh screen
+                                          _fetchLiveGames();
+                                        } else {
+                                          await Navigator.of(context).pushNamed(
+                                            Routes.game_play,
+                                            arguments:
+                                                liveGames[index].gameCode,
+                                          );
+                                        }
                                       },
                                     );
                                   },

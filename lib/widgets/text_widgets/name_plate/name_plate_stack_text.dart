@@ -16,7 +16,7 @@ class NamePlateStackText extends StatelessWidget {
 
     return Text(
       DataFormatter.chipsFormat(stack),
-      style: AppDecorators.getSubtitle4Style(theme: theme).copyWith(
+      style: AppDecorators.getNameplateStyle(theme: theme).copyWith(
         fontSize: 10.dp,
       ),
     );

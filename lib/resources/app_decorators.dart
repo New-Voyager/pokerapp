@@ -164,8 +164,16 @@ class AppDecorators {
 
   static TextStyle getSubtitle4Style({@required AppTheme theme}) {
     return TextStyle(
-      color: theme.supportingColorWithLight(),
-      fontSize: 8.dp,
+      color: theme.secondaryColorWithLight(),
+      fontSize: 7.dp,
+      fontWeight: FontWeight.w300,
+    );
+  }
+
+  static TextStyle getNameplateStyle({@required AppTheme theme}) {
+    return TextStyle(
+      color: theme.supportingColor,
+      fontSize: 7.dp,
       fontWeight: FontWeight.w300,
     );
   }
