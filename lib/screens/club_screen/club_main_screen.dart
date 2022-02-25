@@ -46,7 +46,7 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew>
   void refreshClubMainScreen() {
     //  log('refresh club main screen');
     fetchData(update: true);
-    //setState(() {});
+    setState(() {});
   }
 
   @override

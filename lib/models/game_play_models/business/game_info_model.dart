@@ -26,6 +26,7 @@ class GameInfoModel {
   double smallBlind;
   double bigBlind;
   double ante;
+  DateTime startedAt;
   List<int> availableSeats;
   List<PlayerModel> playersInSeats;
   String gameToken;

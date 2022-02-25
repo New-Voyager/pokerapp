@@ -170,6 +170,14 @@ class AppDecorators {
     );
   }
 
+  static TextStyle getNameplateStyle({@required AppTheme theme}) {
+    return TextStyle(
+      color: theme.supportingColor,
+      fontSize: 7.dp,
+      fontWeight: FontWeight.w300,
+    );
+  }
+
   static TextStyle getCenterTextTextstyle({@required AppTheme appTheme}) {
     return TextStyle(
         fontSize: 18.dp,

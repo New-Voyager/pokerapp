@@ -309,7 +309,8 @@ class NamePlateWidget extends StatelessWidget {
                         : null, //EdgeInsets.all(3),
                     //padding: EdgeInsets.all(2),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         //SizedBox(height: 2),
                         // player name
@@ -328,10 +329,10 @@ class NamePlateWidget extends StatelessWidget {
                         // bottom widget - to show stack, sit back time, etc.
                         Expanded(
                           child: Align(
-                            alignment: Alignment.centerRight,
+                            alignment: Alignment.center,
                             child: Padding(
                               padding: const EdgeInsets.symmetric(
-                                horizontal: 5,
+                                horizontal: 2,
                               ),
                               child: bottomWidget(context, theme),
                             ),
@@ -355,7 +356,7 @@ class NamePlateWidget extends StatelessWidget {
         //width: boardAttributes.namePlateSize.width,
         //height: boardAttributes.namePlateSize.height,
         padding: const EdgeInsets.symmetric(
-          vertical: 5.0,
+          vertical: 2.0,
         ),
         decoration: BoxDecoration(
           boxShadow: shadow,
@@ -419,7 +420,7 @@ class PlayerViewDivider extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = AppTheme.getTheme(context);
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 8),
+      margin: EdgeInsets.symmetric(horizontal: 4),
       decoration: BoxDecoration(
         color: theme.accentColor,
         borderRadius: BorderRadius.circular(5),

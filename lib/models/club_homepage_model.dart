@@ -75,13 +75,15 @@ class ClubHomePageModel extends ChangeNotifier {
         buyInMin
         buyInMax
         tableCount
+        startedAt
+        status
       }  
     }""";
 
   String clubName;
   String clubCode;
   double playerBalance;
-  List<GameModelNew> liveGames;
+  List<GameModel> liveGames;
   bool isManager;
   bool isOwner;
   bool isAgent;
@@ -119,7 +121,7 @@ class ClubHomePageModel extends ChangeNotifier {
     this.canViewAgentReport = member['canViewAgentReport'] ?? false;
     this.playerBalance = double.parse(member['myBalance'].toString());
     this.liveGames = data['liveGames']
-        .map<GameModelNew>((game) => GameModelNew.fromJson(game))
+        .map<GameModel>((game) => GameModel.fromJson(game))
         .toList();
     this.weeklyActivity = activity;
     this.pendingMemberCount = member['pendingMemberCount'] ?? 0;

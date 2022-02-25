@@ -66,6 +66,13 @@ class ClubActionsNew extends StatelessWidget {
           _clubHomePageModel.hostUnreadMessageCount.toString(),
           style: TextStyle(color: theme.supportingColor),
         );
+      } else {
+        if (_clubHomePageModel.memberUnreadMessageCount > 0) {
+          badgeContent = Text(
+            _clubHomePageModel.memberUnreadMessageCount.toString(),
+            style: TextStyle(color: theme.supportingColor),
+          );
+        }
       }
     } else {
       if (_clubHomePageModel.memberUnreadMessageCount > 0) {
