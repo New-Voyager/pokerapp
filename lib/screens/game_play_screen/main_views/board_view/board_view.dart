@@ -37,7 +37,7 @@ class BoardView extends StatelessWidget {
 
     final ts = SizingUtils.getPlayersOnTableSize(tableSize);
 
-    final height = ts.height - namePlateSize.height * 2;
+    final height = ts.height - namePlateSize.height * 2.2;
     final width = ts.width - namePlateSize.width * 2;
 
     return Size(width, height);
@@ -109,29 +109,30 @@ class BoardView extends StatelessWidget {
             },
           ),
 
-
           /* new center view */
-          ValueListenableBuilder(
-            valueListenable: gameState.tableSizeVn,
-            builder: (_, tableSize, __) {
-              if (tableSize == null) return const SizedBox.shrink();
+          Transform.translate(
+            offset: Offset(0.0, -NamePlateWidgetParent.topWidgetOffset),
+            child: ValueListenableBuilder(
+              valueListenable: gameState.tableSizeVn,
+              builder: (_, tableSize, __) {
+                if (tableSize == null) return const SizedBox.shrink();
 
-              return DebugBorderWidget(
-                color: Colors.lime,
-                child: SizedBox.fromSize(
-                  size: _getCenterViewSize(tableSize: tableSize),
-                  child: CenterView(
-                    tableState: context.read<TableState>(),
-                    gameCode: gameInfo.gameCode,
-                    isHost: gameInfo.isHost,
-                    isBoardHorizontal: isBoardHorizontal,
-                    onStartGame: onStartGame,
+                return DebugBorderWidget(
+                  color: Colors.lime,
+                  child: SizedBox.fromSize(
+                    size: _getCenterViewSize(tableSize: tableSize),
+                    child: CenterView(
+                      tableState: context.read<TableState>(),
+                      gameCode: gameInfo.gameCode,
+                      isHost: gameInfo.isHost,
+                      isBoardHorizontal: isBoardHorizontal,
+                      onStartGame: onStartGame,
+                    ),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
-
 
           /* distributing card animation widgets */
           Align(

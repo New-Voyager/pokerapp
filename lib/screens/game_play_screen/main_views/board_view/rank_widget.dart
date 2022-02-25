@@ -16,37 +16,40 @@ class RankWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var textStyle = AppStylesNew.footerResultTextStyle4
-        .copyWith(fontSize: 16.dp, color: Colors.white);
+    var textStyle = AppStylesNew.footerResultTextStyle4.copyWith(
+      fontSize: 16.dp,
+      color: Colors.white,
+    );
     return ValueListenableBuilder(
-        valueListenable: rankTextNotifier,
-        builder: (_, rankStr, __) {
-          //Color color = theme.accentColorWithDark();
-          Color color = theme.fillInColor;
-          if (rankStr.toString().toLowerCase() == 'low') {
-            color = Colors.blueGrey;
-          }
-          return AnimatedSwitcher(
-            duration: AppConstants.animationDuration,
-            reverseDuration: AppConstants.animationDuration,
-            child: _hideRankStr(rankStr)
-                ? const SizedBox.shrink()
-                : Container(
-                    // margin: EdgeInsets.only(top: 5.0),
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 15.pw,
-                      vertical: 2.pw,
-                    ),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(100.0),
-                      color: color, //theme.accentColorWithDark(),
-                    ),
-                    child: Text(
-                      rankStr,
-                      style: textStyle,
-                    ),
+      valueListenable: rankTextNotifier,
+      builder: (_, rankStr, __) {
+        //Color color = theme.accentColorWithDark();
+        Color color = theme.fillInColor;
+        if (rankStr.toString().toLowerCase() == 'low') {
+          color = Colors.blueGrey;
+        }
+        return AnimatedSwitcher(
+          duration: AppConstants.animationDuration,
+          reverseDuration: AppConstants.animationDuration,
+          child: _hideRankStr(rankStr)
+              ? const SizedBox.shrink()
+              : Container(
+                  // margin: EdgeInsets.only(top: 5.0),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 15.pw,
+                    vertical: 2.pw,
                   ),
-          );
-        });
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(100.0),
+                    color: color, //theme.accentColorWithDark(),
+                  ),
+                  child: Text(
+                    rankStr,
+                    style: textStyle,
+                  ),
+                ),
+        );
+      },
+    );
   }
 }
