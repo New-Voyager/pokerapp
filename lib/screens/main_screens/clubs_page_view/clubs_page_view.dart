@@ -435,36 +435,76 @@ class _ClubsPageViewState extends State<ClubsPageView>
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      RoundRectButton(
-                        text: _appScreenText['searchClub'],
-                        onTap: () async {
-                          await showModalBottomSheet(
-                            context: context,
-                            backgroundColor: Colors.transparent,
-                            isScrollControlled: true,
-                            builder: (ctx) => SearchClubBottomSheet(),
-                          );
-                          _fetchClubs(withLoading: true);
-                          // Map<String, dynamic> attribs;
-                          // try {
-                          //   ScreenAttributes.buildList();
-                          //   Size size = Size(390.0, 865.0);
-                          //   attribs = ScreenAttributes.getScreenAttribs('iPhone Something', 1.0, size);
-                          //   log('attribs length: ${attribs.length}');
-                          // } catch(err) {
-                          //   log('Error: ${err.toString()}');
-                          // }
-                        },
-                        focusNode: focusNodes[0],
-                        theme: theme,
-                      ),
+                      CircleImageButton(
+                          theme: theme,
+                          icon: Icons.search,
+                          onTap: () async {
+                            // Alerts.showDailog(
+                            //   context: context,
+                            //   child: BugsFeaturesWidget(),
+                            // );
+                            await showModalBottomSheet(
+                              context: context,
+                              backgroundColor: Colors.transparent,
+                              isScrollControlled: true,
+                              builder: (ctx) => SearchClubBottomSheet(),
+                            );
+                            _fetchClubs(withLoading: true);
+                          }),
+
+                      // RoundRectButton(
+                      //   text: _appScreenText['searchClub'],
+                      //   onTap: () async {
+                      //     await showModalBottomSheet(
+                      //       context: context,
+                      //       backgroundColor: Colors.transparent,
+                      //       isScrollControlled: true,
+                      //       builder: (ctx) => SearchClubBottomSheet(),
+                      //     );
+                      //     _fetchClubs(withLoading: true);
+                      //     // Map<String, dynamic> attribs;
+                      //     // try {
+                      //     //   ScreenAttributes.buildList();
+                      //     //   Size size = Size(390.0, 865.0);
+                      //     //   attribs = ScreenAttributes.getScreenAttribs('iPhone Something', 1.0, size);
+                      //     //   log('attribs length: ${attribs.length}');
+                      //     // } catch(err) {
+                      //     //   log('Error: ${err.toString()}');
+                      //     // }
+                      //   },
+                      //   focusNode: focusNodes[0],
+                      //   theme: theme,
+                      // ),
                       HeadingWidget(heading: _appScreenText['clubs']),
-                      RoundRectButton(
-                        text: '+ ${_appScreenText['createClub']}',
-                        onTap: () => _createClub(ctx),
-                        theme: theme,
-                        focusNode: focusNodes[1],
-                      ),
+                      // RoundRectButton(
+                      //   text: '+ ${_appScreenText['createClub']}',
+                      //   onTap: () => _createClub(ctx),
+                      //   theme: theme,
+                      //   focusNode: focusNodes[1],
+                      // ),
+                      CircleImageButton(
+                          theme: theme,
+                          icon: Icons.add,
+                          onTap: () {
+                            // Alerts.showDailog(
+                            //   context: context,
+                            //   child: BugsFeaturesWidget(),
+                            // );
+                            _createClub(ctx);
+                          }),
+
+                      // CircleImageButton(
+                      //     theme: theme,
+                      //     icon: Icons.help_rounded,
+                      //     onTap: () {
+                      //       // Alerts.showDailog(
+                      //       //   context: context,
+                      //       //   child: BugsFeaturesWidget(),
+                      //       // );
+                      //       showErrorDialog(context, 'Help',
+                      //           "Host: Host a Poker game and invite your friends to join.\n\nJoin: Join your friend's game with the game code.\n\nTap on Clubs tab to create your friends' club.",
+                      //           info: true);
+                      //     }),
                     ],
                   ),
 
@@ -483,13 +523,14 @@ class _ClubsPageViewState extends State<ClubsPageView>
                         )
                       : _clubs.isEmpty
                           ? Expanded(
-                              child: Center(
-                                child: Text(
-                                  _appScreenText['noClubs'],
-                                  style: AppDecorators.getAccentTextStyle(
-                                      theme: theme),
-                                ),
-                              ),
+                              child: ClubsHelpText(theme),
+                              // Center(
+                              //   child: Text(
+                              //     _appScreenText['noClubs'],
+                              //     style: AppDecorators.getAccentTextStyle(
+                              //         theme: theme),
+                              //   ),
+                              // ),
                             )
                           : Expanded(
                               child: ListView.separated(
@@ -553,6 +594,43 @@ class _ClubsPageViewState extends State<ClubsPageView>
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class ClubsHelpText extends StatelessWidget {
+  final AppTheme theme;
+
+  ClubsHelpText(this.theme);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.all(20),
+      child: Column(
+        children: [
+          SizedBox(height: 50),
+          Row(
+            children: [
+              Text('Tap'),
+              SizedBox(width: 10),
+              CircleImageButton(theme: theme, icon: Icons.add, onTap: () {}),
+              SizedBox(width: 10),
+              Text('to create a club'),
+            ],
+          ),
+          SizedBox(height: 30),
+          Row(
+            children: [
+              Text('Tap'),
+              SizedBox(width: 10),
+              CircleImageButton(theme: theme, icon: Icons.search, onTap: () {}),
+              SizedBox(width: 10),
+              Text('to search an existing club'),
+            ],
+          )
+        ],
       ),
     );
   }

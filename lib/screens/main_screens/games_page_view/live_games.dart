@@ -16,6 +16,7 @@ import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/routes.dart';
+import 'package:pokerapp/screens/game_play_screen/widgets/help_text.dart';
 import 'package:pokerapp/screens/game_screens/game_history_view/game_history_item_new.dart';
 import 'package:pokerapp/screens/game_screens/new_game_settings/new_game_settings2.dart';
 import 'package:pokerapp/screens/main_screens/games_page_view/widgets/live_games_item.dart';
@@ -275,7 +276,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
         ),
         actions: [
           RoundRectButton(
-            text: _appScreenText['join'],
+            text: 'Join',
             onTap: () async {
               if (gameCode.isEmpty) {
                 toast(_appScreenText['emptyGameCode']);
@@ -422,7 +423,8 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
 
     return Consumer<AppTheme>(
       builder: (_, appTheme, __) {
-        List<OnboardingStep> steps = getOnboardingSteps(appTheme);
+        //List<OnboardingStep> steps = getOnboardingSteps(appTheme);
+        List<OnboardingStep> steps = [];
         Widget mainView = getMainView(appTheme);
         if (steps.length == 0) {
           return mainView;
@@ -463,46 +465,51 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
+                  RoundRectButton(
+                    onTap: () async {
+                      await hostGame();
+                    },
+                    text: 'Host', //_appScreenText["host"],
+                    theme: appTheme,
+                    focusNode: focusNodes[0],
+                  ),
                   Expanded(
-                      child: HeadingWidget(heading: _appScreenText['appName'])),
-                  CircleImageButton(
-                      focusNode: focusNodes[2],
-                      height: 30,
-                      width: 30,
-                      imageWidth: 18,
-                      theme: appTheme,
-                      icon: Icons.info,
-                      onTap: () {
-                        Alerts.showDailog(
-                          context: context,
-                          child: BugsFeaturesWidget(),
-                        );
-                      }),
+                      child: Column(children: [
+                    HeadingWidget(
+                      heading: _appScreenText['appName'],
+                    ),
+                  ])),
+                  // CircleImageButton(
+                  //     focusNode: focusNodes[2],
+                  //     height: 30,
+                  //     width: 30,
+                  //     imageWidth: 18,
+                  //     theme: appTheme,
+                  //     icon: Icons.info,
+                  //     onTap: () {
+                  //       Alerts.showDailog(
+                  //         context: context,
+                  //         child: BugsFeaturesWidget(),
+                  //       );
+                  //     }),
+                  RoundRectButton(
+                    onTap: () async {
+                      await joinGame(appTheme);
+                    },
+                    theme: appTheme,
+                    text: 'Join', //_appScreenText['join'],
+                    focusNode: focusNodes[1],
+                  ),
                 ],
               ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                RoundRectButton(
-                  onTap: () async {
-                    await hostGame();
-                  },
-                  text: _appScreenText["host"],
-                  theme: appTheme,
-                  focusNode: focusNodes[0],
-                ),
-                RoundRectButton(
-                  onTap: () async {
-                    await joinGame(appTheme);
-                  },
-                  theme: appTheme,
-                  text: _appScreenText['join'],
-                  focusNode: focusNodes[1],
-                ),
-                // SizedBox(width: 8.pw),
-              ],
-            ),
+            // Align(
+            //     alignment: Alignment.centerRight,
+            //     child: CircleImageButton(
+            //       onTap: () {},
+            //       icon: Icons.email,
+            //       theme: appTheme,
+            //     )),
 
             TabBar(
               physics: const BouncingScrollPhysics(),
@@ -569,13 +576,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                       _isLoading
                           ? Container()
                           : liveGames.isEmpty
-                              ? Center(
-                                  child: Text(
-                                    _appScreenText['noLiveGames'],
-                                    style: AppDecorators.getAccentTextStyle(
-                                        theme: appTheme),
-                                  ),
-                                )
+                              ? LiveGamesHelpText(appTheme)
                               : ListView.separated(
                                   physics: BouncingScrollPhysics(),
                                   shrinkWrap: true,
@@ -672,5 +673,66 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
         showClubName: true,
       ),
     );
+  }
+}
+
+class LiveGamesHelpText extends StatelessWidget {
+  final AppTheme appTheme;
+
+  LiveGamesHelpText(this.appTheme);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+      SizedBox(height: 50),
+      Row(
+        children: [
+          SizedBox(width: 20.pw),
+          Text('Tap '),
+          RoundRectButton(
+            onTap: () async {},
+            text: 'Host',
+            theme: appTheme,
+          ),
+          SizedBox(width: 8.pw),
+          Flexible(
+            child: Text('to host a new game'),
+          ),
+        ],
+      ),
+      SizedBox(height: 20),
+      Row(
+        children: [
+          SizedBox(width: 20.pw),
+          Text('Tap '),
+          RoundRectButton(
+            onTap: () async {},
+            text: 'Join',
+            theme: appTheme,
+          ),
+          SizedBox(width: 8.pw),
+          Flexible(
+            child: Text('to join a game with game code'),
+          ),
+        ],
+      ),
+      SizedBox(height: 20),
+      Row(
+        children: [
+          SizedBox(width: 20.pw),
+          Flexible(
+            child:
+                Text('Tap on Clubs tab to see your clubs or create a new club'),
+          ),
+        ],
+      ),
+    ]);
+
+    // Center(
+    //   child: Text(
+    //     'No games',
+    //     style: AppDecorators.getAccentTextStyle(theme: appTheme),
+    //   ),
+    // );
   }
 }

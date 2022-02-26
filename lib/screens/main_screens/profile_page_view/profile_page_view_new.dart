@@ -247,7 +247,7 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                           // Fetch user details from server
                                         },
                                       ),
-                                      CustomDivider(),
+                                      //CustomDivider(),
                                       // ListTileItem(
                                       //   text: _appScreenText[
                                       //       'customizeGameScreen'],
@@ -261,15 +261,18 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                       //   },
                                       // ),
                                       // CustomDivider(),
-                                      ListTileItem(
-                                        text: _appScreenText['chooseTheme'],
-                                        icon: Icons.dashboard_customize,
-                                        index: 4,
-                                        onTapFunction: () {
-                                          Navigator.of(context).pushNamed(
-                                            Routes.customize,
-                                          );
-                                        },
+                                      Visibility(
+                                        visible: false,
+                                        child: ListTileItem(
+                                          text: _appScreenText['chooseTheme'],
+                                          icon: Icons.dashboard_customize,
+                                          index: 4,
+                                          onTapFunction: () {
+                                            Navigator.of(context).pushNamed(
+                                              Routes.customize,
+                                            );
+                                          },
+                                        ),
                                       ),
                                     ],
                                   ),
