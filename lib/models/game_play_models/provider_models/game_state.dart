@@ -176,7 +176,8 @@ class GameState {
   final GlobalKey tableKey = GlobalKey();
 
   final ValueNotifier<Size> tableSizeVn = ValueNotifier<Size>(null);
-  double holeCardsViewWidth;
+  Size holeCardsViewSize = Size(0, 0);
+  double cardWidth;
   double cardsSizeRatio;
 
   void calculateTableSizePostFrame({bool force = false}) {

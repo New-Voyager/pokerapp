@@ -165,7 +165,9 @@ class _FooterViewState extends State<FooterView>
   /* straddle prompt builder / footer action view builder / hole card view builder */
   Widget _buildMainView(GameState gameState) {
     final width = MediaQuery.of(context).size.width;
-    gameState.holeCardsViewWidth = MediaQuery.of(context).size.width - 80;
+
+    gameState.holeCardsViewSize = Size(MediaQuery.of(context).size.width - 80,
+        gameState.holeCardsViewSize.height);
     return Consumer<MyState>(
       builder: (
         BuildContext _,
@@ -204,14 +206,9 @@ class _FooterViewState extends State<FooterView>
           log('RedrawFooter: rebuilding hole card');
 
           return Center(
-            child: DebugBorderWidget(
-              child: Container(
-                width: gameState.holeCardsViewWidth,
-                child: HoleCardsViewAndFooterActionView(
-                  playerModel: mee,
-                  isHoleCardsVisibleVn: isHoleCardsVisibleVn,
-                ),
-              ),
+            child: HoleCardsViewAndFooterActionView(
+              playerModel: mee,
+              isHoleCardsVisibleVn: isHoleCardsVisibleVn,
             ),
           );
         }

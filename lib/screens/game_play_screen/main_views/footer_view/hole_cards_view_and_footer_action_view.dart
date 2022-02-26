@@ -46,6 +46,14 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
       final gameState = GameState.getState(context);
       final theme = AppTheme.getTheme(context);
 
+      double footerHeight =
+          MediaQuery.of(context).size.height * boardAttributes.footerViewScale;
+      footerHeight += boardAttributes.bottomHeightAdjust;
+      gameState.holeCardsViewSize = Size(
+        gameState.holeCardsViewSize.width,
+        footerHeight,
+      );
+
       Widget rankText;
       rankText = Consumer<MyState>(builder: (_, __, ___) {
         bool showHandStrength = gameState.playerLocalConfig.showHandRank;
@@ -81,18 +89,20 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
           //     : Container(),
 
           // hole card view & rank Text
-          Transform.translate(
-            offset: offset,
-            child: Transform.scale(
-              alignment: Alignment.topCenter,
-              scale: 1,
-              child: Consumer4<StraddlePromptState, HoleCardsState, MyState,
-                  MarkedCards>(
-                builder: (_, __, ___, ____, markedCards, _____) {
-                  // log('Holecard view: rebuild');
-                  // return Container();
-                  return _buildHoleCardView(context);
-                },
+
+          DebugBorderWidget(
+            child: Container(
+              width: gameState.holeCardsViewSize.width,
+              height: footerHeight - 42,
+              child: Center(
+                child: Consumer4<StraddlePromptState, HoleCardsState, MyState,
+                    MarkedCards>(
+                  builder: (_, __, ___, ____, markedCards, _____) {
+                    // log('Holecard view: rebuild');
+                    // return Container();
+                    return _buildHoleCardView(context);
+                  },
+                ),
               ),
             ),
           ),
@@ -264,21 +274,33 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
 
           gameState.holeCardsState.notify();
         },
-        child: DebugBorderWidget(
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              cardsWidget,
-              // Visibility(
-              //   visible: isHoleCardsVisibleVn.value,
-              //   child: Positioned(
-              //     bottom: 40,
-              //     left: 0,
-              //     right: 0,
-              //     child: shuffleButton,
-              //   ),
-              // ),
-            ],
+        child: Container(
+          width: gameState.holeCardsViewSize.width,
+          padding: EdgeInsets.symmetric(
+              horizontal: 8 * playerCards.length.toDouble(),
+              vertical:
+                  context.read<BoardAttributesObject>().screenDiagnolSize >= 7
+                      ? 32
+                      : 0),
+          child: Center(
+            child: DebugBorderWidget(
+              color: Colors.green,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Positioned.fill(child: cardsWidget),
+                  // Visibility(
+                  //   visible: isHoleCardsVisibleVn.value,
+                  //   child: Positioned(
+                  //     bottom: 40,
+                  //     left: 0,
+                  //     right: 0,
+                  //     child: shuffleButton,
+                  //   ),
+                  // ),
+                ],
+              ),
+            ),
           ),
         ),
       ),
