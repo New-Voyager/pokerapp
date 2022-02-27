@@ -38,6 +38,9 @@ class PlayerState {
   PlayerState();
 
   Future<Box> open() async {
+    if (_box != null) {
+      return _box;
+    }
     _box = await Hive.openBox('player_state');
 
     bool newData = false;

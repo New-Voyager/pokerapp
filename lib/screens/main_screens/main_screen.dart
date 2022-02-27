@@ -79,6 +79,7 @@ class _MainScreenState extends State<MainScreen>
     await GameHistoryService.init();
 
     if (!TestService.isTesting) {
+      await playerState.open();
       _currentPlayer = await PlayerService.getMyInfo(null);
       playerState.updatePlayerInfo(
         playerId: _currentPlayer.id,
@@ -215,7 +216,7 @@ class _MainScreenState extends State<MainScreen>
                 CurvedNavItem(
                   iconData: AppIcons.user,
                   title: _appScreenText['profile'],
-                  showBadge: playerState.unreadAnnouncements > 0,
+                  showBadge: (playerState.unreadAnnouncements ?? 0) > 0,
                   selected: _navPos == 2,
                 ),
                 CurvedNavItem(
