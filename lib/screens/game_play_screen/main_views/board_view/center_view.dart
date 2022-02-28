@@ -18,8 +18,10 @@ import 'package:pokerapp/screens/game_play_screen/main_views/board_view/center_b
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/pots_view.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/formatter.dart';
+import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/cards/animations/animating_shuffle_card_view.dart';
 import 'package:pokerapp/widgets/cards/community_cards_view/community_cards_view.dart';
+import 'package:pokerapp/widgets/debug_border_widget.dart';
 import 'package:provider/provider.dart';
 import "dart:math" show pi;
 
@@ -288,36 +290,55 @@ class _BoardCenterView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        // pot view
-        Expanded(
-          child: _PotViewWidget(
-            dimPots: tableState.dimPots,
-            vnPotChips: vnPotChips,
-            vnPotToHighlight: vnPotToHighlight,
+    return Padding(
+      padding: Screen.isLargeScreen
+          ? const EdgeInsets.all(30.0)
+          : const EdgeInsets.only(bottom: 12.0),
+      child: Column(
+        children: [
+          // pot view
+          Expanded(
+            child: DebugBorderWidget(
+              color: Colors.green,
+              child: _PotViewWidget(
+                dimPots: tableState.dimPots,
+                vnPotChips: vnPotChips,
+                vnPotToHighlight: vnPotToHighlight,
+              ),
+            ),
           ),
-        ),
 
-        // community cards view
-        Expanded(
-          flex: 3,
-          child: _CommunityCardsWidget(
-            vnCommunityCardsRefresh: vnCommunityCardsRefresh,
-            vnCards: vnCards,
-            vnCardOthers: vnCardOthers,
-            vnTwoBoardsNeeded: vnTwoBoardsNeeded,
+          // community cards view
+          Expanded(
+            flex: 2,
+            child: DebugBorderWidget(
+              color: Colors.green,
+              child: Padding(
+                padding: Screen.isLargeScreen
+                    ? const EdgeInsets.symmetric(horizontal: 15.0)
+                    : const EdgeInsets.only(),
+                child: _CommunityCardsWidget(
+                  vnCommunityCardsRefresh: vnCommunityCardsRefresh,
+                  vnCards: vnCards,
+                  vnCardOthers: vnCardOthers,
+                  vnTwoBoardsNeeded: vnTwoBoardsNeeded,
+                ),
+              ),
+            ),
           ),
-        ),
 
-        // pots update view
-        Expanded(
-          child: _PotUpdatesOrRankWidget(
-            vnPotChipsUpdates: vnPotChipsUpdates,
-            gameState: gameState,
+          // pots update view
+          Expanded(
+            child: DebugBorderWidget(
+              color: Colors.green,
+              child: _PotUpdatesOrRankWidget(
+                vnPotChipsUpdates: vnPotChipsUpdates,
+                gameState: gameState,
+              ),
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

@@ -76,23 +76,14 @@ class _BoardViewState extends State<BoardView> {
       gameState.playerOnTableSize.height - namePlateSize.height * 2.0,
     );
 
-    double deflateSize = 10;
-
-    if (Screen.isLargeScreen) {
-      deflateSize = 40;
-    }
-
-    final rect = Rect.fromLTRB(
+    final rect = Rect.fromLTWH(
       left,
       top,
-      left + centerViewSize.width,
-      top + centerViewSize.height,
-    ).deflate(deflateSize);
-
-    return Tuple2<Offset, Size>(
-      Offset(rect.left, rect.top - deflateSize),
-      rect.size,
+      centerViewSize.width,
+      centerViewSize.height,
     );
+
+    return Tuple2<Offset, Size>(Offset(rect.left, rect.top), rect.size);
   }
 
   @override

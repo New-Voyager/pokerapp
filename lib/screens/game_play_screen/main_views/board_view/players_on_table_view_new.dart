@@ -37,7 +37,7 @@ class PlayersOnTableViewNew extends StatefulWidget {
   final bool isLargerScreen;
 
   PlayersOnTableViewNew({
-    Key key, 
+    Key key,
     @required this.tableSize,
     @required this.onUserTap,
     @required this.gameComService,
@@ -116,15 +116,13 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
       final playerView = ListenableProvider<Seat>(
         create: (_) => seat,
         builder: (_, __) => Consumer<Seat>(builder: (_, __, ___) {
-          return DebugBorderWidget(
-            child: PlayerView(
-              seat: seat,
-              onUserTap: widget.onUserTap,
-              gameComService: widget.gameComService,
-              boardAttributes: boa,
-              gameContextObject: gco,
-              gameState: _gameState,
-            ),
+          return PlayerView(
+            seat: seat,
+            onUserTap: widget.onUserTap,
+            gameComService: widget.gameComService,
+            boardAttributes: boa,
+            gameContextObject: gco,
+            gameState: _gameState,
           );
         }),
       );
