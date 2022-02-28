@@ -40,6 +40,11 @@ class Screen {
     return _screen._devicePixelRatio;
   }
 
+
+  static bool get isLargeScreen {
+    return Screen.screenSizeInches > 7;
+  }
+
   static int get screenSize {
     int diagonalSize = diagonalInches.floor();
     if (Platform.isIOS) {

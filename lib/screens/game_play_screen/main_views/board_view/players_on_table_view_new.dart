@@ -37,13 +37,14 @@ class PlayersOnTableViewNew extends StatefulWidget {
   final bool isLargerScreen;
 
   PlayersOnTableViewNew({
+    Key key, 
     @required this.tableSize,
     @required this.onUserTap,
     @required this.gameComService,
     @required this.gameState,
     @required this.maxPlayers,
     this.isLargerScreen = false,
-  });
+  }) : super(key: key);
 
   @override
   State<PlayersOnTableViewNew> createState() => _PlayersOnTableViewNewState();
