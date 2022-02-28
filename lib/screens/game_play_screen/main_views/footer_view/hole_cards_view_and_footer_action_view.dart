@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
@@ -91,19 +92,50 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
           // hole card view & rank Text
 
           DebugBorderWidget(
-            child: Container(
-              width: gameState.holeCardsViewSize.width,
-              height: footerHeight - 42,
-              child: Center(
-                child: Consumer4<StraddlePromptState, HoleCardsState, MyState,
-                    MarkedCards>(
-                  builder: (_, __, ___, ____, markedCards, _____) {
-                    // log('Holecard view: rebuild');
-                    // return Container();
-                    return _buildHoleCardView(context);
-                  },
-                ),
-              ),
+            color: Colors.red,
+            child: GestureDetector(
+              onTapUp: (tapDetails) {
+                log(tapDetails.globalPosition.toString());
+                log(gameState.cardEyes.toString());
+                bool hit = false;
+                gameState.cardEyes.forEach((key, value) {
+                  if (value.contains(tapDetails.globalPosition)) {
+                    log("tap");
+                    var cardId = gameState.me.cards
+                        .firstWhere((element) => (key == element));
+                    log(cardId.toString());
+
+                    CardObject card = CardHelper.getCard(cardId);
+                    gameState.markedCardsState.mark(card, false);
+                    hit = true;
+                  }
+                });
+                if (!hit) {
+                  isHoleCardsVisibleVn.value = !isHoleCardsVisibleVn.value;
+                }
+              },
+              child: ValueListenableBuilder(
+                  valueListenable: isHoleCardsVisibleVn,
+                  child: Container(
+                    width: gameState.holeCardsViewSize.width,
+                    height: footerHeight - 42,
+                    child: Center(
+                      child: Consumer4<StraddlePromptState, HoleCardsState,
+                          MyState, MarkedCards>(
+                        builder: (_, __, ___, ____, markedCards, _____) {
+                          // log('Holecard view: rebuild');
+                          // return Container();
+                          return _buildHoleCardView(context);
+                        },
+                      ),
+                    ),
+                  ),
+                  builder: (context, isVisible, child) {
+                    return AbsorbPointer(
+                      absorbing: isVisible,
+                      child: child,
+                    );
+                  }),
             ),
           ),
           StraddleWidget(gameState),
@@ -277,7 +309,9 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
         child: Container(
           width: gameState.holeCardsViewSize.width,
           padding: EdgeInsets.symmetric(
-              horizontal: 8 * playerCards.length.toDouble(),
+              horizontal: isHoleCardsVisibleVn.value
+                  ? 8 * playerCards.length.toDouble()
+                  : 0,
               vertical:
                   context.read<BoardAttributesObject>().screenDiagnolSize >= 7
                       ? 32
@@ -285,20 +319,22 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
           child: Center(
             child: DebugBorderWidget(
               color: Colors.green,
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  Positioned.fill(child: cardsWidget),
-                  // Visibility(
-                  //   visible: isHoleCardsVisibleVn.value,
-                  //   child: Positioned(
-                  //     bottom: 40,
-                  //     left: 0,
-                  //     right: 0,
-                  //     child: shuffleButton,
-                  //   ),
-                  // ),
-                ],
+              child: FittedBox(
+                child: Stack(
+                  alignment: Alignment.topLeft,
+                  children: [
+                    cardsWidget,
+                    // Visibility(
+                    //   visible: isHoleCardsVisibleVn.value,
+                    //   child: Positioned(
+                    //     bottom: 40,
+                    //     left: 0,
+                    //     right: 0,
+                    //     child: shuffleButton,
+                    //   ),
+                    // ),
+                  ],
+                ),
               ),
             ),
           ),

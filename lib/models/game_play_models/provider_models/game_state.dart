@@ -180,6 +180,8 @@ class GameState {
   double cardWidth;
   double cardsSizeRatio;
 
+  Map<int, Rect> cardEyes = Map<int, Rect>();
+
   void calculateTableSizePostFrame({bool force = false}) {
     if (!force && tableSizeVn.value != null) return;
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
