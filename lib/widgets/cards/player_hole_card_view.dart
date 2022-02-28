@@ -43,21 +43,6 @@ class PlayerHoleCardView extends StatelessWidget {
           gameState: gameState,
           card: card,
         ),
-        /* tap widget */
-        Positioned(
-          // top: 0,
-          // height: 50.pw,
-          left: 0,
-          bottom: -50.pw,
-          child: InkWell(
-            onTap: onMarkTapCallback,
-            child: Container(
-              // color: Colors.red.withAlpha(100),
-              width: 30.pw,
-              height: 100.pw,
-            ),
-          ),
-        )
       ],
     );
     //return Image.asset('assets/images/card_face/${card.cardNum}.png');
@@ -105,7 +90,7 @@ class _CardEyeState extends State<CardEye> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final box = _key.currentContext.findRenderObject() as RenderBox;
       var position = box.localToGlobal(Offset(0, 0));
-      widget.gameState.cardEyes[widget.card.cardNum] =
+      widget.gameState.gameUIState.cardEyes[widget.card.cardNum] =
           Rect.fromLTWH(position.dx, position.dy, 24, 24);
     });
   }
@@ -113,10 +98,11 @@ class _CardEyeState extends State<CardEye> {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-        // top: marked ? 50 : 55,
-        bottom: 30,
-        left: widget.marked ? 5 : 10,
+        top: widget.marked ? 60 : 65,
+        // bottom: 30,
+        left: widget.marked ? 8 : 12,
         child: DebugBorderWidget(
+          color: Colors.transparent,
           child: Icon(
             Icons.visibility,
             key: _key,

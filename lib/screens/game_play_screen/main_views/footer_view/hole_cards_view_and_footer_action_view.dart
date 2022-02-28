@@ -50,8 +50,8 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
       double footerHeight =
           MediaQuery.of(context).size.height * boardAttributes.footerViewScale;
       footerHeight += boardAttributes.bottomHeightAdjust;
-      gameState.holeCardsViewSize = Size(
-        gameState.holeCardsViewSize.width,
+      gameState.gameUIState.holeCardsViewSize = Size(
+        gameState.gameUIState.holeCardsViewSize.width,
         footerHeight,
       );
 
@@ -96,9 +96,9 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
             child: GestureDetector(
               onTapUp: (tapDetails) {
                 log(tapDetails.globalPosition.toString());
-                log(gameState.cardEyes.toString());
+                log(gameState.gameUIState.cardEyes.toString());
                 bool hit = false;
-                gameState.cardEyes.forEach((key, value) {
+                gameState.gameUIState.cardEyes.forEach((key, value) {
                   if (value.contains(tapDetails.globalPosition)) {
                     log("tap");
                     var cardId = gameState.me.cards
@@ -117,7 +117,7 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
               child: ValueListenableBuilder(
                   valueListenable: isHoleCardsVisibleVn,
                   child: Container(
-                    width: gameState.holeCardsViewSize.width,
+                    width: gameState.gameUIState.holeCardsViewSize.width,
                     height: footerHeight - 42,
                     child: Center(
                       child: Consumer4<StraddlePromptState, HoleCardsState,
@@ -307,7 +307,7 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
           gameState.holeCardsState.notify();
         },
         child: Container(
-          width: gameState.holeCardsViewSize.width,
+          width: gameState.gameUIState.holeCardsViewSize.width,
           padding: EdgeInsets.symmetric(
               horizontal: isHoleCardsVisibleVn.value
                   ? 8 * playerCards.length.toDouble()

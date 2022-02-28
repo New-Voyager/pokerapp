@@ -54,8 +54,8 @@ class HoleStackCardView extends StatelessWidget {
     // double cardWidth = holeCardsViewWidth - (displacementValue * cards.length);
     // double cardWidth = holeCardsViewWidth / (cards.length / 3);
     // gameState.cardWidth = cardWidth;
-    final double sch = gameState.cardWidth * 38 / 30;
-    final double scw = gameState.cardWidth;
+    final double sch = gameState.gameUIState.cardWidth * 38 / 30;
+    final double scw = gameState.gameUIState.cardWidth;
 
     final double tw = scw + displacementValue * (cards.length - 1);
 
@@ -75,10 +75,12 @@ class HoleStackCardView extends StatelessWidget {
       (i) {
         var offsetInX = -(i - mid) * displacementValue;
 
-        if (cards.length.isEven) {
-          offsetInX = offsetInX - displacementValue / 2;
-        } else {
-          offsetInX = offsetInX;
+        if (!isCardVisible) {
+          if (cards.length.isEven) {
+            offsetInX = offsetInX - displacementValue / 2;
+          } else {
+            offsetInX = offsetInX;
+          }
         }
         final card = Transform.translate(
           offset: Offset(offsetInX, 0),
@@ -114,7 +116,6 @@ class HoleStackCardView extends StatelessWidget {
             // 6 inch: 0.25
             // 10 inch: 0.10
             origin: Offset(0, 0),
-            // angle: -((i - m) * 0.10),
             angle: -((i - m) * 0.10),
             child: card,
           );
@@ -201,67 +202,18 @@ class HoleStackCardView extends StatelessWidget {
     }
     int mid = (cards.length ~/ 2);
 
-    double displacementValue = boardAttributes.getHoleCardDisplacement(
-      noOfCards: cards.length,
-      isCardVisible: isCardVisible,
-    );
+    // double displacementValue = boardAttributes.getHoleCardDisplacement(
+    //   noOfCards: cards.length,
+    //   isCardVisible: isCardVisible,
+    // );
 
     // if (cards.length == 2) {
     //   displacementValue = 2 * displacementValue;
     // }
 
-    double cardWidth = gameState.holeCardsViewSize.width / 3;
+    gameState.gameUIState.calculateCardSize(context, gameState, cards.length);
 
-    if (cards.length == 2) {
-      displacementValue = gameState.holeCardsViewSize.width / 5;
-      if (context.read<BoardAttributesObject>().screenDiagnolSize >= 7) {
-        displacementValue = gameState.holeCardsViewSize.width * 0.25;
-      }
-      // cardWidth = gameState.holeCardsViewSize.width / cards.length;
-    } else if (cards.length == 3) {
-      displacementValue = gameState.holeCardsViewSize.width / 8;
-      if (context.read<BoardAttributesObject>().screenDiagnolSize >= 7) {
-        displacementValue = gameState.holeCardsViewSize.width * 0.17;
-      }
-      // cardWidth = gameState.holeCardsViewSize.width / cards.length;
-    } else if (cards.length == 4) {
-      displacementValue = gameState.holeCardsViewSize.width / 10;
-      if (context.read<BoardAttributesObject>().screenDiagnolSize >= 7) {
-        displacementValue = gameState.holeCardsViewSize.width * 0.14;
-      }
-      // cardWidth = gameState.holeCardsViewSize.width / cards.length;
-    } else if (cards.length == 5) {
-      displacementValue = gameState.holeCardsViewSize.width / 15;
-      if (context.read<BoardAttributesObject>().screenDiagnolSize >= 7) {
-        displacementValue = gameState.holeCardsViewSize.width * 0.12;
-      }
-      // cardWidth = gameState.holeCardsViewSize.width / cards.length;
-    } else if (cards.length == 6) {
-      displacementValue = gameState.holeCardsViewSize.width / 20;
-      if (context.read<BoardAttributesObject>().screenDiagnolSize >= 7) {
-        displacementValue = gameState.holeCardsViewSize.width * 0.1;
-      }
-      // cardWidth = gameState.holeCardsViewSize.width / cards.length;
-    }
-
-    displacementValue = 35;
-
-    // print(displacementValue);
-
-    // double maxCardWidth = gameState.holeCardsViewSize.width / 1.6;
-    // double cardWidth = (gameState.holeCardsViewSize.width / cards.length);
-    // double overlapValue = gameState.holeCardsViewSize.width / (cards.length);
-    // cardWidth += overlapValue;
-    // if (cardWidth > maxCardWidth) {
-    //   cardWidth = maxCardWidth;
-    // }
-    cardWidth =
-        gameState.holeCardsViewSize.width - (displacementValue * cards.length);
-    gameState.cardWidth = cardWidth;
-
-    // print(cardWidth);
-
-    // double minDisplacementValue = 20;
+    double displacementValue = gameState.gameUIState.cardsDisplacement;
 
     // displacementValue = cardWidth / (1 * cards.length);
     // if (displacementValue < minDisplacementValue) {

@@ -166,8 +166,6 @@ class _FooterViewState extends State<FooterView>
   Widget _buildMainView(GameState gameState) {
     final width = MediaQuery.of(context).size.width;
 
-    gameState.holeCardsViewSize = Size(MediaQuery.of(context).size.width - 80,
-        gameState.holeCardsViewSize.height);
     return Consumer<MyState>(
       builder: (
         BuildContext _,
@@ -205,6 +203,9 @@ class _FooterViewState extends State<FooterView>
         } else {
           log('RedrawFooter: rebuilding hole card');
 
+          gameState.gameUIState.holeCardsViewSize = Size(
+              MediaQuery.of(context).size.width - 80,
+              gameState.gameUIState.holeCardsViewSize.height);
           return Center(
             child: HoleCardsViewAndFooterActionView(
               playerModel: mee,

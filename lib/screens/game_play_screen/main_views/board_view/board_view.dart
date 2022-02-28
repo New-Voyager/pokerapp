@@ -71,7 +71,7 @@ class BoardView extends StatelessWidget {
     }
 
     // this calculates the table size after drawing the table image
-    gameState.calculateTableSizePostFrame();
+    gameState.gameUIState.calculateTableSizePostFrame();
 
     return DebugBorderWidget(
       color: Colors.white,
@@ -92,7 +92,7 @@ class BoardView extends StatelessWidget {
 
           // new players view
           ValueListenableBuilder(
-            valueListenable: gameState.tableSizeVn,
+            valueListenable: gameState.gameUIState.tableSizeVn,
             builder: (_, size, __) {
               if (size == null) return const SizedBox.shrink();
               return DebugBorderWidget(
@@ -111,7 +111,7 @@ class BoardView extends StatelessWidget {
 
           /* new center view */
           ValueListenableBuilder(
-            valueListenable: gameState.tableSizeVn,
+            valueListenable: gameState.gameUIState.tableSizeVn,
             builder: (_, tableSize, __) {
               if (tableSize == null) return const SizedBox.shrink();
 

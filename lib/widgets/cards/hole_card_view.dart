@@ -135,7 +135,7 @@ class HoleCardWidget extends StatelessWidget {
 
     var gameState = GameState.getState(context);
     // double holeCardsViewWidth = gameState.holeCardsViewSize.width;
-    double cardWidth = gameState.cardWidth;
+    double cardWidth = gameState.gameUIState.cardWidth;
 
     final double height = cardWidth * 38 / 30;
     final double width = cardWidth;
