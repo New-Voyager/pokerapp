@@ -1012,7 +1012,7 @@ class HandActionProtoService {
       Alerts.showNotification(
         titleText: gameTypeStr(gameType),
         duration: Duration(seconds: 5),
-        imagePath: GameModelNew.getGameTypeImageAssetFromEnum(gameType),
+        imagePath: GameModel.getGameTypeImageAssetFromEnum(gameType),
       );
     }
     //log('Hand Message: ::handleAnnouncement:: END');

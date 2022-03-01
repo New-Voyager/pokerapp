@@ -21,7 +21,7 @@ import 'package:provider/provider.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class ClubLiveGamesView extends StatelessWidget {
-  final List<GameModelNew> liveGames;
+  final List<GameModel> liveGames;
   final AppTextScreen appScreenText;
   final ClubHomePageModel clubModel;
   final VoidCallback onRefreshClubMainScreen;

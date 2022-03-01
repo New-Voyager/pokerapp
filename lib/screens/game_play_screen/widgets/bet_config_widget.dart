@@ -91,7 +91,7 @@ class _BetConfigWidgetState extends State<BetConfigWidget> {
             height: 20,
           ),
           Text(
-            "Post-Flop (BB)",
+            "Post-Flop (% Pot)",
             style: AppDecorators.getHeadLine4Style(theme: theme),
           ),
           SizedBox(

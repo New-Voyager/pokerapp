@@ -20,6 +20,7 @@ import 'package:pokerapp/utils/date_range_picker.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/buttons.dart';
+import 'package:pokerapp/widgets/credits.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:pokerapp/widgets/radio_list_widget.dart';
 import 'package:share/share.dart';
@@ -59,7 +60,7 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
   DataTableSource _dataTableSource;
   int _selectedDateRangeIndex;
   DateTimeRange _dateTimeRange;
-
+  bool filter = false;
   @override
   void initState() {
     super.initState();
@@ -76,19 +77,33 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
         DateTime(startDate.year, startDate.month, startDate.day, 0, 0, 0);
     var endDate = DateTime(now.year, now.month, now.day, 0, 0, 0);
     _dateTimeRange = DateTimeRange(start: startDate, end: endDate);
+    filter = true;
   }
 
   void fetchData() async {
     try {
       loading = true;
       setState(() {});
-      member = await ClubInteriorService.getClubMemberDetail(
-          widget.clubCode, widget.playerId);
-      history = await ClubInteriorService.getCreditHistory(
-          widget.clubCode, widget.playerId);
+      member = await appState.cacheService
+          .getClubMemberDetail(widget.clubCode, widget.playerId);
+      history = await appState.cacheService
+          .getPlayerActivities(widget.clubCode, widget.playerId);
+      // filter using the dates
+      List<MemberCreditHistory> filteredHistory;
+      if (filter) {
+        filteredHistory = history.where((element) {
+          if (element.updatedDate.isAfter(_dateTimeRange.start) &&
+              element.updatedDate.isBefore(_dateTimeRange.end)) {
+            return true;
+          }
+          return false;
+        }).toList();
+      } else {
+        filteredHistory = history;
+      }
       // history = MemberCreditHistory.getMockData();
       _dataTableSource = DataCreditSource(
-        items: history,
+        items: filteredHistory,
         theme: theme,
         onTap: openItem,
         clearFlag: clearFlag,
@@ -177,21 +192,14 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
                           ),
                           Row(
                             children: [
-                              Text(
-                                DataFormatter.chipsFormat(
-                                    member.availableCredit),
-                                style: AppDecorators.getHeadLine3Style(
-                                        theme: theme)
-                                    .copyWith(
-                                        color: member.availableCredit < 0
-                                            ? Colors.redAccent
-                                            : Colors.greenAccent),
-                              ),
+                              CreditsWidget(
+                                  theme: theme,
+                                  credits: member.availableCredit),
+                              SizedBox(width: 8.0),
                               !widget.owner
                                   ? SizedBox.shrink()
-                                  : RoundRectButton(
-                                      theme: theme,
-                                      text: 'Change',
+                                  : CircleImageButton(
+                                      svgAsset: 'assets/images/edit.svg',
                                       onTap: () async {
                                         bool ret =
                                             await SetCreditsDialog.prompt(
@@ -219,7 +227,7 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
                                               .getMembers(widget.clubCode);
                                         }
                                       },
-                                    )
+                                      theme: theme)
                             ],
                           ),
                         ],
@@ -227,10 +235,13 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
                       SizedBox(height: 15),
                       dateRangeFilter(),
                       SizedBox(height: 15),
-                      Center(
-                        child: Text(((startDateStr != endDateStr)
-                            ? '${startDateStr} - ${endDateStr}'
-                            : '$startDateStr')),
+                      Visibility(
+                        visible: filter,
+                        child: Center(
+                          child: Text(((startDateStr != endDateStr)
+                              ? '${startDateStr} - ${endDateStr}'
+                              : '$startDateStr')),
+                        ),
                       ),
                       SizedBox(height: 15.0),
                       // download button
@@ -482,10 +493,12 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
         'This\nMonth',
         'Last\nMonth',
         'Custom',
+        'All'
         // 'Last Week',
         // 'Last Month'
       ],
       onSelect: (int value) async {
+        filter = true;
         _selectedDateRangeIndex = value;
         if (value == 0) {
           var startDate = findFirstDateOfTheWeek(now);
@@ -516,6 +529,8 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
         } else if (value == 4) {
           await _handleDateRangePicker(context, theme);
           setState(() {});
+        } else if (value == 5) {
+          filter = false;
         }
 
         fetchData();
@@ -657,11 +672,11 @@ class DataCreditSource extends DataTableSource {
       DataCell(
         Container(
             alignment: Alignment.center,
-            child: Text(
-              DataFormatter.chipsFormat(item.updatedCredits),
-              textAlign: TextAlign.right,
-              style: AppDecorators.getSubtitle1Style(theme: theme),
-            )),
+            child: FittedBox(
+                child: CreditsWidget(
+              credits: item.updatedCredits,
+              theme: theme,
+            ))),
         onTap: () async {
           if (onTap != null) {
             await onTap(item.updateType, item.gameCode);

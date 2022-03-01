@@ -8,6 +8,7 @@ import 'package:pokerapp/services/app/clubs_service.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
+import 'package:pokerapp/widgets/credits.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:pokerapp/widgets/radio_list_widget.dart';
 import 'package:pokerapp/widgets/switch.dart';
@@ -187,13 +188,7 @@ class _CreditDialogsWidgetState extends State<CreditDialogsWidget> {
         ),
       );
     } else {
-      Color color = Colors.green;
-      if (credits < 0) {
-        color = Colors.red;
-      }
-      creditsWidget = Text(DataFormatter.chipsFormat(credits),
-          style: AppDecorators.getHeadLine3Style(theme: widget.theme)
-              .copyWith(color: color));
+      creditsWidget = CreditsWidget(theme: widget.theme, credits: credits);
     }
     final values = ['Add', 'Deduct', 'Fee', 'Set'];
     String title;

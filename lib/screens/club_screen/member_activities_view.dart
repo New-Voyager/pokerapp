@@ -19,6 +19,7 @@ import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/date_range_picker.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/utils.dart';
+import 'package:pokerapp/widgets/credits.dart';
 import 'package:pokerapp/widgets/radio_list_widget.dart';
 import 'package:pokerapp/widgets/texts.dart';
 import 'package:share/share.dart';
@@ -285,7 +286,12 @@ class _ClubMemberActivitiesScreenState
                     ],
                   ),
                 ),
-                const SizedBox(height: 16.0),
+                const SizedBox(height: 8.0),
+                Align(
+                    alignment: Alignment.topLeft,
+                    child: LabelText(
+                        label: '*Credits: Shows the current credits',
+                        theme: theme)),
                 Theme(
                   data: Theme.of(context).copyWith(
                     cardColor: theme.primaryColorWithDark(),
@@ -599,20 +605,18 @@ class DataSource extends DataTableSource {
         openMember(activity.playerUuid);
       }),
     );
-    cells.add(DataCell(
-        Center(
-          child: Text(
-            DataFormatter.chipsFormat(activity.credits),
-            style: TextStyle(color: creditColor, fontSize: 12),
-            textAlign: TextAlign.right,
-          ),
-        ), onTap: () {
-      if (openCreditHistory != null) {
-        openCreditHistory(activity.playerUuid);
-      }
-      //openMember(activity.playerUuid);
-    }));
 
+    cells.add(DataCell(
+      Center(
+          child: CreditsWidget(
+              theme: theme,
+              credits: activity.credits,
+              onTap: () {
+                if (openCreditHistory != null) {
+                  openCreditHistory(activity.playerUuid);
+                }
+              })),
+    ));
     if (includeTips) {
       cells.add(
         DataCell(Center(child: Text(DataFormatter.chipsFormat(activity.tips))),

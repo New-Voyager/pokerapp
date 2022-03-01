@@ -16,6 +16,7 @@ import 'package:pokerapp/screens/game_play_screen/seat_view/animating_widgets/st
 import 'package:pokerapp/screens/game_play_screen/widgets/milliseconds_counter.dart';
 import 'package:pokerapp/services/audio/audio_service.dart';
 import 'package:pokerapp/utils/name_plate_widget_parent.dart';
+import 'package:pokerapp/widgets/debug_border_widget.dart';
 import 'package:pokerapp/widgets/nameplate.dart';
 import 'package:pokerapp/widgets/text_widgets/name_plate/name_plate_name_text.dart';
 import 'package:pokerapp/widgets/text_widgets/name_plate/name_plate_stack_text.dart';
@@ -330,7 +331,7 @@ class NamePlateWidget extends StatelessWidget {
       child: NamePlateWidgetParent.build(
         child: plateWidget,
         decoration: BoxDecoration(boxShadow: shadow),
-        padding: const EdgeInsets.symmetric(vertical: 5.0),
+        // padding: const EdgeInsets.symmetric(vertical: 5.0),
       ),
     );
     return ret;
@@ -389,7 +390,7 @@ class PlayerViewDivider extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = AppTheme.getTheme(context);
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 8),
+      margin: EdgeInsets.symmetric(horizontal: 4),
       decoration: BoxDecoration(
         color: theme.accentColor,
         borderRadius: BorderRadius.circular(5),

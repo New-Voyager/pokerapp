@@ -16,8 +16,8 @@ class NamePlateNameText extends StatelessWidget {
     final textWidget = Center(
       child: Text(
         text,
-        style: AppDecorators.getSubtitle4Style(theme: theme).copyWith(
-          fontSize: 10.dp,
+        style: AppDecorators.getNameplateStyle(theme: theme).copyWith(
+          fontSize: 11.dp,
         ),
       ),
     );

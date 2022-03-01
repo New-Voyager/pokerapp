@@ -175,8 +175,39 @@ class GameState {
 
   GameUIState gameUIState;
 
-  // central board key
-  GlobalKey boardKey;
+  final GlobalKey playerOnTableKey = GlobalKey();
+
+  final GlobalKey boardKey = GlobalKey();
+
+  final ValueNotifier<Offset> playerOnTablePositionVn =
+      ValueNotifier<Offset>(null);
+
+  Size _playerOnTableSize;
+  Size get playerOnTableSize => _playerOnTableSize;
+
+  void calculatePlayersOnTablePositionPostFrame() {
+    if (playerOnTablePositionVn.value != null) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      while (playerOnTableKey.currentContext == null) {
+        await Future.delayed(const Duration(milliseconds: 10));
+      }
+
+      final box =
+          playerOnTableKey.currentContext.findRenderObject() as RenderBox;
+
+      _playerOnTableSize = box.size;
+      final tempPos = box.localToGlobal(Offset.zero);
+
+      final box1 = boardKey.currentContext.findRenderObject() as RenderBox;
+      final playerOnTablePos = box1.globalToLocal(tempPos);
+
+      playerOnTablePositionVn.value = playerOnTablePos;
+
+      print(
+        'calculatePlayersOnTablePositionPostFrame: ${playerOnTablePositionVn.value}',
+      );
+    });
+  }
 
   // tracks whether buyin keyboard is shown or not
   bool buyInKeyboardShown = false;
@@ -455,6 +486,9 @@ class GameState {
         }
         log('In GameState initialize(), gameSettings = $playerLocalConfig');
         _communicationState.showTextChat = playerLocalConfig.showChat;
+      } else {
+        playerLocalConfig = GameLocalConfig(gameCode, gameHiveStore);
+        await playerLocalConfig.init();
       }
     }
 

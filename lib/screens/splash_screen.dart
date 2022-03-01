@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/main_helper.dart';
+import 'package:pokerapp/models/announcement_model.dart';
 import 'package:pokerapp/models/auth_model.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/models/ui/app_theme_data.dart';
@@ -12,11 +13,13 @@ import 'package:pokerapp/services/app/appcoin_service.dart';
 import 'package:pokerapp/services/app/appinfo_service.dart';
 import 'package:pokerapp/services/app/asset_service.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
+import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/audio/audio_service.dart';
 import 'package:pokerapp/services/connectivity_check/network_change_listener.dart';
 import 'package:pokerapp/services/data/asset_hive_store.dart';
 import 'package:pokerapp/services/data/box_type.dart';
 import 'package:pokerapp/services/data/hive_datasource_impl.dart';
+import 'package:pokerapp/services/data/hive_models/player_state.dart';
 import 'package:provider/provider.dart';
 import 'package:upgrader/upgrader.dart';
 
@@ -92,7 +95,25 @@ class _SplashScreenState extends State<SplashScreen> {
           } catch (err) {
             log(err.toString());
           }
+          await playerState.open();
 
+          // read announcments
+          final announcements = await GameService.getSystemAnnouncements();
+
+          // if there are announcements marked as important, show in a dialog
+          List<AnnouncementModel> important = [];
+          int unreadAnnouncements = 0;
+          for (final announcement in announcements) {
+            if (announcement.createdAt
+                .isAfter(playerState.lastReadSysAnnounceDate)) {
+              if (announcement.isImportant) {
+                important.add(announcement);
+              }
+              // playerState.updateSysAnnounceReadDate();
+              unreadAnnouncements++;
+            }
+          }
+          playerState.unreadAnnouncements = unreadAnnouncements;
           goToLoginScreen = false;
         }
       } catch (err) {

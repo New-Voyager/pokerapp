@@ -16,11 +16,13 @@ import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/routes.dart';
+import 'package:pokerapp/screens/game_play_screen/widgets/help_text.dart';
 import 'package:pokerapp/screens/game_screens/game_history_view/game_history_item_new.dart';
 import 'package:pokerapp/screens/game_screens/new_game_settings/new_game_settings2.dart';
 import 'package:pokerapp/screens/main_screens/games_page_view/widgets/live_games_item.dart';
 import 'package:pokerapp/screens/profile_screens/bug_features_dialog.dart';
 import 'package:pokerapp/services/app/game_service.dart';
+import 'package:pokerapp/services/data/hive_models/player_state.dart';
 import 'package:pokerapp/services/onboarding.dart';
 import 'package:pokerapp/services/test/mock_data.dart';
 import 'package:pokerapp/services/test/test_service.dart';
@@ -43,7 +45,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
   final GlobalKey<OnboardingState> onboardingKey = GlobalKey<OnboardingState>();
   bool _isLoading = true;
   bool _isPlayedGamesLoading = true;
-  List<GameModelNew> liveGames = [];
+  List<GameModel> liveGames = [];
   List<GameHistoryModel> playedGames = [];
   bool closed = false;
   TabController _tabController;
@@ -85,17 +87,17 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
 
     if (appState != null) {
       appState.addListener(() async {
-        final int currentIndex = appState.currentIndex;
+        //final int currentIndex = appState.currentIndex;
         if (appState.newGame || appState.gameEnded) {
-          if (currentIndex == 0) {
-            if (_tabController.index == 0) {
-              await _fetchLiveGames();
-            } else if (_tabController.index == 1) {
-              await _fetchPlayedGames();
-            }
-          }
+          await _fetchLiveGames();
+          await _fetchPlayedGames();
           appState.setNewGame(false);
           appState.setGameEnded(false);
+          // if (currentIndex == 0) {
+          //   if (_tabController.index == 0) {
+          //   } else if (_tabController.index == 1) {
+          //   }
+          // }
         }
       });
     }
@@ -149,6 +151,23 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
       updatedLiveGames = await MockData.getLiveGames();
     } else {
       updatedLiveGames = await GameService.getLiveGamesNew();
+      await playerState.open();
+      // get friends games
+      final gameCodes = playerState.getFriendsGameCodes();
+      if (gameCodes.length > 0) {
+        for (final gameCode in gameCodes) {
+          final game = await GameService.getGameInfo(gameCode);
+          if (game == null) {
+            // game probaly ended
+            playerState.removeFriendsGameCodes(gameCode);
+            showErrorDialog(context, 'Not Found', 'Game is not found');
+          } else {
+            // add the game to the list
+            GameModel gameModel = GameModel.fromGameInfo(game);
+            updatedLiveGames.add(gameModel);
+          }
+        }
+      }
     }
 
     bool refresh = true;
@@ -191,7 +210,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
     final jsonResult = json.decode(data);
     log('${jsonResult}');
     for (var item in jsonResult['liveGames']) {
-      liveGames.add(GameModelNew.fromJson(item));
+      liveGames.add(GameModel.fromJson(item));
     }
     log("Size : ${liveGames.length}");
     if (closed) {
@@ -257,7 +276,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
         ),
         actions: [
           RoundRectButton(
-            text: _appScreenText['join'],
+            text: 'Join',
             onTap: () async {
               if (gameCode.isEmpty) {
                 toast(_appScreenText['emptyGameCode']);
@@ -276,8 +295,15 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
       // Check game exists or not
       final gameInfo = await GameService.getGameInfo(gameCode);
       if (gameInfo == null) {
-        Alerts.showNotification(titleText: _appScreenText['gameNotFound']);
+        // Alerts.showNotification(titleText: _appScreenText['gameNotFound']);
       } else {
+        if (gameInfo.clubCode == null || gameInfo.clubCode.isEmpty) {
+          // we joined this game, save the game code
+          playerState.addFriendsGameCodes(gameCode);
+          // add the game to the list
+          GameModel gameModel = GameModel.fromGameInfo(gameInfo);
+          liveGames.add(gameModel);
+        }
         Navigator.of(context).pushNamed(Routes.game_play, arguments: result);
       }
     }
@@ -290,9 +316,11 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
     if (appState.newGame || appState.gameEnded) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _fetchLiveGames();
+        _fetchPlayedGames();
         appState.setNewGame(false);
+        appState.setGameEnded(false);
         if (appState.gameEnded) {
-          _fetchPlayedGames();
+          //_fetchPlayedGames();
           appState.setGameEnded(false);
         }
       });
@@ -395,7 +423,8 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
 
     return Consumer<AppTheme>(
       builder: (_, appTheme, __) {
-        List<OnboardingStep> steps = getOnboardingSteps(appTheme);
+        //List<OnboardingStep> steps = getOnboardingSteps(appTheme);
+        List<OnboardingStep> steps = [];
         Widget mainView = getMainView(appTheme);
         if (steps.length == 0) {
           return mainView;
@@ -436,46 +465,51 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
+                  RoundRectButton(
+                    onTap: () async {
+                      await hostGame();
+                    },
+                    text: 'Host', //_appScreenText["host"],
+                    theme: appTheme,
+                    focusNode: focusNodes[0],
+                  ),
                   Expanded(
-                      child: HeadingWidget(heading: _appScreenText['appName'])),
-                  CircleImageButton(
-                      focusNode: focusNodes[2],
-                      height: 30,
-                      width: 30,
-                      imageWidth: 18,
-                      theme: appTheme,
-                      icon: Icons.info,
-                      onTap: () {
-                        Alerts.showDailog(
-                          context: context,
-                          child: BugsFeaturesWidget(),
-                        );
-                      }),
+                      child: Column(children: [
+                    HeadingWidget(
+                      heading: _appScreenText['appName'],
+                    ),
+                  ])),
+                  // CircleImageButton(
+                  //     focusNode: focusNodes[2],
+                  //     height: 30,
+                  //     width: 30,
+                  //     imageWidth: 18,
+                  //     theme: appTheme,
+                  //     icon: Icons.info,
+                  //     onTap: () {
+                  //       Alerts.showDailog(
+                  //         context: context,
+                  //         child: BugsFeaturesWidget(),
+                  //       );
+                  //     }),
+                  RoundRectButton(
+                    onTap: () async {
+                      await joinGame(appTheme);
+                    },
+                    theme: appTheme,
+                    text: 'Join', //_appScreenText['join'],
+                    focusNode: focusNodes[1],
+                  ),
                 ],
               ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                RoundRectButton(
-                  onTap: () async {
-                    await hostGame();
-                  },
-                  text: _appScreenText["host"],
-                  theme: appTheme,
-                  focusNode: focusNodes[0],
-                ),
-                RoundRectButton(
-                  onTap: () async {
-                    await joinGame(appTheme);
-                  },
-                  theme: appTheme,
-                  text: _appScreenText['join'],
-                  focusNode: focusNodes[1],
-                ),
-                // SizedBox(width: 8.pw),
-              ],
-            ),
+            // Align(
+            //     alignment: Alignment.centerRight,
+            //     child: CircleImageButton(
+            //       onTap: () {},
+            //       icon: Icons.email,
+            //       theme: appTheme,
+            //     )),
 
             TabBar(
               physics: const BouncingScrollPhysics(),
@@ -542,13 +576,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                       _isLoading
                           ? Container()
                           : liveGames.isEmpty
-                              ? Center(
-                                  child: Text(
-                                    _appScreenText['noLiveGames'],
-                                    style: AppDecorators.getAccentTextStyle(
-                                        theme: appTheme),
-                                  ),
-                                )
+                              ? LiveGamesHelpText(appTheme)
                               : ListView.separated(
                                   physics: BouncingScrollPhysics(),
                                   shrinkWrap: true,
@@ -556,10 +584,29 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                                     return LiveGameItem(
                                       game: liveGames[index],
                                       onTapFunction: () async {
-                                        await Navigator.of(context).pushNamed(
-                                          Routes.game_play,
-                                          arguments: liveGames[index].gameCode,
-                                        );
+                                        // get game info again to see whether the game is still active
+                                        final gameInfo =
+                                            await GameService.getGameInfo(
+                                                liveGames[index].gameCode);
+                                        await playerState.open();
+                                        bool validGameCode = true;
+                                        if (!TestService.isTesting) {
+                                          if (gameInfo == null) {
+                                            // game ended
+                                            playerState.removeFriendsGameCodes(
+                                                liveGames[index].gameCode);
+                                            // refresh screen
+                                            _fetchLiveGames();
+                                            validGameCode = false;
+                                          }
+                                        }
+                                        if (validGameCode) {
+                                          await Navigator.of(context).pushNamed(
+                                            Routes.game_play,
+                                            arguments:
+                                                liveGames[index].gameCode,
+                                          );
+                                        }
                                       },
                                     );
                                   },
@@ -632,5 +679,66 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
         showClubName: true,
       ),
     );
+  }
+}
+
+class LiveGamesHelpText extends StatelessWidget {
+  final AppTheme appTheme;
+
+  LiveGamesHelpText(this.appTheme);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+      SizedBox(height: 50),
+      Row(
+        children: [
+          SizedBox(width: 20.pw),
+          Text('Tap '),
+          RoundRectButton(
+            onTap: () async {},
+            text: 'Host',
+            theme: appTheme,
+          ),
+          SizedBox(width: 8.pw),
+          Flexible(
+            child: Text('to host a new game'),
+          ),
+        ],
+      ),
+      SizedBox(height: 20),
+      Row(
+        children: [
+          SizedBox(width: 20.pw),
+          Text('Tap '),
+          RoundRectButton(
+            onTap: () async {},
+            text: 'Join',
+            theme: appTheme,
+          ),
+          SizedBox(width: 8.pw),
+          Flexible(
+            child: Text('to join a game with game code'),
+          ),
+        ],
+      ),
+      SizedBox(height: 20),
+      Row(
+        children: [
+          SizedBox(width: 20.pw),
+          Flexible(
+            child:
+                Text('Tap on Clubs tab to see your clubs or create a new club'),
+          ),
+        ],
+      ),
+    ]);
+
+    // Center(
+    //   child: Text(
+    //     'No games',
+    //     style: AppDecorators.getAccentTextStyle(theme: appTheme),
+    //   ),
+    // );
   }
 }

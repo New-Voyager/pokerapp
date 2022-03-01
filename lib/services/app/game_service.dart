@@ -9,7 +9,6 @@ import 'package:pokerapp/main_helper.dart';
 import 'package:pokerapp/models/announcement_model.dart';
 import 'package:pokerapp/models/game/new_game_model.dart';
 import 'package:pokerapp/models/game_history_model.dart';
-import 'package:pokerapp/models/game_model.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/business/game_resp.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
@@ -400,6 +399,8 @@ class GameService {
           tableCount
           clubCode
           clubPicUrl
+          startedAt
+          status
         }
       }
     """;
@@ -439,9 +440,9 @@ class GameService {
       }
     """;
 
-  static Future<List<GameModelNew>> getLiveGamesNew() async {
+  static Future<List<GameModel>> getLiveGamesNew() async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
-    final List<GameModelNew> liveGames = [];
+    final List<GameModel> liveGames = [];
     QueryResult result =
         await _client.query(QueryOptions(document: gql(liveGamesNewQuery)));
     if (result.hasException) {
@@ -449,7 +450,7 @@ class GameService {
     } else {
       try {
         for (final item in result.data['liveGames']) {
-          liveGames.add(GameModelNew.fromJson(item));
+          liveGames.add(GameModel.fromJson(item));
         }
       } catch (e) {
         log("Exception in converting to model: $e");

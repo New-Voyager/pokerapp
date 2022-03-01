@@ -95,8 +95,7 @@ class GameTypeSelectionWidget extends StatelessWidget {
             }
           },
           icon: Image.asset(
-              GameModelNew.getGameTypeImageAssetFromEnum(
-                  listOfGameTypes[index]),
+              GameModel.getGameTypeImageAssetFromEnum(listOfGameTypes[index]),
               width: 24,
               height: 24),
           label: Text(

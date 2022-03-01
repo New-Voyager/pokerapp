@@ -12,12 +12,15 @@ import 'package:pokerapp/screens/game_play_screen/seat_view/animating_widgets/st
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/utils/name_plate_widget_parent.dart';
 import 'package:pokerapp/utils/sizing_utils/sizing_utils.dart';
+import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/debug_border_widget.dart';
+import 'package:pokerapp/widgets/nameplate.dart';
 import 'package:provider/provider.dart';
+import 'package:tuple/tuple.dart';
 
 import 'decorative_views/background_view.dart';
 
-class BoardView extends StatelessWidget {
+class BoardView extends StatefulWidget {
   final GameComService gameComService;
   final GameInfoModel gameInfo;
   final Function(Seat seat) onUserTap;
@@ -30,17 +33,57 @@ class BoardView extends StatelessWidget {
     @required this.gameComService,
   });
 
-  final GlobalKey boardViewKey = GlobalKey();
+  @override
+  State<BoardView> createState() => _BoardViewState();
+}
+
+class _BoardViewState extends State<BoardView> {
+  GameState gameState;
 
   Size _getCenterViewSize({@required Size tableSize}) {
     final namePlateSize = NamePlateWidgetParent.namePlateSize;
 
     final ts = SizingUtils.getPlayersOnTableSize(tableSize);
 
-    final height = ts.height - namePlateSize.height * 2;
+    final height = ts.height - namePlateSize.height * 2.2;
     final width = ts.width - namePlateSize.width * 2;
 
     return Size(width, height);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    gameState = GameState.getState(context);
+
+    // this calculates the table size after drawing the table image
+    gameState.gameUIState.calculateTableSizePostFrame();
+    gameState.calculatePlayersOnTablePositionPostFrame();
+  }
+
+  Tuple2<Offset, Size> _getCenterViewRect({
+    @required Size size,
+    @required Offset position,
+  }) {
+    final namePlateSize = NamePlateWidgetParent.namePlateSize;
+
+    final left = position.dx + namePlateSize.width;
+    final top = position.dy + namePlateSize.height;
+
+    final centerViewSize = Size(
+      gameState.playerOnTableSize.width - namePlateSize.width * 2.0,
+      gameState.playerOnTableSize.height - namePlateSize.height * 2.0,
+    );
+
+    final rect = Rect.fromLTWH(
+      left,
+      top,
+      centerViewSize.width,
+      centerViewSize.height,
+    );
+
+    return Tuple2<Offset, Size>(Offset(rect.left, rect.top), rect.size);
   }
 
   @override
@@ -48,8 +91,6 @@ class BoardView extends StatelessWidget {
     // AppTextScreen _appScreenText = getAppTextScreen("boardView");
 
     // final theme = AppTheme.getTheme(context);
-    final gameState = GameState.getState(context);
-    gameState.boardKey = boardViewKey;
     final boardAttributes = gameState.getBoardAttributes(context);
     final isBoardHorizontal =
         boardAttributes.orientation == BoardOrientation.horizontal;
@@ -74,6 +115,7 @@ class BoardView extends StatelessWidget {
     gameState.gameUIState.calculateTableSizePostFrame();
 
     return DebugBorderWidget(
+      key: gameState.boardKey,
       color: Colors.white,
       child: Stack(
         clipBehavior: Clip.antiAlias,
@@ -98,11 +140,12 @@ class BoardView extends StatelessWidget {
               return DebugBorderWidget(
                 color: Colors.amber,
                 child: PlayersOnTableViewNew(
+                  key: gameState.playerOnTableKey,
                   tableSize: size,
-                  onUserTap: onUserTap,
-                  gameComService: gameComService,
+                  onUserTap: widget.onUserTap,
+                  gameComService: widget.gameComService,
                   gameState: gameState,
-                  maxPlayers: gameInfo.maxPlayers,
+                  maxPlayers: widget.gameInfo.maxPlayers,
                   isLargerScreen: isLargerScreen,
                 ),
               );
@@ -110,21 +153,32 @@ class BoardView extends StatelessWidget {
           ),
 
           /* new center view */
-          ValueListenableBuilder(
-            valueListenable: gameState.gameUIState.tableSizeVn,
-            builder: (_, tableSize, __) {
-              if (tableSize == null) return const SizedBox.shrink();
 
-              return DebugBorderWidget(
-                color: Colors.lime,
-                child: SizedBox.fromSize(
-                  size: _getCenterViewSize(tableSize: tableSize),
-                  child: CenterView(
-                    tableState: context.read<TableState>(),
-                    gameCode: gameInfo.gameCode,
-                    isHost: gameInfo.isHost,
-                    isBoardHorizontal: isBoardHorizontal,
-                    onStartGame: onStartGame,
+          ValueListenableBuilder2(
+            gameState.gameUIState.tableSizeVn,
+            gameState.playerOnTablePositionVn,
+            builder: (_, Size tableSize, Offset position, __) {
+              if (tableSize == null || position == null) {
+                return const SizedBox.shrink();
+              }
+
+              final rect =
+                  _getCenterViewRect(size: tableSize, position: position);
+
+              return Positioned(
+                left: rect.item1.dx,
+                top: rect.item1.dy,
+                child: DebugBorderWidget(
+                  color: Colors.lime,
+                  child: SizedBox.fromSize(
+                    size: rect.item2,
+                    child: CenterView(
+                      tableState: context.read<TableState>(),
+                      gameCode: widget.gameInfo.gameCode,
+                      isHost: widget.gameInfo.isHost,
+                      isBoardHorizontal: isBoardHorizontal,
+                      onStartGame: widget.onStartGame,
+                    ),
                   ),
                 ),
               );

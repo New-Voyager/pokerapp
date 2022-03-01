@@ -191,38 +191,7 @@ class ClubItem extends StatelessWidget {
 
   Widget _buildSideAction(ClubModel club) {
     List<Widget> children = [];
-    /* if (club.memberStatus == 'ACTIVE') {
-      children = [
-        club.balance == '0'
-            ? SizedBox(
-                height: 0,
-              )
-            : Text(
-                club.balance,
-                style: AppStylesNew.itemInfoSecondaryTextStyle.copyWith(
-                  color: double.parse(club.balance) > 0
-                      ? AppColorsNew.positiveColor
-                      : AppColorsNew.negativeColor,
-                ),
-              ),
-      ];
-    } else */
-    /*  if (club.memberStatus == 'INVITED') {
-      children = [
-        RoundedColorButton(
-          text: 'Join',
-          onTapFunction: () {},
-          backgroundColor: AppColorsNew.newGreenButtonColor,
-          textColor: AppColorsNew.darkGreenShadeColor,
-        ),
-        AppDimensionsNew.getHorizontalSpace(32),
-        RoundedColorButton(
-          text: 'Decline',
-          onTapFunction: () {},
-          backgroundColor: AppColorsNew.newRedButtonColor,
-        ),
-      ];
-    } else  */
+
     if (club.memberStatus == 'PENDING') {
       children = [
         CircularProgressWidget(

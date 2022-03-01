@@ -24,6 +24,7 @@ import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/buttons.dart';
+import 'package:pokerapp/widgets/credits.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:pokerapp/widgets/menu_list_tile.dart';
 import 'package:pokerapp/widgets/textfields.dart';
@@ -305,12 +306,9 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                   style: AppDecorators.getHeadLine4Style(theme: theme),
                 ),
                 SizedBox(width: 30.pw),
-                Text(
-                  DataFormatter.chipsFormat(_data.availableCredit),
-                  style: AppDecorators.getHeadLine3Style(theme: theme).copyWith(
-                      color: _data.availableCredit < 0
-                          ? Colors.redAccent
-                          : Colors.greenAccent),
+                CreditsWidget(
+                  theme: theme,
+                  credits: _data.availableCredit,
                 ),
               ],
             ),

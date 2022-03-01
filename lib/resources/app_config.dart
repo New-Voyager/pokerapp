@@ -21,6 +21,7 @@ class AppConfig {
     if (apiServer == null) {
       apiServer = defaultUrl;
     }
+    // apiServer = 'https://api.pokerclub.app';
 
     if (!apiServer.contains('https://') && !apiServer.contains('http://')) {
       apiServer = 'http://$apiServer:9501';
@@ -33,8 +34,8 @@ class AppConfig {
         sharedPreferences.getString(AppConstants.DEVICE_SECRET);
     await AppConfig.saveApiUrl(apiServer: _apiUrl);
 
-    //deviceId = 'b75b78a1032fd10f';
-    //deviceSecret = '1d587495-cf72-4406-bce4-6d6439e95ae3';
+    // deviceId = 'b75b78a1032fd10f';
+    // deviceSecret = '1d587495-cf72-4406-bce4-6d6439e95ae3';
     _deviceId = deviceId;
     _deviceSecret = deviceSecret;
   }

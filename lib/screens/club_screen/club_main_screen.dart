@@ -17,9 +17,11 @@ import 'package:pokerapp/screens/club_screen/widgets/club_live_games_view.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/screens/main_screens/purchase_page_view/coin_update.dart';
 import 'package:pokerapp/screens/main_screens/purchase_page_view/store_dialog.dart';
+import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
 import 'package:pokerapp/services/test/mock_data.dart';
 import 'package:pokerapp/utils/formatter.dart';
+import 'package:pokerapp/widgets/credits.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
@@ -44,7 +46,7 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew>
   void refreshClubMainScreen() {
     //  log('refresh club main screen');
     fetchData(update: true);
-    //setState(() {});
+    setState(() {});
   }
 
   @override
@@ -129,16 +131,24 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew>
                         : Positioned(
                             top: 70.ph,
                             right: 20.pw,
-                            child: Column(children: [
-                              Text('Credits'),
-                              Text(
-                                  DataFormatter.chipsFormat(
-                                      clubModel.availableCredit),
-                                  style: TextStyle(
-                                      color: clubModel.availableCredit < 0
-                                          ? Colors.redAccent
-                                          : Colors.greenAccent))
-                            ])),
+                            child: CreditsWidget(
+                              credits: clubModel.availableCredit,
+                              theme: theme,
+                              onTap: () {
+                                // go to activities screen
+                                final currentPlayer = AuthService.get();
+                                Navigator.pushNamed(
+                                  context,
+                                  Routes.club_member_credit_detail_view,
+                                  arguments: {
+                                    'clubCode': clubModel.clubCode,
+                                    'playerId': currentPlayer.uuid,
+                                    'owner': false,
+                                  },
+                                );
+                              },
+                            ),
+                          ),
                   ],
                 ),
 
