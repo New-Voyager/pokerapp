@@ -281,25 +281,29 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
       }
     }
 
-//     Widget old = Transform.scale(
-//         scale:
-//             widget.boardAttributes.getMuckCardScale(seat.player.cards.length),
-//         alignment: Alignment.bottomCenter,
-//         child: Transform.translate(
-//           // TODO: NEED TO VERIFY THIS FOR DIFF SCREEN SIZES
-//           offset: Offset(0.0, 10.ph),
-//           child: Container(
-//             height: widget.boardAttributes.namePlateSize.height,
-//             width: widget.boardAttributes.namePlateSize.width,
-//             child: DisplayCardsWidget(
-//               isReplayHandsActor: isReplayHandsActor,
-//               seat: seat,
-//               showdown: widget.gameState.showdown,
-//               colorCards: widget.gameState.playerLocalConfig.colorCards,
-//             ),
-//           ),
-//         ));
+    // Widget old = Transform.scale(
+    //     scale:
+    //         widget.boardAttributes.getMuckCardScale(seat.player.cards.length),
+    //     alignment: Alignment.bottomCenter,
+    //     child: Transform.translate(
+    //       // TODO: NEED TO VERIFY THIS FOR DIFF SCREEN SIZES
+    //       offset: Offset(0.0, 10.ph),
+    //       child: Container(
+    //         height: widget.boardAttributes.namePlateSize.height,
+    //         width: widget.boardAttributes.namePlateSize.width,
+    //         child: DisplayCardsWidget(
+    //           isReplayHandsActor: isReplayHandsActor,
+    //           seat: seat,
+    //           showdown: widget.gameState.showdown,
+    //           colorCards: widget.gameState.playerLocalConfig.colorCards,
+    //         ),
+    //       ),
+    //     ));
 
+    bool colorCards = false;
+    if (widget.gameState.playerLocalConfig != null) {
+      colorCards = widget.gameState.playerLocalConfig?.colorCards;
+    }
     return Container(
       // height: widget.boardAttributes.namePlateSize.height,
       // width: widget.boardAttributes.namePlateSize.width,
@@ -307,7 +311,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
         isReplayHandsActor: isReplayHandsActor,
         seat: seat,
         showdown: widget.gameState.showdown,
-        colorCards: widget.gameState.playerLocalConfig.colorCards,
+        colorCards: colorCards,
       ),
     );
   }
@@ -480,7 +484,6 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
             clipBehavior: Clip.none,
             alignment: Alignment.center,
             children: [
-              
               // main body
               Opacity(
                 opacity: opacity,

@@ -1,6 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/main_helper.dart';
 import 'package:pokerapp/models/auth_model.dart';
 import 'package:pokerapp/models/club_members_model.dart';
@@ -14,7 +13,6 @@ import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/club_screen/messages_page_view/widgets/message_item.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
-import 'package:pokerapp/services/app/club_interior_service.dart';
 import 'package:pokerapp/services/app/club_message_service.dart';
 import 'package:pokerapp/services/text_filtering/text_filtering.dart';
 import 'package:pokerapp/utils/favourite_texts_widget.dart';
@@ -128,8 +126,7 @@ class _MessagesPageViewState extends State<MessagesPageView>
 
   _fetchMembers() async {
     List<ClubMemberModel> _clubMembers =
-        await ClubInteriorService.getMembers(widget.clubCode);
-
+        await appState.cacheService.getMembers(widget.clubCode);
     _players = Map<String, String>();
 
     _clubMembers.forEach((member) {
@@ -170,6 +167,10 @@ class _MessagesPageViewState extends State<MessagesPageView>
             context: context,
             titleText: _appScreenText['clubChat'],
             subTitleText: "${widget.clubCode}",
+            onBackHandle: () {
+              appState.cacheService.refreshClub = widget.clubCode;
+              Navigator.pop(context);
+            },
           ),
           body: SafeArea(
             child: Column(
@@ -226,16 +227,6 @@ class _MessagesPageViewState extends State<MessagesPageView>
                         onEmojiClick: _onEmojiSelectTap,
                         editingController: _textController,
                       ),
-
-                // : ChatTextField(
-                //     icon: FontAwesomeIcons.icons,
-                //     appScreenText: _appScreenText,
-                //     onGifSelectTap: () => _openGifDrawer(theme),
-                //     textEditingController: _textController,
-                //     onSend: _sendMessage,
-                //     onEmojiSelectTap: _onEmojiSelectTap,
-                //     onTap: _onTap,
-                //   ),
 
                 // emoji picker
                 ValueListenableBuilder<bool>(

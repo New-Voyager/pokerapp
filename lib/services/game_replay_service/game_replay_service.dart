@@ -275,6 +275,11 @@ class GameReplayService {
       replayMode: true,
     );
 
+    final player = gameState.getPlayerById(playerID);
+    if (player != null && currPlayerCards.isNotEmpty) {
+      player.cards = currPlayerCards;
+    }
+
     return GameReplayController(
       playerActionTime: data.actionTime ?? 30,
       gameState: gameState,

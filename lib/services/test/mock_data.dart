@@ -10,14 +10,14 @@ import 'package:pokerapp/models/newmodels/game_model_new.dart';
 class MockData {
   MockData._();
 
-  static Future<List<GameModelNew>> getLiveGames() async {
-    final List<GameModelNew> liveGames = [];
+  static Future<List<GameModel>> getLiveGames() async {
+    final List<GameModel> liveGames = [];
 
     try {
       final jsondata =
           await rootBundle.rootBundle.loadString("assets/json/mockdata.json");
       final List liveGames = json.decode(jsondata)["liveGames"] as List;
-      return liveGames.map((e) => GameModelNew.fromJson(e)).toList();
+      return liveGames.map((e) => GameModel.fromJson(e)).toList();
     } catch (e) {
       log("Exception in converting to model: $e");
       return liveGames;

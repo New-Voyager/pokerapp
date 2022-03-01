@@ -15,6 +15,9 @@ class ScreenAttributeObject {
     this.base = map['base'];
     this.name = map['name'];
     this.models = map['models'] != null ? map['models'].cast<String>() : null;
+    if (this.models != null) {
+      this.models = this.models.map((e) => e.toLowerCase()).toList();
+    }
     this.diagonalMinSize = map['diagonalMinSize'];
     this.diagonalMaxSize = map['diagonalMaxSize'];
     String screenSizeStr = map['screenSize'];

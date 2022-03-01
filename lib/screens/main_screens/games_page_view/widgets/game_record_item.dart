@@ -77,8 +77,7 @@ class GameRecordItem extends StatelessWidget {
                             width: 100.ph,
                           ),
                           Image.asset(
-                            GameModelNew.getGameTypeImageAsset(
-                                game.gameTypeStr),
+                            GameModel.getGameTypeImageAsset(game.gameTypeStr),
                             height: 60.ph,
                             width: 60.ph,
                             alignment: Alignment.center,

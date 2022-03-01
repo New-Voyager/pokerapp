@@ -420,35 +420,35 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
                         // AppDimensionsNew.getVerticalSizedBox(16),
 
                         // Recover Email
-                        _buildTextFormField(
-                          appTheme: appTheme,
-                          labelText: _appScreenText['recoveryEmail'],
-                          keyboardType: TextInputType.emailAddress,
-                          controller: _emailCtrl,
-                          validator: (value) {
-                            if (value.length > 50) {
-                              return _appScreenText['invalidEmail'];
-                            } else if (value.isNotEmpty) {
-                              // RegExp for email validation
-                              if (!RegExp(
-                                      r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
-                                  .hasMatch(value)) {
-                                return _appScreenText['invalidEmail'];
-                              }
-                            }
-                            return null;
-                          },
-                          hintText: _appScreenText['optional'],
-                          onInfoIconPress: () {
-                            toast(
-                              _appScreenText['recoveryEmailHint'],
-                              duration: Duration(seconds: 5),
-                            );
-                          },
-                        ),
+                        // _buildTextFormField(
+                        //   appTheme: appTheme,
+                        //   labelText: _appScreenText['recoveryEmail'],
+                        //   keyboardType: TextInputType.emailAddress,
+                        //   controller: _emailCtrl,
+                        //   validator: (value) {
+                        //     if (value.length > 50) {
+                        //       return _appScreenText['invalidEmail'];
+                        //     } else if (value.isNotEmpty) {
+                        //       // RegExp for email validation
+                        //       if (!RegExp(
+                        //               r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
+                        //           .hasMatch(value)) {
+                        //         return _appScreenText['invalidEmail'];
+                        //       }
+                        //     }
+                        //     return null;
+                        //   },
+                        //   hintText: _appScreenText['optional'],
+                        //   onInfoIconPress: () {
+                        //     toast(
+                        //       _appScreenText['recoveryEmailHint'],
+                        //       duration: Duration(seconds: 5),
+                        //     );
+                        //   },
+                        // ),
 
-                        // sep
-                        AppDimensionsNew.getVerticalSizedBox(16),
+                        // // sep
+                        // AppDimensionsNew.getVerticalSizedBox(16),
 
                         // Terms and privacy text
                         _buildTermsAndPrivacyText(_appTheme),
@@ -523,7 +523,7 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
       String deviceId = new Uuid().v4().toString();
       if (_emailCtrl.text.trim().isNotEmpty) {
         // generate sha1 from email address
-        deviceId = sha1.convert(utf8.encode(_emailCtrl.text)).toString();
+        deviceId = _emailCtrl.text.toString();
       } else {
         try {
           final devId = await FlutterUdid.udid;
@@ -532,6 +532,7 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
           // couldn't get device id, use the uuid
         }
       }
+      deviceId = sha1.convert(utf8.encode(deviceId)).toString();
 
       ConnectionDialog.show(
           context: context, loadingText: _appScreenText['registering']);

@@ -690,7 +690,7 @@ class BetWidget extends StatelessWidget {
     final postflop = bettingOptions.postFlop;
     final raise = bettingOptions.raise;
 
-    if (action.raiseAmount == 0) {
+    if (!action.raiseAvailable) {
       if (gameState.handState == HandState.PREFLOP) {
         for (int i = 0; i < preflop.length; i++) {
           final amount = preflop[i].toDouble() * gameState.handInfo.bigBlind;

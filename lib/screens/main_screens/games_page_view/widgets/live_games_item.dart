@@ -15,7 +15,7 @@ import 'package:pokerapp/widgets/buttons.dart';
 import 'package:provider/provider.dart';
 
 class LiveGameItem extends StatelessWidget {
-  final GameModelNew game;
+  final GameModel game;
   final Function onTapFunction;
 
   LiveGameItem({this.game, this.onTapFunction});
@@ -35,6 +35,12 @@ class LiveGameItem extends StatelessWidget {
     return Consumer<AppTheme>(builder: (_, theme, __) {
       final gameType = gameTypeFromStr(game.gameType);
       final gameTypeStr = gameTypeShortStr(gameType);
+      int timeDiff = 0;
+      if (game.gameStartTime != null) {
+        timeDiff = DateTime.now().difference(game.gameStartTime).inSeconds;
+      }
+      final timeDiffStr = DataFormatter.timeFormat(timeDiff);
+
       return Stack(
         children: [
           Container(
@@ -82,13 +88,13 @@ class LiveGameItem extends StatelessWidget {
                           children: [
                             Image.asset(
                               AppAssetsNew.pathGameTypeChipImage,
-                              height: 100.ph,
-                              width: 100.ph,
+                              height: 80.ph,
+                              width: 80.ph,
                             ),
                             Image.asset(
-                              GameModelNew.getGameTypeImageAsset(game.gameType),
-                              height: 60.ph,
-                              width: 60.ph,
+                              GameModel.getGameTypeImageAsset(game.gameType),
+                              height: 40.ph,
+                              width: 40.ph,
                               alignment: Alignment.center,
                             ),
                             (game.clubCode != null)
@@ -124,40 +130,76 @@ class LiveGameItem extends StatelessWidget {
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
                                     Text(
-                                      '${_appScreenText['buyin']}: ${DataFormatter.chipsFormat(game.buyInMin)}-${DataFormatter.chipsFormat(game.buyInMax)}',
-                                      style: AppDecorators.getSubtitle1Style(
+                                      'Buy-in: ${DataFormatter.chipsFormat(game.buyInMin)}-${DataFormatter.chipsFormat(game.buyInMax)}',
+                                      style: AppDecorators.getHeadLine5Style(
                                           theme: theme),
                                     ),
                                     AppDimensionsNew.getHorizontalSpace(16.pw),
                                   ],
                                 ),
-                                Text(
-                                  "${gameTypeStr} ${DataFormatter.chipsFormat(game.smallBlind)}/${DataFormatter.chipsFormat(game.bigBlind)}",
-                                  style: AppDecorators.getHeadLine4Style(
-                                      theme: theme),
-                                ),
-                                AppDimensionsNew.getVerticalSizedBox(4.ph),
-                                Text(
-                                  "${_appScreenText['gameId']}: ${game.gameCode}",
-                                  style: AppDecorators.getSubtitle2Style(
-                                      theme: theme),
-                                ),
+                                Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        "${gameTypeStr} ${DataFormatter.chipsFormat(game.smallBlind)}/${DataFormatter.chipsFormat(game.bigBlind)}",
+                                        style: AppDecorators.getHeadLine4Style(
+                                            theme: theme),
+                                      ),
+                                      RichText(
+                                          text: TextSpan(children: [
+                                        TextSpan(
+                                          text: 'Code: ',
+                                          style:
+                                              AppDecorators.getHeadLine5Style(
+                                                  theme: theme),
+                                        ),
+                                        TextSpan(
+                                          text: game.gameCode,
+                                          style:
+                                              AppDecorators.getAccentTextStyle(
+                                                      theme: theme)
+                                                  .copyWith(fontSize: 10.dp),
+                                        )
+                                      ])),
+                                      SizedBox(width: 10),
+                                    ]),
                                 AppDimensionsNew.getVerticalSizedBox(2.ph),
-                                Text(
-                                  GameModelNew.getSeatsAvailble(game) > 0
-                                      ? "${game.maxPlayers - game.tableCount} ${_appScreenText['openSeats']}"
-                                      : game.waitlistCount > 0
-                                          ? "${_appScreenText['tableIsFull']} (${game.waitlistCount} ${_appScreenText['waiting']})"
-                                          : "${_appScreenText['tableIsFull']}",
-                                  style: AppDecorators.getSubtitle1Style(
-                                      theme: theme),
-                                ),
-                                AppDimensionsNew.getVerticalSizedBox(8.ph),
-                                Text(
-                                  "${_appScreenText['started']} ${DataFormatter.getTimeInHHMMFormat(game.elapsedTime)} ${_appScreenText['ago']}.",
-                                  style: AppDecorators.getSubtitle3Style(
-                                      theme: theme),
-                                ),
+                                Row(children: [
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        Icons.person,
+                                        color:
+                                            theme.secondaryColorWithDark(0.1),
+                                        size: 16.pw,
+                                      ),
+                                      SizedBox(width: 5),
+                                      Text(
+                                        '${game.tableCount}/${game.maxPlayers}',
+                                        style: AppDecorators.getHeadLine5Style(
+                                            theme: theme),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(width: 20),
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        Icons.timer,
+                                        color:
+                                            theme.secondaryColorWithDark(0.1),
+                                        size: 16.pw,
+                                      ),
+                                      SizedBox(width: 5),
+                                      Text(
+                                        '${timeDiffStr}',
+                                        style: AppDecorators.getHeadLine5Style(
+                                            theme: theme),
+                                      ),
+                                    ],
+                                  )
+                                ]),
                               ],
                             ),
                           )),
@@ -171,7 +213,7 @@ class LiveGameItem extends StatelessWidget {
             bottom: 20.ph,
             right: 5.pw,
             child: RoundRectButton(
-              text: GameModelNew.getSeatsAvailble(game) > 0
+              text: GameModel.getSeatsAvailble(game) > 0
                   ? "${_appScreenText['join']}"
                   : "${_appScreenText['view']}",
               onTap: onTapFunction,

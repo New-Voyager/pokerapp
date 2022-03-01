@@ -817,11 +817,11 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
       if (appService.appSettings.showRefreshBanner) {
         appService.appSettings.showRefreshBanner = false;
-        Alerts.showNotification(
-            duration: Duration(seconds: 8),
-            titleText: 'Beta Issue',
-            subTitleText:
-                "If you see any issues in this screen or in the audio conference, go back from this game screen and return to this screen. Most issues will be resolved. You will still be in the game and in the hand.");
+        // Alerts.showNotification(
+        //     duration: Duration(seconds: 8),
+        //     titleText: 'Beta Issue',
+        //     subTitleText:
+        //         "If you see any issues in this screen or in the audio conference, go back from this game screen and return to this screen. Most issues will be resolved. You will still be in the game and in the hand.");
       }
       if (appService.appSettings.showReportInfoDialog) {
         appService.appSettings.showReportInfoDialog = false;

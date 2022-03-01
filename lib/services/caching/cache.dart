@@ -108,7 +108,7 @@ class CacheService {
   Future<List<MemberActivity>> getAgentPlayerActivities(
       String clubCode, String agentId, DateTime start, DateTime end) async {
     String cacheId =
-        '$clubCode-$agentId-${start.toIso8601String()}-${end.toIso8601String()}';
+        'agentActivties-$clubCode-$agentId-${start.toIso8601String()}-${end.toIso8601String()}';
     final cachedObject = getFromCache(cacheId);
     if (cachedObject != null) {
       return cachedObject;
@@ -117,5 +117,31 @@ class CacheService {
         clubCode, agentId, start, end);
     cacheObject(cacheId, activities);
     return activities;
+  }
+
+  Future<List<MemberCreditHistory>> getPlayerActivities(
+      String clubCode, String playerId) async {
+    String cacheId = 'creditHistory-$clubCode-$playerId';
+    final cachedObject = getFromCache(cacheId);
+    if (cachedObject != null) {
+      return cachedObject;
+    }
+    final history =
+        await ClubInteriorService.getCreditHistory(clubCode, playerId);
+    cacheObject(cacheId, history);
+    return history;
+  }
+
+  Future<ClubMemberModel> getClubMemberDetail(
+      String clubCode, String playerId) async {
+    String cacheId = 'memberDetail-$clubCode-$playerId';
+    final cachedObject = getFromCache(cacheId);
+    if (cachedObject != null) {
+      return cachedObject;
+    }
+    final member =
+        await ClubInteriorService.getClubMemberDetail(clubCode, playerId);
+    cacheObject(cacheId, member);
+    return member;
   }
 }
