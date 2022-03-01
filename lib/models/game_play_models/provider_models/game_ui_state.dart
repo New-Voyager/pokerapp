@@ -9,7 +9,7 @@ class GameUIState {
 
   final ValueNotifier<Size> tableSizeVn = ValueNotifier<Size>(null);
   Size holeCardsViewSize = Size(0, 0);
-  double cardWidth;
+  Size cardSize;
   double cardsDisplacement;
   double cardsSizeRatio;
 
@@ -74,8 +74,8 @@ class GameUIState {
     // if (cardWidth > maxCardWidth) {
     //   cardWidth = maxCardWidth;
     // }
-    cardWidth = gameState.gameUIState.holeCardsViewSize.width -
+    var cardWidth = gameState.gameUIState.holeCardsViewSize.width -
         (cardsDisplacement * cardsLength);
-    gameState.gameUIState.cardWidth = cardWidth;
+    cardSize = Size(cardWidth, cardWidth * 38 / 30);
   }
 }

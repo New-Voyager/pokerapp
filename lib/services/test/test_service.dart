@@ -517,6 +517,8 @@ class TestService {
       200,
       168,
       177,
+      194,
+      196,
     ]; //, 168, 177, 194];
     player.rankText = 'Full House';
     final myState = gameState.myState;

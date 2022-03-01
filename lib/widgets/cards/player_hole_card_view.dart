@@ -98,7 +98,7 @@ class _CardEyeState extends State<CardEye> {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-        top: widget.marked ? 60 : 65,
+        top: widget.gameState.gameUIState.cardSize.height / 2.5,
         // bottom: 30,
         left: widget.marked ? 8 : 12,
         child: DebugBorderWidget(

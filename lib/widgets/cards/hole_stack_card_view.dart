@@ -54,8 +54,8 @@ class HoleStackCardView extends StatelessWidget {
     // double cardWidth = holeCardsViewWidth - (displacementValue * cards.length);
     // double cardWidth = holeCardsViewWidth / (cards.length / 3);
     // gameState.cardWidth = cardWidth;
-    final double sch = gameState.gameUIState.cardWidth * 38 / 30;
-    final double scw = gameState.gameUIState.cardWidth;
+    final double sch = gameState.gameUIState.cardSize.height;
+    final double scw = gameState.gameUIState.cardSize.width;
 
     final double tw = scw + displacementValue * (cards.length - 1);
 
