@@ -122,33 +122,28 @@ class CommunityCardsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final gameState = GameState.getState(context);
-    final boa = gameState.getBoardAttributes(context);
     final tableState = gameState.tableState;
 
     if (twoBoardsNeeded ?? false) {
-      return Transform.scale(
-        alignment: Alignment.topCenter,
-        scale: boa.doubleBoardScale,
-        child: Column(
-          children: [
-            /* board 1 cards */
-            buildSingleBoardCards(
-              1,
-              cards,
-              dimBoard: tableState.dimBoard1,
-            ),
+      return Column(
+        children: [
+          /* board 1 cards */
+          buildSingleBoardCards(
+            1,
+            cards,
+            dimBoard: tableState.dimBoard1,
+          ),
 
-            /* divider */
-            const SizedBox(height: 2.0),
+          /* divider */
+          const SizedBox(height: 2.0),
 
-            /* board 2 cards */
-            buildSingleBoardCards(
-              2,
-              cardsOther,
-              dimBoard: tableState.dimBoard2,
-            ),
-          ],
-        ),
+          /* board 2 cards */
+          buildSingleBoardCards(
+            2,
+            cardsOther,
+            dimBoard: tableState.dimBoard2,
+          ),
+        ],
       );
     }
 

@@ -29,7 +29,6 @@ class CustomFlipCard extends StatelessWidget {
 
     return CardBuilderWidget.getCardRatioFromCardType(
       CardType.CommunityCard,
-      context,
     );
   }
 

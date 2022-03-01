@@ -290,55 +290,45 @@ class _BoardCenterView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: Screen.isLargeScreen
-          ? const EdgeInsets.all(30.0)
-          : const EdgeInsets.only(bottom: 12.0),
-      child: Column(
-        children: [
-          // pot view
-          Expanded(
-            child: DebugBorderWidget(
-              color: Colors.green,
-              child: _PotViewWidget(
-                dimPots: tableState.dimPots,
-                vnPotChips: vnPotChips,
-                vnPotToHighlight: vnPotToHighlight,
-              ),
+    return Column(
+      children: [
+        // pot view
+        Expanded(
+          child: DebugBorderWidget(
+            color: Colors.green,
+            child: _PotViewWidget(
+              dimPots: tableState.dimPots,
+              vnPotChips: vnPotChips,
+              vnPotToHighlight: vnPotToHighlight,
             ),
           ),
+        ),
 
-          // community cards view
-          Expanded(
-            flex: 2,
-            child: DebugBorderWidget(
-              color: Colors.green,
-              child: Padding(
-                padding: Screen.isLargeScreen
-                    ? const EdgeInsets.symmetric(horizontal: 15.0)
-                    : const EdgeInsets.only(),
-                child: _CommunityCardsWidget(
-                  vnCommunityCardsRefresh: vnCommunityCardsRefresh,
-                  vnCards: vnCards,
-                  vnCardOthers: vnCardOthers,
-                  vnTwoBoardsNeeded: vnTwoBoardsNeeded,
-                ),
-              ),
+        // community cards view
+        Expanded(
+          flex: Screen.isLargeScreen ? 4 : 3,
+          child: DebugBorderWidget(
+            color: Colors.green,
+            child: _CommunityCardsWidget(
+              vnCommunityCardsRefresh: vnCommunityCardsRefresh,
+              vnCards: vnCards,
+              vnCardOthers: vnCardOthers,
+              vnTwoBoardsNeeded: vnTwoBoardsNeeded,
             ),
           ),
+        ),
 
-          // pots update view
-          Expanded(
-            child: DebugBorderWidget(
-              color: Colors.green,
-              child: _PotUpdatesOrRankWidget(
-                vnPotChipsUpdates: vnPotChipsUpdates,
-                gameState: gameState,
-              ),
+        // pots update view
+        Expanded(
+          child: DebugBorderWidget(
+            color: Colors.green,
+            child: _PotUpdatesOrRankWidget(
+              vnPotChipsUpdates: vnPotChipsUpdates,
+              gameState: gameState,
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
@@ -453,37 +443,57 @@ class _CommunityCardsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20.0),
-      child: FittedBox(
-        child: ValueListenableBuilder<int>(
-          valueListenable: vnCommunityCardsRefresh,
-          builder: (_, __, ___) {
-            return ValueListenableBuilder3<List<CardObject>, List<CardObject>,
-                bool>(
-              vnCards,
-              vnCardOthers,
-              vnTwoBoardsNeeded,
-              builder: (_, cards, cardsOther, twoBoardsNeeded, __) {
-                final gameState = GameState.getState(context);
-                final tableState = gameState.tableState;
+    return ValueListenableBuilder<int>(
+      valueListenable: vnCommunityCardsRefresh,
+      builder: (_, __, ___) {
+        return ValueListenableBuilder3<List<CardObject>, List<CardObject>,
+            bool>(
+          vnCards,
+          vnCardOthers,
+          vnTwoBoardsNeeded,
+          builder: (_, cards, cardsOther, twoBoardsNeeded, __) {
+            final gameState = GameState.getState(context);
+            final tableState = gameState.tableState;
 
-                /// we use a transform matrix to give the table center view contents a 3d perspective look
-                return Transform(
-                  transform: transformMatrix,
-                  alignment: FractionalOffset.center,
-                  child: CommunityCardsView(
-                    cards: tableState.cards,
-                    cardsOther: tableState.cardsOther,
-                    twoBoardsNeeded: tableState.twoBoardsNeeded,
-                    horizontal: true,
+            return LayoutBuilder(
+              builder: (_, constraints) {
+                /// available height for the community cards
+                final height = constraints.maxHeight;
+
+                /// single board factor = 4/5 of available height
+                final double singleBoardFactor =
+                    Screen.isLargeScreen ? 3.0 / 4 : 4.0 / 5;
+
+                /// double board factor = full available height
+                final double doubleBoardFactor =
+                    Screen.isLargeScreen ? 0.90 : 1.0;
+
+                /// board factor depending upon if single board / double board
+                final boardFactor =
+                    twoBoardsNeeded ? doubleBoardFactor : singleBoardFactor;
+
+                final negativeSpace = (1 - boardFactor) * height;
+
+                return Container(
+                  margin: EdgeInsets.symmetric(vertical: negativeSpace),
+                  child: FittedBox(
+                    child: Transform(
+                      transform: transformMatrix,
+                      alignment: Alignment.center,
+                      child: CommunityCardsView(
+                        cards: tableState.cards,
+                        cardsOther: tableState.cardsOther,
+                        twoBoardsNeeded: tableState.twoBoardsNeeded,
+                        horizontal: true,
+                      ),
+                    ),
                   ),
                 );
               },
             );
           },
-        ),
-      ),
+        );
+      },
     );
   }
 }

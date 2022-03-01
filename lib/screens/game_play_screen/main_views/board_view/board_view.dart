@@ -40,17 +40,6 @@ class BoardView extends StatefulWidget {
 class _BoardViewState extends State<BoardView> {
   GameState gameState;
 
-  Size _getCenterViewSize({@required Size tableSize}) {
-    final namePlateSize = NamePlateWidgetParent.namePlateSize;
-
-    final ts = SizingUtils.getPlayersOnTableSize(tableSize);
-
-    final height = ts.height - namePlateSize.height * 2.2;
-    final width = ts.width - namePlateSize.width * 2;
-
-    return Size(width, height);
-  }
-
   @override
   void initState() {
     super.initState();
@@ -76,14 +65,19 @@ class _BoardViewState extends State<BoardView> {
       gameState.playerOnTableSize.height - namePlateSize.height * 2.0,
     );
 
+    final deflate = Screen.isLargeScreen ? 15.0 : 10.0;
+
     final rect = Rect.fromLTWH(
       left,
       top,
       centerViewSize.width,
       centerViewSize.height,
-    );
+    ).deflate(deflate);
 
-    return Tuple2<Offset, Size>(Offset(rect.left, rect.top), rect.size);
+    return Tuple2<Offset, Size>(
+      Offset(rect.left, rect.top - deflate),
+      rect.size,
+    );
   }
 
   @override

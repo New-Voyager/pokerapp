@@ -27,7 +27,6 @@ class HoleStackCardView extends StatelessWidget {
   Size _getTotalCardsSize(BuildContext context, double displacementValue) {
     double holeCardRatio = CardBuilderWidget.getCardRatioFromCardType(
       CardType.HoleCard,
-      context,
     );
 
     final double sch = AppDimensions.cardHeight * holeCardRatio;
