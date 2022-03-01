@@ -29,8 +29,6 @@ class FlopCommunityCards extends StatefulWidget {
 class _FlopCommunityCardsState extends State<FlopCommunityCards> {
   GlobalKey<FlipCardState> _globalFlipKey = GlobalKey<FlipCardState>();
 
-  BoardAttributesObject _boa;
-
   bool _isFlipDone;
   bool _isAnimationCompleted;
 
@@ -41,8 +39,6 @@ class _FlopCommunityCardsState extends State<FlopCommunityCards> {
   @override
   void initState() {
     super.initState();
-
-    _boa = Provider.of<BoardAttributesObject>(context, listen: false);
 
     _isFlipDone = false;
     _isAnimationCompleted = false;
@@ -64,8 +60,7 @@ class _FlopCommunityCardsState extends State<FlopCommunityCards> {
 
   double getDifferenceBetween(int idx1, idx2) {
     return (CommunityCardAttribute.getOffsetPosition(idx1).dx -
-            CommunityCardAttribute.getOffsetPosition(idx2).dx) *
-        (widget.twoBoards ? _boa.doubleBoardScale : 1.0);
+        CommunityCardAttribute.getOffsetPosition(idx2).dx);
   }
 
   Widget _buildFlipCardWidget() {
@@ -82,7 +77,6 @@ class _FlopCommunityCardsState extends State<FlopCommunityCards> {
         globalKey: _globalFlipKey,
         cardWidget: widget.flopCards.last,
         twoBoards: widget.twoBoards,
-        doubleBoardScale: _boa.doubleBoardScale,
       ),
     );
   }

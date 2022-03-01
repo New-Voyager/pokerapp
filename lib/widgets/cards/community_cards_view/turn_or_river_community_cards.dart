@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/widgets/cards/community_cards_view/custom_flip_card.dart';
-import 'package:provider/provider.dart';
 
 class TurnOrRiverCommunityCards extends StatefulWidget {
   final List<Widget> riverOrTurnCards;
@@ -27,8 +26,6 @@ class TurnOrRiverCommunityCards extends StatefulWidget {
 class _TurnOrRiverCommunityCardsState extends State<TurnOrRiverCommunityCards> {
   GlobalKey<FlipCardState> _globalFlipKey = GlobalKey<FlipCardState>();
 
-  BoardAttributesObject _boa;
-
   void onFlipDone(bool _) {
     setState(() => _isFlipDone = true);
   }
@@ -37,8 +34,7 @@ class _TurnOrRiverCommunityCardsState extends State<TurnOrRiverCommunityCards> {
 
   double getDifferenceBetween(int idx1, idx2) {
     return (CommunityCardAttribute.getOffsetPosition(idx1).dx -
-            CommunityCardAttribute.getOffsetPosition(idx2).dx) *
-        (widget.twoBoards ? _boa.doubleBoardScale : 1.0);
+        CommunityCardAttribute.getOffsetPosition(idx2).dx);
   }
 
   Widget _buildFlipCardWidget() {
@@ -51,15 +47,12 @@ class _TurnOrRiverCommunityCardsState extends State<TurnOrRiverCommunityCards> {
       cardWidget: widget.riverOrTurnCards.last,
       cardBackBytes: cardBackBytes,
       twoBoards: widget.twoBoards,
-      doubleBoardScale: _boa.doubleBoardScale,
     );
   }
 
   @override
   void initState() {
     super.initState();
-
-    _boa = Provider.of<BoardAttributesObject>(context, listen: false);
 
     _isFlipDone = false;
 
@@ -96,10 +89,8 @@ class _TurnOrRiverCommunityCardsState extends State<TurnOrRiverCommunityCards> {
             alignment: Alignment.topCenter,
             child: Transform.translate(
               offset: Offset(
-                getDifferenceBetween(
-                  0,
-                  widget.riverOrTurnCards.length == 4 ? 1 : 2,
-                ),
+                getDifferenceBetween(0, 1) *
+                    (widget.riverOrTurnCards.length == 4 ? 2 : 3.5),
                 0.0,
               ),
               child: _buildFlipCardWidget(),

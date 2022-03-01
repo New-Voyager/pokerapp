@@ -482,6 +482,7 @@ class _CommunityCardsWidget extends StatelessWidget {
                       transform: transformMatrix,
                       alignment: Alignment.center,
                       child: CommunityCardsView(
+                        key: Key('community-cards-view'),
                         cards: tableState.cards,
                         cardsOther: tableState.cardsOther,
                         twoBoardsNeeded: tableState.twoBoardsNeeded,

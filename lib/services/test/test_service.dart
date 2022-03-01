@@ -286,6 +286,8 @@ class TestService {
   }
 
   static Future<void> addFlopCards() async {
+    print('card offsets: ${CommunityCardAttribute.cardOffsets}');
+
     final tableState = _getTableState();
     final gameState = GameState.getState(_context);
 

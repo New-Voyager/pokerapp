@@ -40,8 +40,10 @@ class CommunityCardAttribute {
     if (key.currentContext == null) return;
 
     final RenderBox renderBox = key.currentContext.findRenderObject();
-    final Offset offset = renderBox.localToGlobal(Offset.zero);
-    cardOffsets[idx] = offset;
+    final Offset offset = renderBox.globalToLocal(Offset.zero);
+
+    print('community card position: $idx at $offset');
+    cardOffsets[idx] = Offset(-offset.dx, -offset.dy);
   }
 
   static getOffsetPosition(int idx) => cardOffsets[idx];
