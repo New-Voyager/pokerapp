@@ -122,7 +122,8 @@ class _MainScreenState extends State<MainScreen>
     List<AnnouncementModel> important = [];
     int unreadAnnouncements = 0;
     for (final announcement in announcements) {
-      if (announcement.createdAt.isAfter(playerState.lastReadSysAnnounceDate)) {
+      if (playerState.lastReadSysAnnounceDate == null ||
+          announcement.createdAt.isAfter(playerState.lastReadSysAnnounceDate)) {
         if (announcement.isImportant) {
           important.add(announcement);
         }
