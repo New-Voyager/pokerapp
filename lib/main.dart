@@ -17,6 +17,7 @@ import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/services/app_service.dart';
 import 'package:pokerapp/services/connectivity_check/network_change_listener.dart';
+import 'package:pokerapp/services/data/hive_models/player_state.dart';
 import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:provider/provider.dart';
@@ -59,6 +60,7 @@ void main() async {
       child: MyApp(),
     );
   }
+  await playerState.open();
 
   await AppConfig.init(flavorApp.apiBaseUrl);
   String apiUrl = AppConfig.apiUrl;

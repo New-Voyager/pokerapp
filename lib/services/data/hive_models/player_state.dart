@@ -173,6 +173,7 @@ class PlayerState {
 
   List<String> removeFriendsGameCodes(String gameCode) {
     List<String> gameCodes = [];
+    open();
     String json = _box.get('friends_game_codes');
     if (json != null) {
       final codes = jsonDecode(json);
