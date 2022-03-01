@@ -82,6 +82,8 @@ class PlayerState {
   }
 
   void _save() {
+    open();
+
     _box.put(PLAYER_ID, _playerId);
     _box.put(PLAYER_UUID, _playerUuid);
     _box.put(PLAYER_NAME, _playerName);
@@ -99,10 +101,12 @@ class PlayerState {
     if (_box?.isOpen ?? false) {
       _box?.close();
     }
+    _box = null;
   }
 
   // add get/set properties
   void updatePlayerInfo({String playerUuid, int playerId, String playerName}) {
+    open();
     _playerUuid = playerUuid;
     _playerId = playerId;
     _playerName = playerName;

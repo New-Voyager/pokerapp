@@ -1269,14 +1269,14 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
                                 // ),
 
                                 /* bot games */
-                                _buildRadio(
-                                  label: appScreenText['botGame'],
-                                  value: gmp.botGame,
-                                  onChange: (bool b) {
-                                    gmp.botGame = b;
-                                  },
-                                  theme: theme,
-                                ),
+                                // _buildRadio(
+                                //   label: appScreenText['botGame'],
+                                //   value: gmp.botGame,
+                                //   onChange: (bool b) {
+                                //     gmp.botGame = b;
+                                //   },
+                                //   theme: theme,
+                                // ),
                                 /* location check */
                                 _buildRadio(
                                   label: appScreenText['locationCheck'],
