@@ -289,6 +289,13 @@ class TestService {
     final tableState = _getTableState();
     final gameState = GameState.getState(_context);
 
+    tableState.addFlopCards(1, []);
+
+    tableState.updateRankStrSilent('Straight');
+    tableState.notifyAll();
+
+    await Future.delayed(const Duration(milliseconds: 500));
+
     tableState.addFlopCards(
       1,
       [130, 152, 193]

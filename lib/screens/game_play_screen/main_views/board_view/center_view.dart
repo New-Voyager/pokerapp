@@ -477,6 +477,7 @@ class _CommunityCardsWidget extends StatelessWidget {
                 return Container(
                   margin: EdgeInsets.symmetric(vertical: negativeSpace),
                   child: FittedBox(
+                    fit: BoxFit.fitHeight,
                     child: Transform(
                       transform: transformMatrix,
                       alignment: Alignment.center,

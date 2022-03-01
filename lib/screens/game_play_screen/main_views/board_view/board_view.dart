@@ -65,7 +65,7 @@ class _BoardViewState extends State<BoardView> {
       gameState.playerOnTableSize.height - namePlateSize.height * 2.0,
     );
 
-    final deflate = Screen.isLargeScreen ? 15.0 : 10.0;
+    final deflate = Screen.isLargeScreen ? 25.0 : 10.0;
 
     final rect = Rect.fromLTWH(
       left,
@@ -101,7 +101,7 @@ class _BoardViewState extends State<BoardView> {
     bool isLargerScreen = false;
     print(boardAttributes.screenDiagnolSize);
     if (boardAttributes.screenDiagnolSize > 7.0) {
-      tableWidthFactor = 0.70;
+      tableWidthFactor = 0.80;
       isLargerScreen = true;
     }
 

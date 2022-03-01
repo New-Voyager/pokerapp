@@ -75,10 +75,10 @@ class GamePlayScreenUtilMethods {
               color: Colors.white,
             ),
             backgroundColor: Colors.red,
-            label: 'Dealer Choice',
+            label: 'Add Turn/River cards',
             labelBackgroundColor: Colors.black,
             onTap: () {
-              TestService.dealerChoicePrompt();
+              TestService.addTurnOrRiverCard();
             }),
         SpeedDialChild(
             child: Icon(
@@ -86,10 +86,10 @@ class GamePlayScreenUtilMethods {
               color: Colors.white,
             ),
             backgroundColor: Colors.red,
-            label: 'Show Bet Widget',
+            label: 'Show bets',
             labelBackgroundColor: Colors.black,
             onTap: () {
-              TestService.testBetWidget();
+              TestService.showBets();
             }),
         SpeedDialChild(
           child: Icon(
