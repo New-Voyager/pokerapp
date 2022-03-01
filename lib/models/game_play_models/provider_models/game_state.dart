@@ -501,6 +501,9 @@ class GameState {
         }
         log('In GameState initialize(), gameSettings = $playerLocalConfig');
         _communicationState.showTextChat = playerLocalConfig.showChat;
+      } else {
+        playerLocalConfig = GameLocalConfig(gameCode, gameHiveStore);
+        await playerLocalConfig.init();
       }
     }
 

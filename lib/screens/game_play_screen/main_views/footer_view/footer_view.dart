@@ -563,18 +563,26 @@ class _FooterViewState extends State<FooterView>
       /* my last action */
       children.add(_buildMyLastActionWidget(context));
       children.add(
-        Align(
-            alignment: Alignment.topCenter,
-            child: HelpText(
-              show: appService.appSettings.showBetTip,
-              text:
-                  'Tap the cards to flip or \nUse finger gesture to peek the cards',
-              theme: theme,
-              onTap: () {
-                // store this information, and don't show this again
-                appService.appSettings.showBetTip = false;
-              },
-            )),
+        Consumer<MyState>(builder: (_, __, ___) {
+          //appService.appSettings.showHoleCardTip = true;
+          if (gameState.me == null ||
+              gameState.me.cards.length == 0 ||
+              !appService.appSettings.showHoleCardTip) {
+            return Container();
+          }
+          return Align(
+              alignment: Alignment.topCenter,
+              child: HelpText(
+                show: appService.appSettings.showHoleCardTip,
+                text:
+                    'Tap the cards to flip or \nUse finger gesture to peek the cards',
+                theme: theme,
+                onTap: () {
+                  // store this information, and don't show this again
+                  appService.appSettings.showHoleCardTip = false;
+                },
+              ));
+        }),
       );
     }
 

@@ -1269,14 +1269,14 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
                                 // ),
 
                                 /* bot games */
-                                _buildRadio(
-                                  label: appScreenText['botGame'],
-                                  value: gmp.botGame,
-                                  onChange: (bool b) {
-                                    gmp.botGame = b;
-                                  },
-                                  theme: theme,
-                                ),
+                                // _buildRadio(
+                                //   label: appScreenText['botGame'],
+                                //   value: gmp.botGame,
+                                //   onChange: (bool b) {
+                                //     gmp.botGame = b;
+                                //   },
+                                //   theme: theme,
+                                // ),
                                 /* location check */
                                 _buildRadio(
                                   label: appScreenText['locationCheck'],
@@ -1384,25 +1384,28 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
                           ],
                         ),
                         NewGameSettings2.sepV8,
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            LabelText(
-                                label: appScreenText['serviceFee'],
-                                theme: theme),
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                LabelText(label: "10", theme: theme),
-                                Image.asset(
-                                  'assets/images/appcoin.png',
-                                  height: 16.pw,
-                                  width: 16.pw,
-                                ),
-                                LabelText(label: "coins/hour", theme: theme),
-                              ],
-                            ),
-                          ],
+                        Visibility(
+                          visible: false, // service fee is not shown for v1
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              LabelText(
+                                  label: appScreenText['serviceFee'],
+                                  theme: theme),
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  LabelText(label: "10", theme: theme),
+                                  Image.asset(
+                                    'assets/images/appcoin.png',
+                                    height: 16.pw,
+                                    width: 16.pw,
+                                  ),
+                                  LabelText(label: "coins/hour", theme: theme),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                         NewGameSettings2.sep12,
 

@@ -390,7 +390,7 @@ class PlayerViewDivider extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = AppTheme.getTheme(context);
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 8),
+      margin: EdgeInsets.symmetric(horizontal: 4),
       decoration: BoxDecoration(
         color: theme.accentColor,
         borderRadius: BorderRadius.circular(5),

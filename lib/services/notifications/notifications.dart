@@ -389,6 +389,8 @@ class NotificationHandler {
         handleBuyinRequest(json);
       } else if (type == 'CREDIT_UPDATE') {
         handleCreditUpdate(json);
+      } else if (type == 'GAME_STATUS_CHANGE') {
+        handleGameStatusChange(json);
       }
     }
   }
@@ -618,6 +620,14 @@ class NotificationHandler {
   Future<void> handleGameEnded(Map<String, dynamic> json) async {
     if (appState != null) {
       appState.setGameEnded(true);
+    }
+  }
+
+  Future<void> handleGameStatusChange(Map<String, dynamic> json) async {
+    if (json['status'] == 'ENDED') {
+      if (appState != null) {
+        appState.setGameEnded(true);
+      }
     }
   }
 

@@ -1,8 +1,8 @@
 import 'package:pokerapp/enums/game_type.dart';
-import 'package:pokerapp/models/ui/app_text.dart';
+import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 
-class GameModelNew {
+class GameModel {
   String gameCode;
   String gameType;
   String clubName;
@@ -16,8 +16,11 @@ class GameModelNew {
   int waitlistCount;
   String clubCode;
   String clubPicUrl;
+  DateTime gameStartTime;
+  String gameStatus;
+  String tableStatus;
 
-  GameModelNew({
+  GameModel({
     this.gameCode,
     this.gameType,
     this.clubName,
@@ -32,7 +35,7 @@ class GameModelNew {
     this.clubCode,
   });
 
-  GameModelNew.fromJson(Map<String, dynamic> json, {bool playedGame}) {
+  GameModel.fromJson(Map<String, dynamic> json, {bool playedGame}) {
     gameCode = json['gameCode'];
     gameType = json['gameType'];
     clubName = json['clubName'];
@@ -46,6 +49,29 @@ class GameModelNew {
     waitlistCount = json['waitlistCount'];
     clubCode = json['clubCode'];
     clubPicUrl = json['clubPicUrl'];
+    if (json['startedAt'] != null) {
+      gameStartTime = DateTime.parse(json['startedAt']);
+    }
+    if (json['status'] != null) {
+      gameStatus = json['status'];
+    }
+  }
+
+  GameModel.fromGameInfo(GameInfoModel gameInfo, {bool playedGame}) {
+    gameCode = gameInfo.gameCode;
+    gameType = gameInfo.gameType;
+    buyInMin = gameInfo.buyInMin;
+    buyInMax = gameInfo.buyInMax;
+    smallBlind = gameInfo.smallBlind;
+    bigBlind = gameInfo.bigBlind;
+    maxPlayers = gameInfo.maxPlayers;
+    tableCount = 0;
+    elapsedTime = gameInfo.runningTime;
+    waitlistCount = 0;
+    if (gameInfo.startedAt != null) {
+      gameStartTime = gameInfo.startedAt;
+    }
+    gameStatus = gameInfo.status;
   }
 
   Map<String, dynamic> toJson() {
@@ -61,7 +87,8 @@ class GameModelNew {
     data['elapsedTime'] = this.elapsedTime;
     data['tableCount'] = this.tableCount;
     data['waitlistCount'] = this.waitlistCount;
-    data['clubCode'] = this.clubCode;
+    data['startedAt'] = this.gameStartTime.toIso8601String();
+    data['status'] = this.gameStatus;
 
     return data;
   }
@@ -129,7 +156,7 @@ class GameModelNew {
     }
   }
 
-  static int getSeatsAvailble(GameModelNew model) {
+  static int getSeatsAvailble(GameModel model) {
     return model.maxPlayers - model.tableCount;
   }
 }

@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:badges/badges.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -74,10 +75,11 @@ class _MainScreenState extends State<MainScreen>
       AppConstants.GIF_CATEGORIES + AppConstants.GIF_CATEGORIES_CLUB,
     );
     log('device name: ${DeviceInfo.name}');
-    await playerState.open();
+    //await playerState.open();
     await GameHistoryService.init();
 
     if (!TestService.isTesting) {
+      await playerState.open();
       _currentPlayer = await PlayerService.getMyInfo(null);
       playerState.updatePlayerInfo(
         playerId: _currentPlayer.id,
@@ -124,7 +126,7 @@ class _MainScreenState extends State<MainScreen>
         if (announcement.isImportant) {
           important.add(announcement);
         }
-        playerState.updateSysAnnounceReadDate();
+        // playerState.updateSysAnnounceReadDate();
         unreadAnnouncements++;
       }
     }
@@ -214,6 +216,7 @@ class _MainScreenState extends State<MainScreen>
                 CurvedNavItem(
                   iconData: AppIcons.user,
                   title: _appScreenText['profile'],
+                  showBadge: (playerState.unreadAnnouncements ?? 0) > 0,
                   selected: _navPos == 2,
                 ),
                 CurvedNavItem(
@@ -250,12 +253,14 @@ class CurvedNavItem extends StatelessWidget {
     @required this.iconData,
     @required this.selected,
     this.svgAsset = '',
+    this.showBadge = false,
   });
 
   final String title;
   final IconData iconData;
   final String svgAsset;
   final bool selected;
+  final bool showBadge;
 
   @override
   Widget build(BuildContext context) {
@@ -281,7 +286,11 @@ class CurvedNavItem extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       // crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
-        icon,
+        Badge(
+            animationType: BadgeAnimationType.scale,
+            showBadge: showBadge,
+            badgeContent: Text(''),
+            child: icon),
         selected
             ? Container()
             : Container(

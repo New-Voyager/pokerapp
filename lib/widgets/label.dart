@@ -13,7 +13,7 @@ class Label extends StatelessWidget {
       height: 20,
       padding: EdgeInsets.all(2.0),
       decoration: ShapeDecoration(
-        color: theme.accentColor,
+        color: theme.accentColorWithDark(0.2),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
             topRight: Radius.circular(16.0),

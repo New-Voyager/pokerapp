@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/notification_models/hh_notification_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
@@ -11,7 +10,6 @@ import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:pokerapp/proto/hand.pb.dart' as proto;
 import 'package:pokerapp/proto/handmessage.pb.dart' as proto;
-import 'package:provider/provider.dart';
 
 class Winner {
   int seatNo;
@@ -249,7 +247,7 @@ class ResultHandlerV2 {
         if (boardWinners.hiWinners.values.toList().length == 1) {
           oneWinner = true;
         }
-        if (boardWinners.lowWinners.values.toList().length != 1) {
+        if (boardWinners.lowWinners.values.toList().length > 1) {
           oneWinner = false;
         }
         if (!showdown && oneWinner) {
@@ -346,12 +344,14 @@ class ResultHandlerV2 {
       final playerRank = board.playerRank[winner.seatNo];
       List<int> winningCards = [];
       final playerInfo = result.playerInfo[winner.seatNo];
-      if (low) {
-        winningCards = playerRank.loCards;
-        rank = 'Low';
-        log('HiLo: Low winners: players cards: ${winningCards}');
-      } else {
-        winningCards = playerRank.hiCards;
+      if (playerRank != null) {
+        if (low) {
+          winningCards = playerRank.loCards;
+          rank = 'Low';
+          log('HiLo: Low winners: players cards: ${winningCards}');
+        } else {
+          winningCards = playerRank.hiCards;
+        }
       }
       Winner winningPlayer = Winner(winner.seatNo, playerInfo.cards,
           board.cards, winningCards, winner.amount, rank, low);

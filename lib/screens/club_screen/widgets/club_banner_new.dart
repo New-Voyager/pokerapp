@@ -8,6 +8,7 @@ import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/utils.dart';
+import 'package:pokerapp/widgets/label.dart';
 
 class ClubBannerViewNew extends StatelessWidget {
   final ClubHomePageModel clubModel;
@@ -20,25 +21,9 @@ class ClubBannerViewNew extends StatelessWidget {
     Widget role = SizedBox.shrink();
     final theme = AppTheme.getTheme(context);
     if (clubModel.isOwner) {
-      role = Container(
-          padding: EdgeInsets.all(3),
-          decoration: BoxDecoration(
-              border: Border.all(color: theme.secondaryColor),
-              borderRadius: BorderRadius.circular(
-                  15.ph) // use instead of BorderRadius.all(Radius.circular(20))
-              ),
-          child: Text('Owner',
-              style: AppDecorators.getHeadLine5Style(theme: theme)));
+      role = Label('Owner', theme);
     } else if (clubModel.isManager) {
-      role = Container(
-          padding: EdgeInsets.all(8),
-          decoration: BoxDecoration(
-              border: Border.all(color: theme.secondaryColor),
-              borderRadius: BorderRadius.circular(
-                  20) // use instead of BorderRadius.all(Radius.circular(20))
-              ),
-          child: Text('Manager',
-              style: AppDecorators.getHeadLine5Style(theme: theme)));
+      role = Label('Manager', theme);
     }
     final decoration = BoxDecoration(
         shape: BoxShape.circle,
@@ -79,7 +64,7 @@ class ClubBannerViewNew extends StatelessWidget {
               child: clubModel.picUrl.isEmpty
                   ? Text(
                       HelperUtils.getClubShortName(clubModel.clubName),
-                      style: AppDecorators.getHeadLine2Style(theme: theme),
+                      style: AppDecorators.getHeadLine3Style(theme: theme),
                     )
                   : SizedBox.shrink(),
             ),
@@ -90,7 +75,7 @@ class ClubBannerViewNew extends StatelessWidget {
           padding: EdgeInsets.only(top: 8.0.pw),
           child: Text(
             clubModel.clubName,
-            style: AppDecorators.getHeadLine2Style(theme: theme),
+            style: AppDecorators.getHeadLine3Style(theme: theme),
           ),
         ),
         Row(
@@ -104,7 +89,7 @@ class ClubBannerViewNew extends StatelessWidget {
             // ),
             Text(
               clubModel.clubCode,
-              style: AppDecorators.getHeadLine3Style(theme: theme),
+              style: AppDecorators.getHeadLine5Style(theme: theme),
             ),
             GestureDetector(
               child: Padding(
