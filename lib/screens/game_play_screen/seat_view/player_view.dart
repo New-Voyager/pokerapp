@@ -19,6 +19,7 @@ import 'package:pokerapp/screens/club_screen/set_credits_dialog.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/nameplate_dialog.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/data/hive_models/player_state.dart';
+import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/widgets/blinking_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/displaycards.dart';
@@ -178,8 +179,11 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
         if (data != null &&
             data['type'] != null &&
             data['type'] == "animation") {
-          final bool result = await playerState
-              .deductDiamonds(AppConfig.noOfDiamondsForAnimation);
+          final bool result = TestService.isPartialTesting
+              ? true
+              : await playerState.deductDiamonds(
+                  AppConfig.noOfDiamondsForAnimation,
+                );
           if (result) {
             gameState.gameComService.gameMessaging.sendAnimation(
               gameState.me?.seatNo,

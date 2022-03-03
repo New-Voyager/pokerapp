@@ -10,7 +10,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/host_seat_chang
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
-import 'package:pokerapp/screens/game_play_screen/main_views/board_view/lottie_animation.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/animating_widgets/lottie_animation.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/player_chat_bubble.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/name_plate_view.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/player_view.dart';
@@ -50,6 +50,9 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
     with TickerProviderStateMixin {
   BoardAttributesObject _boardAttributes;
 
+  final LottieAnimationChangeNotifier animations =
+      LottieAnimationChangeNotifier();
+
   //seat change animation controller
   Animation<Offset> _seatChangeAnimation;
   AnimationController _seatChangeAnimationController;
@@ -65,9 +68,8 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
   int seatChangerPlayer;
   int seatChangeToo;
 
-  String _animationAssetID;
-  List<PlayerChatBubble> chatBubbles = [];
-  List<LottieAnimation> animations = [];
+  final List<PlayerChatBubble> chatBubbles = [];
+  // final List<Widget> animations = [];
 
   // getters
   GameState get _gameState => widget.gameState;
@@ -125,36 +127,19 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
     return players;
   }
 
-  // Size getPlayerOnTableSize() {
-  //   // If larger screen, then allow the multichild layout to spread a little
-  //   // If smaller screen devices, then squeeze the multichild layout
-  //   // Otherwise, do not change the factor of the tableSize
-
-  //   // in case of larger screens - let the multichild layout be placed extra 1.10 factor
-  //   if (widget.isLargerScreen)
-  //     return Size(
-  //       widget.tableSize.width,
-  //       widget.tableSize.height,
-  //     );
-
-  //   // TODO: DO WE NEED A CASE FOR SMALLER SCREEN DEVICES?
-
-  //   // normal case
-  //   return Size(widget.tableSize.width, widget.tableSize.height);
-  // }
-
-  void onAnimationComplete(int index) {
-    animations.removeAt(index);
-  }
-
   void _onAnimation(ChatMessage message) async {
-    LottieAnimation lottieAnimation = LottieAnimation(
-        parentKey: _parentKey,
-        gameState: widget.gameState,
-        message: message,
-        onComplete: onAnimationComplete);
-    animations.add(lottieAnimation);
-    setState(() {});
+    int id = DateTime.now().millisecondsSinceEpoch;
+
+    final LottieAnimation lottieAnimation = LottieAnimation(
+      key: ValueKey(id),
+      parentKey: _parentKey,
+      gameState: widget.gameState,
+      animationId: id,
+      message: message,
+      animationNotifier: animations,
+    );
+
+    animations.addAnimation(id, lottieAnimation);
   }
 
   Offset getPositionOffsetFromKey(GlobalKey key) {
@@ -286,8 +271,9 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
   void _init() {
     _boardAttributes = context.read<BoardAttributesObject>();
 
-    widget.gameComService?.gameMessaging
-        ?.listen(onAnimation: this._onAnimation);
+    widget.gameComService?.gameMessaging?.listen(
+      onAnimation: this._onAnimation,
+    );
     _seatChangeAnimationHandler();
     _gameState.gameChatBubbleNotifyState.addListener(_gameChatBubbleNotifier);
   }
@@ -332,7 +318,10 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
     final gameComService = _gameState.gameComService;
     for (int localSeat = 1; localSeat <= _maxPlayers; localSeat++) {
       final seat = widget.gameState.getSeat(localSeat);
-      chatBubbles.add(PlayerChatBubble(gameComService, seat));
+      chatBubbles.add(PlayerChatBubble(
+        gameComService,
+        seat,
+      ));
     }
 
     return chatBubbles;
@@ -343,37 +332,43 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
     final ts = SizingUtils.getPlayersOnTableSize(widget.tableSize);
     Provider.of<SeatsOnTableState>(context, listen: true);
 
-    return Stack(
-      alignment: Alignment.center,
-      key: _parentKey,
-      children: [
-        // positioning players
-        SizedBox(
-          width: ts.width,
-          height: ts.height,
-          child: CustomMultiChildLayout(
-            delegate: PlayerPlacementDelegate(
-              isLarger: widget.isLargerScreen,
-            ),
-            children: _getPlayers(context),
-          ),
-        ),
-        ...animations,
+    return AnimatedBuilder(
+        animation: animations,
+        builder: (_, __) {
+          return Stack(
+            alignment: Alignment.center,
+            key: _parentKey,
+            children: [
+              // positioning players
+              SizedBox(
+                width: ts.width,
+                height: ts.height,
+                child: CustomMultiChildLayout(
+                  delegate: PlayerPlacementDelegate(
+                    isLarger: widget.isLargerScreen,
+                  ),
+                  children: _getPlayers(context),
+                ),
+              ),
 
-        // seat change animation
-        ValueListenableBuilder(
-          valueListenable: _isSeatChangingVn,
-          builder: (_, isSeatChanging, __) {
-            return isSeatChanging
-                ? _buildSeatChangeAnimating()
-                : const SizedBox.shrink();
-          },
-        ),
+              // lottie animations
+              ...animations.animations,
 
-        // chat bubbles - for every players
-        ..._getChatBubbles(),
-      ],
-    );
+              // seat change animation
+              ValueListenableBuilder(
+                valueListenable: _isSeatChangingVn,
+                builder: (_, isSeatChanging, __) {
+                  return isSeatChanging
+                      ? _buildSeatChangeAnimating()
+                      : const SizedBox.shrink();
+                },
+              ),
+
+              // chat bubbles - for every players
+              ..._getChatBubbles(),
+            ],
+          );
+        });
   }
 }
 

@@ -34,6 +34,10 @@ import 'package:pokerapp/models/game_play_models/provider_models/host_seat_chang
 
 class TestService {
   static bool get isTesting {
+    return false;
+  }
+
+   static bool get isPartialTesting {
     return true;
   }
 

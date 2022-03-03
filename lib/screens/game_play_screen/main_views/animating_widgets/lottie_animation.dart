@@ -5,20 +5,42 @@ import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart
 import 'package:pokerapp/services/audio/audio_service.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 
+class LottieAnimationChangeNotifier extends ChangeNotifier {
+  final Map<int, LottieAnimation> _animationsMap = <int, LottieAnimation>{};
+  List<LottieAnimation> get animations => _animationsMap.values.toList();
+
+  void addAnimation(int id, Widget child) {
+    _animationsMap[id] = child;
+    notifyListeners();
+  }
+
+  void removeAnimation(int id) {
+    _animationsMap.remove(id);
+    notifyListeners();
+  }
+}
+
 const double _lottieAnimationContainerSize = 120.0;
 const double _animatingAssetContainerSize = 40.0;
 
-const Duration _lottieAnimationDuration = const Duration(milliseconds: 5000);
-const Duration _animatingWidgetDuration = const Duration(milliseconds: 500);
+const Duration _lottieAnimationDuration = const Duration(seconds: 5);
+const Duration _animatingWidgetDuration = const Duration(milliseconds: 800);
 
 class LottieAnimation extends StatefulWidget {
   final ChatMessage message;
   final GameState gameState;
   final GlobalKey parentKey;
-  final Function onComplete;
-  LottieAnimation(
-      {Key key, this.parentKey, this.gameState, this.message, this.onComplete})
-      : super(key: key);
+  final int animationId;
+  final LottieAnimationChangeNotifier animationNotifier;
+
+  LottieAnimation({
+    @required Key key,
+    @required this.parentKey,
+    @required this.gameState,
+    @required this.message,
+    @required this.animationId,
+    @required this.animationNotifier,
+  }) : super(key: key);
 
   @override
   State<LottieAnimation> createState() => _LottieAnimationState();
@@ -73,7 +95,8 @@ class _LottieAnimationState extends State<LottieAnimation>
 
         _lottieController.reset();
 
-        widget.onComplete(0);
+        // animation completed
+        widget.animationNotifier.removeAnimation(widget.animationId);
       }
     });
 
@@ -97,10 +120,10 @@ class _LottieAnimationState extends State<LottieAnimation>
     });
   }
 
-  animate() {
+  void animate() {
     Offset from;
     Offset to;
-
+    
     if (widget.message.fromSeat == null || widget.message.toSeat == null) {
       return;
     }
@@ -121,6 +144,8 @@ class _LottieAnimationState extends State<LottieAnimation>
 
     from = positions[0];
     to = positions[1];
+
+    print('animations: from: $from to: $to');
 
     /* get the middle point for the animated to player */
     final Offset toMod = Offset(
@@ -154,45 +179,46 @@ class _LottieAnimationState extends State<LottieAnimation>
 
   @override
   Widget build(BuildContext context) {
-    final boardAttributes =
-        GameState.getState(context).getBoardAttributes(context);
+    final boardAttributes = GameState.getState(context).getBoardAttributes(
+      context,
+    );
 
-    return Stack(
-      children: [
-        isAnimating && animation != null
-            ? AnimatedBuilder(
-                child: Container(
-                  height: _animatingAssetContainerSize,
-                  width: _animatingAssetContainerSize,
-                  child: SvgPicture.asset(
-                    'assets/animations/$animationAssetID.svg',
-                  ),
-                ),
-                animation: animation,
-                builder: (_, child) => Transform.translate(
-                  offset: animation.value,
-                  child: Transform.scale(
-                      scale: boardAttributes.lottieScale, child: child),
-                ),
-              )
-            : SizedBox.shrink(),
-        isLottieAnimationAnimating
-            ? Transform.translate(
-                offset: lottieAnimationPosition,
+    return isAnimating && animation != null
+        ? AnimatedBuilder(
+            child: Container(
+              height: _animatingAssetContainerSize,
+              width: _animatingAssetContainerSize,
+              child: SvgPicture.asset(
+                'assets/animations/$animationAssetID.svg',
+              ),
+            ),
+            animation: animation,
+            builder: (_, child) => Positioned(
+              left: animation.value.dx,
+              top: animation.value.dy,
+              child: Transform.scale(
+                scale: boardAttributes.lottieScale,
+                child: child,
+              ),
+            ),
+          )
+        : isLottieAnimationAnimating
+            ? Positioned(
+                left: lottieAnimationPosition.dx,
+                top: lottieAnimationPosition.dy,
                 child: Container(
                   height: _lottieAnimationContainerSize,
                   width: _lottieAnimationContainerSize,
                   child: Transform.scale(
-                      scale: boardAttributes.lottieScale,
-                      child: Lottie.asset(
-                        'assets/animations/$animationAssetID.json',
-                        controller: _lottieController,
-                      )),
+                    scale: boardAttributes.lottieScale,
+                    child: Lottie.asset(
+                      'assets/animations/$animationAssetID.json',
+                      controller: _lottieController,
+                    ),
+                  ),
                 ),
               )
-            : SizedBox.shrink(),
-      ],
-    );
+            : const SizedBox.shrink();
   }
 
   /**
@@ -200,16 +226,19 @@ class _LottieAnimationState extends State<LottieAnimation>
    */
   Offset findPositionOfUser({@required int seatNo}) {
     final gameState = GameState.getState(context);
-    /* if available in cache, get from there */
     final seat = gameState.getSeat(seatNo);
+
     if (seat == null) {
       return Offset(0, 0);
     }
+
     if (seat.parentRelativePos != null) {
       return seat.parentRelativePos;
     }
 
     final relativeSeatPos = getPositionOffsetFromKey(seat?.key);
+
+    // return relativeSeatPos;
     if (relativeSeatPos == null) return null;
 
     final RenderBox parentBox =
@@ -218,13 +247,13 @@ class _LottieAnimationState extends State<LottieAnimation>
 
     /* we have the seatPos now, put in the cache */
     seat.parentRelativePos = seatPos;
+
+    print('${seat?.seatPos}: position: ${seatPos}');
+
     return seatPos;
   }
 
-  List<Offset> findPositionOfFromAndToUser({
-    int fromSeat,
-    int toSeat,
-  }) {
+  List<Offset> findPositionOfFromAndToUser({int fromSeat, int toSeat}) {
     return [
       findPositionOfUser(seatNo: fromSeat),
       findPositionOfUser(seatNo: toSeat),

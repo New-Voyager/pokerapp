@@ -56,6 +56,8 @@ class _NamePlateDailogState extends State<NamePlateDailog> {
     if (savedNotes != null) {
       _controller.text = savedNotes;
     }
+
+    if (mounted)
     setState(() {});
   }
 
