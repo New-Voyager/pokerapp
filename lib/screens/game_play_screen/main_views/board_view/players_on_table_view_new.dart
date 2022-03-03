@@ -336,6 +336,7 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
         animation: animations,
         builder: (_, __) {
           return Stack(
+            clipBehavior: Clip.none,
             alignment: Alignment.center,
             key: _parentKey,
             children: [
