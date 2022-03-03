@@ -10,6 +10,7 @@ import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/widgets/cards/card_builder_widget.dart';
 import 'package:pokerapp/widgets/cards/player_hole_card_view.dart';
+import 'package:pokerapp/widgets/debug_border_widget.dart';
 import 'package:pokerapp/widgets/page_curl/page_curl.dart';
 import 'package:provider/provider.dart';
 
@@ -25,12 +26,42 @@ class HoleStackCardView extends StatelessWidget {
   });
 
   Size _getTotalCardsSize(BuildContext context, double displacementValue) {
-    double holeCardRatio = CardBuilderWidget.getCardRatioFromCardType(
-      CardType.HoleCard,
-    );
+// <<<<<<< HEAD
+//     double holeCardRatio = CardBuilderWidget.getCardRatioFromCardType(
+//       CardType.HoleCard,
+//     );
+// =======
+    // double holeCardRatio = CardBuilderWidget.getCardRatioFromCardType(
+    //   CardType.HoleCard,
+    //   context,
+    // );
 
-    final double sch = AppDimensions.cardHeight * holeCardRatio;
-    final double scw = AppDimensions.cardWidth * holeCardRatio;
+    final gameState = GameState.getState(context);
+    // double holeCardsViewWidth = gameState.holeCardsViewSize.width;
+
+    // double ratioo = 1;
+
+    // if (cards.length == 2) {
+    //   ratioo = 1.45;
+    // } else if (cards.length == 4) {
+    //   ratioo = 1.85;
+    // } else if (cards.length == 5) {
+    //   ratioo = 1.85;
+    // } else if (cards.length == 6) {
+    //   ratioo = 2.2;
+    // }
+
+    // ratioo
+
+    // gameState.cardsSizeRatio = ratioo;
+
+    // double cardWidth = holeCardsViewWidth / ratioo;
+    // double cardWidth = holeCardsViewWidth - (displacementValue * cards.length);
+    // double cardWidth = holeCardsViewWidth / (cards.length / 3);
+    // gameState.cardWidth = cardWidth;
+    final double sch = gameState.gameUIState.cardSize.height;
+    final double scw = gameState.gameUIState.cardSize.width;
+
     final double tw = scw + displacementValue * (cards.length - 1);
 
     return Size(tw, sch);
@@ -47,20 +78,30 @@ class HoleStackCardView extends StatelessWidget {
     List<Widget> children = List.generate(
       cards.length,
       (i) {
-        final offsetInX = -(i - mid) * displacementValue;
+        var offsetInX = -(i - mid) * displacementValue;
+
+        if (!isCardVisible) {
+          if (cards.length.isEven) {
+            offsetInX = offsetInX - displacementValue / 2;
+          } else {
+            offsetInX = offsetInX;
+          }
+        }
         final card = Transform.translate(
           offset: Offset(offsetInX, 0),
           child: Builder(
-            builder: (context) => PlayerHoleCardView(
-              marked: markedCards.isMarked(cards[i]),
-              onMarkTapCallback: () {
-                final gameState = GameState.getState(context);
-                markedCards.mark(
-                    cards[i], gameState.handState == HandState.RESULT);
-              },
-              card: cards[i],
-              dim: deactivated,
-              isCardVisible: isCardVisible,
+            builder: (context) => DebugBorderWidget(
+              child: PlayerHoleCardView(
+                marked: markedCards.isMarked(cards[i]),
+                onMarkTapCallback: () {
+                  final gameState = GameState.getState(context);
+                  markedCards.mark(
+                      cards[i], gameState.handState == HandState.RESULT);
+                },
+                card: cards[i],
+                dim: deactivated,
+                isCardVisible: isCardVisible,
+              ),
             ),
           ),
         );
@@ -79,6 +120,7 @@ class HoleStackCardView extends StatelessWidget {
             alignment: _getAlignment(ss),
             // 6 inch: 0.25
             // 10 inch: 0.10
+            origin: Offset(0, 0),
             angle: -((i - m) * 0.10),
             child: card,
           );
@@ -109,19 +151,14 @@ class HoleStackCardView extends StatelessWidget {
     @required double displacementValue,
     bool isCardVisible = false,
   }) {
-    return FittedBox(
-      child: Transform.translate(
-        offset: Offset(xOffset, 0.0),
-        child: Stack(
-          alignment: Alignment.center,
-          children: _getChildren(
-            context: context,
-            mid: mid,
-            markedCards: markedCards,
-            displacementValue: displacementValue,
-            isCardVisible: isCardVisible,
-          ),
-        ),
+    return Stack(
+      alignment: Alignment.center,
+      children: _getChildren(
+        context: context,
+        mid: mid,
+        markedCards: markedCards,
+        displacementValue: displacementValue,
+        isCardVisible: isCardVisible,
       ),
     );
   }
@@ -170,14 +207,25 @@ class HoleStackCardView extends StatelessWidget {
     }
     int mid = (cards.length ~/ 2);
 
-    double displacementValue = boardAttributes.getHoleCardDisplacement(
-      noOfCards: cards.length,
-      isCardVisible: isCardVisible,
-    );
+    // double displacementValue = boardAttributes.getHoleCardDisplacement(
+    //   noOfCards: cards.length,
+    //   isCardVisible: isCardVisible,
+    // );
 
-    if (cards.length == 2) {
-      displacementValue = 2 * displacementValue;
-    }
+    // if (cards.length == 2) {
+    //   displacementValue = 2 * displacementValue;
+    // }
+
+    gameState.gameUIState.calculateCardSize(context, gameState, cards.length);
+
+    double displacementValue = gameState.gameUIState.cardsDisplacement;
+
+    // displacementValue = cardWidth / (1 * cards.length);
+    // if (displacementValue < minDisplacementValue) {
+    //   displacementValue = minDisplacementValue;
+    // }
+
+    print(displacementValue);
 
     final double evenNoDisplacement = getEvenNoDisplacement(displacementValue);
 

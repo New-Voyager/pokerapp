@@ -47,7 +47,7 @@ class _BoardViewState extends State<BoardView> {
     gameState = GameState.getState(context);
 
     // this calculates the table size after drawing the table image
-    gameState.calculateTableSizePostFrame();
+    gameState.gameUIState.calculateTableSizePostFrame();
     gameState.calculatePlayersOnTablePositionPostFrame();
   }
 
@@ -105,6 +105,9 @@ class _BoardViewState extends State<BoardView> {
       isLargerScreen = true;
     }
 
+    // this calculates the table size after drawing the table image
+    gameState.gameUIState.calculateTableSizePostFrame();
+
     return DebugBorderWidget(
       key: gameState.boardKey,
       color: Colors.white,
@@ -125,7 +128,7 @@ class _BoardViewState extends State<BoardView> {
 
           // new players view
           ValueListenableBuilder(
-            valueListenable: gameState.tableSizeVn,
+            valueListenable: gameState.gameUIState.tableSizeVn,
             builder: (_, size, __) {
               if (size == null) return const SizedBox.shrink();
               return DebugBorderWidget(
@@ -144,8 +147,9 @@ class _BoardViewState extends State<BoardView> {
           ),
 
           /* new center view */
+
           ValueListenableBuilder2(
-            gameState.tableSizeVn,
+            gameState.gameUIState.tableSizeVn,
             gameState.playerOnTablePositionVn,
             builder: (_, Size tableSize, Offset position, __) {
               if (tableSize == null || position == null) {

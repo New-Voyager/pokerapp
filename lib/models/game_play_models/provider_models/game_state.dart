@@ -13,6 +13,7 @@ import 'package:pokerapp/models/game/game_settings.dart';
 import 'package:pokerapp/models/game_play_models/business/game_chat_notfi_state.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_ui_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/marked_cards.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
@@ -172,24 +173,7 @@ class GameState {
   // high-hand state
   dynamic highHand; // high-hand state
 
-  // table key - we need this to calculate the exact dimension of the table image
-  final GlobalKey tableKey = GlobalKey();
-
-  final ValueNotifier<Size> tableSizeVn = ValueNotifier<Size>(null);
-
-  void calculateTableSizePostFrame({bool force = false}) {
-    if (!force && tableSizeVn.value != null) return;
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      while (true) {
-        final box = tableKey.currentContext.findRenderObject() as RenderBox;
-        if (box.size.shortestSide != 0.0) {
-          tableSizeVn.value = box.size;
-          break;
-        }
-        await Future.delayed(const Duration(milliseconds: 10));
-      }
-    });
-  }
+  GameUIState gameUIState;
 
   final GlobalKey playerOnTableKey = GlobalKey();
 
@@ -284,6 +268,7 @@ class GameState {
     this.replayMode = replayMode ?? false;
     this._gameSettings = GameSettings();
     this._playerSettings = GamePlayerSettings();
+    this.gameUIState = GameUIState();
 
     this._hostSeatChangeSeats = hostSeatChangeSeats;
     this.hostSeatChangeInProgress = hostSeatChangeInProgress ?? false;

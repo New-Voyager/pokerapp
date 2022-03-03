@@ -26,6 +26,7 @@ import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/game_play/graphql/seat_change_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/widgets/buttons.dart';
+import 'package:pokerapp/widgets/debug_border_widget.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
@@ -150,10 +151,12 @@ class _FooterViewState extends State<FooterView>
       builder: (context, gameContextObject, _) => Positioned(
         left: 8,
         top: 10,
-        child: HandAnalyseView(
-          gameState: gameState,
-          clubCode: widget.clubCode,
-          gameContextObject: gameContextObject,
+        child: DebugBorderWidget(
+          child: HandAnalyseView(
+            gameState: gameState,
+            clubCode: widget.clubCode,
+            gameContextObject: gameContextObject,
+          ),
         ),
       ),
     );
@@ -162,6 +165,7 @@ class _FooterViewState extends State<FooterView>
   /* straddle prompt builder / footer action view builder / hole card view builder */
   Widget _buildMainView(GameState gameState) {
     final width = MediaQuery.of(context).size.width;
+
     return Consumer<MyState>(
       builder: (
         BuildContext _,
@@ -199,9 +203,14 @@ class _FooterViewState extends State<FooterView>
         } else {
           log('RedrawFooter: rebuilding hole card');
 
-          return HoleCardsViewAndFooterActionView(
-            playerModel: mee,
-            isHoleCardsVisibleVn: isHoleCardsVisibleVn,
+          gameState.gameUIState.holeCardsViewSize = Size(
+              MediaQuery.of(context).size.width - 80,
+              gameState.gameUIState.holeCardsViewSize.height);
+          return Center(
+            child: HoleCardsViewAndFooterActionView(
+              playerModel: mee,
+              isHoleCardsVisibleVn: isHoleCardsVisibleVn,
+            ),
           );
         }
       },
@@ -283,18 +292,21 @@ class _FooterViewState extends State<FooterView>
 
   Widget _buildCommunicationWidget() {
     return Positioned(
-      right: 5,
+      right: 8,
       top: 0,
-      child: Column(children: [
-        Consumer2<GameSettingsState, CommunicationState>(
-            builder: (_, __, ____, ___) {
-          return CommunicationView(
-            widget.chatVisibilityChange,
-            widget.gameContext.gameComService.gameMessaging,
-            widget.gameContext,
-          );
-        }),
-      ]),
+      child: DebugBorderWidget(
+        color: Colors.yellow,
+        child: Column(children: [
+          Consumer2<GameSettingsState, CommunicationState>(
+              builder: (_, __, ____, ___) {
+            return CommunicationView(
+              widget.chatVisibilityChange,
+              widget.gameContext.gameComService.gameMessaging,
+              widget.gameContext,
+            );
+          }),
+        ]),
+      ),
     );
   }
 
@@ -614,17 +626,20 @@ class _FooterViewState extends State<FooterView>
       return Container();
     }));
 
-    return Stack(children: [
-      Container(
-        width: double.infinity,
-        height: double.infinity,
-        // decoration: BoxDecoration(
-        //   color: Colors.transparent,
-        //   border: Border.all(color: Colors.green, width: 3),
-        // ),
-      ),
-      ...children,
-    ]);
+    return DebugBorderWidget(
+      color: Colors.white,
+      child: Stack(children: [
+        Container(
+          width: double.infinity,
+          height: double.infinity,
+          // decoration: BoxDecoration(
+          //   color: Colors.transparent,
+          //   border: Border.all(color: Colors.green, width: 3),
+          // ),
+        ),
+        ...children,
+      ]),
+    );
   }
 
   @override

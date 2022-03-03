@@ -578,6 +578,7 @@ class BoardAttributesObject extends ChangeNotifier {
 
   int _noOfCards = 2; // default no of cards be 2
   set noOfCards(int n) => _noOfCards = n;
+  get noOfCards => _noOfCards;
 
   // center attributes
   // TODO HOW IS THIS CENTER SIZE RELEVANT
