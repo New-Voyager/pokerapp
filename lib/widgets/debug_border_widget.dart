@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/services/test/test_service.dart';
 
 class DebugBorderWidget extends StatelessWidget {
   final Widget child;
@@ -12,6 +13,8 @@ class DebugBorderWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (!TestService.isTesting) return child;
+
     return Stack(
       children: <Widget>[
         child,
@@ -19,8 +22,9 @@ class DebugBorderWidget extends StatelessWidget {
           child: IgnorePointer(
             child: Container(
               decoration: BoxDecoration(
-                  border: Border.all(color: color, width: 2.0),
-                  color: Colors.transparent),
+                border: Border.all(color: color, width: 2.0),
+                color: Colors.transparent,
+              ),
             ),
           ),
         ),

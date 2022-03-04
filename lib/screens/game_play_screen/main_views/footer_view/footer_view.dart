@@ -377,7 +377,7 @@ class _FooterViewState extends State<FooterView>
                 }
               }
             }
-            return Container();
+            return const SizedBox.shrink();
           },
         ),
       ),

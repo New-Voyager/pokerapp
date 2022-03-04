@@ -72,22 +72,12 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
         }
       });
 
-      double scale = boardAttributes.holeCardViewScale;
-      final offset = boardAttributes.holeCardViewOffset;
-      bool showHelpText = true;
-      bool showHandRank = gameState.playerLocalConfig.showHandRank ?? true;
       return Stack(
         alignment: Alignment.topCenter,
         children: [
           gameState.customizationMode
               ? BetIconButton(displayBetText: false)
-              : Container(),
-          // gameState.customizationMode || showHandRank
-          //     ? Align(
-          //         alignment: Alignment.topCenter,
-          //         child: rankText,
-          //       )
-          //     : Container(),
+              : const SizedBox.shrink(),
 
           // hole card view & rank Text
 
@@ -101,8 +91,12 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
                 gameState.gameUIState.cardEyes.forEach((key, value) {
                   if (value.contains(tapDetails.globalPosition)) {
                     log("tap");
-                    var cardId = gameState.me.cards
-                        .firstWhere((element) => (key == element));
+                    var cardId = gameState.me.cards.firstWhere(
+                      (element) => (key == element),
+                      orElse: () => null,
+                    );
+                    if (cardId == null) return;
+
                     log(cardId.toString());
 
                     CardObject card = CardHelper.getCard(cardId);
@@ -293,50 +287,31 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
       }
     }
 
-    return Transform.translate(
-      offset: Offset(0, 0),
-      child: GestureDetector(
-        onTap: () {
-          isHoleCardsVisibleVn.value = !isHoleCardsVisibleVn.value;
+    return GestureDetector(
+      onTap: () {
+        isHoleCardsVisibleVn.value = !isHoleCardsVisibleVn.value;
 
-          // write the final _isCardVisible value to local storage
-          gameState.gameHiveStore.setHoleCardsVisibilityState(
-            isHoleCardsVisibleVn.value,
-          );
+        // write the final _isCardVisible value to local storage
+        gameState.gameHiveStore.setHoleCardsVisibilityState(
+          isHoleCardsVisibleVn.value,
+        );
 
-          gameState.holeCardsState.notify();
-        },
-        child: Container(
-          width: gameState.gameUIState.holeCardsViewSize.width,
-          padding: EdgeInsets.symmetric(
-              horizontal: isHoleCardsVisibleVn.value
-                  ? 8 * playerCards.length.toDouble()
-                  : 0,
-              vertical:
-                  context.read<BoardAttributesObject>().screenDiagnolSize >= 7
-                      ? 32
-                      : 0),
-          child: Center(
-            child: DebugBorderWidget(
-              color: Colors.green,
-              child: FittedBox(
-                child: Stack(
-                  alignment: Alignment.topLeft,
-                  children: [
-                    cardsWidget,
-                    // Visibility(
-                    //   visible: isHoleCardsVisibleVn.value,
-                    //   child: Positioned(
-                    //     bottom: 40,
-                    //     left: 0,
-                    //     right: 0,
-                    //     child: shuffleButton,
-                    //   ),
-                    // ),
-                  ],
-                ),
-              ),
-            ),
+        gameState.holeCardsState.notify();
+      },
+      child: Container(
+        width: gameState.gameUIState.holeCardsViewSize.width,
+        padding: EdgeInsets.symmetric(
+          horizontal: isHoleCardsVisibleVn.value
+              ? 8 * playerCards.length.toDouble()
+              : 0,
+          vertical: context.read<BoardAttributesObject>().screenDiagnolSize >= 7
+              ? 32
+              : 0,
+        ),
+        child: Center(
+          child: DebugBorderWidget(
+            color: Colors.green,
+            child: cardsWidget,
           ),
         ),
       ),

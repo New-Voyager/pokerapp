@@ -163,7 +163,7 @@ class _StorePageState extends State<StorePage> {
   refreshCoinCount() async {
     AppConfig.setAvailableCoins(await AppCoinService.availableCoins());
     log("Appcoins refreshed : ${AppConfig.availableCoins}");
-    setState(() {});
+    if (mounted) setState(() {});
   }
 
   @override

@@ -516,7 +516,7 @@ class PlayerActionHandler {
     // show a prompt regarding last player action
 
     final seat = _gameState.getSeat(seatNo);
-    if (seat.isMe) {
+    if (seat?.isMe == true) {
       _gameState.showAction(false);
       _gameState.myState.notify();
     }
