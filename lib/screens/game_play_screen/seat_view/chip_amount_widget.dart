@@ -17,7 +17,7 @@ import 'package:provider/provider.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
-class ChipAmountWidget extends StatefulWidget {
+class ChipAmountWidget extends StatelessWidget {
   final bool animate;
   final GlobalKey potKey;
   final Seat seat;
@@ -37,14 +37,8 @@ class ChipAmountWidget extends StatefulWidget {
   });
 
   @override
-  _ChipAmountWidgetState createState() => _ChipAmountWidgetState();
-}
-
-class _ChipAmountWidgetState extends State<ChipAmountWidget>
-    with AfterLayoutMixin<ChipAmountWidget> {
-  @override
   Widget build(BuildContext context) {
-    // log('ChipAmountWidget: Rebuilding ChipAmountWidget seat ${widget.seat.seatPos.toString()} position: ${widget.seat.potViewPos}');
+    calculateSelfChipPos(context);
 
     bool showBet = false;
     Offset offset = Offset.zero;
@@ -54,21 +48,21 @@ class _ChipAmountWidgetState extends State<ChipAmountWidget>
 
     Map<SeatPos, Offset> betAmountPos = boardAttributesObject.betAmountPosition;
 
-    if (betAmountPos[widget.seat.seatPos] != null) {
-      offset = betAmountPos[widget.seat.seatPos];
+    if (betAmountPos[seat.seatPos] != null) {
+      offset = betAmountPos[seat.seatPos];
     }
 
-    if (widget.seat.betWidgetPos == null) {
-      widget.seat.betWidgetPos = offset;
+    if (seat.betWidgetPos == null) {
+      seat.betWidgetPos = offset;
     }
 
-    if (widget.seat.player.action.amount != null &&
-        widget.seat.player.action.amount != 0 &&
-        widget.seat.player.startingStack >= 0) {
+    if (seat.player.action.amount != null &&
+        seat.player.action.amount != 0 &&
+        seat.player.startingStack >= 0) {
       showBet = true;
     }
 
-    final action = widget.seat.player.action;
+    final action = seat.player.action;
 
     Widget betWidget;
 
@@ -81,19 +75,18 @@ class _ChipAmountWidgetState extends State<ChipAmountWidget>
 
     List<Widget> children = [];
 
-    // TODO: FIX THE LOGIC FOR SHOWING CHIPS
     Widget coin;
-    if (action.amount <= widget.gameInfo.bigBlind / 2) {
+    if (action.amount <= gameInfo.bigBlind / 2) {
       coin = SvgPicture.asset(
         'assets/images/betchips/sb.svg',
         height: 10.0,
       );
-    } else if (action.amount == widget.gameInfo.bigBlind) {
+    } else if (action.amount == gameInfo.bigBlind) {
       coin = SvgPicture.asset(
         'assets/images/betchips/sb.svg',
         height: 10.0,
       );
-    } else if (action.amount == 2 * widget.gameInfo.bigBlind) {
+    } else if (action.amount == 2 * gameInfo.bigBlind) {
       coin = SvgPicture.asset(
         'assets/images/betchips/straddle.svg',
         height: 10.0,
@@ -116,8 +109,8 @@ class _ChipAmountWidgetState extends State<ChipAmountWidget>
       color = Colors.green[900];
     }
 
-    if (widget.animate) {
-      if (widget.reverse) {
+    if (animate) {
+      if (reverse) {
         color = Colors.green[900];
       } else {
         color = Colors.black;
@@ -148,7 +141,7 @@ class _ChipAmountWidgetState extends State<ChipAmountWidget>
 
     final widthSep = SizedBox(width: 2.0);
 
-    final SeatPos seatPos = widget.seat.seatPos;
+    final SeatPos seatPos = seat.seatPos;
     final textPos = betTextPos[seatPos] ?? BetTextPos.Right;
     if (textPos == BetTextPos.Left) {
       children.add(amount);
@@ -159,16 +152,6 @@ class _ChipAmountWidgetState extends State<ChipAmountWidget>
       children.add(widthSep);
       children.add(amount);
     }
-
-    // if (seatPos == SeatPos.topCenter ||
-    //     seatPos == SeatPos.topCenter1 ||
-    //     seatPos == SeatPos.topCenter2) {
-    //   children = [];
-    //   children.add(coin);
-    //   children.add(widthSep);
-    //   children.add(amount);
-    // } else {
-    // }
 
     CrossAxisAlignment crossAxisAlignment;
 
@@ -185,7 +168,7 @@ class _ChipAmountWidgetState extends State<ChipAmountWidget>
       children: children,
     );
 
-    if (widget.animate) {
+    if (animate) {
       return betWidget;
     }
 
@@ -195,18 +178,17 @@ class _ChipAmountWidgetState extends State<ChipAmountWidget>
     );
   }
 
-  void calculatePotViewPos(BuildContext context) {
-    final potViewPos = widget.boardAttributesObject.potGlobalPos;
-    final RenderBox box = context.findRenderObject();
-    if (box != null && potViewPos != null) {
-      appState.setPosForSeat(widget.seat, box.globalToLocal(potViewPos));
-    }
-  }
-
-  @override
-  void afterFirstLayout(BuildContext context) {
-    if (!appState.isPosAvailableFor(widget.seat)) {
-      calculatePotViewPos(context);
+  void calculateSelfChipPos(BuildContext context) {
+    if (!appState.isPosAvailableFor(seat)) {
+      final potViewPos = boardAttributesObject.potGlobalPos;
+      if (potViewPos != null) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          final RenderBox box = context.findRenderObject();
+          if (box != null) {
+            appState.setPosForSeat(seat, box.globalToLocal(potViewPos));
+          }
+        });
+      }
     }
   }
 }
@@ -232,16 +214,15 @@ class ChipAmountAnimatingWidget extends StatelessWidget {
     Offset end = appState.getPosForSeat(seat);
     Offset begin = seat.betWidgetPos;
 
-    print('ChipAmountAnimatingWidget: end:$end begin:$begin');
-
     bool isWinningAnimation = reverse ?? false;
 
     if (isWinningAnimation) {
-      // swap end, begin
       var tmp = end;
       end = begin;
       begin = tmp;
     }
+
+    if (end == null || begin == null) return const SizedBox.shrink();
 
     return NewChipAnimation(
       begin: begin,
