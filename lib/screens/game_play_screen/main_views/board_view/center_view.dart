@@ -11,11 +11,13 @@ import 'package:pokerapp/models/game_play_models/provider_models/table_state.dar
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/animation_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/center_button_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/pots_view.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/board_view/rank_widget.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/utils.dart';
@@ -216,6 +218,7 @@ class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
       vnCardOthers: vnCardOthers,
       vnTwoBoardsNeeded: vnTwoBoardsNeeded,
       vnPotChipsUpdates: vnPotChipsUpdates,
+      vnRankStr: vnRankStr,
       gameState: gameState,
     );
   }
@@ -271,6 +274,7 @@ class _BoardCenterView extends StatelessWidget {
   final ValueNotifier<List<CardObject>> vnCards;
   final ValueNotifier<List<CardObject>> vnCardOthers;
   final ValueNotifier<bool> vnTwoBoardsNeeded;
+  final ValueNotifier<String> vnRankStr;
 
   final ValueNotifier<double> vnPotChipsUpdates;
   final GameState gameState;
@@ -285,6 +289,7 @@ class _BoardCenterView extends StatelessWidget {
     @required this.vnCardOthers,
     @required this.vnTwoBoardsNeeded,
     @required this.vnPotChipsUpdates,
+    @required this.vnRankStr,
     @required this.gameState,
   }) : super(key: key);
 
@@ -328,6 +333,7 @@ class _BoardCenterView extends StatelessWidget {
             child: _PotUpdatesOrRankWidget(
               vnPotChipsUpdates: vnPotChipsUpdates,
               gameState: gameState,
+              vnRankStr: vnRankStr,
             ),
           ),
         ),
@@ -506,11 +512,13 @@ class _CommunityCardsWidget extends StatelessWidget {
 class _PotUpdatesOrRankWidget extends StatelessWidget {
   final ValueNotifier<double> vnPotChipsUpdates;
   final GameState gameState;
+  final ValueNotifier<String> vnRankStr;
 
   const _PotUpdatesOrRankWidget({
     Key key,
     @required this.vnPotChipsUpdates,
     @required this.gameState,
+    @required this.vnRankStr,
   }) : super(key: key);
 
   double _getOpacityForPotUpdatesView({
@@ -540,11 +548,14 @@ class _PotUpdatesOrRankWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    log('CenterView: rebuilding pot updates/rank view');
     if (gameState.handState == HandState.RESULT) {
-      return SizedBox.shrink();
+      //return 
+      //return SizedBox.shrink();
     }
+    final theme = AppTheme.getTheme(context);
 
-    return FittedBox(
+    Widget potUpdatesView = FittedBox(
       child: ValueListenableBuilder<double>(
         valueListenable: vnPotChipsUpdates,
         builder: (_, potChipsUpdates, __) {
@@ -591,7 +602,16 @@ class _PotUpdatesOrRankWidget extends StatelessWidget {
         },
       ),
     );
+
+    return Stack(alignment: Alignment.center,
+          children: [
+            Transform.translate(offset: Offset(0, -20), child: 
+             FittedBox(
+      child: RankWidget(theme, vnRankStr))),
+            potUpdatesView
+          ],);
   }
+  
 }
 
 class ValueListenableBuilder2<A, B> extends StatelessWidget {
