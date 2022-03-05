@@ -37,7 +37,7 @@ class TestService {
     return false;
   }
 
-   static bool get isPartialTesting {
+  static bool get isPartialTesting {
     return true;
   }
 
@@ -531,7 +531,7 @@ class TestService {
       168,
       177,
       194,
-      196,
+      // 196,
     ]; //, 168, 177, 194];
     player.rankText = 'Full House';
     final myState = gameState.myState;

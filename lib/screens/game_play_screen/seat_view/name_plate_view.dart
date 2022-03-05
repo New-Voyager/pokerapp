@@ -303,7 +303,10 @@ class NamePlateWidget extends StatelessWidget {
                     Expanded(
                       child: playerName == null || playerName == ''
                           ? const SizedBox.shrink()
-                          : NamePlateNameText(playerName),
+                          : Container(
+                              width: NamePlateWidgetParent.namePlateSize.width *
+                                  (3 / 4),
+                              child: NamePlateNameText(playerName)),
                     ),
 
                     // divider

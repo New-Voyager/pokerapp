@@ -309,11 +309,14 @@ class _BoardCenterView extends StatelessWidget {
           flex: Screen.isLargeScreen ? 4 : 3,
           child: DebugBorderWidget(
             color: Colors.green,
-            child: _CommunityCardsWidget(
-              vnCommunityCardsRefresh: vnCommunityCardsRefresh,
-              vnCards: vnCards,
-              vnCardOthers: vnCardOthers,
-              vnTwoBoardsNeeded: vnTwoBoardsNeeded,
+            child: Container(
+              width: gameState.gameUIState.centerViewRect.width,
+              child: _CommunityCardsWidget(
+                vnCommunityCardsRefresh: vnCommunityCardsRefresh,
+                vnCards: vnCards,
+                vnCardOthers: vnCardOthers,
+                vnTwoBoardsNeeded: vnTwoBoardsNeeded,
+              ),
             ),
           ),
         ),

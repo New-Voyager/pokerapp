@@ -119,7 +119,7 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
                         builder: (_, __, ___, ____, markedCards, _____) {
                           // log('Holecard view: rebuild');
                           // return Container();
-                          return _buildHoleCardView(context);
+                          return _buildHoleCardView(context, rankText);
                         },
                       ),
                     ),
@@ -229,19 +229,26 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
 
     return DebugBorderWidget(
       color: Colors.amber,
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-        child: Text(
-          me.rankText,
-          style: AppDecorators.getHeadLine5Style(theme: theme).copyWith(
-            fontSize: ba.selfRankTextSize,
-          ),
-        ),
-      ),
+      child: (!me.rankText.isEmpty)
+          ? Container(
+              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              margin: EdgeInsets.only(bottom: 40.0.ph),
+              decoration: BoxDecoration(
+                  color: Colors.black.withAlpha(180),
+                  // border: Border.all(color: Colors.white, width: 2),
+                  borderRadius: BorderRadius.circular(8)),
+              child: Text(
+                me.rankText,
+                style: AppDecorators.getHeadLine5Style(theme: theme).copyWith(
+                  fontSize: 14.0,
+                ),
+              ),
+            )
+          : SizedBox.shrink(),
     );
   }
 
-  Widget _buildHoleCardView(BuildContext context) {
+  Widget _buildHoleCardView(BuildContext context, Widget rankText) {
     final gameState = GameState.getState(context);
     final theme = AppTheme.getTheme(context);
     final playerCards = gameState.getHoleCards();
@@ -298,23 +305,36 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
 
         gameState.holeCardsState.notify();
       },
-      child: Container(
-        width: gameState.gameUIState.holeCardsViewSize.width,
-        padding: EdgeInsets.symmetric(
-          horizontal: isHoleCardsVisibleVn.value
-              ? 8 * playerCards.length.toDouble()
-              : 0,
-          vertical: context.read<BoardAttributesObject>().screenDiagnolSize >= 7
-              ? 32
-              : 0,
-        ),
-        child: Center(
-          child: DebugBorderWidget(
-            color: Colors.green,
-            child: cardsWidget,
-          ),
-        ),
-      ),
+      child: ValueListenableBuilder<bool>(
+          valueListenable: isHoleCardsVisibleVn,
+          builder: (_, isCardVisible, __) {
+            return Container(
+              width: gameState.gameUIState.holeCardsViewSize.width,
+              padding: EdgeInsets.symmetric(
+                horizontal: isHoleCardsVisibleVn.value
+                    ? 8 * playerCards.length.toDouble()
+                    : 0,
+                vertical:
+                    context.read<BoardAttributesObject>().screenDiagnolSize >= 7
+                        ? 32
+                        : 0,
+              ),
+              child: Center(
+                child: DebugBorderWidget(
+                  color: Colors.green,
+                  child: Stack(
+                    children: [
+                      Center(child: cardsWidget),
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: rankText,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          }),
     );
   }
 

@@ -8,7 +8,6 @@ import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/cards/player_hole_card_view.dart';
 import 'package:pokerapp/widgets/page_curl/page_curl.dart';
-import 'package:provider/provider.dart';
 
 class HoleStackCardView extends StatelessWidget {
   final List<CardObject> cards;
@@ -154,7 +153,8 @@ class HoleStackCardView extends StatelessWidget {
       return const SizedBox.shrink();
     }
     int mid = (cards.length ~/ 2);
-    gameState.gameUIState.calculateCardSize(context, gameState, cards.length);
+    gameState.gameUIState
+        .calculateCardSize(context, gameState, cards.length, isCardVisible);
 
     double displacementValue = gameState.gameUIState.cardsDisplacement;
     print(displacementValue);

@@ -84,14 +84,18 @@ class CardEye extends StatefulWidget {
 class _CardEyeState extends State<CardEye> {
   GlobalKey _key = GlobalKey();
 
+  var markedHeight;
+
   @override
   void initState() {
     super.initState();
+    var cardWidth = widget.gameState.gameUIState.cardSize.width;
+    markedHeight = cardWidth / 8.5;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final box = _key.currentContext.findRenderObject() as RenderBox;
       var position = box.localToGlobal(Offset(0, 0));
       widget.gameState.gameUIState.cardEyes[widget.card.cardNum] =
-          Rect.fromLTWH(position.dx, position.dy, 24, 24);
+          Rect.fromLTWH(position.dx, position.dy, markedHeight, markedHeight);
     });
   }
 
@@ -107,7 +111,7 @@ class _CardEyeState extends State<CardEye> {
             Icons.visibility,
             key: _key,
             color: widget.marked ? Colors.green : Colors.grey,
-            size: widget.marked ? 24 : 14,
+            size: widget.marked ? markedHeight : markedHeight / 1.2,
           ),
         ));
   }

@@ -159,6 +159,11 @@ class _BoardViewState extends State<BoardView> {
               final rect =
                   _getCenterViewRect(size: tableSize, position: position);
 
+              gameState.gameUIState.centerViewRect = Rect.fromLTWH(
+                  rect.item1.dx,
+                  rect.item1.dy,
+                  rect.item2.width,
+                  rect.item2.height);
               return Positioned(
                 left: rect.item1.dx,
                 top: rect.item1.dy,

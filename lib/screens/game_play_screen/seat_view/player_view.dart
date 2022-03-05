@@ -21,6 +21,7 @@ import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/data/hive_models/player_state.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
+import 'package:pokerapp/utils/name_plate_widget_parent.dart';
 import 'package:pokerapp/widgets/blinking_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/displaycards.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
@@ -451,8 +452,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
       },
       builder: (context, List<int> candidateData, rejectedData) {
         Offset notesOffset = Offset(0, 0);
-        final double namePlateWidth =
-            widget.boardAttributes.namePlateSize.width;
+        final double namePlateWidth = NamePlateWidgetParent.namePlateSize.width;
         SeatPos pos = widget.seat.seatPos ?? SeatPos.bottomLeft;
         double actionLeft;
         double actionRight;
@@ -467,6 +467,17 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
           actionRight = 0;
           notesOffset = Offset(((namePlateWidth / 2)), 0);
         }
+
+        if (widget.seat.seatPos == SeatPos.middleLeft ||
+            widget.seat.seatPos == SeatPos.topLeft ||
+            widget.seat.seatPos == SeatPos.bottomLeft) {
+          actionLeft = NamePlateWidgetParent.namePlateSize.width / 2;
+          actionRight = null;
+        } else {
+          actionLeft = null;
+          actionRight = NamePlateWidgetParent.namePlateSize.width / 2 - 8;
+        }
+
         Key key = widget.seat.key;
         double opacity = 1.0;
 
@@ -474,6 +485,9 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
           if (widget.seat.player.highlight &&
               widget.seat.player.connectivity.connectivityLost) {
             opacity = 0.70;
+          }
+          if (widget.seat.player.playerFolded) {
+            opacity = 0.5;
           }
         }
 

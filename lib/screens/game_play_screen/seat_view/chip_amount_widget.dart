@@ -13,6 +13,8 @@ import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/boar
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
+import 'package:pokerapp/utils/name_plate_widget_parent.dart';
+import 'package:pokerapp/utils/utils.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
@@ -43,13 +45,17 @@ class ChipAmountWidget extends StatelessWidget {
     bool showBet = false;
     Offset offset = Offset.zero;
 
-    final BoardAttributesObject boardAttributesObject =
-        context.read<BoardAttributesObject>();
-
-    Map<SeatPos, Offset> betAmountPos = boardAttributesObject.betAmountPosition;
-
-    if (betAmountPos[seat.seatPos] != null) {
-      offset = betAmountPos[seat.seatPos];
+    offset = Offset(0, (NamePlateWidgetParent.namePlateSize.height / 2) + 5);
+    final seatPos = seat.seatPos;
+    if (seatPos == SeatPos.bottomCenter) {
+      offset =
+          Offset(-20, -((NamePlateWidgetParent.namePlateSize.height / 2) + 15));
+    } else if (seatPos == SeatPos.bottomLeft) {
+      offset =
+          Offset(20, -((NamePlateWidgetParent.namePlateSize.height / 2) + 15));
+    } else if (seatPos == SeatPos.bottomRight) {
+      offset =
+          Offset(-20, -((NamePlateWidgetParent.namePlateSize.height / 2) + 15));
     }
 
     if (seat.betWidgetPos == null) {
@@ -141,7 +147,6 @@ class ChipAmountWidget extends StatelessWidget {
 
     final widthSep = SizedBox(width: 2.0);
 
-    final SeatPos seatPos = seat.seatPos;
     final textPos = betTextPos[seatPos] ?? BetTextPos.Right;
     if (textPos == BetTextPos.Left) {
       children.add(amount);
@@ -162,11 +167,18 @@ class ChipAmountWidget extends StatelessWidget {
     else
       crossAxisAlignment = CrossAxisAlignment.center;
 
-    betWidget = Row(
-      crossAxisAlignment: crossAxisAlignment,
-      mainAxisSize: MainAxisSize.min,
-      children: children,
-    );
+    var scale = 0.75;
+    if (Screen.isLargeScreen) {
+      scale = 1.0;
+    }
+
+    betWidget = Transform.scale(
+        scale: scale,
+        child: Row(
+          crossAxisAlignment: crossAxisAlignment,
+          mainAxisSize: MainAxisSize.min,
+          children: children,
+        ));
 
     if (animate) {
       return betWidget;
