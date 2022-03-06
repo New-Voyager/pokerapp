@@ -910,52 +910,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     });
   }
 
-//<<<<<<< HEAD
-  // Widget _buildChatWindow() => Consumer<ValueNotifier<bool>>(
-  //       builder: (context, vnChatVisibility, __) {
-  //         _isChatScreenVisible = vnChatVisibility.value;
-  //         return AnimatedSwitcher(
-  //           duration: const Duration(milliseconds: 200),
-  //           child: vnChatVisibility.value
-  //               ? Align(
-  //                   alignment: Alignment.bottomCenter,
-  //                   child: GameChat(
-  //                     scrollController: _gcsController,
-  //                     chatService: _gameContextObj.gameComService.gameMessaging,
-  //                     onChatVisibilityChange: () => _toggleChatVisibility(
-  //                       context,
-  //                     ),
-  //                   ),
-  //                 )
-  //               : const SizedBox.shrink(),
-  //         );
-  //       },
-  //     );
-// =======
-//   Widget _buildChatWindow() {
-//     return Consumer<ValueNotifier<bool>>(
-//       builder: (context, vnChatVisibility, __) {
-//         _isChatScreenVisible = vnChatVisibility.value;
-//         return AnimatedSwitcher(
-//           duration: const Duration(milliseconds: 200),
-//           child: vnChatVisibility.value
-//               ? Align(
-//                   alignment: Alignment.bottomCenter,
-//                   child: GameChat(
-//                     scrollController: _gcsController,
-//                     chatService: _gameContextObj.gameComService.gameMessaging,
-//                     onChatVisibilityChange: () => _toggleChatVisibility(
-//                       context,
-//                     ),
-//                   ),
-//                 )
-//               : const SizedBox.shrink(),
-//         );
-//       },
-//     );
-//   }
-// >>>>>>> master
-
   Widget _buildBoardView(Size boardDimensions, double boardScale) {
     return Container(
       width: boardDimensions.width,
@@ -1071,7 +1025,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
           gameContextObject: _gameContextObj,
           currentPlayer: _gameContextObj.gameState.currentPlayer,
           gameInfo: _gameInfoModel,
-          // toggleChatVisibility: _toggleChatVisibility,
+          toggleChatVisibility: _showGameChat,
           onStartGame: startGame,
         );
       },

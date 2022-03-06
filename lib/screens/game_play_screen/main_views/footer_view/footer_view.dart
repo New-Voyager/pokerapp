@@ -293,7 +293,7 @@ class _FooterViewState extends State<FooterView>
   Widget _buildCommunicationWidget() {
     return Positioned(
       right: 8,
-      top: 0,
+      top: 20,
       child: DebugBorderWidget(
         color: Colors.yellow,
         child: Column(children: [

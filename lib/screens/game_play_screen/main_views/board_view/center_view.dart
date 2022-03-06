@@ -549,16 +549,16 @@ class _PotUpdatesOrRankWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     log('CenterView: rebuilding pot updates/rank view');
-    if (gameState.handState == HandState.RESULT) {
-      //return 
-      //return SizedBox.shrink();
-    }
     final theme = AppTheme.getTheme(context);
 
     Widget potUpdatesView = FittedBox(
-      child: ValueListenableBuilder<double>(
-        valueListenable: vnPotChipsUpdates,
-        builder: (_, potChipsUpdates, __) {
+      child: ValueListenableBuilder2<double, String>(
+        vnPotChipsUpdates, vnRankStr,
+        builder: (_, potChipsUpdates, rank, __) {
+          if (gameState.handState == HandState.RESULT) {
+            return RankWidget(theme, vnRankStr);
+          }
+
           double opacity = _getOpacityForPotUpdatesView(
             potChipsUpdates: potChipsUpdates,
             gameState: gameState,
@@ -602,6 +602,8 @@ class _PotUpdatesOrRankWidget extends StatelessWidget {
         },
       ),
     );
+
+    return potUpdatesView;
 
     return Stack(alignment: Alignment.center,
           children: [
