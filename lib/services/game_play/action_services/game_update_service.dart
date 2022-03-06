@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/enums/player_status.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
@@ -50,18 +51,7 @@ class GameUpdateService {
         // don't process table message in the middle of the hand
         dynamic message = _messages[0];
 
-        //String messageType = message['messageType'];
         log(':GameUpdateService: ${jsonEncode(message)}');
-        // if (_gameState.handState != HandState.UNKNOWN &&
-        //     _gameState.handState != HandState.ENDED) {
-        //   if (messageType == AppConstants.GAME_STATUS ||
-        //       messageType == AppConstants.TABLE_UPDATE) {
-        //     _messages.removeAt(0);
-        //     _messages.add(message);
-        //     await Future.delayed(Duration(milliseconds: 500));
-        //     continue;
-        //   }
-        // }
 
         dynamic m = _messages.removeAt(0);
         bool done = false;
@@ -1419,6 +1409,7 @@ class GameUpdateService {
       //await refreshScreen();
       log('Game has ended. Update the state');
       _gameState.ended = true;
+      appState.gameEnded = true;
       resetBoard();
       //_gameState.refresh();
       _gameState.handInfo.notify();
@@ -1426,6 +1417,7 @@ class GameUpdateService {
       if (_gameState.mySeat != null && _gameState.mySeat.player != null) {
         _gameState.mySeat.player.reset();
       }
+      tableState.notifyAll();
       _gameState.myState.notify();
       _gameState.actionState.show = false;
       _gameState.actionState.notify();
@@ -1586,7 +1578,10 @@ class GameUpdateService {
 
   void resetBoard() async {
     _gameState.clear();
-    _gameState.refresh();
+    if (!_gameState.ended) {
+      _gameState.refresh();
+    }
+    _gameState.tableState.notifyAll();
     _gameState.seatsOnTableState.notify();
   }
 }

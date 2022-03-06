@@ -80,7 +80,7 @@ class PlayerCardsWidget extends StatelessWidget {
       if (seat.seatPos == SeatPos.middleLeft ||
           seat.seatPos == SeatPos.topLeft ||
           seat.seatPos == SeatPos.bottomLeft) {
-        xoffset = -NamePlateWidgetParent.namePlateSize.width / 2;
+        xoffset = -(NamePlateWidgetParent.namePlateSize.width / 2 - 8);
       } else {
         xoffset = NamePlateWidgetParent.namePlateSize.width / 2 - 8;
       }
