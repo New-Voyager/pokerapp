@@ -553,7 +553,8 @@ class _PotUpdatesOrRankWidget extends StatelessWidget {
 
     Widget potUpdatesView = FittedBox(
       child: ValueListenableBuilder2<double, String>(
-        vnPotChipsUpdates, vnRankStr,
+        vnPotChipsUpdates,
+        vnRankStr,
         builder: (_, potChipsUpdates, rank, __) {
           if (gameState.handState == HandState.RESULT) {
             return RankWidget(theme, vnRankStr);
@@ -605,15 +606,16 @@ class _PotUpdatesOrRankWidget extends StatelessWidget {
 
     return potUpdatesView;
 
-    return Stack(alignment: Alignment.center,
-          children: [
-            Transform.translate(offset: Offset(0, -20), child: 
-             FittedBox(
-      child: RankWidget(theme, vnRankStr))),
-            potUpdatesView
-          ],);
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        Transform.translate(
+            offset: Offset(0, -20),
+            child: FittedBox(child: RankWidget(theme, vnRankStr))),
+        potUpdatesView
+      ],
+    );
   }
-  
 }
 
 class ValueListenableBuilder2<A, B> extends StatelessWidget {

@@ -264,12 +264,21 @@ class NamePlateWidget extends StatelessWidget {
     if (playerName == null) {
       playerName = '';
     }
+    double opacity = 1.0;
+
+    if (seat.player.playerFolded) {
+      opacity = 0.5;
+    }
+
     Stack namePlate = Stack(
       alignment: Alignment.center,
       clipBehavior: Clip.hardEdge,
       children: [
         // plate
-        plateWidget,
+        Opacity(
+          opacity: opacity,
+          child: plateWidget,
+        ),
 
         // main
         Positioned.fill(
@@ -306,17 +315,21 @@ class NamePlateWidget extends StatelessWidget {
                           : Container(
                               width: NamePlateWidgetParent.namePlateSize.width *
                                   (3 / 4),
-                              child: NamePlateNameText(playerName)),
+                              child: Opacity(
+                                  opacity: opacity,
+                                  child: NamePlateNameText(playerName))),
                     ),
 
                     // divider
-                    PlayerViewDivider(),
+                    Opacity(opacity: opacity, child: PlayerViewDivider()),
 
                     // bottom widget - to show stack, sit back time, etc.
                     Expanded(
                       child: Align(
                         alignment: Alignment.centerRight,
-                        child: _bottomWidget(context, theme),
+                        child: Opacity(
+                            opacity: opacity,
+                            child: _bottomWidget(context, theme)),
                       ),
                     ),
                   ],

@@ -1,7 +1,6 @@
 import 'dart:developer';
 import 'dart:ui';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
@@ -14,7 +13,6 @@ import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/time_bank.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/bet_widget.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_proto_service.dart';
-import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/utils.dart';
@@ -454,6 +452,23 @@ class _FooterActionViewState extends State<FooterActionView> {
             },
           )));
     }
+
+// Consumer<ActionState>(builder: (_, __, ___) {
+//                   // show time widget if the player is acting
+//                   final gameState = GameState.getState(context);
+//                   if (gameState.actionState.show) {
+//                     return DebugBorderWidget(child: TimeBankWidget(gameState));
+//                   } else {
+//                     return Container();
+//                   }
+//                 });
+
+// final gameState = GameState.getState(context);
+
+//   actionButtons.add(
+// TimeBankWidget(gameState),
+//   );
+
     return Stack(
       clipBehavior: Clip.none,
       children: [

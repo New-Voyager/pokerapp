@@ -150,7 +150,7 @@ class _FooterViewState extends State<FooterView>
     return Consumer<GameContextObject>(
       builder: (context, gameContextObject, _) => Positioned(
         left: 8,
-        top: 10,
+        top: 20,
         child: DebugBorderWidget(
           child: HandAnalyseView(
             gameState: gameState,

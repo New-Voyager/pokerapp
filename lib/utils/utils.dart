@@ -40,7 +40,6 @@ class Screen {
     return _screen._devicePixelRatio;
   }
 
-
   static bool get isLargeScreen {
     return Screen.screenSizeInches > 7;
   }

@@ -123,7 +123,7 @@ class _LottieAnimationState extends State<LottieAnimation>
   void animate() {
     Offset from;
     Offset to;
-    
+
     if (widget.message.fromSeat == null || widget.message.toSeat == null) {
       return;
     }

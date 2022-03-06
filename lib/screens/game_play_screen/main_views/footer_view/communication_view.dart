@@ -71,22 +71,30 @@ class _CommunicationViewState extends State<CommunicationView> {
               builder: (context, communicationState, __) {
                 List<Widget> children = [];
                 String status = gameState.myStatus;
+                // mic button
+                bool showVoiceText = true;
+                bool audioConf = gameState.audioConfEnabled ?? false;
+
                 // log('PlayerStatus = ${status}, '
                 //     'audioConferenceStatus = ${communicationState.audioConferenceStatus}, '
                 //     'voiceChatEnable = ${communicationState.voiceChatEnable}');
                 bool gameChatEnabled = (gameState.gameSettings.chat ?? true);
                 bool playerChatEnabled =
                     (gameState.playerLocalConfig.showChat ?? true);
+
                 if (gameChatEnabled && playerChatEnabled) {
                   children.add(
                     // chat button
-                    Consumer<GameChatNotifState>(
-                      builder: (_, gcns, __) => Badge(
-                        animationType: BadgeAnimationType.scale,
-                        showBadge: gcns.hasUnreadMessages,
-                        position: BadgePosition.topEnd(top: 0, end: 0),
-                        badgeContent: Text(gcns.count.toString()),
-                        child: DebugBorderWidget(
+                    Consumer<GameChatNotifState>(builder: (_, gcns, __) {
+                      return InkWell(
+                        onTap: () {
+                          widget.chatVisibilityChange();
+                        },
+                        child: Badge(
+                          animationType: BadgeAnimationType.scale,
+                          showBadge: gcns.hasUnreadMessages,
+                          position: BadgePosition.topEnd(top: 0, end: 0),
+                          badgeContent: Text(gcns.count.toString()),
                           child: CircleImageButton(
                             onTap: () {
                               log('on chat clicked');
@@ -96,19 +104,20 @@ class _CommunicationViewState extends State<CommunicationView> {
                             svgAsset: chat,
                           ),
                         ),
-                      ),
-                    ),
+                      );
+                    }),
                   );
 
                   // gap
                   children.add(SizedBox(
-                    height: 10.dp,
+                    height: 10,
                   ));
                 }
 
-                // mic button
-                bool showVoiceText = true;
-                bool audioConf = gameState.audioConfEnabled ?? false;
+                if (showVoiceText && !gameState.audioConfEnabled) {
+                  children.addAll(voiceTextWidgets(widget.chatService));
+                  children.add(SizedBox(height: 10));
+                }
 
                 if (audioConf &&
                     gameState.playerLocalConfig.inAudioConference) {
@@ -118,10 +127,6 @@ class _CommunicationViewState extends State<CommunicationView> {
                         child: audioConferenceWidget(gameState, theme)));
                     showVoiceText = false;
                   }
-                }
-
-                if (showVoiceText && !gameState.audioConfEnabled) {
-                  children.addAll(voiceTextWidgets(widget.chatService));
                 }
 
                 if (gameState.audioConfEnabled &&
@@ -134,7 +139,7 @@ class _CommunicationViewState extends State<CommunicationView> {
                 //   children.add(PendingApprovalsButton(
                 //       theme, gameState, gameContextObj, mounted));
                 // }
-                children.add(SizedBox(height: boardAttributes.timerGap));
+                children.add(SizedBox(height: 60));
                 children.add(Consumer<ActionState>(builder: (_, __, ___) {
                   // show time widget if the player is acting
                   final gameState = GameState.getState(context);

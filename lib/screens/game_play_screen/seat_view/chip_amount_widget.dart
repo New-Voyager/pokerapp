@@ -68,6 +68,10 @@ class ChipAmountWidget extends StatelessWidget {
       showBet = true;
     }
 
+    if (!seat.player.inhand) {
+      showBet = false;
+    }
+
     final action = seat.player.action;
 
     Widget betWidget;

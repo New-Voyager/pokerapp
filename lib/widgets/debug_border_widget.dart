@@ -20,6 +20,7 @@ class DebugBorderWidget extends StatelessWidget {
         child,
         Positioned.fill(
           child: IgnorePointer(
+            ignoring: true,
             child: Container(
               decoration: BoxDecoration(
                 border: Border.all(color: color, width: 2.0),

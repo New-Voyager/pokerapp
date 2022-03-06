@@ -487,7 +487,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
             opacity = 0.70;
           }
           if (widget.seat.player.playerFolded) {
-            opacity = 0.5;
+            // opacity = 0.5;
           }
         }
 

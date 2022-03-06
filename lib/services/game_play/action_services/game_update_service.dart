@@ -1416,7 +1416,19 @@ class GameUpdateService {
 
     if (gameStatus == AppConstants.GAME_ENDED) {
       var forced = data['forced'] ?? false;
-      await refreshScreen();
+      //await refreshScreen();
+      log('Game has ended. Update the state');
+      _gameState.ended = true;
+      resetBoard();
+      //_gameState.refresh();
+      _gameState.handInfo.notify();
+      tableState.updateTableStatusSilent(AppConstants.GAME_ENDED);
+      if (_gameState.mySeat != null && _gameState.mySeat.player != null) {
+        _gameState.mySeat.player.reset();
+      }
+      _gameState.myState.notify();
+      _gameState.actionState.show = false;
+      _gameState.actionState.notify();
 
       // if (_gameState.handInProgress && !forced) {
       //   int i = 0;

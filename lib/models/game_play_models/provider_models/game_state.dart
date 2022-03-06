@@ -751,7 +751,7 @@ class GameState {
     GameInfoModel gameInfo = await GameService.getGameInfo(this._gameCode);
     if (gameInfo == null) {
       // check whether the game has ended
-      this._gameInfo.status = 'ENDED';
+      //this._gameInfo.status = 'ENDED';
       return;
     }
     this._gameInfo = gameInfo;
