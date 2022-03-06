@@ -15,14 +15,15 @@ import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/animation_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
-import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/center_button_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/pots_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/rank_widget.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/formatter.dart';
+import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/cards/animations/animating_shuffle_card_view.dart';
 import 'package:pokerapp/widgets/cards/community_cards_view/community_cards_view.dart';
+import 'package:pokerapp/widgets/debug_border_widget.dart';
 import 'package:provider/provider.dart';
 import "dart:math" show pi;
 
@@ -56,71 +57,42 @@ class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
     );
   }
 
-  Widget _positionAnimationShuffleCardView({
-    Widget child,
-    double scale = 1.0,
-    Offset offset = Offset.zero,
-  }) {
-    return Align(
-      alignment: Alignment.center,
-      child: Transform.translate(
-        offset: offset,
-        child: Transform.scale(
-          scale: scale * 1.2,
-          child: child,
-        ),
-      ),
-    );
-  }
-
   Widget _dealerChoicePrompt() {
     return Align(
       alignment: Alignment.center,
-      child:
-          Text('${tableState.dealerChoicePromptPlayer} is choosing next game'),
+      child: Text(
+        '${tableState.dealerChoicePromptPlayer} is choosing next game',
+      ),
     );
   }
 
-  Widget centerTextWidget(
-    String text,
-    Offset offset,
-  ) {
-    return Transform.translate(
-      offset: offset,
-      child: Center(
-        child: Text(
-          text,
-          style: TextStyle(
-            color: Colors.grey,
-            fontSize: 12.dp,
-            fontWeight: FontWeight.w600,
-          ),
+  Widget centerTextWidget(String text) {
+    return Center(
+      child: Text(
+        text,
+        style: TextStyle(
+          color: Colors.grey,
+          fontSize: 12.dp,
+          fontWeight: FontWeight.w600,
         ),
       ),
     );
   }
 
-  Widget _buildGamePauseOptions(
-    GameState gameState,
-    Offset centerViewButtonOffset,
-  ) {
+  Widget _buildGamePauseOptions(GameState gameState) {
     // log('Center: center_view _buildGamePauseOptions');
-    return Transform.translate(
-      offset: centerViewButtonOffset,
-      child: Consumer2<SeatChangeNotifier, TableState>(
-        builder:
-            (_, SeatChangeNotifier seatChange, TableState tableState, __) =>
-                ValueListenableBuilder2<String, String>(
-          vnGameStatus,
-          vnTableStatus,
-          builder: (_, gameStatus, tableStatus, __) {
-            // log('Center: Rebuilding center view: Is game running: ${gameState.isGameRunning}');
-            return CenterButtonView(
-              isHost: this.widget.isHost,
-              onStartGame: this.widget.onStartGame,
-            );
-          },
-        ),
+    return Consumer2<SeatChangeNotifier, TableState>(
+      builder: (_, SeatChangeNotifier seatChange, TableState tableState, __) =>
+          ValueListenableBuilder2<String, String>(
+        vnGameStatus,
+        vnTableStatus,
+        builder: (_, gameStatus, tableStatus, __) {
+          // log('Center: Rebuilding center view: Is game running: ${gameState.isGameRunning}');
+          return CenterButtonView(
+            isHost: this.widget.isHost,
+            onStartGame: this.widget.onStartGame,
+          );
+        },
       ),
     );
   }
@@ -194,217 +166,197 @@ class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
     super.dispose();
   }
 
-  Widget _mainBuild(
-    BuildContext context, {
+  Widget _mainBuild({
+    @required GameState gameState,
     @required final String gameStatus,
     @required final String tableStatus,
-    @required final BoardAttributesObject boardAttributes,
   }) {
-    final gameState = GameState.getState(context);
     // log('Center: CenterView _mainBuild status: ${gameState.gameInfo.status}');
     //log('potViewPos: before game ended.');
     if (gameState.gameInfo.status == AppConstants.GAME_ENDED)
-      return centerTextWidget(
-        _appScreenText['gameEnded'],
-        boardAttributes.centerButtonsPos,
-      );
+      return centerTextWidget(_appScreenText['gameEnded']);
 
     //log('potViewPos: before waiting for players.');
     if (!gameState.botGame &&
         gameState.playersInSeatsCount <= 1 &&
         gameState.gameInfo.status != AppConstants.GAME_CONFIGURED) {
-      String text = _appScreenText['waitingForPlayersToJoin'];
-      return centerTextWidget(text, boardAttributes.centerButtonsPos);
+      return centerTextWidget(_appScreenText['waitingForPlayersToJoin']);
     }
 
     if (gameState.tableState.tableStatus ==
         AppConstants.TABLE_STATUS_NOT_ENOUGH_PLAYERS) {
-      String text = _appScreenText['waitingForPlayersToJoin'];
-      return centerTextWidget(text, boardAttributes.centerButtonsPos);
+      return centerTextWidget(_appScreenText['waitingForPlayersToJoin']);
     }
 
     //log('potViewPos: before seat change progress.');
     if (gameState.gameInfo.tableStatus ==
         AppConstants.TABLE_STATUS_HOST_SEATCHANGE_IN_PROGRESS) {
-      return centerTextWidget(_appScreenText['seatChangeInProgress'],
-          boardAttributes.centerButtonsPos);
+      return centerTextWidget(_appScreenText['seatChangeInProgress']);
     }
 
     final bool isGamePausedOrWaiting = gameState.gameInfo.status ==
             AppConstants.GAME_PAUSED ||
         gameState.gameInfo.tableStatus == AppConstants.WAITING_TO_BE_STARTED;
 
-    //log('potViewPos: before is paused or waiting isGameRunning: ${gameState.isGameRunning} isGamePausedOrWaiting: $isGamePausedOrWaiting ${gameState.gameInfo.tableStatus}');
-    List<Widget> children = [];
-
-    /* if we reach here, means, the game is RUNNING */
-    /* The following view, shows the community cards
-     and the pot chips, if they are nulls, put the default values */
-    children.add(_buildMainCenterView(context, boardAttributes));
-
     /* if the game is paused, show the options available during game pause */
     // don't show start/pause buttons for bot script games
     if (!gameState.isBotGame) {
       if (isGamePausedOrWaiting || !gameState.isGameRunning) {
-        children.add(
-          Align(
-            alignment: Alignment.center,
-            child: _buildGamePauseOptions(
-              gameState,
-              boardAttributes.centerButtonsPos,
-            ),
-          ),
-        );
+        return _buildGamePauseOptions(gameState);
       }
     }
 
-    // stack
-    return Stack(
-      alignment: Alignment.topCenter,
-      children: children,
+    /* if we reach here, means, the game is RUNNING */
+    /* The following view, shows the community cards
+     and the pot chips, if they are nulls, put the default values */
+    return _BoardCenterView(
+      tableState: tableState,
+      vnPotChips: vnPotChips,
+      vnPotToHighlight: vnPotToHighlight,
+      vnCommunityCardsRefresh: vnCommunityCardsRefresh,
+      vnCards: vnCards,
+      vnCardOthers: vnCardOthers,
+      vnTwoBoardsNeeded: vnTwoBoardsNeeded,
+      vnPotChipsUpdates: vnPotChipsUpdates,
+      vnRankStr: vnRankStr,
+      gameState: gameState,
     );
   }
 
   @override
   Widget build(BuildContext context) {
     final gameState = GameState.getState(context);
-    final boardAttributes = gameState.getBoardAttributes(context);
-    // log('Center: CenterView build');
 
     return ValueListenableBuilder3<String, String, bool>(
-        vnGameStatus, vnTableStatus, vnShowCardShuffling,
-        builder: (_, gameStatus, tableStatus, showCardsShuffling, __) {
-      List<Widget> children = [];
-      if (showCardsShuffling) {
-        bool showBombAnimation = (gameState?.handInfo?.bombPot) ?? false;
-        if (gameState.gameSettings.bombPotEveryHand ?? false) {
-          showBombAnimation = false;
+      vnGameStatus,
+      vnTableStatus,
+      vnShowCardShuffling,
+      builder: (_, gameStatus, tableStatus, showCardsShuffling, __) {
+        List<Widget> children = [];
+        if (showCardsShuffling) {
+          bool showBombAnimation = (gameState?.handInfo?.bombPot) ?? false;
+          if (gameState.gameSettings.bombPotEveryHand ?? false) {
+            showBombAnimation = false;
+          }
+          if (showBombAnimation) {
+            children.add(_bombPotAnimation());
+          } else if (tableState.dealerChoicePrompt) {
+            children.add(_dealerChoicePrompt());
+          } else {
+            children.add(AnimatingShuffleCardView());
+          }
         }
-        if (showBombAnimation) {
-          children.add(_bombPotAnimation());
-        } else if (tableState.dealerChoicePrompt) {
-          children.add(_dealerChoicePrompt());
-        } else {
-          children.add(_positionAnimationShuffleCardView(
-            offset: boardAttributes.centerViewCardShufflePosition,
-            scale: boardAttributes.centerViewCenterScale,
-            child: AnimatingShuffleCardView(),
-          ));
-        }
-      }
-      children.add(_mainBuild(
-        context,
-        tableStatus: tableStatus,
-        gameStatus: gameStatus,
-        boardAttributes: boardAttributes,
-      ));
+        children.add(_mainBuild(
+          gameState: gameState,
+          tableStatus: tableStatus,
+          gameStatus: gameStatus,
+        ));
 
-      return Stack(
-        alignment: Alignment.topCenter,
-        children: children,
-      );
-    });
-  }
-
-  Widget _buildMainCenterView(
-    final context,
-    final BoardAttributesObject boardAttributes,
-  ) {
-    //log('potViewPos: building main center view');
-
-    /**
-     * Pots on the board have two controls stacked on each other.
-     * emptyPotsView: Always created with transparent color. Used for identifying the location where the chips moved from the players.
-     * multiplePots: Multiple pots above the community cards 
-     */
-    final potKey = GlobalKey();
-    final emptyPotsView = PotsView(
-      isBoardHorizontal: this.widget.isBoardHorizontal,
-      potChip: 0,
-      uiKey: potKey,
-      highlight: false,
-      transparent: true,
+        return Stack(
+          alignment: Alignment.center,
+          children: children,
+        );
+      },
     );
-    boardAttributes.potKey = potKey;
-    // log('ChipAmountWidget: buildMainCenterView. potKey: ${boardAttributes.potKey}');
+  }
+}
 
-    Widget multiplePots = _buildMultiplePots(boardAttributes);
+/// this view is mainly divided into 3 parts,
+/// 1. Pot View
+/// 2. Community Cards
+/// 3. Pots Update
+class _BoardCenterView extends StatelessWidget {
+  final TableState tableState;
+  final ValueNotifier<List<double>> vnPotChips;
+  final ValueNotifier<int> vnPotToHighlight;
 
-    Widget potsStack = Stack(
-      alignment: Alignment.topCenter,
+  final ValueNotifier<int> vnCommunityCardsRefresh;
+  final ValueNotifier<List<CardObject>> vnCards;
+  final ValueNotifier<List<CardObject>> vnCardOthers;
+  final ValueNotifier<bool> vnTwoBoardsNeeded;
+  final ValueNotifier<String> vnRankStr;
+
+  final ValueNotifier<double> vnPotChipsUpdates;
+  final GameState gameState;
+
+  _BoardCenterView({
+    Key key,
+    @required this.tableState,
+    @required this.vnPotChips,
+    @required this.vnPotToHighlight,
+    @required this.vnCommunityCardsRefresh,
+    @required this.vnCards,
+    @required this.vnCardOthers,
+    @required this.vnTwoBoardsNeeded,
+    @required this.vnPotChipsUpdates,
+    @required this.vnRankStr,
+    @required this.gameState,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
       children: [
-        emptyPotsView,
-        multiplePots,
+        // pot view
+        Expanded(
+          child: DebugBorderWidget(
+            color: Colors.green,
+            child: _PotViewWidget(
+              dimPots: tableState.dimPots,
+              vnPotChips: vnPotChips,
+              vnPotToHighlight: vnPotToHighlight,
+            ),
+          ),
+        ),
+
+        // community cards view
+        Expanded(
+          flex: Screen.isLargeScreen ? 4 : 3,
+          child: DebugBorderWidget(
+            color: Colors.green,
+            child: Container(
+              width: gameState.gameUIState.centerViewRect.width,
+              child: _CommunityCardsWidget(
+                vnCommunityCardsRefresh: vnCommunityCardsRefresh,
+                vnCards: vnCards,
+                vnCardOthers: vnCardOthers,
+                vnTwoBoardsNeeded: vnTwoBoardsNeeded,
+              ),
+            ),
+          ),
+        ),
+
+        // pots update view
+        Expanded(
+          child: DebugBorderWidget(
+            color: Colors.green,
+            child: _PotUpdatesOrRankWidget(
+              vnPotChipsUpdates: vnPotChipsUpdates,
+              gameState: gameState,
+              vnRankStr: vnRankStr,
+            ),
+          ),
+        ),
       ],
     );
-    /* main pot view */
-    Widget pots = Transform.scale(
-      scale: boardAttributes.centerPotScale,
-      alignment: Alignment.bottomCenter,
-      child: potsStack,
-    );
-
-    final theme = AppTheme.getTheme(context);
-
-    return Transform.translate(
-      offset: boardAttributes.centerViewPos,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          pots,
-
-          // divider
-          SizedBox(height: boardAttributes.centerGap),
-
-          /* community cards view */
-          ValueListenableBuilder<int>(
-            valueListenable: vnCommunityCardsRefresh,
-            builder: (_, __, ___) {
-              return ValueListenableBuilder3<List<CardObject>, List<CardObject>,
-                  bool>(
-                vnCards,
-                vnCardOthers,
-                vnTwoBoardsNeeded,
-                builder: (_, cards, cardsOther, twoBoardsNeeded, __) {
-                  final gameState = GameState.getState(context);
-                  final tableState = gameState.tableState;
-                  // log('CommunityCards: cards: ${tableState.cards} cardsOther: ${tableState.cardsOther} twoboards: ${tableState.twoBoardsNeeded}');
-
-                  return Transform(
-                    transform: Matrix4.identity()
-                      ..setEntry(3, 2, 0.005)
-                      ..rotateX(-20 * pi / 180),
-                    alignment: FractionalOffset.center,
-                    child: CommunityCardsView(
-                      cards: tableState.cards,
-                      cardsOther: tableState.cardsOther,
-                      twoBoardsNeeded: tableState.twoBoardsNeeded,
-                      horizontal: true,
-                    ),
-                  );
-                },
-              );
-            },
-          ),
-
-          // divider
-          SizedBox(height: boardAttributes.potViewGap),
-
-          Stack(
-            alignment: Alignment.topCenter,
-            children: [
-              RankWidget(boardAttributes, theme, vnRankStr),
-              potUpdatesView(boa: boardAttributes)
-            ],
-          )
-        ],
-      ),
-    );
   }
+}
 
-  Widget _buildMultiplePots(boardAttributes) {
-    //log('potViewPos: building multiple pots');
+class _PotViewWidget extends StatelessWidget {
+  final bool dimPots;
+  final ValueNotifier<List<double>> vnPotChips;
+  final ValueNotifier<int> vnPotToHighlight;
+
+  _PotViewWidget({
+    Key key,
+    @required this.dimPots,
+    @required this.vnPotChips,
+    @required this.vnPotToHighlight,
+  }) : super(key: key);
+
+  final potKey = GlobalKey();
+
+  Widget _buildMultiplePots() {
     return ValueListenableBuilder2<List<double>, int>(
       vnPotChips,
       vnPotToHighlight,
@@ -419,17 +371,15 @@ class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
           double potChipValue = 10;
           potChipValue = cleanedPotChips[i]?.toDouble();
 
-          final potKey = GlobalKey();
-          bool dimView = tableState.dimPots;
+          bool dimView = dimPots;
           bool highlight = (potToHighlight ?? -1) == i;
           if (highlight) {
             dimView = false;
           }
 
           final potsView = PotsView(
-            isBoardHorizontal: this.widget.isBoardHorizontal,
             potChip: potChipValue,
-            uiKey: potKey,
+            uiKey: GlobalKey(),
             highlight: highlight,
             dim: dimView,
           );
@@ -451,8 +401,130 @@ class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
     );
   }
 
-  double _getOpacityForPotUpdatesView(
-      {final double potChipsUpdates, GameState gameState}) {
+  @override
+  Widget build(BuildContext context) {
+    /**
+     * Pots on the board have two controls stacked on each other.
+     * emptyPotsView: Always created with transparent color. Used for identifying the location where the chips moved from the players.
+     * multiplePots: Multiple pots above the community cards
+     */
+    final emptyPotsView = PotsView(
+      potChip: 0,
+      uiKey: potKey,
+      highlight: false,
+      transparent: true,
+    );
+
+    context.read<BoardAttributesObject>().potKey = potKey;
+
+    Widget multiplePots = _buildMultiplePots();
+
+    /// we just need the stack here, for the emptyPotsView
+    return FittedBox(
+      child: Stack(
+        alignment: Alignment.topCenter,
+        children: [
+          emptyPotsView,
+          multiplePots,
+        ],
+      ),
+    );
+  }
+}
+
+class _CommunityCardsWidget extends StatelessWidget {
+  final ValueNotifier<int> vnCommunityCardsRefresh;
+  final ValueNotifier<List<CardObject>> vnCards;
+  final ValueNotifier<List<CardObject>> vnCardOthers;
+  final ValueNotifier<bool> vnTwoBoardsNeeded;
+
+  const _CommunityCardsWidget({
+    Key key,
+    @required this.vnCommunityCardsRefresh,
+    @required this.vnCards,
+    @required this.vnCardOthers,
+    @required this.vnTwoBoardsNeeded,
+  }) : super(key: key);
+
+  Matrix4 get transformMatrix => Matrix4.identity()
+    ..setEntry(3, 2, 0.005)
+    ..rotateX(-20 * pi / 180);
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<int>(
+      valueListenable: vnCommunityCardsRefresh,
+      builder: (_, __, ___) {
+        return ValueListenableBuilder3<List<CardObject>, List<CardObject>,
+            bool>(
+          vnCards,
+          vnCardOthers,
+          vnTwoBoardsNeeded,
+          builder: (_, cards, cardsOther, twoBoardsNeeded, __) {
+            final gameState = GameState.getState(context);
+            final tableState = gameState.tableState;
+
+            return LayoutBuilder(
+              builder: (_, constraints) {
+                /// available height for the community cards
+                final height = constraints.maxHeight;
+
+                /// single board factor = 4/5 of available height
+                final double singleBoardFactor =
+                    Screen.isLargeScreen ? 3.0 / 4 : 4.0 / 5;
+
+                /// double board factor = full available height
+                final double doubleBoardFactor =
+                    Screen.isLargeScreen ? 0.90 : 1.0;
+
+                /// board factor depending upon if single board / double board
+                final boardFactor =
+                    twoBoardsNeeded ? doubleBoardFactor : singleBoardFactor;
+
+                final negativeSpace = (1 - boardFactor) * height;
+
+                return Container(
+                  margin: EdgeInsets.symmetric(vertical: negativeSpace),
+                  child: FittedBox(
+                    fit: BoxFit.fitHeight,
+                    child: Transform(
+                      transform: transformMatrix,
+                      alignment: Alignment.center,
+                      child: CommunityCardsView(
+                        key: Key('community-cards-view'),
+                        cards: tableState.cards,
+                        cardsOther: tableState.cardsOther,
+                        twoBoardsNeeded: tableState.twoBoardsNeeded,
+                        horizontal: true,
+                      ),
+                    ),
+                  ),
+                );
+              },
+            );
+          },
+        );
+      },
+    );
+  }
+}
+
+class _PotUpdatesOrRankWidget extends StatelessWidget {
+  final ValueNotifier<double> vnPotChipsUpdates;
+  final GameState gameState;
+  final ValueNotifier<String> vnRankStr;
+
+  const _PotUpdatesOrRankWidget({
+    Key key,
+    @required this.vnPotChipsUpdates,
+    @required this.gameState,
+    @required this.vnRankStr,
+  }) : super(key: key);
+
+  double _getOpacityForPotUpdatesView({
+    final double potChipsUpdates,
+    GameState gameState,
+  }) {
     bool show = false;
     final tableState = gameState.tableState;
     if (tableState.potChips != null && tableState.potChips.length > 1) {
@@ -474,58 +546,74 @@ class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
     return 0;
   }
 
-  Widget potUpdatesView({final BoardAttributesObject boa}) {
-    final gameState = GameState.getState(context);
-    if (gameState.handState == HandState.RESULT) {
-      return SizedBox.shrink();
-    }
+  @override
+  Widget build(BuildContext context) {
+    log('CenterView: rebuilding pot updates/rank view');
+    final theme = AppTheme.getTheme(context);
 
-    return Transform.scale(
-      scale: boa.centerPotUpdatesScale,
-      alignment: Alignment.topCenter,
-      child: ValueListenableBuilder<double>(
-          valueListenable: vnPotChipsUpdates,
-          builder: (_, potChipsUpdates, __) {
-            double opacity = _getOpacityForPotUpdatesView(
-              potChipsUpdates: potChipsUpdates,
-              gameState: gameState,
-            );
-            if (gameState.handState == HandState.RESULT) {
-              opacity = 0.0;
-            }
-            return Opacity(
-                opacity: opacity,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10.0,
-                    vertical: 5.0,
+    Widget potUpdatesView = FittedBox(
+      child: ValueListenableBuilder2<double, String>(
+        vnPotChipsUpdates,
+        vnRankStr,
+        builder: (_, potChipsUpdates, rank, __) {
+          if (gameState.handState == HandState.RESULT) {
+            return RankWidget(theme, vnRankStr);
+          }
+
+          double opacity = _getOpacityForPotUpdatesView(
+            potChipsUpdates: potChipsUpdates,
+            gameState: gameState,
+          );
+          if (gameState.handState == HandState.RESULT) {
+            opacity = 0.0;
+          }
+          return Opacity(
+            opacity: opacity,
+            child: Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 10.0,
+                vertical: 5.0,
+              ),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20.0),
+                color: Colors.black,
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SvgPicture.asset(
+                    'assets/icons/potpokerchips.svg',
+                    color: Colors.yellow,
+                    width: 24.pw,
+                    height: 24.pw,
+                    fit: BoxFit.cover,
                   ),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20.0),
-                    color: Colors.black,
+                  SizedBox(width: 10),
+                  Text(
+                    '${DataFormatter.chipsFormat(potChipsUpdates?.toDouble())}',
+                    style: AppStylesNew.itemInfoTextStyleHeavy.copyWith(
+                      fontSize: 13.dp,
+                      fontWeight: FontWeight.w400,
+                    ),
                   ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SvgPicture.asset(
-                        'assets/icons/potpokerchips.svg',
-                        color: Colors.yellow,
-                        width: 24.pw,
-                        height: 24.pw,
-                        fit: BoxFit.cover,
-                      ),
-                      SizedBox(width: 10),
-                      Text(
-                        '${DataFormatter.chipsFormat(potChipsUpdates?.toDouble())}',
-                        style: AppStylesNew.itemInfoTextStyleHeavy.copyWith(
-                          fontSize: 13.dp,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                    ],
-                  ),
-                ));
-          }),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+
+    return potUpdatesView;
+
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        Transform.translate(
+            offset: Offset(0, -20),
+            child: FittedBox(child: RankWidget(theme, vnRankStr))),
+        potUpdatesView
+      ],
     );
   }
 }

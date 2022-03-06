@@ -2,11 +2,9 @@ import 'dart:developer';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
-import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/cards/pulsating_card_container.dart';
 import 'package:provider/provider.dart';
 
@@ -43,25 +41,13 @@ class CardBuilderWidget extends StatelessWidget {
             cardBuilder != null);
 
   /* this method returns the correct RATIO for a particular CARD TYPE */
-  static double getCardRatioFromCardType(
-      CardType cardType, BuildContext context,
-      {bool doubleBoard = false}) {
+  static double getCardRatioFromCardType(CardType cardType) {
     switch (cardType) {
       case CardType.CommunityCard:
-        /* if we have a card type of community cards, then we must be on the 
-          game screen, thus we can safely call BoardAttributesObject */
-        final bao = context.read<BoardAttributesObject>();
-        if (doubleBoard) {
-          return bao.centerDoubleBoardScale;
-        } else {
-          return bao.centerBoardScale;
-        }
-        break;
-      //return 1.2 * bao.boardScale;
+        return 1.0;
 
       case CardType.HoleCard:
-        final bao = context.read<BoardAttributesObject>();
-        return bao.holeCardSizeRatio;
+        return 1.0;
 
       case CardType.PlayerCard:
         return 0.90;
@@ -99,11 +85,7 @@ class CardBuilderWidget extends StatelessWidget {
       color: card.color,
     );
 
-    double _ratio = getCardRatioFromCardType(
-      card.cardType,
-      context,
-      doubleBoard: this.doubleBoard,
-    );
+    double _ratio = getCardRatioFromCardType(card.cardType);
 
     // IMP: we ignore "dim" value if "highlight" is true
     bool toDim = dim;

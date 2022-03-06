@@ -15,6 +15,8 @@ import 'package:pokerapp/screens/game_play_screen/game_play_screen_util_methods.
 import 'package:pokerapp/screens/game_play_screen/seat_view/animating_widgets/stack_reload_animating_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/milliseconds_counter.dart';
 import 'package:pokerapp/services/audio/audio_service.dart';
+import 'package:pokerapp/utils/name_plate_widget_parent.dart';
+import 'package:pokerapp/widgets/debug_border_widget.dart';
 import 'package:pokerapp/widgets/nameplate.dart';
 import 'package:pokerapp/widgets/text_widgets/name_plate/name_plate_name_text.dart';
 import 'package:pokerapp/widgets/text_widgets/name_plate/name_plate_stack_text.dart';
@@ -196,48 +198,29 @@ class NamePlateWidget extends StatelessWidget {
       playerNamePlate = nameplate.svg;
       playerProgress = nameplate.path;
     }
-    double scale = 0.95;
-    // if (nameplate.id != "0") {
-    //   scale = 1.2;
-    // }
-/*
-[log] Timer remaining: 6698 total: 30 current: 23
-[log] Rebuilding highlight remaining: 7 total: 30 current: 23
-[log] Timer remaining: 22977 total: 30 current: 7
-*/
+    // double scale = 0.95;
+
     Size containerSize = Size(200, 120);
-    // Size svgSize = Size(400, 240);
     Size progressRatio = Size(1.0, 1.0);
     if (seat.player?.highlight ?? false) {
-      plateWidget = Consumer<ActionTimerState>(builder: (_, __, ___) {
-        int total = seat.actionTimer.getTotalTime();
-        // log('Nameplate: total: $total progress: ${seat.actionTimer.getProgressTime()}');
-        int lastRemainingTime = seat.actionTimer.getRemainingTime();
-        int progressTime = seat.actionTimer.getTotalTime() -
-            seat.actionTimer.getRemainingTime();
-        // log('ActionTimer: progress seat no: ${seat.serverSeatPos} action timer: ${seat.actionTimer.getTotalTime()} remainingTime: ${seat.actionTimer.getRemainingTime()} progress time: ${progressTime}');
-        // if (seat.serverSeatPos == 1) {
-        // }
-        bool first = true;
+      plateWidget = Consumer<ActionTimerState>(
+        builder: (_, __, ___) {
+          int total = seat.actionTimer.getTotalTime();
+          int lastRemainingTime = seat.actionTimer.getRemainingTime();
+          int progressTime = seat.actionTimer.getTotalTime() -
+              seat.actionTimer.getRemainingTime();
+          bool first = true;
 
-        return CountdownMs(
+          return CountdownMs(
             key: UniqueKey(),
             totalSeconds: seat.actionTimer.getTotalTime(),
             currentSeconds: progressTime,
             build: (_, time) {
               int remainingTime = time.toInt();
-              if (first) {
-                if (seat.serverSeatPos == 1) {
-                  // log('ActionTimer: (first) progress seat no: ${seat.serverSeatPos} action timer: ${total} remainingTime: ${lastRemainingTime} progress time: ${progressTime}');
-                }
-              }
               first = false;
-              int currentProgressInSecs = (total * 1000 - time) ~/ 1000;
               int remainingTimeInSecs = remainingTime ~/ 1000;
-              //seat.actionTimer.setRemainingTime(time ~/ 1000);
               if (seat.serverSeatPos == 1) {
                 if (lastRemainingTime != remainingTimeInSecs) {
-                  // log('ActionTimer: progress seat no: ${seat.serverSeatPos} action timer: ${total} remainingTime: ${remainingTimeInSecs} progress: ${currentProgressInSecs} clock ticking: ${vnIsPlayingTickingSound.value}');
                   lastRemainingTime = remainingTimeInSecs;
                 }
               }
@@ -257,10 +240,12 @@ class NamePlateWidget extends StatelessWidget {
                 size: containerSize,
                 progressPath: playerProgress,
                 progressRatio: progressRatio,
-                scale: scale,
+                scale: 1.0,
               );
-            });
-      });
+            },
+          );
+        },
+      );
     } else {
       plateWidget = Nameplate.fromSvgString(
         remainingTime: 0,
@@ -269,7 +254,7 @@ class NamePlateWidget extends StatelessWidget {
         size: containerSize,
         progressPath: playerProgress,
         progressRatio: progressRatio,
-        scale: scale,
+        scale: 1.0,
       );
     }
     String playerName = '';
@@ -279,97 +264,98 @@ class NamePlateWidget extends StatelessWidget {
     if (playerName == null) {
       playerName = '';
     }
+    double opacity = 1.0;
+
+    if (seat.player.playerFolded) {
+      opacity = 0.5;
+    }
+
     Stack namePlate = Stack(
       alignment: Alignment.center,
       clipBehavior: Clip.hardEdge,
       children: [
-        plateWidget,
+        // plate
+        Opacity(
+          opacity: opacity,
+          child: plateWidget,
+        ),
+
+        // main
         Positioned.fill(
-            child: Align(
-                alignment: Alignment.topCenter,
-                child: AnimatedOpacity(
-                  duration: AppConstants.animationDuration,
-                  opacity: seat.isOpen ? 0.0 : 1.0,
-                  child: Padding(
-                    padding: nameplate != null
-                        ? EdgeInsets.fromLTRB(
-                            double.parse(
-                              nameplate.meta.padding.split(",")[0].trim(),
-                            ),
-                            double.parse(
-                              nameplate.meta.padding.split(",")[1].trim(),
-                            ),
-                            double.parse(
-                              nameplate.meta.padding.split(",")[2].trim(),
-                            ),
-                            double.parse(
-                              nameplate.meta.padding.split(",")[3].trim(),
-                            ),
-                          )
-                        : null, //EdgeInsets.all(3),
-                    //padding: EdgeInsets.all(2),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        //SizedBox(height: 2),
-                        // player name
-                        Expanded(
-                          child: playerName == null || playerName == ''
-                              ? const SizedBox.shrink()
-                              : NamePlateNameText(playerName),
+          child: Align(
+            alignment: Alignment.topCenter,
+            child: AnimatedOpacity(
+              duration: AppConstants.animationDuration,
+              opacity: seat.isOpen ? 0.0 : 1.0,
+              child: Padding(
+                padding: nameplate != null
+                    ? EdgeInsets.fromLTRB(
+                        double.parse(
+                          nameplate.meta.padding.split(",")[0].trim(),
                         ),
-
-                        // divider
-                        Transform.scale(
-                          scale: scale,
-                          child: PlayerViewDivider(),
+                        double.parse(
+                          nameplate.meta.padding.split(",")[1].trim(),
                         ),
-
-                        // bottom widget - to show stack, sit back time, etc.
-                        Expanded(
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 2,
-                              ),
-                              child: bottomWidget(context, theme),
-                            ),
-                          ),
+                        double.parse(
+                          nameplate.meta.padding.split(",")[2].trim(),
                         ),
-                      ],
+                        double.parse(
+                          nameplate.meta.padding.split(",")[3].trim(),
+                        ),
+                      )
+                    : null,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    //SizedBox(height: 2),
+                    // player name
+                    Expanded(
+                      child: playerName == null || playerName == ''
+                          ? const SizedBox.shrink()
+                          : Container(
+                              width: NamePlateWidgetParent.namePlateSize.width *
+                                  (3 / 4),
+                              child: Opacity(
+                                  opacity: opacity,
+                                  child: NamePlateNameText(playerName))),
                     ),
-                  ),
-                ))),
+
+                    // divider
+                    Opacity(opacity: opacity, child: PlayerViewDivider()),
+
+                    // bottom widget - to show stack, sit back time, etc.
+                    Expanded(
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: Opacity(
+                            opacity: opacity,
+                            child: _bottomWidget(context, theme)),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
       ],
     );
-
-    // log('SeatView: Nameplate build ${seat.serverSeatPos}:L${seat.localSeatPos} pos: ${seat.seatPos.toString()} player: ${seat.player?.name} highlight: ${seat.player?.highlight}');
 
     plateWidget = namePlate;
     Widget ret = Opacity(
       opacity: childWhenDragging ? 0.50 : 1.0,
-      child: Container(
-        width: 100,
-        height: 76,
-        //width: boardAttributes.namePlateSize.width,
-        //height: boardAttributes.namePlateSize.height,
-        padding: const EdgeInsets.symmetric(
-          vertical: 2.0,
-        ),
-        decoration: BoxDecoration(
-          boxShadow: shadow,
-        ),
+      child: NamePlateWidgetParent.build(
         child: plateWidget,
+        decoration: BoxDecoration(boxShadow: shadow),
+        // padding: const EdgeInsets.symmetric(vertical: 5.0),
       ),
     );
     return ret;
   }
 
-  Widget bottomWidget(BuildContext context, AppTheme theme) {
+  Widget _bottomWidget(BuildContext context, AppTheme theme) {
     if (seat.player == null) {
-      return Container();
+      return const SizedBox.shrink();
     }
 
     if (seat.player.inBreak &&
@@ -388,15 +374,19 @@ class NamePlateWidget extends StatelessWidget {
       return GamePlayScreenUtilMethods.breakBuyIntimer(context, seat);
     } else {
       if (seat.player != null) {
-        return stack(context, theme);
+        return Container(
+          height: double.infinity,
+          child: _buildPlayerStack(context, theme),
+        );
       } else {
-        return Container();
+        return const SizedBox.shrink();
       }
     }
   }
 
-  Widget stack(BuildContext context, AppTheme theme) {
+  Widget _buildPlayerStack(BuildContext context, AppTheme theme) {
     Widget _buildStackTextWidget(double stack) => FittedBox(
+          fit: BoxFit.fitHeight,
           child: NamePlateStackText(stack),
         );
 
@@ -412,10 +402,6 @@ class NamePlateWidget extends StatelessWidget {
 }
 
 class PlayerViewDivider extends StatelessWidget {
-  const PlayerViewDivider({
-    Key key,
-  }) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     final theme = AppTheme.getTheme(context);

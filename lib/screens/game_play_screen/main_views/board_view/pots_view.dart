@@ -12,7 +12,7 @@ class PotsView extends StatelessWidget {
   final GlobalKey uiKey;
   final bool transparent;
   PotsView({
-    this.isBoardHorizontal,
+    this.isBoardHorizontal = true,
     this.potChip,
     this.uiKey,
     this.highlight,

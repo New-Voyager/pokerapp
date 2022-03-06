@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
+import 'package:pokerapp/utils/name_plate_widget_parent.dart';
 import 'package:pokerapp/widgets/cards/hidden_card_view.dart';
 
 import 'animating_widgets/fold_card_animating_widget.dart';
@@ -73,17 +74,27 @@ class PlayerCardsWidget extends StatelessWidget {
       }
       if (this.noCards == 4) {
         scale = 0.75;
-        xoffset = 0.75;
+        xoffset = 0.5;
       }
+
+      if (seat.seatPos == SeatPos.middleLeft ||
+          seat.seatPos == SeatPos.topLeft ||
+          seat.seatPos == SeatPos.bottomLeft) {
+        xoffset = -(NamePlateWidgetParent.namePlateSize.width / 2 - 8);
+      } else {
+        xoffset = NamePlateWidgetParent.namePlateSize.width / 2 - 8;
+      }
+
       //log('Hole cards');
       // log('PlayerCardsWidget: [${seat.serverSeatPos}] Hidden cards');
       Widget plateHoleCards = Transform.translate(
         offset: Offset(
-          xOffset * xoffset,
-          25.0,
+          // xOffset * xoffset,
+          xoffset,
+          -NamePlateWidgetParent.namePlateSize.height / 2 + 8,
         ),
         child: Transform.scale(
-          scale: scale,
+          scale: scale / 1.2,
           child: HiddenCardView(noOfCards: this.noCards),
         ),
       );

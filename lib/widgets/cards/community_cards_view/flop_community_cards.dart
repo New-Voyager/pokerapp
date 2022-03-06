@@ -29,8 +29,6 @@ class FlopCommunityCards extends StatefulWidget {
 class _FlopCommunityCardsState extends State<FlopCommunityCards> {
   GlobalKey<FlipCardState> _globalFlipKey = GlobalKey<FlipCardState>();
 
-  BoardAttributesObject _boa;
-
   bool _isFlipDone;
   bool _isAnimationCompleted;
 
@@ -41,8 +39,6 @@ class _FlopCommunityCardsState extends State<FlopCommunityCards> {
   @override
   void initState() {
     super.initState();
-
-    _boa = Provider.of<BoardAttributesObject>(context, listen: false);
 
     _isFlipDone = false;
     _isAnimationCompleted = false;
@@ -62,27 +58,26 @@ class _FlopCommunityCardsState extends State<FlopCommunityCards> {
     setState(() => _isFlipDone = true);
   }
 
-  double getDifferenceBetween(int idx1, idx2) {
-    return (CommunityCardAttribute.getOffsetPosition(idx1).dx -
-            CommunityCardAttribute.getOffsetPosition(idx2).dx) *
-        (widget.twoBoards ? _boa.doubleBoardScale : 1.0);
-  }
+  double get singleCardGap =>
+      CommunityCardAttribute.getOffsetPosition(1).dx -
+      CommunityCardAttribute.getOffsetPosition(0).dx;
+
+  // double getDifferenceBetween(int idx1, idx2) {
+  //   return (CommunityCardAttribute.getOffsetPosition(idx1).dx -
+  //       CommunityCardAttribute.getOffsetPosition(idx2).dx);
+  // }
 
   Widget _buildFlipCardWidget() {
     final gameState = GameState.getState(context);
     final cardBackBytes = gameState.assets.getHoleCardBack();
     return Transform.translate(
-      offset: Offset(
-        getDifferenceBetween(2, 0),
-        0.0,
-      ),
+      offset: Offset(singleCardGap * 2, 0.0),
       child: CustomFlipCard(
         cardBackBytes: cardBackBytes,
         onFlipDone: onFlipDone,
         globalKey: _globalFlipKey,
         cardWidget: widget.flopCards.last,
         twoBoards: widget.twoBoards,
-        doubleBoardScale: _boa.doubleBoardScale,
       ),
     );
   }
@@ -100,16 +95,8 @@ class _FlopCommunityCardsState extends State<FlopCommunityCards> {
       duration: AppConstants.communityCardAnimationDuration,
       onEnd: () => onEnd(idx),
       tween: Tween<Offset>(
-        begin: Offset(
-          /* final position - different between two * index */
-          getDifferenceBetween(4 - idx, 2) - idx * getDifferenceBetween(0, 1),
-          0.0,
-        ),
-        end: Offset(
-          /* final position offset */
-          getDifferenceBetween(4 - idx, 2),
-          0.0,
-        ),
+        begin: Offset(singleCardGap * 2, 0.0),
+        end: Offset(singleCardGap * (2 - idx), 0.0),
       ),
       child: widget.flopCards[idx],
       builder: (_, offset, child) => Transform.translate(
@@ -132,10 +119,7 @@ class _FlopCommunityCardsState extends State<FlopCommunityCards> {
   Widget build(BuildContext context) => _isFlipDone
       ? _isAnimationCompleted
           ? Transform.translate(
-              offset: Offset(
-                getDifferenceBetween(1, 0),
-                0.0,
-              ),
+              offset: Offset(singleCardGap, 0.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: widget.flopCards,

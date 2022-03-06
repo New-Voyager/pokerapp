@@ -1,12 +1,10 @@
 import 'dart:developer';
 import 'dart:math' as math;
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/main_helper.dart';
 import 'package:pokerapp/models/auth_model.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/models/hand_history_model.dart';
-import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
@@ -16,7 +14,6 @@ import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/screens/game_screens/widgets/hand_history_filter_widget.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/services/app/hand_service.dart';
-import 'package:pokerapp/services/app/player_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/services/game_history/game_history_service.dart';
 import 'package:provider/provider.dart';
@@ -29,10 +26,12 @@ class HandHistoryListView extends StatefulWidget {
   final bool isLeadingBackIconShow;
   final bool liveGame;
   final ClubHomePageModel club;
+  final bool showWinningHands;
 
   HandHistoryListView(this.data, this.clubCode, this.club,
       {this.isInBottomSheet = false,
       this.isLeadingBackIconShow = true,
+      this.showWinningHands = true,
       this.liveGame = false});
 
   final String clubCode;
@@ -59,8 +58,11 @@ class _HandHistoryState extends State<HandHistoryListView>
   @override
   void initState() {
     _appScreenText = getAppTextScreen("handHistoryListView");
-
-    _tabController = new TabController(length: 2, vsync: this);
+    int length = 1;
+    if (widget.showWinningHands) {
+      length++;
+    }
+    _tabController = new TabController(length: length, vsync: this);
     _data = widget.data;
     if (widget.liveGame) {
       showFilter = false;
@@ -250,6 +252,35 @@ class _HandHistoryState extends State<HandHistoryListView>
   }
 
   Widget getMainView(AppTheme theme) {
+    List<Tab> tabs = [];
+    List<Widget> children = [];
+    tabs.add(Tab(
+      text: _appScreenText['allHands'],
+    ));
+    children.add(PlayedHandsScreen(
+      _data.chipUnit,
+      _data.gameCode,
+      _data.getMyHands(),
+      //_data.getAllHands(),
+      widget.clubCode,
+      currentPlayer,
+      isInBottomSheet: widget.isInBottomSheet,
+      club: widget.club,
+    ));
+    if (widget.showWinningHands) {
+      tabs.add(Tab(
+        text: _appScreenText['winningHands'],
+      ));
+      children.add(PlayedHandsScreen(
+        _data.chipUnit,
+        _data.gameCode,
+        _data.getWinningHands(),
+        widget.clubCode,
+        currentPlayer,
+        isInBottomSheet: widget.isInBottomSheet,
+        club: widget.club,
+      ));
+    }
     return Container(
       child: Column(
         children: [
@@ -259,40 +290,13 @@ class _HandHistoryState extends State<HandHistoryListView>
             indicatorSize: TabBarIndicatorSize.label,
             indicatorColor: theme.accentColor,
             labelColor: theme.secondaryColorWithLight(),
-            tabs: [
-              new Tab(
-                text: _appScreenText['allHands'],
-              ),
-              new Tab(
-                text: _appScreenText['winningHands'],
-              ),
-            ],
+            tabs: tabs,
             controller: _tabController,
           ),
           Expanded(
             child: TabBarView(
               physics: const BouncingScrollPhysics(),
-              children: [
-                PlayedHandsScreen(
-                  _data.chipUnit,
-                  _data.gameCode,
-                  _data.getMyHands(),
-                  //_data.getAllHands(),
-                  widget.clubCode,
-                  currentPlayer,
-                  isInBottomSheet: widget.isInBottomSheet,
-                  club: widget.club,
-                ),
-                PlayedHandsScreen(
-                  _data.chipUnit,
-                  _data.gameCode,
-                  _data.getWinningHands(),
-                  widget.clubCode,
-                  currentPlayer,
-                  isInBottomSheet: widget.isInBottomSheet,
-                  club: widget.club,
-                ),
-              ],
+              children: children,
               controller: _tabController,
             ),
           ),

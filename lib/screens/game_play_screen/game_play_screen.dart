@@ -49,6 +49,7 @@ import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
+import 'package:pokerapp/utils/name_plate_widget_parent.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
@@ -455,6 +456,8 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   void dispose() {
     appState.removeGameCode();
 
+    _timer?.cancel();
+
     if (_gameState != null) {
       _gameState.uiClosing = true;
     }
@@ -634,7 +637,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   }
 
   Future _onJoinGame(Seat seat) async {
-    final gameState = GameState.getState(_providerContext);
+    final gameState = _gameState;
     final tableState = gameState.tableState;
     final me = gameState.me;
     /* ignore the open seat tap as the player is seated and game is running */
@@ -778,9 +781,14 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     }
   }
 
+  Timer _timer;
+
   @override
   void initState() {
     super.initState();
+
+    // TODO: THIS FUNCTION WOULD BE CALLED WHILE INITIALIZING THE APP
+    NamePlateWidgetParent.setWidth(80);
 
     boardAttributes = BoardAttributesObject(
       screenSize: Screen.diagonalInches,
@@ -802,7 +810,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     _binding.addObserver(this);
 
     init().then((v) {
-      Future.delayed(Duration(seconds: 1), () async {
+      _timer = Timer(const Duration(seconds: 1), () {
         if (!TestService.isTesting) {
           _queryCurrentHandIfNeeded();
           final nats = context.read<Nats>();
@@ -902,66 +910,15 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     });
   }
 
-//<<<<<<< HEAD
-  // Widget _buildChatWindow() => Consumer<ValueNotifier<bool>>(
-  //       builder: (context, vnChatVisibility, __) {
-  //         _isChatScreenVisible = vnChatVisibility.value;
-  //         return AnimatedSwitcher(
-  //           duration: const Duration(milliseconds: 200),
-  //           child: vnChatVisibility.value
-  //               ? Align(
-  //                   alignment: Alignment.bottomCenter,
-  //                   child: GameChat(
-  //                     scrollController: _gcsController,
-  //                     chatService: _gameContextObj.gameComService.gameMessaging,
-  //                     onChatVisibilityChange: () => _toggleChatVisibility(
-  //                       context,
-  //                     ),
-  //                   ),
-  //                 )
-  //               : const SizedBox.shrink(),
-  //         );
-  //       },
-  //     );
-// =======
-//   Widget _buildChatWindow() {
-//     return Consumer<ValueNotifier<bool>>(
-//       builder: (context, vnChatVisibility, __) {
-//         _isChatScreenVisible = vnChatVisibility.value;
-//         return AnimatedSwitcher(
-//           duration: const Duration(milliseconds: 200),
-//           child: vnChatVisibility.value
-//               ? Align(
-//                   alignment: Alignment.bottomCenter,
-//                   child: GameChat(
-//                     scrollController: _gcsController,
-//                     chatService: _gameContextObj.gameComService.gameMessaging,
-//                     onChatVisibilityChange: () => _toggleChatVisibility(
-//                       context,
-//                     ),
-//                   ),
-//                 )
-//               : const SizedBox.shrink(),
-//         );
-//       },
-//     );
-//   }
-// >>>>>>> master
-
   Widget _buildBoardView(Size boardDimensions, double boardScale) {
-    // log('RedrawTop: Rebuilding board view');
     return Container(
-      // key: UniqueKey(),
       width: boardDimensions.width,
       height: boardDimensions.height,
-      child: Transform.scale(
-        scale: boardScale,
-        child: BoardView(
-          gameComService: _gameContextObj?.gameComService,
-          gameInfo: _gameInfoModel,
-          onUserTap: _onJoinGame,
-          onStartGame: startGame,
-        ),
+      child: BoardView(
+        gameComService: _gameContextObj?.gameComService,
+        gameInfo: _gameInfoModel,
+        onUserTap: _onJoinGame,
+        onStartGame: startGame,
       ),
     );
   }
@@ -984,136 +941,143 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     }
   }
 
+  Widget _buildHeaderView(AppTheme theme) {
+    if (_gameState.customizationMode) {
+      return Align(
+        alignment: Alignment.centerLeft,
+        child: InkWell(
+            borderRadius: BorderRadius.circular(32.pw),
+            onTap: () => Navigator.of(context).pop(),
+            child: Container(
+              decoration: AppDecorators.bgRadialGradient(theme),
+              child: SvgPicture.asset(
+                'assets/images/backarrow.svg',
+                color: AppColorsNew.newGreenButtonColor,
+                width: 32.pw,
+                height: 32.ph,
+                fit: BoxFit.cover,
+              ),
+            )),
+      );
+    } else {
+      return Container(
+        width: Screen.width,
+        child: HeaderView(
+          gameState: _gameState,
+          scaffoldKey: _scaffoldKey,
+        ),
+      );
+    }
+  }
+
+  Widget _buildMainBoardView(AppTheme theme) {
+    final width = MediaQuery.of(context).size.width;
+    final boardDimensions = boardAttributes.dimensions(context);
+    double boardScale = boardAttributes.boardScale;
+
+    return Container(
+      clipBehavior: Clip.hardEdge,
+      decoration: BoxDecoration(),
+      height: boardDimensions.height,
+      width: Screen.width,
+      child: Stack(
+        clipBehavior: Clip.antiAlias,
+        alignment: Alignment.topCenter,
+        children: [
+          this.widget.showTop && _gameState.customizationMode
+              ? Positioned(
+                  top: 10.ph,
+                  left: width - 50.pw,
+                  child: CircleImageButton(
+                    onTap: () async {
+                      await Navigator.of(context)
+                          .pushNamed(Routes.select_table);
+                      await _gameState.assets.initialize();
+                      final redrawTop = _gameState.redrawBoardSectionState;
+                      redrawTop.notify();
+                      setState(() {});
+                    },
+                    theme: theme,
+                    icon: Icons.edit,
+                  ),
+                )
+              : Container(),
+
+          // board view
+          Positioned(
+            top: 0,
+            child: _buildBoardView(
+              boardDimensions,
+              boardScale,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFooterView() {
+    return Consumer<RedrawFooterSectionState>(
+      builder: (_, ___, __) {
+        log('RedrawFooter: building footer view');
+        return FooterViewWidget(
+          gameCode: widget.gameCode,
+          gameContextObject: _gameContextObj,
+          currentPlayer: _gameContextObj.gameState.currentPlayer,
+          gameInfo: _gameInfoModel,
+          toggleChatVisibility: _showGameChat,
+          onStartGame: startGame,
+        );
+      },
+    );
+  }
+
   Widget _buildCoreBody(
     BuildContext context,
     BoardAttributesObject boardAttributes,
   ) {
-    final width = MediaQuery.of(context).size.width;
-
-    final boardDimensions = boardAttributes.dimensions(context);
-    double boardScale = boardAttributes.boardScale;
     final theme = AppTheme.getTheme(context);
+    const kEmpty = const SizedBox.shrink();
 
-    List<Widget> children = [];
-
-    Widget headerView;
-    if (this.widget.showTop) {
-      if (_gameState.customizationMode) {
-        headerView = Align(
-          alignment: Alignment.centerLeft,
-          child: InkWell(
-              borderRadius: BorderRadius.circular(32.pw),
-              onTap: () => Navigator.of(context).pop(),
-              child: Container(
-                decoration: AppDecorators.bgRadialGradient(theme),
-                child: SvgPicture.asset(
-                  'assets/images/backarrow.svg',
-                  color: AppColorsNew.newGreenButtonColor,
-                  width: 32.pw,
-                  height: 32.ph,
-                  fit: BoxFit.cover,
-                ),
-              )),
-        );
-      } else {
-        headerView = Container(
-          width: Screen.width,
-          child: HeaderView(
-            gameState: _gameState,
-            scaffoldKey: _scaffoldKey,
-          ),
-        );
-      }
-
-      children.addAll(
-        [
-          // main board view
-          Stack(
-            clipBehavior: Clip.antiAlias,
-            alignment: Alignment.topCenter,
-            children: [
-              this.widget.showTop && _gameState.customizationMode
-                  ? Positioned(
-                      top: 10.ph,
-                      left: width - 50.pw,
-                      child: CircleImageButton(
-                        onTap: () async {
-                          await Navigator.of(context)
-                              .pushNamed(Routes.select_table);
-                          await _gameState.assets.initialize();
-                          final redrawTop = _gameState.redrawBoardSectionState;
-                          redrawTop.notify();
-                          setState(() {});
-                        },
-                        theme: theme,
-                        icon: Icons.edit,
-                      ),
-                    )
-                  : Container(),
-
-              // board view
-              Positioned(
-                top: 0, //Screen.height / 2,
-                child: _buildBoardView(
-                  boardDimensions,
-                  boardScale,
-                ),
-              ),
-            ],
-          ),
-
-          /* divider that divides the board view and the footer */
-          // Divider(color: AppColorsNew.dividerColor, thickness: 3),
-        ],
-      );
-    }
-
-    Widget topView = Stack(
-      children: children,
-    );
-
-    List<Widget> gameScreenChildren = [];
-    if (widget.showTop) {
-      gameScreenChildren.add(headerView);
-      // top view
-      gameScreenChildren.add(
-        Container(
-          clipBehavior: Clip.none,
-          height: boardDimensions.height,
-          width: Screen.width,
-          child: topView,
-        ),
-      );
-    }
-
-    if (widget.showBottom) {
-      gameScreenChildren.add(Align(
-        alignment: Alignment.bottomCenter,
-        child: Consumer<RedrawFooterSectionState>(
-          builder: (_, ___, __) {
-            log('RedrawFooter: building footer view');
-            return FooterViewWidget(
-                gameCode: widget.gameCode,
-                gameContextObject: _gameContextObj,
-                currentPlayer: _gameContextObj.gameState.currentPlayer,
-                gameInfo: _gameInfoModel,
-                toggleChatVisibility: _showGameChat,
-                onStartGame: startGame);
-          },
-        ),
-      ));
-    }
+    // if (widget.showBottom) {
+    //   gameScreenChildren.add(Align(
+    //     alignment: Alignment.bottomCenter,
+    //     child: Consumer<RedrawFooterSectionState>(
+    //       builder: (_, ___, __) {
+    //         log('RedrawFooter: building footer view');
+    //         return FooterViewWidget(
+    //             gameCode: widget.gameCode,
+    //             gameContextObject: _gameContextObj,
+    //             currentPlayer: _gameContextObj.gameState.currentPlayer,
+    //             gameInfo: _gameInfoModel,
+    //             toggleChatVisibility: _showGameChat,
+    //             onStartGame: startGame);
+    //       },
+    //     ),
+    //   ));
+    // }
     Widget column = Column(
       mainAxisAlignment: MainAxisAlignment.start,
-      children: gameScreenChildren,
+      children: [
+        // header
+        widget.showTop ? _buildHeaderView(theme) : kEmpty,
+
+        // board view
+        widget.showTop ? _buildMainBoardView(theme) : kEmpty,
+
+        // footerview
+        widget.showBottom ? _buildFooterView() : kEmpty,
+      ],
     );
 
-    Stack allWidgets = Stack(children: [
-      column,
+    Stack allWidgets = Stack(
+      children: [
+        column,
 
-      /* chat window widget */
-      // this.widget.showBottom ? _buildChatWindow() : const SizedBox.shrink(),
-    ]);
+        /* chat window widget */
+        // this.widget.showBottom ? _buildChatWindow() : const SizedBox.shrink(),
+      ],
+    );
     return allWidgets;
   }
 

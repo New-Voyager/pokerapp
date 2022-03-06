@@ -27,6 +27,7 @@ class AppConfig {
       apiServer = 'http://$apiServer:9501';
     }
     _apiUrl = apiServer;
+    _apiUrl = 'https://demo.pokerclub.app';
 
     String deviceId = sharedPreferences.getString(AppConstants.DEVICE_ID);
     String deviceSecret =

@@ -1,15 +1,9 @@
 import 'dart:developer';
 import 'dart:async';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_chat_bubble/bubble_type.dart';
-import 'package:flutter_chat_bubble/chat_bubble.dart';
-import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_1.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pokerapp/enums/game_type.dart';
-import 'package:pokerapp/models/game_play_models/business/game_chat_notfi_state.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
@@ -25,7 +19,9 @@ import 'package:pokerapp/screens/club_screen/set_credits_dialog.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/nameplate_dialog.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/data/hive_models/player_state.dart';
+import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
+import 'package:pokerapp/utils/name_plate_widget_parent.dart';
 import 'package:pokerapp/widgets/blinking_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/displaycards.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
@@ -73,6 +69,8 @@ class PlayerView extends StatefulWidget {
 }
 
 class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
+  GameState get gameState => widget.gameState;
+
   TableState _tableState;
 
   HandInfoState _handInfoState;
@@ -113,7 +111,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
     _messagePopupTimer?.cancel();
   }
 
-  void onTap(BuildContext context) async {
+  void _onTap(BuildContext context) async {
     if (widget.gameState.handState == HandState.RESULT &&
         widget.seat.player.winner == true) {
       final enlargeVn = widget.seat.enLargeCardsVn;
@@ -127,7 +125,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
       listen: false,
     );
 
-    if (widget.gameState.customizationMode) {
+    if (gameState.customizationMode) {
       return;
     }
 
@@ -136,12 +134,13 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
     }
     log('seat ${widget.seat.seatPos.toString()} is tapped');
     if (widget.seat.isOpen) {
-      final tableState = widget.gameState.tableState;
-      if (widget.gameState.myStatus == AppConstants.PLAYING &&
+      final tableState = gameState.tableState;
+      if (gameState.myStatus == AppConstants.PLAYING &&
           tableState.gameStatus == AppConstants.GAME_RUNNING) {
         log('Ignoring the open seat tap as the player is sitting and game is running');
         return;
       }
+      log('seat no: ${widget.seat.serverSeatPos}');
       // the player tapped to sit-in
       widget.onUserTap(widget.seat);
     } else {
@@ -157,7 +156,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
       //   return;
       // }
       final mySeat = gameState.mySeat;
-      if (!widget.gameState.currentPlayer.isAdmin()) {
+      if (!gameState.currentPlayer.isAdmin()) {
         if (mySeat == null) {
           return;
         }
@@ -181,8 +180,11 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
         if (data != null &&
             data['type'] != null &&
             data['type'] == "animation") {
-          final bool result = await playerState
-              .deductDiamonds(AppConfig.noOfDiamondsForAnimation);
+          final bool result = TestService.isPartialTesting
+              ? true
+              : await playerState.deductDiamonds(
+                  AppConfig.noOfDiamondsForAnimation,
+                );
           if (result) {
             gameState.gameComService.gameMessaging.sendAnimation(
               gameState.me?.seatNo,
@@ -234,7 +236,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
         try {
           limit = double.parse(_controller.text.toString());
           await GameService.setBuyinLimit(
-              gameCode: widget.gameState.gameCode,
+              gameCode: gameState.gameCode,
               playerUuid: seat.player.playerUuid,
               playerId: seat.player.playerId,
               limit: limit);
@@ -248,15 +250,15 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
 
   _handleHostButtonClick(BuildContext context) async {
     final result = await showPrompt(context, "Assign Host",
-        "Do you want to assign '${widget.gameState.currentPlayer.name}' as host?",
+        "Do you want to assign '${gameState.currentPlayer.name}' as host?",
         positiveButtonText: "Yes", negativeButtonText: "No");
     if (result != null) {
       if (result == true) {
         // setbuyin limit
         try {
           final result = await GameService.assignHost(
-            gameCode: widget.gameState.gameCode,
-            playerId: widget.gameState.currentPlayer.uuid,
+            gameCode: gameState.gameCode,
+            playerId: gameState.currentPlayer.uuid,
           );
           if (result != null && result == true) {
             Alerts.showNotification(titleText: "Assigned a new host.");
@@ -284,25 +286,6 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
       }
     }
 
-    // Widget old = Transform.scale(
-    //     scale:
-    //         widget.boardAttributes.getMuckCardScale(seat.player.cards.length),
-    //     alignment: Alignment.bottomCenter,
-    //     child: Transform.translate(
-    //       // TODO: NEED TO VERIFY THIS FOR DIFF SCREEN SIZES
-    //       offset: Offset(0.0, 10.ph),
-    //       child: Container(
-    //         height: widget.boardAttributes.namePlateSize.height,
-    //         width: widget.boardAttributes.namePlateSize.width,
-    //         child: DisplayCardsWidget(
-    //           isReplayHandsActor: isReplayHandsActor,
-    //           seat: seat,
-    //           showdown: widget.gameState.showdown,
-    //           colorCards: widget.gameState.playerLocalConfig.colorCards,
-    //         ),
-    //       ),
-    //     ));
-
     bool colorCards = false;
     if (widget.gameState.playerLocalConfig != null) {
       colorCards = widget.gameState.playerLocalConfig?.colorCards;
@@ -314,7 +297,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
         isReplayHandsActor: isReplayHandsActor,
         seat: seat,
         showdown: widget.gameState.showdown,
-        colorCards: colorCards,
+        colorCards: widget.gameState.playerLocalConfig.colorCards,
       ),
     );
   }
@@ -322,19 +305,9 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final theme = AppTheme.getTheme(context);
-    // log('RedrawTop: PlayerView build ${widget.seat.serverSeatPos}:L${widget.seat.localSeatPos} pos: ${widget.seat.seatPos.toString()} player: ${widget.seat.player?.name}');
-    // widget.seat.key = GlobalKey(
-    //   debugLabel: 'Seat:${widget.seat.serverSeatPos}',
-    // ); //this.globalKey;
-
-    // log('potViewPos: Rebuilding Seat: ${widget.seat.serverSeatPos}');
-
-    // the player tapped to see the player profile
-    final gameState = GameState.getState(context);
     bool openSeat = widget.seat.isOpen;
     bool isMe = widget.seat.isMe;
-    // log('SeatView: seat: ${widget.seat.serverSeatPos} isOpen: ${openSeat} player: ${widget.seat.player}');
-    bool showdown = widget.gameState.showdown;
+    bool showdown = gameState.showdown;
 
     // if open seat, just show open seat widget
     if (openSeat) {
@@ -352,7 +325,9 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
         seatChangeInProgress: gameState.hostSeatChangeInProgress,
         seatChangeSeat: seatChangeSeat,
       );
+
       List<Widget> children = [];
+
       if (widget.seat.dealer) {
         children.add(
           // dealer button
@@ -364,14 +339,18 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
         );
       }
       children.add(openSeatWidget);
+
       children.add(
-        Consumer<SeatChangeNotifier>(builder: (_, scn, __) {
-          return (gameState.hostSeatChangeInProgress ||
-                  gameState.playerSeatChangeInProgress)
-              ? SeatNoWidget(widget.seat)
-              : const SizedBox.shrink();
-        }),
+        Consumer<SeatChangeNotifier>(
+          builder: (_, scn, __) {
+            return (gameState.hostSeatChangeInProgress ||
+                    gameState.playerSeatChangeInProgress)
+                ? SeatNoWidget(widget.seat)
+                : const SizedBox.shrink();
+          },
+        ),
       );
+
       return Stack(alignment: Alignment.center, children: children);
     }
 
@@ -454,8 +433,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
       },
       builder: (context, List<int> candidateData, rejectedData) {
         Offset notesOffset = Offset(0, 0);
-        final double namePlateWidth =
-            widget.boardAttributes.namePlateSize.width;
+        final double namePlateWidth = NamePlateWidgetParent.namePlateSize.width;
         SeatPos pos = widget.seat.seatPos ?? SeatPos.bottomLeft;
         double actionLeft;
         double actionRight;
@@ -470,6 +448,17 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
           actionRight = 0;
           notesOffset = Offset(((namePlateWidth / 2)), 0);
         }
+
+        if (widget.seat.seatPos == SeatPos.middleLeft ||
+            widget.seat.seatPos == SeatPos.topLeft ||
+            widget.seat.seatPos == SeatPos.bottomLeft) {
+          actionLeft = NamePlateWidgetParent.namePlateSize.width / 2;
+          actionRight = null;
+        } else {
+          actionLeft = null;
+          actionRight = NamePlateWidgetParent.namePlateSize.width / 2 - 8;
+        }
+
         Key key = widget.seat.key;
         double opacity = 1.0;
 
@@ -478,32 +467,29 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
               widget.seat.player.connectivity.connectivityLost) {
             opacity = 0.70;
           }
+          if (widget.seat.player.playerFolded) {
+            // opacity = 0.5;
+          }
         }
 
         return InkWell(
           onTap: () {
-            if (widget.gameState.replayMode) {
+            if (gameState.replayMode) {
               return;
             }
-            this.onTap(context);
+            _onTap(context);
           },
           child: Stack(
             clipBehavior: Clip.none,
             alignment: Alignment.center,
             children: [
-              // Container(width: 100, height: 60, color: Colors.grey[900]),
-              //SvgPicture.string(namePlateStr, width: 60, height: 50),
-              // // main user body
-
+              // main body
               Opacity(
                 opacity: opacity,
-                child: Transform.scale(
-                  scale: scale,
-                  child: NamePlateWidget(
-                    widget.seat,
-                    globalKey: key,
-                    boardAttributes: boardAttributes,
-                  ),
+                child: NamePlateWidget(
+                  widget.seat,
+                  globalKey: key,
+                  boardAttributes: boardAttributes,
                 ),
               ),
 
@@ -595,8 +581,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
                           Icons.mic_off,
                           color: Colors.white70,
                         ),
-                      ),
-                    )
+                      ))
                   : SizedBox(),
               widget.seat.player.showMicOn
                   ? Positioned(

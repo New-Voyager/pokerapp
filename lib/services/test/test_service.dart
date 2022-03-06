@@ -37,6 +37,10 @@ class TestService {
     return false;
   }
 
+  static bool get isPartialTesting {
+    return true;
+  }
+
   static var _showResult = false;
   static pi.PlayerInfo _currentPlayer;
   static GameInfoModel _gameInfo;
@@ -234,7 +238,7 @@ class TestService {
         //_currentPlayer = PlayerInfo.fromJson(jsonData["currentPlayer"]);
       }
       // 2 4 6 8 9
-      var maxPlayers = 4;
+      var maxPlayers = 9;
       if (jsonData["gameInfo"] != null) {
         // todo: debug remove: change the max Players in a game here
         _gameInfo = GameInfoModel.fromJson(
@@ -286,8 +290,17 @@ class TestService {
   }
 
   static Future<void> addFlopCards() async {
+    print('card offsets: ${CommunityCardAttribute.cardOffsets}');
+
     final tableState = _getTableState();
     final gameState = GameState.getState(_context);
+
+    tableState.addFlopCards(1, []);
+
+    tableState.updateRankStrSilent('Straight');
+    tableState.notifyAll();
+
+    await Future.delayed(const Duration(milliseconds: 500));
 
     tableState.addFlopCards(
       1,
@@ -512,12 +525,19 @@ class TestService {
     196, C4: A♦
     Ah, 10c, 9s, Jd, Ks 
     */
-    player.cards = [161, 200, 168, 177, 177]; //, 168, 177, 194];
+    player.cards = [
+      161,
+      200,
+      168,
+      177,
+      194,
+      // 196,
+    ]; //, 168, 177, 194];
     player.rankText = 'Full House';
     final myState = gameState.myState;
     myState.notify();
 
-    List<int> communityCards = [161, 200, 168, 177, 194];
+    List<int> communityCards = [161, 200, 168, 177];
 
     // final rabbitState = gameState.rabbitState;
     // player.noOfCardsVisible = player.cards.length;

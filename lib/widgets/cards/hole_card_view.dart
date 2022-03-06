@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/main.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
@@ -53,8 +54,9 @@ class HoleCardWidget extends StatelessWidget {
         return 1.2 * bao.boardScale;
 
       case CardType.HoleCard:
-        final bao = context.read<BoardAttributesObject>();
-        return bao.holeCardSizeRatio;
+        // final bao = context.read<BoardAttributesObject>();
+        // return bao.holeCardSizeRatio;
+        return 1.0;
 
       case CardType.PlayerCard:
         return 0.90;
@@ -116,8 +118,26 @@ class HoleCardWidget extends StatelessWidget {
       );
     }
 
-    final double height = AppDimensions.cardHeight * _ratio;
-    final double width = AppDimensions.cardWidth * _ratio;
+    //for 5 cards 1.85
+    // for 4 cards 1.85
+    // for 2 cards 1.45
+
+    // var cards = context.read<BoardAttributesObject>().noOfCards;
+    // double ratioo = 1;
+
+    // if (cards == 2) {
+    //   ratioo = 1.45;
+    // } else if (cards == 4) {
+    //   ratioo = 1.75;
+    // } else if (cards == 5) {
+    //   ratioo = 1.85;
+    // }
+
+    var gameState = GameState.getState(context);
+    // double holeCardsViewWidth = gameState.holeCardsViewSize.width;
+
+    final double height = gameState.gameUIState.cardSize.height;
+    final double width = gameState.gameUIState.cardSize.width;
 
     Widget cardWidget = Container(
       height: height,

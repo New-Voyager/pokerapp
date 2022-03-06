@@ -38,6 +38,7 @@ class _HandHistoryAnalyseBottomSheetState
                   isInBottomSheet: true,
                   isLeadingBackIconShow: false,
                   liveGame: true,
+                  showWinningHands: false,
                 ),
               ),
             ],

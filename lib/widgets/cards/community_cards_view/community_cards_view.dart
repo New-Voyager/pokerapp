@@ -10,20 +10,31 @@ import 'package:pokerapp/widgets/cards/community_cards_view/turn_or_river_commun
 
 /* THIS VIEW ITSELF TAKES CARE OF THE ANIMATION PART FOR THE COMMUNITY CARDS */
 
-class CommunityCardsView extends StatelessWidget {
+class CommunityCardsView extends StatefulWidget {
   final List<CardObject> cards;
   final List<CardObject> cardsOther;
   final bool twoBoardsNeeded;
   final bool horizontal;
+
   CommunityCardsView({
+    Key key,
     @required this.cards,
     this.cardsOther,
     this.twoBoardsNeeded,
     this.horizontal = true,
-  });
+  }) : super(key: key);
 
-  List<Widget> getCommunityCards(List<CardObject> cards,
-      {bool dimBoard = false}) {
+  @override
+  State<CommunityCardsView> createState() => _CommunityCardsViewState();
+}
+
+class _CommunityCardsViewState extends State<CommunityCardsView> {
+  final Map<int, GlobalKey> _globalKeys = Map();
+
+  List<Widget> getCommunityCards(
+    List<CardObject> cards, {
+    bool dimBoard = false,
+  }) {
     List<CardObject> reversedList = cards?.toList() ?? [];
 
     /* if we do not have an already existing entry, then only go for the dummy card */
@@ -47,27 +58,22 @@ class CommunityCardsView extends StatelessWidget {
       }
     }
 
-    Map<int, GlobalKey> _globalKeys = Map();
-    List<Widget> communityCards = [];
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _globalKeys.forEach((idx, globalKey) {
-        CommunityCardAttribute.addEntry(idx, globalKey);
-      });
-    });
+    final List<Widget> communityCards = [];
 
     int idx = 4;
     for (var card in reversedList) {
       GlobalKey globalKey;
+
       card.dimBoard = false;
       if (dimBoard) {
         card.dimBoard = true;
       }
-      if (twoBoardsNeeded) {
+      if (widget.twoBoardsNeeded) {
         card.doubleBoard = true;
       }
 
       if (!CommunityCardAttribute.hasEntry(idx)) {
+        print('community cards: No previous entry for $idx\'s position');
         /* only add an entry, if there is no previous entry available */
         globalKey = GlobalKey();
 
@@ -86,7 +92,8 @@ class CommunityCardsView extends StatelessWidget {
 
       idx -= 1;
     }
-    return communityCards.toList();
+
+    return communityCards;
   }
 
   Widget buildSingleBoardCards(
@@ -98,14 +105,14 @@ class CommunityCardsView extends StatelessWidget {
     if (boardCards?.length == 3)
       return FlopCommunityCards(
         flopCards: getCommunityCards(boardCards, dimBoard: dimBoard),
-        twoBoards: twoBoardsNeeded ?? false,
+        twoBoards: widget.twoBoardsNeeded ?? false,
       );
 
     if (boardCards?.length == 4 || boardCards?.length == 5)
       return TurnOrRiverCommunityCards(
         key: ValueKey('$boardNo-${boardCards.length}'),
         riverOrTurnCards: getCommunityCards(boardCards, dimBoard: dimBoard),
-        twoBoards: twoBoardsNeeded ?? false,
+        twoBoards: widget.twoBoardsNeeded ?? false,
       );
 
     /* default case - this is done to bake our data for animating in the future */
@@ -119,39 +126,48 @@ class CommunityCardsView extends StatelessWidget {
     );
   }
 
+  void _init() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _globalKeys.forEach((idx, globalKey) {
+        CommunityCardAttribute.addEntry(idx, globalKey);
+      });
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _init();
+  }
+
   @override
   Widget build(BuildContext context) {
     final gameState = GameState.getState(context);
-    final boa = gameState.getBoardAttributes(context);
     final tableState = gameState.tableState;
 
-    if (twoBoardsNeeded ?? false) {
-      return Transform.scale(
-        alignment: Alignment.topCenter,
-        scale: boa.doubleBoardScale,
-        child: Column(
-          children: [
-            /* board 1 cards */
-            buildSingleBoardCards(
-              1,
-              cards,
-              dimBoard: tableState.dimBoard1,
-            ),
+    if (widget.twoBoardsNeeded ?? false) {
+      return Column(
+        children: [
+          /* board 1 cards */
+          buildSingleBoardCards(
+            1,
+            widget.cards,
+            dimBoard: tableState.dimBoard1,
+          ),
 
-            /* divider */
-            const SizedBox(height: 2.0),
+          /* divider */
+          const SizedBox(height: 2.0),
 
-            /* board 2 cards */
-            buildSingleBoardCards(
-              2,
-              cardsOther,
-              dimBoard: tableState.dimBoard2,
-            ),
-          ],
-        ),
+          /* board 2 cards */
+          buildSingleBoardCards(
+            2,
+            widget.cardsOther,
+            dimBoard: tableState.dimBoard2,
+          ),
+        ],
       );
     }
 
-    return buildSingleBoardCards(1, cards);
+    return buildSingleBoardCards(1, widget.cards);
   }
 }

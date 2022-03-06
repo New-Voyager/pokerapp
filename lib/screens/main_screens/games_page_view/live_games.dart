@@ -151,7 +151,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
       updatedLiveGames = await MockData.getLiveGames();
     } else {
       updatedLiveGames = await GameService.getLiveGamesNew();
-
+      await playerState.open();
       // get friends games
       final gameCodes = playerState.getFriendsGameCodes();
       if (gameCodes.length > 0) {
@@ -588,13 +588,19 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                                         final gameInfo =
                                             await GameService.getGameInfo(
                                                 liveGames[index].gameCode);
-                                        if (gameInfo == null) {
-                                          // game ended
-                                          playerState.removeFriendsGameCodes(
-                                              liveGames[index].gameCode);
-                                          // refresh screen
-                                          _fetchLiveGames();
-                                        } else {
+                                        await playerState.open();
+                                        bool validGameCode = true;
+                                        if (!TestService.isTesting) {
+                                          if (gameInfo == null) {
+                                            // game ended
+                                            playerState.removeFriendsGameCodes(
+                                                liveGames[index].gameCode);
+                                            // refresh screen
+                                            _fetchLiveGames();
+                                            validGameCode = false;
+                                          }
+                                        }
+                                        if (validGameCode) {
                                           await Navigator.of(context).pushNamed(
                                             Routes.game_play,
                                             arguments:

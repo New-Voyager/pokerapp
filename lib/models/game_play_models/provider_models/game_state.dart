@@ -13,6 +13,7 @@ import 'package:pokerapp/models/game/game_settings.dart';
 import 'package:pokerapp/models/game_play_models/business/game_chat_notfi_state.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_ui_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/marked_cards.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
@@ -172,8 +173,41 @@ class GameState {
   // high-hand state
   dynamic highHand; // high-hand state
 
-  // central board key
-  GlobalKey boardKey;
+  GameUIState gameUIState;
+
+  final GlobalKey playerOnTableKey = GlobalKey();
+
+  final GlobalKey boardKey = GlobalKey();
+
+  final ValueNotifier<Offset> playerOnTablePositionVn =
+      ValueNotifier<Offset>(null);
+
+  Size _playerOnTableSize;
+  Size get playerOnTableSize => _playerOnTableSize;
+
+  void calculatePlayersOnTablePositionPostFrame() {
+    if (playerOnTablePositionVn.value != null) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      while (playerOnTableKey.currentContext == null) {
+        await Future.delayed(const Duration(milliseconds: 10));
+      }
+
+      final box =
+          playerOnTableKey.currentContext.findRenderObject() as RenderBox;
+
+      _playerOnTableSize = box.size;
+      final tempPos = box.localToGlobal(Offset.zero);
+
+      final box1 = boardKey.currentContext.findRenderObject() as RenderBox;
+      final playerOnTablePos = box1.globalToLocal(tempPos);
+
+      playerOnTablePositionVn.value = playerOnTablePos;
+
+      print(
+        'calculatePlayersOnTablePositionPostFrame: ${playerOnTablePositionVn.value}',
+      );
+    });
+  }
 
   // tracks whether buyin keyboard is shown or not
   bool buyInKeyboardShown = false;
@@ -234,6 +268,7 @@ class GameState {
     this.replayMode = replayMode ?? false;
     this._gameSettings = GameSettings();
     this._playerSettings = GamePlayerSettings();
+    this.gameUIState = GameUIState();
 
     this._hostSeatChangeSeats = hostSeatChangeSeats;
     this.hostSeatChangeInProgress = hostSeatChangeInProgress ?? false;
@@ -687,7 +722,7 @@ class GameState {
   bool get isTableFull {
     for (int i = 1; i <= _gameInfo.maxPlayers; i++) {
       final seat = getSeat(i);
-      if (seat.player == null) {
+      if (seat?.player == null) {
         return false;
       }
     }
@@ -716,7 +751,7 @@ class GameState {
     GameInfoModel gameInfo = await GameService.getGameInfo(this._gameCode);
     if (gameInfo == null) {
       // check whether the game has ended
-      this._gameInfo.status = 'ENDED';
+      //this._gameInfo.status = 'ENDED';
       return;
     }
     this._gameInfo = gameInfo;

@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/widgets/cards/community_cards_view/custom_flip_card.dart';
-import 'package:provider/provider.dart';
 
 class TurnOrRiverCommunityCards extends StatefulWidget {
   final List<Widget> riverOrTurnCards;
@@ -27,7 +26,7 @@ class TurnOrRiverCommunityCards extends StatefulWidget {
 class _TurnOrRiverCommunityCardsState extends State<TurnOrRiverCommunityCards> {
   GlobalKey<FlipCardState> _globalFlipKey = GlobalKey<FlipCardState>();
 
-  BoardAttributesObject _boa;
+  int get numCards => widget.riverOrTurnCards.length;
 
   void onFlipDone(bool _) {
     setState(() => _isFlipDone = true);
@@ -35,11 +34,9 @@ class _TurnOrRiverCommunityCardsState extends State<TurnOrRiverCommunityCards> {
 
   bool _isFlipDone;
 
-  double getDifferenceBetween(int idx1, idx2) {
-    return (CommunityCardAttribute.getOffsetPosition(idx1).dx -
-            CommunityCardAttribute.getOffsetPosition(idx2).dx) *
-        (widget.twoBoards ? _boa.doubleBoardScale : 1.0);
-  }
+  double get singleCardGap =>
+      CommunityCardAttribute.getOffsetPosition(1).dx -
+      CommunityCardAttribute.getOffsetPosition(0).dx;
 
   Widget _buildFlipCardWidget() {
     final gameState = GameState.getState(context);
@@ -51,15 +48,12 @@ class _TurnOrRiverCommunityCardsState extends State<TurnOrRiverCommunityCards> {
       cardWidget: widget.riverOrTurnCards.last,
       cardBackBytes: cardBackBytes,
       twoBoards: widget.twoBoards,
-      doubleBoardScale: _boa.doubleBoardScale,
     );
   }
 
   @override
   void initState() {
     super.initState();
-
-    _boa = Provider.of<BoardAttributesObject>(context, listen: false);
 
     _isFlipDone = false;
 
@@ -76,30 +70,23 @@ class _TurnOrRiverCommunityCardsState extends State<TurnOrRiverCommunityCards> {
           /* show all the flop cards */
           Transform.translate(
             offset: Offset(
-              getDifferenceBetween(1, 0) /
-                  (widget.riverOrTurnCards.length == 4 ? 1 : 2),
+              singleCardGap / (numCards == 4 ? 1 : 2),
               0.0,
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: widget.riverOrTurnCards.length == 4
+              children: numCards == 4
                   ? widget.riverOrTurnCards.sublist(0, 3)
                   : widget.riverOrTurnCards.sublist(0, 4),
             ),
           ),
 
-          /*
-          show the flip
-          */
-
+          /// show the flip
           Align(
             alignment: Alignment.topCenter,
             child: Transform.translate(
               offset: Offset(
-                getDifferenceBetween(
-                  0,
-                  widget.riverOrTurnCards.length == 4 ? 1 : 2,
-                ),
+                -singleCardGap * (numCards == 4 ? 2 : 3.5),
                 0.0,
               ),
               child: _buildFlipCardWidget(),
@@ -113,9 +100,7 @@ class _TurnOrRiverCommunityCardsState extends State<TurnOrRiverCommunityCards> {
     return _isFlipDone
         ? Transform.translate(
             offset: Offset(
-              widget.riverOrTurnCards.length == 4
-                  ? getDifferenceBetween(1, 0) / 2
-                  : 0.0,
+              numCards == 4 ? singleCardGap / 2 : 0.0,
               0.0,
             ),
             child: Row(
