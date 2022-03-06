@@ -10,6 +10,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/host_seat_chang
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/animating_widgets/lottie_animation.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/player_chat_bubble.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/name_plate_view.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/player_view.dart';
@@ -21,12 +22,7 @@ import 'package:pokerapp/utils/sizing_utils/sizing_utils.dart';
 import 'package:pokerapp/widgets/debug_border_widget.dart';
 import 'package:provider/provider.dart';
 
-const double _lottieAnimationContainerSize = 120.0;
-const double _animatingAssetContainerSize = 40.0;
-
 // const Duration _durationWaitBeforeExplosion = const Duration(milliseconds: 10);
-const Duration _lottieAnimationDuration = const Duration(milliseconds: 5000);
-const Duration _animatingWidgetDuration = const Duration(milliseconds: 1000);
 
 class PlayersOnTableViewNew extends StatefulWidget {
   final Size tableSize;
@@ -37,13 +33,14 @@ class PlayersOnTableViewNew extends StatefulWidget {
   final bool isLargerScreen;
 
   PlayersOnTableViewNew({
+    Key key,
     @required this.tableSize,
     @required this.onUserTap,
     @required this.gameComService,
     @required this.gameState,
     @required this.maxPlayers,
     this.isLargerScreen = false,
-  });
+  }) : super(key: key);
 
   @override
   State<PlayersOnTableViewNew> createState() => _PlayersOnTableViewNewState();
@@ -53,11 +50,8 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
     with TickerProviderStateMixin {
   BoardAttributesObject _boardAttributes;
 
-  // fun animation transition & lottie animation
-  Animation<Offset> _lottieTransitionAnimation;
-  AnimationController _lottieTransitionAnimationController;
-  AnimationController _lottieController;
-  Offset _lottieAnimationPosition;
+  final LottieAnimationChangeNotifier animations =
+      LottieAnimationChangeNotifier();
 
   //seat change animation controller
   Animation<Offset> _seatChangeAnimation;
@@ -67,17 +61,15 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
   GlobalKey _parentKey = GlobalKey();
 
   // value notifiers
-  ValueNotifier<bool> _isLottieAnimatingVn = ValueNotifier(false);
   ValueNotifier<bool> _isSeatChangingVn = ValueNotifier(false);
-  ValueNotifier<bool> _isAnimatingVn = ValueNotifier(false);
 
   Offset seatChangeFrom, seatChangeTo;
   SeatChangeNotifier hostSeatChange;
   int seatChangerPlayer;
   int seatChangeToo;
 
-  String _animationAssetID;
-  List<PlayerChatBubble> chatBubbles = [];
+  final List<PlayerChatBubble> chatBubbles = [];
+  // final List<Widget> animations = [];
 
   // getters
   GameState get _gameState => widget.gameState;
@@ -115,15 +107,13 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
       final playerView = ListenableProvider<Seat>(
         create: (_) => seat,
         builder: (_, __) => Consumer<Seat>(builder: (_, __, ___) {
-          return DebugBorderWidget(
-            child: PlayerView(
-              seat: seat,
-              onUserTap: widget.onUserTap,
-              gameComService: widget.gameComService,
-              boardAttributes: boa,
-              gameContextObject: gco,
-              gameState: _gameState,
-            ),
+          return PlayerView(
+            seat: seat,
+            onUserTap: widget.onUserTap,
+            gameComService: widget.gameComService,
+            boardAttributes: boa,
+            gameContextObject: gco,
+            gameState: _gameState,
           );
         }),
       );
@@ -137,112 +127,19 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
     return players;
   }
 
-  // Size getPlayerOnTableSize() {
-  //   // If larger screen, then allow the multichild layout to spread a little
-  //   // If smaller screen devices, then squeeze the multichild layout
-  //   // Otherwise, do not change the factor of the tableSize
-
-  //   // in case of larger screens - let the multichild layout be placed extra 1.10 factor
-  //   if (widget.isLargerScreen)
-  //     return Size(
-  //       widget.tableSize.width,
-  //       widget.tableSize.height,
-  //     );
-
-  //   // TODO: DO WE NEED A CASE FOR SMALLER SCREEN DEVICES?
-
-  //   // normal case
-  //   return Size(widget.tableSize.width, widget.tableSize.height);
-  // }
-
-  void _animationHandlers() {
-    _lottieController = AnimationController(
-      vsync: this,
-      duration: _lottieAnimationDuration,
-    );
-
-    _lottieTransitionAnimationController = AnimationController(
-      vsync: this,
-      duration: _animatingWidgetDuration,
-    );
-
-    _lottieController.addListener(() {
-      /* after the lottie animation is completed reset everything */
-      if (_lottieController.isCompleted) {
-        _isLottieAnimatingVn.value = false;
-        _lottieController.reset();
-      }
-    });
-
-    _lottieTransitionAnimationController.addListener(() async {
-      if (_lottieTransitionAnimationController.isCompleted) {
-        /* wait before the explosion */
-        // await Future.delayed(_durationWaitBeforeExplosion);
-
-        _isAnimatingVn.value = false;
-        _lottieTransitionAnimationController.reset();
-
-        /* finally drive the lottie animation */
-        // play the audio
-        AudioService.playAnimationSound(_animationAssetID);
-
-        _isLottieAnimatingVn.value = true;
-        _lottieController.forward();
-      }
-    });
-  }
-
   void _onAnimation(ChatMessage message) async {
-    Offset from;
-    Offset to;
+    int id = DateTime.now().millisecondsSinceEpoch;
 
-    if (message.fromSeat == null || message.toSeat == null) {
-      return;
-    }
-
-    if (!_gameState.playerLocalConfig.animations) {
-      // animation is disabled
-      return;
-    }
-    /*
-    * find position of to and from user
-    **/
-    final positions = findPositionOfFromAndToUser(
-      fromSeat: message.fromSeat,
-      toSeat: message.toSeat,
+    final LottieAnimation lottieAnimation = LottieAnimation(
+      key: ValueKey(id),
+      parentKey: _parentKey,
+      gameState: widget.gameState,
+      animationId: id,
+      message: message,
+      animationNotifier: animations,
     );
 
-    final Size playerWidgetSize = getPlayerWidgetSize(message.toSeat);
-
-    from = positions[0];
-    to = positions[1];
-
-    /* get the middle point for the animated to player */
-    final Offset toMod = Offset(
-      to.dx + (playerWidgetSize.width / 2) - _animatingAssetContainerSize / 2,
-      to.dy + (playerWidgetSize.height / 2) - _animatingAssetContainerSize / 2,
-    );
-
-    _lottieTransitionAnimation = Tween<Offset>(
-      begin: from,
-      end: toMod,
-    ).animate(
-      CurvedAnimation(
-        parent: _lottieTransitionAnimationController,
-        curve: Curves.easeOut,
-      ),
-    );
-
-    // set the lottie animation position
-    _lottieAnimationPosition = Offset(
-      to.dx + (playerWidgetSize.width / 2) - _lottieAnimationContainerSize / 2,
-      to.dy + (playerWidgetSize.height / 2) - _lottieAnimationContainerSize / 2,
-    );
-
-    _animationAssetID = message.animationID;
-    _isAnimatingVn.value = true;
-
-    _lottieTransitionAnimationController.forward();
+    animations.addAnimation(id, lottieAnimation);
   }
 
   Offset getPositionOffsetFromKey(GlobalKey key) {
@@ -375,9 +272,8 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
     _boardAttributes = context.read<BoardAttributesObject>();
 
     widget.gameComService?.gameMessaging?.listen(
-      onAnimation: _onAnimation,
+      onAnimation: this._onAnimation,
     );
-    _animationHandlers();
     _seatChangeAnimationHandler();
     _gameState.gameChatBubbleNotifyState.addListener(_gameChatBubbleNotifier);
   }
@@ -396,27 +292,8 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
 
   @override
   void dispose() {
-    _lottieController?.dispose();
-    _lottieTransitionAnimationController?.dispose();
     _seatChangeAnimationController?.dispose();
     super.dispose();
-  }
-
-  Widget _buildLottieAnimating() {
-    return Transform.translate(
-      offset: _lottieAnimationPosition,
-      child: Container(
-        height: _lottieAnimationContainerSize,
-        width: _lottieAnimationContainerSize,
-        child: Transform.scale(
-          scale: _boardAttributes.lottieScale,
-          child: Lottie.asset(
-            'assets/animations/$_animationAssetID.json',
-            controller: _lottieController,
-          ),
-        ),
-      ),
-    );
   }
 
   Widget _buildSeatChangeAnimating() {
@@ -437,31 +314,14 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
     );
   }
 
-  Widget _buildLottieTransitionAnimating() {
-    return AnimatedBuilder(
-      child: Container(
-        height: _animatingAssetContainerSize,
-        width: _animatingAssetContainerSize,
-        child: SvgPicture.asset(
-          'assets/animations/$_animationAssetID.svg',
-        ),
-      ),
-      animation: _lottieTransitionAnimation,
-      builder: (_, child) => Transform.translate(
-        offset: _lottieTransitionAnimation.value,
-        child: Transform.scale(
-          scale: _boardAttributes.lottieScale,
-          child: child,
-        ),
-      ),
-    );
-  }
-
   List<Widget> _getChatBubbles() {
     final gameComService = _gameState.gameComService;
     for (int localSeat = 1; localSeat <= _maxPlayers; localSeat++) {
       final seat = widget.gameState.getSeat(localSeat);
-      chatBubbles.add(PlayerChatBubble(gameComService, seat));
+      chatBubbles.add(PlayerChatBubble(
+        gameComService,
+        seat,
+      ));
     }
 
     return chatBubbles;
@@ -472,56 +332,44 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
     final ts = SizingUtils.getPlayersOnTableSize(widget.tableSize);
     Provider.of<SeatsOnTableState>(context, listen: true);
 
-    return Stack(
-      alignment: Alignment.center,
-      key: _parentKey,
-      children: [
-        // positioning players
-        SizedBox(
-          width: ts.width,
-          height: ts.height,
-          child: CustomMultiChildLayout(
-            delegate: PlayerPlacementDelegate(
-              isLarger: widget.isLargerScreen,
-            ),
-            children: _getPlayers(context),
-          ),
-        ),
+    return AnimatedBuilder(
+        animation: animations,
+        builder: (_, __) {
+          return Stack(
+            clipBehavior: Clip.none,
+            alignment: Alignment.center,
+            key: _parentKey,
+            children: [
+              // positioning players
+              SizedBox(
+                width: ts.width,
+                height: ts.height,
+                child: CustomMultiChildLayout(
+                  delegate: PlayerPlacementDelegate(
+                    isLarger: widget.isLargerScreen,
+                  ),
+                  children: _getPlayers(context),
+                ),
+              ),
 
-        // lottie transition animation
-        ValueListenableBuilder(
-          valueListenable: _isAnimatingVn,
-          builder: (_, isAnimating, ___) {
-            return isAnimating
-                ? _buildLottieTransitionAnimating()
-                : const SizedBox.shrink();
-          },
-        ),
+              // lottie animations
+              ...animations.animations,
 
-        // lottie final animation
-        ValueListenableBuilder(
-          valueListenable: _isLottieAnimatingVn,
-          builder: (_, isLottieAnimating, __) {
-            return isLottieAnimating
-                ? _buildLottieAnimating()
-                : const SizedBox.shrink();
-          },
-        ),
+              // seat change animation
+              ValueListenableBuilder(
+                valueListenable: _isSeatChangingVn,
+                builder: (_, isSeatChanging, __) {
+                  return isSeatChanging
+                      ? _buildSeatChangeAnimating()
+                      : const SizedBox.shrink();
+                },
+              ),
 
-        // seat change animation
-        ValueListenableBuilder(
-          valueListenable: _isSeatChangingVn,
-          builder: (_, isSeatChanging, __) {
-            return isSeatChanging
-                ? _buildSeatChangeAnimating()
-                : const SizedBox.shrink();
-          },
-        ),
-
-        // chat bubbles - for every players
-        ..._getChatBubbles(),
-      ],
-    );
+              // chat bubbles - for every players
+              ..._getChatBubbles(),
+            ],
+          );
+        });
   }
 }
 

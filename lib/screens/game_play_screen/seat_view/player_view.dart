@@ -19,7 +19,9 @@ import 'package:pokerapp/screens/club_screen/set_credits_dialog.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/nameplate_dialog.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/data/hive_models/player_state.dart';
+import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
+import 'package:pokerapp/utils/name_plate_widget_parent.dart';
 import 'package:pokerapp/widgets/blinking_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/displaycards.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
@@ -178,8 +180,11 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
         if (data != null &&
             data['type'] != null &&
             data['type'] == "animation") {
-          final bool result = await playerState
-              .deductDiamonds(AppConfig.noOfDiamondsForAnimation);
+          final bool result = TestService.isPartialTesting
+              ? true
+              : await playerState.deductDiamonds(
+                  AppConfig.noOfDiamondsForAnimation,
+                );
           if (result) {
             gameState.gameComService.gameMessaging.sendAnimation(
               gameState.me?.seatNo,
@@ -281,25 +286,10 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
       }
     }
 
-//     Widget old = Transform.scale(
-//         scale:
-//             widget.boardAttributes.getMuckCardScale(seat.player.cards.length),
-//         alignment: Alignment.bottomCenter,
-//         child: Transform.translate(
-//           // TODO: NEED TO VERIFY THIS FOR DIFF SCREEN SIZES
-//           offset: Offset(0.0, 10.ph),
-//           child: Container(
-//             height: widget.boardAttributes.namePlateSize.height,
-//             width: widget.boardAttributes.namePlateSize.width,
-//             child: DisplayCardsWidget(
-//               isReplayHandsActor: isReplayHandsActor,
-//               seat: seat,
-//               showdown: widget.gameState.showdown,
-//               colorCards: widget.gameState.playerLocalConfig.colorCards,
-//             ),
-//           ),
-//         ));
-
+    bool colorCards = false;
+    if (widget.gameState.playerLocalConfig != null) {
+      colorCards = widget.gameState.playerLocalConfig?.colorCards;
+    }
     return Container(
       // height: widget.boardAttributes.namePlateSize.height,
       // width: widget.boardAttributes.namePlateSize.width,
@@ -443,8 +433,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
       },
       builder: (context, List<int> candidateData, rejectedData) {
         Offset notesOffset = Offset(0, 0);
-        final double namePlateWidth =
-            widget.boardAttributes.namePlateSize.width;
+        final double namePlateWidth = NamePlateWidgetParent.namePlateSize.width;
         SeatPos pos = widget.seat.seatPos ?? SeatPos.bottomLeft;
         double actionLeft;
         double actionRight;
@@ -459,6 +448,17 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
           actionRight = 0;
           notesOffset = Offset(((namePlateWidth / 2)), 0);
         }
+
+        if (widget.seat.seatPos == SeatPos.middleLeft ||
+            widget.seat.seatPos == SeatPos.topLeft ||
+            widget.seat.seatPos == SeatPos.bottomLeft) {
+          actionLeft = NamePlateWidgetParent.namePlateSize.width / 2;
+          actionRight = null;
+        } else {
+          actionLeft = null;
+          actionRight = NamePlateWidgetParent.namePlateSize.width / 2 - 8;
+        }
+
         Key key = widget.seat.key;
         double opacity = 1.0;
 
@@ -466,6 +466,9 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
           if (widget.seat.player.highlight &&
               widget.seat.player.connectivity.connectivityLost) {
             opacity = 0.70;
+          }
+          if (widget.seat.player.playerFolded) {
+            // opacity = 0.5;
           }
         }
 
@@ -480,7 +483,6 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
             clipBehavior: Clip.none,
             alignment: Alignment.center,
             children: [
-              
               // main body
               Opacity(
                 opacity: opacity,

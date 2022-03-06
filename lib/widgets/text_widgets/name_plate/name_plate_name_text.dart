@@ -13,12 +13,10 @@ class NamePlateNameText extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = context.read<AppTheme>();
 
-    final textWidget = Center(
-      child: Text(
-        text,
-        style: AppDecorators.getNameplateStyle(theme: theme).copyWith(
-          fontSize: 11.dp,
-        ),
+    final textWidget = Text(
+      text,
+      style: AppDecorators.getNameplateStyle(theme: theme).copyWith(
+        fontSize: 11.dp,
       ),
     );
 

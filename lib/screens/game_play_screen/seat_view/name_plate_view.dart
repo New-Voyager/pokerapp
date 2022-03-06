@@ -16,6 +16,7 @@ import 'package:pokerapp/screens/game_play_screen/seat_view/animating_widgets/st
 import 'package:pokerapp/screens/game_play_screen/widgets/milliseconds_counter.dart';
 import 'package:pokerapp/services/audio/audio_service.dart';
 import 'package:pokerapp/utils/name_plate_widget_parent.dart';
+import 'package:pokerapp/widgets/debug_border_widget.dart';
 import 'package:pokerapp/widgets/nameplate.dart';
 import 'package:pokerapp/widgets/text_widgets/name_plate/name_plate_name_text.dart';
 import 'package:pokerapp/widgets/text_widgets/name_plate/name_plate_stack_text.dart';
@@ -263,12 +264,21 @@ class NamePlateWidget extends StatelessWidget {
     if (playerName == null) {
       playerName = '';
     }
+    double opacity = 1.0;
+
+    if (seat.player.playerFolded) {
+      opacity = 0.5;
+    }
+
     Stack namePlate = Stack(
       alignment: Alignment.center,
       clipBehavior: Clip.hardEdge,
       children: [
         // plate
-        plateWidget,
+        Opacity(
+          opacity: opacity,
+          child: plateWidget,
+        ),
 
         // main
         Positioned.fill(
@@ -302,17 +312,24 @@ class NamePlateWidget extends StatelessWidget {
                     Expanded(
                       child: playerName == null || playerName == ''
                           ? const SizedBox.shrink()
-                          : NamePlateNameText(playerName),
+                          : Container(
+                              width: NamePlateWidgetParent.namePlateSize.width *
+                                  (3 / 4),
+                              child: Opacity(
+                                  opacity: opacity,
+                                  child: NamePlateNameText(playerName))),
                     ),
 
                     // divider
-                    PlayerViewDivider(),
+                    Opacity(opacity: opacity, child: PlayerViewDivider()),
 
                     // bottom widget - to show stack, sit back time, etc.
                     Expanded(
                       child: Align(
                         alignment: Alignment.centerRight,
-                        child: _bottomWidget(context, theme),
+                        child: Opacity(
+                            opacity: opacity,
+                            child: _bottomWidget(context, theme)),
                       ),
                     ),
                   ],
@@ -330,7 +347,7 @@ class NamePlateWidget extends StatelessWidget {
       child: NamePlateWidgetParent.build(
         child: plateWidget,
         decoration: BoxDecoration(boxShadow: shadow),
-        padding: const EdgeInsets.symmetric(vertical: 5.0),
+        // padding: const EdgeInsets.symmetric(vertical: 5.0),
       ),
     );
     return ret;

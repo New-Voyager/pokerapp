@@ -1,0 +1,4 @@
+Agent API
+Assign a player to agent
+Get a list of players assigned to agent
+Get a list of players who have didn't any agent

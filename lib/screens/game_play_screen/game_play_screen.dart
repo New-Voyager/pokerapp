@@ -456,6 +456,8 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   void dispose() {
     appState.removeGameCode();
 
+    _timer?.cancel();
+
     if (_gameState != null) {
       _gameState.uiClosing = true;
     }
@@ -779,6 +781,8 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     }
   }
 
+  Timer _timer;
+
   @override
   void initState() {
     super.initState();
@@ -806,7 +810,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     _binding.addObserver(this);
 
     init().then((v) {
-      Future.delayed(Duration(seconds: 1), () async {
+      _timer = Timer(const Duration(seconds: 1), () {
         if (!TestService.isTesting) {
           _queryCurrentHandIfNeeded();
           final nats = context.read<Nats>();
@@ -817,11 +821,11 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
       if (appService.appSettings.showRefreshBanner) {
         appService.appSettings.showRefreshBanner = false;
-        Alerts.showNotification(
-            duration: Duration(seconds: 8),
-            titleText: 'Beta Issue',
-            subTitleText:
-                "If you see any issues in this screen or in the audio conference, go back from this game screen and return to this screen. Most issues will be resolved. You will still be in the game and in the hand.");
+        // Alerts.showNotification(
+        //     duration: Duration(seconds: 8),
+        //     titleText: 'Beta Issue',
+        //     subTitleText:
+        //         "If you see any issues in this screen or in the audio conference, go back from this game screen and return to this screen. Most issues will be resolved. You will still be in the game and in the hand.");
       }
       if (appService.appSettings.showReportInfoDialog) {
         appService.appSettings.showReportInfoDialog = false;
@@ -905,52 +909,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       }
     });
   }
-
-//<<<<<<< HEAD
-  // Widget _buildChatWindow() => Consumer<ValueNotifier<bool>>(
-  //       builder: (context, vnChatVisibility, __) {
-  //         _isChatScreenVisible = vnChatVisibility.value;
-  //         return AnimatedSwitcher(
-  //           duration: const Duration(milliseconds: 200),
-  //           child: vnChatVisibility.value
-  //               ? Align(
-  //                   alignment: Alignment.bottomCenter,
-  //                   child: GameChat(
-  //                     scrollController: _gcsController,
-  //                     chatService: _gameContextObj.gameComService.gameMessaging,
-  //                     onChatVisibilityChange: () => _toggleChatVisibility(
-  //                       context,
-  //                     ),
-  //                   ),
-  //                 )
-  //               : const SizedBox.shrink(),
-  //         );
-  //       },
-  //     );
-// =======
-//   Widget _buildChatWindow() {
-//     return Consumer<ValueNotifier<bool>>(
-//       builder: (context, vnChatVisibility, __) {
-//         _isChatScreenVisible = vnChatVisibility.value;
-//         return AnimatedSwitcher(
-//           duration: const Duration(milliseconds: 200),
-//           child: vnChatVisibility.value
-//               ? Align(
-//                   alignment: Alignment.bottomCenter,
-//                   child: GameChat(
-//                     scrollController: _gcsController,
-//                     chatService: _gameContextObj.gameComService.gameMessaging,
-//                     onChatVisibilityChange: () => _toggleChatVisibility(
-//                       context,
-//                     ),
-//                   ),
-//                 )
-//               : const SizedBox.shrink(),
-//         );
-//       },
-//     );
-//   }
-// >>>>>>> master
 
   Widget _buildBoardView(Size boardDimensions, double boardScale) {
     return Container(
@@ -1063,12 +1021,13 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       builder: (_, ___, __) {
         log('RedrawFooter: building footer view');
         return FooterViewWidget(
-            gameCode: widget.gameCode,
-            gameContextObject: _gameContextObj,
-            currentPlayer: _gameContextObj.gameState.currentPlayer,
-            gameInfo: _gameInfoModel,
-            //toggleChatVisibility: _toggleChatVisibility,
-            onStartGame: startGame);
+          gameCode: widget.gameCode,
+          gameContextObject: _gameContextObj,
+          currentPlayer: _gameContextObj.gameState.currentPlayer,
+          gameInfo: _gameInfoModel,
+          toggleChatVisibility: _showGameChat,
+          onStartGame: startGame,
+        );
       },
     );
   }

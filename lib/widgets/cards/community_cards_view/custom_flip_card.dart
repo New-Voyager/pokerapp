@@ -2,10 +2,8 @@ import 'dart:typed_data';
 
 import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
-import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
-import 'package:pokerapp/widgets/cards/card_builder_widget.dart';
 
 class CustomFlipCard extends StatelessWidget {
   final Function onFlipDone;
@@ -13,7 +11,6 @@ class CustomFlipCard extends StatelessWidget {
   final Widget cardWidget;
   final Uint8List cardBackBytes;
   final bool twoBoards;
-  final double doubleBoardScale;
 
   CustomFlipCard({
     @required this.onFlipDone,
@@ -21,17 +18,7 @@ class CustomFlipCard extends StatelessWidget {
     @required this.cardWidget,
     @required this.cardBackBytes,
     this.twoBoards,
-    this.doubleBoardScale = 1.0,
   });
-
-  double _getScale(context) {
-    if (twoBoards) return doubleBoardScale;
-
-    return CardBuilderWidget.getCardRatioFromCardType(
-      CardType.CommunityCard,
-      context,
-    );
-  }
 
   @override
   Widget build(BuildContext context) => FlipCard(
@@ -44,8 +31,8 @@ class CustomFlipCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(5.0),
           child: Image.memory(
             cardBackBytes,
-            height: AppDimensions.cardHeight * _getScale(context),
-            width: AppDimensions.cardWidth * _getScale(context),
+            height: AppDimensions.cardHeight,
+            width: AppDimensions.cardWidth,
           ),
         ),
       );

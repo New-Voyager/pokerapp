@@ -163,7 +163,7 @@ class _StorePageState extends State<StorePage> {
   refreshCoinCount() async {
     AppConfig.setAvailableCoins(await AppCoinService.availableCoins());
     log("Appcoins refreshed : ${AppConfig.availableCoins}");
-    setState(() {});
+    if (mounted) setState(() {});
   }
 
   @override
@@ -251,7 +251,7 @@ class _StorePageState extends State<StorePage> {
         }
       },
     ));
-
+    bool showRedeem = false;
     return Container(
       decoration: AppDecorators.bgRadialGradient(theme),
       child: SafeArea(
@@ -268,14 +268,17 @@ class _StorePageState extends State<StorePage> {
                         // mainAxisAlignment: MainAxisAlignment.center,
                         alignment: Alignment.center,
                         children: [
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: RoundRectButton(
-                                text: "Redeem",
-                                onTap: () {
-                                  _handleRedeem(theme, context);
-                                },
-                                theme: theme),
+                          Visibility(
+                            visible: showRedeem,
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: RoundRectButton(
+                                  text: "Redeem",
+                                  onTap: () {
+                                    _handleRedeem(theme, context);
+                                  },
+                                  theme: theme),
+                            ),
                           ),
 
                           // AppDimensionsNew.getHorizontalSpace(24.pw),

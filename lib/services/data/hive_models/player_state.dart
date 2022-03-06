@@ -38,6 +38,9 @@ class PlayerState {
   PlayerState();
 
   Future<Box> open() async {
+    if (_box != null) {
+      return _box;
+    }
     _box = await Hive.openBox('player_state');
 
     bool newData = false;
@@ -79,6 +82,8 @@ class PlayerState {
   }
 
   void _save() {
+    open();
+
     _box.put(PLAYER_ID, _playerId);
     _box.put(PLAYER_UUID, _playerUuid);
     _box.put(PLAYER_NAME, _playerName);
@@ -96,10 +101,12 @@ class PlayerState {
     if (_box?.isOpen ?? false) {
       _box?.close();
     }
+    _box = null;
   }
 
   // add get/set properties
   void updatePlayerInfo({String playerUuid, int playerId, String playerName}) {
+    open();
     _playerUuid = playerUuid;
     _playerId = playerId;
     _playerName = playerName;
@@ -166,6 +173,7 @@ class PlayerState {
 
   List<String> removeFriendsGameCodes(String gameCode) {
     List<String> gameCodes = [];
+    open();
     String json = _box.get('friends_game_codes');
     if (json != null) {
       final codes = jsonDecode(json);

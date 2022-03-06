@@ -15,7 +15,7 @@ class TableView extends StatelessWidget {
     final animationDuration = const Duration(milliseconds: 250);
     final gameState = GameState.getState(context);
     return Container(
-      key: gameState.tableKey,
+      key: gameState.gameUIState.tableKey,
       width: tableWidth,
       child: Consumer<RedrawBoardSectionState>(
         builder: (_, __, ___) => AnimatedSwitcher(

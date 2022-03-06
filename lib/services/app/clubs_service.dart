@@ -331,6 +331,9 @@ class ClubsService {
   static Future<String> createClub(String name, String description) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
 
+    if (description == null) {
+      description = '';
+    }
     String _query = createClubQuery;
     Map<String, dynamic> variables = {
       "name": name,

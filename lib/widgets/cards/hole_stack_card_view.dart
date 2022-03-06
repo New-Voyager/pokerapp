@@ -2,16 +2,12 @@ import 'dart:math' as math;
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/marked_cards.dart';
-import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
-import 'package:pokerapp/resources/app_dimensions.dart';
-import 'package:pokerapp/widgets/cards/card_builder_widget.dart';
+import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/cards/player_hole_card_view.dart';
 import 'package:pokerapp/widgets/page_curl/page_curl.dart';
-import 'package:provider/provider.dart';
 
 class HoleStackCardView extends StatelessWidget {
   final List<CardObject> cards;
@@ -25,13 +21,10 @@ class HoleStackCardView extends StatelessWidget {
   });
 
   Size _getTotalCardsSize(BuildContext context, double displacementValue) {
-    double holeCardRatio = CardBuilderWidget.getCardRatioFromCardType(
-      CardType.HoleCard,
-      context,
-    );
+    final gameState = GameState.getState(context);
+    final double sch = gameState.gameUIState.cardSize.height;
+    final double scw = gameState.gameUIState.cardSize.width;
 
-    final double sch = AppDimensions.cardHeight * holeCardRatio;
-    final double scw = AppDimensions.cardWidth * holeCardRatio;
     final double tw = scw + displacementValue * (cards.length - 1);
 
     return Size(tw, sch);
@@ -49,6 +42,7 @@ class HoleStackCardView extends StatelessWidget {
       cards.length,
       (i) {
         final offsetInX = -(i - mid) * displacementValue;
+
         final card = Transform.translate(
           offset: Offset(offsetInX, 0),
           child: Builder(
@@ -68,18 +62,11 @@ class HoleStackCardView extends StatelessWidget {
         if (fanOut) {
           double m = cards.length == 2 ? 0.50 : mid.toDouble();
 
-          int ss = context.read<BoardAttributesObject>().screenDiagnolSize;
-
-          Alignment _getAlignment(int ss) {
-            if (ss <= 7) return Alignment.bottomCenter;
-
-            return Alignment.topCenter;
-          }
-
           return Transform.rotate(
-            alignment: _getAlignment(ss),
-            // 6 inch: 0.25
-            // 10 inch: 0.10
+            alignment: Screen.isLargeScreen
+                ? Alignment.topCenter
+                : Alignment.bottomCenter,
+            origin: Offset(0, 0),
             angle: -((i - m) * 0.10),
             child: card,
           );
@@ -159,26 +146,18 @@ class HoleStackCardView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    context.read<BoardAttributesObject>().noOfCards = cards?.length ?? 0;
     final GameState gameState = GameState.getState(context);
-    final boardAttributes = gameState.getBoardAttributes(context);
-
     final MarkedCards markedCards = gameState.markedCardsState;
-    //log('HoleCards: build cards: $cards');
     if (cards == null || cards.isEmpty) {
       // log('Customize: HoleCards: build cards are empty. $cards');
       return const SizedBox.shrink();
     }
     int mid = (cards.length ~/ 2);
+    gameState.gameUIState
+        .calculateCardSize(context, gameState, cards.length, isCardVisible);
 
-    double displacementValue = boardAttributes.getHoleCardDisplacement(
-      noOfCards: cards.length,
-      isCardVisible: isCardVisible,
-    );
-
-    if (cards.length == 2) {
-      displacementValue = 2 * displacementValue;
-    }
+    double displacementValue = gameState.gameUIState.cardsDisplacement;
+    print(displacementValue);
 
     final double evenNoDisplacement = getEvenNoDisplacement(displacementValue);
 

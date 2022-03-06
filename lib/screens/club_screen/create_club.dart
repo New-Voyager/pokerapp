@@ -134,6 +134,7 @@ class CreateClubDialog {
                                 CardFormTextField(
                                   theme: theme,
                                   elevation: 0.0,
+                                  maxLength: 60,
                                   hintText: appScreenText['nameHint'],
                                   validator: (String val) => val.trim().isEmpty
                                       ? appScreenText['provideClubName']
@@ -152,9 +153,6 @@ class CreateClubDialog {
                                   theme: theme,
                                   elevation: 0.0,
                                   hintText: appScreenText['descriptionHint'],
-                                  validator: (String val) => val.trim().isEmpty
-                                      ? appScreenText['provideDescription']
-                                      : null,
                                   maxLines: 5,
                                   maxLength: 500,
                                   showCharacterCounter: true,

@@ -34,6 +34,10 @@ import 'package:pokerapp/models/game_play_models/provider_models/host_seat_chang
 
 class TestService {
   static bool get isTesting {
+    return false;
+  }
+
+  static bool get isPartialTesting {
     return true;
   }
 
@@ -286,8 +290,17 @@ class TestService {
   }
 
   static Future<void> addFlopCards() async {
+    print('card offsets: ${CommunityCardAttribute.cardOffsets}');
+
     final tableState = _getTableState();
     final gameState = GameState.getState(_context);
+
+    tableState.addFlopCards(1, []);
+
+    tableState.updateRankStrSilent('Straight');
+    tableState.notifyAll();
+
+    await Future.delayed(const Duration(milliseconds: 500));
 
     tableState.addFlopCards(
       1,
@@ -512,12 +525,19 @@ class TestService {
     196, C4: A♦
     Ah, 10c, 9s, Jd, Ks 
     */
-    player.cards = [161, 200, 168, 177, 177]; //, 168, 177, 194];
+    player.cards = [
+      161,
+      200,
+      168,
+      177,
+      194,
+      // 196,
+    ]; //, 168, 177, 194];
     player.rankText = 'Full House';
     final myState = gameState.myState;
     myState.notify();
 
-    List<int> communityCards = [161, 200, 168, 177, 194];
+    List<int> communityCards = [161, 200, 168, 177];
 
     // final rabbitState = gameState.rabbitState;
     // player.noOfCardsVisible = player.cards.length;

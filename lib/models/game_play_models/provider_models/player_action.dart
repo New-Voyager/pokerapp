@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:pokerapp/proto/hand.pb.dart' as proto;
+import 'package:pokerapp/proto/hand.pbenum.dart';
 
 const String FOLD = 'FOLD';
 const String CALL = 'CALL';
@@ -55,6 +56,7 @@ class PlayerAction {
   double _seatInSoFar = 0;
   double _ploPotAmount = 0;
   List<Option> _options;
+  bool _raise = false;
 
   PlayerAction();
 
@@ -136,9 +138,15 @@ class PlayerAction {
     yourAction._ploPotAmount = 0;
     yourAction._potAmount = seatAction.potAmount;
 
-    if (yourAction._raiseAmount == yourAction._callAmount) {
-      yourAction._raiseAmount = 0;
+    yourAction._raise = false;
+    for (final action in seatAction.availableActions) {
+      if (action == ACTION.RAISE) {
+        yourAction._raise = true;
+      }
     }
+    // if (yourAction._raiseAmount == yourAction._callAmount) {
+    //   yourAction._raiseAmount = 0;
+    // }
 
     yourAction._options = [];
     for (final option in seatAction.betOptions) {
@@ -186,6 +194,7 @@ class PlayerAction {
   double get potAmount => _potAmount;
   double get seatInSoFar => _seatInSoFar;
   double get ploPotAmount => _ploPotAmount;
+  bool get raiseAvailable => _raise;
 
   void sort() {
     List<AvailableAction> sortedActions = [];

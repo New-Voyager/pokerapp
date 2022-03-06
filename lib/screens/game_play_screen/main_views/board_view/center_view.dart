@@ -11,15 +11,19 @@ import 'package:pokerapp/models/game_play_models/provider_models/table_state.dar
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/animation_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/center_button_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/pots_view.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/board_view/rank_widget.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/formatter.dart';
+import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/cards/animations/animating_shuffle_card_view.dart';
 import 'package:pokerapp/widgets/cards/community_cards_view/community_cards_view.dart';
+import 'package:pokerapp/widgets/debug_border_widget.dart';
 import 'package:provider/provider.dart';
 import "dart:math" show pi;
 
@@ -214,6 +218,7 @@ class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
       vnCardOthers: vnCardOthers,
       vnTwoBoardsNeeded: vnTwoBoardsNeeded,
       vnPotChipsUpdates: vnPotChipsUpdates,
+      vnRankStr: vnRankStr,
       gameState: gameState,
     );
   }
@@ -269,6 +274,7 @@ class _BoardCenterView extends StatelessWidget {
   final ValueNotifier<List<CardObject>> vnCards;
   final ValueNotifier<List<CardObject>> vnCardOthers;
   final ValueNotifier<bool> vnTwoBoardsNeeded;
+  final ValueNotifier<String> vnRankStr;
 
   final ValueNotifier<double> vnPotChipsUpdates;
   final GameState gameState;
@@ -283,6 +289,7 @@ class _BoardCenterView extends StatelessWidget {
     @required this.vnCardOthers,
     @required this.vnTwoBoardsNeeded,
     @required this.vnPotChipsUpdates,
+    @required this.vnRankStr,
     @required this.gameState,
   }) : super(key: key);
 
@@ -292,29 +299,42 @@ class _BoardCenterView extends StatelessWidget {
       children: [
         // pot view
         Expanded(
-          child: _PotViewWidget(
-            dimPots: tableState.dimPots,
-            vnPotChips: vnPotChips,
-            vnPotToHighlight: vnPotToHighlight,
+          child: DebugBorderWidget(
+            color: Colors.green,
+            child: _PotViewWidget(
+              dimPots: tableState.dimPots,
+              vnPotChips: vnPotChips,
+              vnPotToHighlight: vnPotToHighlight,
+            ),
           ),
         ),
 
         // community cards view
         Expanded(
-          flex: 3,
-          child: _CommunityCardsWidget(
-            vnCommunityCardsRefresh: vnCommunityCardsRefresh,
-            vnCards: vnCards,
-            vnCardOthers: vnCardOthers,
-            vnTwoBoardsNeeded: vnTwoBoardsNeeded,
+          flex: Screen.isLargeScreen ? 4 : 3,
+          child: DebugBorderWidget(
+            color: Colors.green,
+            child: Container(
+              width: gameState.gameUIState.centerViewRect.width,
+              child: _CommunityCardsWidget(
+                vnCommunityCardsRefresh: vnCommunityCardsRefresh,
+                vnCards: vnCards,
+                vnCardOthers: vnCardOthers,
+                vnTwoBoardsNeeded: vnTwoBoardsNeeded,
+              ),
+            ),
           ),
         ),
 
         // pots update view
         Expanded(
-          child: _PotUpdatesOrRankWidget(
-            vnPotChipsUpdates: vnPotChipsUpdates,
-            gameState: gameState,
+          child: DebugBorderWidget(
+            color: Colors.green,
+            child: _PotUpdatesOrRankWidget(
+              vnPotChipsUpdates: vnPotChipsUpdates,
+              gameState: gameState,
+              vnRankStr: vnRankStr,
+            ),
           ),
         ),
       ],
@@ -432,37 +452,59 @@ class _CommunityCardsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20.0),
-      child: FittedBox(
-        child: ValueListenableBuilder<int>(
-          valueListenable: vnCommunityCardsRefresh,
-          builder: (_, __, ___) {
-            return ValueListenableBuilder3<List<CardObject>, List<CardObject>,
-                bool>(
-              vnCards,
-              vnCardOthers,
-              vnTwoBoardsNeeded,
-              builder: (_, cards, cardsOther, twoBoardsNeeded, __) {
-                final gameState = GameState.getState(context);
-                final tableState = gameState.tableState;
+    return ValueListenableBuilder<int>(
+      valueListenable: vnCommunityCardsRefresh,
+      builder: (_, __, ___) {
+        return ValueListenableBuilder3<List<CardObject>, List<CardObject>,
+            bool>(
+          vnCards,
+          vnCardOthers,
+          vnTwoBoardsNeeded,
+          builder: (_, cards, cardsOther, twoBoardsNeeded, __) {
+            final gameState = GameState.getState(context);
+            final tableState = gameState.tableState;
 
-                /// we use a transform matrix to give the table center view contents a 3d perspective look
-                return Transform(
-                  transform: transformMatrix,
-                  alignment: FractionalOffset.center,
-                  child: CommunityCardsView(
-                    cards: tableState.cards,
-                    cardsOther: tableState.cardsOther,
-                    twoBoardsNeeded: tableState.twoBoardsNeeded,
-                    horizontal: true,
+            return LayoutBuilder(
+              builder: (_, constraints) {
+                /// available height for the community cards
+                final height = constraints.maxHeight;
+
+                /// single board factor = 4/5 of available height
+                final double singleBoardFactor =
+                    Screen.isLargeScreen ? 3.0 / 4 : 4.0 / 5;
+
+                /// double board factor = full available height
+                final double doubleBoardFactor =
+                    Screen.isLargeScreen ? 0.90 : 1.0;
+
+                /// board factor depending upon if single board / double board
+                final boardFactor =
+                    twoBoardsNeeded ? doubleBoardFactor : singleBoardFactor;
+
+                final negativeSpace = (1 - boardFactor) * height;
+
+                return Container(
+                  margin: EdgeInsets.symmetric(vertical: negativeSpace),
+                  child: FittedBox(
+                    fit: BoxFit.fitHeight,
+                    child: Transform(
+                      transform: transformMatrix,
+                      alignment: Alignment.center,
+                      child: CommunityCardsView(
+                        key: Key('community-cards-view'),
+                        cards: tableState.cards,
+                        cardsOther: tableState.cardsOther,
+                        twoBoardsNeeded: tableState.twoBoardsNeeded,
+                        horizontal: true,
+                      ),
+                    ),
                   ),
                 );
               },
             );
           },
-        ),
-      ),
+        );
+      },
     );
   }
 }
@@ -470,11 +512,13 @@ class _CommunityCardsWidget extends StatelessWidget {
 class _PotUpdatesOrRankWidget extends StatelessWidget {
   final ValueNotifier<double> vnPotChipsUpdates;
   final GameState gameState;
+  final ValueNotifier<String> vnRankStr;
 
   const _PotUpdatesOrRankWidget({
     Key key,
     @required this.vnPotChipsUpdates,
     @required this.gameState,
+    @required this.vnRankStr,
   }) : super(key: key);
 
   double _getOpacityForPotUpdatesView({
@@ -504,14 +548,18 @@ class _PotUpdatesOrRankWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (gameState.handState == HandState.RESULT) {
-      return SizedBox.shrink();
-    }
+    log('CenterView: rebuilding pot updates/rank view');
+    final theme = AppTheme.getTheme(context);
 
-    return FittedBox(
-      child: ValueListenableBuilder<double>(
-        valueListenable: vnPotChipsUpdates,
-        builder: (_, potChipsUpdates, __) {
+    Widget potUpdatesView = FittedBox(
+      child: ValueListenableBuilder2<double, String>(
+        vnPotChipsUpdates,
+        vnRankStr,
+        builder: (_, potChipsUpdates, rank, __) {
+          if (gameState.handState == HandState.RESULT) {
+            return RankWidget(theme, vnRankStr);
+          }
+
           double opacity = _getOpacityForPotUpdatesView(
             potChipsUpdates: potChipsUpdates,
             gameState: gameState,
@@ -554,6 +602,18 @@ class _PotUpdatesOrRankWidget extends StatelessWidget {
           );
         },
       ),
+    );
+
+    return potUpdatesView;
+
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        Transform.translate(
+            offset: Offset(0, -20),
+            child: FittedBox(child: RankWidget(theme, vnRankStr))),
+        potUpdatesView
+      ],
     );
   }
 }
