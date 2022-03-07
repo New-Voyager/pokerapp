@@ -49,6 +49,8 @@ class CenterView extends StatefulWidget {
 class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
   TableState get tableState => widget.tableState;
   AppTextScreen _appScreenText;
+  BoardAttributesObject boa;
+  final GlobalKey potKey = GlobalKey();
 
   Widget _bombPotAnimation() {
     return LottieBuilder.asset(
@@ -142,22 +144,21 @@ class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
     vnRankStr.value = tableState.rankStr;
   }
 
+  void calculatePotPosition() {
+    if (boa.potGlobalPos == null) {
+      final RenderBox box = potKey.currentContext?.findRenderObject();
+      if (box == null) return;
+      boa.potGlobalPos = box.localToGlobal(const Offset(0, 0));
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     _appScreenText = getAppTextScreen("centerView");
     tableState.addListener(tableStateListener);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final gameState = GameState.getState(context);
-      final boardAttributes = gameState.getBoardAttributes(context);
-      // get pot view position and store in board attributes
-      if (boardAttributes.potKey != null) {
-        final RenderBox potViewBox =
-            boardAttributes.potKey.currentContext.findRenderObject();
-        boardAttributes.potGlobalPos = potViewBox.localToGlobal(Offset(0, 0));
-        log('BoardView global potViewPos: ${boardAttributes.potGlobalPos}');
-      }
-    });
+    final gameState = GameState.getState(context);
+    boa = gameState.getBoardAttributes(context);
   }
 
   @override
@@ -220,6 +221,7 @@ class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
       vnPotChipsUpdates: vnPotChipsUpdates,
       vnRankStr: vnRankStr,
       gameState: gameState,
+      potKey: potKey,
     );
   }
 
@@ -252,6 +254,8 @@ class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
           gameStatus: gameStatus,
         ));
 
+        calculatePotPosition();
+
         return Stack(
           alignment: Alignment.center,
           children: children,
@@ -278,6 +282,7 @@ class _BoardCenterView extends StatelessWidget {
 
   final ValueNotifier<double> vnPotChipsUpdates;
   final GameState gameState;
+  final GlobalKey potKey;
 
   _BoardCenterView({
     Key key,
@@ -291,6 +296,7 @@ class _BoardCenterView extends StatelessWidget {
     @required this.vnPotChipsUpdates,
     @required this.vnRankStr,
     @required this.gameState,
+    @required this.potKey,
   }) : super(key: key);
 
   @override
@@ -305,6 +311,7 @@ class _BoardCenterView extends StatelessWidget {
               dimPots: tableState.dimPots,
               vnPotChips: vnPotChips,
               vnPotToHighlight: vnPotToHighlight,
+              potKey: potKey,
             ),
           ),
         ),
@@ -346,15 +353,15 @@ class _PotViewWidget extends StatelessWidget {
   final bool dimPots;
   final ValueNotifier<List<double>> vnPotChips;
   final ValueNotifier<int> vnPotToHighlight;
+  final GlobalKey potKey;
 
   _PotViewWidget({
     Key key,
     @required this.dimPots,
     @required this.vnPotChips,
     @required this.vnPotToHighlight,
+    @required this.potKey,
   }) : super(key: key);
-
-  final potKey = GlobalKey();
 
   Widget _buildMultiplePots() {
     return ValueListenableBuilder2<List<double>, int>(
@@ -379,7 +386,6 @@ class _PotViewWidget extends StatelessWidget {
 
           final potsView = PotsView(
             potChip: potChipValue,
-            uiKey: GlobalKey(),
             highlight: highlight,
             dim: dimView,
           );
@@ -414,8 +420,6 @@ class _PotViewWidget extends StatelessWidget {
       highlight: false,
       transparent: true,
     );
-
-    context.read<BoardAttributesObject>().potKey = potKey;
 
     Widget multiplePots = _buildMultiplePots();
 
