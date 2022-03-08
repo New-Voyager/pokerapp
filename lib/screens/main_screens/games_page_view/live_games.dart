@@ -227,10 +227,10 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
   Future<void> hostGame() async {
     // if the player does not have enough coins
     // don't host the game
-    if (AppConfig.availableCoins < 10) {
-      showErrorDialog(context, 'Error', 'Not enough coins to host a game');
-      return;
-    }
+    // if (AppConfig.availableCoins < 10) {
+    //   showErrorDialog(context, 'Error', 'Not enough coins to host a game');
+    //   return;
+    // }
 
     final dynamic result = await Navigator.of(context).pushNamed(
       Routes.new_game_settings,
