@@ -669,7 +669,7 @@ class GameState {
   set currentHandNum(int handNum) => this._currentHandNum = currentHandNum;
 
   Future<void> refreshSettings() async {
-    log('************ Refreshing game state');
+    log('************ Refreshing game state refreshSettings');
     // fetch new player using GameInfo API and add to the game
     GameSettings settings = await GameSettingsService.getGameSettings(gameCode);
 
@@ -703,7 +703,7 @@ class GameState {
   }
 
   Future<void> refreshPlayerSettings() async {
-    log('************ Refreshing game state');
+    log('************ Refreshing game state refreshPlayerSettings');
     GamePlayerSettings settings =
         await GameSettingsService.getGamePlayerSettings(gameCode);
 
@@ -747,7 +747,7 @@ class GameState {
   }
 
   Future<void> refresh({bool rebuildSeats = false}) async {
-    log('************ Refreshing game state');
+    log('************ Refreshing game state refresh');
     GameInfoModel gameInfo = await GameService.getGameInfo(this._gameCode);
     if (gameInfo == null) {
       // check whether the game has ended

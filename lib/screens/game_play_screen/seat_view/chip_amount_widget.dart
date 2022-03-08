@@ -177,12 +177,13 @@ class ChipAmountWidget extends StatelessWidget {
     }
 
     betWidget = Transform.scale(
-        scale: scale,
-        child: Row(
-          crossAxisAlignment: crossAxisAlignment,
-          mainAxisSize: MainAxisSize.min,
-          children: children,
-        ));
+      scale: scale,
+      child: Row(
+        crossAxisAlignment: crossAxisAlignment,
+        mainAxisSize: MainAxisSize.min,
+        children: children,
+      ),
+    );
 
     if (animate) {
       return betWidget;

@@ -66,13 +66,13 @@ class _BoardViewState extends State<BoardView> {
     );
 
     final deflate = Screen.isLargeScreen ? 25.0 : 10.0;
-
+    final deflateRect = deflate + 10;
     final rect = Rect.fromLTWH(
       left,
       top,
       centerViewSize.width,
       centerViewSize.height,
-    ).deflate(deflate);
+    ).deflate(deflateRect);
 
     return Tuple2<Offset, Size>(
       Offset(rect.left, rect.top - deflate),

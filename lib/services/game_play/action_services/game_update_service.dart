@@ -295,7 +295,11 @@ class GameUpdateService {
       return;
     }
 
-    assert(newPlayerModel != null);
+    if (_gameState.getPlayerById(newPlayerModel.playerId) != null) {
+      log('handleNewPlayer :: player exists locally :: ${newPlayerModel.playerId}');
+      return;
+    }
+
     // put the status of the fetched player
     newPlayerModel?.status = playerUpdate['status'];
 
@@ -843,7 +847,7 @@ class GameUpdateService {
   }) {
     var playerUpdate = data;
     String dataStr = jsonEncode(playerUpdate);
-    log('PLAYER_UPDATE: $dataStr');
+    log('handleNewPlayerUpdate :: PLAYER_UPDATE: $dataStr');
     String newUpdate = playerUpdate['newUpdate'];
     String playerStatus = playerUpdate['status'];
     int playerId = int.parse(playerUpdate['playerId'].toString());
@@ -905,6 +909,7 @@ class GameUpdateService {
         return handlePlayerBuyinDenied(
           playerUpdate: playerUpdate,
         );
+
       case AppConstants.RELOAD_DENIED:
         return handlePlayerReloadDenied(
           playerUpdate: playerUpdate,
