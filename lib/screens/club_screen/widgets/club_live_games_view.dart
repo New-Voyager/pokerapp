@@ -144,11 +144,11 @@ class ClubLiveGamesView extends StatelessWidget {
     int minCoinsNeeded = 10;
     // if the player does not have enough coins
     // don't host the game
-    if (clubModel.clubCoins < 10) {
-      showErrorDialog(context, 'Error',
-          'Not enough coins to host a game. $minCoinsNeeded required to host a game');
-      return;
-    }
+    // if (clubModel.clubCoins < 10) {
+    //   showErrorDialog(context, 'Error',
+    //       'Not enough coins to host a game. $minCoinsNeeded required to host a game');
+    //   return;
+    // }
 
     final dynamic result = await Navigator.pushNamed(
       context,

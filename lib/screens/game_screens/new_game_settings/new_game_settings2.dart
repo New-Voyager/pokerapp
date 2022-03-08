@@ -24,13 +24,11 @@ import 'package:pokerapp/widgets/multi_game_selection.dart';
 import 'package:pokerapp/widgets/radio_list_widget.dart';
 import 'package:pokerapp/widgets/slider.dart';
 import 'package:pokerapp/widgets/switch.dart';
-import 'package:pokerapp/widgets/switch_widget.dart';
 import 'package:pokerapp/widgets/text_input_widget.dart';
 import 'package:pokerapp/widgets/textfields.dart';
 import 'package:pokerapp/widgets/texts.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
-import 'package:flutter_xlider/flutter_xlider.dart';
 
 import '../../../main_helper.dart';
 import '../../../routes.dart';
@@ -544,54 +542,6 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
                               gmp.bombPotHandInterval = val;
                             },
                           ),
-                          // FlutterSlider(
-                          //   handlerHeight: 20,
-                          //   handler: FlutterSliderHandler(
-                          //       child: Container(
-                          //           decoration: BoxDecoration(
-                          //               shape: BoxShape.circle,
-                          //               gradient: LinearGradient(
-                          //                   // colors: [
-                          //                   //   Colors.black38,
-                          //                   //   Colors.black87,
-                          //                   //   Colors.black,
-                          //                   // ],
-                          //                   colors: [
-                          //                     theme.accentColorWithDark(0.1),
-                          //                     theme.accentColorWithDark(0.2),
-                          //                     theme.accentColor,
-                          //                   ],
-                          //                   begin: Alignment.topLeft,
-                          //                   end: Alignment.bottomRight)))),
-                          //   tooltip: FlutterSliderTooltip(
-                          //     disabled: true,
-                          //   ),
-                          //   values: [gmp.bombPotHandInterval.toDouble()],
-                          //   trackBar: FlutterSliderTrackBar(
-                          //     activeTrackBarHeight: 8,
-                          //     inactiveTrackBarHeight: 8,
-                          //     inactiveTrackBar: BoxDecoration(
-                          //       borderRadius: BorderRadius.circular(20),
-                          //       border: Border.all(
-                          //           width: 1, color: theme.accentColor),
-                          //     ),
-                          //     activeTrackBar: BoxDecoration(
-                          //         borderRadius: BorderRadius.circular(20),
-                          //         color: theme.accentColor,
-                          //         border: Border.all(
-                          //             width: 1, color: theme.accentColor)),
-                          //   ),
-                          //   max: 100,
-                          //   min: 1,
-                          //   onDragCompleted: (val, val1, val2) {
-                          //     gmp.bombPotHandInterval = val1.toInt();
-                          //     //setState(() {});
-                          //   },
-                          //   onDragging: (handlerIndex, lowerValue, upperValue) {
-                          //     gmp.bombPotHandInterval = lowerValue.toInt();
-                          //     //setState(() {});
-                          //   },
-                          // )
                         ]),
                       ),
                       NewGameSettings2.sepV8,
@@ -1269,14 +1219,17 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
                                 // ),
 
                                 /* bot games */
-                                _buildRadio(
-                                  label: appScreenText['botGame'],
-                                  value: gmp.botGame,
-                                  onChange: (bool b) {
-                                    gmp.botGame = b;
-                                  },
-                                  theme: theme,
-                                ),
+                                gmp.settings.clubCode == null ||
+                                        gmp.settings.clubCode.isEmpty
+                                    ? _buildRadio(
+                                        label: appScreenText['botGame'],
+                                        value: gmp.botGame,
+                                        onChange: (bool b) {
+                                          gmp.botGame = b;
+                                        },
+                                        theme: theme,
+                                      )
+                                    : Container(),
                                 /* location check */
                                 _buildRadio(
                                   label: appScreenText['locationCheck'],
