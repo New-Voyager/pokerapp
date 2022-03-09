@@ -41,7 +41,7 @@ class Screen {
   }
 
   static bool get isLargeScreen {
-    return Screen.screenSizeInches > 7;
+    return Screen.screenSizeInches >= 7;
   }
 
   static int get screenSize {
