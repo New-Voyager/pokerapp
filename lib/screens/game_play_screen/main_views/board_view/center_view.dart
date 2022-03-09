@@ -306,7 +306,7 @@ class _BoardCenterView extends StatelessWidget {
         // pot view
         Expanded(
           child: DebugBorderWidget(
-            color: Colors.green,
+            color: Colors.transparent,
             child: _PotViewWidget(
               dimPots: tableState.dimPots,
               vnPotChips: vnPotChips,
@@ -320,7 +320,7 @@ class _BoardCenterView extends StatelessWidget {
         Expanded(
           flex: Screen.isLargeScreen ? 4 : 3,
           child: DebugBorderWidget(
-            color: Colors.green,
+            color: Colors.transparent,
             child: Container(
               width: gameState.gameUIState.centerViewRect.width,
               child: _CommunityCardsWidget(
@@ -336,7 +336,7 @@ class _BoardCenterView extends StatelessWidget {
         // pots update view
         Expanded(
           child: DebugBorderWidget(
-            color: Colors.green,
+            color: Colors.transparent,
             child: _PotUpdatesOrRankWidget(
               vnPotChipsUpdates: vnPotChipsUpdates,
               gameState: gameState,

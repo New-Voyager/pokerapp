@@ -14,11 +14,10 @@ import 'package:pokerapp/screens/game_play_screen/main_views/animating_widgets/l
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/player_chat_bubble.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/name_plate_view.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/player_view.dart';
-import 'package:pokerapp/services/audio/audio_service.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/utils/name_plate_widget_parent.dart';
-import 'package:pokerapp/utils/sizing_utils/sizing_utils.dart';
+import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/debug_border_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -329,8 +328,11 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
 
   @override
   Widget build(BuildContext context) {
-    final ts = SizingUtils.getPlayersOnTableSize(widget.tableSize);
+    final ts =
+        widget.gameState.gameUIState.getPlayersOnTableSize(widget.tableSize);
     Provider.of<SeatsOnTableState>(context, listen: true);
+    // this calculates the table size after drawing the table image
+    widget.gameState.gameUIState.calculateTableSizePostFrame();
 
     return AnimatedBuilder(
         animation: animations,
@@ -341,16 +343,27 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
             key: _parentKey,
             children: [
               // positioning players
-              SizedBox(
-                width: ts.width,
-                height: ts.height,
-                child: CustomMultiChildLayout(
-                  delegate: PlayerPlacementDelegate(
-                    isLarger: widget.isLargerScreen,
-                  ),
-                  children: _getPlayers(context),
-                ),
-              ),
+              Align(
+                  alignment: Alignment.center,
+                  child: SizedBox(
+                      key: widget.gameState.gameUIState.playerOnTableKey,
+                      width: ts.width,
+                      height: ts.height,
+                      child: ValueListenableBuilder(
+                          valueListenable: widget
+                              .gameState.gameUIState.playerOnTablePositionVn,
+                          builder: (_, size, __) {
+                            return DebugBorderWidget(
+                              color: Colors.redAccent,
+                              child: CustomMultiChildLayout(
+                                delegate: PlayerPlacementDelegate(
+                                  isLarger: widget.isLargerScreen,
+                                  gameState: widget.gameState,
+                                ),
+                                children: _getPlayers(context),
+                              ),
+                            );
+                          }))),
 
               // lottie animations
               ...animations.animations,
@@ -375,11 +388,17 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
 
 class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
   final bool isLarger;
+  final GameState gameState;
 
-  PlayerPlacementDelegate({@required this.isLarger});
+  PlayerPlacementDelegate({@required this.isLarger, @required this.gameState});
 
   @override
   void performLayout(Size size) {
+    if (Screen.isLargeScreen) {
+      performLayoutLargeScreen(size);
+      return;
+    }
+
     // top left
     if (hasChild(SeatPos.topLeft)) {
       final cs = layoutChild(
@@ -403,19 +422,6 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
       positionChild(
         SeatPos.topRight,
         Offset(size.width - cs.width, 0.0),
-      );
-    }
-
-    // middle left
-    if (hasChild(SeatPos.middleLeft)) {
-      final cs = layoutChild(
-        SeatPos.middleLeft,
-        BoxConstraints.loose(size),
-      );
-
-      positionChild(
-        SeatPos.middleLeft,
-        Offset(0.0, size.height / 2 - cs.height / 1.5),
       );
     }
 
@@ -466,19 +472,6 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
       );
     }
 
-    // middle right
-    if (hasChild(SeatPos.middleRight)) {
-      final cs = layoutChild(
-        SeatPos.middleRight,
-        BoxConstraints.loose(size),
-      );
-
-      positionChild(
-        SeatPos.middleRight,
-        Offset(size.width - cs.width, size.height / 2 - cs.height / 1.5),
-      );
-    }
-
     // bottom left
     // 3/16 th from left -> 0   1/8   3/16   1/4    1/2 ...................... 1
     if (hasChild(SeatPos.bottomLeft)) {
@@ -522,6 +515,213 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
         Offset(
           (13 * size.width / 16) - (cs.width / 2),
           size.height - cs.height,
+        ),
+      );
+    }
+
+    // middle left
+    if (hasChild(SeatPos.middleLeft)) {
+      final cs = layoutChild(
+        SeatPos.middleLeft,
+        BoxConstraints.loose(size),
+      );
+
+      positionChild(
+        SeatPos.middleLeft,
+        Offset(0.0, size.height / 2 - cs.height / 1.5),
+      );
+    }
+    // middle right
+    if (hasChild(SeatPos.middleRight)) {
+      final cs = layoutChild(
+        SeatPos.middleRight,
+        BoxConstraints.loose(size),
+      );
+
+      positionChild(
+        SeatPos.middleRight,
+        Offset(size.width - cs.width, size.height / 2 - cs.height / 1.5),
+      );
+    }
+  }
+
+  void performLayoutLargeScreen(Size size) {
+    final pot = gameState.gameUIState.playerOnTableRect;
+    final table = gameState.gameUIState.tableRect;
+    final npVertPadding = gameState.gameUIState.namePlateVeriticalPadding;
+
+    double widthGap = 0;
+    double heightGap = 0;
+    double topLeftLeft = 0;
+    if (pot != null) {
+      widthGap = table.left - pot.left;
+      heightGap = table.top - pot.top;
+    }
+    double left = 0;
+    double top = 0;
+    double topGap = 0;
+
+    // top left
+    if (hasChild(SeatPos.topLeft)) {
+      final cs = layoutChild(
+        SeatPos.topLeft,
+        BoxConstraints.loose(size),
+      );
+
+      left = widthGap;
+      top = heightGap / 2;
+      topLeftLeft = left;
+      positionChild(
+        SeatPos.topLeft,
+        Offset(left, top),
+      );
+    }
+
+    // top right
+    if (hasChild(SeatPos.topRight)) {
+      final cs = layoutChild(
+        SeatPos.topRight,
+        BoxConstraints.loose(size),
+      );
+
+      left = topLeftLeft + table.width - cs.width;
+      top = heightGap / 2;
+      topGap = (left + cs.width) - topLeftLeft;
+      positionChild(
+        SeatPos.topRight,
+        Offset(left, top),
+      );
+    }
+
+    // middle left
+    if (hasChild(SeatPos.middleLeft)) {
+      final cs = layoutChild(
+        SeatPos.middleLeft,
+        BoxConstraints.loose(size),
+      );
+      left = 0;
+      top = heightGap + (table.height - cs.height) / 3;
+
+      positionChild(
+        SeatPos.middleLeft,
+        Offset(left, top),
+      );
+    }
+
+    // top center 1
+    // 3/8 th from the left
+    if (hasChild(SeatPos.topCenter1)) {
+      final cs = layoutChild(
+        SeatPos.topCenter1,
+        BoxConstraints.loose(size),
+      );
+      double topCenter1Left = (topGap / 2) - cs.width * 3 / 4;
+      top = (heightGap - cs.height) + npVertPadding;
+
+      positionChild(
+        SeatPos.topCenter1,
+        Offset(
+          topCenter1Left,
+          top,
+        ),
+      );
+    }
+
+    // top center 2
+    // 5/8 th from the left
+    if (hasChild(SeatPos.topCenter2)) {
+      final cs = layoutChild(
+        SeatPos.topCenter2,
+        BoxConstraints.loose(size),
+      );
+
+      double topCenter1Left = (topGap / 2) + cs.width * 3 / 4;
+      top = (heightGap - cs.height) + npVertPadding;
+
+      positionChild(
+        SeatPos.topCenter2,
+        Offset(
+          topCenter1Left,
+          top,
+        ),
+      );
+    }
+
+    // top center
+    if (hasChild(SeatPos.topCenter)) {
+      final cs = layoutChild(
+        SeatPos.topCenter,
+        BoxConstraints.loose(size),
+      );
+
+      positionChild(
+        SeatPos.topCenter,
+        Offset((size.width / 2) - cs.width / 2, -cs.height * 0.20),
+      );
+    }
+
+    // middle right
+    if (hasChild(SeatPos.middleRight)) {
+      final cs = layoutChild(
+        SeatPos.middleRight,
+        BoxConstraints.loose(size),
+      );
+      left = size.width - cs.width;
+      top = heightGap + (table.height - cs.height) / 3;
+
+      positionChild(
+        SeatPos.middleRight,
+        Offset(left, top),
+      );
+    }
+
+    // bottom left
+    // 3/16 th from left -> 0   1/8   3/16   1/4    1/2 ...................... 1
+    if (hasChild(SeatPos.bottomLeft)) {
+      final cs = layoutChild(
+        SeatPos.bottomLeft,
+        BoxConstraints.loose(size),
+      );
+
+      left = widthGap;
+      top = size.height - cs.height - heightGap / 4;
+      positionChild(
+        SeatPos.bottomLeft,
+        Offset(
+          left,
+          top,
+        ),
+      );
+    }
+
+    // bottom center
+    if (hasChild(SeatPos.bottomCenter)) {
+      final cs = layoutChild(
+        SeatPos.bottomCenter,
+        BoxConstraints.loose(size),
+      );
+
+      positionChild(
+        SeatPos.bottomCenter,
+        Offset((size.width / 2) - cs.width / 2, size.height - cs.height),
+      );
+    }
+
+    // bottom right
+    // 13/16 th from left
+    if (hasChild(SeatPos.bottomRight)) {
+      final cs = layoutChild(
+        SeatPos.bottomRight,
+        BoxConstraints.loose(size),
+      );
+      left = topLeftLeft + table.width - cs.width;
+      top = size.height - cs.height - heightGap / 4;
+
+      positionChild(
+        SeatPos.bottomRight,
+        Offset(
+          left,
+          top,
         ),
       );
     }

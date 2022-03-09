@@ -11,10 +11,8 @@ import 'package:pokerapp/screens/game_play_screen/main_views/board_view/players_
 import 'package:pokerapp/screens/game_play_screen/seat_view/animating_widgets/stack_switch_seat_animating_widget.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/utils/name_plate_widget_parent.dart';
-import 'package:pokerapp/utils/sizing_utils/sizing_utils.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/debug_border_widget.dart';
-import 'package:pokerapp/widgets/nameplate.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
@@ -48,36 +46,7 @@ class _BoardViewState extends State<BoardView> {
 
     // this calculates the table size after drawing the table image
     gameState.gameUIState.calculateTableSizePostFrame();
-    gameState.calculatePlayersOnTablePositionPostFrame();
-  }
-
-  Tuple2<Offset, Size> _getCenterViewRect({
-    @required Size size,
-    @required Offset position,
-  }) {
-    final namePlateSize = NamePlateWidgetParent.namePlateSize;
-
-    final left = position.dx + namePlateSize.width;
-    final top = position.dy + namePlateSize.height;
-
-    final centerViewSize = Size(
-      gameState.playerOnTableSize.width - namePlateSize.width * 2.0,
-      gameState.playerOnTableSize.height - namePlateSize.height * 2.0,
-    );
-
-    final deflate = Screen.isLargeScreen ? 25.0 : 10.0;
-    final deflateRect = deflate + 10;
-    final rect = Rect.fromLTWH(
-      left,
-      top,
-      centerViewSize.width,
-      centerViewSize.height,
-    ).deflate(deflateRect);
-
-    return Tuple2<Offset, Size>(
-      Offset(rect.left, rect.top - deflate),
-      rect.size,
-    );
+    gameState.gameUIState.calculatePlayersOnTablePositionPostFrame();
   }
 
   @override
@@ -101,16 +70,16 @@ class _BoardViewState extends State<BoardView> {
     bool isLargerScreen = false;
     print(boardAttributes.screenDiagnolSize);
     if (boardAttributes.screenDiagnolSize > 7.0) {
-      tableWidthFactor = 0.80;
+      tableWidthFactor = 0.70;
       isLargerScreen = true;
     }
 
     // this calculates the table size after drawing the table image
-    gameState.gameUIState.calculateTableSizePostFrame();
+    // gameState.gameUIState.calculateTableSizePostFrame();
 
     return DebugBorderWidget(
-      key: gameState.boardKey,
-      color: Colors.white,
+      key: gameState.gameUIState.boardKey,
+      color: Colors.transparent,
       child: Stack(
         clipBehavior: Clip.antiAlias,
         alignment: Alignment.center,
@@ -121,9 +90,12 @@ class _BoardViewState extends State<BoardView> {
             child: BackgroundView(),
           ),
 
-          DebugBorderWidget(
-            color: Colors.green,
-            child: TableView(tableWidthFactor: tableWidthFactor),
+          Positioned(
+            bottom: NamePlateWidgetParent.namePlateSize.height,
+            child: DebugBorderWidget(
+              color: Colors.green,
+              child: TableView(tableWidthFactor: tableWidthFactor),
+            ),
           ),
 
           // new players view
@@ -132,9 +104,9 @@ class _BoardViewState extends State<BoardView> {
             builder: (_, size, __) {
               if (size == null) return const SizedBox.shrink();
               return DebugBorderWidget(
-                color: Colors.amber,
+                color: Colors.transparent,
                 child: PlayersOnTableViewNew(
-                  key: gameState.playerOnTableKey,
+                  // key: gameState.gameUIState.playerOnTableKey,
                   tableSize: size,
                   onUserTap: widget.onUserTap,
                   gameComService: widget.gameComService,
@@ -150,14 +122,13 @@ class _BoardViewState extends State<BoardView> {
 
           ValueListenableBuilder2(
             gameState.gameUIState.tableSizeVn,
-            gameState.playerOnTablePositionVn,
+            gameState.gameUIState.playerOnTablePositionVn,
             builder: (_, Size tableSize, Offset position, __) {
               if (tableSize == null || position == null) {
                 return const SizedBox.shrink();
               }
 
-              final rect =
-                  _getCenterViewRect(size: tableSize, position: position);
+              final rect = gameState.gameUIState.getCenterViewRect();
 
               gameState.gameUIState.centerViewRect = Rect.fromLTWH(
                   rect.item1.dx,
@@ -168,7 +139,7 @@ class _BoardViewState extends State<BoardView> {
                 left: rect.item1.dx,
                 top: rect.item1.dy,
                 child: DebugBorderWidget(
-                  color: Colors.lime,
+                  color: Colors.yellow,
                   child: SizedBox.fromSize(
                     size: rect.item2,
                     child: CenterView(

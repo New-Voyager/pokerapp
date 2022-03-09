@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
+import 'package:pokerapp/utils/name_plate_widget_parent.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:provider/src/provider.dart';
+import 'package:tuple/tuple.dart';
 
 class GameUIState {
   // table key - we need this to calculate the exact dimension of the table image
@@ -14,6 +16,16 @@ class GameUIState {
   double cardsDisplacement;
   double cardsSizeRatio;
   Rect centerViewRect;
+  Offset tableGlobalTopLeft;
+  Rect playerOnTableRect;
+  Rect tableRect;
+  final GlobalKey boardKey = GlobalKey();
+  final GlobalKey playerOnTableKey = GlobalKey();
+  final ValueNotifier<Offset> playerOnTablePositionVn =
+      ValueNotifier<Offset>(null);
+
+  Size _playerOnTableSize;
+  Size get playerOnTableSize => _playerOnTableSize;
 
   Map<int, Rect> cardEyes = Map<int, Rect>();
 
@@ -23,7 +35,10 @@ class GameUIState {
       while (true) {
         final box = tableKey.currentContext.findRenderObject() as RenderBox;
         if (box.size.shortestSide != 0.0) {
+          tableGlobalTopLeft = box.localToGlobal(Offset.zero);
           tableSizeVn.value = box.size;
+          tableRect = Rect.fromLTWH(tableGlobalTopLeft.dx,
+              tableGlobalTopLeft.dy, box.size.width, box.size.height);
           break;
         }
         await Future.delayed(const Duration(milliseconds: 10));
@@ -110,5 +125,72 @@ class GameUIState {
     var cardWidth = gameState.gameUIState.holeCardsViewSize.width -
         (cardsDisplacement * cardsLength);
     cardSize = Size(cardWidth, cardWidth * 38 / 30);
+  }
+
+  Size getPlayersOnTableSize(Size tableSize) {
+    double width = tableSize.width;
+    double height =
+        tableSize.height + NamePlateWidgetParent.namePlateSize.height * 1.5;
+    if (Screen.isLargeScreen) {
+      width = tableSize.width + NamePlateWidgetParent.namePlateSize.width;
+    }
+    return Size(width, height);
+  }
+
+  void calculatePlayersOnTablePositionPostFrame() {
+    if (playerOnTablePositionVn.value != null) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      while (playerOnTableKey.currentContext == null) {
+        await Future.delayed(const Duration(milliseconds: 10));
+      }
+
+      final box =
+          playerOnTableKey.currentContext.findRenderObject() as RenderBox;
+
+      _playerOnTableSize = box.size;
+      final tempPos = box.localToGlobal(Offset.zero);
+
+      final box1 = boardKey.currentContext.findRenderObject() as RenderBox;
+      final playerOnTablePos = box1.globalToLocal(tempPos);
+
+      playerOnTablePositionVn.value = playerOnTablePos;
+      playerOnTableRect = Rect.fromLTWH(
+          tempPos.dx, tempPos.dy, box.size.width, box.size.height);
+
+      print(
+        'calculatePlayersOnTablePositionPostFrame: ${playerOnTablePositionVn.value} rect: ${playerOnTableRect}',
+      );
+    });
+  }
+
+  double get namePlateVeriticalPadding {
+    return 10.0;
+  }
+
+  Tuple2<Offset, Size> getCenterViewRect() {
+    final namePlateSize = NamePlateWidgetParent.namePlateSize;
+
+    final left = playerOnTableRect.left + namePlateSize.width;
+    final top = playerOnTableRect.top + namePlateSize.height;
+
+    final centerViewSize = Size(
+      playerOnTableSize.width - namePlateSize.width * 2.0,
+      playerOnTableSize.height - namePlateSize.height * 2.0,
+    );
+
+    final deflate = Screen.isLargeScreen ? namePlateSize.height / 2 : 10.0;
+    final deflateRect = deflate + 10;
+
+    final rect = Rect.fromLTWH(
+      left,
+      top,
+      centerViewSize.width,
+      centerViewSize.height,
+    ).deflate(deflateRect);
+
+    return Tuple2<Offset, Size>(
+      Offset(rect.left, playerOnTableRect.top + namePlateSize.height),
+      rect.size,
+    );
   }
 }
