@@ -31,8 +31,18 @@ class GameUIState {
 
   Size _playerOnTableSize;
   Size get playerOnTableSize => _playerOnTableSize;
+  double tableWidthFactor = 1.0;
 
   Map<int, Rect> cardEyes = Map<int, Rect>();
+  void init() {
+    NamePlateWidgetParent.setWidth(80);
+    if (Screen.diagonalInches >= 7 && Screen.diagonalInches < 9) {
+      tableWidthFactor = 0.70;
+    } else if (Screen.diagonalInches >= 9) {
+      NamePlateWidgetParent.setWidth(100);
+      tableWidthFactor = 0.70;
+    }
+  }
 
   void calculateTableSizePostFrame({bool force = false}) {
     if (!force && tableSizeVn.value != null) return;

@@ -45,6 +45,7 @@ class _BoardViewState extends State<BoardView> {
     super.initState();
 
     gameState = GameState.getState(context);
+    gameState.gameUIState.init();
 
     // this calculates the table size after drawing the table image
     gameState.gameUIState.calculateTableSizePostFrame();
@@ -68,13 +69,14 @@ class _BoardViewState extends State<BoardView> {
     // TODO: WE NEED TWO NEW VARIABLES FROM OUTSIDE
     // TODO: 1. TABLE WIDTH FACTOR
     // TODO: 2. IS LARGER SCREEN
-    double tableWidthFactor = 1.0;
-    bool isLargerScreen = false;
-    print(boardAttributes.screenDiagnolSize);
-    if (boardAttributes.screenDiagnolSize > 7.0) {
-      tableWidthFactor = 0.70;
-      isLargerScreen = true;
-    }
+
+    // double tableWidthFactor = 1.0;
+    // bool isLargerScreen = false;
+    // print(boardAttributes.screenDiagnolSize);
+    // if (boardAttributes.screenDiagnolSize >= 7.0) {
+    //   tableWidthFactor = 0.70;
+    //   isLargerScreen = true;
+    // }
 
     // this calculates the table size after drawing the table image
     // gameState.gameUIState.calculateTableSizePostFrame();
@@ -96,7 +98,8 @@ class _BoardViewState extends State<BoardView> {
             bottom: NamePlateWidgetParent.namePlateSize.height,
             child: DebugBorderWidget(
               color: Colors.green,
-              child: TableView(tableWidthFactor: tableWidthFactor),
+              child: TableView(
+                  tableWidthFactor: gameState.gameUIState.tableWidthFactor),
             ),
           ),
 
@@ -117,7 +120,7 @@ class _BoardViewState extends State<BoardView> {
                   gameComService: widget.gameComService,
                   gameState: gameState,
                   maxPlayers: widget.gameInfo.maxPlayers,
-                  isLargerScreen: isLargerScreen,
+                  isLargerScreen: Screen.isLargeScreen,
                 ),
               );
 
