@@ -328,8 +328,6 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
 
   @override
   Widget build(BuildContext context) {
-    final ts =
-        widget.gameState.gameUIState.getPlayersOnTableSize(widget.tableSize);
     Rect rect = widget.gameState.gameUIState.getPlayersOnTableRect();
     log('PlayersOnTableViewNew Rect: ${rect}');
     Provider.of<SeatsOnTableState>(context, listen: true);
@@ -357,6 +355,9 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
                           valueListenable: widget
                               .gameState.gameUIState.playerOnTablePositionVn,
                           builder: (_, size, __) {
+                            if (size == null) {
+                              return Container();
+                            }
                             return DebugBorderWidget(
                               color: Colors.redAccent,
                               child: CustomMultiChildLayout(
@@ -550,6 +551,144 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
   }
 
   void performLayoutLargeScreen(Size size) {
+    final pot = gameState.gameUIState.seatPosToOffsetMap;
+
+    // top left
+    if (hasChild(SeatPos.topLeft)) {
+      final cs = layoutChild(
+        SeatPos.topLeft,
+        BoxConstraints.loose(size),
+      );
+
+      positionChild(
+        SeatPos.topLeft,
+        pot[SeatPos.topLeft],
+      );
+    }
+
+    // top right
+    if (hasChild(SeatPos.topRight)) {
+      final cs = layoutChild(
+        SeatPos.topRight,
+        BoxConstraints.loose(size),
+      );
+
+      positionChild(
+        SeatPos.topRight,
+        pot[SeatPos.topRight],
+      );
+    }
+
+    // middle left
+    if (hasChild(SeatPos.middleLeft)) {
+      final cs = layoutChild(
+        SeatPos.middleLeft,
+        BoxConstraints.loose(size),
+      );
+
+      positionChild(
+        SeatPos.middleLeft,
+        pot[SeatPos.middleLeft],
+      );
+    }
+
+    // top center 1
+    // 3/8 th from the left
+    if (hasChild(SeatPos.topCenter1)) {
+      final cs = layoutChild(
+        SeatPos.topCenter1,
+        BoxConstraints.loose(size),
+      );
+
+      positionChild(
+        SeatPos.topCenter1,
+        pot[SeatPos.topCenter1],
+      );
+    }
+
+    // top center 2
+    // 5/8 th from the left
+    if (hasChild(SeatPos.topCenter2)) {
+      final cs = layoutChild(
+        SeatPos.topCenter2,
+        BoxConstraints.loose(size),
+      );
+
+      positionChild(
+        SeatPos.topCenter2,
+        pot[SeatPos.topCenter2],
+      );
+    }
+
+    // top center
+    if (hasChild(SeatPos.topCenter)) {
+      final cs = layoutChild(
+        SeatPos.topCenter,
+        BoxConstraints.loose(size),
+      );
+
+      positionChild(
+        SeatPos.topCenter,
+        pot[SeatPos.topCenter],
+      );
+    }
+
+    // middle right
+    if (hasChild(SeatPos.middleRight)) {
+      final cs = layoutChild(
+        SeatPos.middleRight,
+        BoxConstraints.loose(size),
+      );
+
+      positionChild(
+        SeatPos.middleRight,
+        pot[SeatPos.middleRight],
+      );
+    }
+
+    // bottom left
+    // 3/16 th from left -> 0   1/8   3/16   1/4    1/2 ...................... 1
+    if (hasChild(SeatPos.bottomLeft)) {
+      final cs = layoutChild(
+        SeatPos.bottomLeft,
+        BoxConstraints.loose(size),
+      );
+
+      positionChild(
+        SeatPos.bottomLeft,
+        pot[SeatPos.bottomLeft],
+      );
+    }
+
+    // bottom center
+    if (hasChild(SeatPos.bottomCenter)) {
+      final cs = layoutChild(
+        SeatPos.bottomCenter,
+        BoxConstraints.loose(size),
+      );
+
+      positionChild(
+        SeatPos.bottomCenter,
+        pot[SeatPos.bottomCenter],
+      );
+    }
+
+    // bottom right
+    // 13/16 th from left
+    if (hasChild(SeatPos.bottomRight)) {
+      final cs = layoutChild(
+        SeatPos.bottomRight,
+        BoxConstraints.loose(size),
+      );
+
+      positionChild(
+        SeatPos.bottomRight,
+        pot[SeatPos.bottomRight],
+      );
+    }
+  }
+
+  void performLayoutLargeScreenOld(Size size) {
     final pot = gameState.gameUIState.playerOnTableRect;
     final table = gameState.gameUIState.tableRect;
     final npVertPadding = gameState.gameUIState.tableBaseHeight;

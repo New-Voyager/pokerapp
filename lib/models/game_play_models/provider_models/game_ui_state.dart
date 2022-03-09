@@ -32,7 +32,7 @@ class GameUIState {
   Size _playerOnTableSize;
   Size get playerOnTableSize => _playerOnTableSize;
   double tableWidthFactor = 1.0;
-
+  Map<SeatPos, Offset> seatPosToOffsetMap = {};
   Map<int, Rect> cardEyes = Map<int, Rect>();
   void init() {
     NamePlateWidgetParent.setWidth(80);
@@ -42,6 +42,75 @@ class GameUIState {
       NamePlateWidgetParent.setWidth(100);
       tableWidthFactor = 0.70;
     }
+  }
+
+  void initSeatPos() {
+    final pot = this.playerOnTableRect;
+    final table = this.tableRect;
+
+    double widthGap = 0;
+    double heightGap = 0;
+    double topLeftLeft = 0;
+    if (pot != null) {
+      widthGap = table.left - pot.left;
+      heightGap = table.top - pot.top;
+    }
+    double left = 0;
+    double top = 0;
+    double topGap = 0;
+    double namePlateWidth = NamePlateWidgetParent.namePlateSize.width;
+    double namePlateHeight = NamePlateWidgetParent.namePlateSize.height;
+
+    // top left
+    left = widthGap;
+    top = heightGap / 2;
+    topLeftLeft = left;
+    seatPosToOffsetMap[SeatPos.topLeft] = Offset(left, top);
+
+    // top right
+    left = topLeftLeft + table.width - namePlateWidth;
+    top = heightGap / 2;
+    topGap = (left + namePlateWidth) - topLeftLeft;
+    seatPosToOffsetMap[SeatPos.topRight] = Offset(left, top);
+
+    // middle left
+    left = 0;
+    top = heightGap + (table.height - namePlateHeight) / 3;
+    seatPosToOffsetMap[SeatPos.middleLeft] = Offset(left, top);
+
+    // top center 1
+    double topCenter1Left = (topGap / 2) - namePlateWidth * 3 / 4;
+    top = (heightGap - namePlateHeight);
+    seatPosToOffsetMap[SeatPos.topCenter1] = Offset(topCenter1Left, top);
+
+    // top center 2
+    double topCenter2Left = (topGap / 2) + namePlateWidth * 3 / 4;
+    top = (heightGap - namePlateHeight);
+    seatPosToOffsetMap[SeatPos.topCenter2] = Offset(topCenter2Left, top);
+
+    // top center 2
+    top = (heightGap - namePlateHeight);
+    seatPosToOffsetMap[SeatPos.topCenter] = Offset(topCenter2Left, top);
+
+    // middle right
+    left = pot.width - namePlateWidth;
+    top = heightGap + (table.height - namePlateHeight) / 3;
+    seatPosToOffsetMap[SeatPos.middleRight] = Offset(left, top);
+
+    // bottom left
+    left = widthGap;
+    top = pot.height - namePlateHeight - heightGap / 4;
+    seatPosToOffsetMap[SeatPos.bottomLeft] = Offset(left, top);
+
+    // bottom center
+    left = (pot.width / 2) - namePlateWidth / 2;
+    top = pot.height - namePlateHeight;
+    seatPosToOffsetMap[SeatPos.bottomCenter] = Offset(left, top);
+
+    // bottom right
+    left = topLeftLeft + table.width - namePlateWidth;
+    top = pot.height - namePlateHeight - heightGap / 4;
+    seatPosToOffsetMap[SeatPos.bottomRight] = Offset(left, top);
   }
 
   void calculateTableSizePostFrame({bool force = false}) {
@@ -143,15 +212,15 @@ class GameUIState {
     cardSize = Size(cardWidth, cardWidth * 38 / 30);
   }
 
-  Size getPlayersOnTableSize(Size tableSize) {
-    double width = tableSize.width;
-    double height =
-        tableSize.height + NamePlateWidgetParent.namePlateSize.height * 1.5;
-    if (Screen.isLargeScreen) {
-      width = tableSize.width + NamePlateWidgetParent.namePlateSize.width;
-    }
-    return Size(width, height);
-  }
+  // Size getPlayersOnTableSize(Size tableSize) {
+  //   double width = tableSize.width;
+  //   double height =
+  //       tableSize.height + NamePlateWidgetParent.namePlateSize.height * 1.5;
+  //   if (Screen.isLargeScreen) {
+  //     width = tableSize.width + NamePlateWidgetParent.namePlateSize.width;
+  //   }
+  //   return Size(width, height);
+  // }
 
   // rectangle relative to board co-ordinates
   Rect getTableRect() {
@@ -199,13 +268,16 @@ class GameUIState {
       final box1 = boardKey.currentContext.findRenderObject() as RenderBox;
       final playerOnTablePos = box1.globalToLocal(tempPos);
 
-      playerOnTablePositionVn.value = playerOnTablePos;
       playerOnTableRect = Rect.fromLTWH(
           tempPos.dx, tempPos.dy, box.size.width, box.size.height);
 
       print(
         'calculatePlayersOnTablePositionPostFrame: ${playerOnTablePositionVn.value} rect: ${playerOnTableRect}',
       );
+      getTableRect();
+      getPlayersOnTableRect();
+      initSeatPos();
+      playerOnTablePositionVn.value = playerOnTablePos;
     });
   }
 
