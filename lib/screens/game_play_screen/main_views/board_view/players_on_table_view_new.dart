@@ -330,6 +330,8 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
   Widget build(BuildContext context) {
     final ts =
         widget.gameState.gameUIState.getPlayersOnTableSize(widget.tableSize);
+    Rect rect = widget.gameState.gameUIState.getPlayersOnTableRect();
+    log('PlayersOnTableViewNew Rect: ${rect}');
     Provider.of<SeatsOnTableState>(context, listen: true);
     // this calculates the table size after drawing the table image
     widget.gameState.gameUIState.calculateTableSizePostFrame();
@@ -347,8 +349,10 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
                   alignment: Alignment.center,
                   child: SizedBox(
                       key: widget.gameState.gameUIState.playerOnTableKey,
-                      width: ts.width,
-                      height: ts.height,
+                      // width: ts.width,
+                      // height: ts.height,
+                      width: rect.width,
+                      height: rect.height,
                       child: ValueListenableBuilder(
                           valueListenable: widget
                               .gameState.gameUIState.playerOnTablePositionVn,
@@ -548,7 +552,7 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
   void performLayoutLargeScreen(Size size) {
     final pot = gameState.gameUIState.playerOnTableRect;
     final table = gameState.gameUIState.tableRect;
-    final npVertPadding = gameState.gameUIState.namePlateVeriticalPadding;
+    final npVertPadding = gameState.gameUIState.tableBaseHeight;
 
     double widthGap = 0;
     double heightGap = 0;
@@ -616,7 +620,7 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
         BoxConstraints.loose(size),
       );
       double topCenter1Left = (topGap / 2) - cs.width * 3 / 4;
-      top = (heightGap - cs.height) + npVertPadding;
+      top = (heightGap - cs.height); // + npVertPadding;
 
       positionChild(
         SeatPos.topCenter1,
@@ -636,7 +640,7 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
       );
 
       double topCenter1Left = (topGap / 2) + cs.width * 3 / 4;
-      top = (heightGap - cs.height) + npVertPadding;
+      top = (heightGap - cs.height); // + npVertPadding;
 
       positionChild(
         SeatPos.topCenter2,

@@ -19,6 +19,11 @@ class GameUIState {
   Offset tableGlobalTopLeft;
   Rect playerOnTableRect;
   Rect tableRect;
+  Rect playerOnTableRectRelativeBoard;
+  Rect tableRectRelativeToBoard;
+  // table base height is 10% of the total table height
+  double _tableBaseHeight = 1;
+
   final GlobalKey boardKey = GlobalKey();
   final GlobalKey playerOnTableKey = GlobalKey();
   final ValueNotifier<Offset> playerOnTablePositionVn =
@@ -39,6 +44,7 @@ class GameUIState {
           tableSizeVn.value = box.size;
           tableRect = Rect.fromLTWH(tableGlobalTopLeft.dx,
               tableGlobalTopLeft.dy, box.size.width, box.size.height);
+          _tableBaseHeight = tableRect.height * 0.10;
           break;
         }
         await Future.delayed(const Duration(milliseconds: 10));
@@ -137,6 +143,36 @@ class GameUIState {
     return Size(width, height);
   }
 
+  // rectangle relative to board co-ordinates
+  Rect getTableRect() {
+    if (tableRectRelativeToBoard != null) {
+      return tableRectRelativeToBoard;
+    }
+    final box = this.boardKey.currentContext.findRenderObject() as RenderBox;
+
+    Offset topLeft = box.globalToLocal(Offset(tableRect.left, tableRect.top));
+    tableRectRelativeToBoard = Rect.fromLTWH(
+        topLeft.dx, topLeft.dy, tableRect.width, tableRect.height);
+    return tableRectRelativeToBoard;
+  }
+
+  // rectangle relative to board co-ordinates
+  Rect getPlayersOnTableRect() {
+    if (playerOnTableRectRelativeBoard != null) {
+      return playerOnTableRectRelativeBoard;
+    }
+
+    final box = this.boardKey.currentContext.findRenderObject() as RenderBox;
+
+    Offset topLeft = box.globalToLocal(Offset(tableRect.left, tableRect.top));
+    final tmp = Rect.fromLTWH(
+        topLeft.dx, topLeft.dy, tableRect.width, tableRect.height);
+    final tmp2 = tmp.inflate(NamePlateWidgetParent.namePlateSize.height);
+    playerOnTableRectRelativeBoard = Rect.fromLTWH(
+        tmp2.left, tmp2.top, tmp2.width, tmp2.height - _tableBaseHeight);
+    return playerOnTableRectRelativeBoard;
+  }
+
   void calculatePlayersOnTablePositionPostFrame() {
     if (playerOnTablePositionVn.value != null) return;
     WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -163,8 +199,8 @@ class GameUIState {
     });
   }
 
-  double get namePlateVeriticalPadding {
-    return 10.0;
+  double get tableBaseHeight {
+    return _tableBaseHeight;
   }
 
   Tuple2<Offset, Size> getCenterViewRect() {

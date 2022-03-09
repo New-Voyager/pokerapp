@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
@@ -79,7 +81,7 @@ class _BoardViewState extends State<BoardView> {
 
     return DebugBorderWidget(
       key: gameState.gameUIState.boardKey,
-      color: Colors.transparent,
+      color: Colors.white,
       child: Stack(
         clipBehavior: Clip.antiAlias,
         alignment: Alignment.center,
@@ -103,7 +105,10 @@ class _BoardViewState extends State<BoardView> {
             valueListenable: gameState.gameUIState.tableSizeVn,
             builder: (_, size, __) {
               if (size == null) return const SizedBox.shrink();
-              return DebugBorderWidget(
+              Rect rect = gameState.gameUIState.getPlayersOnTableRect();
+              log('PlayersOnTableViewNew Rect2: ${rect}');
+
+              Widget child = DebugBorderWidget(
                 color: Colors.transparent,
                 child: PlayersOnTableViewNew(
                   // key: gameState.gameUIState.playerOnTableKey,
@@ -115,6 +120,8 @@ class _BoardViewState extends State<BoardView> {
                   isLargerScreen: isLargerScreen,
                 ),
               );
+
+              return Positioned(top: rect.top, left: rect.left, child: child);
             },
           ),
 
