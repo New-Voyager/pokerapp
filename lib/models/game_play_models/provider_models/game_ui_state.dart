@@ -148,14 +148,22 @@ class GameUIState {
     Offset topLeft = boardBox.globalToLocal(topLeftGlobal);
     Offset bottomRight = boardBox.globalToLocal(bottomRightGlobal);
 
+    final centerTopGap = topLeft.dy -
+        (seatPosToOffsetMap[SeatPos.topCenter].dy +
+            NamePlateWidgetParent.namePlateSize.height);
+
+    final centerBottomGap =
+        seatPosToOffsetMap[SeatPos.bottomCenter].dy - bottomRight.dy;
+    final extraBottomGap = centerBottomGap - centerTopGap;
+
     final rect = Rect.fromLTWH(
       topLeft.dx,
       topLeft.dy,
       bottomRight.dx - topLeft.dx,
-      bottomRight.dy - topLeft.dy,
+      bottomRight.dy - topLeft.dy - extraBottomGap * 2,
     );
 
-    _centerViewRect = rect.deflate(_centerViewDeflationBy());
+    _centerViewRect = rect;
   }
 
   void calculateTableSizePostFrame({bool force = false}) {
