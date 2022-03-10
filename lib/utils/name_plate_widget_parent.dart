@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 
-/// derived from the original width & height
-/// width: 100
-/// height: 80
-/// aspect ratio: 5/4 = 1.25
-const _aspectRatio = 1.25;
+/// derives from the aspect ratio of our progress bar SVG
+/// width: 20.18
+/// height: 12.48
+/// aspect ratio: 20.18/12.48 = 1.616987
+/// IMPORTANT: DO NOT CHANGE THIS WITHOUT CHANGING THE ORIGINAL SVG ASPECT RATIO
+const _aspectRatio = 1.616987;
 
 abstract class NamePlateWidgetParent {
   /// this will be the default width, if setWidth is never called
