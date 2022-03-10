@@ -35,11 +35,11 @@ class GameUIState {
   Map<int, Rect> cardEyes = Map<int, Rect>();
 
   void init() {
-    NamePlateWidgetParent.setWidth(80);
+    NamePlateWidgetParent.setWidth(90);
     if (Screen.diagonalInches >= 7 && Screen.diagonalInches < 9) {
       tableWidthFactor = 0.70;
     } else if (Screen.diagonalInches >= 9) {
-      NamePlateWidgetParent.setWidth(100);
+      NamePlateWidgetParent.setWidth(110);
       tableWidthFactor = 0.70;
     }
   }
