@@ -3,6 +3,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/utils/name_plate_widget_parent.dart';
 import 'package:pokerapp/utils/utils.dart';
+import 'dart:math' as math;
 
 class GameUIState {
   // table key - we need this to calculate the exact dimension of the table image
@@ -118,8 +119,26 @@ class GameUIState {
     seatPosToOffsetMap[SeatPos.bottomRight] = Offset(left, top);
   }
 
-  double _centerViewDeflationBy([f = 0.10]) {
-    return 10.0;
+  Rect _deflatedRect({
+    @required Rect rect,
+    double factor = 1.0,
+  }) {
+    assert(0 <= factor && factor <= 1);
+
+    final diagonal = math.sqrt(
+      math.pow(rect.width, 2) + math.pow(rect.height, 2),
+    );
+
+    final gap = diagonal * (1 - factor);
+    final deflateBy = gap / 2.0;
+
+    return rect.deflate(deflateBy);
+  }
+
+  double _getDeflateFactor() {
+    // todo: if needed, we can put factor here
+    if (Screen.isLargeScreen) return 0.90;
+    return 1.0;
   }
 
   void calculateCenterViewRect() {
@@ -172,7 +191,7 @@ class GameUIState {
       bottomRight.dy - topLeft.dy - extraBottomGap,
     );
 
-    _centerViewRect = rect;
+    _centerViewRect = _deflatedRect(rect: rect, factor: _getDeflateFactor());
   }
 
   void calculateTableSizePostFrame({bool force = false}) {
