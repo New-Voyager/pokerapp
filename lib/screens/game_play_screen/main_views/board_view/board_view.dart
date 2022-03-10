@@ -83,7 +83,7 @@ class _BoardViewState extends State<BoardView> {
 
     return DebugBorderWidget(
       key: gameState.gameUIState.boardKey,
-      color: Colors.white,
+      color: Colors.transparent,
       child: Stack(
         clipBehavior: Clip.antiAlias,
         alignment: Alignment.center,
@@ -138,20 +138,20 @@ class _BoardViewState extends State<BoardView> {
                 return const SizedBox.shrink();
               }
 
-              final rect = gameState.gameUIState.getCenterViewRect();
+              final rect = gameState.gameUIState.getCenterViewRect2();
 
-              gameState.gameUIState.centerViewRect = Rect.fromLTWH(
-                  rect.item1.dx,
-                  rect.item1.dy,
-                  rect.item2.width,
-                  rect.item2.height);
+              // gameState.gameUIState.centerViewRect = Rect.fromLTWH(
+              //     rect.item1.dx,
+              //     rect.item1.dy,
+              //     rect.item2.width,
+              //     rect.item2.height);
               return Positioned(
-                left: rect.item1.dx,
-                top: rect.item1.dy,
+                left: rect.left,
+                top: rect.top,
                 child: DebugBorderWidget(
                   color: Colors.yellow,
                   child: SizedBox.fromSize(
-                    size: rect.item2,
+                    size: Size(rect.width, rect.height),
                     child: CenterView(
                       tableState: context.read<TableState>(),
                       gameCode: widget.gameInfo.gameCode,

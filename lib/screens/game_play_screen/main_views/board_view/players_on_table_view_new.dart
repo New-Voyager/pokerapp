@@ -106,13 +106,16 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
       final playerView = ListenableProvider<Seat>(
         create: (_) => seat,
         builder: (_, __) => Consumer<Seat>(builder: (_, __, ___) {
-          return PlayerView(
-            seat: seat,
-            onUserTap: widget.onUserTap,
-            gameComService: widget.gameComService,
-            boardAttributes: boa,
-            gameContextObject: gco,
-            gameState: _gameState,
+          return DebugBorderWidget(
+            color: Colors.blue,
+            child: PlayerView(
+              seat: seat,
+              onUserTap: widget.onUserTap,
+              gameComService: widget.gameComService,
+              boardAttributes: boa,
+              gameContextObject: gco,
+              gameState: _gameState,
+            ),
           );
         }),
       );
@@ -403,6 +406,8 @@ class PlayerPlacementDelegate extends MultiChildLayoutDelegate {
       performLayoutLargeScreen(size);
       return;
     }
+    performLayoutLargeScreen(size);
+    return;
 
     // top left
     if (hasChild(SeatPos.topLeft)) {

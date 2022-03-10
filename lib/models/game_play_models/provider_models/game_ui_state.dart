@@ -34,6 +34,7 @@ class GameUIState {
   double tableWidthFactor = 1.0;
   Map<SeatPos, Offset> seatPosToOffsetMap = {};
   Map<int, Rect> cardEyes = Map<int, Rect>();
+
   void init() {
     NamePlateWidgetParent.setWidth(80);
     if (Screen.diagonalInches >= 7 && Screen.diagonalInches < 9) {
@@ -79,16 +80,22 @@ class GameUIState {
     seatPosToOffsetMap[SeatPos.middleLeft] = Offset(left, top);
 
     // top center 1
-    double topCenter1Left = (topGap / 2) - namePlateWidth * 3 / 4;
+    double remainingWidth = seatPosToOffsetMap[SeatPos.topRight].dx -
+        (seatPosToOffsetMap[SeatPos.topLeft].dx + namePlateWidth);
+    remainingWidth = (remainingWidth - (2 * namePlateWidth));
+    double gap = remainingWidth / 3;
+
+    double topCenter1Left =
+        seatPosToOffsetMap[SeatPos.topLeft].dx + namePlateWidth + gap;
     top = (heightGap - namePlateHeight);
     seatPosToOffsetMap[SeatPos.topCenter1] = Offset(topCenter1Left, top);
 
     // top center 2
-    double topCenter2Left = (topGap / 2) + namePlateWidth * 3 / 4;
-    top = (heightGap - namePlateHeight);
+    double topCenter2Left =
+        seatPosToOffsetMap[SeatPos.topCenter1].dx + namePlateWidth + gap;
     seatPosToOffsetMap[SeatPos.topCenter2] = Offset(topCenter2Left, top);
 
-    // top center 2
+    // top center
     top = (heightGap - namePlateHeight);
     seatPosToOffsetMap[SeatPos.topCenter] = Offset(topCenter2Left, top);
 
@@ -111,6 +118,34 @@ class GameUIState {
     left = topLeftLeft + table.width - namePlateWidth;
     top = pot.height - namePlateHeight - heightGap / 4;
     seatPosToOffsetMap[SeatPos.bottomRight] = Offset(left, top);
+  }
+
+  void calculateCenterViewRect() {
+    if (centerViewRect != null) {
+      return;
+    }
+    double namePlateWidth = NamePlateWidgetParent.namePlateSize.width;
+    double namePlateHeight = NamePlateWidgetParent.namePlateSize.height;
+
+    double left, top, right, bottom;
+    left = seatPosToOffsetMap[SeatPos.topLeft].dx + namePlateWidth;
+    top = seatPosToOffsetMap[SeatPos.topLeft].dy + namePlateHeight;
+    bottom = seatPosToOffsetMap[SeatPos.bottomRight].dy;
+    right = seatPosToOffsetMap[SeatPos.bottomRight].dx;
+
+    final boardBox = boardKey.currentContext.findRenderObject() as RenderBox;
+    final playerOnTableBox =
+        playerOnTableKey.currentContext.findRenderObject() as RenderBox;
+
+    Offset topLeftGlobal = playerOnTableBox.localToGlobal(Offset(left, top));
+    Offset bottomRightGlobal =
+        playerOnTableBox.localToGlobal(Offset(right, bottom));
+
+    Offset topLeft = boardBox.globalToLocal(topLeftGlobal);
+    Offset bottomRight = boardBox.globalToLocal(bottomRightGlobal);
+    centerViewRect = Rect.fromLTWH(topLeft.dx, topLeft.dy,
+        bottomRight.dx - topLeft.dx, bottomRight.dy - topLeft.dy);
+    //centerViewRect = Rect.fromLTWH(left, top, right - left, bottom - top);
   }
 
   void calculateTableSizePostFrame({bool force = false}) {
@@ -242,11 +277,20 @@ class GameUIState {
     }
 
     final box = this.boardKey.currentContext.findRenderObject() as RenderBox;
-
+    final screenSize = Screen.size;
     Offset topLeft = box.globalToLocal(Offset(tableRect.left, tableRect.top));
     final tmp = Rect.fromLTWH(
         topLeft.dx, topLeft.dy, tableRect.width, tableRect.height);
-    final tmp2 = tmp.inflate(NamePlateWidgetParent.namePlateSize.height);
+    Rect tmp2 = tmp.inflate(NamePlateWidgetParent.namePlateSize.height);
+    double left = tmp2.left;
+    double right = tmp2.right;
+    if (tmp2.left < 0) {
+      left = 0;
+    }
+    if (tmp2.right > screenSize.width) {
+      right = screenSize.width;
+    }
+    tmp2 = Rect.fromLTWH(left, tmp2.top, right - left, tmp2.height);
     playerOnTableRectRelativeBoard = Rect.fromLTWH(
         tmp2.left, tmp2.top, tmp2.width, tmp2.height - _tableBaseHeight);
     return playerOnTableRectRelativeBoard;
@@ -277,6 +321,7 @@ class GameUIState {
       getTableRect();
       getPlayersOnTableRect();
       initSeatPos();
+      calculateCenterViewRect();
       playerOnTablePositionVn.value = playerOnTablePos;
     });
   }
@@ -285,7 +330,15 @@ class GameUIState {
     return _tableBaseHeight;
   }
 
+  Rect getCenterViewRect2() {
+    return centerViewRect;
+  }
+
   Tuple2<Offset, Size> getCenterViewRect() {
+    return Tuple2<Offset, Size>(
+      Offset(centerViewRect.left, centerViewRect.top),
+      Size(centerViewRect.width, centerViewRect.height),
+    );
     final namePlateSize = NamePlateWidgetParent.namePlateSize;
 
     final left = playerOnTableRect.left + namePlateSize.width;
