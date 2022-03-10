@@ -130,7 +130,10 @@ class GameUIState {
     double namePlateWidth = NamePlateWidgetParent.namePlateSize.width;
     double namePlateHeight = NamePlateWidgetParent.namePlateSize.height;
 
-    double left, top, right, bottom;
+    double left, top, right, bottom, topTop, bottomTop;
+    topTop = seatPosToOffsetMap[SeatPos.topCenter].dy + namePlateHeight;
+    bottomTop = seatPosToOffsetMap[SeatPos.bottomCenter].dy;
+
     left = seatPosToOffsetMap[SeatPos.topLeft].dx + namePlateWidth;
     top = seatPosToOffsetMap[SeatPos.topLeft].dy + namePlateHeight;
     bottom = seatPosToOffsetMap[SeatPos.bottomRight].dy;
@@ -144,23 +147,29 @@ class GameUIState {
     Offset bottomRightGlobal = playerOnTableBox.localToGlobal(
       Offset(right, bottom),
     );
+    Offset topTopGlobal = playerOnTableBox.localToGlobal(Offset(0.0, topTop));
+    Offset bottomTopGlobal = playerOnTableBox.localToGlobal(
+      Offset(0.0, bottomTop),
+    );
 
     Offset topLeft = boardBox.globalToLocal(topLeftGlobal);
     Offset bottomRight = boardBox.globalToLocal(bottomRightGlobal);
 
-    final centerTopGap = topLeft.dy -
-        (seatPosToOffsetMap[SeatPos.topCenter].dy +
-            NamePlateWidgetParent.namePlateSize.height);
+    // topTopLocal is Top player's bottom position
+    Offset topTopLocal = boardBox.globalToLocal(topTopGlobal);
+    Offset bottomTopLocal = boardBox.globalToLocal(bottomTopGlobal);
 
-    final centerBottomGap =
-        seatPosToOffsetMap[SeatPos.bottomCenter].dy - bottomRight.dy;
-    final extraBottomGap = centerBottomGap - centerTopGap;
+    final centerTopGap = topLeft.dy - topTopLocal.dy;
+    final centerBottomGap = bottomTopLocal.dy - bottomRight.dy;
+
+    // to make the bottom and top gap uniform
+    final extraBottomGap = centerTopGap - centerBottomGap;
 
     final rect = Rect.fromLTWH(
       topLeft.dx,
       topLeft.dy,
       bottomRight.dx - topLeft.dx,
-      bottomRight.dy - topLeft.dy - extraBottomGap * 2,
+      bottomRight.dy - topLeft.dy - extraBottomGap,
     );
 
     _centerViewRect = rect;
