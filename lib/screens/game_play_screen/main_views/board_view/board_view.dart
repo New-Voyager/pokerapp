@@ -138,13 +138,7 @@ class _BoardViewState extends State<BoardView> {
                 return const SizedBox.shrink();
               }
 
-              final rect = gameState.gameUIState.getCenterViewRect2();
-
-              // gameState.gameUIState.centerViewRect = Rect.fromLTWH(
-              //     rect.item1.dx,
-              //     rect.item1.dy,
-              //     rect.item2.width,
-              //     rect.item2.height);
+              final rect = gameState.gameUIState.centerViewRect;
               return Positioned(
                 left: rect.left,
                 top: rect.top,
