@@ -220,11 +220,11 @@ class _MainScreenState extends State<MainScreen>
                   showBadge: (playerState.unreadAnnouncements ?? 0) > 0,
                   selected: _navPos == 2,
                 ),
-                CurvedNavItem(
-                  iconData: Icons.shopping_cart,
-                  title: _appScreenText['store'],
-                  selected: _navPos == 3,
-                ),
+                // CurvedNavItem(
+                //   iconData: Icons.shopping_cart,
+                //   title: _appScreenText['store'],
+                //   selected: _navPos == 3,
+                // ),
                 if (TestService.isTesting)
                   CurvedNavItem(
                     iconData: Icons.money,

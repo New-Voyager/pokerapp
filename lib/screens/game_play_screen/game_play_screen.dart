@@ -787,9 +787,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   void initState() {
     super.initState();
 
-    // TODO: THIS FUNCTION WOULD BE CALLED WHILE INITIALIZING THE APP
-    NamePlateWidgetParent.setWidth(80);
-
     boardAttributes = BoardAttributesObject(
       screenSize: Screen.diagonalInches,
     );

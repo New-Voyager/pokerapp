@@ -38,7 +38,7 @@ class TestService {
   }
 
   static bool get isPartialTesting {
-    return true;
+    return false;
   }
 
   static var _showResult = false;
@@ -238,7 +238,7 @@ class TestService {
         //_currentPlayer = PlayerInfo.fromJson(jsonData["currentPlayer"]);
       }
       // 2 4 6 8 9
-      var maxPlayers = 9;
+      var maxPlayers = 6;
       if (jsonData["gameInfo"] != null) {
         // todo: debug remove: change the max Players in a game here
         _gameInfo = GameInfoModel.fromJson(

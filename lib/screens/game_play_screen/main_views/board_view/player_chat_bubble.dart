@@ -28,8 +28,8 @@ class PlayerChatBubble extends StatefulWidget {
     state.show(showBubble, offset, message);
   }
 
-  int get seatNo {
-    return seat.serverSeatPos;
+  SeatPos get seatPos {
+    return seat.seatPos;
   }
 
   @override

@@ -286,14 +286,17 @@ class _StoreDialogState extends State<StoreDialog> {
                                 // mainAxisAlignment: MainAxisAlignment.center,
                                 alignment: Alignment.center,
                                 children: [
-                                  Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: RoundRectButton(
-                                        text: "Redeem",
-                                        onTap: () {
-                                          _handleRedeem(theme, context);
-                                        },
-                                        theme: theme),
+                                  Visibility(
+                                    visible: false,
+                                    child: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: RoundRectButton(
+                                          text: "Redeem",
+                                          onTap: () {
+                                            _handleRedeem(theme, context);
+                                          },
+                                          theme: theme),
+                                    ),
                                   ),
 
                                   // AppDimensionsNew.getHorizontalSpace(24.pw),

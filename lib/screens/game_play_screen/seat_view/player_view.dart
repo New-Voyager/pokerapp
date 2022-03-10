@@ -406,6 +406,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
         boardAttributesObject: boardAttributes,
         gameInfo: gameInfo,
         reverse: widget.seat.player.winner,
+        gameState: widget.gameState,
       );
     }
     return DragTarget(
@@ -435,29 +436,39 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
         Offset notesOffset = Offset(0, 0);
         final double namePlateWidth = NamePlateWidgetParent.namePlateSize.width;
         SeatPos pos = widget.seat.seatPos ?? SeatPos.bottomLeft;
-        double actionLeft;
-        double actionRight;
+        double actionLeft = null;
+        double actionRight = null;
         if (pos == SeatPos.bottomLeft ||
             pos == SeatPos.middleLeft ||
             pos == SeatPos.topLeft ||
             pos == SeatPos.topCenter ||
             pos == SeatPos.topCenter1) {
-          actionLeft = 0;
+          //actionLeft = 0;
           notesOffset = Offset(-((namePlateWidth / 1.5)), 0);
         } else {
-          actionRight = 0;
+          //actionRight = 0;
           notesOffset = Offset(((namePlateWidth / 2)), 0);
         }
 
-        if (widget.seat.seatPos == SeatPos.middleLeft ||
-            widget.seat.seatPos == SeatPos.topLeft ||
-            widget.seat.seatPos == SeatPos.bottomLeft) {
-          actionLeft = NamePlateWidgetParent.namePlateSize.width / 2;
-          actionRight = null;
+        //actionRight = NamePlateWidgetParent.namePlateSize.width / 2 - 8;
+        if (widget.seat.seatPos == SeatPos.bottomRight ||
+            widget.seat.seatPos == SeatPos.bottomCenter) {
+          //actionLeft = null;
+          //NamePlateWidgetParent.namePlateSize.width / 2 - 8;
+          actionRight = 0;
         } else {
-          actionLeft = null;
-          actionRight = NamePlateWidgetParent.namePlateSize.width / 2 - 8;
+          actionLeft = 0;
         }
+
+        // if (widget.seat.seatPos == SeatPos.middleLeft ||
+        //     widget.seat.seatPos == SeatPos.topLeft ||
+        //     widget.seat.seatPos == SeatPos.bottomLeft) {
+        //   actionLeft = NamePlateWidgetParent.namePlateSize.width / 2;
+        //   actionRight = null;
+        // } else {
+        //   actionLeft = null;
+        //   actionRight = NamePlateWidgetParent.namePlateSize.width / 2 - 8;
+        // }
 
         Key key = widget.seat.key;
         double opacity = 1.0;
@@ -498,7 +509,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
 
               // player action text
               Positioned(
-                top: -5.ph,
+                top: -15,
                 left: actionLeft,
                 right: actionRight,
                 child: ActionStatusWidget(widget.seat, widget.cardsAlignment),
