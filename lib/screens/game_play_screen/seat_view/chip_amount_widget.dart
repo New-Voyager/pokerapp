@@ -25,6 +25,7 @@ class ChipAmountWidget extends StatelessWidget {
   final Seat seat;
   final BoardAttributesObject boardAttributesObject;
   final GameInfoModel gameInfo;
+  final GameState gameState;
   final GlobalKey key;
   final bool reverse;
 
@@ -34,6 +35,7 @@ class ChipAmountWidget extends StatelessWidget {
     @required this.key,
     @required this.seat,
     @required this.boardAttributesObject,
+    @required this.gameState,
     @required this.gameInfo,
     this.reverse = false,
   });
@@ -171,13 +173,8 @@ class ChipAmountWidget extends StatelessWidget {
     else
       crossAxisAlignment = CrossAxisAlignment.center;
 
-    var scale = 0.75;
-    if (Screen.isLargeScreen) {
-      scale = 1.0;
-    }
-
     betWidget = Transform.scale(
-      scale: scale,
+      scale: this.gameState.gameUIState.chipAmountScale,
       child: Row(
         crossAxisAlignment: crossAxisAlignment,
         mainAxisSize: MainAxisSize.min,

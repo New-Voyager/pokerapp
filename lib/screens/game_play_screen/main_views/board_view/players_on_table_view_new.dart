@@ -1,8 +1,6 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:lottie/lottie.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
@@ -254,8 +252,9 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
       final seat = _gameState.getSeatByPlayer(message.fromPlayer);
       if (seat != null) {
         log('ChatBubble: seat ${message.fromPlayer} seat: ${seat.serverSeatPos} sent ${message.text}');
+
         for (final chatBubble in chatBubbles) {
-          if (chatBubble.seatNo == seat.serverSeatPos) {
+          if (chatBubble.seatPos == seat.seatPos) {
             chatBubble.show(false);
             Offset offset = findPositionOfUser(seatNo: seat.serverSeatPos);
             if (offset != null) {
@@ -319,7 +318,7 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
   List<Widget> _getChatBubbles() {
     final gameComService = _gameState.gameComService;
     for (int localSeat = 1; localSeat <= _maxPlayers; localSeat++) {
-      final seat = widget.gameState.getSeat(localSeat);
+      final seat = widget.gameState.seats[localSeat];
       chatBubbles.add(PlayerChatBubble(
         gameComService,
         seat,
@@ -362,7 +361,7 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
                               return Container();
                             }
                             return DebugBorderWidget(
-                              color: Colors.redAccent,
+                              color: Colors.transparent,
                               child: CustomMultiChildLayout(
                                 delegate: PlayerPlacementDelegate(
                                   isLarger: widget.isLargerScreen,

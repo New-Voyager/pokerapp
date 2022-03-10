@@ -24,7 +24,7 @@ const double _lottieAnimationContainerSize = 120.0;
 const double _animatingAssetContainerSize = 40.0;
 
 const Duration _lottieAnimationDuration = const Duration(seconds: 5);
-const Duration _animatingWidgetDuration = const Duration(milliseconds: 800);
+const Duration _animatingWidgetDuration = const Duration(milliseconds: 500);
 
 class LottieAnimation extends StatefulWidget {
   final ChatMessage message;

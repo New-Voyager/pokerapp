@@ -33,14 +33,22 @@ class GameUIState {
   double tableWidthFactor = 1.0;
   Map<SeatPos, Offset> seatPosToOffsetMap = {};
   Map<int, Rect> cardEyes = Map<int, Rect>();
-
+  double chipAmountScale = 1.0;
   void init() {
     NamePlateWidgetParent.setWidth(90);
+    tableWidthFactor = 0.90;
+
+    if (Screen.diagonalInches < 7) {
+      NamePlateWidgetParent.setWidth(70);
+      chipAmountScale = 0.70;
+    }
     if (Screen.diagonalInches >= 7 && Screen.diagonalInches < 9) {
       tableWidthFactor = 0.70;
+      chipAmountScale = 1.0;
     } else if (Screen.diagonalInches >= 9) {
       NamePlateWidgetParent.setWidth(110);
       tableWidthFactor = 0.70;
+      chipAmountScale = 1.0;
     }
   }
 
@@ -73,11 +81,6 @@ class GameUIState {
     top = heightGap / 2;
     seatPosToOffsetMap[SeatPos.topRight] = Offset(left, top);
 
-    // middle left
-    left = 0;
-    top = heightGap + (table.height - namePlateHeight) / 3;
-    seatPosToOffsetMap[SeatPos.middleLeft] = Offset(left, top);
-
     // top center 1
     double remainingWidth = seatPosToOffsetMap[SeatPos.topRight].dx -
         (seatPosToOffsetMap[SeatPos.topLeft].dx + namePlateWidth);
@@ -95,13 +98,8 @@ class GameUIState {
     seatPosToOffsetMap[SeatPos.topCenter2] = Offset(topCenter2Left, top);
 
     // top center
-    top = (heightGap - namePlateHeight);
-    seatPosToOffsetMap[SeatPos.topCenter] = Offset(topCenter2Left, top);
-
-    // middle right
-    left = pot.width - namePlateWidth;
-    top = heightGap + (table.height - namePlateHeight) / 3;
-    seatPosToOffsetMap[SeatPos.middleRight] = Offset(left, top);
+    left = (pot.width / 2) - namePlateWidth / 2;
+    seatPosToOffsetMap[SeatPos.topCenter] = Offset(left, top);
 
     // bottom left
     left = widthGap;
@@ -117,6 +115,19 @@ class GameUIState {
     left = topLeftLeft + table.width - namePlateWidth;
     top = pot.height - namePlateHeight - heightGap / 4;
     seatPosToOffsetMap[SeatPos.bottomRight] = Offset(left, top);
+
+    double remainingHeight = seatPosToOffsetMap[SeatPos.bottomLeft].dy -
+        (seatPosToOffsetMap[SeatPos.topLeft].dy + namePlateHeight);
+    gap = remainingHeight / 3;
+
+    // middle left
+    left = 0;
+    top = seatPosToOffsetMap[SeatPos.topLeft].dy + namePlateHeight + gap;
+    seatPosToOffsetMap[SeatPos.middleLeft] = Offset(left, top);
+
+    // middle right
+    left = pot.width - namePlateWidth;
+    seatPosToOffsetMap[SeatPos.middleRight] = Offset(left, top);
   }
 
   Rect _deflatedRect({
@@ -330,10 +341,10 @@ class GameUIState {
     double left = tmp2.left;
     double right = tmp2.right;
     if (tmp2.left < 0) {
-      left = 0;
+      left = 4;
     }
     if (tmp2.right > screenSize.width) {
-      right = screenSize.width;
+      right = screenSize.width - 4;
     }
     tmp2 = Rect.fromLTWH(left, tmp2.top, right - left, tmp2.height);
 
