@@ -288,24 +288,27 @@ class NamePlateWidget extends StatelessWidget {
               duration: AppConstants.animationDuration,
               opacity: seat.isOpen ? 0.0 : 1.0,
               child: Padding(
-                padding: nameplate != null
-                    ? EdgeInsets.fromLTRB(
-                        double.parse(
-                          nameplate.meta.padding.split(",")[0].trim(),
-                        ),
-                        double.parse(
-                          nameplate.meta.padding.split(",")[1].trim(),
-                        ),
-                        double.parse(
-                          nameplate.meta.padding.split(",")[2].trim(),
-                        ),
-                        double.parse(
-                          nameplate.meta.padding.split(",")[3].trim(),
-                        ),
-                      )
-                    : null,
+                padding: EdgeInsets.symmetric(horizontal: 5),
+
+                // nameplate != null
+                //     ? EdgeInsets.fromLTRB(
+                //         double.parse(
+                //           nameplate.meta.padding.split(",")[0].trim(),
+                //         ),
+                //         double.parse(
+                //           nameplate.meta.padding.split(",")[1].trim(),
+                //         ),
+                //         double.parse(
+                //           nameplate.meta.padding.split(",")[2].trim(),
+                //         ),
+                //         double.parse(
+                //           nameplate.meta.padding.split(",")[3].trim(),
+                //         ),
+                //       )
+                //     : null,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     //SizedBox(height: 2),
                     // player name

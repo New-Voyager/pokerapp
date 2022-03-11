@@ -2,13 +2,14 @@
 name: pokerapp
 description: PokerClubApp
 publish_to: "none"
-version: 0.7.22+1
+version: 0.7.24+1
 environment:
   sdk: '>=2.7.0 <3.0.0'
 dependencies:
   after_layout: ^1.1.0
   animated_text_kit: ^4.2.1
   animated_widgets: ^1.1.0
+  auto_size_text: ^3.0.0  
   archive: ^3.1.2
   audioplayers: ^0.20.1
   badges: ^2.0.1

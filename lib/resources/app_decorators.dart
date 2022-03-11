@@ -173,7 +173,7 @@ class AppDecorators {
   static TextStyle getNameplateStyle({@required AppTheme theme}) {
     return TextStyle(
       color: theme.supportingColor,
-      fontSize: 7.dp,
+      fontSize: 10.dp,
       fontWeight: FontWeight.w300,
     );
   }

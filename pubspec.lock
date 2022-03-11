@@ -72,7 +72,7 @@ packages:
     source: hosted
     version: "0.20.1"
   auto_size_text:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: auto_size_text
       url: "https://pub.dartlang.org"

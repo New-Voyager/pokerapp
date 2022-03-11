@@ -72,7 +72,7 @@ class PlayerState {
     }
     _diamonds = _box.get(DIAMONDS) as int;
     if (_diamonds == null) {
-      _diamonds = 50;
+      _diamonds = 200;
     }
 
     if (newData) {
