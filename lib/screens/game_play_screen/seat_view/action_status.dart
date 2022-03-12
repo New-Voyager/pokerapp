@@ -104,7 +104,7 @@ class ActionStatusWidget extends StatelessWidget {
   }
 
   static TextStyle getStatusTextStyle(String status) {
-    Color statusColor = Colors.black; // default color be black
+    Color statusColor = Colors.blueGrey; // default color be black
     if (status != null) {
       if (status.toUpperCase().contains('CHECK') ||
           status.toUpperCase().contains('CALL'))

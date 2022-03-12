@@ -251,7 +251,7 @@ class StatusOptionsWidget extends StatelessWidget {
   Widget getSitbackButton(
       AppTextScreen appScreenText, AppTheme theme, BuildContext context) {
     return RoundRectButton(
-      fontSize: 16.dp,
+      fontSize: 10.dp,
       onTap: () async {
         await onSitBack(context);
       },

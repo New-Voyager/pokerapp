@@ -34,6 +34,11 @@ class GameUIState {
   Map<SeatPos, Offset> seatPosToOffsetMap = {};
   Map<int, Rect> cardEyes = Map<int, Rect>();
   double chipAmountScale = 1.0;
+
+  // hole card UI
+  GlobalKey rearrangeKey = GlobalKey();
+  Rect rearrangeRect;
+
   void init() {
     NamePlateWidgetParent.setWidth(90);
     tableWidthFactor = 0.90;

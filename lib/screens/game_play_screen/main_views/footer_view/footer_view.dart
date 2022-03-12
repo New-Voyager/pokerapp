@@ -583,11 +583,11 @@ class _FooterViewState extends State<FooterView>
             return Container();
           }
           return Align(
-              alignment: Alignment.topCenter,
+              alignment: Alignment.center,
               child: HelpText(
                 show: appService.appSettings.showHoleCardTip,
                 text:
-                    'Tap the cards to flip or \nUse finger gesture to peek the cards',
+                    'Tap the cards to flip back or face\nUse finger gesture to peek the cards',
                 theme: theme,
                 onTap: () {
                   // store this information, and don't show this again

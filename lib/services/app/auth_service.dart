@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:http/http.dart' as http;
+import 'package:pokerapp/build_info.dart';
 import 'package:pokerapp/main_helper.dart';
 
 import 'package:pokerapp/models/auth_model.dart';
@@ -149,6 +150,7 @@ class AuthService {
       "attribs-used": attribs?.name,
       "physcial-dimension": Screen.physicalSize.toString(),
       "screen-dimension": Screen.size.toString(),
+      "app-version": versionNumber,
     };
     if (recoveryEmail != null) {
       payload["email"] = recoveryEmail;

@@ -507,14 +507,6 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
               // result cards shown in player view at the time of result
               _buildDisplayCardsWidget(widget.seat, gameState.handState),
 
-              // player action text
-              Positioned(
-                top: -15,
-                left: actionLeft,
-                right: actionRight,
-                child: ActionStatusWidget(widget.seat, widget.cardsAlignment),
-              ),
-
               // player notes text
               Visibility(
                 visible: widget.seat.player.hasNotes && !widget.seat.isMe,
@@ -556,6 +548,13 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
                 this.widget.cardsAlignment,
                 widget.seat.player?.noOfCardsVisible,
                 showdown,
+              ),
+              // player action text
+              Positioned(
+                top: -15,
+                left: actionLeft,
+                right: actionRight,
+                child: ActionStatusWidget(widget.seat, widget.cardsAlignment),
               ),
 
               // show dealer button, if user is a dealer

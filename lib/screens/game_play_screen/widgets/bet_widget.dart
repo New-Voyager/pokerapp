@@ -296,6 +296,7 @@ class BetWidget extends StatelessWidget {
     final Widget betChipWidget = GestureDetector(
       onTap: () {
         log('BET: tap detected');
+        appService.appSettings.showBetTip = false;
         onSubmitCallBack?.call(vnBetAmount.value);
       },
       child: Container(

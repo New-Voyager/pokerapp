@@ -7,16 +7,17 @@ import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'blinking_widget.dart';
 
 class RoundRectButton extends StatelessWidget {
-  RoundRectButton({
-    this.text,
-    @required this.onTap,
-    @required this.theme,
-    this.focusNode,
-    this.fontSize,
-    this.split = false,
-    this.adaptive = true,
-    this.icon,
-  });
+  RoundRectButton(
+      {this.text,
+      @required this.onTap,
+      @required this.theme,
+      this.focusNode,
+      this.fontSize,
+      this.split = false,
+      this.adaptive = true,
+      this.icon,
+      this.positive = null,
+      this.negative = null});
 
   final bool adaptive;
   final String text;
@@ -26,8 +27,74 @@ class RoundRectButton extends StatelessWidget {
   final double fontSize;
   final Icon icon;
   final FocusNode focusNode;
+  final bool positive;
+  final bool negative;
 
   Widget build(BuildContext context) {
+    var gradient = LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [
+          theme.accentColorWithDark(0.1),
+          theme.accentColorWithLight(0.2),
+          theme.accentColor,
+          theme.accentColorWithDark(0.1),
+          theme.accentColorWithDark(0.2),
+          theme.accentColor,
+        ],
+        stops: [
+          0,
+          0.3,
+          0.5,
+          0.7,
+          0.9,
+          1.0
+          //0.3
+        ]);
+    // if (positive != null && positive) {
+    //   gradient = LinearGradient(
+    //       begin: Alignment.topCenter,
+    //       end: Alignment.bottomCenter,
+    //       colors: [
+    //         Colors.green[500],
+    //         Colors.green[300],
+    //         Colors.green[200],
+    //         Colors.green[500],
+    //         Colors.green[700],
+    //         Colors.green[800],
+    //       ],
+    //       stops: [
+    //         0,
+    //         0.3,
+    //         0.5,
+    //         0.7,
+    //         0.9,
+    //         1.0
+    //         //0.3
+    //       ]);
+    // }
+    // if (negative != null && negative) {
+    //   gradient = LinearGradient(
+    //       begin: Alignment.topCenter,
+    //       end: Alignment.bottomCenter,
+    //       colors: [
+    //         Colors.red[500],
+    //         Colors.red[300],
+    //         Colors.red[200],
+    //         Colors.red[500],
+    //         Colors.red[700],
+    //         Colors.red[800],
+    //       ],
+    //       stops: [
+    //         0,
+    //         0.3,
+    //         0.5,
+    //         0.7,
+    //         0.9,
+    //         1.0
+    //         //0.3
+    //       ]);
+    // }
     return InkWell(
       focusNode: focusNode,
       onTap: () {
@@ -47,26 +114,7 @@ class RoundRectButton extends StatelessWidget {
                   theme.roundedButtonBackgroundColor,
               width: 1.pw),
           // color: theme.roundedButtonBackgroundColor,
-          gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                theme.accentColorWithDark(0.1),
-                theme.accentColorWithLight(0.2),
-                theme.accentColor,
-                theme.accentColorWithDark(0.1),
-                theme.accentColorWithDark(0.2),
-                theme.accentColor,
-              ],
-              stops: [
-                0,
-                0.3,
-                0.5,
-                0.7,
-                0.9,
-                1.0
-                //0.3
-              ]),
+          gradient: gradient,
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,

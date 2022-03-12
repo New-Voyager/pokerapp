@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
@@ -28,55 +30,69 @@ class _HelpTextState extends State<HelpText> {
       return Container();
     }
 
-    return Stack(clipBehavior: Clip.none, children: [
-      InkWell(
-          onTap: () {
-            setState(() {
-              show = false;
-            });
+    return InkWell(
+      onTap: () {
+        log('HelpText tapped');
+        setState(() {
+          show = false;
+        });
 
-            if (widget.onTap != null) {
-              widget.onTap();
-            }
-          },
-          child: Column(children: [
-            SizedBox(height: 15),
-            Container(
-                padding: EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                    color: widget.theme.primaryColorWithDark(0.2),
-                    borderRadius: BorderRadius.circular(10),
-                    border:
-                        Border.all(width: 1, color: widget.theme.accentColor)),
-                child: Text(widget.text,
-                    style:
-                        AppDecorators.getHeadLine6Style(theme: widget.theme))),
-          ])),
-      Positioned(
-        right: 10.0,
-        top: 5.0,
-        child: GestureDetector(
-          onTap: () {
-            //Navigator.of(context).pop();
-            setState(() {
-              show = false;
-            });
-            if (widget.onTap != null) {
-              widget.onTap();
-            }
-          },
-          child: Align(
-            alignment: Alignment.topRight,
-            child: CircleAvatar(
-              radius: 8.0,
-              foregroundColor: widget.theme.accentColor,
-              backgroundColor: widget.theme.accentColor,
-              child:
-                  Icon(Icons.close, size: 12, color: widget.theme.primaryColor),
+        if (widget.onTap != null) {
+          widget.onTap();
+        }
+      },
+      child: Stack(key: UniqueKey(), clipBehavior: Clip.none, children: [
+        InkWell(
+            onTap: () {
+              log('HelpText tapped');
+              setState(() {
+                show = false;
+              });
+
+              if (widget.onTap != null) {
+                widget.onTap();
+              }
+            },
+            child: Column(mainAxisSize: MainAxisSize.min, children: [
+              SizedBox(height: 15),
+              Container(
+                  padding: EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                      color: widget.theme.primaryColorWithDark(0.2),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                          width: 1, color: widget.theme.accentColor)),
+                  child: Text(widget.text,
+                      style: AppDecorators.getHeadLine6Style(
+                          theme: widget.theme))),
+            ])),
+        Positioned(
+          right: 10.0,
+          top: 5.0,
+          child: GestureDetector(
+            onTap: () {
+              //Navigator.of(context).pop();
+              log('HelpText tapped');
+              setState(() {
+                show = false;
+              });
+              if (widget.onTap != null) {
+                widget.onTap();
+              }
+            },
+            child: Align(
+              alignment: Alignment.topRight,
+              child: CircleAvatar(
+                radius: 8.0,
+                foregroundColor: widget.theme.accentColor,
+                backgroundColor: widget.theme.accentColor,
+                child: Icon(Icons.close,
+                    size: 12, color: widget.theme.primaryColor),
+              ),
             ),
           ),
         ),
-      ),
-    ]);
+      ]),
+    );
   }
 }

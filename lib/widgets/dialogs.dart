@@ -139,6 +139,7 @@ Future<bool> showPrompt(
                         },
                         theme: theme,
                         text: positiveButtonText,
+                        positive: true,
                       ),
                       SizedBox(width: 15.dp),
                       RoundRectButton(
@@ -147,6 +148,7 @@ Future<bool> showPrompt(
                         },
                         theme: theme,
                         text: negativeButtonText,
+                        negative: true,
                       ),
                     ]),
                   ),

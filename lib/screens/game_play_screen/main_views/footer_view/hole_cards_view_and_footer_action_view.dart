@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
@@ -14,6 +15,7 @@ import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/result_options_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/straddle_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/bet_widget.dart';
+import 'package:pokerapp/screens/game_play_screen/widgets/help_text.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/widgets/cards/hole_stack_card_view.dart';
 import 'package:pokerapp/utils/card_helper.dart';
@@ -23,7 +25,7 @@ import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 import 'footer_action_view.dart';
 
-class HoleCardsViewAndFooterActionView extends StatelessWidget {
+class HoleCardsViewAndFooterActionView extends StatefulWidget {
   final PlayerModel playerModel;
   final ValueNotifier<bool> isHoleCardsVisibleVn;
 
@@ -32,12 +34,38 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
     @required this.isHoleCardsVisibleVn,
   });
 
+  @override
+  State<HoleCardsViewAndFooterActionView> createState() =>
+      _HoleCardsViewAndFooterActionViewState();
+}
+
+class _HoleCardsViewAndFooterActionViewState
+    extends State<HoleCardsViewAndFooterActionView> {
   final ValueNotifier<bool> _showDarkBackgroundVn = ValueNotifier(false);
+  bool showHelpText = true;
+  @override
+  void initState() {
+    super.initState();
+    // appService.appSettings.showHoleCardTip = true;
+    // appService.appSettings.showHoleRearrangeTip = true;
+    showHelpText = appService.appSettings.showHoleRearrangeTip;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final gameState = GameState.getState(context);
+      if (gameState.gameUIState.rearrangeKey == null ||
+          gameState.gameUIState.rearrangeKey.currentContext == null) {
+        return;
+      }
+      final box = gameState.gameUIState.rearrangeKey.currentContext
+          .findRenderObject() as RenderBox;
+      var position = box.localToGlobal(Offset(0, 0));
+      Rect rect = Rect.fromLTWH(position.dx, position.dy,
+          box.constraints.maxWidth, box.constraints.maxHeight);
+      gameState.gameUIState.rearrangeRect = rect;
+      log('$rect');
+    });
+  }
 
   // bool _showAllCardSelectionButton(bool isInResult) {
-  //   return isInResult && (playerModel?.isActive ?? false);
-  // }
-
   Widget _buildHoleCardViewAndStraddleDialog(
     GameState gameState,
     BoardAttributesObject boardAttributes,
@@ -84,9 +112,31 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
           DebugBorderWidget(
             color: Colors.red,
             child: GestureDetector(
+              onPanEnd: (e) {
+                int i = 1;
+                if (e.velocity.pixelsPerSecond.dx < 0) {
+                  i = -1;
+                }
+                gameState.changeHoleCardOrder(inc: i);
+              },
               onTapUp: (tapDetails) {
-                log(tapDetails.globalPosition.toString());
-                log(gameState.gameUIState.cardEyes.toString());
+                //log(tapDetails.globalPosition.toString());
+                //log(gameState.gameUIState.cardEyes.toString());
+
+                // see whether we hit the help text
+                if (showHelpText &&
+                    gameState.gameUIState.rearrangeRect != null) {
+                  if (gameState.gameUIState.rearrangeRect
+                      .contains(tapDetails.globalPosition)) {
+                    //gameState.gameUIState.rearrangeRect = null;
+                    log('Hide help text');
+                    showHelpText = false;
+                    appService.appSettings.showHoleRearrangeTip = false;
+                    setState(() {});
+                    return;
+                  }
+                }
+
                 bool hit = false;
                 gameState.gameUIState.cardEyes.forEach((key, value) {
                   if (value.contains(tapDetails.globalPosition)) {
@@ -105,11 +155,12 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
                   }
                 });
                 if (!hit) {
-                  isHoleCardsVisibleVn.value = !isHoleCardsVisibleVn.value;
+                  widget.isHoleCardsVisibleVn.value =
+                      !widget.isHoleCardsVisibleVn.value;
                 }
               },
               child: ValueListenableBuilder(
-                  valueListenable: isHoleCardsVisibleVn,
+                  valueListenable: widget.isHoleCardsVisibleVn,
                   child: Container(
                     width: gameState.gameUIState.holeCardsViewSize.width,
                     height: footerHeight - 42,
@@ -206,7 +257,7 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
             alignment: Alignment.bottomCenter,
             child: ResultOptionsWidget(
               gameState: gameState,
-              isHoleCardsVisibleVn: isHoleCardsVisibleVn,
+              isHoleCardsVisibleVn: widget.isHoleCardsVisibleVn,
             ),
           ),
         ],
@@ -255,8 +306,8 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
     final boardAttributes = gameState.getBoardAttributes(context);
     // log('Holecards: rebuilding. Hole cards: ${playerCards}');
     bool playerFolded = false;
-    if (playerModel != null) {
-      playerFolded = playerModel.playerFolded;
+    if (widget.playerModel != null) {
+      playerFolded = widget.playerModel.playerFolded;
     }
 
     Widget cardsWidget = cards(
@@ -269,8 +320,8 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
     if (gameState.straddlePrompt) return cardsWidget;
 
     Widget shuffleButton = Container();
-    if (playerModel != null && playerModel.cards != null) {
-      if (playerModel.cards.length > 2 &&
+    if (widget.playerModel != null && widget.playerModel.cards != null) {
+      if (widget.playerModel.cards.length > 2 &&
           gameState.playerLocalConfig.showRearrange) {
         Color buttonColor = theme.accentColor;
         shuffleButton = InkWell(
@@ -296,22 +347,22 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        isHoleCardsVisibleVn.value = !isHoleCardsVisibleVn.value;
+        widget.isHoleCardsVisibleVn.value = !widget.isHoleCardsVisibleVn.value;
 
         // write the final _isCardVisible value to local storage
         gameState.gameHiveStore.setHoleCardsVisibilityState(
-          isHoleCardsVisibleVn.value,
+          widget.isHoleCardsVisibleVn.value,
         );
 
         gameState.holeCardsState.notify();
       },
       child: ValueListenableBuilder<bool>(
-          valueListenable: isHoleCardsVisibleVn,
+          valueListenable: widget.isHoleCardsVisibleVn,
           builder: (_, isCardVisible, __) {
             return Container(
               width: gameState.gameUIState.holeCardsViewSize.width,
               padding: EdgeInsets.symmetric(
-                horizontal: isHoleCardsVisibleVn.value
+                horizontal: widget.isHoleCardsVisibleVn.value
                     ? 8 * playerCards.length.toDouble()
                     : 0,
                 vertical:
@@ -323,12 +374,34 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
                 child: DebugBorderWidget(
                   color: Colors.green,
                   child: Stack(
+                    alignment: Alignment.center,
                     children: [
                       Center(child: cardsWidget),
                       Align(
                         alignment: Alignment.bottomCenter,
                         child: rankText,
                       ),
+
+                      Visibility(
+                        visible: showHelpText && isCardVisible,
+                        child: DebugBorderWidget(
+                            color: Colors.red,
+                            child: HelpText(
+                                key: gameState.gameUIState.rearrangeKey,
+                                show:
+                                    appService.appSettings.showHoleRearrangeTip,
+                                text: 'Swipe left or right to rearrange cards',
+                                theme: AppTheme.getTheme(context),
+                                onTap: () {
+                                  // don't show this again
+                                  appService.appSettings.showHoleRearrangeTip =
+                                      false;
+                                })),
+                      ),
+                      // Visibility(
+                      //   visible: isCardVisible && playerCards.length > 0,
+                      //   child:
+                      // ),
                     ],
                   ),
                 ),
@@ -355,7 +428,7 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
         [];
 
     return ValueListenableBuilder<bool>(
-      valueListenable: isHoleCardsVisibleVn,
+      valueListenable: widget.isHoleCardsVisibleVn,
       builder: (_, isCardVisible, __) {
         bool cardVisible = isCardVisible;
         if (gameState.customizationMode) {

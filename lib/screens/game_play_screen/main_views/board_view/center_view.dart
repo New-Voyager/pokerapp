@@ -73,9 +73,9 @@ class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
       child: Text(
         text,
         style: TextStyle(
-          color: Colors.grey,
-          fontSize: 12.dp,
-          fontWeight: FontWeight.w600,
+          color: Colors.white,
+          fontSize: 8.dp,
+          fontWeight: FontWeight.normal,
         ),
       ),
     );

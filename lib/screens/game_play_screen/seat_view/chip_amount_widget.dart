@@ -110,7 +110,7 @@ class ChipAmountWidget extends StatelessWidget {
         width: 15.0,
       );
     }
-    Color color = Colors.transparent;
+    Color color = Colors.blueGrey;
     if (action.action == HandActions.ALLIN) {
       color = Colors.teal[700];
     } else if (action.action == HandActions.BET) {

@@ -60,6 +60,18 @@ class AppSettingsStore {
     _box.put('gameSettings.showHoleCardTip', v);
   }
 
+  bool get showHoleRearrangeTip {
+    bool ret = getSetting('gameSettings.showHoleRearrangeTip');
+    if (ret == null) {
+      return true;
+    }
+    return ret;
+  }
+
+  set showHoleRearrangeTip(bool v) {
+    _box.put('gameSettings.showHoleRearrangeTip', v);
+  }
+
   bool get showBetTip {
     bool ret = getSetting('gameSettings.showBetTip');
     if (ret == null) {
