@@ -256,10 +256,15 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
         for (final chatBubble in chatBubbles) {
           if (chatBubble.seatPos == seat.seatPos) {
             chatBubble.show(false);
-            Offset offset = findPositionOfUser(seatNo: seat.serverSeatPos);
+            final offset =
+                _gameState.gameUIState.seatPosToOffsetMap[seat.seatPos];
             if (offset != null) {
-              Offset loc = Offset(offset.dx + 20, offset.dy + 20);
-              chatBubble.show(true, offset: loc, message: message);
+              final namePlateSize = NamePlateWidgetParent.namePlateSize;
+              final messageLoc = Offset(
+                offset.dx + namePlateSize.width / 2,
+                offset.dy + namePlateSize.height / 2,
+              );
+              chatBubble.show(true, offset: messageLoc, message: message);
             }
           }
         }
@@ -349,8 +354,6 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
                   alignment: Alignment.center,
                   child: SizedBox(
                       key: widget.gameState.gameUIState.playerOnTableKey,
-                      // width: ts.width,
-                      // height: ts.height,
                       width: rect.width,
                       height: rect.height,
                       child: ValueListenableBuilder(

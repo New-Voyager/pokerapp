@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_chat_bubble/bubble_type.dart';
 import 'package:flutter_chat_bubble/chat_bubble.dart';
 import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_1.dart';
-import 'package:pokerapp/models/game_play_models/business/game_chat_notfi_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
@@ -14,15 +13,14 @@ import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:provider/provider.dart';
 
+const kTextLengthLimit = 30;
+
 class PlayerChatBubble extends StatefulWidget {
   final GameComService gameComService;
   final Seat seat;
   _PlayerChatBubbleState state;
-  PlayerChatBubble(
-    this.gameComService,
-    this.seat, {
-    Key key,
-  }) : super(key: key);
+
+  PlayerChatBubble(this.gameComService, this.seat, {Key key}) : super(key: key);
 
   void show(bool showBubble, {Offset offset, ChatMessage message}) {
     state.show(showBubble, offset, message);
@@ -35,7 +33,6 @@ class PlayerChatBubble extends StatefulWidget {
   @override
   _PlayerChatBubbleState createState() {
     state = _PlayerChatBubbleState();
-    ;
     return state;
   }
 }
@@ -93,6 +90,13 @@ class _PlayerChatBubbleState extends State<PlayerChatBubble> {
     return widget.seat.seatPos.toString().toLowerCase().contains('right');
   }
 
+  String _getModifiedText(String text) {
+    if (text.length > kTextLengthLimit) {
+      return '${text.substring(0, kTextLengthLimit - 3)}...';
+    }
+    return text;
+  }
+
   @override
   Widget build(BuildContext context) {
     if (!showing || chatMessage == null) {
@@ -133,9 +137,9 @@ class _PlayerChatBubbleState extends State<PlayerChatBubble> {
                     right: 5,
                   ),
             shadowColor: theme.secondaryColorWithDark(0.80),
-            child: (chatMessage.text != null)
+            child: chatMessage.text != null
                 ? Text(
-                    chatMessage.text,
+                    _getModifiedText(chatMessage.text),
                     style: TextStyle(color: Colors.white),
                   )
                 : AnimatedScale(
@@ -165,7 +169,7 @@ class _PlayerChatBubbleState extends State<PlayerChatBubble> {
     );
 
     if (offset != null) {
-      return Transform.translate(offset: offset, child: widget);
+      return Positioned(left: offset.dx, top: offset.dy, child: widget);
     }
     return widget;
   }
