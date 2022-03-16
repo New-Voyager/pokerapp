@@ -16,6 +16,7 @@ class DebugBorderWidget extends StatelessWidget {
     if (!TestService.isTesting) return child;
 
     return Stack(
+      clipBehavior: Clip.none,
       children: <Widget>[
         child,
         Positioned.fill(

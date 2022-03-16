@@ -97,80 +97,80 @@ class _PlayerChatBubbleState extends State<PlayerChatBubble> {
     return text;
   }
 
+  void _onTap() {
+    if (zoomed) {
+      showing = false;
+      setState(() {});
+      return;
+    }
+    // extend time
+    _messagePopupTimer.cancel();
+    _messagePopupTimer = Timer(Duration(seconds: 8), () {
+      showing = false;
+      setState(() {});
+    });
+    zoomed = true;
+    setState(() {
+      gifScale = 4.0;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    if (!showing || chatMessage == null) {
-      return SizedBox.shrink();
+    if (!showing || chatMessage == null || offset == null) {
+      return const SizedBox.shrink();
     }
 
-    Widget widget = InkWell(
-      onTap: () {
-        if (zoomed) {
-          showing = false;
-          setState(() {});
-          return;
-        }
-        // extend time
-        _messagePopupTimer.cancel();
-        _messagePopupTimer = Timer(Duration(seconds: 8), () {
-          showing = false;
-          setState(() {});
-        });
-        zoomed = true;
-        setState(() {
-          gifScale = 4.0;
-        });
-      },
-      child: IntrinsicHeight(
-        child: IntrinsicWidth(
-          child: ChatBubble(
-            clipper: ChatBubbleClipper1(
-              type: BubbleType.receiverBubble,
-            ),
-            backGroundColor: theme.secondaryColorWithDark(0.60),
-            padding: (chatMessage.text != null)
-                ? null
-                : const EdgeInsets.only(
-                    top: 5,
-                    bottom: 5,
-                    left: 20,
-                    right: 5,
-                  ),
-            shadowColor: theme.secondaryColorWithDark(0.80),
-            child: chatMessage.text != null
-                ? Text(
-                    _getModifiedText(chatMessage.text),
-                    style: TextStyle(color: Colors.white),
-                  )
-                : AnimatedScale(
-                    scale: gifScale,
-                    curve: Curves.easeInOut,
-                    duration: const Duration(milliseconds: 300),
-                    child: Container(
-                      height: giphySize,
-                      child: CachedNetworkImage(
-                        imageUrl: chatMessage.giphyLink,
-                        cacheManager: ImageCacheManager.instance,
-                        placeholder: (_, __) => Center(
-                          child: Container(
-                            padding: EdgeInsets.all(5.0),
-                            height: 10,
-                            width: 10,
-                            child: CircularProgressIndicator(),
-                          ),
+    Widget widget = IntrinsicHeight(
+      child: IntrinsicWidth(
+        child: ChatBubble(
+          clipper: ChatBubbleClipper1(
+            type: BubbleType.receiverBubble,
+          ),
+          backGroundColor: theme.secondaryColorWithDark(0.60),
+          padding: (chatMessage.text != null)
+              ? null
+              : const EdgeInsets.only(
+                  top: 5,
+                  bottom: 5,
+                  left: 20,
+                  right: 5,
+                ),
+          shadowColor: theme.secondaryColorWithDark(0.80),
+          child: chatMessage.text != null
+              ? Text(
+                  _getModifiedText(chatMessage.text),
+                  style: TextStyle(color: Colors.white),
+                )
+              : AnimatedScale(
+                  scale: gifScale,
+                  curve: Curves.easeInOut,
+                  duration: const Duration(milliseconds: 300),
+                  child: Container(
+                    height: giphySize,
+                    child: CachedNetworkImage(
+                      imageUrl: chatMessage.giphyLink,
+                      cacheManager: ImageCacheManager.instance,
+                      placeholder: (_, __) => Center(
+                        child: Container(
+                          padding: EdgeInsets.all(5.0),
+                          height: 10,
+                          width: 10,
+                          child: CircularProgressIndicator(),
                         ),
-                        fit: BoxFit.cover,
                       ),
+                      fit: BoxFit.cover,
                     ),
                   ),
-          ),
+                ),
         ),
       ),
     );
 
-    if (offset != null) {
-      return Positioned(left: offset.dx, top: offset.dy, child: widget);
-    }
-    return widget;
+    return Positioned(
+      left: offset.dx,
+      top: offset.dy,
+      child: InkWell(onTap: _onTap, child: widget),
+    );
   }
 }

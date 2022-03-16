@@ -288,12 +288,6 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
   void initState() {
     super.initState();
     _init();
-    // TODO: THIS FUNCTION WOULD BE CALLED WHILE INITIALIZING THE APP
-    // if (widget.isLargerScreen) {
-    //   NamePlateWidgetParent.setWidth(100);
-    // } else {
-    //   NamePlateWidgetParent.setWidth(80);
-    // }
   }
 
   @override
