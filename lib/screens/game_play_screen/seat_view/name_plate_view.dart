@@ -209,7 +209,6 @@ class NamePlateWidget extends StatelessWidget {
           int lastRemainingTime = seat.actionTimer.getRemainingTime();
           int progressTime = seat.actionTimer.getTotalTime() -
               seat.actionTimer.getRemainingTime();
-          bool first = true;
 
           return CountdownMs(
             key: UniqueKey(),
@@ -217,7 +216,6 @@ class NamePlateWidget extends StatelessWidget {
             currentSeconds: progressTime,
             build: (_, time) {
               int remainingTime = time.toInt();
-              first = false;
               int remainingTimeInSecs = remainingTime ~/ 1000;
               if (seat.serverSeatPos == 1) {
                 if (lastRemainingTime != remainingTimeInSecs) {
@@ -233,8 +231,7 @@ class NamePlateWidget extends StatelessWidget {
               }
 
               return Nameplate.fromSvgString(
-                remainingTime: time
-                    .toInt(), // seat.actionTimer.getRemainingTime()*1000, //time.toInt(),
+                remainingTime: time.toInt(),
                 totalTime: total * 1000, // in milliseconds
                 svg: playerNamePlate,
                 size: containerSize,
@@ -289,29 +286,10 @@ class NamePlateWidget extends StatelessWidget {
               opacity: seat.isOpen ? 0.0 : 1.0,
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 5),
-
-                // nameplate != null
-                //     ? EdgeInsets.fromLTRB(
-                //         double.parse(
-                //           nameplate.meta.padding.split(",")[0].trim(),
-                //         ),
-                //         double.parse(
-                //           nameplate.meta.padding.split(",")[1].trim(),
-                //         ),
-                //         double.parse(
-                //           nameplate.meta.padding.split(",")[2].trim(),
-                //         ),
-                //         double.parse(
-                //           nameplate.meta.padding.split(",")[3].trim(),
-                //         ),
-                //       )
-                //     : null,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    //SizedBox(height: 2),
-                    // player name
                     Expanded(
                       child: playerName == null || playerName == ''
                           ? const SizedBox.shrink()

@@ -130,12 +130,7 @@ class _PlayerChatBubbleState extends State<PlayerChatBubble> {
           backGroundColor: theme.secondaryColorWithDark(0.60),
           padding: (chatMessage.text != null)
               ? null
-              : const EdgeInsets.only(
-                  top: 5,
-                  bottom: 5,
-                  left: 20,
-                  right: 5,
-                ),
+              : const EdgeInsets.only(top: 5, bottom: 5, left: 20, right: 5),
           shadowColor: theme.secondaryColorWithDark(0.80),
           child: chatMessage.text != null
               ? Text(

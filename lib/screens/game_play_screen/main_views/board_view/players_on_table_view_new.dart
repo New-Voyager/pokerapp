@@ -345,29 +345,32 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
             children: [
               // positioning players
               Align(
-                  alignment: Alignment.center,
-                  child: SizedBox(
-                      key: widget.gameState.gameUIState.playerOnTableKey,
-                      width: rect.width,
-                      height: rect.height,
-                      child: ValueListenableBuilder(
-                          valueListenable: widget
-                              .gameState.gameUIState.playerOnTablePositionVn,
-                          builder: (_, size, __) {
-                            if (size == null) {
-                              return Container();
-                            }
-                            return DebugBorderWidget(
-                              color: Colors.transparent,
-                              child: CustomMultiChildLayout(
-                                delegate: PlayerPlacementDelegate(
-                                  isLarger: widget.isLargerScreen,
-                                  gameState: widget.gameState,
-                                ),
-                                children: _getPlayers(context),
-                              ),
-                            );
-                          }))),
+                alignment: Alignment.center,
+                child: SizedBox(
+                  key: widget.gameState.gameUIState.playerOnTableKey,
+                  width: rect.width,
+                  height: rect.height,
+                  child: ValueListenableBuilder(
+                    valueListenable:
+                        widget.gameState.gameUIState.playerOnTablePositionVn,
+                    builder: (_, size, __) {
+                      if (size == null) {
+                        return Container();
+                      }
+                      return DebugBorderWidget(
+                        color: Colors.transparent,
+                        child: CustomMultiChildLayout(
+                          delegate: PlayerPlacementDelegate(
+                            isLarger: widget.isLargerScreen,
+                            gameState: widget.gameState,
+                          ),
+                          children: _getPlayers(context),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
 
               // lottie animations
               ...animations.animations,

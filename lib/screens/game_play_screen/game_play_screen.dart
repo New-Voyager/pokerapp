@@ -1023,16 +1023,27 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     final theme = AppTheme.getTheme(context);
     const kEmpty = const SizedBox.shrink();
 
-    return Column(
+    return Stack(
+      alignment: Alignment.center,
       children: [
-        // header
-        widget.showTop ? _buildHeaderView(theme) : kEmpty,
-
-        // board view
-        widget.showTop ? _buildMainBoardView(theme) : kEmpty,
-
         // footer view
-        widget.showBottom ? _buildFooterView() : kEmpty,
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: widget.showBottom ? _buildFooterView() : kEmpty,
+        ),
+
+        Align(
+          alignment: Alignment.center,
+          child: Column(
+            children: [
+              // header
+              widget.showTop ? _buildHeaderView(theme) : kEmpty,
+
+              // board view
+              widget.showTop ? _buildMainBoardView(theme) : kEmpty,
+            ],
+          ),
+        ),
       ],
     );
   }
@@ -1117,16 +1128,10 @@ class _GamePlayScreenState extends State<GamePlayScreen>
             );
           }),
           key: _scaffoldKey,
-          /* FIXME: THIS FLOATING ACTION BUTTON IS FOR SHOWING THE TESTS */
           floatingActionButton: GamePlayScreenUtilMethods.floatingActionButton(
             onReload: () {},
             isCustomizationMode: widget.customizationService != null,
           ),
-          // floating button to refresh network TEST
-          // floatingActionButton: FloatingActionButton(
-          //   child: Icon(Icons.android_rounded),
-          //   onPressed: _reconnectGameComService,
-          // ),
           resizeToAvoidBottomInset: true,
           backgroundColor: Colors.black,
           body: _buildBody(theme),
