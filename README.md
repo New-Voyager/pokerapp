@@ -94,6 +94,6 @@ xayb-jwdh-ixxh-yijp
 # release
 update the version in pubspec.yaml
 
-flutter build appbundle --flavor prod -t lib/main.dart
-
+ flutter build appbundle --flavor prod -t lib/main.dart --obfuscate --split-debug-info=v1.0-android-debug
+ 
 flutter build ios-framework --no-debug --no-profile --xcframework --no-universal --cocoapods --obfuscate --split-debug-info=v1.0-debug
