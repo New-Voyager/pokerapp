@@ -106,8 +106,11 @@ class AuthService {
     Map<String, String> header = {
       'Content-type': 'application/json',
     };
-    String body =
-        jsonEncode({"device-id": deviceId, "device-secret": deviceSecret});
+    String body = jsonEncode({
+      "device-id": deviceId,
+      "device-secret": deviceSecret,
+      "app-version": versionNumber,
+    });
 
     String apiServerUrl = AppConfig.apiUrl;
 

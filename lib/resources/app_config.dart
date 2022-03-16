@@ -26,7 +26,7 @@ class AppConfig {
     if (!apiServer.contains('https://') && !apiServer.contains('http://')) {
       apiServer = 'http://$apiServer:9501';
     }
-    //apiServer = 'http://localhost:9501';
+    // apiServer = 'http://localhost:9501';
     _apiUrl = apiServer;
     //_apiUrl = 'https://demo.pokerclub.app';
 

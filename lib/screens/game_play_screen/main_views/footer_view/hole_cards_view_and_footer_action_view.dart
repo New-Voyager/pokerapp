@@ -383,13 +383,13 @@ class _HoleCardsViewAndFooterActionViewState
                       ),
 
                       Visibility(
-                        visible: showHelpText && isCardVisible,
+                        visible: false, //showHelpText && isCardVisible,
                         child: DebugBorderWidget(
                             color: Colors.red,
                             child: HelpText(
                                 key: gameState.gameUIState.rearrangeKey,
                                 show:
-                                    appService.appSettings.showHoleRearrangeTip,
+                                    false, //appService.appSettings.showHoleRearrangeTip,
                                 text: 'Swipe left or right to rearrange cards',
                                 theme: AppTheme.getTheme(context),
                                 onTap: () {
