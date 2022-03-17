@@ -1023,27 +1023,14 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     final theme = AppTheme.getTheme(context);
     const kEmpty = const SizedBox.shrink();
 
-    return Stack(
-      alignment: Alignment.center,
+    return Column(
       children: [
+        // header
+        widget.showTop ? _buildHeaderView(theme) : kEmpty,
+        // board view
+        widget.showTop ? _buildMainBoardView(theme) : kEmpty,
         // footer view
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: widget.showBottom ? _buildFooterView() : kEmpty,
-        ),
-
-        Align(
-          alignment: Alignment.center,
-          child: Column(
-            children: [
-              // header
-              widget.showTop ? _buildHeaderView(theme) : kEmpty,
-
-              // board view
-              widget.showTop ? _buildMainBoardView(theme) : kEmpty,
-            ],
-          ),
-        ),
+        widget.showBottom ? _buildFooterView() : kEmpty,
       ],
     );
   }
