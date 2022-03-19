@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/app_stickers.dart';
 import 'package:provider/provider.dart';
 
 const List<String> _emojis = [
@@ -56,11 +58,9 @@ class EmojiStickerPicker extends StatelessWidget {
 
   Tab _buildStickerTab() {
     return Tab(
-      icon: Text(
-        '😂',
-        style: TextStyle(
-          fontSize: 25.0,
-        ),
+      icon: Lottie.asset(
+        AppStickers.laughingTears,
+        height: 40,
       ),
     );
   }
@@ -124,12 +124,12 @@ class _EmojisWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget _buildSingleEmojiChild(String emoji) => InkWell(
+    Widget _buildEmojiWidget(String emoji) => InkWell(
           onTap: () {
             onEmojiSelected(emoji);
           },
           child: Padding(
-            padding: EdgeInsets.all(10.0),
+            padding: EdgeInsets.all(8.0),
             child: Text(
               emoji,
               style: TextStyle(
@@ -143,8 +143,7 @@ class _EmojisWidget extends StatelessWidget {
       physics: BouncingScrollPhysics(),
       child: Wrap(
         alignment: WrapAlignment.center,
-        children:
-            _emojis.map((emoji) => _buildSingleEmojiChild(emoji)).toList(),
+        children: _emojis.map((emoji) => _buildEmojiWidget(emoji)).toList(),
       ),
     );
   }
@@ -158,13 +157,26 @@ class _StickersWidget extends StatelessWidget {
     @required void this.onStickerSelected(String _),
   }) : super(key: key);
 
+  Widget _buildStickerWidget(String sticker) {
+    return InkWell(
+      onTap: () {
+        onStickerSelected(sticker);
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Lottie.asset(sticker, height: 40),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       physics: BouncingScrollPhysics(),
       child: Wrap(
         alignment: WrapAlignment.center,
-        children: [],
+        children:
+            AppStickers.stickers.map((s) => _buildStickerWidget(s)).toList(),
       ),
     );
   }
