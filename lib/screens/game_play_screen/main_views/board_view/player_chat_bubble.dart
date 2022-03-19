@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_chat_bubble/bubble_type.dart';
 import 'package:flutter_chat_bubble/chat_bubble.dart';
 import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_1.dart';
+import 'package:lottie/lottie.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
@@ -126,34 +127,40 @@ class _PlayerChatBubbleState extends State<PlayerChatBubble> {
                   padding: (chatMessage.text != null)
                       ? null
                       : const EdgeInsets.only(
-                          top: 5, bottom: 5, left: 20, right: 5),
+                          top: 5,
+                          bottom: 5,
+                          left: 20,
+                          right: 5,
+                        ),
                   shadowColor: theme.secondaryColorWithDark(0.80),
-                  child: chatMessage.text != null
-                      ? Text(
-                          _getModifiedText(chatMessage.text),
-                          style: TextStyle(color: Colors.white),
-                        )
-                      : AnimatedScale(
-                          scale: gifScale,
-                          curve: Curves.easeInOut,
-                          duration: const Duration(milliseconds: 300),
-                          child: Container(
-                            height: giphySize,
-                            child: CachedNetworkImage(
-                              imageUrl: chatMessage.giphyLink,
-                              cacheManager: ImageCacheManager.instance,
-                              placeholder: (_, __) => Center(
-                                child: Container(
-                                  padding: EdgeInsets.all(5.0),
-                                  height: 10,
-                                  width: 10,
-                                  child: CircularProgressIndicator(),
+                  child: chatMessage.type == kStickerMessageType
+                      ? Lottie.asset(chatMessage.text, height: 50)
+                      : chatMessage.text != null
+                          ? Text(
+                              _getModifiedText(chatMessage.text),
+                              style: TextStyle(color: Colors.white),
+                            )
+                          : AnimatedScale(
+                              scale: gifScale,
+                              curve: Curves.easeInOut,
+                              duration: const Duration(milliseconds: 300),
+                              child: Container(
+                                height: giphySize,
+                                child: CachedNetworkImage(
+                                  imageUrl: chatMessage.giphyLink,
+                                  cacheManager: ImageCacheManager.instance,
+                                  placeholder: (_, __) => Center(
+                                    child: Container(
+                                      padding: EdgeInsets.all(5.0),
+                                      height: 10,
+                                      width: 10,
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                  ),
+                                  fit: BoxFit.cover,
                                 ),
                               ),
-                              fit: BoxFit.cover,
                             ),
-                          ),
-                        ),
                 ),
               ),
             ),

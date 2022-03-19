@@ -42,13 +42,13 @@ class EmojiStickerPicker extends StatelessWidget {
 
   EmojiStickerPicker({
     @required void this.onEmojiSelected(String _),
-    void this.onStickerSelected(String _),
+    @required void this.onStickerSelected(String _),
   });
 
   Tab _buildEmojiTab() {
     return Tab(
       icon: Text(
-        '😂',
+        _emojis[4],
         style: TextStyle(
           fontSize: 25.0,
         ),
@@ -72,7 +72,7 @@ class EmojiStickerPicker extends StatelessWidget {
     return Container(
       color: Colors.black,
       width: size.width,
-      height: size.height * 0.25,
+      height: size.height * 0.30,
       child: DefaultTabController(
         length: 2,
         child: Column(

@@ -141,6 +141,7 @@ class _ChatScreenState extends State<ChatScreen> with RouteAwareAnalytics {
                   onEmojiSelected: (String emoji) {
                     _textController.text += emoji;
                   },
+                  onStickerSelected: (String sticker) {},
                 )
               : const SizedBox.shrink(),
         ),

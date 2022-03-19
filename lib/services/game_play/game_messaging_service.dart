@@ -20,6 +20,7 @@ const kRequestMessageMessageType = 'REQUEST_MESSAGE';
 const kReceivedMessageMessageType = 'RECEIVED_MESSAGE';
 const kAudioMessageType = 'AUDIO';
 const kGiphyMessageType = 'GIPHY';
+const kStickerMessageType = 'STICKER';
 const kAnimationMessageType = 'ANIMATION';
 const kCardsMessageType = 'CARDS';
 const kRabbitMessageType = 'RABBIT';
@@ -48,6 +49,7 @@ class GameMessagingService {
   Function onText;
   Function onAudio;
   Function onGiphy;
+  Function onSticker;
   Function onAnimation;
   Function onCards;
   Function onRabbitHunt;
@@ -63,6 +65,7 @@ class GameMessagingService {
     void onText(ChatMessage _),
     void onAudio(ChatMessage _),
     void onGiphy(ChatMessage _),
+    void onSticker(ChatMessage _),
     void onAnimation(ChatMessage _),
     void onCards(ChatMessage _),
     void onRabbitHunt(ChatMessage _),
@@ -78,6 +81,10 @@ class GameMessagingService {
 
     if (onGiphy != null) {
       this.onGiphy = onGiphy;
+    }
+
+    if (onSticker != null) {
+      this.onSticker = onSticker;
     }
 
     if (onAnimation != null) {
@@ -113,7 +120,9 @@ class GameMessagingService {
     if (message == null) return;
 
     // handle messages
-    if (message.type == kTextMessageType || message.type == kGiphyMessageType) {
+    if (message.type == kTextMessageType ||
+        message.type == kGiphyMessageType ||
+        message.type == kStickerMessageType) {
       if (this.messages.length > MAX_CHAT_BUFSIZE) {
         this.messages.removeAt(0);
       }
@@ -150,6 +159,13 @@ class GameMessagingService {
         if (this.onGiphy != null) {
           this.messages.add(message);
           this.onGiphy(message);
+        }
+      }
+
+      if (message.type == kStickerMessageType) {
+        if (this.onSticker != null) {
+          this.messages.add(message);
+          this.onSticker(message);
         }
       }
 
@@ -383,6 +399,18 @@ class GameMessagingService {
     this.nats.clientPub.pubString(this.chatChannel, body);
   }
 
+  void sendSticker(String stickerAsset) {
+    dynamic body = jsonEncode({
+      'id': uuid.v1(),
+      'playerID': this.currentPlayer.id,
+      'name': this.currentPlayer.name,
+      'text': stickerAsset,
+      'type': kStickerMessageType,
+      'sent': DateTime.now().toUtc().toIso8601String(),
+    });
+    this.nats.clientPub.pubString(this.chatChannel, body);
+  }
+
   void sendAnimation(int fromSeat, int toSeat, String animation) {
     dynamic body = jsonEncode({
       'id': uuid.v1(),
@@ -526,6 +554,8 @@ class ChatMessage {
       }
 
       if (msg.type == kTextMessageType) {
+        msg.text = message['text'].toString();
+      } else if (msg.type == kStickerMessageType) {
         msg.text = message['text'].toString();
       } else if (msg.type == kAudioMessageType) {
         if (message['audio'] != null) {

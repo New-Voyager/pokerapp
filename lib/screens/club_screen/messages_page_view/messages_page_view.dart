@@ -236,6 +236,7 @@ class _MessagesPageViewState extends State<MessagesPageView>
                           onEmojiSelected: (String emoji) {
                             _textController.text += emoji;
                           },
+                          onStickerSelected: (String sticker) {},
                         )
                       : const SizedBox.shrink(),
                 ),

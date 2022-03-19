@@ -3,6 +3,7 @@ import 'dart:developer' as dev;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:lottie/lottie.dart';
 import 'package:pokerapp/models/game_play_models/business/game_chat_notfi_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
@@ -239,6 +240,8 @@ class _GameChatState extends State<GameChat> {
       }
     }
 
+    final bool isSticker = message.type == kStickerMessageType;
+
     return Align(
       alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
       child: IntrinsicWidth(
@@ -249,28 +252,36 @@ class _GameChatState extends State<GameChat> {
             minWidth: MediaQuery.of(context).size.width * 0.3,
           ),
           padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-          decoration: isMe
-              ? AppDecorators.getChatMyMessageDecoration(theme)
-              : AppDecorators.getChatOtherMessageDecoration(theme),
+          decoration: isSticker
+              ? null
+              : isMe
+                  ? AppDecorators.getChatMyMessageDecoration(theme)
+                  : AppDecorators.getChatOtherMessageDecoration(theme),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               /* name of player & time */
-              Wrap(
-                crossAxisAlignment: WrapCrossAlignment.center,
-                alignment: WrapAlignment.end,
-                children: bubble,
-              ),
+              isSticker
+                  ? const SizedBox.shrink()
+                  : Wrap(
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      alignment: WrapAlignment.end,
+                      children: bubble,
+                    ),
 
               // sep
               const SizedBox(height: 2),
 
-              // // message / gif
-              message.text != null
-                  ? const SizedBox.shrink()
-                  : AttributedGifWidget(url: message.giphyLink),
+              // message / gif
 
-              message.text != null
+              message.type == kGiphyMessageType
+                  ? AttributedGifWidget(url: message.giphyLink)
+                  : isSticker
+                      ? Lottie.asset(message.text, height: 100)
+                      : const SizedBox.shrink(),
+
+              /// this check is needed because
+              message.text != null && !isSticker
                   ? const SizedBox.shrink()
                   : _buildName(message.fromName, theme),
             ],
@@ -336,7 +347,7 @@ class _GameChatState extends State<GameChat> {
     if (isKeyboardVisible) {
       return height * 0.25;
     } else {
-      return expanded ? height * 0.75 : height * 0.30;
+      return expanded ? height * 0.60 : height * 0.30;
     }
   }
 
@@ -409,6 +420,9 @@ class _GameChatState extends State<GameChat> {
                     ? EmojiStickerPicker(
                         onEmojiSelected: (String emoji) {
                           _textEditingController.text += emoji;
+                        },
+                        onStickerSelected: (String sticker) {
+                          chatService.sendSticker(sticker);
                         },
                       )
                     : const SizedBox.shrink(),

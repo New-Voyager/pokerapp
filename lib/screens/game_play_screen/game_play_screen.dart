@@ -898,6 +898,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     gms.listen(
       onText: (ChatMessage message) => _onChatMessage(message),
       onGiphy: (ChatMessage message) => _onChatMessage(message),
+      onSticker: (ChatMessage message) => _onChatMessage(message),
     );
 
     _gcsController.addListener(() {
