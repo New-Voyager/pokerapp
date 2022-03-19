@@ -35,6 +35,7 @@ class PlayerChatBubble extends StatefulWidget {
 
 class _PlayerChatBubbleState extends State<PlayerChatBubble> {
   double giphySize = 32.0;
+  double lottieSize = 24.0;
   AppTheme theme;
   double gifScale = 1.0;
   _PlayerChatBubbleState();
@@ -129,12 +130,12 @@ class _PlayerChatBubbleState extends State<PlayerChatBubble> {
                       : const EdgeInsets.only(
                           top: 5,
                           bottom: 5,
-                          left: 20,
+                          left: 5,
                           right: 5,
                         ),
                   shadowColor: theme.secondaryColorWithDark(0.80),
                   child: chatMessage.type == kStickerMessageType
-                      ? Lottie.asset(chatMessage.text, height: 50)
+                      ? Lottie.asset(chatMessage.text, height: lottieSize)
                       : chatMessage.text != null
                           ? Text(
                               _getModifiedText(chatMessage.text),

@@ -66,6 +66,9 @@ class AppTheme extends ChangeNotifier {
   Color primaryColorWithLight([double l = 0.10]) =>
       _lighten(_themeData.style.primaryColor, l);
 
+  Color fillInColorWithLight([double l = 0.10]) =>
+      _lighten(_themeData.style.fillInColor, l);
+
   // color that is used on buttons or other highlighting places
   Color get secondaryColor => _themeData.style.secondaryColor;
   Color secondaryColorWithDark([double d = 0.10]) =>

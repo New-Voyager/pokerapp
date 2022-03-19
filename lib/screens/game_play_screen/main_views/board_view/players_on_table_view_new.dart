@@ -357,14 +357,22 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
           _gameState.gameUIState.seatPosToOffsetMap[seat.seatPos];
       final parentOffset = _gameState.gameUIState.playerOnTableRect.topLeft;
 
-      final overlayOffset = Offset(
+      var overlayOffset = Offset(
         seatOffset.dx +
             parentOffset.dx +
             NamePlateWidgetParent.namePlateSize.width / 2,
-        seatOffset.dy +
-            parentOffset.dy +
-            NamePlateWidgetParent.namePlateSize.height / 2,
+        seatOffset.dy + parentOffset.dy,
       );
+      if (seat.seatPos == SeatPos.middleRight ||
+          seat.seatPos == SeatPos.bottomRight ||
+          seat.seatPos == SeatPos.topRight) {
+        overlayOffset = Offset(
+          seatOffset.dx + parentOffset.dx,
+          seatOffset.dy +
+              parentOffset.dy +
+              NamePlateWidgetParent.namePlateSize.height / 3,
+        );
+      }
 
       final playerChatBubble = PlayerChatBubble(
         gameComService: gameComService,

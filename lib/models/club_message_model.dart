@@ -6,11 +6,11 @@ enum MessageType {
   TEXT,
   HAND,
   GIPHY,
-  STICKER,
   JOIN_CLUB,
   LEAVE_CLUB,
   KICKED_OUT,
   NEW_GAME,
+  STICKER,
 }
 
 class SharedHandMsg {

@@ -222,7 +222,7 @@ class AppDecorators {
 
   static BoxDecoration getChatMyMessageDecoration(AppTheme theme) {
     return BoxDecoration(
-      color: theme.fillInColor,
+      color: theme.fillInColorWithLight(0.18),
       borderRadius: BorderRadius.only(
         topLeft: Radius.circular(16),
         topRight: Radius.circular(16),
@@ -233,7 +233,7 @@ class AppDecorators {
 
   static BoxDecoration getChatOtherMessageDecoration(AppTheme theme) {
     return BoxDecoration(
-      color: theme.fillInColor,
+      color: theme.fillInColorWithLight(0.05),
       borderRadius: BorderRadius.only(
         topLeft: Radius.circular(16),
         topRight: Radius.circular(16),

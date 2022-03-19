@@ -75,7 +75,7 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
     var startDate = now.subtract(Duration(days: now.weekday));
     startDate =
         DateTime(startDate.year, startDate.month, startDate.day, 0, 0, 0);
-    var endDate = DateTime(now.year, now.month, now.day, 0, 0, 0);
+    var endDate = DateTime(now.year, now.month, now.day + 1, 0, 0, 0);
     _dateTimeRange = DateTimeRange(start: startDate, end: endDate);
     filter = true;
   }
@@ -606,7 +606,8 @@ class DataCreditSource extends DataTableSource {
     }
     if (item.updateType == 'CHANGE') {
       type = 'Set';
-      amountColor = Colors.blue;
+      typeColor = Colors.blue;
+      // amountColor = Colors.blue;
       //typeColor = Colors.cyan;
     }
     List<DataCell> cells = [
