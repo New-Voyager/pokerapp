@@ -250,10 +250,14 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
         _gameState.gameChatBubbleNotifyState.getMessages();
     final latestMessage = messages.first;
     final seat = _gameState.getSeatByPlayer(latestMessage.fromPlayer);
+    if (seat == null) return;
 
     for (final chatHolder in chatBubbleHolders) {
       if (chatHolder.seatPos == seat.seatPos) {
-        chatHolder.timer?.cancel();
+        if (chatHolder?.timer != null) {
+          chatHolder.timer.cancel();
+          chatHolder.overlayEntry.remove();
+        }
 
         // set message
         chatHolder.chatMessageHolder.value = latestMessage;
