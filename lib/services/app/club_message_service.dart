@@ -15,9 +15,11 @@ class ClubMessageService {
 
     log(mutation);
 
-    _client.mutate(
+    final queryResult = await _client.mutate(
       MutationOptions(document: gql(mutation)),
     );
+
+    log('query result: ${queryResult}');
   }
 
   static StreamController<List<ClubMessageModel>> _stream;

@@ -85,6 +85,9 @@ class ClubMessageModel {
       case 'GIPHY':
         this.messageType = MessageType.GIPHY;
         break;
+      case 'STICKER':
+        this.messageType = MessageType.STICKER;
+        break;
       case 'JOIN_CLUB':
         this.messageType = MessageType.JOIN_CLUB;
         break;

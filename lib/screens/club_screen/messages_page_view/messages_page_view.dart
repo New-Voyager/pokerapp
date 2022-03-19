@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/main_helper.dart';
@@ -97,6 +99,16 @@ class _MessagesPageViewState extends State<MessagesPageView>
       clubCode: widget.clubCode,
       messageType: MessageType.GIPHY,
       giphyLink: url,
+    );
+
+    ClubMessageService.sendMessage(_model);
+  }
+
+  void _sendSticker(String stickerAsset) {
+    ClubMessageModel _model = ClubMessageModel(
+      clubCode: widget.clubCode,
+      messageType: MessageType.STICKER,
+      text: stickerAsset,
     );
 
     ClubMessageService.sendMessage(_model);
@@ -236,7 +248,10 @@ class _MessagesPageViewState extends State<MessagesPageView>
                           onEmojiSelected: (String emoji) {
                             _textController.text += emoji;
                           },
-                          onStickerSelected: (String sticker) {},
+                          onStickerSelected: (String sticker) {
+                            _sendSticker(sticker);
+                            log('messages_page_view :: onStickerSelected');
+                          },
                         )
                       : const SizedBox.shrink(),
                 ),
