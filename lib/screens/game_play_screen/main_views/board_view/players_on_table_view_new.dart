@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/animating_widgets/lottie_animation.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/board_view/chat_bubble_holder.class.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/player_chat_bubble.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/name_plate_view.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/player_view.dart';
@@ -65,8 +67,7 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
   int seatChangerPlayer;
   int seatChangeToo;
 
-  final List<PlayerChatBubble> chatBubbles = [];
-  // final List<Widget> animations = [];
+  final List<ChatBubbleHolder> chatBubbleHolders = [];
 
   // getters
   GameState get _gameState => widget.gameState;
@@ -244,29 +245,94 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
     });
   }
 
-  void _gameChatBubbleNotifier() {
-    log('ChatBubble: working on chat notification');
+  void _gameChatBubbleNotifier() async {
     List<ChatMessage> messages =
         _gameState.gameChatBubbleNotifyState.getMessages();
-    for (final message in messages) {
-      final seat = _gameState.getSeatByPlayer(message.fromPlayer);
-      if (seat != null) {
-        log('ChatBubble: seat ${message.fromPlayer} seat: ${seat.serverSeatPos} sent ${message.text}');
+    final latestMessage = messages.first;
+    final seat = _gameState.getSeatByPlayer(latestMessage.fromPlayer);
+    if (seat == null) return;
 
-        for (final chatBubble in chatBubbles) {
-          if (chatBubble.seatPos == seat.seatPos) {
-            chatBubble.show(false);
-            Offset offset = findPositionOfUser(seatNo: seat.serverSeatPos);
-            if (offset != null) {
-              Offset loc = Offset(offset.dx + 20, offset.dy + 20);
-              chatBubble.show(true, offset: loc, message: message);
-            }
-          }
+    for (final chatHolder in chatBubbleHolders) {
+      if (chatHolder.seatPos == seat.seatPos) {
+        if (chatHolder?.timer != null) {
+          chatHolder.timer.cancel();
+          if (chatHolder.overlayEntry.mounted) chatHolder.overlayEntry.remove();
         }
-      } else {
-        log('ChatBubble: seat ${message.fromPlayer} sent ${message.text}');
+
+        // set message
+        chatHolder.chatMessageHolder.value = latestMessage;
+
+        final overlayState = Overlay.of(context);
+        overlayState.insert(chatHolder.overlayEntry);
+
+        chatHolder.timer = Timer(const Duration(seconds: 4), () {
+          chatHolder.chatMessageHolder.value = null;
+          chatHolder.overlayEntry.remove();
+        });
+
+        break;
       }
     }
+
+    // final o = _gameState.gameUIState.seatPosToOffsetMap[SeatPos.bottomCenter];
+    // final parentOffset = _gameState.gameUIState.playerOnTableRect.topLeft;
+    //
+    // final offset = Offset(
+    //   o.dx + parentOffset.dx + NamePlateWidgetParent.namePlateSize.width / 2,
+    //   o.dy + parentOffset.dy + NamePlateWidgetParent.namePlateSize.height / 2,
+    // );
+    // final overlayState = Overlay.of(context);
+    // final overlayEntry = OverlayEntry(
+    //   builder: (_) => Positioned(
+    //     left: offset.dx,
+    //     top: offset.dy,
+    //     child: Container(
+    //       color: Colors.green,
+    //       width: 100,
+    //       height: 100,
+    //     ),
+    //   ),
+    // );
+    // overlayState.insert(overlayEntry);
+    //
+    // await Future.delayed(const Duration(seconds: 5));
+    //
+    // overlayEntry.remove();
+    //
+    // return;
+    // log('ChatBubble: working on chat notification');
+    // List<ChatMessage> messages =
+    //     _gameState.gameChatBubbleNotifyState.getMessages();
+    // for (final message in messages) {
+    //   final seat = _gameState.getSeatByPlayer(message.fromPlayer);
+    //   if (seat != null) {
+    //     log('ChatBubble: seat ${message.fromPlayer} seat: ${seat.serverSeatPos} sent ${message.text}');
+    //
+    //     for (final chatBubble in chatBubbles) {
+    //       if (chatBubble.seatPos == seat.seatPos) {
+    //         // chatBubble.show(false);
+    //         final offset =
+    //             _gameState.gameUIState.seatPosToOffsetMap[seat.seatPos];
+    //         if (offset != null) {
+    //           final namePlateSize = NamePlateWidgetParent.namePlateSize;
+    //           final messageLoc = Offset(
+    //             offset.dx + namePlateSize.width / 2,
+    //             offset.dy + namePlateSize.height / 2,
+    //           );
+    //           // final overlay = Overlay.of(context);
+    //           // overlay.insert(
+    //           //   OverlayEntry(
+    //           //     builder: (_) => chatBubble,
+    //           //   ),
+    //           // );
+    //           // chatBubble.show(true, offset: messageLoc, message: message);
+    //         }
+    //       }
+    //     }
+    //   } else {
+    //     log('ChatBubble: seat ${message.fromPlayer} sent ${message.text}');
+    //   }
+    // }
   }
 
   void _init() {
@@ -279,21 +345,83 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
     _gameState.gameChatBubbleNotifyState.addListener(_gameChatBubbleNotifier);
   }
 
+  void _initChatBubbleHolders() {
+    final gameComService = _gameState.gameComService;
+
+    for (int s = 1; s <= _maxPlayers; s++) {
+      final seat = widget.gameState.seats[s];
+
+      final chatMessageHolder = ValueNotifier<ChatMessage>(null);
+
+      final seatOffset =
+          _gameState.gameUIState.seatPosToOffsetMap[seat.seatPos];
+      final parentOffset = _gameState.gameUIState.playerOnTableRect.topLeft;
+
+      var overlayOffset = Offset(
+        seatOffset.dx +
+            parentOffset.dx +
+            NamePlateWidgetParent.namePlateSize.width / 2,
+        seatOffset.dy + parentOffset.dy,
+      );
+      if (seat.seatPos == SeatPos.middleRight ||
+          seat.seatPos == SeatPos.bottomRight ||
+          seat.seatPos == SeatPos.topRight) {
+        overlayOffset = Offset(
+          seatOffset.dx + parentOffset.dx,
+          seatOffset.dy +
+              parentOffset.dy +
+              NamePlateWidgetParent.namePlateSize.height / 3,
+        );
+      }
+
+      final playerChatBubble = PlayerChatBubble(
+        gameComService: gameComService,
+        seat: seat,
+        chatMessageHolder: chatMessageHolder,
+      );
+
+      final overlayEntry = OverlayEntry(
+        builder: (_) => Positioned(
+          left: overlayOffset.dx,
+          top: overlayOffset.dy,
+          child: playerChatBubble,
+        ),
+      );
+
+      final chatBubbleHolder = ChatBubbleHolder(
+        chatMessageHolder: chatMessageHolder,
+        overlayEntry: overlayEntry,
+        seatPos: seat.seatPos,
+      );
+
+      chatBubbleHolders.add(chatBubbleHolder);
+    }
+  }
+
+  Timer _chatBubbleInitTimer;
+
   @override
   void initState() {
     super.initState();
     _init();
-    // TODO: THIS FUNCTION WOULD BE CALLED WHILE INITIALIZING THE APP
-    // if (widget.isLargerScreen) {
-    //   NamePlateWidgetParent.setWidth(100);
-    // } else {
-    //   NamePlateWidgetParent.setWidth(80);
-    // }
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      _chatBubbleInitTimer = Timer(const Duration(seconds: 1), () {
+        _initChatBubbleHolders();
+      });
+    });
+  }
+
+  void _disposeChatHolders() {
+    for (final chatHolder in chatBubbleHolders) {
+      chatHolder.timer?.cancel();
+    }
   }
 
   @override
   void dispose() {
     _seatChangeAnimationController?.dispose();
+    _chatBubbleInitTimer?.cancel();
+    _disposeChatHolders();
     super.dispose();
   }
 
@@ -315,18 +443,18 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
     );
   }
 
-  List<Widget> _getChatBubbles() {
-    final gameComService = _gameState.gameComService;
-    for (int localSeat = 1; localSeat <= _maxPlayers; localSeat++) {
-      final seat = widget.gameState.seats[localSeat];
-      chatBubbles.add(PlayerChatBubble(
-        gameComService,
-        seat,
-      ));
-    }
-
-    return chatBubbles;
-  }
+  // List<Widget> _getChatBubbles() {
+  //   final gameComService = _gameState.gameComService;
+  //   for (int localSeat = 1; localSeat <= _maxPlayers; localSeat++) {
+  //     final seat = widget.gameState.seats[localSeat];
+  //     chatBubbles.add(PlayerChatBubble(
+  //       gameComService,
+  //       seat,
+  //     ));
+  //   }
+  //
+  //   return chatBubbles;
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -346,31 +474,32 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
             children: [
               // positioning players
               Align(
-                  alignment: Alignment.center,
-                  child: SizedBox(
-                      key: widget.gameState.gameUIState.playerOnTableKey,
-                      // width: ts.width,
-                      // height: ts.height,
-                      width: rect.width,
-                      height: rect.height,
-                      child: ValueListenableBuilder(
-                          valueListenable: widget
-                              .gameState.gameUIState.playerOnTablePositionVn,
-                          builder: (_, size, __) {
-                            if (size == null) {
-                              return Container();
-                            }
-                            return DebugBorderWidget(
-                              color: Colors.transparent,
-                              child: CustomMultiChildLayout(
-                                delegate: PlayerPlacementDelegate(
-                                  isLarger: widget.isLargerScreen,
-                                  gameState: widget.gameState,
-                                ),
-                                children: _getPlayers(context),
-                              ),
-                            );
-                          }))),
+                alignment: Alignment.center,
+                child: SizedBox(
+                  key: widget.gameState.gameUIState.playerOnTableKey,
+                  width: rect.width,
+                  height: rect.height,
+                  child: ValueListenableBuilder(
+                    valueListenable:
+                        widget.gameState.gameUIState.playerOnTablePositionVn,
+                    builder: (_, size, __) {
+                      if (size == null) {
+                        return Container();
+                      }
+                      return DebugBorderWidget(
+                        color: Colors.transparent,
+                        child: CustomMultiChildLayout(
+                          delegate: PlayerPlacementDelegate(
+                            isLarger: widget.isLargerScreen,
+                            gameState: widget.gameState,
+                          ),
+                          children: _getPlayers(context),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
 
               // lottie animations
               ...animations.animations,
@@ -386,7 +515,7 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
               ),
 
               // chat bubbles - for every players
-              ..._getChatBubbles(),
+              // ..._getChatBubbles(),
             ],
           );
         });

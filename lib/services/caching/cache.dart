@@ -119,6 +119,12 @@ class CacheService {
     return activities;
   }
 
+  void removePlayerActivitiesCache(String clubCode, String playerId) {
+    cachedObjects.removeWhere((key, value) {
+      return key.contains('creditHistory-$clubCode-$playerId');
+    });
+  }
+
   Future<List<MemberCreditHistory>> getPlayerActivities(
       String clubCode, String playerId) async {
     String cacheId = 'creditHistory-$clubCode-$playerId';

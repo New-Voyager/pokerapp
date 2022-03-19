@@ -137,9 +137,12 @@ class _ChatScreenState extends State<ChatScreen> with RouteAwareAnalytics {
         ValueListenableBuilder<bool>(
           valueListenable: _vnShowEmojiPicker,
           builder: (_, showEmojiPicker, __) => showEmojiPicker
-              ? EmojiPicker(
+              ? EmojiStickerPicker(
                   onEmojiSelected: (String emoji) {
                     _textController.text += emoji;
+                  },
+                  onStickerSelected: (String sticker) {
+                    dev.log('chat_screen :: onStickerSelected');
                   },
                 )
               : const SizedBox.shrink(),

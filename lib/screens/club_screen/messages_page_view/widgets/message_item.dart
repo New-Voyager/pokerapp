@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:lottie/lottie.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/auth_model.dart';
 import 'package:pokerapp/models/club_message_model.dart';
@@ -106,7 +107,7 @@ class MessageItem extends StatelessWidget {
         name: players[messageModel.sender ?? ''] ?? 'Somebody',
         userId: messageModel.sender ?? '',
       );
-    return SizedBox();
+    return const SizedBox();
   }
 
   Widget _buildTile(
@@ -128,6 +129,10 @@ class MessageItem extends StatelessWidget {
       triangle = Positioned(right: 0, bottom: 0, child: trianglePainer);
     } else {
       triangle = Positioned(left: 0, bottom: 0, child: trianglePainer);
+    }
+
+    if (messageModel.messageType == MessageType.STICKER) {
+      return Lottie.asset(messageModel.text, height: 100);
     }
 
     return Expanded(

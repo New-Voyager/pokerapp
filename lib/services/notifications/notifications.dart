@@ -595,6 +595,11 @@ class NotificationHandler {
   Future<void> handleCreditUpdate(Map<String, dynamic> json) async {
     String text = json['text'].toString();
     String clubName = json['clubName'].toString();
+    String clubCode = json['clubCode'].toString();
+
+    // invalidate cache
+    appState.cacheService
+        .removePlayerActivitiesCache(clubCode, playerState.playerUuid);
     // toggle pending approvals
     Alerts.showNotification(
         titleText: 'Credits: ${clubName}',

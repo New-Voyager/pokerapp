@@ -3,6 +3,7 @@ import 'dart:developer' as dev;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:lottie/lottie.dart';
 import 'package:pokerapp/models/game_play_models/business/game_chat_notfi_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
@@ -17,6 +18,7 @@ import 'package:pokerapp/services/text_filtering/text_filtering.dart';
 import 'package:pokerapp/utils/favourite_texts_widget.dart';
 import 'package:pokerapp/utils/new_gif_widget.dart';
 import 'package:pokerapp/widgets/attributed_gif_widget.dart';
+import 'package:pokerapp/widgets/debug_border_widget.dart';
 import 'package:pokerapp/widgets/emoji_picker_widget.dart';
 import 'package:pokerapp/widgets/user_input_widget.dart';
 import 'package:provider/provider.dart';
@@ -192,14 +194,14 @@ class _GameChatState extends State<GameChat> {
   Widget _buildText(String text, AppTheme theme) {
     return Text(
       text,
-      style: AppDecorators.getHeadLine4Style(theme: theme),
+      style: AppDecorators.getHeadLine6Style(theme: theme),
     );
   }
 
   Widget _buildName(String name, AppTheme theme) {
     return Text(
       name,
-      style: AppDecorators.getSubtitle2Style(theme: theme).copyWith(
+      style: AppDecorators.getSubtitle4Style(theme: theme).copyWith(
         color: theme.accentColor,
       ),
       softWrap: true,
@@ -215,69 +217,49 @@ class _GameChatState extends State<GameChat> {
 
     List<Widget> bubble = [];
 
+    // if (!isMe) {
+    //   bubble.add(_buildName(message.fromName, theme));
+    // }
+    Widget name = _buildName(message.fromName, theme);
     if (isMe) {
-      if (text != null) {
-        // text
-        bubble.add(_buildText(text, theme));
-
-        // seperation
-        bubble.add(const SizedBox(width: 10));
-
-        // name
-        bubble.add(_buildName(message.fromName, theme));
-      }
+      // bubble.add(Align(alignment: Alignment.bottomRight, child: name));
     } else {
-      if (text != null) {
-        // name
-        bubble.add(_buildName(message.fromName, theme));
-
-        // seperation
-        bubble.add(const SizedBox(width: 10));
-
-        // text
-        bubble.add(_buildText(text, theme));
-      }
+      bubble.add(Align(alignment: Alignment.bottomLeft, child: name));
     }
 
-    return Align(
-      alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
-      child: IntrinsicWidth(
-        child: Container(
-          margin: EdgeInsets.symmetric(vertical: 2.0),
-          constraints: BoxConstraints(
-            maxWidth: MediaQuery.of(context).size.width * 0.80,
-            minWidth: MediaQuery.of(context).size.width * 0.3,
-          ),
-          padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-          decoration: isMe
-              ? AppDecorators.getChatMyMessageDecoration(theme)
-              : AppDecorators.getChatOtherMessageDecoration(theme),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              /* name of player & time */
-              Wrap(
-                crossAxisAlignment: WrapCrossAlignment.center,
-                alignment: WrapAlignment.end,
+    if (message.type == kStickerMessageType) {
+      // animated sticker
+      bubble.add(Lottie.asset(message.text, height: 40));
+    } else if (message.type == kGiphyMessageType) {
+      bubble.add(AttributedGifWidget(url: message.giphyLink));
+    } else if (message.type == kTextMessageType) {
+      bubble.add(_buildText(text, theme));
+    }
+
+    final bool isSticker = message.type == kStickerMessageType;
+
+    return DebugBorderWidget(
+        color: Colors.red,
+        child: Align(
+          alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
+          child: IntrinsicWidth(
+            child: Container(
+              margin: EdgeInsets.symmetric(vertical: 2.0),
+              constraints: BoxConstraints(
+                maxWidth: MediaQuery.of(context).size.width * 0.80,
+                minWidth: MediaQuery.of(context).size.width * 0.3,
+              ),
+              padding: EdgeInsets.symmetric(horizontal: 4, vertical: 4.0),
+              decoration: isMe
+                  ? AppDecorators.getChatMyMessageDecoration(theme)
+                  : AppDecorators.getChatOtherMessageDecoration(theme),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: bubble,
               ),
-
-              // sep
-              const SizedBox(height: 2),
-
-              // // message / gif
-              message.text != null
-                  ? const SizedBox.shrink()
-                  : AttributedGifWidget(url: message.giphyLink),
-
-              message.text != null
-                  ? const SizedBox.shrink()
-                  : _buildName(message.fromName, theme),
-            ],
+            ),
           ),
-        ),
-      ),
-    );
+        ));
   }
 
   Widget _buildMessageArea(AppTheme theme) => Expanded(
@@ -289,9 +271,13 @@ class _GameChatState extends State<GameChat> {
             scrollDirection: Axis.vertical,
             physics: BouncingScrollPhysics(),
             reverse: true,
-            children: widget.chatService.messages.reversed
-                .map((c) => _buildChatBubble(c, theme))
-                .toList(),
+            children: widget.chatService.messages.reversed.map((c) {
+              Widget w = _buildChatBubble(c, theme);
+              return DebugBorderWidget(
+                color: Colors.green,
+                child: w,
+              );
+            }).toList(),
           ),
         ),
       );
@@ -336,7 +322,7 @@ class _GameChatState extends State<GameChat> {
     if (isKeyboardVisible) {
       return height * 0.25;
     } else {
-      return expanded ? height * 0.75 : height * 0.30;
+      return expanded ? height * 0.60 : height * 0.30;
     }
   }
 
@@ -406,9 +392,12 @@ class _GameChatState extends State<GameChat> {
               ValueListenableBuilder<bool>(
                 valueListenable: _vnShowEmojiPicker,
                 builder: (_, bool showPicker, __) => showPicker
-                    ? EmojiPicker(
+                    ? EmojiStickerPicker(
                         onEmojiSelected: (String emoji) {
                           _textEditingController.text += emoji;
+                        },
+                        onStickerSelected: (String sticker) {
+                          chatService.sendSticker(sticker);
                         },
                       )
                     : const SizedBox.shrink(),

@@ -898,6 +898,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     gms.listen(
       onText: (ChatMessage message) => _onChatMessage(message),
       onGiphy: (ChatMessage message) => _onChatMessage(message),
+      onSticker: (ChatMessage message) => _onChatMessage(message),
     );
 
     _gcsController.addListener(() {
@@ -907,7 +908,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     });
   }
 
-  Widget _buildBoardView(Size boardDimensions, double boardScale) {
+  Widget _buildBoardView(Size boardDimensions) {
     return Container(
       width: boardDimensions.width,
       height: boardDimensions.height,
@@ -957,59 +958,46 @@ class _GamePlayScreenState extends State<GamePlayScreen>
             )),
       );
     } else {
-      return Container(
+      return SizedBox(
         width: Screen.width,
-        child: HeaderView(
-          gameState: _gameState,
-          scaffoldKey: _scaffoldKey,
+        child: IntrinsicHeight(
+          child: HeaderView(
+            gameState: _gameState,
+            scaffoldKey: _scaffoldKey,
+          ),
         ),
       );
     }
   }
 
   Widget _buildMainBoardView(AppTheme theme) {
-    final width = MediaQuery.of(context).size.width;
     final boardDimensions = boardAttributes.dimensions(context);
-    double boardScale = boardAttributes.boardScale;
 
-    return Container(
-      clipBehavior: Clip.hardEdge,
-      decoration: BoxDecoration(),
-      height: boardDimensions.height,
-      width: Screen.width,
-      child: Stack(
-        clipBehavior: Clip.antiAlias,
-        alignment: Alignment.topCenter,
-        children: [
-          this.widget.showTop && _gameState.customizationMode
-              ? Positioned(
-                  top: 10.ph,
-                  left: width - 50.pw,
-                  child: CircleImageButton(
-                    onTap: () async {
-                      await Navigator.of(context)
-                          .pushNamed(Routes.select_table);
-                      await _gameState.assets.initialize();
-                      final redrawTop = _gameState.redrawBoardSectionState;
-                      redrawTop.notify();
-                      setState(() {});
-                    },
-                    theme: theme,
-                    icon: Icons.edit,
-                  ),
-                )
-              : Container(),
+    return Stack(
+      clipBehavior: Clip.none,
+      alignment: Alignment.topCenter,
+      children: [
+        this.widget.showTop && _gameState.customizationMode
+            ? Positioned(
+                top: 10,
+                right: 50,
+                child: CircleImageButton(
+                  onTap: () async {
+                    await Navigator.of(context).pushNamed(Routes.select_table);
+                    await _gameState.assets.initialize();
+                    final redrawTop = _gameState.redrawBoardSectionState;
+                    redrawTop.notify();
+                    setState(() {});
+                  },
+                  theme: theme,
+                  icon: Icons.edit,
+                ),
+              )
+            : const SizedBox.shrink(),
 
-          // board view
-          Positioned(
-            top: 0,
-            child: _buildBoardView(
-              boardDimensions,
-              boardScale,
-            ),
-          ),
-        ],
-      ),
+        // board view
+        _buildBoardView(boardDimensions),
+      ],
     );
   }
 
@@ -1036,46 +1024,16 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     final theme = AppTheme.getTheme(context);
     const kEmpty = const SizedBox.shrink();
 
-    // if (widget.showBottom) {
-    //   gameScreenChildren.add(Align(
-    //     alignment: Alignment.bottomCenter,
-    //     child: Consumer<RedrawFooterSectionState>(
-    //       builder: (_, ___, __) {
-    //         log('RedrawFooter: building footer view');
-    //         return FooterViewWidget(
-    //             gameCode: widget.gameCode,
-    //             gameContextObject: _gameContextObj,
-    //             currentPlayer: _gameContextObj.gameState.currentPlayer,
-    //             gameInfo: _gameInfoModel,
-    //             toggleChatVisibility: _showGameChat,
-    //             onStartGame: startGame);
-    //       },
-    //     ),
-    //   ));
-    // }
-    Widget column = Column(
-      mainAxisAlignment: MainAxisAlignment.start,
+    return Column(
       children: [
         // header
         widget.showTop ? _buildHeaderView(theme) : kEmpty,
-
         // board view
         widget.showTop ? _buildMainBoardView(theme) : kEmpty,
-
-        // footerview
+        // footer view
         widget.showBottom ? _buildFooterView() : kEmpty,
       ],
     );
-
-    Stack allWidgets = Stack(
-      children: [
-        column,
-
-        /* chat window widget */
-        // this.widget.showBottom ? _buildChatWindow() : const SizedBox.shrink(),
-      ],
-    );
-    return allWidgets;
   }
 
   Widget _buildBody(AppTheme theme) {
@@ -1083,7 +1041,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     if (_gameInfoModel == null) return Center(child: CircularProgressWidget());
 
     /* get the screen sizes, and initialize the board attributes */
-
     final providers = GamePlayScreenUtilMethods.getProviders(
       context: context,
       gameInfoModel: _gameInfoModel,
@@ -1159,16 +1116,10 @@ class _GamePlayScreenState extends State<GamePlayScreen>
             );
           }),
           key: _scaffoldKey,
-          /* FIXME: THIS FLOATING ACTION BUTTON IS FOR SHOWING THE TESTS */
           floatingActionButton: GamePlayScreenUtilMethods.floatingActionButton(
             onReload: () {},
             isCustomizationMode: widget.customizationService != null,
           ),
-          // floating button to refresh network TEST
-          // floatingActionButton: FloatingActionButton(
-          //   child: Icon(Icons.android_rounded),
-          //   onPressed: _reconnectGameComService,
-          // ),
           resizeToAvoidBottomInset: true,
           backgroundColor: Colors.black,
           body: _buildBody(theme),

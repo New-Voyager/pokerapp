@@ -8,33 +8,27 @@ class BackgroundView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final gameState = GameState.getState(context);
-    return Consumer<RedrawBackdropSectionState>(builder: (_, __, ___) {
-      final boardAttributes = gameState.getBoardAttributes(context);
-      final dimensions = boardAttributes.dimensions(context);
-      return AnimatedSwitcher(
+    return Consumer<RedrawBackdropSectionState>(
+      builder: (_, __, ___) {
+        final boardAttributes = gameState.getBoardAttributes(context);
+        final dimensions = boardAttributes.dimensions(context);
+        return AnimatedSwitcher(
           duration: const Duration(milliseconds: 500),
-          child: Transform.translate(
+          child: Container(
+            clipBehavior: Clip.hardEdge,
+            decoration: const BoxDecoration(),
+            width: dimensions.width,
+            height: dimensions.height,
+            child: Transform.translate(
               offset: boardAttributes.backDropOffset,
-              child: Container(
-                width: dimensions.width,
-                height: dimensions.height,
-                decoration: BoxDecoration(
-                    image: DecorationImage(
-                        fit: BoxFit.fill,
-                        image: AssetImage(appService.appSettings.backdropAsset)
-                        // image: MemoryImage(
-                        //   gameState.assets.getBackDrop(),
-                        // )
-                        )),
-              )));
-      return AnimatedSwitcher(
-        duration: const Duration(milliseconds: 500),
-        child: Image.memory(
-          gameState.assets.getBackDrop(),
-          key: UniqueKey(),
-          fit: BoxFit.fill,
-        ),
-      );
-    });
+              child: Image.asset(
+                appService.appSettings.backdropAsset,
+                fit: BoxFit.fill,
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 }

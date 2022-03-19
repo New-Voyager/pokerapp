@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/services/app/club_interior_service.dart';
@@ -98,6 +99,9 @@ class SetCreditsDialog {
         await ClubInteriorService.feePlayerCredit(clubCode, playerUuid,
             settings.credits.toDouble(), settings.notes, settings.followup);
       }
+
+      // invalidate cache for this player
+      appState.cacheService.removePlayerActivitiesCache(clubCode, playerUuid);
     }
     return ret;
   }

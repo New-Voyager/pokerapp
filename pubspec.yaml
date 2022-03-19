@@ -139,6 +139,7 @@ flutter:
   - assets/sample-data/handlog.json
   - assets/sample-data/weekly-data.json
   - assets/animations/
+  - assets/animations/stickers/
   - assets/images/cards/
   - assets/images/club/
   - assets/images/livegames/

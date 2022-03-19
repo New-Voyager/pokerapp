@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:pokerapp/services/game_play/game_messaging_service.dart';
+
 enum MessageType {
   TEXT,
   HAND,
@@ -8,6 +10,7 @@ enum MessageType {
   LEAVE_CLUB,
   KICKED_OUT,
   NEW_GAME,
+  STICKER,
 }
 
 class SharedHandMsg {
@@ -82,6 +85,9 @@ class ClubMessageModel {
       case 'GIPHY':
         this.messageType = MessageType.GIPHY;
         break;
+      case 'STICKER':
+        this.messageType = MessageType.STICKER;
+        break;
       case 'JOIN_CLUB':
         this.messageType = MessageType.JOIN_CLUB;
         break;
@@ -148,6 +154,9 @@ class ClubMessageModel {
         break;
       case MessageType.GIPHY:
         messageType = 'GIPHY';
+        break;
+      case MessageType.STICKER:
+        messageType = 'STICKER';
         break;
     }
 

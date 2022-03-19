@@ -54,38 +54,16 @@ class _BoardViewState extends State<BoardView> {
 
   @override
   Widget build(BuildContext context) {
-    // AppTextScreen _appScreenText = getAppTextScreen("boardView");
-
-    // final theme = AppTheme.getTheme(context);
     final boardAttributes = gameState.getBoardAttributes(context);
     final isBoardHorizontal =
         boardAttributes.orientation == BoardOrientation.horizontal;
     var dimensions = boardAttributes.dimensions(context);
-    // var bottomPos = boardAttributes.tableBottomPos;
-    // var tableScale = boardAttributes.tableScale;
-
-    // final tableSize = boardAttributes.tableSize;
-
-    // TODO: WE NEED TWO NEW VARIABLES FROM OUTSIDE
-    // TODO: 1. TABLE WIDTH FACTOR
-    // TODO: 2. IS LARGER SCREEN
-
-    // double tableWidthFactor = 1.0;
-    // bool isLargerScreen = false;
-    // print(boardAttributes.screenDiagnolSize);
-    // if (boardAttributes.screenDiagnolSize >= 7.0) {
-    //   tableWidthFactor = 0.70;
-    //   isLargerScreen = true;
-    // }
-
-    // this calculates the table size after drawing the table image
-    // gameState.gameUIState.calculateTableSizePostFrame();
 
     return DebugBorderWidget(
       key: gameState.gameUIState.boardKey,
       color: Colors.transparent,
       child: Stack(
-        clipBehavior: Clip.antiAlias,
+        clipBehavior: Clip.none,
         alignment: Alignment.center,
         children: [
           Container(
@@ -112,9 +90,8 @@ class _BoardViewState extends State<BoardView> {
               log('PlayersOnTableViewNew Rect2: ${rect}');
 
               Widget child = DebugBorderWidget(
-                color: Colors.transparent,
+                color: Colors.green,
                 child: PlayersOnTableViewNew(
-                  // key: gameState.gameUIState.playerOnTableKey,
                   tableSize: size,
                   onUserTap: widget.onUserTap,
                   gameComService: widget.gameComService,
