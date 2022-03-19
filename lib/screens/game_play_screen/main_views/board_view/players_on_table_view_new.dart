@@ -256,7 +256,7 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
       if (chatHolder.seatPos == seat.seatPos) {
         if (chatHolder?.timer != null) {
           chatHolder.timer.cancel();
-          chatHolder.overlayEntry.remove();
+          if (chatHolder.overlayEntry.mounted) chatHolder.overlayEntry.remove();
         }
 
         // set message
