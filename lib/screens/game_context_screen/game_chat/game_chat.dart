@@ -406,7 +406,7 @@ class _GameChatState extends State<GameChat> {
               ValueListenableBuilder<bool>(
                 valueListenable: _vnShowEmojiPicker,
                 builder: (_, bool showPicker, __) => showPicker
-                    ? EmojiPicker(
+                    ? EmojiStickerPicker(
                         onEmojiSelected: (String emoji) {
                           _textEditingController.text += emoji;
                         },

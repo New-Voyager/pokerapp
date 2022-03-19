@@ -232,7 +232,7 @@ class _MessagesPageViewState extends State<MessagesPageView>
                 ValueListenableBuilder<bool>(
                   valueListenable: _vnShowEmojiPicker,
                   builder: (_, showEmojiPicker, __) => showEmojiPicker
-                      ? EmojiPicker(
+                      ? EmojiStickerPicker(
                           onEmojiSelected: (String emoji) {
                             _textController.text += emoji;
                           },
