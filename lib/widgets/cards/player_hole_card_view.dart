@@ -90,7 +90,7 @@ class _CardEyeState extends State<CardEye> {
   void initState() {
     super.initState();
     var cardWidth = widget.gameState.gameUIState.cardSize.width;
-    markedHeight = cardWidth / 8.5;
+    markedHeight = cardWidth / 6.5;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final box = _key.currentContext.findRenderObject() as RenderBox;
       var position = box.localToGlobal(Offset(0, 0));

@@ -7,22 +7,23 @@ import 'package:flutter_chat_bubble/bubble_type.dart';
 import 'package:flutter_chat_bubble/chat_bubble.dart';
 import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_1.dart';
 import 'package:lottie/lottie.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
-import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/utils/utils.dart';
-import 'package:provider/provider.dart';
 
 const kTextLengthLimit = 30;
 
 class PlayerChatBubble extends StatefulWidget {
   final GameComService gameComService;
+  final GameState gameState;
   final Seat seat;
   final ValueNotifier<ChatMessage> chatMessageHolder;
 
   PlayerChatBubble({
+    @required this.gameState,
     @required this.gameComService,
     @required this.seat,
     @required this.chatMessageHolder,
@@ -77,24 +78,6 @@ class _PlayerChatBubbleState extends State<PlayerChatBubble> {
     return text;
   }
 
-  // void _onTap() {
-  //   if (zoomed) {
-  //     showing = false;
-  //     setState(() {});
-  //     return;
-  //   }
-  //   // extend time
-  //   _messagePopupTimer.cancel();
-  //   _messagePopupTimer = Timer(Duration(seconds: 8), () {
-  //     showing = false;
-  //     setState(() {});
-  //   });
-  //   zoomed = true;
-  //   setState(() {
-  //     gifScale = 4.0;
-  //   });
-  // }
-
   void _onTap() {
     log('player_chat_bubble :: InkWell');
 
@@ -112,6 +95,9 @@ class _PlayerChatBubbleState extends State<PlayerChatBubble> {
       valueListenable: widget.chatMessageHolder,
       builder: (_, ChatMessage chatMessage, __) {
         if (chatMessage == null) return const SizedBox.shrink();
+        if (widget.gameState.chatScreenVisible) {
+          return const SizedBox.shrink();
+        }
 
         return Card(
           color: Colors.transparent,

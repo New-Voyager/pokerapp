@@ -375,6 +375,7 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
       }
 
       final playerChatBubble = PlayerChatBubble(
+        gameState: widget.gameState,
         gameComService: gameComService,
         seat: seat,
         chatMessageHolder: chatMessageHolder,
