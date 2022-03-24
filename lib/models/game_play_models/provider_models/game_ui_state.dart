@@ -44,7 +44,8 @@ class GameUIState {
     tableWidthFactor = 0.90;
 
     if (Screen.diagonalInches < 7) {
-      NamePlateWidgetParent.setWidth(70);
+      double width = (Screen.width - 40) / 4.2;
+      NamePlateWidgetParent.setWidth(width);
       chipAmountScale = 0.70;
     }
     if (Screen.diagonalInches >= 7 && Screen.diagonalInches < 9) {
@@ -65,6 +66,7 @@ class GameUIState {
     double heightGap = 0;
     double topLeftLeft = 0;
 
+    double topRowAdjust = 10;
     if (pot != null) {
       widthGap = table.left - pot.left;
       heightGap = table.top - pot.top;
@@ -76,13 +78,13 @@ class GameUIState {
     double namePlateHeight = NamePlateWidgetParent.namePlateSize.height;
 
     // top left
-    left = widthGap;
+    left = widthGap - topRowAdjust;
     top = heightGap / 2;
     topLeftLeft = left;
     seatPosToOffsetMap[SeatPos.topLeft] = Offset(left, top);
 
     // top right
-    left = topLeftLeft + table.width - namePlateWidth;
+    left = (topLeftLeft + table.width + 2 * topRowAdjust) - namePlateWidth;
     top = heightGap / 2;
     seatPosToOffsetMap[SeatPos.topRight] = Offset(left, top);
 
@@ -123,7 +125,7 @@ class GameUIState {
 
     double remainingHeight = seatPosToOffsetMap[SeatPos.bottomLeft].dy -
         (seatPosToOffsetMap[SeatPos.topLeft].dy + namePlateHeight);
-    gap = remainingHeight / 3;
+    gap = (remainingHeight / 3.5);
 
     // middle left
     left = 0;
@@ -154,7 +156,7 @@ class GameUIState {
   double _getDeflateFactor() {
     // todo: if needed, we can put factor here
     if (Screen.isLargeScreen) return 0.90;
-    return 1.0;
+    return 0.95;
   }
 
   void calculateCenterViewRect() {
@@ -172,7 +174,7 @@ class GameUIState {
     left = seatPosToOffsetMap[SeatPos.topLeft].dx + namePlateWidth;
     top = seatPosToOffsetMap[SeatPos.topLeft].dy + namePlateHeight;
     bottom = seatPosToOffsetMap[SeatPos.bottomRight].dy;
-    right = seatPosToOffsetMap[SeatPos.bottomRight].dx;
+    right = seatPosToOffsetMap[SeatPos.topRight].dx;
 
     final boardBox = boardKey.currentContext.findRenderObject() as RenderBox;
     final playerOnTableBox =

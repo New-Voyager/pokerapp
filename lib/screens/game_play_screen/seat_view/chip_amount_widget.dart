@@ -53,11 +53,11 @@ class ChipAmountWidget extends StatelessWidget {
       offset =
           Offset(-20, -((NamePlateWidgetParent.namePlateSize.height / 2) + 15));
     } else if (seatPos == SeatPos.bottomLeft) {
-      offset =
-          Offset(20, -((NamePlateWidgetParent.namePlateSize.height / 2) + 15));
+      offset = Offset(NamePlateWidgetParent.namePlateSize.width / 2,
+          -((NamePlateWidgetParent.namePlateSize.height / 2) + 15));
     } else if (seatPos == SeatPos.bottomRight) {
-      offset =
-          Offset(-20, -((NamePlateWidgetParent.namePlateSize.height / 2) + 15));
+      offset = Offset(-NamePlateWidgetParent.namePlateSize.width / 2,
+          -((NamePlateWidgetParent.namePlateSize.height / 2) + 15));
     }
 
     if (seat.betWidgetPos == null) {

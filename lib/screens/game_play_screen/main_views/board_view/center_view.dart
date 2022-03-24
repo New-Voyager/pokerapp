@@ -580,7 +580,7 @@ class _PotUpdatesOrRankWidget extends StatelessWidget {
               ),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20.0),
-                color: Colors.black,
+                color: Colors.blueGrey[600],
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -588,8 +588,8 @@ class _PotUpdatesOrRankWidget extends StatelessWidget {
                   SvgPicture.asset(
                     'assets/icons/potpokerchips.svg',
                     color: Colors.yellow,
-                    width: 24.pw,
-                    height: 24.pw,
+                    width: 20.pw,
+                    height: 20.pw,
                     fit: BoxFit.cover,
                   ),
                   SizedBox(width: 10),

@@ -80,13 +80,15 @@ class _CommunityCardsViewState extends State<CommunityCardsView> {
         /* collect for offset calculation : offset is calculated post the widget tree is build */
         _globalKeys[idx] = globalKey;
       }
-
+      double scale = 1.0;
       Widget communityCardView = Padding(
         padding: EdgeInsets.symmetric(horizontal: 1.5),
-        child: CommunityCardView(
-          key: globalKey,
-          card: card,
-        ),
+        child: Transform.scale(
+            scale: scale,
+            child: CommunityCardView(
+              key: globalKey,
+              card: card,
+            )),
       );
       communityCards.add(communityCardView);
 
