@@ -23,6 +23,7 @@ import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/cards/animations/animating_shuffle_card_view.dart';
 import 'package:pokerapp/widgets/cards/community_cards_view/community_cards_view.dart';
+import 'package:pokerapp/widgets/cards/community_cards_view_2/community_card_view_2.dart';
 import 'package:pokerapp/widgets/debug_border_widget.dart';
 import 'package:provider/provider.dart';
 import "dart:math" show pi;
@@ -473,34 +474,19 @@ class _CommunityCardsWidget extends StatelessWidget {
                 /// available height for the community cards
                 final height = constraints.maxHeight;
 
-                /// single board factor = 4/5 of available height
-                final double singleBoardFactor =
-                    Screen.isLargeScreen ? 3.0 / 4 : 4.0 / 5;
+                final double boardFactor = Screen.isLargeScreen ? 0.80 : 0.90;
 
-                /// double board factor = full available height
-                final double doubleBoardFactor =
-                    Screen.isLargeScreen ? 0.90 : 1.0;
-
-                /// board factor depending upon if single board / double board
-                final boardFactor =
-                    twoBoardsNeeded ? doubleBoardFactor : singleBoardFactor;
-
-                final negativeSpace = (1 - boardFactor) * height;
+                final negativeSpace = (1 - boardFactor) * height * 0.30;
 
                 return Container(
-                  margin: EdgeInsets.symmetric(vertical: negativeSpace),
-                  child: FittedBox(
-                    fit: BoxFit.fitHeight,
-                    child: Transform(
-                      transform: transformMatrix,
-                      alignment: Alignment.center,
-                      child: CommunityCardsView(
-                        key: Key('community-cards-view'),
-                        cards: tableState.cards,
-                        cardsOther: tableState.cardsOther,
-                        twoBoardsNeeded: tableState.twoBoardsNeeded,
-                        horizontal: true,
-                      ),
+                  color: Colors.green,
+                  height: double.infinity,
+                  margin: EdgeInsets.only(top: negativeSpace),
+                  child: Transform(
+                    transform: transformMatrix,
+                    alignment: Alignment.center,
+                    child: CommunityCardView2(
+                      key: const Key('CommunityCardView'),
                     ),
                   ),
                 );
