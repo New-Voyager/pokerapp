@@ -290,29 +290,17 @@ class TestService {
   }
 
   static Future<void> addFlopCards() async {
-    print('card offsets: ${CommunityCardAttribute.cardOffsets}');
-
-    final tableState = _getTableState();
     final gameState = GameState.getState(_context);
 
-    tableState.addFlopCards(1, []);
-
-    tableState.updateRankStrSilent('Straight');
-    tableState.notifyAll();
+    gameState.communityCardState.reset();
 
     await Future.delayed(const Duration(milliseconds: 500));
 
-    tableState.addFlopCards(
-      1,
-      [130, 152, 193]
-          .map<CardObject>((e) => CardHelper.getCard(
-                e,
-                colorCards: gameState.colorCards,
-              ))
-          .toList(),
+    // just call this to add flop cards
+    gameState.communityCardState.addFlopCards(
+      board1: [1, 2, 4],
+      // board2: [17, 18, 20],
     );
-    tableState.updateRankStrSilent('Straight');
-    tableState.notifyAll();
   }
 
   static Future<void> simulateBetMovement() async {

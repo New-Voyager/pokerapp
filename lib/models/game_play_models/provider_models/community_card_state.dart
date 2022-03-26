@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/widgets/cards/community_cards_view_2/app_flip_card.dart';
+
+import '../../../resources/app_constants.dart';
 
 const kTotalCards = 5;
 const kGap = 4.0;
@@ -6,35 +9,57 @@ const kDoubleBoardWidthFactor = 0.35;
 const kSingleBoardHeightFactor = 0.65;
 const kSpecialBoardHeightFactor = 0.55;
 
+extension RectHelper on Rect {
+  Offset get position => Offset(left, top);
+}
+
 enum CommunityCardBoardState { SINGLE, DOUBLE, RIT }
-enum CardState {
-  UNSET,
+// enum CardState {
+//   UNSET,
+//
+//   ANIMATING_FLOP,
+//   FLOP,
+//   ANIMATING_TURN,
+//   TURN,
+//   ANIMATING_RIVER,
+//   RIVER,
+//
+//   // RIT cases
+//   ANIMATING_BD1_TURN, // animate turn card (same sa ANIMATING_TURN)
+//   BD1_TURN,
+//   ANIMATING_BD1_RIVER,
+//   BD1_RIVER,
+//   ANIMATING_MOVE_BD1_TURN_RIVER, // move bd1 turn and river to top board
+//   ANIMATING_BD2_TURN,
+//   BD2_TURN,
+//   ANIMATING_BD2_RIVER,
+//   BD2_RIVER,
+//
+//   // RIT starts in the river card
+//   ANIMATING_MOVE_BD1_RIVER, // move bd1 river to top board
+// }
 
-  ANIMATING_FLOP,
-  FLOP,
-  ANIMATING_TURN,
-  TURN,
-  ANIMATING_RIVER,
-  RIVER,
+class CardState {
+  Offset position;
 
-  // RIT cases
-  ANIMATING_BD1_TURN, // animate turn card (same sa ANIMATING_TURN)
-  BD1_TURN,
-  ANIMATING_BD1_RIVER,
-  BD1_RIVER,
-  ANIMATING_MOVE_BD1_TURN_RIVER, // move bd1 turn and river to top board
-  ANIMATING_BD2_TURN,
-  BD2_TURN,
-  ANIMATING_BD2_RIVER,
-  BD2_RIVER,
+  final Size size;
+  final int cardNo;
+  final GlobalKey<AppFlipCardState> flipKey;
 
-  // RIT starts in the river card
-  ANIMATING_MOVE_BD1_RIVER, // move bd1 river to top board
+  CardState({
+    @required this.position,
+    @required this.size,
+    @required this.cardNo,
+    @required this.flipKey,
+  });
 }
 
 /// this class holds the card sizes & positions for different community card configurations
 class CommunityCardState extends ChangeNotifier {
   bool _initialized = false;
+
+  final List<CardState> _cardStates = [];
+  List<CardState> get cardStates => _cardStates;
 
   // this state controls the card animation
   // CardState _cardState = CardState.UNSET;
@@ -46,10 +71,106 @@ class CommunityCardState extends ChangeNotifier {
   bool _isFlopDone = false;
   bool _isRiverDone = false;
 
-  void addFlopCards({
+  Rect _getCardDimen(CommunityCardBoardState boardState, int cardId) {
+    switch (boardState) {
+      case CommunityCardBoardState.SINGLE:
+        return getSingleBoardCardDimens(cardId);
+
+      case CommunityCardBoardState.DOUBLE:
+        return getDoubleBoardCardDimens(cardId);
+
+      case CommunityCardBoardState.RIT:
+        return getRitBoardCardDimens(cardId);
+    }
+
+    return getSingleBoardCardDimens(cardId);
+  }
+
+  CardState _getCardStateFromCardNo(
+    int cNo, {
+    CommunityCardBoardState boardState = CommunityCardBoardState.SINGLE,
+    int cardId = 1,
+  }) {
+    final cardDimen = _getCardDimen(boardState, cardId);
+    return CardState(
+      position: cardDimen.position,
+      size: cardDimen.size,
+      cardNo: cNo,
+      flipKey: GlobalKey<AppFlipCardState>(),
+    );
+  }
+
+  Future<void> _delay() => Future.delayed(
+        AppConstants.communityCardWaitDuration,
+      );
+
+  Future<void> _delayFA() => Future.delayed(
+        AppConstants.communityCardFlipAnimationDuration,
+      );
+
+  Future<void> _addFlopCards(
+    List<int> board, {
+    int startWith = 1,
+    CommunityCardBoardState boardState = CommunityCardBoardState.SINGLE,
+  }) async {
+    List<CardState> localCardStates = [];
+    localCardStates.addAll(
+      board.map(
+        (cNo) => _getCardStateFromCardNo(
+          cNo,
+          boardState: boardState,
+          cardId: startWith,
+        ),
+      ),
+    );
+    _cardStates.addAll(localCardStates);
+
+    notifyListeners();
+
+    await _delay();
+
+    // flip the first card
+    localCardStates.forEach((cs) {
+      cs.flipKey.currentState.toggleCard();
+    });
+
+    await _delayFA();
+
+    // move the cards
+    for (int i = 0; i < 3; i++) {
+      final cardId = startWith + i;
+      final cardDimen = _getCardDimen(boardState, cardId);
+      localCardStates[i].position = cardDimen.position;
+    }
+    notifyListeners();
+  }
+
+  Future<void> addFlopCards({
     @required final List<int> board1,
     final List<int> board2,
-  }) {
+  }) async {
+    assert(board1.length == 3, 'Board 1: Only 3 cards to be added in Flop');
+
+    final bool isDoubleBoard = board2 != null;
+    if (isDoubleBoard) {
+      assert(board2.length == 3, 'Board 2: Only 3 cards to be added in Flop');
+    }
+
+    if (isDoubleBoard) {
+      _addFlopCards(
+        board1,
+        startWith: 1,
+        boardState: CommunityCardBoardState.DOUBLE,
+      );
+      await _addFlopCards(
+        board2,
+        startWith: 6,
+        boardState: CommunityCardBoardState.DOUBLE,
+      );
+    } else {
+      await _addFlopCards(board1);
+    }
+
     _isFlopDone = true;
   }
 
@@ -74,6 +195,8 @@ class CommunityCardState extends ChangeNotifier {
   void reset() {
     _isFlopDone = false;
     _isRiverDone = false;
+    _cardStates.clear();
+    notifyListeners();
   }
 
   /// internal methods to calculate sizes and positions of every possible card configurations
@@ -176,7 +299,7 @@ class CommunityCardState extends ChangeNotifier {
   }
 
   void initializeCards(Size size) {
-    if (_initialized) return; // todo: uncomment this line, after finalized
+    if (_initialized) return;
     // single board size calculations
     _initDimenForSingleBoard(size);
 
