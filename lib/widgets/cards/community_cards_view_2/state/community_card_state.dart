@@ -6,35 +6,25 @@ const kDoubleBoardWidthFactor = 0.35;
 const kSingleBoardHeightFactor = 0.65;
 const kSpecialBoardHeightFactor = 0.55;
 
-class Pair<A, B> {
-  final A a;
-  final B b;
-
-  Pair(this.a, this.b);
-}
-
-enum CommunityCardBoardState { single, double, special }
+enum CommunityCardBoardState { SINGLE, DOUBLE, RIT }
 
 /// this class holds the card sizes & positions for different community card configurations
 class CommunityCardState {
   bool isCalculated = false;
 
-  Map<int, Pair<Offset, Size>> _singleBoardCardDimens = Map();
-  Pair<Offset, Size> getSingleBoardCardDimens(int no) =>
-      _singleBoardCardDimens[no];
+  Map<int, Rect> _singleBoardCardDimens = Map();
+  Rect getSingleBoardCardDimens(int no) => _singleBoardCardDimens[no];
 
-  Map<int, Pair<Offset, Size>> _doubleBoardCardDimens = Map();
-  Pair<Offset, Size> getDoubleBoardCardDimens(int no) =>
-      _doubleBoardCardDimens[no];
+  Map<int, Rect> _doubleBoardCardDimens = Map();
+  Rect getDoubleBoardCardDimens(int no) => _doubleBoardCardDimens[no];
 
-  Map<int, Pair<Offset, Size>> _specialBoardCardDimens = Map();
-  Pair<Offset, Size> getSpecialBoardCardDimens(int no) =>
-      _specialBoardCardDimens[no];
+  Map<int, Rect> _ritCardDimens = Map();
+  Rect getRitBoardCardDimens(int no) => _ritCardDimens[no];
 
-  void _initDimenForSpecialBoard(Size size) {
+  void _initDimenForRitBoard(Size size) {
     /// common cards -> 1, 2, 3, 4
     for (int i = 1; i <= 4; i++) {
-      _specialBoardCardDimens[i] = _singleBoardCardDimens[i];
+      _ritCardDimens[i] = _singleBoardCardDimens[i];
     }
 
     /// uncommon cards -> 5, 6, 7, 8
@@ -46,24 +36,16 @@ class CommunityCardState {
     final bottomOffset = size.height / 2;
 
     /// 5, 6 -> top two
-    _specialBoardCardDimens[5] = Pair(
-      Offset(singleBoard4.a.dx, topOffset),
-      Size(singleBoard4.b.width, newHeight),
-    );
-    _specialBoardCardDimens[6] = Pair(
-      Offset(singleBoard5.a.dx, topOffset),
-      Size(singleBoard5.b.width, newHeight),
-    );
+    _ritCardDimens[5] = Rect.fromLTWH(
+        singleBoard4.left, topOffset, singleBoard4.width, newHeight);
+    _ritCardDimens[6] = Rect.fromLTWH(
+        singleBoard5.left, topOffset, singleBoard5.width, newHeight);
 
     /// 7, 8 -> bottom two
-    _specialBoardCardDimens[7] = Pair(
-      Offset(singleBoard4.a.dx, bottomOffset),
-      Size(singleBoard4.b.width, newHeight),
-    );
-    _specialBoardCardDimens[8] = Pair(
-      Offset(singleBoard5.a.dx, bottomOffset),
-      Size(singleBoard5.b.width, newHeight),
-    );
+    _ritCardDimens[7] = Rect.fromLTWH(
+        singleBoard4.left, bottomOffset, singleBoard4.width, newHeight);
+    _ritCardDimens[8] = Rect.fromLTWH(
+        singleBoard5.left, bottomOffset, singleBoard5.width, newHeight);
   }
 
   void _initDimenForDoubleBoard(Size size) {
@@ -79,20 +61,16 @@ class CommunityCardState {
     /// top cards -> 1, 2, 3, 4, 5
     double xOffset = gapWidth + extraGap / 2;
     for (int i = 1; i <= n; i++) {
-      _doubleBoardCardDimens[i] = Pair<Offset, Size>(
-        Offset(xOffset, 0.0),
-        Size(eachCardWidth, eachCardHeight),
-      );
+      _doubleBoardCardDimens[i] =
+          Rect.fromLTWH(xOffset, 0, eachCardWidth, eachCardHeight);
       xOffset += gapWidth + eachCardWidth;
     }
 
     /// bottom cards -> 6, 7, 8, 9, 10
     xOffset = gapWidth + extraGap / 2;
     for (int i = n + 1; i <= n * 2; i++) {
-      _doubleBoardCardDimens[i] = Pair<Offset, Size>(
-        Offset(xOffset, eachCardHeight + kGap),
-        Size(eachCardWidth, eachCardHeight),
-      );
+      _doubleBoardCardDimens[i] = Rect.fromLTWH(
+          xOffset, eachCardHeight + kGap, eachCardWidth, eachCardHeight);
       xOffset += gapWidth + eachCardWidth;
     }
   }
@@ -109,10 +87,8 @@ class CommunityCardState {
 
     double xOffset = gapWidth;
     for (int i = 1; i <= n; i++) {
-      _singleBoardCardDimens[i] = Pair<Offset, Size>(
-        Offset(xOffset, heightOffset),
-        Size(eachCardWidth, eachCardHeight),
-      );
+      _singleBoardCardDimens[i] =
+          Rect.fromLTWH(xOffset, heightOffset, eachCardWidth, eachCardHeight);
       xOffset += gapWidth + eachCardWidth;
     }
   }
@@ -128,6 +104,6 @@ class CommunityCardState {
     _initDimenForDoubleBoard(size);
 
     // special board - combination of double & single board
-    _initDimenForSpecialBoard(size);
+    _initDimenForRitBoard(size);
   }
 }
