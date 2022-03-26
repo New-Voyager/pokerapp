@@ -280,7 +280,9 @@ class CommunityCardState extends ChangeNotifier {
     final cardDimen = getRitBoardCardDimens(6); // 6 -> RIT dimen
     card1State.size = cardDimen.size;
     card1State.position = cardDimen.position;
+    notifyListeners();
 
+    // wait for the push
     await _delay();
 
     /// DO IT FOR THE OTHER CARD
