@@ -63,6 +63,18 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
+          label: 'Reset',
+          labelBackgroundColor: Colors.black,
+          onTap: () {
+            TestService.resetCommunityCards();
+          },
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
           label: 'Flop Cards',
           labelBackgroundColor: Colors.black,
           onTap: () {
@@ -99,10 +111,22 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
-          label: 'Run It Twice',
+          label: 'Run It Twice, after Flop',
           labelBackgroundColor: Colors.black,
           onTap: () {
-            TestService.addFlopCards();
+            TestService.addRunItTwiceAfterFlop();
+          },
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
+          label: 'Run It Twice, after Turn',
+          labelBackgroundColor: Colors.black,
+          onTap: () {
+            TestService.addRunItTwiceAfterTurn();
           },
         ),
         // SpeedDialChild(

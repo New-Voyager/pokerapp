@@ -289,9 +289,13 @@ class TestService {
     tableState.notifyAll();
   }
 
+  static void resetCommunityCards() {
+    final gameState = GameState.getState(_context);
+    gameState.communityCardState.reset();
+  }
+
   static Future<void> addFlopCards() async {
     final gameState = GameState.getState(_context);
-
     gameState.communityCardState.reset();
 
     await Future.delayed(const Duration(milliseconds: 500));
@@ -318,6 +322,56 @@ class TestService {
     gameState.communityCardState.addRiverCard(
       board1Card: 68,
       // board2Card: 72,
+    );
+  }
+
+  static Future<void> addRunItTwiceAfterFlop() async {
+    final gameState = GameState.getState(_context);
+
+    /// SETUP FOR THE TEST
+    gameState.communityCardState.reset();
+    await Future.delayed(const Duration(milliseconds: 500));
+    final board1Cards = [33, 34, 36, 68, 72];
+    final board2Cards = [33, 34, 36, 100, 104];
+    // add flop cards -> just add 3 cards from board 1
+    gameState.communityCardState.addFlopCards(
+      board1: board1Cards.sublist(0, 3),
+    );
+    await Future.delayed(const Duration(milliseconds: 500));
+
+    /// THE REAL TEST BEGINS HERE
+
+    // run it twice case
+    gameState.communityCardState.addRunItTwiceCards(
+      board1: board1Cards,
+      board2: board2Cards,
+    );
+  }
+
+  static Future<void> addRunItTwiceAfterTurn() async {
+    final gameState = GameState.getState(_context);
+
+    /// SETUP FOR THE TEST
+    gameState.communityCardState.reset();
+    await Future.delayed(const Duration(milliseconds: 500));
+    final board1Cards = [33, 34, 36, 68, 72];
+    final board2Cards = [33, 34, 36, 100, 104];
+    // add flop cards -> just add 3 cards from board 1
+    await gameState.communityCardState.addFlopCards(
+      board1: board1Cards.sublist(0, 3),
+    );
+    await Future.delayed(const Duration(milliseconds: 500));
+    await gameState.communityCardState.addTurnCard(
+      board1Card: board1Cards[3],
+    );
+    await Future.delayed(const Duration(milliseconds: 500));
+
+    /// THE REAL TEST BEGINS HERE
+
+    // run it twice case
+    gameState.communityCardState.addRunItTwiceCards(
+      board1: board1Cards,
+      board2: board2Cards,
     );
   }
 

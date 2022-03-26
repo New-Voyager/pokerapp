@@ -41,8 +41,8 @@ enum CommunityCardBoardState { SINGLE, DOUBLE, RIT }
 
 class CardState {
   Offset position;
+  Size size;
 
-  final Size size;
   final int cardNo;
   final GlobalKey<AppFlipCardState> flipKey;
 
@@ -262,11 +262,61 @@ class CommunityCardState extends ChangeNotifier {
     }
   }
 
+  /// cards -> 6, 8 (as 1, 2, 3, 4 are common) & (5, 7 are reserved for Turn case)
+  Future<void> _runItTwiceAfterTurn(int c1, int c2) async {
+    final card1State = _getCardStateFromCardNo(
+      c1,
+      cardId: 5,
+    ); // 5 -> before RIT dimen
+    _cardStates.add(card1State);
+    notifyListeners();
+    await _delay();
+
+    // flip
+    card1State.flipKey.currentState.toggleCard();
+    await _delayFA();
+
+    // push up and change size
+    final cardDimen = getRitBoardCardDimens(6); // 6 -> RIT dimen
+    card1State.size = cardDimen.size;
+    card1State.position = cardDimen.position;
+
+    await _delay();
+
+    /// DO IT FOR THE OTHER CARD
+    final card2State = _getCardStateFromCardNo(
+      c2,
+      cardId: 8,
+      boardState: CommunityCardBoardState.RIT,
+    ); // 8 -> second card RIT dimen
+    _cardStates.add(card2State);
+    notifyListeners();
+    await _delay();
+
+    // flip
+    card2State.flipKey.currentState.toggleCard();
+    await _delayFA();
+  }
+
   /// call this function only if we were running Single Board game up till now, then shifted to Run It Twice
-  void addRunItTwiceCards({
+  Future<void> addRunItTwiceCards({
     @required final List<int> board1,
     @required final List<int> board2,
-  }) {}
+  }) async {
+    if (_isTurnDone) {
+      // need to add last set of cards
+      final board1LastCard = board1.last;
+      final board2LastCard = board2.last;
+
+      await _runItTwiceAfterTurn(board1LastCard, board2LastCard);
+    } else if (_isFlopDone) {
+      // need to add two cards
+
+    }
+
+    throw AssertionError(
+        'Invalid State: If you want to add double board cards, use the addFlopCards method');
+  }
 
   void reset() {
     _isFlopDone = false;
