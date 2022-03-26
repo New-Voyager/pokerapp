@@ -49,7 +49,7 @@ class CardView extends StatelessWidget {
             ),
           ),
         ),
-        SizedBox(height: 4.0),
+        SizedBox(height: 1.0),
         Expanded(
           flex: 6,
           child: FittedBox(

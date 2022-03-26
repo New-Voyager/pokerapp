@@ -6,8 +6,8 @@ import '../../../resources/app_constants.dart';
 const kTotalCards = 5;
 const kGap = 4.0;
 const kDoubleBoardWidthFactor = 0.35;
-const kSingleBoardHeightFactor = 0.65;
-const kSpecialBoardHeightFactor = 0.55;
+const kSingleBoardHeightFactor = 0.80;
+const kSpecialBoardHeightFactor = 0.50;
 
 extension RectHelper on Rect {
   Offset get position => Offset(left, top);
@@ -499,7 +499,7 @@ class CommunityCardState extends ChangeNotifier {
   }
 
   void initializeCards(Size size) {
-    if (_initialized) return;
+    // if (_initialized) return;
     // single board size calculations
     _initDimenForSingleBoard(size);
 

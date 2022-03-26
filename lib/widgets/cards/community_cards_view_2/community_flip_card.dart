@@ -20,6 +20,9 @@ class CommunityFlipCard extends StatelessWidget {
       flipOnTouch: false,
       back: SizedBox.fromSize(
         size: size,
+        // Consumer<WinningCards> (
+        // if my card is winning, highlight this
+        // )
         child: CardHelper.getCard(cardState.cardNo).widget,
       ),
       front: ClipRRect(

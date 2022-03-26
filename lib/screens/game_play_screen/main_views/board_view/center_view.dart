@@ -452,7 +452,7 @@ class _CommunityCardsWidget extends StatelessWidget {
   }) : super(key: key);
 
   Matrix4 get transformMatrix => Matrix4.identity()
-    ..setEntry(3, 2, 0.005)
+    ..setEntry(3, 2, 0.002)
     ..rotateX(-20 * pi / 180);
 
   @override
