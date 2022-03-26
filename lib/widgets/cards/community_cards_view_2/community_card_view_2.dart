@@ -1,18 +1,18 @@
-import 'dart:developer' as dev;
-
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/community_card_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/utils/card_helper.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/community_card_state.dart';
 import 'package:provider/provider.dart';
 
 class _CardWidget extends StatelessWidget {
-  final int no;
+  final int cardNo;
+  final int idx;
   final CommunityCardBoardState state;
 
   const _CardWidget({
     Key key,
-    @required this.no,
+    @required this.cardNo,
+    @required this.idx,
     this.state = CommunityCardBoardState.SINGLE,
   }) : super(key: key);
 
@@ -21,16 +21,16 @@ class _CardWidget extends StatelessWidget {
 
     switch (state) {
       case CommunityCardBoardState.SINGLE:
-        return communityCardState.getSingleBoardCardDimens(no);
+        return communityCardState.getSingleBoardCardDimens(idx);
 
       case CommunityCardBoardState.DOUBLE:
-        return communityCardState.getDoubleBoardCardDimens(no);
+        return communityCardState.getDoubleBoardCardDimens(idx);
 
       case CommunityCardBoardState.RIT:
-        return communityCardState.getRitBoardCardDimens(no);
+        return communityCardState.getRitBoardCardDimens(idx);
     }
 
-    return communityCardState.getSingleBoardCardDimens(no);
+    return communityCardState.getSingleBoardCardDimens(idx);
   }
 
   @override
@@ -38,14 +38,14 @@ class _CardWidget extends StatelessWidget {
     final cardDimen = getCardDimen(context);
 
     assert(cardDimen != null,
-        'Invalid card :$no, or the dimensions are not calculated yet');
+        'Invalid card :$idx, or the dimensions are not calculated yet');
 
     return Positioned(
       left: cardDimen.left,
       top: cardDimen.top,
       child: SizedBox.fromSize(
         size: Size(cardDimen.width, cardDimen.height),
-        child: CardHelper.getCard(17).widget,
+        child: CardHelper.getCard(cardNo).widget,
       ),
     );
   }
@@ -56,52 +56,23 @@ class CommunityCardView2 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (_, constraints) {
-      final size = Size(constraints.maxWidth, constraints.maxHeight);
-      final gameState = GameState.getState(context);
-      gameState.communityCardState.initializeCards(size);
-      return ListenableProvider<CommunityCardState>(
-        create: (_) => gameState.communityCardState,
-        child:
-            Consumer<CommunityCardState>(builder: (_, communityCardState, __) {
-          return Stack(
-            children: <Widget>[
-              _CardWidget(
-                no: 1,
-                state: communityCardState.boardState,
-              ),
-              _CardWidget(
-                no: 2,
-                state: communityCardState.boardState,
-              ),
-              _CardWidget(
-                no: 3,
-                state: communityCardState.boardState,
-              ),
-              _CardWidget(
-                no: 4,
-                state: communityCardState.boardState,
-              ),
-              _CardWidget(
-                no: 5,
-                state: communityCardState.boardState,
-              ),
-              _CardWidget(
-                no: 6,
-                state: communityCardState.boardState,
-              ),
-              _CardWidget(
-                no: 7,
-                state: communityCardState.boardState,
-              ),
-              _CardWidget(
-                no: 8,
-                state: communityCardState.boardState,
-              ),
-            ],
-          );
-        }),
-      );
-    });
+    return LayoutBuilder(
+      builder: (_, constraints) {
+        final size = Size(constraints.maxWidth, constraints.maxHeight);
+        final gameState = GameState.getState(context);
+        gameState.communityCardState.initializeCards(size);
+        return AnimatedBuilder(
+          animation: gameState.communityCardState,
+          builder: (_, __) {
+            final communityCardState = gameState.communityCardState;
+            return Stack(
+              alignment: Alignment.center,
+              clipBehavior: Clip.none,
+              children: <Widget>[],
+            );
+          },
+        );
+      },
+    );
   }
 }

@@ -34,11 +34,49 @@ enum CardState {
 
 /// this class holds the card sizes & positions for different community card configurations
 class CommunityCardState extends ChangeNotifier {
-  bool initialized = false;
+  bool _initialized = false;
 
   // this state controls the card animation
-  CardState cardState = CardState.UNSET;
-  CommunityCardBoardState boardState = CommunityCardBoardState.RIT;
+  // CardState _cardState = CardState.UNSET;
+  // CardState get cardState => _cardState;
+
+  // CommunityCardBoardState _boardState = CommunityCardBoardState.RIT;
+  // CommunityCardBoardState get boardState => _boardState;
+
+  bool _isFlopDone = false;
+  bool _isRiverDone = false;
+
+  void addFlopCards({
+    @required final List<int> board1,
+    final List<int> board2,
+  }) {
+    _isFlopDone = true;
+  }
+
+  void addRiverCards({
+    @required final List<int> board1,
+    final List<int> board2,
+  }) {
+    _isRiverDone = true;
+  }
+
+  void addTurnCards({
+    @required final List<int> board1,
+    final List<int> board2,
+  }) {}
+
+  /// call this function only if we were running Single Board game up till now, then shifted to Run It Twice
+  void addRunItTwiceCards({
+    @required final List<int> board1,
+    @required final List<int> board2,
+  }) {}
+
+  void reset() {
+    _isFlopDone = false;
+    _isRiverDone = false;
+  }
+
+  /// internal methods to calculate sizes and positions of every possible card configurations
 
   Map<int, Rect> _singleBoardCardDimens = Map();
   Rect getSingleBoardCardDimens(int no) => _singleBoardCardDimens[no];
@@ -48,10 +86,6 @@ class CommunityCardState extends ChangeNotifier {
 
   Map<int, Rect> _ritCardDimens = Map();
   Rect getRitBoardCardDimens(int no) => _ritCardDimens[no];
-
-  void reset() {
-    cardState = CardState.UNSET;
-  }
 
   void _initDimenForRitBoard(Size size) {
     /// common cards -> 1, 2, 3, 4
@@ -69,15 +103,31 @@ class CommunityCardState extends ChangeNotifier {
 
     /// 5, 6 -> top two
     _ritCardDimens[5] = Rect.fromLTWH(
-        singleBoard4.left, topOffset, singleBoard4.width, newHeight);
+      singleBoard4.left,
+      topOffset,
+      singleBoard4.width,
+      newHeight,
+    );
     _ritCardDimens[6] = Rect.fromLTWH(
-        singleBoard5.left, topOffset, singleBoard5.width, newHeight);
+      singleBoard5.left,
+      topOffset,
+      singleBoard5.width,
+      newHeight,
+    );
 
     /// 7, 8 -> bottom two
     _ritCardDimens[7] = Rect.fromLTWH(
-        singleBoard4.left, bottomOffset, singleBoard4.width, newHeight);
+      singleBoard4.left,
+      bottomOffset,
+      singleBoard4.width,
+      newHeight,
+    );
     _ritCardDimens[8] = Rect.fromLTWH(
-        singleBoard5.left, bottomOffset, singleBoard5.width, newHeight);
+      singleBoard5.left,
+      bottomOffset,
+      singleBoard5.width,
+      newHeight,
+    );
   }
 
   void _initDimenForDoubleBoard(Size size) {
@@ -126,7 +176,7 @@ class CommunityCardState extends ChangeNotifier {
   }
 
   void initializeCards(Size size) {
-    if (initialized) return; // todo: uncomment this line, after finalized
+    if (_initialized) return; // todo: uncomment this line, after finalized
     // single board size calculations
     _initDimenForSingleBoard(size);
 
@@ -135,6 +185,6 @@ class CommunityCardState extends ChangeNotifier {
 
     // special board - combination of double & single board
     _initDimenForRitBoard(size);
-    initialized = true;
+    _initialized = true;
   }
 }
