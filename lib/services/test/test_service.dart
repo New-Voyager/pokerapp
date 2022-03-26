@@ -303,6 +303,24 @@ class TestService {
     );
   }
 
+  static Future<void> addTurnCard() async {
+    final gameState = GameState.getState(_context);
+
+    gameState.communityCardState.addTurnCard(
+      board1Card: 50,
+      // board2Card: 52,
+    );
+  }
+
+  static Future<void> addRiverCard() async {
+    final gameState = GameState.getState(_context);
+
+    gameState.communityCardState.addRiverCard(
+      board1Card: 68,
+      // board2Card: 72,
+    );
+  }
+
   static Future<void> simulateBetMovement() async {
     BuildContext context = _context;
 

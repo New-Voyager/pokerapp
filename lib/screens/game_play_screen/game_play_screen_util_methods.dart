@@ -78,7 +78,7 @@ class GamePlayScreenUtilMethods {
           label: 'Add Turn',
           labelBackgroundColor: Colors.black,
           onTap: () {
-            TestService.addFlopCards();
+            TestService.addTurnCard();
           },
         ),
         SpeedDialChild(
@@ -90,7 +90,7 @@ class GamePlayScreenUtilMethods {
           label: 'Add River',
           labelBackgroundColor: Colors.black,
           onTap: () {
-            TestService.addFlopCards();
+            TestService.addRiverCard();
           },
         ),
         SpeedDialChild(

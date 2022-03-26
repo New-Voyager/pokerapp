@@ -69,7 +69,7 @@ class CommunityCardState extends ChangeNotifier {
   // CommunityCardBoardState get boardState => _boardState;
 
   bool _isFlopDone = false;
-  bool _isRiverDone = false;
+  bool _isTurnDone = false;
 
   Rect _getCardDimen(CommunityCardBoardState boardState, int cardId) {
     switch (boardState) {
@@ -174,17 +174,93 @@ class CommunityCardState extends ChangeNotifier {
     _isFlopDone = true;
   }
 
-  void addRiverCards({
-    @required final List<int> board1,
-    final List<int> board2,
-  }) {
-    _isRiverDone = true;
+  Future<void> _addTurnCard(
+    int cardNo, {
+    int startWith = 4,
+    CommunityCardBoardState boardState = CommunityCardBoardState.SINGLE,
+  }) async {
+    final cardState = _getCardStateFromCardNo(
+      cardNo,
+      cardId: startWith,
+      boardState: boardState,
+    );
+    _cardStates.add(cardState);
+    notifyListeners();
+
+    await _delay();
+
+    // flip
+    cardState.flipKey.currentState.toggleCard();
   }
 
-  void addTurnCards({
-    @required final List<int> board1,
-    final List<int> board2,
-  }) {}
+  /// single board -> 4
+  /// double board -> 4, 9
+  void addTurnCard({
+    @required int board1Card,
+    final int board2Card,
+  }) async {
+    final bool isDoubleBoard = board2Card != null;
+
+    if (isDoubleBoard) {
+      _addTurnCard(
+        board1Card,
+        startWith: 4,
+        boardState: CommunityCardBoardState.DOUBLE,
+      );
+      await _addTurnCard(
+        board2Card,
+        startWith: 9,
+        boardState: CommunityCardBoardState.DOUBLE,
+      );
+    } else {
+      await _addTurnCard(board1Card);
+    }
+
+    _isTurnDone = true;
+  }
+
+  Future<void> _addRiverCard(
+    int cardNo, {
+    int startWith = 5,
+    CommunityCardBoardState boardState = CommunityCardBoardState.SINGLE,
+  }) async {
+    final cardState = _getCardStateFromCardNo(
+      cardNo,
+      cardId: startWith,
+      boardState: boardState,
+    );
+    _cardStates.add(cardState);
+    notifyListeners();
+
+    await _delay();
+
+    // flip
+    cardState.flipKey.currentState.toggleCard();
+  }
+
+  /// single board -> 5
+  /// double board -> 5, 10
+  void addRiverCard({
+    @required int board1Card,
+    final int board2Card,
+  }) async {
+    final bool isDoubleBoard = board2Card != null;
+
+    if (isDoubleBoard) {
+      _addRiverCard(
+        board1Card,
+        startWith: 5,
+        boardState: CommunityCardBoardState.DOUBLE,
+      );
+      await _addRiverCard(
+        board2Card,
+        startWith: 10,
+        boardState: CommunityCardBoardState.DOUBLE,
+      );
+    } else {
+      await _addRiverCard(board1Card);
+    }
+  }
 
   /// call this function only if we were running Single Board game up till now, then shifted to Run It Twice
   void addRunItTwiceCards({
@@ -194,7 +270,7 @@ class CommunityCardState extends ChangeNotifier {
 
   void reset() {
     _isFlopDone = false;
-    _isRiverDone = false;
+    _isTurnDone = false;
     _cardStates.clear();
     notifyListeners();
   }
