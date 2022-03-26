@@ -13,21 +13,21 @@ class _CardWidget extends StatelessWidget {
   const _CardWidget({
     Key key,
     @required this.no,
-    this.state = CommunityCardBoardState.single,
+    this.state = CommunityCardBoardState.SINGLE,
   }) : super(key: key);
 
-  Pair<Offset, Size> getCardDimen(BuildContext context) {
+  Rect getCardDimen(BuildContext context) {
     final communityCardState = context.read<GameState>().communityCardState;
 
     switch (state) {
-      case CommunityCardBoardState.single:
+      case CommunityCardBoardState.SINGLE:
         return communityCardState.getSingleBoardCardDimens(no);
 
-      case CommunityCardBoardState.double:
+      case CommunityCardBoardState.DOUBLE:
         return communityCardState.getDoubleBoardCardDimens(no);
 
-      case CommunityCardBoardState.special:
-        return communityCardState.getSpecialBoardCardDimens(no);
+      case CommunityCardBoardState.RIT:
+        return communityCardState.getRitBoardCardDimens(no);
     }
 
     return communityCardState.getSingleBoardCardDimens(no);
@@ -41,10 +41,10 @@ class _CardWidget extends StatelessWidget {
         'Invalid card :$no, or the dimensions are not calculated yet');
 
     return Positioned(
-      left: cardDimen.a.dx,
-      top: cardDimen.a.dy,
+      left: cardDimen.left,
+      top: cardDimen.top,
       child: SizedBox.fromSize(
-        size: cardDimen.b,
+        size: Size(cardDimen.width, cardDimen.height),
         child: CardHelper.getCard(17).widget,
       ),
     );
@@ -68,31 +68,31 @@ class CommunityCardView2 extends StatelessWidget {
           children: [
             _CardWidget(
               no: 1,
-              state: CommunityCardBoardState.special,
+              state: CommunityCardBoardState.RIT,
             ),
             _CardWidget(
               no: 2,
-              state: CommunityCardBoardState.special,
+              state: CommunityCardBoardState.RIT,
             ),
             _CardWidget(
               no: 3,
-              state: CommunityCardBoardState.special,
+              state: CommunityCardBoardState.RIT,
             ),
             _CardWidget(
               no: 5,
-              state: CommunityCardBoardState.special,
+              state: CommunityCardBoardState.RIT,
             ),
             _CardWidget(
               no: 6,
-              state: CommunityCardBoardState.special,
+              state: CommunityCardBoardState.RIT,
             ),
             _CardWidget(
               no: 7,
-              state: CommunityCardBoardState.special,
+              state: CommunityCardBoardState.RIT,
             ),
             _CardWidget(
               no: 8,
-              state: CommunityCardBoardState.special,
+              state: CommunityCardBoardState.RIT,
             ),
           ],
         );
