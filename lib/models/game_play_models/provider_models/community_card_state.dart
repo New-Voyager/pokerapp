@@ -300,6 +300,75 @@ class CommunityCardState extends ChangeNotifier {
     await _delayFA();
   }
 
+  Future<List<CardState>> _displayTwoConsecutiveCards({
+    @required List<int> cards,
+    @required int cardIdStartsWith,
+    CommunityCardBoardState boardState = CommunityCardBoardState.SINGLE,
+  }) async {
+    int cardId = cardIdStartsWith;
+    final List<CardState> cardStates = [];
+
+    for (final cNo in cards) {
+      final state = _getCardStateFromCardNo(
+        cNo,
+        cardId: cardId,
+        boardState: boardState,
+      );
+      cardStates.add(state);
+      cardId++;
+
+      _cardStates.add(state);
+      notifyListeners();
+
+      await _delay();
+
+      // flip
+      state.flipKey.currentState.toggleCard();
+
+      await _delayFA();
+    }
+
+    return cardStates;
+  }
+
+  /// cards -> 5, 6 | 7, 8 (as 1, 2, 3 are common) & (4 is reserved for RIT after Turn case)
+  Future<void> _runItTwiceAfterFlop(
+    List<int> board1Cards,
+    List<int> board2Cards,
+  ) async {
+    assert(
+      board1Cards.length == 2,
+      'Invalid: ${board1Cards.length} cards. Board 1 must have 2 cards for Run It Twice After Flop case',
+    );
+    assert(
+      board2Cards.length == 2,
+      'Invalid: ${board2Cards.length} cards. Board 2 must have 2 cards for Run It Twice After Flop case',
+    );
+
+    /// As we are STILL single board - show cards 4 & 5
+    final cardStates = await _displayTwoConsecutiveCards(
+      cards: board1Cards,
+      cardIdStartsWith: 4,
+    );
+
+    // push the cards | 4, 5 of SINGLE changes to 5, 6 of RIT
+    int cardId = 5;
+    cardStates.forEach((cardState) {
+      final cardDimen = _getCardDimen(CommunityCardBoardState.RIT, cardId);
+      cardState.position = cardDimen.position;
+      cardState.size = cardDimen.size;
+      cardId++;
+    });
+    notifyListeners();
+
+    // add the other two cards
+    await _displayTwoConsecutiveCards(
+      cards: board2Cards,
+      cardIdStartsWith: 7,
+      boardState: CommunityCardBoardState.RIT,
+    );
+  }
+
   /// call this function only if we were running Single Board game up till now, then shifted to Run It Twice
   Future<void> addRunItTwiceCards({
     @required final List<int> board1,
@@ -312,12 +381,15 @@ class CommunityCardState extends ChangeNotifier {
 
       await _runItTwiceAfterTurn(board1LastCard, board2LastCard);
     } else if (_isFlopDone) {
-      // need to add two cards
+      // need to add two cards for each board
+      final board1Cards = board1.sublist(3);
+      final board2Cards = board2.sublist(3);
 
+      await _runItTwiceAfterFlop(board1Cards, board2Cards);
+    } else {
+      throw AssertionError(
+          'Invalid State: If you want to add double board cards, use the addFlopCards method');
     }
-
-    throw AssertionError(
-        'Invalid State: If you want to add double board cards, use the addFlopCards method');
   }
 
   void reset() {

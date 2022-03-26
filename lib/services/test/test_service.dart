@@ -334,7 +334,7 @@ class TestService {
     final board1Cards = [33, 34, 36, 68, 72];
     final board2Cards = [33, 34, 36, 100, 104];
     // add flop cards -> just add 3 cards from board 1
-    gameState.communityCardState.addFlopCards(
+    await gameState.communityCardState.addFlopCards(
       board1: board1Cards.sublist(0, 3),
     );
     await Future.delayed(const Duration(milliseconds: 500));
