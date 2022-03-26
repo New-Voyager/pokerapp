@@ -7,10 +7,38 @@ const kSingleBoardHeightFactor = 0.65;
 const kSpecialBoardHeightFactor = 0.55;
 
 enum CommunityCardBoardState { SINGLE, DOUBLE, RIT }
+enum CardState {
+  UNSET,
+
+  ANIMATING_FLOP,
+  FLOP,
+  ANIMATING_TURN,
+  TURN,
+  ANIMATING_RIVER,
+  RIVER,
+
+  // RIT cases
+  ANIMATING_BD1_TURN, // animate turn card (same sa ANIMATING_TURN)
+  BD1_TURN,
+  ANIMATING_BD1_RIVER,
+  BD1_RIVER,
+  ANIMATING_MOVE_BD1_TURN_RIVER, // move bd1 turn and river to top board
+  ANIMATING_BD2_TURN,
+  BD2_TURN,
+  ANIMATING_BD2_RIVER,
+  BD2_RIVER,
+
+  // RIT starts in the river card
+  ANIMATING_MOVE_BD1_RIVER, // move bd1 river to top board
+}
 
 /// this class holds the card sizes & positions for different community card configurations
-class CommunityCardState {
-  bool isCalculated = false;
+class CommunityCardState extends ChangeNotifier {
+  bool initialized = false;
+
+  // this state controls the card animation
+  CardState cardState = CardState.UNSET;
+  CommunityCardBoardState boardState = CommunityCardBoardState.RIT;
 
   Map<int, Rect> _singleBoardCardDimens = Map();
   Rect getSingleBoardCardDimens(int no) => _singleBoardCardDimens[no];
@@ -20,6 +48,10 @@ class CommunityCardState {
 
   Map<int, Rect> _ritCardDimens = Map();
   Rect getRitBoardCardDimens(int no) => _ritCardDimens[no];
+
+  void reset() {
+    cardState = CardState.UNSET;
+  }
 
   void _initDimenForRitBoard(Size size) {
     /// common cards -> 1, 2, 3, 4
@@ -94,9 +126,7 @@ class CommunityCardState {
   }
 
   void initializeCards(Size size) {
-    // if (isCalculated) return; // todo: uncomment this line, after finalized
-    isCalculated = true;
-
+    if (initialized) return; // todo: uncomment this line, after finalized
     // single board size calculations
     _initDimenForSingleBoard(size);
 
@@ -105,5 +135,6 @@ class CommunityCardState {
 
     // special board - combination of double & single board
     _initDimenForRitBoard(size);
+    initialized = true;
   }
 }

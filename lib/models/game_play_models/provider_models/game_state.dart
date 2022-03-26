@@ -29,7 +29,7 @@ import 'package:pokerapp/services/data/hive_models/game_settings.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/utils/utils.dart';
-import 'package:pokerapp/widgets/cards/community_cards_view_2/state/community_card_state.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/community_card_state.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 import 'package:pokerapp/proto/hand.pb.dart' as proto;
