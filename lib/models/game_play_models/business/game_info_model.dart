@@ -82,6 +82,8 @@ class GameInfoModel {
   // all players in the game
   Map<int, GamePlayer> allPlayers = Map<int, GamePlayer>();
 
+  bool demoGame;
+
   /* this constructor is used in the replay hand section */
   GameInfoModel({
     @required this.maxPlayers,
@@ -195,6 +197,8 @@ class GameInfoModel {
         this.allPlayers[gamePlayer.id] = gamePlayer;
       }
     }
+
+    this.demoGame = data['demoGame'] ?? false;
   }
 
   void gameEnded() {
@@ -287,6 +291,7 @@ class GameInfoModel {
 
       livekitUrl
       livekitToken
+      demoGame
     }
   } """;
 }

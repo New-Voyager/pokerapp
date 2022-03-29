@@ -7,6 +7,7 @@ import 'package:onboarding_overlay/onboarding_overlay.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/app_state.dart';
+import 'package:pokerapp/models/game/new_game_model.dart';
 import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/models/newmodels/game_model_new.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
@@ -34,6 +35,8 @@ import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:pokerapp/widgets/textfields.dart';
 import 'package:pokerapp/widgets/texts.dart';
 import 'package:provider/provider.dart';
+
+import '../../../main_helper.dart';
 
 class LiveGamesScreen extends StatefulWidget {
   @override
@@ -417,6 +420,18 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
     return steps;
   }
 
+  void startDemoGame() async {
+    final demoGame = NewGameModel.demoGame();
+    String gameCode = await GameService.configurePlayerGame(demoGame);
+
+    if (gameCode == null) return;
+
+    navigatorKey.currentState.pushNamed(
+      Routes.game_play,
+      arguments: gameCode,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     _handleGameRefresh(appState);
@@ -465,6 +480,14 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
+                  RoundRectButton(
+                    onTap: () async {
+                      startDemoGame();
+                    },
+                    text: 'Demo Game', //_appScreenText["host"],
+                    theme: appTheme,
+                    focusNode: focusNodes[0],
+                  ),
                   RoundRectButton(
                     onTap: () async {
                       await hostGame();
