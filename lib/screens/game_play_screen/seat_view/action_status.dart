@@ -1,8 +1,17 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_chat_bubble/bubble_type.dart';
+import 'package:flutter_chat_bubble/chat_bubble.dart';
+import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_1.dart';
+import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_2.dart';
+import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_3.dart';
+import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_5.dart';
+import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_6.dart';
+import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_9.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
+import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'animating_widgets/stack_switch_seat_animating_widget.dart';
@@ -45,6 +54,29 @@ class ActionStatusWidget extends StatelessWidget {
         action == HandActions.STRADDLE ||
         action == HandActions.BOMB_POT_BET) {
       actionStr = action.toString().replaceAll('HandActions.', '');
+      if (action == HandActions.SB) {
+        actionStr = 'SB';
+      } else if (action == HandActions.BB) {
+        actionStr = 'BB';
+      } else if (action == HandActions.POST_BLIND) {
+        actionStr = 'Blind';
+      } else if (action == HandActions.BET) {
+        actionStr = 'Bet';
+      } else if (action == HandActions.CALL) {
+        actionStr = 'Call';
+      } else if (action == HandActions.CHECK) {
+        actionStr = 'Check';
+      } else if (action == HandActions.RAISE) {
+        actionStr = 'Raise';
+      } else if (action == HandActions.BET) {
+        actionStr = 'Bet';
+      } else if (action == HandActions.ALLIN) {
+        actionStr = 'All In';
+      } else if (action == HandActions.STRADDLE) {
+        actionStr = 'Straddle';
+      } else if (action == HandActions.BOMB_POT_BET) {
+        actionStr = 'Bomb Ante';
+      }
     }
 
     bool allin = seat.player.action.action == HandActions.ALLIN;
@@ -74,6 +106,69 @@ class ActionStatusWidget extends StatelessWidget {
     // decide color from the status message
     // raise, bet -> red
     // check, call -> green
+    if (actionStr == '') {
+      return shrinkedSizedBox;
+    }
+
+    Color statusColor = Colors.blueGrey; // default color be black
+    if (actionStr != null) {
+      if (actionStr.toUpperCase().contains('CHECK') ||
+          actionStr.toUpperCase().contains('CALL')) {
+        statusColor = Colors.green;
+      } else if (actionStr.toUpperCase().contains('RAISE') ||
+          actionStr.toUpperCase().contains('BET')) {
+        statusColor = Colors.red;
+      }
+    }
+
+    Widget child = Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          '  ' + actionStr + '  ',
+          style: getStatusTextStyle(actionStr),
+        ),
+        Visibility(
+          visible: allin,
+          child: Container(
+            width: 20,
+            height: 20,
+            child: Image.asset(
+              'assets/images/game/flame.png',
+              height: 20,
+              width: 20,
+              fit: BoxFit.contain,
+            ),
+          ),
+        )
+      ],
+    );
+    BubbleType bubbleType = BubbleType.sendBubble;
+    if (seat.seatPos == SeatPos.bottomCenter ||
+        seat.seatPos == SeatPos.middleLeft ||
+        seat.seatPos == SeatPos.topLeft ||
+        seat.seatPos == SeatPos.bottomLeft) {
+      bubbleType = BubbleType.receiverBubble;
+    }
+    Widget chatBubble = ChatBubble(
+        clipper: ChatBubbleClipper6(
+          type: bubbleType,
+          nipSize: 4,
+          radius: 5,
+          //sizeRatio: 1,
+        ),
+        backGroundColor: statusColor,
+        margin: EdgeInsets.only(bottom: 5),
+        padding: const EdgeInsets.only(
+          top: 0,
+          bottom: 5,
+          left: 3,
+          right: 3,
+        ),
+        //shadowColor: theme.secondaryColorWithDark(0.80),
+        child: child);
+    return chatBubble;
+
     return actionStr == ''
         ? shrinkedSizedBox
         : ClipRRect(
@@ -114,7 +209,7 @@ class ActionStatusWidget extends StatelessWidget {
     }
 
     Color fgColor = Colors.white;
-    return AppStylesNew.userPopUpMessageTextStyle
-        .copyWith(fontSize: 8.dp, color: fgColor, backgroundColor: statusColor);
+    return AppStylesNew.userPopUpMessageTextStyle.copyWith(
+        fontSize: 8.dp, color: fgColor); //, backgroundColor: statusColor);
   }
 }

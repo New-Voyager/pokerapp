@@ -541,13 +541,17 @@ class _FooterViewState extends State<FooterView>
       children.add(_buildCustomizationView());
     } else if (gameState.tableState.gameStatus ==
             AppConstants.GAME_CONFIGURED &&
-        playerGame) {
-      // display game information
-      children.add(_buildGameInfo(gameState));
+        playerGame &&
+        !gameState.gameInfo.demoGame) {
+      if (!gameState.gameInfo.demoGame) {
+        // display game information
+        children.add(_buildGameInfo(gameState));
+      }
       /* hand analyse view */
       children.add(_buildHandAnalyseView(context));
       /* communication widgets */
       children.add(_buildCommunicationWidget());
+      // nothing to display here
     } else if (!gameState.isPlaying) {
       // the player can join the waitlist
       log('Player is not playing, but can join waitlist');

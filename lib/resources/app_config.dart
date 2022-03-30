@@ -29,7 +29,7 @@ class AppConfig {
     // apiServer = 'http://localhost:9501';
     _apiUrl = apiServer;
     //_apiUrl = 'https://demo.pokerclub.app';
-    _apiUrl = 'http://192.168.0.187:9501';
+    //_apiUrl = 'http://192.168.1.16:9501';
 
     String deviceId = sharedPreferences.getString(AppConstants.DEVICE_ID);
     String deviceSecret =

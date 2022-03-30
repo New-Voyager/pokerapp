@@ -1219,17 +1219,18 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
                                 // ),
 
                                 /* bot games */
-                                gmp.settings.clubCode == null ||
-                                        gmp.settings.clubCode.isEmpty
-                                    ? _buildRadio(
-                                        label: appScreenText['botGame'],
-                                        value: gmp.botGame,
-                                        onChange: (bool b) {
-                                          gmp.botGame = b;
-                                        },
-                                        theme: theme,
-                                      )
-                                    : Container(),
+                                // gmp.settings.clubCode == null ||
+                                //         gmp.settings.clubCode.isEmpty
+                                //     ? _buildRadio(
+                                //         label: appScreenText['botGame'],
+                                //         value: gmp.botGame,
+                                //         onChange: (bool b) {
+                                //           gmp.botGame = b;
+                                //         },
+                                //         theme: theme,
+                                //       )
+                                //     : Container(),
+
                                 /* location check */
                                 _buildRadio(
                                   label: appScreenText['locationCheck'],

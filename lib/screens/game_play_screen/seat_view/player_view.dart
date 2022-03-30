@@ -452,8 +452,10 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
         }
 
         //actionRight = NamePlateWidgetParent.namePlateSize.width / 2 - 8;
-        if (widget.seat.seatPos == SeatPos.bottomRight ||
-            widget.seat.seatPos == SeatPos.bottomCenter) {
+        if (widget.seat.seatPos == SeatPos.bottomCenter ||
+            widget.seat.seatPos == SeatPos.middleLeft ||
+            widget.seat.seatPos == SeatPos.topLeft ||
+            widget.seat.seatPos == SeatPos.bottomLeft) {
           //actionLeft = null;
           //NamePlateWidgetParent.namePlateSize.width / 2 - 8;
           actionRight = 0;
