@@ -7,6 +7,7 @@ import 'package:onboarding_overlay/onboarding_overlay.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/app_state.dart';
+import 'package:pokerapp/models/game/new_game_model.dart';
 import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/models/newmodels/game_model_new.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
@@ -34,6 +35,8 @@ import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:pokerapp/widgets/textfields.dart';
 import 'package:pokerapp/widgets/texts.dart';
 import 'package:provider/provider.dart';
+
+import '../../../main_helper.dart';
 
 class LiveGamesScreen extends StatefulWidget {
   @override
@@ -465,6 +468,14 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
+                  // RoundRectButton(
+                  //   onTap: () async {
+                  //     startDemoGame();
+                  //   },
+                  //   text: 'Demo Game', //_appScreenText["host"],
+                  //   theme: appTheme,
+                  //   focusNode: focusNodes[0],
+                  // ),
                   RoundRectButton(
                     onTap: () async {
                       await hostGame();
@@ -694,13 +705,13 @@ class LiveGamesHelpText extends StatelessWidget {
       Row(
         children: [
           SizedBox(width: 20.pw),
-          Text('Tap '),
-          RoundRectButton(
-            onTap: () async {},
-            text: 'Host',
-            theme: appTheme,
-          ),
-          SizedBox(width: 8.pw),
+          Text('Tap Host button on top left '),
+          // RoundRectButton(
+          //   onTap: () async {},
+          //   text: 'Host',
+          //   theme: appTheme,
+          // ),
+          //SizedBox(width: 8.pw),
           Flexible(
             child: Text('to host a new game'),
           ),
@@ -710,16 +721,18 @@ class LiveGamesHelpText extends StatelessWidget {
       Row(
         children: [
           SizedBox(width: 20.pw),
-          Text('Tap '),
-          RoundRectButton(
-            onTap: () async {},
-            text: 'Join',
-            theme: appTheme,
-          ),
-          SizedBox(width: 8.pw),
           Flexible(
-            child: Text('to join a game with game code'),
-          ),
+              child: Text(
+                  'Tap Join button on top right to join a game with game code')),
+          // RoundRectButton(
+          //   onTap: () async {},
+          //   text: 'Join',
+          //   theme: appTheme,
+          // ),
+          // SizedBox(width: 8.pw),
+          // Flexible(
+          //   child: Text('to join a game with game code'),
+          // ),
         ],
       ),
       SizedBox(height: 20),
@@ -732,6 +745,14 @@ class LiveGamesHelpText extends StatelessWidget {
           ),
         ],
       ),
+      SizedBox(height: 20),
+      RoundRectButton(
+        onTap: () async {
+          startDemoGame(context);
+        },
+        text: 'Demo Game', //_appScreenText["host"],
+        theme: appTheme,
+      ),
     ]);
 
     // Center(
@@ -740,5 +761,31 @@ class LiveGamesHelpText extends StatelessWidget {
     //     style: AppDecorators.getAccentTextStyle(theme: appTheme),
     //   ),
     // );
+  }
+
+  void startDemoGame(BuildContext context) async {
+    final demoGame = NewGameModel.demoGame();
+    String gameCode = await GameService.configurePlayerGame(demoGame);
+
+    if (gameCode == null) return;
+
+    // wait for all the bots taken the seats
+    ConnectionDialog.show(context: context, loadingText: 'Starting demo game');
+    try {
+      while (true) {
+        final gameInfo = await GameService.getGameInfo(gameCode);
+        if (gameInfo.availableSeats.length == 1) {
+          break;
+        } else {
+          await Future.delayed(Duration(milliseconds: 500));
+        }
+      }
+    } catch (err) {}
+    ConnectionDialog.dismiss(context: context);
+
+    navigatorKey.currentState.pushNamed(
+      Routes.game_play,
+      arguments: gameCode,
+    );
   }
 }

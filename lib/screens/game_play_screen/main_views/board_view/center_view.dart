@@ -200,8 +200,8 @@ class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
         gameState.gameInfo.tableStatus == AppConstants.WAITING_TO_BE_STARTED;
 
     /* if the game is paused, show the options available during game pause */
-    // don't show start/pause buttons for bot script games
-    if (!gameState.isBotGame) {
+    // don't show start/pause buttons for bot script games or demo games
+    if (!gameState.isBotGame && !gameState.gameInfo.demoGame) {
       if (isGamePausedOrWaiting || !gameState.isGameRunning) {
         return _buildGamePauseOptions(gameState);
       }

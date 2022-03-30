@@ -95,7 +95,7 @@ class NewGameModel {
   bool waitList = true;
   bool botGame = false;
   bool highHandTracked = false;
-  int buyInWaitTime;
+  int buyInWaitTime = 120;
   Rewards rewards;
   bool muckLosingHand = false;
   bool showPlayerBuyin = false;
@@ -112,6 +112,7 @@ class NewGameModel {
   ChipUnit chipUnit = ChipUnit.DOLLAR;
   BuyInApprovalLimit buyInApprovalLimit = BuyInApprovalLimit.BUYIN_NO_LIMIT;
   bool dealerChoiceOrbit = true;
+  bool demoGame = false;
 
   /*
     bombPotEnabled: Boolean
@@ -173,8 +174,9 @@ class NewGameModel {
     this.buyInWaitTime,
     this.allowFunAnimations,
     this.chipUnit,
-    this.buyInApprovalLimit,
+    this.buyInApprovalLimit = BuyInApprovalLimit.BUYIN_NO_LIMIT,
     this.dealerChoiceOrbit,
+    this.demoGame = false,
   });
 
   NewGameModel.withDefault(String clubCode) {
@@ -331,7 +333,29 @@ class NewGameModel {
     if (this.rewards != null && this.rewards.id != 0) {
       data['rewardIds'] = [this.rewards.id];
     }
+
+    data['demoGame'] = demoGame ?? false;
     return data;
+  }
+
+  factory NewGameModel.demoGame() {
+    final newGameModel = NewGameModel.withDefault("");
+
+    newGameModel.smallBlind = 1;
+    newGameModel.bigBlind = 2;
+    newGameModel.chipUnit = ChipUnit.DOLLAR;
+    newGameModel.gameLength = 60;
+    newGameModel.buyInMin = 100;
+    newGameModel.buyInMax = 500;
+    newGameModel.gameType = GameType.HOLDEM;
+    newGameModel.minPlayers = 2;
+    newGameModel.maxPlayers = 6;
+    newGameModel.demoGame = true;
+    newGameModel.actionTime = 15;
+    newGameModel.rakePercentage = 0;
+    newGameModel.rakeCap = 0;
+
+    return newGameModel;
   }
 
   void setBlinds(Blinds blinds) {

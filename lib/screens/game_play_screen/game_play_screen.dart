@@ -135,6 +135,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   Nats _nats;
   NetworkConnectionDialog _dialog;
   BoardAttributesObject boardAttributes;
+  OverlaySupportEntry demoHelpText = null;
 
   // instantiate a drawer controller
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -698,6 +699,11 @@ class _GamePlayScreenState extends State<GamePlayScreen>
             }
           }
         }
+
+        // dismiss demo help text
+        if (demoHelpText != null) {
+          demoHelpText.dismiss();
+        }
         await GamePlayScreenUtilMethods.joinGame(
           context: _providerContext,
           seat: seat,
@@ -818,18 +824,18 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
       if (appService.appSettings.showRefreshBanner) {
         appService.appSettings.showRefreshBanner = false;
-        // Alerts.showNotification(
-        //     duration: Duration(seconds: 8),
-        //     titleText: 'Beta Issue',
-        //     subTitleText:
-        //         "If you see any issues in this screen or in the audio conference, go back from this game screen and return to this screen. Most issues will be resolved. You will still be in the game and in the hand.");
       }
       if (appService.appSettings.showReportInfoDialog) {
         appService.appSettings.showReportInfoDialog = false;
+      }
 
-        // showErrorDialog(context, 'Report an issue?',
-        //     "If you run into any issues while using the app or want us to implement a feature, please tap the hamburger menu on the bottom left and tap Report Issue.",
-        //     info: true);
+      if (_gameState.gameInfo.demoGame) {
+        Future.delayed(Duration(seconds: 1), () {
+          demoHelpText = Alerts.showNotification(
+            titleText: "Tap on Open Seat to Join the Game!",
+            duration: Duration(seconds: 5),
+          );
+        });
       }
     });
 
