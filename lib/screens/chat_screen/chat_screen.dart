@@ -198,14 +198,15 @@ class _ChatScreenState extends State<ChatScreen> with RouteAwareAnalytics {
         messageTime: toDateTime(m.messageTime),
         memberName: m.memberName,
 
-        // adding chatAdjustmentModel is optional
-        chatAdjustmentModel: ChatAdjustmentModel(
-          type: ChatAdjustTypeParsing.fromString('adjust'),
-          amount: 50.10,
-          credits: 9800.40,
-          text: 'Here you go!',
-          date: DateTime.now(),
-        ),
+        // adding chatAdjustmentModel is optional - if CreditUpdateChat model is added,
+        // we show the CreditUpdateChatWidget
+        // chatAdjustmentModel: CreditUpdateChatModel(
+        //   type: ChatAdjustTypeParsing.fromString('adjust'),
+        //   amount: 50.10,
+        //   credits: 9800.40,
+        //   text: 'Here you go!',
+        //   date: DateTime.now(),
+        // ),
       );
       if (i == 0) {
         chat.isGroupLatest = true;

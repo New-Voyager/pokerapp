@@ -8,7 +8,7 @@ class ChatModel {
   final DateTime messageTime;
   final String memberName;
   bool isGroupLatest;
-  final ChatAdjustmentModel chatAdjustmentModel;
+  final CreditUpdateChatModel chatAdjustmentModel;
 
   ChatModel({
     this.id,
@@ -22,32 +22,52 @@ class ChatModel {
   });
 }
 
-class ChatAdjustmentModel {
-  final ChatAdjustType type;
+class CreditUpdateChatModel {
+  final CreditUpdateType type;
   final double amount;
   final String text;
   final double credits;
   final DateTime date;
 
-  ChatAdjustmentModel({
+  CreditUpdateChatModel({
     @required this.type,
     @required this.amount,
     @required this.text,
     @required this.credits,
     @required this.date,
   });
+
+  /*
+      {
+        "type": "adjust",
+        "amount": -50.0,
+        "annotation": "recd via cashapp",
+        "credits": 600.30,
+        "time":"2022-01-01
+      }
+      type: adjust, fee_credit, add, deduct, hh, reward
+   */
+  factory CreditUpdateChatModel.fromJson(Map<String, dynamic> data) {
+    return CreditUpdateChatModel(
+      type: CreditUpdateTypeParsing.fromString(data['type']),
+      amount: double.parse(data['amount'].toString()),
+      text: data['annotation'].toString(),
+      credits: double.parse(data['credits'].toString()),
+      date: DateTime.parse(data['time'].toString()),
+    );
+  }
 }
 
 // type: adjust, fee_credit, add, deduct, hh, reward
-enum ChatAdjustType { adjust, fee_credit, add, deduct, reward, hh }
+enum CreditUpdateType { adjust, fee_credit, add, deduct, reward, hh }
 
-extension ChatAdjustTypeParsing on ChatAdjustType {
+extension CreditUpdateTypeParsing on CreditUpdateType {
   String get value =>
       this.toString().split('.').last.split('_').join(' ').toUpperCase();
 
-  static ChatAdjustType fromString(String v) =>
-      ChatAdjustType.values.firstWhere(
+  static CreditUpdateType fromString(String v) =>
+      CreditUpdateType.values.firstWhere(
         (e) => e.toString().split('.').last == v,
-        orElse: () => ChatAdjustType.adjust,
+        orElse: () => CreditUpdateType.adjust,
       );
 }

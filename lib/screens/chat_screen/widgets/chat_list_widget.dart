@@ -82,7 +82,7 @@ class _ChatListWidgetState extends State<ChatListWidget> {
 
   Widget _buildTile(ChatModel message) {
     if (message.chatAdjustmentModel != null)
-      return ChatAdjustmentWidget(
+      return CreditUpdateChatWidget(
         chatAdjustmentModel: message.chatAdjustmentModel,
       );
 
@@ -220,10 +220,10 @@ class _ChatListWidgetState extends State<ChatListWidget> {
   }
 }
 
-class ChatAdjustmentWidget extends StatelessWidget {
-  final ChatAdjustmentModel chatAdjustmentModel;
+class CreditUpdateChatWidget extends StatelessWidget {
+  final CreditUpdateChatModel chatAdjustmentModel;
 
-  const ChatAdjustmentWidget({
+  const CreditUpdateChatWidget({
     Key key,
     @required this.chatAdjustmentModel,
   }) : super(key: key);
