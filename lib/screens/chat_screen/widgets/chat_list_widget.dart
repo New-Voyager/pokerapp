@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
 import 'package:pokerapp/models/club_message_model.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
@@ -248,60 +247,53 @@ class ChatAdjustmentWidget extends StatelessWidget {
         right: 12.0,
         left: 12.0,
       ),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Expanded(
-            flex: 1,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // type
-                Text(chatAdjustmentModel.type.value),
-
-                // gap
-                const Gap(4.0),
-
-                // text
-                Text(
-                  chatAdjustmentModel.text,
-                  style: TextStyle(fontSize: 12.0),
-                ),
-              ],
-            ),
-          ),
-          Expanded(
-            child: Center(
-              child: Text(
-                '${isNeg ? '-' : '+'}${DataFormatter.chipsFormat(chatAdjustmentModel.amount)}',
-                style: TextStyle(
-                  fontSize: 18.0,
-                  color: isNeg ? Colors.red : Colors.green,
-                ),
+          // main body
+          Row(
+            children: [
+              Expanded(
+                child: Center(child: Text(chatAdjustmentModel.type.value)),
               ),
-            ),
-          ),
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // credit widget
-                CreditsWidget(
-                  credits: 239.89,
-                  theme: appTheme,
-                ),
-
-                const Gap(4.0),
-
-                // time stamp
-                Align(
-                  alignment: Alignment.bottomRight,
+              Expanded(
+                child: Center(
                   child: Text(
-                    DataFormatter.dateTimeFormat(chatAdjustmentModel.date),
-                    style: const TextStyle(fontSize: 10.0),
+                    '${isNeg ? '-' : '+'}${DataFormatter.chipsFormat(chatAdjustmentModel.amount)}',
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      color: isNeg ? Colors.red : Colors.green,
+                    ),
                   ),
                 ),
-              ],
+              ),
+              Expanded(
+                child: Center(
+                  child: CreditsWidget(
+                    credits: chatAdjustmentModel.credits,
+                    theme: appTheme,
+                  ),
+                ),
+              ),
+            ],
+          ),
+
+          Divider(
+            color: Colors.white,
+          ),
+
+          // text
+          Text(
+            chatAdjustmentModel.text,
+            style: TextStyle(fontSize: 12.0),
+          ),
+
+          // time
+          Align(
+            alignment: Alignment.bottomRight,
+            child: Text(
+              DataFormatter.dateTimeFormat(chatAdjustmentModel.date),
+              style: const TextStyle(fontSize: 10.0),
             ),
           ),
         ],

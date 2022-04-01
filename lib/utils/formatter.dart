@@ -11,10 +11,6 @@ class DataFormatter {
       return '';
     }
 
-    // if (chipUnit == ChipUnit.CENT) {
-    //   value = value / 100;
-    // }
-
     if (value == value.round()) {
       return '${value.toInt()}';
     } else {

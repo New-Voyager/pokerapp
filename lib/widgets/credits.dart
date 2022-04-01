@@ -28,7 +28,7 @@ class CreditsWidget extends StatelessWidget {
     String creditsText = DataFormatter.chipsFormat(credits);
     double width = 60;
     if (creditsText.length >= 5) {
-      width = creditsText.length * 12.0;
+      width = creditsText.length * 11.0;
       width += 10;
     }
     double height = 25;
