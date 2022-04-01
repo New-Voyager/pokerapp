@@ -10,8 +10,12 @@ class CreditsWidget extends StatelessWidget {
   final double credits;
   final AppTheme theme;
   final Function onTap;
-  const CreditsWidget({Key key, this.credits, this.theme, this.onTap})
-      : super(key: key);
+  const CreditsWidget({
+    Key key,
+    @required this.credits,
+    @required this.theme,
+    this.onTap,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +28,7 @@ class CreditsWidget extends StatelessWidget {
     String creditsText = DataFormatter.chipsFormat(credits);
     double width = 60;
     if (creditsText.length >= 5) {
-      width = creditsText.length * 10.0;
+      width = creditsText.length * 12.0;
       width += 10;
     }
     double height = 25;

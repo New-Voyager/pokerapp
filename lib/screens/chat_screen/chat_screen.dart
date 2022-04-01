@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:developer' as dev;
+
 import 'package:flutter/material.dart';
 import 'package:pokerapp/main_helper.dart';
 import 'package:pokerapp/models/messages_from_member.dart';
@@ -13,15 +14,12 @@ import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
 import 'package:pokerapp/services/text_filtering/text_filtering.dart';
 import 'package:pokerapp/utils/favourite_texts_widget.dart';
-import 'package:pokerapp/utils/gif_widget.dart';
-import 'package:pokerapp/utils/new_gif_widget.dart';
 import 'package:pokerapp/widgets/emoji_picker_widget.dart';
 import 'package:pokerapp/widgets/user_input_widget.dart';
 import 'package:provider/provider.dart';
 
 import '../../routes.dart';
 import 'utils.dart';
-import 'widgets/chat_text_field.dart';
 import 'widgets/no_message.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -193,12 +191,22 @@ class _ChatScreenState extends State<ChatScreen> with RouteAwareAnalytics {
     for (int i = 0; i < messages.length; i++) {
       var m = messages[i];
       var chat = ChatModel(
-          id: m.id,
-          memberID: m.memberID,
-          messageType: m.messageType,
-          text: m.text,
-          messageTime: toDateTime(m.messageTime),
-          memberName: m.memberName);
+        id: m.id,
+        memberID: m.memberID,
+        messageType: m.messageType,
+        text: m.text,
+        messageTime: toDateTime(m.messageTime),
+        memberName: m.memberName,
+
+        // adding chatAdjustmentModel is optional
+        chatAdjustmentModel: ChatAdjustmentModel(
+          type: ChatAdjustTypeParsing.fromString('adjust'),
+          amount: 50.10,
+          credits: 9800.40,
+          text: 'Here you go!',
+          date: DateTime.now(),
+        ),
+      );
       if (i == 0) {
         chat.isGroupLatest = true;
       } else {

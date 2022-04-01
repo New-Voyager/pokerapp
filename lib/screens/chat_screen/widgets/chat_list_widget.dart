@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:pokerapp/models/club_message_model.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/screens/chat_screen/utils.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/chat_user_avatar.dart';
+import 'package:pokerapp/utils/formatter.dart';
+import 'package:pokerapp/widgets/credits.dart';
 import 'package:provider/provider.dart';
 
 import '../chat_model.dart';
@@ -79,6 +82,11 @@ class _ChatListWidgetState extends State<ChatListWidget> {
   }
 
   Widget _buildTile(ChatModel message) {
+    if (message.chatAdjustmentModel != null)
+      return ChatAdjustmentWidget(
+        chatAdjustmentModel: message.chatAdjustmentModel,
+      );
+
     bool isSender = _isSender(message.messageType);
 
     if (!message.isGroupLatest) {
@@ -210,5 +218,94 @@ class _ChatListWidgetState extends State<ChatListWidget> {
       return type == FROM_HOST;
     else
       return type != FROM_HOST;
+  }
+}
+
+class ChatAdjustmentWidget extends StatelessWidget {
+  final ChatAdjustmentModel chatAdjustmentModel;
+
+  const ChatAdjustmentWidget({
+    Key key,
+    @required this.chatAdjustmentModel,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final appTheme = context.read<AppTheme>();
+    final isNeg = chatAdjustmentModel.amount < 0;
+
+    return Container(
+      decoration: BoxDecoration(
+        color: appTheme.fillInColor,
+        borderRadius: const BorderRadius.horizontal(
+          left: Radius.circular(20.0),
+        ),
+      ),
+      margin: const EdgeInsets.only(left: 32.0, right: 8.0, top: 8.0),
+      padding: const EdgeInsets.only(
+        top: 8.0,
+        bottom: 4.0,
+        right: 12.0,
+        left: 12.0,
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            flex: 1,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // type
+                Text(chatAdjustmentModel.type.value),
+
+                // gap
+                const Gap(4.0),
+
+                // text
+                Text(
+                  chatAdjustmentModel.text,
+                  style: TextStyle(fontSize: 12.0),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: Center(
+              child: Text(
+                '${isNeg ? '-' : '+'}${DataFormatter.chipsFormat(chatAdjustmentModel.amount)}',
+                style: TextStyle(
+                  fontSize: 18.0,
+                  color: isNeg ? Colors.red : Colors.green,
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // credit widget
+                CreditsWidget(
+                  credits: 239.89,
+                  theme: appTheme,
+                ),
+
+                const Gap(4.0),
+
+                // time stamp
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: Text(
+                    DataFormatter.dateTimeFormat(chatAdjustmentModel.date),
+                    style: const TextStyle(fontSize: 10.0),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
