@@ -3,13 +3,13 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/main_helper.dart';
-import 'package:pokerapp/services/game_play/action_services/hand_action_proto_service.dart';
 import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:provider/provider.dart';
+
+import 'data_connection_checker.dart';
 
 class NetworkChangeListener {
   StreamSubscription<ConnectivityResult> _sub;

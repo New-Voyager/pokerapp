@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_xlider/flutter_xlider.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/widgets/xlider.dart';
 
 class PokerSlider extends StatefulWidget {
   final AppTheme theme;

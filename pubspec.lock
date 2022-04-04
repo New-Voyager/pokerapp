@@ -381,13 +381,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.3"
-  data_connection_checker:
-    dependency: "direct main"
-    description:
-      name: data_connection_checker
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.3.4"
   data_table_2:
     dependency: "direct main"
     description:
@@ -695,13 +688,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.8.1"
-  flutter_xlider:
-    dependency: "direct main"
-    description:
-      name: flutter_xlider
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "3.4.0"
   font_awesome_flutter:
     dependency: "direct main"
     description:
@@ -1651,14 +1637,14 @@ packages:
       name: vibration
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.7.3"
+    version: "1.7.4-nullsafety.0"
   vibration_web:
     dependency: transitive
     description:
       name: vibration_web
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.6.2"
+    version: "1.6.3-nullsafety.0"
   video_player:
     dependency: transitive
     description:
