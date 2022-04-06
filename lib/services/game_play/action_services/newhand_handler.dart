@@ -2,17 +2,15 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_type.dart';
-import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
+import 'package:pokerapp/proto/enums.pb.dart' as proto;
 import 'package:pokerapp/proto/hand.pb.dart' as proto;
 import 'package:pokerapp/proto/handmessage.pb.dart' as proto;
-import 'package:pokerapp/proto/enums.pb.dart' as proto;
 import 'package:pokerapp/resources/app_constants.dart';
-import 'package:pokerapp/services/audio/audio_service.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_proto_service.dart';
 
 class NewHandHandler {
@@ -218,6 +216,7 @@ class NewHandHandler {
     gameState.actionState.reset();
     gameState.actionState.notify();
     gameState.tableState.updateDealerChoicePrompt(false, '');
+    gameState.communityCardState.reset();
     ////log('Hand Message: ::handleNewHand:: START');
     //AudioService.playNewHand(mute: gameState.playerLocalConfig.mute);
     if (gameState.uiClosing) return;

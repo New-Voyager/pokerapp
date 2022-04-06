@@ -884,10 +884,10 @@ class HandActionProtoService {
       _gameState.handState = HandState.RIVER;
 
       // for river pick the 4th index card
-      int board1Card = message.turn.boards[0].cards[4];
+      int board1Card = message.river.boards[0].cards[4];
       int board2Card;
       if (message.turn.boards.length == 2) {
-        board2Card = message.turn.boards[1].cards[4];
+        board2Card = message.river.boards[1].cards[4];
       }
 
       _gameState.communityCardState.addRiverCard(

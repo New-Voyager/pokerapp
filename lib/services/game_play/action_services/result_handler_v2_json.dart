@@ -4,10 +4,8 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
-import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/handlog_model.dart';
 import 'package:pokerapp/resources/app_constants.dart';
-import 'package:pokerapp/utils/card_helper.dart';
 
 class Winner {
   int seatNo;
@@ -82,25 +80,23 @@ class ResultHandlerV2Json {
     }
 
     /* set board 1 cards */
-    List<CardObject> boardCards1CO = [];
+    List<int> boardCards1 = [];
     for (final c in handResult.boards[0].cards) {
-      boardCards1CO
-          .add(CardHelper.getCard(c, colorCards: gameState.colorCards));
+      boardCards1.add(c);
     }
-    tableState.setBoardCards(1, boardCards1CO);
 
+    List<int> boardCards2;
     /* set board 2 cards */
     if (handResult.boards.length == 2) {
-      List<CardObject> boardCards2CO = [];
       for (final c in handResult.boards[1].cards) {
-        boardCards2CO
-            .add(CardHelper.getCard(c, colorCards: gameState.colorCards));
+        boardCards2.add(c);
       }
-      tableState.setBoardCards(2, boardCards2CO);
-      tableState.updateTwoBoardsNeeded(true);
-    } else {
-      tableState.updateTwoBoardsNeeded(false);
     }
+
+    gameState.communityCardState.addBoardCardsWithoutAnimating(
+      board1: boardCards1,
+      board2: boardCards2,
+    );
 
     /* then, change the status of the footer to show the result */
     // context.read<ValueNotifier<FooterStatus>>().value = FooterStatus.Result;
@@ -111,13 +107,7 @@ class ResultHandlerV2Json {
      *    2. delay
      *    3. show all the low pot winners
      */
-    final boardCards = this.handResult.boards[0].cards;
-    List<CardObject> boardCardsUpdate = [];
-    for (final c in boardCards) {
-      boardCardsUpdate
-          .add(CardHelper.getCard(c, colorCards: gameState.colorCards));
-    }
-    tableState.setBoardCards(1, boardCardsUpdate);
+
     final totalPots = handResult.potWinners.length;
     for (int i = totalPots - 1; i >= 0; i--) {
       final potWinner = handResult.potWinners[i];
@@ -249,7 +239,8 @@ class ResultHandlerV2Json {
   void resetResult({
     int boardIndex = 1,
   }) {
-    tableState.unHighlightCardsSilent(boardIndex);
+    // TODO: FIND A WAY TO RESET HIGHLIGHT
+    // tableState.unHighlightCardsSilent(boardIndex);
 
     for (final player in gameState.playersInGame) {
       player.winner = false;
@@ -265,7 +256,6 @@ class ResultHandlerV2Json {
 
     gameState.notifyAllSeats();
     tableState.refreshTable();
-    tableState.refreshCommunityCards();
   }
 
   Future<void> showWinner({
@@ -286,10 +276,11 @@ class ResultHandlerV2Json {
 
       // log('WINNER player.cards: ${winner.playerCards} boardCards: ${winner.boardCards} setState: $setState ${winner.rankStr} ${AppConstants.chipMovingAnimationDuration}');
       /* highlight the winning cards for board 1 */
-      tableState.highlightCardsSilent(
-        boardIndex,
-        winner.boardCards,
-      );
+      // TODO: FIND A WAY TO HIGHLIGHT COMMUNITY CARDS
+      // tableState.highlightCardsSilent(
+      //   boardIndex,
+      //   winner.boardCards,
+      // );
 
       /* update the rank str */
       tableState.updateRankStrSilent(rank);
@@ -304,7 +295,6 @@ class ResultHandlerV2Json {
     if (setState) {
       /* update state */
       tableState.notifyAll();
-      tableState.refreshCommunityCards();
       gameState.notifyAllSeats();
 
       // we don't need this as we don't wanna do animation for all the seats

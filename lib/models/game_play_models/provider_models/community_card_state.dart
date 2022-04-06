@@ -375,9 +375,24 @@ class CommunityCardState extends ChangeNotifier {
   /// add cards in between game - via query current hand
   void addBoardCardsWithoutAnimating({
     @required final List<int> board1,
-    @required final List<int> board2,
-  }) {
-    // TODO IMPLEMENT THIS
+    final List<int> board2,
+  }) async {
+    final bool isDoubleBoard = board2 != null;
+    final int n = board1.length;
+
+    if (n == 0) {
+      // PRE FLOP
+      // do nothing
+    } else if (n == 3) {
+      // FLOP
+
+    } else if (n == 4) {
+      // TURN
+
+    } else {
+      // RIVER
+
+    }
   }
 
   /// reset the community card board
@@ -488,7 +503,7 @@ class CommunityCardState extends ChangeNotifier {
   }
 
   void initializeCards(Size size) {
-    // if (_initialized) return;
+    if (_initialized) return;
     // single board size calculations
     _initDimenForSingleBoard(size);
 

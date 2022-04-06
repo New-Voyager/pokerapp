@@ -22,9 +22,10 @@ import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/cards/animations/animating_shuffle_card_view.dart';
-import 'package:pokerapp/widgets/cards/community_cards_view_2/community_card_view_2.dart';
 import 'package:pokerapp/widgets/debug_border_widget.dart';
 import 'package:provider/provider.dart';
+
+import '../../../../widgets/cards/community_cards_view_2/community_card_view_2.dart';
 
 class CenterView extends StatefulWidget {
   final TableState tableState;
@@ -424,8 +425,6 @@ class _CommunityCardsWidget extends StatelessWidget {
         final negativeSpace = (1 - boardFactor) * height * 0.30;
 
         return Container(
-          color: Colors.green,
-          height: double.infinity,
           margin: EdgeInsets.only(top: negativeSpace),
           child: Transform(
             transform: transformMatrix,
