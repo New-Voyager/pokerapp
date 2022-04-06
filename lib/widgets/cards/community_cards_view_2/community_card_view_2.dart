@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/community_card_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/resources/app_constants.dart';
-import 'package:pokerapp/utils/card_helper.dart';
 import 'package:pokerapp/widgets/cards/community_cards_view_2/community_flip_card.dart';
-import 'package:provider/provider.dart';
 
 class _CardWidget extends StatelessWidget {
   final CardState cardState;

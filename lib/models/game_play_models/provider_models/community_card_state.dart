@@ -14,30 +14,6 @@ extension RectHelper on Rect {
 }
 
 enum CommunityCardBoardState { SINGLE, DOUBLE, RIT }
-// enum CardState {
-//   UNSET,
-//
-//   ANIMATING_FLOP,
-//   FLOP,
-//   ANIMATING_TURN,
-//   TURN,
-//   ANIMATING_RIVER,
-//   RIVER,
-//
-//   // RIT cases
-//   ANIMATING_BD1_TURN, // animate turn card (same sa ANIMATING_TURN)
-//   BD1_TURN,
-//   ANIMATING_BD1_RIVER,
-//   BD1_RIVER,
-//   ANIMATING_MOVE_BD1_TURN_RIVER, // move bd1 turn and river to top board
-//   ANIMATING_BD2_TURN,
-//   BD2_TURN,
-//   ANIMATING_BD2_RIVER,
-//   BD2_RIVER,
-//
-//   // RIT starts in the river card
-//   ANIMATING_MOVE_BD1_RIVER, // move bd1 river to top board
-// }
 
 class CardState {
   Offset position;
@@ -60,13 +36,6 @@ class CommunityCardState extends ChangeNotifier {
 
   final List<CardState> _cardStates = [];
   List<CardState> get cardStates => _cardStates;
-
-  // this state controls the card animation
-  // CardState _cardState = CardState.UNSET;
-  // CardState get cardState => _cardState;
-
-  // CommunityCardBoardState _boardState = CommunityCardBoardState.RIT;
-  // CommunityCardBoardState get boardState => _boardState;
 
   bool _isFlopDone = false;
   bool _isTurnDone = false;
@@ -392,6 +361,7 @@ class CommunityCardState extends ChangeNotifier {
     }
   }
 
+  /// reset the community card board
   void reset() {
     _isFlopDone = false;
     _isTurnDone = false;
