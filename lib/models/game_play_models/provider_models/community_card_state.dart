@@ -343,6 +343,16 @@ class CommunityCardState extends ChangeNotifier {
     @required final List<int> board1,
     @required final List<int> board2,
   }) async {
+    assert(
+      board2 != null,
+      'Second board cannot be null in case of Run It Twice',
+    );
+
+    assert(
+      board1.length == board2.length && board1.length == 5,
+      'Both the boards must contain 5 cards',
+    );
+
     if (_isTurnDone) {
       // need to add last set of cards
       final board1LastCard = board1.last;
@@ -357,8 +367,17 @@ class CommunityCardState extends ChangeNotifier {
       await _runItTwiceAfterFlop(board1Cards, board2Cards);
     } else {
       throw AssertionError(
-          'Invalid State: If you want to add double board cards, use the addFlopCards method');
+        'Invalid State: If you want to add double board cards, use the addFlopCards method',
+      );
     }
+  }
+
+  /// add cards in between game - via query current hand
+  void addBoardCardsWithoutAnimating({
+    @required final List<int> board1,
+    @required final List<int> board2,
+  }) {
+    // TODO IMPLEMENT THIS
   }
 
   /// reset the community card board

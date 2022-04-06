@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:io';
 import 'dart:typed_data';
+
 import 'package:fixnum/fixnum.dart' as $fixnum;
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_type.dart';
@@ -10,14 +10,12 @@ import 'package:pokerapp/models/game_play_models/provider_models/game_context.da
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
-import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/newmodels/game_model_new.dart';
 import 'package:pokerapp/models/player_info.dart' as pi;
 import 'package:pokerapp/proto/hand.pb.dart' as proto;
 import 'package:pokerapp/proto/handmessage.pb.dart' as proto;
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/screens/util_screens/dealer_choice_prompt.dart';
-import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/audio/audio_service.dart';
 import 'package:pokerapp/services/connectivity_check/liveness_sender.dart';
@@ -530,31 +528,11 @@ class HandActionProtoService {
     @required List<int> board2Cards,
   }) async {
     final GameState gameState = GameState.getState(context);
-    final TableState tableState = gameState.tableState;
 
-    final List<CardObject> b1 = [];
-    for (final c in board1Cards) {
-      b1.add(CardHelper.getCard(c, colorCards: gameState.colorCards));
-    }
-
-    /* show the board 1 cards */
-    await tableState.addAllCommunityCardsForRunItTwiceScenario(1, b1);
-    await Future.delayed(Duration(seconds: 1));
-
-    /* pause for a bit todo: get duration */
-    // await Future.delayed(const Duration(milliseconds: 200));
-    tableState.updateTwoBoardsNeeded(true);
-    final List<CardObject> b2 = [];
-    for (final c in board2Cards) {
-      b2.add(CardHelper.getCard(c, colorCards: gameState.colorCards));
-    }
-
-    // /* show the board 2 cards */
-    await tableState.addAllCommunityCardsForRunItTwiceScenario(2, b2);
-    await Future.delayed(Duration(milliseconds: 1500));
-
-    /* pause for a bit todo: get duration */
-    // await Future.delayed(const Duration(milliseconds: 2000));
+    return gameState.communityCardState.addRunItTwiceCards(
+      board1: board1Cards,
+      board2: board2Cards,
+    );
   }
 
   Future<void> handleRunItTwice(proto.HandMessageItem message) async {
@@ -860,42 +838,19 @@ class HandActionProtoService {
     Map<int, String> playerCardRanks;
     // update the community cards
     if (stage == 'flop') {
-      if (message.flop.boards.length >= 2) {
-        tableState.updateTwoBoardsNeeded(true);
-      } else {
-        tableState.updateTwoBoardsNeeded(false);
-      }
-
       tableState.updatePotChipUpdatesSilent(0);
       _gameState.handState = HandState.FLOP;
-      // AudioService.playFlop(mute: _gameState.playerLocalConfig.mute);
-      var board = message.flop.boards[0];
-      List<CardObject> cards = [];
-      for (int i = 0; i < 3; i++) {
-        final c = CardHelper.getCard(
-          int.parse(
-            board.cards[i].toString(),
-          ),
-          colorCards: _gameState.colorCards,
-        );
-        cards.add(c);
-      }
-      tableState.addFlopCards(1, cards);
 
-      if (message.flop.boards.length >= 2) {
-        cards = [];
-        board = message.flop.boards[1];
-        for (int i = 0; i < 3; i++) {
-          final c = CardHelper.getCard(
-            int.parse(
-              board.cards[i].toString(),
-            ),
-            colorCards: _gameState.colorCards,
-          );
-          cards.add(c);
-        }
-        tableState.addFlopCards(2, cards);
+      final List<int> board1Cards = message.flop.boards[0].cards;
+      List<int> board2Cards;
+      if (message.flop.boards.length == 2) {
+        board2Cards = message.flop.boards[1].cards;
       }
+
+      _gameState.communityCardState.addFlopCards(
+        board1: board1Cards,
+        board2: board2Cards,
+      );
 
       AudioService.playFlop(mute: _gameState.playerLocalConfig.mute);
       tableState.notifyAll();
@@ -906,24 +861,18 @@ class HandActionProtoService {
     } else if (stage == 'turn') {
       tableState.updatePotChipUpdatesSilent(0);
       _gameState.handState = HandState.TURN;
-      var board = message.turn.boards[0];
-      var turnCard = board.cards[3];
-      playerCardRanks = message.turn.playerCardRanks;
-      tableState.addTurnOrRiverCard(
-        1,
-        CardHelper.getCard(turnCard, colorCards: _gameState.colorCards),
-      );
+
+      // for turn pick the 3rd index card
+      int board1Card = message.turn.boards[0].cards[3];
+      int board2Card;
       if (message.turn.boards.length == 2) {
-        board = message.turn.boards[1];
-        if (!tableState.twoBoardsNeeded) {
-          tableState.updateTwoBoardsNeeded(true);
-        }
-        turnCard = board.cards[3];
-        tableState.addTurnOrRiverCard(
-          2,
-          CardHelper.getCard(turnCard, colorCards: _gameState.colorCards),
-        );
+        board2Card = message.turn.boards[1].cards[3];
       }
+
+      _gameState.communityCardState.addTurnCard(
+        board1Card: board1Card,
+        board2Card: board2Card,
+      );
 
       AudioService.playFlop(mute: _gameState.playerLocalConfig.mute);
       tableState.notifyAll();
@@ -933,25 +882,19 @@ class HandActionProtoService {
     } else if (stage == 'river') {
       tableState.updatePotChipUpdatesSilent(0);
       _gameState.handState = HandState.RIVER;
-      var board = message.river.boards[0];
-      var riverCard = board.cards[4];
-      playerCardRanks = message.river.playerCardRanks;
-      tableState.addTurnOrRiverCard(
-        1,
-        CardHelper.getCard(riverCard, colorCards: _gameState.colorCards),
-      );
-      if (message.river.boards.length == 2) {
-        board = message.river.boards[1];
-        if (!tableState.twoBoardsNeeded) {
-          tableState.updateTwoBoardsNeeded(true);
-          // flop the cards here (run it twice)
-        }
-        riverCard = board.cards[4];
-        tableState.addTurnOrRiverCard(
-          2,
-          CardHelper.getCard(riverCard, colorCards: _gameState.colorCards),
-        );
+
+      // for river pick the 4th index card
+      int board1Card = message.turn.boards[0].cards[4];
+      int board2Card;
+      if (message.turn.boards.length == 2) {
+        board2Card = message.turn.boards[1].cards[4];
       }
+
+      _gameState.communityCardState.addRiverCard(
+        board1Card: board1Card,
+        board2Card: board2Card,
+      );
+
       AudioService.playFlop(mute: _gameState.playerLocalConfig.mute);
       tableState.notifyAll();
 

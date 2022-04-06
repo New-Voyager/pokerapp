@@ -2,23 +2,21 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:pokerapp/screens/game_play_screen/widgets/overlay_notification.dart';
-import 'package:pokerapp/services/audio/audio_service.dart';
-import 'package:pokerapp/services/connectivity_check/liveness_sender.dart';
-import 'package:pokerapp/services/connectivity_check/network_change_listener.dart';
-import 'package:provider/provider.dart';
-
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
-import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/proto/hand.pb.dart';
 import 'package:pokerapp/proto/handmessage.pb.dart' as proto;
-import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/resources/app_constants.dart';
+import 'package:pokerapp/screens/game_play_screen/widgets/overlay_notification.dart';
+import 'package:pokerapp/services/audio/audio_service.dart';
+import 'package:pokerapp/services/connectivity_check/liveness_sender.dart';
+import 'package:pokerapp/services/connectivity_check/network_change_listener.dart';
 import 'package:pokerapp/utils/card_helper.dart';
+import 'package:provider/provider.dart';
 import 'package:vibration/vibration.dart';
 
 import 'hand_action_proto_service.dart';
@@ -109,64 +107,13 @@ class PlayerActionHandler {
     //String currentRound = currentHandState.currentRound.name;
     final round = currentHandState.currentRound;
 
-    try {
-      List<int> boardCardsNum = currentHandState.boardCards;
-      if (round == HandStatus.FLOP) {
-        if (boardCardsNum.length >= 3) {
-          boardCardsNum = boardCardsNum.sublist(0, 3);
-        }
-      } else if (round == HandStatus.TURN) {
-        if (boardCardsNum.length >= 4) {
-          boardCardsNum = boardCardsNum.sublist(0, 4);
-        }
-      } else if (round == HandStatus.RIVER || round == HandStatus.SHOW_DOWN) {
-        if (boardCardsNum.length >= 5) {
-          boardCardsNum = boardCardsNum;
-        }
-      } else if (round == HandStatus.PREFLOP) {
-        boardCardsNum = [];
-      }
+    final board1Cards = currentHandState.boardCards;
+    final board2Cards = currentHandState.boardCards2;
 
-      if (boardCardsNum != null) {
-        tableState.setBoardCards(
-          1,
-          boardCardsNum
-              .map<CardObject>((c) =>
-                  CardHelper.getCard(c, colorCards: _gameState.colorCards))
-              .toList(),
-        );
-      }
-
-      // set second board if found
-      List<int> secondBoard = currentHandState.boardCards2;
-      if (secondBoard != null && secondBoard.length > 0) {
-        if (round == HandStatus.FLOP) {
-          if (secondBoard.length >= 3) {
-            secondBoard = secondBoard.sublist(0, 3);
-          }
-        } else if (round == HandStatus.TURN) {
-          if (secondBoard.length >= 4) {
-            secondBoard = secondBoard.sublist(0, 4);
-          }
-        } else if (round == HandStatus.RIVER || round == HandStatus.SHOW_DOWN) {
-          if (secondBoard.length >= 5) {
-            secondBoard = secondBoard;
-          }
-        } else if (round == HandStatus.PREFLOP) {
-          secondBoard = [];
-        }
-
-        if (secondBoard != null) {
-          tableState.setBoardCards(
-            2,
-            secondBoard
-                .map<CardObject>((c) =>
-                    CardHelper.getCard(c, colorCards: _gameState.colorCards))
-                .toList(),
-          );
-        }
-      }
-    } catch (e) {}
+    _gameState.communityCardState.addBoardCardsWithoutAnimating(
+      board1: board1Cards,
+      board2: board2Cards,
+    );
 
     // update the pot values
     List<double> pots = [];

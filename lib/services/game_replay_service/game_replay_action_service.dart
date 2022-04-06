@@ -1,16 +1,13 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
-import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_replay_models/game_replay_action.dart';
 import 'package:pokerapp/models/handlog_model.dart';
-import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/services/audio/audio_service.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_proto_service.dart';
 import 'package:pokerapp/services/game_play/action_services/result_handler_v2_json.dart';
-import 'package:pokerapp/utils/card_helper.dart';
 import 'package:provider/provider.dart';
 
 class GameReplayActionService {
@@ -130,17 +127,24 @@ class GameReplayActionService {
     final TableState tableState = _context.read<TableState>();
     final gameState = GameState.getState(_context);
 
-    tableState.addFlopCards(
-      1,
-      action.boardCards
-          .map((c) => CardHelper.getCard(
-                c,
-                colorCards: gameState.colorCards,
-              ))
-          .toList(),
+    gameState.handState = HandState.FLOP;
+
+    gameState.communityCardState.addFlopCards(
+      board1: action.boardCards,
+      // board2: action.boardCards2, // TODO: DO WE NEED 2ND BOARD?
     );
 
-    tableState.notifyAll();
+    // tableState.addFlopCards(
+    //   1,
+    //   action.boardCards
+    //       .map((c) => CardHelper.getCard(
+    //             c,
+    //             colorCards: gameState.colorCards,
+    //           ))
+    //       .toList(),
+    // );
+
+    // tableState.notifyAll();
   }
 
   void _riverOrTurnStartedAction(GameReplayAction action) async {
@@ -153,12 +157,25 @@ class GameReplayActionService {
     final TableState tableState = _context.read<TableState>();
     final GameState gameState = GameState.getState(_context);
 
-    tableState.addTurnOrRiverCard(
-      1,
-      CardHelper.getCard(action.boardCard, colorCards: gameState.colorCards),
-    );
+    if (gameState.handState == HandState.FLOP) {
+      gameState.handState = HandState.TURN;
+    } else {
+      gameState.handState = HandState.RIVER;
+    }
 
-    tableState.notifyAll();
+    // TODO: WHAT ABOUT 2ND BOARD?
+    if (gameState.handState == HandState.TURN) {
+      gameState.communityCardState.addTurnCard(board1Card: action.boardCard);
+    } else {
+      gameState.communityCardState.addRiverCard(board1Card: action.boardCard);
+    }
+
+    // tableState.addTurnOrRiverCard(
+    //   1,
+    //   CardHelper.getCard(action.boardCard, colorCards: gameState.colorCards),
+    // );
+    //
+    // tableState.notifyAll();
   }
 
   void _showdownAction(GameReplayAction action) {

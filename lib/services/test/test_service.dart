@@ -6,35 +6,33 @@ import 'package:flutter/services.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
+import 'package:pokerapp/main_helper.dart';
 import 'package:pokerapp/models/game_model.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
-import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/handlog_model.dart';
 import 'package:pokerapp/models/player_info.dart' as pi;
 import 'package:pokerapp/proto/hand.pb.dart';
 import 'package:pokerapp/proto/handmessage.pb.dart';
 import 'package:pokerapp/resources/app_constants.dart';
+import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/game_play_screen/pop_ups/seat_change_confirmation_pop_up.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/overlay_notification.dart';
 import 'package:pokerapp/screens/util_screens/dealer_choice_prompt.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_proto_service.dart';
 import 'package:pokerapp/services/test/hand_messages.dart';
-import 'package:pokerapp/utils/card_helper.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/numeric_keyboard2.dart';
 import 'package:provider/provider.dart';
-import 'package:pokerapp/routes.dart';
-import 'package:pokerapp/main_helper.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 
 class TestService {
   static bool get isTesting {
-    return true;
+    return false;
   }
 
   static bool get isPartialTesting {
@@ -274,18 +272,6 @@ class TestService {
     final tableState = _getTableState();
 
     tableState.clear();
-    tableState.notifyAll();
-  }
-
-  static Future<void> addTurnOrRiverCard() async {
-    final tableState = _getTableState();
-    final gameState = GameState.getState(_context);
-
-    tableState.addTurnOrRiverCard(
-      1,
-      CardHelper.getCard(162, colorCards: gameState.colorCards),
-    );
-
     tableState.notifyAll();
   }
 
@@ -677,9 +663,6 @@ class TestService {
   //   initHandSevice();
   //   _handActionService.handle(resultMessage);
   // }
-  static void showDoubleBoard() {
-    fillBothBoardCards();
-  }
 
   static void dealerChoicePrompt() async {
     DealerChoiceSelection selection = await DealerChoicePrompt.prompt(
@@ -727,33 +710,6 @@ class TestService {
     }
   }
 
-  static void fillBothBoardCards() {
-    final gameState = GameState.getState(_context);
-    final TableState tableState = gameState.tableState;
-
-    /* board 1 */ /*
-    tableState.setBoardCards(
-      1,
-      [50, 50, 50, 50, 50].map((e) => CardHelper.getCard(e)).toList(),
-    );
-
-    */ /* board 2 */
-    tableState.setBoardCards(
-      2,
-      [50, 50, 50, 50, 50]
-          .map((e) => CardHelper.getCard(e, colorCards: gameState.colorCards))
-          .toList(),
-    );
-    tableState.updateTwoBoardsNeeded(true);
-
-    tableState.updatePotChipsSilent(
-      potChips: [578],
-      potUpdatesChips: 100,
-    );
-
-    tableState.notifyAll();
-  }
-
   static void showShuffle() {
     final gameState = GameState.getState(_context);
     final TableState tableState = gameState.tableState;
@@ -786,37 +742,6 @@ class TestService {
         }
       }
     });
-  }
-
-  static void fillCenterView() {
-    final gameState = GameState.getState(_context);
-    final TableState tableState = gameState.tableState;
-
-    tableState.addFlopCards(
-      1,
-      [50, 50, 50]
-          .map((e) => CardHelper.getCard(
-                e,
-                colorCards: gameState.colorCards,
-              ))
-          .toList(),
-    );
-
-    tableState.addTurnOrRiverCard(
-      1,
-      CardHelper.getCard(200, colorCards: gameState.colorCards),
-    );
-    tableState.addTurnOrRiverCard(
-      1,
-      CardHelper.getCard(200, colorCards: gameState.colorCards),
-    );
-
-    tableState.updatePotChipsSilent(
-      potChips: [578],
-      potUpdatesChips: 120,
-    );
-
-    tableState.notifyAll();
   }
 
   // static initHandSevice() {
