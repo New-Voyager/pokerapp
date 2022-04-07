@@ -21,12 +21,14 @@ class CardState {
 
   final int cardNo;
   final GlobalKey<AppFlipCardState> flipKey;
+  bool isFaced;
 
   CardState({
     @required this.position,
     @required this.size,
     @required this.cardNo,
     @required this.flipKey,
+    this.isFaced = false,
   });
 }
 
@@ -380,19 +382,163 @@ class CommunityCardState extends ChangeNotifier {
     final bool isDoubleBoard = board2 != null;
     final int n = board1.length;
 
-    if (n == 0) {
-      // PRE FLOP
-      // do nothing
-    } else if (n == 3) {
-      // FLOP
+    final bool isFlopRunItTwice =
+        board2 != null && n >= 3 && board2[2] == board1[2];
+    final bool isTurnRunItTwice =
+        board2 != null && n >= 4 && board2[3] == board1[3];
 
-    } else if (n == 4) {
-      // TURN
+    final List<CardState> cardStates = [];
+    _isFlopDone = false;
+    _isTurnDone = false;
 
-    } else {
-      // RIVER
+    // FLOP
+    if (n >= 3) {
+      _isFlopDone = true;
+      if (isDoubleBoard) {
+        if (isFlopRunItTwice) {
+          // first 3 cards are same
+          int cardId = 1;
+          final states = board1
+              .sublist(0, 3)
+              .map((cNo) => _getCardStateFromCardNo(
+                    cNo,
+                    boardState: CommunityCardBoardState.RIT,
+                    cardId: cardId++,
+                  ))
+              .toList();
 
+          cardStates.addAll(states);
+        } else {
+          int cardId1 = 1;
+          int cardId2 = 6;
+
+          final states1 = board1
+              .sublist(0, 3)
+              .map((cNo) => _getCardStateFromCardNo(
+                    cNo,
+                    boardState: CommunityCardBoardState.DOUBLE,
+                    cardId: cardId1++,
+                  ))
+              .toList();
+
+          final states2 = board2
+              .sublist(0, 3)
+              .map((cNo) => _getCardStateFromCardNo(
+                    cNo,
+                    boardState: CommunityCardBoardState.DOUBLE,
+                    cardId: cardId2++,
+                  ))
+              .toList();
+
+          cardStates.addAll(states1);
+          cardStates.addAll(states2);
+        }
+      } else {
+        int cardId = 1;
+        final states = board1
+            .sublist(0, 3)
+            .map((cNo) => _getCardStateFromCardNo(cNo, cardId: cardId++))
+            .toList();
+        cardStates.addAll(states);
+      }
     }
+
+    // TURN
+    if (n >= 4) {
+      _isTurnDone = true;
+      if (isDoubleBoard) {
+        if (isTurnRunItTwice) {
+          // Turn card is same for both board
+          final cardNo = board1[3];
+          cardStates.add(_getCardStateFromCardNo(
+            cardNo,
+            boardState: CommunityCardBoardState.RIT,
+            cardId: 4,
+          ));
+        } else if (isFlopRunItTwice) {
+          final card1No = board1[3];
+          final card2No = board2[3];
+
+          cardStates.add(_getCardStateFromCardNo(
+            card1No,
+            boardState: CommunityCardBoardState.RIT,
+            cardId: 5,
+          ));
+
+          cardStates.add(_getCardStateFromCardNo(
+            card2No,
+            boardState: CommunityCardBoardState.RIT,
+            cardId: 7,
+          ));
+        } else {
+          final card1No = board1[3];
+          final card2No = board2[3];
+
+          cardStates.add(_getCardStateFromCardNo(
+            card1No,
+            boardState: CommunityCardBoardState.DOUBLE,
+            cardId: 4,
+          ));
+
+          cardStates.add(_getCardStateFromCardNo(
+            card2No,
+            boardState: CommunityCardBoardState.DOUBLE,
+            cardId: 9,
+          ));
+        }
+      } else {
+        final cardNo = board1[3];
+        cardStates.add(_getCardStateFromCardNo(cardNo, cardId: 4));
+      }
+    }
+
+    // RIVER
+    if (n == 5) {
+      if (isDoubleBoard) {
+        if (isFlopRunItTwice) {
+          final card1No = board1[4];
+          final card2No = board2[4];
+
+          cardStates.add(_getCardStateFromCardNo(
+            card1No,
+            boardState: CommunityCardBoardState.RIT,
+            cardId: 6,
+          ));
+
+          cardStates.add(_getCardStateFromCardNo(
+            card2No,
+            boardState: CommunityCardBoardState.RIT,
+            cardId: 8,
+          ));
+        } else {
+          final card1No = board1[4];
+          final card2No = board2[4];
+
+          cardStates.add(_getCardStateFromCardNo(
+            card1No,
+            boardState: CommunityCardBoardState.DOUBLE,
+            cardId: 5,
+          ));
+
+          cardStates.add(_getCardStateFromCardNo(
+            card2No,
+            boardState: CommunityCardBoardState.DOUBLE,
+            cardId: 10,
+          ));
+        }
+      } else {
+        final cardNo = board1[4];
+        cardStates.add(_getCardStateFromCardNo(cardNo, cardId: 5));
+      }
+    }
+
+    for (final cardState in cardStates) {
+      cardState.isFaced = true;
+    }
+
+    _cardStates.clear();
+    _cardStates.addAll(cardStates);
+    notifyListeners();
   }
 
   /// reset the community card board

@@ -14,25 +14,29 @@ class CommunityFlipCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = cardState.size;
+    final back = SizedBox.fromSize(
+      size: size,
+      // Consumer<WinningCards> (
+      // if my card is winning, highlight this
+      // )
+      child: CardHelper.getCard(cardState.cardNo).widget,
+    );
+
+    final front = ClipRRect(
+      borderRadius: BorderRadius.circular(5.0),
+      child: Image.memory(
+        context.read<GameState>().assets.holeCardBackBytes,
+        height: size.height,
+        width: size.width,
+      ),
+    );
+
     return AppFlipCard(
       key: cardState.flipKey,
       speed: AppConstants.communityCardFlipAnimationDuration.inMilliseconds,
       flipOnTouch: false,
-      back: SizedBox.fromSize(
-        size: size,
-        // Consumer<WinningCards> (
-        // if my card is winning, highlight this
-        // )
-        child: CardHelper.getCard(cardState.cardNo).widget,
-      ),
-      front: ClipRRect(
-        borderRadius: BorderRadius.circular(5.0),
-        child: Image.memory(
-          context.read<GameState>().assets.holeCardBackBytes,
-          height: size.height,
-          width: size.width,
-        ),
-      ),
+      back: cardState.isFaced ? front : back,
+      front: cardState.isFaced ? back : front,
     );
   }
 }

@@ -1,5 +1,5 @@
-import 'dart:developer' as developer;
 import 'dart:developer';
+import 'dart:developer' as developer;
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:blinking_text/blinking_text.dart';
@@ -8,8 +8,8 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/enums/player_status.dart';
-import 'package:pokerapp/models/game_play_models/business/game_chat_notfi_state.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/notification_models/general_notification_model.dart';
@@ -18,10 +18,9 @@ import 'package:pokerapp/models/game_play_models/provider_models/remaining_time.
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat_change_model.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/resources/app_constants.dart';
-import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
 import 'package:pokerapp/services/app/game_service.dart';
@@ -29,11 +28,11 @@ import 'package:pokerapp/services/data/game_hive_store.dart';
 import 'package:pokerapp/services/data/game_log_store.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
+import 'package:pokerapp/utils/numeric_keyboard2.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 import 'package:timer_count_down/timer_count_down.dart';
-import 'package:pokerapp/utils/numeric_keyboard2.dart';
 
 import '../../services/test/test_service.dart';
 
@@ -127,6 +126,18 @@ class GamePlayScreenUtilMethods {
           labelBackgroundColor: Colors.black,
           onTap: () {
             TestService.addRunItTwiceAfterTurn();
+          },
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
+          label: 'Adds cards',
+          labelBackgroundColor: Colors.black,
+          onTap: () {
+            TestService.addCardsWithoutAnimating();
           },
         ),
         // SpeedDialChild(
