@@ -1,12 +1,9 @@
-import 'dart:developer';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
-import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/widgets/cards/pulsating_card_container.dart';
-import 'package:provider/provider.dart';
 
 // todo: turn off the pulsating highlight if you don't like it ;-)
 bool keepPulsatingHighlight = true;
@@ -112,12 +109,12 @@ class CardBuilderWidget extends StatelessWidget {
       fgDecoration = null;
     }
 
-    final double height = AppDimensions.cardHeight * _ratio;
-    final double width = AppDimensions.cardWidth * _ratio;
+    // final double height = AppDimensions.cardHeight * _ratio;
+    // final double width = AppDimensions.cardWidth * _ratio;
 
     Widget cardWidget = Container(
-      height: height,
-      width: width,
+      height: double.infinity,
+      width: double.infinity,
       foregroundDecoration: fgDecoration,
       decoration: BoxDecoration(
         boxShadow: shadow
@@ -140,8 +137,8 @@ class CardBuilderWidget extends StatelessWidget {
     if (highlight && keepPulsatingHighlight)
       return PulsatingCardContainer(
         child: cardWidget,
-        height: height,
-        width: width,
+        height: double.infinity,
+        width: double.infinity,
         color: Colors.green.withOpacity(0.80),
         animationUpToWidth: 4.0,
       );

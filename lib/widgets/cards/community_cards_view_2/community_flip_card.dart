@@ -15,17 +15,26 @@ class CommunityFlipCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Provider.of<TableState>(context);
-    final colorCards = context.read<GameState>().colorCards;
+    final gameState = context.read<GameState>();
+    final colorCards = gameState.colorCards;
     final size = cardState.size;
     final back = SizedBox.fromSize(
       size: size,
-      // Consumer<WinningCards> (
-      // if my card is winning, highlight this
-      // )
-      child: CardHelper.getCard(
-        cardState.cardNo,
-        colorCards: colorCards,
-      ).widget,
+      child: AnimatedBuilder(
+        animation: gameState.communityCardState,
+        builder: (_, __) {
+          final co = CardHelper.getCard(
+            cardState.cardNo,
+            colorCards: colorCards,
+          );
+
+          co.highlight = gameState.communityCardState.highlightCards.contains(
+            cardState.cardNo,
+          );
+
+          return co.widget;
+        },
+      ),
     );
 
     final front = ClipRRect(

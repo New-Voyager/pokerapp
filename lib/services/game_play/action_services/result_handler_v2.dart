@@ -371,7 +371,6 @@ class ResultHandlerV2 {
   void resetResult({
     int boardIndex = 1,
   }) {
-    // TODO: FIND A WAY TO RESET HIGHLIGHT
     for (final player in gameState.playersInGame) {
       player.winner = false;
       player.highlight = false;
@@ -386,8 +385,7 @@ class ResultHandlerV2 {
     gameState.resetSeatActions(newHand: true);
     tableState.refreshTable();
     gameState.notifyAllSeats();
-    // refresh community cards already calls notifyListeners
-    // tableState.refreshCommunityCards();
+    gameState.communityCardState.resetHighlightCards();
   }
 
   Future<void> showWinner({
@@ -413,13 +411,7 @@ class ResultHandlerV2 {
       /* highlight the winning cards for players */
       seat.player.highlightCards = winner.playerCards;
 
-      // log('WINNER player.cards: ${winner.playerCards} boardCards: ${winner.boardCards} setState: $setState ${winner.rankStr} ${AppConstants.chipMovingAnimationDuration}');
-      /* highlight the winning cards for board 1 */
-      // TODO: FIND A WAY TO HIGHLIGHT CARDS
-      // tableState.highlightCardsSilent(
-      //   boardIndex,
-      //   winner.boardCards,
-      // );
+      gameState.communityCardState.markHighlightCards(winner.boardCards);
 
       /* update the rank str */
       tableState.updateRankStrSilent(rank);

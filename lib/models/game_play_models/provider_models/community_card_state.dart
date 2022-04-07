@@ -39,6 +39,20 @@ class CommunityCardState extends ChangeNotifier {
   final List<CardState> _cardStates = [];
   List<CardState> get cardStates => _cardStates;
 
+  final List<int> _highlightedCards = [];
+  List<int> get highlightCards => _highlightedCards;
+
+  void markHighlightCards(List<int> hc) {
+    _highlightedCards.clear();
+    _highlightedCards.addAll(hc);
+    notifyListeners();
+  }
+
+  void resetHighlightCards() {
+    _highlightedCards.clear();
+    notifyListeners();
+  }
+
   bool _isFlopDone = false;
   bool _isTurnDone = false;
 
@@ -545,6 +559,7 @@ class CommunityCardState extends ChangeNotifier {
   void reset() {
     _isFlopDone = false;
     _isTurnDone = false;
+    _highlightedCards.clear();
     _cardStates.clear();
     notifyListeners();
   }

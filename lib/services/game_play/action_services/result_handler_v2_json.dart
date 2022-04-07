@@ -239,9 +239,6 @@ class ResultHandlerV2Json {
   void resetResult({
     int boardIndex = 1,
   }) {
-    // TODO: FIND A WAY TO RESET HIGHLIGHT
-    // tableState.unHighlightCardsSilent(boardIndex);
-
     for (final player in gameState.playersInGame) {
       player.winner = false;
       player.highlight = false;
@@ -256,6 +253,7 @@ class ResultHandlerV2Json {
 
     gameState.notifyAllSeats();
     tableState.refreshTable();
+    gameState.communityCardState.resetHighlightCards();
   }
 
   Future<void> showWinner({
@@ -274,13 +272,7 @@ class ResultHandlerV2Json {
       seat.player.highlightCards = winner.playerCards;
       seat.player.winner = true;
 
-      // log('WINNER player.cards: ${winner.playerCards} boardCards: ${winner.boardCards} setState: $setState ${winner.rankStr} ${AppConstants.chipMovingAnimationDuration}');
-      /* highlight the winning cards for board 1 */
-      // TODO: FIND A WAY TO HIGHLIGHT COMMUNITY CARDS
-      // tableState.highlightCardsSilent(
-      //   boardIndex,
-      //   winner.boardCards,
-      // );
+      gameState.communityCardState.markHighlightCards(winner.boardCards);
 
       /* update the rank str */
       tableState.updateRankStrSilent(rank);
