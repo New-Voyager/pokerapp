@@ -109,10 +109,12 @@ class PlayerActionHandler {
 
     final board1Cards = currentHandState.boardCards;
     final board2Cards = currentHandState.boardCards2;
+    log('board1Cards: $board1Cards');
+    log('board2Cards: $board2Cards');
 
     _gameState.communityCardState.addBoardCardsWithoutAnimating(
       board1: board1Cards,
-      board2: board2Cards,
+      board2: board2Cards.isEmpty ? null : board2Cards,
     );
 
     // update the pot values

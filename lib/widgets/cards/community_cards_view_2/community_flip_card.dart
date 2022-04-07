@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/community_card_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:pokerapp/widgets/cards/community_cards_view_2/app_flip_card.dart';
@@ -13,13 +14,18 @@ class CommunityFlipCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Provider.of<TableState>(context);
+    final colorCards = context.read<GameState>().colorCards;
     final size = cardState.size;
     final back = SizedBox.fromSize(
       size: size,
       // Consumer<WinningCards> (
       // if my card is winning, highlight this
       // )
-      child: CardHelper.getCard(cardState.cardNo).widget,
+      child: CardHelper.getCard(
+        cardState.cardNo,
+        colorCards: colorCards,
+      ).widget,
     );
 
     final front = ClipRRect(
