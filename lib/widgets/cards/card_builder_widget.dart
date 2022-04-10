@@ -109,12 +109,9 @@ class CardBuilderWidget extends StatelessWidget {
       fgDecoration = null;
     }
 
-    // final double height = AppDimensions.cardHeight * _ratio;
-    // final double width = AppDimensions.cardWidth * _ratio;
-
     Widget cardWidget = Container(
-      height: double.infinity,
-      width: double.infinity,
+      height: 30,
+      width: 20,
       foregroundDecoration: fgDecoration,
       decoration: BoxDecoration(
         boxShadow: shadow
