@@ -31,6 +31,8 @@ class GameReplayActionService {
 
     if (_close) return;
     final seat = gameState.getSeat(action.action.seatNo);
+    if (seat == null) return;
+
     final player = seat.player;
 
     if (_close) return;
@@ -133,18 +135,6 @@ class GameReplayActionService {
       board1: action.boardCards,
       // board2: action.boardCards2, // TODO: DO WE NEED 2ND BOARD?
     );
-
-    // tableState.addFlopCards(
-    //   1,
-    //   action.boardCards
-    //       .map((c) => CardHelper.getCard(
-    //             c,
-    //             colorCards: gameState.colorCards,
-    //           ))
-    //       .toList(),
-    // );
-
-    // tableState.notifyAll();
   }
 
   void _riverOrTurnStartedAction(GameReplayAction action) async {

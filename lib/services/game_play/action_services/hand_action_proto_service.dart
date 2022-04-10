@@ -649,14 +649,14 @@ class HandActionProtoService {
   ) async {
     for (int c = 1; c <= totalCards; c++) {
       gameState.startCardDistributionFor(seatNo);
-      // log('${DateTime.now().toIso8601String()} Playing deal sound');
-      // await AudioService.playDealSound(mute: gameState.playerLocalConfig.mute);
       await Future.delayed(AppConstants.cardDistributionAnimationDuration);
       gameState.stopCardDistributionFor(seatNo);
 
       final playerInSeat = gameState.getSeat(seatNo);
-      playerInSeat.player.noOfCardsVisible = c;
-      playerInSeat.notify();
+      if (playerInSeat != null) {
+        playerInSeat.player.noOfCardsVisible = c;
+        playerInSeat.notify();
+      }
     }
   }
 
@@ -666,24 +666,14 @@ class HandActionProtoService {
   ) async {
     final allSeats = gameState.playersInGame.map<int>((p) => p.seatNo).toList();
     allSeats.shuffle();
-    log('Dealing ${DateTime.now().toIso8601String()}');
     AudioService.playDealSound(mute: gameState.playerLocalConfig.mute);
-    List<Future<void>> futures = [];
-    final now = DateTime.now();
     for (final seatNo in allSeats) {
-      final animation =
-          _handleAnimationForSingleSeat(seatNo, noCards, gameState);
-      futures.add(animation);
-      // delay a bit
-      await Future.delayed(
-        AppConstants.cardDistributionWaitBetweenPlayersDuration,
+      await _handleAnimationForSingleSeat(
+        seatNo,
+        noCards,
+        gameState,
       );
     }
-    await Future.wait(futures);
-    log('Dealing done ${DateTime.now().toIso8601String()} ms: ${DateTime.now().difference(now).inMilliseconds}');
-    // Future.wait(futures).then((value) {
-    //   AudioService.stopDeal();
-    // });
   }
 
   Future<void> handleDealStarted({

@@ -11,6 +11,7 @@ class CardView extends StatelessWidget {
   final CardObject card;
   final Uint8List cardBackBytes;
   final bool doubleBoard;
+
   CardView({
     @required this.card,
     @required this.cardBackBytes,

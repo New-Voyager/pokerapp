@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
+import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/widgets/cards/pulsating_card_container.dart';
 
@@ -37,26 +38,6 @@ class CardBuilderWidget extends StatelessWidget {
             isCardVisible != null &&
             cardBuilder != null);
 
-  /* this method returns the correct RATIO for a particular CARD TYPE */
-  static double getCardRatioFromCardType(CardType cardType) {
-    switch (cardType) {
-      case CardType.CommunityCard:
-        return 1.0;
-
-      case CardType.HoleCard:
-        return 1.0;
-
-      case CardType.PlayerCard:
-        return 0.90;
-
-      case CardType.HandLogOrHandHistoryCard:
-        return 0.80;
-
-      default:
-        return 1.0;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     TextStyle cardTextStyle = AppStylesNew.cardTextStyle.copyWith(fontSize: 12);
@@ -72,7 +53,7 @@ class CardBuilderWidget extends StatelessWidget {
       fontSize: 8,
     );
 
-    bool highlight = card.highlight ?? false;
+    final bool highlight = card.highlight ?? false;
 
     cardTextStyle = AppStylesNew.cardTextStyle.copyWith(
       color: card.color,
@@ -81,8 +62,6 @@ class CardBuilderWidget extends StatelessWidget {
     suitTextStyle = AppStylesNew.cardTextStyle.copyWith(
       color: card.color,
     );
-
-    double _ratio = getCardRatioFromCardType(card.cardType);
 
     // IMP: we ignore "dim" value if "highlight" is true
     bool toDim = dim;
@@ -109,9 +88,18 @@ class CardBuilderWidget extends StatelessWidget {
       fgDecoration = null;
     }
 
+    Size cardSize = const Size(
+      AppDimensions.cardWidth * 0.80,
+      AppDimensions.cardHeight * 0.80,
+    );
+
+    if (highlight) {
+      cardSize = const Size(double.infinity, double.infinity);
+    }
+
     Widget cardWidget = Container(
-      height: 30,
-      width: 20,
+      height: cardSize.height,
+      width: cardSize.width,
       foregroundDecoration: fgDecoration,
       decoration: BoxDecoration(
         boxShadow: shadow

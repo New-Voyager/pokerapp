@@ -1,12 +1,7 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
-import 'package:provider/provider.dart';
-
-// Map<int, Offset> _finalPositionCache = Map();
 
 class MultipleCardDistributionAnimatingWidget extends StatelessWidget {
   final GameState _gameState;
@@ -106,7 +101,8 @@ class CardDistributionAnimatingWidget extends StatelessWidget {
       ),
       duration: AppConstants.cardDistributionAnimationDuration,
       builder: (_, Offset offset, Widget child) {
-        double offsetPercentageDone = (offset.dy / finalOffset.dy);
+        final dy = finalOffset.dy == 0 ? 0.01 : finalOffset.dy;
+        double offsetPercentageDone = (offset.dy / dy);
         double scale = 1.2 + offsetPercentageDone * (0.50 - 1.2);
         return Transform.translate(
           offset: offset,
@@ -131,16 +127,6 @@ class CardDistributionAnimatingWidget extends StatelessWidget {
         return showDistribution
             ? _animatingWidget(context)
             : const SizedBox.shrink();
-
-        // return AnimatedSwitcher(
-        //   switchInCurve: Curves.linear,
-        //   switchOutCurve: Curves.linear,
-        //   duration: const Duration(microseconds: 1),
-        //   reverseDuration: const Duration(microseconds: 1),
-        //   child: showDistribution
-        //       ? _animatingWidget(context)
-        //       : const SizedBox.shrink(),
-        // );
       },
     );
   }
