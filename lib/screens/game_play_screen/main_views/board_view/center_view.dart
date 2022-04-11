@@ -483,6 +483,7 @@ class _PotUpdatesOrRankWidget extends StatelessWidget {
     final theme = AppTheme.getTheme(context);
 
     Widget potUpdatesView = FittedBox(
+      fit: BoxFit.fitHeight,
       child: ValueListenableBuilder2<double, String>(
         vnPotChipsUpdates,
         vnRankStr,

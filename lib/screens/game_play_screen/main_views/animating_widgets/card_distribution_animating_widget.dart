@@ -61,11 +61,6 @@ class CardDistributionAnimatingWidget extends StatelessWidget {
     BuildContext context,
     int seatNo,
   ) {
-    // if (_finalPositionCache.containsKey(seatNo)) {
-    //   // log('final position from cache');
-    //   return _finalPositionCache[seatNo];
-    // }
-
     final gameState = GameState.getState(context);
     final seat = gameState.getSeat(seatNo);
     if (seat == null || seat.key == null) {

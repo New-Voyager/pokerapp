@@ -220,7 +220,7 @@ class CommunityCardState extends ChangeNotifier {
     await _delay();
 
     // flip
-    cardState.flipKey.currentState.toggleCard();
+    cardState.flipKey.currentState?.toggleCard();
   }
 
   /// single board -> 5

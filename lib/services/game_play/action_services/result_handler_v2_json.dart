@@ -192,7 +192,7 @@ class ResultHandlerV2Json {
       tableState.notifyAll();
       //break;
     }
-    if (replay) return;
+    if (replay == true) return;
     resetResult();
     // remove all the community cards
     gameState.clear();

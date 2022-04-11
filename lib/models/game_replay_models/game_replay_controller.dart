@@ -90,7 +90,7 @@ class GameReplayController {
 
       // after we highlight the player, need to wait for that particular duration
       // and also during wait, need to handle any interruptions,
-      // so that incase of skip request, we can end the wait and continue
+      // so that in case of skip request, we can end the wait and continue
 
       // we need to show next action player
       final int waitForInMs = _estimateDelay(action);
@@ -182,15 +182,7 @@ class GameReplayController {
     _isPlayingStreamController.add(_isPlaying);
   }
 
-  void skipPrevious() {
-    // _actionCounter -= 1;
-  }
-
   void skipNext() => _goNext = true;
-
-  void repeat() {
-    // reset everything and start from beginning
-  }
 
   /* getters */
   Stream<bool> get isPlaying =>
