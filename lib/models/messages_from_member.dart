@@ -6,6 +6,7 @@ class MessagesFromMember {
   String messageTime;
   String memberName;
   String playerId;
+  String updatedBy;
 
   MessagesFromMember(
       {this.id, this.memberID, this.messageType, this.text, this.messageTime});
@@ -18,5 +19,6 @@ class MessagesFromMember {
     messageTime = json['messageTime'];
     memberName = json['memberName'];
     playerId = json['playerId'];
+    updatedBy = json['updatedBy'];
   }
 }

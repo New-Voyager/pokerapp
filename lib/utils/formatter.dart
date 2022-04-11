@@ -1,5 +1,4 @@
 import 'package:intl/intl.dart';
-import 'package:pokerapp/enums/game_type.dart';
 
 final DateFormat _dateFormatter =
     DateFormat.yMd().add_jms(); // internationalize this
@@ -11,10 +10,6 @@ class DataFormatter {
     if (value == null) {
       return '';
     }
-
-    // if (chipUnit == ChipUnit.CENT) {
-    //   value = value / 100;
-    // }
 
     if (value == value.round()) {
       return '${value.toInt()}';
@@ -28,6 +23,13 @@ class DataFormatter {
       return '';
     }
     return _dateFormatter.format(dt);
+  }
+
+  // 2022-10-10 06:00PM
+  static String dateTimeFormat(DateTime dt) {
+    if (dt == null) return '';
+
+    return DateFormat('yyyy-MM-dd hh:mm a').format(dt);
   }
 
   static String timeFormatMMSS(

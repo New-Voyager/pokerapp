@@ -4,6 +4,8 @@ import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/screens/chat_screen/utils.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/chat_user_avatar.dart';
+import 'package:pokerapp/utils/formatter.dart';
+import 'package:pokerapp/widgets/credits.dart';
 import 'package:provider/provider.dart';
 
 import '../chat_model.dart';
@@ -79,6 +81,12 @@ class _ChatListWidgetState extends State<ChatListWidget> {
   }
 
   Widget _buildTile(ChatModel message) {
+    if (message.chatAdjustmentModel != null)
+      return CreditUpdateChatWidget(
+        chatAdjustmentModel: message.chatAdjustmentModel,
+        message: message,
+      );
+
     bool isSender = _isSender(message.messageType);
 
     if (!message.isGroupLatest) {
@@ -210,5 +218,141 @@ class _ChatListWidgetState extends State<ChatListWidget> {
       return type == FROM_HOST;
     else
       return type != FROM_HOST;
+  }
+}
+
+class CreditUpdateChatWidget extends StatelessWidget {
+  final CreditUpdateChatModel chatAdjustmentModel;
+  final ChatModel message;
+  final bool decorator;
+  const CreditUpdateChatWidget(
+      {Key key,
+      @required this.chatAdjustmentModel,
+      @required this.message,
+      this.decorator = true})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final appTheme = context.read<AppTheme>();
+    final isNeg = chatAdjustmentModel.amount < 0;
+    var chips = DataFormatter.chipsFormat(chatAdjustmentModel.amount);
+    if (chatAdjustmentModel.type != CreditUpdateType.set &&
+        chatAdjustmentModel.amount > 0) {
+      chips = '+$chips';
+    }
+    Color borderColor = Colors.grey;
+    if (chatAdjustmentModel.type == CreditUpdateType.deduct) {
+      borderColor = Colors.red;
+    } else if (chatAdjustmentModel.type == CreditUpdateType.add) {
+      borderColor = Colors.green;
+    } else if (chatAdjustmentModel.type == CreditUpdateType.fee_credit) {
+      borderColor = Colors.green[300];
+    } else if (chatAdjustmentModel.type == CreditUpdateType.set) {
+      borderColor = Colors.blue[400];
+    }
+
+    String suffix = '';
+    if (message.updatedBy != null) {
+      suffix = message.updatedBy;
+      suffix = suffix + '  ';
+    }
+    suffix = suffix + DataFormatter.dateTimeFormat(chatAdjustmentModel.date);
+    Widget content = // main body
+        Row(
+      children: [
+        // Expanded(
+        //   child: Center(child: Text(chatAdjustmentModel.type.value)),
+        // ),
+        Visibility(
+          visible: chatAdjustmentModel.oldCredits != null,
+          child: Expanded(
+            child: Center(
+              child: CreditsWidget(
+                oldCredits: true,
+                credits: chatAdjustmentModel.oldCredits,
+                theme: appTheme,
+              ),
+            ),
+          ),
+        ),
+        Expanded(
+          child: Center(
+            child: Text(
+              chips,
+              style: TextStyle(
+                fontSize: 16.0,
+                color: isNeg ? Colors.red : Colors.green,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ),
+        Expanded(
+          child: Center(
+            child: Text(
+              '\u{27AA}',
+              style: TextStyle(
+                fontSize: 16.0,
+                color: appTheme.supportingColor,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ),
+        Expanded(
+          child: Center(
+            child: CreditsWidget(
+              credits: chatAdjustmentModel.credits,
+              theme: appTheme,
+            ),
+          ),
+        ),
+      ],
+    );
+    if (!decorator) {
+      return content;
+    }
+    return Container(
+      decoration: BoxDecoration(
+        color: appTheme.fillInColor,
+        borderRadius: const BorderRadius.horizontal(
+          left: Radius.circular(20.0),
+        ),
+        border: Border.all(
+          color: borderColor,
+          width: 1.0,
+        ),
+      ),
+      margin: const EdgeInsets.only(left: 32.0, right: 8.0, top: 8.0),
+      padding: const EdgeInsets.only(
+        top: 8.0,
+        bottom: 4.0,
+        right: 12.0,
+        left: 12.0,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          content,
+          Divider(
+            color: Colors.white,
+          ),
+          // text
+          Text(
+            chatAdjustmentModel.text,
+            style: TextStyle(fontSize: 12.0),
+          ),
+
+          // time
+          Align(
+              alignment: Alignment.bottomRight,
+              child: Text(
+                suffix,
+                style: const TextStyle(fontSize: 10.0),
+              )),
+        ],
+      ),
+    );
   }
 }

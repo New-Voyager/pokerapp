@@ -10,8 +10,14 @@ class CreditsWidget extends StatelessWidget {
   final double credits;
   final AppTheme theme;
   final Function onTap;
-  const CreditsWidget({Key key, this.credits, this.theme, this.onTap})
-      : super(key: key);
+  final bool oldCredits;
+  const CreditsWidget({
+    Key key,
+    @required this.credits,
+    @required this.theme,
+    this.onTap,
+    this.oldCredits = false,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,41 +30,69 @@ class CreditsWidget extends StatelessWidget {
     String creditsText = DataFormatter.chipsFormat(credits);
     double width = 60;
     if (creditsText.length >= 5) {
-      width = creditsText.length * 10.0;
+      width = creditsText.length * 11.0;
       width += 10;
     }
     double height = 25;
+    LinearGradient gradient = LinearGradient(
+      colors: [
+        theme.accentColorWithLight(0.2),
+        theme.accentColorWithLight(0.1),
+        theme.accentColor,
+        theme.accentColor,
+        //           theme.accentColorWithDark(0.1),
+        theme.accentColorWithDark(0.1),
+        theme.accentColorWithDark(0.2),
+        //theme.accentColor,
+      ],
+      stops: [
+        0,
+        0.2,
+        0.5,
+        0.8,
+        0.9,
+        1.0,
+        //0.3
+      ],
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      // begin: Alignment(-1, -1),
+      // end: Alignment(2, 2),
+    );
 
+    if (oldCredits) {
+      gradient = LinearGradient(
+        colors: [
+          theme.greyColorWithDark(0.2),
+          theme.greyColorWithDark(0.1),
+          theme.greyColor,
+          theme.greyColor,
+          //           theme.accentColorWithDark(0.1),
+          theme.greyColorWithDark(0.1),
+          theme.greyColorWithDark(0.2),
+          //theme.accentColor,
+        ],
+        stops: [
+          0,
+          0.2,
+          0.5,
+          0.8,
+          0.9,
+          1.0,
+          //0.3
+        ],
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        // begin: Alignment(-1, -1),
+        // end: Alignment(2, 2),
+      );
+    }
     return Container(
       width: width,
       height: height,
       child: OutlineGradientButton(
           radius: Radius.circular(15),
-          gradient: LinearGradient(
-            colors: [
-              theme.accentColorWithLight(0.2),
-              theme.accentColorWithLight(0.1),
-              theme.accentColor,
-              theme.accentColor,
-              //           theme.accentColorWithDark(0.1),
-              theme.accentColorWithDark(0.1),
-              theme.accentColorWithDark(0.2),
-              //theme.accentColor,
-            ],
-            stops: [
-              0,
-              0.2,
-              0.5,
-              0.8,
-              0.9,
-              1.0,
-              //0.3
-            ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            // begin: Alignment(-1, -1),
-            // end: Alignment(2, 2),
-          ),
+          gradient: gradient,
           strokeWidth: 2,
           backgroundColor: Colors.black,
           padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
