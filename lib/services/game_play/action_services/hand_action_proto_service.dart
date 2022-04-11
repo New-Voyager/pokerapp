@@ -867,7 +867,7 @@ class HandActionProtoService {
       // for river pick the 4th index card
       int board1Card = message.river.boards[0].cards[4];
       int board2Card;
-      if (message.turn.boards.length == 2) {
+      if (message.river.boards.length == 2) {
         board2Card = message.river.boards[1].cards[4];
       }
 
