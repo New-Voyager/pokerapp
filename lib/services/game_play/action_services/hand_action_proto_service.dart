@@ -563,20 +563,15 @@ class HandActionProtoService {
     _gameState.tableState.resultInProgress = false;
     log(message.toString());
     NewHandHandler handler = NewHandHandler(
-        newHand: message.newHand,
-        gameState: _gameState,
-        gameContext: _gameContextObject);
+      newHand: message.newHand,
+      gameState: _gameState,
+      gameContext: _gameContextObject,
+    );
     handler.initialize();
     await handler.handle();
   }
 
   Future<void> handleDeal(proto.HandMessageItem message) async {
-    //return;
-    //log('Hand Message: ::handleDeal:: START');
-
-    // play the deal sound effect
-    //AudioService.playDeal(mute: _gameState.playerLocalConfig.mute);
-
     final dealCards = message.dealCards;
     int mySeatNo = dealCards.seatNo;
     String cards = dealCards.cards;
@@ -592,10 +587,6 @@ class HandActionProtoService {
 
     List<int> seatNos = _gameState.playersInGame.map((p) => p.seatNo).toList();
     seatNos.sort();
-    /* distribute cards to the players */
-    /* this for loop will distribute cards one by one to all the players */
-    //for (int i = 0; i < myCards.length; i++) {
-    /* for distributing the ith card, go through all the players, and give them */
     for (int seatNo in seatNos) {
       int localSeatNo = mySeatNo == null
           ? seatNo
@@ -610,9 +601,6 @@ class HandActionProtoService {
 
       // start the animation
       if (_close || _gameState.uiClosing) return;
-      // _gameState.cardDistributionState.seatNo = localSeatNo;
-      // wait for the animation to finish
-      // await Future.delayed(AppConstants.cardDistributionAnimationDuration);
       final playerInSeat = _gameState.getSeat(seatNo);
       if (playerInSeat != null &&
           playerInSeat.player != null &&
@@ -668,10 +656,13 @@ class HandActionProtoService {
     allSeats.shuffle();
     AudioService.playDealSound(mute: gameState.playerLocalConfig.mute);
     for (final seatNo in allSeats) {
-      await _handleAnimationForSingleSeat(
+      _handleAnimationForSingleSeat(
         seatNo,
         noCards,
         gameState,
+      );
+      await Future.delayed(
+        AppConstants.cardDistributionWaitBetweenPlayersDuration,
       );
     }
   }

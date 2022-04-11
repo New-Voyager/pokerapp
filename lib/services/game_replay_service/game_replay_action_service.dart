@@ -133,7 +133,7 @@ class GameReplayActionService {
 
     gameState.communityCardState.addFlopCards(
       board1: action.boardCards,
-      // board2: action.boardCards2, // TODO: DO WE NEED 2ND BOARD?
+      board2: action.boardCards2,
     );
   }
 

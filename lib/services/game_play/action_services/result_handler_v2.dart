@@ -138,6 +138,7 @@ class ResultHandlerV2 {
     List<int> boardCards2;
     /* set board 2 cards */
     if (result.boards.length == 2) {
+      boardCards2 = [];
       for (final c in result.boards[1].cards) {
         boardCards2.add(c);
       }

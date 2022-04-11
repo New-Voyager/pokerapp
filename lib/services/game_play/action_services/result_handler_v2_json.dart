@@ -88,6 +88,7 @@ class ResultHandlerV2Json {
     List<int> boardCards2;
     /* set board 2 cards */
     if (handResult.boards.length == 2) {
+      boardCards2 = [];
       for (final c in handResult.boards[1].cards) {
         boardCards2.add(c);
       }
