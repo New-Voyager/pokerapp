@@ -45,6 +45,7 @@ class ClubsService {
       text
       messageTime
       playerId
+      updatedBy
     }
   }
   """;
@@ -59,6 +60,7 @@ class ClubsService {
       text
       messageTime
       playerId
+      updatedBy
     }
   }
   """;

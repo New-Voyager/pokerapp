@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:developer' as dev;
 
 import 'package:flutter/material.dart';
@@ -190,6 +191,47 @@ class _ChatScreenState extends State<ChatScreen> with RouteAwareAnalytics {
     List<ChatModel> chats = [];
     for (int i = 0; i < messages.length; i++) {
       var m = messages[i];
+      String text = m.text;
+      CreditUpdateChatModel creditUpdate;
+      if (text.startsWith("{") && text.endsWith("}")) {
+        // json message
+        // {"type":"CT","sub-type":"ADD","notes":"received via cashapp","amount":200,"credits":0}
+        var ret = jsonDecode(text);
+        if (ret != null) {
+          CreditUpdateType updateType = CreditUpdateType.adjust;
+          double amount = double.parse(ret["amount"].toString());
+          if (ret["sub-type"] == "ADD") {
+            updateType = CreditUpdateType.add;
+          } else if (ret["sub-type"] == "DEDUCT") {
+            updateType = CreditUpdateType.deduct;
+            amount = -amount;
+          } else if (ret["sub-type"] == "REWARD") {
+            updateType = CreditUpdateType.reward;
+          } else if (ret["sub-type"] == "ADJUST") {
+            updateType = CreditUpdateType.adjust;
+          } else if (ret["sub-type"] == "FEE_CREDIT") {
+            updateType = CreditUpdateType.fee_credit;
+          } else if (ret["sub-type"] == "HH") {
+            updateType = CreditUpdateType.hh;
+          } else if (ret["sub-type"] == "SET") {
+            updateType = CreditUpdateType.set;
+          } else if (ret["sub-type"] == "CHANGE") {
+            updateType = CreditUpdateType.set;
+          }
+          double oldCredits;
+          if (ret["oldCredits"] != null) {
+            oldCredits = double.parse(ret["oldCredits"].toString());
+          }
+          creditUpdate = CreditUpdateChatModel(
+            amount: amount,
+            type: updateType,
+            text: ret["notes"],
+            credits: double.parse(ret["credits"].toString()),
+            date: toDateTime(m.messageTime),
+            oldCredits: oldCredits,
+          );
+        }
+      }
       var chat = ChatModel(
         id: m.id,
         memberID: m.memberID,
@@ -197,6 +239,8 @@ class _ChatScreenState extends State<ChatScreen> with RouteAwareAnalytics {
         text: m.text,
         messageTime: toDateTime(m.messageTime),
         memberName: m.memberName,
+        chatAdjustmentModel: creditUpdate,
+        updatedBy: m.updatedBy,
 
         // adding chatAdjustmentModel is optional - if CreditUpdateChat model is added,
         // we show the CreditUpdateChatWidget

@@ -25,6 +25,9 @@ class AppThemeStyle {
   // color used for negatives or errors
   Color negativeOrErrorColor;
 
+  // grey color used for showing disabled or inactive elements
+  Color greyColor;
+
   // font family
   String fontFamily;
 
@@ -79,6 +82,12 @@ class AppThemeStyle {
     style.negativeOrErrorColor = HexColor.fromHex(json['negativeOrErrorColor']);
     style.navBgColor = HexColor.fromHex(json['navBgColor']);
     style.navFabColor = HexColor.fromHex(json['navFabColor']);
+    if (json['greyColor'] != null) {
+      style.greyColor = HexColor.fromHex(json['greyColor']);
+    }
+    if (style.greyColor == null) {
+      style.greyColor = HexColor.fromHex('#E0E0E0');
+    }
     if (json['gameListShadeColor'] != null) {
       style.gameListShadeColor = HexColor.fromHex(json['gameListShadeColor']);
     } else {

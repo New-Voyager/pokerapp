@@ -83,6 +83,13 @@ class AppTheme extends ChangeNotifier {
   Color accentColorWithLight([double l = 0.10]) =>
       _lighten(_themeData.style.accentColor, l);
 
+  // accent color that works with the main color in the app
+  Color get greyColor => _themeData.style.greyColor;
+  Color greyColorWithDark([double d = 0.10]) =>
+      _darken(_themeData.style.greyColor, d);
+  Color greyColorWithLight([double l = 0.10]) =>
+      _lighten(_themeData.style.greyColor, l);
+
   Color blackColorWithLight([double l = 0.10]) => _lighten(Colors.black, l);
   Color blackColorWithDark([double l = 0.10]) => _darken(Colors.black, l);
 

@@ -9,7 +9,7 @@ class ChatModel {
   final String memberName;
   bool isGroupLatest;
   final CreditUpdateChatModel chatAdjustmentModel;
-
+  final String updatedBy;
   ChatModel({
     this.id,
     this.memberID,
@@ -19,6 +19,7 @@ class ChatModel {
     this.memberName,
     this.isGroupLatest,
     this.chatAdjustmentModel,
+    this.updatedBy,
   });
 }
 
@@ -27,6 +28,7 @@ class CreditUpdateChatModel {
   final double amount;
   final String text;
   final double credits;
+  final double oldCredits;
   final DateTime date;
 
   CreditUpdateChatModel({
@@ -35,6 +37,7 @@ class CreditUpdateChatModel {
     @required this.text,
     @required this.credits,
     @required this.date,
+    this.oldCredits,
   });
 
   /*
@@ -59,7 +62,7 @@ class CreditUpdateChatModel {
 }
 
 // type: adjust, fee_credit, add, deduct, hh, reward
-enum CreditUpdateType { adjust, fee_credit, add, deduct, reward, hh }
+enum CreditUpdateType { adjust, fee_credit, add, deduct, reward, hh, set }
 
 extension CreditUpdateTypeParsing on CreditUpdateType {
   String get value =>

@@ -84,6 +84,7 @@ class _ChatListWidgetState extends State<ChatListWidget> {
     if (message.chatAdjustmentModel != null)
       return CreditUpdateChatWidget(
         chatAdjustmentModel: message.chatAdjustmentModel,
+        message: message,
       );
 
     bool isSender = _isSender(message.messageType);
@@ -222,22 +223,105 @@ class _ChatListWidgetState extends State<ChatListWidget> {
 
 class CreditUpdateChatWidget extends StatelessWidget {
   final CreditUpdateChatModel chatAdjustmentModel;
-
-  const CreditUpdateChatWidget({
-    Key key,
-    @required this.chatAdjustmentModel,
-  }) : super(key: key);
+  final ChatModel message;
+  final bool decorator;
+  const CreditUpdateChatWidget(
+      {Key key,
+      @required this.chatAdjustmentModel,
+      @required this.message,
+      this.decorator = true})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final appTheme = context.read<AppTheme>();
     final isNeg = chatAdjustmentModel.amount < 0;
+    var chips = DataFormatter.chipsFormat(chatAdjustmentModel.amount);
+    if (chatAdjustmentModel.type != CreditUpdateType.set &&
+        chatAdjustmentModel.amount > 0) {
+      chips = '+$chips';
+    }
+    Color borderColor = Colors.grey;
+    if (chatAdjustmentModel.type == CreditUpdateType.deduct) {
+      borderColor = Colors.red;
+    } else if (chatAdjustmentModel.type == CreditUpdateType.add) {
+      borderColor = Colors.green;
+    } else if (chatAdjustmentModel.type == CreditUpdateType.fee_credit) {
+      borderColor = Colors.green[300];
+    } else if (chatAdjustmentModel.type == CreditUpdateType.set) {
+      borderColor = Colors.blue[400];
+    }
 
+    String suffix = '';
+    if (message.updatedBy != null) {
+      suffix = message.updatedBy;
+      suffix = suffix + '  ';
+    }
+    suffix = suffix + DataFormatter.dateTimeFormat(chatAdjustmentModel.date);
+    Widget content = // main body
+        Row(
+      children: [
+        // Expanded(
+        //   child: Center(child: Text(chatAdjustmentModel.type.value)),
+        // ),
+        Visibility(
+          visible: chatAdjustmentModel.oldCredits != null,
+          child: Expanded(
+            child: Center(
+              child: CreditsWidget(
+                oldCredits: true,
+                credits: chatAdjustmentModel.oldCredits,
+                theme: appTheme,
+              ),
+            ),
+          ),
+        ),
+        Expanded(
+          child: Center(
+            child: Text(
+              chips,
+              style: TextStyle(
+                fontSize: 16.0,
+                color: isNeg ? Colors.red : Colors.green,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ),
+        Expanded(
+          child: Center(
+            child: Text(
+              '\u{27AA}',
+              style: TextStyle(
+                fontSize: 16.0,
+                color: appTheme.supportingColor,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ),
+        Expanded(
+          child: Center(
+            child: CreditsWidget(
+              credits: chatAdjustmentModel.credits,
+              theme: appTheme,
+            ),
+          ),
+        ),
+      ],
+    );
+    if (!decorator) {
+      return content;
+    }
     return Container(
       decoration: BoxDecoration(
         color: appTheme.fillInColor,
         borderRadius: const BorderRadius.horizontal(
           left: Radius.circular(20.0),
+        ),
+        border: Border.all(
+          color: borderColor,
+          width: 1.0,
         ),
       ),
       margin: const EdgeInsets.only(left: 32.0, right: 8.0, top: 8.0),
@@ -250,38 +334,10 @@ class CreditUpdateChatWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // main body
-          Row(
-            children: [
-              Expanded(
-                child: Center(child: Text(chatAdjustmentModel.type.value)),
-              ),
-              Expanded(
-                child: Center(
-                  child: Text(
-                    '${isNeg ? '-' : '+'}${DataFormatter.chipsFormat(chatAdjustmentModel.amount)}',
-                    style: TextStyle(
-                      fontSize: 16.0,
-                      color: isNeg ? Colors.red : Colors.green,
-                    ),
-                  ),
-                ),
-              ),
-              Expanded(
-                child: Center(
-                  child: CreditsWidget(
-                    credits: chatAdjustmentModel.credits,
-                    theme: appTheme,
-                  ),
-                ),
-              ),
-            ],
-          ),
-
+          content,
           Divider(
             color: Colors.white,
           ),
-
           // text
           Text(
             chatAdjustmentModel.text,
@@ -290,12 +346,11 @@ class CreditUpdateChatWidget extends StatelessWidget {
 
           // time
           Align(
-            alignment: Alignment.bottomRight,
-            child: Text(
-              DataFormatter.dateTimeFormat(chatAdjustmentModel.date),
-              style: const TextStyle(fontSize: 10.0),
-            ),
-          ),
+              alignment: Alignment.bottomRight,
+              child: Text(
+                suffix,
+                style: const TextStyle(fontSize: 10.0),
+              )),
         ],
       ),
     );
