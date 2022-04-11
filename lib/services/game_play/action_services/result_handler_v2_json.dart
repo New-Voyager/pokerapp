@@ -171,9 +171,8 @@ class ResultHandlerV2Json {
           low: false,
         );
 
-        resetResult();
-
         if (boardWinners.lowWinners.length > 0) {
+          resetResult();
           // display low banner
           if (hiLoGame) {
             // display high banner
@@ -188,14 +187,16 @@ class ResultHandlerV2Json {
         }
       }
 
+      // in case this is the last pot and it's replay hand - stop here
+      if (i == 0 && replay == true) return;
+
       // UN highlight the req pot no
       tableState.updatePotToHighlightSilent(-1);
       tableState.notifyAll();
-      //break;
     }
+
     if (replay == true) return;
     resetResult();
-    // remove all the community cards
     gameState.clear();
     tableState.clear();
     tableState.notifyAll();

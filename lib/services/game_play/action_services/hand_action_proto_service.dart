@@ -625,8 +625,8 @@ class HandActionProtoService {
   }
 
   /// this method is needed for Replay Hand and Testing Service
-  static void cardDistribution(GameState gameState, [int noCards = 2]) {
-    _handleCardDistribution(noCards, gameState);
+  static Future<void> cardDistribution(GameState gameState, [int noCards = 2]) {
+    return _handleCardDistribution(noCards, gameState);
   }
 
   /// distribute cards for this particular `seatNo` `totalCards` no of times
@@ -655,8 +655,9 @@ class HandActionProtoService {
     final allSeats = gameState.playersInGame.map<int>((p) => p.seatNo).toList();
     allSeats.shuffle();
     AudioService.playDealSound(mute: gameState.playerLocalConfig.mute);
+    final List<Future> futures = [];
     for (final seatNo in allSeats) {
-      _handleAnimationForSingleSeat(
+      final future = _handleAnimationForSingleSeat(
         seatNo,
         noCards,
         gameState,
@@ -664,20 +665,16 @@ class HandActionProtoService {
       await Future.delayed(
         AppConstants.cardDistributionWaitBetweenPlayersDuration,
       );
+      futures.add(future);
     }
+
+    return Future.wait(futures);
   }
 
   Future<void> handleDealStarted({
     bool fromGameReplay = false,
     int testNo = 2, // works only if in testing mode
   }) async {
-    //log('Hand Message: ::handleDealStarted:: START');
-    // final me = _gameState.me(_context);
-
-    /* if I am present in this game,
-     Deal Start message is unnecessary */
-    // if (fromGameReplay == false && me == null) return;
-
     if (_close) return;
     try {
       final TableState tableState = _gameState.tableState;

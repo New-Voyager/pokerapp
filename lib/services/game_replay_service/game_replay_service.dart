@@ -115,7 +115,9 @@ class GameReplayService {
           // startPot: handLog.flopActions.potStart,
           pots: flopActions.pots,
           boardCards: board1Cards?.sublist(0, 3),
-          boardCards2: board2Cards?.sublist(0, 3),
+          boardCards2: board2Cards != null && board2Cards.length >= 3
+              ? board2Cards.sublist(0, 3)
+              : null,
         ),
       );
 

@@ -139,11 +139,6 @@ class TestService {
     }
   }
 
-  static showCardDistribution() async {
-    final gameState = GameState.getState(_context);
-    HandActionProtoService.cardDistribution(gameState, 4);
-  }
-
   static showRank() async {
     final gameState = GameState.getState(_context);
     final seat = gameState.getSeat(1);

@@ -199,7 +199,7 @@ class GameReplayActionService {
 
   Future<void> _runItTwiceWinner(GameReplayAction action) {
     final GameState gameState = GameState.getState(_context);
-    ResultHandlerV2Json resultHander = ResultHandlerV2Json(
+    ResultHandlerV2Json resultHandler = ResultHandlerV2Json(
       replay: true,
       gameState: gameState,
       context: _context,
@@ -207,11 +207,11 @@ class GameReplayActionService {
       audioPlayer: new AudioPlayer(),
     );
 
-    return resultHander.show();
+    return resultHandler.show();
   }
 
   Future<void> _potWinnerResult(GameReplayAction action) {
-    ResultHandlerV2Json resultHander = ResultHandlerV2Json(
+    ResultHandlerV2Json resultHandler = ResultHandlerV2Json(
       replay: true,
       gameState: GameState.getState(_context),
       context: _context,
@@ -219,7 +219,7 @@ class GameReplayActionService {
       audioPlayer: new AudioPlayer(),
     );
 
-    return resultHander.show();
+    return resultHandler.show();
   }
 
   /* this method sets no of cards & distributes the cards */
@@ -229,7 +229,7 @@ class GameReplayActionService {
     AudioService.playDeal();
 
     if (_close) return;
-    HandActionProtoService.cardDistribution(gameState, action.noCards);
+    return HandActionProtoService.cardDistribution(gameState, action.noCards);
   }
 
   Future<void> takeAction(

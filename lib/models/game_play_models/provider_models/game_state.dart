@@ -876,6 +876,8 @@ class GameState {
     // clear table state
     tableState.clear();
     tableState.notifyAll();
+    // clear community cards
+    communityCardState.reset();
   }
 
   GameMessagingService get gameMessageService => this._gameMessageService;

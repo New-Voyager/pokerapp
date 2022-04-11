@@ -1258,18 +1258,8 @@ class GameUpdateService {
     String tableStatus = status['tableStatus'];
     String gameStatus = status['status'];
 
-    /*
-      {"gameId":"90","gameCode":"CG-Z44IXIK44KWKBQW","messageType":"GAME_STATUS","status":{"status":"ACTIVE","tableStatus":"WAITING_TO_BE_STARTED"}}
-      {"gameId":"90","gameCode":"CG-Z44IXIK44KWKBQW","messageType":"GAME_STATUS","status":{"status":"PAUSED","tableStatus":"GAME_RUNNING"}}
-      else if (type == AppConstants.GAME_PAUSED) {
-      // {"gameId":"494","gameCode":"cgnmxhehyy","messageType":"GAME_STATUS","status":{"status":"PAUSED","tableStatus":"GAME_RUNNING"}}
-
-    }
-    */
-
     final tableState = _gameState.tableState;
     if (tableStatus == AppConstants.TABLE_STATUS_NOT_ENOUGH_PLAYERS) {
-      // redraw the board
       await refreshScreen();
     }
     if (tableState.tableStatus != tableStatus ||
