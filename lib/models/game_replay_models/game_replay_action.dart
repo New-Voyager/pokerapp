@@ -35,6 +35,7 @@ class GameReplayAction {
   final List<int> boardCards;
   final List<int> boardCards2;
   final int boardCard;
+  final int boardCard2;
 
   /* for show down & run it twice result / pot winners */
   final Map<int, List<int>> playerCards;
@@ -52,6 +53,7 @@ class GameReplayAction {
     this.boardCards,
     this.boardCards2,
     this.boardCard,
+    this.boardCard2,
     this.playerCards,
     this.result,
     this.seatNos,

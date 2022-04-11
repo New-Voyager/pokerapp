@@ -153,19 +153,17 @@ class GameReplayActionService {
       gameState.handState = HandState.RIVER;
     }
 
-    // TODO: WHAT ABOUT 2ND BOARD?
     if (gameState.handState == HandState.TURN) {
-      gameState.communityCardState.addTurnCard(board1Card: action.boardCard);
+      gameState.communityCardState.addTurnCard(
+        board1Card: action.boardCard,
+        board2Card: action.boardCard2,
+      );
     } else {
-      gameState.communityCardState.addRiverCard(board1Card: action.boardCard);
+      gameState.communityCardState.addRiverCard(
+        board1Card: action.boardCard,
+        board2Card: action.boardCard2,
+      );
     }
-
-    // tableState.addTurnOrRiverCard(
-    //   1,
-    //   CardHelper.getCard(action.boardCard, colorCards: gameState.colorCards),
-    // );
-    //
-    // tableState.notifyAll();
   }
 
   void _showdownAction(GameReplayAction action) {
