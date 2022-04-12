@@ -31,7 +31,7 @@ dependencies:
   firebase_analytics: ^8.3.2
   firebase_core: ^1.6.0
   firebase_messaging: ^10.0.7
-  flip_card: ^0.6.0
+  flip_card: ^0.5.0
   flutter:
     sdk: flutter
   flutter_cache_manager: ^3.3.0
