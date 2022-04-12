@@ -119,7 +119,7 @@ class CardBuilderWidget extends StatelessWidget {
       child: _buildCardBackSide(cardTextStyle, suitTextStyle, context),
     );
 
-    if (highlight && keepPulsatingHighlight)
+    if (highlight && keepPulsatingHighlight) {
       return PulsatingCardContainer(
         child: cardWidget,
         height: double.infinity,
@@ -127,6 +127,11 @@ class CardBuilderWidget extends StatelessWidget {
         color: Colors.green.withOpacity(0.80),
         animationUpToWidth: 4.0,
       );
+    }
+
+    if (toDim) {
+      return Transform.scale(scale: 0.85, child: cardWidget);
+    }
 
     return cardWidget;
   }

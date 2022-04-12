@@ -27,10 +27,15 @@ class CommunityFlipCard extends StatelessWidget {
             cardState.cardNo,
             colorCards: colorCards,
           );
-
-          co.highlight = gameState.communityCardState.highlightCards.contains(
-            cardState.cardNo,
-          );
+          if (gameState.communityCardState.highlightCards.isNotEmpty) {
+            if (gameState.communityCardState.highlightCards.contains(
+              cardState.cardNo,
+            )) {
+              co.highlight = true;
+            } else {
+              co.dim = true;
+            }
+          }
 
           return co.widget;
         },
