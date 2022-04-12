@@ -1,4 +1,5 @@
 import 'dart:developer';
+import "dart:math" show pi;
 
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
@@ -9,7 +10,6 @@ import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
-import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/animation_assets.dart';
@@ -22,10 +22,10 @@ import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/cards/animations/animating_shuffle_card_view.dart';
-import 'package:pokerapp/widgets/cards/community_cards_view/community_cards_view.dart';
 import 'package:pokerapp/widgets/debug_border_widget.dart';
 import 'package:provider/provider.dart';
-import "dart:math" show pi;
+
+import '../../../../widgets/cards/community_cards_view_2/community_card_view_2.dart';
 
 class CenterView extends StatefulWidget {
   final TableState tableState;
@@ -101,14 +101,10 @@ class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
 
   final vnGameStatus = ValueNotifier<String>(null);
   final vnTableStatus = ValueNotifier<String>(null);
-  final vnCards = ValueNotifier<List<CardObject>>([]);
-  final vnCardOthers = ValueNotifier<List<CardObject>>([]);
-  final vnTwoBoardsNeeded = ValueNotifier<bool>(false);
   final vnPotChips = ValueNotifier<List<double>>([]);
   final vnPotChipsUpdates = ValueNotifier<double>(null);
   final vnPotToHighlight = ValueNotifier<int>(null);
   final vnRankStr = ValueNotifier<String>(null);
-  final vnCommunityCardsRefresh = ValueNotifier<int>(null);
   // final vnTableRefresh = ValueNotifier<int>(null);
   final vnShowCardShuffling = ValueNotifier<bool>(false);
 
@@ -122,23 +118,13 @@ class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
   void tableStateListener() {
     vnGameStatus.value = tableState.gameStatus;
     vnTableStatus.value = tableState.tableStatus;
-    vnCommunityCardsRefresh.value = tableState.communityCardRefresh;
     // vnTableRefresh.value = tableState.tableRefresh;
     vnShowCardShuffling.value = tableState.showCardsShuffling;
-
-    // need rebuilding check
-    if (_needsRebuilding(vnCards.value, tableState.cards))
-      vnCards.value = List.of(tableState.cards ?? []);
-
-    // need rebuilding check
-    if (_needsRebuilding(vnCardOthers.value, tableState.cardsOther))
-      vnCardOthers.value = List.of(tableState.cardsOther ?? []);
 
     // needs rebuilding check
     if (_needsRebuilding(vnPotChips.value, tableState.potChips))
       vnPotChips.value = List.of(tableState.potChips ?? []);
 
-    vnTwoBoardsNeeded.value = tableState.twoBoardsNeeded;
     vnPotChipsUpdates.value = tableState.potChipsUpdates;
     vnPotToHighlight.value = tableState.potToHighlight;
     vnRankStr.value = tableState.rankStr;
@@ -201,7 +187,8 @@ class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
 
     /* if the game is paused, show the options available during game pause */
     // don't show start/pause buttons for bot script games or demo games
-    if (!gameState.isBotGame && !gameState.gameInfo.demoGame) {
+    if (gameState?.isBotGame == false &&
+        gameState?.gameInfo?.demoGame == false) {
       if (isGamePausedOrWaiting || !gameState.isGameRunning) {
         return _buildGamePauseOptions(gameState);
       }
@@ -214,10 +201,6 @@ class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
       tableState: tableState,
       vnPotChips: vnPotChips,
       vnPotToHighlight: vnPotToHighlight,
-      vnCommunityCardsRefresh: vnCommunityCardsRefresh,
-      vnCards: vnCards,
-      vnCardOthers: vnCardOthers,
-      vnTwoBoardsNeeded: vnTwoBoardsNeeded,
       vnPotChipsUpdates: vnPotChipsUpdates,
       vnRankStr: vnRankStr,
       gameState: gameState,
@@ -274,10 +257,6 @@ class _BoardCenterView extends StatelessWidget {
   final ValueNotifier<List<double>> vnPotChips;
   final ValueNotifier<int> vnPotToHighlight;
 
-  final ValueNotifier<int> vnCommunityCardsRefresh;
-  final ValueNotifier<List<CardObject>> vnCards;
-  final ValueNotifier<List<CardObject>> vnCardOthers;
-  final ValueNotifier<bool> vnTwoBoardsNeeded;
   final ValueNotifier<String> vnRankStr;
 
   final ValueNotifier<double> vnPotChipsUpdates;
@@ -289,10 +268,6 @@ class _BoardCenterView extends StatelessWidget {
     @required this.tableState,
     @required this.vnPotChips,
     @required this.vnPotToHighlight,
-    @required this.vnCommunityCardsRefresh,
-    @required this.vnCards,
-    @required this.vnCardOthers,
-    @required this.vnTwoBoardsNeeded,
     @required this.vnPotChipsUpdates,
     @required this.vnRankStr,
     @required this.gameState,
@@ -323,12 +298,7 @@ class _BoardCenterView extends StatelessWidget {
             color: Colors.transparent,
             child: Container(
               width: gameState.gameUIState.centerViewRect.width,
-              child: _CommunityCardsWidget(
-                vnCommunityCardsRefresh: vnCommunityCardsRefresh,
-                vnCards: vnCards,
-                vnCardOthers: vnCardOthers,
-                vnTwoBoardsNeeded: vnTwoBoardsNeeded,
-              ),
+              child: const _CommunityCardsWidget(),
             ),
           ),
         ),
@@ -437,76 +407,33 @@ class _PotViewWidget extends StatelessWidget {
 }
 
 class _CommunityCardsWidget extends StatelessWidget {
-  final ValueNotifier<int> vnCommunityCardsRefresh;
-  final ValueNotifier<List<CardObject>> vnCards;
-  final ValueNotifier<List<CardObject>> vnCardOthers;
-  final ValueNotifier<bool> vnTwoBoardsNeeded;
-
-  const _CommunityCardsWidget({
-    Key key,
-    @required this.vnCommunityCardsRefresh,
-    @required this.vnCards,
-    @required this.vnCardOthers,
-    @required this.vnTwoBoardsNeeded,
-  }) : super(key: key);
+  const _CommunityCardsWidget({Key key}) : super(key: key);
 
   Matrix4 get transformMatrix => Matrix4.identity()
-    ..setEntry(3, 2, 0.005)
+    ..setEntry(3, 2, 0.002)
     ..rotateX(-20 * pi / 180);
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<int>(
-      valueListenable: vnCommunityCardsRefresh,
-      builder: (_, __, ___) {
-        return ValueListenableBuilder3<List<CardObject>, List<CardObject>,
-            bool>(
-          vnCards,
-          vnCardOthers,
-          vnTwoBoardsNeeded,
-          builder: (_, cards, cardsOther, twoBoardsNeeded, __) {
-            final gameState = GameState.getState(context);
-            final tableState = gameState.tableState;
+    final gameState = GameState.getState(context);
+    final tableState = gameState.tableState;
 
-            return LayoutBuilder(
-              builder: (_, constraints) {
-                /// available height for the community cards
-                final height = constraints.maxHeight;
+    return LayoutBuilder(
+      builder: (_, constraints) {
+        /// available height for the community cards
+        final height = constraints.maxHeight;
+        final double boardFactor = Screen.isLargeScreen ? 0.80 : 0.90;
+        final negativeSpace = (1 - boardFactor) * height * 0.30;
 
-                /// single board factor = 4/5 of available height
-                final double singleBoardFactor =
-                    Screen.isLargeScreen ? 3.0 / 4 : 4.0 / 5;
-
-                /// double board factor = full available height
-                final double doubleBoardFactor =
-                    Screen.isLargeScreen ? 0.90 : 1.0;
-
-                /// board factor depending upon if single board / double board
-                final boardFactor =
-                    twoBoardsNeeded ? doubleBoardFactor : singleBoardFactor;
-
-                final negativeSpace = (1 - boardFactor) * height;
-
-                return Container(
-                  margin: EdgeInsets.symmetric(vertical: negativeSpace),
-                  child: FittedBox(
-                    fit: BoxFit.fitHeight,
-                    child: Transform(
-                      transform: transformMatrix,
-                      alignment: Alignment.center,
-                      child: CommunityCardsView(
-                        key: Key('community-cards-view'),
-                        cards: tableState.cards,
-                        cardsOther: tableState.cardsOther,
-                        twoBoardsNeeded: tableState.twoBoardsNeeded,
-                        horizontal: true,
-                      ),
-                    ),
-                  ),
-                );
-              },
-            );
-          },
+        return Container(
+          margin: EdgeInsets.only(top: negativeSpace),
+          child: Transform(
+            transform: transformMatrix,
+            alignment: Alignment.center,
+            child: const CommunityCardView2(
+              key: Key('CommunityCardView'),
+            ),
+          ),
         );
       },
     );
@@ -556,6 +483,7 @@ class _PotUpdatesOrRankWidget extends StatelessWidget {
     final theme = AppTheme.getTheme(context);
 
     Widget potUpdatesView = FittedBox(
+      fit: BoxFit.fitHeight,
       child: ValueListenableBuilder2<double, String>(
         vnPotChipsUpdates,
         vnRankStr,

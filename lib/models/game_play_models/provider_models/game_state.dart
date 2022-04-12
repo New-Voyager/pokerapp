@@ -1,5 +1,4 @@
 import 'dart:developer';
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -13,25 +12,26 @@ import 'package:pokerapp/models/game/game_settings.dart';
 import 'package:pokerapp/models/game_play_models/business/game_chat_notfi_state.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/community_card_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_ui_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/marked_cards.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/models/rabbit_state.dart';
+import 'package:pokerapp/proto/hand.pb.dart' as proto;
 import 'package:pokerapp/proto/hand.pbenum.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/services/app/game_service.dart';
-import 'package:pokerapp/services/game_play/graphql/gamesettings_service.dart';
 import 'package:pokerapp/services/app/handlog_cache_service.dart';
 import 'package:pokerapp/services/data/game_hive_store.dart';
 import 'package:pokerapp/services/data/hive_models/game_settings.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
+import 'package:pokerapp/services/game_play/graphql/gamesettings_service.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
-import 'package:pokerapp/proto/hand.pb.dart' as proto;
 
 import 'game_assets.dart';
 import 'host_seat_change.dart';
@@ -211,6 +211,8 @@ class GameState {
 
   // next action id
   String currentActionId;
+
+  final communityCardState = CommunityCardState();
 
   Future<void> initialize({
     String gameCode,
@@ -874,6 +876,8 @@ class GameState {
     // clear table state
     tableState.clear();
     tableState.notifyAll();
+    // clear community cards
+    communityCardState.reset();
   }
 
   GameMessagingService get gameMessageService => this._gameMessageService;

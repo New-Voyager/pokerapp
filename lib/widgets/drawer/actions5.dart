@@ -72,7 +72,7 @@ class _Actions5WidgetState extends State<Actions5Widget> {
           if (closed) return;
           setState(() {});
           widget.gameState.tableState.notifyAll();
-          widget.gameState.tableState.refreshCommunityCards(colorCards: val);
+          // widget.gameState.tableState.refreshCommunityCards(colorCards: val);
           widget.gameState.redrawFooter();
         },
       ),

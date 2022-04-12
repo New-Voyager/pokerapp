@@ -61,8 +61,6 @@ class GameReplayService {
     @required List<int> myCards,
     @required int noCards,
     @required List<int> flopCards,
-    @required int turnCard,
-    @required int riverCard,
     @required Map<int, List<int>> playerCards,
     @required List<int> board1Cards,
     @required List<int> board2Cards,
@@ -116,7 +114,10 @@ class GameReplayService {
           gameReplayActionType: GameReplayActionType.flop_started,
           // startPot: handLog.flopActions.potStart,
           pots: flopActions.pots,
-          boardCards: flopCards,
+          boardCards: board1Cards?.sublist(0, 3),
+          boardCards2: board2Cards != null && board2Cards.length >= 3
+              ? board2Cards.sublist(0, 3)
+              : null,
         ),
       );
 
@@ -136,7 +137,12 @@ class GameReplayService {
         GameReplayAction(
           gameReplayActionType: GameReplayActionType.turn_started,
           pots: turnActions.pots,
-          boardCard: turnCard,
+          boardCard: board1Cards != null && board1Cards.length >= 3
+              ? board1Cards[3]
+              : null,
+          boardCard2: board2Cards != null && board2Cards.length >= 3
+              ? board2Cards[3]
+              : null,
         ),
       );
 
@@ -156,7 +162,12 @@ class GameReplayService {
         GameReplayAction(
           gameReplayActionType: GameReplayActionType.river_started,
           pots: riverActions.pots,
-          boardCard: riverCard,
+          boardCard: board1Cards != null && board1Cards.length >= 4
+              ? board1Cards[4]
+              : null,
+          boardCard2: board2Cards != null && board2Cards.length >= 4
+              ? board2Cards[4]
+              : null,
         ),
       );
 
@@ -249,8 +260,6 @@ class GameReplayService {
       myCards: currPlayerCards,
       noCards: data.noCards,
       flopCards: board1Cards.sublist(0, 3),
-      riverCard: board1Cards[3],
-      turnCard: board1Cards[4],
       playerCards: playerCards,
       board1Cards: board1Cards,
       board2Cards: data.getBoard2(),

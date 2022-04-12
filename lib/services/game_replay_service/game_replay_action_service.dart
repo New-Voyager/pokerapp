@@ -1,16 +1,13 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
-import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_replay_models/game_replay_action.dart';
 import 'package:pokerapp/models/handlog_model.dart';
-import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/services/audio/audio_service.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_proto_service.dart';
 import 'package:pokerapp/services/game_play/action_services/result_handler_v2_json.dart';
-import 'package:pokerapp/utils/card_helper.dart';
 import 'package:provider/provider.dart';
 
 class GameReplayActionService {
@@ -34,6 +31,8 @@ class GameReplayActionService {
 
     if (_close) return;
     final seat = gameState.getSeat(action.action.seatNo);
+    if (seat == null) return;
+
     final player = seat.player;
 
     if (_close) return;
@@ -130,17 +129,12 @@ class GameReplayActionService {
     final TableState tableState = _context.read<TableState>();
     final gameState = GameState.getState(_context);
 
-    tableState.addFlopCards(
-      1,
-      action.boardCards
-          .map((c) => CardHelper.getCard(
-                c,
-                colorCards: gameState.colorCards,
-              ))
-          .toList(),
-    );
+    gameState.handState = HandState.FLOP;
 
-    tableState.notifyAll();
+    gameState.communityCardState.addFlopCards(
+      board1: action.boardCards,
+      board2: action.boardCards2,
+    );
   }
 
   void _riverOrTurnStartedAction(GameReplayAction action) async {
@@ -153,12 +147,23 @@ class GameReplayActionService {
     final TableState tableState = _context.read<TableState>();
     final GameState gameState = GameState.getState(_context);
 
-    tableState.addTurnOrRiverCard(
-      1,
-      CardHelper.getCard(action.boardCard, colorCards: gameState.colorCards),
-    );
+    if (gameState.handState == HandState.FLOP) {
+      gameState.handState = HandState.TURN;
+    } else {
+      gameState.handState = HandState.RIVER;
+    }
 
-    tableState.notifyAll();
+    if (gameState.handState == HandState.TURN) {
+      gameState.communityCardState.addTurnCard(
+        board1Card: action.boardCard,
+        board2Card: action.boardCard2,
+      );
+    } else {
+      gameState.communityCardState.addRiverCard(
+        board1Card: action.boardCard,
+        board2Card: action.boardCard2,
+      );
+    }
   }
 
   void _showdownAction(GameReplayAction action) {
@@ -194,7 +199,7 @@ class GameReplayActionService {
 
   Future<void> _runItTwiceWinner(GameReplayAction action) {
     final GameState gameState = GameState.getState(_context);
-    ResultHandlerV2Json resultHander = ResultHandlerV2Json(
+    ResultHandlerV2Json resultHandler = ResultHandlerV2Json(
       replay: true,
       gameState: gameState,
       context: _context,
@@ -202,11 +207,11 @@ class GameReplayActionService {
       audioPlayer: new AudioPlayer(),
     );
 
-    return resultHander.show();
+    return resultHandler.show();
   }
 
   Future<void> _potWinnerResult(GameReplayAction action) {
-    ResultHandlerV2Json resultHander = ResultHandlerV2Json(
+    ResultHandlerV2Json resultHandler = ResultHandlerV2Json(
       replay: true,
       gameState: GameState.getState(_context),
       context: _context,
@@ -214,7 +219,7 @@ class GameReplayActionService {
       audioPlayer: new AudioPlayer(),
     );
 
-    return resultHander.show();
+    return resultHandler.show();
   }
 
   /* this method sets no of cards & distributes the cards */
@@ -224,7 +229,7 @@ class GameReplayActionService {
     AudioService.playDeal();
 
     if (_close) return;
-    HandActionProtoService.cardDistribution(gameState, action.noCards);
+    return HandActionProtoService.cardDistribution(gameState, action.noCards);
   }
 
   Future<void> takeAction(

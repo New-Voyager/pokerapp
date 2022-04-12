@@ -89,6 +89,10 @@ class AppConstants {
     milliseconds: 120,
   );
 
+  static const Duration communityCardWaitDuration = const Duration(
+    milliseconds: 200,
+  );
+
   static const Duration communityCardAnimationDuration = const Duration(
     milliseconds: 200,
   );

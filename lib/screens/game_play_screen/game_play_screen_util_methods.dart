@@ -1,5 +1,5 @@
-import 'dart:developer' as developer;
 import 'dart:developer';
+import 'dart:developer' as developer;
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:blinking_text/blinking_text.dart';
@@ -8,8 +8,8 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/enums/player_status.dart';
-import 'package:pokerapp/models/game_play_models/business/game_chat_notfi_state.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/notification_models/general_notification_model.dart';
@@ -18,10 +18,9 @@ import 'package:pokerapp/models/game_play_models/provider_models/remaining_time.
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat_change_model.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/resources/app_constants.dart';
-import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
 import 'package:pokerapp/services/app/game_service.dart';
@@ -29,11 +28,11 @@ import 'package:pokerapp/services/data/game_hive_store.dart';
 import 'package:pokerapp/services/data/game_log_store.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
+import 'package:pokerapp/utils/numeric_keyboard2.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 import 'package:timer_count_down/timer_count_down.dart';
-import 'package:pokerapp/utils/numeric_keyboard2.dart';
 
 import '../../services/test/test_service.dart';
 
@@ -63,6 +62,18 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
+          label: 'Reset',
+          labelBackgroundColor: Colors.black,
+          onTap: () {
+            TestService.resetCommunityCards();
+          },
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
           label: 'Flop Cards',
           labelBackgroundColor: Colors.black,
           onTap: () {
@@ -70,47 +81,16 @@ class GamePlayScreenUtilMethods {
           },
         ),
         SpeedDialChild(
-            child: Icon(
-              Icons.adb_rounded,
-              color: Colors.white,
-            ),
-            backgroundColor: Colors.red,
-            label: 'Add Turn/River cards',
-            labelBackgroundColor: Colors.black,
-            onTap: () {
-              TestService.addTurnOrRiverCard();
-            }),
-        SpeedDialChild(
-            child: Icon(
-              Icons.adb_rounded,
-              color: Colors.white,
-            ),
-            backgroundColor: Colors.red,
-            label: 'Show bets',
-            labelBackgroundColor: Colors.black,
-            onTap: () {
-              TestService.showBets();
-            }),
-        SpeedDialChild(
           child: Icon(
             Icons.adb_rounded,
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
+          label: 'Add Turn',
           labelBackgroundColor: Colors.black,
-          label: 'Show double board',
-          onTap: () => TestService.showDoubleBoard(),
-        ),
-
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          labelBackgroundColor: Colors.black,
-          label: 'Fill center view',
-          onTap: () => TestService.fillCenterView(),
+          onTap: () {
+            TestService.addTurnCard();
+          },
         ),
         SpeedDialChild(
           child: Icon(
@@ -118,9 +98,11 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
+          label: 'Add River',
           labelBackgroundColor: Colors.black,
-          label: 'Simulate Bet Movement',
-          onTap: () => TestService.simulateBetMovement(),
+          onTap: () {
+            TestService.addRiverCard();
+          },
         ),
         SpeedDialChild(
           child: Icon(
@@ -128,9 +110,11 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
-          label: 'Show Rank',
+          label: 'Run It Twice, after Flop',
           labelBackgroundColor: Colors.black,
-          onTap: () => TestService.showRank(),
+          onTap: () {
+            TestService.addRunItTwiceAfterFlop();
+          },
         ),
         SpeedDialChild(
           child: Icon(
@@ -138,62 +122,46 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
+          label: 'Run It Twice, after Turn',
           labelBackgroundColor: Colors.black,
-          label: 'Show holecards',
-          onTap: () => TestService.showHoleCards(),
+          onTap: () {
+            TestService.addRunItTwiceAfterTurn();
+          },
         ),
-
-        // SpeedDialChild(
-        //   child: Icon(
-        //     Icons.adb_rounded,
-        //     color: Colors.white,
-        //   ),
-        //   backgroundColor: Colors.red,
-        //   label: 'Fireworks',
-        //   labelBackgroundColor: Colors.black,
-        //   onTap: () => TestService.showFireworks(),
-        // ),
         SpeedDialChild(
           child: Icon(
             Icons.adb_rounded,
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
+          label: 'Adds cards',
           labelBackgroundColor: Colors.black,
-          label: 'Show double board',
-          onTap: () => TestService.showDoubleBoard(),
+          onTap: () {
+            TestService.addCardsWithoutAnimating();
+          },
         ),
         // SpeedDialChild(
-        //   child: Icon(
-        //     Icons.adb_rounded,
-        //     color: Colors.white,
-        //   ),
-        //   backgroundColor: Colors.red,
-        //   labelBackgroundColor: Colors.black,
-        //   label: 'Show Bets',
-        //   onTap: () => TestService.showBets(),
-        // ),
-        SpeedDialChild(
-            child: Icon(
-              Icons.adb_rounded,
-              color: Colors.white,
-            ),
-            backgroundColor: Colors.red,
-            label: 'Show Bet Widget',
-            labelBackgroundColor: Colors.black,
-            onTap: () {
-              TestService.testBetWidget();
-            }),
+        //     child: Icon(
+        //       Icons.adb_rounded,
+        //       color: Colors.white,
+        //     ),
+        //     backgroundColor: Colors.red,
+        //     label: 'Add Turn/River cards',
+        //     labelBackgroundColor: Colors.black,
+        //     onTap: () {
+        //       TestService.addTurnOrRiverCard();
+        //     }),
         // SpeedDialChild(
-        //   child: Icon(
-        //     Icons.adb_rounded,
-        //     color: Colors.white,
-        //   ),
-        //   backgroundColor: Colors.red,
-        //   label: 'Mic Animation',
-        //   labelBackgroundColor: Colors.black,
-        //   onTap: () => TestService.showMicAnimation(),
-        // ),
+        //     child: Icon(
+        //       Icons.adb_rounded,
+        //       color: Colors.white,
+        //     ),
+        //     backgroundColor: Colors.red,
+        //     label: 'Show bets',
+        //     labelBackgroundColor: Colors.black,
+        //     onTap: () {
+        //       TestService.showBets();
+        //     }),
         // SpeedDialChild(
         //   child: Icon(
         //     Icons.adb_rounded,
@@ -201,9 +169,10 @@ class GamePlayScreenUtilMethods {
         //   ),
         //   backgroundColor: Colors.red,
         //   labelBackgroundColor: Colors.black,
-        //   label: 'Seat Change Prompt',
-        //   onTap: () => TestService.showSeatChangePrompt(),
+        //   label: 'Show double board',
+        //   onTap: () => TestService.showDoubleBoard(),
         // ),
+        //
         // SpeedDialChild(
         //   child: Icon(
         //     Icons.adb_rounded,
@@ -211,8 +180,8 @@ class GamePlayScreenUtilMethods {
         //   ),
         //   backgroundColor: Colors.red,
         //   labelBackgroundColor: Colors.black,
-        //   label: 'Show Dealer Widget',
-        //   onTap: () => TestService.showDealerWidget(),
+        //   label: 'Fill center view',
+        //   onTap: () => TestService.fillCenterView(),
         // ),
         // SpeedDialChild(
         //   child: Icon(
@@ -221,8 +190,18 @@ class GamePlayScreenUtilMethods {
         //   ),
         //   backgroundColor: Colors.red,
         //   labelBackgroundColor: Colors.black,
-        //   label: 'Notification',
-        //   onTap: () => TestService.showTextNotification(),
+        //   label: 'Simulate Bet Movement',
+        //   onTap: () => TestService.simulateBetMovement(),
+        // ),
+        // SpeedDialChild(
+        //   child: Icon(
+        //     Icons.adb_rounded,
+        //     color: Colors.white,
+        //   ),
+        //   backgroundColor: Colors.red,
+        //   label: 'Show Rank',
+        //   labelBackgroundColor: Colors.black,
+        //   onTap: () => TestService.showRank(),
         // ),
         // SpeedDialChild(
         //   child: Icon(
@@ -231,9 +210,101 @@ class GamePlayScreenUtilMethods {
         //   ),
         //   backgroundColor: Colors.red,
         //   labelBackgroundColor: Colors.black,
-        //   label: 'Show Muck Losing Hand',
-        //   onTap: () => TestService.showMuckLosingHand(),
+        //   label: 'Show holecards',
+        //   onTap: () => TestService.showHoleCards(),
         // ),
+        //
+        // // SpeedDialChild(
+        // //   child: Icon(
+        // //     Icons.adb_rounded,
+        // //     color: Colors.white,
+        // //   ),
+        // //   backgroundColor: Colors.red,
+        // //   label: 'Fireworks',
+        // //   labelBackgroundColor: Colors.black,
+        // //   onTap: () => TestService.showFireworks(),
+        // // ),
+        // SpeedDialChild(
+        //   child: Icon(
+        //     Icons.adb_rounded,
+        //     color: Colors.white,
+        //   ),
+        //   backgroundColor: Colors.red,
+        //   labelBackgroundColor: Colors.black,
+        //   label: 'Show double board',
+        //   onTap: () => TestService.showDoubleBoard(),
+        // ),
+        // // SpeedDialChild(
+        // //   child: Icon(
+        // //     Icons.adb_rounded,
+        // //     color: Colors.white,
+        // //   ),
+        // //   backgroundColor: Colors.red,
+        // //   labelBackgroundColor: Colors.black,
+        // //   label: 'Show Bets',
+        // //   onTap: () => TestService.showBets(),
+        // // ),
+        // SpeedDialChild(
+        //     child: Icon(
+        //       Icons.adb_rounded,
+        //       color: Colors.white,
+        //     ),
+        //     backgroundColor: Colors.red,
+        //     label: 'Show Bet Widget',
+        //     labelBackgroundColor: Colors.black,
+        //     onTap: () {
+        //       TestService.testBetWidget();
+        //     }),
+        // // SpeedDialChild(
+        // //   child: Icon(
+        // //     Icons.adb_rounded,
+        // //     color: Colors.white,
+        // //   ),
+        // //   backgroundColor: Colors.red,
+        // //   label: 'Mic Animation',
+        // //   labelBackgroundColor: Colors.black,
+        // //   onTap: () => TestService.showMicAnimation(),
+        // // ),
+        // // SpeedDialChild(
+        // //   child: Icon(
+        // //     Icons.adb_rounded,
+        // //     color: Colors.white,
+        // //   ),
+        // //   backgroundColor: Colors.red,
+        // //   labelBackgroundColor: Colors.black,
+        // //   label: 'Seat Change Prompt',
+        // //   onTap: () => TestService.showSeatChangePrompt(),
+        // // ),
+        // // SpeedDialChild(
+        // //   child: Icon(
+        // //     Icons.adb_rounded,
+        // //     color: Colors.white,
+        // //   ),
+        // //   backgroundColor: Colors.red,
+        // //   labelBackgroundColor: Colors.black,
+        // //   label: 'Show Dealer Widget',
+        // //   onTap: () => TestService.showDealerWidget(),
+        // // ),
+        // // SpeedDialChild(
+        // //   child: Icon(
+        // //     Icons.adb_rounded,
+        // //     color: Colors.white,
+        // //   ),
+        // //   backgroundColor: Colors.red,
+        // //   labelBackgroundColor: Colors.black,
+        // //   label: 'Notification',
+        // //   onTap: () => TestService.showTextNotification(),
+        // // ),
+        // // SpeedDialChild(
+        // //   child: Icon(
+        // //     Icons.adb_rounded,
+        // //     color: Colors.white,
+        // //   ),
+        // //   backgroundColor: Colors.red,
+        // //   labelBackgroundColor: Colors.black,
+        // //   label: 'Show Muck Losing Hand',
+        // //   onTap: () => TestService.showMuckLosingHand(),
+        // // ),
       ],
       backgroundColor: AppColorsNew.appAccentColor,
     );

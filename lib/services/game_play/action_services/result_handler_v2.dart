@@ -3,13 +3,11 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
-import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
+import 'package:pokerapp/proto/hand.pb.dart' as proto;
+import 'package:pokerapp/proto/handmessage.pb.dart' as proto;
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/services/audio/audio_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
-import 'package:pokerapp/utils/card_helper.dart';
-import 'package:pokerapp/proto/hand.pb.dart' as proto;
-import 'package:pokerapp/proto/handmessage.pb.dart' as proto;
 
 class Winner {
   int seatNo;
@@ -95,23 +93,21 @@ class ResultHandlerV2 {
     }
 
     /* set board 1 cards */
-    List<CardObject> boardCards1CO = [];
+    List<int> boardCards1 = [];
     for (final c in result.boards[0].cards) {
-      boardCards1CO
-          .add(CardHelper.getCard(c, colorCards: gameState.colorCards));
+      boardCards1.add(c);
     }
     bool showdown = false;
     if (result.wonAt == proto.HandStatus.SHOW_DOWN) {
       showdown = true;
     }
     if (result.wonAt == proto.HandStatus.PREFLOP) {
-      boardCards1CO = [];
+      boardCards1 = [];
     } else if (result.wonAt == proto.HandStatus.FLOP) {
-      boardCards1CO = boardCards1CO.sublist(0, 3);
+      boardCards1 = boardCards1.sublist(0, 3);
     } else if (result.wonAt == proto.HandStatus.TURN) {
-      boardCards1CO = boardCards1CO.sublist(0, 4);
+      boardCards1 = boardCards1.sublist(0, 4);
     }
-    tableState.setBoardCards(1, boardCards1CO);
 
     if (result.highHandWinners.length > 0) {
       final winner = result.highHandWinners[0];
@@ -138,27 +134,27 @@ class ResultHandlerV2 {
         seat.notify();
       }
     }
+
+    List<int> boardCards2;
     /* set board 2 cards */
     if (result.boards.length == 2) {
-      List<CardObject> boardCards2CO = [];
+      boardCards2 = [];
       for (final c in result.boards[1].cards) {
-        boardCards2CO
-            .add(CardHelper.getCard(c, colorCards: gameState.colorCards));
+        boardCards2.add(c);
       }
       if (result.wonAt == proto.HandStatus.PREFLOP) {
-        boardCards2CO = [];
+        boardCards2 = [];
       } else if (result.wonAt == proto.HandStatus.FLOP) {
-        boardCards2CO = boardCards2CO.sublist(0, 3);
+        boardCards2 = boardCards2.sublist(0, 3);
       } else if (result.wonAt == proto.HandStatus.TURN) {
-        boardCards2CO = boardCards2CO.sublist(0, 4);
+        boardCards2 = boardCards2.sublist(0, 4);
       }
-
-      tableState.setBoardCards(2, boardCards2CO);
-      tableState.updateTwoBoardsNeeded(true);
-    } else {
-      tableState.updateTwoBoardsNeeded(false);
     }
-    // log('Result: result board: ${result.boards.length}');
+
+    gameState.communityCardState.addBoardCardsWithoutAnimating(
+      board1: boardCards1,
+      board2: boardCards2,
+    );
 
     /**
      * DO the following for each pot:
@@ -376,7 +372,6 @@ class ResultHandlerV2 {
   void resetResult({
     int boardIndex = 1,
   }) {
-    tableState.unHighlightCardsSilent(boardIndex);
     for (final player in gameState.playersInGame) {
       player.winner = false;
       player.highlight = false;
@@ -391,8 +386,7 @@ class ResultHandlerV2 {
     gameState.resetSeatActions(newHand: true);
     tableState.refreshTable();
     gameState.notifyAllSeats();
-    // refresh community cards already calls notifyListeners
-    tableState.refreshCommunityCards();
+    gameState.communityCardState.resetHighlightCards();
   }
 
   Future<void> showWinner({
@@ -418,12 +412,7 @@ class ResultHandlerV2 {
       /* highlight the winning cards for players */
       seat.player.highlightCards = winner.playerCards;
 
-      // log('WINNER player.cards: ${winner.playerCards} boardCards: ${winner.boardCards} setState: $setState ${winner.rankStr} ${AppConstants.chipMovingAnimationDuration}');
-      /* highlight the winning cards for board 1 */
-      tableState.highlightCardsSilent(
-        boardIndex,
-        winner.boardCards,
-      );
+      gameState.communityCardState.markHighlightCards(winner.boardCards);
 
       /* update the rank str */
       tableState.updateRankStrSilent(rank);
@@ -439,9 +428,8 @@ class ResultHandlerV2 {
       /* update state */
       gameState.notifyAllSeats();
       tableState.notifyAll();
-      tableState.refreshCommunityCards(colorCards: gameState.colorCards);
 
-      // we dont need this as we don't wanna do animation for all the seats
+      // we don't need this as we don't wanna do animation for all the seats
       /* finally animate the moving stack */
       // gameState.animateSeatActions();
 

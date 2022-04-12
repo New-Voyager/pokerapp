@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -6,7 +5,6 @@ import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/widgets/cards/pulsating_card_container.dart';
-import 'package:provider/provider.dart';
 
 // todo: turn off the pulsating highlight if you don't like it ;-)
 bool keepPulsatingHighlight = true;
@@ -40,26 +38,6 @@ class CardBuilderWidget extends StatelessWidget {
             isCardVisible != null &&
             cardBuilder != null);
 
-  /* this method returns the correct RATIO for a particular CARD TYPE */
-  static double getCardRatioFromCardType(CardType cardType) {
-    switch (cardType) {
-      case CardType.CommunityCard:
-        return 1.0;
-
-      case CardType.HoleCard:
-        return 1.0;
-
-      case CardType.PlayerCard:
-        return 0.90;
-
-      case CardType.HandLogOrHandHistoryCard:
-        return 0.80;
-
-      default:
-        return 1.0;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     TextStyle cardTextStyle = AppStylesNew.cardTextStyle.copyWith(fontSize: 12);
@@ -75,7 +53,7 @@ class CardBuilderWidget extends StatelessWidget {
       fontSize: 8,
     );
 
-    bool highlight = card.highlight ?? false;
+    final bool highlight = card.highlight ?? false;
 
     cardTextStyle = AppStylesNew.cardTextStyle.copyWith(
       color: card.color,
@@ -84,8 +62,6 @@ class CardBuilderWidget extends StatelessWidget {
     suitTextStyle = AppStylesNew.cardTextStyle.copyWith(
       color: card.color,
     );
-
-    double _ratio = getCardRatioFromCardType(card.cardType);
 
     // IMP: we ignore "dim" value if "highlight" is true
     bool toDim = dim;
@@ -112,12 +88,18 @@ class CardBuilderWidget extends StatelessWidget {
       fgDecoration = null;
     }
 
-    final double height = AppDimensions.cardHeight * _ratio;
-    final double width = AppDimensions.cardWidth * _ratio;
+    Size cardSize = const Size(
+      AppDimensions.cardWidth * 0.80,
+      AppDimensions.cardHeight * 0.80,
+    );
+
+    if (highlight) {
+      cardSize = const Size(double.infinity, double.infinity);
+    }
 
     Widget cardWidget = Container(
-      height: height,
-      width: width,
+      height: cardSize.height,
+      width: cardSize.width,
       foregroundDecoration: fgDecoration,
       decoration: BoxDecoration(
         boxShadow: shadow
@@ -137,14 +119,19 @@ class CardBuilderWidget extends StatelessWidget {
       child: _buildCardBackSide(cardTextStyle, suitTextStyle, context),
     );
 
-    if (highlight && keepPulsatingHighlight)
+    if (highlight && keepPulsatingHighlight) {
       return PulsatingCardContainer(
         child: cardWidget,
-        height: height,
-        width: width,
+        height: double.infinity,
+        width: double.infinity,
         color: Colors.green.withOpacity(0.80),
         animationUpToWidth: 4.0,
       );
+    }
+
+    if (toDim) {
+      return Transform.scale(scale: 0.85, child: cardWidget);
+    }
 
     return cardWidget;
   }
