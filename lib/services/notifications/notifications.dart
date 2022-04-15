@@ -402,6 +402,7 @@ class NotificationHandler {
     // WAITLIST_SEATING
     String type = json['type'];
     if (!(type == 'NEW_GAME' ||
+        type == 'CLUB_CHAT' ||
         type == 'WAITLIST_SEATING' ||
         type == 'HOST_MESSAGE' ||
         type == 'TEST_PUSH' ||
@@ -419,6 +420,15 @@ class NotificationHandler {
         int sb = int.parse(json['sb'].toString());
         int bb = int.parse(json['bb'].toString());
         body = 'Club: ${json['clubName']} hosts a new game. $game $sb/$bb';
+      } catch (err) {}
+    } else if (type == 'CLUB_CHAT') {
+      try {
+        if (json['text'] != null) {
+          body =
+              'Club: ${json['clubName']} ${json['playerName']}: ${json['text']}';
+        } else {
+          return;
+        }
       } catch (err) {}
     } else if (type == 'WAITLIST_SEATING') {
       try {
@@ -462,7 +472,7 @@ class NotificationHandler {
     final _iosDetails = IOSNotificationDetails();
     final _notificationDetails =
         NotificationDetails(android: _androidDetails, iOS: _iosDetails);
-    log('5 in showMessageInBin');
+    // log('5 in showMessageInBin');
 
     await flutterLocalNotificationsPlugin
         .show(
@@ -475,7 +485,7 @@ class NotificationHandler {
         .onError((error, stackTrace) {
       log('Error when showing message. Error: ${error.toString()}');
     }); //, payload: jsonEncode(json));
-    log('6 in showMessageInBin');
+    // log('6 in showMessageInBin');
   }
 
   Future<void> handleTestMessage(Map<String, dynamic> json) async {
