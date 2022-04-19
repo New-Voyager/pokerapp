@@ -52,7 +52,7 @@ class GifCacheService {
   ) async {
     /* download the preview gifs & store them in local storage */
     for (int i = 0; i < gifs.length; i++) {
-      print('downloading $i cache gif for $query');
+      //print('downloading $i cache gif for $query');
       TenorResult gif = gifs[i];
 
       final String previewUrl = gif.media.tinygif.url;

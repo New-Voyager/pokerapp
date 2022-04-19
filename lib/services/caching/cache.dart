@@ -126,10 +126,11 @@ class CacheService {
   }
 
   Future<List<MemberCreditHistory>> getPlayerActivities(
-      String clubCode, String playerId) async {
+      String clubCode, String playerId,
+      {bool update = false}) async {
     String cacheId = 'creditHistory-$clubCode-$playerId';
     final cachedObject = getFromCache(cacheId);
-    if (cachedObject != null) {
+    if (cachedObject != null && !update) {
       return cachedObject;
     }
     final history =
@@ -138,11 +139,11 @@ class CacheService {
     return history;
   }
 
-  Future<ClubMemberModel> getClubMemberDetail(
-      String clubCode, String playerId) async {
+  Future<ClubMemberModel> getClubMemberDetail(String clubCode, String playerId,
+      {bool update = false}) async {
     String cacheId = 'memberDetail-$clubCode-$playerId';
     final cachedObject = getFromCache(cacheId);
-    if (cachedObject != null) {
+    if (cachedObject != null && !update) {
       return cachedObject;
     }
     final member =

@@ -402,13 +402,15 @@ class NotificationHandler {
     // WAITLIST_SEATING
     String type = json['type'];
     if (!(type == 'NEW_GAME' ||
+        type == 'CLUB_CHAT' ||
         type == 'WAITLIST_SEATING' ||
         type == 'HOST_MESSAGE' ||
         type == 'TEST_PUSH' ||
         type == 'SYSTEM_ANNOUNCEMENT' ||
         type == 'CLUB_ANNOUNCEMENT' ||
         type == 'HOST_TO_MEMBER' ||
-        type == 'MEMBER_TO_HOST')) {
+        type == 'MEMBER_TO_HOST' ||
+        type == 'CREDIT_UPDATE')) {
       return;
     }
     String body = '';
@@ -419,6 +421,49 @@ class NotificationHandler {
         int sb = int.parse(json['sb'].toString());
         int bb = int.parse(json['bb'].toString());
         body = 'Club: ${json['clubName']} hosts a new game. $game $sb/$bb';
+      } catch (err) {}
+    } else if (type == 'CLUB_CHAT') {
+      try {
+        if (json['chat-type'] == 'TEXT') {
+          if (json['text'] != null) {
+            body =
+                'Club: ${json['clubName']} ${json['playerName']}: ${json['text']}';
+          } else {
+            return;
+          }
+        } else if (json['chat-type'] == 'GIPHY') {
+          body =
+              'Club: ${json['clubName']} ${json['playerName']}: sent an image';
+        }
+      } catch (err) {}
+    } else if (type == 'CREDIT_UPDATE') {
+      try {
+        /*
+        const message: any = {
+      type: 'CREDIT_UPDATE',
+      clubName: clubName,
+      clubCode: clubCode,
+      text: text,
+      requestId: messageId,
+      changeCredit: changeCredit,
+      availableCredits: updatedCredits,
+      updateType: CreditUpdateType[updateType],
+    };
+        */
+        body = '';
+        if (json['updateType'] == 'ADD') {
+          body =
+              'Club: ${json['clubName']} added ${json['changeCredit']} credits. Credits: ${json['availableCredits']}';
+        } else if (json['updateType'] == 'DEDUCT') {
+          body =
+              'Club: ${json['clubName']} deducted ${json['changeCredit']} credits. Credits: ${json['availableCredits']}';
+        } else if (json['updateType'] == 'FEE_CREDIT') {
+          body =
+              'Club: ${json['clubName']} added ${json['changeCredit']} fee credits. Credits: ${json['availableCredits']}';
+        } else if (json['updateType'] == 'CHANGE') {
+          body =
+              'Club: ${json['clubName']} set credits to ${json['changeCredit']}. Credits: ${json['availableCredits']}';
+        }
       } catch (err) {}
     } else if (type == 'WAITLIST_SEATING') {
       try {
@@ -462,7 +507,7 @@ class NotificationHandler {
     final _iosDetails = IOSNotificationDetails();
     final _notificationDetails =
         NotificationDetails(android: _androidDetails, iOS: _iosDetails);
-    log('5 in showMessageInBin');
+    // log('5 in showMessageInBin');
 
     await flutterLocalNotificationsPlugin
         .show(
@@ -475,7 +520,7 @@ class NotificationHandler {
         .onError((error, stackTrace) {
       log('Error when showing message. Error: ${error.toString()}');
     }); //, payload: jsonEncode(json));
-    log('6 in showMessageInBin');
+    // log('6 in showMessageInBin');
   }
 
   Future<void> handleTestMessage(Map<String, dynamic> json) async {
