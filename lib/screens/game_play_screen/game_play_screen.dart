@@ -23,9 +23,9 @@ import 'package:pokerapp/models/pending_approvals.dart';
 import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
-import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/game_context_screen/game_chat/game_chat.dart';
 import 'package:pokerapp/screens/game_play_screen/footer_view.dart';
@@ -47,16 +47,15 @@ import 'package:pokerapp/services/game_play/graphql/seat_change_service.dart';
 import 'package:pokerapp/services/gql_errors.dart';
 import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/services/test/test_service.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
-import 'package:pokerapp/utils/name_plate_widget_parent.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:pokerapp/widgets/drawer/game_play_drawer.dart';
 import 'package:provider/provider.dart';
 import 'package:wakelock/wakelock.dart';
-import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 import '../../main_helper.dart';
 import '../../routes.dart';
@@ -455,6 +454,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   /* dispose method for closing connections and un subscribing to channels */
   @override
   void dispose() {
+    appState.isInGameScreen = false;
     appState.removeGameCode();
 
     _timer?.cancel();
@@ -792,6 +792,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   @override
   void initState() {
     super.initState();
+    appState.isInGameScreen = true;
 
     boardAttributes = BoardAttributesObject(
       screenSize: Screen.diagonalInches,
@@ -815,6 +816,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     init().then((v) {
       _timer = Timer(const Duration(seconds: 1), () {
         if (!TestService.isTesting) {
+          if (!mounted) return;
           _queryCurrentHandIfNeeded();
           final nats = context.read<Nats>();
           log('dartnats: adding to disconnectListeners');
@@ -859,7 +861,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       await _initGameInfoModel();
     } catch (e) {
       log(e.toString());
-      Navigator.pop(context);
+      if (mounted) Navigator.pop(context);
     }
   }
 

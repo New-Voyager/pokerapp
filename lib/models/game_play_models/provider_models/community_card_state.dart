@@ -657,8 +657,12 @@ class CommunityCardState extends ChangeNotifier {
 
     double xOffset = gapWidth;
     for (int i = 1; i <= n; i++) {
-      _singleBoardCardDimens[i] =
-          Rect.fromLTWH(xOffset, heightOffset, eachCardWidth, eachCardHeight);
+      _singleBoardCardDimens[i] = Rect.fromLTWH(
+        xOffset,
+        heightOffset,
+        eachCardWidth,
+        eachCardHeight,
+      );
       xOffset += gapWidth + eachCardWidth;
     }
   }
