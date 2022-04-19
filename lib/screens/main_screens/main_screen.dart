@@ -1,16 +1,14 @@
 import 'dart:developer';
 
 import 'package:badges/badges.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/announcement_model.dart';
-import 'package:pokerapp/models/app_state.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
 import 'package:pokerapp/models/player_info.dart';
-import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/app_icons.dart';
@@ -19,7 +17,6 @@ import 'package:pokerapp/screens/main_screens/clubs_page_view/clubs_page_view.da
 import 'package:pokerapp/screens/main_screens/games_page_view/live_games.dart';
 import 'package:pokerapp/screens/main_screens/profile_page_view/profile_page_view_new.dart';
 import 'package:pokerapp/screens/main_screens/purchase_page_view/store_page.dart';
-import 'package:pokerapp/services/app/clubs_service.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/app/gif_cache_service.dart';
 import 'package:pokerapp/services/app/loadassets_service.dart';
@@ -74,6 +71,12 @@ class _MainScreenState extends State<MainScreen>
     GifCacheService.cacheGifCategories(
       AppConstants.GIF_CATEGORIES + AppConstants.GIF_CATEGORIES_CLUB,
     );
+
+    // ConnectionDialog.show(
+    //   context: context,
+    //   loadingText: "Initializing the app.",
+    // );
+
     log('device name: ${DeviceInfo.name}');
     //await playerState.open();
     await GameHistoryService.init();
@@ -111,6 +114,8 @@ class _MainScreenState extends State<MainScreen>
       appState.myClubs = clubs;
     }
     assetLoader.load();
+
+    // ConnectionDialog.dismiss(context: context);
 
     // check for active game and if there, redirect
     QuickGameNavigationService.handle(context: context);

@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:hive/hive.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/resources/app_constants.dart';
@@ -15,6 +14,9 @@ class QuickGameNavigationService {
   }
 
   static void handle({@required final BuildContext context}) async {
+    // if already in game screen - don't do anything
+    if (appState.isInGameScreen) return;
+
     final userInGame = appService.userSettings.getLastGame();
     // return if userInGame is empty
     if (userInGame.isEmpty) return;

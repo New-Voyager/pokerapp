@@ -59,10 +59,11 @@ class _ChatScreenState extends State<ChatScreen> with RouteAwareAnalytics {
 
     dev.log('chat screen for host-member message: fetching');
 
-    setState(() {
-      messages.clear();
-      messages.addAll(messagesFromMembers);
-    });
+    if (mounted)
+      setState(() {
+        messages.clear();
+        messages.addAll(messagesFromMembers);
+      });
   }
 
   void _startFetching() {
