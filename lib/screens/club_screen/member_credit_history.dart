@@ -84,10 +84,12 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
     try {
       loading = true;
       setState(() {});
-      member = await appState.cacheService
-          .getClubMemberDetail(widget.clubCode, widget.playerId);
-      history = await appState.cacheService
-          .getPlayerActivities(widget.clubCode, widget.playerId);
+      member = await appState.cacheService.getClubMemberDetail(
+          widget.clubCode, widget.playerId,
+          update: changed);
+      history = await appState.cacheService.getPlayerActivities(
+          widget.clubCode, widget.playerId,
+          update: changed);
       // filter using the dates
       List<MemberCreditHistory> filteredHistory;
       if (filter) {
@@ -225,6 +227,7 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
                                               widget.clubCode;
                                           await appState.cacheService
                                               .getMembers(widget.clubCode);
+                                          changed = false;
                                         }
                                       },
                                       theme: theme)
@@ -437,6 +440,21 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
               width: 8,
             ),
             Text('Result'),
+            SizedBox(
+              width: 8,
+            ),
+            Container(
+              height: 10,
+              width: 10,
+              decoration: BoxDecoration(
+                color: Colors.blueGrey[300],
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            SizedBox(
+              width: 8,
+            ),
+            Text('Reset'),
           ],
         ),
         Theme(
@@ -580,6 +598,11 @@ class DataCreditSource extends DataTableSource {
     Color amountColor = Colors.white;
     Color typeColor = Colors.white;
     String notes = item.notes;
+
+    if (item.updateType == 'DEDUCT') {
+      item.amount = -item.amount;
+    }
+
     if (item.amount < 0) {
       amountColor = Colors.red;
     } else if (item.amount > 0) {
@@ -606,8 +629,8 @@ class DataCreditSource extends DataTableSource {
     }
     if (item.updateType == 'CHANGE') {
       type = 'Set';
-      typeColor = Colors.blue;
-      // amountColor = Colors.blue;
+      typeColor = Colors.blueGrey[300];
+      amountColor = Colors.blueGrey[300];
       //typeColor = Colors.cyan;
     }
     List<DataCell> cells = [

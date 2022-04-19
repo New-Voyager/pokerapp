@@ -390,7 +390,7 @@ class MemberItem extends StatelessWidget {
                       Align(
                           alignment: Alignment.topRight,
                           child: Visibility(
-                              visible: club.trackMemberCredit,
+                              visible: club.trackMemberCredit && club.isOwner,
                               child: CreditsWidget(
                                 credits: data.availableCredit ?? 0,
                                 theme: theme,

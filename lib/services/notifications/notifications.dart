@@ -409,7 +409,8 @@ class NotificationHandler {
         type == 'SYSTEM_ANNOUNCEMENT' ||
         type == 'CLUB_ANNOUNCEMENT' ||
         type == 'HOST_TO_MEMBER' ||
-        type == 'MEMBER_TO_HOST')) {
+        type == 'MEMBER_TO_HOST' ||
+        type == 'CREDIT_UPDATE')) {
       return;
     }
     String body = '';
@@ -423,11 +424,45 @@ class NotificationHandler {
       } catch (err) {}
     } else if (type == 'CLUB_CHAT') {
       try {
-        if (json['text'] != null) {
+        if (json['chat-type'] == 'TEXT') {
+          if (json['text'] != null) {
+            body =
+                'Club: ${json['clubName']} ${json['playerName']}: ${json['text']}';
+          } else {
+            return;
+          }
+        } else if (json['chat-type'] == 'GIPHY') {
           body =
-              'Club: ${json['clubName']} ${json['playerName']}: ${json['text']}';
-        } else {
-          return;
+              'Club: ${json['clubName']} ${json['playerName']}: sent an image';
+        }
+      } catch (err) {}
+    } else if (type == 'CREDIT_UPDATE') {
+      try {
+        /*
+        const message: any = {
+      type: 'CREDIT_UPDATE',
+      clubName: clubName,
+      clubCode: clubCode,
+      text: text,
+      requestId: messageId,
+      changeCredit: changeCredit,
+      availableCredits: updatedCredits,
+      updateType: CreditUpdateType[updateType],
+    };
+        */
+        body = '';
+        if (json['updateType'] == 'ADD') {
+          body =
+              'Club: ${json['clubName']} added ${json['changeCredit']} credits. Credits: ${json['availableCredits']}';
+        } else if (json['updateType'] == 'DEDUCT') {
+          body =
+              'Club: ${json['clubName']} deducted ${json['changeCredit']} credits. Credits: ${json['availableCredits']}';
+        } else if (json['updateType'] == 'FEE_CREDIT') {
+          body =
+              'Club: ${json['clubName']} added ${json['changeCredit']} fee credits. Credits: ${json['availableCredits']}';
+        } else if (json['updateType'] == 'CHANGE') {
+          body =
+              'Club: ${json['clubName']} set credits to ${json['changeCredit']}. Credits: ${json['availableCredits']}';
         }
       } catch (err) {}
     } else if (type == 'WAITLIST_SEATING') {
