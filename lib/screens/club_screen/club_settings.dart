@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/models/club_update_input_model.dart';
+import 'package:pokerapp/models/notifications_update_model.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_config.dart';
@@ -37,8 +38,10 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
   AppTextScreen _appScreenText;
   TextEditingController _controller = TextEditingController();
   ClubHomePageModel _clubModel;
+  ClubNotifications _notifications;
   bool _loading = true;
   bool updated = false;
+  bool notificationsUpdated = false;
   @override
   void initState() {
     _clubModel = widget.clubModel;
@@ -55,8 +58,11 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
     });
     final ClubHomePageModel model =
         await ClubsService.getClubHomePageData(widget.clubModel.clubCode);
+    final ClubNotifications notifications =
+        await ClubsService.getClubNotifications(widget.clubModel.clubCode);
     if (model != null) {
       setState(() {
+        _notifications = notifications;
         _clubModel = model;
       });
     }
@@ -82,6 +88,9 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
               // save club settings
               if (updated) {
                 await updateClubSettings();
+              }
+              if (notificationsUpdated) {
+                await updateNotificationSettings();
               }
               Navigator.of(context).pop(updated);
             },
@@ -247,8 +256,69 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
                         ),
                       ),
 
+                      // Visibility(
+                      //   visible: _clubModel.isOwner,
+                      //   child: Container(
+                      //     decoration: AppDecorators.tileDecoration(theme),
+                      //     padding:
+                      //         EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                      //     margin:
+                      //         EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      //     child: Column(
+                      //       crossAxisAlignment: CrossAxisAlignment.start,
+                      //       children: [
+                      //         Text(
+                      //           "Manager Roles",
+                      //           style: AppDecorators.getAccentTextStyle(
+                      //               theme: theme),
+                      //           textAlign: TextAlign.center,
+                      //         ),
+                      //         _buildRadio(
+                      //             value: _clubModel.role.seeTips,
+                      //             label: 'Can See Tips',
+                      //             onChange: (v) async {
+                      //               _clubModel.role.seeTips = v;
+                      //               updated = true;
+                      //             },
+                      //             theme: theme),
+                      //         _buildRadio(
+                      //             value: _clubModel.role.makeAnnouncement,
+                      //             label: 'Can Make Announcement',
+                      //             onChange: (v) async {
+                      //               updated = true;
+                      //               _clubModel.role.makeAnnouncement = v;
+                      //             },
+                      //             theme: theme),
+                      //         _buildRadio(
+                      //             value: _clubModel.role.hostGames,
+                      //             label: 'Can Host Games',
+                      //             onChange: (v) async {
+                      //               updated = true;
+                      //               _clubModel.role.hostGames = v;
+                      //             },
+                      //             theme: theme),
+                      //         _buildRadio(
+                      //             value: _clubModel.role.viewMemberActivities,
+                      //             label: 'Can View Players Report',
+                      //             onChange: (v) async {
+                      //               updated = true;
+                      //               _clubModel.role.viewMemberActivities = v;
+                      //             },
+                      //             theme: theme),
+                      //         _buildRadio(
+                      //             value: _clubModel.role.canUpdateCredits,
+                      //             label: 'Can Update Credits',
+                      //             onChange: (v) async {
+                      //               updated = true;
+                      //               _clubModel.role.canUpdateCredits = v;
+                      //             },
+                      //             theme: theme),
+                      //       ],
+                      //     ),
+                      //   ),
+                      // ),
                       Visibility(
-                        visible: _clubModel.isOwner,
+                        visible: true,
                         child: Container(
                           decoration: AppDecorators.tileDecoration(theme),
                           padding:
@@ -259,64 +329,48 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "Manager Roles",
+                                "Notifications",
                                 style: AppDecorators.getAccentTextStyle(
                                     theme: theme),
                                 textAlign: TextAlign.center,
                               ),
                               _buildRadio(
-                                  value: _clubModel.role.seeTips,
-                                  label: 'Can See Tips',
+                                  value: _notifications.newGames,
+                                  label: 'New Games',
                                   onChange: (v) async {
-                                    _clubModel.role.seeTips = v;
-                                    updated = true;
+                                    _notifications.newGames = v;
+                                    notificationsUpdated = true;
                                   },
                                   theme: theme),
                               _buildRadio(
-                                  value: _clubModel.role.makeAnnouncement,
-                                  label: 'Can Make Announcement',
+                                  value: _notifications.creditUpdates,
+                                  label: 'Credit Updates',
                                   onChange: (v) async {
                                     updated = true;
-                                    _clubModel.role.makeAnnouncement = v;
+                                    _notifications.creditUpdates = v;
+                                    notificationsUpdated = true;
                                   },
                                   theme: theme),
                               _buildRadio(
-                                  value: _clubModel.role.hostGames,
-                                  label: 'Can Host Games',
+                                  value: _notifications.clubChat,
+                                  label: 'Club Chat',
                                   onChange: (v) async {
-                                    updated = true;
-                                    _clubModel.role.hostGames = v;
-                                  },
-                                  theme: theme),
-                              // _buildRadio(
-                              //     value: _clubModel.role.approveBuyin,
-                              //     label: 'Can Approve Buyin',
-                              //     onChange: (v) async {
-                              //       _clubModel.role.approveBuyin = v;
-                              //       updated = true;
-                              //     },
-                              //     theme: theme),
-                              _buildRadio(
-                                  value: _clubModel.role.viewMemberActivities,
-                                  label: 'Can View Players Report',
-                                  onChange: (v) async {
-                                    updated = true;
-                                    _clubModel.role.viewMemberActivities = v;
+                                    _notifications.clubChat = v;
+                                    notificationsUpdated = true;
                                   },
                                   theme: theme),
                               _buildRadio(
-                                  value: _clubModel.role.canUpdateCredits,
-                                  label: 'Can Update Credits',
+                                  value: _notifications.clubAnnouncements,
+                                  label: 'Club Announcements',
                                   onChange: (v) async {
-                                    updated = true;
-                                    _clubModel.role.canUpdateCredits = v;
+                                    _notifications.clubAnnouncements = v;
+                                    notificationsUpdated = true;
                                   },
                                   theme: theme),
                             ],
                           ),
                         ),
                       ),
-
                       // Leave club
                       Visibility(
                         visible: !(_clubModel.isOwner),
@@ -535,6 +589,23 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
     ConnectionDialog.dismiss(context: context);
   }
 
+  updateClubNotificationSettings(ClubNotifications input) async {
+    ConnectionDialog.show(
+        context: context, loadingText: "${_appScreenText['updatingDetails']}");
+    final res =
+        await ClubsService.updateClubNotifications(_clubModel.clubCode, input);
+
+    if (res != null && res == true) {
+      Alerts.showNotification(
+          titleText: "${_appScreenText['clubDetailsUpdated']}");
+    } else {
+      Alerts.showNotification(
+          titleText: "${_appScreenText['failedToUpdateClubDetails']}");
+    }
+    //await _fetchClubInfo();
+    ConnectionDialog.dismiss(context: context);
+  }
+
   _handleUploadPicture() async {
     final ImagePicker _picker = ImagePicker();
     // Pick an image
@@ -584,6 +655,16 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
       await ClubsService.updateManagerRole(
           _clubModel.clubCode, _clubModel.role);
       log('updateClubSettings');
+      ConnectionDialog.dismiss(context: context);
+    }
+  }
+
+  Future<void> updateNotificationSettings() async {
+    if (notificationsUpdated) {
+      ConnectionDialog.show(
+          context: context, loadingText: "Updating notifications...");
+      await ClubsService.updateClubNotifications(
+          _clubModel.clubCode, _notifications);
       ConnectionDialog.dismiss(context: context);
     }
   }

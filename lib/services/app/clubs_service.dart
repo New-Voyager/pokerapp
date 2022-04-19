@@ -14,6 +14,7 @@ import 'package:pokerapp/models/host_message_summary_model.dart';
 import 'package:pokerapp/models/messages_from_member.dart';
 
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:pokerapp/models/notifications_update_model.dart';
 
 class ClubsService {
   static String sendPlayerMessageQuery = """
@@ -132,6 +133,30 @@ class ClubsService {
   static String updateClubQuery = """
     mutation (\$clubCode: String!, \$club: ClubUpdateInput!) {
       updateClub(clubCode: \$clubCode, club: \$club)
+  }
+  """;
+
+  static String updateClubNotificationsQuery = """
+    mutation (\$clubCode: String!, \$input: NotificationSettingsInput!) {
+      updateNotificationSettings(clubCode: \$clubCode, input: \$input) {
+        newGames
+        clubChat
+        creditUpdates
+        hostMessages
+        clubAnnouncements
+  }
+  }
+  """;
+
+  static String queryClubNotificationsQuery = """
+    query (\$clubCode: String!) {
+      notificationSettings(clubCode: \$clubCode) {
+        newGames
+        clubChat
+        creditUpdates
+        hostMessages
+        clubAnnouncements
+      }
   }
   """;
 
@@ -291,28 +316,6 @@ class ClubsService {
     return result.data['deleteClub'] ?? false;
   }
 
-  // static Future<bool> updateClub(
-  //   String clubCode,
-  //   String name,
-  //   String description,
-  // ) async {
-  //   GraphQLClient _client = graphQLConfiguration.clientToQuery();
-  //   String _query = updateClubQuery;
-  //   Map<String, dynamic> variables = {
-  //     "name": name,
-  //     "description": description,
-  //     "clubCode": clubCode,
-  //   };
-
-  //   QueryResult result = await _client.mutate(
-  //     MutationOptions(document: gql(_query), variables: variables),
-  //   );
-
-  //   if (result.hasException) return false;
-
-  //   return result.data['updateClub'] ?? false;
-  // }
-
   static Future<bool> updateClubInput(
       String clubCode, ClubUpdateInput input) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
@@ -328,6 +331,40 @@ class ClubsService {
     if (result.hasException) return false;
 
     return result.data['updateClub'] ?? false;
+  }
+
+  static Future<bool> updateClubNotifications(
+      String clubCode, ClubNotifications input) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    Map<String, dynamic> variables = {
+      "clubCode": clubCode,
+      "input": input.toJson()
+    };
+
+    QueryResult result = await _client.mutate(
+      MutationOptions(
+          document: gql(updateClubNotificationsQuery), variables: variables),
+    );
+
+    if (result.hasException) return false;
+
+    return true;
+  }
+
+  static Future<ClubNotifications> getClubNotifications(String clubCode) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    Map<String, dynamic> variables = {
+      "clubCode": clubCode,
+    };
+
+    QueryResult result = await _client.query(
+      QueryOptions(
+          document: gql(queryClubNotificationsQuery), variables: variables),
+    );
+
+    if (result.hasException) return ClubNotifications.defaultObject();
+
+    return ClubNotifications.fromJson(result.data['notificationSettings']);
   }
 
   static Future<String> createClub(String name, String description) async {
