@@ -7,6 +7,7 @@ import 'package:location/location.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/main_helper.dart';
 import 'package:pokerapp/models/announcement_model.dart';
+import 'package:pokerapp/models/game/lobby_game_model.dart';
 import 'package:pokerapp/models/game/new_game_model.dart';
 import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
@@ -15,6 +16,7 @@ import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/newmodels/game_model_new.dart';
 import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/models/table_record.dart';
+import 'package:pokerapp/screens/main_screens/lobby_games/lobbygames.dart';
 import 'package:pokerapp/services/app/quick_game_navigation_service.dart';
 import 'package:pokerapp/services/data/box_type.dart';
 import 'package:pokerapp/services/data/hive_datasource_impl.dart';
@@ -140,6 +142,56 @@ class GameService {
       }
     } 
   """;
+
+  static String getLobbyGamesQuery = """
+    query lobbyGames{
+      ret:lobbyGames{
+        title
+        gameCode
+        gameType
+        smallBlind
+        bigBlind
+        buyInMin
+        buyInMax
+        gameID
+        status
+        maxPlayers
+        activePlayers
+      }
+    }
+  """;
+
+  // Fetch Lobby Games
+  static Future<List<LobbyGameModel>> fetchLobbyGames() async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    QueryResult result = await _client.query(
+      QueryOptions(
+        document: gql(getLobbyGamesQuery),
+      ),
+    );
+
+    final List<LobbyGameModel> games = [];
+    if (result.hasException) {
+      log(result.exception.toString());
+      return games;
+    }
+
+    if (result.data == null) {
+      return games;
+    }
+
+    final List<dynamic> lobbyGames = result.data['ret'];
+
+    if (lobbyGames == null) {
+      return games;
+    }
+
+    for (var game in lobbyGames) {
+      games.add(LobbyGameModel.fromJson(game));
+    }
+
+    return games;
+  }
 
   static Future<List<AnnouncementModel>> getSystemAnnouncements() async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();

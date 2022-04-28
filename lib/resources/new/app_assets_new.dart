@@ -75,4 +75,6 @@ class AppAssetsNew {
 
   static String defaultBackdropPath = 'assets/images/backgrounds/night sky.png';
   static String defaultBetDailPath = 'assets/images/betimage.svg';
+
+  static String chipImagePath = "assets/images/chips.png";
 }

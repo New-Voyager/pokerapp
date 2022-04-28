@@ -85,7 +85,8 @@
         "clubs": "Clubs",
         "profile": "Profile",
         "store": "Store",
-        "test": "Test"
+        "test": "Test",
+        "lobby": "Lobby"
     },
     "liveGame": {
         "host": "HOST",

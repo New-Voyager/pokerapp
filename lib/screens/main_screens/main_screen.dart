@@ -15,6 +15,7 @@ import 'package:pokerapp/resources/app_icons.dart';
 import 'package:pokerapp/screens/game_screens/game_history_details_view/hand_stats_view.dart';
 import 'package:pokerapp/screens/main_screens/clubs_page_view/clubs_page_view.dart';
 import 'package:pokerapp/screens/main_screens/games_page_view/live_games.dart';
+import 'package:pokerapp/screens/main_screens/lobby_games/lobbygames.dart';
 import 'package:pokerapp/screens/main_screens/profile_page_view/profile_page_view_new.dart';
 import 'package:pokerapp/screens/main_screens/purchase_page_view/store_page.dart';
 import 'package:pokerapp/services/app/game_service.dart';
@@ -182,6 +183,7 @@ class _MainScreenState extends State<MainScreen>
     List<Widget> widgets = [];
     widgets.addAll([
       LiveGamesScreen(),
+      LobbyGamesScreen(),
       ClubsPageView(),
       ProfilePageNew(),
       StorePage(),
@@ -214,16 +216,21 @@ class _MainScreenState extends State<MainScreen>
                   selected: _navPos == 0,
                 ),
                 CurvedNavItem(
+                  iconData: AppIcons.playing_card,
+                  title: _appScreenText['lobby'],
+                  selected: _navPos == 1,
+                ),
+                CurvedNavItem(
                   iconData: null, // AppIcons.users,
                   svgAsset: 'assets/icons/clubs.svg',
                   title: _appScreenText['clubs'],
-                  selected: _navPos == 1,
+                  selected: _navPos == 2,
                 ),
                 CurvedNavItem(
                   iconData: AppIcons.user,
                   title: _appScreenText['profile'],
                   showBadge: (playerState.unreadAnnouncements ?? 0) > 0,
-                  selected: _navPos == 2,
+                  selected: _navPos == 3,
                 ),
                 // CurvedNavItem(
                 //   iconData: Icons.shopping_cart,
