@@ -201,6 +201,7 @@ class NamePlateWidget extends StatelessWidget {
     // double scale = 0.95;
 
     Size containerSize = Size(200, 120);
+    //Size containerSize = Size(150, 50);
     Size progressRatio = Size(1.0, 1.0);
     if (seat.player?.highlight ?? false) {
       plateWidget = Consumer<ActionTimerState>(
@@ -305,7 +306,7 @@ class NamePlateWidget extends StatelessWidget {
                     // bottom widget - to show stack, sit back time, etc.
                     Expanded(
                       child: Align(
-                        alignment: Alignment.centerRight,
+                        alignment: Alignment.center,
                         child: Opacity(
                             opacity: opacity,
                             child: _bottomWidget(context, theme)),

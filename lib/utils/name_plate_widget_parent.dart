@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 /// height: 12.48
 /// aspect ratio: 20.18/12.48 = 1.616987
 /// IMPORTANT: DO NOT CHANGE THIS WITHOUT CHANGING THE ORIGINAL SVG ASPECT RATIO
-const _aspectRatio = 1.616987;
+const _aspectRatio = 2; //1.616987;
 //const _aspectRatio = 1.5;
 
 abstract class NamePlateWidgetParent {
   /// this will be the default width, if setWidth is never called
-  static double _width = 100;
+  static double _width = 120;
 
   /// sets width for a given screen size
   /// Instead of using scale, use setWidth method
