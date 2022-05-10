@@ -7,7 +7,7 @@ import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/widgets/cards/pulsating_card_container.dart';
 
 // todo: turn off the pulsating highlight if you don't like it ;-)
-bool keepPulsatingHighlight = true;
+bool keepPulsatingHighlight = false;
 
 class CardBuilderWidget extends StatelessWidget {
   final CardObject card;
@@ -120,13 +120,14 @@ class CardBuilderWidget extends StatelessWidget {
     );
 
     if (highlight && keepPulsatingHighlight) {
-      return PulsatingCardContainer(
-        child: cardWidget,
-        height: double.infinity,
-        width: double.infinity,
-        color: Colors.green.withOpacity(0.80),
-        animationUpToWidth: 4.0,
-      );
+      // return PulsatingCardContainer(
+      //   child: cardWidget,
+      //   height: double.infinity,
+      //   width: double.infinity,
+      //   color: Colors.green.withOpacity(0.80),
+      //   animationUpToWidth: 4.0,
+      // );
+      return cardWidget;
     }
 
     if (toDim) {

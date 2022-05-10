@@ -182,14 +182,15 @@ class NamePlateCardView extends StatelessWidget {
       width: namePlateCardViewWidth,
       height: namePlateCardViewHeight,
       decoration: fgDecoration,
-      child: card.highlight
-          ? PulsatingCardContainer(
-              height: namePlateCardViewHeight,
-              width: namePlateCardViewWidth,
-              child: cardWidget,
-              color: Colors.green,
-            )
-          : cardWidget,
+      child: cardWidget,
+      // child: card.highlight
+      //     ? PulsatingCardContainer(
+      //         height: namePlateCardViewHeight,
+      //         width: namePlateCardViewWidth,
+      //         child: cardWidget,
+      //         color: Colors.green,
+      //       )
+      //     : cardWidget,
     );
 
     if (!card.highlight && !card.reveal) {

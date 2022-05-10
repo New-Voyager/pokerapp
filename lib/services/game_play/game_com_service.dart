@@ -60,6 +60,7 @@ class GameComService {
   }) {
     // _client = Client();
     // _clientPub = Client();
+    log('handToAllChannel: $handToAllChannel');
     this.active = false;
   }
 

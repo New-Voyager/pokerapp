@@ -895,14 +895,16 @@ class HandActionProtoService {
         me.rankText = rankText;
         myState.notify();
       } else {
-        for (final seatNo in playerCardRanks.keys) {
-          if (seatNo == me.seatNo) {
-            _encryptionService
-                .decodeAndDecrypt(playerCardRanks[seatNo])
-                .then((decryptedBytes) => utf8.decode(decryptedBytes))
-                .then((rankStr) => {me.rankText = rankStr})
-                .then((value) => myState.notify());
-            break;
+        if (playerCardRanks != null) {
+          for (final seatNo in playerCardRanks.keys) {
+            if (seatNo == me.seatNo) {
+              _encryptionService
+                  .decodeAndDecrypt(playerCardRanks[seatNo])
+                  .then((decryptedBytes) => utf8.decode(decryptedBytes))
+                  .then((rankStr) => {me.rankText = rankStr})
+                  .then((value) => myState.notify());
+              break;
+            }
           }
         }
       }

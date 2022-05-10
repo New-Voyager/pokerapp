@@ -12,7 +12,7 @@ import 'package:pokerapp/widgets/cards/pulsating_card_container.dart';
 import 'package:provider/provider.dart';
 
 // todo: turn off the pulsating highlight if you don't like it ;-)
-bool keepPulsatingHighlight = true;
+bool keepPulsatingHighlight = false;
 
 class HoleCardWidget extends StatelessWidget {
   final CardObject card;
