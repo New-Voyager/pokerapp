@@ -451,27 +451,15 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
           notesOffset = Offset(((namePlateWidth / 2)), 0);
         }
 
-        //actionRight = NamePlateWidgetParent.namePlateSize.width / 2 - 8;
-        if (widget.seat.seatPos == SeatPos.bottomCenter ||
-            widget.seat.seatPos == SeatPos.middleLeft ||
+        if (widget.seat.seatPos == SeatPos.middleLeft ||
             widget.seat.seatPos == SeatPos.topLeft ||
             widget.seat.seatPos == SeatPos.bottomLeft) {
-          //actionLeft = null;
-          //NamePlateWidgetParent.namePlateSize.width / 2 - 8;
-          actionRight = 0;
-        } else {
           actionLeft = 0;
+          actionRight = null;
+        } else {
+          actionLeft = null;
+          actionRight = 0;
         }
-
-        // if (widget.seat.seatPos == SeatPos.middleLeft ||
-        //     widget.seat.seatPos == SeatPos.topLeft ||
-        //     widget.seat.seatPos == SeatPos.bottomLeft) {
-        //   actionLeft = NamePlateWidgetParent.namePlateSize.width / 2;
-        //   actionRight = null;
-        // } else {
-        //   actionLeft = null;
-        //   actionRight = NamePlateWidgetParent.namePlateSize.width / 2 - 8;
-        // }
 
         Key key = widget.seat.key;
         double opacity = 1.0;

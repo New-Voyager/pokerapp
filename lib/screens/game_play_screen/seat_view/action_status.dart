@@ -3,12 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_bubble/bubble_type.dart';
 import 'package:flutter_chat_bubble/chat_bubble.dart';
-import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_1.dart';
-import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_2.dart';
-import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_3.dart';
-import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_5.dart';
 import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_6.dart';
-import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_9.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
@@ -76,6 +71,8 @@ class ActionStatusWidget extends StatelessWidget {
         actionStr = 'Straddle';
       } else if (action == HandActions.BOMB_POT_BET) {
         actionStr = 'Bomb Ante';
+      } else if (action == HandActions.FOLD) {
+        actionStr = 'Fold';
       }
     }
 
@@ -110,11 +107,11 @@ class ActionStatusWidget extends StatelessWidget {
       return shrinkedSizedBox;
     }
 
-    Color statusColor = Colors.blueGrey; // default color be black
+    Color statusColor = Colors.blueGrey[800];
     if (actionStr != null) {
       if (actionStr.toUpperCase().contains('CHECK') ||
           actionStr.toUpperCase().contains('CALL')) {
-        statusColor = Colors.green;
+        statusColor = Colors.green[800];
       } else if (actionStr.toUpperCase().contains('RAISE') ||
           actionStr.toUpperCase().contains('BET')) {
         statusColor = Colors.red;
@@ -143,12 +140,11 @@ class ActionStatusWidget extends StatelessWidget {
         )
       ],
     );
-    BubbleType bubbleType = BubbleType.sendBubble;
-    if (seat.seatPos == SeatPos.bottomCenter ||
-        seat.seatPos == SeatPos.middleLeft ||
+    BubbleType bubbleType = BubbleType.receiverBubble;
+    if (seat.seatPos == SeatPos.middleLeft ||
         seat.seatPos == SeatPos.topLeft ||
         seat.seatPos == SeatPos.bottomLeft) {
-      bubbleType = BubbleType.receiverBubble;
+      bubbleType = BubbleType.sendBubble;
     }
     Widget chatBubble = ChatBubble(
         clipper: ChatBubbleClipper6(
