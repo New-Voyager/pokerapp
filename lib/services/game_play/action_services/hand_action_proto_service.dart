@@ -857,6 +857,7 @@ class HandActionProtoService {
 
       _gameState.actionState.checkFoldSelected = false;
       _gameState.actionState.notify();
+      playerCardRanks = message.turn.playerCardRanks;
     } else if (stage == 'river') {
       tableState.updatePotChipUpdatesSilent(0);
       _gameState.handState = HandState.RIVER;
@@ -878,6 +879,7 @@ class HandActionProtoService {
 
       _gameState.actionState.checkFoldSelected = false;
       _gameState.actionState.notify();
+      playerCardRanks = message.river.playerCardRanks;
     }
 
     await Future.delayed(Duration(seconds: 1));
