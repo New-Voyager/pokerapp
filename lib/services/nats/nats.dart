@@ -10,13 +10,14 @@ import 'package:provider/provider.dart';
 
 import 'client.dart';
 import 'subscription.dart';
+import 'wsclient.dart';
 
 class Nats {
-  Client get clientSub => _clientSub;
-  Client _clientSub;
+  WSClient get clientSub => _clientSub;
+  WSClient _clientSub;
 
-  Client get clientPub => _clientPub;
-  Client _clientPub;
+  WSClient get clientPub => _clientPub;
+  WSClient _clientPub;
 
   String _natsUrl;
   String _playerChannel;
@@ -83,8 +84,8 @@ class Nats {
     String natsUrl = await UtilService.getNatsURL();
 
     // instantiate new clients
-    _clientSub = Client();
-    _clientPub = Client();
+    _clientSub = WSClient();
+    _clientPub = WSClient();
 
     _playerChannel = playerChannel;
     _clubSubs = Map<String, Subscription>();
@@ -96,9 +97,10 @@ class Nats {
         .replaceFirst('tls://', '')
         .replaceFirst(':4222', '');
 
+    natsUrl = 'ws://192.168.0.108:8090';
     _natsUrl = natsUrl;
-    await _clientSub.connect(natsUrl);
-    await _clientPub.connect(natsUrl);
+    await _clientSub.wsconnect(natsUrl);
+    await _clientPub.wsconnect(natsUrl);
     _clientSub.onDisconnect = onDisconnect;
 
     // subscribe for player messages

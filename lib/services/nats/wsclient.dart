@@ -4,58 +4,62 @@ import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:web_socket_channel/web_socket_channel.dart';
+
+import 'client.dart';
 import 'common.dart';
 import 'inbox.dart';
 import 'message.dart';
 import 'subscription.dart';
 
-enum ReceiveState {
-  idle, //op=msg -> msg
-  msg, //newline -> idle
+// enum ReceiveState {
+//   idle, //op=msg -> msg
+//   msg, //newline -> idle
 
-}
+// }
 
-///status of the nats client
-enum Status {
-  /// discontected or not connected
-  disconnected,
+// ///status of the nats client
+// enum Status {
+//   /// discontected or not connected
+//   disconnected,
 
-  ///connected to server
-  connected,
+//   ///connected to server
+//   connected,
 
-  ///alread close by close or server
-  closed,
+//   ///alread close by close or server
+//   closed,
 
-  ///automatic reconnection to server
-  reconnecting,
+//   ///automatic reconnection to server
+//   reconnecting,
 
-  ///connecting by connect() method
-  connecting,
+//   ///connecting by connect() method
+//   connecting,
 
-  // draining_subs,
-  // draining_pubs,
-}
+//   // draining_subs,
+//   // draining_pubs,
+// }
 
-class Pub {
-  final String subject;
-  final List<int> data;
-  final String replyTo;
+// class Pub {
+//   final String subject;
+//   final List<int> data;
+//   final String replyTo;
 
-  Pub(this.subject, this.data, this.replyTo);
-}
+//   Pub(this.subject, this.data, this.replyTo);
+// }
 
 ///NATS client
-class Client {
-  String _host;
-  int _port;
-  Socket _socket;
+class WSClient extends Client {
+  // late String _host;
+  // late int _port;
+  // late Socket _socket;
+  String _uri;
+  WebSocketChannel _channel;
   Info _info;
   Completer _pingCompleter;
   Function onDisconnect;
 
   ///status of the client
   var status = Status.disconnected;
-  var _connectOption = ConnectOption(verbose: false);
 
   ///server info
   Info get info => _info;
@@ -65,51 +69,48 @@ class Client {
   final _pubBuffer = <Pub>[];
 
   int _ssid = 0;
+  static final connectDefault = ConnectOption(verbose: false);
 
   /// Connect to NATS server
-  Future<bool> connect(String host,
-      {int port = 4222,
-      ConnectOption connectOption,
-      int timeout = 5,
-      bool retry = false,
-      int retryInterval = 10}) async {
+  Future<bool> wsconnect(String uri,
+      {int timeout = 5, bool retry = false, int retryInterval = 10}) async {
     if (status != Status.disconnected && status != Status.closed) {
       return Future.error('Error: status not disconnected and not closed');
     }
-    _host = host;
-    _port = port;
-
-    if (connectOption != null) _connectOption = connectOption;
 
     try {
       status = Status.disconnected;
-      _socket = await Socket.connect(_host, _port,
-          timeout: Duration(seconds: timeout));
+
+      // _socket = await Socket.connect(_host, _port,
+      //     timeout: Duration(seconds: timeout));
+      _uri = uri;
+      _channel = WebSocketChannel.connect(Uri.parse(uri));
       status = Status.connected;
       log('dartnats: Connected');
-      _addConnectOption(_connectOption);
       _backendSubscriptAll();
       _flushPubBuffer();
 
       _buffer = [];
-      _socket.listen((d) {
+      _channel.stream.listen((d) {
         _buffer.addAll(d);
+        String buf = String.fromCharCodes(_buffer);
+        log('listen: $buf');
         while (_receiveState == ReceiveState.idle && _buffer.contains(13)) {
           _processOp();
         }
       }, onDone: () {
         log('dartnats: onDone loop disconnected');
         status = Status.disconnected;
-        _socket.close();
+        _channel.sink.close();
         if (onDisconnect != null) {
-          Future.delayed(Duration(milliseconds: 100), () {
+          Future.delayed(const Duration(milliseconds: 100), () {
             onDisconnect();
           });
         }
       }, onError: (err) {
-        log('dartnats: onError loop disconnected');
+        log('dartnats: onError (${err.toString()}) loop disconnected');
         status = Status.disconnected;
-        _socket.close();
+        _channel.sink.close();
       });
       return true;
     } catch (err) {
@@ -138,7 +139,7 @@ class Client {
   String _receiveLine1 = '';
   void _processOp() async {
     // we have got a chunk of data from previous message
-    if (_receiveLine1.length > 0) {
+    if (_receiveLine1.isNotEmpty) {
       _processMsg();
     }
     while (true) {
@@ -153,6 +154,7 @@ class Client {
 
       var line =
           String.fromCharCodes(_buffer.sublist(0, nextLineIndex)); // retest
+      log(line);
 
       if (_buffer.length > nextLineIndex + 2) {
         _buffer.removeRange(0, nextLineIndex + 2);
@@ -236,17 +238,13 @@ class Client {
   }
 
   /// get server max payload
-  int maxPayload() => _info?.maxPayload;
+  int maxPayload() => _info.maxPayload;
 
   ///ping server current not implement pong verification
   Future ping() {
     _pingCompleter = Completer();
     _add('ping');
     return _pingCompleter.future;
-  }
-
-  void _addConnectOption(ConnectOption c) {
-    _add('connect ' + jsonEncode(c.toJson()));
   }
 
   ///default buffer action for pub
@@ -264,7 +262,7 @@ class Client {
       }
     }
 
-    if (replyTo == null) {
+    if (replyTo == null || replyTo == '') {
       _add('pub $subject ${data.length}');
     } else {
       _add('pub $subject $replyTo ${data.length}');
@@ -277,7 +275,8 @@ class Client {
   ///publish by string
   bool pubString(String subject, String str,
       {String replyTo, bool buffer = true}) {
-    return pub(subject, utf8.encode(str), replyTo: replyTo, buffer: buffer);
+    return pub(subject, Uint8List.fromList(utf8.encode(str)),
+        replyTo: replyTo, buffer: buffer);
   }
 
   bool _pub(Pub p) {
@@ -313,6 +312,9 @@ class Client {
 
   ///unsubscribe
   bool unSub(Subscription s) {
+    if (s == null) {
+      return false;
+    }
     var sid = s.sid;
 
     if (_subs[sid] == null) return false;
@@ -340,16 +342,15 @@ class Client {
   }
 
   bool _add(String str) {
-    if (_socket == null) return false; //todo throw error
-    _socket.add(utf8.encode(str + '\r\n'));
+    if (_channel == null) return false; //todo throw error
+    _channel.sink.add(utf8.encode(str + '\r\n'));
     return true;
   }
 
   bool _addByte(List<int> msg) {
-    if (_socket == null) return false; //todo throw error
-
-    _socket.add(msg);
-    _socket.add(utf8.encode('\r\n'));
+    if (_channel == null) return false; //todo throw error
+    _channel.sink.add(msg);
+    _channel.sink.add(utf8.encode('\r\n'));
     return true;
   }
 
@@ -359,8 +360,7 @@ class Client {
   /// or an error, including a timeout if no message was received properly.
   Future<Message> request(String subj, Uint8List data,
       {String queueGroup, Duration timeout}) {
-    timeout ??= Duration(seconds: 2);
-    data ??= Uint8List(0);
+    timeout ??= const Duration(seconds: 2);
 
     if (_inboxs[subj] == null) {
       var inbox = newInbox();
@@ -379,7 +379,6 @@ class Client {
   /// requestString() helper to request()
   Future<Message> requestString(String subj, String data,
       {String queueGroup, Duration timeout}) {
-    data ??= '';
     return request(subj, Uint8List.fromList(data.codeUnits),
         queueGroup: queueGroup, timeout: timeout);
   }
@@ -388,7 +387,7 @@ class Client {
   void close() {
     _backendSubs.forEach((_, s) => s = false);
     _inboxs.clear();
-    _socket?.close();
+    _channel.sink.close();
     status = Status.closed;
   }
 }
