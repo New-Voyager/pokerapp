@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/flavor_config.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';

@@ -1,5 +1,3 @@
-import 'package:pokerapp/utils/formatter.dart';
-
 class ClubModel {
   String clubName;
   String clubCode;
