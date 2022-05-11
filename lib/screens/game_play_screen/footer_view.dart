@@ -29,7 +29,7 @@ class FooterViewWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final boa = context.read<BoardAttributesObject>();
     double footerHeight =
-        MediaQuery.of(context).size.height * boa.footerViewScale;
+        MediaQuery.of(context).size.height * boa.footerViewScale / 2;
     footerHeight += boa.bottomHeightAdjust;
     log('RedrawFooter: FooterViewWidget build');
 
