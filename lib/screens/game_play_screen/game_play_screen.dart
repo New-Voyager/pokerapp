@@ -30,7 +30,7 @@ import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/game_context_screen/game_chat/game_chat.dart';
 import 'package:pokerapp/screens/game_play_screen/footer_view.dart';
 import 'package:pokerapp/screens/game_play_screen/game_play_screen_util_methods.dart';
-import 'package:pokerapp/screens/game_play_screen/main_views/board_view/board_view.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/board_view/board_view_vertical.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/header_view/header_view.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
 import 'package:pokerapp/services/app/game_service.dart';
@@ -52,6 +52,7 @@ import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/buttons.dart';
+import 'package:pokerapp/widgets/debug_border_widget.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:pokerapp/widgets/drawer/game_play_drawer.dart';
 import 'package:provider/provider.dart';
@@ -919,12 +920,14 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   Widget _buildBoardView(Size boardDimensions) {
     return Container(
       width: boardDimensions.width,
-      height: boardDimensions.height,
-      child: BoardView(
-        gameComService: _gameContextObj?.gameComService,
-        gameInfo: _gameInfoModel,
-        onUserTap: _onJoinGame,
-        onStartGame: startGame,
+      // height: boardDimensions.height,
+      child: DebugBorderWidget(
+        child: BoardViewVertical(
+          gameComService: _gameContextObj?.gameComService,
+          gameInfo: _gameInfoModel,
+          onUserTap: _onJoinGame,
+          onStartGame: startGame,
+        ),
       ),
     );
   }
@@ -1037,7 +1040,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         // header
         widget.showTop ? _buildHeaderView(theme) : kEmpty,
         // board view
-        widget.showTop ? _buildMainBoardView(theme) : kEmpty,
+        widget.showTop ? Expanded(child: _buildMainBoardView(theme)) : kEmpty,
         // footer view
         widget.showBottom ? _buildFooterView() : kEmpty,
       ],

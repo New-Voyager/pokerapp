@@ -79,13 +79,13 @@ class GameUIState {
 
     // top left
     left = widthGap - topRowAdjust;
-    top = heightGap / 2;
+    top = heightGap * 3;
     topLeftLeft = left;
     seatPosToOffsetMap[SeatPos.topLeft] = Offset(left, top);
 
     // top right
     left = (topLeftLeft + table.width + 2 * topRowAdjust) - namePlateWidth;
-    top = heightGap / 2;
+    top = heightGap * 3;
     seatPosToOffsetMap[SeatPos.topRight] = Offset(left, top);
 
     // top center 1
@@ -94,14 +94,12 @@ class GameUIState {
     remainingWidth = (remainingWidth - (2 * namePlateWidth));
     double gap = remainingWidth / 3;
 
-    double topCenter1Left =
-        seatPosToOffsetMap[SeatPos.topLeft].dx + namePlateWidth + gap;
-    top = (heightGap - namePlateHeight);
+    double topCenter1Left = (pot.width / 2) - namePlateWidth * 1.5;
+    top = (heightGap - namePlateHeight / 2);
     seatPosToOffsetMap[SeatPos.topCenter1] = Offset(topCenter1Left, top);
 
     // top center 2
-    double topCenter2Left =
-        seatPosToOffsetMap[SeatPos.topCenter1].dx + namePlateWidth + gap;
+    double topCenter2Left = (pot.width / 2) + namePlateWidth * 0.5;
     seatPosToOffsetMap[SeatPos.topCenter2] = Offset(topCenter2Left, top);
 
     // top center
@@ -110,7 +108,7 @@ class GameUIState {
 
     // bottom left
     left = widthGap;
-    top = pot.height - namePlateHeight - heightGap / 4;
+    top = pot.height - namePlateHeight - 2 * heightGap;
     seatPosToOffsetMap[SeatPos.bottomLeft] = Offset(left, top);
 
     // bottom center
@@ -120,7 +118,7 @@ class GameUIState {
 
     // bottom right
     left = topLeftLeft + table.width - namePlateWidth;
-    top = pot.height - namePlateHeight - heightGap / 4;
+    top = pot.height - namePlateHeight - 2 * heightGap;
     seatPosToOffsetMap[SeatPos.bottomRight] = Offset(left, top);
 
     double remainingHeight = seatPosToOffsetMap[SeatPos.bottomLeft].dy -
@@ -129,7 +127,7 @@ class GameUIState {
 
     // middle left
     left = 0;
-    top = seatPosToOffsetMap[SeatPos.topLeft].dy + namePlateHeight + gap;
+    top = seatPosToOffsetMap[SeatPos.topLeft].dy + namePlateHeight + 1.5 * gap;
     seatPosToOffsetMap[SeatPos.middleLeft] = Offset(left, top);
 
     // middle right
