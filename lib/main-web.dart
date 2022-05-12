@@ -1,11 +1,12 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:pokerapp/utils/platform.dart';
 import 'main_helper.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  PlatformUtils.isWeb = true;
   String apiUrl = 'http://192.168.0.108:9501';
   log('$apiUrl');
   await graphQLConfiguration.init(apiUrl: apiUrl);

@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:io';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -16,6 +15,7 @@ import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/main_screens/purchase_page_view/diamonds_widget.dart';
 import 'package:pokerapp/services/app/appcoin_service.dart';
+import 'package:pokerapp/utils/platform.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/services/data/hive_models/player_state.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
@@ -443,7 +443,7 @@ class _StorePageState extends State<StorePage> {
     try {
       bool purchased = await _connection.buyConsumable(
           purchaseParam: purchaseParam,
-          autoConsume: _kAutoConsume || Platform.isIOS);
+          autoConsume: _kAutoConsume || PlatformUtils.isIOS);
     } catch (err) {
       log('Purchased ${productDetails.id}');
     }
@@ -467,10 +467,10 @@ class _StorePageState extends State<StorePage> {
       */
       String sourceType = 'UNKNOWN';
       String receipt = '';
-      if (Platform.isAndroid) {
+      if (PlatformUtils.isAndroid) {
         sourceType = 'GOOGLE_PLAY_STORE';
         receipt = purchaseDetails.verificationData.localVerificationData;
-      } else if (Platform.isIOS) {
+      } else if (PlatformUtils.isIOS) {
         sourceType = 'IOS_APP_STORE';
         receipt = purchaseDetails.verificationData.serverVerificationData;
       }
@@ -524,7 +524,7 @@ class _StorePageState extends State<StorePage> {
             _handleInvalidPurchase(purchaseDetails);
             return;
           }
-          if (Platform.isAndroid) {
+          if (PlatformUtils.isAndroid) {
             if (!_kAutoConsume && purchaseDetails.productID == _kConsumableId) {
               final InAppPurchaseAndroidPlatformAddition androidAddition =
                   _connection.getPlatformAddition<

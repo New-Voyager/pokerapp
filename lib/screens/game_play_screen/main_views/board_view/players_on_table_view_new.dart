@@ -273,66 +273,6 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
         break;
       }
     }
-
-    // final o = _gameState.gameUIState.seatPosToOffsetMap[SeatPos.bottomCenter];
-    // final parentOffset = _gameState.gameUIState.playerOnTableRect.topLeft;
-    //
-    // final offset = Offset(
-    //   o.dx + parentOffset.dx + NamePlateWidgetParent.namePlateSize.width / 2,
-    //   o.dy + parentOffset.dy + NamePlateWidgetParent.namePlateSize.height / 2,
-    // );
-    // final overlayState = Overlay.of(context);
-    // final overlayEntry = OverlayEntry(
-    //   builder: (_) => Positioned(
-    //     left: offset.dx,
-    //     top: offset.dy,
-    //     child: Container(
-    //       color: Colors.green,
-    //       width: 100,
-    //       height: 100,
-    //     ),
-    //   ),
-    // );
-    // overlayState.insert(overlayEntry);
-    //
-    // await Future.delayed(const Duration(seconds: 5));
-    //
-    // overlayEntry.remove();
-    //
-    // return;
-    // log('ChatBubble: working on chat notification');
-    // List<ChatMessage> messages =
-    //     _gameState.gameChatBubbleNotifyState.getMessages();
-    // for (final message in messages) {
-    //   final seat = _gameState.getSeatByPlayer(message.fromPlayer);
-    //   if (seat != null) {
-    //     log('ChatBubble: seat ${message.fromPlayer} seat: ${seat.serverSeatPos} sent ${message.text}');
-    //
-    //     for (final chatBubble in chatBubbles) {
-    //       if (chatBubble.seatPos == seat.seatPos) {
-    //         // chatBubble.show(false);
-    //         final offset =
-    //             _gameState.gameUIState.seatPosToOffsetMap[seat.seatPos];
-    //         if (offset != null) {
-    //           final namePlateSize = NamePlateWidgetParent.namePlateSize;
-    //           final messageLoc = Offset(
-    //             offset.dx + namePlateSize.width / 2,
-    //             offset.dy + namePlateSize.height / 2,
-    //           );
-    //           // final overlay = Overlay.of(context);
-    //           // overlay.insert(
-    //           //   OverlayEntry(
-    //           //     builder: (_) => chatBubble,
-    //           //   ),
-    //           // );
-    //           // chatBubble.show(true, offset: messageLoc, message: message);
-    //         }
-    //       }
-    //     }
-    //   } else {
-    //     log('ChatBubble: seat ${message.fromPlayer} sent ${message.text}');
-    //   }
-    // }
   }
 
   void _init() {

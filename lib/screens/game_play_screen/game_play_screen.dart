@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:developer';
-import 'dart:io';
 
 import 'package:after_layout/after_layout.dart';
 import 'package:audioplayers/audioplayers.dart';
@@ -50,6 +49,7 @@ import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
+import 'package:pokerapp/utils/platform.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
@@ -1132,7 +1132,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
           backgroundColor: Colors.black,
           body: _buildBody(theme),
         );
-        if (!Platform.isIOS) {
+        if (!PlatformUtils.isIOS) {
           mainBody = SafeArea(child: mainBody);
         }
         if (boardAttributes.useSafeArea) {

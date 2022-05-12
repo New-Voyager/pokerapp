@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:io';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -15,12 +14,12 @@ import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/overlay_notification.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
-import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/app/player_service.dart';
 import 'package:pokerapp/services/data/hive_models/player_state.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/formatter.dart';
+import 'package:pokerapp/utils/platform.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
 
 enum NotificationType {
@@ -81,7 +80,7 @@ class NotificationHandler {
     // Any time the token refreshes, store this in the database too.
     FirebaseMessaging.instance.onTokenRefresh.listen(saveFirebaseToken);
 
-    if (Platform.isIOS) {
+    if (PlatformUtils.isIOS) {
       FirebaseMessaging messaging = FirebaseMessaging.instance;
 
       NotificationSettings settings = await messaging.requestPermission(
