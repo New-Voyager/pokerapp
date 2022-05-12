@@ -13,6 +13,18 @@
         "--flavor",
         "dev"
       ]
-    }, 
+    },
+    {
+      "name": "pokerapp-web",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main-web.dart",
+      "args": [
+        "-d",
+        "chrome",
+        "--flavor",
+        "dev"
+      ]
+    },
   ]
 }

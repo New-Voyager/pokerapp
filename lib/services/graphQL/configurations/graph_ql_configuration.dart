@@ -5,8 +5,10 @@ import 'package:pokerapp/resources/app_config.dart';
 class GraphQLConfiguration {
   String apiURL;
 
-  Future<void> init() async {
-    String apiUrl = AppConfig.apiUrl;
+  Future<void> init({String apiUrl}) async {
+    if (apiUrl == null) {
+      apiURL = AppConfig.apiUrl;
+    }
     this.apiURL = '$apiUrl/graphql';
   }
 
