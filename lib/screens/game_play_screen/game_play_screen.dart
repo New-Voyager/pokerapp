@@ -824,12 +824,12 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         }
       });
 
-      if (appService.appSettings.showRefreshBanner) {
-        appService.appSettings.showRefreshBanner = false;
-      }
-      if (appService.appSettings.showReportInfoDialog) {
-        appService.appSettings.showReportInfoDialog = false;
-      }
+      // if (appService.appSettings.showRefreshBanner) {
+      //   appService.appSettings.showRefreshBanner = false;
+      // }
+      // if (appService.appSettings.showReportInfoDialog) {
+      //   appService.appSettings.showReportInfoDialog = false;
+      // }
 
       if (_gameState.gameInfo.demoGame) {
         Future.delayed(Duration(seconds: 1), () {

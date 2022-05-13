@@ -20,6 +20,7 @@ import 'package:pokerapp/services/connectivity_check/network_change_listener.dar
 import 'package:pokerapp/services/data/hive_models/player_state.dart';
 import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/utils/platform.dart';
+import 'package:pokerapp/utils/platform.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:provider/provider.dart';
 import 'main_helper.dart';

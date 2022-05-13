@@ -26,6 +26,7 @@ import 'package:pokerapp/screens/profile_screens/help_screen.dart';
 import 'package:pokerapp/screens/profile_screens/performance_view.dart';
 import 'package:pokerapp/screens/profile_screens/privacy_policy.dart';
 import 'package:pokerapp/screens/profile_screens/table_selector.dart';
+import 'package:pokerapp/screens/web/web_home_screen.dart';
 import 'package:pokerapp/services/app/appinfo_service.dart';
 import 'package:pokerapp/services/game_play/customization_service.dart';
 import 'package:provider/provider.dart';
@@ -41,8 +42,9 @@ import 'package:pokerapp/models/rewards_model.dart';
 class Routes {
   Routes._();
 
+  static const String initialWebRoute = '/';
   //SplashScreen
-  static const String initial = '/';
+  static const String initial = '/mobile';
   // LoginScreen
   static const String login = '/login';
   // RegistrationScreen
@@ -154,6 +156,12 @@ class Routes {
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
+      case initialWebRoute:
+        return _getPageRoute(
+          routeName: settings.name,
+          viewToShow: WebHomeScreen(),
+        );
+
       case initial:
         return _getPageRoute(
           routeName: settings.name,

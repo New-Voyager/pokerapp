@@ -110,6 +110,8 @@ class DeviceInfo {
         _deviceData = _readAndroidBuildData(await deviceInfoPlugin.androidInfo);
       } else if (PlatformUtils.isIOS) {
         _deviceData = _readIosDeviceInfo(await deviceInfoPlugin.iosInfo);
+      } else {
+        _deviceData = _readWebBuildData(await deviceInfoPlugin.webBrowserInfo);
       }
     } on PlatformException {
       _deviceData = <String, dynamic>{
@@ -124,7 +126,7 @@ class DeviceInfo {
     } else if (PlatformUtils.isAndroid) {
       return _deviceInfo._deviceData['model'];
     }
-    return 'Unknown';
+    return _deviceInfo._deviceData['model'];
   }
 
   static String get version {
@@ -133,7 +135,7 @@ class DeviceInfo {
     } else if (PlatformUtils.isAndroid) {
       return _deviceInfo._deviceData['version.sdkInt'].toString();
     }
-    return 'Unknown';
+    return _deviceInfo._deviceData['systemVersion'];
   }
 
   Map<String, dynamic> _readAndroidBuildData(AndroidDeviceInfo build) {
@@ -187,6 +189,17 @@ class DeviceInfo {
       'utsname.release:': data.utsname.release,
       'utsname.version:': data.utsname.version,
       'utsname.machine:': data.utsname.machine,
+    };
+  }
+
+  Map<String, dynamic> _readWebBuildData(WebBrowserInfo data) {
+    return <String, dynamic>{
+      'name': data.browserName.name,
+      'model': data.browserName.name,
+      'userAgent': data.userAgent,
+      'language': data.language,
+      'platform': data.platform,
+      'isPhysicalDevice': true,
     };
   }
 }

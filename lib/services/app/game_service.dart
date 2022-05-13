@@ -723,24 +723,29 @@ class GameService {
 
     String _query = GameInfoModel.query(gameCode);
 
-    QueryResult result = await _client.query(
-      QueryOptions(document: gql(_query)),
-    );
+    try {
+      QueryResult result = await _client.query(
+        QueryOptions(document: gql(_query)),
+      );
 
-    if (result.hasException) {
-      log(result.exception.toString());
-      if (result.exception.graphqlErrors.length > 0) {
-        return null;
+      if (result.hasException) {
+        log(result.exception.toString());
+        if (result.exception.graphqlErrors.length > 0) {
+          return null;
+        }
       }
+
+      if (result.data == null) return null;
+
+      final jsonResponse = result.data['gameInfo'];
+      // JsonEncoder encoder = new JsonEncoder.withIndent('  ');
+      // String prettyprint = encoder.convert(jsonResponse);
+      // debugPrint(prettyprint, wrapWidth: 4096);
+      return GameInfoModel.fromJson(jsonResponse);
+    } catch (e, stackTrace) {
+      log(e.toString());
+      return null;
     }
-
-    if (result.data == null) return null;
-
-    final jsonResponse = result.data['gameInfo'];
-    // JsonEncoder encoder = new JsonEncoder.withIndent('  ');
-    // String prettyprint = encoder.convert(jsonResponse);
-    // debugPrint(prettyprint, wrapWidth: 4096);
-    return GameInfoModel.fromJson(jsonResponse);
   }
 
   /* this method joins the game at a particular seat number */

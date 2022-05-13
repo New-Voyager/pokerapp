@@ -46,7 +46,7 @@ mixin RouteAwareAnalytics<T extends StatefulWidget> on State<T>
   Future<void> _setCurrentScreen(String routeName) async {
     routeName = routeName.substring(1);
     log('Setting current screen to $routeName');
-    await FirebaseAnalytics.instance
-        .logEvent(name: routeName, parameters: {"screen_name": routeName});
+    // await FirebaseAnalytics.instance
+    //     .logEvent(name: routeName, parameters: {"screen_name": routeName});
   }
 }

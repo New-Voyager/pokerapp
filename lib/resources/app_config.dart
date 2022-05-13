@@ -21,16 +21,16 @@ class AppConfig {
     if (apiServer == null) {
       apiServer = defaultUrl;
     }
-    // apiServer = 'https://api.pokerclub.app';
+    apiServer = 'https://api.pokerclub.app';
 
     if (!apiServer.contains('https://') && !apiServer.contains('http://')) {
       apiServer = 'http://$apiServer:9501';
     }
     // apiServer = 'http://localhost:9501';
     _apiUrl = apiServer;
-    //_apiUrl = 'https://demo.pokerclub.app';
+    // _apiUrl = 'https://demo.pokerclub.app';
     //_apiUrl = 'http://192.168.1.16:9501';
-    _apiUrl = 'http://192.168.1.99:9501';
+    // _apiUrl = 'http://192.168.1.99:9501';
 
     String deviceId = sharedPreferences.getString(AppConstants.DEVICE_ID);
     String deviceSecret =

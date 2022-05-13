@@ -7,9 +7,9 @@ class GraphQLConfiguration {
 
   Future<void> init({String apiUrl}) async {
     if (apiUrl == null) {
-      apiURL = AppConfig.apiUrl;
+      this.apiURL = AppConfig.apiUrl;
     }
-    this.apiURL = '$apiUrl/graphql';
+    this.apiURL = '${this.apiURL}/graphql';
   }
 
   HttpLink httpLink() {

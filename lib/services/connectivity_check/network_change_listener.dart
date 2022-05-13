@@ -1,25 +1,22 @@
 import 'dart:async';
 import 'dart:developer';
-import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/main_helper.dart';
-import 'package:pokerapp/services/game_play/action_services/hand_action_proto_service.dart';
 import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:provider/provider.dart';
 
 class NetworkChangeListener {
   StreamSubscription<ConnectivityResult> _sub;
-  StreamSubscription<DataConnectionStatus> _internetSub;
+  // StreamSubscription<DataConnectionStatus> _internetSub;
 
   bool _checkForInternetInProgress = false;
 
   NetworkConnectionDialog _dialog;
 
-  final DataConnectionChecker _dataConnectionChecker = DataConnectionChecker();
+  // final DataConnectionChecker _dataConnectionChecker = DataConnectionChecker();
   final Connectivity _connectivity = Connectivity();
 
   StreamController<ConnectivityResult> _streamController =
@@ -38,25 +35,26 @@ class NetworkChangeListener {
   // if there is no internet connection, this function keeps waiting
   // and on internet availability, this function completes
   Future<void> _checkForInternetConnection() async {
-    // use navigator's context
-    final BuildContext context = navigatorKey.currentState.overlay.context;
+    return;
+    // // use navigator's context
+    // final BuildContext context = navigatorKey.currentState.overlay.context;
 
-    // else keep on checking for internet access
-    while (!(await _dataConnectionChecker.hasConnection)) {
-      // we dont have internet
-      // show the dialog box
-      _dialog?.show(
-        context: context,
-        loadingText: 'No Internet',
-      );
+    // // else keep on checking for internet access
+    // while (!(await _dataConnectionChecker.hasConnection)) {
+    //   // we dont have internet
+    //   // show the dialog box
+    //   _dialog?.show(
+    //     context: context,
+    //     loadingText: 'No Internet',
+    //   );
 
-      // wait for a bit
-      await Future.delayed(const Duration(milliseconds: 100));
-    }
+    //   // wait for a bit
+    //   await Future.delayed(const Duration(milliseconds: 100));
+    // }
 
-    // if we are outside the while loop, means we have internet connection
-    // dismiss the dialog box
-    _dialog?.dismiss(context: context);
+    // // if we are outside the while loop, means we have internet connection
+    // // dismiss the dialog box
+    // _dialog?.dismiss(context: context);
   }
 
   void _connectivityCheck(ConnectivityResult result) async {
@@ -88,28 +86,28 @@ class NetworkChangeListener {
   // if my phone is connected to wifi, and for some reason
   // the router looses internet access - my app should be able
   // to detect the internet failure (without wifi - lte changes)
-  void _dataConnectionCheckListener(DataConnectionStatus status) async {
-    if (status == DataConnectionStatus.disconnected) {
-      _connectivityCheck(await _connectivity.checkConnectivity());
-    }
-  }
+  // void _dataConnectionCheckListener(DataConnectionStatus status) async {
+  //   if (status == DataConnectionStatus.disconnected) {
+  //     _connectivityCheck(await _connectivity.checkConnectivity());
+  //   }
+  // }
 
   void _initDataConnectionChecker() {
     // set up addresses to check for
-    _dataConnectionChecker.addresses = [
-      AddressCheckOptions(
-        InternetAddress('8.8.8.8'),
-      ),
-      AddressCheckOptions(
-        InternetAddress('8.8.4.4'),
-      ),
-      AddressCheckOptions(
-        InternetAddress('1.1.1.1'),
-      ),
-    ];
+    // _dataConnectionChecker.addresses = [
+    //   AddressCheckOptions(
+    //     InternetAddress('8.8.8.8'),
+    //   ),
+    //   AddressCheckOptions(
+    //     InternetAddress('8.8.4.4'),
+    //   ),
+    //   AddressCheckOptions(
+    //     InternetAddress('1.1.1.1'),
+    //   ),
+    // ];
 
     // this checks for internet access every 5 seconds
-    _dataConnectionChecker.checkInterval = const Duration(seconds: 5);
+    // _dataConnectionChecker.checkInterval = const Duration(seconds: 5);
   }
 
   NetworkChangeListener() {
@@ -119,12 +117,12 @@ class NetworkChangeListener {
 
   void _startListening() {
     // setup data connection checker
-    _initDataConnectionChecker();
+    // _initDataConnectionChecker();
 
     // listen for connectivity changes - and then check for internet connection
     _sub = _connectivity.onConnectivityChanged.listen(_connectivityCheck);
-    _internetSub = _dataConnectionChecker.onStatusChange
-        .listen(_dataConnectionCheckListener);
+    // _internetSub = _dataConnectionChecker.onStatusChange
+    //     .listen(_dataConnectionCheckListener);
 
     // instantiate the dialog object
     _dialog = NetworkConnectionDialog();
@@ -142,7 +140,7 @@ class NetworkChangeListener {
     }
     _sub?.cancel();
     _sub = null;
-    _internetSub?.cancel();
-    _internetSub = null;
+    // _internetSub?.cancel();
+    // _internetSub = null;
   }
 }
