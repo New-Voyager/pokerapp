@@ -65,3 +65,5 @@ ios/config/prod/
 android/upload-keystore.jks
 
 /out
+.vscode/settings.json
+.vscode/launch.json
