@@ -31,6 +31,7 @@ import 'package:pokerapp/screens/game_context_screen/game_chat/game_chat.dart';
 import 'package:pokerapp/screens/game_play_screen/footer_view.dart';
 import 'package:pokerapp/screens/game_play_screen/game_play_screen_util_methods.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/board_view_vertical.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/board_view/decorative_views/background_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/header_view/header_view.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
 import 'package:pokerapp/services/app/game_service.dart';
@@ -1035,14 +1036,33 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     final theme = AppTheme.getTheme(context);
     const kEmpty = const SizedBox.shrink();
 
+    var dimensions = boardAttributes.dimensions(context);
+
     return Column(
       children: [
         // header
         widget.showTop ? _buildHeaderView(theme) : kEmpty,
-        // board view
-        widget.showTop ? Expanded(child: _buildMainBoardView(theme)) : kEmpty,
-        // footer view
-        widget.showBottom ? _buildFooterView() : kEmpty,
+        Expanded(
+          child: Stack(
+            children: [
+              Container(
+                width: double.infinity,
+                height: dimensions.height,
+                child: BackgroundView(),
+              ),
+              Column(
+                children: [
+                  // board view
+                  widget.showTop
+                      ? Expanded(child: _buildMainBoardView(theme))
+                      : kEmpty,
+                  // footer view
+                  widget.showBottom ? _buildFooterView() : kEmpty,
+                ],
+              ),
+            ],
+          ),
+        )
       ],
     );
   }

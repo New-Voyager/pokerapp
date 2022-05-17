@@ -58,6 +58,37 @@ class _FooterActionViewState extends State<FooterActionView> {
     }
   }
 
+  Widget _buildGradientBorderContainer(
+    Widget child,
+    AppTheme theme,
+  ) {
+    final kInnerDecoration = BoxDecoration(
+      color: Colors.grey.shade900,
+      borderRadius: BorderRadius.circular(32),
+    );
+
+    final kGradientBoxDecoration = BoxDecoration(
+      gradient: LinearGradient(
+        colors: [theme.accentColor, theme.accentColor.withAlpha(100)],
+        begin: Alignment.centerLeft,
+        stops: [0.1, 0.7],
+        end: Alignment.centerRight,
+      ),
+      borderRadius: BorderRadius.circular(32),
+    );
+    return Container(
+      margin: EdgeInsets.all(10.0),
+      child: Padding(
+        padding: const EdgeInsets.all(1.5),
+        child: Container(
+          child: child,
+          decoration: kInnerDecoration,
+        ),
+      ),
+      decoration: kGradientBoxDecoration,
+    );
+  }
+
   Widget _buildRoundButton({
     String text = 'Button',
     Function onTap,
@@ -85,6 +116,8 @@ class _FooterActionViewState extends State<FooterActionView> {
       btnTextStyle = AppDecorators.getSubtitle3Style(theme: theme);
     }
 
+    btnColor = Colors.grey.shade900;
+
     final button = Container(
       // duration: AppConstants.fastAnimationDuration,
       // curve: Curves.bounceInOut,
@@ -93,20 +126,21 @@ class _FooterActionViewState extends State<FooterActionView> {
       margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
       padding: const EdgeInsets.all(2.0),
       decoration: BoxDecoration(
-          color: btnColor,
-          shape: BoxShape.rectangle,
-          border: Border.all(
-            color: btnColor,
-            width: 1.0,
-          ),
-          borderRadius: BorderRadius.circular(8),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black,
-              spreadRadius: 0.1,
-              blurRadius: 5,
-            ),
-          ]),
+        color: btnColor,
+        shape: BoxShape.rectangle,
+        border: Border.all(
+          color: Colors.white,
+          width: 1.5,
+        ),
+        borderRadius: BorderRadius.circular(16),
+        // boxShadow: [
+        //   BoxShadow(
+        //     color: Colors.black,
+        //     spreadRadius: 0.1,
+        //     blurRadius: 5,
+        //   ),
+        // ],
+      ),
       child: Center(
         child: FittedBox(
           fit: BoxFit.fitHeight,
@@ -150,26 +184,27 @@ class _FooterActionViewState extends State<FooterActionView> {
     Color borderColor = Colors.white;
 
     final button = Container(
-      height: 34.ph,
+      height: 32.ph,
       width: 150.pw,
-      margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+      // margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
       padding: EdgeInsets.all(5.ph),
-      decoration: BoxDecoration(
-          color: btnColor,
-          shape: BoxShape.rectangle,
-          border: Border.all(
-            color: borderColor,
-            width: 1.ph,
-          ),
-          borderRadius: BorderRadius.circular(10.pw),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black,
-              spreadRadius: 0.1,
-              blurRadius: 5,
-            ),
-          ]),
+      // decoration: BoxDecoration(
+      //     color: btnColor,
+      //     shape: BoxShape.rectangle,
+      //     border: Border.all(
+      //       color: borderColor,
+      //       width: 1.ph,
+      //     ),
+      //     borderRadius: BorderRadius.circular(17.pw),
+      //     boxShadow: [
+      //       BoxShadow(
+      //         color: Colors.black,
+      //         spreadRadius: 0.1,
+      //         blurRadius: 5,
+      //       ),
+      //     ]),
       child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
           // seperator
           const SizedBox(width: 5.0),
@@ -474,7 +509,7 @@ class _FooterActionViewState extends State<FooterActionView> {
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.max,
+          mainAxisSize: MainAxisSize.min,
           children: actionButtons,
         ),
       ],
@@ -495,7 +530,7 @@ class _FooterActionViewState extends State<FooterActionView> {
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      mainAxisSize: MainAxisSize.max,
+      mainAxisSize: MainAxisSize.min,
       children: actionButtons,
     );
   }
@@ -539,82 +574,96 @@ class _FooterActionViewState extends State<FooterActionView> {
     final gameState = GameState.getState(context);
     final me = gameState.me;
     return IntrinsicHeight(
-      child: Container(
-        width: Screen.width,
-        height: betWidgetShown ? (Screen.height / 2) - 15.ph : null,
-        color: Colors.black.withOpacity(0.5),
-        child: Consumer<ActionState>(
-            key: ValueKey('buildActionButtons'),
-            builder: (_, actionState, __) {
-              // log('BetAction: build actionState.show ${actionState.show} handState: ${gameState.handState.toString()}');
-              if (gameState.handState == HandState.RESULT ||
-                  gameState.handState == HandState.SHOWDOWN ||
-                  gameState.handState == HandState.ENDED ||
-                  gameState.me == null ||
-                  !gameState.me.inhand) {
-                return Container();
-              }
+      child: _buildGradientBorderContainer(
+        Container(
+          // width: Screen.width,
 
-              List<Widget> children = [];
-              if (actionState.show) {
-                children.addAll([
-                  /* bet widget */
-                  AnimatedSwitcher(
-                      duration: AppConstants.fastestAnimationDuration,
-                      reverseDuration: AppConstants.fastestAnimationDuration,
-                      transitionBuilder: (child, animation) => ScaleTransition(
-                            alignment: Alignment.bottomCenter,
-                            scale: animation,
-                            child: child,
+          padding: EdgeInsets.symmetric(horizontal: 6.0),
+          height: betWidgetShown ? (Screen.height / 2) - 15.ph : null,
+          // decoration: BoxDecoration(
+          //   color: Colors.grey.shade900.withAlpha(220),
+          //   borderRadius: BorderRadius.circular(42),
+          //   border: Border.all(
+          //     color: Colors.white,
+          //     width: 1.5,
+          //   ),
+          // ),
+          child: Consumer<ActionState>(
+              key: ValueKey('buildActionButtons'),
+              builder: (_, actionState, __) {
+                // log('BetAction: build actionState.show ${actionState.show} handState: ${gameState.handState.toString()}');
+                if (gameState.handState == HandState.RESULT ||
+                    gameState.handState == HandState.SHOWDOWN ||
+                    gameState.handState == HandState.ENDED ||
+                    gameState.me == null ||
+                    !gameState.me.inhand) {
+                  return Container();
+                }
+
+                List<Widget> children = [];
+                if (actionState.show) {
+                  children.addAll([
+                    /* bet widget */
+                    AnimatedSwitcher(
+                        duration: AppConstants.fastestAnimationDuration,
+                        reverseDuration: AppConstants.fastestAnimationDuration,
+                        transitionBuilder: (child, animation) =>
+                            ScaleTransition(
+                              alignment: Alignment.bottomCenter,
+                              scale: animation,
+                              child: child,
+                            ),
+                        child: Transform.scale(
+                          scale: boardAttributes.footerActionScale,
+                          child: _buildBetWidget(
+                            gameState,
+                            gameState.mySeat,
+                            me.cards,
+                            actionState.action,
+                            30,
+                            boardAttributes: boardAttributes,
                           ),
-                      child: Transform.scale(
-                        scale: boardAttributes.footerActionScale,
-                        child: _buildBetWidget(
-                          gameState,
-                          gameState.mySeat,
-                          me.cards,
-                          actionState.action,
-                          30,
-                          boardAttributes: boardAttributes,
-                        ),
-                      )),
-                  /* bottom row */ Transform.scale(
-                    scale: boardAttributes.footerActionScale,
-                    alignment: Alignment.bottomCenter,
-                    child: Container(
-                      padding: EdgeInsets.symmetric(vertical: 2.0),
-                      child: _buildActionWidgets(actionState.action, theme),
-                    ),
-                  ),
-                ]);
-              } else if (actionState.showCheckFold) {
-                final mySeat = gameState.mySeat;
-                if (mySeat.player != null &&
-                    mySeat.player.isActive &&
-                    mySeat.player.inhand &&
-                    mySeat.player.cards != null &&
-                    mySeat.player.cards.length > 0 &&
-                    gameState.playerLocalConfig.showCheckFold) {
-                  children.add(
-                    /* bottom row */
-                    Transform.scale(
+                        )),
+                    /* bottom row */ Transform.scale(
                       scale: boardAttributes.footerActionScale,
                       alignment: Alignment.bottomCenter,
                       child: Container(
-                        padding: EdgeInsets.symmetric(vertical: 4.0),
-                        child: _buildCheckFoldWidget(actionState, theme),
+                        padding: EdgeInsets.symmetric(vertical: 0.0),
+                        child: _buildActionWidgets(actionState.action, theme),
                       ),
                     ),
-                  );
+                  ]);
+                } else if (actionState.showCheckFold) {
+                  final mySeat = gameState.mySeat;
+                  if (mySeat.player != null &&
+                      mySeat.player.isActive &&
+                      mySeat.player.inhand &&
+                      mySeat.player.cards != null &&
+                      mySeat.player.cards.length > 0 &&
+                      gameState.playerLocalConfig.showCheckFold) {
+                    children.add(
+                      /* bottom row */
+                      Transform.scale(
+                        scale: boardAttributes.footerActionScale,
+                        alignment: Alignment.bottomCenter,
+                        child: Container(
+                          padding: EdgeInsets.symmetric(vertical: 4.0),
+                          child: _buildCheckFoldWidget(actionState, theme),
+                        ),
+                      ),
+                    );
+                  }
                 }
-              }
 
-              return Stack(
-                children: [
-                  ...children,
-                ],
-              );
-            }),
+                return Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    ...children,
+                  ],
+                );
+              }),
+        ),
+        theme,
       ),
     );
   }

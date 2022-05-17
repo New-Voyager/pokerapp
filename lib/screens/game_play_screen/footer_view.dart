@@ -29,7 +29,7 @@ class FooterViewWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final boa = context.read<BoardAttributesObject>();
     double footerHeight =
-        MediaQuery.of(context).size.height * boa.footerViewScale / 2;
+        MediaQuery.of(context).size.height * boa.footerViewScale;
     footerHeight += boa.bottomHeightAdjust;
     log('RedrawFooter: FooterViewWidget build');
 
@@ -37,12 +37,12 @@ class FooterViewWidget extends StatelessWidget {
       child: Container(
         height: footerHeight,
         key: UniqueKey(),
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage("assets/images/bottom_pattern.png"),
-            fit: BoxFit.fill,
-          ),
-        ),
+        // decoration: BoxDecoration(
+        //   image: DecorationImage(
+        //     image: AssetImage("assets/images/bottom_pattern.png"),
+        //     fit: BoxFit.fill,
+        //   ),
+        // ),
         child: FooterView(
             gameContext: gameContextObject,
             gameCode: gameCode,

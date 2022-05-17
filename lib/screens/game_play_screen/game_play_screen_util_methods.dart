@@ -92,54 +92,54 @@ class GamePlayScreenUtilMethods {
             TestService.addTurnCard();
           },
         ),
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          label: 'Add River',
-          labelBackgroundColor: Colors.black,
-          onTap: () {
-            TestService.addRiverCard();
-          },
-        ),
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          label: 'Run It Twice, after Flop',
-          labelBackgroundColor: Colors.black,
-          onTap: () {
-            TestService.addRunItTwiceAfterFlop();
-          },
-        ),
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          label: 'Run It Twice, after Turn',
-          labelBackgroundColor: Colors.black,
-          onTap: () {
-            TestService.addRunItTwiceAfterTurn();
-          },
-        ),
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          label: 'Adds cards',
-          labelBackgroundColor: Colors.black,
-          onTap: () {
-            TestService.addCardsWithoutAnimating();
-          },
-        ),
+        // SpeedDialChild(
+        //   child: Icon(
+        //     Icons.adb_rounded,
+        //     color: Colors.white,
+        //   ),
+        //   backgroundColor: Colors.red,
+        //   label: 'Add River',
+        //   labelBackgroundColor: Colors.black,
+        //   onTap: () {
+        //     TestService.addRiverCard();
+        //   },
+        // ),
+        // SpeedDialChild(
+        //   child: Icon(
+        //     Icons.adb_rounded,
+        //     color: Colors.white,
+        //   ),
+        //   backgroundColor: Colors.red,
+        //   label: 'Run It Twice, after Flop',
+        //   labelBackgroundColor: Colors.black,
+        //   onTap: () {
+        //     TestService.addRunItTwiceAfterFlop();
+        //   },
+        // ),
+        // SpeedDialChild(
+        //   child: Icon(
+        //     Icons.adb_rounded,
+        //     color: Colors.white,
+        //   ),
+        //   backgroundColor: Colors.red,
+        //   label: 'Run It Twice, after Turn',
+        //   labelBackgroundColor: Colors.black,
+        //   onTap: () {
+        //     TestService.addRunItTwiceAfterTurn();
+        //   },
+        // ),
+        // SpeedDialChild(
+        //   child: Icon(
+        //     Icons.adb_rounded,
+        //     color: Colors.white,
+        //   ),
+        //   backgroundColor: Colors.red,
+        //   label: 'Adds cards',
+        //   labelBackgroundColor: Colors.black,
+        //   onTap: () {
+        //     TestService.addCardsWithoutAnimating();
+        //   },
+        // ),
         // SpeedDialChild(
         //     child: Icon(
         //       Icons.adb_rounded,
@@ -244,17 +244,17 @@ class GamePlayScreenUtilMethods {
         // //   label: 'Show Bets',
         // //   onTap: () => TestService.showBets(),
         // // ),
-        // SpeedDialChild(
-        //     child: Icon(
-        //       Icons.adb_rounded,
-        //       color: Colors.white,
-        //     ),
-        //     backgroundColor: Colors.red,
-        //     label: 'Show Bet Widget',
-        //     labelBackgroundColor: Colors.black,
-        //     onTap: () {
-        //       TestService.testBetWidget();
-        //     }),
+        SpeedDialChild(
+            child: Icon(
+              Icons.adb_rounded,
+              color: Colors.white,
+            ),
+            backgroundColor: Colors.red,
+            label: 'Show Bet Widget',
+            labelBackgroundColor: Colors.black,
+            onTap: () {
+              TestService.testBetWidget();
+            }),
         // // SpeedDialChild(
         // //   child: Icon(
         // //     Icons.adb_rounded,
@@ -275,16 +275,16 @@ class GamePlayScreenUtilMethods {
         // //   label: 'Seat Change Prompt',
         // //   onTap: () => TestService.showSeatChangePrompt(),
         // // ),
-        // // SpeedDialChild(
-        // //   child: Icon(
-        // //     Icons.adb_rounded,
-        // //     color: Colors.white,
-        // //   ),
-        // //   backgroundColor: Colors.red,
-        // //   labelBackgroundColor: Colors.black,
-        // //   label: 'Show Dealer Widget',
-        // //   onTap: () => TestService.showDealerWidget(),
-        // // ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
+          labelBackgroundColor: Colors.black,
+          label: 'Show Dealer Widget',
+          onTap: () => TestService.showDealerWidget(),
+        ),
         // // SpeedDialChild(
         // //   child: Icon(
         // //     Icons.adb_rounded,

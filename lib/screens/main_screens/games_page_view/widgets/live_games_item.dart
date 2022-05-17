@@ -74,49 +74,52 @@ class LiveGameItem extends StatelessWidget {
                 ),
                 Padding(
                   padding: EdgeInsets.only(
-                    left: 16.pw,
+                    left: 8.pw,
                     top: 8.ph,
                     bottom: 8.ph,
                   ),
                   child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(
                         flex: 3,
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            Image.asset(
-                              AppAssetsNew.pathGameTypeChipImage,
-                              height: 80.ph,
-                              width: 80.ph,
-                            ),
-                            Image.asset(
-                              GameModel.getGameTypeImageAsset(game.gameType),
-                              height: 40.ph,
-                              width: 40.ph,
-                              alignment: Alignment.center,
-                            ),
-                            (game.clubCode != null)
-                                ? Positioned(
-                                    right: 0,
-                                    bottom: 0,
-                                    child: Container(
-                                      height: 26.pw,
-                                      width: 26.pw,
-                                      decoration: BoxDecoration(
-                                          image: clubImage,
-                                          borderRadius:
-                                              BorderRadius.circular(13.pw)),
-                                      padding: EdgeInsets.all(5.pw),
-                                      // child: SvgPicture.asset(
-                                      //     'assets/icons/clubs.svg',
-                                      //     height: 24.pw,
-                                      //     width: 24.pw,
-                                      //     color: Colors.white),
-                                    ))
-                                : Container(),
-                          ],
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 16.0),
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              Image.asset(
+                                AppAssetsNew.pathGameTypeChipImage,
+                                height: 80.ph,
+                                width: 80.ph,
+                              ),
+                              Image.asset(
+                                GameModel.getGameTypeImageAsset(game.gameType),
+                                height: 40.ph,
+                                width: 40.ph,
+                                alignment: Alignment.center,
+                              ),
+                              (game.clubCode != null)
+                                  ? Positioned(
+                                      right: 0,
+                                      bottom: 0,
+                                      child: Container(
+                                        height: 26.pw,
+                                        width: 26.pw,
+                                        decoration: BoxDecoration(
+                                            image: clubImage,
+                                            borderRadius:
+                                                BorderRadius.circular(13.pw)),
+                                        padding: EdgeInsets.all(5.pw),
+                                        // child: SvgPicture.asset(
+                                        //     'assets/icons/clubs.svg',
+                                        //     height: 24.pw,
+                                        //     width: 24.pw,
+                                        //     color: Colors.white),
+                                      ))
+                                  : Container(),
+                            ],
+                          ),
                         ),
                       ),
                       Expanded(
@@ -134,37 +137,29 @@ class LiveGameItem extends StatelessWidget {
                                       style: AppDecorators.getHeadLine5Style(
                                           theme: theme),
                                     ),
-                                    AppDimensionsNew.getHorizontalSpace(16.pw),
+                                    AppDimensionsNew.getHorizontalSpace(8.pw),
                                   ],
                                 ),
-                                Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        "${gameTypeStr} ${DataFormatter.chipsFormat(game.smallBlind)}/${DataFormatter.chipsFormat(game.bigBlind)}",
-                                        style: AppDecorators.getHeadLine4Style(
-                                            theme: theme),
-                                      ),
-                                      RichText(
-                                          text: TextSpan(children: [
-                                        TextSpan(
-                                          text: 'Code: ',
-                                          style:
-                                              AppDecorators.getHeadLine5Style(
-                                                  theme: theme),
-                                        ),
-                                        TextSpan(
-                                          text: game.gameCode,
-                                          style:
-                                              AppDecorators.getAccentTextStyle(
-                                                      theme: theme)
-                                                  .copyWith(fontSize: 10.dp),
-                                        )
-                                      ])),
-                                      SizedBox(width: 10),
-                                    ]),
-                                AppDimensionsNew.getVerticalSizedBox(2.ph),
+                                Text(
+                                  "${gameTypeStr} ${DataFormatter.chipsFormat(game.smallBlind)}/${DataFormatter.chipsFormat(game.bigBlind)}",
+                                  style: AppDecorators.getHeadLine4Style(
+                                      theme: theme),
+                                ),
+                                RichText(
+                                    text: TextSpan(children: [
+                                  TextSpan(
+                                    text: 'Code: ',
+                                    style: AppDecorators.getHeadLine5Style(
+                                        theme: theme),
+                                  ),
+                                  TextSpan(
+                                    text: game.gameCode,
+                                    style: AppDecorators.getAccentTextStyle(
+                                            theme: theme)
+                                        .copyWith(fontSize: 10.dp),
+                                  )
+                                ])),
+                                AppDimensionsNew.getVerticalSizedBox(8.ph),
                                 Row(children: [
                                   Row(
                                     children: [

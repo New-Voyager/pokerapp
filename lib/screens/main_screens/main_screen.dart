@@ -234,7 +234,7 @@ class _MainScreenState extends State<MainScreen>
                   CurvedNavItem(
                     iconData: Icons.money,
                     title: _appScreenText['test'],
-                    selected: _navPos == 4,
+                    selected: _navPos == 3,
                   ),
               ],
             ),

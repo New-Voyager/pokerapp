@@ -823,7 +823,7 @@ class BoardAttributesObject extends ChangeNotifier {
   }
 
   double get footerViewScale {
-    return attribsObj.footerViewScale;
+    return attribsObj.footerViewScale / 1.75;
   }
 
   double get boardHeightAdjust {

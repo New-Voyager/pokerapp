@@ -5,6 +5,11 @@ import 'package:pokerapp/utils/name_plate_widget_parent.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'dart:math' as math;
 
+enum TableLayout {
+  HORIZONTAL,
+  VERTICAL,
+}
+
 class GameUIState {
   // table key - we need this to calculate the exact dimension of the table image
   final GlobalKey tableKey = GlobalKey();
@@ -38,6 +43,9 @@ class GameUIState {
   // hole card UI
   GlobalKey rearrangeKey = GlobalKey();
   Rect rearrangeRect;
+
+  //table layout
+  TableLayout layout = TableLayout.HORIZONTAL;
 
   void init() {
     NamePlateWidgetParent.setWidth(90);
@@ -198,7 +206,8 @@ class GameUIState {
     final centerBottomGap = bottomTopLocal.dy - bottomRight.dy;
 
     // to make the bottom and top gap uniform
-    final extraBottomGap = centerTopGap - centerBottomGap;
+    // final extraBottomGap = centerTopGap - centerBottomGap;
+    final extraBottomGap = centerTopGap;
 
     final rect = Rect.fromLTWH(
       topLeft.dx,
