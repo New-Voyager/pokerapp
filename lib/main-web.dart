@@ -13,21 +13,14 @@ import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/models/ui/app_theme_data.dart';
 import 'package:pokerapp/models/ui/app_theme_styles.dart';
-import 'package:pokerapp/resources/app_config.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
-import 'package:pokerapp/routes.dart';
-import 'package:pokerapp/services/app/appcoin_service.dart';
-import 'package:pokerapp/services/app/auth_service.dart';
-import 'package:pokerapp/services/app_service.dart';
 import 'package:pokerapp/services/connectivity_check/network_change_listener.dart';
 import 'package:pokerapp/services/nats/nats.dart';
-import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/platform.dart';
 import 'package:pokerapp/utils/utils.dart';
-import 'package:pokerapp/widgets/buttons.dart';
+import 'package:pokerapp/web-routes.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
-import 'package:uuid/uuid.dart';
 import 'main_helper.dart';
 
 void main() async {
@@ -35,10 +28,12 @@ void main() async {
   PlatformUtils.isWeb = true;
   await DeviceInfo.init();
   await initAppText('en');
- 
+
   ScreenAttributes.buildList();
 
   String apiUrl = 'https://api.pokerclub.app';
+  // apiUrl = 'http://192.168.0.103:9501';
+
   log('$apiUrl');
   await graphQLConfiguration.init(apiUrl: apiUrl);
   runApp(
@@ -81,6 +76,8 @@ class _MyWebAppState extends State<MyWebApp> {
 
     //this.nats = Nats(context);
     final style = getAppStyle('default');
+    String gameCode = Uri.base.queryParameters["gameCode"];
+    log('gameCode: $gameCode');
     return MultiProvider(
       /* PUT INDEPENDENT PROVIDERS HERE */
       providers: [
@@ -131,8 +128,7 @@ class _MyWebAppState extends State<MyWebApp> {
                         cursorColor: appTheme.accentColor,
                       ),
                     ),
-                    onGenerateRoute: Routes.generateRoute,
-                    initialRoute: Routes.initialWebRoute,
+                    onGenerateRoute: WebRoutes.generateRoute,
                     navigatorObservers: [routeObserver],
                   );
                 },
