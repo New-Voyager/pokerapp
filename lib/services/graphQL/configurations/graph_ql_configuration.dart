@@ -1,15 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:pokerapp/main-web.dart';
 import 'package:pokerapp/resources/app_config.dart';
+import 'package:pokerapp/utils/platform.dart';
 
 class GraphQLConfiguration {
   String apiURL;
 
   Future<void> init({String apiUrl}) async {
     if (apiUrl == null) {
-      this.apiURL = AppConfig.apiUrl;
+      apiUrl = AppConfig.apiUrl;
     }
-    this.apiURL = '${this.apiURL}/graphql';
+    this.apiURL = '${apiUrl}/graphql';
   }
 
   HttpLink httpLink() {
@@ -17,9 +19,16 @@ class GraphQLConfiguration {
   }
 
   AuthLink authLink() {
-    return AuthLink(getToken: () async {
-      return 'jwt ${AppConfig.jwt}';
-    });
+    if (PlatformUtils.isWeb) {
+      // TODO: temporary code
+      return AuthLink(getToken: () async {
+        return 'Bearer $kWebPlayerUuid';
+      });
+    } else {
+      return AuthLink(getToken: () async {
+        return 'jwt ${AppConfig.jwt}';
+      });
+    }
   }
 
   // final ValueNotifier<GraphQLClient> client = ValueNotifier(

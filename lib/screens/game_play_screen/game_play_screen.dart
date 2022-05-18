@@ -840,11 +840,13 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       }
     });
 
-    PlayerService.getPendingApprovals().then((v) {
-      appState.buyinApprovals.setPendingList(v);
-    }).onError((error, stackTrace) {
-      // ignore it
-    });
+    if (!PlatformUtils.isWeb) {
+      PlayerService.getPendingApprovals().then((v) {
+        appState.buyinApprovals.setPendingList(v);
+      }).onError((error, stackTrace) {
+        // ignore it
+      });
+    }
 
     _appScreenText = getAppTextScreen("gameScreen");
   }
