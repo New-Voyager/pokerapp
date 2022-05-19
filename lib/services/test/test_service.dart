@@ -32,7 +32,7 @@ import 'package:provider/provider.dart';
 
 class TestService {
   static bool get isTesting {
-    return false;
+    return true;
   }
 
   static bool get isPartialTesting {
