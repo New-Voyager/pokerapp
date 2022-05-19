@@ -1,4 +1,8 @@
 class AppAssetsNew {
+
+  // Web Constants
+
+
   static const String fontFamilyRockwell = 'Rockwell';
   static const String fontFamilyPoppins = 'Poppins';
   static const String pathBackgroundImage =

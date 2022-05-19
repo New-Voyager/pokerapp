@@ -9,8 +9,10 @@ import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/services/app/appcoin_service.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/utils/utils.dart';
+import 'package:pokerapp/web-routes.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:uuid/uuid.dart';
+import 'package:crypto/src/sha1.dart';
 
 class WebHomeScreen extends StatefulWidget {
   const WebHomeScreen({Key key}) : super(key: key);
@@ -20,12 +22,12 @@ class WebHomeScreen extends StatefulWidget {
 }
 
 class _WebHomeScreenState extends State<WebHomeScreen> {
-  final _textController = TextEditingController(text: "pgjewasl");
+  final _textController = TextEditingController(text: "lgpmoqya");
   BuildContext _context;
 
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
       _defaults();
     });
     super.initState();
@@ -37,7 +39,7 @@ class _WebHomeScreenState extends State<WebHomeScreen> {
 
     Screen.init(_context);
     String deviceId = new Uuid().v4().toString();
-    // deviceId = sha1.convert(utf8.encode(deviceId)).toString();
+    deviceId = sha1.convert(utf8.encode(deviceId)).toString();
 
     log('deviceId: $deviceId');
     final resp = await AuthService.signup(
@@ -59,6 +61,7 @@ class _WebHomeScreenState extends State<WebHomeScreen> {
       AppConfig.jwt = resp['jwt'];
       final availableCoins = await AppCoinService.availableCoins();
       AppConfig.setAvailableCoins(availableCoins);
+      setState(() {});
     }
   }
 
@@ -88,8 +91,8 @@ class _WebHomeScreenState extends State<WebHomeScreen> {
               text: "Join Game",
               onTap: () {
                 Navigator.of(context).pushNamed(
-                  Routes.game_play,
-                  arguments: '${_textController.text}',
+                  WebRoutes.gameRoute,
+                  arguments: {'gameCode' : _textController.text},
                 );
               },
               theme: AppTheme.getTheme(context),

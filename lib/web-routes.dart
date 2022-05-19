@@ -1,10 +1,8 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
+import 'package:pokerapp/screens/web/web_game_play_screen.dart';
 import 'package:pokerapp/screens/web/web_home_screen.dart';
-
-import 'package:pokerapp/screens/screens.dart';
+import 'package:provider/provider.dart';
 
 class WebRoutes {
   WebRoutes._();
@@ -24,21 +22,21 @@ class WebRoutes {
 
     switch (routeName) {
       case gameRoute:
-        String gameCode;
-        bool botGame = false;
-        bool isFromWaitListNotification = false;
-        GameInfoModel gameInfo;
-        gameCode = uri.queryParameters['gameCode'];
-        if (gameCode == null) {
-          // show an error
-        }
+        final String gameCode =
+            uri.queryParameters['gameCode'] ?? "lgpmoqya"; // Default lobbygame
+        final bool isBotGame = uri.queryParameters['botGame'] ?? false;
+        final bool isFromWaitListNotification = false;
+
         return _getPageRoute(
-          routeName: '/game_play',
-          viewToShow: GamePlayScreen(
-            gameCode: gameCode,
-            botGame: false,
-            gameInfoModel: gameInfo,
-            isFromWaitListNotification: isFromWaitListNotification,
+          routeName: settings.name,
+          viewToShow: Provider(
+            create: (_) => GameState(),
+            child: WebGamePlayScreen(
+              gameCode: gameCode,
+              isBotGame: isBotGame,
+              // gameInfoModel: gameInfo,
+              isFromWaitListNotification: isFromWaitListNotification,
+            ),
           ),
         );
 

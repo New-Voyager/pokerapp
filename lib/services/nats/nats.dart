@@ -97,7 +97,7 @@ class Nats {
         .replaceFirst('tls://', '')
         .replaceFirst(':4222', '');
 
-    natsUrl = 'ws://192.168.1.99:8090';
+    natsUrl = 'ws://192.168.1.100:8090';
     _natsUrl = natsUrl;
     await _clientSub.wsconnect(natsUrl);
     await _clientPub.wsconnect(natsUrl);

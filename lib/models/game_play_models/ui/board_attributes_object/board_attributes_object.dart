@@ -1,7 +1,6 @@
 /* This class holds board attributes data, like orientation,
 * mappings and everything that is variable */
 
-import 'dart:convert';
 import 'dart:developer';
 import 'dart:typed_data';
 

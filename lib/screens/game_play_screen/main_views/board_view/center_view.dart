@@ -142,7 +142,7 @@ class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     _appScreenText = getAppTextScreen("centerView");
-    tableState.addListener(tableStateListener);
+    //tableState.addListener(tableStateListener);
     final gameState = GameState.getState(context);
     boa = gameState.getBoardAttributes(context);
   }

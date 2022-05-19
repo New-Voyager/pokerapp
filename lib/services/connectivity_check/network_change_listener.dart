@@ -111,7 +111,7 @@ class NetworkChangeListener {
   }
 
   NetworkChangeListener() {
-    log('NetworkChangeListener :: constructor');
+    // log('NetworkChangeListener :: constructor');
     _startListening();
   }
 

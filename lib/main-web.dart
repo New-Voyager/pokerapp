@@ -14,6 +14,8 @@ import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/models/ui/app_theme_data.dart';
 import 'package:pokerapp/models/ui/app_theme_styles.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
+import 'package:pokerapp/screens/layouts/layout_holder.dart';
+import 'package:pokerapp/screens/web/web_home_screen.dart';
 import 'package:pokerapp/services/connectivity_check/network_change_listener.dart';
 import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/utils/platform.dart';
@@ -33,7 +35,7 @@ void main() async {
   ScreenAttributes.buildList();
 
   String apiUrl = 'https://api.pokerclub.app';
-  apiUrl = 'http://192.168.0.103:9501';
+  apiUrl = 'http://192.168.1.100:9501';
 
   log('$apiUrl');
   await graphQLConfiguration.init(apiUrl: apiUrl);
@@ -77,8 +79,8 @@ class _MyWebAppState extends State<MyWebApp> {
 
     //this.nats = Nats(context);
     final style = getAppStyle('default');
-    String gameCode = Uri.base.queryParameters["gameCode"];
-    log('gameCode: $gameCode');
+    //String gameCode = Uri.base.queryParameters["gameCode"];
+    //log('gameCode: $gameCode');
     return MultiProvider(
       /* PUT INDEPENDENT PROVIDERS HERE */
       providers: [
@@ -106,6 +108,10 @@ class _MyWebAppState extends State<MyWebApp> {
           Provider(
             create: (_) => NetworkChangeListener(),
             lazy: false,
+          ),
+          // Layout related provider
+          ChangeNotifierProvider(
+            create: (_) => LayoutHolder(),
           ),
         ],
         child: OverlaySupport.global(
