@@ -1,4 +1,3 @@
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
@@ -204,7 +203,6 @@ class GameReplayActionService {
       gameState: gameState,
       context: _context,
       handResult: action.result,
-      audioPlayer: new AudioPlayer(),
     );
 
     return resultHandler.show();
@@ -216,7 +214,6 @@ class GameReplayActionService {
       gameState: GameState.getState(_context),
       context: _context,
       handResult: action.result,
-      audioPlayer: new AudioPlayer(),
     );
 
     return resultHandler.show();

@@ -3,12 +3,9 @@ PODS:
     - Flutter
   - audioplayers (0.0.1):
     - Flutter
-  - connectivity (0.0.1):
-    - Flutter
-    - Reachability
   - connectivity_plus (0.0.1):
     - Flutter
-    - Reachability
+    - ReachabilitySwift
   - device_info (0.0.1):
     - Flutter
   - Firebase/Analytics (8.7.0):
@@ -150,7 +147,7 @@ PODS:
   - "permission_handler (5.1.0+2)":
     - Flutter
   - PromisesObjC (2.1.0)
-  - Reachability (3.2)
+  - ReachabilitySwift (5.0.0)
   - record (0.0.1):
     - Flutter
   - SAMKeychain (1.5.3)
@@ -176,7 +173,6 @@ PODS:
 DEPENDENCIES:
   - audio_session (from `.symlinks/plugins/audio_session/ios`)
   - audioplayers (from `.symlinks/plugins/audioplayers/ios`)
-  - connectivity (from `.symlinks/plugins/connectivity/ios`)
   - connectivity_plus (from `.symlinks/plugins/connectivity_plus/ios`)
   - device_info (from `.symlinks/plugins/device_info/ios`)
   - firebase_analytics (from `.symlinks/plugins/firebase_analytics/ios`)
@@ -221,7 +217,7 @@ SPEC REPOS:
     - Libyuv
     - nanopb
     - PromisesObjC
-    - Reachability
+    - ReachabilitySwift
     - SAMKeychain
     - WebRTC-SDK
 
@@ -230,8 +226,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/audio_session/ios"
   audioplayers:
     :path: ".symlinks/plugins/audioplayers/ios"
-  connectivity:
-    :path: ".symlinks/plugins/connectivity/ios"
   connectivity_plus:
     :path: ".symlinks/plugins/connectivity_plus/ios"
   device_info:
@@ -292,8 +286,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   audio_session: 4f3e461722055d21515cf3261b64c973c062f345
   audioplayers: 455322b54050b30ea4b1af7cd9e9d105f74efa8c
-  connectivity: c4130b2985d4ef6fd26f9702e886bd5260681467
-  connectivity_plus: 5f0eb61093bec56935f21a1699dd2758bc895587
+  connectivity_plus: 413a8857dd5d9f1c399a39130850d02fe0feaf7e
   device_info: d7d233b645a32c40dfdc212de5cf646ca482f175
   Firebase: bc9325d5ee2041524bac78a5213d0e530c651309
   firebase_analytics: 72e3c5d712e43eeb0cb6f194f7cc10bc81e7d3fe
@@ -325,7 +318,7 @@ SPEC CHECKSUMS:
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
   permission_handler: ccb20a9fad0ee9b1314a52b70b76b473c5f8dab0
   PromisesObjC: 99b6f43f9e1044bd87a95a60beff28c2c44ddb72
-  Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
+  ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
   record: 7ee2393532f8553bbb09fa19e95478323b7c0a99
   SAMKeychain: 483e1c9f32984d50ca961e26818a534283b4cd5c
   share: 0b2c3e82132f5888bccca3351c504d0003b3b410

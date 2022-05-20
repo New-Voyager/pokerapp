@@ -1,7 +1,6 @@
 import 'dart:developer';
 import 'dart:developer' as developer;
 
-import 'package:audioplayers/audioplayers.dart';
 import 'package:blinking_text/blinking_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
@@ -450,14 +449,6 @@ class GamePlayScreenUtilMethods {
       /* this is for the highHand Notification */
       ListenableProvider<ValueNotifier<HHNotificationModel>>(
         create: (_) => ValueNotifier<HHNotificationModel>(null),
-      ),
-
-      /* This provider holds the audioPlayer object, which facilitates playing
-          * audio in the game */
-      Provider<AudioPlayer>(
-        create: (_) => AudioPlayer(
-          mode: PlayerMode.LOW_LATENCY,
-        ),
       ),
 
       /* managing audio assets as temporary files */

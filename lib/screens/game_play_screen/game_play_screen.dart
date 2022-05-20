@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:after_layout/after_layout.dart';
-import 'package:audioplayers/audioplayers.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -122,7 +121,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
   // String _audioToken = '';
   // bool liveAudio = true;
-  AudioPlayer _voiceTextPlayer;
+  //AudioPlayer _voiceTextPlayer;
 
   //Agora agora;
   GameComService _gameComService;
@@ -581,14 +580,15 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     log('Audio message is sent ${message.messageId} from player ${message.fromPlayer}');
     // final gameState = GameState.getState(_providerContext);
     final seat = _gameState.getSeatByPlayer(message.fromPlayer);
-    if (_voiceTextPlayer != null &&
-        message.audio != null &&
-        message.audio.length > 0) {
+    if (message.audio != null && message.audio.length > 0) {
       if (seat != null && seat.player != null) {
         seat.player.talking = true;
         seat.notify();
         try {
-          _voiceTextPlayer.playBytes(message.audio).then((value) {
+          AudioService.playVoice(message.audio).then((value) {
+            seat.player.talking = false;
+            seat.notify();
+          }).onError((error, stackTrace) {
             seat.player.talking = false;
             seat.notify();
           });
@@ -598,7 +598,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       } else {
         // Play voice text from observer.
         try {
-          int res = await _voiceTextPlayer.playBytes(message.audio);
+          int res = await AudioService.playVoice(message.audio);
           if (res == 1) {
             log("Playing observer sound");
             //await Future.delayed(Duration(seconds: message.duration ?? 0));
@@ -809,7 +809,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
             );
 
     Wakelock.enable();
-    _voiceTextPlayer = AudioPlayer();
 
     // Register listener for lifecycle methods
     WidgetsBinding.instance.addObserver(this);
@@ -876,7 +875,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       }
       _gameContextObj?.dispose();
       _gameState?.close();
-      _voiceTextPlayer?.dispose();
     } catch (e) {
       log('Caught exception: ${e.toString()}');
     }
@@ -1233,7 +1231,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
   Future<void> leaveAudioConference() async {
     if (_gameState != null) {
-      _voiceTextPlayer?.pause();
       _gameContextObj?.leaveAudio();
     }
   }
