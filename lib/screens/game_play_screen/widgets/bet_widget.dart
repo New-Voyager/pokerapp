@@ -12,7 +12,6 @@ import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
-import 'package:pokerapp/screens/game_play_screen/widgets/custom_slider_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/help_text.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/jumping_text_widget.dart';
 import 'package:pokerapp/services/data/box_type.dart';
@@ -24,6 +23,7 @@ import 'package:pokerapp/utils/numeric_keyboard2.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/cards/multiple_stack_card_views.dart';
+import 'package:pokerapp/widgets/slider_widget.dart';
 import 'package:provider/provider.dart';
 
 class BetWidget extends StatelessWidget {
@@ -454,78 +454,25 @@ class BetWidget extends StatelessWidget {
       //     },
       //   ),
       // ),
-      child: Container(
-        child: CustomFlutterSlider(
-          trackBar: FlutterSliderTrackBar(
-            activeTrackBarHeight: 10,
-            inactiveTrackBarHeight: 10,
-            inactiveTrackBar: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
-              color: Colors.grey.shade800.withAlpha(180),
-            ),
-            activeTrackBar: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
-              gradient: LinearGradient(
-                colors: [
-                  Colors.blue.shade900,
-                  Colors.blue.shade200,
-                ],
-                begin: const FractionalOffset(0.0, 0.0),
-                end: const FractionalOffset(1.0, 0.0),
-              ),
-            ),
-          ),
-          handlerHeight: 30,
-          handlerWidth: 30,
-          handler: FlutterSliderHandler(
-            decoration: BoxDecoration(
-              color: Colors.transparent,
-            ),
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                Container(
-                  height: 30,
-                  width: 30,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    gradient: RadialGradient(
-                      colors: [
-                        Colors.transparent,
-                        Colors.white.withAlpha(60),
-                      ],
-                      stops: [
-                        0.2,
-                        0.9,
-                      ],
-                    ),
-                  ),
-                ),
-                Container(
-                  height: 20,
-                  width: 20,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    gradient: LinearGradient(
-                      colors: [
-                        Colors.yellow,
-                        theme.accentColor,
-                      ],
-                      begin: const FractionalOffset(0.7, 0.0),
-                      end: const FractionalOffset(0.3, 1.0),
-                      stops: [0.3, 0.75],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          max: 200,
-          min: 100,
-          handlerAnimation: FlutterSliderHandlerAnimation(
-              duration: Duration(milliseconds: 0), scale: 1),
-          values: [100],
-        ),
+
+      child: Consumer<ValueNotifier<double>>(
+        builder: (_, vnBetAmount, __) {
+          final min = action.minRaiseAmount.toDouble();
+          final max = action.maxRaiseAmount.toDouble();
+
+          return CustomSlider(
+            max: max,
+            min: min,
+            values: [vnBetAmount.value],
+            onChanged: (handlerIndex, newBetAmount, upperValue) {
+              if (gameState.gameInfo.chipUnit == ChipUnit.DOLLAR) {
+                vnBetAmount.value = newBetAmount.round().toDouble();
+              } else {
+                vnBetAmount.value = newBetAmount;
+              }
+            },
+          );
+        },
       ),
     );
   }
