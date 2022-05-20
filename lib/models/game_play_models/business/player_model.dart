@@ -1,15 +1,13 @@
-import 'dart:developer';
 import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart';
-
 import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/handlog_model.dart';
+import 'package:pokerapp/proto/hand.pb.dart' as proto;
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/utils/card_helper.dart';
-import 'package:pokerapp/proto/hand.pb.dart' as proto;
 
 class StackReloadState {
   double oldStack;
@@ -226,6 +224,7 @@ class PlayerModel {
   PlayerConnectivityState get connectivity => this._connectivity;
 
   void reset({bool stickAction}) {
+    noOfCardsVisible = 0;
     this.highlight = false;
     this.winner = false;
     this.loWinner = false;

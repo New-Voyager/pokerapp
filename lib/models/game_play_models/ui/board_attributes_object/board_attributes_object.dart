@@ -1,20 +1,13 @@
 /* This class holds board attributes data, like orientation,
 * mappings and everything that is variable */
 
-import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:pokerapp/enums/game_type.dart';
-import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_mappings.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/screen_attributes.dart';
 import 'package:pokerapp/utils/utils.dart';
-import 'package:tuple/tuple.dart';
-
-import 'android.dart';
-import 'iphone.dart';
 
 enum BoardOrientation {
   horizontal,
@@ -666,20 +659,20 @@ class BoardAttributesObject extends ChangeNotifier {
       orientation == BoardOrientation.horizontal;
 
   Map<int, Offset> get seatChangeStackOffsetMapping {
-    if (_boardOrientation == BoardOrientation.horizontal) {
-      return {
-        1: Offset(0, 80),
-        2: Offset(-130, 50),
-        3: Offset(-120, -0),
-        4: Offset(-110, -80),
-        5: Offset(-40, -90),
-        6: Offset(60, -90),
-        7: Offset(110, -80),
-        8: Offset(110, -0),
-        9: Offset(130, 50),
-      };
-    }
-    return kSeatChangeStackVerticalOffsetMapping;
+    // if (_boardOrientation == BoardOrientation.horizontal) {
+    return {
+      1: Offset(0, 80),
+      2: Offset(-130, 50),
+      3: Offset(-120, -0),
+      4: Offset(-110, -80),
+      5: Offset(-40, -90),
+      6: Offset(60, -90),
+      7: Offset(110, -80),
+      8: Offset(110, -0),
+      9: Offset(130, 50),
+    };
+    // }
+    // return kSeatChangeStackVerticalOffsetMapping;
   }
 
   Map<SeatPos, Offset> buttonPos() {
@@ -690,12 +683,12 @@ class BoardAttributesObject extends ChangeNotifier {
     return this._foldCardPos;
   }
 
-  Tuple2<Color, Color> buttonColor(GameType gameType) {
-    if (kDealerButtonColor.containsKey(gameType)) {
-      return kDealerButtonColor[gameType];
-    }
-    return kDealerButtonColor[GameType.UNKNOWN];
-  }
+  // Tuple2<Color, Color> buttonColor(GameType gameType) {
+  //   if (kDealerButtonColor.containsKey(gameType)) {
+  //     return kDealerButtonColor[gameType];
+  //   }
+  //   return kDealerButtonColor[GameType.UNKNOWN];
+  // }
 
   Size dimensions(BuildContext context) {
     var _widthMultiplier = 0.78;

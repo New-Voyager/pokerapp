@@ -43,7 +43,7 @@ class CommunityCardView2 extends StatelessWidget {
               switchInCurve: Curves.easeInOutExpo,
               switchOutCurve: Curves.easeInOut,
               duration: Duration.zero,
-              reverseDuration: const Duration(milliseconds: 400),
+              reverseDuration: AppConstants.cardThrowAnimationDuration,
               transitionBuilder: (child, animation) => FadeTransition(
                 opacity: animation,
                 child: AnimatedBuilder(
@@ -51,6 +51,7 @@ class CommunityCardView2 extends StatelessWidget {
                   child: child,
                   builder: (context, child) {
                     return Transform.scale(
+                      alignment: Alignment.topCenter,
                       scale: max(animation.value, 0.60),
                       child: child,
                     );

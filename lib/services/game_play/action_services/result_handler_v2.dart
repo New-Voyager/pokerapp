@@ -295,8 +295,8 @@ class ResultHandlerV2 {
       // UN highlight the req pot no
       tableState.updatePotToHighlightSilent(-1);
       tableState.notifyAll();
-      //break;
     }
+
     if (replay) return;
 
     // see whether this high hand
@@ -313,7 +313,7 @@ class ResultHandlerV2 {
 
     resetResult();
     // remove all the community cards
-    gameState.clear();
+    await gameState.clear();
     tableState.clear();
     tableState.notifyAll();
     gameState.myState.notify();
