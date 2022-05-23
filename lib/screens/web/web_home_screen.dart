@@ -8,6 +8,7 @@ import 'package:pokerapp/resources/app_config.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/services/app/appcoin_service.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
+import 'package:pokerapp/services/test/test_service_web.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/web-routes.dart';
 import 'package:pokerapp/widgets/buttons.dart';
@@ -22,7 +23,8 @@ class WebHomeScreen extends StatefulWidget {
 }
 
 class _WebHomeScreenState extends State<WebHomeScreen> {
-  final _textController = TextEditingController(text: "lgpmoqya");
+  final _textController =
+      TextEditingController(text: TestServiceWeb.testGameCode);
   BuildContext _context;
 
   @override
@@ -92,7 +94,7 @@ class _WebHomeScreenState extends State<WebHomeScreen> {
               onTap: () {
                 Navigator.of(context).pushNamed(
                   WebRoutes.gameRoute,
-                  arguments: {'gameCode' : _textController.text},
+                  arguments: {'gameCode': _textController.text},
                 );
               },
               theme: AppTheme.getTheme(context),

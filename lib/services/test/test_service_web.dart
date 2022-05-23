@@ -30,9 +30,9 @@ import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/numeric_keyboard2.dart';
 import 'package:provider/provider.dart';
 
-class TestService {
+class TestServiceWeb {
   static bool get isTesting {
-    return false;
+    return true;
   }
 
   static bool get isPartialTesting {
@@ -50,7 +50,7 @@ class TestService {
   static BuildContext _context;
   //static HandActionService _handActionService;
   static HandActionProtoService _handActionProtoService;
-  TestService._();
+  TestServiceWeb._();
 
   static set context(BuildContext context) => _context = context;
 
@@ -178,10 +178,11 @@ class TestService {
   static pi.PlayerInfo get currentPlayer {
     final data = jsonDecode('''  {
                   "myInfo": {
-                    "id": 1,
-                    "uuid": "371e8c15-39cb-4bd9-a932-ced7a9dd6aac",
-                    "name": "poker club"
-                  },
+      "id": 21,
+      "uuid": "75830c6b-c711-484a-9389-51e9a015ba62",
+      "name": "rambo",
+      "channel": "player.21"
+    },
                   "role": {
                     "isHost": true,
                     "isOwner": true,
@@ -1134,86 +1135,92 @@ class TestService {
       log('Error: ${err.toString()}, ${err.stackTrace}');
     }
   }
-
+  static String testGameCode = "pgkmbamb";
   static GameInfoModel _testGame() {
     final String testGameJson = """
- {
-                "gameID": 22,
-                "gameCode": "lgpmoqya",
-                "clubCode": "",
-                "buyInMax": 6,
-                "maxPlayers": 9,
-                "title": "NLH 1/2",
-                "gameType": "HOLDEM",
-                "buyInMin": 1,
-                "smallBlind": 0.01,
-                "bigBlind": 0.02,
-                "ante": 0,
-                "utgStraddleAllowed": true,
-                "buttonStraddleAllowed": false,
-                "buttonStraddleBet": 2,
-                "status": "ACTIVE",
-                "tableStatus": "NOT_ENOUGH_PLAYERS",
-                "allowRabbitHunt": null,
-                "showHandRank": null,
-                "waitlistAllowed": true,
-                "botGame": false,
-                "highHandTracked": false,
-                "ipCheck": false,
-                "gpsCheck": false,
-                "handNum": 1,
-                "chipUnit": "DOLLAR",
-                "rakeCap": 0.05,
-                "rakePercentage": 5,
-                "sessionTime": null,
-                "runningTime": 280531,
-                "noHandsWon": null,
-                "noHandsPlayed": null,
-                "buyin": null,
-                "stack": null,
-                "seatInfo": {
-                  "availableSeats": [
-                    1,
-                    2,
-                    3,
-                    4,
-                    5,
-                    6,
-                    7,
-                    8,
-                    9
-                  ],
-                  "playersInSeats": []
-                },
-                "allPlayers": [],
-                "actionTime": 20,
-                "gameToken": null,
-                "playerGameStatus": null,
-                "gameToPlayerChannel": "game.lgpmoqya.player",
-                "playerToHandChannel": "player.lgpmoqya.hand",
-                "handToAllChannel": "hand.lgpmoqya.player.all",
-                "handToPlayerChannel": "hand.lgpmoqya.player.21",
-                "handToPlayerTextChannel": "hand.lgpmoqya.player.21.text",
-                "gameChatChannel": "game.lgpmoqya.chat",
-                "clientAliveChannel": "clientalive.lgpmoqya",
-                "playerRunItTwiceConfig": null,
-                "playerMuckLosingHandConfig": null,
-                "audioConfEnabled": false,
-                "janusUrl": "http://139.59.57.29:8088/janus",
-                "janusToken": "",
-                "janusSecret": "",
-                "janusRoomId": 0,
-                "janusRoomPin": "",
-                "useAgora": false,
-                "agoraToken": null,
-                "agoraAppId": "e25000bdccc24765a9464555c65d430b",
-                "sfuUrl": "ws://demo.pokerclub.app:7000/ws",
-                "livekitUrl": "wss://livekit.pokerclub.app",
-                "livekitToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2aWRlbyI6eyJyb29tSm9pbiI6dHJ1ZSwicm9vbSI6ImxncG1vcXlhIiwiY2FuUHVibGlzaCI6dHJ1ZSwiY2FuU3Vic2NyaWJlIjp0cnVlfSwiaWF0IjoxNjUyOTc1ODExLCJuYmYiOjE2NTI5NzU4MTEsImV4cCI6MTY1MzE0ODYxMSwiaXNzIjoiQVBJZ1drSHFXWlRGbjlZIiwic3ViIjoiMjEiLCJqdGkiOiIyMSJ9.moTc8nPsH45pgwWtBWofdo0SVBRv1EIb9twq1UXp6Ug",
-                "demoGame": false
-              }
+{
+      "gameID": 32,
+      "gameCode": "pgkmbamb",
+      "clubCode": "",
+      "buyInMax": 200,
+      "maxPlayers": 6,
+      "title": "Test",
+      "gameType": "HOLDEM",
+      "buyInMin": 60,
+      "smallBlind": 1,
+      "bigBlind": 2,
+      "ante": 0,
+      "utgStraddleAllowed": false,
+      "buttonStraddleAllowed": false,
+      "buttonStraddleBet": 2,
+      "status": "CONFIGURED",
+      "tableStatus": "WAITING_TO_BE_STARTED",
+      "allowRabbitHunt": null,
+      "showHandRank": null,
+      "waitlistAllowed": true,
+      "botGame": true,
+      "highHandTracked": false,
+      "ipCheck": false,
+      "gpsCheck": false,
+      "handNum": 0,
+      "chipUnit": "DOLLAR",
+      "rakeCap": 0,
+      "rakePercentage": 0,
+      "sessionTime": null,
+      "runningTime": 47,
+      "noHandsWon": null,
+      "noHandsPlayed": null,
+      "buyin": null,
+      "stack": null,
+      "seatInfo": {
+        "availableSeats": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "playersInSeats": []
+      },
+      "allPlayers": [],
+      "actionTime": 30,
+      "gameToken": null,
+      "playerGameStatus": null,
+      "gameToPlayerChannel": "game.pgkmbamb.player",
+      "playerToHandChannel": "player.pgkmbamb.hand",
+      "handToAllChannel": "hand.pgkmbamb.player.all",
+      "handToPlayerChannel": "hand.pgkmbamb.player.21",
+      "handToPlayerTextChannel": "hand.pgkmbamb.player.21.text",
+      "gameChatChannel": "game.pgkmbamb.chat",
+      "clientAliveChannel": "clientalive.pgkmbamb",
+      "playerRunItTwiceConfig": null,
+      "playerMuckLosingHandConfig": null,
+      "audioConfEnabled": false,
+      "janusUrl": "http://139.59.57.29:8088/janus",
+      "janusToken": "",
+      "janusSecret": "",
+      "janusRoomId": 0,
+      "janusRoomPin": "",
+      "useAgora": false,
+      "agoraToken": null,
+      "agoraAppId": "e25000bdccc24765a9464555c65d430b",
+      "sfuUrl": "ws://demo.pokerclub.app:7000/ws",
+      "livekitUrl": "wss://livekit.pokerclub.app",
+      "livekitToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2aWRlbyI6eyJyb29tSm9pbiI6dHJ1ZSwicm9vbSI6InBna21iYW1iIiwiY2FuUHVibGlzaCI6dHJ1ZSwiY2FuU3Vic2NyaWJlIjp0cnVlfSwiaWF0IjoxNjUzMzAyMzc0LCJuYmYiOjE2NTMzMDIzNzQsImV4cCI6MTY1MzQ3NTE3NCwiaXNzIjoiQVBJZ1drSHFXWlRGbjlZIiwic3ViIjoiMjEiLCJqdGkiOiIyMSJ9.kgrpwgdb-0KH5Ibd146WMYyrFZXFc773dSQbbWRbHYM",
+      "demoGame": false
+    }
 """;
 
     return GameInfoModel.fromJson(jsonDecode(testGameJson));
+  }
+
+  static Future<GameState> getGameState() async {
+    final GameState gameState = GameState();
+    await gameState.initialize(
+        gameCode: gameInfo.gameCode,
+        gameInfo: gameInfo,
+        currentPlayer: currentPlayer);
+    return gameState;
   }
 }

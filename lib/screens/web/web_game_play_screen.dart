@@ -1,15 +1,13 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
-import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/layouts/layout_holder.dart';
 import 'package:pokerapp/services/app/game_service.dart';
+import 'package:pokerapp/services/test/test_service_web.dart';
 import 'package:pokerapp/services/test/test_service.dart';
-import 'package:provider/provider.dart';
 
 class WebGamePlayScreen extends StatefulWidget {
   final String gameCode;
@@ -28,6 +26,7 @@ class WebGamePlayScreen extends StatefulWidget {
 
 class _WebGamePlayScreenState extends State<WebGamePlayScreen> {
   GameInfoModel _gameInfoModel;
+  GameState _gameState;
   @override
   void initState() {
     super.initState();
@@ -38,10 +37,20 @@ class _WebGamePlayScreenState extends State<WebGamePlayScreen> {
   }
 
   void _fetchGameInfo() async {
-    if (TestService.isTesting) {
-      _gameInfoModel = TestService.gameInfo;
+    if (TestServiceWeb.isTesting) {
+      _gameInfoModel = TestServiceWeb.gameInfo;
+      _gameState = await TestServiceWeb.getGameState();
+      log("Gameinfomodel and gamestate initialized");
     } else {
       _gameInfoModel = await GameService.getGameInfo(widget.gameCode);
+      _gameState = GameState();
+      await _gameState.initialize(
+        gameInfo: _gameInfoModel,
+        gameCode: widget.gameCode,
+        customizationMode: false,
+        replayMode: false,
+        currentPlayer: TestService.currentPlayer,
+      );
     }
 
     setState(() {});
@@ -50,20 +59,21 @@ class _WebGamePlayScreenState extends State<WebGamePlayScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _gameInfoModel != null
+      body: ((_gameInfoModel != null) && (_gameState != null))
           ? _buildGameScreen()
           : CircularProgressWidget(),
     );
   }
 
   Widget _buildGameScreen() {
+    log("building game screen");
     final delegate = LayoutHolder.getGameDelegate(context);
     return Stack(
       clipBehavior: Clip.none,
       alignment: Alignment.center,
       children: [
-        delegate.tableBuilder(),
-        delegate.centerViewBuilder(),
+        delegate.tableBuilder(_gameState),
+        delegate.centerViewBuilder(_gameState),
         //  delegate.playersOnTableBuilder(Size(300, 200)),
         // ignore: sized_box_for_whitespace
         /*  Container(

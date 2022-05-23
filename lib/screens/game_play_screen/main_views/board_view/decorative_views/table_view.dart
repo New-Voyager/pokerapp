@@ -7,24 +7,30 @@ import 'package:provider/provider.dart';
 
 class TableView extends StatelessWidget {
   final double tableWidthFactor;
+  final GameState gameState;
 
   TableView({
     Key key,
     this.tableWidthFactor = 1,
+    this.gameState,
   }) : super(key: key);
 
   Widget build(BuildContext context) {
     final tableWidth = MediaQuery.of(context).size.width * tableWidthFactor;
     final animationDuration = const Duration(milliseconds: 250);
-    final gameState = GameState.getState(context);
+    // final gameState = GameState.getState(context);
     return Container(
-      //key: gameState.gameUIState.tableKey,
+      key: gameState.gameUIState.tableKey,
       alignment: Alignment.center,
       width: tableWidth,
-      child: Image.asset(
-        AppAssetsNew.defaultTablePath,
-        key: UniqueKey(),
-        fit: BoxFit.fill,
+      child: Consumer<RedrawBoardSectionState>(
+        builder: (_, __, ___) => AnimatedSwitcher(
+          duration: const Duration(milliseconds: 250),
+          child: Image.asset(
+            appService.appSettings.tableAsset,
+            key: UniqueKey(),
+          ),
+        ),
       ),
     );
   }

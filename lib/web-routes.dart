@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/screens/web/web_game_play_screen.dart';
 import 'package:pokerapp/screens/web/web_home_screen.dart';
+import 'package:pokerapp/services/test/test_service.dart';
+import 'package:pokerapp/services/test/test_service_web.dart';
 import 'package:provider/provider.dart';
 
 class WebRoutes {
@@ -23,7 +25,7 @@ class WebRoutes {
     switch (routeName) {
       case gameRoute:
         final String gameCode =
-            uri.queryParameters['gameCode'] ?? "lgpmoqya"; // Default lobbygame
+            uri.queryParameters['gameCode'] ?? TestServiceWeb.testGameCode;
         final bool isBotGame = uri.queryParameters['botGame'] ?? false;
         final bool isFromWaitListNotification = false;
 

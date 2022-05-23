@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:hive/hive.dart';
+import 'package:pokerapp/utils/platform.dart';
 
 import 'box_type.dart';
 import 'hive_datasource_impl.dart';
@@ -155,6 +156,9 @@ class UserSettingsStore {
   }
 
   bool getColorCards() {
+    if (PlatformUtils.isWeb) {
+      return false;
+    }
     try {
       bool colorCards = _box.get(KEY_COLOR_CARDS) as bool;
       return colorCards;
