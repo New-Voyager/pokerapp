@@ -63,6 +63,7 @@ import '../../routes.dart';
 import '../../services/test/test_service.dart';
 import 'game_play_screen_util_methods.dart';
 import 'location_updates.dart';
+import 'main_views/board_view/board_view.dart';
 
 // FIXME: THIS NEEDS TO BE CHANGED AS PER DEVICE CONFIG
 const kScrollOffsetPosition = 40.0;
@@ -921,7 +922,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       width: boardDimensions.width,
       // height: boardDimensions.height,
       child: DebugBorderWidget(
-        child: BoardViewVertical(
+        child: BoardView(
           gameComService: _gameContextObj?.gameComService,
           gameInfo: _gameInfoModel,
           onUserTap: _onJoinGame,
