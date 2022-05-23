@@ -12,6 +12,7 @@ import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/time_bank.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/bet_widget.dart';
+import 'package:pokerapp/screens/game_play_screen/widgets/bet_widget_new.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_proto_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/formatter.dart';
@@ -554,7 +555,7 @@ class _FooterActionViewState extends State<FooterActionView> {
       child: playerAction?.options == null
           ? shrinkedBox
           : _showOptions
-              ? BetWidget(
+              ? BetWidgetNew(
                   gameState: gameState,
                   seat: mySeat,
                   action: playerAction,
