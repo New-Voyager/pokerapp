@@ -2,12 +2,17 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
+import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
+import 'package:pokerapp/screens/game_play_screen/game_play_screen_util_methods.dart';
 import 'package:pokerapp/screens/layouts/layout_holder.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/test/test_service_web.dart';
 import 'package:pokerapp/services/test/test_service.dart';
+import 'package:pokerapp/utils/utils.dart';
+import 'package:provider/provider.dart';
 
 class WebGamePlayScreen extends StatefulWidget {
   final String gameCode;
@@ -66,17 +71,38 @@ class _WebGamePlayScreenState extends State<WebGamePlayScreen> {
   }
 
   Widget _buildGameScreen() {
-    log("building game screen");
+    final BoardAttributesObject boardAttributes =
+        BoardAttributesObject(screenSize: Screen.diagonalInches);
+
+    final GameContextObject _gameContextObj = GameContextObject(
+      player: TestServiceWeb.currentPlayer,
+      gameCode: TestServiceWeb.testGameCode,
+      
+    );
+    final providers = GamePlayScreenUtilMethods.getProviders(
+      context: context,
+      gameInfoModel: _gameInfoModel,
+      gameCode: widget.gameCode,
+      gameState: _gameState,
+      boardAttributes: boardAttributes,
+      gameContextObject: _gameContextObj,
+      // hostSeatChangePlayers: _hostSeatChangeSeats,
+      // seatChangeInProgress: _hostSeatChangeInProgress,
+    );
+
     final delegate = LayoutHolder.getGameDelegate(context);
-    return Stack(
-      clipBehavior: Clip.none,
-      alignment: Alignment.center,
-      children: [
-        delegate.tableBuilder(_gameState),
-        delegate.centerViewBuilder(_gameState),
-        //  delegate.playersOnTableBuilder(Size(300, 200)),
-        // ignore: sized_box_for_whitespace
-        /*  Container(
+    return MultiProvider(
+      providers: providers,
+      builder: (_, __) {
+        return Stack(
+          clipBehavior: Clip.none,
+          alignment: Alignment.center,
+          children: [
+            delegate.tableBuilder(_gameState),
+            delegate.centerViewBuilder(_gameState),
+            //  delegate.playersOnTableBuilder(Size(300, 200)),
+            // ignore: sized_box_for_whitespace
+            /*  Container(
           width: 140,
           height: 50,
           child: ElevatedButton(
@@ -101,7 +127,9 @@ class _WebGamePlayScreenState extends State<WebGamePlayScreen> {
           ),
         ),
      */
-      ],
+          ],
+        );
+      },
     );
   }
 }

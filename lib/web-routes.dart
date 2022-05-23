@@ -33,12 +33,14 @@ class WebRoutes {
           routeName: settings.name,
           viewToShow: Provider(
             create: (_) => GameState(),
-            child: WebGamePlayScreen(
+            builder: (_,__) { 
+            return WebGamePlayScreen(
               gameCode: gameCode,
               isBotGame: isBotGame,
               // gameInfoModel: gameInfo,
               isFromWaitListNotification: isFromWaitListNotification,
-            ),
+            );
+            }
           ),
         );
 

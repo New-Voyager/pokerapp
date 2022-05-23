@@ -3,6 +3,7 @@ import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
+import 'package:pokerapp/utils/platform.dart';
 import 'package:provider/provider.dart';
 
 class TableView extends StatelessWidget {
@@ -18,7 +19,7 @@ class TableView extends StatelessWidget {
   Widget build(BuildContext context) {
     final tableWidth = MediaQuery.of(context).size.width * tableWidthFactor;
     final animationDuration = const Duration(milliseconds: 250);
-    // final gameState = GameState.getState(context);
+    final gameState = GameState.getState(context);
     return Container(
       key: gameState.gameUIState.tableKey,
       alignment: Alignment.center,
@@ -27,7 +28,9 @@ class TableView extends StatelessWidget {
         builder: (_, __, ___) => AnimatedSwitcher(
           duration: const Duration(milliseconds: 250),
           child: Image.asset(
-            appService.appSettings.tableAsset,
+            PlatformUtils.isWeb
+                ? AppAssetsNew.defaultTablePath
+                : appService.appSettings.tableAsset,
             key: UniqueKey(),
           ),
         ),
