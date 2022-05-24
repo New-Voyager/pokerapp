@@ -1,7 +1,9 @@
 import 'dart:developer';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:pokerapp/services/audio/audio_service.dart';
 
 class BetSlider extends StatefulWidget {
   BetSlider({Key key}) : super(key: key);
@@ -15,22 +17,31 @@ class _BetSliderState extends State<BetSlider> {
 
   List<GlobalKey> keys = [];
   Size chipSize = Size(60, 30);
-  double overlapFactor = 3;
+  double overlapFactor = 2.7;
   List<double> keyPos = [];
+  List<double> chipsXOffset = [];
   List<bool> keyVisibility = [];
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback(_afterLayout);
-    int size = 20;
+    int size = 10;
     for (int i = 0; i < size; i++) {
       keys.add(GlobalKey());
       keyPos.add(0);
-      if (i == 0)
+      if (i == 0) {
         keyVisibility.add(true);
-      else
+        chipsXOffset.add(0);
+      } else {
+        double posXOffset = random(0, chipSize.width ~/ 10).toDouble();
+        int sign = random(0, 1);
+        if (sign == 0) {
+          posXOffset = -posXOffset;
+        }
+        chipsXOffset.add(posXOffset);
         keyVisibility.add(false);
+      }
     }
   }
 
@@ -48,7 +59,10 @@ class _BetSliderState extends State<BetSlider> {
     for (int i = 1; i < keys.length; i++) {
       if (posY < keyPos[i] + chipSize.height) {
         setState(() {
-          keyVisibility[i] = true;
+          if (!keyVisibility[i]) {
+            AudioService.playBet(mute: false);
+            keyVisibility[i] = true;
+          }
         });
       } else {
         setState(() {
@@ -65,15 +79,18 @@ class _BetSliderState extends State<BetSlider> {
     for (int i = 0; i < keys.length; i++) {
       childrens.add(Positioned(
         bottom: position,
-        child: Opacity(
-          opacity: keyVisibility[i] ? 1 : 0,
-          child: Container(
-            key: keys[i],
-            height: chipSize.height,
-            child: SvgPicture.asset(
-              'assets/images/betchips/green.svg',
-              fit: BoxFit.fill,
-              width: chipSize.width,
+        child: Transform.translate(
+          offset: Offset(chipsXOffset[i], 0),
+          child: Opacity(
+            opacity: keyVisibility[i] ? 1 : 0,
+            child: Container(
+              key: keys[i],
+              height: chipSize.height,
+              child: SvgPicture.asset(
+                'assets/images/betchips/bet_chips_blue.svg',
+                fit: BoxFit.fill,
+                width: chipSize.width,
+              ),
             ),
           ),
         ),
@@ -97,6 +114,7 @@ class _BetSliderState extends State<BetSlider> {
           width: chipSize.width,
           child: Center(
             child: Stack(
+              clipBehavior: Clip.none,
               // alignment: Alignment.bottomCenter,
               children: [
                 Padding(
@@ -117,5 +135,9 @@ class _BetSliderState extends State<BetSlider> {
         ),
       ),
     );
+  }
+
+  int random(min, max) {
+    return min + Random().nextInt(max - min);
   }
 }

@@ -919,9 +919,15 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   }
 
   Widget _buildBoardView(Size boardDimensions) {
+    double footerHeight =
+        MediaQuery.of(context).size.height * boardAttributes.footerViewScale;
+
+    footerHeight += boardAttributes.bottomHeightAdjust;
+
     return Container(
       width: boardDimensions.width,
       // height: boardDimensions.height,
+      padding: EdgeInsets.only(bottom: footerHeight / 2),
       child: DebugBorderWidget(
         child: BoardView(
           gameComService: _gameContextObj?.gameComService,
@@ -1050,16 +1056,25 @@ class _GamePlayScreenState extends State<GamePlayScreen>
                 height: dimensions.height,
                 child: BackgroundView(),
               ),
-              Column(
-                children: [
-                  // board view
-                  widget.showTop
-                      ? Expanded(child: _buildMainBoardView(theme))
-                      : kEmpty,
-                  // footer view
-                  widget.showBottom ? _buildFooterView() : kEmpty,
-                ],
-              ),
+              // Column(
+              //   children: [
+              //     // board view
+              //     widget.showTop
+              //         ? Expanded(child: _buildMainBoardView(theme))
+              //         : kEmpty,
+              //     // footer view
+              //     widget.showBottom ? _buildFooterView() : kEmpty,
+              //   ],
+              // ),
+
+              widget.showTop ? _buildMainBoardView(theme) : kEmpty,
+              // footer view
+              widget.showBottom
+                  ? Align(
+                      alignment: Alignment.bottomCenter,
+                      child: _buildFooterView())
+                  : kEmpty,
+
               Positioned(
                 top: 100,
                 left: 145,
