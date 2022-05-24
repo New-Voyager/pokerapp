@@ -11,12 +11,18 @@ class WebRoutes {
 
   static const String initialRoute = '/';
   static const String gameRoute = 'join-game';
+  static const String testRoute = 'test';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     if (settings.name == '/') {
       return _getPageRoute(
         routeName: settings.name,
-        viewToShow: WebHomeScreen(),
+        viewToShow: WebGamePlayScreen(
+          gameCode: TestService.gameInfo.gameCode,
+          isBotGame: false,
+          // gameInfoModel: gameInfo,
+          isFromWaitListNotification: false,
+        ),
       );
     }
     var uri = Uri.parse(settings.name);
@@ -32,16 +38,15 @@ class WebRoutes {
         return _getPageRoute(
           routeName: settings.name,
           viewToShow: Provider(
-            create: (_) => GameState(),
-            builder: (_,__) { 
-            return WebGamePlayScreen(
-              gameCode: gameCode,
-              isBotGame: isBotGame,
-              // gameInfoModel: gameInfo,
-              isFromWaitListNotification: isFromWaitListNotification,
-            );
-            }
-          ),
+              create: (_) => GameState(),
+              builder: (_, __) {
+                return WebGamePlayScreen(
+                  gameCode: gameCode,
+                  isBotGame: isBotGame,
+                  // gameInfoModel: gameInfo,
+                  isFromWaitListNotification: isFromWaitListNotification,
+                );
+              }),
         );
 
       default:

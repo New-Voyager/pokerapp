@@ -32,7 +32,7 @@ import 'package:provider/provider.dart';
 
 class TestService {
   static bool get isTesting {
-    return false;
+    return true;
   }
 
   static bool get isPartialTesting {
@@ -51,8 +51,27 @@ class TestService {
   //static HandActionService _handActionService;
   static HandActionProtoService _handActionProtoService;
   TestService._();
-
+  static GameState _gameState;
   static set context(BuildContext context) => _context = context;
+
+  static Future<GameState> initialize() async {
+    // temporary to launch game screen in test mode
+    final String gameCode = gameInfo.gameCode;
+    final gameState = GameState();
+    gameState.initialize(
+      gameInfo: TestService.gameInfo,
+      gameCode: gameCode,
+      customizationMode: false,
+      replayMode: false,
+      currentPlayer: TestService.currentPlayer,
+    );
+    _gameState = gameState;
+    return gameState;
+  }
+
+  static GameState gameState() {
+    return _gameState;
+  }
 
   static showDealerWidget() {
     final gameState = GameState.getState(_context);

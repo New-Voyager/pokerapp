@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/utils/name_plate_widget_parent.dart';
+import 'package:pokerapp/utils/platform.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'dart:math' as math;
 
@@ -43,18 +44,24 @@ class GameUIState {
     NamePlateWidgetParent.setWidth(90);
     tableWidthFactor = 0.90;
 
-    if (Screen.diagonalInches < 7) {
-      double width = (Screen.width - 40) / 4.2;
-      NamePlateWidgetParent.setWidth(width);
-      chipAmountScale = 0.70;
-    }
-    if (Screen.diagonalInches >= 7 && Screen.diagonalInches < 9) {
-      tableWidthFactor = 0.70;
-      chipAmountScale = 1.0;
-    } else if (Screen.diagonalInches >= 9) {
+    if (PlatformUtils.isWeb) {
       NamePlateWidgetParent.setWidth(110);
       tableWidthFactor = 0.70;
       chipAmountScale = 1.0;
+    } else {
+      if (Screen.diagonalInches < 7) {
+        double width = (Screen.width - 40) / 4.2;
+        NamePlateWidgetParent.setWidth(width);
+        chipAmountScale = 0.70;
+      }
+      if (Screen.diagonalInches >= 7 && Screen.diagonalInches < 9) {
+        tableWidthFactor = 0.70;
+        chipAmountScale = 1.0;
+      } else if (Screen.diagonalInches >= 9) {
+        NamePlateWidgetParent.setWidth(110);
+        tableWidthFactor = 0.70;
+        chipAmountScale = 1.0;
+      }
     }
   }
 

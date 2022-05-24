@@ -14,6 +14,7 @@ import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/screens/layouts/layout_holder.dart';
 import 'package:pokerapp/services/connectivity_check/network_change_listener.dart';
 import 'package:pokerapp/services/nats/nats.dart';
+import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/platform.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/web-routes.dart';
@@ -55,7 +56,7 @@ class MyWebApp extends StatefulWidget {
 
 class _MyWebAppState extends State<MyWebApp> {
   bool _error = false;
-
+  bool initialized = false;
   @override
   void dispose() {
     super.dispose();
@@ -63,6 +64,7 @@ class _MyWebAppState extends State<MyWebApp> {
 
   @override
   void initState() {
+    initialized = true;
     super.initState();
   }
 
@@ -73,73 +75,78 @@ class _MyWebAppState extends State<MyWebApp> {
       return Container(color: Colors.red);
     }
 
+    if (!initialized) {
+      return CircularProgressIndicator(color: Colors.green);
+    }
+
     //this.nats = Nats(context);
     final style = getAppStyle('default');
     //String gameCode = Uri.base.queryParameters["gameCode"];
     //log('gameCode: $gameCode');
     return MultiProvider(
-      /* PUT INDEPENDENT PROVIDERS HERE */
-      providers: [
-        // theme related provider
-        ListenableProvider<AppTheme>(
-          create: (_) => AppTheme(AppThemeData(style: style)),
-        ),
-
-        ListenableProvider<PendingApprovalsState>(
-          create: (_) => appState.buyinApprovals,
-        ),
-        ListenableProvider<ClubsUpdateState>(
-          create: (_) => appState.clubUpdateState,
-        ),
-        ChangeNotifierProvider<AppState>(
-          create: (_) => appState,
-        ),
-      ],
-      builder: (context, _) => MultiProvider(
-        /* PUT DEPENDENT PROVIDERS HERE */
+        /* PUT INDEPENDENT PROVIDERS HERE */
         providers: [
-          Provider<Nats>(
-            create: (_) => Nats(context),
+          // theme related provider
+          ListenableProvider<AppTheme>(
+            create: (_) => AppTheme(AppThemeData(style: style)),
           ),
-          Provider(
-            create: (_) => NetworkChangeListener(),
-            lazy: false,
+
+          ListenableProvider<PendingApprovalsState>(
+            create: (_) => appState.buyinApprovals,
           ),
-          // Layout related provider
-          ChangeNotifierProvider(
-            create: (_) => LayoutHolder(),
+          ListenableProvider<ClubsUpdateState>(
+            create: (_) => appState.clubUpdateState,
+          ),
+          ChangeNotifierProvider<AppState>(
+            create: (_) => appState,
           ),
         ],
-        child: OverlaySupport.global(
-          child: LayoutBuilder(
-            builder: (context, constraints) =>
-                OrientationBuilder(builder: (context, orientation) {
-              return Sizer(
-                builder: (context, orientation, deviceType) {
-                  // SizerUtil().init(constraints, orientation);
-                  //SizerUtil().setScreenSize(constraints, orientation);
-                  final appTheme = context.read<AppTheme>();
-                  return MaterialApp(
-                    title: "PokerWebApp",
-                    debugShowCheckedModeBanner: false,
-                    navigatorKey: navigatorKey,
-                    theme: ThemeData(
-                      colorScheme: ColorScheme.dark(),
-                      visualDensity: VisualDensity.adaptivePlatformDensity,
-                      fontFamily: AppAssetsNew.fontFamilyPoppins,
-                      textSelectionTheme: TextSelectionThemeData(
-                        cursorColor: appTheme.accentColor,
-                      ),
-                    ),
-                    onGenerateRoute: WebRoutes.generateRoute,
-                    navigatorObservers: [routeObserver],
+        builder: (context, _) {
+          return MultiProvider(
+            /* PUT DEPENDENT PROVIDERS HERE */
+            providers: [
+              Provider<Nats>(
+                create: (_) => Nats(context),
+              ),
+              Provider(
+                create: (_) => NetworkChangeListener(),
+                lazy: false,
+              ),
+              // Layout related provider
+              ChangeNotifierProvider(
+                create: (_) => LayoutHolder(),
+              ),
+            ],
+            child: OverlaySupport.global(
+              child: LayoutBuilder(
+                builder: (context, constraints) =>
+                    OrientationBuilder(builder: (context, orientation) {
+                  return Sizer(
+                    builder: (context, orientation, deviceType) {
+                      // SizerUtil().init(constraints, orientation);
+                      //SizerUtil().setScreenSize(constraints, orientation);
+                      final appTheme = context.read<AppTheme>();
+                      return MaterialApp(
+                        title: "PokerWebApp",
+                        debugShowCheckedModeBanner: false,
+                        navigatorKey: navigatorKey,
+                        theme: ThemeData(
+                          colorScheme: ColorScheme.dark(),
+                          visualDensity: VisualDensity.adaptivePlatformDensity,
+                          fontFamily: AppAssetsNew.fontFamilyPoppins,
+                          textSelectionTheme: TextSelectionThemeData(
+                            cursorColor: appTheme.accentColor,
+                          ),
+                        ),
+                        onGenerateRoute: WebRoutes.generateRoute,
+                        navigatorObservers: [routeObserver],
+                      );
+                    },
                   );
-                },
-              );
-            }),
-          ),
-        ),
-      ),
-    );
+                }),
+              ),
+            ),
+          );
+        });
   }
 }

@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/game_play_screen/game_play_screen_util_methods.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/board_view/board_view.dart';
 import 'package:pokerapp/screens/layouts/layout_holder.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/test/test_service_web.dart';
@@ -42,9 +44,10 @@ class _WebGamePlayScreenState extends State<WebGamePlayScreen> {
   }
 
   void _fetchGameInfo() async {
-    if (TestServiceWeb.isTesting) {
-      _gameInfoModel = TestServiceWeb.gameInfo;
-      _gameState = await TestServiceWeb.getGameState();
+    if (TestService.isTesting) {
+      _gameInfoModel = TestService.gameInfo;
+      await TestService.initialize();
+      _gameState = TestService.gameState();
       log("Gameinfomodel and gamestate initialized");
     } else {
       _gameInfoModel = await GameService.getGameInfo(widget.gameCode);
@@ -63,12 +66,18 @@ class _WebGamePlayScreenState extends State<WebGamePlayScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Screen.init(context);
+
     return Scaffold(
       body: ((_gameInfoModel != null) && (_gameState != null))
           ? _buildGameScreen()
           : CircularProgressWidget(),
     );
   }
+
+  void onJoinGame(Seat seat) {}
+
+  void startGame() {}
 
   Widget _buildGameScreen() {
     final BoardAttributesObject boardAttributes =
@@ -77,7 +86,6 @@ class _WebGamePlayScreenState extends State<WebGamePlayScreen> {
     final GameContextObject _gameContextObj = GameContextObject(
       player: TestServiceWeb.currentPlayer,
       gameCode: TestServiceWeb.testGameCode,
-      
     );
     final providers = GamePlayScreenUtilMethods.getProviders(
       context: context,
@@ -91,6 +99,24 @@ class _WebGamePlayScreenState extends State<WebGamePlayScreen> {
     );
 
     final delegate = LayoutHolder.getGameDelegate(context);
+
+    return MultiProvider(
+        providers: providers,
+        builder: (_, __) {
+          return Stack(children: [
+            Container(
+              width: Screen.width,
+              height: Screen.height,
+              child: BoardView(
+                gameComService: _gameContextObj?.gameComService,
+                gameInfo: _gameInfoModel,
+                onUserTap: onJoinGame,
+                onStartGame: startGame,
+              ),
+            )
+          ]);
+        });
+
     return MultiProvider(
       providers: providers,
       builder: (_, __) {
@@ -100,7 +126,7 @@ class _WebGamePlayScreenState extends State<WebGamePlayScreen> {
           children: [
             delegate.tableBuilder(_gameState),
             delegate.centerViewBuilder(_gameState),
-            //  delegate.playersOnTableBuilder(Size(300, 200)),
+            delegate.playersOnTableBuilder(Size(300, 200)),
             // ignore: sized_box_for_whitespace
             /*  Container(
           width: 140,
