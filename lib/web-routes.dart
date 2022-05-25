@@ -18,7 +18,7 @@ class WebRoutes {
       return _getPageRoute(
         routeName: settings.name,
         viewToShow: WebGamePlayScreen(
-          gameCode: TestService.gameInfo.gameCode,
+          gameCode: "CG-8QI4TZBWJRQAXN",
           isBotGame: false,
           // gameInfoModel: gameInfo,
           isFromWaitListNotification: false,

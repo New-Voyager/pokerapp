@@ -1,7 +1,5 @@
 class AppAssetsNew {
-
   // Web Constants
-
 
   static const String fontFamilyRockwell = 'Rockwell';
   static const String fontFamilyPoppins = 'Poppins';
@@ -79,5 +77,4 @@ class AppAssetsNew {
 
   static String defaultBackdropPath = 'assets/images/backgrounds/night sky.png';
   static String defaultBetDailPath = 'assets/images/betimage.svg';
-
 }

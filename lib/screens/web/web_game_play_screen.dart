@@ -10,6 +10,7 @@ import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/game_play_screen/game_play_screen_util_methods.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/board_view.dart';
 import 'package:pokerapp/screens/layouts/layout_holder.dart';
+import 'package:pokerapp/services/app/asset_service.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/test/test_service_web.dart';
 import 'package:pokerapp/services/test/test_service.dart';
@@ -45,10 +46,12 @@ class _WebGamePlayScreenState extends State<WebGamePlayScreen> {
 
   void _fetchGameInfo() async {
     if (TestService.isTesting) {
+      await TestService.load();
       _gameInfoModel = TestService.gameInfo;
       await TestService.initialize();
       _gameState = TestService.gameState();
-      log("Gameinfomodel and gamestate initialized");
+      await AssetService.initWebAssets();
+      log("Gameinfomodel, assets and gamestate initialized");
     } else {
       _gameInfoModel = await GameService.getGameInfo(widget.gameCode);
       _gameState = GameState();
@@ -84,13 +87,13 @@ class _WebGamePlayScreenState extends State<WebGamePlayScreen> {
         BoardAttributesObject(screenSize: Screen.diagonalInches);
 
     final GameContextObject _gameContextObj = GameContextObject(
-      player: TestServiceWeb.currentPlayer,
-      gameCode: TestServiceWeb.testGameCode,
+      player: TestService.currentPlayer,
+      gameCode: TestService.gameInfo.gameCode,
     );
     final providers = GamePlayScreenUtilMethods.getProviders(
       context: context,
       gameInfoModel: _gameInfoModel,
-      gameCode: widget.gameCode,
+      gameCode: TestService.gameInfo.gameCode,
       gameState: _gameState,
       boardAttributes: boardAttributes,
       gameContextObject: _gameContextObj,
@@ -99,22 +102,26 @@ class _WebGamePlayScreenState extends State<WebGamePlayScreen> {
     );
 
     final delegate = LayoutHolder.getGameDelegate(context);
+    final boardDimensions = boardAttributes.dimensions(context);
 
     return MultiProvider(
         providers: providers,
         builder: (_, __) {
-          return Stack(children: [
-            Container(
-              width: Screen.width,
-              height: Screen.height,
-              child: BoardView(
-                gameComService: _gameContextObj?.gameComService,
-                gameInfo: _gameInfoModel,
-                onUserTap: onJoinGame,
-                onStartGame: startGame,
-              ),
-            )
-          ]);
+          return Stack(
+            alignment: Alignment.center,
+            children: [
+              Container(
+                width: boardDimensions.width,
+                height: boardDimensions.height,
+                child: BoardView(
+                  gameComService: _gameContextObj?.gameComService,
+                  gameInfo: _gameInfoModel,
+                  onUserTap: onJoinGame,
+                  onStartGame: startGame,
+                ),
+              )
+            ],
+          );
         });
 
     return MultiProvider(

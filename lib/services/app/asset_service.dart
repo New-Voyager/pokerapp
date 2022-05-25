@@ -12,12 +12,17 @@ import 'package:pokerapp/services/data/asset_hive_store.dart';
 import 'package:archive/archive_io.dart';
 import 'package:pokerapp/services/data/user_settings.dart';
 import 'package:flutter/services.dart' as rootBundle;
+import 'package:pokerapp/utils/platform.dart';
 
 class AssetService {
   AssetService._();
   static AssetHiveStore hiveStore;
   static List<Asset> assets = [];
   static List<NamePlateDesign> nameplates = [];
+
+  static Future<void> initWebAssets()async{
+    nameplates = await importNameplates();
+  }
 
   static Future<void> refresh() async {
     try {

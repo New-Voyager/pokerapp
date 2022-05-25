@@ -41,7 +41,7 @@ class TestService {
 
   static var _showResult = false;
   static pi.PlayerInfo _currentPlayer;
-  static GameInfoModel _gameInfo = _testGame();
+  static GameInfoModel _gameInfo; // = _testGame();
   static dynamic _result;
 
   // static List<CardObject> _boardCards;
@@ -58,9 +58,9 @@ class TestService {
     // temporary to launch game screen in test mode
     final String gameCode = gameInfo.gameCode;
     final gameState = GameState();
-    gameState.initialize(
-      gameInfo: TestService.gameInfo,
-      gameCode: gameCode,
+    await gameState.initialize(
+      gameInfo: gameInfo,
+      gameCode: gameInfo.gameCode,
       customizationMode: false,
       replayMode: false,
       currentPlayer: TestService.currentPlayer,
@@ -199,7 +199,7 @@ class TestService {
                   "myInfo": {
                     "id": 1,
                     "uuid": "371e8c15-39cb-4bd9-a932-ced7a9dd6aac",
-                    "name": "poker club"
+                    "name": "matt"
                   },
                   "role": {
                     "isHost": true,
