@@ -75,6 +75,10 @@ class _WebGamePlayScreenState extends State<WebGamePlayScreen> {
       body: ((_gameInfoModel != null) && (_gameState != null))
           ? _buildGameScreen()
           : CircularProgressWidget(),
+      floatingActionButton: GamePlayScreenUtilMethods.floatingActionButton(
+        onReload: () {},
+        isCustomizationMode: false,
+      ),
     );
   }
 
@@ -106,13 +110,17 @@ class _WebGamePlayScreenState extends State<WebGamePlayScreen> {
 
     return MultiProvider(
         providers: providers,
-        builder: (_, __) {
+        builder: (context, __) {
+          if (TestService.isTesting) {
+            TestService.context = context;
+          }
+
           return Stack(
             alignment: Alignment.center,
             children: [
               Container(
-                width: boardDimensions.width,
-                height: boardDimensions.height,
+                width: Screen.width,
+                height: Screen.height,
                 child: BoardView(
                   gameComService: _gameContextObj?.gameComService,
                   gameInfo: _gameInfoModel,

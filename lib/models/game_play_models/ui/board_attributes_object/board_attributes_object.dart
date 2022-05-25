@@ -704,7 +704,11 @@ class BoardAttributesObject extends ChangeNotifier {
       widthOfBoard = MediaQuery.of(context).size.width;
       heightOfBoard = MediaQuery.of(context).size.height / 2.5;
     }
-    this._tableSize = Size(widthOfBoard, heightOfBoard - 70);
+    if (PlatformUtils.isWeb) {
+      this._tableSize = Size(widthOfBoard, heightOfBoard);
+    } else {
+      this._tableSize = Size(widthOfBoard, heightOfBoard - 70);
+    }
     this._centerSize = Size(widthOfBoard - 30, this._tableSize.height - 70);
     double adjust = 0;
     adjust = this.boardHeightAdjust;
