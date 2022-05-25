@@ -61,84 +61,84 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
-          label: 'Reset',
+          label: 'Distribute Cards',
           labelBackgroundColor: Colors.black,
           onTap: () {
-            TestService.resetCommunityCards();
+            TestService.showCardDistribution();
           },
         ),
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          label: 'Flop Cards',
-          labelBackgroundColor: Colors.black,
-          onTap: () {
-            TestService.addFlopCards();
-          },
-        ),
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          label: 'Add Turn',
-          labelBackgroundColor: Colors.black,
-          onTap: () {
-            TestService.addTurnCard();
-          },
-        ),
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          label: 'Add River',
-          labelBackgroundColor: Colors.black,
-          onTap: () {
-            TestService.addRiverCard();
-          },
-        ),
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          label: 'Run It Twice, after Flop',
-          labelBackgroundColor: Colors.black,
-          onTap: () {
-            TestService.addRunItTwiceAfterFlop();
-          },
-        ),
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          label: 'Run It Twice, after Turn',
-          labelBackgroundColor: Colors.black,
-          onTap: () {
-            TestService.addRunItTwiceAfterTurn();
-          },
-        ),
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          label: 'Adds cards',
-          labelBackgroundColor: Colors.black,
-          onTap: () {
-            TestService.addCardsWithoutAnimating();
-          },
-        ),
+        // SpeedDialChild(
+        //   child: Icon(
+        //     Icons.adb_rounded,
+        //     color: Colors.white,
+        //   ),
+        //   backgroundColor: Colors.red,
+        //   label: 'Flop Cards',
+        //   labelBackgroundColor: Colors.black,
+        //   onTap: () {
+        //     TestService.addFlopCards();
+        //   },
+        // ),
+        // SpeedDialChild(
+        //   child: Icon(
+        //     Icons.adb_rounded,
+        //     color: Colors.white,
+        //   ),
+        //   backgroundColor: Colors.red,
+        //   label: 'Add Turn',
+        //   labelBackgroundColor: Colors.black,
+        //   onTap: () {
+        //     TestService.addTurnCard();
+        //   },
+        // ),
+        // SpeedDialChild(
+        //   child: Icon(
+        //     Icons.adb_rounded,
+        //     color: Colors.white,
+        //   ),
+        //   backgroundColor: Colors.red,
+        //   label: 'Add River',
+        //   labelBackgroundColor: Colors.black,
+        //   onTap: () {
+        //     TestService.addRiverCard();
+        //   },
+        // ),
+        // SpeedDialChild(
+        //   child: Icon(
+        //     Icons.adb_rounded,
+        //     color: Colors.white,
+        //   ),
+        //   backgroundColor: Colors.red,
+        //   label: 'Run It Twice, after Flop',
+        //   labelBackgroundColor: Colors.black,
+        //   onTap: () {
+        //     TestService.addRunItTwiceAfterFlop();
+        //   },
+        // ),
+        // SpeedDialChild(
+        //   child: Icon(
+        //     Icons.adb_rounded,
+        //     color: Colors.white,
+        //   ),
+        //   backgroundColor: Colors.red,
+        //   label: 'Run It Twice, after Turn',
+        //   labelBackgroundColor: Colors.black,
+        //   onTap: () {
+        //     TestService.addRunItTwiceAfterTurn();
+        //   },
+        // ),
+        // SpeedDialChild(
+        //   child: Icon(
+        //     Icons.adb_rounded,
+        //     color: Colors.white,
+        //   ),
+        //   backgroundColor: Colors.red,
+        //   label: 'Adds cards',
+        //   labelBackgroundColor: Colors.black,
+        //   onTap: () {
+        //     TestService.addCardsWithoutAnimating();
+        //   },
+        // ),
         // SpeedDialChild(
         //     child: Icon(
         //       Icons.adb_rounded,

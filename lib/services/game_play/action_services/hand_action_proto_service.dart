@@ -36,6 +36,11 @@ enum PlayerActedSendState {
   ACK_RECEIVED,
 }
 
+enum CardDistributionType {
+  randomOrder,
+  sequentialOrder,
+}
+
 class RetrySendingProtoMsg {
   GameComService _gameComService;
   String _messageType;
@@ -650,25 +655,49 @@ class HandActionProtoService {
 
   static Future<void> _handleCardDistribution(
     int noCards,
-    GameState gameState,
-  ) async {
+    GameState gameState, {
+    // change the card distribution type from here
+    CardDistributionType cardDistributionType =
+        CardDistributionType.sequentialOrder,
+  }) async {
     final allSeats = gameState.playersInGame.map<int>((p) => p.seatNo).toList();
     allSeats.shuffle();
     AudioService.playDealSound(mute: gameState.playerLocalConfig.mute);
-    final List<Future> futures = [];
-    for (final seatNo in allSeats) {
-      final future = _handleAnimationForSingleSeat(
-        seatNo,
-        noCards,
-        gameState,
-      );
-      await Future.delayed(
-        AppConstants.cardDistributionWaitBetweenPlayersDuration,
-      );
-      futures.add(future);
-    }
 
-    return Future.wait(futures);
+    if (cardDistributionType == CardDistributionType.randomOrder) {
+      final List<Future> futures = [];
+      for (final seatNo in allSeats) {
+        final future = _handleAnimationForSingleSeat(
+          seatNo,
+          noCards,
+          gameState,
+        );
+        await Future.delayed(
+          AppConstants.cardDistributionWaitBetweenPlayersDuration,
+        );
+        futures.add(future);
+      }
+      return Future.wait(futures);
+    } else {
+      for (int c = 0; c < noCards; c++) {
+        // distribute cards to all players
+
+        for (final seatNo in allSeats) {
+          gameState.startCardDistributionFor(seatNo);
+        }
+
+        await Future.delayed(AppConstants.cardDistributionAnimationDuration);
+
+        for (final seatNo in allSeats) {
+          gameState.stopCardDistributionFor(seatNo);
+          final playerInSeat = gameState.getSeat(seatNo);
+          if (playerInSeat != null) {
+            playerInSeat.player.noOfCardsVisible = c;
+            playerInSeat.notify();
+          }
+        }
+      }
+    }
   }
 
   Future<void> handleDealStarted({

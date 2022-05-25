@@ -485,8 +485,12 @@ class TestService {
     gameState.resetSeatActions();
   }
 
+  static void showCardDistribution() {
+    final gameState = Provider.of<GameState>(_context, listen: false);
+    HandActionProtoService.cardDistribution(gameState, 3);
+  }
+
   static Future<void> testBetWidget() async {
-    // return showCardDistribution();
     BuildContext context = _context;
 
     final gameState = Provider.of<GameState>(context, listen: false);

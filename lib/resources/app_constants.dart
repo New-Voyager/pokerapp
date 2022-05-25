@@ -113,6 +113,10 @@ class AppConstants {
     milliseconds: 500,
   );
 
+  static const Duration cardThrowAnimationDuration = const Duration(
+    milliseconds: 380,
+  );
+
   static const Duration seatChangeAnimationDuration = const Duration(
     milliseconds: 500,
   );
