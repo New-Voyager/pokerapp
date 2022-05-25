@@ -23,6 +23,7 @@ import 'package:pokerapp/utils/numeric_keyboard2.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/cards/multiple_stack_card_views.dart';
+import 'package:pokerapp/widgets/slider.dart';
 import 'package:provider/provider.dart';
 
 class BetWidget extends StatelessWidget {
@@ -439,15 +440,16 @@ class BetWidget extends StatelessWidget {
           builder: (_, vnBetAmount, __) {
             final min = action.minRaiseAmount.toDouble();
             final max = action.maxRaiseAmount.toDouble();
-            return Slider(
+            return PokerSlider(
               min: min,
               max: max,
-              value: vnBetAmount.value,
-              onChanged: (newBetAmount) {
+              theme: appTheme,
+              defaultValue: vnBetAmount.value,
+              onDragging: (handlerIndex, lowerValue, upperValue) {
                 if (gameState.gameInfo.chipUnit == ChipUnit.DOLLAR) {
-                  vnBetAmount.value = newBetAmount.round().toDouble();
+                  vnBetAmount.value = lowerValue.round().toDouble();
                 } else {
-                  vnBetAmount.value = newBetAmount;
+                  vnBetAmount.value = lowerValue;
                 }
               },
             );
