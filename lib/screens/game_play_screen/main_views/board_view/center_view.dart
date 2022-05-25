@@ -20,6 +20,7 @@ import 'package:pokerapp/screens/game_play_screen/main_views/board_view/pots_vie
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/rank_widget.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/formatter.dart';
+import 'package:pokerapp/utils/platform.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/cards/animations/animating_shuffle_card_view.dart';
 import 'package:pokerapp/widgets/debug_border_widget.dart';
@@ -409,9 +410,15 @@ class _PotViewWidget extends StatelessWidget {
 class _CommunityCardsWidget extends StatelessWidget {
   const _CommunityCardsWidget({Key key}) : super(key: key);
 
-  Matrix4 get transformMatrix => Matrix4.identity()
-    ..setEntry(3, 2, 0.002)
-    ..rotateX(-20 * pi / 180);
+  Matrix4 get transformMatrix {
+    double angle = -20;
+    if (PlatformUtils.isWeb) {
+      angle = -5;
+    }
+    return Matrix4.identity()
+      ..setEntry(3, 2, 0.002)
+      ..rotateX(angle * pi / 180);
+  }
 
   @override
   Widget build(BuildContext context) {

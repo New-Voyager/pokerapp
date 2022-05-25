@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/utils/card_helper.dart';
+import 'package:pokerapp/utils/platform.dart';
 import 'package:pokerapp/widgets/cards/card_builder_widget.dart';
-import 'package:pokerapp/widgets/cards/pulsating_card_container.dart';
 
 class CardView extends StatelessWidget {
   final CardObject card;
@@ -24,11 +24,56 @@ class CardView extends StatelessWidget {
     BuildContext context,
   ) {
     String suitImage = CardHelper.getSuitImage(card.suit);
+    List<Widget> children = [];
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
+    if (PlatformUtils.isWeb) {
+      children = [];
+
+      children.add(
+        Transform.translate(
+            offset: Offset(10, 5),
+            child: Column(children: [
+              Transform.scale(
+                scale: 1.8,
+                child: Text(
+                  card.label == 'T' ? '10' : card.label ?? 'X',
+                  style: TextStyle(
+                    color: card.color,
+                    fontSize: 32.0,
+                    fontWeight: FontWeight.w700,
+                    fontFamily: AppAssets.fontFamilyLiterata,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              SizedBox(height: 5.0),
+              FittedBox(
+                child: Image.asset(
+                  suitImage,
+                  height: 30,
+                  width: 30,
+                  color: card.color,
+                ),
+              ),
+            ])),
+      );
+      children.add(SizedBox(height: 1.0));
+      children.add(
+        Align(
+            alignment: Alignment.bottomRight,
+            child: Image.asset(
+              suitImage,
+              height: 60,
+              width: 60,
+              color: card.color,
+            )),
+      );
+
+      return Stack(
+        children: children,
+      );
+    } else {
+      children.add(
         Expanded(
           flex: 6,
           child: FittedBox(
@@ -50,7 +95,9 @@ class CardView extends StatelessWidget {
             ),
           ),
         ),
-        SizedBox(height: 1.0),
+      );
+      children.add(SizedBox(height: 1.0));
+      children.add(
         Expanded(
           flex: 6,
           child: FittedBox(
@@ -62,8 +109,13 @@ class CardView extends StatelessWidget {
             ),
           ),
         ),
-      ],
-    );
+      );
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: children,
+      );
+    }
   }
 
   @override
