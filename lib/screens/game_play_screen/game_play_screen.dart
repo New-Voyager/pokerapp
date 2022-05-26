@@ -6,52 +6,32 @@ import 'package:after_layout/after_layout.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:overlay_support/overlay_support.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:pokerapp/main.dart';
-import 'package:pokerapp/models/game_play_models/business/game_chat_notfi_state.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/marked_cards.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
-import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
-import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
-import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
-import 'package:pokerapp/screens/game_context_screen/game_chat/game_chat.dart';
 import 'package:pokerapp/screens/game_play_screen/footer_view.dart';
+import 'package:pokerapp/screens/game_play_screen/game_play_objects.dart';
 import 'package:pokerapp/screens/game_play_screen/game_play_screen_util_methods.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/board_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/header_view/header_view.dart';
-import 'package:pokerapp/services/app/clubs_service.dart';
-import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/app/player_service.dart';
 import 'package:pokerapp/services/audio/audio_service.dart';
-import 'package:pokerapp/services/connectivity_check/liveness_sender.dart';
 import 'package:pokerapp/services/connectivity_check/network_change_listener.dart';
-import 'package:pokerapp/services/encryption/encryption_service.dart';
-import 'package:pokerapp/services/game_play/action_services/game_action_service/util_action_services.dart';
 import 'package:pokerapp/services/game_play/customization_service.dart';
-import 'package:pokerapp/services/game_play/game_com_service.dart';
-import 'package:pokerapp/services/game_play/game_messaging_service.dart';
-import 'package:pokerapp/services/game_play/graphql/seat_change_service.dart';
-import 'package:pokerapp/services/gql_errors.dart';
 import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/alerts.dart';
-import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/buttons.dart';
-import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:pokerapp/widgets/drawer/game_play_drawer.dart';
 import 'package:provider/provider.dart';
 import 'package:wakelock/wakelock.dart';
@@ -60,7 +40,6 @@ import '../../main_helper.dart';
 import '../../routes.dart';
 import '../../services/test/test_service.dart';
 import 'game_play_screen_util_methods.dart';
-import 'location_updates.dart';
 
 /*
 7 inch tablet
@@ -110,27 +89,8 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   @override
   String get routeName => Routes.game_play;
 
-  bool _initiated;
-  BuildContext _providerContext;
-  PlayerInfo _currentPlayer;
-
-  // String _audioToken = '';
-  // bool liveAudio = true;
-  //AudioPlayer _voiceTextPlayer;
-
-  //Agora agora;
-  GameComService _gameComService;
-  GameInfoModel _gameInfoModel;
-  GameContextObject _gameContextObj;
-  GameState _gameState;
-  List<PlayerInSeat> _hostSeatChangeSeats;
-  bool _hostSeatChangeInProgress;
   WidgetsBinding _binding = WidgetsBinding.instance;
-  LocationUpdates _locationUpdates;
-  Nats _nats;
-  NetworkConnectionDialog _dialog;
-  BoardAttributesObject boardAttributes;
-  OverlaySupportEntry demoHelpText = null;
+  GamePlayObjects gamePlayObjects;
 
   // instantiate a drawer controller
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -143,23 +103,24 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
     _timer?.cancel();
 
-    if (_gameState != null) {
-      _gameState.uiClosing = true;
+    if (gamePlayObjects.gameState != null) {
+      gamePlayObjects.gameState.uiClosing = true;
     }
 
-    if (_nats != null) {
-      _nats.disconnectListeners.remove(this.onNatsDisconnect);
+    if (gamePlayObjects.nats != null) {
+      gamePlayObjects.nats.disconnectListeners
+          .remove(gamePlayObjects.onNatsDisconnect);
     }
 
     // cancel listening to game play screen network changes
     _streamSub?.cancel();
 
     Wakelock.disable();
-    if (_locationUpdates != null) {
-      _locationUpdates.stop();
-      _locationUpdates = null;
+    if (gamePlayObjects.locationUpdates != null) {
+      gamePlayObjects.locationUpdates.stop();
+      gamePlayObjects.locationUpdates = null;
     }
-    leaveAudioConference();
+    gamePlayObjects.leaveAudioConference();
 
     if (_binding != null) {
       _binding.removeObserver(this);
@@ -174,34 +135,34 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
     void onMarkingCards() {
       // if new cards are marked, send them back
-      if (_gameState.handState == HandState.RESULT) {
-        _sendMarkedCards(context);
+      if (gamePlayObjects.gameState.handState == HandState.RESULT) {
+        gamePlayObjects.sendMarkedCards(context);
       }
     }
 
-    _gameState.handChangeState.addListener(() {
-      if (_gameState.handState == HandState.RESULT) {
+    gamePlayObjects.gameState.handChangeState.addListener(() {
+      if (gamePlayObjects.gameState.handState == HandState.RESULT) {
         // send the marked cards for the first time
-        _sendMarkedCards(context);
+        gamePlayObjects.sendMarkedCards(context);
 
         // start listening for changes in markedCards value
         markedCards.addListener(onMarkingCards);
       }
     });
 
-    _gameState.audioConfState.addListener(() async {
-      if (_gameState.audioConfState.join) {
-        joinAudioConference().then((value) {
+    gamePlayObjects.gameState.audioConfState.addListener(() async {
+      if (gamePlayObjects.gameState.audioConfState.join) {
+        gamePlayObjects.joinAudioConference().then((value) {
           if (mounted) {
-            _gameState.audioConfState.joinedConf();
+            gamePlayObjects.gameState.audioConfState.joinedConf();
           }
         }).onError((error, stackTrace) {
           // do nothing
         });
-      } else if (_gameState.audioConfState.leave) {
-        leaveAudioConference().then((value) {
+      } else if (gamePlayObjects.gameState.audioConfState.leave) {
+        gamePlayObjects.leaveAudioConference().then((value) {
           if (mounted) {
-            _gameState.audioConfState.leftConf();
+            gamePlayObjects.gameState.audioConfState.leftConf();
           }
         }).onError((error, stackTrace) {
           // do nothing
@@ -211,9 +172,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   }
 
   void _initGameInfoModel() async {
-    final GameInfoModel gameInfoModel = await _init();
+    await gamePlayObjects.load();
     if (mounted) {
-      setState(() => _gameInfoModel = gameInfoModel);
+      setState(() {});
     }
   }
 
@@ -243,17 +204,23 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   void initState() {
     super.initState();
     appState.isInGameScreen = true;
+    gamePlayObjects = GamePlayObjects();
+    final appScreenText = getAppTextScreen("gameScreen");
 
-    boardAttributes = BoardAttributesObject(
-      screenSize: Screen.diagonalInches,
-    );
+    gamePlayObjects.initialize(
+        context: context,
+        botGame: widget.botGame,
+        gameCode: widget.gameCode,
+        customizationService: widget.customizationService,
+        gameInfoModel: widget.gameInfoModel,
+        appScreenText: appScreenText);
 
     // store in app state that we are in the game_play_screen
     appState.setCurrentScreenGameCode(widget.gameCode);
 
     _streamSub =
         context.read<NetworkChangeListener>().onConnectivityChange.listen(
-              (_) => _reconnectGameComService(),
+              (_) => gamePlayObjects.reconnectGameComService(),
             );
 
     Wakelock.enable();
@@ -266,10 +233,10 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       _timer = Timer(const Duration(seconds: 1), () {
         if (!TestService.isTesting) {
           if (!mounted) return;
-          _queryCurrentHandIfNeeded();
+          gamePlayObjects.queryCurrentHandIfNeeded();
           final nats = context.read<Nats>();
           log('dartnats: adding to disconnectListeners');
-          nats.disconnectListeners.add(this.onNatsDisconnect);
+          nats.disconnectListeners.add(gamePlayObjects.onNatsDisconnect);
         }
       });
 
@@ -280,14 +247,11 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         appService.appSettings.showReportInfoDialog = false;
       }
 
-      if (_gameState.gameInfo.demoGame) {
-        Future.delayed(Duration(seconds: 1), () {
-          demoHelpText = Alerts.showNotification(
-            titleText: "Tap on Open Seat to Join the Game!",
-            duration: Duration(seconds: 5),
-          );
-        });
+      if (gamePlayObjects.gameState.gameInfo.demoGame) {
+        gamePlayObjects.showDemoGameHelp();
       }
+
+      setState(() {});
     });
 
     PlayerService.getPendingApprovals().then((v) {
@@ -295,8 +259,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     }).onError((error, stackTrace) {
       // ignore it
     });
-
-    _appScreenText = getAppTextScreen("gameScreen");
   }
 
   void reload() {
@@ -318,11 +280,11 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     // _timer?.cancel();
 
     try {
-      if (_locationUpdates != null) {
-        _locationUpdates.stop();
+      if (gamePlayObjects.locationUpdates != null) {
+        gamePlayObjects.locationUpdates.stop();
       }
-      _gameContextObj?.dispose();
-      _gameState?.close();
+      gamePlayObjects.gameContextObj?.dispose();
+      gamePlayObjects.gameState?.close();
     } catch (e) {
       log('Caught exception: ${e.toString()}');
     }
@@ -333,16 +295,16 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       width: boardDimensions.width,
       height: boardDimensions.height,
       child: BoardView(
-        gameComService: _gameContextObj?.gameComService,
-        gameInfo: _gameInfoModel,
-        onUserTap: _onJoinGame,
-        onStartGame: startGame,
+        gameComService: gamePlayObjects.gameContextObj?.gameComService,
+        gameInfo: gamePlayObjects.gameInfoModel,
+        onUserTap: gamePlayObjects.onJoinGame,
+        onStartGame: gamePlayObjects.startGame,
       ),
     );
   }
 
   Widget _buildHeaderView(AppTheme theme) {
-    if (_gameState.customizationMode) {
+    if (gamePlayObjects.gameState.customizationMode) {
       return Align(
         alignment: Alignment.centerLeft,
         child: InkWell(
@@ -364,7 +326,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         width: Screen.width,
         child: IntrinsicHeight(
           child: HeaderView(
-            gameState: _gameState,
+            gameState: gamePlayObjects.gameState,
             scaffoldKey: _scaffoldKey,
           ),
         ),
@@ -373,21 +335,22 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   }
 
   Widget _buildMainBoardView(AppTheme theme) {
-    final boardDimensions = boardAttributes.dimensions(context);
+    final boardDimensions = gamePlayObjects.boardAttributes.dimensions(context);
 
     return Stack(
       clipBehavior: Clip.none,
       alignment: Alignment.topCenter,
       children: [
-        this.widget.showTop && _gameState.customizationMode
+        this.widget.showTop && gamePlayObjects.gameState.customizationMode
             ? Positioned(
                 top: 10,
                 right: 50,
                 child: CircleImageButton(
                   onTap: () async {
                     await Navigator.of(context).pushNamed(Routes.select_table);
-                    await _gameState.assets.initialize();
-                    final redrawTop = _gameState.redrawBoardSectionState;
+                    await gamePlayObjects.gameState.assets.initialize();
+                    final redrawTop =
+                        gamePlayObjects.gameState.redrawBoardSectionState;
                     redrawTop.notify();
                     setState(() {});
                   },
@@ -409,11 +372,11 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         log('RedrawFooter: building footer view');
         return FooterViewWidget(
           gameCode: widget.gameCode,
-          gameContextObject: _gameContextObj,
-          currentPlayer: _gameContextObj.gameState.currentPlayer,
-          gameInfo: _gameInfoModel,
-          toggleChatVisibility: _showGameChat,
-          onStartGame: startGame,
+          gameContextObject: gamePlayObjects.gameContextObj,
+          currentPlayer: gamePlayObjects.gameState.currentPlayer,
+          gameInfo: gamePlayObjects.gameInfoModel,
+          toggleChatVisibility: gamePlayObjects.showGameChat,
+          onStartGame: gamePlayObjects.startGame,
         );
       },
     );
@@ -439,33 +402,36 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   }
 
   Widget _buildBody(AppTheme theme) {
+    log('======== 1 _buildBody ========');
     // show a progress indicator if the game info object is null
-    if (_gameInfoModel == null) return Center(child: CircularProgressWidget());
+    if (gamePlayObjects.gameInfoModel == null)
+      return Center(child: CircularProgressWidget());
+    log('======== 2 _buildBody ========');
 
     /* get the screen sizes, and initialize the board attributes */
     final providers = GamePlayScreenUtilMethods.getProviders(
       context: context,
-      gameInfoModel: _gameInfoModel,
+      gameInfoModel: gamePlayObjects.gameInfoModel,
       gameCode: widget.gameCode,
-      gameState: _gameState,
-      boardAttributes: boardAttributes,
-      gameContextObject: _gameContextObj,
-      hostSeatChangePlayers: _hostSeatChangeSeats,
-      seatChangeInProgress: _hostSeatChangeInProgress,
+      gameState: gamePlayObjects.gameState,
+      boardAttributes: gamePlayObjects.boardAttributes,
+      gameContextObject: gamePlayObjects.gameContextObj,
+      hostSeatChangePlayers: gamePlayObjects.hostSeatChangeSeats,
+      seatChangeInProgress: gamePlayObjects.hostSeatChangeInProgress,
     );
 
     return MultiProvider(
       providers: providers,
       builder: (BuildContext context, _) {
         _showWaitListHandlingNotification();
-        this._providerContext = context;
+        gamePlayObjects.providerContext = context;
 
         /* this function listens for marked cards in the result and sends as necessary */
-        _initSendCardAfterFold(_providerContext);
+        _initSendCardAfterFold(gamePlayObjects.providerContext);
 
-        if (_gameContextObj != null) {
+        if (gamePlayObjects.gameContextObj != null) {
           if (!TestService.isTesting && widget.customizationService == null) {
-            _gameContextObj.setup(context);
+            gamePlayObjects.gameContextObj.setup(context);
           }
         }
 
@@ -478,7 +444,8 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         return ListenableProvider<ValueNotifier<bool>>(
           // default value false means, we keep the chat window hidden initially
           create: (_) => ValueNotifier<bool>(false),
-          builder: (context, _) => _buildCoreBody(context, boardAttributes),
+          builder: (context, _) =>
+              _buildCoreBody(context, gamePlayObjects.boardAttributes),
         );
       },
     );
@@ -486,21 +453,24 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
   @override
   Widget build(BuildContext context) {
+    log('======== build game play screen ========');
     if (TestService.isTesting) {
       try {
-        this._currentPlayer = TestService.currentPlayer;
+        gamePlayObjects.currentPlayer = TestService.currentPlayer;
       } catch (e) {}
     }
     if (widget.customizationService != null) {
-      this._currentPlayer = widget.customizationService.currentPlayer;
+      gamePlayObjects.currentPlayer = widget.customizationService.currentPlayer;
     }
     final body = Consumer<AppTheme>(
       builder: (_, theme, __) {
+        log('======== 2 build game play screen ========');
+
         Widget mainBody = Scaffold(
           endDrawer: Consumer<PendingApprovalsState>(builder: (_, __, ___) {
             log('PendingApprovalsState updated');
             return Drawer(
-              child: GamePlayScreenDrawer(gameState: _gameState),
+              child: GamePlayScreenDrawer(gameState: gamePlayObjects.gameState),
             );
           }),
           key: _scaffoldKey,
@@ -515,7 +485,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         if (!Platform.isIOS) {
           mainBody = SafeArea(child: mainBody);
         }
-        if (boardAttributes.useSafeArea) {
+        if (gamePlayObjects.boardAttributes.useSafeArea) {
           return SafeArea(child: mainBody);
         }
 
@@ -552,19 +522,20 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       case AppLifecycleState.detached:
       case AppLifecycleState.inactive:
         log("Leaving AudioConference from Lifecycle");
-        leaveAudioConference();
+        gamePlayObjects.leaveAudioConference();
         AudioService.stop();
-        if (_locationUpdates != null) {
-          _locationUpdates.stop();
+        if (gamePlayObjects.locationUpdates != null) {
+          gamePlayObjects.locationUpdates.stop();
         }
         break;
       case AppLifecycleState.resumed:
-        if (_gameState != null && !_gameState.uiClosing) {
+        if (gamePlayObjects.gameState != null &&
+            !gamePlayObjects.gameState.uiClosing) {
           AudioService.resume();
           log("Joining AudioConference from Lifecycle");
-          joinAudioConference();
-          if (_locationUpdates != null) {
-            _locationUpdates.start();
+          gamePlayObjects.joinAudioConference();
+          if (gamePlayObjects.locationUpdates != null) {
+            gamePlayObjects.locationUpdates.start();
           }
         }
         break;

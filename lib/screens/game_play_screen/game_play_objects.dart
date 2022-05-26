@@ -35,6 +35,7 @@ import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
+import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:provider/provider.dart';
 
@@ -64,6 +65,27 @@ class GamePlayObjects {
   bool botGame;
 
   GamePlayObjects();
+
+  GameState get gameState => _gameState;
+  GameContextObject get gameContextObj => _gameContextObj;
+  BuildContext get providerContext => _providerContext;
+  List<PlayerInSeat> get hostSeatChangeSeats => _hostSeatChangeSeats;
+  bool get hostSeatChangeInProgress => _hostSeatChangeInProgress;
+  PlayerInfo get currentPlayer => _currentPlayer;
+  Nats get nats => _nats;
+  LocationUpdates get locationUpdates => _locationUpdates;
+  void set locationUpdates(LocationUpdates locationUpdates) {
+    _locationUpdates = locationUpdates;
+  }
+
+  void set currentPlayer(PlayerInfo player) {
+    _currentPlayer = player;
+  }
+
+  void set providerContext(BuildContext context) {
+    _providerContext = context;
+  }
+
   void initialize(
       {BuildContext context,
       bool botGame,
@@ -76,6 +98,10 @@ class GamePlayObjects {
     this._appScreenText = appScreenText;
     this.customizationService = customizationService;
     this.botGame = botGame;
+    this.context = context;
+    this.boardAttributes = BoardAttributesObject(
+      screenSize: Screen.diagonalInches,
+    );
   }
 
   /* _init function is run only for the very first time,
@@ -165,7 +191,7 @@ class GamePlayObjects {
             log('dartnats: Connection is available. Reconnecting');
             await _nats.reconnect();
             // resubscribe to messages
-            await _reconnectGameComService();
+            await reconnectGameComService();
             log('dartnats: reconnected. _nats.connectionBroken ${_nats.connectionBroken}');
             break;
           }
@@ -182,7 +208,7 @@ class GamePlayObjects {
     }
   }
 
-  void _reconnectGameComService() async {
+  void reconnectGameComService() async {
     log('network_reconnect: _reconnectGameComService invoked');
     final nats = context.read<Nats>();
     if (nats.connectionBroken) {
@@ -193,10 +219,10 @@ class GamePlayObjects {
     await _gameComService.reconnect(nats);
 
     // query current hand
-    _queryCurrentHandIfNeeded();
+    queryCurrentHandIfNeeded();
   }
 
-  void _queryCurrentHandIfNeeded() {
+  void queryCurrentHandIfNeeded() {
     /* THIS METHOD QUERIES THE CURRENT HAND AND POPULATE THE
        GAME SCREEN, IF AND ONLY IF THE GAME IS ALREADY PLAYING */
 
@@ -338,7 +364,7 @@ class GamePlayObjects {
   // Timer _timer;
   /* The init method returns a Future of all the initial game constants
   * This method is also responsible for subscribing to the NATS channels */
-  Future<GameInfoModel> _init() async {
+  Future<GameInfoModel> load() async {
     // check if there is a gameInfo passed, if not, then fetch the game info
     GameInfoModel _gameInfoModel = await _fetchGameInfo();
     ClubInfo clubInfo = ClubInfo();
@@ -356,7 +382,10 @@ class GamePlayObjects {
       log('host seat change: $_hostSeatChangeSeats');
       _hostSeatChangeInProgress = true;
     }
-    if (_initiated == true) return _gameInfoModel;
+    gameInfoModel = _gameInfoModel;
+    if (_initiated == true) {
+      return _gameInfoModel;
+    }
 
     log('establishing game communication service');
     _gameComService = GameComService(
@@ -587,7 +616,7 @@ class GamePlayObjects {
     }
   }
 
-  void _showGameChat(BuildContext context) async {
+  void showGameChat(BuildContext context) async {
     _gameState.chatScreenVisible = true;
 
     await showGeneralDialog(
@@ -616,7 +645,16 @@ class GamePlayObjects {
     _gameState.chatScreenVisible = false;
   }
 
-  Future _onJoinGame(Seat seat) async {
+  void showDemoGameHelp() {
+    Future.delayed(Duration(seconds: 1), () {
+      demoHelpText = Alerts.showNotification(
+        titleText: "Tap on Open Seat to Join the Game!",
+        duration: Duration(seconds: 5),
+      );
+    });
+  }
+
+  Future onJoinGame(Seat seat) async {
     final gameState = _gameState;
     final tableState = gameState.tableState;
     final me = gameState.me;
@@ -739,7 +777,7 @@ class GamePlayObjects {
     }
   }
 
-  void _sendMarkedCards(BuildContext context) {
+  void sendMarkedCards(BuildContext context) {
     if (TestService.isTesting || customizationService != null) return;
     final MarkedCards markedCards = _gameState.markedCardsState;
     if (_gameState.handState != HandState.RESULT) {
