@@ -5,9 +5,11 @@ import 'package:provider/provider.dart';
 
 class TableView extends StatelessWidget {
   final double tableWidthFactor;
+  final GameState gameState;
 
   TableView({
     this.tableWidthFactor = 1.0,
+    this.gameState,
   });
 
   Widget build(BuildContext context) {

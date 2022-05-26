@@ -2,6 +2,8 @@ import 'package:intl/intl.dart';
 
 class AppConstants {
   AppConstants._();
+  static const double largeTableWidth = 1200.0;
+  static const double mediumTableWidth = 800.0;
 
   static const List<String> maskedList = [
     "money",

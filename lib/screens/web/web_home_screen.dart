@@ -5,10 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/models/auth_model.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_config.dart';
-import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/services/app/appcoin_service.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
-import 'package:pokerapp/services/test/test_service_web.dart';
+import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/web-routes.dart';
 import 'package:pokerapp/widgets/buttons.dart';
@@ -24,7 +23,7 @@ class WebHomeScreen extends StatefulWidget {
 
 class _WebHomeScreenState extends State<WebHomeScreen> {
   final _textController =
-      TextEditingController(text: TestServiceWeb.testGameCode);
+      TextEditingController(text: TestService.gameInfo.gameCode);
   BuildContext _context;
 
   @override
