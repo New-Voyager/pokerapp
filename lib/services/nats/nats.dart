@@ -1,30 +1,25 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:flutter/material.dart';
 import 'package:pokerapp/main.dart';
-import 'package:pokerapp/models/app_state.dart';
 import 'package:pokerapp/services/app/util_service.dart';
 import 'package:pokerapp/services/nats/message.dart';
 import 'package:pokerapp/utils/platform.dart';
-import 'package:provider/provider.dart';
 
-import 'client.dart';
 import 'subscription.dart';
-import 'wsclient.dart';
+import 'client.dart';
 
 class Nats {
-  WSClient get clientSub => _clientSub;
-  WSClient _clientSub;
+  Client get clientSub => _clientSub;
+  Client _clientSub;
 
-  WSClient get clientPub => _clientPub;
-  WSClient _clientPub;
+  Client get clientPub => _clientPub;
+  Client _clientPub;
 
   String _natsUrl;
   String _playerChannel;
   bool _initialized = false;
   Subscription _playerSub;
-  BuildContext _providerContext;
   Map<String, Subscription> _clubSubs = Map<String, Subscription>();
   Function(String) playerNotifications;
   Function(String) clubNotifications;
@@ -32,7 +27,7 @@ class Nats {
   // functions listens for disconnection
   List<Function> disconnectListeners = [];
 
-  Nats(this._providerContext) {}
+  Nats() {}
 
   bool get connectionBroken {
     if (_clientPub.status == Status.disconnected ||
@@ -90,8 +85,8 @@ class Nats {
     }
 
     // instantiate new clients
-    _clientSub = WSClient();
-    _clientPub = WSClient();
+    _clientSub = Client();
+    _clientPub = Client();
 
     _playerChannel = playerChannel;
     _clubSubs = Map<String, Subscription>();
@@ -105,8 +100,8 @@ class Nats {
 
     natsUrl = 'ws://192.168.0.103:8090';
     _natsUrl = natsUrl;
-    await _clientSub.wsconnect(natsUrl);
-    await _clientPub.wsconnect(natsUrl);
+    await _clientSub.connect(natsUrl);
+    await _clientPub.connect(natsUrl);
     _clientSub.onDisconnect = onDisconnect;
 
     // subscribe for player messages

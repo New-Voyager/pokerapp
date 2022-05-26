@@ -14,7 +14,6 @@ import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/screens/layouts/layout_holder.dart';
 import 'package:pokerapp/services/connectivity_check/network_change_listener.dart';
 import 'package:pokerapp/services/nats/nats.dart';
-import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/platform.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/web-routes.dart';
@@ -106,7 +105,7 @@ class _MyWebAppState extends State<MyWebApp> {
             /* PUT DEPENDENT PROVIDERS HERE */
             providers: [
               Provider<Nats>(
-                create: (_) => Nats(context),
+                create: (_) => Nats(),
               ),
               Provider(
                 create: (_) => NetworkChangeListener(),
