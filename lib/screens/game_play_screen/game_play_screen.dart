@@ -31,6 +31,7 @@ import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/alerts.dart';
+import 'package:pokerapp/utils/platform.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/debug_border_widget.dart';
@@ -118,7 +119,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     // cancel listening to game play screen network changes
     _streamSub?.cancel();
 
-    Wakelock.disable();
+    if (!PlatformUtils.isWeb) {
+      Wakelock.disable();
+    }
     if (gamePlayObjects.locationUpdates != null) {
       gamePlayObjects.locationUpdates.stop();
       gamePlayObjects.locationUpdates = null;
@@ -221,12 +224,16 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     // store in app state that we are in the game_play_screen
     appState.setCurrentScreenGameCode(widget.gameCode);
 
-    _streamSub =
-        context.read<NetworkChangeListener>().onConnectivityChange.listen(
-              (_) => gamePlayObjects.reconnectGameComService(),
-            );
+    if (!PlatformUtils.isWeb) {
+      _streamSub =
+          context.read<NetworkChangeListener>().onConnectivityChange.listen(
+                (_) => gamePlayObjects.reconnectGameComService(),
+              );
+    }
 
-    Wakelock.enable();
+    if (!PlatformUtils.isWeb) {
+      Wakelock.enable();
+    }
 
     // Register listener for lifecycle methods
     WidgetsBinding.instance.addObserver(this);
@@ -243,15 +250,17 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         }
       });
 
-      if (appService.appSettings.showRefreshBanner) {
-        appService.appSettings.showRefreshBanner = false;
-      }
-      if (appService.appSettings.showReportInfoDialog) {
-        appService.appSettings.showReportInfoDialog = false;
-      }
+      if (!PlatformUtils.isWeb) {
+        if (appService.appSettings.showRefreshBanner) {
+          appService.appSettings.showRefreshBanner = false;
+        }
+        if (appService.appSettings.showReportInfoDialog) {
+          appService.appSettings.showReportInfoDialog = false;
+        }
 
-      if (gamePlayObjects.gameState.gameInfo.demoGame) {
-        gamePlayObjects.showDemoGameHelp();
+        if (gamePlayObjects.gameState.gameInfo.demoGame) {
+          gamePlayObjects.showDemoGameHelp();
+        }
       }
 
       setState(() {});
@@ -527,6 +536,12 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     if (widget.customizationService != null) {
       gamePlayObjects.currentPlayer = widget.customizationService.currentPlayer;
     }
+
+    if (PlatformUtils.isWeb) {
+      Screen.init(context);
+      gamePlayObjects.initialzeBoardAttributes();
+    }
+
     final body = Consumer<AppTheme>(
       builder: (_, theme, __) {
         log('======== 2 build game play screen ========');
@@ -547,7 +562,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
           backgroundColor: Colors.black,
           body: _buildBody(theme),
         );
-        if (!Platform.isIOS) {
+        if (!PlatformUtils.isIOS) {
           mainBody = SafeArea(child: mainBody);
         }
         if (gamePlayObjects.boardAttributes.useSafeArea) {

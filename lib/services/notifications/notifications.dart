@@ -21,6 +21,7 @@ import 'package:pokerapp/services/app/player_service.dart';
 import 'package:pokerapp/services/data/hive_models/player_state.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/formatter.dart';
+import 'package:pokerapp/utils/platform.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
 
 enum NotificationType {
@@ -81,7 +82,7 @@ class NotificationHandler {
     // Any time the token refreshes, store this in the database too.
     FirebaseMessaging.instance.onTokenRefresh.listen(saveFirebaseToken);
 
-    if (Platform.isIOS) {
+    if (PlatformUtils.isIOS) {
       FirebaseMessaging messaging = FirebaseMessaging.instance;
 
       NotificationSettings settings = await messaging.requestPermission(

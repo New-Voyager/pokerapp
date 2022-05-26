@@ -6,6 +6,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pokerapp/services/data/box_type.dart';
 import 'package:pokerapp/services/data/datasource_contract.dart';
+import 'package:pokerapp/utils/platform.dart';
 
 class HiveDatasource implements IDatasource {
   HiveDatasource._();
@@ -21,8 +22,12 @@ class HiveDatasource implements IDatasource {
 
   @override
   Future<void> init() async {
-    Directory dir = await getApplicationDocumentsDirectory();
-    await Hive.initFlutter(dir.path);
+    if (PlatformUtils.isWeb) {
+      await Hive.initFlutter();
+    } else {
+      Directory dir = await getApplicationDocumentsDirectory();
+      await Hive.initFlutter(dir.path);
+    }
 
     /* open boxes */
     /* open every boxes mentioned in the boxtype enum */

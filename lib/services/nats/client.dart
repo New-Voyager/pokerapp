@@ -114,7 +114,7 @@ class Client {
       _channel.stream.listen((d) {
         _buffer.addAll(d);
         String buf = String.fromCharCodes(_buffer);
-        log('listen: $buf');
+        // log('listen: $buf');
         while (_receiveState == ReceiveState.idle && _buffer.contains(13)) {
           _processOp();
         }
@@ -226,7 +226,7 @@ class Client {
 
       var line =
           String.fromCharCodes(_buffer.sublist(0, nextLineIndex)); // retest
-      log(line);
+      // log(line);
 
       if (_buffer.length > nextLineIndex + 2) {
         _buffer.removeRange(0, nextLineIndex + 2);
@@ -302,6 +302,7 @@ class Client {
 
     if (_subs[sid] != null) {
       if (!_subs[sid].closed) {
+        log('subscriber id: $sid');
         _subs[sid].add(Message(subject, sid, payload, replyTo: replyTo));
       }
     }

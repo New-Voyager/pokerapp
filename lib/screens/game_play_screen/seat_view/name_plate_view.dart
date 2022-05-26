@@ -15,6 +15,7 @@ import 'package:pokerapp/screens/game_play_screen/seat_view/animating_widgets/st
 import 'package:pokerapp/screens/game_play_screen/widgets/milliseconds_counter.dart';
 import 'package:pokerapp/services/audio/audio_service.dart';
 import 'package:pokerapp/utils/name_plate_widget_parent.dart';
+import 'package:pokerapp/utils/platform.dart';
 import 'package:pokerapp/widgets/nameplate.dart';
 import 'package:pokerapp/widgets/text_widgets/name_plate/name_plate_name_text.dart';
 import 'package:pokerapp/widgets/text_widgets/name_plate/name_plate_stack_text.dart';
@@ -186,7 +187,13 @@ class NamePlateWidget extends StatelessWidget {
       if (seat.player.isMe) {
         nameplate = gameState.assets.getNameplate();
       } else {
-        nameplate = gameState.assets.getNameplateById(seat.player.namePlateId);
+        if (PlatformUtils.isWeb) {
+          nameplate = gameState.assets.getNameplate();
+        } else {
+          //return Container(width: 100, height: 50, color: Colors.red);
+          nameplate =
+              gameState.assets.getNameplateById(seat.player.namePlateId);
+        }
       }
     }
 
