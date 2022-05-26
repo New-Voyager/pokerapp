@@ -31,6 +31,7 @@ import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/alerts.dart';
+import 'package:pokerapp/utils/platform.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/debug_border_widget.dart';
@@ -547,7 +548,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
           backgroundColor: Colors.black,
           body: _buildBody(theme),
         );
-        if (!Platform.isIOS) {
+        if (!PlatformUtils.isIOS) {
           mainBody = SafeArea(child: mainBody);
         }
         if (gamePlayObjects.boardAttributes.useSafeArea) {

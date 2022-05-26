@@ -7,6 +7,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/screen_attributes.dart';
+import 'package:pokerapp/utils/platform.dart';
 import 'package:pokerapp/utils/utils.dart';
 
 enum BoardOrientation {
@@ -113,7 +114,7 @@ class SeatPosAttribs {
 class BoardAttributesJson {
   Map<String, dynamic> attribs;
   void init(double screenSize) {
-    if (Platform.isAndroid) {
+    if (PlatformUtils.isAndroid) {
       // attribs = AndroidAttribs.getAttribs(DeviceInfo.model, screenSize);
       attribs = ScreenAttributes.getScreenAttribs(
           DeviceInfo.model, screenSize, Screen.size);
