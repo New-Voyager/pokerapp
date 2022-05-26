@@ -32,7 +32,7 @@ class AppConfig {
     //_apiUrl = 'http://192.168.1.16:9501';
     //_apiUrl = 'http://192.168.0.108:9501';
 
-    _apiUrl = 'http://192.168.0.103:9501';
+    // _apiUrl = 'http://192.168.0.103:9501';
     String deviceId = sharedPreferences.getString(AppConstants.DEVICE_ID);
     String deviceSecret =
         sharedPreferences.getString(AppConstants.DEVICE_SECRET);

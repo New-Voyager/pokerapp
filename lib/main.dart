@@ -36,6 +36,11 @@ void main() async {
 
   //appState.currentFlavor = Flavor.DEV;
   appState.currentFlavor = Flavor.PROD;
+  if (Platform.isIOS) {
+    PlatformUtils.isIOS = true;
+  } else if (Platform.isAndroid) {
+    PlatformUtils.isAndroid = true;
+  }
 
   // Register all the models and services before the app starts
   if (PlatformUtils.isAndroid) {
