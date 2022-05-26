@@ -700,6 +700,8 @@ class BoardAttributesObject extends ChangeNotifier {
     if (this.orientation == BoardOrientation.horizontal) {
       widthOfBoard = MediaQuery.of(context).size.width;
       heightOfBoard = MediaQuery.of(context).size.height / 2.5;
+    } else {
+      widthOfBoard = MediaQuery.of(context).size.width;
     }
     this._tableSize = Size(widthOfBoard, heightOfBoard - 70);
     this._centerSize = Size(widthOfBoard - 30, this._tableSize.height - 70);
@@ -816,7 +818,8 @@ class BoardAttributesObject extends ChangeNotifier {
   }
 
   double get footerViewScale {
-    return attribsObj.footerViewScale;
+    if (isOrientationHorizontal) return attribsObj.footerViewScale;
+    return attribsObj.footerViewScale / 1.3;
   }
 
   double get boardHeightAdjust {

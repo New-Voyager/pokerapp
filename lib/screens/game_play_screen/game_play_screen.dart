@@ -20,7 +20,8 @@ import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/game_play_screen/footer_view.dart';
 import 'package:pokerapp/screens/game_play_screen/game_play_objects.dart';
 import 'package:pokerapp/screens/game_play_screen/game_play_screen_util_methods.dart';
-import 'package:pokerapp/screens/game_play_screen/main_views/board_view/board_view.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/board_view/board_view_vertical.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/board_view/decorative_views/background_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/header_view/header_view.dart';
 import 'package:pokerapp/services/app/player_service.dart';
 import 'package:pokerapp/services/audio/audio_service.dart';
@@ -32,6 +33,7 @@ import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/buttons.dart';
+import 'package:pokerapp/widgets/debug_border_widget.dart';
 import 'package:pokerapp/widgets/drawer/game_play_drawer.dart';
 import 'package:provider/provider.dart';
 import 'package:wakelock/wakelock.dart';
@@ -40,6 +42,7 @@ import '../../main_helper.dart';
 import '../../routes.dart';
 import '../../services/test/test_service.dart';
 import 'game_play_screen_util_methods.dart';
+import 'main_views/board_view/board_view.dart';
 
 /*
 7 inch tablet
@@ -291,14 +294,48 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   }
 
   Widget _buildBoardView(Size boardDimensions) {
+// =======
+//       height: boardDimensions.height,
+//       child: BoardView(
+//         gameComService: gamePlayObjects.gameContextObj?.gameComService,
+//         gameInfo: gamePlayObjects.gameInfoModel,
+//         onUserTap: gamePlayObjects.onJoinGame,
+//         onStartGame: gamePlayObjects.startGame,
+// >>>>>>> master
+
+    final boardAttributes = gamePlayObjects.boardAttributes;
+    final gameInfo = gamePlayObjects.gameInfoModel;
+    final gameContextObj = gamePlayObjects.gameContextObj;
+    final onJoinGame = gamePlayObjects.onJoinGame;
+    final startGame = gamePlayObjects.startGame;
+
+    double footerHeight =
+        MediaQuery.of(context).size.height * boardAttributes.footerViewScale;
+
+    footerHeight += boardAttributes.bottomHeightAdjust;
+
     return Container(
       width: boardDimensions.width,
-      height: boardDimensions.height,
-      child: BoardView(
-        gameComService: gamePlayObjects.gameContextObj?.gameComService,
-        gameInfo: gamePlayObjects.gameInfoModel,
-        onUserTap: gamePlayObjects.onJoinGame,
-        onStartGame: gamePlayObjects.startGame,
+      height: (boardAttributes.isOrientationHorizontal)
+          ? boardDimensions.height
+          : null,
+      padding: (boardAttributes.isOrientationHorizontal)
+          ? null
+          : EdgeInsets.only(bottom: footerHeight / 3),
+      child: DebugBorderWidget(
+        child: (boardAttributes.isOrientationHorizontal)
+            ? BoardView(
+                gameComService: gameContextObj?.gameComService,
+                gameInfo: gameInfo,
+                onUserTap: onJoinGame,
+                onStartGame: startGame,
+              )
+            : BoardViewVertical(
+                gameComService: gameContextObj?.gameComService,
+                gameInfo: gameInfo,
+                onUserTap: onJoinGame,
+                onStartGame: startGame,
+              ),
       ),
     );
   }
@@ -389,16 +426,44 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     final theme = AppTheme.getTheme(context);
     const kEmpty = const SizedBox.shrink();
 
-    return Column(
-      children: [
-        // header
-        widget.showTop ? _buildHeaderView(theme) : kEmpty,
-        // board view
-        widget.showTop ? _buildMainBoardView(theme) : kEmpty,
-        // footer view
-        widget.showBottom ? _buildFooterView() : kEmpty,
-      ],
-    );
+    var dimensions = boardAttributes.dimensions(context);
+
+    return (boardAttributes.isOrientationHorizontal)
+        ? Column(
+            children: [
+              // header
+              widget.showTop ? _buildHeaderView(theme) : kEmpty,
+              // board view
+              widget.showTop ? _buildMainBoardView(theme) : kEmpty,
+              // footer view
+              widget.showBottom ? _buildFooterView() : kEmpty,
+            ],
+          )
+        : Column(
+            children: [
+              // header
+              widget.showTop ? _buildHeaderView(theme) : kEmpty,
+              Expanded(
+                child: Stack(
+                  children: [
+                    Container(
+                      width: double.infinity,
+                      height: dimensions.height,
+                      child: BackgroundView(),
+                    ),
+                    // board view
+                    widget.showTop ? _buildMainBoardView(theme) : kEmpty,
+                    // footer view
+                    widget.showBottom
+                        ? Align(
+                            alignment: Alignment.bottomCenter,
+                            child: _buildFooterView())
+                        : kEmpty,
+                  ],
+                ),
+              )
+            ],
+          );
   }
 
   Widget _buildBody(AppTheme theme) {

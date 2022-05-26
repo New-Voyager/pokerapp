@@ -540,7 +540,7 @@ class TestService {
     final seatAction = jsonDecode(seatActionJsonStr);
     actionState.setAction(1, seatAction);
     gameState.setAction(1, seatAction);
-    //gameState.showCheckFold();
+    gameState.showCheckFold();
     gameState.showAction(true);
 
     actionState.notifyListeners();

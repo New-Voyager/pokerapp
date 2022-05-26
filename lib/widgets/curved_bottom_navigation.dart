@@ -117,7 +117,7 @@ class _MyBottomNavigationState
       bool isSelected = widget.selected == i;
       _itemsTranslationY[i] = visitor(
         _itemsTranslationY[i],
-        isSelected ? -(widget.fabSize / 2) - (widget.fabMargin / 2) : 0.0,
+        isSelected ? -(widget.fabSize / 2) - widget.fabMargin : 0.0,
         (dynamic value) => Tween<double>(
           begin: value,
         ),

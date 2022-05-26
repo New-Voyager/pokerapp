@@ -28,7 +28,9 @@ class TableView extends StatelessWidget {
           //   fit: BoxFit.fill,
           // ),
           child: Image.asset(
-            appService.appSettings.tableAsset,
+            (gameState.getBoardAttributes(context).isOrientationHorizontal)
+                ? appService.appSettings.tableAsset
+                : "assets/images/table/vertical.png",
             key: UniqueKey(),
           ),
         ),

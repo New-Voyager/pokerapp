@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
+import 'package:pokerapp/widgets/switch_new.dart';
 import 'package:provider/provider.dart';
 
 class SwitchWidget2 extends StatelessWidget {
@@ -64,29 +65,35 @@ class SwitchWidget2 extends StatelessWidget {
 
                 /* switch */
                 Consumer<ValueNotifier<bool>>(
-                    builder: (_, vnValue, __) => FlutterSwitch(
+                    builder: (_, vnValue, __) => FlutterSwitch2(
                       //width: activeText != 'On' ? 100 : 70.0,
-                      width: 45,
+                      width: 50,
                       height: 25,
                       disabled: disabled,
-                      activeTextColor: theme.supportingColor,
-                      inactiveTextColor: theme.supportingColor.withAlpha(100),
-                      activeSwitchBorder: Border.all(
-                        color: theme.accentColor,
-                        width: 2.0,
-                      ),
-                      inactiveSwitchBorder: Border.all(
-                        color: theme.supportingColor.withAlpha(100),
-                        width: 2.0,
-                      ),
-                      activeColor: theme.fillInColor,
+                      activeTextColor: theme.accentColor,
+                      inactiveTextColor: theme.supportingColor.withAlpha(150),
+                      activeSwitchBorderColor: theme.accentColor,
+                      activeSwitchBorderWidth: 1.0,
+                      inactiveSwitchBorderColor:
+                          theme.supportingColor.withAlpha(100),
+                      inactiveSwitchBorderWidth: 1.0,
+                      activeColor: theme.accentColor.withAlpha(50),
                       activeToggleColor: theme.accentColor,
+                      toggleSize: 15,
+                      toggleBorder: Border.all(
+                        color: theme.accentColor,
+                        width: 0.5,
+                      ),
                       inactiveColor: theme.fillInColor,
-                      inactiveToggleColor: theme.supportingColor.withAlpha(100),
+                      inactiveToggleColor: theme.accentColor,
                       //showOnOff: true,
-                      activeText: activeText,
-                      inactiveText: inactiveText,
+                      activeText: activeText.toUpperCase(),
+                      inactiveText: inactiveText.toUpperCase(),
                       value: vnValue.value ?? false,
+                      activeTextFontWeight: FontWeight.w400,
+                      inactiveTextFontWeight: FontWeight.w400,
+                      showOnOff: true,
+                      valueFontSize: 10.0,
                       onToggle: (bool newValue) {
                         vnValue.value = newValue;
                         onChange(newValue);

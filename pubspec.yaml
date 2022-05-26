@@ -23,7 +23,7 @@ dependencies:
   cupertino_icons: ^1.0.3
   data_connection_checker: ^0.3.4
   data_table_2: ^2.2.0
-  device_info_plus: ^2.0.2
+  device_info_plus: ^3.2.3
   dropdown_button2: ^1.1.1
   equatable: ^2.0.3
   firebase_analytics: ^8.3.2
