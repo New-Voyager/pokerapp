@@ -5,9 +5,13 @@ import 'package:pokerapp/resources/app_config.dart';
 class GraphQLConfiguration {
   String apiURL;
 
-  Future<void> init() async {
-    String apiUrl = AppConfig.apiUrl;
-    this.apiURL = '$apiUrl/graphql';
+  Future<void> init({String apiUrl}) async {
+    if (apiUrl == null) {
+      apiUrl = AppConfig.apiUrl;
+      this.apiURL = '$apiUrl/graphql';
+    } else {
+      this.apiURL = apiUrl;
+    }
   }
 
   HttpLink httpLink() {
