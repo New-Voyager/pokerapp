@@ -6,6 +6,7 @@ import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/app_state.dart';
 import 'package:pokerapp/services/app/util_service.dart';
 import 'package:pokerapp/services/nats/message.dart';
+import 'package:pokerapp/utils/platform.dart';
 import 'package:provider/provider.dart';
 
 import 'client.dart';
@@ -50,8 +51,8 @@ class Nats {
   }
 
   Future<void> reconnect() async {
-    // if we dont have the player channel yet, dont call reconnect wait for init
-    if (_playerChannel == null) return;
+    // // if we dont have the player channel yet, dont call reconnect wait for init
+    // if (_playerChannel == null) return;
 
     log('network_reconnect: Nats reconnect method invoked');
 
@@ -81,7 +82,12 @@ class Nats {
   }
 
   Future<void> init(String playerChannel) async {
-    String natsUrl = await UtilService.getNatsURL();
+    String natsUrl = '';
+    if (PlatformUtils.isWeb) {
+      natsUrl = 'ws://192.168.0.103:8090';
+    } else {
+      natsUrl = await UtilService.getNatsURL();
+    }
 
     // instantiate new clients
     _clientSub = WSClient();
@@ -97,7 +103,7 @@ class Nats {
         .replaceFirst('tls://', '')
         .replaceFirst(':4222', '');
 
-    natsUrl = 'ws://192.168.1.100:8090';
+    natsUrl = 'ws://192.168.0.103:8090';
     _natsUrl = natsUrl;
     await _clientSub.wsconnect(natsUrl);
     await _clientPub.wsconnect(natsUrl);
@@ -199,6 +205,9 @@ class Nats {
   }
 
   subscribePlayerMessages() {
+    if (playerChannel == null) {
+      return;
+    }
     log('subscribing to ${this._playerChannel}');
     this._playerSub = this._clientSub.sub(this._playerChannel);
 

@@ -166,7 +166,7 @@ class GameScreenAssets {
       }
       try {
         // log('Customize: Loading cards');
-        await loadCards(cardFace: cardFace);
+        await loadCards(); //cardFace: cardFace);
         // log('Customize: Loading cards successful');
       } catch (err) {
         // log('Customize: Loading default cards');
@@ -204,10 +204,9 @@ class GameScreenAssets {
       final cardStr = CardConvUtils.getString(card);
       Uint8List cardBytes;
       if (cardFace == null || cardFace.bundled ?? false) {
-        cardBytes =
-            (await rootBundle.load('images/card_face/$card.svg'))
-                .buffer
-                .asUint8List();
+        cardBytes = (await rootBundle.load('assets/images/card_face/$card.svg'))
+            .buffer
+            .asUint8List();
       } else {
         String filename = '${cardFace.downloadDir}/$card.svg';
         if (!File(filename).existsSync()) {

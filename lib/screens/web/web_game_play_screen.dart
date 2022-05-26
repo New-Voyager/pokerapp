@@ -131,46 +131,5 @@ class _WebGamePlayScreenState extends State<WebGamePlayScreen> {
             ],
           );
         });
-
-    return MultiProvider(
-      providers: providers,
-      builder: (_, __) {
-        return Stack(
-          clipBehavior: Clip.none,
-          alignment: Alignment.center,
-          children: [
-            delegate.tableBuilder(_gameState),
-            delegate.centerViewBuilder(_gameState),
-            delegate.playersOnTableBuilder(Size(300, 200)),
-            // ignore: sized_box_for_whitespace
-            /*  Container(
-          width: 140,
-          height: 50,
-          child: ElevatedButton(
-            onPressed: () {
-              // used for testing different things
-              //testGameLog(context);
-            },
-            style: ElevatedButton.styleFrom(
-              primary: Colors.pinkAccent,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(25),
-              ),
-              elevation: 15.0,
-            ),
-            child: Padding(
-              padding: EdgeInsets.all(15.0),
-              child: Text(
-                'Test',
-                // style: TextStyle(fontSize: 20),
-              ),
-            ),
-          ),
-        ),
-     */
-          ],
-        );
-      },
-    );
   }
 }

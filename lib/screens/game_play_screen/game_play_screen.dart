@@ -116,12 +116,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   bool _initiated;
   BuildContext _providerContext;
   PlayerInfo _currentPlayer;
-
-  // String _audioToken = '';
-  // bool liveAudio = true;
-  //AudioPlayer _voiceTextPlayer;
-
-  //Agora agora;
   GameComService _gameComService;
   GameInfoModel _gameInfoModel;
   GameContextObject _gameContextObj;
@@ -171,7 +165,13 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       gameInfo = widget.gameInfoModel ??
           await GameService.getGameInfo(widget.gameCode);
       debugPrint('fetching game data: ${widget.gameCode} done');
-      this._currentPlayer = await PlayerService.getMyInfo(widget.gameCode);
+
+      if (PlatformUtils.isWeb) {
+        // temporary code
+        this._currentPlayer = TestService.currentPlayer;
+      } else {
+        this._currentPlayer = await PlayerService.getMyInfo(widget.gameCode);
+      }
       debugPrint('getting current player: ${widget.gameCode} done');
     }
 
@@ -244,8 +244,12 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       // subscribe the NATs channels
       final natsClient = Provider.of<Nats>(context, listen: false);
       _nats = natsClient;
-      if (natsClient.connectionBroken) {
+      if (PlatformUtils.isWeb) {
         await natsClient.reconnect();
+      } else {
+        if (natsClient.connectionBroken) {
+          await natsClient.reconnect();
+        }
       }
 
       log('natsClient: $natsClient');
@@ -794,10 +798,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     super.initState();
     appState.isInGameScreen = true;
 
-    boardAttributes = BoardAttributesObject(
-      screenSize: Screen.diagonalInches,
-    );
-
     // store in app state that we are in the game_play_screen
     appState.setCurrentScreenGameCode(widget.gameCode);
 
@@ -811,34 +811,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     // Register listener for lifecycle methods
     WidgetsBinding.instance.addObserver(this);
     _binding.addObserver(this);
-
-    init().then((v) {
-      _timer = Timer(const Duration(seconds: 1), () {
-        if (!TestService.isTesting) {
-          if (!mounted) return;
-          _queryCurrentHandIfNeeded();
-          final nats = context.read<Nats>();
-          log('dartnats: adding to disconnectListeners');
-          nats.disconnectListeners.add(this.onNatsDisconnect);
-        }
-      });
-
-      // if (appService.appSettings.showRefreshBanner) {
-      //   appService.appSettings.showRefreshBanner = false;
-      // }
-      // if (appService.appSettings.showReportInfoDialog) {
-      //   appService.appSettings.showReportInfoDialog = false;
-      // }
-
-      if (_gameState.gameInfo.demoGame) {
-        Future.delayed(Duration(seconds: 1), () {
-          demoHelpText = Alerts.showNotification(
-            titleText: "Tap on Open Seat to Join the Game!",
-            duration: Duration(seconds: 5),
-          );
-        });
-      }
-    });
 
     if (!PlatformUtils.isWeb) {
       PlayerService.getPendingApprovals().then((v) {
@@ -1032,16 +1004,34 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     final theme = AppTheme.getTheme(context);
     const kEmpty = const SizedBox.shrink();
 
-    return Column(
-      children: [
-        // header
-        widget.showTop ? _buildHeaderView(theme) : kEmpty,
-        // board view
-        widget.showTop ? _buildMainBoardView(theme) : kEmpty,
-        // footer view
-        widget.showBottom ? _buildFooterView() : kEmpty,
-      ],
-    );
+    if (PlatformUtils.isWeb) {
+      return Stack(
+        alignment: Alignment.center,
+        children: [
+          Container(
+            width: Screen.width,
+            height: Screen.height,
+            child: BoardView(
+              gameComService: _gameContextObj?.gameComService,
+              gameInfo: _gameInfoModel,
+              onUserTap: _onJoinGame,
+              onStartGame: startGame,
+            ),
+          )
+        ],
+      );
+    } else {
+      return Column(
+        children: [
+          // header
+          widget.showTop ? _buildHeaderView(theme) : kEmpty,
+          // board view
+          widget.showTop ? _buildMainBoardView(theme) : kEmpty,
+          // footer view
+          widget.showBottom ? _buildFooterView() : kEmpty,
+        ],
+      );
+    }
   }
 
   Widget _buildBody(AppTheme theme) {
@@ -1106,11 +1096,20 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
   @override
   Widget build(BuildContext context) {
+    if (PlatformUtils.isWeb) {
+      Screen.init(context);
+    }
+
     if (TestService.isTesting) {
       try {
         this._currentPlayer = TestService.currentPlayer;
       } catch (e) {}
     }
+
+    if (!_initiated) {
+      return CircularProgressWidget();
+    }
+
     if (widget.customizationService != null) {
       this._currentPlayer = widget.customizationService.currentPlayer;
     }
@@ -1132,11 +1131,13 @@ class _GamePlayScreenState extends State<GamePlayScreen>
           backgroundColor: Colors.black,
           body: _buildBody(theme),
         );
-        if (!PlatformUtils.isIOS) {
-          mainBody = SafeArea(child: mainBody);
-        }
-        if (boardAttributes.useSafeArea) {
-          return SafeArea(child: mainBody);
+        if (!PlatformUtils.isWeb) {
+          if (!PlatformUtils.isIOS) {
+            mainBody = SafeArea(child: mainBody);
+          }
+          if (boardAttributes.useSafeArea) {
+            return SafeArea(child: mainBody);
+          }
         }
 
         return WillPopScope(
@@ -1161,7 +1162,39 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   }
 
   @override
-  void afterFirstLayout(BuildContext context) {}
+  void afterFirstLayout(BuildContext context) {
+    boardAttributes = BoardAttributesObject(
+      screenSize: Screen.diagonalInches,
+    );
+
+    init().then((v) {
+      _timer = Timer(const Duration(seconds: 1), () {
+        if (!TestService.isTesting) {
+          if (!mounted) return;
+          _queryCurrentHandIfNeeded();
+          final nats = context.read<Nats>();
+          log('dartnats: adding to disconnectListeners');
+          nats.disconnectListeners.add(this.onNatsDisconnect);
+        }
+      });
+
+      // if (appService.appSettings.showRefreshBanner) {
+      //   appService.appSettings.showRefreshBanner = false;
+      // }
+      // if (appService.appSettings.showReportInfoDialog) {
+      //   appService.appSettings.showReportInfoDialog = false;
+      // }
+
+      if (_gameState.gameInfo.demoGame) {
+        Future.delayed(Duration(seconds: 1), () {
+          demoHelpText = Alerts.showNotification(
+            titleText: "Tap on Open Seat to Join the Game!",
+            duration: Duration(seconds: 5),
+          );
+        });
+      }
+    });
+  }
 
   startGame() async {
     try {
@@ -1239,7 +1272,10 @@ class _GamePlayScreenState extends State<GamePlayScreen>
             );
 
             await _gameContextObj.joinAudio(context);
-            _gameState.gameMessageService.sendMyInfo();
+
+            if (!PlatformUtils.isWeb) {
+              _gameState.gameMessageService.sendMyInfo();
+            }
             // ui is still running
             // send stream id
             log('AudioConf: 1 Requesting information about the other players');

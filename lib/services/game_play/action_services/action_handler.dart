@@ -486,10 +486,10 @@ class PlayerActionHandler {
     if (action.action == HandActions.BET ||
         action.action == HandActions.RAISE ||
         action.action == HandActions.CALL) {
-      AudioService.playBet(mute: _gameState.playerLocalConfig.mute);
+      //AudioService.playBet(mute: _gameState.playerLocalConfig.mute);
       await Future.delayed(Duration(milliseconds: 500));
     } else if (action.action == HandActions.FOLD) {
-      AudioService.playFold(mute: _gameState.playerLocalConfig.mute);
+      //AudioService.playFold(mute: _gameState.playerLocalConfig.mute);
       await Future.delayed(Duration(milliseconds: 500));
       seat.player.playerFolded = true;
       seat.player.animatingFold = true;
@@ -499,7 +499,7 @@ class PlayerActionHandler {
         _gameState.myState.notify();
       }
     } else if (action.action == HandActions.CHECK) {
-      AudioService.playCheck(mute: _gameState.playerLocalConfig.mute);
+      //AudioService.playCheck(mute: _gameState.playerLocalConfig.mute);
       await Future.delayed(Duration(milliseconds: 500));
     }
     seat.notify();

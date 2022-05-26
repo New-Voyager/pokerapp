@@ -32,7 +32,7 @@ void main() async {
   ScreenAttributes.buildList();
 
   String apiUrl = 'https://api.pokerclub.app';
-  apiUrl = 'http://192.168.1.100:9501';
+  apiUrl = 'http://192.168.0.103:9501';
 
   log('$apiUrl');
   await graphQLConfiguration.init(apiUrl: apiUrl);
@@ -125,6 +125,7 @@ class _MyWebAppState extends State<MyWebApp> {
                     builder: (context, orientation, deviceType) {
                       // SizerUtil().init(constraints, orientation);
                       //SizerUtil().setScreenSize(constraints, orientation);
+
                       final appTheme = context.read<AppTheme>();
                       return MaterialApp(
                         title: "PokerWebApp",

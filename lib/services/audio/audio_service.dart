@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:just_audio/just_audio.dart' as just_audio;
+import 'package:pokerapp/utils/platform.dart';
 
 const String clickSound = 'assets/sound_effects/button_press.mp3';
 const String betRaiseSound = 'assets/sound_effects/bet_call1.mp3';
@@ -89,6 +90,10 @@ class AudioService {
   }
 
   static Future<void> playSound(String soundFile, {bool mute = false}) async {
+    // TODO: enable sound later
+    if (PlatformUtils.isWeb) {
+      return;
+    }
     if (!play) return;
     if (mute ?? false) return;
     //if (!_audioFileCache.containsKey(soundFile)) return;

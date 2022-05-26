@@ -6,6 +6,8 @@ import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/services/test/test_service_web.dart';
 import 'package:provider/provider.dart';
 
+import 'screens/game_play_screen/game_play_screen.dart';
+
 class WebRoutes {
   WebRoutes._();
 
@@ -15,12 +17,24 @@ class WebRoutes {
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     if (settings.name == '/') {
+      // test service
+      // return _getPageRoute(
+      //   routeName: settings.name,
+      //   viewToShow: WebGamePlayScreen(
+      //     gameCode: "CG-8QI4TZBWJRQAXN",
+      //     isBotGame: false,
+      //     // gameInfoModel: gameInfo,
+      //     isFromWaitListNotification: false,
+      //   ),
+      // );
+
+      String gameCode = 'pgzqmopw';
       return _getPageRoute(
         routeName: settings.name,
-        viewToShow: WebGamePlayScreen(
-          gameCode: "CG-8QI4TZBWJRQAXN",
-          isBotGame: false,
-          // gameInfoModel: gameInfo,
+        viewToShow: GamePlayScreen(
+          gameCode: gameCode,
+          botGame: false,
+          gameInfoModel: null,
           isFromWaitListNotification: false,
         ),
       );
