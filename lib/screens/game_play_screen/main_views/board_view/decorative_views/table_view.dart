@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
+import 'package:pokerapp/utils/platform.dart';
 import 'package:provider/provider.dart';
 
 class TableView extends StatelessWidget {
@@ -16,6 +17,17 @@ class TableView extends StatelessWidget {
     final tableWidth = MediaQuery.of(context).size.width * tableWidthFactor;
     final animationDuration = const Duration(milliseconds: 250);
     final gameState = GameState.getState(context);
+    String tableAsset;
+    if (!PlatformUtils.isWeb) {
+      tableAsset = appService.appSettings.tableAsset;
+      if (gameState.getBoardAttributes(context).isOrientationHorizontal) {
+        tableAsset = appService.appSettings.tableAsset;
+      } else {
+        tableAsset = "assets/images/table/vertical.png";
+      }
+    } else {
+      tableAsset = 'assets/images/table/redtable.png';
+    }
     return Container(
       key: gameState.gameUIState.tableKey,
       width: tableWidth,
@@ -28,9 +40,7 @@ class TableView extends StatelessWidget {
           //   fit: BoxFit.fill,
           // ),
           child: Image.asset(
-            (gameState.getBoardAttributes(context).isOrientationHorizontal)
-                ? appService.appSettings.tableAsset
-                : "assets/images/table/vertical.png",
+            tableAsset,
             key: UniqueKey(),
           ),
         ),

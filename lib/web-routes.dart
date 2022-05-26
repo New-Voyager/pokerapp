@@ -26,7 +26,7 @@ class WebRoutes {
       //   ),
       // );
 
-      String gameCode = 'pgjyejyl';
+      String gameCode = 'pgxzpfep';
       return _getPageRoute(
         routeName: settings.name,
         viewToShow: GamePlayScreen(

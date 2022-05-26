@@ -17,6 +17,7 @@ import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/straddl
 import 'package:pokerapp/screens/game_play_screen/widgets/bet_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/help_text.dart';
 import 'package:pokerapp/services/test/test_service.dart';
+import 'package:pokerapp/utils/platform.dart';
 import 'package:pokerapp/widgets/cards/hole_stack_card_view.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:pokerapp/widgets/debug_border_widget.dart';
@@ -48,7 +49,11 @@ class _HoleCardsViewAndFooterActionViewState
     super.initState();
     // appService.appSettings.showHoleCardTip = true;
     // appService.appSettings.showHoleRearrangeTip = true;
-    showHelpText = appService.appSettings.showHoleRearrangeTip;
+    showHelpText = false;
+    if (!PlatformUtils.isWeb) {
+      showHelpText = appService.appSettings.showHoleRearrangeTip;
+    }
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final gameState = GameState.getState(context);
       if (gameState.gameUIState.rearrangeKey == null ||
@@ -85,7 +90,8 @@ class _HoleCardsViewAndFooterActionViewState
 
       Widget rankText;
       rankText = Consumer<MyState>(builder: (_, __, ___) {
-        bool showHandStrength = gameState.playerLocalConfig.showHandRank;
+        bool showHandStrength =
+            gameState.playerLocalConfig.showHandRank ?? true;
         if (!(gameState.gameSettings.showHandRank ?? false)) {
           showHandStrength = false;
         }

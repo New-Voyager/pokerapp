@@ -25,12 +25,14 @@ class ImageCacheManager {
 }
 
 class Screen {
+  static bool initialized = false;
   final Size _size;
   final double _devicePixelRatio;
   Screen(this._size, this._devicePixelRatio);
 
   static Screen _screen;
   static void init(BuildContext c) {
+    initialized = true;
     final query = MediaQuery.of(c);
     _screen = new Screen(query.size, query.devicePixelRatio);
   }

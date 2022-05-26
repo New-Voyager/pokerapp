@@ -99,9 +99,15 @@ class GamePlayObjects {
     this.customizationService = customizationService;
     this.botGame = botGame;
     this.context = context;
-    this.boardAttributes = BoardAttributesObject(
-      screenSize: Screen.diagonalInches,
-    );
+    initialzeBoardAttributes();
+  }
+
+  void initialzeBoardAttributes() {
+    if (Screen.initialized) {
+      this.boardAttributes = BoardAttributesObject(
+        screenSize: Screen.diagonalInches,
+      );
+    }
   }
 
   /* _init function is run only for the very first time,

@@ -29,6 +29,7 @@ import 'package:pokerapp/services/data/hive_models/game_settings.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/services/game_play/graphql/gamesettings_service.dart';
+import 'package:pokerapp/utils/platform.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
@@ -441,23 +442,28 @@ class GameState {
     gameHiveStore = GameHiveStore();
     await gameHiveStore.initialize(code);
 
-    if (!(this.customizationMode ?? false)) {
-      if (!this.replayMode) {
-        if (!gameHiveStore.haveGameSettings()) {
-          log('In GameState initialize(), gameBox is empty');
+    playerLocalConfig = GameLocalConfig(gameCode, gameHiveStore);
+    await playerLocalConfig.init();
 
-          // create a new settings object, and init it (by init -> saves locally)
+    if (!PlatformUtils.isWeb) {
+      if (!(this.customizationMode ?? false)) {
+        if (!this.replayMode) {
+          if (!gameHiveStore.haveGameSettings()) {
+            log('In GameState initialize(), gameBox is empty');
+
+            // create a new settings object, and init it (by init -> saves locally)
+            playerLocalConfig = GameLocalConfig(gameCode, gameHiveStore);
+            await playerLocalConfig.init();
+          } else {
+            log('In GameState initialize(), getting gameSettings from gameBox');
+            playerLocalConfig = gameHiveStore.getGameConfiguration();
+          }
+          log('In GameState initialize(), gameSettings = $playerLocalConfig');
+          _communicationState.showTextChat = playerLocalConfig.showChat;
+        } else {
           playerLocalConfig = GameLocalConfig(gameCode, gameHiveStore);
           await playerLocalConfig.init();
-        } else {
-          log('In GameState initialize(), getting gameSettings from gameBox');
-          playerLocalConfig = gameHiveStore.getGameConfiguration();
         }
-        log('In GameState initialize(), gameSettings = $playerLocalConfig');
-        _communicationState.showTextChat = playerLocalConfig.showChat;
-      } else {
-        playerLocalConfig = GameLocalConfig(gameCode, gameHiveStore);
-        await playerLocalConfig.init();
       }
     }
 
