@@ -113,7 +113,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   @override
   String get routeName => Routes.game_play;
 
-  bool _initiated;
+  bool _initiated = false;
   BuildContext _providerContext;
   PlayerInfo _currentPlayer;
   GameComService _gameComService;
