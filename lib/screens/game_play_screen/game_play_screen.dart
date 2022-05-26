@@ -93,7 +93,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   String get routeName => Routes.game_play;
 
   WidgetsBinding _binding = WidgetsBinding.instance;
-  bool _initiated;
+  bool _initiated = false;
   BuildContext _providerContext;
   OverlaySupportEntry demoHelpText = null;
   GamePlayObjects gamePlayObjects = GamePlayObjects();
@@ -171,6 +171,10 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     }
 
     AppTextScreen appScreenText = getAppTextScreen("gameScreen");
+    gamePlayObjects.initialize(context, appScreenText, widget.gameCode);
+    // gamePlayObjects.init().then((value) {
+    //   _initiated = true;
+    // });
   }
 
   void reload() {
@@ -481,6 +485,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
           );
         });
       }
+    }).onError((error, stackTrace) {
+      log('error: $error');
+      log('stackTrace: $stackTrace');
     });
   }
 
