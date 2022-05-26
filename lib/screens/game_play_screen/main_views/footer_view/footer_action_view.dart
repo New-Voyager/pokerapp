@@ -575,96 +575,92 @@ class _FooterActionViewState extends State<FooterActionView> {
     final gameState = GameState.getState(context);
     final me = gameState.me;
     return IntrinsicHeight(
-      child: _buildGradientBorderContainer(
-        Container(
-          // width: Screen.width,
+      child: Container(
+        // width: Screen.width,
 
-          padding: EdgeInsets.symmetric(horizontal: 6.0),
-          height: betWidgetShown ? (Screen.height / 2) - 15.ph : null,
-          // decoration: BoxDecoration(
-          //   color: Colors.grey.shade900.withAlpha(220),
-          //   borderRadius: BorderRadius.circular(42),
-          //   border: Border.all(
-          //     color: Colors.white,
-          //     width: 1.5,
-          //   ),
-          // ),
-          child: Consumer<ActionState>(
-              key: ValueKey('buildActionButtons'),
-              builder: (_, actionState, __) {
-                // log('BetAction: build actionState.show ${actionState.show} handState: ${gameState.handState.toString()}');
-                if (gameState.handState == HandState.RESULT ||
-                    gameState.handState == HandState.SHOWDOWN ||
-                    gameState.handState == HandState.ENDED ||
-                    gameState.me == null ||
-                    !gameState.me.inhand) {
-                  return Container();
-                }
+        padding: EdgeInsets.symmetric(horizontal: 6.0),
+        height: betWidgetShown ? (Screen.height / 2) - 15.ph : null,
+        // decoration: BoxDecoration(
+        //   color: Colors.grey.shade900.withAlpha(220),
+        //   borderRadius: BorderRadius.circular(42),
+        //   border: Border.all(
+        //     color: Colors.white,
+        //     width: 1.5,
+        //   ),
+        // ),
+        child: Consumer<ActionState>(
+            key: ValueKey('buildActionButtons'),
+            builder: (_, actionState, __) {
+              // log('BetAction: build actionState.show ${actionState.show} handState: ${gameState.handState.toString()}');
+              if (gameState.handState == HandState.RESULT ||
+                  gameState.handState == HandState.SHOWDOWN ||
+                  gameState.handState == HandState.ENDED ||
+                  gameState.me == null ||
+                  !gameState.me.inhand) {
+                return Container();
+              }
 
-                List<Widget> children = [];
-                if (actionState.show) {
-                  children.addAll([
-                    /* bet widget */
-                    AnimatedSwitcher(
-                        duration: AppConstants.fastestAnimationDuration,
-                        reverseDuration: AppConstants.fastestAnimationDuration,
-                        transitionBuilder: (child, animation) =>
-                            ScaleTransition(
-                              alignment: Alignment.bottomCenter,
-                              scale: animation,
-                              child: child,
-                            ),
-                        child: Transform.scale(
-                          scale: boardAttributes.footerActionScale,
-                          child: _buildBetWidget(
-                            gameState,
-                            gameState.mySeat,
-                            me.cards,
-                            actionState.action,
-                            30,
-                            boardAttributes: boardAttributes,
+              List<Widget> children = [];
+              if (actionState.show) {
+                children.addAll([
+                  /* bet widget */
+                  AnimatedSwitcher(
+                      duration: AppConstants.fastestAnimationDuration,
+                      reverseDuration: AppConstants.fastestAnimationDuration,
+                      transitionBuilder: (child, animation) => ScaleTransition(
+                            alignment: Alignment.bottomCenter,
+                            scale: animation,
+                            child: child,
                           ),
-                        )),
-                    /* bottom row */ Transform.scale(
+                      child: Transform.scale(
+                        scale: boardAttributes.footerActionScale,
+                        child: _buildBetWidget(
+                          gameState,
+                          gameState.mySeat,
+                          me.cards,
+                          actionState.action,
+                          30,
+                          boardAttributes: boardAttributes,
+                        ),
+                      )),
+                  /* bottom row */ Transform.scale(
+                    scale: boardAttributes.footerActionScale,
+                    alignment: Alignment.bottomCenter,
+                    child: Container(
+                      padding: EdgeInsets.symmetric(vertical: 0.0),
+                      child: _buildActionWidgets(actionState.action, theme),
+                    ),
+                  ),
+                ]);
+              } else if (actionState.showCheckFold) {
+                final mySeat = gameState.mySeat;
+                if (mySeat.player != null &&
+                    mySeat.player.isActive &&
+                    mySeat.player.inhand &&
+                    mySeat.player.cards != null &&
+                    mySeat.player.cards.length > 0 &&
+                    gameState.playerLocalConfig.showCheckFold) {
+                  children.add(
+                    /* bottom row */
+                    Transform.scale(
                       scale: boardAttributes.footerActionScale,
                       alignment: Alignment.bottomCenter,
                       child: Container(
-                        padding: EdgeInsets.symmetric(vertical: 0.0),
-                        child: _buildActionWidgets(actionState.action, theme),
+                        padding: EdgeInsets.symmetric(vertical: 4.0),
+                        child: _buildCheckFoldWidget(actionState, theme),
                       ),
                     ),
-                  ]);
-                } else if (actionState.showCheckFold) {
-                  final mySeat = gameState.mySeat;
-                  if (mySeat.player != null &&
-                      mySeat.player.isActive &&
-                      mySeat.player.inhand &&
-                      mySeat.player.cards != null &&
-                      mySeat.player.cards.length > 0 &&
-                      gameState.playerLocalConfig.showCheckFold) {
-                    children.add(
-                      /* bottom row */
-                      Transform.scale(
-                        scale: boardAttributes.footerActionScale,
-                        alignment: Alignment.bottomCenter,
-                        child: Container(
-                          padding: EdgeInsets.symmetric(vertical: 4.0),
-                          child: _buildCheckFoldWidget(actionState, theme),
-                        ),
-                      ),
-                    );
-                  }
+                  );
                 }
+              }
 
-                return Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    ...children,
-                  ],
-                );
-              }),
-        ),
-        theme,
+              return Stack(
+                alignment: Alignment.center,
+                children: [
+                  ...children,
+                ],
+              );
+            }),
       ),
     );
   }

@@ -13,6 +13,7 @@ import 'package:pokerapp/models/game_play_models/business/game_chat_notfi_state.
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_ui_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/marked_cards.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
@@ -32,7 +33,6 @@ import 'package:pokerapp/screens/game_play_screen/game_play_screen_util_methods.
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/board_view_vertical.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/decorative_views/background_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/header_view/header_view.dart';
-import 'package:pokerapp/screens/game_play_screen/new_bet_slider.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/app/player_service.dart';
@@ -926,15 +926,26 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
     return Container(
       width: boardDimensions.width,
-      // height: boardDimensions.height,
-      padding: EdgeInsets.only(bottom: footerHeight / 2),
+      height: (boardAttributes.isOrientationHorizontal)
+          ? boardDimensions.height
+          : null,
+      padding: (boardAttributes.isOrientationHorizontal)
+          ? null
+          : EdgeInsets.only(bottom: footerHeight / 3),
       child: DebugBorderWidget(
-        child: BoardView(
-          gameComService: _gameContextObj?.gameComService,
-          gameInfo: _gameInfoModel,
-          onUserTap: _onJoinGame,
-          onStartGame: startGame,
-        ),
+        child: (boardAttributes.isOrientationHorizontal)
+            ? BoardView(
+                gameComService: _gameContextObj?.gameComService,
+                gameInfo: _gameInfoModel,
+                onUserTap: _onJoinGame,
+                onStartGame: startGame,
+              )
+            : BoardViewVertical(
+                gameComService: _gameContextObj?.gameComService,
+                gameInfo: _gameInfoModel,
+                onUserTap: _onJoinGame,
+                onStartGame: startGame,
+              ),
       ),
     );
   }
@@ -1044,47 +1055,42 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
     var dimensions = boardAttributes.dimensions(context);
 
-    return Column(
-      children: [
-        // header
-        widget.showTop ? _buildHeaderView(theme) : kEmpty,
-        Expanded(
-          child: Stack(
+    return (boardAttributes.isOrientationHorizontal)
+        ? Column(
             children: [
-              Container(
-                width: double.infinity,
-                height: dimensions.height,
-                child: BackgroundView(),
-              ),
-              // Column(
-              //   children: [
-              //     // board view
-              //     widget.showTop
-              //         ? Expanded(child: _buildMainBoardView(theme))
-              //         : kEmpty,
-              //     // footer view
-              //     widget.showBottom ? _buildFooterView() : kEmpty,
-              //   ],
-              // ),
-
+              // header
+              widget.showTop ? _buildHeaderView(theme) : kEmpty,
+              // board view
               widget.showTop ? _buildMainBoardView(theme) : kEmpty,
               // footer view
-              widget.showBottom
-                  ? Align(
-                      alignment: Alignment.bottomCenter,
-                      child: _buildFooterView())
-                  : kEmpty,
-
-              Positioned(
-                top: 100,
-                left: 145,
-                child: BetSlider(),
-              ),
+              widget.showBottom ? _buildFooterView() : kEmpty,
             ],
-          ),
-        )
-      ],
-    );
+          )
+        : Column(
+            children: [
+              // header
+              widget.showTop ? _buildHeaderView(theme) : kEmpty,
+              Expanded(
+                child: Stack(
+                  children: [
+                    Container(
+                      width: double.infinity,
+                      height: dimensions.height,
+                      child: BackgroundView(),
+                    ),
+                    // board view
+                    widget.showTop ? _buildMainBoardView(theme) : kEmpty,
+                    // footer view
+                    widget.showBottom
+                        ? Align(
+                            alignment: Alignment.bottomCenter,
+                            child: _buildFooterView())
+                        : kEmpty,
+                  ],
+                ),
+              )
+            ],
+          );
   }
 
   Widget _buildBody(AppTheme theme) {

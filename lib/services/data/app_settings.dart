@@ -112,7 +112,7 @@ class AppSettingsStore {
   String get tableAsset {
     String ret = getSetting('gameSettings.tableAsset');
     if (ret == null) {
-      return 'assets/images/table/vertical.png';
+      return 'assets/images/table/redtable.png';
     }
     return ret.toString();
   }

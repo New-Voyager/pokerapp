@@ -5,11 +5,6 @@ import 'package:pokerapp/utils/name_plate_widget_parent.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'dart:math' as math;
 
-enum TableLayout {
-  HORIZONTAL,
-  VERTICAL,
-}
-
 class GameUIState {
   // table key - we need this to calculate the exact dimension of the table image
   final GlobalKey tableKey = GlobalKey();
@@ -43,9 +38,6 @@ class GameUIState {
   // hole card UI
   GlobalKey rearrangeKey = GlobalKey();
   Rect rearrangeRect;
-
-  //table layout
-  TableLayout layout = TableLayout.HORIZONTAL;
 
   void init() {
     NamePlateWidgetParent.setWidth(90);
@@ -85,62 +77,126 @@ class GameUIState {
     double namePlateWidth = NamePlateWidgetParent.namePlateSize.width;
     double namePlateHeight = NamePlateWidgetParent.namePlateSize.height;
 
-    // top left
-    left = widthGap - topRowAdjust;
-    top = heightGap * 3;
-    topLeftLeft = left;
-    seatPosToOffsetMap[SeatPos.topLeft] = Offset(left, top);
+    if (GameState.getState(boardKey.currentContext)
+        .getBoardAttributes(boardKey.currentContext)
+        .isOrientationHorizontal) {
+      // top left
+      left = widthGap - topRowAdjust;
+      top = heightGap / 2;
+      topLeftLeft = left;
+      seatPosToOffsetMap[SeatPos.topLeft] = Offset(left, top);
 
-    // top right
-    left = (topLeftLeft + table.width + 2 * topRowAdjust) - namePlateWidth;
-    top = heightGap * 3;
-    seatPosToOffsetMap[SeatPos.topRight] = Offset(left, top);
+      // top right
+      left = (topLeftLeft + table.width + 2 * topRowAdjust) - namePlateWidth;
+      top = heightGap / 2;
+      seatPosToOffsetMap[SeatPos.topRight] = Offset(left, top);
 
-    // top center 1
-    double remainingWidth = seatPosToOffsetMap[SeatPos.topRight].dx -
-        (seatPosToOffsetMap[SeatPos.topLeft].dx + namePlateWidth);
-    remainingWidth = (remainingWidth - (2 * namePlateWidth));
-    double gap = remainingWidth / 3;
+      // top center 1
+      double remainingWidth = seatPosToOffsetMap[SeatPos.topRight].dx -
+          (seatPosToOffsetMap[SeatPos.topLeft].dx + namePlateWidth);
+      remainingWidth = (remainingWidth - (2 * namePlateWidth));
+      double gap = remainingWidth / 3;
 
-    double topCenter1Left = (pot.width / 2) - namePlateWidth * 1.5;
-    top = (heightGap - namePlateHeight / 2);
-    seatPosToOffsetMap[SeatPos.topCenter1] = Offset(topCenter1Left, top);
+      double topCenter1Left =
+          seatPosToOffsetMap[SeatPos.topLeft].dx + namePlateWidth + gap;
+      top = (heightGap - namePlateHeight);
+      seatPosToOffsetMap[SeatPos.topCenter1] = Offset(topCenter1Left, top);
 
-    // top center 2
-    double topCenter2Left = (pot.width / 2) + namePlateWidth * 0.5;
-    seatPosToOffsetMap[SeatPos.topCenter2] = Offset(topCenter2Left, top);
+      // top center 2
+      double topCenter2Left =
+          seatPosToOffsetMap[SeatPos.topCenter1].dx + namePlateWidth + gap;
+      seatPosToOffsetMap[SeatPos.topCenter2] = Offset(topCenter2Left, top);
 
-    // top center
-    left = (pot.width / 2) - namePlateWidth / 2;
-    seatPosToOffsetMap[SeatPos.topCenter] = Offset(left, top);
+      // top center
+      left = (pot.width / 2) - namePlateWidth / 2;
+      seatPosToOffsetMap[SeatPos.topCenter] = Offset(left, top);
 
-    // bottom left
-    left = widthGap;
-    top = pot.height - namePlateHeight - 2 * heightGap;
-    seatPosToOffsetMap[SeatPos.bottomLeft] = Offset(left, top);
+      // bottom left
+      left = widthGap;
+      top = pot.height - namePlateHeight - heightGap / 4;
+      seatPosToOffsetMap[SeatPos.bottomLeft] = Offset(left, top);
 
-    // bottom center
-    left = (pot.width / 2) - namePlateWidth / 2;
-    top = pot.height - namePlateHeight;
-    seatPosToOffsetMap[SeatPos.bottomCenter] = Offset(left, top);
+      // bottom center
+      left = (pot.width / 2) - namePlateWidth / 2;
+      top = pot.height - namePlateHeight;
+      seatPosToOffsetMap[SeatPos.bottomCenter] = Offset(left, top);
 
-    // bottom right
-    left = topLeftLeft + table.width - namePlateWidth;
-    top = pot.height - namePlateHeight - 2 * heightGap;
-    seatPosToOffsetMap[SeatPos.bottomRight] = Offset(left, top);
+      // bottom right
+      left = topLeftLeft + table.width - namePlateWidth;
+      top = pot.height - namePlateHeight - heightGap / 4;
+      seatPosToOffsetMap[SeatPos.bottomRight] = Offset(left, top);
 
-    double remainingHeight = seatPosToOffsetMap[SeatPos.bottomLeft].dy -
-        (seatPosToOffsetMap[SeatPos.topLeft].dy + namePlateHeight);
-    gap = (remainingHeight / 3.5);
+      double remainingHeight = seatPosToOffsetMap[SeatPos.bottomLeft].dy -
+          (seatPosToOffsetMap[SeatPos.topLeft].dy + namePlateHeight);
+      gap = (remainingHeight / 3.5);
 
-    // middle left
-    left = 0;
-    top = seatPosToOffsetMap[SeatPos.topLeft].dy + namePlateHeight + 1.5 * gap;
-    seatPosToOffsetMap[SeatPos.middleLeft] = Offset(left, top);
+      // middle left
+      left = 0;
+      top = seatPosToOffsetMap[SeatPos.topLeft].dy + namePlateHeight + gap;
+      seatPosToOffsetMap[SeatPos.middleLeft] = Offset(left, top);
 
-    // middle right
-    left = pot.width - namePlateWidth;
-    seatPosToOffsetMap[SeatPos.middleRight] = Offset(left, top);
+      // middle right
+      left = pot.width - namePlateWidth;
+      seatPosToOffsetMap[SeatPos.middleRight] = Offset(left, top);
+    } else {
+      // top left
+      left = widthGap - topRowAdjust;
+      top = heightGap * 3;
+      topLeftLeft = left;
+      seatPosToOffsetMap[SeatPos.topLeft] = Offset(left, top);
+
+      // top right
+      left = (topLeftLeft + table.width + 2 * topRowAdjust) - namePlateWidth;
+      top = heightGap * 3;
+      seatPosToOffsetMap[SeatPos.topRight] = Offset(left, top);
+
+      // top center 1
+      double remainingWidth = seatPosToOffsetMap[SeatPos.topRight].dx -
+          (seatPosToOffsetMap[SeatPos.topLeft].dx + namePlateWidth);
+      remainingWidth = (remainingWidth - (2 * namePlateWidth));
+      double gap = remainingWidth / 3;
+
+      double topCenter1Left = (pot.width / 2) - namePlateWidth * 1.5;
+      top = (heightGap - namePlateHeight / 2);
+      seatPosToOffsetMap[SeatPos.topCenter1] = Offset(topCenter1Left, top);
+
+      // top center 2
+      double topCenter2Left = (pot.width / 2) + namePlateWidth * 0.5;
+      seatPosToOffsetMap[SeatPos.topCenter2] = Offset(topCenter2Left, top);
+
+      // top center
+      left = (pot.width / 2) - namePlateWidth / 2;
+      seatPosToOffsetMap[SeatPos.topCenter] = Offset(left, top);
+
+      // bottom left
+      left = widthGap;
+      top = pot.height - namePlateHeight - 2 * heightGap;
+      seatPosToOffsetMap[SeatPos.bottomLeft] = Offset(left, top);
+
+      // bottom center
+      left = (pot.width / 2) - namePlateWidth / 2;
+      top = pot.height - namePlateHeight;
+      seatPosToOffsetMap[SeatPos.bottomCenter] = Offset(left, top);
+
+      // bottom right
+      left = topLeftLeft + table.width - namePlateWidth;
+      top = pot.height - namePlateHeight - 2 * heightGap;
+      seatPosToOffsetMap[SeatPos.bottomRight] = Offset(left, top);
+
+      double remainingHeight = seatPosToOffsetMap[SeatPos.bottomLeft].dy -
+          (seatPosToOffsetMap[SeatPos.topLeft].dy + namePlateHeight);
+      gap = (remainingHeight / 3.5);
+
+      // middle left
+      left = 0;
+      top =
+          seatPosToOffsetMap[SeatPos.topLeft].dy + namePlateHeight + 1.5 * gap;
+      seatPosToOffsetMap[SeatPos.middleLeft] = Offset(left, top);
+
+      // middle right
+      left = pot.width - namePlateWidth;
+      seatPosToOffsetMap[SeatPos.middleRight] = Offset(left, top);
+    }
   }
 
   Rect _deflatedRect({

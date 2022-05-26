@@ -376,7 +376,11 @@ class _HoleCardsViewAndFooterActionViewState
                   child: Stack(
                     alignment: Alignment.center,
                     children: [
-                      Center(child: cardsWidget),
+                      Align(
+                          alignment: (boardAttributes.isOrientationHorizontal)
+                              ? Alignment.center
+                              : Alignment.bottomCenter,
+                          child: cardsWidget),
                       Align(
                         alignment: Alignment.bottomCenter,
                         child: rankText,
