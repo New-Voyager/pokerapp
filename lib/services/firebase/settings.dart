@@ -5,6 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:pokerapp/utils/platform.dart';
 
 Future<FirebaseOptions> getFirebaseSettings(String apiUrl) async {
   try {
@@ -18,10 +19,10 @@ Future<FirebaseOptions> getFirebaseSettings(String apiUrl) async {
 
     Map settings = jsonDecode(resBody);
 
-    if (Platform.isAndroid) {
+    if (PlatformUtils.isAndroid) {
       settings['apiKey'] = settings['androidApiKey'];
       settings['appId'] = settings['androidAppId'];
-    } else if (Platform.isIOS) {
+    } else if (PlatformUtils.isIOS) {
       settings['apiKey'] = settings['iosApiKey'];
       settings['appId'] = settings['iosAppId'];
     }

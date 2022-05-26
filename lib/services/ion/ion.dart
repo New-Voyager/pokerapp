@@ -190,7 +190,7 @@ class IonAudioConferenceService {
       var localStream = await LocalStream.getUserMedia(constraints: constraints);
       // var localStream = await LocalStream.getUserMedia(
       //     constraints: Constraints(audio: true, video: false));
-      if (Platform.isIOS) {
+      if (PlatformUtils.isIOS) {
         localStream.getTrack('audio').enableSpeakerphone(true);
       }
       await client.publish(localStream);

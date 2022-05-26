@@ -16,6 +16,7 @@ import 'package:pokerapp/services/audio/audio_service.dart';
 import 'package:pokerapp/services/connectivity_check/liveness_sender.dart';
 import 'package:pokerapp/services/connectivity_check/network_change_listener.dart';
 import 'package:pokerapp/utils/card_helper.dart';
+import 'package:pokerapp/utils/platform.dart';
 import 'package:provider/provider.dart';
 import 'package:vibration/vibration.dart';
 
@@ -34,9 +35,11 @@ class PlayerActionHandler {
 
   PlayerActionHandler(this._context, this._gameState, this._livenessSender,
       this._handActionProtoService) {
-    this._context.read<NetworkChangeListener>().onConnectivityChange.listen(
-          (_) => extendTimerOnReconnect(),
-        );
+    if (!PlatformUtils.isWeb) {
+      this._context.read<NetworkChangeListener>().onConnectivityChange.listen(
+            (_) => extendTimerOnReconnect(),
+          );
+    }
   }
 
   void close() {

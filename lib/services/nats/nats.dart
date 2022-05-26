@@ -30,6 +30,9 @@ class Nats {
   Nats() {}
 
   bool get connectionBroken {
+    if (!_initialized) {
+      return true;
+    }
     if (_clientPub.status == Status.disconnected ||
         _clientSub.status == Status.disconnected) {
       _clientPub.close();

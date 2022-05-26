@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/services/graphQL/configurations/graph_ql_configuration.dart';
+import 'package:pokerapp/utils/platform.dart';
 
 GraphQLConfiguration graphQLConfiguration = GraphQLConfiguration();
 final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
@@ -46,7 +47,9 @@ mixin RouteAwareAnalytics<T extends StatefulWidget> on State<T>
   Future<void> _setCurrentScreen(String routeName) async {
     routeName = routeName.substring(1);
     log('Setting current screen to $routeName');
-    await FirebaseAnalytics()
-        .logEvent(name: routeName, parameters: {"screen_name": routeName});
+    if (!PlatformUtils.isWeb) {
+      await FirebaseAnalytics()
+          .logEvent(name: routeName, parameters: {"screen_name": routeName});
+    }
   }
 }
