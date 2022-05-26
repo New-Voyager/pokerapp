@@ -1,8 +1,9 @@
-import 'dart:developer';
 import 'dart:async';
+import 'dart:developer';
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
@@ -17,29 +18,29 @@ import 'package:pokerapp/resources/app_config.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/club_screen/set_credits_dialog.dart';
+import 'package:pokerapp/screens/game_play_screen/seat_view/displaycards.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/nameplate_dialog.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/data/hive_models/player_state.dart';
+import 'package:pokerapp/services/game_play/game_com_service.dart';
+import 'package:pokerapp/services/game_play/graphql/seat_change_service.dart';
 import 'package:pokerapp/services/test/test_service.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/name_plate_widget_parent.dart';
 import 'package:pokerapp/widgets/blinking_widget.dart';
-import 'package:pokerapp/screens/game_play_screen/seat_view/displaycards.dart';
-import 'package:pokerapp/services/game_play/game_com_service.dart';
-import 'package:pokerapp/services/game_play/graphql/seat_change_service.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:pokerapp/widgets/textfields.dart';
 import 'package:provider/provider.dart';
 
 import 'action_status.dart';
+import 'animating_widgets/fold_card_animating_widget.dart';
 import 'animating_widgets/stack_switch_seat_animating_widget.dart';
 import 'chip_amount_widget.dart';
 import 'dealer_button.dart';
 import 'name_plate_view.dart';
 import 'nameplate_cards.dart';
 import 'open_seat.dart';
-import 'dart:math' as math;
-import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 /* this contains the player positions <seat-no, position> mapping */
 // Map<int, Offset> playerPositions = Map();
@@ -277,29 +278,37 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
   ) {
     final bool isReplayHandsActor = seat?.player?.playerUuid == '';
 
-    // the following rules dont apply to the replay hands actor
+    // the following rules don't apply to the replay hands actor
+    bool showDisplayCards = true;
+
     if (!isReplayHandsActor) {
       if (handState != HandState.RESULT) {
-        return const SizedBox.shrink();
-      }
-      if (seat.player != null && !seat.player.inhand) {
-        return const SizedBox.shrink();
+        showDisplayCards = false;
+      } else if (seat.player != null && !seat.player.inhand) {
+        showDisplayCards = false;
       }
     }
 
-    bool colorCards = false;
-    if (widget.gameState.playerLocalConfig != null) {
-      colorCards = widget.gameState.playerLocalConfig?.colorCards;
-    }
-    return Container(
-      // height: widget.boardAttributes.namePlateSize.height,
-      // width: widget.boardAttributes.namePlateSize.width,
+    return ValueListenableBuilder(
+      valueListenable: gameState.throwingCardsVn,
       child: DisplayCardsWidget(
         isReplayHandsActor: isReplayHandsActor,
         seat: seat,
         showdown: widget.gameState.showdown,
         colorCards: widget.gameState.playerLocalConfig.colorCards,
       ),
+      builder: (_, bool throwCards, Widget child) {
+        if (throwCards) {
+          return FoldCardAnimatingWidget(
+            key: UniqueKey(),
+            seat: seat,
+            child: child,
+          );
+        }
+
+        // show the display cards, if required
+        return showDisplayCards ? child : const SizedBox.shrink();
+      },
     );
   }
 
@@ -469,9 +478,6 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
               widget.seat.player.connectivity.connectivityLost) {
             opacity = 0.70;
           }
-          if (widget.seat.player.playerFolded) {
-            // opacity = 0.5;
-          }
         }
 
         return InkWell(
@@ -516,20 +522,19 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
                 ),
               ),
 
-              // !showWinnerLottie
-              //     ? Container()
-              //     : Lottie.asset('assets/animations/winner.json'),
-
               Visibility(
-                  visible: showWinnerLottie,
-                  child: Transform.scale(
-                      scale: 2.5,
-                      child: SizedBox.square(
-                          dimension: 80,
-                          child: Lottie.asset(
-                            'assets/animations/winner.json',
-                            repeat: false,
-                          )))),
+                visible: showWinnerLottie,
+                child: Transform.scale(
+                  scale: 2.5,
+                  child: SizedBox.square(
+                    dimension: 80,
+                    child: Lottie.asset(
+                      'assets/animations/winner.json',
+                      repeat: false,
+                    ),
+                  ),
+                ),
+              ),
 
               // player hole cards (tilted card on the bottom left)
               PlayerCardsWidget(
@@ -562,12 +567,14 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
                   ? _animatingChipAmount(chipAmountWidget)
                   : chipAmountWidget,
 
-              Consumer<SeatChangeNotifier>(builder: (_, scn, __) {
-                return (gameState.hostSeatChangeInProgress ||
-                        gameState.playerSeatChangeInProgress)
-                    ? SeatNoWidget(widget.seat)
-                    : const SizedBox.shrink();
-              }),
+              Consumer<SeatChangeNotifier>(
+                builder: (_, scn, __) {
+                  return (gameState.hostSeatChangeInProgress ||
+                          gameState.playerSeatChangeInProgress)
+                      ? SeatNoWidget(widget.seat)
+                      : const SizedBox.shrink();
+                },
+              ),
 
               playerStatusIcons(),
               widget.seat.player.showMicOff

@@ -1,15 +1,13 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:flutter/material.dart';
 import 'package:pokerapp/main.dart';
-import 'package:pokerapp/models/app_state.dart';
 import 'package:pokerapp/services/app/util_service.dart';
 import 'package:pokerapp/services/nats/message.dart';
-import 'package:provider/provider.dart';
+import 'package:pokerapp/utils/platform.dart';
 
-import 'client.dart';
 import 'subscription.dart';
+import 'client.dart';
 
 class Nats {
   Client get clientSub => _clientSub;
@@ -22,7 +20,6 @@ class Nats {
   String _playerChannel;
   bool _initialized = false;
   Subscription _playerSub;
-  BuildContext _providerContext;
   Map<String, Subscription> _clubSubs = Map<String, Subscription>();
   Function(String) playerNotifications;
   Function(String) clubNotifications;
@@ -30,7 +27,7 @@ class Nats {
   // functions listens for disconnection
   List<Function> disconnectListeners = [];
 
-  Nats(this._providerContext) {}
+  Nats() {}
 
   bool get connectionBroken {
     if (_clientPub.status == Status.disconnected ||
@@ -49,8 +46,8 @@ class Nats {
   }
 
   Future<void> reconnect() async {
-    // if we dont have the player channel yet, dont call reconnect wait for init
-    if (_playerChannel == null) return;
+    // // if we dont have the player channel yet, dont call reconnect wait for init
+    // if (_playerChannel == null) return;
 
     log('network_reconnect: Nats reconnect method invoked');
 
@@ -80,8 +77,12 @@ class Nats {
   }
 
   Future<void> init(String playerChannel) async {
-    String natsUrl = await UtilService.getNatsURL();
-
+    String natsUrl = '';
+    if (PlatformUtils.isWeb) {
+      natsUrl = 'ws://192.168.0.103:8090';
+    } else {
+      natsUrl = await UtilService.getNatsURL();
+    }
     // instantiate new clients
     _clientSub = Client();
     _clientPub = Client();
@@ -197,6 +198,9 @@ class Nats {
   }
 
   subscribePlayerMessages() {
+    if (playerChannel == null) {
+      return;
+    }
     log('subscribing to ${this._playerChannel}');
     this._playerSub = this._clientSub.sub(this._playerChannel);
 

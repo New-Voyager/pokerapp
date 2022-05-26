@@ -163,7 +163,7 @@ class _MyAppState extends State<MyApp> {
         /* PUT DEPENDENT PROVIDERS HERE */
         providers: [
           Provider<Nats>(
-            create: (_) => Nats(context),
+            create: (_) => Nats(),
           ),
           Provider(
             create: (_) => NetworkChangeListener(),

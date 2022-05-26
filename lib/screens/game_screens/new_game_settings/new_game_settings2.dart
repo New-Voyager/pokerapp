@@ -532,7 +532,7 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
                               ]),
                           PokerSlider(
                             theme: theme,
-                            defaultValue: gmp.bombPotHandInterval,
+                            defaultValue: gmp.bombPotHandInterval.toDouble(),
                             min: 1,
                             max: 100,
                             onDragCompleted: (val) {
