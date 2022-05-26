@@ -37,12 +37,12 @@ class FooterViewWidget extends StatelessWidget {
       child: Container(
         height: footerHeight,
         key: UniqueKey(),
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage("assets/images/bottom_pattern.png"),
-            fit: BoxFit.fill,
-          ),
-        ),
+        // decoration: BoxDecoration(
+        //   image: DecorationImage(
+        //     image: AssetImage("assets/images/bottom_pattern.png"),
+        //     fit: BoxFit.fill,
+        //   ),
+        // ),
         child: FooterView(
             gameContext: gameContextObject,
             gameCode: gameCode,

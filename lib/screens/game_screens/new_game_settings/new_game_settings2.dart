@@ -701,7 +701,7 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
             //   borderRadius: BorderRadius.circular(10),
             // ),
             decoration:
-                BoxDecoration(color: theme.secondaryColorWithDark(0.35)),
+                BoxDecoration(color: theme.secondaryColorWithDark(0.40)),
             padding: const EdgeInsets.all(16),
             child: Column(
               children: [

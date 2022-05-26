@@ -12,6 +12,7 @@ import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/time_bank.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/bet_widget.dart';
+import 'package:pokerapp/screens/game_play_screen/widgets/bet_widget_new.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_proto_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/formatter.dart';
@@ -56,6 +57,195 @@ class _FooterActionViewState extends State<FooterActionView> {
       log('raise');
       _raise();
     }
+  }
+
+  Widget _buildGradientBorderContainer(
+    Widget child,
+    AppTheme theme,
+  ) {
+    final kInnerDecoration = BoxDecoration(
+      color: Colors.grey.shade900,
+      borderRadius: BorderRadius.circular(32),
+    );
+
+    final kGradientBoxDecoration = BoxDecoration(
+      gradient: LinearGradient(
+        colors: [theme.accentColor, theme.accentColor.withAlpha(100)],
+        begin: Alignment.centerLeft,
+        stops: [0.1, 0.7],
+        end: Alignment.centerRight,
+      ),
+      borderRadius: BorderRadius.circular(32),
+    );
+    return Container(
+      margin: EdgeInsets.all(10.0),
+      child: Padding(
+        padding: const EdgeInsets.all(1.5),
+        child: Container(
+          child: child,
+          decoration: kInnerDecoration,
+        ),
+      ),
+      decoration: kGradientBoxDecoration,
+    );
+  }
+
+  Widget _buildRoundButton2({
+    String text = 'Button',
+    Function onTap,
+    bool isSelected = false,
+    bool disable = false,
+    AppTheme theme,
+  }) {
+    TextStyle btnTextStyle = AppDecorators.getHeadLine4Style(theme: theme)
+        .copyWith(
+            color: isSelected
+                ? theme.primaryColorWithDark()
+                : theme.supportingColor);
+    Color btnColor = theme.accentColor;
+    if (text.toLowerCase().contains("fold")) {
+      btnColor = Colors.blueGrey.shade600;
+    } else if (text.toLowerCase().contains("call")) {
+      btnColor = Colors.green.shade600;
+    } else if (text.toLowerCase().contains("bet")) {
+      btnColor = Colors.redAccent.shade700;
+    } else if (text.toLowerCase().contains("check")) {
+      btnColor = Colors.green.shade700;
+    }
+    if (disable) {
+      btnColor = Colors.grey;
+      btnTextStyle = AppDecorators.getSubtitle3Style(theme: theme);
+    }
+
+    btnColor = Colors.grey.shade900;
+
+    final button = Container(
+      // duration: AppConstants.fastAnimationDuration,
+      // curve: Curves.bounceInOut,
+      height: 32.ph,
+      width: 80.pw,
+      margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+      padding: const EdgeInsets.all(2.0),
+      decoration: BoxDecoration(
+        color: btnColor,
+        shape: BoxShape.rectangle,
+        border: Border.all(
+          color: Colors.white,
+          width: 1.5,
+        ),
+        borderRadius: BorderRadius.circular(16),
+        // boxShadow: [
+        //   BoxShadow(
+        //     color: Colors.black,
+        //     spreadRadius: 0.1,
+        //     blurRadius: 5,
+        //   ),
+        // ],
+      ),
+      child: Center(
+        child: FittedBox(
+          fit: BoxFit.fitHeight,
+          child: Text(
+            text.toUpperCase(),
+            textAlign: TextAlign.center,
+            style: btnTextStyle.copyWith(
+              fontSize: 10.dp,
+              fontWeight: FontWeight.w600,
+              color: Colors.white,
+            ),
+          ),
+        ),
+      ),
+    );
+
+    if (disable) {
+      return button;
+    }
+
+    return InkWell(
+      onTap: onTap,
+      child: button,
+    );
+  }
+
+  Widget _buildCheckFoldButton2({
+    String text = 'Button',
+    Function onTap,
+    bool isSelected = false,
+    bool disable = false,
+    AppTheme theme,
+  }) {
+    TextStyle btnTextStyle = AppDecorators.getHeadLine4Style(theme: theme)
+        .copyWith(
+            color: isSelected
+                ? theme.primaryColorWithDark()
+                : theme.supportingColor);
+    Color btnColor = theme.accentColor;
+    btnColor = isSelected ? Colors.blueGrey : Colors.black;
+    Color borderColor = Colors.white;
+
+    final button = Container(
+      height: 32.ph,
+      width: 150.pw,
+      // margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+      padding: EdgeInsets.all(5.ph),
+      // decoration: BoxDecoration(
+      //     color: btnColor,
+      //     shape: BoxShape.rectangle,
+      //     border: Border.all(
+      //       color: borderColor,
+      //       width: 1.ph,
+      //     ),
+      //     borderRadius: BorderRadius.circular(17.pw),
+      //     boxShadow: [
+      //       BoxShadow(
+      //         color: Colors.black,
+      //         spreadRadius: 0.1,
+      //         blurRadius: 5,
+      //       ),
+      //     ]),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // seperator
+          const SizedBox(width: 5.0),
+
+          // selection button indicator
+          isSelected
+              ? Icon(Icons.check_circle_outline_rounded, size: 20.0)
+              : Icon(Icons.circle_outlined, size: 20.0),
+
+          // spacer
+          Spacer(),
+
+          // text
+          FittedBox(
+            fit: BoxFit.fitHeight,
+            child: Text(
+              text,
+              textAlign: TextAlign.center,
+              style: btnTextStyle.copyWith(
+                fontSize: 10.dp,
+                fontWeight: FontWeight.w600,
+                color: Colors.white,
+              ),
+            ),
+          ),
+
+          // spacer
+          Spacer(),
+        ],
+      ),
+    );
+
+    if (disable) {
+      return button;
+    }
+
+    return InkWell(
+      onTap: onTap,
+      child: button,
+    );
   }
 
   Widget _buildRoundButton({
@@ -474,7 +664,7 @@ class _FooterActionViewState extends State<FooterActionView> {
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.max,
+          mainAxisSize: MainAxisSize.min,
           children: actionButtons,
         ),
       ],
@@ -495,7 +685,7 @@ class _FooterActionViewState extends State<FooterActionView> {
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      mainAxisSize: MainAxisSize.max,
+      mainAxisSize: MainAxisSize.min,
       children: actionButtons,
     );
   }
@@ -540,9 +730,18 @@ class _FooterActionViewState extends State<FooterActionView> {
     final me = gameState.me;
     return IntrinsicHeight(
       child: Container(
-        width: Screen.width,
+        // width: Screen.width,
+
+        padding: EdgeInsets.symmetric(horizontal: 6.0),
         height: betWidgetShown ? (Screen.height / 2) - 15.ph : null,
-        color: Colors.black.withOpacity(0.5),
+        // decoration: BoxDecoration(
+        //   color: Colors.grey.shade900.withAlpha(220),
+        //   borderRadius: BorderRadius.circular(42),
+        //   border: Border.all(
+        //     color: Colors.white,
+        //     width: 1.5,
+        //   ),
+        // ),
         child: Consumer<ActionState>(
             key: ValueKey('buildActionButtons'),
             builder: (_, actionState, __) {
@@ -582,7 +781,7 @@ class _FooterActionViewState extends State<FooterActionView> {
                     scale: boardAttributes.footerActionScale,
                     alignment: Alignment.bottomCenter,
                     child: Container(
-                      padding: EdgeInsets.symmetric(vertical: 2.0),
+                      padding: EdgeInsets.symmetric(vertical: 0.0),
                       child: _buildActionWidgets(actionState.action, theme),
                     ),
                   ),
@@ -610,6 +809,7 @@ class _FooterActionViewState extends State<FooterActionView> {
               }
 
               return Stack(
+                alignment: Alignment.center,
                 children: [
                   ...children,
                 ],

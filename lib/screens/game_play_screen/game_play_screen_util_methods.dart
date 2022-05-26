@@ -243,17 +243,17 @@ class GamePlayScreenUtilMethods {
         // //   label: 'Show Bets',
         // //   onTap: () => TestService.showBets(),
         // // ),
-        // SpeedDialChild(
-        //     child: Icon(
-        //       Icons.adb_rounded,
-        //       color: Colors.white,
-        //     ),
-        //     backgroundColor: Colors.red,
-        //     label: 'Show Bet Widget',
-        //     labelBackgroundColor: Colors.black,
-        //     onTap: () {
-        //       TestService.testBetWidget();
-        //     }),
+        SpeedDialChild(
+            child: Icon(
+              Icons.adb_rounded,
+              color: Colors.white,
+            ),
+            backgroundColor: Colors.red,
+            label: 'Show Bet Widget',
+            labelBackgroundColor: Colors.black,
+            onTap: () {
+              TestService.testBetWidget();
+            }),
         // // SpeedDialChild(
         // //   child: Icon(
         // //     Icons.adb_rounded,
@@ -274,16 +274,16 @@ class GamePlayScreenUtilMethods {
         // //   label: 'Seat Change Prompt',
         // //   onTap: () => TestService.showSeatChangePrompt(),
         // // ),
-        // // SpeedDialChild(
-        // //   child: Icon(
-        // //     Icons.adb_rounded,
-        // //     color: Colors.white,
-        // //   ),
-        // //   backgroundColor: Colors.red,
-        // //   labelBackgroundColor: Colors.black,
-        // //   label: 'Show Dealer Widget',
-        // //   onTap: () => TestService.showDealerWidget(),
-        // // ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
+          labelBackgroundColor: Colors.black,
+          label: 'Show Dealer Widget',
+          onTap: () => TestService.showDealerWidget(),
+        ),
         // // SpeedDialChild(
         // //   child: Icon(
         // //     Icons.adb_rounded,

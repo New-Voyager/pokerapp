@@ -75,8 +75,8 @@ class _HoleCardsViewAndFooterActionViewState
       final gameState = GameState.getState(context);
       final theme = AppTheme.getTheme(context);
 
-      double footerHeight =
-          MediaQuery.of(context).size.height * boardAttributes.footerViewScale;
+      double footerHeight = boardAttributes.footerHeight;
+      double footerActionViewHeight = 42;
       footerHeight += boardAttributes.bottomHeightAdjust;
       gameState.gameUIState.holeCardsViewSize = Size(
         gameState.gameUIState.holeCardsViewSize.width,
@@ -163,7 +163,7 @@ class _HoleCardsViewAndFooterActionViewState
                   valueListenable: widget.isHoleCardsVisibleVn,
                   child: Container(
                     width: gameState.gameUIState.holeCardsViewSize.width,
-                    height: footerHeight - 42,
+                    height: footerHeight - footerActionViewHeight,
                     child: Center(
                       child: Consumer4<StraddlePromptState, HoleCardsState,
                           MyState, MarkedCards>(
@@ -207,7 +207,7 @@ class _HoleCardsViewAndFooterActionViewState
   Widget _buildFooterActionView(
       BuildContext context, GameContextObject gco, ActionState actionState) {
     return DebugBorderWidget(
-      color: Colors.amber,
+      color: Colors.transparent,
       child: FooterActionView(
         gameContext: gco,
         isBetWidgetVisible: (bool isBetWidgetVisible) {
@@ -376,7 +376,11 @@ class _HoleCardsViewAndFooterActionViewState
                   child: Stack(
                     alignment: Alignment.center,
                     children: [
-                      Center(child: cardsWidget),
+                      Align(
+                          alignment: (boardAttributes.isOrientationHorizontal)
+                              ? Alignment.center
+                              : Alignment.bottomCenter,
+                          child: cardsWidget),
                       Align(
                         alignment: Alignment.bottomCenter,
                         child: rankText,

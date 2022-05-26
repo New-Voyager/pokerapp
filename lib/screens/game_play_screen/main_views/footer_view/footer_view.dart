@@ -203,9 +203,12 @@ class _FooterViewState extends State<FooterView>
         } else {
           log('RedrawFooter: rebuilding hole card');
 
-          gameState.gameUIState.holeCardsViewSize = Size(
-              MediaQuery.of(context).size.width - 80,
-              gameState.gameUIState.holeCardsViewSize.height);
+          gameState.gameUIState.holeCardsViewSize =
+              (gameState.getBoardAttributes(context).isOrientationHorizontal)
+                  ? Size(MediaQuery.of(context).size.width - 80,
+                      gameState.gameUIState.holeCardsViewSize.height)
+                  : Size(MediaQuery.of(context).size.width - 270,
+                      gameState.gameUIState.holeCardsViewSize.height);
           return Center(
             child: HoleCardsViewAndFooterActionView(
               playerModel: mee,
