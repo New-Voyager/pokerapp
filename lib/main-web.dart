@@ -21,7 +21,9 @@ import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 import 'main_helper.dart';
 
-String kWebPlayerUuid = 'd7102747-a8de-4c49-ba91-322ee7a4f827';
+// String kWebPlayerUuid = 'd7102747-a8de-4c49-ba91-322ee7a4f827';
+
+String kWebPlayerUuid = '75830c6b-c711-484a-9389-51e9a015ba62';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   PlatformUtils.isWeb = true;
@@ -31,7 +33,7 @@ void main() async {
   ScreenAttributes.buildList();
 
   String apiUrl = 'https://api.pokerclub.app';
-  apiUrl = 'http://192.168.0.103:9501';
+  apiUrl = 'http://192.168.1.100:9501';
   await appService.init();
 
   log('$apiUrl');
