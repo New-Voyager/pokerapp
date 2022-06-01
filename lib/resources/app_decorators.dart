@@ -6,6 +6,7 @@ import 'package:pokerapp/utils/adaptive_sizer.dart';
 class AppDecorators {
   AppDecorators._();
   static BoxDecoration bgImage(AppTheme theme) => BoxDecoration(
+        color: Colors.black,
         image: DecorationImage(
           image: AssetImage(
             "assets/images/backgrounds/bg5.jpg",
@@ -15,6 +16,7 @@ class AppDecorators {
               Colors.black.withOpacity(0.2), BlendMode.dstATop),
         ),
       );
+
 // gradients
   static BoxDecoration bgRadialGradient(AppTheme theme) => BoxDecoration(
         gradient: RadialGradient(

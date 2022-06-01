@@ -53,6 +53,46 @@ showAlertDialog(BuildContext context, String title, String message) {
   );
 }
 
+showYesNoDialog(
+  BuildContext context,
+  String title,
+  String message,
+) async {
+  // set up the button
+  Widget noButton = ElevatedButton(
+    child: Text("No"),
+    onPressed: () {
+      Navigator.of(context).pop(false);
+    },
+  );
+
+  Widget yesButton = ElevatedButton(
+    child: Text("Yes"),
+    onPressed: () {
+      Navigator.of(context).pop(true);
+    },
+  );
+
+  // set up the AlertDialog
+  AlertDialog alert = AlertDialog(
+    title: Text(title),
+    backgroundColor: AppColorsNew.cardBackgroundColor,
+    content: Text(message),
+    actions: [
+      yesButton,
+      noButton,
+    ],
+  );
+
+  // show the dialog
+  return showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
+}
+
 showError(BuildContext context, {GqlError error, String message}) {
   // translate to other languages here
   if (error != null) {

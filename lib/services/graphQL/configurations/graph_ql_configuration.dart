@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:pokerapp/main-web.dart';
 import 'package:pokerapp/resources/app_config.dart';
+import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/utils/platform.dart';
 
 class GraphQLConfiguration {
@@ -28,7 +29,7 @@ class GraphQLConfiguration {
 
   AuthLink authLinkWeb() {
     return AuthLink(getToken: () async {
-      return 'Bearer $kWebPlayerUuid';
+      return 'Bearer 889a2eda-ffa0-4b35-9805-cc284145459a';
     });
   }
 
