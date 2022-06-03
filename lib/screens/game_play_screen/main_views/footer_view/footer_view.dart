@@ -25,6 +25,7 @@ import 'package:pokerapp/screens/game_play_screen/widgets/help_text.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/game_play/graphql/seat_change_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
+import 'package:pokerapp/utils/platform.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/debug_border_widget.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
@@ -127,7 +128,11 @@ class _FooterViewState extends State<FooterView>
     if (_gameState.customizationMode) {
       visible = true;
     } else {
-      visible = _gameState.gameHiveStore.getHoleCardsVisibilityState();
+      if (PlatformUtils.isWeb) {
+        visible = true;
+      } else {
+        visible = _gameState.gameHiveStore.getHoleCardsVisibilityState();
+      }
     }
     isHoleCardsVisibleVn.value = visible;
     _gameState.myState.addListener(onPlayersChanges);

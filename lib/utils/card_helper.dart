@@ -1,10 +1,11 @@
+import 'dart:developer';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 
-const String _heart = '♥';
+const String _heart = '❤';
 const String _spade = '♠';
 const String _diamond = '♦';
 const String _club = '♣';
@@ -62,6 +63,61 @@ const Map<int, String> _cardValues = {
   193: 'A$_spade',
   194: 'A$_heart️',
   196: 'A$_diamond',
+};
+
+const Map<String, int> _cardValuesFromStr = {
+  '2$_spade': 1,
+  '2$_heart': 2,
+  '2$_diamond': 4,
+  '2$_club': 8,
+  '3$_spade': 17,
+  '3$_heart️': 18,
+  '3$_diamond': 20,
+  '3$_club': 24,
+  '4$_club': 40,
+  '4$_spade': 33,
+  '4$_heart️': 34,
+  '4$_diamond': 36,
+  '5$_heart️': 50,
+  '5$_diamond': 52,
+  '5$_club': 56,
+  '5$_spade': 49,
+  '6$_spade': 65,
+  '6$_heart️': 66,
+  '6$_diamond': 68,
+  '6$_club': 72,
+  '7$_spade': 81,
+  '7$_heart️': 82,
+  '7$_diamond': 84,
+  '7$_club': 88,
+  '8$_spade': 97,
+  '8$_heart️': 98,
+  '8$_diamond': 100,
+  '8$_club': 104,
+  '9$_spade': 113,
+  '9$_heart️': 114,
+  '9$_diamond': 116,
+  '9$_club': 120,
+  'T$_heart️': 130,
+  'T$_diamond': 132,
+  'T$_club': 136,
+  'T$_spade': 129,
+  'J$_club': 152,
+  'J$_spade': 145,
+  'J$_heart️': 146,
+  'J$_diamond': 148,
+  'Q$_spade': 161,
+  'Q$_heart️': 162,
+  'Q$_diamond': 164,
+  'Q$_club': 168,
+  'K$_spade': 177,
+  'K$_heart️': 178,
+  'K$_diamond': 180,
+  'K$_club': 184,
+  'A$_club': 200,
+  'A$_spade': 193,
+  'A$_heart️': 194,
+  'A$_diamond': 196,
 };
 
 class CardHelper {
@@ -205,4 +261,21 @@ class CardHelper {
     'four3333': [17, 24, 18, 20],
     'four2222': [1, 8, 2, 4],
   };
+
+  static int getCardNumberFromSymbol(String c) {
+    return _cardValuesFromStr[c];
+  }
+
+  // returns card number from cardstr from Handmessage. 2Heart, 3Diamond, etc
+  static List<int> getCardNumberFromCardStr(String cardsStr) {
+    List<int> cards = [];
+    final String str = cardsStr.replaceAll("[", "").replaceAll("]", "");
+    str.split('  ').forEach((c) {
+      final int cardNum = getCardNumberFromSymbol(c.trim());
+      if (cardNum != null) {
+        cards.add(cardNum);
+      }
+    });
+    return cards;
+  }
 }

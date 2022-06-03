@@ -26,6 +26,7 @@ import 'package:pokerapp/services/game_play/action_services/result_handler_v2.da
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/card_helper.dart';
+import 'package:pokerapp/utils/platform.dart';
 
 import '../game_com_service.dart';
 import '../message_id.dart';
@@ -580,8 +581,14 @@ class HandActionProtoService {
     final dealCards = message.dealCards;
     int mySeatNo = dealCards.seatNo;
     String cards = dealCards.cards;
+    log("Message : $message");
 
-    List<int> myCards = CardHelper.getRawCardNumbers(cards);
+    List<int> myCards = [];
+    if (PlatformUtils.isWeb) {
+      myCards = CardHelper.getCardNumberFromCardStr(message.dealCards.cardsStr);
+    } else {
+      myCards = CardHelper.getRawCardNumbers(cards);
+    }
     if (_close || _gameState.uiClosing) return;
 
     if (_gameState.mySeat != null) {
