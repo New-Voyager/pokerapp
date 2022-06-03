@@ -240,29 +240,21 @@ class _BetSliderState extends State<BetSlider> {
       },
       child: Container(
         // color: Colors.grey.shade800,
-        padding: EdgeInsets.all(9),
-        child: Container(
-          height: (widget.chipSize.height * keys.length) / overlapFactor +
-              widget.chipSize.height * (1 - 1 / overlapFactor),
-          width: widget.chipSize.width,
-          child: Center(
+        padding: EdgeInsets.all(8),
+        width: double.maxFinite,
+        decoration: BoxDecoration(
+            image: DecorationImage(
+                image: AssetImage('assets/images/bet-widget/background.png'),
+                fit: BoxFit.fill)),
+        child: Center(
+          child: Container(
+            height: (widget.chipSize.height * keys.length) / overlapFactor +
+                widget.chipSize.height * (1 - 1 / overlapFactor),
+            width: widget.chipSize.width,
             child: Stack(
               clipBehavior: Clip.none,
               // alignment: Alignment.bottomCenter,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Center(
-                    child: Opacity(
-                      opacity: 0.4,
-                      child: Image.asset(
-                        'assets/images/slide_up.png',
-                      ),
-                    ),
-                  ),
-                ),
-                ...childrens
-              ],
+              children: [...childrens],
             ),
           ),
         ),

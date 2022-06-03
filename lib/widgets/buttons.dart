@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
+import 'package:pokerapp/utils/color_generator.dart';
 
 import 'blinking_widget.dart';
 
@@ -865,7 +866,7 @@ class BetAmountButton extends StatelessWidget {
   Widget build(BuildContext context) {
     TextStyle btnTextStyle = AppDecorators.getHeadLine4Style(theme: theme)
         .copyWith(color: theme.supportingColor);
-    Color btnColor = theme.primaryColorWithLight(0.2);
+    Color btnColor = theme.primaryColorWithLight(0.25);
     final button = Container(
       // duration: AppConstants.fastAnimationDuration,
       // curve: Curves.bounceInOut,
@@ -876,11 +877,21 @@ class BetAmountButton extends StatelessWidget {
       decoration: BoxDecoration(
         //color: btnColor,
         shape: BoxShape.rectangle,
-        border: Border.all(
-          color: btnColor,
-          width: 2.0,
-        ),
+        // border: Border.all(
+        //   color: btnColor,
+        //   width: 2.0,
+        // ),
         borderRadius: BorderRadius.circular(8),
+        gradient: LinearGradient(
+          colors: [
+            lighten(btnColor, 0.13),
+            btnColor,
+            lighten(btnColor, 0.13),
+          ],
+          begin: Alignment.centerLeft,
+          stops: [0.0, 0.5, 1],
+          end: Alignment.centerRight,
+        ),
       ),
       child: Center(
         child: FittedBox(

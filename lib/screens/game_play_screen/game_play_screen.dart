@@ -1173,10 +1173,14 @@ class _GamePlayScreenState extends State<GamePlayScreen>
             );
           }),
           key: _scaffoldKey,
-          floatingActionButton: GamePlayScreenUtilMethods.floatingActionButton(
-            onReload: () {},
-            isCustomizationMode: widget.customizationService != null,
+          floatingActionButton: Padding(
+            padding: const EdgeInsets.only(top: 80.0),
+            child: GamePlayScreenUtilMethods.floatingActionButton(
+              onReload: () {},
+              isCustomizationMode: widget.customizationService != null,
+            ),
           ),
+          floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
           resizeToAvoidBottomInset: true,
           backgroundColor: Colors.black,
           body: _buildBody(theme),

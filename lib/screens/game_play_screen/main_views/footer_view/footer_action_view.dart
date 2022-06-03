@@ -15,6 +15,7 @@ import 'package:pokerapp/screens/game_play_screen/widgets/bet_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/bet_widget_new.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_proto_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
+import 'package:pokerapp/utils/color_generator.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/buttons.dart';
@@ -104,12 +105,14 @@ class _FooterActionViewState extends State<FooterActionView> {
                 : theme.supportingColor);
     Color btnColor = theme.accentColor;
     if (text.toLowerCase().contains("fold")) {
-      btnColor = Colors.blueGrey.shade600;
+      btnColor = Colors.red.shade400;
     } else if (text.toLowerCase().contains("call")) {
       btnColor = Colors.green.shade600;
     } else if (text.toLowerCase().contains("bet")) {
-      btnColor = Colors.redAccent.shade700;
+      btnColor = Colors.yellow.shade700;
     } else if (text.toLowerCase().contains("check")) {
+      btnColor = Colors.green.shade700;
+    } else if (text.toLowerCase().contains("raise")) {
       btnColor = Colors.green.shade700;
     }
     if (disable) {
@@ -117,23 +120,21 @@ class _FooterActionViewState extends State<FooterActionView> {
       btnTextStyle = AppDecorators.getSubtitle3Style(theme: theme);
     }
 
-    btnColor = Colors.grey.shade900;
-
     final button = Container(
       // duration: AppConstants.fastAnimationDuration,
       // curve: Curves.bounceInOut,
       height: 32.ph,
       width: 80.pw,
-      margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+      margin: const EdgeInsets.only(left: 5),
       padding: const EdgeInsets.all(2.0),
       decoration: BoxDecoration(
         color: btnColor,
         shape: BoxShape.rectangle,
-        border: Border.all(
-          color: Colors.white,
-          width: 1.5,
-        ),
-        borderRadius: BorderRadius.circular(16),
+        // border: Border.all(
+        //   color: Colors.white,
+        //   width: 1.5,
+        // ),
+        borderRadius: BorderRadius.circular(4),
         // boxShadow: [
         //   BoxShadow(
         //     color: Colors.black,
@@ -141,6 +142,16 @@ class _FooterActionViewState extends State<FooterActionView> {
         //     blurRadius: 5,
         //   ),
         // ],
+        gradient: LinearGradient(
+          colors: [
+            btnColor,
+            lighten(btnColor, 0.13),
+            btnColor,
+          ],
+          begin: Alignment.centerLeft,
+          stops: [0.0, 0.5, 1],
+          end: Alignment.centerRight,
+        ),
       ),
       child: Center(
         child: FittedBox(
@@ -474,19 +485,19 @@ class _FooterActionViewState extends State<FooterActionView> {
 
     if (closeButton) {
       actionButtons = [];
-      actionButtons.add(Align(
-          alignment: Alignment.bottomRight,
-          child: CircleImageButton(
-            theme: theme,
-            icon: Icons.close,
-            onTap: () {
-              setState(() {
-                _showOptions = !_showOptions;
-                betWidgetShown = false;
-                widget.isBetWidgetVisible?.call(_showOptions);
-              });
-            },
-          )));
+      // actionButtons.add(Align(
+      //     alignment: Alignment.bottomRight,
+      //     child: CircleImageButton(
+      //       theme: theme,
+      //       icon: Icons.close,
+      //       onTap: () {
+      //         setState(() {
+      //           _showOptions = !_showOptions;
+      //           betWidgetShown = false;
+      //           widget.isBetWidgetVisible?.call(_showOptions);
+      //         });
+      //       },
+      //     )));
     }
 
 // Consumer<ActionState>(builder: (_, __, ___) {
@@ -545,8 +556,10 @@ class _FooterActionViewState extends State<FooterActionView> {
     @required final BoardAttributesObject boardAttributes,
   }) {
     return AnimatedSwitcher(
-      duration: AppConstants.fastestAnimationDuration,
-      reverseDuration: AppConstants.fastestAnimationDuration,
+      // duration: AppConstants.fastestAnimationDuration,
+      // reverseDuration: AppConstants.fastestAnimationDuration,
+      duration: Duration(milliseconds: 0),
+      reverseDuration: Duration(milliseconds: 0),
       transitionBuilder: (child, animation) => ScaleTransition(
         alignment: Alignment.bottomCenter,
         scale: animation,
@@ -623,12 +636,15 @@ class _FooterActionViewState extends State<FooterActionView> {
                           boardAttributes: boardAttributes,
                         ),
                       )),
-                  /* bottom row */ Transform.scale(
-                    scale: boardAttributes.footerActionScale,
-                    alignment: Alignment.bottomCenter,
-                    child: Container(
-                      padding: EdgeInsets.symmetric(vertical: 0.0),
-                      child: _buildActionWidgets(actionState.action, theme),
+                  /* bottom row */ Align(
+                    alignment: Alignment.bottomRight,
+                    child: Transform.scale(
+                      scale: boardAttributes.footerActionScale,
+                      alignment: Alignment.bottomCenter,
+                      child: Container(
+                        padding: EdgeInsets.symmetric(vertical: 0.0),
+                        child: _buildActionWidgets(actionState.action, theme),
+                      ),
                     ),
                   ),
                 ]);

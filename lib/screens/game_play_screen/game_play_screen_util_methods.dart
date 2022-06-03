@@ -54,6 +54,7 @@ class GamePlayScreenUtilMethods {
       visible: TestService.isTesting && !isCustomizationMode,
       overlayOpacity: 0.1,
       icon: Icons.all_inclusive_rounded,
+      direction: SpeedDialDirection.Down,
       children: [
         SpeedDialChild(
           child: Icon(
