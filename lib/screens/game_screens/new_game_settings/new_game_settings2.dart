@@ -532,7 +532,7 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
                               ]),
                           PokerSlider(
                             theme: theme,
-                            defaultValue: gmp.bombPotHandInterval,
+                            defaultValue: gmp.bombPotHandInterval.toDouble(),
                             min: 1,
                             max: 100,
                             onDragCompleted: (val) {
@@ -701,7 +701,7 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
             //   borderRadius: BorderRadius.circular(10),
             // ),
             decoration:
-                BoxDecoration(color: theme.secondaryColorWithDark(0.35)),
+                BoxDecoration(color: theme.secondaryColorWithDark(0.40)),
             padding: const EdgeInsets.all(16),
             child: Column(
               children: [
@@ -1218,14 +1218,14 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
                                 //   theme: theme,
                                 // ),
 
-                                // _buildRadio(
-                                //   label: appScreenText['botGame'],
-                                //   value: gmp.botGame,
-                                //   onChange: (bool b) {
-                                //     gmp.botGame = b;
-                                //   },
-                                //   theme: theme,
-                                // ),
+                                _buildRadio(
+                                  label: appScreenText['botGame'],
+                                  value: gmp.botGame,
+                                  onChange: (bool b) {
+                                    gmp.botGame = b;
+                                  },
+                                  theme: theme,
+                                ),
                                 /* location check */
                                 _buildRadio(
                                   label: appScreenText['locationCheck'],

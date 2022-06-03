@@ -23,7 +23,7 @@ import 'package:pokerapp/utils/numeric_keyboard2.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/cards/multiple_stack_card_views.dart';
-import 'package:pokerapp/widgets/slider_widget.dart';
+import 'package:pokerapp/widgets/slider.dart';
 import 'package:provider/provider.dart';
 
 class BetWidget extends StatelessWidget {
@@ -422,57 +422,39 @@ class BetWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildBetSeekBar(double width, AppTheme theme, GameState gameState) {
+  Widget _buildBetSeekBar(
+      double width, AppTheme appTheme, GameState gameState) {
     return Container(
       width: width,
-      // child: SliderTheme(
-      //   data: SliderThemeData(
-      //     thumbColor: appTheme.accentColor,
-      //     activeTrackColor: appTheme.secondaryColor,
-      //     thumbShape: RoundSliderThumbShape(enabledThumbRadius: 12),
-      //     inactiveTrackColor: appTheme.secondaryColor.withOpacity(
-      //       0.5,
-      //     ),
-      //     trackHeight: 10.0,
-      //   ),
-      //   child: Consumer<ValueNotifier<double>>(
-      //     builder: (_, vnBetAmount, __) {
-      //       final min = action.minRaiseAmount.toDouble();
-      //       final max = action.maxRaiseAmount.toDouble();
-      //       return Slider(
-      //         min: min,
-      //         max: max,
-      //         value: vnBetAmount.value,
-      //         onChanged: (newBetAmount) {
-      //           if (gameState.gameInfo.chipUnit == ChipUnit.DOLLAR) {
-      //             vnBetAmount.value = newBetAmount.round().toDouble();
-      //           } else {
-      //             vnBetAmount.value = newBetAmount;
-      //           }
-      //         },
-      //       );
-      //     },
-      //   ),
-      // ),
-
-      child: Consumer<ValueNotifier<double>>(
-        builder: (_, vnBetAmount, __) {
-          final min = action.minRaiseAmount.toDouble();
-          final max = action.maxRaiseAmount.toDouble();
-
-          return CustomSlider(
-            max: max,
-            min: min,
-            values: [vnBetAmount.value],
-            onChanged: (handlerIndex, newBetAmount, upperValue) {
-              if (gameState.gameInfo.chipUnit == ChipUnit.DOLLAR) {
-                vnBetAmount.value = newBetAmount.round().toDouble();
-              } else {
-                vnBetAmount.value = newBetAmount;
-              }
-            },
-          );
-        },
+      child: SliderTheme(
+        data: SliderThemeData(
+          thumbColor: appTheme.accentColor,
+          activeTrackColor: appTheme.secondaryColor,
+          thumbShape: RoundSliderThumbShape(enabledThumbRadius: 12),
+          inactiveTrackColor: appTheme.secondaryColor.withOpacity(
+            0.5,
+          ),
+          trackHeight: 10.0,
+        ),
+        child: Consumer<ValueNotifier<double>>(
+          builder: (_, vnBetAmount, __) {
+            final min = action.minRaiseAmount.toDouble();
+            final max = action.maxRaiseAmount.toDouble();
+            return PokerSlider(
+              min: min,
+              max: max,
+              theme: appTheme,
+              defaultValue: vnBetAmount.value,
+              onDragging: (handlerIndex, lowerValue, upperValue) {
+                if (gameState.gameInfo.chipUnit == ChipUnit.DOLLAR) {
+                  vnBetAmount.value = lowerValue.round().toDouble();
+                } else {
+                  vnBetAmount.value = lowerValue;
+                }
+              },
+            );
+          },
+        ),
       ),
     );
   }

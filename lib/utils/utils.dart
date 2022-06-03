@@ -1,11 +1,12 @@
 import 'dart:io';
 import 'dart:math';
-import 'package:device_info/device_info.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:ios_utsname_ext/extension.dart';
+import 'package:pokerapp/utils/platform.dart';
 
 const _cacheStalePeriod = const Duration(days: 1);
 const _maxCacheObjects = 50;
@@ -24,17 +25,20 @@ class ImageCacheManager {
 }
 
 class Screen {
+  static bool initialized = false;
   final Size _size;
   final double _devicePixelRatio;
   Screen(this._size, this._devicePixelRatio);
 
   static Screen _screen;
   static void init(BuildContext c) {
+    initialized = true;
     final query = MediaQuery.of(c);
     _screen = new Screen(query.size, query.devicePixelRatio);
   }
 
-  static double get _ppi => (Platform.isAndroid || Platform.isIOS) ? 150 : 96;
+  static double get _ppi =>
+      (PlatformUtils.isAndroid || PlatformUtils.isIOS) ? 150 : 96;
 
   static double get devicePixelRatio {
     return _screen._devicePixelRatio;
@@ -46,7 +50,7 @@ class Screen {
 
   static int get screenSize {
     int diagonalSize = diagonalInches.floor();
-    if (Platform.isIOS) {
+    if (PlatformUtils.isIOS) {
       diagonalSize = diagonalInches.floor();
     }
     return diagonalSize.toInt();
@@ -104,9 +108,9 @@ class DeviceInfo {
 
   Future<void> initPlateformData() async {
     try {
-      if (Platform.isAndroid) {
+      if (PlatformUtils.isAndroid) {
         _deviceData = _readAndroidBuildData(await deviceInfoPlugin.androidInfo);
-      } else if (Platform.isIOS) {
+      } else if (PlatformUtils.isIOS) {
         _deviceData = _readIosDeviceInfo(await deviceInfoPlugin.iosInfo);
       }
     } on PlatformException {
@@ -117,18 +121,18 @@ class DeviceInfo {
   }
 
   static String get model {
-    if (Platform.isIOS) {
+    if (PlatformUtils.isIOS) {
       return _deviceInfo._deviceData['model'];
-    } else if (Platform.isAndroid) {
+    } else if (PlatformUtils.isAndroid) {
       return _deviceInfo._deviceData['model'];
     }
     return 'Unknown';
   }
 
   static String get version {
-    if (Platform.isIOS) {
+    if (PlatformUtils.isIOS) {
       return _deviceInfo._deviceData['systemVersion'];
-    } else if (Platform.isAndroid) {
+    } else if (PlatformUtils.isAndroid) {
       return _deviceInfo._deviceData['version.sdkInt'].toString();
     }
     return 'Unknown';

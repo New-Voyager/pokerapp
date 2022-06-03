@@ -19,6 +19,10 @@ class AssetService {
   static List<Asset> assets = [];
   static List<NamePlateDesign> nameplates = [];
 
+  static Future<void> initWebAssets() async {
+    nameplates = await importNameplates();
+  }
+
   static Future<void> refresh() async {
     try {
       // Fetch assets from server

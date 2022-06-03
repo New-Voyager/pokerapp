@@ -1,8 +1,8 @@
 ///subscription model
 import 'dart:async';
 
-import 'message.dart';
 import 'client.dart';
+import 'message.dart';
 
 /// subscription class
 class Subscription {

@@ -51,8 +51,27 @@ class TestService {
   //static HandActionService _handActionService;
   static HandActionProtoService _handActionProtoService;
   TestService._();
+  static GameState _gameState;
 
   static set context(BuildContext context) => _context = context;
+  static Future<GameState> initialize() async {
+    // temporary to launch game screen in test mode
+    final String gameCode = gameInfo.gameCode;
+    final gameState = GameState();
+    await gameState.initialize(
+      gameInfo: gameInfo,
+      gameCode: gameInfo.gameCode,
+      customizationMode: false,
+      replayMode: false,
+      currentPlayer: TestService.currentPlayer,
+    );
+    _gameState = gameState;
+    return gameState;
+  }
+
+  static GameState gameState() {
+    return _gameState;
+  }
 
   static showDealerWidget() {
     final gameState = GameState.getState(_context);
@@ -485,8 +504,12 @@ class TestService {
     gameState.resetSeatActions();
   }
 
+  static void showCardDistribution() {
+    final gameState = Provider.of<GameState>(_context, listen: false);
+    HandActionProtoService.cardDistribution(gameState, 3);
+  }
+
   static Future<void> testBetWidget() async {
-    // return showCardDistribution();
     BuildContext context = _context;
 
     final gameState = Provider.of<GameState>(context, listen: false);

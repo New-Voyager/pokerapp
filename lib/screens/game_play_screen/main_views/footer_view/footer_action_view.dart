@@ -91,7 +91,7 @@ class _FooterActionViewState extends State<FooterActionView> {
     );
   }
 
-  Widget _buildRoundButton({
+  Widget _buildRoundButton2({
     String text = 'Button',
     Function onTap,
     bool isSelected = false,
@@ -179,7 +179,7 @@ class _FooterActionViewState extends State<FooterActionView> {
     );
   }
 
-  Widget _buildCheckFoldButton({
+  Widget _buildCheckFoldButton2({
     String text = 'Button',
     Function onTap,
     bool isSelected = false,
@@ -217,6 +217,160 @@ class _FooterActionViewState extends State<FooterActionView> {
       //     ]),
       child: Row(
         mainAxisSize: MainAxisSize.min,
+        children: [
+          // seperator
+          const SizedBox(width: 5.0),
+
+          // selection button indicator
+          isSelected
+              ? Icon(Icons.check_circle_outline_rounded, size: 20.0)
+              : Icon(Icons.circle_outlined, size: 20.0),
+
+          // spacer
+          Spacer(),
+
+          // text
+          FittedBox(
+            fit: BoxFit.fitHeight,
+            child: Text(
+              text,
+              textAlign: TextAlign.center,
+              style: btnTextStyle.copyWith(
+                fontSize: 10.dp,
+                fontWeight: FontWeight.w600,
+                color: Colors.white,
+              ),
+            ),
+          ),
+
+          // spacer
+          Spacer(),
+        ],
+      ),
+    );
+
+    if (disable) {
+      return button;
+    }
+
+    return InkWell(
+      onTap: onTap,
+      child: button,
+    );
+  }
+
+  Widget _buildRoundButton({
+    String text = 'Button',
+    Function onTap,
+    bool isSelected = false,
+    bool disable = false,
+    AppTheme theme,
+  }) {
+    TextStyle btnTextStyle = AppDecorators.getHeadLine4Style(theme: theme)
+        .copyWith(
+            color: isSelected
+                ? theme.primaryColorWithDark()
+                : theme.supportingColor);
+    Color btnColor = theme.accentColor;
+    if (text.toLowerCase().contains("fold")) {
+      btnColor = Colors.blueGrey.shade600;
+    } else if (text.toLowerCase().contains("call")) {
+      btnColor = Colors.green.shade600;
+    } else if (text.toLowerCase().contains("bet")) {
+      btnColor = Colors.redAccent.shade700;
+    } else if (text.toLowerCase().contains("check")) {
+      btnColor = Colors.green.shade700;
+    }
+    if (disable) {
+      btnColor = Colors.grey;
+      btnTextStyle = AppDecorators.getSubtitle3Style(theme: theme);
+    }
+
+    final button = Container(
+      // duration: AppConstants.fastAnimationDuration,
+      // curve: Curves.bounceInOut,
+      height: 32.ph,
+      width: 80.pw,
+      margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+      padding: const EdgeInsets.all(2.0),
+      decoration: BoxDecoration(
+          color: btnColor,
+          shape: BoxShape.rectangle,
+          border: Border.all(
+            color: btnColor,
+            width: 1.0,
+          ),
+          borderRadius: BorderRadius.circular(8),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black,
+              spreadRadius: 0.1,
+              blurRadius: 5,
+            ),
+          ]),
+      child: Center(
+        child: FittedBox(
+          fit: BoxFit.fitHeight,
+          child: Text(
+            text.toUpperCase(),
+            textAlign: TextAlign.center,
+            style: btnTextStyle.copyWith(
+              fontSize: 10.dp,
+              fontWeight: FontWeight.w600,
+              color: Colors.white,
+            ),
+          ),
+        ),
+      ),
+    );
+
+    if (disable) {
+      return button;
+    }
+
+    return InkWell(
+      onTap: onTap,
+      child: button,
+    );
+  }
+
+  Widget _buildCheckFoldButton({
+    String text = 'Button',
+    Function onTap,
+    bool isSelected = false,
+    bool disable = false,
+    AppTheme theme,
+  }) {
+    TextStyle btnTextStyle = AppDecorators.getHeadLine4Style(theme: theme)
+        .copyWith(
+            color: isSelected
+                ? theme.primaryColorWithDark()
+                : theme.supportingColor);
+    Color btnColor = theme.accentColor;
+    btnColor = isSelected ? Colors.blueGrey : Colors.black;
+    Color borderColor = Colors.white;
+
+    final button = Container(
+      height: 34.ph,
+      width: 150.pw,
+      margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+      padding: EdgeInsets.all(5.ph),
+      decoration: BoxDecoration(
+          color: btnColor,
+          shape: BoxShape.rectangle,
+          border: Border.all(
+            color: borderColor,
+            width: 1.ph,
+          ),
+          borderRadius: BorderRadius.circular(10.pw),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black,
+              spreadRadius: 0.1,
+              blurRadius: 5,
+            ),
+          ]),
+      child: Row(
         children: [
           // seperator
           const SizedBox(width: 5.0),
@@ -568,7 +722,7 @@ class _FooterActionViewState extends State<FooterActionView> {
       child: playerAction?.options == null
           ? shrinkedBox
           : _showOptions
-              ? BetWidgetNew(
+              ? BetWidget(
                   gameState: gameState,
                   seat: mySeat,
                   action: playerAction,

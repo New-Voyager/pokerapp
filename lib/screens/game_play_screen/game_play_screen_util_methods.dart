@@ -62,36 +62,36 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
-          label: 'Reset',
+          label: 'Distribute Cards',
           labelBackgroundColor: Colors.black,
           onTap: () {
-            TestService.resetCommunityCards();
+            TestService.showCardDistribution();
           },
         ),
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          label: 'Flop Cards',
-          labelBackgroundColor: Colors.black,
-          onTap: () {
-            TestService.addFlopCards();
-          },
-        ),
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          label: 'Add Turn',
-          labelBackgroundColor: Colors.black,
-          onTap: () {
-            TestService.addTurnCard();
-          },
-        ),
+        // SpeedDialChild(
+        //   child: Icon(
+        //     Icons.adb_rounded,
+        //     color: Colors.white,
+        //   ),
+        //   backgroundColor: Colors.red,
+        //   label: 'Flop Cards',
+        //   labelBackgroundColor: Colors.black,
+        //   onTap: () {
+        //     TestService.addFlopCards();
+        //   },
+        // ),
+        // SpeedDialChild(
+        //   child: Icon(
+        //     Icons.adb_rounded,
+        //     color: Colors.white,
+        //   ),
+        //   backgroundColor: Colors.red,
+        //   label: 'Add Turn',
+        //   labelBackgroundColor: Colors.black,
+        //   onTap: () {
+        //     TestService.addTurnCard();
+        //   },
+        // ),
         // SpeedDialChild(
         //   child: Icon(
         //     Icons.adb_rounded,

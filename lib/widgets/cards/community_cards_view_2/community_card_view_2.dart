@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/community_card_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
@@ -37,12 +39,34 @@ class CommunityCardView2 extends StatelessWidget {
         return AnimatedBuilder(
           animation: communityCardState,
           builder: (_, __) {
-            return Stack(
-              alignment: Alignment.center,
-              clipBehavior: Clip.none,
-              children: communityCardState.cardStates
-                  .map((cardState) => _CardWidget(cardState: cardState))
-                  .toList(),
+            return AnimatedSwitcher(
+              switchInCurve: Curves.easeInOutExpo,
+              switchOutCurve: Curves.easeInOut,
+              duration: Duration.zero,
+              reverseDuration: AppConstants.cardThrowAnimationDuration,
+              transitionBuilder: (child, animation) => FadeTransition(
+                opacity: animation,
+                child: AnimatedBuilder(
+                  animation: animation,
+                  child: child,
+                  builder: (context, child) {
+                    return Transform.scale(
+                      alignment: Alignment.topCenter,
+                      scale: max(animation.value, 0.60),
+                      child: child,
+                    );
+                  },
+                ),
+              ),
+              child: communityCardState.cardStates.isEmpty
+                  ? const SizedBox.shrink()
+                  : Stack(
+                      alignment: Alignment.center,
+                      clipBehavior: Clip.none,
+                      children: communityCardState.cardStates
+                          .map((cardState) => _CardWidget(cardState: cardState))
+                          .toList(),
+                    ),
             );
           },
         );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/widgets/switch_new.dart';
 import 'package:provider/provider.dart';
 
@@ -46,14 +47,14 @@ class SwitchWidget2 extends StatelessWidget {
           children: [
             ...iconChildren,
             /* label */
-            // (label != "")
-            //     ? Expanded(
-            //         child: Text(
-            //           label,
-            //           style: AppDecorators.getHeadLine5Style(theme: theme),
-            //         ),
-            //       )
-            //     : SizedBox.shrink(),
+            (label != "")
+                ? Expanded(
+                    child: Text(
+                      label,
+                      style: AppDecorators.getHeadLine5Style(theme: theme),
+                    ),
+                  )
+                : SizedBox.shrink(),
 
             /* spacer */
             // useSpacer ? const Spacer() : const SizedBox(width: 20.0),

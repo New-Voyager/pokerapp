@@ -2,6 +2,8 @@ import 'package:intl/intl.dart';
 
 class AppConstants {
   AppConstants._();
+  static const double largeTableWidth = 1200.0;
+  static const double mediumTableWidth = 800.0;
 
   static const List<String> maskedList = [
     "money",
@@ -111,6 +113,10 @@ class AppConstants {
 
   static const Duration animationDuration = const Duration(
     milliseconds: 500,
+  );
+
+  static const Duration cardThrowAnimationDuration = const Duration(
+    milliseconds: 380,
   );
 
   static const Duration seatChangeAnimationDuration = const Duration(

@@ -108,7 +108,7 @@
 //       return;
 //     }
 //     initializing = true;
-//     if (defaultTargetPlatform == TargetPlatform.android) {
+//     if (defaultTargetPlatform == TargetPlatformUtils.android) {
 //       await Permission.microphone.request();
 //     }
 

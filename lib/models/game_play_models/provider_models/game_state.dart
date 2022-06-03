@@ -29,6 +29,7 @@ import 'package:pokerapp/services/data/hive_models/game_settings.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/services/game_play/graphql/gamesettings_service.dart';
+import 'package:pokerapp/utils/platform.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
@@ -58,6 +59,7 @@ enum HoleCardOrder {
   SUIT,
   PAIR,
 }
+
 List<HoleCardOrder> holeCardOrders = [
   HoleCardOrder.DEALT,
   HoleCardOrder.PAIR,
@@ -440,23 +442,28 @@ class GameState {
     gameHiveStore = GameHiveStore();
     await gameHiveStore.initialize(code);
 
-    if (!(this.customizationMode ?? false)) {
-      if (!this.replayMode) {
-        if (!gameHiveStore.haveGameSettings()) {
-          log('In GameState initialize(), gameBox is empty');
+    playerLocalConfig = GameLocalConfig(gameCode, gameHiveStore);
+    await playerLocalConfig.init();
 
-          // create a new settings object, and init it (by init -> saves locally)
+    if (!PlatformUtils.isWeb) {
+      if (!(this.customizationMode ?? false)) {
+        if (!this.replayMode) {
+          if (!gameHiveStore.haveGameSettings()) {
+            log('In GameState initialize(), gameBox is empty');
+
+            // create a new settings object, and init it (by init -> saves locally)
+            playerLocalConfig = GameLocalConfig(gameCode, gameHiveStore);
+            await playerLocalConfig.init();
+          } else {
+            log('In GameState initialize(), getting gameSettings from gameBox');
+            playerLocalConfig = gameHiveStore.getGameConfiguration();
+          }
+          log('In GameState initialize(), gameSettings = $playerLocalConfig');
+          _communicationState.showTextChat = playerLocalConfig.showChat;
+        } else {
           playerLocalConfig = GameLocalConfig(gameCode, gameHiveStore);
           await playerLocalConfig.init();
-        } else {
-          log('In GameState initialize(), getting gameSettings from gameBox');
-          playerLocalConfig = gameHiveStore.getGameConfiguration();
         }
-        log('In GameState initialize(), gameSettings = $playerLocalConfig');
-        _communicationState.showTextChat = playerLocalConfig.showChat;
-      } else {
-        playerLocalConfig = GameLocalConfig(gameCode, gameHiveStore);
-        await playerLocalConfig.init();
       }
     }
 
@@ -862,7 +869,22 @@ class GameState {
 
   static GameState getState(BuildContext context) => context.read<GameState>();
 
-  void clear() {
+  final _throwingCardsVn = ValueNotifier(false);
+  ValueNotifier<bool> get throwingCardsVn => _throwingCardsVn;
+  set _tc(bool value) => _throwingCardsVn.value = value;
+
+  Future<void> throwCards() async {
+    _tc = true;
+    await Future.delayed(AppConstants.cardThrowAnimationDuration);
+  }
+
+  Future<void> clear() async {
+    // clear community cards
+    communityCardState.reset();
+
+    /// throw the cards <--- this must be done before we reset `showdown`
+    await throwCards();
+
     final tableState = this.tableState;
     this.holecardOrder = HoleCardOrder.DEALT;
     this.showdown = false;
@@ -876,8 +898,7 @@ class GameState {
     // clear table state
     tableState.clear();
     tableState.notifyAll();
-    // clear community cards
-    communityCardState.reset();
+    _tc = false;
   }
 
   GameMessagingService get gameMessageService => this._gameMessageService;

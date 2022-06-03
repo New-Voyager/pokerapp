@@ -19,6 +19,7 @@ import 'package:pokerapp/services/app_service.dart';
 import 'package:pokerapp/services/connectivity_check/network_change_listener.dart';
 import 'package:pokerapp/services/data/hive_models/player_state.dart';
 import 'package:pokerapp/services/nats/nats.dart';
+import 'package:pokerapp/utils/platform.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:provider/provider.dart';
 import 'main_helper.dart';
@@ -35,9 +36,14 @@ void main() async {
 
   //appState.currentFlavor = Flavor.DEV;
   appState.currentFlavor = Flavor.PROD;
+  if (Platform.isIOS) {
+    PlatformUtils.isIOS = true;
+  } else if (Platform.isAndroid) {
+    PlatformUtils.isAndroid = true;
+  }
 
   // Register all the models and services before the app starts
-  if (Platform.isAndroid) {
+  if (PlatformUtils.isAndroid) {
     InAppPurchaseAndroidPlatformAddition.enablePendingPurchases();
   }
   await DeviceInfo.init();
@@ -163,7 +169,7 @@ class _MyAppState extends State<MyApp> {
         /* PUT DEPENDENT PROVIDERS HERE */
         providers: [
           Provider<Nats>(
-            create: (_) => Nats(context),
+            create: (_) => Nats(),
           ),
           Provider(
             create: (_) => NetworkChangeListener(),
