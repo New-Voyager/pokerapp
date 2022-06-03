@@ -29,8 +29,12 @@ class GraphQLConfiguration {
 
   AuthLink authLinkWeb() {
     return AuthLink(getToken: () async {
-      return 'Bearer 889a2eda-ffa0-4b35-9805-cc284145459a';
+      return 'jwt ${AppConfig.jwt}';
     });
+
+    // return AuthLink(getToken: () async {
+    //   return 'Bearer 902a5058-21d1-4d23-976d-f225aa3d942f';
+    // });
   }
 
   // final ValueNotifier<GraphQLClient> client = ValueNotifier(

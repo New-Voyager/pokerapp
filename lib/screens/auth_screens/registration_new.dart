@@ -54,13 +54,13 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      if (PlatformUtils.isWeb) {
-        _checkLogin();
-      } else {
-        setState(() {
-          _isLoading = false;
-        });
-      }
+      // if (PlatformUtils.isWeb) {
+      //   _checkLogin();
+      // } else {
+      setState(() {
+        _isLoading = false;
+      });
+      // }
     });
     _appScreenText = getAppTextScreen("registration");
     _appTheme = AppTheme.getTheme(context);

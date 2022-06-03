@@ -44,8 +44,8 @@ void main() async {
 
 Future<void> initWebPlatform() async {
   // reset shared preferences
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  prefs.clear();
+  //SharedPreferences prefs = await SharedPreferences.getInstance();
+  //prefs.clear();
 
   ScreenAttributes.buildList();
 
@@ -54,11 +54,11 @@ Future<void> initWebPlatform() async {
   await DeviceInfo.init();
   await initAppText('en');
 
-  // String apiUrl = 'https://api.pokerclub.app';
-  String apiUrl = 'http://localhost:9501';
+  String apiUrl = 'https://api.pokerclub.app';
+  //String apiUrl = 'http://localhost:9501';
 
   await appService.init();
-  AppConfig.init(apiUrl, force: true);
+  AppConfig.init(apiUrl, force: false);
   await appService.initScreenAttribs();
   await graphQLConfiguration.init();
 }

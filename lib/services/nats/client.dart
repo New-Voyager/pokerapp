@@ -72,7 +72,7 @@ class Client {
   Future<bool> connect(String uri,
       {int timeout = 5, bool retry = false, int retryInterval = 10}) async {
     final uriComponents = Uri.parse(uri);
-    if (uriComponents.scheme == 'ws') {
+    if (uriComponents.scheme == 'ws' || uriComponents.scheme == 'wss') {
       _wsConnection = true;
       return wsconnect(uri,
           timeout: timeout, retry: retry, retryInterval: retryInterval);
