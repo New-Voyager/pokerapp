@@ -140,14 +140,21 @@ class GamePlayObjects {
       debugPrint('fetching game data: ${gameCode}');
       gameInfo = gameInfoModel ?? await GameService.getGameInfo(gameCode);
       debugPrint('fetching game data: ${gameCode} done');
-      this._currentPlayer = await PlayerService.getMyInfo(gameCode);
+      if (gameInfo.tournament) {
+        this._currentPlayer = await PlayerService.getMyInfo(null);
+      } else {
+        this._currentPlayer = await PlayerService.getMyInfo(gameCode);
+      }
+
       debugPrint('getting current player: ${gameCode} done');
     }
 
     // mark the isMe field
-    for (int i = 0; i < gameInfo.playersInSeats.length; i++) {
-      if (gameInfo.playersInSeats[i].playerUuid == _currentPlayer.uuid)
-        gameInfo.playersInSeats[i].isMe = true;
+    if (_currentPlayer != null) {
+      for (int i = 0; i < gameInfo.playersInSeats.length; i++) {
+        if (gameInfo.playersInSeats[i].playerUuid == _currentPlayer.uuid)
+          gameInfo.playersInSeats[i].isMe = true;
+      }
     }
     return gameInfo;
   }

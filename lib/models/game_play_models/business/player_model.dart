@@ -116,39 +116,7 @@ class PlayerModel {
     int tmpN = math.Random().nextInt(6) + 1;
     this.avatarUrl = 'assets/images/$tmpN.png';
   }
-
-  PlayerModel.fromJson(var data) {
-    this.name = data['name'];
-    this.seatNo = data['seatNo'];
-    this.playerUuid = data['playerUuid'];
-    this.buyIn = double.parse(data['buyIn'].toString());
-    this.stack = double.parse(data['stack'].toString());
-    this.status = data['status'];
-    this.playerId = int.parse(data['playerId'].toString());
-    if (data['missedBlind'] != null) {
-      this.missedBlind = data['missedBlind'];
-    }
-    this._action = PlayerActedState();
-    this._connectivity = PlayerConnectivityState();
-    // Notes
-    this.hasNotes = data['hasNotes'] ?? false;
-    // log('NEW_HAND: PlayerModel::fromJson player: ${name} stack ${stack}');
-
-    DateTime now = DateTime.now();
-    if (data['buyInExpTime'] != null) {
-      // buyin time is kept in UTC
-      this.buyInTimeExpAt = DateTime.tryParse(data['buyInExpTime']);
-    }
-
-    if (this.status == 'IN_BREAK' && data['breakExpTime'] != null) {
-      // buyin time is kept in UTC
-      this.breakTimeExpAt = DateTime.tryParse(data['breakExpTime']);
-      this.breakTimeStartedAt = DateTime.now();
-      if (data['breakStartedTime'] != null) {
-        this.breakTimeStartedAt = DateTime.tryParse(data['breakStartedTime']);
-      }
-    }
-
+  void initialize() {
     // default values
     this.isMe = false;
     this.playerType = TablePosition.None;
@@ -165,6 +133,52 @@ class PlayerModel {
     // for now randomly choose from the asset files
     int tmpN = math.Random().nextInt(6) + 1;
     this.avatarUrl = 'assets/images/$tmpN.png';
+
+    this._action = PlayerActedState();
+    this._connectivity = PlayerConnectivityState();
+    // Notes
+    this.hasNotes = false;
+  }
+
+  PlayerModel.fromJson(var data) {
+    this.initialize();
+    this.name = data['name'];
+    this.seatNo = data['seatNo'];
+    this.playerUuid = data['playerUuid'];
+    this.buyIn = double.parse(data['buyIn'].toString());
+    this.stack = double.parse(data['stack'].toString());
+    this.status = data['status'];
+    this.playerId = int.parse(data['playerId'].toString());
+    if (data['missedBlind'] != null) {
+      this.missedBlind = data['missedBlind'];
+    }
+    // log('NEW_HAND: PlayerModel::fromJson player: ${name} stack ${stack}');
+
+    DateTime now = DateTime.now();
+    if (data['buyInExpTime'] != null) {
+      // buyin time is kept in UTC
+      this.buyInTimeExpAt = DateTime.tryParse(data['buyInExpTime']);
+    }
+
+    if (this.status == 'IN_BREAK' && data['breakExpTime'] != null) {
+      // buyin time is kept in UTC
+      this.breakTimeExpAt = DateTime.tryParse(data['breakExpTime']);
+      this.breakTimeStartedAt = DateTime.now();
+      if (data['breakStartedTime'] != null) {
+        this.breakTimeStartedAt = DateTime.tryParse(data['breakStartedTime']);
+      }
+    }
+  }
+
+  PlayerModel.fromTournamentJson(var data) {
+    this.initialize();
+    this.name = data['playerName'];
+    this.seatNo = data['seatNo'];
+    this.playerUuid = data['playerUuid'];
+    this.buyIn = 0;
+    this.stack = double.parse(data['stack'].toString());
+    this.status = data['status'];
+    this.playerId = int.parse(data['playerId'].toString());
   }
 
   // a util method for updating the class variables
