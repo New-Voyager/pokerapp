@@ -59,7 +59,7 @@ class PlayerActionHandler {
 
   Future<void> handleQueryCurrentHand(proto.HandMessageItem message) async {
     final currentHandState = message.currentHandState;
-    // log('Current hand state: $currentHandState');
+    log('Current hand state: $currentHandState');
     if (_gameState.uiClosing) return;
 
     // current players cards
