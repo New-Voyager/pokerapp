@@ -23,7 +23,7 @@ class TableView extends StatelessWidget {
       if (gameState.getBoardAttributes(context).isOrientationHorizontal) {
         tableAsset = appService.appSettings.tableAsset;
       } else {
-        tableAsset = "assets/images/table/vertical.png";
+        tableAsset = "assets/images/table/new_vertical.png";
       }
     } else {
       tableAsset = 'assets/images/table/redtable.png';

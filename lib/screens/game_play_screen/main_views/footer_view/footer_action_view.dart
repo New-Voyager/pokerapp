@@ -273,12 +273,14 @@ class _FooterActionViewState extends State<FooterActionView> {
                 : theme.supportingColor);
     Color btnColor = theme.accentColor;
     if (text.toLowerCase().contains("fold")) {
-      btnColor = Colors.blueGrey.shade600;
+      btnColor = Colors.red.shade400;
     } else if (text.toLowerCase().contains("call")) {
       btnColor = Colors.green.shade600;
     } else if (text.toLowerCase().contains("bet")) {
-      btnColor = Colors.redAccent.shade700;
+      btnColor = Colors.yellow.shade700;
     } else if (text.toLowerCase().contains("check")) {
+      btnColor = Colors.green.shade700;
+    } else if (text.toLowerCase().contains("raise")) {
       btnColor = Colors.green.shade700;
     }
     if (disable) {
@@ -287,27 +289,25 @@ class _FooterActionViewState extends State<FooterActionView> {
     }
 
     final button = Container(
-      // duration: AppConstants.fastAnimationDuration,
-      // curve: Curves.bounceInOut,
       height: 32.ph,
       width: 80.pw,
-      margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+      margin: const EdgeInsets.only(left: 5),
       padding: const EdgeInsets.all(2.0),
       decoration: BoxDecoration(
-          color: btnColor,
-          shape: BoxShape.rectangle,
-          border: Border.all(
-            color: btnColor,
-            width: 1.0,
-          ),
-          borderRadius: BorderRadius.circular(8),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black,
-              spreadRadius: 0.1,
-              blurRadius: 5,
-            ),
-          ]),
+        color: btnColor,
+        shape: BoxShape.rectangle,
+        borderRadius: BorderRadius.circular(4),
+        gradient: LinearGradient(
+          colors: [
+            btnColor,
+            lighten(btnColor, 0.13),
+            btnColor,
+          ],
+          begin: Alignment.centerLeft,
+          stops: [0.0, 0.5, 1],
+          end: Alignment.centerRight,
+        ),
+      ),
       child: Center(
         child: FittedBox(
           fit: BoxFit.fitHeight,
@@ -722,7 +722,7 @@ class _FooterActionViewState extends State<FooterActionView> {
       child: playerAction?.options == null
           ? shrinkedBox
           : _showOptions
-              ? BetWidget(
+              ? BetWidgetNew(
                   gameState: gameState,
                   seat: mySeat,
                   action: playerAction,
@@ -781,6 +781,7 @@ class _FooterActionViewState extends State<FooterActionView> {
                           ),
                       child: Transform.scale(
                         scale: boardAttributes.footerActionScale,
+                        alignment: Alignment.bottomCenter,
                         child: _buildBetWidget(
                           gameState,
                           gameState.mySeat,

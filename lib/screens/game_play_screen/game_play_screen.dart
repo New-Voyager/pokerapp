@@ -457,7 +457,8 @@ class _GamePlayScreenState extends State<GamePlayScreen>
                   children: [
                     Container(
                       width: double.infinity,
-                      height: dimensions.height,
+                      height: double.maxFinite,
+                      // height: dimensions.height,
                       child: BackgroundView(),
                     ),
                     // board view

@@ -504,6 +504,8 @@ class BetWidgetNew extends StatelessWidget {
         return Container(
           // margin: EdgeInsets.only(bottom: 30),
           width: MediaQuery.of(context).size.width,
+          height: boardAttributes.footerHeight,
+          padding: EdgeInsets.only(right: 4),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.end,
@@ -614,9 +616,10 @@ class BetWidgetNew extends StatelessWidget {
                   ),
                   Column(
                     mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Container(
-                        width: 80,
+                        width: 80.pw,
                         decoration: BoxDecoration(
                           border: Border.all(
                               color: Colors.blueGrey.shade800, width: 2),
@@ -762,26 +765,24 @@ class BetWidgetNew extends StatelessWidget {
                       ),
                     ],
                   ),
-                  SizedBox(
-                    width: 6.0,
-                  ),
                 ],
               ),
-              Padding(
-                padding: const EdgeInsets.only(right: 4),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    betAmountList(context, valueNotifierVal, appTheme),
-                    _buildRaiseButton(
-                        theme: appTheme,
-                        onTap: () {
-                          appService.appSettings.showBetTip = false;
-                          onSubmitCallBack?.call(valueNotifierVal.value);
-                        },
-                        text: "Raise"),
-                  ],
-                ),
+              SizedBox(
+                height: 8.0,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  // betAmountList(context, valueNotifierVal, appTheme),
+                  _buildRaiseButton(
+                      theme: appTheme,
+                      onTap: () {
+                        appService.appSettings.showBetTip = false;
+                        onSubmitCallBack?.call(valueNotifierVal.value);
+                      },
+                      text: "Raise"),
+                ],
               ),
             ],
           ),
@@ -969,7 +970,7 @@ class BetWidgetNew extends StatelessWidget {
     }
 
     return Container(
-      height: 40,
+      height: 80.0,
       child: ListView.builder(
         physics: BouncingScrollPhysics(),
         scrollDirection: Axis.horizontal,
@@ -1077,8 +1078,6 @@ class BetWidgetNew extends StatelessWidget {
     }
 
     final button = Container(
-      // duration: AppConstants.fastAnimationDuration,
-      // curve: Curves.bounceInOut,
       height: 32.ph,
       width: 80.pw,
       margin: const EdgeInsets.only(left: 5),
@@ -1086,18 +1085,7 @@ class BetWidgetNew extends StatelessWidget {
       decoration: BoxDecoration(
         color: btnColor,
         shape: BoxShape.rectangle,
-        // border: Border.all(
-        //   color: Colors.white,
-        //   width: 1.5,
-        // ),
         borderRadius: BorderRadius.circular(4),
-        // boxShadow: [
-        //   BoxShadow(
-        //     color: Colors.black,
-        //     spreadRadius: 0.1,
-        //     blurRadius: 5,
-        //   ),
-        // ],
         gradient: LinearGradient(
           colors: [
             btnColor,
