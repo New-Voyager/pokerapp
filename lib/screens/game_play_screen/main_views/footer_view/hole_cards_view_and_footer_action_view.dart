@@ -213,11 +213,11 @@ class _HoleCardsViewAndFooterActionViewState
   Widget _buildFooterActionView(
       BuildContext context, GameContextObject gco, ActionState actionState) {
     return DebugBorderWidget(
-      color: Colors.transparent,
+      color: Colors.red,
       child: FooterActionView(
         gameContext: gco,
         isBetWidgetVisible: (bool isBetWidgetVisible) {
-          _showDarkBackgroundVn.value = isBetWidgetVisible;
+          // _showDarkBackgroundVn.value = isBetWidgetVisible;
         },
         actionState: actionState,
       ),

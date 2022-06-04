@@ -612,7 +612,7 @@ class BoardAttributesObject extends ChangeNotifier {
     /*
     * This screen size is diagonal inches*/
     @required double screenSize,
-    BoardOrientation orientation = BoardOrientation.horizontal,
+    BoardOrientation orientation = BoardOrientation.vertical,
   }) {
     //this._screenSize = screenSize.round();
     this._screenDiagnolSize = Screen.screenSize;
@@ -820,7 +820,7 @@ class BoardAttributesObject extends ChangeNotifier {
 
   double get footerViewScale {
     if (isOrientationHorizontal) return attribsObj.footerViewScale;
-    return attribsObj.footerViewScale / 1.3;
+    return attribsObj.footerViewScale / 1.2;
   }
 
   double get boardHeightAdjust {

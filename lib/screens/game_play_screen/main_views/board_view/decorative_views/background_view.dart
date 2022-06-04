@@ -26,12 +26,11 @@ class BackgroundView extends StatelessWidget {
             clipBehavior: Clip.hardEdge,
             decoration: const BoxDecoration(),
             width: dimensions.width,
-            height: dimensions.height,
             child: Transform.translate(
               offset: boardAttributes.backDropOffset,
               child: Image.asset(
                 backdropAsset,
-                fit: BoxFit.fill,
+                fit: BoxFit.cover,
               ),
             ),
           ),

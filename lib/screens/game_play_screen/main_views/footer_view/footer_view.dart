@@ -20,6 +20,7 @@ import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/animating_widgets/my_last_action_animating_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/center_view.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/communication_handanalyse.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/status_options_buttons.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/help_text.dart';
 import 'package:pokerapp/services/app/game_service.dart';
@@ -156,6 +157,27 @@ class _FooterViewState extends State<FooterView>
             gameState: gameState,
             clubCode: widget.clubCode,
             gameContextObject: gameContextObject,
+          ),
+        ),
+      ),
+    );
+  }
+
+  /* hand analyse and communication view builder */
+  Widget _buildCommunicationHandAnalyseView(BuildContext context) {
+    final gameState = context.read<GameState>();
+
+    return Consumer<GameContextObject>(
+      builder: (context, gameContextObject, _) => Positioned(
+        left: 8,
+        top: 20,
+        child: DebugBorderWidget(
+          child: CommunitcationHandAnalyseView(
+            gameState: gameState,
+            clubCode: widget.clubCode,
+            gameContextObject: gameContextObject,
+            chatService: widget.gameContext.gameComService.gameMessaging,
+            chatVisibilityChange: widget.chatVisibilityChange,
           ),
         ),
       ),
@@ -551,9 +573,11 @@ class _FooterViewState extends State<FooterView>
         children.add(_buildGameInfo(gameState));
       }
       /* hand analyse view */
-      children.add(_buildHandAnalyseView(context));
+      // children.add(_buildHandAnalyseView(context));
       /* communication widgets */
-      children.add(_buildCommunicationWidget());
+      // children.add(_buildCommunicationWidget());
+
+      children.add(_buildCommunicationHandAnalyseView(context));
       // nothing to display here
     } else if (!gameState.isPlaying) {
       // the player can join the waitlist
@@ -564,17 +588,21 @@ class _FooterViewState extends State<FooterView>
       children.add(_buildSeatConfirmWidget(context));
 
       /* hand analyse view */
-      children.add(_buildHandAnalyseView(context));
+      // children.add(_buildHandAnalyseView(context));
       /* communication widgets */
-      children.add(_buildCommunicationWidget());
+      // children.add(_buildCommunicationWidget());
+
+      children.add(_buildCommunicationHandAnalyseView(context));
     } else {
       /* build main view - straddle prompt, hole cards, action view*/
       children.add(_buildMainView(gameState));
       /* hand analyse view */
-      children.add(_buildHandAnalyseView(context));
+      // children.add(_buildHandAnalyseView(context));
 
       /* communication widgets */
-      children.add(_buildCommunicationWidget());
+      // children.add(_buildCommunicationWidget());
+
+      children.add(_buildCommunicationHandAnalyseView(context));
 
       /* seat confirm widget */
       children.add(_buildSeatConfirmWidget(context));
