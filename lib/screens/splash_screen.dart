@@ -20,6 +20,8 @@ import 'package:pokerapp/services/data/asset_hive_store.dart';
 import 'package:pokerapp/services/data/box_type.dart';
 import 'package:pokerapp/services/data/hive_datasource_impl.dart';
 import 'package:pokerapp/services/data/hive_models/player_state.dart';
+import 'package:pokerapp/utils/platform.dart';
+import 'package:pokerapp/web-routes.dart';
 import 'package:provider/provider.dart';
 import 'package:upgrader/upgrader.dart';
 
@@ -30,10 +32,17 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   void _navigateToNextScreen(bool isAuthenticated) {
-    Navigator.pushReplacementNamed(
-      context,
-      isAuthenticated ? Routes.main : Routes.registration,
-    );
+    if (PlatformUtils.isWeb) {
+      Navigator.pushReplacementNamed(
+        context,
+        isAuthenticated ? WebRoutes.home : WebRoutes.registration,
+      );
+    } else {
+      Navigator.pushReplacementNamed(
+        context,
+        isAuthenticated ? Routes.main : Routes.registration,
+      );
+    }
   }
 
   @override
@@ -52,6 +61,9 @@ class _SplashScreenState extends State<SplashScreen> {
     await AudioService.init();
 
     // this function call will NOT end until we have internet access
+    if (PlatformUtils.isWeb) {
+      return;
+    }
     await context.read<NetworkChangeListener>().checkInternet();
   }
 

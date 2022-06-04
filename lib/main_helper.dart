@@ -48,7 +48,7 @@ mixin RouteAwareAnalytics<T extends StatefulWidget> on State<T>
     routeName = routeName.substring(1);
     log('Setting current screen to $routeName');
     if (!PlatformUtils.isWeb) {
-      await FirebaseAnalytics()
+      await FirebaseAnalytics.instance
           .logEvent(name: routeName, parameters: {"screen_name": routeName});
     }
   }

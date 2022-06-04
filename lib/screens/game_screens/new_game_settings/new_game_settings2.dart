@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:pokerapp/enums/approval_type.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/main.dart';
@@ -16,6 +17,8 @@ import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
+import 'package:pokerapp/utils/platform.dart';
+import 'package:pokerapp/web-routes.dart';
 import 'package:pokerapp/widgets/button_widget.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/child_widgets.dart';
@@ -34,11 +37,18 @@ import '../../../main_helper.dart';
 import '../../../routes.dart';
 
 class NewGameSettings2 extends StatefulWidget {
-  static void _joinGame(BuildContext context, String gameCode) =>
+  static void _joinGame(BuildContext context, String gameCode) {
+    if (PlatformUtils.isWeb) {
+      Navigator.of(context).pushNamed(
+        WebRoutes.game_play + "/${gameCode}",
+      );
+    } else {
       navigatorKey.currentState.pushNamed(
         Routes.game_play,
         arguments: gameCode,
       );
+    }
+  }
 
   static Future<void> show(
     BuildContext context, {

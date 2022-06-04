@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app_constants.dart';
@@ -12,36 +14,46 @@ class AppConfig {
   static int noOfDiamondsForAnimation = 5;
   static int noOfDiamondsForReveal = 5;
   static int noOfDiamondsForShare = 5;
+  static String uuid;
 
   static SharedPreferences sharedPreferences;
 
-  static Future<void> init(String defaultUrl) async {
+  static Future<void> init(String defaultUrl, {bool force = false}) async {
+    // Force to use the default url
     sharedPreferences = await SharedPreferences.getInstance();
-    String apiServer = sharedPreferences.getString(AppConstants.API_SERVER_URL);
-    if (apiServer == null) {
-      apiServer = defaultUrl;
-    }
-    // apiServer = 'https://api.pokerclub.app';
+    if (force) {
+      _apiUrl = defaultUrl;
+    } else {
+      String apiServer =
+          sharedPreferences.getString(AppConstants.API_SERVER_URL);
+      if (apiServer == null) {
+        apiServer = defaultUrl;
+      }
+      apiServer = 'https://api.pokerclub.app';
 
-    if (!apiServer.contains('https://') && !apiServer.contains('http://')) {
-      apiServer = 'http://$apiServer:9501';
-    }
-    // apiServer = 'http://localhost:9501';
-    _apiUrl = apiServer;
-    //_apiUrl = 'https://demo.pokerclub.app';
-    //_apiUrl = 'http://192.168.1.16:9501';
-    //_apiUrl = 'http://192.168.0.108:9501';
+      if (!apiServer.contains('https://') && !apiServer.contains('http://')) {
+        apiServer = 'http://$apiServer:9501';
+      }
+      // apiServer = 'http://localhost:9501';
+      _apiUrl = apiServer;
+      //_apiUrl = 'https://demo.pokerclub.app';
+      //_apiUrl = 'http://192.168.1.16:9501';
+      //_apiUrl = 'http://192.168.86.21:9501';
 
-    // _apiUrl = 'http://192.168.0.103:9501';
+      // _apiUrl = 'http://192.168.0.103:9501';
+    }
     String deviceId = sharedPreferences.getString(AppConstants.DEVICE_ID);
     String deviceSecret =
         sharedPreferences.getString(AppConstants.DEVICE_SECRET);
+    String deviceUuid = sharedPreferences.getString(AppConstants.UUID);
+    log("Using URL: $_apiUrl");
     await AppConfig.saveApiUrl(apiServer: _apiUrl);
 
     // deviceId = 'b75b78a1032fd10f';
     // deviceSecret = '1d587495-cf72-4406-bce4-6d6439e95ae3';
     _deviceId = deviceId;
     _deviceSecret = deviceSecret;
+    uuid = deviceUuid;
   }
 
   static Future<void> saveApiUrl({

@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:pokerapp/main-web.dart';
 import 'package:pokerapp/resources/app_config.dart';
+import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/utils/platform.dart';
 
 class GraphQLConfiguration {
@@ -27,8 +29,12 @@ class GraphQLConfiguration {
 
   AuthLink authLinkWeb() {
     return AuthLink(getToken: () async {
-      return 'Bearer d7102747-a8de-4c49-ba91-322ee7a4f827';
+      return 'jwt ${AppConfig.jwt}';
     });
+
+    // return AuthLink(getToken: () async {
+    //   return 'Bearer 902a5058-21d1-4d23-976d-f225aa3d942f';
+    // });
   }
 
   // final ValueNotifier<GraphQLClient> client = ValueNotifier(

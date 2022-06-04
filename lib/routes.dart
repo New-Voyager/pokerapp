@@ -39,6 +39,7 @@ import 'package:pokerapp/models/hand_history_model.dart';
 import 'package:pokerapp/models/rewards_model.dart';
 
 class Routes {
+
   Routes._();
 
   //SplashScreen

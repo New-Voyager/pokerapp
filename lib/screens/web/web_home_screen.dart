@@ -2,15 +2,27 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:livekit_client/livekit_client.dart';
 import 'package:pokerapp/models/auth_model.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_config.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
+import 'package:pokerapp/screens/game_screens/new_game_settings/new_game_settings2.dart';
+import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/appcoin_service.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
+import 'package:pokerapp/services/app/util_service.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/web-routes.dart';
+import 'package:pokerapp/widgets/appname_logo.dart';
+import 'package:pokerapp/widgets/button_widget.dart';
 import 'package:pokerapp/widgets/buttons.dart';
+import 'package:pokerapp/widgets/text_input_widget.dart';
 import 'package:uuid/uuid.dart';
 import 'package:crypto/src/sha1.dart';
 
@@ -22,85 +34,150 @@ class WebHomeScreen extends StatefulWidget {
 }
 
 class _WebHomeScreenState extends State<WebHomeScreen> {
-  final _textController =
-      TextEditingController(text: TestService.gameInfo.gameCode);
-  BuildContext _context;
+  final _textController = TextEditingController();
+  AppTextScreen _appScreenText;
+  AppTheme _appTheme;
+  // BuildContext _context;
 
   @override
   void initState() {
-    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
-      _defaults();
-    });
     super.initState();
-  }
-
-  _defaults() async {
-    //await AppService.getInstance().init();
-    //await AppService.getInstance().initScreenAttribs();
-
-    Screen.init(_context);
-    String deviceId = new Uuid().v4().toString();
-    deviceId = sha1.convert(utf8.encode(deviceId)).toString();
-
-    log('deviceId: $deviceId');
-    final resp = await AuthService.signup(
-      deviceId: deviceId,
-      screenName: "webplayer",
-      displayName: "webplayer",
-      recoveryEmail: "webplayer@gmail.com",
-    );
-    if (resp['status']) {
-      // save device id, device secret and jwt
-      AuthModel currentUser = AuthModel(
-          deviceID: deviceId,
-          deviceSecret: resp['deviceSecret'],
-          name: "webplayer",
-          uuid: resp['uuid'],
-          playerId: resp['id'],
-          jwt: resp['jwt']);
-      await AuthService.save(currentUser);
-      AppConfig.jwt = resp['jwt'];
-      final availableCoins = await AppCoinService.availableCoins();
-      AppConfig.setAvailableCoins(availableCoins);
-      setState(() {});
-    }
+    _appScreenText = getAppTextScreen("registration");
+    _appTheme = AppTheme.getTheme(context);
   }
 
   @override
   Widget build(BuildContext context) {
-    _context = context;
+    // _context = context;
+    _appTheme = AppTheme.getTheme(context);
 
     // Check for errors
-    return Scaffold(
-      body: Container(
-        width: 800,
-        height: 800,
-        color: Colors.red,
-        child: Column(
-          children: [
-            Text('Hello'),
-            const SizedBox(height: 24),
-            TextField(
-              controller: _textController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Enter gamecode',
+    return WillPopScope(
+      onWillPop: () async {
+        final result = await showYesNoDialog(
+            context, "Confirm", "Would you like to exit?");
+        return result;
+      },
+      child: Container(
+        decoration: AppDecorators.bgImage(_appTheme),
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          body: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              AppDimensionsNew.getVerticalSizedBox(16),
+              // Logo section
+              AppNameAndLogoWidget(_appTheme, _appScreenText),
+              AppDimensionsNew.getVerticalSizedBox(16),
+
+              const SizedBox(height: 24),
+              Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      children: [
+                        CircleAvatar(
+                          backgroundColor: AppColorsNew.yellowAccentColor,
+                          radius: 40,
+                          child: IconButton(
+                            icon: Icon(Icons.add),
+                            onPressed: () async {
+                              final dynamic result =
+                                  await Navigator.of(context).pushNamed(
+                                WebRoutes.new_game_settings,
+                              );
+                              if (result != null) {
+                                /* show game settings dialog */
+                                await NewGameSettings2.show(
+                                  context,
+                                  clubCode: "",
+                                  mainGameType: result['gameType'],
+                                  subGameTypes: List.from(
+                                        result['gameTypes'],
+                                      ) ??
+                                      [],
+                                );
+                              }
+                            },
+                          ),
+                        ),
+                        AppDimensionsNew.getVerticalSizedBox(16),
+                        Text(
+                          "Host a Game",
+                          style: AppStylesNew.valueTextStyle,
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      children: [
+                        TextInputWidget.buildTextFormField(
+                          controller: _textController,
+                          validator: (_) {
+                            if (_textController.text.isEmpty) {
+                              return "Enter a valid game code";
+                            }
+                            return null;
+                          },
+                          hintText: "Enter Game code",
+                          labelText: "Game code",
+                          onInfoIconPress: () {},
+                          appTheme: _appTheme,
+                        ),
+                        const SizedBox(height: 24),
+                        ButtonWidget(
+                            text: "Join Game",
+                            onTap: () {
+                              Navigator.of(context).pushNamed(
+                                WebRoutes.game_play +
+                                    "/" +
+                                    _textController.text,
+                              );
+                            }),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-            ),
-            const SizedBox(height: 24),
-            RoundRectButton2(
-              text: "Join Game",
-              onTap: () {
-                Navigator.of(context).pushNamed(
-                  WebRoutes.gameRoute,
-                  arguments: {'gameCode': _textController.text},
-                );
-              },
-              theme: AppTheme.getTheme(context),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
+
+// _defaults() async {
+//     //await AppService.getInstance().init();
+//     //await AppService.getInstance().initScreenAttribs();
+
+//     Screen.init(_context);
+//     String deviceId = new Uuid().v4().toString();
+//     deviceId = sha1.convert(utf8.encode(deviceId)).toString();
+
+//     log('deviceId: $deviceId');
+//     final resp = await AuthService.signup(
+//       deviceId: deviceId,
+//       screenName: "webplayer",
+//       displayName: "webplayer",
+//       recoveryEmail: "webplayer@gmail.com",
+//     );
+//     if (resp['status']) {
+//       // save device id, device secret and jwt
+//       AuthModel currentUser = AuthModel(
+//           deviceID: deviceId,
+//           deviceSecret: resp['deviceSecret'],
+//           name: "webplayer",
+//           uuid: resp['uuid'],
+//           playerId: resp['id'],
+//           jwt: resp['jwt']);
+//       await AuthService.save(currentUser);
+//       AppConfig.jwt = resp['jwt'];
+//       final availableCoins = await AppCoinService.availableCoins();
+//       AppConfig.setAvailableCoins(availableCoins);
+//       setState(() {});
+//     }
+//   }
+
 }
