@@ -2,11 +2,16 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:pokerapp/resources/app_constants.dart';
+import 'package:pokerapp/utils/platform.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
 class UtilService {
   static Future<String> getNatsURL() async {
+    if (PlatformUtils.isWeb) {
+      return 'wss://api.pokerclub.app';
+    }
+
     String apiServerUrl = (await SharedPreferences.getInstance())
         .getString(AppConstants.API_SERVER_URL);
 

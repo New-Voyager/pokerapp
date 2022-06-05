@@ -49,7 +49,6 @@ class GamePlayObjects {
   BuildContext _providerContext;
   PlayerInfo _currentPlayer;
   GameComService _gameComService;
-  GameInfoModel _gameInfoModel;
   GameContextObject _gameContextObj;
   GameState _gameState;
   List<PlayerInSeat> _hostSeatChangeSeats;
@@ -106,6 +105,7 @@ class GamePlayObjects {
     if (Screen.initialized) {
       this.boardAttributes = BoardAttributesObject(
         screenSize: Screen.diagonalInches,
+        orientation: BoardOrientation.horizontal,
       );
     }
   }
@@ -241,7 +241,7 @@ class GamePlayObjects {
 
     if (TestService.isTesting == true || customizationService != null) return;
 
-    if (_gameInfoModel?.tableStatus == AppConstants.GAME_RUNNING) {
+    if (gameInfoModel?.tableStatus == AppConstants.GAME_RUNNING) {
       // query current hand to get game update
       WidgetsBinding.instance.addPostFrameCallback((_) {
         log('network_reconnect: queryCurrentHand invoked');
