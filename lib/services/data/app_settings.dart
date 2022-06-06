@@ -101,7 +101,7 @@ class AppSettingsStore {
     String ret = getSetting('gameSettings.backdropAsset');
     return 'assets/images/backgrounds/new_background.png';
     if (ret == null) {
-      return 'assets/images/backgrounds/night sky.png';
+      return 'assets/images/backgrounds/night-sky.png';
     }
     return ret.toString();
   }
