@@ -125,7 +125,7 @@ class AppSettingsStore {
   String get cardBackAsset {
     String ret = getSetting('gameSettings.cardbackAsset');
     if (ret == null) {
-      return 'assets/images/card_back/set2/Asset 1.png';
+      return 'assets/images/card_back/set2/Asset-1.png';
     }
     return ret.toString();
   }

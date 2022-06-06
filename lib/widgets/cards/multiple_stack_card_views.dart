@@ -271,7 +271,7 @@ class NamePlateStackCardView extends StatelessWidget {
 
     if (card.cardFace == CardFace.BACK) {
       final cardBackImage = Image.asset(
-        'assets/images/card_back/set2/Asset 8.png',
+        'assets/images/card_back/set2/Asset-8.png',
       );
       view = Container(
         width: namePlateCardViewWidth,

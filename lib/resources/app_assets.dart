@@ -37,7 +37,7 @@ class AppAssets {
   static const String coinsImages = 'assets/images/coins.svg';
   static const String bigBetImage = 'assets/images/game/bigbet.svg';
   static const String cardBackImage =
-      'assets/images/card_back/set2/Asset 6.png';
+      'assets/images/card_back/set2/Asset-6.png';
   static const String handHistory = 'assets/images/handhistory.svg';
   static const String lastHand = 'assets/images/lasthand.svg';
   static const String highHand = 'assets/images/highhand.svg';
