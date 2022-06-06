@@ -774,7 +774,7 @@ class BetWidgetNew extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  // betAmountList(context, valueNotifierVal, appTheme),
+                  betAmountList(context, valueNotifierVal, appTheme),
                   _buildRaiseButton(
                       theme: appTheme,
                       onTap: () {
@@ -970,7 +970,7 @@ class BetWidgetNew extends StatelessWidget {
     }
 
     return Container(
-      height: 80.0,
+      height: 32.ph,
       child: ListView.builder(
         physics: BouncingScrollPhysics(),
         scrollDirection: Axis.horizontal,

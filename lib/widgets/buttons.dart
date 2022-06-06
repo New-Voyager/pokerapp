@@ -870,9 +870,11 @@ class BetAmountButton extends StatelessWidget {
     final button = Container(
       // duration: AppConstants.fastAnimationDuration,
       // curve: Curves.bounceInOut,
-      height: 30.ph,
+      height: 32.ph,
       width: 50.pw,
-      margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+      margin: const EdgeInsets.symmetric(
+        horizontal: 5,
+      ),
       padding: const EdgeInsets.all(2.0),
       decoration: BoxDecoration(
         //color: btnColor,
@@ -881,7 +883,7 @@ class BetAmountButton extends StatelessWidget {
         //   color: btnColor,
         //   width: 2.0,
         // ),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(4),
         gradient: LinearGradient(
           colors: [
             lighten(btnColor, 0.13),
