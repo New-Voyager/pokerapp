@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/models/club_members_model.dart';
 import 'package:pokerapp/models/game_history_model.dart';
@@ -25,6 +26,7 @@ import 'package:pokerapp/screens/club_screen/member_credit_history.dart';
 import 'package:pokerapp/screens/game_screens/game_history_details_view/hand_stats_view.dart';
 import 'package:pokerapp/screens/game_screens/game_history_details_view/stack_details_view.dart';
 import 'package:pokerapp/screens/game_screens/new_game_settings/choose_game_new.dart';
+import 'package:pokerapp/screens/game_screens/new_game_settings/new_game_settings2.dart';
 import 'package:pokerapp/screens/main_screens/main_screen.dart';
 import 'package:pokerapp/screens/main_screens/profile_page_view/system_announcements.dart';
 import 'package:pokerapp/screens/profile_screens/card_selector_screen.dart';
@@ -171,14 +173,15 @@ class WebRoutes {
       }
       log("GameCode: $gameCodeFromUrl");
     }
-    // launchGameCode = '';
     log("Got Webroute: ${settings.name}");
 
     switch (routeName) {
       case initial:
         return _getPageRoute(
           routeName: settings.name,
-          viewToShow: SplashScreen(),
+          // viewToShow: SplashScreen(),
+          viewToShow:
+              Scaffold(body: NewGameSettings2(null, GameType.HOLDEM, null)),
         );
 
       case registration:

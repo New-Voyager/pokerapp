@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
+import 'package:pokerapp/utils/platform.dart';
 import 'package:pokerapp/widgets/switch_new.dart';
 import 'package:provider/provider.dart';
 
@@ -51,7 +52,9 @@ class SwitchWidget2 extends StatelessWidget {
                 ? Expanded(
                     child: Text(
                       label,
-                      style: AppDecorators.getHeadLine5Style(theme: theme),
+                      style: PlatformUtils.isWeb
+                          ? AppDecorators.getHeadLine4Style(theme: theme)
+                          : AppDecorators.getHeadLine5Style(theme: theme),
                     ),
                   )
                 : SizedBox.shrink(),
@@ -67,19 +70,20 @@ class SwitchWidget2 extends StatelessWidget {
                 Consumer<ValueNotifier<bool>>(
                     builder: (_, vnValue, __) => FlutterSwitch2(
                       //width: activeText != 'On' ? 100 : 70.0,
-                      width: 50,
-                      height: 25,
+                      width: PlatformUtils.isWeb ? 100 : 50,
+                      height: PlatformUtils.isWeb ? 40 : 25,
                       disabled: disabled,
                       activeTextColor: theme.accentColor,
                       inactiveTextColor: theme.supportingColor.withAlpha(150),
                       activeSwitchBorderColor: theme.accentColor,
-                      activeSwitchBorderWidth: 1.0,
+                      activeSwitchBorderWidth: PlatformUtils.isWeb ? 2.0 : 1.0,
                       inactiveSwitchBorderColor:
                           theme.supportingColor.withAlpha(100),
-                      inactiveSwitchBorderWidth: 1.0,
+                      inactiveSwitchBorderWidth:
+                          PlatformUtils.isWeb ? 2.0 : 1.0,
                       activeColor: theme.accentColor.withAlpha(50),
                       activeToggleColor: theme.accentColor,
-                      toggleSize: 15,
+                      toggleSize: PlatformUtils.isWeb ? 30 : 15,
                       toggleBorder: Border.all(
                         color: theme.accentColor,
                         width: 0.5,
@@ -93,7 +97,7 @@ class SwitchWidget2 extends StatelessWidget {
                       activeTextFontWeight: FontWeight.w400,
                       inactiveTextFontWeight: FontWeight.w400,
                       showOnOff: true,
-                      valueFontSize: 10.0,
+                      valueFontSize: PlatformUtils.isWeb ? 15.0 : 10.0,
                       onToggle: (bool newValue) {
                         vnValue.value = newValue;
                         onChange(newValue);

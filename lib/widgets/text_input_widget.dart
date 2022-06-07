@@ -71,15 +71,8 @@ class TextInputWidget extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 5.0),
       padding: const EdgeInsets.only(bottom: 2.0),
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            width: 1.0,
-            color: theme.accentColor,
-          ),
-        ),
-      ),
       child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
           /* leading */
           leading == null
@@ -157,23 +150,25 @@ class TextInputWidget extends StatelessWidget {
             return onChange(val);
           }
         },
-        child: Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 15.0,
-            vertical: 5.0,
-          ),
-          decoration: BoxDecoration(
-            color: theme.primaryColorWithDark(),
-            borderRadius: BorderRadius.circular(5.0),
-          ),
-          child: Row(
-            children: [
-              /* build label and seperator */
-              _buildLabelAndSep(theme),
+        child: IntrinsicWidth(
+          child: Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 15.0,
+              vertical: 5.0,
+            ),
+            decoration: BoxDecoration(
+              color: theme.primaryColorWithDark(),
+              borderRadius: BorderRadius.circular(5.0),
+            ),
+            child: Row(
+              children: [
+                /* build label and seperator */
+                _buildLabelAndSep(theme),
 
-              /* main input area */
-              Expanded(child: _buildInputArea(theme)),
-            ],
+                /* main input area */
+                Expanded(child: _buildInputArea(theme)),
+              ],
+            ),
           ),
         ),
       ),
