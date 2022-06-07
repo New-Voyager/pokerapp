@@ -80,8 +80,7 @@ class Nats {
   }
 
   Future<void> init(String playerChannel) async {
-    String natsUrl = '';
-    natsUrl = await UtilService.getNatsURL();
+    String natsUrl = await UtilService.getNatsURL();
     // instantiate new clients
     _clientSub = Client();
     _clientPub = Client();

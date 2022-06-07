@@ -73,13 +73,14 @@ class GamePlayScreen extends StatefulWidget {
   // NOTE: Enable this for agora audio testing
   GamePlayScreen({
     @required this.gameCode,
+    Key key,
     this.customizationService,
     this.botGame = false,
     this.showTop = true,
     this.showBottom = true,
     this.gameInfoModel,
     this.isFromWaitListNotification = false,
-  }) : assert(gameCode != null);
+  }) : super(key: key);
 
   @override
   _GamePlayScreenState createState() => _GamePlayScreenState();
@@ -283,6 +284,12 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     try {
       await _initGameInfoModel();
     } catch (e) {
+      Alerts.showNotification(
+        titleText: "Game not found",
+        subTitleText:
+            "Gamecode: '${widget.gameCode}' not found in our servers!",
+        duration: Duration(seconds: 3),
+      );
       log(e.toString());
       if (mounted) Navigator.pop(context);
     }

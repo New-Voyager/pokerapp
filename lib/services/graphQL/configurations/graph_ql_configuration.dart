@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:pokerapp/main-web.dart';
@@ -18,7 +20,10 @@ class GraphQLConfiguration {
   }
 
   HttpLink httpLink() {
-    return HttpLink(apiURL);
+    return HttpLink(apiURL, defaultHeaders: {
+      HttpHeaders.acceptHeader: '*',
+      HttpHeaders.accessControlAllowOriginHeader: '*',
+    });
   }
 
   AuthLink authLink() {
@@ -26,23 +31,6 @@ class GraphQLConfiguration {
       return 'jwt ${AppConfig.jwt}';
     });
   }
-
-  AuthLink authLinkWeb() {
-    return AuthLink(getToken: () async {
-      return 'jwt ${AppConfig.jwt}';
-    });
-
-    // return AuthLink(getToken: () async {
-    //   return 'Bearer 902a5058-21d1-4d23-976d-f225aa3d942f';
-    // });
-  }
-
-  // final ValueNotifier<GraphQLClient> client = ValueNotifier(
-  //   GraphQLClient(
-  //     link: authLink.concat(httpLink),
-  //     cache: OptimisticCache(dataIdFromObject: typenameDataIdFromObject),
-  //   ),
-  // );
 
   ValueNotifier<GraphQLClient> client() {
     return ValueNotifier(
@@ -53,26 +41,10 @@ class GraphQLConfiguration {
     );
   }
 
-  ValueNotifier<GraphQLClient> webclient() {
-    return ValueNotifier(
-      GraphQLClient(
-        link: authLinkWeb().concat(httpLink()),
-        cache: GraphQLCache(),
-      ),
-    );
-  }
-
   GraphQLClient clientToQuery() {
-    if (PlatformUtils.isWeb) {
-      return GraphQLClient(
-        link: authLinkWeb().concat(httpLink()),
-        cache: GraphQLCache(),
-      );
-    } else {
-      return GraphQLClient(
-        link: authLink().concat(httpLink()),
-        cache: GraphQLCache(),
-      );
-    }
+    return GraphQLClient(
+      link: authLink().concat(httpLink()),
+      cache: GraphQLCache(),
+    );
   }
 }
