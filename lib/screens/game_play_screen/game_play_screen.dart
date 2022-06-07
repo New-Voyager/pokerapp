@@ -283,6 +283,12 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     try {
       await _initGameInfoModel();
     } catch (e) {
+      Alerts.showNotification(
+        titleText: "Game not found",
+        subTitleText:
+            "Gamecode: '${widget.gameCode}' not found in our servers!",
+        duration: Duration(seconds: 3),
+      );
       log(e.toString());
       if (mounted) Navigator.pop(context);
     }

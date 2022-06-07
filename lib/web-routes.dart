@@ -162,9 +162,10 @@ class WebRoutes {
     if (settings.name.contains("/game/")) {
       gameCodeFromUrl = settings.name.replaceAll("/game/", "");
       routeName = game_play;
+      log("GameCode: $gameCodeFromUrl");
     }
-    log("GameCode: $gameCodeFromUrl");
     log("Got Webroute: ${settings.name}");
+
     switch (routeName) {
       case initial:
         return _getPageRoute(
