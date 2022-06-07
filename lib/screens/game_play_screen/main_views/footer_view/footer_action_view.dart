@@ -282,6 +282,13 @@ class _FooterActionViewState extends State<FooterActionView> {
       btnColor = Colors.green.shade700;
     } else if (text.toLowerCase().contains("raise")) {
       btnColor = Colors.green.shade700;
+    } else if (text.toLowerCase().contains("dummy")) {
+      return Container(
+        height: 32.ph,
+        margin: const EdgeInsets.only(left: 5),
+        padding: const EdgeInsets.all(2.0),
+        width: 80.pw,
+      );
     }
     if (disable) {
       btnColor = Colors.grey;
@@ -572,22 +579,34 @@ class _FooterActionViewState extends State<FooterActionView> {
               theme: theme,
             );
           } else {
-            closeButton = true;
-          }
-          break;
-        case CALL:
-          if (playerAction.callAmount > 0) {
+            // closeButton = true;
             actionWidget = _buildRoundButton(
-              text: action.actionName +
-                  ' ' +
-                  DataFormatter.chipsFormat(action.actionValue),
-              onTap: () => _call(
-                playerAction.callAmount,
-                context: context,
-              ),
+              isSelected: _showOptions,
+              text: "dummy",
+              onTap: () {
+                setState(() {
+                  _showOptions = !_showOptions;
+                  betWidgetShown = true;
+                  widget.isBetWidgetVisible?.call(_showOptions);
+                });
+              },
               theme: theme,
             );
           }
+          break;
+        case CALL:
+          // if (playerAction.callAmount > 0) {
+          actionWidget = _buildRoundButton(
+            text: action.actionName +
+                ' ' +
+                DataFormatter.chipsFormat(action.actionValue),
+            onTap: () => _call(
+              playerAction.callAmount,
+              context: context,
+            ),
+            theme: theme,
+          );
+          // }
           break;
 
         /* on tapping on RAISE this button should highlight and show further options */
@@ -605,7 +624,19 @@ class _FooterActionViewState extends State<FooterActionView> {
               theme: theme,
             );
           } else {
-            closeButton = true;
+            // closeButton = true;
+            actionWidget = _buildRoundButton(
+              isSelected: _showOptions,
+              text: "dummy",
+              onTap: () {
+                setState(() {
+                  _showOptions = !_showOptions;
+                  betWidgetShown = true;
+                  widget.isBetWidgetVisible?.call(_showOptions);
+                });
+              },
+              theme: theme,
+            );
           }
           break;
       }
