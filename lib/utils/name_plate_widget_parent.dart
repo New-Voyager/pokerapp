@@ -23,8 +23,6 @@ abstract class NamePlateWidgetParent {
   /// returns the current size of name plate widget
   static Size get namePlateSize => Size(_width, _width / _aspectRatio);
 
-  static double get topWidgetOffset => namePlateSize.height * 0.25;
-
   static Widget build({
     @required Widget child,
     @required BoxDecoration decoration,

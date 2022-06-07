@@ -99,7 +99,7 @@ class AppSettingsStore {
 
   String get backdropAsset {
     String ret = getSetting('gameSettings.backdropAsset');
-    return 'assets/images/backgrounds/new_background.png';
+    return 'assets/images/backgrounds/carpet1.png';
     if (ret == null) {
       return 'assets/images/backgrounds/night-sky.png';
     }

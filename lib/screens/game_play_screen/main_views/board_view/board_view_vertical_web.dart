@@ -9,24 +9,23 @@ import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/boar
 import 'package:pokerapp/screens/game_play_screen/main_views/animating_widgets/card_distribution_animating_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/center_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/decorative_views/table_view.dart';
-import 'package:pokerapp/screens/game_play_screen/main_views/board_view/players_on_table_view_new.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/board_view/players_on_table_view_vertical.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/animating_widgets/stack_switch_seat_animating_widget.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/utils/name_plate_widget_parent.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/debug_border_widget.dart';
 import 'package:provider/provider.dart';
-import 'package:tuple/tuple.dart';
 
 import 'decorative_views/background_view.dart';
 
-class BoardView extends StatefulWidget {
+class BoardViewVerticalWeb extends StatefulWidget {
   final GameComService gameComService;
   final GameInfoModel gameInfo;
   final Function(Seat seat) onUserTap;
   final Function() onStartGame;
 
-  BoardView({
+  BoardViewVerticalWeb({
     @required this.gameInfo,
     @required this.onUserTap,
     @required this.onStartGame,
@@ -34,10 +33,10 @@ class BoardView extends StatefulWidget {
   });
 
   @override
-  State<BoardView> createState() => _BoardViewState();
+  State<BoardViewVerticalWeb> createState() => _BoardViewVerticalWebState();
 }
 
-class _BoardViewState extends State<BoardView> {
+class _BoardViewVerticalWebState extends State<BoardViewVerticalWeb> {
   GameState gameState;
 
   @override
@@ -61,17 +60,11 @@ class _BoardViewState extends State<BoardView> {
 
     return DebugBorderWidget(
       key: gameState.gameUIState.boardKey,
-      color: Colors.amber,
+      color: Colors.transparent,
       child: Stack(
         clipBehavior: Clip.none,
         alignment: Alignment.center,
         children: [
-          Container(
-            width: double.infinity,
-            height: dimensions.height,
-            child: BackgroundView(),
-          ),
-
           Positioned(
             bottom: NamePlateWidgetParent.namePlateSize.height,
             child: DebugBorderWidget(
@@ -91,7 +84,7 @@ class _BoardViewState extends State<BoardView> {
 
               Widget child = DebugBorderWidget(
                 color: Colors.green,
-                child: PlayersOnTableViewNew(
+                child: PlayersOnTableViewNewVertical(
                   tableSize: size,
                   onUserTap: widget.onUserTap,
                   gameComService: widget.gameComService,

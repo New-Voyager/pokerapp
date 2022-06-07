@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/services/app/util_service.dart';
 import 'package:pokerapp/services/nats/message.dart';
+import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/platform.dart';
 
 import 'subscription.dart';
@@ -30,6 +31,10 @@ class Nats {
   Nats() {}
 
   bool get connectionBroken {
+    if (TestService.isTesting) {
+      return false;
+    }
+
     if (!_initialized) {
       return true;
     }

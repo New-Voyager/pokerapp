@@ -44,6 +44,7 @@ import '../../routes.dart';
 import '../../services/test/test_service.dart';
 import 'game_play_screen_util_methods.dart';
 import 'main_views/board_view/board_view.dart';
+import 'main_views/board_view/board_view_vertical_web.dart';
 
 /*
 7 inch tablet
@@ -329,29 +330,45 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         MediaQuery.of(context).size.height * boardAttributes.footerViewScale;
 
     footerHeight += boardAttributes.bottomHeightAdjust;
-
+    double boardHeight = boardDimensions.height;
+    double boardWidth = boardDimensions.width;
+    Widget boardView = BoardView(
+      gameComService: gameContextObj?.gameComService,
+      gameInfo: gameInfo,
+      onUserTap: onJoinGame,
+      onStartGame: startGame,
+    );
+    EdgeInsets padding = null;
+    if (PlatformUtils.isWeb) {
+      if (boardAttributes.isOrientationHorizontal) {
+      } else {
+        boardView = BoardViewVerticalWeb(
+          gameComService: gameContextObj?.gameComService,
+          gameInfo: gameInfo,
+          onUserTap: onJoinGame,
+          onStartGame: startGame,
+        );
+      }
+    } else {
+      if (boardAttributes.isOrientationHorizontal) {
+      } else {
+        boardView = BoardViewVertical(
+          gameComService: gameContextObj?.gameComService,
+          gameInfo: gameInfo,
+          onUserTap: onJoinGame,
+          onStartGame: startGame,
+        );
+        boardHeight = null;
+        padding = EdgeInsets.only(bottom: footerHeight / 3);
+      }
+    }
     return Container(
-      width: boardDimensions.width,
-      height: (boardAttributes.isOrientationHorizontal)
-          ? boardDimensions.height
-          : null,
-      padding: (boardAttributes.isOrientationHorizontal)
-          ? null
-          : EdgeInsets.only(bottom: footerHeight / 3),
+      width: boardWidth,
+      height: boardHeight,
+      padding: padding,
       child: DebugBorderWidget(
-        child: (boardAttributes.isOrientationHorizontal)
-            ? BoardView(
-                gameComService: gameContextObj?.gameComService,
-                gameInfo: gameInfo,
-                onUserTap: onJoinGame,
-                onStartGame: startGame,
-              )
-            : BoardViewVertical(
-                gameComService: gameContextObj?.gameComService,
-                gameInfo: gameInfo,
-                onUserTap: onJoinGame,
-                onStartGame: startGame,
-              ),
+        color: Color.fromARGB(255, 95, 108, 223),
+        child: boardView,
       ),
     );
   }

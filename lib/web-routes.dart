@@ -179,9 +179,9 @@ class WebRoutes {
       case initial:
         return _getPageRoute(
           routeName: settings.name,
-          // viewToShow: SplashScreen(),
-          viewToShow:
-              Scaffold(body: NewGameSettings2(null, GameType.HOLDEM, null)),
+          viewToShow: SplashScreen(),
+          // viewToShow:
+          //     Scaffold(body: NewGameSettings2(null, GameType.HOLDEM, null)),
         );
 
       case registration:

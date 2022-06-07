@@ -35,6 +35,7 @@ import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
+import 'package:pokerapp/utils/platform.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:provider/provider.dart';
@@ -102,10 +103,14 @@ class GamePlayObjects {
   }
 
   void initialzeBoardAttributes() {
+    BoardOrientation orientation = BoardOrientation.vertical;
+    if (PlatformUtils.isWeb) {
+      orientation = BoardOrientation.horizontal;
+    }
     if (Screen.initialized) {
       this.boardAttributes = BoardAttributesObject(
         screenSize: Screen.diagonalInches,
-        orientation: BoardOrientation.horizontal,
+        orientation: orientation,
       );
     }
   }
@@ -184,6 +189,10 @@ class GamePlayObjects {
       return;
     }
 
+    if (TestService.isTesting) {
+      return;
+    }
+
     if (_nats != null && _nats.connectionBroken) {
       final BuildContext context = navigatorKey.currentState.overlay.context;
       // we don't have connection to Nats server
@@ -222,6 +231,9 @@ class GamePlayObjects {
   }
 
   void reconnectGameComService() async {
+    if (TestService.isTesting) {
+      return;
+    }
     log('network_reconnect: _reconnectGameComService invoked');
     final nats = context.read<Nats>();
     if (nats.connectionBroken) {
@@ -467,23 +479,16 @@ class GamePlayObjects {
         await _gameState.refreshSettings();
         await _gameState.refreshPlayerSettings();
         await _gameState.refreshNotes();
+        if (_nats.connectionBroken) {
+          await _nats.reconnect();
+        }
+        // ask for game messages
+        // tdo: reqplayerinfo
+        // _gameComService.gameMessaging.askForChatMessages();
+        _gameComService.gameMessaging?.requestPlayerInfo();
       }
-      if (_nats.connectionBroken) {
-        await _nats.reconnect();
-      }
-
-      // ask for game messages
-      // tdo: reqplayerinfo
-      // _gameComService.gameMessaging.askForChatMessages();
-      _gameComService.gameMessaging?.requestPlayerInfo();
 
       log('initializing game state done');
-    }
-
-    // _audioPlayer = AudioPlayer();
-    log('establishing audio conference');
-    if (_nats.connectionBroken) {
-      await _nats.reconnect();
     }
 
     if (TestService.isTesting || customizationService != null) {

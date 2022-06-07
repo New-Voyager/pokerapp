@@ -694,23 +694,34 @@ class BoardAttributesObject extends ChangeNotifier {
   Size dimensions(BuildContext context) {
     var _widthMultiplier = 0.78;
     var _heightMultiplier = 2.0;
+    Size screen = MediaQuery.of(context).size;
     double width = MediaQuery.of(context).size.width;
     double heightOfBoard = width * _widthMultiplier * _heightMultiplier;
     double widthOfBoard = width * _widthMultiplier;
+    double footerHeight = (Screen.height * footerViewScale);
+    double boardHeight = Screen.height - footerHeight;
 
+    log('Screen: board height: ${heightOfBoard} width: ${widthOfBoard}');
+    double tableHeight = heightOfBoard;
     if (this.orientation == BoardOrientation.horizontal) {
       widthOfBoard = MediaQuery.of(context).size.width;
       heightOfBoard = MediaQuery.of(context).size.height / 2.5;
+      tableHeight = heightOfBoard - 70;
     } else {
+      //heightOfBoard = screen.height - _heightMultiplier;
       widthOfBoard = MediaQuery.of(context).size.width;
+      tableHeight =
+          boardHeight - 70; // remove hardcoded stuff with NamePlateHeight
+      if (PlatformUtils.isWeb) {
+        //tableHeight = (heightOfBoard - (Screen.height * footerViewScale));
+      }
     }
-    this._tableSize = Size(widthOfBoard, heightOfBoard - 70);
+    this._tableSize = Size(widthOfBoard, tableHeight);
     this._centerSize = Size(widthOfBoard - 30, this._tableSize.height - 70);
     double adjust = 0;
     adjust = this.boardHeightAdjust;
-    double footerHeight = (Screen.height * footerViewScale);
-    double boardHeight = Screen.height - footerHeight;
     this._boardSize = Size(widthOfBoard, boardHeight + adjust);
+    log('Screen: screen size: ${screen} board: ${_boardSize} table: ${this._tableSize} footer: ${footerHeight}');
     return this._boardSize;
   }
 
@@ -818,9 +829,18 @@ class BoardAttributesObject extends ChangeNotifier {
     return attribsObj.otherBetOptionButtonsSpreadRadius;
   }
 
+  // double get footerViewScale {
+  //   if (isOrientationHorizontal) {
+  //     return attribsObj.footerViewScale;
+  //   }
+  //   return attribsObj.footerViewScale / 1.2;
+  // }
+
   double get footerViewScale {
-    if (isOrientationHorizontal) return attribsObj.footerViewScale;
-    return attribsObj.footerViewScale / 1.2;
+    if (isOrientationHorizontal) {
+      return 0.50;
+    }
+    return 0.25;
   }
 
   double get boardHeightAdjust {
