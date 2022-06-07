@@ -83,6 +83,7 @@ class GameInfoModel {
   Map<int, GamePlayer> allPlayers = Map<int, GamePlayer>();
 
   bool demoGame;
+  bool tournament = false;
 
   /* this constructor is used in the replay hand section */
   GameInfoModel({
@@ -201,6 +202,77 @@ class GameInfoModel {
     this.demoGame = data['demoGame'] ?? false;
   }
 
+  GameInfoModel.fromTournamentGameInfoJson(var data, {int maxPlayers}) {
+    this.gameID = data['gameID'] ?? 0;
+    this.gameCode = data['gameCode'];
+    this.clubCode = data['clubCode'];
+    this.actionTime = data['actionTime'];
+    this.maxPlayers = maxPlayers ?? data['maxPlayersInTable'];
+    this.title = data['title'];
+    this.gameType = data['gameType'];
+    this.chipUnit = ChipUnit.DOLLAR;
+    if (data['chipUnit'] == 'CENT') {
+      this.chipUnit = ChipUnit.CENT;
+    }
+    this.smallBlind = double.parse(data['smallBlind'].toString());
+    this.bigBlind = double.parse(data['bigBlind'].toString());
+    if (data['ante'] != null) {
+      this.ante = double.parse(data['ante'].toString());
+    } else {
+      data['ante'] = 0.0;
+    }
+    this.status = data['status'];
+    this.tableStatus = data['tableStatus'];
+    this.utgStraddleAllowed = data['utgStraddleAllowed'] ?? false;
+    this.buttonStraddleAllowed = data['buttonStraddleAllowed'] ?? false;
+    this.availableSeats = [];
+    this.playersInSeats = data['players']
+        .map<PlayerModel>((e) => PlayerModel.fromTournamentJson(e))
+        .toList();
+
+    this.gameToken = data['gameToken'];
+    this.playerGameStatus = data['playerGameStatus'];
+    this.playerRunItTwice = data['playerRunItTwiceConfig'] ?? false;
+    this.playerMuckLosingHand = data['playerMuckLosingHandConfig'] ?? false;
+    this.botGame = data['botGame'];
+    this.sessionTime = data['sessionTime'] ?? 0;
+    this.runningTime = data['runningTime'] ?? 0;
+    this.noHandsWon = data['noHandsWon'] ?? 0;
+    this.noHandsPlayed = data['noHandsPlayed'] ?? 0;
+    this.allowRabbitHunt = data['allowRabbitHunt'] ?? true;
+    this.showHandRank = data['showHandRank'] ?? false;
+    this.waitlistAllowed = data['waitlistAllowed'] ?? false;
+    this.ipCheck = data['ipCheck'] ?? false;
+    this.gpsCheck = data['gpsCheck'] ?? false;
+    this.handNum = data['handNum'] ?? 0;
+
+    // Nats Server channels
+    this.gameToPlayerChannel = data['gameToPlayerChannel'];
+    this.playerToHandChannel = data['playerToHandChannel'];
+    this.handToPlayerTextChannel = data['handToPlayerTextChannel'];
+    this.handToAllChannel = data['handToAllChannel'];
+    this.handToPlayerChannel = data['handToPlayerChannel'];
+    this.gameChatChannel = data['gameChatChannel'];
+    this.clientAliveChannel = data['clientAliveChannel'];
+
+    this.audioConfEnabled = data['audioConfEnabled'] ?? false;
+    this.janusUrl = data['janusUrl'];
+    this.janusRoomId = data['janusRoomId'];
+    this.janusRoomPin = data['janusRoomPin'];
+    this.janusToken = data['janusToken'];
+    this.janusSecret = data['janusSecret'];
+
+    this.useAgora = data['useAgora'];
+    this.agoraAppId = data['agoraAppId'];
+    this.agoraToken = data['agoraToken'];
+
+    this.sfuUrl = data['sfuUrl'];
+    this.livekitUrl = data['livekitUrl'];
+    this.livekitToken = data['livekitToken'];
+    this.demoGame = data['demoGame'] ?? false;
+    this.tournament = true;
+  }
+
   void gameEnded() {
     status = 'ENDED';
   }
@@ -294,6 +366,44 @@ class GameInfoModel {
       demoGame
     }
   } """;
+
+  // tournament game info
+  static String tournamentGameInfoQuery(String gameCode) =>
+      """query tournamentGameInfo {
+        getTournamentGameInfo(gameCode:"$gameCode") {
+              gameID
+              actionTime
+              maxPlayersInTable
+              title
+              chipUnit
+              smallBlind
+              bigBlind
+              ante
+              status
+              tableStatus
+              level
+              gameType
+              nextLevel
+              gameCode
+              nextLevelTimeInSecs
+              gameChatChannel
+              gameToPlayerChannel
+              playerToHandChannel
+              handToPlayerChannel
+              handToAllChannel
+              clientAliveChannel
+              players {
+                playerId
+                playerUuid
+                playerName
+                stack
+                seatNo
+                status
+              }
+              handToPlayerTextChannel
+    }
+  }
+  """;
 }
 
 class ClubInfo {

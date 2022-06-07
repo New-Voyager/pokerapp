@@ -1,6 +1,8 @@
 import 'package:intl/intl.dart';
 
 class AppConstants {
+  static String UUID = "";
+
   AppConstants._();
   static const double largeTableWidth = 1200.0;
   static const double mediumTableWidth = 800.0;

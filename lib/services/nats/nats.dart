@@ -80,12 +80,7 @@ class Nats {
   }
 
   Future<void> init(String playerChannel) async {
-    String natsUrl = '';
-    if (PlatformUtils.isWeb) {
-      natsUrl = 'ws://192.168.0.103:8090';
-    } else {
-      natsUrl = await UtilService.getNatsURL();
-    }
+    String natsUrl = await UtilService.getNatsURL();
     // instantiate new clients
     _clientSub = Client();
     _clientPub = Client();

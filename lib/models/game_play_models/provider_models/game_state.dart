@@ -544,6 +544,10 @@ class GameState {
     return playerLocalConfig.colorCards;
   }
 
+  bool get isTournament {
+    return this._gameInfo.tournament ?? false;
+  }
+
   bool get ended {
     return this._gameInfo.status == AppConstants.GAME_ENDED;
   }
@@ -647,6 +651,10 @@ class GameState {
 
   Future<void> refreshSettings() async {
     log('************ Refreshing game state refreshSettings');
+    if (this.isTournament) {
+      return;
+    }
+
     // fetch new player using GameInfo API and add to the game
     GameSettings settings = await GameSettingsService.getGameSettings(gameCode);
 
@@ -680,6 +688,10 @@ class GameState {
   }
 
   Future<void> refreshPlayerSettings() async {
+    if (this.isTournament) {
+      return;
+    }
+
     log('************ Refreshing game state refreshPlayerSettings');
     GamePlayerSettings settings =
         await GameSettingsService.getGamePlayerSettings(gameCode);
@@ -814,6 +826,10 @@ class GameState {
 
   Future<void> refreshNotes() async {
     try {
+      if (this.isTournament) {
+        return;
+      }
+
       // final playerIds = this._playersInGame.map((e) => e.playerId).toList();
       // final playerNotes = await PlayerService.getPlayerNotes(playerIds);
       final playerNotes = await GameService.getPlayersWithNotes(gameCode);

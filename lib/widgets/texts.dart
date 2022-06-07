@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
+import 'package:pokerapp/utils/platform.dart';
 
 class WrapText extends StatelessWidget {
   final AppTheme theme;
@@ -112,7 +113,9 @@ class LabelText extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: padding),
       child: Text(
         label,
-        style: AppDecorators.getHeadLine5Style(theme: theme),
+        style: PlatformUtils.isWeb
+            ? AppDecorators.getHeadLine4Style(theme: theme)
+            : AppDecorators.getHeadLine5Style(theme: theme),
       ),
     );
   }

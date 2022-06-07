@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -59,6 +60,7 @@ class AuthService {
     sharedPreferences.setString(AppConstants.DEVICE_ID, currentUser.deviceID);
     sharedPreferences.setString(
         AppConstants.DEVICE_SECRET, currentUser.deviceSecret);
+    sharedPreferences.setString(AppConstants.UUID, currentUser.uuid ?? "");
     _user = currentUser;
     return;
   }
@@ -105,6 +107,9 @@ class AuthService {
       String deviceId, String deviceSecret) async {
     Map<String, String> header = {
       'Content-type': 'application/json',
+      'Accept': 'application/json',
+      HttpHeaders.acceptHeader: '*',
+      HttpHeaders.accessControlAllowOriginHeader: '*',
     };
     String body = jsonEncode({
       "device-id": deviceId,
@@ -141,6 +146,7 @@ class AuthService {
       String displayName}) async {
     Map<String, String> header = {
       'Content-type': 'application/json',
+      HttpHeaders.accessControlAllowOriginHeader: '*',
     };
     final attribs = ScreenAttributes.getScreenAttribsObject(
         DeviceInfo.model, Screen.diagonalInches, Screen.size);
@@ -155,22 +161,28 @@ class AuthService {
       "screen-dimension": Screen.size.toString(),
       "app-version": versionNumber,
     };
-    if (recoveryEmail != null) {
+    if (recoveryEmail != null && recoveryEmail.isNotEmpty) {
       payload["email"] = recoveryEmail;
     }
 
-    if (displayName != null) {
+    if (displayName != null && displayName.isNotEmpty) {
       payload["display-name"] = displayName;
     }
-    String body = jsonEncode(payload);
+    log("Payload: $payload");
+    final bodyStr = jsonEncode(payload);
 
     String apiServerUrl = AppConfig.apiUrl;
 
-    final response = await http.post(
-      Uri.parse('$apiServerUrl/auth/signup'),
-      headers: header,
-      body: body,
-    );
+    var response;
+    try {
+      response = await http.post(
+        Uri.parse('$apiServerUrl/auth/signup'),
+        headers: header,
+        body: bodyStr,
+      );
+    } catch (e) {
+      log("message: ${e.message}");
+    }
 
     String resBody = response.body;
     final respBody = jsonDecode(resBody);
@@ -359,7 +371,8 @@ class AuthService {
       return null;
     }
     var data = result.data['ret'];
-    AuthModel auth = _user;
+    AuthModel auth = AuthModel(); //
+    if (_user != null) auth = _user;
     auth.email = data['email'];
     auth.name = data['name'];
     auth.playerId = data['id'];

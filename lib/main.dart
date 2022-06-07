@@ -27,9 +27,18 @@ import 'models/ui/app_text.dart';
 import 'package:sizer/sizer.dart';
 
 import 'models/ui/app_theme_styles.dart';
+import 'services/app/util_service.dart';
 
 AppService appService = AppService();
 AppState appState = AppState();
+
+Future<String> getNatsUrl() async {
+  if (PlatformUtils.isWeb) {
+    return 'wss://api.pokerclub.app';
+  } else {
+    return UtilService.getNatsURL();
+  }
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

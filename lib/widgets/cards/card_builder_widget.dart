@@ -151,7 +151,7 @@ class CardBuilderWidget extends StatelessWidget {
     if (this.backCardBytes != null) {
       cardBackImage = Image.memory(this.backCardBytes);
     } else {
-      cardBackImage = Image.asset('assets/images/card_back/set2/Asset 8.png');
+      cardBackImage = Image.asset('assets/images/card_back/set2/Asset-8.png');
     }
 
     return ClipRRect(
