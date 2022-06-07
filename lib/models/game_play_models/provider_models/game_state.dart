@@ -214,6 +214,8 @@ class GameState {
   // next action id
   String currentActionId;
 
+  BoardAttributesObject boardAttributes;
+
   final communityCardState = CommunityCardState();
 
   Future<void> initialize({
@@ -929,6 +931,9 @@ class GameState {
     BuildContext context, {
     bool listen: false,
   }) {
+    if (this.boardAttributes != null) {
+      return boardAttributes;
+    }
     return Provider.of<BoardAttributesObject>(context, listen: listen);
   }
 

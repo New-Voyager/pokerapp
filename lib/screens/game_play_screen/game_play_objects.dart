@@ -408,6 +408,7 @@ class GamePlayObjects {
     // instantiate the dialog object
     _dialog = NetworkConnectionDialog();
     _gameState = GameState();
+    _gameState.boardAttributes = boardAttributes;
 
     if (!TestService.isTesting && customizationService == null) {
       // subscribe the NATs channels

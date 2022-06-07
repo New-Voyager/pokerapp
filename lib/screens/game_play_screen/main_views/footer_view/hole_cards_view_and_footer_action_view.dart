@@ -284,21 +284,29 @@ class _HoleCardsViewAndFooterActionViewState
       return SizedBox.shrink();
     }
 
+    double rankMarigin = 40.0.ph;
+    final boardAttributes = gameState.getBoardAttributes(context);
+
+    var padding = EdgeInsets.symmetric(horizontal: 8, vertical: 4);
+    if (!boardAttributes.isOrientationHorizontal) {
+      rankMarigin = 5.0.ph;
+      padding = EdgeInsets.symmetric(horizontal: 8, vertical: 2);
+    }
+
     return DebugBorderWidget(
       color: Colors.amber,
       child: (!me.rankText.isEmpty)
           ? Container(
-              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              margin: EdgeInsets.only(bottom: 40.0.ph),
+              padding: padding,
+              margin: EdgeInsets.only(bottom: rankMarigin),
               decoration: BoxDecoration(
                   color: Colors.black.withAlpha(180),
-                  // border: Border.all(color: Colors.white, width: 2),
+                  border: Border.all(color: theme.primaryColor, width: 2),
                   borderRadius: BorderRadius.circular(8)),
               child: Text(
                 me.rankText,
-                style: AppDecorators.getHeadLine5Style(theme: theme).copyWith(
-                  fontSize: 14.0,
-                ),
+                style: AppDecorators.getHeadLine5Style(theme: theme)
+                    .copyWith(fontSize: 14.0, color: Colors.white),
               ),
             )
           : SizedBox.shrink(),
@@ -380,6 +388,7 @@ class _HoleCardsViewAndFooterActionViewState
                 child: DebugBorderWidget(
                   color: Colors.green,
                   child: Stack(
+                    clipBehavior: Clip.none,
                     alignment: Alignment.center,
                     children: [
                       Align(
@@ -387,8 +396,9 @@ class _HoleCardsViewAndFooterActionViewState
                               ? Alignment.center
                               : Alignment.bottomCenter,
                           child: cardsWidget),
-                      Align(
-                        alignment: Alignment.bottomCenter,
+                      Positioned(
+                        left: 0,
+                        bottom: 0,
                         child: rankText,
                       ),
 

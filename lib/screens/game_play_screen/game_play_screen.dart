@@ -517,11 +517,16 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
         /* This listenable provider takes care of showing or hiding the chat widget */
         return ListenableProvider<ValueNotifier<bool>>(
-          // default value false means, we keep the chat window hidden initially
-          create: (_) => ValueNotifier<bool>(false),
-          builder: (context, _) =>
-              _buildCoreBody(context, gamePlayObjects.boardAttributes),
-        );
+            // default value false means, we keep the chat window hidden initially
+            create: (_) => ValueNotifier<bool>(false),
+            builder: (context, _) {
+              return ListenableProvider<BoardAttributesObject>(
+                  create: (_) => gamePlayObjects.gameState.boardAttributes,
+                  builder: (context, _) {
+                    return _buildCoreBody(
+                        context, gamePlayObjects.boardAttributes);
+                  });
+            });
       },
     );
   }

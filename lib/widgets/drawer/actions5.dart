@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
+import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/services/game_play/graphql/gamesettings_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/widgets/menu_list_tile.dart';
+import 'package:pokerapp/widgets/radio_list_widget.dart';
+import 'package:pokerapp/widgets/texts.dart';
 
 class Actions5Widget extends StatefulWidget {
   final GameState gameState;
@@ -39,6 +43,39 @@ class _Actions5WidgetState extends State<Actions5Widget> {
         onSwitchChanged: (val) {},
       ));
     }
+
+    final boardAttributes = widget.gameState.getBoardAttributes(context);
+    int defaultValue = 0; // horizontal/landscape
+    if (!boardAttributes.isOrientationHorizontal) {
+      defaultValue = 1; // vertical/portrait
+    }
+    AppTheme theme = AppTheme.getTheme(context);
+    Widget layout = Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+          child: SubTitleText(text: "Board Layout", theme: theme),
+        ),
+        Center(
+            child: RadioToggleButtonsWidget<String>(
+                defaultValue: defaultValue,
+                values: ['Landscape', 'Portrait'],
+                onSelect: (int value) async {
+                  if (value == 0) {
+                    boardAttributes.orientation = BoardOrientation.horizontal;
+                  } else if (value == 1) {
+                    boardAttributes.orientation = BoardOrientation.vertical;
+                  }
+                })),
+        SizedBox(
+          height: 8,
+        ),
+      ],
+    );
+    children.add(layout);
+
     children.addAll([
       MenuListTile(
         title: text['runItTwice'],
