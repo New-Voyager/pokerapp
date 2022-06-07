@@ -20,6 +20,7 @@ import 'package:pokerapp/services/data/box_type.dart';
 import 'package:pokerapp/services/data/hive_datasource_impl.dart';
 import 'package:pokerapp/services/gql_errors.dart';
 import 'package:pokerapp/services/tenor/src/model/tenor_result.dart';
+import 'package:pokerapp/utils/alerts.dart';
 
 class JoinGameResponse {
   String status;
@@ -747,6 +748,15 @@ class GameService {
 
       if (result.hasException) {
         log(result.exception.toString());
+        String message = result.exception.toString();
+        if (message.contains('XMLHttpRequest error')) {
+          Alerts.showNotification(
+            titleText: "Game not found",
+            subTitleText: "Gamecode: '${gameCode}' threw XMLHttpRequest error!",
+            duration: Duration(seconds: 3),
+          );
+          return null;
+        }
         if (result.exception.graphqlErrors.length > 0) {
           return null;
         }

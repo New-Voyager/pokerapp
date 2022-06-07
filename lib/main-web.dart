@@ -4,6 +4,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/app_state.dart';
+import 'package:pokerapp/models/auth_model.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/screen_attributes.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
@@ -13,6 +14,7 @@ import 'package:pokerapp/models/ui/app_theme_styles.dart';
 import 'package:pokerapp/resources/app_config.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/screens/layouts/layout_holder.dart';
+import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/utils/platform.dart';
 import 'package:pokerapp/utils/utils.dart';
@@ -32,7 +34,7 @@ void main() async {
 
   runApp(
     GraphQLProvider(
-      client: graphQLConfiguration.webclient(),
+      client: graphQLConfiguration.client(),
       child: CacheProvider(
         child: MyWebApp(),
       ),
@@ -75,10 +77,48 @@ class _MyWebAppState extends State<MyWebApp> {
     super.dispose();
   }
 
+  Future<void> loginIfNeeded() async {
+    // login if the user has already logged in here before
+    if (AppConfig.deviceId != null || AppConfig.deviceSecret != null) {
+      final resp = await AuthService.newlogin(
+          AppConfig.deviceId, AppConfig.deviceSecret);
+      if (resp['status']) {
+        // Need to initialize before queries
+        await graphQLConfiguration.init();
+
+        // successfully logged in
+        AppConfig.jwt = resp['jwt'];
+        // save device id, device secret and jwt
+        AuthModel currentUser = AuthModel(
+            deviceID: AppConfig.deviceId,
+            deviceSecret: AppConfig.deviceSecret,
+            name: resp['name'],
+            uuid: resp['uuid'],
+            playerId: resp['id'],
+            jwt: resp['jwt']);
+        await AuthService.save(currentUser);
+        AppConfig.jwt = resp['jwt'];
+      }
+    }
+  }
+
   @override
   void initState() {
-    initialized = true;
     super.initState();
+    final url = Uri.base.toString();
+    if (url.contains("/game/")) {
+      Uri uri = Uri.parse(url);
+      String path = uri.fragment;
+      final gameCodeFromUrl = path.replaceAll("/game/", "");
+      WebRoutes.launchGameCode = gameCodeFromUrl;
+      log("GameCode: $gameCodeFromUrl");
+    }
+    loginIfNeeded().then((value) {
+      initialized = true;
+      if (mounted) {
+        setState(() {});
+      }
+    });
   }
 
   @override

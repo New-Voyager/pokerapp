@@ -73,13 +73,14 @@ class GamePlayScreen extends StatefulWidget {
   // NOTE: Enable this for agora audio testing
   GamePlayScreen({
     @required this.gameCode,
+    Key key,
     this.customizationService,
     this.botGame = false,
     this.showTop = true,
     this.showBottom = true,
     this.gameInfoModel,
     this.isFromWaitListNotification = false,
-  }) : assert(gameCode != null);
+  }) : super(key: key);
 
   @override
   _GamePlayScreenState createState() => _GamePlayScreenState();
