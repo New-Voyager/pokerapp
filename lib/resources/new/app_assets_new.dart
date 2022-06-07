@@ -30,7 +30,7 @@ class AppAssetsNew {
 
   static var lastHandPath = "assets/images/lasthand.svg";
 
-  static String cardBackImagePath = "assets/images/card_back/set2/Asset 8.png";
+  static String cardBackImagePath = "assets/images/card_back/set2/Asset-8.png";
 
   static String tableResultPath = "assets/images/gamesettings/casino.svg";
 
@@ -70,9 +70,9 @@ class AppAssetsNew {
   static String hostImagePath = "assets/images/host.svg";
   static String joinImagePath = "assets/images/join.svg";
 
-  // static String defaultTablePath = "assets/images/table/night sky table.png";
+  // static String defaultTablePath = "assets/images/table/night-sky table.png";
   static String defaultTablePath = "assets/images/table/redtable.png";
 
-  static String defaultBackdropPath = 'assets/images/backgrounds/night sky.png';
+  static String defaultBackdropPath = 'assets/images/backgrounds/night-sky.png';
   static String defaultBetDailPath = 'assets/images/betimage.svg';
 }

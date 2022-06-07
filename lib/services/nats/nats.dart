@@ -81,11 +81,7 @@ class Nats {
 
   Future<void> init(String playerChannel) async {
     String natsUrl = '';
-    if (PlatformUtils.isWeb) {
-      natsUrl = 'wss://nats.pokerclub.app';
-    } else {
-      natsUrl = await UtilService.getNatsURL();
-    }
+    natsUrl = await UtilService.getNatsURL();
     // instantiate new clients
     _clientSub = Client();
     _clientPub = Client();

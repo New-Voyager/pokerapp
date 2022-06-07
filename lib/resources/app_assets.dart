@@ -37,7 +37,7 @@ class AppAssets {
   static const String coinsImages = 'assets/images/coins.svg';
   static const String bigBetImage = 'assets/images/game/bigbet.svg';
   static const String cardBackImage =
-      'assets/images/card_back/set2/Asset 6.png';
+      'assets/images/card_back/set2/Asset-6.png';
   static const String handHistory = 'assets/images/handhistory.svg';
   static const String lastHand = 'assets/images/lasthand.svg';
   static const String highHand = 'assets/images/highhand.svg';
@@ -52,7 +52,7 @@ class AppAssets {
 
   // table
   // assets/images/table/darkgreen.png
-  // assets/images/table/night sky table.png
+  // assets/images/table/night-sky table.png
   // assets/images/table/redtable.png
   static const String _table = 'assets/images/table';
   static const List<String> tables = [
@@ -63,33 +63,33 @@ class AppAssets {
 
   // backdrop
   // assets/images/backgrounds/bar_bookshelf_light.jpg
-  // assets/images/backgrounds/night sky.png
+  // assets/images/backgrounds/night-sky.png
   // assets/images/backgrounds/western saloon.png
   static const String _backdrop = 'assets/images/backgrounds';
   static const List<String> backdrops = [
     '$_backdrop/bar_bookshelf_light.jpg',
-    '$_backdrop/night sky.png',
+    '$_backdrop/night-sky.png',
     '$_backdrop/western saloon.png',
   ];
 
   // card back
-  // assets/images/card_back/set2/Asset 1.png
-  // assets/images/card_back/set2/Asset 2.png
-  // assets/images/card_back/set2/Asset 3.png
-  // assets/images/card_back/set2/Asset 4.png
-  // assets/images/card_back/set2/Asset 5.png
-  // assets/images/card_back/set2/Asset 6.png
-  // assets/images/card_back/set2/Asset 7.png
-  // assets/images/card_back/set2/Asset 8.png
+  // assets/images/card_back/set2/Asset-1.png
+  // assets/images/card_back/set2/Asset-2.png
+  // assets/images/card_back/set2/Asset-3.png
+  // assets/images/card_back/set2/Asset-4.png
+  // assets/images/card_back/set2/Asset-5.png
+  // assets/images/card_back/set2/Asset-6.png
+  // assets/images/card_back/set2/Asset-7.png
+  // assets/images/card_back/set2/Asset-8.png
   static const String _card = 'assets/images/card_back/set2';
   static const List<String> cards = [
-    '$_card/Asset 1.png',
-    '$_card/Asset 2.png',
-    '$_card/Asset 3.png',
-    '$_card/Asset 4.png',
-    '$_card/Asset 5.png',
-    '$_card/Asset 6.png',
-    '$_card/Asset 7.png',
-    '$_card/Asset 8.png',
+    '$_card/Asset-1.png',
+    '$_card/Asset-2.png',
+    '$_card/Asset-3.png',
+    '$_card/Asset-4.png',
+    '$_card/Asset-5.png',
+    '$_card/Asset-6.png',
+    '$_card/Asset-7.png',
+    '$_card/Asset-8.png',
   ];
 }

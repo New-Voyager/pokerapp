@@ -255,7 +255,7 @@ class GameInfoModel {
     this.gameChatChannel = data['gameChatChannel'];
     this.clientAliveChannel = data['clientAliveChannel'];
 
-    this.audioConfEnabled = data['audioConfEnabled'];
+    this.audioConfEnabled = data['audioConfEnabled'] ?? false;
     this.janusUrl = data['janusUrl'];
     this.janusRoomId = data['janusRoomId'];
     this.janusRoomPin = data['janusRoomPin'];

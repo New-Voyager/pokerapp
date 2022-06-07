@@ -585,7 +585,8 @@ class HandActionProtoService {
 
     List<int> myCards = [];
     if (PlatformUtils.isWeb) {
-      myCards = CardHelper.getCardNumberFromCardStr(message.dealCards.cardsStr);
+      myCards = message.dealCards.cardsInt;
+      //myCards = CardHelper.getCardNumberFromCardStr(message.dealCards.cardsStr);
     } else {
       myCards = CardHelper.getRawCardNumbers(cards);
     }
