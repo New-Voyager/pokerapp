@@ -155,15 +155,23 @@ class WebRoutes {
   static const String attributions = "/attributions";
 
   static const String home = "/home";
+  static String launchGameCode = '';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     String routeName = settings.name;
     String gameCodeFromUrl = "";
-    if (settings.name.contains("/game/")) {
+    if (settings.name.contains("/game/") || settings.name.contains("/game")) {
       gameCodeFromUrl = settings.name.replaceAll("/game/", "");
+      if (gameCodeFromUrl == settings.name) {
+        gameCodeFromUrl = settings.name.replaceAll("/game", "");
+      }
       routeName = game_play;
+      if (gameCodeFromUrl.isEmpty) {
+        gameCodeFromUrl = launchGameCode;
+      }
       log("GameCode: $gameCodeFromUrl");
     }
+    // launchGameCode = '';
     log("Got Webroute: ${settings.name}");
 
     switch (routeName) {
@@ -192,6 +200,7 @@ class WebRoutes {
         return _getPageRoute(
           routeName: settings.name,
           viewToShow: GamePlayScreen(
+            key: UniqueKey(),
             gameCode: gameCodeFromUrl,
             botGame: botGame,
             gameInfoModel: gameInfo,
