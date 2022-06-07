@@ -47,12 +47,12 @@ class RadioListWidget<T> extends StatelessWidget {
         },
         child: IntrinsicWidth(
           child: Container(
-            margin: EdgeInsets.symmetric(horizontal: 5.0),
+            margin: EdgeInsets.symmetric(horizontal: 8.0, vertical: 5.0),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5.0),
               color: borderColor,
             ),
-            padding: EdgeInsets.all(padding.toDouble()),
+            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
             height: 32.ph,
             alignment: Alignment.center,
             child: Text(

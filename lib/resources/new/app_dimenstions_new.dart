@@ -5,6 +5,8 @@ import 'package:pokerapp/models/ui/app_theme.dart';
 class AppDimensionsNew {
   static double bottomSheetRadius = 16.0;
 
+  static double maxWidth = 600.0;
+
   static Widget getVerticalSizedBox(double height) {
     return SizedBox(
       height: height,
