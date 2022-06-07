@@ -3,8 +3,10 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:just_audio/just_audio.dart' as just_audio;
+import 'package:pokerapp/utils/platform.dart';
 
 const String clickSound = 'assets/sound_effects/button_press.mp3';
 const String betRaiseSound = 'assets/sound_effects/bet_call1.mp3';
@@ -24,6 +26,33 @@ const String applauseSound = 'assets/sound_effects/applause.mp3';
 const String fireworksSound = 'assets/animations/fireworks.mp3';
 const String clockTickingSound = 'assets/sound_effects/clock_ticking.mp3';
 
+class MyJABytesSource extends StreamAudioSource {
+  Uint8List _buffer;
+
+  MyJABytesSource(this._buffer) : super(tag: 'MyAudioSource');
+
+  @override
+  Future<StreamAudioResponse> request([int start, int end]) async {
+    // Returning the stream audio response with the parameters
+    return StreamAudioResponse(
+      sourceLength: _buffer.length,
+      contentLength: _buffer.length,
+      offset: 0,
+      stream: Stream.fromIterable([_buffer.sublist(0, _buffer.length)]),
+      contentType: 'audio/wav',
+    );
+  }
+
+  void load(String assetFile) async {
+    // Load the asset file
+    final ByteData data = await rootBundle.load(assetFile);
+    // Create a Uint8List from the ByteData
+    final Uint8List buffer = data.buffer.asUint8List();
+    // Set the buffer to the source
+    _buffer.setRange(0, buffer.length, buffer);
+  }
+}
+
 class AudioService {
   static just_audio.AudioPlayer justAudioPlayer;
   //static just_audio.AudioPlayer dealAudioPlayer;
@@ -33,6 +62,8 @@ class AudioService {
   // static AudioCache player = AudioCache(prefix: 'assets/sound_effects/');
 
   static final Map<String, Uri> _audioFileCache = Map<String, Uri>();
+  static final Map<String, MyJABytesSource> _audioStreamCache =
+      Map<String, MyJABytesSource>();
   // static final Map<String, Uint8List> _audioCache = Map<String, Uint8List>();
   static bool play = true;
   AudioService._();
@@ -74,10 +105,15 @@ class AudioService {
     log('Loading file $soundFile');
     try {
       final data = (await rootBundle.load(soundFile)).buffer.asUint8List();
-      final file = File('${(await getTemporaryDirectory()).path}/$soundFile');
-      await file.create(recursive: true);
-      await file.writeAsBytes(data.buffer.asUint8List());
-      _audioFileCache[soundFile] = file.uri;
+      if (!PlatformUtils.isWeb) {
+        final file = File('${(await getTemporaryDirectory()).path}/$soundFile');
+        await file.create(recursive: true);
+        await file.writeAsBytes(data.buffer.asUint8List());
+        _audioFileCache[soundFile] = file.uri;
+      } else {
+        MyJABytesSource source = MyJABytesSource(data);
+        _audioStreamCache[soundFile] = source;
+      }
     } catch (err) {
       log('File loading failed. ${err.toString()}');
     }
@@ -94,7 +130,11 @@ class AudioService {
     //if (!_audioFileCache.containsKey(soundFile)) return;
 
     try {
-      await justAudioPlayer.setAsset(soundFile);
+      if (PlatformUtils.isWeb) {
+        justAudioPlayer.setAudioSource(_audioStreamCache[soundFile]);
+      } else {
+        await justAudioPlayer.setAsset(soundFile);
+      }
       await justAudioPlayer.play();
     } catch (err) {
       log('Could not play sound. Error: ${err.toString()}');

@@ -12,7 +12,7 @@ class BackgroundView extends StatelessWidget {
     if (!PlatformUtils.isWeb) {
       backdropAsset = appService.appSettings.backdropAsset;
     } else {
-      backdropAsset = 'assets/images/backgrounds/night sky.png';
+      backdropAsset = 'assets/images/backgrounds/night-sky.png';
     }
 
     final gameState = GameState.getState(context);

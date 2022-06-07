@@ -49,7 +49,6 @@ class GamePlayObjects {
   BuildContext _providerContext;
   PlayerInfo _currentPlayer;
   GameComService _gameComService;
-  GameInfoModel _gameInfoModel;
   GameContextObject _gameContextObj;
   GameState _gameState;
   List<PlayerInSeat> _hostSeatChangeSeats;
@@ -106,6 +105,7 @@ class GamePlayObjects {
     if (Screen.initialized) {
       this.boardAttributes = BoardAttributesObject(
         screenSize: Screen.diagonalInches,
+        orientation: BoardOrientation.horizontal,
       );
     }
   }
@@ -241,7 +241,7 @@ class GamePlayObjects {
 
     if (TestService.isTesting == true || customizationService != null) return;
 
-    if (_gameInfoModel?.tableStatus == AppConstants.GAME_RUNNING) {
+    if (gameInfoModel?.tableStatus == AppConstants.GAME_RUNNING) {
       // query current hand to get game update
       WidgetsBinding.instance.addPostFrameCallback((_) {
         log('network_reconnect: queryCurrentHand invoked');
@@ -395,8 +395,8 @@ class GamePlayObjects {
       log('host seat change: $_hostSeatChangeSeats');
       _hostSeatChangeInProgress = true;
     }
-    gameInfoModel = _gameInfoModel;
     if (_initiated == true) {
+      gameInfoModel = _gameInfoModel;
       return _gameInfoModel;
     }
 
@@ -467,6 +467,9 @@ class GamePlayObjects {
         await _gameState.refreshPlayerSettings();
         await _gameState.refreshNotes();
       }
+      if (_nats.connectionBroken) {
+        await _nats.reconnect();
+      }
 
       // ask for game messages
       // tdo: reqplayerinfo
@@ -478,6 +481,9 @@ class GamePlayObjects {
 
     // _audioPlayer = AudioPlayer();
     log('establishing audio conference');
+    if (_nats.connectionBroken) {
+      await _nats.reconnect();
+    }
 
     if (TestService.isTesting || customizationService != null) {
       // testing code goes here
@@ -580,6 +586,7 @@ class GamePlayObjects {
       _gameState.gameMessageService?.sendMyInfo();
       log('publishing my information done');
     });
+    gameInfoModel = _gameInfoModel;
     return _gameInfoModel;
   }
 

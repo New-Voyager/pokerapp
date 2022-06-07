@@ -13,13 +13,11 @@ import 'package:pokerapp/models/ui/app_theme_styles.dart';
 import 'package:pokerapp/resources/app_config.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/screens/layouts/layout_holder.dart';
-import 'package:pokerapp/services/connectivity_check/network_change_listener.dart';
 import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/utils/platform.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/web-routes.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'main_helper.dart';
 

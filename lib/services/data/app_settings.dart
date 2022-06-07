@@ -101,7 +101,7 @@ class AppSettingsStore {
     String ret = getSetting('gameSettings.backdropAsset');
     return 'assets/images/backgrounds/new_background.png';
     if (ret == null) {
-      return 'assets/images/backgrounds/night sky.png';
+      return 'assets/images/backgrounds/night-sky.png';
     }
     return ret.toString();
   }
@@ -125,7 +125,7 @@ class AppSettingsStore {
   String get cardBackAsset {
     String ret = getSetting('gameSettings.cardbackAsset');
     if (ret == null) {
-      return 'assets/images/card_back/set2/Asset 1.png';
+      return 'assets/images/card_back/set2/Asset-1.png';
     }
     return ret.toString();
   }

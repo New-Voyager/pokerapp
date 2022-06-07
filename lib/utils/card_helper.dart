@@ -270,12 +270,12 @@ class CardHelper {
   static List<int> getCardNumberFromCardStr(String cardsStr) {
     List<int> cards = [];
     final String str = cardsStr.replaceAll("[", "").replaceAll("]", "");
-    str.split('  ').forEach((c) {
-      final int cardNum = getCardNumberFromSymbol(c.trim());
-      if (cardNum != null) {
-        cards.add(cardNum);
-      }
-    });
+    final List<String> cardsList = str.split(" ");
+    for (String c in cardsList) {
+      final cardNum = getCardNumberFromSymbol(c);
+      log('Card: $c num: $cardNum');
+      cards.add(cardNum);
+    }
     return cards;
   }
 }
