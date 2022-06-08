@@ -21,12 +21,14 @@ class GameComService {
   String playerToHandChannel;
   String handToPlayerTextChannel;
   String gameChatChannel;
+  String tournamentChannel;
 
   Subscription _gameToPlayerChannelSubs;
   Subscription _handToAllChannelSubs;
   Subscription _handToPlayerChannelSubs;
   Subscription _handToPlayerTextChannelSubs;
   Subscription _gameChatChannelSubs;
+  Subscription _tournamentChannelSubs;
 
   StreamController<Message> _gameToPlayerChannelInternal =
       StreamController.broadcast();
@@ -37,6 +39,8 @@ class GameComService {
   StreamController<Message> _handToPlayerTextChannelInternal =
       StreamController.broadcast();
   StreamController<Message> _gameChatChannelInternal =
+      StreamController.broadcast();
+  StreamController<Message> _tournamentChannelInternal =
       StreamController.broadcast();
 
   // current player info
@@ -57,6 +61,7 @@ class GameComService {
     @required this.playerToHandChannel,
     @required this.handToPlayerTextChannel,
     @required this.gameChatChannel,
+    @required this.tournamentChannel,
   }) {
     // _client = Client();
     // _clientPub = Client();
@@ -103,6 +108,13 @@ class GameComService {
     _gameChatChannelSubs.stream
         .listen((event) => _gameChatChannelInternal.add(event));
 
+    if (this.tournamentChannel != null) {
+      log('subscribing to ${this.tournamentChannel}');
+      _tournamentChannelSubs = nats.clientSub.sub(this.tournamentChannel);
+      _tournamentChannelSubs.stream
+          .listen((event) => _tournamentChannelInternal.add(event));
+    }
+
     if (this._chat == null) {
       this._chat = GameMessagingService(
         this.currentPlayer,
@@ -143,6 +155,9 @@ class GameComService {
 
     // _gameChatChannelSubs?.unSub();
     _gameChatChannelSubs?.close();
+
+    // tournament channel
+    _tournamentChannelInternal?.close();
   }
 
   void dispose() {
@@ -154,6 +169,7 @@ class GameComService {
     _handToPlayerChannelSubs?.unSub();
     _handToPlayerTextChannelSubs?.unSub();
     _gameChatChannelSubs?.unSub();
+    _gameChatChannelSubs?.unSub();
 
     // close
     _close();
@@ -164,6 +180,7 @@ class GameComService {
     _handToPlayerChannelInternal.close();
     _handToPlayerTextChannelInternal.close();
     _gameChatChannelInternal.close();
+    _tournamentChannelInternal.close();
 
     active = false;
     // _client?.close();
@@ -193,6 +210,11 @@ class GameComService {
   Stream<Message> get gameChatChannelStream {
     assert(active);
     return _gameChatChannelInternal.stream;
+  }
+
+  Stream<Message> get tournamentChannelStream {
+    assert(active);
+    return _tournamentChannelInternal.stream;
   }
 
   GameMessagingService get gameMessaging {

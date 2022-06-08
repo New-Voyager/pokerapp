@@ -8,6 +8,7 @@ import 'package:pokerapp/services/game_play/action_services/game_update_service.
 import 'package:pokerapp/services/game_play/action_services/hand_action_proto_service.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_player_text_service.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
+import 'package:pokerapp/services/game_play/tournament_text_service.dart';
 import 'package:pokerapp/services/ion/ion.dart';
 import 'package:pokerapp/services/livekit/livekit.dart';
 import 'package:pokerapp/services/nats/message.dart';
@@ -33,6 +34,7 @@ class GameContextObject extends ChangeNotifier {
   HandToPlayerTextService handToPlayerTextService;
   //IonAudioConferenceService ionAudioConferenceService;
   LivekitAudioConference audioConf;
+  TournamentTextService tournamentTextService;
 
   GameContextObject({
     @required String gameCode,
@@ -41,6 +43,7 @@ class GameContextObject extends ChangeNotifier {
     GameUpdateService gameUpdateService,
     HandToPlayerTextService handToPlayerTextService,
     HandActionProtoService handActionProtoService,
+    TournamentTextService tournamentTextService,
     GameComService gameComService,
     EncryptionService encryptionService,
     LivenessSender livenessSender,
@@ -55,6 +58,7 @@ class GameContextObject extends ChangeNotifier {
     this.gameUpdateService = gameUpdateService;
     this.handActionProtoService = handActionProtoService;
     this.handToPlayerTextService = handToPlayerTextService;
+    this.tournamentTextService = tournamentTextService;
   }
 
   void initializeAudioConf() {
@@ -117,6 +121,7 @@ class GameContextObject extends ChangeNotifier {
     encryptionService?.dispose();
     handActionProtoService?.close();
     livenessSender?.close();
+    tournamentTextService?.close();
     super.dispose();
   }
 
@@ -251,6 +256,19 @@ class GameContextObject extends ChangeNotifier {
         if (!gameComService.active) return;
         handToPlayerTextService.handle(message.string);
       });
+    }
+
+    // listen for tournament messages
+    if (gameState.isTournament) {
+      if (tournamentTextService == null) {
+        tournamentTextService = TournamentTextService(context, gameState);
+        tournamentTextService.loop();
+
+        gameComService.tournamentChannelStream?.listen((Message message) {
+          if (!gameComService.active) return;
+          tournamentTextService.handle(message.string);
+        });
+      }
     }
   }
 }

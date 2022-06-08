@@ -37,32 +37,58 @@ class HeaderView extends StatelessWidget {
   }
 
   Widget _buildMainContent() {
-    return Consumer<HandInfoState>(
-      builder: (_, his, __) {
-        String titleText = "";
-        if (his.handNum == 0) {
-          titleText =
-              "${gameTypeStr(gameTypeFromStr(gameState.gameInfo.gameType))}  ${DataFormatter.chipsFormat(gameState.gameInfo.smallBlind)}/${DataFormatter.chipsFormat(gameState.gameInfo.bigBlind)}";
-        } else {
-          titleText = _getTitleText(his);
-        }
-        return Column(
-          children: [
-            /* title text */
-            // game type and bet coins
-            HeaderTitleText(titleText),
+    return ListenableProvider<TournamentState>(
+        create: (_) => gameState.tournamentState,
+        builder: (BuildContext context, _) {
+          return Consumer<HandInfoState>(
+            builder: (_, his, __) {
+              String titleText = "";
+              String gameCode = "";
+              gameCode = 'Code: ' + gameState.gameInfo.gameCode;
+              if (his.handNum >= 0) {
+                gameCode = 'Hand Num:' + his.handNum.toString();
+              }
 
-            // game code
-            HeaderGameCodeText(
-              his.handNum == 0 ? 'Code: ' : _appScreenText['hand'],
-              his.handNum == 0
-                  ? '${gameState.gameInfo.gameCode}'
-                  : ' #${his.handNum}',
-            ),
-          ],
-        );
-      },
-    );
+              if (his.handNum == 0) {
+                titleText =
+                    "${gameTypeStr(gameTypeFromStr(gameState.gameInfo.gameType))}  ${DataFormatter.chipsFormat(gameState.gameInfo.smallBlind)}/${DataFormatter.chipsFormat(gameState.gameInfo.bigBlind)}";
+              } else {
+                titleText = _getTitleText(his);
+              }
+              final tournamentState = gameState.tournamentState;
+              if (gameState.gameInfo.tournament &&
+                  tournamentState != null &&
+                  tournamentState.nextLevel != null &&
+                  tournamentState.nextLevel > 1) {
+                titleText =
+                    "NLH  ${DataFormatter.chipsFormat(gameState.gameInfo.smallBlind)}/${DataFormatter.chipsFormat(gameState.gameInfo.bigBlind)}";
+                gameCode = 'Next Level: ' +
+                    tournamentState.nextLevel.toString() +
+                    '  ' +
+                    tournamentState.nextSmallSblind.toString() +
+                    '/' +
+                    tournamentState.nextBigSblind.toString();
+                if (tournamentState.nextAnte > 0) {
+                  gameCode = gameCode +
+                      '(' +
+                      tournamentState.nextAnte.toString() +
+                      ')';
+                }
+              }
+
+              return Column(
+                children: [
+                  /* title text */
+                  // game type and bet coins
+                  HeaderTitleText(titleText),
+
+                  // game code
+                  HeaderGameCodeText(gameCode, ''),
+                ],
+              );
+            },
+          );
+        });
   }
 
   void _onGameMenuNavButtonPress(BuildContext context) {

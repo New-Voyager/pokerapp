@@ -122,6 +122,7 @@ class GameState {
   SeatChangeNotifier _seatChangeState;
   GameChatNotifState _chatNotifState;
   AudioConfState _audioConfState;
+  TournamentState _tournamentState = TournamentState();
   GameChatBubbleNotifyState _gameChatBubbleNotifyState;
   final GlobalKey<OnboardingState> onboardingKey = GlobalKey<OnboardingState>();
   final Map<int, GamePlayerInfo> players = Map<int, GamePlayerInfo>();
@@ -631,6 +632,8 @@ class GameState {
 
   GameChatBubbleNotifyState get gameChatBubbleNotifyState =>
       this._gameChatBubbleNotifyState;
+
+  TournamentState get tournamentState => this._tournamentState;
 
   bool get isGameRunning {
     bool tableRunning =
@@ -1761,5 +1764,25 @@ class AudioConfState extends ChangeNotifier {
     joined = true;
     left = false;
     leave = false;
+  }
+}
+
+class TournamentState extends ChangeNotifier {
+  bool isRunning = false;
+  int currentLevel = 0;
+  int nextLevel = 0;
+  double nextSmallSblind = 0.0;
+  double nextBigSblind = 0.0;
+  double nextAnte = 0.0;
+  int nextLevelTimeInSecs = 0;
+
+  void setNextLevel(int level, double smallBlind, double bigBlind, double ante,
+      int nextLevelTimeInSecs) {
+    this.nextSmallSblind = smallBlind;
+    this.nextBigSblind = bigBlind;
+    this.nextAnte = ante;
+    this.nextLevel = level;
+    this.nextLevelTimeInSecs = nextLevelTimeInSecs;
+    this.notifyListeners();
   }
 }

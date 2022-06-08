@@ -421,6 +421,7 @@ class GamePlayObjects {
       playerToHandChannel: _gameInfoModel.playerToHandChannel,
       handToPlayerTextChannel: _gameInfoModel.handToPlayerTextChannel,
       gameChatChannel: _gameInfoModel.gameChatChannel,
+      tournamentChannel: _gameInfoModel.tournamentChannel,
     );
 
     final encryptionService = EncryptionService();
