@@ -162,16 +162,16 @@ class GamePlayScreenUtilMethods {
         //     onTap: () {
         //       TestService.showBets();
         //     }),
-        // SpeedDialChild(
-        //   child: Icon(
-        //     Icons.adb_rounded,
-        //     color: Colors.white,
-        //   ),
-        //   backgroundColor: Colors.red,
-        //   labelBackgroundColor: Colors.black,
-        //   label: 'Show double board',
-        //   onTap: () => TestService.showDoubleBoard(),
-        // ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
+          labelBackgroundColor: Colors.black,
+          label: 'Show double board',
+          onTap: () => TestService.addCardsWithoutAnimating(),
+        ),
         //
         // SpeedDialChild(
         //   child: Icon(

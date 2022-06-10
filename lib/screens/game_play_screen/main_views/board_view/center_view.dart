@@ -281,7 +281,7 @@ class _BoardCenterView extends StatelessWidget {
         // pot view
         Expanded(
           child: DebugBorderWidget(
-            color: Colors.transparent,
+            color: Colors.red,
             child: _PotViewWidget(
               dimPots: tableState.dimPots,
               vnPotChips: vnPotChips,
@@ -306,7 +306,7 @@ class _BoardCenterView extends StatelessWidget {
         // pots update view
         Expanded(
           child: DebugBorderWidget(
-            color: Colors.transparent,
+            color: Colors.green,
             child: _PotUpdatesOrRankWidget(
               vnPotChipsUpdates: vnPotChipsUpdates,
               gameState: gameState,
@@ -425,13 +425,16 @@ class _CommunityCardsWidget extends StatelessWidget {
         final double boardFactor = Screen.isLargeScreen ? 0.80 : 0.90;
         final negativeSpace = (1 - boardFactor) * height * 0.30;
 
-        return Container(
-          margin: EdgeInsets.only(top: negativeSpace),
-          child: Transform(
-            transform: transformMatrix,
-            alignment: Alignment.center,
-            child: const CommunityCardView2(
-              key: Key('CommunityCardView'),
+        return DebugBorderWidget(
+          color: Colors.purple,
+          child: Container(
+            margin: EdgeInsets.only(top: negativeSpace),
+            child: Transform(
+              transform: transformMatrix,
+              alignment: Alignment.center,
+              child: const CommunityCardView2(
+                key: Key('CommunityCardView'),
+              ),
             ),
           ),
         );

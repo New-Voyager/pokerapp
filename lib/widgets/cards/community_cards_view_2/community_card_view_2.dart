@@ -5,6 +5,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/community_card_
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/widgets/cards/community_cards_view_2/community_flip_card.dart';
+import 'package:pokerapp/widgets/debug_border_widget.dart';
 
 class _CardWidget extends StatelessWidget {
   final CardState cardState;
@@ -64,7 +65,8 @@ class CommunityCardView2 extends StatelessWidget {
                       alignment: Alignment.center,
                       clipBehavior: Clip.none,
                       children: communityCardState.cardStates
-                          .map((cardState) => _CardWidget(cardState: cardState))
+                          .map((cardState) => DebugBorderWidget(
+                              child: _CardWidget(cardState: cardState)))
                           .toList(),
                     ),
             );

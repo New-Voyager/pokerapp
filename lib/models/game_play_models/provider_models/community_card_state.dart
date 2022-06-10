@@ -625,8 +625,8 @@ class CommunityCardState extends ChangeNotifier {
     const totalGapWidth = gap * gapWidth;
     final extraGap = size.width * kDoubleBoardWidthFactor;
     final cardsAvailableWidth = size.width - totalGapWidth - extraGap;
-    final eachCardWidth = cardsAvailableWidth / n;
     final eachCardHeight = (size.height - kGap) / 2;
+    final eachCardWidth = eachCardHeight * 2 / 3;
 
     /// top cards -> 1, 2, 3, 4, 5
     double xOffset = gapWidth + extraGap / 2;

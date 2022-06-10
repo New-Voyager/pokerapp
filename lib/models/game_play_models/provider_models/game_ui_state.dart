@@ -274,18 +274,20 @@ class GameUIState {
     // final extraBottomGap = centerTopGap - centerBottomGap;
     final extraBottomGap = centerTopGap;
 
-    double offset = 0;
+    double horizontalOffset = 0;
+    double verticalOffsetFactor = 1;
     if (!GameState.getState(boardKey.currentContext)
         .boardAttributes
         .isOrientationHorizontal) {
-      offset = namePlateWidth / 8;
+      horizontalOffset = namePlateWidth / 8;
+      verticalOffsetFactor = 1.5;
     }
 
     final rect = Rect.fromLTWH(
-      topLeft.dx - offset,
+      topLeft.dx - horizontalOffset,
       topLeft.dy,
-      bottomRight.dx - topLeft.dx + offset * 2,
-      bottomRight.dy - topLeft.dy - extraBottomGap,
+      bottomRight.dx - topLeft.dx + horizontalOffset * 2,
+      (bottomRight.dy - topLeft.dy - extraBottomGap) * verticalOffsetFactor,
     );
 
     _centerViewRect = _deflatedRect(rect: rect, factor: _getDeflateFactor());
