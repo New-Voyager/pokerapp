@@ -1,8 +1,13 @@
+import 'dart:developer';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
+import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
+import 'package:pokerapp/widgets/cards/new_card_view.dart';
 import 'package:pokerapp/widgets/debug_border_widget.dart';
 
 import 'hole_card_view.dart';
@@ -28,8 +33,14 @@ class PlayerHoleCardView extends StatelessWidget {
     BuildContext context,
   ) {
     final gameState = GameState.getState(context);
-    final cardAsset = SvgPicture.memory(gameState.assets
-        .getHoleCard(card.cardNum, color: gameState.colorCards));
+
+    Widget cardAsset;
+    if (gameState.boardAttributes.isOrientationHorizontal) {
+      cardAsset = SvgPicture.memory(gameState.assets
+          .getHoleCard(card.cardNum, color: gameState.colorCards));
+    } else {
+      cardAsset = card.newWidget;
+    }
     //final cardAsset = SvgPicture.asset('assets/images/card_face/${card.cardNum}.svg');
     return Stack(
       fit: StackFit.expand,
@@ -102,9 +113,11 @@ class _CardEyeState extends State<CardEye> {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-        top: widget.gameState.gameUIState.cardSize.height / 2.5,
+        top: widget.gameState.gameUIState.cardSize.height / 1.8,
         // bottom: 30,
-        left: widget.marked ? 8 : 12,
+        left: widget.gameState.boardAttributes.isOrientationHorizontal
+            ? (widget.marked ? 8 : 12)
+            : (widget.marked ? 7 : 8),
         child: DebugBorderWidget(
           color: Colors.transparent,
           child: Icon(

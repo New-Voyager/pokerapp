@@ -359,7 +359,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
           onStartGame: startGame,
         );
         boardHeight = null;
-        padding = EdgeInsets.only(bottom: footerHeight / 3);
+        padding = EdgeInsets.only(bottom: footerHeight / 2.3);
       }
     }
     return Container(

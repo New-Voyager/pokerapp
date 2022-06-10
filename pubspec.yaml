@@ -147,6 +147,7 @@ flutter:
   - assets/images/livegames/
   - assets/images/color-card_face/
   - assets/images/card_face/
+  - assets/images/card_face_new/
   - assets/language/
   - assets/json/nameplates.json
   - assets/json/mockdata.json
@@ -194,6 +195,10 @@ flutter:
     fonts:
     - asset: assets/fonts/Literata-Bold.ttf
       weight: 700
+  - family: Kurale
+    fonts:
+    - asset: assets/fonts/kurale-regular.otf
+      weight: 400
   - family: AppIcons
     fonts:
     - asset: assets/icons/app_icons.ttf

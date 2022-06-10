@@ -32,7 +32,7 @@ import 'package:provider/provider.dart';
 
 class TestService {
   static bool get isTesting {
-    return false;
+    return true;
   }
 
   static bool get isPartialTesting {
@@ -302,7 +302,7 @@ class TestService {
 
     // just call this to add flop cards
     gameState.communityCardState.addFlopCards(
-      board1: [1, 2, 4],
+      board1: [1, 2, 177],
       // board2: [17, 18, 20],
     );
   }

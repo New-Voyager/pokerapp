@@ -840,7 +840,7 @@ class BoardAttributesObject extends ChangeNotifier {
     if (isOrientationHorizontal) {
       return 0.50;
     }
-    return 0.25;
+    return 0.45;
   }
 
   double get boardHeightAdjust {

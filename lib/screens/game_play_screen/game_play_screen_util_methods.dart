@@ -68,18 +68,18 @@ class GamePlayScreenUtilMethods {
             TestService.showCardDistribution();
           },
         ),
-        // SpeedDialChild(
-        //   child: Icon(
-        //     Icons.adb_rounded,
-        //     color: Colors.white,
-        //   ),
-        //   backgroundColor: Colors.red,
-        //   label: 'Flop Cards',
-        //   labelBackgroundColor: Colors.black,
-        //   onTap: () {
-        //     TestService.addFlopCards();
-        //   },
-        // ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
+          label: 'Flop Cards',
+          labelBackgroundColor: Colors.black,
+          onTap: () {
+            TestService.addFlopCards();
+          },
+        ),
         // SpeedDialChild(
         //   child: Icon(
         //     Icons.adb_rounded,

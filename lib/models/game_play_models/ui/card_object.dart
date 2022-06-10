@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/widgets/cards/card_view.dart';
+import 'package:pokerapp/widgets/cards/new_card_view.dart';
 
 enum CardFace {
   FRONT,
@@ -64,6 +65,10 @@ class CardObject {
         card: this,
         cardBackBytes: null,
         doubleBoard: this.doubleBoard,
+      );
+
+  Widget get newWidget => CardViewNew(
+        card: this,
       );
 
   String get cardHash => '$cardNum';

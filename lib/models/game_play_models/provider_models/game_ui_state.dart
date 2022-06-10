@@ -274,10 +274,17 @@ class GameUIState {
     // final extraBottomGap = centerTopGap - centerBottomGap;
     final extraBottomGap = centerTopGap;
 
+    double offset = 0;
+    if (!GameState.getState(boardKey.currentContext)
+        .boardAttributes
+        .isOrientationHorizontal) {
+      offset = namePlateWidth / 8;
+    }
+
     final rect = Rect.fromLTWH(
-      topLeft.dx,
+      topLeft.dx - offset,
       topLeft.dy,
-      bottomRight.dx - topLeft.dx,
+      bottomRight.dx - topLeft.dx + offset * 2,
       bottomRight.dy - topLeft.dy - extraBottomGap,
     );
 

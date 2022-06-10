@@ -18,6 +18,7 @@ class CommunityFlipCard extends StatelessWidget {
     final gameState = context.read<GameState>();
     final colorCards = gameState.colorCards;
     final size = cardState.size;
+
     final back = SizedBox.fromSize(
       size: size,
       child: AnimatedBuilder(
@@ -37,6 +38,8 @@ class CommunityFlipCard extends StatelessWidget {
             }
           }
 
+          if (!gameState.boardAttributes.isOrientationHorizontal)
+            return co.newWidget;
           return co.widget;
         },
       ),
