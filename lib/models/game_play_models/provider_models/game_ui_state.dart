@@ -276,16 +276,18 @@ class GameUIState {
 
     double horizontalOffset = 0;
     double verticalOffsetFactor = 1;
+    double topPosOffset = 0;
     if (!GameState.getState(boardKey.currentContext)
         .boardAttributes
         .isOrientationHorizontal) {
       horizontalOffset = namePlateWidth / 8;
       verticalOffsetFactor = 1.5;
+      topPosOffset = namePlateHeight;
     }
 
     final rect = Rect.fromLTWH(
       topLeft.dx - horizontalOffset,
-      topLeft.dy,
+      topLeft.dy - topPosOffset,
       bottomRight.dx - topLeft.dx + horizontalOffset * 2,
       (bottomRight.dy - topLeft.dy - extraBottomGap) * verticalOffsetFactor,
     );

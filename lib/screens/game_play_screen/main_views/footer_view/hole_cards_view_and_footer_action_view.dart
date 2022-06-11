@@ -377,7 +377,10 @@ class _HoleCardsViewAndFooterActionViewState
               width: gameState.gameUIState.holeCardsViewSize.width,
               padding: EdgeInsets.symmetric(
                 horizontal: widget.isHoleCardsVisibleVn.value
-                    ? 8 * playerCards.length.toDouble()
+                    ? (gameState.boardAttributes.isOrientationHorizontal
+                            ? 8
+                            : 3) *
+                        playerCards.length.toDouble()
                     : 0,
                 vertical:
                     context.read<BoardAttributesObject>().screenDiagnolSize >= 7

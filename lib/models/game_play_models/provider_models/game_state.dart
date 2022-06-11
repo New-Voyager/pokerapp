@@ -216,7 +216,7 @@ class GameState {
 
   BoardAttributesObject boardAttributes;
 
-  final communityCardState = CommunityCardState();
+  CommunityCardState communityCardState;
 
   Future<void> initialize({
     String gameCode,
@@ -241,6 +241,7 @@ class GameState {
     this._gameSettings = GameSettings();
     this._playerSettings = GamePlayerSettings();
     this.gameUIState = GameUIState();
+    this.communityCardState = CommunityCardState(this);
 
     this._hostSeatChangeSeats = hostSeatChangeSeats;
     this.hostSeatChangeInProgress = hostSeatChangeInProgress ?? false;

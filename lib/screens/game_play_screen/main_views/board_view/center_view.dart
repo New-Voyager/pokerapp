@@ -276,46 +276,95 @@ class _BoardCenterView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        // pot view
-        Expanded(
-          child: DebugBorderWidget(
-            color: Colors.red,
-            child: _PotViewWidget(
-              dimPots: tableState.dimPots,
-              vnPotChips: vnPotChips,
-              vnPotToHighlight: vnPotToHighlight,
-              potKey: potKey,
-            ),
-          ),
-        ),
+    Widget widget;
 
-        // community cards view
-        Expanded(
-          flex: Screen.isLargeScreen ? 4 : 3,
-          child: DebugBorderWidget(
-            color: Colors.transparent,
-            child: Container(
-              width: gameState.gameUIState.centerViewRect.width,
-              child: const _CommunityCardsWidget(),
+    bool isOrientationHorizontal =
+        gameState.boardAttributes.isOrientationHorizontal;
+    if (isOrientationHorizontal) {
+      widget = Column(
+        children: [
+          // pot view
+          Expanded(
+            child: DebugBorderWidget(
+              color: Colors.red,
+              child: _PotViewWidget(
+                dimPots: tableState.dimPots,
+                vnPotChips: vnPotChips,
+                vnPotToHighlight: vnPotToHighlight,
+                potKey: potKey,
+              ),
             ),
           ),
-        ),
+          // community cards view
+          Expanded(
+            flex: Screen.isLargeScreen
+                ? 4
+                : (isOrientationHorizontal)
+                    ? 3
+                    : 6,
+            child: DebugBorderWidget(
+              color: Colors.transparent,
+              child: Container(
+                width: gameState.gameUIState.centerViewRect.width,
+                child: const _CommunityCardsWidget(),
+              ),
+            ),
+          ),
+          // pots update view
+          Expanded(
+            child: DebugBorderWidget(
+              color: Colors.green,
+              child: _PotUpdatesOrRankWidget(
+                vnPotChipsUpdates: vnPotChipsUpdates,
+                gameState: gameState,
+                vnRankStr: vnRankStr,
+              ),
+            ),
+          ),
+        ],
+      );
+    } else {
+      widget = Column(
+        children: [
+          // pot view
+          Expanded(
+            child: DebugBorderWidget(
+              color: Colors.red,
+              child: _PotViewWidget(
+                dimPots: tableState.dimPots,
+                vnPotChips: vnPotChips,
+                vnPotToHighlight: vnPotToHighlight,
+                potKey: potKey,
+              ),
+            ),
+          ),
+          // pots update view
+          Expanded(
+            child: DebugBorderWidget(
+              color: Colors.green,
+              child: _PotUpdatesOrRankWidget(
+                vnPotChipsUpdates: vnPotChipsUpdates,
+                gameState: gameState,
+                vnRankStr: vnRankStr,
+              ),
+            ),
+          ),
+          // community cards view
+          Expanded(
+            flex: Screen.isLargeScreen ? 4 : 6,
+            child: DebugBorderWidget(
+              color: Colors.transparent,
+              child: Container(
+                width: gameState.gameUIState.centerViewRect.width,
+                child: const _CommunityCardsWidget(),
+              ),
+            ),
+          ),
+        ],
+      );
+    }
 
-        // pots update view
-        Expanded(
-          child: DebugBorderWidget(
-            color: Colors.green,
-            child: _PotUpdatesOrRankWidget(
-              vnPotChipsUpdates: vnPotChipsUpdates,
-              gameState: gameState,
-              vnRankStr: vnRankStr,
-            ),
-          ),
-        ),
-      ],
-    );
+    return widget;
   }
 }
 

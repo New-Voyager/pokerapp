@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/widgets/cards/community_cards_view_2/app_flip_card.dart';
 
 import '../../../resources/app_constants.dart';
@@ -34,6 +35,10 @@ class CardState {
 
 /// this class holds the card sizes & positions for different community card configurations
 class CommunityCardState extends ChangeNotifier {
+  GameState gameState;
+
+  CommunityCardState(this.gameState);
+
   bool _initialized = false;
 
   final List<CardState> _cardStates = [];
@@ -619,29 +624,58 @@ class CommunityCardState extends ChangeNotifier {
   }
 
   void _initDimenForDoubleBoard(Size size) {
-    const int n = kTotalCards;
-    const int gap = n + 1;
-    const double gapWidth = kGap;
-    const totalGapWidth = gap * gapWidth;
-    final extraGap = size.width * kDoubleBoardWidthFactor;
-    final cardsAvailableWidth = size.width - totalGapWidth - extraGap;
-    final eachCardHeight = (size.height - kGap) / 2;
-    final eachCardWidth = eachCardHeight * 2 / 3;
+    if (gameState.boardAttributes.isOrientationHorizontal) {
+      const int n = kTotalCards;
+      const int gap = n + 1;
+      const double gapWidth = kGap;
+      const totalGapWidth = gap * gapWidth;
+      final extraGap = size.width * kDoubleBoardWidthFactor;
+      final cardsAvailableWidth = size.width - totalGapWidth - extraGap;
+      final eachCardWidth = cardsAvailableWidth / n;
+      final eachCardHeight = (size.height - kGap) / 2;
 
-    /// top cards -> 1, 2, 3, 4, 5
-    double xOffset = gapWidth + extraGap / 2;
-    for (int i = 1; i <= n; i++) {
-      _doubleBoardCardDimens[i] =
-          Rect.fromLTWH(xOffset, 0, eachCardWidth, eachCardHeight);
-      xOffset += gapWidth + eachCardWidth;
-    }
+      /// top cards -> 1, 2, 3, 4, 5
+      double xOffset = gapWidth + extraGap / 2;
+      for (int i = 1; i <= n; i++) {
+        _doubleBoardCardDimens[i] =
+            Rect.fromLTWH(xOffset, 0, eachCardWidth, eachCardHeight);
+        xOffset += gapWidth + eachCardWidth;
+      }
 
-    /// bottom cards -> 6, 7, 8, 9, 10
-    xOffset = gapWidth + extraGap / 2;
-    for (int i = n + 1; i <= n * 2; i++) {
-      _doubleBoardCardDimens[i] = Rect.fromLTWH(
-          xOffset, eachCardHeight + kGap, eachCardWidth, eachCardHeight);
-      xOffset += gapWidth + eachCardWidth;
+      /// bottom cards -> 6, 7, 8, 9, 10
+      xOffset = gapWidth + extraGap / 2;
+      for (int i = n + 1; i <= n * 2; i++) {
+        _doubleBoardCardDimens[i] = Rect.fromLTWH(
+            xOffset, eachCardHeight + kGap, eachCardWidth, eachCardHeight);
+        xOffset += gapWidth + eachCardWidth;
+      }
+    } else {
+      const int n = kTotalCards;
+      const int gap = n + 1;
+      const double gapWidth = kGap;
+      const totalGapWidth = gap * gapWidth;
+      // final extraGap = size.width * kDoubleBoardWidthFactor;
+      final extraGap = 0;
+      final cardsAvailableWidth = size.width - totalGapWidth - extraGap;
+      final eachCardWidth = cardsAvailableWidth / n;
+      final eachCardHeight = eachCardWidth * 3 / 2;
+
+      /// top cards -> 1, 2, 3, 4, 5
+      double xOffset = gapWidth + extraGap / 2;
+      for (int i = 1; i <= n; i++) {
+        _doubleBoardCardDimens[i] =
+            Rect.fromLTWH(xOffset, 0, eachCardWidth, eachCardHeight);
+        xOffset += gapWidth + eachCardWidth;
+      }
+
+      /// bottom cards -> 6, 7, 8, 9, 10
+      // xOffset = gapWidth + extraGap / 2;
+      xOffset = gapWidth + extraGap / 2;
+      for (int i = n + 1; i <= n * 2; i++) {
+        _doubleBoardCardDimens[i] = Rect.fromLTWH(
+            xOffset, eachCardHeight + kGap, eachCardWidth, eachCardHeight);
+        xOffset += gapWidth + eachCardWidth;
+      }
     }
   }
 

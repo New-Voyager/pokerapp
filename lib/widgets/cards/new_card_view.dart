@@ -22,6 +22,11 @@ class CardViewNew extends StatelessWidget {
       // log(constraints.maxHeight.toString() + "loll");
 
       double cardWidth = constraints.maxWidth;
+      String label = card.label;
+      if (card.label == 'T') {
+        label = '10';
+      }
+      ;
 
       return Container(
         decoration: BoxDecoration(
@@ -72,7 +77,7 @@ class CardViewNew extends StatelessWidget {
                       // color: Colors.red,
                       height: cardWidth < 69 ? 14 : 17,
                       child: Text(
-                        card.label,
+                        label,
                         style: TextStyle(
                           color: card.color,
                           height: 0.9,

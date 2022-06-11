@@ -250,7 +250,7 @@ class TestService {
         //_currentPlayer = PlayerInfo.fromJson(jsonData["currentPlayer"]);
       }
       // 2 4 6 8 9
-      var maxPlayers = 6;
+      var maxPlayers = 9;
       if (jsonData["gameInfo"] != null) {
         // todo: debug remove: change the max Players in a game here
         _gameInfo = GameInfoModel.fromJson(
@@ -263,7 +263,7 @@ class TestService {
       List<PlayerModel> playerInSeats = [];
       for (final player in _gameInfo.playersInSeats) {
         if (player.seatNo <= maxPlayers) {
-          player.cards = [177, 177];
+          player.cards = [177, 24, 100, 104, 177, 164];
           playerInSeats.add(player);
         }
       }
