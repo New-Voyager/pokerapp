@@ -608,12 +608,12 @@ class BoardAttributesObject extends ChangeNotifier {
   Offset potGlobalPos;
   BoardAttributesJson attribsObj;
 
-  BoardAttributesObject({
-    /*
+  BoardAttributesObject(
+      {
+      /*
     * This screen size is diagonal inches*/
-    @required double screenSize,
-    BoardOrientation orientation = BoardOrientation.vertical,
-  }) {
+      @required double screenSize,
+      BoardOrientation orientation = BoardOrientation.horizontal}) {
     //this._screenSize = screenSize.round();
     this._screenDiagnolSize = Screen.screenSize;
     log('original screen size: $screenSize, rounded screen size: ${Screen.screenSizeInches}');

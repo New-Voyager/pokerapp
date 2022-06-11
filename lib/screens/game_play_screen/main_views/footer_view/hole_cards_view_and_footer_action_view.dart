@@ -396,11 +396,15 @@ class _HoleCardsViewAndFooterActionViewState
                               ? Alignment.center
                               : Alignment.bottomCenter,
                           child: cardsWidget),
-                      Positioned(
-                        left: 0,
-                        bottom: 0,
+                      Align(
+                        alignment: Alignment.bottomCenter,
                         child: rankText,
                       ),
+                      // Positioned(
+                      //   left: 0,
+                      //   bottom: 0,
+                      //   child: rankText,
+                      // ),
 
                       Visibility(
                         visible: false, //showHelpText && isCardVisible,

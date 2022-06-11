@@ -539,57 +539,60 @@ class BetWidgetNew extends StatelessWidget {
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              GestureDetector(
-                                onTap: () {
-                                  _stopIncrementDecrement();
-                                },
-                                onTapDown: (v) {
-                                  _startIncrementDecrement(
-                                      true, valueNotifierVal, isCentsGame);
-                                },
-                                onTapUp: (v) {
-                                  _stopIncrementDecrement();
-                                },
-                                child: Container(
-                                  height: 28,
-                                  width: 28,
-                                  decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                          image: AssetImage(
-                                            'assets/images/bet-widget/add.png',
-                                          ),
-                                          fit: BoxFit.fill)),
-                                  child: Icon(
-                                    Icons.add,
-                                    size: 18,
-                                  ),
-                                ),
-                              ),
+                              BetButton(
+                                  onTapDown: (v) {
+                                    _startIncrementDecrement(
+                                        true, valueNotifierVal, isCentsGame);
+                                  },
+                                  onTapUp: (v) {
+                                    _stopIncrementDecrement();
+                                  },
+                                  onTap: () {
+                                    _stopIncrementDecrement();
+                                  },
+                                  theme: appTheme,
+                                  iconData: Icons.add),
                               SizedBox(
                                 height: 4.0,
                               ),
-                              GestureDetector(
-                                onTap: () {
-                                  _stopIncrementDecrement();
-                                },
-                                onTapDown: (v) {
-                                  _startIncrementDecrement(
-                                      false, valueNotifierVal, isCentsGame);
-                                },
-                                onTapUp: (v) {
-                                  _stopIncrementDecrement();
-                                },
-                                child: Container(
-                                  height: 28,
-                                  width: 28,
-                                  decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                          image: AssetImage(
-                                            'assets/images/bet-widget/minus.png',
-                                          ),
-                                          fit: BoxFit.fill)),
-                                ),
+                              BetButton(
+                                  onTapDown: (v) {
+                                    _startIncrementDecrement(
+                                        false, valueNotifierVal, isCentsGame);
+                                  },
+                                  onTapUp: (v) {
+                                    _stopIncrementDecrement();
+                                  },
+                                  onTap: () {
+                                    _stopIncrementDecrement();
+                                  },
+                                  theme: appTheme,
+                                  iconData: Icons.remove),
+                              SizedBox(
+                                height: 4.0,
                               ),
+                              BetButton(
+                                  onTap: () async {
+                                    double min =
+                                        action.minRaiseAmount.toDouble();
+                                    double max =
+                                        action.maxRaiseAmount.toDouble();
+
+                                    final double res =
+                                        await NumericKeyboard2.show(
+                                      context,
+                                      title: 'Enter your bet',
+                                      min: min,
+                                      currentVal: valueNotifierVal.value,
+                                      max: max,
+                                      decimalAllowed: isCentsGame,
+                                    );
+
+                                    if (res != null)
+                                      valueNotifierVal.value = res;
+                                  },
+                                  theme: appTheme,
+                                  iconData: Icons.keyboard),
                             ],
                           ),
                         ),
@@ -632,6 +635,7 @@ class BetWidgetNew extends StatelessWidget {
                                       min: min,
                                       currentVal: valueNotifierVal.value,
                                       max: max,
+                                      decimalAllowed: isCentsGame,
                                     );
 
                                     if (res != null)
@@ -654,18 +658,9 @@ class BetWidgetNew extends StatelessWidget {
                                             DataFormatter.chipsFormat(
                                                 betAmount),
                                             style: TextStyle(
-                                              fontSize: 12.dp,
+                                              fontSize: 8.dp,
                                               fontWeight: FontWeight.bold,
                                               color: Colors.yellowAccent,
-                                            ),
-                                          ),
-                                        ),
-                                        Positioned(
-                                          left: 4,
-                                          child: Center(
-                                            child: Icon(
-                                              Icons.keyboard,
-                                              size: 18,
                                             ),
                                           ),
                                         ),
