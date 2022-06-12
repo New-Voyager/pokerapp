@@ -543,6 +543,13 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Align(
+                        alignment: Alignment.topRight,
+                        child: TipButton(
+                          theme: theme,
+                          text:
+                              '### Track Member Credits\nPlayers buyin/winning tracked for chips ledger\n ### Show Game Result\n If turned on, players can view game ledger',
+                        )),
                     _buildRadio(
                         value: _clubModel.trackMemberCredit,
                         label: 'Track Member Credits',

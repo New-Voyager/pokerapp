@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:just_the_tooltip/just_the_tooltip.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
@@ -985,5 +987,105 @@ class BetButton extends StatelessWidget {
       onTapDown: onTapDown,
       child: button,
     );
+  }
+}
+
+class GameActionButton extends StatelessWidget {
+  final AppTheme theme;
+  final Function onTap;
+  final String text;
+  final Color btnColor;
+  final IconData icon;
+  GameActionButton(
+      {this.theme, this.onTap, this.text, this.btnColor, this.icon});
+
+  @override
+  Widget build(BuildContext context) {
+    TextStyle btnTextStyle = AppDecorators.getHeadLine4Style(theme: theme)
+        .copyWith(color: theme.primaryColorWithDark());
+    Color btnColor = this.btnColor ?? theme.accentColor;
+    List<Widget> widgets = [];
+    if (icon != null) {
+      widgets.add(Icon(icon));
+    }
+    widgets.add(Text(text,
+        textAlign: TextAlign.center,
+        style: btnTextStyle.copyWith(
+          fontSize: 10.dp,
+          fontWeight: FontWeight.w600,
+          color: Colors.white,
+        )));
+    final button = Container(
+      height: 32.ph,
+      width: 80.pw,
+      margin: const EdgeInsets.only(left: 5),
+      padding: const EdgeInsets.all(2.0),
+      decoration: BoxDecoration(
+        color: btnColor,
+        shape: BoxShape.rectangle,
+        borderRadius: BorderRadius.circular(4),
+        gradient: LinearGradient(
+          colors: [
+            btnColor,
+            lighten(btnColor, 0.13),
+            btnColor,
+          ],
+          begin: Alignment.centerLeft,
+          stops: [0.0, 0.5, 1],
+          end: Alignment.centerRight,
+        ),
+      ),
+      child: Center(
+        child: FittedBox(
+          fit: BoxFit.fitHeight,
+          child: Row(
+            children: widgets,
+          ),
+        ),
+      ),
+    );
+    return InkWell(
+      onTap: onTap,
+      child: button,
+    );
+  }
+}
+
+class TipButton extends StatelessWidget {
+  final AppTheme theme;
+  final String text;
+  final tooltipController = JustTheController();
+  TipButton({@required this.theme, @required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    Widget button = Container(
+      width: 18.ph,
+      height: 18.ph,
+      //padding: EdgeInsets.all(2),
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(color: Colors.grey, width: 2),
+        color: Colors.black,
+      ),
+      child: Icon(Icons.question_mark, size: 15.ph, color: Colors.grey),
+    );
+
+    return JustTheTooltip(
+        controller: tooltipController,
+        isModal: true,
+        child: button,
+        backgroundColor: Color.fromARGB(255, 41, 40, 40),
+        content: Padding(
+            padding: EdgeInsets.all(8.0),
+            child: MarkdownBody(
+              data: text,
+              styleSheet: MarkdownStyleSheet(
+                h3: TextStyle(
+                    color: theme.accentColor,
+                    fontSize: 9.dp,
+                    fontWeight: FontWeight.bold),
+              ),
+            )));
   }
 }

@@ -38,7 +38,7 @@ class AppConfig {
       _apiUrl = apiServer;
       //_apiUrl = 'https://demo.pokerclub.app';
       // _apiUrl = 'http://192.168.1.16:9501';
-      //_apiUrl = 'http://192.168.40.34:9501';
+      // _apiUrl = 'http://192.168.40.34:9501';
 
       // _apiUrl = 'http://192.168.0.103:9501';
     }

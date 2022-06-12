@@ -26,6 +26,7 @@ import 'package:pokerapp/screens/game_play_screen/widgets/help_text.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/game_play/graphql/seat_change_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
+import 'package:pokerapp/utils/listenable.dart';
 import 'package:pokerapp/utils/platform.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/debug_border_widget.dart';
@@ -34,6 +35,7 @@ import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import 'communication_view.dart';
 import 'customization_view.dart';
+import 'footer_game_options.dart';
 import 'hand_analyse_view.dart';
 import 'hole_cards_view_and_footer_action_view.dart';
 import 'seat_change_confirm_widget.dart';
@@ -571,17 +573,19 @@ class _FooterViewState extends State<FooterView>
       children.add(_buildCustomizationView());
     } else if (gameState.tableState.gameStatus ==
             AppConstants.GAME_CONFIGURED &&
-        playerGame &&
         !gameState.gameInfo.demoGame) {
-      if (!gameState.gameInfo.demoGame) {
-        // display game information
-        children.add(_buildGameInfo(gameState));
-      }
+      // if (!gameState.gameInfo.demoGame) {
+      //   // display game information
+      //   children.add(_buildGameInfo(gameState));
+      // }
       /* hand analyse view */
       // children.add(_buildHandAnalyseView(context));
       /* communication widgets */
       // children.add(_buildCommunicationWidget());
-
+      children.add(Align(
+        alignment: Alignment.bottomCenter,
+        child: FooterGameActionView(gameState: gameState),
+      ));
       children.add(_buildCommunicationHandAnalyseView(context));
       // nothing to display here
     } else if (!gameState.isPlaying) {

@@ -268,7 +268,7 @@ class NewChipAnimation extends StatelessWidget {
 
   Widget _coin() {
     return SizedBox.square(
-      dimension: 18.0,
+      dimension: 12.0,
       child: SvgPicture.asset('assets/images/betchips/green.svg'),
     );
   }

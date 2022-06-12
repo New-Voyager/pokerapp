@@ -5,8 +5,8 @@ import '../../../resources/app_constants.dart';
 
 const kTotalCards = 5;
 const kGap = 4.0;
-const kDoubleBoardWidthFactor = 0.35;
-const kSingleBoardHeightFactor = 0.80;
+const kDoubleBoardWidthFactor = 0.10;
+const kSingleBoardHeightFactor = 0.66;
 const kSpecialBoardHeightFactor = 0.50;
 
 extension RectHelper on Rect {

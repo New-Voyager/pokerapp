@@ -54,7 +54,8 @@ class GameUIState {
       if (Screen.diagonalInches < 7) {
         double width = (Screen.width - 40) / 4.2;
         NamePlateWidgetParent.setWidth(width);
-        chipAmountScale = 0.70;
+        tableWidthFactor = 1.0;
+        chipAmountScale = 0.90;
       }
       if (Screen.diagonalInches >= 7 && Screen.diagonalInches < 9) {
         tableWidthFactor = 0.70;
@@ -75,7 +76,7 @@ class GameUIState {
     double heightGap = 0;
     double topLeftLeft = 0;
 
-    double topRowAdjust = 10;
+    double topRowAdjust = 0;
     if (pot != null) {
       widthGap = table.left - pot.left;
       heightGap = table.top - pot.top;
