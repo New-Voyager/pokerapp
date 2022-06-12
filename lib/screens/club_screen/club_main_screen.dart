@@ -103,20 +103,22 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew>
                     left: 5.pw,
                     child: BackArrowWidget(),
                   ),
-                  clubModel.clubCoins == null
-                      ? SizedBox.shrink()
-                      : Positioned(
-                          top: 5.ph,
-                          right: 10.pw,
-                          child: InkWell(
-                            onTap: () {
-                              StoreDialog.show(context, theme);
-                            },
-                            child: Transform.scale(
-                                scale: 1.2,
-                                child:
-                                    CoinWidget(clubModel.clubCoins, 0, false)),
-                          )),
+
+                  // don't show club coins
+                  // clubModel.clubCoins == null
+                  //     ? SizedBox.shrink()
+                  //     : Positioned(
+                  //         top: 5.ph,
+                  //         right: 10.pw,
+                  //         child: InkWell(
+                  //           onTap: () {
+                  //             StoreDialog.show(context, theme);
+                  //           },
+                  //           child: Transform.scale(
+                  //               scale: 1.2,
+                  //               child:
+                  //                   CoinWidget(clubModel.clubCoins, 0, false)),
+                  //         )),
 
                   // banner
                   Transform.translate(
