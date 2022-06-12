@@ -216,6 +216,10 @@ class GameState {
 
   BoardAttributesObject boardAttributes;
 
+  // main screen that is holding the game state as provider
+  // this is a hack, we shouldn't store the context here
+  BuildContext mainScreenContext;
+
   final communityCardState = CommunityCardState();
 
   Future<void> initialize({

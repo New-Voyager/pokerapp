@@ -67,13 +67,15 @@ class _FooterGameActionViewState extends State<FooterGameActionView> {
 
   startGame(BuildContext context) async {
     try {
-      ConnectionDialog.show(context: context, loadingText: "Starting...");
+      ConnectionDialog.show(
+          context: widget.gameState.mainScreenContext,
+          loadingText: "Starting...");
       await GamePlayScreenUtilMethods.startGame(widget.gameState.gameCode);
       await widget.gameState.refresh();
-      ConnectionDialog.dismiss(context: context);
+      ConnectionDialog.dismiss(context: widget.gameState.mainScreenContext);
     } catch (err) {
-      ConnectionDialog.dismiss(context: context);
-      showErrorDialog(context, 'Error',
+      ConnectionDialog.dismiss(context: widget.gameState.mainScreenContext);
+      showErrorDialog(widget.gameState.mainScreenContext, 'Error',
           'Failed to start the game. Error: ${err.toString()}');
     }
   }
@@ -86,7 +88,8 @@ class _FooterGameActionViewState extends State<FooterGameActionView> {
                 builder: (_, gameStatus, tableStatus, __) {
               // if table is running, don't show the buttons
               if (widget.gameState.tableState.gameStatus !=
-                  AppConstants.GAME_CONFIGURED) {
+                      AppConstants.GAME_CONFIGURED ||
+                  widget.gameState.gameInfo.demoGame) {
                 return SizedBox.shrink();
               }
               AppTheme appTheme = AppTheme.getTheme(context);

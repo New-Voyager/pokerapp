@@ -94,7 +94,7 @@ class _BugsFeaturesWidgetState extends State<BugsFeaturesWidget> {
             "By submitting this report, you agree we can use the features and any rights in them in any way we would like.",
             textAlign: TextAlign.center,
             style: AppDecorators.getHeadLine6Style(theme: theme)
-                .copyWith(color: theme.secondaryColor),
+                .copyWith(color: Colors.grey, fontSize: 10),
           ),
           RichText(
             textAlign: TextAlign.center,
@@ -103,20 +103,39 @@ class _BugsFeaturesWidgetState extends State<BugsFeaturesWidget> {
                 TextSpan(
                   style: AppDecorators.getHeadLine5Style(theme: theme)
                       .copyWith(color: theme.accentColor),
-                  text: "Join our discord channel: ",
+                  text: "Join our discord channel: \n",
                 ),
                 TextSpan(
                   style: AppDecorators.getHeadLine5Style(theme: theme).copyWith(
                     color: Colors.blue.shade700,
                   ),
-                  text: "https://discord.gg/AzHcCcFuA2",
+                  text: "https://discord.gg/dxDE9HJFuW",
                   recognizer: TapGestureRecognizer()
                     ..onTap = () async {
-                      final url = 'https://discord.gg/AzHcCcFuA2';
-                      if (await canLaunch(url)) {
-                        await launch(
-                          url,
-                          forceSafariVC: false,
+                      final url = 'https://discord.gg/dxDE9HJFuW';
+                      if (await canLaunchUrl(Uri.parse(url))) {
+                        await launchUrl(
+                          Uri.parse(url),
+                        );
+                      }
+                    },
+                ),
+                TextSpan(
+                  style: AppDecorators.getHeadLine5Style(theme: theme)
+                      .copyWith(color: theme.accentColor),
+                  text: "\n\nTelegram: ",
+                ),
+                TextSpan(
+                  style: AppDecorators.getHeadLine5Style(theme: theme).copyWith(
+                    color: Colors.blue.shade700,
+                  ),
+                  text: "@PokerClubApp",
+                  recognizer: TapGestureRecognizer()
+                    ..onTap = () async {
+                      final url = 'https://t.me/PokerClubApp';
+                      if (await canLaunchUrl(Uri.parse(url))) {
+                        await launchUrl(
+                          Uri.parse(url),
                         );
                       }
                     },
