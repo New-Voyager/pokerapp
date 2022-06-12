@@ -2,7 +2,7 @@
 name: pokerapp
 description: PokerClubApp
 publish_to: "none"
-version: 0.9.0+10
+version: 0.9.2+11
 environment:
   sdk: '>=2.7.0 <3.0.0'
 dependencies:
