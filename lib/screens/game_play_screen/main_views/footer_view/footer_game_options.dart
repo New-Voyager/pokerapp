@@ -105,12 +105,12 @@ class _FooterGameActionViewState extends State<FooterGameActionView> {
                   text: ' End ',
                   btnColor: Color.fromARGB(255, 208, 91, 83),
                   icon: Icons.close));
-              actionButtons.add(GameActionButton(
-                  theme: appTheme,
-                  onTap: () {},
-                  text: ' Shuffle ',
-                  btnColor: Colors.blueGrey,
-                  icon: Icons.shuffle));
+              // actionButtons.add(GameActionButton(
+              //     theme: appTheme,
+              //     onTap: () {},
+              //     text: ' Shuffle ',
+              //     btnColor: Colors.blueGrey,
+              //     icon: Icons.shuffle));
               return Stack(
                 clipBehavior: Clip.none,
                 children: [

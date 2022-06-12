@@ -402,7 +402,7 @@ class MemberItem extends StatelessWidget {
                                     arguments: {
                                       'clubCode': club.clubCode,
                                       'playerId': data.playerId,
-                                      'owner': false,
+                                      'owner': club.isOwner,
                                     },
                                   );
                                 },
