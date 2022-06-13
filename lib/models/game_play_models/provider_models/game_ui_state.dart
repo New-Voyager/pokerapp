@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
@@ -46,7 +48,9 @@ class GameUIState {
 
     if (PlatformUtils.isWeb) {
       // web is same as 7inch screen
-      double width = (Screen.width) / 5;
+      tableWidthFactor = 0.80;
+      double width = (Screen.width) / 6;
+      log('Width: $width');
       //NamePlateWidgetParent.setWidth(90);
       NamePlateWidgetParent.setWidth(width);
       chipAmountScale = 0.70;

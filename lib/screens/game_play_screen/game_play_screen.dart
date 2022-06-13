@@ -635,7 +635,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       case AppLifecycleState.paused:
       case AppLifecycleState.detached:
       case AppLifecycleState.inactive:
-        log("Leaving AudioConference from Lifecycle");
+        log("AppLifecycleState:: Leaving AudioConference from Lifecycle");
         gamePlayObjects.leaveAudioConference();
         AudioService.stop();
         if (gamePlayObjects.locationUpdates != null) {
@@ -645,8 +645,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       case AppLifecycleState.resumed:
         if (gamePlayObjects.gameState != null &&
             !gamePlayObjects.gameState.uiClosing) {
+          gamePlayObjects.gameState.communityCardState.refresh();
           AudioService.resume();
-          log("Joining AudioConference from Lifecycle");
+          log("AppLifecycleState:: Joining AudioConference from Lifecycle");
           gamePlayObjects.joinAudioConference();
           if (gamePlayObjects.locationUpdates != null) {
             gamePlayObjects.locationUpdates.start();

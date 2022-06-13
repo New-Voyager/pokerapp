@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:pokerapp/utils/platform.dart';
 import 'package:pokerapp/widgets/cards/community_cards_view_2/app_flip_card.dart';
 
 import '../../../resources/app_constants.dart';
@@ -36,6 +39,7 @@ class CardState {
 class CommunityCardState extends ChangeNotifier {
   bool _initialized = false;
 
+  bool _doubleBoard = false;
   final List<CardState> _cardStates = [];
   List<CardState> get cardStates => _cardStates;
 
@@ -55,6 +59,20 @@ class CommunityCardState extends ChangeNotifier {
 
   bool _isFlopDone = false;
   bool _isTurnDone = false;
+  bool _isRiverDone = false;
+  List<int> board1Cards = [];
+  List<int> board2Cards = [];
+
+  void refresh() {
+    if (!_initialized) {
+      return;
+    }
+    log('CommunityCardState: CommunityCardState::refresh _isFlopDone: $_isFlopDone _isTurnDone: $_isTurnDone _isRiverDone: $_isRiverDone board1Cards: $board1Cards board2Cards: $board2Cards');
+    if (board1Cards.length > 0) {
+      addBoardCardsWithoutAnimating(board1: board1Cards, board2: board2Cards);
+    }
+    //notifyListeners();
+  }
 
   Rect _getCardDimen(CommunityCardBoardState boardState, int cardId) {
     switch (boardState) {
@@ -108,18 +126,30 @@ class CommunityCardState extends ChangeNotifier {
         ),
       ),
     );
+
     _cardStates.addAll(localCardStates);
 
     notifyListeners();
 
     await _delay();
-
+    log('1 CommunityCardState: _addFlopCards: _cardStates: $_cardStates');
     // flip the first card
+    bool addWithoutAnimating = false;
     localCardStates.forEach((cs) {
-      cs.flipKey.currentState.toggleCard();
+      if (cs.flipKey != null && cs.flipKey.currentState != null) {
+        log('2 CommunityCardState: current state: ${cs.flipKey.currentState}');
+        cs.flipKey.currentState.toggleCard();
+      } else {
+        addWithoutAnimating = true;
+      }
     });
+    log('2 CommunityCardState: _addFlopCards: _cardStates: $_cardStates');
 
     await _delayFA();
+    if (PlatformUtils.isWeb && addWithoutAnimating) {
+      addBoardCardsWithoutAnimating(board1: board1Cards, board2: board2Cards);
+      return;
+    }
 
     // move the cards
     for (int i = 0; i < 3; i++) {
@@ -134,14 +164,21 @@ class CommunityCardState extends ChangeNotifier {
     @required final List<int> board1,
     final List<int> board2,
   }) async {
-    assert(board1.length == 3, 'Board 1: Only 3 cards to be added in Flop');
+    log('CommunityCardState: CommunityCardState::addFlopCards ${board1} board2: ${board2}');
 
+    assert(board1.length == 3, 'Board 1: Only 3 cards to be added in Flop');
     final bool isDoubleBoard = board2 != null;
     if (isDoubleBoard) {
       assert(board2.length == 3, 'Board 2: Only 3 cards to be added in Flop');
     }
+    this.board1Cards.addAll(board1);
+    if (board2 != null) {
+      this.board2Cards.addAll(board2);
+    }
 
+    _doubleBoard = false;
     if (isDoubleBoard) {
+      _doubleBoard = true;
       _addFlopCards(
         board1,
         startWith: 1,
@@ -170,12 +207,19 @@ class CommunityCardState extends ChangeNotifier {
       boardState: boardState,
     );
     _cardStates.add(cardState);
+
     notifyListeners();
 
     await _delay();
 
     // flip
-    cardState.flipKey.currentState.toggleCard();
+    if (PlatformUtils.isWeb) {
+      if (cardState.flipKey != null && cardState.flipKey.currentState == null) {
+        addBoardCardsWithoutAnimating(board1: board1Cards, board2: board2Cards);
+        return;
+      }
+    }
+    cardState.flipKey.currentState?.toggleCard();
   }
 
   /// single board -> 4
@@ -185,8 +229,9 @@ class CommunityCardState extends ChangeNotifier {
     final int board2Card,
   }) async {
     final bool isDoubleBoard = board2Card != null;
-
+    board1Cards.add(board1Card);
     if (isDoubleBoard) {
+      board2Cards.add(board1Card);
       _addTurnCard(
         board1Card,
         startWith: 4,
@@ -200,6 +245,7 @@ class CommunityCardState extends ChangeNotifier {
     } else {
       await _addTurnCard(board1Card);
     }
+    log('CommunityCardState: CommunityCardState::addTurnCard ${board1Cards} board2: ${board2Cards}');
 
     _isTurnDone = true;
   }
@@ -215,11 +261,28 @@ class CommunityCardState extends ChangeNotifier {
       boardState: boardState,
     );
     _cardStates.add(cardState);
+    if (PlatformUtils.isWeb) {
+      bool addWithoutAnimating = false;
+      if (cardState.flipKey != null && cardState.flipKey.currentState == null) {
+        addWithoutAnimating = true;
+      }
+      if (addWithoutAnimating) {
+        addBoardCardsWithoutAnimating(board1: board1Cards, board2: board2Cards);
+        return;
+      }
+    }
+
     notifyListeners();
 
     await _delay();
 
     // flip
+    if (PlatformUtils.isWeb) {
+      if (cardState.flipKey != null && cardState.flipKey.currentState == null) {
+        addBoardCardsWithoutAnimating(board1: board1Cards, board2: board2Cards);
+        return;
+      }
+    }
     cardState.flipKey.currentState?.toggleCard();
   }
 
@@ -230,8 +293,10 @@ class CommunityCardState extends ChangeNotifier {
     final int board2Card,
   }) async {
     final bool isDoubleBoard = board2Card != null;
+    board1Cards.add(board1Card);
 
     if (isDoubleBoard) {
+      board2Cards.add(board2Card);
       _addRiverCard(
         board1Card,
         startWith: 5,
@@ -245,6 +310,7 @@ class CommunityCardState extends ChangeNotifier {
     } else {
       await _addRiverCard(board1Card);
     }
+    log('CommunityCardState: CommunityCardState::addRiverCard ${board1Cards} board2: ${board2Cards}');
   }
 
   /// cards -> 6, 8 (as 1, 2, 3, 4 are common) & (5, 7 are reserved for Turn case)
@@ -393,18 +459,22 @@ class CommunityCardState extends ChangeNotifier {
     @required final List<int> board1,
     final List<int> board2,
   }) async {
-    final bool isDoubleBoard = board2 != null;
+    bool isDoubleBoard = false;
     final int n = board1.length;
-
-    final bool isFlopRunItTwice =
-        board2 != null && n >= 3 && board2[2] == board1[2];
-    final bool isTurnRunItTwice =
-        board2 != null && n >= 4 && board2[3] == board1[3];
+    bool isFlopRunItTwice = false;
+    bool isTurnRunItTwice = false;
+    if (board2 != null && board2.length > 0) {
+      isDoubleBoard = true;
+      isFlopRunItTwice = (n >= 3 && board2[2] == board1[2]);
+      isTurnRunItTwice = (n >= 4 && board2[3] == board1[3]);
+    }
 
     final List<CardState> cardStates = [];
     _isFlopDone = false;
     _isTurnDone = false;
+    _isRiverDone = false;
 
+    log('CommunityCardState: addBoardCardsWithoutAnimating ${board1} board2: ${board2}');
     // FLOP
     if (n >= 3) {
       _isFlopDone = true;
@@ -552,15 +622,19 @@ class CommunityCardState extends ChangeNotifier {
 
     _cardStates.clear();
     _cardStates.addAll(cardStates);
+    log('CommunityCardState: addBoardCardsWithoutAnimating end ${board1} board2: ${board2} cardStates: ${_cardStates}');
     notifyListeners();
   }
 
   /// reset the community card board
   void reset() {
+    log('CommunityCardState: CommunityCardState::reset');
     _isFlopDone = false;
     _isTurnDone = false;
     _highlightedCards.clear();
     _cardStates.clear();
+    board1Cards = [];
+    board2Cards = [];
     notifyListeners();
   }
 

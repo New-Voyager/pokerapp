@@ -232,6 +232,7 @@ class NewHandHandler {
     if (gameState.uiClosing) return;
     final TableState tableState = gameState.tableState;
     gameState.resetSeatActions(newHand: true);
+    gameState.communityCardState.reset();
 
     // remove all the community cards
     tableState.clear();
@@ -372,13 +373,13 @@ class NewHandHandler {
       // AudioService.playDeal(mute: gameState.playerLocalConfig.mute);
 
       /* show card shuffling*/
-      tableState.updateCardShufflingAnimation(true);
       if (gameState.handInfo.bombPot) {
-        await Future.delayed(AppConstants.bombPotTotalWaitDuration); // wait
+        // tableState.updateCardShufflingAnimation(true);
+        // await Future.delayed(AppConstants.bombPotTotalWaitDuration); // wait
       } else {
-        await Future.delayed(
-          AppConstants.cardShufflingTotalWaitDuration,
-        ); // wait
+        // await Future.delayed(
+        //   AppConstants.cardShufflingTotalWaitDuration,
+        // ); // wait
       }
 
       await HandActionProtoService.cardDistribution(

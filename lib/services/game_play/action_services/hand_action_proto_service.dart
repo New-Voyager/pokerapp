@@ -1077,6 +1077,7 @@ class HandActionProtoService {
     } catch (err) {
       log('==== CRITICAL ====: Exception thrown at updatePotBeforeResultStatic. Error: ${err.toString()}');
     }
+    _gameState.communityCardState.reset();
     _gameState.handState = HandState.ENDED;
     _gameState.handInProgress = false;
 

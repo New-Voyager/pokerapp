@@ -302,7 +302,6 @@ class Client {
 
     if (_subs[sid] != null) {
       if (!_subs[sid].closed) {
-        log('subscriber id: $sid');
         _subs[sid].add(Message(subject, sid, payload, replyTo: replyTo));
       }
     }
