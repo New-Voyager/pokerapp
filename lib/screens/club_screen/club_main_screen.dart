@@ -86,93 +86,98 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew>
     super.initState();
   }
 
-  Widget _buildMainBody(ClubHomePageModel clubModel, AppTheme theme) => Stack(
-        children: [
-          SingleChildScrollView(
-            physics: BouncingScrollPhysics(),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                SizedBox(height: 8),
-                Stack(
-                  children: [
-                    Positioned(
-                      top: 5.ph,
-                      left: 5.pw,
-                      child: BackArrowWidget(),
-                    ),
-                    clubModel.clubCoins == null
-                        ? SizedBox.shrink()
-                        : Positioned(
-                            top: 5.ph,
-                            right: 10.pw,
-                            child: InkWell(
-                              onTap: () {
-                                StoreDialog.show(context, theme);
-                              },
-                              child: Transform.scale(
-                                  scale: 1.2,
-                                  child: CoinWidget(
-                                      clubModel.clubCoins, 0, false)),
-                            )),
+  Widget _buildMainBody(ClubHomePageModel clubModel, AppTheme theme) {
+    bool isOwner = clubModel.isOwner ?? false;
+    return Stack(
+      children: [
+        SingleChildScrollView(
+          physics: BouncingScrollPhysics(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              SizedBox(height: 8),
+              Stack(
+                children: [
+                  Positioned(
+                    top: 5.ph,
+                    left: 5.pw,
+                    child: BackArrowWidget(),
+                  ),
 
-                    // banner
-                    Transform.translate(
-                      offset: Offset(0, 16.ph),
-                      child: ClubBannerViewNew(
-                        clubModel: clubModel,
-                        appScreenText: _appScreenText,
-                      ),
-                    ),
+                  // don't show club coins
+                  // clubModel.clubCoins == null
+                  //     ? SizedBox.shrink()
+                  //     : Positioned(
+                  //         top: 5.ph,
+                  //         right: 10.pw,
+                  //         child: InkWell(
+                  //           onTap: () {
+                  //             StoreDialog.show(context, theme);
+                  //           },
+                  //           child: Transform.scale(
+                  //               scale: 1.2,
+                  //               child:
+                  //                   CoinWidget(clubModel.clubCoins, 0, false)),
+                  //         )),
 
-                    clubModel.availableCredit == null ||
-                            !clubModel.trackMemberCredit
-                        ? SizedBox.shrink()
-                        : Positioned(
-                            top: 70.ph,
-                            right: 20.pw,
-                            child: CreditsWidget(
-                              credits: clubModel.availableCredit,
-                              theme: theme,
-                              onTap: () {
-                                // go to activities screen
-                                final currentPlayer = AuthService.get();
-                                Navigator.pushNamed(
-                                  context,
-                                  Routes.club_member_credit_detail_view,
-                                  arguments: {
-                                    'clubCode': clubModel.clubCode,
-                                    'playerId': currentPlayer.uuid,
-                                    'owner': false,
-                                  },
-                                );
-                              },
-                            ),
+                  // banner
+                  Transform.translate(
+                    offset: Offset(0, 16.ph),
+                    child: ClubBannerViewNew(
+                      clubModel: clubModel,
+                      appScreenText: _appScreenText,
+                    ),
+                  ),
+
+                  clubModel.availableCredit == null ||
+                          !clubModel.trackMemberCredit
+                      ? SizedBox.shrink()
+                      : Positioned(
+                          top: 70.ph,
+                          right: 20.pw,
+                          child: CreditsWidget(
+                            credits: clubModel.availableCredit,
+                            theme: theme,
+                            onTap: () {
+                              // go to activities screen
+                              final currentPlayer = AuthService.get();
+                              Navigator.pushNamed(
+                                context,
+                                Routes.club_member_credit_detail_view,
+                                arguments: {
+                                  'clubCode': clubModel.clubCode,
+                                  'playerId': currentPlayer.uuid,
+                                  'owner': isOwner,
+                                },
+                              );
+                            },
                           ),
-                  ],
-                ),
+                        ),
+                ],
+              ),
 
-                // live game
-                ClubLiveGamesView(
-                  clubModel: clubModel,
-                  liveGames: clubModel.liveGames,
-                  appScreenText: _appScreenText,
-                  onRefreshClubMainScreen: refreshClubMainScreen,
-                ),
+              // live game
+              ClubLiveGamesView(
+                clubModel: clubModel,
+                liveGames: clubModel.liveGames,
+                appScreenText: _appScreenText,
+                onRefreshClubMainScreen: refreshClubMainScreen,
+              ),
 
-                // seperator
-                AppDimensionsNew.getVerticalSizedBox(16.ph),
+              // seperator
+              AppDimensionsNew.getVerticalSizedBox(16.ph),
 
-                // club actions
-                ClubActionsNew(clubModel, this.widget.clubCode, _appScreenText),
+              // club actions
+              ClubActionsNew(clubModel, this.widget.clubCode, _appScreenText),
 
-                // seperator
-                AppDimensionsNew.getVerticalSizedBox(16.ph),
-              ],
-            ),
+              // seperator
+              AppDimensionsNew.getVerticalSizedBox(16.ph),
+            ],
           ),
-        ],
-      );
+        ),
+      ],
+    );
+  }
 
   Future<ClubHomePageModel> fetchData({bool update = false}) async {
     // if the current user is manager or club owner, get club coins

@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:developer' as developer;
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/community_card_state.dart';
@@ -40,6 +41,8 @@ class CommunityCardView2 extends StatelessWidget {
         return AnimatedBuilder(
           animation: communityCardState,
           builder: (_, __) {
+            developer.log(
+                'CommunityCardState: Rebuilding ${communityCardState.cardStates.length}');
             return AnimatedSwitcher(
               switchInCurve: Curves.easeInOutExpo,
               switchOutCurve: Curves.easeInOut,

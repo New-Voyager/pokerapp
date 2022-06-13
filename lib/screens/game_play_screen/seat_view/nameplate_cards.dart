@@ -91,7 +91,7 @@ class PlayerCardsWidget extends StatelessWidget {
         offset: Offset(
           // xOffset * xoffset,
           xoffset,
-          -NamePlateWidgetParent.namePlateSize.height / 2, // + 8,
+          NamePlateWidgetParent.namePlateSize.height / 2, // / 2, // + 8,
         ),
         child: Transform.scale(
           scale: scale / 1.2,

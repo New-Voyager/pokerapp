@@ -114,10 +114,10 @@ class _CommunicationViewState extends State<CommunicationView> {
                   ));
                 }
 
-                if (showVoiceText && !gameState.audioConfEnabled) {
-                  children.addAll(voiceTextWidgets(widget.chatService));
-                  children.add(SizedBox(height: 10));
-                }
+                // if (showVoiceText && !gameState.audioConfEnabled) {
+                //   children.addAll(voiceTextWidgets(widget.chatService));
+                //   children.add(SizedBox(height: 10));
+                // }
 
                 if (audioConf &&
                     gameState.playerLocalConfig.inAudioConference) {

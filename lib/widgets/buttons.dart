@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:just_the_tooltip/just_the_tooltip.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
@@ -921,5 +923,169 @@ class BetAmountButton extends StatelessWidget {
       onTap: onTap,
       child: button,
     );
+  }
+}
+
+class BetButton extends StatelessWidget {
+  final AppTheme theme;
+  final String text;
+  final Function onTap;
+  final Function onTapDown;
+  final Function onTapUp;
+  final bool isKeyboard;
+  final String svgAsset;
+  final IconData iconData;
+
+  const BetButton(
+      {Key key,
+      @required this.theme,
+      this.svgAsset,
+      this.iconData,
+      this.text = '',
+      this.isKeyboard = false,
+      @required this.onTap,
+      this.onTapDown,
+      this.onTapUp})
+      : super(key: key);
+
+  Widget build(BuildContext context) {
+    TextStyle btnTextStyle = AppDecorators.getHeadLine4Style(theme: theme)
+        .copyWith(color: theme.supportingColor);
+    // Color btnColor = theme.primaryColorWithLight(0.25);
+    Color btnColor = Color(0xFF134848);
+    Widget icon;
+    if (this.svgAsset != null) {
+      icon = SvgPicture.asset(
+        svgAsset,
+        width: double.infinity,
+        height: double.infinity,
+      );
+    } else {
+      icon = Icon(iconData);
+    }
+    final button = Container(
+      // duration: AppConstants.fastAnimationDuration,
+      // curve: Curves.bounceInOut,
+      height: 28.ph,
+      width: 28.ph,
+      margin: const EdgeInsets.symmetric(
+        horizontal: 5,
+      ),
+      padding: const EdgeInsets.all(2.0),
+      decoration: BoxDecoration(
+          image: DecorationImage(
+              image: AssetImage(
+                'assets/images/buttons/bet-button.png',
+              ),
+              fit: BoxFit.fill)),
+      child: icon,
+    );
+
+    return GestureDetector(
+      onTap: onTap,
+      onTapUp: onTapUp,
+      onTapDown: onTapDown,
+      child: button,
+    );
+  }
+}
+
+class GameActionButton extends StatelessWidget {
+  final AppTheme theme;
+  final Function onTap;
+  final String text;
+  final Color btnColor;
+  final IconData icon;
+  GameActionButton(
+      {this.theme, this.onTap, this.text, this.btnColor, this.icon});
+
+  @override
+  Widget build(BuildContext context) {
+    TextStyle btnTextStyle = AppDecorators.getHeadLine4Style(theme: theme)
+        .copyWith(color: theme.primaryColorWithDark());
+    Color btnColor = this.btnColor ?? theme.accentColor;
+    List<Widget> widgets = [];
+    if (icon != null) {
+      widgets.add(Icon(icon));
+    }
+    widgets.add(Text(text,
+        textAlign: TextAlign.center,
+        style: btnTextStyle.copyWith(
+          fontSize: 10.dp,
+          fontWeight: FontWeight.w600,
+          color: Colors.white,
+        )));
+    final button = Container(
+      height: 32.ph,
+      width: 80.pw,
+      margin: const EdgeInsets.only(left: 5),
+      padding: const EdgeInsets.all(2.0),
+      decoration: BoxDecoration(
+        color: btnColor,
+        shape: BoxShape.rectangle,
+        borderRadius: BorderRadius.circular(4),
+        gradient: LinearGradient(
+          colors: [
+            btnColor,
+            lighten(btnColor, 0.13),
+            btnColor,
+          ],
+          begin: Alignment.centerLeft,
+          stops: [0.0, 0.5, 1],
+          end: Alignment.centerRight,
+        ),
+      ),
+      child: Center(
+        child: FittedBox(
+          fit: BoxFit.fitHeight,
+          child: Row(
+            children: widgets,
+          ),
+        ),
+      ),
+    );
+    return InkWell(
+      onTap: onTap,
+      child: button,
+    );
+  }
+}
+
+class TipButton extends StatelessWidget {
+  final AppTheme theme;
+  final String text;
+  final tooltipController = JustTheController();
+  TipButton({@required this.theme, @required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    Widget button = Container(
+      width: 18.ph,
+      height: 18.ph,
+      //padding: EdgeInsets.all(2),
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(color: Colors.grey, width: 2),
+        color: Colors.black,
+      ),
+      child: Icon(Icons.question_mark, size: 15.ph, color: Colors.grey),
+    );
+
+    return JustTheTooltip(
+        controller: tooltipController,
+        isModal: true,
+        child: button,
+        backgroundColor: Color.fromARGB(255, 41, 40, 40),
+        content: Padding(
+            padding: EdgeInsets.all(8.0),
+            child: MarkdownBody(
+              data: text,
+              styleSheet: MarkdownStyleSheet(
+                h3: TextStyle(
+                    color: theme.accentColor,
+                    fontSize: 9.dp,
+                    fontWeight: FontWeight.bold),
+              ),
+            )));
   }
 }

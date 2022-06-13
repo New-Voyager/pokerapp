@@ -213,6 +213,12 @@ class _CreditDialogsWidgetState extends State<CreditDialogsWidget> {
       title = 'Set Credits';
       subTitle = '(will be set as current credits)';
     }
+    String tipText = '### Add\nThe chips will be added to player credits\n'
+        '### Deduct\nThe chips will be deducted from player credits\n'
+        '### Fee\nFee chips will be added to player credits\n'
+        '### Set\nSet chips to player credits\n'
+        '### Follow-up\nFlags the entry for future follow-up\n'
+        '### Clear Follow-ups\nClears all follow-ups for this player';
     return Container(
       // height: MediaQuery.of(context).size.height * 0.5,
       // margin: EdgeInsets.all(16),
@@ -226,6 +232,12 @@ class _CreditDialogsWidgetState extends State<CreditDialogsWidget> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           // sep
+          Align(
+              alignment: Alignment.topRight,
+              child: TipButton(
+                theme: widget.theme,
+                text: tipText,
+              )),
           SizedBox(height: 5.ph),
           Text(widget.name,
               style: AppDecorators.getHeadLine4Style(theme: widget.theme)),
@@ -247,14 +259,14 @@ class _CreditDialogsWidgetState extends State<CreditDialogsWidget> {
               }),
           SizedBox(height: 15.ph),
 
-          Column(children: [
-            Text(
-              title,
-              style: AppDecorators.getAccentTextStyle(theme: widget.theme),
-            ),
-            Text(subTitle,
-                style: AppDecorators.getHeadLine6Style(theme: widget.theme)),
-          ]),
+          // Column(children: [
+          //   Text(
+          //     title,
+          //     style: AppDecorators.getAccentTextStyle(theme: widget.theme),
+          //   ),
+          //   Text(subTitle,
+          //       style: AppDecorators.getHeadLine6Style(theme: widget.theme)),
+          // ]),
           SizedBox(height: 5.ph),
           CardFormTextField(
             controller: creditsController,

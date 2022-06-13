@@ -70,6 +70,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
   bool closed = false;
   TabController _tabController;
   List<ClubMemberModel> playersUnderMe = [];
+  int playersUnderMeCount = 0;
   _ClubMembersDetailsView(this.clubCode, this.playerId, this.isClubOwner);
 
   AppTextScreen _appScreenText;
@@ -104,7 +105,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
         }
       }
     }
-
+    playersUnderMeCount = playersUnderMe.length;
     oldPhoneText = _data.contactInfo;
     oldNotes = _data.notes;
     oldTipsBack = _data.tipsBack;
@@ -790,10 +791,10 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
 
   Widget playersUnderRow(AppTheme theme) {
     return MenuListTile(
-      title: "Players Under (${playersUnderMe.length})",
+      title: "Players Under (${playersUnderMeCount})",
       navIcon: true,
       onPressed: () async {
-        await Navigator.pushNamed(
+        dynamic ret = await Navigator.pushNamed(
           context,
           Routes.club_member_players_under_view,
           arguments: {
@@ -803,6 +804,13 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
             'member': widget.member,
           },
         );
+        if (ret != null) {
+          if (ret[0]) {
+            playersUnderMeCount = ret[1];
+            setState(() {});
+          }
+        }
+        log('returned');
       },
       padding: EdgeInsets.only(left: 5),
     );

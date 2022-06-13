@@ -103,7 +103,7 @@ class GamePlayObjects {
   }
 
   void initialzeBoardAttributes() {
-    BoardOrientation orientation = BoardOrientation.vertical;
+    BoardOrientation orientation = BoardOrientation.horizontal;
     if (PlatformUtils.isWeb) {
       orientation = BoardOrientation.horizontal;
     }
@@ -427,6 +427,7 @@ class GamePlayObjects {
     // instantiate the dialog object
     _dialog = NetworkConnectionDialog();
     _gameState = GameState();
+    _gameState.mainScreenContext = context;
     _gameState.boardAttributes = boardAttributes;
 
     if (!TestService.isTesting && customizationService == null) {

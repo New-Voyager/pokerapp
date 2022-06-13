@@ -13,11 +13,11 @@ class NewGameConstants {
     GameType.DEALER_CHOICE: "Dealer Choice",
   };
 
-  static const List<int> ACTION_TIMES = [10, 15, 20, 30, 45, 60];
-  static const List<int> BUYIN_WAIT_TIMES = [60, 90, 120, 240, 300];
+  static const List<int> ACTION_TIMES = [10, 15, 20, 30];
+  static const List<int> BUYIN_WAIT_TIMES = [60, 90, 120, 180];
   static const List<int> BOMB_POT_INTERVALS = [15, 30, 45, 60];
   static const List<int> BOMB_POT_BET_SIZE = [2, 3, 4, 5, 10];
-  static const List<int> BREAK_WAIT_TIMES = [3, 5, 10, 15, 30];
+  static const List<int> BREAK_WAIT_TIMES = [3, 5, 10, 15];
   static const List<String> BOMB_POT_GAME_TYPES = [
     'NLH',
     'PLO',

@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
+import 'package:pokerapp/utils/platform.dart';
 
 import 'box_type.dart';
 import 'hive_datasource_impl.dart';
@@ -99,7 +100,9 @@ class AppSettingsStore {
 
   String get backdropAsset {
     String ret = getSetting('gameSettings.backdropAsset');
-    return 'assets/images/backgrounds/carpet1.png';
+    if (PlatformUtils.isWeb) {
+      return 'assets/images/backgrounds/carpet1.png';
+    }
     if (ret == null) {
       return 'assets/images/backgrounds/night-sky.png';
     }

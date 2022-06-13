@@ -50,6 +50,7 @@ class _ClubMembersUnderAgentState extends State<ClubMembersUnderAgent>
   List<ClubMemberModel> allPlayers = [];
   bool loading = true;
   bool playersLoading = false;
+  bool modified = false;
 
   bool playersEditMode = false;
   TextEditingController searchTextController = TextEditingController();
@@ -406,6 +407,7 @@ class _ClubMembersUnderAgentState extends State<ClubMembersUnderAgent>
                               member.agentUuid = agent.playerId;
                               member.agentName = agent.name;
                               playersUnderMe.add(member);
+                              modified = true;
                             }
 
                             for (final member in removedExistingPlayers) {
@@ -414,6 +416,7 @@ class _ClubMembersUnderAgentState extends State<ClubMembersUnderAgent>
                               member.agentUuid = '';
                               member.agentName = '';
                               playersUnderMe.remove(member);
+                              modified = true;
                             }
                             setState(() {
                               exitPlayersEditMode();
@@ -446,7 +449,7 @@ class _ClubMembersUnderAgentState extends State<ClubMembersUnderAgent>
   }
 
   void goBack(BuildContext context) {
-    Navigator.pop(context);
+    Navigator.pop(context, [modified, playersUnderMe.length]);
   }
 
   void exitPlayersEditMode() {

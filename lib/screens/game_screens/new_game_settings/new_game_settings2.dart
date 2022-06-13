@@ -491,23 +491,23 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            LabelText(label: 'Interval', theme: theme),
-                            RadioToggleButtonsWidget<String>(
-                              defaultValue: gmp.bombPotIntervalType ==
-                                      BombPotIntervalType.TIME_INTERVAL
-                                  ? 0
-                                  : 1,
-                              values: ['Time', 'Hands'],
-                              onSelect: (val) {
-                                gmp.bombPotIntervalType = val == 0
-                                    ? BombPotIntervalType.TIME_INTERVAL
-                                    : BombPotIntervalType.EVERY_X_HANDS;
-                              },
-                            )
-                          ]),
+                      // Row(
+                      //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      //     children: [
+                      //       LabelText(label: 'Interval', theme: theme),
+                      //       RadioToggleButtonsWidget<String>(
+                      //         defaultValue: gmp.bombPotIntervalType ==
+                      //                 BombPotIntervalType.TIME_INTERVAL
+                      //             ? 0
+                      //             : 1,
+                      //         values: ['Time', 'Hands'],
+                      //         onSelect: (val) {
+                      //           gmp.bombPotIntervalType = val == 0
+                      //               ? BombPotIntervalType.TIME_INTERVAL
+                      //               : BombPotIntervalType.EVERY_X_HANDS;
+                      //         },
+                      //       )
+                      //     ]),
                       Visibility(
                         visible: gmp.bombPotIntervalType ==
                             BombPotIntervalType.TIME_INTERVAL,
@@ -1305,14 +1305,14 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
 
                               /* sep */
                               NewGameSettings2.sepV8,
-                              _buildRadio(
-                                label: appScreenText['botGame'],
-                                value: gmp.botGame,
-                                onChange: (bool b) {
-                                  gmp.botGame = b;
-                                },
-                                theme: theme,
-                              ),
+                              // _buildRadio(
+                              //   label: appScreenText['botGame'],
+                              //   value: gmp.botGame,
+                              //   onChange: (bool b) {
+                              //     gmp.botGame = b;
+                              //   },
+                              //   theme: theme,
+                              // ),
                               /* location check */
                               _buildRadio(
                                 label: appScreenText['locationCheck'],

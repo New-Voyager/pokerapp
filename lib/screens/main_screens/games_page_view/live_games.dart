@@ -521,7 +521,18 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
             //       icon: Icons.email,
             //       theme: appTheme,
             //     )),
-
+            Align(
+                alignment: Alignment.topRight,
+                child: RoundRectButton(
+                  onTap: () async {
+                    Alerts.showDailog(
+                      context: context,
+                      child: BugsFeaturesWidget(),
+                    );
+                  },
+                  text: 'Feedback', //_appScreenText["host"],
+                  theme: appTheme,
+                )),
             TabBar(
               physics: const BouncingScrollPhysics(),
               tabs: [
@@ -750,9 +761,10 @@ class LiveGamesHelpText extends StatelessWidget {
         onTap: () async {
           startDemoGame(context);
         },
-        text: 'Demo Game', //_appScreenText["host"],
+        text: 'Try It!', //_appScreenText["host"],
         theme: appTheme,
       ),
+      SizedBox(height: 20),
     ]);
 
     // Center(

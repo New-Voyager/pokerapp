@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
+import 'package:pokerapp/utils/platform.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
@@ -40,6 +41,12 @@ class RadioListWidget<T> extends StatelessWidget {
       // color: vnCurrValue.value == v
       //     ? theme.accentColor
       //     : theme.primaryColorWithDark(),
+      var padding = EdgeInsets.all(this.padding.toDouble());
+      var margin = EdgeInsets.symmetric(horizontal: 5.0);
+      if (PlatformUtils.isWeb) {
+        margin = EdgeInsets.symmetric(horizontal: 8.0, vertical: 5.0);
+        padding = EdgeInsets.symmetric(horizontal: 8, vertical: 2);
+      }
       return InkWell(
         onTap: () {
           vnCurrValue.value = v;
@@ -47,12 +54,12 @@ class RadioListWidget<T> extends StatelessWidget {
         },
         child: IntrinsicWidth(
           child: Container(
-            margin: EdgeInsets.symmetric(horizontal: 8.0, vertical: 5.0),
+            margin: margin,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5.0),
               color: borderColor,
             ),
-            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+            padding: padding,
             height: 32.ph,
             alignment: Alignment.center,
             child: Text(

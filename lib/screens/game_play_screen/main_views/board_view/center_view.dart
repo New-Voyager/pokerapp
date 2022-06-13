@@ -20,6 +20,7 @@ import 'package:pokerapp/screens/game_play_screen/main_views/board_view/pots_vie
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/rank_widget.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/formatter.dart';
+import 'package:pokerapp/utils/listenable.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/cards/animations/animating_shuffle_card_view.dart';
 import 'package:pokerapp/widgets/debug_border_widget.dart';
@@ -187,12 +188,13 @@ class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
 
     /* if the game is paused, show the options available during game pause */
     // don't show start/pause buttons for bot script games or demo games
-    if (gameState?.isBotGame == false &&
-        gameState?.gameInfo?.demoGame == false) {
-      if (isGamePausedOrWaiting || !gameState.isGameRunning) {
-        return _buildGamePauseOptions(gameState);
-      }
-    }
+
+    // if (gameState?.isBotGame == false &&
+    //     gameState?.gameInfo?.demoGame == false) {
+    //   if (isGamePausedOrWaiting || !gameState.isGameRunning) {
+    //     return _buildGamePauseOptions(gameState);
+    //   }
+    // }
 
     /* if we reach here, means, the game is RUNNING */
     /* The following view, shows the community cards
@@ -560,23 +562,29 @@ class _PotUpdatesOrRankWidget extends StatelessWidget {
               ),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20.0),
-                color: Colors.blueGrey[600],
+                color: Colors.black26,
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  SvgPicture.asset(
-                    'assets/icons/potpokerchips.svg',
-                    color: Colors.yellow,
-                    width: 20.pw,
-                    height: 20.pw,
-                    fit: BoxFit.cover,
-                  ),
+                  Text('Pot:',
+                      style: AppStylesNew.itemInfoTextStyleHeavy.copyWith(
+                        color: Colors.blue,
+                        fontSize: 9.dp,
+                        fontWeight: FontWeight.w800,
+                      )),
+                  // SvgPicture.asset(
+                  //   'assets/icons/potpokerchips.svg',
+                  //   color: Colors.yellow,
+                  //   width: 20.pw,
+                  //   height: 20.pw,
+                  //   fit: BoxFit.cover,
+                  // ),
                   SizedBox(width: 10),
                   Text(
                     '${DataFormatter.chipsFormat(potChipsUpdates?.toDouble())}',
                     style: AppStylesNew.itemInfoTextStyleHeavy.copyWith(
-                      fontSize: 13.dp,
+                      fontSize: 10.dp,
                       fontWeight: FontWeight.w400,
                     ),
                   ),
@@ -598,74 +606,6 @@ class _PotUpdatesOrRankWidget extends StatelessWidget {
             child: FittedBox(child: RankWidget(theme, vnRankStr))),
         potUpdatesView
       ],
-    );
-  }
-}
-
-class ValueListenableBuilder2<A, B> extends StatelessWidget {
-  ValueListenableBuilder2(
-    this.first,
-    this.second, {
-    Key key,
-    this.builder,
-    this.child,
-  }) : super(key: key);
-
-  final ValueListenable<A> first;
-  final ValueListenable<B> second;
-  final Widget child;
-  final Widget Function(BuildContext context, A a, B b, Widget child) builder;
-
-  @override
-  Widget build(BuildContext context) {
-    return ValueListenableBuilder<A>(
-      valueListenable: first,
-      builder: (_, a, __) {
-        return ValueListenableBuilder<B>(
-          valueListenable: second,
-          builder: (context, b, __) {
-            return builder(context, a, b, child);
-          },
-        );
-      },
-    );
-  }
-}
-
-class ValueListenableBuilder3<A, B, C> extends StatelessWidget {
-  ValueListenableBuilder3(
-    this.first,
-    this.second,
-    this.third, {
-    Key key,
-    this.builder,
-    this.child,
-  }) : super(key: key);
-
-  final ValueListenable<A> first;
-  final ValueListenable<B> second;
-  final ValueListenable<C> third;
-  final Widget child;
-  final Widget Function(BuildContext context, A a, B b, C c, Widget child)
-      builder;
-
-  @override
-  Widget build(BuildContext context) {
-    return ValueListenableBuilder<A>(
-      valueListenable: first,
-      builder: (_, a, __) {
-        return ValueListenableBuilder<B>(
-          valueListenable: second,
-          builder: (_, b, __) {
-            return ValueListenableBuilder<C>(
-              valueListenable: third,
-              builder: (context, c, __) {
-                return builder(context, a, b, c, child);
-              },
-            );
-          },
-        );
-      },
     );
   }
 }

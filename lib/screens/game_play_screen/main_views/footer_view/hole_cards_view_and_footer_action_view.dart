@@ -25,6 +25,7 @@ import 'package:provider/provider.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 import 'footer_action_view.dart';
+import 'footer_game_options.dart';
 
 class HoleCardsViewAndFooterActionView extends StatefulWidget {
   final PlayerModel playerModel;
@@ -258,6 +259,11 @@ class _HoleCardsViewAndFooterActionViewState
             }),
           ),
 
+          // action view (show when it is time for this user to act)
+          Align(
+              alignment: Alignment.bottomCenter,
+              child: FooterGameActionView(gameState: gameState)),
+
           // show post result options
           Align(
             alignment: Alignment.bottomCenter,
@@ -287,7 +293,7 @@ class _HoleCardsViewAndFooterActionViewState
     double rankMarigin = 40.0.ph;
     final boardAttributes = gameState.getBoardAttributes(context);
 
-    var padding = EdgeInsets.symmetric(horizontal: 8, vertical: 4);
+    var padding = EdgeInsets.symmetric(horizontal: 4, vertical: 2);
     if (!boardAttributes.isOrientationHorizontal) {
       rankMarigin = 5.0.ph;
       padding = EdgeInsets.symmetric(horizontal: 8, vertical: 2);
@@ -300,13 +306,15 @@ class _HoleCardsViewAndFooterActionViewState
               padding: padding,
               margin: EdgeInsets.only(bottom: rankMarigin),
               decoration: BoxDecoration(
-                  color: Colors.black.withAlpha(180),
+                  color: Color.fromARGB(255, 49, 46, 46),
                   border: Border.all(color: theme.primaryColor, width: 2),
                   borderRadius: BorderRadius.circular(8)),
               child: Text(
                 me.rankText,
-                style: AppDecorators.getHeadLine5Style(theme: theme)
-                    .copyWith(fontSize: 14.0, color: Colors.white),
+                style: AppDecorators.getHeadLine5Style(theme: theme).copyWith(
+                    fontSize: 10.dp,
+                    color: Color.fromARGB(255, 225, 219, 150),
+                    fontWeight: FontWeight.bold),
               ),
             )
           : SizedBox.shrink(),
@@ -400,10 +408,14 @@ class _HoleCardsViewAndFooterActionViewState
                               : Alignment.bottomCenter,
                           child: cardsWidget),
                       Positioned(
-                        left: 0,
-                        bottom: 0,
+                        bottom: -30,
                         child: rankText,
                       ),
+                      // Positioned(
+                      //   left: 0,
+                      //   bottom: 0,
+                      //   child: rankText,
+                      // ),
 
                       Visibility(
                         visible: false, //showHelpText && isCardVisible,
