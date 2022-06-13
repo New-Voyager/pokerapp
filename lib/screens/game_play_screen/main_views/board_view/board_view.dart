@@ -46,15 +46,19 @@ class _BoardViewState extends State<BoardView> {
     super.initState();
 
     gameState = GameState.getState(context);
-    gameState.gameUIState.init();
+    // gameState.gameUIState.init();
 
-    // this calculates the table size after drawing the table image
-    gameState.gameUIState.calculateTableSizePostFrame();
-    gameState.gameUIState.calculatePlayersOnTablePositionPostFrame();
+    // // this calculates the table size after drawing the table image
+    // gameState.gameUIState.calculateTableSizePostFrame();
+    // gameState.gameUIState.calculatePlayersOnTablePositionPostFrame();
   }
 
   @override
   Widget build(BuildContext context) {
+    bool recalc = gameState.gameUIState.init(context);
+    gameState.gameUIState.calculateTableSizePostFrame(force: recalc);
+    gameState.gameUIState
+        .calculatePlayersOnTablePositionPostFrame(force: recalc);
     final boardAttributes = gameState.getBoardAttributes(context);
     final isBoardHorizontal =
         boardAttributes.orientation == BoardOrientation.horizontal;
@@ -76,7 +80,7 @@ class _BoardViewState extends State<BoardView> {
           Positioned(
             bottom: NamePlateWidgetParent.namePlateSize.height,
             child: DebugBorderWidget(
-              color: Colors.green,
+              color: Color.fromARGB(255, 203, 193, 105),
               child: TableView(
                   tableWidthFactor: gameState.gameUIState.tableWidthFactor),
             ),
@@ -91,7 +95,7 @@ class _BoardViewState extends State<BoardView> {
               log('PlayersOnTableViewNew Rect2: ${rect}');
 
               Widget child = DebugBorderWidget(
-                color: Colors.green,
+                color: Color.fromARGB(255, 226, 137, 223),
                 child: PlayersOnTableViewNew(
                   tableSize: size,
                   onUserTap: widget.onUserTap,

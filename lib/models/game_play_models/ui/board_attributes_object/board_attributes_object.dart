@@ -701,7 +701,6 @@ class BoardAttributesObject extends ChangeNotifier {
     double footerHeight = (Screen.height * footerViewScale);
     double boardHeight = Screen.height - footerHeight;
 
-    log('Screen: board height: ${heightOfBoard} width: ${widthOfBoard}');
     double tableHeight = heightOfBoard;
     if (this.orientation == BoardOrientation.horizontal) {
       widthOfBoard = MediaQuery.of(context).size.width;
@@ -721,6 +720,8 @@ class BoardAttributesObject extends ChangeNotifier {
     double adjust = 0;
     adjust = this.boardHeightAdjust;
     this._boardSize = Size(widthOfBoard, boardHeight + adjust);
+    log('TableResize Screen: board: ${_boardSize}');
+
     log('Screen: screen size: ${screen} board: ${_boardSize} table: ${this._tableSize} footer: ${footerHeight}');
     return this._boardSize;
   }
@@ -728,8 +729,6 @@ class BoardAttributesObject extends ChangeNotifier {
   double get footerHeight {
     return (Screen.height * footerViewScale);
   }
-
-  Size get tableSize => this._tableSize;
 
   double get lottieScale {
     return attribsObj.lottieScale;
@@ -838,6 +837,9 @@ class BoardAttributesObject extends ChangeNotifier {
 
   double get footerViewScale {
     if (isOrientationHorizontal) {
+      if (PlatformUtils.isWeb) {
+        return 0.45;
+      }
       return 0.50;
     }
     return 0.45;

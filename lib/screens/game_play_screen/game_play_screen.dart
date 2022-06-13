@@ -367,7 +367,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       height: boardHeight,
       padding: padding,
       child: DebugBorderWidget(
-        color: Color.fromARGB(255, 95, 108, 223),
+        color: Color.fromARGB(255, 86, 95, 141),
         child: boardView,
       ),
     );
