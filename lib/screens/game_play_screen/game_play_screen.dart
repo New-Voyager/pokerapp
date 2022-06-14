@@ -331,6 +331,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
     footerHeight += boardAttributes.bottomHeightAdjust;
     double boardHeight = boardDimensions.height;
+
     double boardWidth = boardDimensions.width;
     Widget boardView = BoardView(
       gameComService: gameContextObj?.gameComService,
@@ -358,17 +359,20 @@ class _GamePlayScreenState extends State<GamePlayScreen>
           onUserTap: onJoinGame,
           onStartGame: startGame,
         );
-        boardHeight = null;
-        padding = EdgeInsets.only(bottom: footerHeight / 2.3);
+        // boardHeight = null;
+        // padding = EdgeInsets.only(bottom: footerHeight / 3);
       }
     }
-    return Container(
-      width: boardWidth,
-      height: boardHeight,
-      padding: padding,
-      child: DebugBorderWidget(
-        color: Color.fromARGB(255, 95, 108, 223),
-        child: boardView,
+    return Align(
+      alignment: Alignment.bottomCenter,
+      child: Container(
+        width: boardWidth,
+        height: boardHeight,
+        padding: padding,
+        child: DebugBorderWidget(
+          color: Color.fromARGB(255, 95, 108, 223),
+          child: boardView,
+        ),
       ),
     );
   }
@@ -407,32 +411,36 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   Widget _buildMainBoardView(AppTheme theme) {
     final boardDimensions = gamePlayObjects.boardAttributes.dimensions(context);
 
-    return Stack(
-      clipBehavior: Clip.none,
-      alignment: Alignment.topCenter,
-      children: [
-        this.widget.showTop && gamePlayObjects.gameState.customizationMode
-            ? Positioned(
-                top: 10,
-                right: 50,
-                child: CircleImageButton(
-                  onTap: () async {
-                    await Navigator.of(context).pushNamed(Routes.select_table);
-                    await gamePlayObjects.gameState.assets.initialize();
-                    final redrawTop =
-                        gamePlayObjects.gameState.redrawBoardSectionState;
-                    redrawTop.notify();
-                    setState(() {});
-                  },
-                  theme: theme,
-                  icon: Icons.edit,
-                ),
-              )
-            : const SizedBox.shrink(),
+    return DebugBorderWidget(
+      color: Colors.purple,
+      child: Stack(
+        clipBehavior: Clip.none,
+        alignment: Alignment.topCenter,
+        children: [
+          this.widget.showTop && gamePlayObjects.gameState.customizationMode
+              ? Positioned(
+                  top: 10,
+                  right: 50,
+                  child: CircleImageButton(
+                    onTap: () async {
+                      await Navigator.of(context)
+                          .pushNamed(Routes.select_table);
+                      await gamePlayObjects.gameState.assets.initialize();
+                      final redrawTop =
+                          gamePlayObjects.gameState.redrawBoardSectionState;
+                      redrawTop.notify();
+                      setState(() {});
+                    },
+                    theme: theme,
+                    icon: Icons.edit,
+                  ),
+                )
+              : const SizedBox.shrink(),
 
-        // board view
-        _buildBoardView(boardDimensions),
-      ],
+          // board view
+          _buildBoardView(boardDimensions),
+        ],
+      ),
     );
   }
 
@@ -476,6 +484,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
             children: [
               // header
               widget.showTop ? _buildHeaderView(theme) : kEmpty,
+              SizedBox(
+                height: MediaQuery.of(context).padding.top,
+              ),
               Expanded(
                 child: Stack(
                   children: [
@@ -485,14 +496,20 @@ class _GamePlayScreenState extends State<GamePlayScreen>
                       // height: dimensions.height,
                       child: BackgroundView(),
                     ),
-                    // board view
-                    widget.showTop ? _buildMainBoardView(theme) : kEmpty,
-                    // footer view
-                    widget.showBottom
-                        ? Align(
-                            alignment: Alignment.bottomCenter,
-                            child: _buildFooterView())
-                        : kEmpty,
+                    Column(
+                      children: [
+                        // board view
+                        widget.showTop
+                            ? Expanded(child: _buildMainBoardView(theme))
+                            : kEmpty,
+                        // footer view
+                        widget.showBottom
+                            ? Align(
+                                alignment: Alignment.bottomCenter,
+                                child: _buildFooterView())
+                            : kEmpty,
+                      ],
+                    )
                   ],
                 ),
               )

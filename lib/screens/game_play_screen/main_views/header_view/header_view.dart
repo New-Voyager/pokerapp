@@ -166,12 +166,14 @@ class HeaderView extends StatelessWidget {
           child: Container(
             // margin: const EdgeInsets.only(right: 16, top: 8, bottom: 8),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 // back button
                 BackArrowWidget(),
 
                 // center title
-                Expanded(child: _buildMainContent()),
+                // Expanded(child: _buildMainContent()),
 
                 // game menu
                 Consumer<HandInfoState>(

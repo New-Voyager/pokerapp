@@ -177,17 +177,17 @@ class _CommunitcationHandAnalyseViewState
     return Column(
       children: [
         _buildMenuWidget(),
-        SizedBox(
-          height: 10,
-        ),
-        Consumer2<GameSettingsState, CommunicationState>(
-            builder: (_, __, ____, ___) {
-          return CommunicationView(
-            widget.chatVisibilityChange,
-            widget.gameContextObject.gameComService.gameMessaging,
-            widget.gameContextObject,
-          );
-        }),
+        // SizedBox(
+        //   height: 10,
+        // ),
+        // Consumer2<GameSettingsState, CommunicationState>(
+        //     builder: (_, __, ____, ___) {
+        //   return CommunicationView(
+        //     widget.chatVisibilityChange,
+        //     widget.gameContextObject.gameComService.gameMessaging,
+        //     widget.gameContextObject,
+        //   );
+        // }),
       ],
     );
   }

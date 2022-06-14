@@ -235,6 +235,7 @@ class _HoleCardsViewAndFooterActionViewState
 
     return SafeArea(
       child: Stack(
+        clipBehavior: Clip.none,
         children: [
           Align(
             alignment: Alignment.topCenter,
@@ -384,12 +385,7 @@ class _HoleCardsViewAndFooterActionViewState
             return Container(
               width: gameState.gameUIState.holeCardsViewSize.width,
               padding: EdgeInsets.symmetric(
-                horizontal: widget.isHoleCardsVisibleVn.value
-                    ? (gameState.boardAttributes.isOrientationHorizontal
-                            ? 8
-                            : 3) *
-                        playerCards.length.toDouble()
-                    : 0,
+                horizontal: widget.isHoleCardsVisibleVn.value ? 0 : 0,
                 vertical:
                     context.read<BoardAttributesObject>().screenDiagnolSize >= 7
                         ? 32

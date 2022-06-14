@@ -66,8 +66,8 @@ class _BoardViewVerticalState extends State<BoardViewVertical> {
         clipBehavior: Clip.none,
         alignment: Alignment.center,
         children: [
-          Positioned(
-            bottom: NamePlateWidgetParent.namePlateSize.height,
+          Align(
+            alignment: Alignment.bottomCenter,
             child: DebugBorderWidget(
               color: Colors.green,
               child: TableView(

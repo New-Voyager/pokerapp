@@ -67,21 +67,21 @@ class CardViewNew extends StatelessWidget {
               alignment: Alignment.topLeft,
               child: Padding(
                 padding: EdgeInsets.only(
-                  left: (cardWidth < 69) ? 2.0 : 4.0,
-                  top: (cardWidth < 69) ? 4.0 : 6.0,
+                  left: (cardWidth < 69) ? 2.0 : 15.0,
+                  top: (cardWidth < 69) ? 4.0 : 20.0,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     SizedBox(
                       // color: Colors.red,
-                      height: cardWidth < 69 ? 14 : 17,
+                      height: cardWidth < 69 ? 14 : 40,
                       child: Text(
                         label,
                         style: TextStyle(
                           color: card.color,
                           height: 0.9,
-                          fontSize: cardWidth < 69 ? 18.0 : 24,
+                          fontSize: cardWidth < 69 ? 18.0 : 50,
                           fontWeight: FontWeight.bold,
                           fontFamily: 'Kurale',
                         ),
@@ -96,7 +96,7 @@ class CardViewNew extends StatelessWidget {
                       card.suit,
                       style: TextStyle(
                         color: card.color,
-                        fontSize: cardWidth < 69 ? 12.0 : 20,
+                        fontSize: cardWidth < 69 ? 12.0 : 30,
                         fontWeight: FontWeight.bold,
                         fontStyle: FontStyle.normal,
                         fontFamily: '',

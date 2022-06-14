@@ -19,6 +19,7 @@ import 'package:pokerapp/utils/color_generator.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/buttons.dart';
+import 'package:pokerapp/widgets/debug_border_widget.dart';
 import 'package:provider/provider.dart';
 
 const shrinkedBox = const SizedBox.shrink(
@@ -858,6 +859,7 @@ class _FooterActionViewState extends State<FooterActionView> {
 
               return Stack(
                 alignment: Alignment.center,
+                clipBehavior: Clip.none,
                 children: [
                   ...children,
                 ],

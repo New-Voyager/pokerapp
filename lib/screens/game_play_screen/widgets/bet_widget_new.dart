@@ -524,11 +524,12 @@ class BetWidgetNew extends StatelessWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.end,
                       crossAxisAlignment: CrossAxisAlignment.end,
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         Container(
                           margin: EdgeInsets.only(
-                            bottom: 30.0,
-                          ),
+                              // bottom: 30.0,
+                              ),
                           decoration: BoxDecoration(
                               image: DecorationImage(
                                   image: AssetImage(
@@ -700,7 +701,7 @@ class BetWidgetNew extends StatelessWidget {
                                   initialValue: vnBetAmount.value,
                                   max: action.maxRaiseAmount.toDouble(),
                                   min: action.minRaiseAmount.toDouble(),
-                                  chipsCount: 12,
+                                  chipsCount: 2,
                                   chipSize: Size(50, 25),
                                   onChanged: (value) {
                                     if (gameState.gameInfo.chipUnit ==

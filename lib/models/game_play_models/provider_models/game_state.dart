@@ -220,7 +220,7 @@ class GameState {
   // this is a hack, we shouldn't store the context here
   BuildContext mainScreenContext;
 
-  final communityCardState = CommunityCardState();
+  CommunityCardState communityCardState;
 
   Future<void> initialize({
     String gameCode,
