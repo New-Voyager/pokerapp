@@ -478,6 +478,21 @@ class GameState {
     _initializeCardDistributionMap();
   }
 
+  bool isAdmin() {
+    if (_currentPlayer?.role?.isHost == true ||
+        _currentPlayer?.role?.isManager == true ||
+        _currentPlayer?.role?.isOwner == true) return true;
+
+    return false;
+  }
+
+  bool isHost() {
+    if (_currentPlayer?.role?.isHost == true) {
+      return true;
+    }
+    return false;
+  }
+
   void close() {
     if (!this.replayMode) {
       if (gameHiveStore != null) {

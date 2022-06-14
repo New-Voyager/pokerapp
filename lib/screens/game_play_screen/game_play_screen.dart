@@ -503,8 +503,10 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   Widget _buildBody(AppTheme theme) {
     log('======== 1 _buildBody ========');
     // show a progress indicator if the game info object is null
-    if (gamePlayObjects.gameInfoModel == null)
+    if (gamePlayObjects.gameInfoModel == null ||
+        gamePlayObjects.gameState == null) {
       return Center(child: CircularProgressWidget());
+    }
     log('======== 2 _buildBody ========');
 
     /* get the screen sizes, and initialize the board attributes */
