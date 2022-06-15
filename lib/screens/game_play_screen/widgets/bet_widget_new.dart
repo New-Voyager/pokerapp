@@ -30,21 +30,25 @@ import 'package:provider/provider.dart';
 
 class BetWidgetNew extends StatelessWidget {
   final Function onSubmitCallBack;
+  final Function onKeyboardEntry;
   final PlayerAction action;
   final int remainingTime;
   final List<int> playerCards;
   final BoardAttributesObject boardAttributesObject;
   final GameState gameState;
   final Seat seat;
+  final double initialValue;
 
   BetWidgetNew({
     @required this.seat,
+    @required this.onKeyboardEntry,
     @required this.gameState,
     @required this.action,
     @required this.playerCards,
     @required this.boardAttributesObject,
     this.onSubmitCallBack,
     this.remainingTime,
+    this.initialValue,
   });
 
   _buildOtherBetOptionsButton(double angle, {Widget child}) {
@@ -505,6 +509,10 @@ class BetWidgetNew extends StatelessWidget {
         ),
         builder: (BuildContext context, _) {
           valueNotifierVal = context.read<ValueNotifier<double>>();
+          if (initialValue != null) {
+            valueNotifierVal.value = initialValue;
+          }
+
           return Container(
             // margin: EdgeInsets.only(bottom: 30),
             width: MediaQuery.of(context).size.width,
@@ -578,23 +586,8 @@ class BetWidgetNew extends StatelessWidget {
                                 ),
                                 BetButton(
                                     onTap: () async {
-                                      double min =
-                                          action.minRaiseAmount.toDouble();
-                                      double max =
-                                          action.maxRaiseAmount.toDouble();
-
-                                      final double res =
-                                          await NumericKeyboard2.show(
-                                        context,
-                                        title: 'Enter your bet',
-                                        min: min,
-                                        currentVal: valueNotifierVal.value,
-                                        max: max,
-                                        decimalAllowed: isCentsGame,
-                                      );
-
-                                      if (res != null)
-                                        valueNotifierVal.value = res;
+                                      onKeyboardEntry(
+                                          valueNotifierVal.value, isCentsGame);
                                     },
                                     theme: appTheme,
                                     iconData: Icons.keyboard),
@@ -628,23 +621,7 @@ class BetWidgetNew extends StatelessWidget {
                                   builder: (_, double betAmount, __) =>
                                       GestureDetector(
                                     onTap: () async {
-                                      double min =
-                                          action.minRaiseAmount.toDouble();
-                                      double max =
-                                          action.maxRaiseAmount.toDouble();
-
-                                      final double res =
-                                          await NumericKeyboard2.show(
-                                        context,
-                                        title: 'Enter your bet',
-                                        min: min,
-                                        currentVal: valueNotifierVal.value,
-                                        max: max,
-                                        decimalAllowed: isCentsGame,
-                                      );
-
-                                      if (res != null)
-                                        valueNotifierVal.value = res;
+                                      onKeyboardEntry(betAmount, isCentsGame);
                                     },
                                     child: Container(
                                       width: double.maxFinite,
@@ -701,6 +678,7 @@ class BetWidgetNew extends StatelessWidget {
                                 Consumer<ValueNotifier<double>>(
                                     builder: (_, vnBetAmount, __) {
                                   log(vnBetAmount.value.toString());
+
                                   return BetSlider(
                                     initialValue: vnBetAmount.value,
                                     max: action.maxRaiseAmount.toDouble(),

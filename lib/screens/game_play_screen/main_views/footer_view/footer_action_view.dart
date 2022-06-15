@@ -1,25 +1,21 @@
 import 'dart:developer';
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/player_action.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
-import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
-import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/time_bank.dart';
-import 'package:pokerapp/screens/game_play_screen/widgets/bet_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/bet_widget_new.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_proto_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/color_generator.dart';
 import 'package:pokerapp/utils/formatter.dart';
+import 'package:pokerapp/utils/numeric_keyboard2.dart';
 import 'package:pokerapp/utils/utils.dart';
-import 'package:pokerapp/widgets/buttons.dart';
-import 'package:pokerapp/widgets/debug_border_widget.dart';
 import 'package:provider/provider.dart';
 
 const shrinkedBox = const SizedBox.shrink(
@@ -51,6 +47,7 @@ class _FooterActionViewState extends State<FooterActionView> {
   OverlayEntry _betWidgetoverlayEntry;
   GlobalKey _betButtonKey = GlobalKey();
   Offset _betBtnPosition;
+  BetWidgetNew _betWidget;
 
   void _betOrRaise(double val) {
     _showOptions = false;
@@ -586,12 +583,10 @@ class _FooterActionViewState extends State<FooterActionView> {
                   widget.isBetWidgetVisible?.call(_showOptions);
                 });
 
-                final gameState = GameState.getState(context);
-                final boardAttributes = context.read<BoardAttributesObject>();
-                _buildBetWidget(gameState, gameState.mySeat, gameState.me.cards,
-                    playerAction, 30,
-                    boardAttributes: boardAttributes);
-              } else {}
+                _buildBetWidget();
+              } else {
+                _betWidget.bet();
+              }
             },
             theme: theme,
           );
@@ -750,61 +745,78 @@ class _FooterActionViewState extends State<FooterActionView> {
     );
   }
 
-  void _buildBetWidget(
-    GameState gameState,
-    Seat mySeat,
-    List<int> playerCards,
-    PlayerAction playerAction,
-    int remainingTime, {
-    @required final BoardAttributesObject boardAttributes,
-  }) {
+  void _buildBetWidget({double initValue}) {
+    final boardAttributes = context.read<BoardAttributesObject>();
+    final gameState = GameState.getState(context);
+    final me = gameState.me;
+
+    _betWidget = BetWidgetNew(
+      gameState: gameState,
+      seat: gameState.mySeat,
+      action: gameState.actionState.action,
+      playerCards: me.cards,
+      onSubmitCallBack: _betOrRaise,
+      onKeyboardEntry: onBetKeyboardEntry,
+      remainingTime: 30,
+      initialValue: initValue,
+      boardAttributesObject: boardAttributes,
+    );
+
     _betWidgetoverlayEntry = OverlayEntry(
       builder: (BuildContext context) {
-        return Positioned(
-          bottom: MediaQuery.of(context).size.height - _betBtnPosition.dy,
-          child: Provider<GameState>(
-            create: (_) => gameState,
-            builder: (context, _) {
-              return BetWidgetNew(
-                gameState: gameState,
-                seat: mySeat,
-                action: playerAction,
-                playerCards: playerCards,
-                onSubmitCallBack: _betOrRaise,
-                remainingTime: remainingTime,
-                boardAttributesObject: boardAttributes,
-              );
+        return Positioned.fill(
+          child: GestureDetector(
+            onTap: () {
+              _betWidgetoverlayEntry.remove();
+              appService.appSettings.showBetTip = false;
+              setState(() {
+                betWidgetShown = false;
+              });
             },
+            child: Stack(
+              children: [
+                Positioned(
+                  bottom:
+                      MediaQuery.of(context).size.height - _betBtnPosition.dy,
+                  child: Provider<GameState>(
+                    create: (_) => gameState,
+                    builder: (context, _) {
+                      return _betWidget;
+                    },
+                  ),
+                ),
+              ],
+            ),
           ),
         );
       },
     );
-    Overlay.of(context).insert(_betWidgetoverlayEntry);
 
-    // return AnimatedSwitcher(
-    //   // duration: AppConstants.fastestAnimationDuration,
-    //   // reverseDuration: AppConstants.fastestAnimationDuration,
-    //   duration: Duration(milliseconds: 0),
-    //   reverseDuration: Duration(milliseconds: 0),
-    //   transitionBuilder: (child, animation) => ScaleTransition(
-    //     alignment: Alignment.bottomCenter,
-    //     scale: animation,
-    //     child: child,
-    //   ),
-    //   child: playerAction?.options == null
-    //       ? shrinkedBox
-    //       : _showOptions
-    //           ? BetWidgetNew(
-    //               gameState: gameState,
-    //               seat: mySeat,
-    //               action: playerAction,
-    //               playerCards: playerCards,
-    //               onSubmitCallBack: _betOrRaise,
-    //               remainingTime: remainingTime,
-    //               boardAttributesObject: boardAttributes,
-    //             )
-    //           : shrinkedBox,
-    // );
+    Overlay.of(context).insert(_betWidgetoverlayEntry);
+  }
+
+  void onBetKeyboardEntry(
+    double currentValue,
+    bool isCentsGame,
+  ) async {
+    _betWidgetoverlayEntry.remove();
+
+    final gameState = GameState.getState(context);
+
+    double min = gameState.actionState.action.minRaiseAmount.toDouble();
+    double max = gameState.actionState.action.maxRaiseAmount.toDouble();
+
+    final double res = await NumericKeyboard2.show(
+      context,
+      title: 'Enter your bet',
+      min: min,
+      currentVal: currentValue,
+      max: max,
+      decimalAllowed: isCentsGame,
+    );
+
+    if (res != null) _buildBetWidget(initValue: res);
+    ;
   }
 
   @override
@@ -832,6 +844,12 @@ class _FooterActionViewState extends State<FooterActionView> {
         await Future.delayed(const Duration(milliseconds: 10));
       }
     });
+  }
+
+  @override
+  void dispose() {
+    if (_betWidgetoverlayEntry.mounted) _betWidgetoverlayEntry.remove();
+    super.dispose();
   }
 
   @override
