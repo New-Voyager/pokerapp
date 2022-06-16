@@ -278,95 +278,61 @@ class _BoardCenterView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget widget;
+    AppTheme theme = AppTheme.getTheme(context);
+    // Widget rankView = FittedBox(
+    //     fit: BoxFit.fitHeight,
+    //     child: ValueListenableBuilder<String>(
+    //         valueListenable: vnRankStr,
+    //         builder: (_, rank, __) {
+    //           if (gameState.handState == HandState.RESULT) {
+    //             return RankWidget(theme, vnRankStr);
+    //           }
+    //           return SizedBox.shrink();
+    //         }));
 
-    bool isOrientationHorizontal =
-        gameState.boardAttributes.isOrientationHorizontal;
-    if (isOrientationHorizontal) {
-      widget = Column(
-        children: [
-          // pot view
-          Expanded(
-            child: DebugBorderWidget(
-              color: Colors.red,
-              child: _PotViewWidget(
-                dimPots: tableState.dimPots,
-                vnPotChips: vnPotChips,
-                vnPotToHighlight: vnPotToHighlight,
-                potKey: potKey,
-              ),
-            ),
-          ),
-          // community cards view
-          Expanded(
-            flex: Screen.isLargeScreen
-                ? 4
-                : (isOrientationHorizontal)
-                    ? 3
-                    : 6,
-            child: DebugBorderWidget(
-              color: Colors.transparent,
-              child: Container(
-                width: gameState.gameUIState.centerViewRect.width,
-                child: const _CommunityCardsWidget(),
-              ),
-            ),
-          ),
-          // pots update view
-          Expanded(
-            child: DebugBorderWidget(
-              color: Colors.green,
-              child: _PotUpdatesOrRankWidget(
-                vnPotChipsUpdates: vnPotChipsUpdates,
-                gameState: gameState,
-                vnRankStr: vnRankStr,
-              ),
-            ),
-          ),
-        ],
-      );
-    } else {
-      widget = Column(
-        children: [
-          // pot view
-          Expanded(
-            child: DebugBorderWidget(
-              color: Colors.red,
-              child: _PotViewWidget(
-                dimPots: tableState.dimPots,
-                vnPotChips: vnPotChips,
-                vnPotToHighlight: vnPotToHighlight,
-                potKey: potKey,
-              ),
-            ),
-          ),
-          // pots update view
-          Expanded(
-            child: DebugBorderWidget(
-              color: Colors.green,
-              child: _PotUpdatesOrRankWidget(
-                vnPotChipsUpdates: vnPotChipsUpdates,
-                gameState: gameState,
-                vnRankStr: vnRankStr,
-              ),
-            ),
-          ),
-          // community cards view
-          Expanded(
-            flex: Screen.isLargeScreen ? 4 : 6,
-            child: DebugBorderWidget(
-              color: Colors.transparent,
-              child: Container(
-                width: gameState.gameUIState.centerViewRect.width,
-                child: const _CommunityCardsWidget(),
-              ),
-            ),
-          ),
-        ],
-      );
-    }
+    return Column(
+      children: [
+        // pots update view
 
-    return widget;
+        Expanded(
+          child: DebugBorderWidget(
+            color: Colors.yellow,
+            child: _PotUpdatesOrRankWidget(
+              vnPotChipsUpdates: vnPotChipsUpdates,
+              gameState: gameState,
+              vnRankStr: vnRankStr,
+            ),
+          ),
+        ),
+// pot view
+        Expanded(
+          //flex: 2,
+          child: DebugBorderWidget(
+            color: Colors.green,
+            child: _PotViewWidget(
+              dimPots: tableState.dimPots,
+              vnPotChips: vnPotChips,
+              vnPotToHighlight: vnPotToHighlight,
+              potKey: potKey,
+            ),
+          ),
+        ),
+        // community cards view
+        Expanded(
+          flex: Screen.isLargeScreen ? 4 : 3,
+          child: DebugBorderWidget(
+            color: Colors.transparent,
+            child: Container(
+              width: gameState.gameUIState.centerViewRect.width,
+              child: Stack(children: [
+                _CommunityCardsWidget(),
+                //Align(alignment: Alignment.bottomCenter, child: rankView)
+              ]),
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }
 
@@ -476,16 +442,13 @@ class _CommunityCardsWidget extends StatelessWidget {
         final double boardFactor = Screen.isLargeScreen ? 0.80 : 0.90;
         final negativeSpace = (1 - boardFactor) * height * 0.30;
 
-        return DebugBorderWidget(
-          color: Colors.purple,
-          child: Container(
-            margin: EdgeInsets.only(top: negativeSpace),
-            child: Transform(
-              transform: transformMatrix,
-              alignment: Alignment.center,
-              child: const CommunityCardView2(
-                key: Key('CommunityCardView'),
-              ),
+        return Container(
+          margin: EdgeInsets.only(top: negativeSpace),
+          child: Transform(
+            transform: transformMatrix,
+            alignment: Alignment.center,
+            child: const CommunityCardView2(
+              key: Key('CommunityCardView'),
             ),
           ),
         );

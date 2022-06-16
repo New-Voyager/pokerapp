@@ -246,8 +246,10 @@ class GameUIState {
 
   double _getDeflateFactor() {
     // todo: if needed, we can put factor here
-    if (Screen.isLargeScreen) return 0.90;
-    return 0.95;
+    if (Screen.isLargeScreen) {
+      return 0.90;
+    }
+    return 0.90;
   }
 
   void calculateCenterViewRect({bool force = false}) {

@@ -237,7 +237,8 @@ class ResultHandlerV2 {
             // log('Result: UpdateSeat: show winnners updating cards for seat: ${seat.player.seatNo} player: ${seat.player.name} cards: ${seat.player.cards}');
           }
         }
-        AudioService.playApplause(mute: gameState.playerLocalConfig.mute);
+        AudioService.playWinner(mute: gameState.playerLocalConfig.mute);
+        //AudioService.playApplause(mute: gameState.playerLocalConfig.mute);
         // log('Result: 1 Show winners');
         bool oneWinner = false;
         if (boardWinners.hiWinners.values.toList().length == 1) {
