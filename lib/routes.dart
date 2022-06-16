@@ -19,6 +19,7 @@ import 'package:pokerapp/screens/club_screen/club_stats_screen.dart';
 import 'package:pokerapp/screens/game_screens/game_history_details_view/hand_stats_view.dart';
 import 'package:pokerapp/screens/game_screens/game_history_details_view/stack_details_view.dart';
 import 'package:pokerapp/screens/game_screens/new_game_settings/choose_game_new.dart';
+import 'package:pokerapp/screens/game_screens/tournament/tournaments.dart';
 import 'package:pokerapp/screens/main_screens/profile_page_view/system_announcements.dart';
 import 'package:pokerapp/screens/profile_screens/card_selector_screen.dart';
 import 'package:pokerapp/screens/profile_screens/customize_view.dart';
@@ -39,7 +40,6 @@ import 'package:pokerapp/models/hand_history_model.dart';
 import 'package:pokerapp/models/rewards_model.dart';
 
 class Routes {
-
   Routes._();
 
   //SplashScreen
@@ -152,6 +152,9 @@ class Routes {
   static const String terms_conditions = "/terms_conditions";
   // gamescreen holecard view.
   static const String attributions = "/attributions";
+
+  // tournaments view
+  static const String tournaments = "/tournaments";
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -569,6 +572,12 @@ class Routes {
             title: "Attributions",
             text: appInfo.attributions,
           ),
+        );
+
+      case tournaments:
+        return _getPageRoute(
+          routeName: settings.name,
+          viewToShow: TournamentsScreen(),
         );
 
       default:

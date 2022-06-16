@@ -20,6 +20,7 @@ import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/help_text.dart';
 import 'package:pokerapp/screens/game_screens/game_history_view/game_history_item_new.dart';
 import 'package:pokerapp/screens/game_screens/new_game_settings/new_game_settings2.dart';
+import 'package:pokerapp/screens/game_screens/tournament/tournament_settings.dart';
 import 'package:pokerapp/screens/main_screens/games_page_view/widgets/live_games_item.dart';
 import 'package:pokerapp/screens/profile_screens/bug_features_dialog.dart';
 import 'package:pokerapp/services/app/game_service.dart';
@@ -312,6 +313,12 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
     }
   }
 
+  Future<void> hostTournament() async {
+    await TournamentSettings.show(
+      context,
+    );
+  }
+
   void _handleGameRefresh(AppState appState) {
     if (!mounted) return;
     final int currentIndex = appState.currentIndex;
@@ -521,18 +528,45 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
             //       icon: Icons.email,
             //       theme: appTheme,
             //     )),
-            Align(
-                alignment: Alignment.topRight,
-                child: RoundRectButton(
-                  onTap: () async {
-                    Alerts.showDailog(
-                      context: context,
-                      child: BugsFeaturesWidget(),
-                    );
-                  },
-                  text: 'Feedback', //_appScreenText["host"],
-                  theme: appTheme,
-                )),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Align(
+                    alignment: Alignment.centerLeft,
+                    child: RoundRectButton(
+                      onTap: () async {
+                        hostTournament();
+                      },
+                      text: 'Host Tournament', //_appScreenText["host"],
+                      theme: appTheme,
+                    )),
+                Align(
+                    alignment: Alignment.center,
+                    child: RoundRectButton(
+                      onTap: () async {
+                        Navigator.pushNamed(
+                          context,
+                          Routes.tournaments,
+                        );
+                      },
+                      text: 'Tournaments', //_appScreenText["host"],
+                      theme: appTheme,
+                    )),
+                Align(
+                    alignment: Alignment.centerRight,
+                    child: RoundRectButton(
+                      onTap: () async {
+                        Alerts.showDailog(
+                          context: context,
+                          child: BugsFeaturesWidget(),
+                        );
+                      },
+                      text: 'Feedback', //_appScreenText["host"],
+                      theme: appTheme,
+                    )),
+              ],
+            ),
             TabBar(
               physics: const BouncingScrollPhysics(),
               tabs: [
