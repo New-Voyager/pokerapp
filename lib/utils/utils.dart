@@ -390,6 +390,10 @@ class ProfileClass {
   Stopwatch initStateTime;
   Stopwatch gameInfoFetch;
   Stopwatch queryCurrentHand;
+  Stopwatch boardBuildTime;
+  Stopwatch gameComServiceTime;
+  Stopwatch gameStateTime;
+
   List<String> profileLogs = [];
   void startGameLoading() {
     gameLoading = Stopwatch();
@@ -441,6 +445,38 @@ class ProfileClass {
         'Performance: Query current hand time: ${queryCurrentHand.elapsedMilliseconds}ms');
     profileLogs.add(
         'Performance: Query current hand time: ${queryCurrentHand.elapsedMilliseconds}ms');
+  }
+
+  void startBoardBuildTime() {
+    boardBuildTime = Stopwatch()..start();
+  }
+
+  void stopBoardBuildTime() {
+    boardBuildTime.stop();
+    developer.log(
+        'Performance: Board build time: ${boardBuildTime.elapsedMilliseconds}ms');
+    profileLogs.add(
+        'Performance: Board build time: ${boardBuildTime.elapsedMilliseconds}ms');
+  }
+
+  void startGameServiceTime() {
+    gameComServiceTime = Stopwatch()..start();
+  }
+
+  void stopGameServiceTime() {
+    gameComServiceTime.stop();
+    profileLogs.add(
+        'Performance: Game com service time: ${gameComServiceTime.elapsedMilliseconds}ms');
+  }
+
+  void startGameStateTime() {
+    gameStateTime = Stopwatch()..start();
+  }
+
+  void stopGameStateTime() {
+    gameStateTime.stop();
+    profileLogs.add(
+        'Performance: Game state initialize time: ${gameStateTime.elapsedMilliseconds}ms');
   }
 }
 

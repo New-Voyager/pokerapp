@@ -490,6 +490,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
             ))
       ]);
     }
+    logging = false;
     if (logging) {
       secondRowChildren.add(
         Align(
@@ -585,19 +586,19 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                 ],
               ),
             ),
-            secondRow,
-            // Align(
-            //     alignment: Alignment.centerRight,
-            //     child: RoundRectButton(
-            //       onTap: () async {
-            //         Alerts.showDailog(
-            //           context: context,
-            //           child: BugsFeaturesWidget(),
-            //         );
-            //       },
-            //       text: 'Feedback', //_appScreenText["host"],
-            //       theme: appTheme,
-            //     )),
+            //secondRow,
+            Align(
+                alignment: Alignment.centerRight,
+                child: RoundRectButton(
+                  onTap: () async {
+                    Alerts.showDailog(
+                      context: context,
+                      child: BugsFeaturesWidget(),
+                    );
+                  },
+                  text: 'Feedback', //_appScreenText["host"],
+                  theme: appTheme,
+                )),
             // Align(
             //     alignment: Alignment.centerRight,
             //     child: CircleImageButton(

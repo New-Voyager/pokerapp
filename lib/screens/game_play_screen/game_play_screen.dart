@@ -362,7 +362,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         padding = EdgeInsets.only(bottom: footerHeight / 2.3);
       }
     }
-    Profile.stopGameLoading();
     return Container(
       width: boardWidth,
       height: boardHeight,
@@ -521,8 +520,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       hostSeatChangePlayers: gamePlayObjects.hostSeatChangeSeats,
       seatChangeInProgress: gamePlayObjects.hostSeatChangeInProgress,
     );
-
-    return MultiProvider(
+    var body = MultiProvider(
       providers: providers,
       builder: (BuildContext context, _) {
         _showWaitListHandlingNotification();
@@ -550,12 +548,19 @@ class _GamePlayScreenState extends State<GamePlayScreen>
               return ListenableProvider<BoardAttributesObject>(
                   create: (_) => gamePlayObjects.gameState.boardAttributes,
                   builder: (context, _) {
-                    return _buildCoreBody(
+                    Profile.startBoardBuildTime();
+
+                    var body = _buildCoreBody(
                         context, gamePlayObjects.boardAttributes);
+                    Profile.stopBoardBuildTime();
+                    Profile.stopGameLoading();
+                    return body;
                   });
             });
       },
     );
+
+    return body;
   }
 
   @override

@@ -12,23 +12,27 @@ class EncryptionService {
 
   EncryptionService();
 
-  Future<void> init() async {
-    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+  Future<void> init({SecretKey key}) async {
+    if (key == null) {
+      GraphQLClient _client = graphQLConfiguration.clientToQuery();
 
-    String _query = """query getEncryptionKey {
-      encryptionKey
-    }""";
+      String _query = """query getEncryptionKey {
+        encryptionKey
+      }""";
 
-    QueryResult result = await _client.query(
-      QueryOptions(document: gql(_query)),
-    );
+      QueryResult result = await _client.query(
+        QueryOptions(document: gql(_query)),
+      );
 
-    if (result.hasException) {
-      return null;
+      if (result.hasException) {
+        return null;
+      }
+
+      List<int> bytes = Uuid.parse(result.data['encryptionKey']);
+      this.key = SecretKey(bytes);
+    } else {
+      this.key = key;
     }
-
-    List<int> bytes = Uuid.parse(result.data['encryptionKey']);
-    this.key = SecretKey(bytes);
     this.initialized = true;
   }
 

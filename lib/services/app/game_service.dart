@@ -772,6 +772,44 @@ class GameService {
     }
   }
 
+  static Future<GameInfoAll> getGameInfoAll(
+      String gameCode, String clubCode) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    String query = GameInfoAll.queryAll(gameCode: gameCode, clubCode: clubCode);
+    Map<String, dynamic> variables = {
+      "gameCode": gameCode,
+    };
+    log(query);
+    QueryResult result = await _client.query(
+      QueryOptions(
+        document: gql(query),
+        variables: variables,
+      ),
+    );
+
+    if (result.hasException) {
+      log(result.exception.toString());
+      String message = result.exception.toString();
+      if (message.contains('XMLHttpRequest error')) {
+        Alerts.showNotification(
+          titleText: "Game not found",
+          subTitleText: "Gamecode: '${gameCode}' threw XMLHttpRequest error!",
+          duration: Duration(seconds: 3),
+        );
+        return null;
+      }
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
+
+    if (result.data == null) return null;
+
+    final jsonResponse = result.data;
+    return GameInfoAll.build(jsonResponse);
+  }
+
   /* this method joins the game at a particular seat number */
   static Future<JoinGameResponse> joinGame(String gameCode, int seatNo) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();

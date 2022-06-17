@@ -170,6 +170,7 @@ class GameState {
   bool gameSounds = true;
   GameLocalConfig playerLocalConfig;
   GameHiveStore gameHiveStore;
+  GameInfoAll gameInfoAll; // object that contains all the game info (caching)
   bool replayMode = false;
 
   // high-hand state
@@ -704,6 +705,14 @@ class GameState {
     this._gameSettings.roeGames.addAll(settings.roeGames);
     this._gameSettings.dealerChoiceGames = [];
     this._gameSettings.dealerChoiceGames.addAll(settings.dealerChoiceGames);
+  }
+
+  void setGameSettings(GameSettings settings) {
+    this._gameSettings = settings;
+  }
+
+  void setPlayerSettings(GamePlayerSettings settings) {
+    this._playerSettings = settings;
   }
 
   Future<void> refreshPlayerSettings() async {

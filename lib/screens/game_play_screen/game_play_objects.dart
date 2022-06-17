@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:cryptography/cryptography.dart';
 import 'package:flutter/material.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -63,7 +64,8 @@ class GamePlayObjects {
   CustomizationService customizationService;
   GameInfoModel gameInfoModel;
   bool botGame;
-
+  // queries all the game information to initialize the game quicker
+  GameInfoAll gameInfoAll;
   GamePlayObjects();
 
   GameState get gameState => _gameState;
@@ -143,17 +145,26 @@ class GamePlayObjects {
       }
     } else {
       debugPrint('fetching game data: ${gameCode}');
-      Profile.startGameInfoFetch();
-      gameInfo = gameInfoModel ?? await GameService.getGameInfo(gameCode);
-      Profile.stopGameInfoFetch();
-      debugPrint('fetching game data: ${gameCode} done');
-      if (gameInfo.tournament) {
-        this._currentPlayer = await PlayerService.getMyInfo(null);
-      } else {
-        this._currentPlayer = await PlayerService.getMyInfo(gameCode);
-      }
 
-      debugPrint('getting current player: ${gameCode} done');
+      if (!gameCode.startsWith('t')) {
+        gameInfoAll = await GameService.getGameInfoAll(gameCode, null);
+        if (gameInfoAll.gameInfo.clubCode != null &&
+            gameInfoAll.gameInfo.clubCode.isNotEmpty) {
+          gameInfoAll.clubInfo = await ClubsService.getClubInfoForGame(
+              gameInfoAll.gameInfo.clubCode);
+        }
+        gameInfo = gameInfoAll.gameInfo;
+        _currentPlayer = gameInfoAll.playerInfo;
+      } else {
+        gameInfo = gameInfoModel ?? await GameService.getGameInfo(gameCode);
+        debugPrint('fetching game data: ${gameCode} done');
+        if (gameInfo.tournament) {
+          this._currentPlayer = await PlayerService.getMyInfo(null);
+        } else {
+          this._currentPlayer = await PlayerService.getMyInfo(gameCode);
+        }
+        debugPrint('getting current player: ${gameCode} done');
+      }
     }
 
     // mark the isMe field
@@ -393,11 +404,19 @@ class GamePlayObjects {
   * This method is also responsible for subscribing to the NATS channels */
   Future<GameInfoModel> load() async {
     Profile.startInitStateTime();
+    Profile.startGameInfoFetch();
     // check if there is a gameInfo passed, if not, then fetch the game info
     GameInfoModel _gameInfoModel = await _fetchGameInfo();
     ClubInfo clubInfo = ClubInfo();
-    if (_gameInfoModel.clubCode != null && !_gameInfoModel.clubCode.isEmpty) {
-      clubInfo = await _fetchClubInfo(_gameInfoModel.clubCode);
+    Profile.stopGameInfoFetch();
+    if (gameInfoAll != null && gameInfoAll.clubInfo != null) {
+      clubInfo = gameInfoAll.clubInfo;
+    }
+
+    if (clubInfo != null) {
+      if (_gameInfoModel.clubCode != null && !_gameInfoModel.clubCode.isEmpty) {
+        clubInfo = await _fetchClubInfo(_gameInfoModel.clubCode);
+      }
     }
     _hostSeatChangeInProgress = false;
     if (_gameInfoModel.status == AppConstants.GAME_PAUSED &&
@@ -430,9 +449,10 @@ class GamePlayObjects {
     // instantiate the dialog object
     _dialog = NetworkConnectionDialog();
     _gameState = GameState();
+    _gameState.gameInfoAll = gameInfoAll;
     _gameState.mainScreenContext = context;
     _gameState.boardAttributes = boardAttributes;
-
+    Profile.startGameServiceTime();
     if (!TestService.isTesting && customizationService == null) {
       // subscribe the NATs channels
       final natsClient = Provider.of<Nats>(context, listen: false);
@@ -443,9 +463,14 @@ class GamePlayObjects {
 
       log('natsClient: $natsClient');
       await _gameComService.init(natsClient);
-      await encryptionService.init();
+      SecretKey encryptionKey = null;
+      if (gameInfoAll != null) {
+        encryptionKey = gameInfoAll.encryptionKey;
+      }
+      await encryptionService.init(key: encryptionKey);
     }
     log('game communication service is established');
+    Profile.stopGameServiceTime();
 
     final livenessSender = LivenessSender(
       _gameInfoModel.gameID,
@@ -470,7 +495,7 @@ class GamePlayObjects {
         _gameComService.gameMessaging.getMyInfo = this.getPlayerInfo;
       }
       log('initializing game state');
-
+      Profile.startGameStateTime();
       await _gameState.initialize(
         gameCode: _gameInfoModel.gameCode,
         gameInfo: _gameInfoModel,
@@ -480,9 +505,15 @@ class GamePlayObjects {
         hostSeatChangeSeats: _hostSeatChangeSeats,
       );
       if (!TestService.isTesting) {
-        await _gameState.refreshSettings();
-        await _gameState.refreshPlayerSettings();
-        await _gameState.refreshNotes();
+        if (gameInfoAll != null) {
+          _gameState.setGameSettings(gameInfoAll.gameSettings);
+          _gameState.setPlayerSettings(gameInfoAll.gamePlayerSettings);
+          _gameState.playersWithNotes = gameInfoAll.playerNotes;
+        } else {
+          await _gameState.refreshSettings();
+          await _gameState.refreshPlayerSettings();
+          await _gameState.refreshNotes();
+        }
         if (_nats.connectionBroken) {
           await _nats.reconnect();
         }
@@ -491,7 +522,7 @@ class GamePlayObjects {
         // _gameComService.gameMessaging.askForChatMessages();
         _gameComService.gameMessaging?.requestPlayerInfo();
       }
-
+      Profile.stopGameStateTime();
       log('initializing game state done');
     }
 
