@@ -464,6 +464,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
   Widget getMainView(AppTheme appTheme) {
     List<Widget> secondRowChildren = [];
     bool tournament = false;
+    bool logging = true;
     if (tournament) {
       secondRowChildren.addAll([
         Align(
@@ -488,6 +489,23 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
               theme: appTheme,
             ))
       ]);
+    }
+    if (logging) {
+      secondRowChildren.add(
+        Align(
+          alignment: Alignment.centerLeft,
+          child: RoundRectButton(
+            onTap: () async {
+              Navigator.pushNamed(
+                context,
+                Routes.logs,
+              );
+            },
+            text: 'Logs', //_appScreenText["host"],
+            theme: appTheme,
+          ),
+        ),
+      );
     }
     Widget secondRow = Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -567,18 +585,19 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                 ],
               ),
             ),
-            Align(
-                alignment: Alignment.centerRight,
-                child: RoundRectButton(
-                  onTap: () async {
-                    Alerts.showDailog(
-                      context: context,
-                      child: BugsFeaturesWidget(),
-                    );
-                  },
-                  text: 'Feedback', //_appScreenText["host"],
-                  theme: appTheme,
-                )),
+            secondRow,
+            // Align(
+            //     alignment: Alignment.centerRight,
+            //     child: RoundRectButton(
+            //       onTap: () async {
+            //         Alerts.showDailog(
+            //           context: context,
+            //           child: BugsFeaturesWidget(),
+            //         );
+            //       },
+            //       text: 'Feedback', //_appScreenText["host"],
+            //       theme: appTheme,
+            //     )),
             // Align(
             //     alignment: Alignment.centerRight,
             //     child: CircleImageButton(

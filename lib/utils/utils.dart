@@ -390,7 +390,7 @@ class ProfileClass {
   Stopwatch initStateTime;
   Stopwatch gameInfoFetch;
   Stopwatch queryCurrentHand;
-  List<String> profileLogs;
+  List<String> profileLogs = [];
   void startGameLoading() {
     gameLoading = Stopwatch();
     gameLoading.start();

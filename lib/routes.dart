@@ -27,6 +27,7 @@ import 'package:pokerapp/screens/profile_screens/help_screen.dart';
 import 'package:pokerapp/screens/profile_screens/performance_view.dart';
 import 'package:pokerapp/screens/profile_screens/privacy_policy.dart';
 import 'package:pokerapp/screens/profile_screens/table_selector.dart';
+import 'package:pokerapp/screens/util_screens/logs_screen.dart';
 import 'package:pokerapp/services/app/appinfo_service.dart';
 import 'package:pokerapp/services/game_play/customization_service.dart';
 import 'package:pokerapp/utils/utils.dart';
@@ -156,6 +157,9 @@ class Routes {
 
   // tournaments view
   static const String tournaments = "/tournaments";
+
+  // logs view
+  static const String logs = "/logs";
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -580,6 +584,12 @@ class Routes {
         return _getPageRoute(
           routeName: settings.name,
           viewToShow: TournamentsScreen(),
+        );
+
+      case logs:
+        return _getPageRoute(
+          routeName: settings.name,
+          viewToShow: LogsScreen(),
         );
 
       default:
