@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:math';
+import 'dart:developer' as developer;
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -383,3 +384,56 @@ DateTime findLastDateOfTheWeek(DateTime dateTime) {
   ret = DateTime(ret.year, ret.month, ret.day, 23, 59, 59);
   return ret;
 }
+
+class PerformanceClass {
+  Stopwatch gameLoading;
+  Stopwatch initStateTime;
+  Stopwatch gameInfoFetch;
+  Stopwatch queryCurrentHand;
+
+  void startGameLoading() {
+    gameLoading = Stopwatch();
+    gameLoading.start();
+  }
+
+  void stopGameLoading() {
+    gameLoading.stop();
+    developer.log(
+        'Performance: Game loading time: ${gameLoading.elapsedMilliseconds}ms');
+  }
+
+  void startInitStateTime() {
+    initStateTime = Stopwatch();
+    initStateTime.start();
+  }
+
+  void stopInitStateTime() {
+    initStateTime.stop();
+    developer.log(
+        'Performance: Init state time: ${initStateTime.elapsedMilliseconds}ms');
+  }
+
+  void startGameInfoFetch() {
+    gameInfoFetch = Stopwatch();
+    gameInfoFetch.start();
+  }
+
+  void stopGameInfoFetch() {
+    gameInfoFetch.stop();
+    developer.log(
+        'Performance: Game info fetch time: ${gameInfoFetch.elapsedMilliseconds}ms');
+  }
+
+  void startQueryCurrentHand() {
+    queryCurrentHand = Stopwatch();
+    queryCurrentHand.start();
+  }
+
+  void stopQueryCurrentHand() {
+    queryCurrentHand.stop();
+    developer.log(
+        'Performance: Query current hand time: ${queryCurrentHand.elapsedMilliseconds}ms');
+  }
+}
+
+PerformanceClass Performance = PerformanceClass();

@@ -143,7 +143,9 @@ class GamePlayObjects {
       }
     } else {
       debugPrint('fetching game data: ${gameCode}');
+      Performance.startGameInfoFetch();
       gameInfo = gameInfoModel ?? await GameService.getGameInfo(gameCode);
+      Performance.stopGameInfoFetch();
       debugPrint('fetching game data: ${gameCode} done');
       if (gameInfo.tournament) {
         this._currentPlayer = await PlayerService.getMyInfo(null);
@@ -250,7 +252,6 @@ class GamePlayObjects {
   void queryCurrentHandIfNeeded() {
     /* THIS METHOD QUERIES THE CURRENT HAND AND POPULATE THE
        GAME SCREEN, IF AND ONLY IF THE GAME IS ALREADY PLAYING */
-
     if (TestService.isTesting == true || customizationService != null) return;
 
     if (gameInfoModel?.tableStatus == AppConstants.GAME_RUNNING) {
@@ -258,6 +259,7 @@ class GamePlayObjects {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         log('network_reconnect: queryCurrentHand invoked');
 
+        Performance.startQueryCurrentHand();
         // if nats connection is broken, reconnect
         _gameContextObj.handActionProtoService.queryCurrentHand();
       });
@@ -390,6 +392,7 @@ class GamePlayObjects {
   /* The init method returns a Future of all the initial game constants
   * This method is also responsible for subscribing to the NATS channels */
   Future<GameInfoModel> load() async {
+    Performance.startInitStateTime();
     // check if there is a gameInfo passed, if not, then fetch the game info
     GameInfoModel _gameInfoModel = await _fetchGameInfo();
     ClubInfo clubInfo = ClubInfo();
@@ -594,6 +597,7 @@ class GamePlayObjects {
       log('publishing my information done');
     });
     gameInfoModel = _gameInfoModel;
+    Performance.stopInitStateTime();
     return _gameInfoModel;
   }
 

@@ -362,6 +362,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         padding = EdgeInsets.only(bottom: footerHeight / 2.3);
       }
     }
+    Performance.stopGameLoading();
     return Container(
       width: boardWidth,
       height: boardHeight,

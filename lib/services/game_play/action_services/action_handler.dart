@@ -17,6 +17,7 @@ import 'package:pokerapp/services/connectivity_check/liveness_sender.dart';
 import 'package:pokerapp/services/connectivity_check/network_change_listener.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:pokerapp/utils/platform.dart';
+import 'package:pokerapp/utils/utils.dart';
 import 'package:provider/provider.dart';
 import 'package:vibration/vibration.dart';
 
@@ -224,6 +225,8 @@ class PlayerActionHandler {
 
     if (seatToAct != null)
       log('QueryCurrentHand: 3 seat no: ${seatToAct.serverSeatPos} action timer: ${seatToAct.actionTimer.getTotalTime()} remainingTime: ${seatToAct.actionTimer.getRemainingTime()}');
+
+    Performance.stopQueryCurrentHand();
   }
 
   Future<void> handleNextAction(proto.HandMessageItem message) async {

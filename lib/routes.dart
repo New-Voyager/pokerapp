@@ -29,6 +29,7 @@ import 'package:pokerapp/screens/profile_screens/privacy_policy.dart';
 import 'package:pokerapp/screens/profile_screens/table_selector.dart';
 import 'package:pokerapp/services/app/appinfo_service.dart';
 import 'package:pokerapp/services/game_play/customization_service.dart';
+import 'package:pokerapp/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 import 'package:pokerapp/screens/screens.dart';
@@ -192,6 +193,7 @@ class Routes {
         String gameCode;
         bool botGame = false;
         bool isFromWaitListNotification = false;
+        Performance.startGameLoading();
         GameInfoModel gameInfo;
         if (settings.arguments is String) {
           gameCode = settings.arguments as String;
