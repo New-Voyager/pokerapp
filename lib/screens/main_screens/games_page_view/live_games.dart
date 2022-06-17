@@ -462,9 +462,10 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
   }
 
   Widget getMainView(AppTheme appTheme) {
-    Widget tournamentButtons = Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
+    List<Widget> secondRowChildren = [];
+    bool tournament = false;
+    if (tournament) {
+      secondRowChildren.addAll([
         Align(
             alignment: Alignment.centerLeft,
             child: RoundRectButton(
@@ -485,7 +486,13 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
               },
               text: 'Tournaments', //_appScreenText["host"],
               theme: appTheme,
-            )),
+            ))
+      ]);
+    }
+    Widget secondRow = Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        ...secondRowChildren,
         Align(
             alignment: Alignment.centerRight,
             child: RoundRectButton(
@@ -560,6 +567,18 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                 ],
               ),
             ),
+            Align(
+                alignment: Alignment.centerRight,
+                child: RoundRectButton(
+                  onTap: () async {
+                    Alerts.showDailog(
+                      context: context,
+                      child: BugsFeaturesWidget(),
+                    );
+                  },
+                  text: 'Feedback', //_appScreenText["host"],
+                  theme: appTheme,
+                )),
             // Align(
             //     alignment: Alignment.centerRight,
             //     child: CircleImageButton(
