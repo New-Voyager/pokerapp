@@ -462,6 +462,44 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
   }
 
   Widget getMainView(AppTheme appTheme) {
+    Widget tournamentButtons = Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Align(
+            alignment: Alignment.centerLeft,
+            child: RoundRectButton(
+              onTap: () async {
+                hostTournament();
+              },
+              text: 'Host Tournament', //_appScreenText["host"],
+              theme: appTheme,
+            )),
+        Align(
+            alignment: Alignment.center,
+            child: RoundRectButton(
+              onTap: () async {
+                Navigator.pushNamed(
+                  context,
+                  Routes.tournaments,
+                );
+              },
+              text: 'Tournaments', //_appScreenText["host"],
+              theme: appTheme,
+            )),
+        Align(
+            alignment: Alignment.centerRight,
+            child: RoundRectButton(
+              onTap: () async {
+                Alerts.showDailog(
+                  context: context,
+                  child: BugsFeaturesWidget(),
+                );
+              },
+              text: 'Feedback', //_appScreenText["host"],
+              theme: appTheme,
+            )),
+      ],
+    );
     return Container(
       decoration: AppDecorators.bgRadialGradient(appTheme),
       child: SafeArea(
@@ -530,44 +568,6 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
             //       theme: appTheme,
             //     )),
 
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Align(
-                    alignment: Alignment.centerLeft,
-                    child: RoundRectButton(
-                      onTap: () async {
-                        hostTournament();
-                      },
-                      text: 'Host Tournament', //_appScreenText["host"],
-                      theme: appTheme,
-                    )),
-                Align(
-                    alignment: Alignment.center,
-                    child: RoundRectButton(
-                      onTap: () async {
-                        Navigator.pushNamed(
-                          context,
-                          Routes.tournaments,
-                        );
-                      },
-                      text: 'Tournaments', //_appScreenText["host"],
-                      theme: appTheme,
-                    )),
-                Align(
-                    alignment: Alignment.centerRight,
-                    child: RoundRectButton(
-                      onTap: () async {
-                        Alerts.showDailog(
-                          context: context,
-                          child: BugsFeaturesWidget(),
-                        );
-                      },
-                      text: 'Feedback', //_appScreenText["host"],
-                      theme: appTheme,
-                    )),
-              ],
-            ),
             TabBar(
               physics: const BouncingScrollPhysics(),
               tabs: [

@@ -229,7 +229,6 @@ class NewHandHandler {
     await updatePlayers();
     // set small blind and big blind
     if (gameState.uiClosing) return;
-    if (gameState.uiClosing) return;
     final TableState tableState = gameState.tableState;
     gameState.resetSeatActions(newHand: true);
     gameState.communityCardState.reset();
@@ -260,27 +259,26 @@ class NewHandHandler {
         if (seat != null && seat.player != null) {
           seat.player.resetSeatAction();
         }
-
         if (newHand.playersInSeats[seatNo].inhand) {
           seat.player.action.setAnte(newHand.ante);
           pot += newHand.ante;
+        }
+      }
+      await Future.delayed(Duration(milliseconds: 500));
+
+      for (final seatNo in newHand.playersInSeats.keys) {
+        final seat = gameState.getSeat(seatNo);
+        if (newHand.playersInSeats[seatNo].inhand) {
           seat.player.action.animateAction = true;
           seat.notify();
         }
       }
-      await Future.delayed(Duration(milliseconds: 400));
+
+      await Future.delayed(Duration(milliseconds: 300));
       //tableState.notifyAll();
 
       if (gameState.uiClosing) return;
-      for (final seatNo in newHand.playersInSeats.keys) {
-        final seat = gameState.getSeat(seatNo);
-        if (seat != null && seat.player != null) {
-          seat.player.resetSeatAction();
-          seat.notify();
-        }
-      }
     }
-    ;
 
     if (!newHand.bombPot) {
       final sbSeat = gameState.getSeat(newHand.sbPos);
