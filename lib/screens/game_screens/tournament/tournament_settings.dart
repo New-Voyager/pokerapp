@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game/new_game_provider.dart';
+import 'package:pokerapp/models/tournament/tournament_settings.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
+import 'package:pokerapp/services/app/tournament_service.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/utils/platform.dart';
 import 'package:pokerapp/widgets/button_widget.dart';
@@ -12,14 +14,14 @@ import 'package:pokerapp/widgets/switch.dart';
 import 'package:pokerapp/widgets/textfields.dart';
 import 'package:pokerapp/widgets/texts.dart';
 
-class TournamentSettings extends StatefulWidget {
-  static Future<void> show(
+class TournamentSettingsView extends StatefulWidget {
+  static Future<int> show(
     BuildContext context,
   ) async {
     ConnectionDialog.show(context: context, loadingText: 'Please wait...');
 
     ConnectionDialog.dismiss(context: context);
-    await showDialog<NewGameModelProvider>(
+    int tournamentId = await showDialog<int>(
       context: context,
       barrierDismissible: false,
       builder: (_) => Dialog(
@@ -27,12 +29,13 @@ class TournamentSettings extends StatefulWidget {
           horizontal: 15.0,
           vertical: 30.0,
         ),
-        child: TournamentSettings(),
+        child: TournamentSettingsView(),
       ),
     );
+    return tournamentId;
   }
 
-  TournamentSettings();
+  TournamentSettingsView();
 
   static const sepV20 = const SizedBox(height: 20.0);
   static const sepV8 = const SizedBox(height: 8.0);
@@ -41,17 +44,20 @@ class TournamentSettings extends StatefulWidget {
   static const sepH10 = const SizedBox(width: 10.0);
 
   @override
-  State<TournamentSettings> createState() => _TournamentSettingsState();
+  State<TournamentSettingsView> createState() => _TournamentSettingsViewState();
 }
 
-class _TournamentSettingsState extends State<TournamentSettings> {
+class _TournamentSettingsViewState extends State<TournamentSettingsView> {
   bool loading = false;
 
   TextEditingController _tecMaxPlayers = TextEditingController();
-
+  TextEditingController _tecName = TextEditingController();
+  TournamentSettings _tournamentSettings = TournamentSettings.defaultSettings();
   @override
   void initState() {
     loading = true;
+    _tecMaxPlayers.text = _tournamentSettings.maxPlayers.toString();
+    _tecName.text = _tournamentSettings.name;
 
     loading = false;
     super.initState();
@@ -111,21 +117,21 @@ class _TournamentSettingsState extends State<TournamentSettings> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         LabelText(label: 'Name', theme: theme),
-                        TournamentSettings.sepV8,
+                        TournamentSettingsView.sepV8,
                         CardFormTextField(
                           hintText: "",
-                          controller: TextEditingController(),
+                          controller: _tecName,
                           maxLines: 1,
                           theme: theme,
                         ),
                       ],
                     ),
-                    TournamentSettings.sepV20,
+                    TournamentSettingsView.sepV20,
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         LabelText(label: 'Game Type', theme: theme),
-                        TournamentSettings.sepV8,
+                        TournamentSettingsView.sepV8,
                         RadioListWidget<String>(
                           defaultValue: 'PLO',
                           wrap: true,
@@ -150,12 +156,12 @@ class _TournamentSettingsState extends State<TournamentSettings> {
                         ),
                       ],
                     ),
-                    TournamentSettings.sepV20,
+                    TournamentSettingsView.sepV20,
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         LabelText(label: 'Max Players (300 max)', theme: theme),
-                        TournamentSettings.sepV8,
+                        TournamentSettingsView.sepV8,
                         CardFormTextField(
                           hintText: "",
                           controller: _tecMaxPlayers,
@@ -165,19 +171,32 @@ class _TournamentSettingsState extends State<TournamentSettings> {
                         ),
                       ],
                     ),
-                    TournamentSettings.sepV20,
+                    TournamentSettingsView.sepV20,
                     _buildRadio(
                       label: "Test with bots",
                       value: false,
-                      onChange: (bool b) {},
+                      onChange: (bool b) {
+                        _tournamentSettings.fillWithBots = b;
+                      },
                       theme: theme,
                     ),
-                    TournamentSettings.sepV20,
+                    TournamentSettingsView.sepV20,
                     ButtonWidget(
                       text: "Create Tables",
-                      onTap: () {},
+                      onTap: () async {
+                        _tournamentSettings.name = _tecName.text;
+                        _tournamentSettings.maxPlayers =
+                            int.parse(_tecMaxPlayers.text);
+                        if (_tournamentSettings.maxPlayers == 0) {
+                          _tournamentSettings.maxPlayers = 6;
+                        }
+                        int tournamentId =
+                            await TournamentService.scheduleTournament(
+                                _tournamentSettings);
+                        Navigator.pop(context, tournamentId);
+                      },
                     ),
-                    TournamentSettings.sep12,
+                    TournamentSettingsView.sep12,
                   ],
                 ),
               ),

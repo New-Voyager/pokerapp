@@ -31,3 +31,9 @@ PlayerStatus playerStatusFromStr(String status) {
     return PlayerStatus.values[index];
   }
 }
+
+extension PlayerStatusSerialization on PlayerStatus {
+  String toJson() => this.toString().split(".").last;
+  static PlayerStatus fromJson(String s) =>
+      PlayerStatus.values.firstWhere((type) => type.toJson() == s);
+}

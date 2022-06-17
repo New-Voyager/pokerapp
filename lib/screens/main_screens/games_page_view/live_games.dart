@@ -314,9 +314,10 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
   }
 
   Future<void> hostTournament() async {
-    await TournamentSettings.show(
+    int tournamentId = await TournamentSettingsView.show(
       context,
     );
+    Alerts.showNotification(titleText: 'Tournament: $tournamentId is created');
   }
 
   void _handleGameRefresh(AppState appState) {
