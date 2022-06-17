@@ -193,7 +193,7 @@ class Routes {
         String gameCode;
         bool botGame = false;
         bool isFromWaitListNotification = false;
-        Performance.startGameLoading();
+        Profile.startGameLoading();
         GameInfoModel gameInfo;
         if (settings.arguments is String) {
           gameCode = settings.arguments as String;

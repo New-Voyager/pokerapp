@@ -226,7 +226,7 @@ class PlayerActionHandler {
     if (seatToAct != null)
       log('QueryCurrentHand: 3 seat no: ${seatToAct.serverSeatPos} action timer: ${seatToAct.actionTimer.getTotalTime()} remainingTime: ${seatToAct.actionTimer.getRemainingTime()}');
 
-    Performance.stopQueryCurrentHand();
+    Profile.stopQueryCurrentHand();
   }
 
   Future<void> handleNextAction(proto.HandMessageItem message) async {

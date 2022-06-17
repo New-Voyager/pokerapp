@@ -143,9 +143,9 @@ class GamePlayObjects {
       }
     } else {
       debugPrint('fetching game data: ${gameCode}');
-      Performance.startGameInfoFetch();
+      Profile.startGameInfoFetch();
       gameInfo = gameInfoModel ?? await GameService.getGameInfo(gameCode);
-      Performance.stopGameInfoFetch();
+      Profile.stopGameInfoFetch();
       debugPrint('fetching game data: ${gameCode} done');
       if (gameInfo.tournament) {
         this._currentPlayer = await PlayerService.getMyInfo(null);
@@ -259,7 +259,7 @@ class GamePlayObjects {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         log('network_reconnect: queryCurrentHand invoked');
 
-        Performance.startQueryCurrentHand();
+        Profile.startQueryCurrentHand();
         // if nats connection is broken, reconnect
         _gameContextObj.handActionProtoService.queryCurrentHand();
       });
@@ -392,7 +392,7 @@ class GamePlayObjects {
   /* The init method returns a Future of all the initial game constants
   * This method is also responsible for subscribing to the NATS channels */
   Future<GameInfoModel> load() async {
-    Performance.startInitStateTime();
+    Profile.startInitStateTime();
     // check if there is a gameInfo passed, if not, then fetch the game info
     GameInfoModel _gameInfoModel = await _fetchGameInfo();
     ClubInfo clubInfo = ClubInfo();
@@ -597,7 +597,7 @@ class GamePlayObjects {
       log('publishing my information done');
     });
     gameInfoModel = _gameInfoModel;
-    Performance.stopInitStateTime();
+    Profile.stopInitStateTime();
     return _gameInfoModel;
   }
 

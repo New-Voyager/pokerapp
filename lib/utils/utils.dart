@@ -385,12 +385,12 @@ DateTime findLastDateOfTheWeek(DateTime dateTime) {
   return ret;
 }
 
-class PerformanceClass {
+class ProfileClass {
   Stopwatch gameLoading;
   Stopwatch initStateTime;
   Stopwatch gameInfoFetch;
   Stopwatch queryCurrentHand;
-
+  List<String> profileLogs;
   void startGameLoading() {
     gameLoading = Stopwatch();
     gameLoading.start();
@@ -399,6 +399,8 @@ class PerformanceClass {
   void stopGameLoading() {
     gameLoading.stop();
     developer.log(
+        'Performance: Game loading time: ${gameLoading.elapsedMilliseconds}ms');
+    profileLogs.add(
         'Performance: Game loading time: ${gameLoading.elapsedMilliseconds}ms');
   }
 
@@ -411,6 +413,8 @@ class PerformanceClass {
     initStateTime.stop();
     developer.log(
         'Performance: Init state time: ${initStateTime.elapsedMilliseconds}ms');
+    profileLogs.add(
+        'Performance: Init state time: ${initStateTime.elapsedMilliseconds}ms');
   }
 
   void startGameInfoFetch() {
@@ -421,6 +425,8 @@ class PerformanceClass {
   void stopGameInfoFetch() {
     gameInfoFetch.stop();
     developer.log(
+        'Performance: Game info fetch time: ${gameInfoFetch.elapsedMilliseconds}ms');
+    profileLogs.add(
         'Performance: Game info fetch time: ${gameInfoFetch.elapsedMilliseconds}ms');
   }
 
@@ -433,7 +439,9 @@ class PerformanceClass {
     queryCurrentHand.stop();
     developer.log(
         'Performance: Query current hand time: ${queryCurrentHand.elapsedMilliseconds}ms');
+    profileLogs.add(
+        'Performance: Query current hand time: ${queryCurrentHand.elapsedMilliseconds}ms');
   }
 }
 
-PerformanceClass Performance = PerformanceClass();
+ProfileClass Profile = ProfileClass();
