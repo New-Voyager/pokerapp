@@ -38,10 +38,11 @@ class GifListWidget extends StatelessWidget {
 
             if (gif.media.gif == null) return const SizedBox.shrink();
 
-            final String url = gif.media.gif.url;
+            final String url = gif.itemurl;
 
             /* the preview URL can be a local one: from cache */
-            final String previewUrl = gif.cache ?? gif.media.tinygif.url;
+            final String previewUrl =
+                gif.itemurl; //.cache ?? gif.media.tinygif.url;
 
             final bool isLocal = gif.cache != null;
 

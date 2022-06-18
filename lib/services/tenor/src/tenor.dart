@@ -9,8 +9,10 @@ import 'service/search_suggestions.dart';
 class Tenor {
   final String apiKey;
   final String language;
+  final String secret;
 
-  Tenor({this.apiKey = '', this.language = 'en'});
+  Tenor(
+      {this.apiKey = '', this.language = 'en', this.secret = 'Poker Club App'});
 
   /// Returns response containing a list of the current global trending GIFs. The trending stream is updated regularly throughout the day.
   ///
@@ -31,7 +33,8 @@ class Tenor {
     GifSize size = GifSize.all,
     MediaFilter mediaFilter = MediaFilter.minimal,
   }) async {
-    var url = 'https://g.tenor.com/v1/trending?key=$apiKey&locale=$language';
+    var url =
+        'https://tenor.googleapis.com/v2/trending_terms?key=$apiKey&client_key=$secret&limit=$limit';
     return await tenorRequestGif(
       url,
       limit: limit,
@@ -56,7 +59,10 @@ class Tenor {
     MediaFilter mediaFilter = MediaFilter.minimal,
   }) async {
     var url =
-        'https://g.tenor.com/v1/search?key=$apiKey&locale=$language&q=$search';
+        'https://tenor.googleapis.com/v2/search?q=$search&key=$apiKey&client_key=$secret&limit=$limit';
+
+    // var url =
+    //     'https://g.tenor.com/v1/search?key=$apiKey&locale=$language&q=$search';
     return await tenorRequestGif(
       url,
       limit: limit,
@@ -81,7 +87,10 @@ class Tenor {
     MediaFilter mediaFilter = MediaFilter.minimal,
   }) async {
     var url =
-        'https://g.tenor.com/v1/random?key=$apiKey&locale=$language&q=$search';
+        'https://tenor.googleapis.com/v2/search?q=$search&key=$apiKey&client_key=$secret&limit=$limit';
+
+    // var url =
+    //     'https://g.tenor.com/v1/random?key=$apiKey&locale=$language&q=$search';
     return await tenorRequestGif(
       url,
       limit: limit,
@@ -103,7 +112,8 @@ class Tenor {
     int limit = 20,
   }) async {
     var url =
-        'https://g.tenor.com/v1/search_suggestions?key=$apiKey&locale=$language&q=$search';
+        'https://tenor.googleapis.com/v2/search_suggestions?q=$search&key=$apiKey&client_key=$secret&limit=$limit';
+
     return await tenorSearchSuggestions(
       url,
       limit: limit,
@@ -120,7 +130,8 @@ class Tenor {
     int limit = 20,
   }) async {
     var url =
-        'https://g.tenor.com/v1/trending_terms?key=$apiKey&locale=$language';
+        'https://tenor.googleapis.com/v2/trending_terms?key=$apiKey&client_key=$secret&limit=$limit';
+
     return await tenorSearchSuggestions(
       url,
       limit: limit,
@@ -138,7 +149,8 @@ class Tenor {
     int limit = 20,
   }) async {
     var url =
-        'https://g.tenor.com/v1/autocomplete?key=$apiKey&locale=$language&q=$search';
+        'https://tenor.googleapis.com/v2/autocomplete?key=$apiKey&client_key=$secret&limit=$limit';
+
     return await tenorSearchSuggestions(
       url,
       limit: limit,
@@ -156,7 +168,9 @@ class Tenor {
     ContentFilter contentFilter = ContentFilter.off,
     CategoryType categoryType = CategoryType.featured,
   }) async {
-    var url = 'https://g.tenor.com/v1/categories?key=$apiKey&locale=$language';
+    var url =
+        'https://tenor.googleapis.com/v2/categories?key=$apiKey&client_key=$secret';
+
     return await tenorTenorCategories(
       url,
       contentFilter: contentFilter,

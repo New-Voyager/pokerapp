@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:hive/hive.dart';
@@ -31,9 +32,9 @@ class GifCacheService {
     final Directory dir = await _gifDirectory;
 
     final cacheBox = HiveDatasource.getInstance.getBox(BoxType.CACHE_GIF_BOX);
-
+    bool needToFetch = false;
     for (String category in categories) {
-      if (_needToFetch(category, cacheBox)) {
+      if (_needToFetch(category, cacheBox) || needToFetch) {
         List<TenorResult> gifs = await TenorService.getGifsWithSearch(
           category,
           limit: cacheAmount,
@@ -42,6 +43,7 @@ class GifCacheService {
         await _save(category, gifs, cacheBox, dir);
       }
     }
+    log('All gifs cached');
   }
 
   static Future<void> _save(
@@ -52,10 +54,12 @@ class GifCacheService {
   ) async {
     /* download the preview gifs & store them in local storage */
     for (int i = 0; i < gifs.length; i++) {
-      //print('downloading $i cache gif for $query');
       TenorResult gif = gifs[i];
 
-      final String previewUrl = gif.media.tinygif.url;
+      String previewUrl = gif.previewUrl; // gif.media.tinygif.url;
+      if (previewUrl == null) {
+        previewUrl = gif.itemurl;
+      }
       final String fileName = '${Uuid().v1()}.gif';
 
       final String downloadPath = '${dir.path}/$fileName';
@@ -63,9 +67,10 @@ class GifCacheService {
       /* download the file */
       Response response = await get(Uri.parse(previewUrl));
       await File(downloadPath).writeAsBytes(response.bodyBytes);
+      log('Download ${previewUrl} cache gif for size: ${response.contentLength}');
 
       // we dont care about the GOOD quality GIFs, thus we just save the preview ones
-      gif.media.gif.url = previewUrl;
+      //gif.media.gif.url = previewUrl;
 
       gif.cache = fileName;
     }
