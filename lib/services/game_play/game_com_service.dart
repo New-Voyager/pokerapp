@@ -21,12 +21,16 @@ class GameComService {
   String playerToHandChannel;
   String handToPlayerTextChannel;
   String gameChatChannel;
+  String tournamentChannel;
+  String tournamentPlayerChannel;
 
   Subscription _gameToPlayerChannelSubs;
   Subscription _handToAllChannelSubs;
   Subscription _handToPlayerChannelSubs;
   Subscription _handToPlayerTextChannelSubs;
   Subscription _gameChatChannelSubs;
+  Subscription _tournamentChannelSubs;
+  Subscription _tournamentPlayerChannelSubs;
 
   StreamController<Message> _gameToPlayerChannelInternal =
       StreamController.broadcast();
@@ -37,6 +41,10 @@ class GameComService {
   StreamController<Message> _handToPlayerTextChannelInternal =
       StreamController.broadcast();
   StreamController<Message> _gameChatChannelInternal =
+      StreamController.broadcast();
+  StreamController<Message> _tournamentChannelInternal =
+      StreamController.broadcast();
+  StreamController<Message> _tournamentChannelPlayerInternal =
       StreamController.broadcast();
 
   // current player info
@@ -57,6 +65,8 @@ class GameComService {
     @required this.playerToHandChannel,
     @required this.handToPlayerTextChannel,
     @required this.gameChatChannel,
+    this.tournamentChannel,
+    this.tournamentPlayerChannel,
   }) {
     // _client = Client();
     // _clientPub = Client();
@@ -103,6 +113,21 @@ class GameComService {
     _gameChatChannelSubs.stream
         .listen((event) => _gameChatChannelInternal.add(event));
 
+    if (tournamentChannel != null && tournamentChannel.isNotEmpty) {
+      log('subscribing to ${this.tournamentChannel}');
+      _tournamentChannelSubs = nats.clientSub.sub(this.tournamentChannel);
+      _tournamentChannelSubs.stream
+          .listen((event) => _tournamentChannelInternal.add(event));
+    }
+
+    if (tournamentPlayerChannel != null && tournamentPlayerChannel.isNotEmpty) {
+      log('subscribing to ${this.tournamentPlayerChannel}');
+      _tournamentPlayerChannelSubs =
+          nats.clientSub.sub(this.tournamentPlayerChannel);
+      _tournamentPlayerChannelSubs.stream
+          .listen((event) => _tournamentChannelPlayerInternal.add(event));
+    }
+
     if (this._chat == null) {
       this._chat = GameMessagingService(
         this.currentPlayer,
@@ -143,6 +168,8 @@ class GameComService {
 
     // _gameChatChannelSubs?.unSub();
     _gameChatChannelSubs?.close();
+    _tournamentPlayerChannelSubs?.close();
+    _tournamentChannelSubs?.close();
   }
 
   void dispose() {
@@ -154,6 +181,8 @@ class GameComService {
     _handToPlayerChannelSubs?.unSub();
     _handToPlayerTextChannelSubs?.unSub();
     _gameChatChannelSubs?.unSub();
+    _tournamentPlayerChannelSubs?.unSub();
+    _tournamentChannelSubs?.unSub();
 
     // close
     _close();
@@ -164,6 +193,8 @@ class GameComService {
     _handToPlayerChannelInternal.close();
     _handToPlayerTextChannelInternal.close();
     _gameChatChannelInternal.close();
+    _tournamentPlayerChannelSubs?.close();
+    _tournamentChannelSubs?.close();
 
     active = false;
     // _client?.close();
@@ -201,5 +232,15 @@ class GameComService {
     }
     // assert(active);
     return this._chat;
+  }
+
+  Stream<Message> get tournamentChannelStream {
+    assert(active);
+    return _tournamentChannelInternal.stream;
+  }
+
+  Stream<Message> get tournamentPlayerChannelStream {
+    assert(active);
+    return _tournamentChannelPlayerInternal.stream;
   }
 }

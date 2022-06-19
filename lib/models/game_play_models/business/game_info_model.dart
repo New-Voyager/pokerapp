@@ -71,6 +71,8 @@ class GameInfoModel {
   String handToPlayerChannel;
   String gameChatChannel;
   String clientAliveChannel;
+  String tournamentChannel;
+  String tournamentPlayerChannel;
 
   // janus related settings
   bool audioConfEnabled;
@@ -259,6 +261,7 @@ class GameInfoModel {
     this.handToPlayerChannel = data['handToPlayerChannel'];
     this.gameChatChannel = data['gameChatChannel'];
     this.clientAliveChannel = data['clientAliveChannel'];
+    this.tournamentChannel = data['tournamentChannel'];
 
     this.audioConfEnabled = data['audioConfEnabled'] ?? false;
     this.janusUrl = data['janusUrl'];
@@ -275,6 +278,7 @@ class GameInfoModel {
     this.livekitUrl = data['livekitUrl'];
     this.livekitToken = data['livekitToken'];
     this.demoGame = data['demoGame'] ?? false;
+
     this.tournament = true;
   }
 

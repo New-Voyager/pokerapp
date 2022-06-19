@@ -435,6 +435,11 @@ class GamePlayObjects {
     }
 
     log('establishing game communication service');
+
+    if (_gameInfoModel.tournament) {
+      _gameInfoModel.tournamentPlayerChannel =
+          '${_gameInfoModel.tournamentChannel}.player.${_currentPlayer.id}';
+    }
     _gameComService = GameComService(
       currentPlayer: this._currentPlayer,
       gameToPlayerChannel: _gameInfoModel.gameToPlayerChannel,
@@ -443,6 +448,8 @@ class GamePlayObjects {
       playerToHandChannel: _gameInfoModel.playerToHandChannel,
       handToPlayerTextChannel: _gameInfoModel.handToPlayerTextChannel,
       gameChatChannel: _gameInfoModel.gameChatChannel,
+      tournamentChannel: _gameInfoModel.tournamentChannel,
+      tournamentPlayerChannel: _gameInfoModel.tournamentPlayerChannel,
     );
 
     final encryptionService = EncryptionService();
