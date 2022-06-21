@@ -44,6 +44,7 @@ import 'package:pokerapp/services/test/test_service.dart';
 import 'package:provider/provider.dart';
 
 import 'screens/game_play_screen/game_play_screen.dart';
+import 'utils/utils.dart';
 
 class WebRoutes {
   // Initial route splash
@@ -199,6 +200,7 @@ class WebRoutes {
       case game_play:
         bool botGame = false;
         bool isFromWaitListNotification = false;
+        Profile.startGameLoading();
         GameInfoModel gameInfo;
         return _getPageRoute(
           routeName: settings.name,

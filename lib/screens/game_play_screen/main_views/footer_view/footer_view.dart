@@ -220,13 +220,17 @@ class _FooterViewState extends State<FooterView>
             showOptionsButtons = true;
           }
         }
-        if (showOptionsButtons) {
+        if (showOptionsButtons &&
+            gameState.gameInfo.status == AppConstants.GAME_ACTIVE) {
           return StatusOptionsWidget(gameState: gameState);
         }
 
         /* build the HoleCardsViewAndFooterActionView only if me is NOT null */
         final mee = gameState.me;
-        if (mee == null && !gameState.customizationMode) {
+
+        if (gameState.gameInfo.status != AppConstants.GAME_CONFIGURED &&
+            mee == null &&
+            !gameState.customizationMode) {
           log('RedrawFooter: rebuilding hole card me is null');
           return SizedBox(width: width);
         } else {
@@ -578,6 +582,9 @@ class _FooterViewState extends State<FooterView>
       //   // display game information
       //   children.add(_buildGameInfo(gameState));
       // }
+      if (PlatformUtils.isWeb) {
+        children.add(_buildMainView(gameState));
+      }
       /* hand analyse view */
       children.add(_buildHandAnalyseView(context));
       /* communication widgets */
